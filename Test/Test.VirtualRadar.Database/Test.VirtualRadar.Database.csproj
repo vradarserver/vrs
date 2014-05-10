@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3BCD0AE3-BC71-47DC-836C-41BDF0C2533E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Test.VirtualRadar.Database</RootNamespace>
+    <AssemblyName>Test.VirtualRadar.Database</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Moq">
+      <HintPath>..\..\Dependencies\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.65.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\System.Data.SQLite.DLL</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInitialise.cs" />
+    <Compile Include="AutoConfigBaseStationDatabaseTests.cs" />
+    <Compile Include="BackgroundDataDownloaderTests.cs" />
+    <Compile Include="BaseStationDatabaseTests.cs" />
+    <Compile Include="CallsignRouteFetcherTests.cs" />
+    <Compile Include="LogDatabaseTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchBaseStationCriteriaTests.cs" />
+    <Compile Include="StandingDataManagerTests.cs" />
+    <Compile Include="StandingDataUpdaterTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj">
+      <Project>{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}</Project>
+      <Name>SQLiteWrapper.DotNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Database\VirtualRadar.Database.csproj">
+      <Project>{049A9A56-990E-4F99-99F7-CC09767508D9}</Project>
+      <Name>VirtualRadar.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
+      <Project>{94F0A821-51BB-4381-9413-1A3FAD661D82}</Project>
+      <Name>Test.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

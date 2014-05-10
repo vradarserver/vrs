@@ -1,0 +1,756 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Über</value>
+    <comment>e.g. About Virtual Radar Server</comment>
+  </data>
+  <data name="AcronymByte" xml:space="preserve">
+    <value>B</value>
+    <comment>Shorthand for byte</comment>
+  </data>
+  <data name="AcronymGigabyte" xml:space="preserve">
+    <value>GB</value>
+    <comment>Shorthand for 1024 x 1024 x 1024 bytes</comment>
+  </data>
+  <data name="AcronymKilobyte" xml:space="preserve">
+    <value>KB</value>
+    <comment>Shorthand for 1024 bytes</comment>
+  </data>
+  <data name="AcronymMegabyte" xml:space="preserve">
+    <value>MB</value>
+    <comment>Shorthand for 1024 x 1024 bytes</comment>
+  </data>
+  <data name="AcronymTerrabyte" xml:space="preserve">
+    <value>TB</value>
+    <comment>Shorthand for 1024 x 1024 x 1024 x 1024 bytes</comment>
+  </data>
+  <data name="ADSBAircraft" xml:space="preserve">
+    <value>ADS-B Flugzeuge</value>
+    <comment>The aircraft picked up by an ADS-B radio</comment>
+  </data>
+  <data name="AllowInternetProximityGadgets" xml:space="preserve">
+    <value>Lassen Internet-nahe Gadgets zu</value>
+    <comment>Allow Windows 7 desktop gadgets that display the closest aircraft details to connect from the Internet</comment>
+  </data>
+  <data name="AnotherInstanceRunningFull" xml:space="preserve">
+    <value>Eine weitere Instanz von Virtual Radar Server läuft bereits.</value>
+  </data>
+  <data name="AnotherInstanceRunningTitle" xml:space="preserve">
+    <value>Eine weitere Instanz läuft bereits</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="ApplicationDescription" xml:space="preserve">
+    <value>DIESE ANWENDUNG IST KOSTENLOS.
+
+Dies ist ein einfacher Webserver, der verwendet werden kann, um die Spur eines Flugzeugs anzuzeigen mithilfe der Installation von BaseStation.
+
+Anwendungsprogramm Icon mit freundlicher Genehmigung von Aha-Soft (http://www.aha-soft.com/).
+
+iPhone CSS wurde dem jQ Touch Projekt entnommen (http://www.jqtouch.com).
+
+Deutsch von Eva Knapp und Michael Leigh.</value>
+    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio</value>
+    <comment>Things that are generally to do with audio / sounds</comment>
+  </data>
+  <data name="BaseStation" xml:space="preserve">
+    <value>BaseStation</value>
+    <comment>May not need to be translated, it's the name of a program</comment>
+  </data>
+  <data name="BaseStationStatus" xml:space="preserve">
+    <value>Status der BaseStation</value>
+    <comment>BaseStation is a program name and does not need translating, status refers to TCP connection to program</comment>
+  </data>
+  <data name="BytesSent" xml:space="preserve">
+    <value>Gesendete Bytes</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="CanConnectWithSettings" xml:space="preserve">
+    <value>Eine Verbindung kann mit diesen Einstellungen hergestellt werden</value>
+  </data>
+  <data name="CannotCommunicateWithFlightSimulatorX" xml:space="preserve">
+    <value>Keine Kommunikation zum Flug- Simulator X</value>
+    <comment>"Flight Simulator X" may not need translating</comment>
+  </data>
+  <data name="CannotConnect" xml:space="preserve">
+    <value>Keine Verbindung</value>
+  </data>
+  <data name="CannotConnectToBaseStationFull" xml:space="preserve">
+    <value>Keine Verbindung zur BaseStation: {0}</value>
+    <comment>Where {0} is an exception message. BaseStation is a program and may not need translating</comment>
+  </data>
+  <data name="CannotConnectToBaseStationTitle" xml:space="preserve">
+    <value>Keine Verbindung zur BaseStation</value>
+    <comment>BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotConnectWithSettings" xml:space="preserve">
+    <value>Eine Verbindung kann mit diesen Einstellungen nicht hergestellt werden.</value>
+  </data>
+  <data name="CannotDetermineNetworkAddress" xml:space="preserve">
+    <value>Netzwerk-Adresse kann nicht ermittelt werden</value>
+  </data>
+  <data name="CannotLoadFlightRouteDataFull" xml:space="preserve">
+    <value>Flugstrecken-Daten - {0} konnten nicht geladen werden</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="CannotLoadFlightRouteDataTitle" xml:space="preserve">
+    <value>Flugstrecken-Daten konnten nicht geladen werden</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="CannotOpenBaseStationDatabaseFull" xml:space="preserve">
+    <value>Keine Verbindung zu der BaseStation Datenbank {0}</value>
+    <comment>Where {0} is a filename. BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotOpenBaseStationDatabaseTitle" xml:space="preserve">
+    <value>Kann BaseStation Datenbank nicht öffnen</value>
+    <comment>BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotParseRouteFile" xml:space="preserve">
+    <value>Konnte die Strecken-Statusdatei nicht analysieren.</value>
+    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+  </data>
+  <data name="CannotStartWebServerFull" xml:space="preserve">
+    <value>Kann Webserver für prefix nicht starten</value>
+    <comment>Prefix is a Microsoft term and may not need translating</comment>
+  </data>
+  <data name="CannotStartWebServerTitle" xml:space="preserve">
+    <value>Kann den Webserver nicht starten</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="CaughtExceptionInReverseDNS" xml:space="preserve">
+    <value>Caught-Ausnahme beim Reverse-DNS </value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Schließen</value>
+    <comment>As in close a dialog box or window</comment>
+  </data>
+  <data name="ConfigurationFolder" xml:space="preserve">
+    <value>Konfigurationsordner</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Verbunden</value>
+    <comment>As in a connection between two computers</comment>
+  </data>
+  <data name="ConnectedSuccessfully" xml:space="preserve">
+    <value>Erfolgreich verbunden</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Anschließen</value>
+  </data>
+  <data name="ConnectionClientLog" xml:space="preserve">
+    <value>Verbindung Client Log</value>
+    <comment>Logged connections of clients to the web server</comment>
+  </data>
+  <data name="ConnectionSessionLog" xml:space="preserve">
+    <value>Anschluss Sitzungsprotokoll</value>
+    <comment>Logged sessions for a client connecting to the web server</comment>
+  </data>
+  <data name="ConnectToFlightSimulatorX" xml:space="preserve">
+    <value>Anschluss an Flugsimulator X</value>
+    <comment>Flight Simulator X is the name of a program, it may not need translating</comment>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Inhalt</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright © 2010- Andrew Whewell</value>
+  </data>
+  <data name="CouldNotCheckForUpdate" xml:space="preserve">
+    <value>Konnte keine spätere Version prüfen</value>
+  </data>
+  <data name="CouldNotConnect" xml:space="preserve">
+    <value>Keine Verbindung</value>
+  </data>
+  <data name="CurrentRouteData" xml:space="preserve">
+    <value>Aktuelle Streckendaten</value>
+    <comment>Label for status message describing the flight route data held by the program</comment>
+  </data>
+  <data name="DatabaseFileName" xml:space="preserve">
+    <value>Datenbank-Dateiname</value>
+  </data>
+  <data name="DaysBetweenChecks" xml:space="preserve">
+    <value>Anzahl der zu wartenden Tage vor Prüfung einer neuen Version</value>
+  </data>
+  <data name="DefaultSettingsSavedFull" xml:space="preserve">
+    <value>Standardkonfigurationseinstellungen gespeichert - bitte den Virtual Radar Server erneut starten.</value>
+  </data>
+  <data name="DefaultSettingsSavedTitle" xml:space="preserve">
+    <value>Standardeinstellungen gespeichert</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="DefaultVersion" xml:space="preserve">
+    <value>Standard Version</value>
+  </data>
+  <data name="DefaultVoice" xml:space="preserve">
+    <value>Standard Stimme</value>
+    <comment>As in the default computer text-to-speech voice</comment>
+  </data>
+  <data name="DesktopVersion" xml:space="preserve">
+    <value>Desktop-Version</value>
+    <comment>The version of the site for desktop computers</comment>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>Abgekuppelt</value>
+  </data>
+  <data name="Disconnecting" xml:space="preserve">
+    <value>Kuppelt ab</value>
+  </data>
+  <data name="DotNetVersionTooLowFull" xml:space="preserve">
+    <value>Für dieses Programm muss das komplette .NET 3.5 Framework installiert sein. Möchten Sie die .NET 3.5 Download-Seite auf der Microsoft Website sehen?</value>
+  </data>
+  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
+    <value>Falsche Version des .NET Frameworks</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DownloadData" xml:space="preserve">
+    <value>Daten downloaden</value>
+    <comment>Title of dialog box that lets the user force the download of flight route data</comment>
+  </data>
+  <data name="DownloadingPleaseWait" xml:space="preserve">
+    <value>Downloading, bitte warten</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Dauer</value>
+  </data>
+  <data name="DurationBeforeAircraftRemovedFromMap" xml:space="preserve">
+    <value>Dauer (in Sekunden) zwischen dem Signalverlust und der Streichung des Flugzeugs aus der Karte</value>
+  </data>
+  <data name="DurationOfShortTrails" xml:space="preserve">
+    <value>Dauer (in Sekunden) Kurzstrecken</value>
+    <comment>A short trail is a line drawn behind the aircraft which shows its positions for the past so-many seconds of flight</comment>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="EndDateCannotBeBeforeStartDate" xml:space="preserve">
+    <value>Das Enddatum muss am oder nach dem Startdatum liegen</value>
+  </data>
+  <data name="ExceptionWhenCheckingFile" xml:space="preserve">
+    <value>Konnte Dateinamen: {0} nicht prüfen.</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="ExceptionWhenCheckingFolder" xml:space="preserve">
+    <value>Konnte Ordner: {0} nicht prüfen</value>
+    <comment>Where {0} is the name of a folder</comment>
+  </data>
+  <data name="FakeAircraftMode" xml:space="preserve">
+    <value>Gefälschterflugzeugmodus</value>
+    <comment>Title for dialog box that lets devs create pretend aircraft to test how they appear on the map</comment>
+  </data>
+  <data name="FirstSeen" xml:space="preserve">
+    <value>Erstmals gesehen</value>
+  </data>
+  <data name="FlagsFolder" xml:space="preserve">
+    <value>Flag-Ordner</value>
+    <comment>The folder containing images of country or airline flags</comment>
+  </data>
+  <data name="FlightSimulatorXIsNotInstalled" xml:space="preserve">
+    <value>Flight Simulator X ist nicht installiert (kann SimConnect nicht laden). </value>
+    <comment>"Flight Simulator X" and "SimConnect" may not need translating</comment>
+  </data>
+  <data name="FlightSimulatorXShutdown" xml:space="preserve">
+    <value>Abgekuppelt weil Flugsimulator abgebrochen hat</value>
+  </data>
+  <data name="FlightSimVersion" xml:space="preserve">
+    <value>Flight Sim Version</value>
+    <comment>The version of the site that shows aircraft in Flight Simulator X</comment>
+  </data>
+  <data name="FolderDoesNotExistFull" xml:space="preserve">
+    <value>Der Ordner {0} existiert nicht</value>
+    <comment>Where {0} is the name of a folder</comment>
+  </data>
+  <data name="FolderDoesNotExistTitle" xml:space="preserve">
+    <value>Ordner existiert nicht</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Von</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Allgemeines</value>
+    <comment>Miscellaneous options</comment>
+  </data>
+  <data name="GoogleMaps" xml:space="preserve">
+    <value>Google Maps</value>
+  </data>
+  <data name="ICAO" xml:space="preserve">
+    <value>ICAO</value>
+    <comment>The initials of the United Nations organisation</comment>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Bilder</value>
+    <comment>A count of images</comment>
+  </data>
+  <data name="InitialLatitude" xml:space="preserve">
+    <value>Ausgangs-Breitengrad</value>
+    <comment>As in a line of latitude on a map</comment>
+  </data>
+  <data name="InitialLongitude" xml:space="preserve">
+    <value>Ausgangs-Längengrad</value>
+    <comment>As in a line of longitude on a map</comment>
+  </data>
+  <data name="InitialMapType" xml:space="preserve">
+    <value>Ausgangs-Kartentyp</value>
+    <comment>Default Google map type</comment>
+  </data>
+  <data name="InitialRefresh" xml:space="preserve">
+    <value>Sekunden zwischen Karten-Updates</value>
+    <comment>Number of seconds between each update of the map</comment>
+  </data>
+  <data name="InitialZoom" xml:space="preserve">
+    <value>Ausgangs-Zoom</value>
+    <comment>Default level of zoom on Google map</comment>
+  </data>
+  <data name="Internet" xml:space="preserve">
+    <value>Internet</value>
+  </data>
+  <data name="InternetClients" xml:space="preserve">
+    <value>Internet-Clients</value>
+    <comment>Options that affect clients connecting to the web server from the Internet (instead of from the local network)</comment>
+  </data>
+  <data name="InvalidConfigurationFileFull" xml:space="preserve">
+    <value>Es gab ein Problem ('{0}') beim Laden der Konfigurationsdatei von {1}. Dies kann durch einen Fehler verursacht worden sein, der einen ungültigen Wert für eine der Konfiguratseinstellungen eingegeben wurde. Wollen Sie die Konfiguration zurücksetzen auf die Standardeinstellungen und es erneut versuchen?</value>
+    <comment>Where {0} is an exception message and {1} is a filename</comment>
+  </data>
+  <data name="InvalidConfigurationFileTitle" xml:space="preserve">
+    <value>Reset Konfigurationseinstellungen?</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="IPAddress" xml:space="preserve">
+    <value>IP-Adresse</value>
+  </data>
+  <data name="LastRequest" xml:space="preserve">
+    <value>Letzte Anforderung</value>
+    <comment>The time of the last request from a client to the server</comment>
+  </data>
+  <data name="LastSeen" xml:space="preserve">
+    <value>Zuletzt gesehen</value>
+  </data>
+  <data name="LastURL" xml:space="preserve">
+    <value>Letzter URL</value>
+    <comment>The last URL requested by a client</comment>
+  </data>
+  <data name="LaterVersionAvailable" xml:space="preserve">
+    <value>Eine  neuere Version des Programms ist verfügbar</value>
+  </data>
+  <data name="LatestVersion" xml:space="preserve">
+    <value>Dies ist die aktuelle Version des Programms </value>
+  </data>
+  <data name="License" xml:space="preserve">
+    <value>Lizenz</value>
+  </data>
+  <data name="LicenseContent" xml:space="preserve">
+    <value>Copyright © 2010 onwards, Andrew Whewell
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</value>
+    <comment>** MULTILINE FIELD **</comment>
+  </data>
+  <data name="Local" xml:space="preserve">
+    <value>Lokal</value>
+    <comment>As in the local network</comment>
+  </data>
+  <data name="menuAbout" xml:space="preserve">
+    <value>&amp;Über...</value>
+  </data>
+  <data name="menuCheckForUpdates" xml:space="preserve">
+    <value>&amp;Suche nach Updates</value>
+  </data>
+  <data name="menuConnectionClientLog" xml:space="preserve">
+    <value>Anschluss &amp;Client Log...</value>
+  </data>
+  <data name="menuConnectionSessionLog" xml:space="preserve">
+    <value>Anschluss &amp;Sitzungslog...</value>
+  </data>
+  <data name="menuDebug" xml:space="preserve">
+    <value>&amp;Fehlersuche und beseitigen</value>
+  </data>
+  <data name="menuDownloadData" xml:space="preserve">
+    <value>Download D&amp;ata...</value>
+  </data>
+  <data name="menuExit" xml:space="preserve">
+    <value>&amp;Abbrechen</value>
+  </data>
+  <data name="menuFakeAircraftMode" xml:space="preserve">
+    <value>&amp;Gefälschterflugzeugmodus...</value>
+  </data>
+  <data name="menuFile" xml:space="preserve">
+    <value>&amp;Datei</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="menuFlightSimulatorXMode" xml:space="preserve">
+    <value>Flug&amp;simulator X-Modus...</value>
+  </data>
+  <data name="menuHelp" xml:space="preserve">
+    <value>&amp;Hilfe</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="menuOpenVirtualRadarLog" xml:space="preserve">
+    <value> VirtualRadarLog.txt &amp;öffnen</value>
+  </data>
+  <data name="menuOptions" xml:space="preserve">
+    <value>&amp;Optionen...</value>
+  </data>
+  <data name="menuTools" xml:space="preserve">
+    <value>&amp;Tools</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="MessageType" xml:space="preserve">
+    <value>Meldungsart</value>
+  </data>
+  <data name="MinimumRefresh" xml:space="preserve">
+    <value>Mindest Sekundenanzahl zwischen Kartenupdates</value>
+    <comment>The smallest number of seconds a browser can request between map updates</comment>
+  </data>
+  <data name="MissingFileName" xml:space="preserve">
+    <value>Fehlender Dateiname</value>
+  </data>
+  <data name="MissingFolder" xml:space="preserve">
+    <value>Fehlender Ordner</value>
+  </data>
+  <data name="MobileVersion" xml:space="preserve">
+    <value>Mobile Version</value>
+    <comment>The version of the site for smartphones and tablet computers</comment>
+  </data>
+  <data name="NotConnected" xml:space="preserve">
+    <value>Nicht angeschlossen</value>
+    <comment>As in a connection between two computers</comment>
+  </data>
+  <data name="NotLoaded" xml:space="preserve">
+    <value>Nicht geladen</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+    <comment>As used on OK buttons</comment>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Betreiber</value>
+    <comment>As in the organisation operating an aircraft</comment>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Anderes</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Port</value>
+    <comment>As in a TCP/IP port number</comment>
+  </data>
+  <data name="ReadingSpeed" xml:space="preserve">
+    <value>Lesegeschwindigkeit</value>
+    <comment>How quickly some text is spoken</comment>
+  </data>
+  <data name="ReceivedCountMessages" xml:space="preserve">
+    <value>Eingegangen {0:N0} Meldungen</value>
+    <comment>Where {0:N0} is an integer</comment>
+  </data>
+  <data name="Reconnecting" xml:space="preserve">
+    <value>Wiederverbinden</value>
+  </data>
+  <data name="Reg" xml:space="preserve">
+    <value>Registrierung</value>
+    <comment>As in aircraft registration</comment>
+  </data>
+  <data name="Requests" xml:space="preserve">
+    <value>Anforderungen</value>
+    <comment>The number of requests a server gets</comment>
+  </data>
+  <data name="ResetSettingsToDefault" xml:space="preserve">
+    <value>Reset Einstellungen auf Standardwerte</value>
+  </data>
+  <data name="ReverseDNS" xml:space="preserve">
+    <value>Reverse-DNS</value>
+  </data>
+  <data name="RideAircraft" xml:space="preserve">
+    <value>Flugzeug fliegen</value>
+    <comment>Ride in the cockpit of an aircraft (using Flight Simulator X)</comment>
+  </data>
+  <data name="RidingAircraft" xml:space="preserve">
+    <value>Fliegen {0}</value>
+    <comment>Riding in the cockpit of the aircraft whose registration is {0}</comment>
+  </data>
+  <data name="RouteFileStatus" xml:space="preserve">
+    <value>Geladene {0:N0} Strecken für den Zeitraum {1:d} bis {2:d}</value>
+    <comment>Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
+  </data>
+  <data name="RouteStateFileContentInvalid" xml:space="preserve">
+    <value>Streckenzustandsdateiinhalt ist ungültig</value>
+    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+  </data>
+  <data name="RouteStateFileInvalid" xml:space="preserve">
+    <value>Streckenzustandsdatei ist ungültig</value>
+    <comment>Route as in flight route</comment>
+  </data>
+  <data name="SelectAnAircraftToRide" xml:space="preserve">
+    <value>Wählen Sie ein Flugzeug für ersten Flug</value>
+    <comment>Validation message, refers to riding in cockpit of an aircraft in Flight Simulator X</comment>
+  </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>Sitzungen</value>
+    <comment>The number of times someone has connected to the server</comment>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>Zeigen</value>
+  </data>
+  <data name="ShowLocalAddress" xml:space="preserve">
+    <value>Lokale Adresse anzeigen</value>
+    <comment>As in show the address of the server on 127.0.0.1</comment>
+  </data>
+  <data name="ShowNetworkAddress" xml:space="preserve">
+    <value>Netzwerkadresse zeigen</value>
+    <comment>As in show the address of the server on the network</comment>
+  </data>
+  <data name="SilhouettesFolder" xml:space="preserve">
+    <value>Silhouetten Ordner</value>
+    <comment>The folder containing images of aircraft silhouettes</comment>
+  </data>
+  <data name="SomeRouteFilesMissing" xml:space="preserve">
+    <value>Einige Streckendateien fehlen</value>
+    <comment>As in flight routes</comment>
+  </data>
+  <data name="SomethingDoesNotExist" xml:space="preserve">
+    <value>'{0}' existiert nicht</value>
+    <comment>Where {0} is a filename or a folder name</comment>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Quelle</value>
+    <comment>As in whether a connection was from the local network or the Internet</comment>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+    <comment>The current state of something</comment>
+  </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>Status Code</value>
+  </data>
+  <data name="StopRidingAircraft" xml:space="preserve">
+    <value>Flug unterbrechen</value>
+    <comment>Stop riding in the cockpit of an aircraft</comment>
+  </data>
+  <data name="SuggestUseDifferentPortFull" xml:space="preserve">
+    <value>Wenn der Webserver nicht gestartet werden kann,weil ein anderes Programm den Port benutzt, das Virtual Radar Server Installationsprogramm erneut starten und einen anderen Port wählen.
+
+Wenn zum Beispiel das Installationsprogramm eine Portnummer anfragt versuchen sie 8080 anstelle von 80</value>
+    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **
+Suggestion made if the exception could indicate that the port number is in use.</comment>
+  </data>
+  <data name="SuggestUseDifferentPortTitle" xml:space="preserve">
+    <value>Mögliche Lösung</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="TakeWebServerOffline" xml:space="preserve">
+    <value>Offline Abwicklung</value>
+  </data>
+  <data name="TakeWebServerOnline" xml:space="preserve">
+    <value>Online Abwicklung</value>
+  </data>
+  <data name="TestConnection" xml:space="preserve">
+    <value>Testverbindung</value>
+    <comment>Testing the connection to a computer</comment>
+  </data>
+  <data name="TheseSettingsOnlyAffectInternetBrowsers" xml:space="preserve">
+    <value>Diese Einstellungen betreffen nur Browser, die aus dem Internet angeschlossen sind.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>An</value>
+  </data>
+  <data name="TotalMessages" xml:space="preserve">
+    <value>Alle Meldungen</value>
+  </data>
+  <data name="TransmissionType" xml:space="preserve">
+    <value>Übertragungstyp</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+    <comment>As in aircraft type</comment>
+  </data>
+  <data name="UNC" xml:space="preserve">
+    <value>Adresse</value>
+    <comment>As in a UNC kind of address, but not using technical acronyms if possible</comment>
+  </data>
+  <data name="UnrecognisedCommandLineParameterFull" xml:space="preserve">
+    <value>Kommandozeilenparameter {0} ist unerkannt</value>
+    <comment>Where {0} is a string</comment>
+  </data>
+  <data name="UnrecognisedCommandLineParameterTitle" xml:space="preserve">
+    <value>Nicht erfasste Kommandozeilenparameter</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="UseFreezeMethod" xml:space="preserve">
+    <value>"Freeze"-Verfahren anwenden</value>
+    <comment>"Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UserMustAuthenticate" xml:space="preserve">
+    <value>Benutzer müssen sich authentifizieren</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="UseSlewMethod" xml:space="preserve">
+    <value>"Slew"-Verfahren anwenden</value>
+    <comment>"Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+    <comment>e.g. Version 1.2.3.4</comment>
+  </data>
+  <data name="VersionCheckResult" xml:space="preserve">
+    <value>Version Prüfungsergebnis</value>
+    <comment>Title for a dialog box displaying the result of a check for a later version</comment>
+  </data>
+  <data name="WebServer" xml:space="preserve">
+    <value>Webserver</value>
+  </data>
+  <data name="WebServerOffline" xml:space="preserve">
+    <value>Der Webserver ist offline</value>
+  </data>
+  <data name="WebServerOnline" xml:space="preserve">
+    <value>Der Webserver ist online</value>
+  </data>
+  <data name="WebServerStatus" xml:space="preserve">
+    <value>Webserver Status</value>
+  </data>
+  <data name="WindowsVersionTooLowFull" xml:space="preserve">
+    <value>Dieses Programm funktioniert nicht auf dem angewandten Betriebssystem.  Bei Verwendung von Windows XP bitte Service Pack 2 (oder höher) installieren.</value>
+  </data>
+  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
+    <value>HttpListener Nicht von O/S unterstützt</value>
+    <comment>Title for an error message box</comment>
+  </data>
+</root>

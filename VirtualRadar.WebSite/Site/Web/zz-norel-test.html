@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic,greek,vietnamese' rel='stylesheet' type='text/css'>
+    <title>TEST PAGE</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/vrs-common.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/vrs-mobile.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/jquery.dlmenu.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/jquery-ui/jquery-ui.css" type="text/css" media="screen" />
+
+    <!-- [[ JS BUNDLE START ]] -->
+    <!-- 3rd party javascript libraries and plugins -->
+    <script src="script/jquery.js" type="text/javascript"></script>
+    <script src="script/modernizr.custom.js" type="text/javascript"></script>
+    <script src="script/jquery.dlmenu.js" type="text/javascript"></script>
+</head>
+<body>
+    <p></p>
+    <div id="dl-menu" class="dl-menuwrapper">
+        <button class="dl-trigger">Open Menu</button>
+        <p class="dl-trigger">This is also a trigger</p>
+        <div style="background: yellow" class="dl-trigger">TRIGGER</div>
+        <ul class="dl-menu">
+            <li>
+                <a href="#"><span class="ui-icon ui-icon-wrench" style="display: inline-block; position: relative; top: 2px; margin-right: 4px;"></span>Item 1 which is quite long</a>
+                <ul class="dl-submenu">
+                    <li><a href="#">Sub-Item 1</a></li>
+                    <li><a href="#">Sub-Item 2</a></li>
+                    <li><a href="#">Sub-Item 3</a></li>
+                    <li>
+                        <a href="#">Sub-Item 4</a>
+                        <ul class="dl-submenu">
+                            <li><a href="#">Sub-Sub-Item 1</a></li>
+                            <li><a href="#">Sub-Sub-Item 2</a></li>
+                            <li><a href="#">Sub-Sub-Item 3</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Sub-Item 5</a></li>
+                    <li><a href="#">Sub-Item 6</a></li>
+                </ul>
+            </li>
+            <li><a href="#"><span style="padding-left: 20px;"></span>Item 2</a></li>
+            <li><a href="#"><span style="padding-left: 20px;"></span>Item 3</a></li>
+            <li><a href="#"><span style="padding-left: 20px;"></span>Some item</a></li>
+        </ul>
+    </div>
+
+
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('p').first().text('Menu Test');
+            $('#dl-menu').dlmenu();
+        });
+    </script>
+</body>
+</html>

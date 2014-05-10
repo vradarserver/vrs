@@ -1,0 +1,32 @@
+grid size is 16 unless otherwise noted
+
+\e000 = menu arrow pointing right
+\f000 = menu arrow pointing bottom-left
+\e600 = paint-format
+\e601 = cog
+\e602 = equalizer
+\e603 = question
+\e604 = contract
+\e605 = radio-unchecked
+\e606 = radio-checked
+\e607 = pause
+\e608 = volume-mute     (has cross next to speaker)
+\e609 = volume-mute2    (has speaker with no sound waves)
+\e60a = volume-low
+\e60b = volume-medium
+\e60c = volume-high
+\e60d = screen
+\e60e = print
+\e60f = binoculars
+\e610 = sort-down       (grid size is 14)
+\e611 = sort-up         (grid size is 14)
+\e612 = locked
+\e613 = unlocked
+\e614 = remove
+\e615 = backward
+\e616 = forward
+\e617 = previous/first
+\e618 = next/last
+\e619 = loop
+\e61a = close
+\e61b = checkmark

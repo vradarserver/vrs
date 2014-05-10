@@ -1,0 +1,40 @@
+<component name="libraryTable">
+  <library name="3rd party" type="javaScript">
+    <properties>
+      <option name="frameworkName" value="jQuery UI" />
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/Web/script/jquery.json.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/modernizr.custom.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/markerWithLabel.js" />
+        <item url="file://$PROJECT_DIR$/_external/_jQuery-1-9.js" />
+        <item url="file://$PROJECT_DIR$/_external/_googleMaps.js" />
+        <item url="file://$PROJECT_DIR$/_external/_jQuery-UI.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/jquery.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/stacktrace.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/jquery.colorPicker.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/purl.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/globalize.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/jquery.ui.touch-punch.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/jstorage.js" />
+        <item url="file://$PROJECT_DIR$/Web/script/jquery-ui.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/Web/script/jquery.json.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/modernizr.custom.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/markerWithLabel.js" />
+      <root url="file://$PROJECT_DIR$/_external/_jQuery-1-9.js" />
+      <root url="file://$PROJECT_DIR$/_external/_googleMaps.js" />
+      <root url="file://$PROJECT_DIR$/_external/_jQuery-UI.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/jquery.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/stacktrace.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/jquery.colorPicker.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/purl.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/globalize.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/jquery.ui.touch-punch.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/jstorage.js" />
+      <root url="file://$PROJECT_DIR$/Web/script/jquery-ui.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

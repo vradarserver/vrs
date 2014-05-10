@@ -1,0 +1,1971 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>О</value>
+    <comment>e.g. About Virtual Radar Server</comment>
+  </data>
+  <data name="ApplicationDescription" xml:space="preserve">
+    <value>ЭТО ПРИЛОЖЕНИЕ ЯВЛЯЕТСЯ БЕСПЛАТНЫМ.
+
+Это простой веб-сервер, который может быть использован для отображения самолетов, принятых ADS-B приемником.
+
+Иконка для приложения любезно предоставлена aha-soft (http://www.aha-soft.com). 
+
+Гражданские и военные коды регистрационной принадлежности любезно получены из файла countries.dat, поддерживающегося пользователем Kinetic-форума 'SabreJV' и опубликованного пользователем Kinetic-форума 'Bones' (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
+
+iPhone CSS был позаимствован из jQTouch проекта (http://www.jqtouch.com). 
+
+Немецкий перевод Евы Кнапп и Майкла Ли.
+Русский перевод Сергея Серова /sergsero и друзей.
+Французский перевод Франсуа /F5ANN.</value>
+    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
+  </data>
+  <data name="BaseStationStatus" xml:space="preserve">
+    <value>Состояние BaseStation</value>
+    <comment>BaseStation is a program name and does not need translating, status refers to TCP connection to program</comment>
+  </data>
+  <data name="BytesSent" xml:space="preserve">
+    <value>Отправлено, Байт</value>
+  </data>
+  <data name="CanConnectWithSettings" xml:space="preserve">
+    <value>Можно создать соединение с этими настройками</value>
+  </data>
+  <data name="CannotConnect" xml:space="preserve">
+    <value>Не удается подключиться</value>
+  </data>
+  <data name="CannotConnectWithSettings" xml:space="preserve">
+    <value>Нельзя создать соединение с этими настройками</value>
+  </data>
+  <data name="CaughtExceptionInReverseDNS" xml:space="preserve">
+    <value>Обрабатывать ошибки обратной зоны DNS</value>
+  </data>
+  <data name="ConfigurationFolder" xml:space="preserve">
+    <value>Папка настроек</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Установлено</value>
+    <comment>As in a connection between two computers</comment>
+  </data>
+  <data name="ConnectedSuccessfully" xml:space="preserve">
+    <value>Соединение установлено успешно</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Содержание</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright © 2010 onwards, Andrew Whewell</value>
+  </data>
+  <data name="DatabaseFileName" xml:space="preserve">
+    <value>Файл базы данных</value>
+  </data>
+  <data name="DefaultVoice" xml:space="preserve">
+    <value>Голос по умолчанию</value>
+    <comment>As in the default computer text-to-speech voice</comment>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Продолжительность</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Включить</value>
+  </data>
+  <data name="FirstSeen" xml:space="preserve">
+    <value>Первое посещение</value>
+  </data>
+  <data name="FlagsFolder" xml:space="preserve">
+    <value>Папка с логотипами</value>
+    <comment>The folder containing images of country or airline flags</comment>
+  </data>
+  <data name="ICAO" xml:space="preserve">
+    <value>ИКАО</value>
+    <comment>The initials of the United Nations organisation</comment>
+  </data>
+  <data name="Internet" xml:space="preserve">
+    <value>Интернет</value>
+  </data>
+  <data name="IPAddress" xml:space="preserve">
+    <value>IP-адрес</value>
+  </data>
+  <data name="LastSeen" xml:space="preserve">
+    <value>Последнее посещение</value>
+  </data>
+  <data name="Local" xml:space="preserve">
+    <value>По локальной сети</value>
+    <comment>As in the local network</comment>
+  </data>
+  <data name="MessageType" xml:space="preserve">
+    <value>Тип сообщения</value>
+  </data>
+  <data name="NotConnected" xml:space="preserve">
+    <value>Не подключен</value>
+    <comment>As in a connection between two computers</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>ОК</value>
+    <comment>As used on OK buttons</comment>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Оператор</value>
+    <comment>As in the organisation operating an aircraft</comment>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Порт</value>
+    <comment>As in a TCP/IP port number</comment>
+  </data>
+  <data name="ReadingSpeed" xml:space="preserve">
+    <value>Скорость голоса</value>
+    <comment>How quickly some text is spoken</comment>
+  </data>
+  <data name="Reg" xml:space="preserve">
+    <value>Регистрация</value>
+    <comment>As in aircraft registration</comment>
+  </data>
+  <data name="ReverseDNS" xml:space="preserve">
+    <value>Доменное имя</value>
+  </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>Сессии</value>
+    <comment>The number of times someone has connected to the server</comment>
+  </data>
+  <data name="SilhouettesFolder" xml:space="preserve">
+    <value>Папка с силуэтами</value>
+    <comment>The folder containing images of aircraft silhouettes</comment>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Входящее соединение</value>
+    <comment>As in whether a connection was from the local network or the Internet</comment>
+  </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>Код состояния</value>
+  </data>
+  <data name="TestConnection" xml:space="preserve">
+    <value>Проверка соединения</value>
+    <comment>Testing the connection to a computer</comment>
+  </data>
+  <data name="TotalMessages" xml:space="preserve">
+    <value>Всего сообщений</value>
+  </data>
+  <data name="TransmissionType" xml:space="preserve">
+    <value>Тип передачи</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Тип</value>
+    <comment>As in aircraft type</comment>
+  </data>
+  <data name="UNC" xml:space="preserve">
+    <value>Адрес</value>
+    <comment>As in a UNC kind of address, but not using technical acronyms if possible</comment>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версия</value>
+    <comment>e.g. Version 1.2.3.4</comment>
+  </data>
+  <data name="AcronymByte" xml:space="preserve">
+    <value>Б</value>
+    <comment>Shorthand for byte</comment>
+  </data>
+  <data name="AcronymGigabyte" xml:space="preserve">
+    <value>ГБ</value>
+    <comment>Shorthand for 1024 x 1024 x 1024 bytes</comment>
+  </data>
+  <data name="AcronymKilobyte" xml:space="preserve">
+    <value>КБ</value>
+    <comment>Shorthand for 1024 bytes</comment>
+  </data>
+  <data name="AcronymMegabyte" xml:space="preserve">
+    <value>МБ</value>
+    <comment>Shorthand for 1024 x 1024 bytes</comment>
+  </data>
+  <data name="AcronymTerrabyte" xml:space="preserve">
+    <value>ТБ</value>
+    <comment>Shorthand for 1024 x 1024 x 1024 x 1024 bytes</comment>
+  </data>
+  <data name="AllowInternetProximityGadgets" xml:space="preserve">
+    <value>Разрешить подключение гаджетов</value>
+    <comment>Allow Windows 7 desktop gadgets that display the closest aircraft details to connect from the Internet</comment>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Преобразование текста в речь</value>
+    <comment>Things that are generally to do with audio / sounds</comment>
+  </data>
+  <data name="DaysBetweenChecks" xml:space="preserve">
+    <value>Периодичность проверки новой версии, дни</value>
+  </data>
+  <data name="DefaultVersion" xml:space="preserve">
+    <value>Версия по умолчанию</value>
+  </data>
+  <data name="DesktopVersion" xml:space="preserve">
+    <value>Версия для настольных систем</value>
+    <comment>The version of the site for desktop computers</comment>
+  </data>
+  <data name="DurationBeforeAircraftRemovedFromMap" xml:space="preserve">
+    <value>Интервал между потерей сигнала и удалением метки самолета на карте, с</value>
+  </data>
+  <data name="DurationOfShortTrails" xml:space="preserve">
+    <value>Длительность укороченных траекторий, с</value>
+    <comment>A short trail is a line drawn behind the aircraft which shows its positions for the past so-many seconds of flight</comment>
+  </data>
+  <data name="FlightSimVersion" xml:space="preserve">
+    <value>Версия Flight Sim</value>
+    <comment>The version of the site that shows aircraft in Flight Simulator X</comment>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Изображения</value>
+    <comment>A count of images</comment>
+  </data>
+  <data name="InitialLatitude" xml:space="preserve">
+    <value>Координата широты в центре</value>
+    <comment>As in a line of latitude on a map</comment>
+  </data>
+  <data name="InitialLongitude" xml:space="preserve">
+    <value>Координата долготы в центре</value>
+    <comment>As in a line of longitude on a map</comment>
+  </data>
+  <data name="InitialMapType" xml:space="preserve">
+    <value>Тип карты</value>
+    <comment>Default Google map type</comment>
+  </data>
+  <data name="InitialRefresh" xml:space="preserve">
+    <value>Интервал обновления карты, с</value>
+    <comment>Number of seconds between each update of the map</comment>
+  </data>
+  <data name="InitialZoom" xml:space="preserve">
+    <value>Детализация карты по умолчанию</value>
+    <comment>Default level of zoom on Google map</comment>
+  </data>
+  <data name="LastRequest" xml:space="preserve">
+    <value>Последний запрос</value>
+    <comment>The time of the last request from a client to the server</comment>
+  </data>
+  <data name="LastURL" xml:space="preserve">
+    <value>Последний URL</value>
+    <comment>The last URL requested by a client</comment>
+  </data>
+  <data name="LaterVersionAvailable" xml:space="preserve">
+    <value>Доступна новая версия программы</value>
+  </data>
+  <data name="MinimumRefresh" xml:space="preserve">
+    <value>Минимальный период обновления карты, с</value>
+    <comment>The smallest number of seconds a browser can request between map updates</comment>
+  </data>
+  <data name="MobileVersion" xml:space="preserve">
+    <value>Мобильная версия</value>
+    <comment>The version of the site for smartphones and tablet computers</comment>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Другое</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="Requests" xml:space="preserve">
+    <value>Запросы</value>
+    <comment>The number of requests a server gets</comment>
+  </data>
+  <data name="ShowLocalAddress" xml:space="preserve">
+    <value>Адрес localhost</value>
+    <comment>As in show the address of the server on 127.0.0.1</comment>
+  </data>
+  <data name="ShowNetworkAddress" xml:space="preserve">
+    <value>Адрес в локальной сети</value>
+    <comment>As in show the address of the server on the network</comment>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Старт</value>
+  </data>
+  <data name="TakeWebServerOffline" xml:space="preserve">
+    <value>Перевести в Offline</value>
+  </data>
+  <data name="TakeWebServerOnline" xml:space="preserve">
+    <value>Перевести в Online</value>
+  </data>
+  <data name="TheseSettingsOnlyAffectInternetBrowsers" xml:space="preserve">
+    <value>Эти настройки действуют только при подключении через Интернет</value>
+  </data>
+  <data name="UserMustAuthenticate" xml:space="preserve">
+    <value>Пользователь должен быть аутентифицирован</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="WebServerOffline" xml:space="preserve">
+    <value>Веб-сервер Offline</value>
+  </data>
+  <data name="WebServerOnline" xml:space="preserve">
+    <value>Веб-сервер Online</value>
+  </data>
+  <data name="WebServerStatus" xml:space="preserve">
+    <value>Состояние веб-сервера</value>
+  </data>
+  <data name="ADSBAircraft" xml:space="preserve">
+    <value>Самолет с ADS-B</value>
+    <comment>The aircraft picked up by an ADS-B radio</comment>
+  </data>
+  <data name="CannotCommunicateWithFlightSimulatorX" xml:space="preserve">
+    <value>Невозможно связаться с Flight Simulator X</value>
+    <comment>"Flight Simulator X" may not need translating</comment>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Закрыть</value>
+    <comment>As in close a dialog box or window</comment>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Соединение</value>
+  </data>
+  <data name="ConnectToFlightSimulatorX" xml:space="preserve">
+    <value>Подключиться к Flight Simulator X</value>
+    <comment>Flight Simulator X is the name of a program, it may not need translating</comment>
+  </data>
+  <data name="CouldNotConnect" xml:space="preserve">
+    <value>Не удается подключиться</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>Отключен</value>
+  </data>
+  <data name="Disconnecting" xml:space="preserve">
+    <value>Отключение</value>
+  </data>
+  <data name="FlightSimulatorXIsNotInstalled" xml:space="preserve">
+    <value>Flight Simulator X не установлен (не удается загрузить SimConnect)</value>
+    <comment>"Flight Simulator X" and "SimConnect" may not need translating</comment>
+  </data>
+  <data name="FlightSimulatorXShutdown" xml:space="preserve">
+    <value>Отсоединен по закрытию Flight Simulator X</value>
+  </data>
+  <data name="ReceivedCountMessages" xml:space="preserve">
+    <value>Принято {0:N0} сообщений</value>
+    <comment>Where {0:N0} is an integer</comment>
+  </data>
+  <data name="RideAircraft" xml:space="preserve">
+    <value>Ride Aircraft</value>
+    <comment>Ride in the cockpit of an aircraft (using Flight Simulator X)</comment>
+  </data>
+  <data name="RidingAircraft" xml:space="preserve">
+    <value>Riding {0}</value>
+    <comment>Riding in the cockpit of the aircraft whose registration is {0}</comment>
+  </data>
+  <data name="SelectAnAircraftToRide" xml:space="preserve">
+    <value>Выберите первый управляемый самолет</value>
+    <comment>Validation message, refers to riding in cockpit of an aircraft in Flight Simulator X</comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Состояние</value>
+    <comment>The current state of something</comment>
+  </data>
+  <data name="StopRidingAircraft" xml:space="preserve">
+    <value>Stop Ride</value>
+    <comment>Stop riding in the cockpit of an aircraft</comment>
+  </data>
+  <data name="UseFreezeMethod" xml:space="preserve">
+    <value>Использовать "freeze" метод</value>
+    <comment>"Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UseSlewMethod" xml:space="preserve">
+    <value>Использовать "slew" метод</value>
+    <comment>"Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="ConnectionClientLog" xml:space="preserve">
+    <value>Журнал подключений клиентов</value>
+    <comment>Logged connections of clients to the web server</comment>
+  </data>
+  <data name="ConnectionSessionLog" xml:space="preserve">
+    <value>Журнал сеансов</value>
+    <comment>Logged sessions for a client connecting to the web server</comment>
+  </data>
+  <data name="CouldNotCheckForUpdate" xml:space="preserve">
+    <value>Не удалось проверить наличие новой версии</value>
+  </data>
+  <data name="CurrentRouteData" xml:space="preserve">
+    <value>Маршрутов</value>
+    <comment>Label for status message describing the flight route data held by the program</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Скачать</value>
+  </data>
+  <data name="DownloadData" xml:space="preserve">
+    <value>Загрузка данных</value>
+    <comment>Title of dialog box that lets the user force the download of flight route data</comment>
+  </data>
+  <data name="DownloadingPleaseWait" xml:space="preserve">
+    <value>идет загрузка, ждите...</value>
+  </data>
+  <data name="EndDateCannotBeBeforeStartDate" xml:space="preserve">
+    <value>Конечная дата должна совпадать или быть позже начальной</value>
+  </data>
+  <data name="FakeAircraftMode" xml:space="preserve">
+    <value>Режим виртуальной метки самолета</value>
+    <comment>Title for dialog box that lets devs create pretend aircraft to test how they appear on the map</comment>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>С</value>
+  </data>
+  <data name="LatestVersion" xml:space="preserve">
+    <value>Это актуальная версия программы</value>
+  </data>
+  <data name="menuAbout" xml:space="preserve">
+    <value>&amp;О программе...</value>
+  </data>
+  <data name="menuCheckForUpdates" xml:space="preserve">
+    <value>&amp;Проверить наличие обновлений</value>
+  </data>
+  <data name="menuConnectionClientLog" xml:space="preserve">
+    <value>Журнал подключений клиентов...</value>
+  </data>
+  <data name="menuConnectionSessionLog" xml:space="preserve">
+    <value>Журнал сеансов...</value>
+  </data>
+  <data name="menuDebug" xml:space="preserve">
+    <value>Отладка</value>
+  </data>
+  <data name="menuDownloadData" xml:space="preserve">
+    <value>Скачать данные маршрутов...</value>
+  </data>
+  <data name="menuExit" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="menuFakeAircraftMode" xml:space="preserve">
+    <value>Режим виртуального самолета...</value>
+  </data>
+  <data name="menuFile" xml:space="preserve">
+    <value>&amp;Файл</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="menuFlightSimulatorXMode" xml:space="preserve">
+    <value>Режим Flight &amp;Simulator X...</value>
+  </data>
+  <data name="menuHelp" xml:space="preserve">
+    <value>&amp;Справка</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="menuOpenVirtualRadarLog" xml:space="preserve">
+    <value>&amp;Открыть VirtualRadarLog.txt</value>
+  </data>
+  <data name="menuOptions" xml:space="preserve">
+    <value>&amp;Параметры...</value>
+  </data>
+  <data name="menuTools" xml:space="preserve">
+    <value>&amp;Инструменты</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>Показать</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>По</value>
+  </data>
+  <data name="VersionCheckResult" xml:space="preserve">
+    <value>Результат проверки версии</value>
+    <comment>Title for a dialog box displaying the result of a check for a later version</comment>
+  </data>
+  <data name="AnotherInstanceRunningFull" xml:space="preserve">
+    <value>Другой экземпляр Virtual Radar Server уже работает</value>
+    <comment>Virtual Radar SeRver</comment>
+  </data>
+  <data name="AnotherInstanceRunningTitle" xml:space="preserve">
+    <value>Другой экземпляр программы уже работает</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="BaseStation" xml:space="preserve">
+    <value>BaseStation</value>
+    <comment>May not need to be translated, it's the name of a program</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="CannotConnectToBaseStationFull" xml:space="preserve">
+    <value>Не удается подключиться к источнику данных: {0}</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="CannotConnectToBaseStationTitle" xml:space="preserve">
+    <value>Не удается подключиться к источнику данных</value>
+    <comment>BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotDetermineNetworkAddress" xml:space="preserve">
+    <value>Не удается определить сетевой адрес</value>
+  </data>
+  <data name="CannotLoadFlightRouteDataFull" xml:space="preserve">
+    <value>Не удалось загрузить данные о маршруте полета - {0}</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="CannotLoadFlightRouteDataTitle" xml:space="preserve">
+    <value>Не удалось загрузить данные о маршруте полета</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="CannotOpenBaseStationDatabaseFull" xml:space="preserve">
+    <value>Не удалось подключиться к базе данных BaseStation в {0}</value>
+    <comment>Where {0} is a filename. BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotOpenBaseStationDatabaseTitle" xml:space="preserve">
+    <value>Не удается открыть базу данных BaseStation</value>
+    <comment>BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotStartWebServerFull" xml:space="preserve">
+    <value>Не удается запустить веб-сервер на порту {0}</value>
+  </data>
+  <data name="CannotStartWebServerTitle" xml:space="preserve">
+    <value>Не удается запустить веб-сервер</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="DefaultSettingsSavedFull" xml:space="preserve">
+    <value>Настройки по умолчанию сохранены — запустите Virtual Radar Server снова</value>
+  </data>
+  <data name="DefaultSettingsSavedTitle" xml:space="preserve">
+    <value>Настройки по умолчанию сохранены</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="DotNetVersionTooLowFull" xml:space="preserve">
+    <value>Программе необходим установленный .NET 3.5 Framework. Хотите загрузить .NET 3.5 Framework с сайта Microsoft?</value>
+  </data>
+  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
+    <value>Неподходящая версия .NET Framework</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="ExceptionWhenCheckingFile" xml:space="preserve">
+    <value>Не удалось проверить файл: {0}</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="ExceptionWhenCheckingFolder" xml:space="preserve">
+    <value>Не удалось проверить папку: {0}</value>
+    <comment>Where {0} is the name of a folder</comment>
+  </data>
+  <data name="FolderDoesNotExistFull" xml:space="preserve">
+    <value>Папка {0} не существует</value>
+    <comment>Where {0} is the name of a folder</comment>
+  </data>
+  <data name="FolderDoesNotExistTitle" xml:space="preserve">
+    <value>Папка не существует</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Общие</value>
+    <comment>Miscellaneous options</comment>
+  </data>
+  <data name="GoogleMaps" xml:space="preserve">
+    <value>Настройки карты Google Maps</value>
+  </data>
+  <data name="InternetClients" xml:space="preserve">
+    <value>Из Интернет</value>
+    <comment>Options that affect clients connecting to the web server from the Internet (instead of from the local network)</comment>
+  </data>
+  <data name="InvalidConfigurationFileFull" xml:space="preserve">
+    <value>Возникла проблема ('{0}') при загрузке файла конфигурации из {1}. Это могло быть вызвано ошибкой, позволившей одному из параметров конфигурации принять недопустимое значение. Сбросить конфигурацию к настройкам по умолчанию и попробовать еще раз?</value>
+    <comment>Where {0} is an exception message and {1} is a filename</comment>
+  </data>
+  <data name="InvalidConfigurationFileTitle" xml:space="preserve">
+    <value>Сбросить настройки?</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="MissingFileName" xml:space="preserve">
+    <value>Отсутствует имя файла</value>
+  </data>
+  <data name="MissingFolder" xml:space="preserve">
+    <value>Отсутствует папка</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="ResetSettingsToDefault" xml:space="preserve">
+    <value>Сбросить настройки по умолчанию</value>
+  </data>
+  <data name="SomethingDoesNotExist" xml:space="preserve">
+    <value>"{0}" не существует</value>
+    <comment>Where {0} is a filename or a folder name</comment>
+  </data>
+  <data name="SuggestUseDifferentPortFull" xml:space="preserve">
+    <value>Если веб-сервер не может запуститься, потому что другая программа уже прослушивает этот порт, запустите программу установки Virtual Radar Server вновь и выберите другой порт.
+
+Например, когда программа установки запрашивает номер порта, попробуйте 8080, а не 80.</value>
+    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **
+Suggestion made if the exception could indicate that the port number is in use.</comment>
+  </data>
+  <data name="SuggestUseDifferentPortTitle" xml:space="preserve">
+    <value>Возможное решение</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="UnrecognisedCommandLineParameterFull" xml:space="preserve">
+    <value>Параметр командной строки {0} не опознан</value>
+    <comment>Where {0} is a string</comment>
+  </data>
+  <data name="UnrecognisedCommandLineParameterTitle" xml:space="preserve">
+    <value>Неизвестный параметр командной строки</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="WebServer" xml:space="preserve">
+    <value>Веб-сервер</value>
+  </data>
+  <data name="WindowsVersionTooLowFull" xml:space="preserve">
+    <value>Программа не будет работать в используемой вами операционной системе. Если вы работаете в Windows XP, то необходимо установить пакет Service Pack 2 или выше.</value>
+  </data>
+  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
+    <value>HttpListener не поддерживается операционной системой</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="CannotParseRouteFile" xml:space="preserve">
+    <value>Невозможно разобрать файл с маршрутными данными</value>
+    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+  </data>
+  <data name="NotLoaded" xml:space="preserve">
+    <value>Не загружен</value>
+  </data>
+  <data name="RouteFileStatus" xml:space="preserve">
+    <value>получено {0:N0} за период с {1:d} по {2:d}</value>
+    <comment>Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
+  </data>
+  <data name="RouteStateFileContentInvalid" xml:space="preserve">
+    <value>Содержимое файла маршрутных данных испорчено</value>
+    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+  </data>
+  <data name="RouteStateFileInvalid" xml:space="preserve">
+    <value>Файл маршрутных данных испорчен</value>
+    <comment>Route as in flight route</comment>
+  </data>
+  <data name="SomeRouteFilesMissing" xml:space="preserve">
+    <value>Отсутствуют некоторые файлы маршрутов</value>
+    <comment>As in flight routes</comment>
+  </data>
+  <data name="Reconnecting" xml:space="preserve">
+    <value>Повторное подключение</value>
+  </data>
+  <data name="LicenseContent" xml:space="preserve">
+    <value>Авторское право © 2010, Andrew Whewell
+Все права защищены.
+
+Разрешается повторное распространение и использование как в виде исходного кода, так и в двоичной форме, с модификациями или без, при соблюдении следующих условий:
+
+    *При повторном распространении исходного кода должно оставаться указанное выше уведомление об авторском праве, этот список условий и нижеследующий отказ от ответственности.
+    *При повторном распространении двоичного кода должно воспроизводиться указанное выше уведомление об авторском праве, этот список условий и нижеследующий отказ от ответственности в документации и/или в других материалах, поставляемых при распространении.
+    *Ни имя автора, ни имена других участников проекта не могут быть использованы в качестве поддержки или продвижения продуктов, основанных на этом программном обеспечении без предварительного письменного разрешения.
+
+ЭТА ПРОГРАММА ПРЕДОСТАВЛЕНА ДЕРЖАТЕЛЯМИ АВТОРСКИХ ПРАВ И/ИЛИ ДРУГИМИ СТОРОНАМИ «КАК ОНА ЕСТЬ» БЕЗ КАКОГО-ЛИБО ВИДА ГАРАНТИЙ, ВЫРАЖЕННЫХ ЯВНО ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ ИМИ, ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ КОММЕРЧЕСКОЙ ЦЕННОСТИ И ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ. НИ В КОЕМ СЛУЧАЕ, ЕСЛИ НЕ ТРЕБУЕТСЯ СООТВЕТСТВУЮЩИМ ЗАКОНОМ, ИЛИ НЕ УСТАНОВЛЕНО В УСТНОЙ ФОРМЕ, НИ ОДИН ДЕРЖАТЕЛЬ АВТОРСКИХ ПРАВ И НИ ОДНО ДРУГОЕ ЛИЦО, КОТОРОЕ МОЖЕТ ИЗМЕНЯТЬ И/ИЛИ ПОВТОРНО РАСПРОСТРАНЯТЬ ПРОГРАММУ, КАК БЫЛО РАЗРЕШЕНО ВЫШЕ, НЕ ОТВЕТСТВЕННЫ ПЕРЕД ВАМИ ЗА УБЫТКИ, ВКЛЮЧАЯ ЛЮБЫЕ ОБЩИЕ, СЛУЧАЙНЫЕ, СПЕЦИАЛЬНЫЕ ИЛИ ПОСЛЕДОВАВШИЕ УБЫТКИ, ПРОИСТЕКАЮЩИЕ ИЗ ИСПОЛЬЗОВАНИЯ ИЛИ НЕВОЗМОЖНОСТИ ИСПОЛЬЗОВАНИЯ ПРОГРАММЫ (ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ ПОТЕРЕЙ ДАННЫХ, ИЛИ ДАННЫМИ, СТАВШИМИ НЕПРАВИЛЬНЫМИ, ИЛИ ПОТЕРЯМИ, ПРИНЕСЁННЫМИ ИЗ-ЗА ВАС ИЛИ ТРЕТЬИХ ЛИЦ, ИЛИ ОТКАЗОМ ПРОГРАММЫ РАБОТАТЬ СОВМЕСТНО С ДРУГИМИ ПРОГРАММАМИ), ДАЖЕ ЕСЛИ ТАКОЙ ДЕРЖАТЕЛЬ ИЛИ ДРУГОЕ ЛИЦО БЫЛИ ИЗВЕЩЕНЫ О ВОЗМОЖНОСТИ ТАКИХ УБЫТКОВ.</value>
+    <comment>** MULTILINE FIELD **</comment>
+  </data>
+  <data name="License" xml:space="preserve">
+    <value>Лицензия</value>
+  </data>
+  <data name="UPnpPort" xml:space="preserve">
+    <value>Номер порта из Интернет</value>
+    <comment>As in a TCP/IP port number, not the sailing kind</comment>
+  </data>
+  <data name="PutOnInternet" xml:space="preserve">
+    <value>Доступ из Интернет</value>
+    <comment>Переделать</comment>
+  </data>
+  <data name="TakeOffInternet" xml:space="preserve">
+    <value>Отключить от Интернет</value>
+  </data>
+  <data name="UPnpActive" xml:space="preserve">
+    <value>Веб-сервер доступен из Интернет</value>
+  </data>
+  <data name="UPnpDisabled" xml:space="preserve">
+    <value>UPnP поддержка отключена</value>
+    <comment>UPnP probably does not need translating</comment>
+  </data>
+  <data name="UPnpInactive" xml:space="preserve">
+    <value>Веб-сервер не доступен из Интернет</value>
+  </data>
+  <data name="UPnpActiveWhileDisabled" xml:space="preserve">
+    <value>UPnP поддержка отключена, но сервер доступен из Интернет</value>
+    <comment>UPnP may not need translating</comment>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Аутентификация</value>
+  </data>
+  <data name="ShowInternetAddress" xml:space="preserve">
+    <value>Интернет-адрес</value>
+  </data>
+  <data name="UPnPNotPresent" xml:space="preserve">
+    <value>Не найден маршрутизатор с поддержкой UPnP</value>
+    <comment>UPnP need not be translated</comment>
+  </data>
+  <data name="UPnpNotSupported" xml:space="preserve">
+    <value>Версия Windows не поддерживает UPnP</value>
+    <comment>UPnP does not need to be translated</comment>
+  </data>
+  <data name="PicturesFolder" xml:space="preserve">
+    <value>Папка с изображениями</value>
+  </data>
+  <data name="AutoStartUPnP" xml:space="preserve">
+    <value>Доступ к серверу из Интернет при запуске VRS</value>
+  </data>
+  <data name="SplashScreenConnectingToBaseStation" xml:space="preserve">
+    <value>Подключение к источнику данных</value>
+  </data>
+  <data name="SplashScreenInitialisingAircraftList" xml:space="preserve">
+    <value>Инициализация списка самолетов</value>
+  </data>
+  <data name="SplashScreenInitialisingBaseStationListener" xml:space="preserve">
+    <value>Инициализация приемника канала</value>
+  </data>
+  <data name="SplashScreenInitialisingConnectionLogger" xml:space="preserve">
+    <value>Инициализация регистратора соединений</value>
+  </data>
+  <data name="SplashScreenInitialisingLog" xml:space="preserve">
+    <value>Инициализация журнала</value>
+  </data>
+  <data name="SplashScreenInitialisingUPnPManager" xml:space="preserve">
+    <value>Инициализация UPnP менеджера</value>
+  </data>
+  <data name="SplashScreenLoadingConfiguration" xml:space="preserve">
+    <value>Загрузка настроек</value>
+  </data>
+  <data name="SplashScreenOpeningBaseStationDatabase" xml:space="preserve">
+    <value>Открытие базы данных BaseStation</value>
+  </data>
+  <data name="SplashScreenParsingCommandLineParameters" xml:space="preserve">
+    <value>Разбор параметров командной строки</value>
+  </data>
+  <data name="SplashScreenStartingConnectionLogger" xml:space="preserve">
+    <value>Запуск регистратора соединений</value>
+  </data>
+  <data name="SplashScreenStartingDataUpdate" xml:space="preserve">
+    <value>Запуск фоновой проверки обновления данных</value>
+  </data>
+  <data name="SplashScreenStartingUPnP" xml:space="preserve">
+    <value>Подключение сервера к Интернет в режиме UPnP</value>
+  </data>
+  <data name="SplashScreenStartingWebServer" xml:space="preserve">
+    <value>Старт веб-сервера</value>
+  </data>
+  <data name="VirtualRadarServer" xml:space="preserve">
+    <value>Virtual Radar Server</value>
+    <comment>The name of the application</comment>
+  </data>
+  <data name="UserNameMissing" xml:space="preserve">
+    <value>Введите имя пользователя для доступа к веб-сайту</value>
+  </data>
+  <data name="SplashScreenLoadingStandingData" xml:space="preserve">
+    <value>Загрузка данных</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Плагины</value>
+  </data>
+  <data name="menuPlugins" xml:space="preserve">
+    <value>&amp;Плагины...</value>
+  </data>
+  <data name="PluginThrewExceptionFull" xml:space="preserve">
+    <value>Плагин {0} вызвал исключение ({1}) при запуске - он остается загруженным, но не может работать правильно. Полная информация в журнале.</value>
+  </data>
+  <data name="PluginThrewExceptionTitle" xml:space="preserve">
+    <value>Плагин выдал исключение во время запуска</value>
+  </data>
+  <data name="SplashScreenStartingPlugins" xml:space="preserve">
+    <value>Запуск плагинов</value>
+  </data>
+  <data name="ShuttingDown" xml:space="preserve">
+    <value>Выключение Virtual Radar Server</value>
+  </data>
+  <data name="ShuttingDownBaseStationAircraftList" xml:space="preserve">
+    <value>Отключение списка самолетов</value>
+  </data>
+  <data name="ShuttingDownBaseStationDatabase" xml:space="preserve">
+    <value>Закрытие базы данных BaseStation</value>
+    <comment>BaseStation is the name of an application</comment>
+  </data>
+  <data name="ShuttingDownBaseStationListener" xml:space="preserve">
+    <value>Отключение от источника данных</value>
+    <comment>BaseStation is the name of an application</comment>
+  </data>
+  <data name="ShuttingDownConnectionLogger" xml:space="preserve">
+    <value>Отключение регистратора соединений</value>
+  </data>
+  <data name="ShuttingDownLogDatabase" xml:space="preserve">
+    <value>Закрытие журнала базы данных</value>
+  </data>
+  <data name="ShuttingDownPlugin" xml:space="preserve">
+    <value>Отключение {0} плагина</value>
+  </data>
+  <data name="ShuttingDownUPnpManager" xml:space="preserve">
+    <value>Отключение режима UPnP</value>
+  </data>
+  <data name="ShuttingDownWebServer" xml:space="preserve">
+    <value>Завершение работы веб-сервера</value>
+  </data>
+  <data name="TrackingAircraft" xml:space="preserve">
+    <value>Самолетов</value>
+  </data>
+  <data name="CouldNotFindManifest" xml:space="preserve">
+    <value>Не удалось найти манифест</value>
+  </data>
+  <data name="CouldNotParseManifest" xml:space="preserve">
+    <value>Не удалось разобрать манифест: {0}</value>
+  </data>
+  <data name="PluginCannotBeLoaded" xml:space="preserve">
+    <value>Плагин не может быть загружен: {0}</value>
+  </data>
+  <data name="PluginDoesNotHaveJustOneIPlugin" xml:space="preserve">
+    <value>Плагин не имеет только один класс, который реализует IPlugin</value>
+  </data>
+  <data name="PluginMaximumVersionNotMet" xml:space="preserve">
+    <value>Плагин не работает с версиями VRS ранее {0}</value>
+  </data>
+  <data name="PluginMaximumVersionUnparseable" xml:space="preserve">
+    <value>Максимальная версия манифеста не может быть разобрана</value>
+  </data>
+  <data name="PluginMinimumVersionNotMet" xml:space="preserve">
+    <value>Плагину требуется версия VRS {0} (или позже)</value>
+  </data>
+  <data name="PluginMinumumVersionUnparseable" xml:space="preserve">
+    <value>Минимальная версия манифеста не может быть разобрана</value>
+  </data>
+  <data name="CountPluginsCouldNotBeLoaded" xml:space="preserve">
+    <value>{0: N0} плагин(ы) не может быть загружен</value>
+  </data>
+  <data name="PluginFileName" xml:space="preserve">
+    <value>Имя файла плагина</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Причина</value>
+  </data>
+  <data name="InvalidPlugins" xml:space="preserve">
+    <value>Неверные плагины</value>
+  </data>
+  <data name="SplashScreenStartingPictureFolderCache" xml:space="preserve">
+    <value>Запуск кэширования папки с изображениями</value>
+  </data>
+  <data name="Feet" xml:space="preserve">
+    <value>Футы</value>
+  </data>
+  <data name="InitialDistanceUnits" xml:space="preserve">
+    <value>Единица расстояния</value>
+    <comment>Начальная</comment>
+  </data>
+  <data name="InitialHeightUnits" xml:space="preserve">
+    <value>Единица высоты</value>
+  </data>
+  <data name="InitialSpeedUnits" xml:space="preserve">
+    <value>Единица скорости</value>
+  </data>
+  <data name="Kilometres" xml:space="preserve">
+    <value>Километры</value>
+  </data>
+  <data name="KilometresPerHour" xml:space="preserve">
+    <value>Километры в час</value>
+  </data>
+  <data name="Knots" xml:space="preserve">
+    <value>Узлы</value>
+  </data>
+  <data name="Metres" xml:space="preserve">
+    <value>Метры</value>
+  </data>
+  <data name="Miles" xml:space="preserve">
+    <value>Мили</value>
+  </data>
+  <data name="MilesPerHour" xml:space="preserve">
+    <value>Мили в час</value>
+  </data>
+  <data name="NauticalMiles" xml:space="preserve">
+    <value>Морские мили</value>
+  </data>
+  <data name="IgnoreBadMessages" xml:space="preserve">
+    <value>Игнорировать сообщения с ошибками</value>
+  </data>
+  <data name="TotalBadMessages" xml:space="preserve">
+    <value>Ошибочных</value>
+  </data>
+  <data name="PleaseSelectAFile" xml:space="preserve">
+    <value>Выберите файл</value>
+  </data>
+  <data name="PleaseSelectAFolder" xml:space="preserve">
+    <value>Выберите папку</value>
+  </data>
+  <data name="PleaseSelectFlagsFolder" xml:space="preserve">
+    <value>Выберите папку с логотипами авиакомпаний</value>
+  </data>
+  <data name="PleaseSelectPicturesFolder" xml:space="preserve">
+    <value>Выберите папку с фотографиями самолетов</value>
+  </data>
+  <data name="PleaseSelectSilhouettesFolder" xml:space="preserve">
+    <value>Выберите папку с силуэтами самолетов</value>
+  </data>
+  <data name="SelectBaseStationDatabaseFile" xml:space="preserve">
+    <value>Выберите файл базы BaseStation</value>
+    <comment>BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="DataSource" xml:space="preserve">
+    <value>Источник данных</value>
+    <comment>As in SBS1 / Port 30003 data / SBS-3 etc.</comment>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
+  <data name="Port30003Feed" xml:space="preserve">
+    <value>BaseStation</value>
+    <comment>BaseStation does not need translating</comment>
+  </data>
+  <data name="ReceiverLocation" xml:space="preserve">
+    <value>Местоположение приемника</value>
+  </data>
+  <data name="SBS3ModeSFeed" xml:space="preserve">
+    <value>SBS-3 RAW</value>
+    <comment>!</comment>
+  </data>
+  <data name="UseDefaultPort" xml:space="preserve">
+    <value>Использовать порт по умолчанию</value>
+  </data>
+  <data name="Data" xml:space="preserve">
+    <value>Данные</value>
+  </data>
+  <data name="ConnectionStatus" xml:space="preserve">
+    <value>Статус соединения</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Широта</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Долгота</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Новый</value>
+  </data>
+  <data name="PleaseEnterNameForLocation" xml:space="preserve">
+    <value>Укажите название местоположения</value>
+  </data>
+  <data name="PleaseEnterUniqueNameForLocation" xml:space="preserve">
+    <value>Это название уже используется для другого местоположения</value>
+  </data>
+  <data name="ReceiverLocationsTitle" xml:space="preserve">
+    <value>Местоположения приемников</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="UpdateFromBaseStationDatabase" xml:space="preserve">
+    <value>Получить из базы данных BaseStation</value>
+  </data>
+  <data name="BeastModeSFeed" xml:space="preserve">
+    <value>AVR или BIN BEAST RAW</value>
+    <comment>'Beast' is the name of a product and may not need translating</comment>
+  </data>
+  <data name="AcceptableAirborneSpeed" xml:space="preserve">
+    <value>Приемлемое перемещение в воздухе за 30 с, км</value>
+    <comment>Воздушная скорость - скорость полета самолета относительно воздуха, не зависимо от пути, пройденного относительно земной поверхности</comment>
+  </data>
+  <data name="AcceptableAirSurfaceTransitionSpeed" xml:space="preserve">
+    <value>Приемлемое перемещение при взлете или посадке за 30 с, км</value>
+  </data>
+  <data name="AcceptableSurfaceSpeed" xml:space="preserve">
+    <value>Приемлемое перемещение на земле за 30 с, км</value>
+  </data>
+  <data name="AirborneGlobalPositionLimit" xml:space="preserve">
+    <value>Интервал сообщений о местоположении в воздухе, с</value>
+  </data>
+  <data name="DecoderSettings" xml:space="preserve">
+    <value>Установки декодера</value>
+  </data>
+  <data name="FastSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>Интервал сообщений о местоположении на земле для быстрых целей, с</value>
+  </data>
+  <data name="IgnoreMilitaryExtendedSquitter" xml:space="preserve">
+    <value>Игнорировать DF19/AF0 сообщения</value>
+  </data>
+  <data name="Km" xml:space="preserve">
+    <value>км</value>
+    <comment>Abbreviation of kilometres</comment>
+  </data>
+  <data name="RawDecoding" xml:space="preserve">
+    <value>RAW декодирование</value>
+  </data>
+  <data name="ReceiverRange" xml:space="preserve">
+    <value>Ограничение зоны приема, км</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>секунды</value>
+    <comment>As in hours, minutes, seconds</comment>
+  </data>
+  <data name="SlowSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>Интервал сообщений о местоположении на земле для медленных целей, с</value>
+  </data>
+  <data name="UseIcaoSpecificationSettings" xml:space="preserve">
+    <value>Использовать рекомендованные ИКАО настройки</value>
+  </data>
+  <data name="UseRecommendedSettings" xml:space="preserve">
+    <value>Использовать рекомендованные настройки</value>
+  </data>
+  <data name="OptionsDataSourcesDataFeed" xml:space="preserve">
+    <value>Тип источника и формат</value>
+  </data>
+  <data name="OptionsDataSourcesSheetTitle" xml:space="preserve">
+    <value>Источники данных</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesAddress" xml:space="preserve">
+    <value>IP-адрес приемника или программы, от которых получаются данные. Используется только для сетевых источников.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesDataSource" xml:space="preserve">
+    <value>Формат данных приемника или программы, которые Virtual Radar Server будет получать на вход. Поддерживаются символы *, @, : в начале AVR сообщений, а также бинарный формат BIN BEAST.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesPort" xml:space="preserve">
+    <value>Номер порта, через который приемник или программа посылает данные. Используется только для сетевых источников.</value>
+  </data>
+  <data name="AircraftData" xml:space="preserve">
+    <value>Данные о самолетах</value>
+  </data>
+  <data name="AutomaticallyDownloadNewRoutes" xml:space="preserve">
+    <value>Загружать обновления маршрутов</value>
+  </data>
+  <data name="CheckForNewVersions" xml:space="preserve">
+    <value>Проверка обновлений программы</value>
+  </data>
+  <data name="ConnectionType" xml:space="preserve">
+    <value>Тип подключения</value>
+  </data>
+  <data name="InternetUserCanSeeLabels" xml:space="preserve">
+    <value>Подписи у меток самолетов</value>
+  </data>
+  <data name="InternetUserIdleTimeout" xml:space="preserve">
+    <value>Время замораживания экрана по бездействию, м</value>
+  </data>
+  <data name="InternetUsersCanListenToAudio" xml:space="preserve">
+    <value>Прослушивание голосовых сообщений</value>
+  </data>
+  <data name="InternetUsersCanRunReports" xml:space="preserve">
+    <value>Создание отчетов</value>
+  </data>
+  <data name="InternetUsersCanViewPictures" xml:space="preserve">
+    <value>Отображение фотографий самолетов</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Сеть</value>
+    <comment>As in a TCP/IP network or the Internet</comment>
+  </data>
+  <data name="OptionsDescribeDataSourcesConnectionType" xml:space="preserve">
+    <value>Как Virtual Radar Server следует подключить к приемнику или программе.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesDatabaseFileName" xml:space="preserve">
+    <value>Полный путь и имя файла базы данных BaseStation, которая содержит информацию о самолетах.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesFlagsFolder" xml:space="preserve">
+    <value>Папка, содержащая логотипы авиакомпаний, в качестве имен файлов используются ИКАО коды авиакомпаний.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesIgnoreBadConnection" xml:space="preserve">
+    <value>"Нет" - отключить источник, если поступают сообщения с ошибками, "Да" - игнорировать и продолжать получать.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesPicturesFolder" xml:space="preserve">
+    <value>Папка, содержащая фотографии самолетов, в качестве имен файлов используются регистрационные номера самолетов и/или их ИКАО коды типов.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesSilhouettesFolder" xml:space="preserve">
+    <value>Папка, содержащая силуэты самолетов, в качестве имен файлов используются ИКАО коды типов.</value>
+  </data>
+  <data name="OptionsDescribeGeneralAudioEnabled" xml:space="preserve">
+    <value>"Да" - включить звуковые функции веб-сайта, "Нет" - отключить.</value>
+  </data>
+  <data name="OptionsDescribeGeneralCheckForNewVersions" xml:space="preserve">
+    <value>"Да" - разрешить уведомление о доступности новой версии, "Нет" - отключить проверку.</value>
+  </data>
+  <data name="OptionsDescribeGeneralCheckForNewVersionsPeriodDays" xml:space="preserve">
+    <value>Интервал проверки наличия новых версий, дней</value>
+  </data>
+  <data name="OptionsDescribeGeneralDisplayTimeoutSeconds" xml:space="preserve">
+    <value>Количество секунд, которое должно пройти с момента получения последнего сообщения от самолета, после чего его метка будет удалена с веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeGeneralDownloadFlightRoutes" xml:space="preserve">
+    <value>"Да" - позволить программе автоматически загружать обновления маршрутов, "Нет" - отключить автоматическое обновление.</value>
+  </data>
+  <data name="OptionsDescribeGeneralReadingSpeed" xml:space="preserve">
+    <value>Регулирует темп речи. Значение 0 соответствует средней скорости, отрицательные значения - медленнее, положительные - быстрее.</value>
+  </data>
+  <data name="OptionsDescribeGeneralShortTrailLengthSeconds" xml:space="preserve">
+    <value>Какому количеству секунд при перемещений самолета будет соответствовать укороченный след на карте.</value>
+  </data>
+  <data name="OptionsDescribeGeneralTextToSpeechVoice" xml:space="preserve">
+    <value>Голос, используемый при преобразовании текста в речь.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptableAirborneSpeed" xml:space="preserve">
+    <value>Допустимое количество километров, на которое самолет может переместиться в горизонтальном полете за 30 с, прежде чем декодирование в местном масштабе местоположения в воздухе считается недействительным. ИКАО рекомендует 11,112 км. Большие значения мешают обнаружению неточностей.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptableAirSurfaceTransitionSpeed" xml:space="preserve">
+    <value>Допустимое количество километров, на которое взлетающий или садящийся самолет может переместиться за 30 с, прежде чем декодирование в местном масштабе местоположения в воздухе считается недействительным. ИКАО рекомендует 4,63 км. Большие значения мешают обнаружению неточностей.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptableSurfaceSpeed" xml:space="preserve">
+    <value>Допустимое количество километров, на которое самолет или транспортное средство на земле может переместиться за 30 с, прежде чем декодирование в местном масштабе местоположения на земле считается недействительным. ИКАО рекомендует 1,4 км. Большие значения мешают обнаружению неточностей.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAirborneGlobalPositionLimit" xml:space="preserve">
+    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении в воздухе при декодировании в глобальном масштабе. ИКАО рекомендует 10 секунд. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении на земле при декодировании в глобальном масштабе для целей, движущихся быстрее 25 уз. (46,3 км/ч). ИКАО рекомендует 25 с. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedIgnoreMilitaryExtendedSquitter" xml:space="preserve">
+    <value>"Да" - игнорировать DF19/AF0 сообщения, не декодируя их подобно DF17. В ряде документов ИКАО утверждается, что их можно рассматривать, как DF17 сообщения, в других - это отрицается.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedReceiverLocation" xml:space="preserve">
+    <value>Название места приема и его географические координаты. Необходимо для однозначного определения местоположения приемника в одной из восьми зон на Земле, для которой производится декодирование.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedReceiverRange" xml:space="preserve">
+    <value>Радиус рабочей зоны приема. ADS-B сообщения с большей величиной дальности от места приема, чем это значение, отбрасываются.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSlowSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении на земле при декодировании в глобальном масштабе для целей, движущихся медленнее 25 уз. (46,3 км/ч). ИКАО рекомендует 50 с. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
+  </data>
+  <data name="OptionsDescribeWebServerAllowInternetProximityGadgets" xml:space="preserve">
+    <value>"Да" - если гаджетам, подключенным из Интернет, разрешено получать данные, "Нет" - если не разрешено. На гаджеты из локальной сети параметр не влияет.</value>
+  </data>
+  <data name="OptionsDescribeWebServerAutoStartUPnp" xml:space="preserve">
+    <value>"Да", чтобы автоматически сделать VRS доступным из Интернет при запуске программы, "Нет", чтобы оставался недоступным, пока не будет подключен вручную.</value>
+  </data>
+  <data name="OptionsDescribeWebServerEnableUPnpFeatures" xml:space="preserve">
+    <value>"Да", чтобы разрешить Universal Plug and Play возможности программы, "Нет", чтобы их запретить.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanPlayAudio" xml:space="preserve">
+    <value>"Да", если Интернет-пользователям разрешено использовать голосовые возможности, "Нет", если запрещено. Увеличивает использование полосы пропускания и нагрузку на сервер. Пользователи локальной сети не зависят от этого параметра.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanRunReports" xml:space="preserve">
+    <value>"Да", если Интернет-пользователям разрешено создавать отчеты, "Нет", если запрещено. Увеличивает использование полосы пропускания и нагрузку на сервер. Пользователи локальной сети не зависят от этого параметра.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanSeeLabels" xml:space="preserve">
+    <value>"Да", если Интернет-пользователям разрешено просматривать подписи у меток самолетов, "Нет", если запрещено. Увеличивает использование полосы пропускания и нагрузку на сервер. Пользователи локальной сети не зависят от этого параметра.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanSeePictures" xml:space="preserve">
+    <value>"Да", если Интернет-пользователям разрешено просматривать фотографии самолетов, "Нет", если запрещено. Увеличивает использование полосы пропускания и нагрузку на сервер. Пользователи локальной сети не зависят от этого параметра.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientTimeoutMinutes" xml:space="preserve">
+    <value>Количество минут бездействия, после чего сайт перестает отвечать Интернет-пользователям. "0" отключает эту функцию. Пользователи локальной сети не имеют тайм-аута.</value>
+  </data>
+  <data name="OptionsDescribeWebServerIsOnlyVirtualRadarServerOnLan" xml:space="preserve">
+    <value>"Да", если это единственный компьютер в сети с работающим VRS, которому вы хотите обеспечить доступ в Интернет, "Нет", если это не так.</value>
+  </data>
+  <data name="OptionsDescribeWebServerPassword" xml:space="preserve">
+    <value>Пароль, который пользователи должны ввести при входе на веб-сайт.</value>
+  </data>
+  <data name="OptionsDescribeWebServerUPnpPort" xml:space="preserve">
+    <value>Номер порта на UPnP маршрутизаторе, через который будет направляться Интернет-трафик при доступе к веб-серверу.</value>
+  </data>
+  <data name="OptionsDescribeWebServerUserMustAuthenticate" xml:space="preserve">
+    <value>"Да", если пользователи должны пройти аутентификацию перед просмотром веб-сайта, "Нет", если этого не требуется.</value>
+    <comment>May be browSing?</comment>
+  </data>
+  <data name="OptionsDescribeWebServerUserName" xml:space="preserve">
+    <value>Имя, которое пользователи должны ввести при входе на веб-сайт.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialDistanceUnit" xml:space="preserve">
+    <value>В каких единицах измеряется расстояние. Используется при первом посещении веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapLatitude" xml:space="preserve">
+    <value>Координата линии широты в центре карты. Используется при первом посещении веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapLongitude" xml:space="preserve">
+    <value>Координата линии долготы в центре карты. Используется при первом посещении веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapRefreshSeconds" xml:space="preserve">
+    <value>Количество секунд между обновлениями данных о самолетах на веб-сайте. Используется при первом посещении веб-сайта.</value>
+    <comment>"Only used on a browser's first visit to the web site." - Why? And how often the update then?</comment>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapType" xml:space="preserve">
+    <value>Тип карты. Используется при первом посещении веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapZoom" xml:space="preserve">
+    <value>Используемый уровень увеличения карты, где 0 показывает Землю целиком, а большие числа повышают локальную детализацию местности. Используется при первом посещении веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialHeightUnit" xml:space="preserve">
+    <value>В каких единицах измеряется высота. Используется при первом посещении веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialSpeedUnit" xml:space="preserve">
+    <value>В каких единицах измеряется скорость. Используется при первом посещении веб-сайта.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteMinimumGoogleMapRefreshSeconds" xml:space="preserve">
+    <value>Наименьшее количество секунд, которое веб-сайт позволит установить при выборе числа секунд между обновлением данных.</value>
+  </data>
+  <data name="OptionsGeneralCategory" xml:space="preserve">
+    <value>Общие настройки</value>
+    <comment>As in miscellaneous settings</comment>
+  </data>
+  <data name="OptionsRawFeedDecoderParametersCategory" xml:space="preserve">
+    <value>Параметры декодирования</value>
+  </data>
+  <data name="OptionsRawFeedReceiverDetailsCategory" xml:space="preserve">
+    <value>Параметры приема</value>
+  </data>
+  <data name="OptionsRawFeedSheetTitle" xml:space="preserve">
+    <value>Декодирование RAW данных</value>
+  </data>
+  <data name="OptionsUPnPCategory" xml:space="preserve">
+    <value>UPnP</value>
+  </data>
+  <data name="OptionsWebServerInternetClientsCategory" xml:space="preserve">
+    <value>Ограничения для Интернет-пользователей</value>
+  </data>
+  <data name="OptionsWebServerSheetTitle" xml:space="preserve">
+    <value>Веб-сервер</value>
+  </data>
+  <data name="OptionsWebSiteSettingsCategory" xml:space="preserve">
+    <value>Установки веб-сервера</value>
+  </data>
+  <data name="OptionsWebSiteTitle" xml:space="preserve">
+    <value>Веб-сайт</value>
+  </data>
+  <data name="TextToSpeechVoice" xml:space="preserve">
+    <value>Выбор голоса</value>
+  </data>
+  <data name="USBOverCOM" xml:space="preserve">
+    <value>Последовательный порт</value>
+    <comment>As in a serial port, serial communications etc.</comment>
+  </data>
+  <data name="TestAudioSettings" xml:space="preserve">
+    <value>Проба голоса</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="DataSourceNetworkAddressMissing" xml:space="preserve">
+    <value>Введите IP-адрес источника данных для подключения</value>
+  </data>
+  <data name="PortOutOfBounds" xml:space="preserve">
+    <value>Номер порта источника данных должен быть от 1 до 65535</value>
+  </data>
+  <data name="AcceptableAirborneSpeedOutOfBounds" xml:space="preserve">
+    <value>Приемлемое значение перемещения в воздухе, для однозначного декодирования в местном масштабе, должно быть между 0,005 и 45,0</value>
+  </data>
+  <data name="AcceptableAirSurfaceTransitionSpeedOutOfBounds" xml:space="preserve">
+    <value>Приемлемое значение перемещения в воздухе при взлете/посадке, для однозначного декодирования в местном масштабе, должно быть между 0,003 и 20,0</value>
+  </data>
+  <data name="AcceptableSurfaceSpeedOutOfBounds" xml:space="preserve">
+    <value>Приемлемое значение перемещения на земле, для однозначного декодирования в местном масштабе, должно быть между 0,001 и 10,0</value>
+  </data>
+  <data name="AirborneGlobalPositionLimitOutOfBounds" xml:space="preserve">
+    <value>Допустимое значение интервала между четным и нечетным сообщениями о местоположении в воздухе при глобальном декодировании должно быть между 1 и 30</value>
+  </data>
+  <data name="FastSurfaceGlobalPositionLimitOutOfBounds" xml:space="preserve">
+    <value>Допустимое значение интервала между четным и нечетным сообщениями о местоположении на земле для быстро перемещающихся целей при глобальном декодировании должно быть между 1 и 75</value>
+  </data>
+  <data name="ReceiverRangeOutOfBounds" xml:space="preserve">
+    <value>Радиус рабочей зоны приема должен быть от 0 до 99999</value>
+  </data>
+  <data name="SlowSurfaceGlobalPositionLimitOutOfBounds" xml:space="preserve">
+    <value>Допустимое значение интервала между четным и нечетным сообщениями о местоположении на земле для медленно перемещающихся целей при глобальном декодировании должно быть между 1 и 150</value>
+  </data>
+  <data name="DaysBetweenChecksOutOfBounds" xml:space="preserve">
+    <value>Интервал проверки наличия новой версии должен быть от 1 до 365</value>
+  </data>
+  <data name="DurationBeforeAircraftRemovedFromMapOutOfBounds" xml:space="preserve">
+    <value>Период бездействия, после которого изображение замораживается, должен быть от 5 до 540</value>
+  </data>
+  <data name="DurationOfShortTrailsOutOfBounds" xml:space="preserve">
+    <value>Продолжительность укороченных траекторий должна быть между 1 и 1800</value>
+  </data>
+  <data name="EnableUPnp" xml:space="preserve">
+    <value>Включить UPnP</value>
+  </data>
+  <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
+    <value>Уровень увеличения карты Google Maps должен быть между 0 и 19</value>
+  </data>
+  <data name="InitialRefreshLessThanMinimumRefresh" xml:space="preserve">
+    <value>Начальное значение обновления не может быть меньше, чем минимальное значение обновления</value>
+  </data>
+  <data name="InitialRefreshOutOfBounds" xml:space="preserve">
+    <value>Начальное значение обновления должно быть от 0 до 3600</value>
+  </data>
+  <data name="InternetUserIdleTimeoutOutOfBounds" xml:space="preserve">
+    <value>Период бездействия для Интернет-пользователей должен быть от 0 до 1440</value>
+  </data>
+  <data name="LatitudeOutOfBounds" xml:space="preserve">
+    <value>Широта должна быть от -90.0 (Южное полушарие) до 90.0 (Северное полушарие)</value>
+  </data>
+  <data name="LongitudeOutOfBounds" xml:space="preserve">
+    <value>Долгота должна быть от -180.0 (к Западу) до 180.0 (к Востоку)</value>
+    <comment>? better is if East + and West -</comment>
+  </data>
+  <data name="MinimumRefreshOutOfBounds" xml:space="preserve">
+    <value>Минимальное значение обновления должно быть от 0 до 3600</value>
+  </data>
+  <data name="ReadingSpeedOutOfBounds" xml:space="preserve">
+    <value>Скорость голоса должна быть от -10 до 10</value>
+  </data>
+  <data name="ResetPortAssignmentsOnStartup" xml:space="preserve">
+    <value>Сброс состояния порта при запуске</value>
+  </data>
+  <data name="UPnpPortOutOfBounds" xml:space="preserve">
+    <value>UPnP порт должен быть от 1 до 65535</value>
+    <comment>UPnP may not need translating</comment>
+  </data>
+  <data name="menuReconnectToDataFeed" xml:space="preserve">
+    <value>&amp;Переподключить к источнику данных</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesBaudRate" xml:space="preserve">
+    <value>Скорость в бит/с при обмене данными с устройством. Используется только для сериального порта.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesDataBits" xml:space="preserve">
+    <value>Число бит данных в символе при обмене данными с устройством. Используется только для сериального порта.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesHandshake" xml:space="preserve">
+    <value>Протокол управления передачей при обмене данными с устройством. Используется только для сериального порта.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesParity" xml:space="preserve">
+    <value>Использование контроля четности для проверки ошибок передачи при обмене данными с устройством. Используется только для сериального порта.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesComPort" xml:space="preserve">
+    <value>Номер последовательного порта при обмене данными с устройством. Используется только для сериального порта.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesShutdownText" xml:space="preserve">
+    <value>Управляющая команда для отправки в приемник для отключения обмена данными. Для microADSB должно быть #43-00\r. Используется только для сериального порта.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesStartupText" xml:space="preserve">
+    <value>Управляющая команда для отправки в приемник для инициализации обмена данными. Для microADSB должно быть #43-02\r. Используется только для сериального порта.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesStopBits" xml:space="preserve">
+    <value>Число стоп-бит, которые определяют конец символа при обмене данными с последовательным устройством. Используется только для сериального порта.</value>
+  </data>
+  <data name="SerialBaudRate" xml:space="preserve">
+    <value>Скорость передачи</value>
+    <comment>As in the baud rate of a serial port</comment>
+  </data>
+  <data name="SerialComPort" xml:space="preserve">
+    <value>Номер сериального порта</value>
+  </data>
+  <data name="SerialDataBits" xml:space="preserve">
+    <value>Число бит в символе</value>
+    <comment>As in the bits per byte when talking over a serial port</comment>
+  </data>
+  <data name="SerialHandshake" xml:space="preserve">
+    <value>Протокол управления передачей</value>
+    <comment>As in the handshaking protocol to use when talking over a serial port. Also known as flow control.</comment>
+  </data>
+  <data name="SerialParity" xml:space="preserve">
+    <value>Контроль четности</value>
+    <comment>As in the parity check to apply when talking over a serial port.</comment>
+  </data>
+  <data name="SerialSettings" xml:space="preserve">
+    <value>Последовательный порт</value>
+    <comment>As in the settings for serial communications</comment>
+  </data>
+  <data name="SerialShutdownText" xml:space="preserve">
+    <value>Команда отключения</value>
+    <comment>Text sent to a COM device when disconnecting.</comment>
+  </data>
+  <data name="SerialStartupText" xml:space="preserve">
+    <value>Команда инициализации</value>
+    <comment>Text sent to a COM device when first connected.</comment>
+  </data>
+  <data name="SerialStopBits" xml:space="preserve">
+    <value>Число стоп-бит</value>
+    <comment>As in the number of stop bits at the end of each byte when talking over a serial port</comment>
+  </data>
+  <data name="SerialBaudRateInvalidValue" xml:space="preserve">
+    <value>Введите допустимое значение скорости передачи, бит/с (от 115200 до 3000000)</value>
+    <comment>3000000</comment>
+  </data>
+  <data name="SerialComPortMissing" xml:space="preserve">
+    <value>Введите номер сериального порта, к которому подключен приемник</value>
+  </data>
+  <data name="SerialDataBitsOutOfBounds" xml:space="preserve">
+    <value>Число бит в символе должно быть от 5 до 8</value>
+  </data>
+  <data name="SerialHandshakeNone" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="SerialHandshakeRts" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="SerialHandshakeRtsXOnXOff" xml:space="preserve">
+    <value>Hardware или XOn / XOff</value>
+  </data>
+  <data name="SerialHandshakeXOnXOff" xml:space="preserve">
+    <value>XOn / XOff</value>
+  </data>
+  <data name="SerialParityEven" xml:space="preserve">
+    <value>Четный</value>
+  </data>
+  <data name="SerialParityMark" xml:space="preserve">
+    <value>Отметка</value>
+  </data>
+  <data name="SerialParityNone" xml:space="preserve">
+    <value>Не используется</value>
+  </data>
+  <data name="SerialParityOdd" xml:space="preserve">
+    <value>Нечетный</value>
+  </data>
+  <data name="SerialParitySpace" xml:space="preserve">
+    <value>Пробел</value>
+  </data>
+  <data name="SerialStopBitsNone" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="SerialStopBitsOne" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="SerialStopBitsOnePointFive" xml:space="preserve">
+    <value>1.5</value>
+  </data>
+  <data name="SerialStopBitsTwo" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="Format" xml:space="preserve">
+    <value>Формат</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="OptionsDescribeGeneralRebroadcastServers" xml:space="preserve">
+    <value>Параметры серверов, ретранслирующих данные в сеть</value>
+  </data>
+  <data name="RebroadcastFormatPassthrough" xml:space="preserve">
+    <value>Сквозной</value>
+    <comment>A rebroadcast server that transmits exactly the same bytes that were transmitted by the receiver VRS is listening to</comment>
+  </data>
+  <data name="RebroadcastFormatPort30003" xml:space="preserve">
+    <value>BaseStation</value>
+    <comment>A rebroadcast server that transmits Kinetic Port 30003 format messages converted from raw messages transmitted by the receiver that VRS is listening to</comment>
+  </data>
+  <data name="RebroadcastOptionsTitle" xml:space="preserve">
+    <value>Ретрансляция данных</value>
+  </data>
+  <data name="RebroadcastServer" xml:space="preserve">
+    <value>Настройки ретранслирующего сервера</value>
+  </data>
+  <data name="RebroadcastServersDescribeMany" xml:space="preserve">
+    <value>настроено серверов {0}, включено {1}</value>
+  </data>
+  <data name="RebroadcastServersDescribeSingle" xml:space="preserve">
+    <value>1 сервер настроен, включен {0}</value>
+  </data>
+  <data name="RebroadcastServersLabel" xml:space="preserve">
+    <value>Ретранслирующие серверы</value>
+  </data>
+  <data name="RebroadcastServersNoneConfigured" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="RebroadcastServersTitle" xml:space="preserve">
+    <value>Ретранслирующие Серверы</value>
+  </data>
+  <data name="RebroadcastServersStatus" xml:space="preserve">
+    <value>Состояние ретранслирующего сервера</value>
+  </data>
+  <data name="NameMustBeUnique" xml:space="preserve">
+    <value>Введите имя, которое еще ​​не было использовано</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>Введите имя</value>
+  </data>
+  <data name="PortMustBeUnique" xml:space="preserve">
+    <value>Введите порт, который еще ​​не был использован</value>
+  </data>
+  <data name="RebroadcastFormatRequired" xml:space="preserve">
+    <value>Выберите формат сообщения для ретрансляции</value>
+  </data>
+  <data name="SplashScreenStartingRebroadcastServers" xml:space="preserve">
+    <value>Запуск ретранслирующих серверов</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Конфигурация</value>
+  </data>
+  <data name="DataFeedStatus" xml:space="preserve">
+    <value>Состояние источника данных</value>
+  </data>
+  <data name="PIPresent" xml:space="preserve">
+    <value>Содержат PI</value>
+  </data>
+  <data name="RebroadcastFormatAvr" xml:space="preserve">
+    <value>AVR</value>
+    <comment>Probably doesn't need translating, it's a format for transmitting Mode-S messages</comment>
+  </data>
+  <data name="IgnoreCallsignsInBds20" xml:space="preserve">
+    <value>Игнорировать позывные самолетов из BDS2,0 сообщений</value>
+    <comment>Опознавательный индекс воздушного судна соответствует указанному
+в плане полета. Когда план полета отсутствует, используются
+регистрационные знаки воздушного судна.</comment>
+  </data>
+  <data name="OptionsDescribeRawFeedIgnoreCallsignsInBds20" xml:space="preserve">
+    <value>"Да", если VRS извлекает позывные только из ADS-B сообщений, "Нет", если дополнительно используются BDS2,0 сообщения.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSuppressReceiverRangeCheck" xml:space="preserve">
+    <value>Установите "Да", если координаты места или радиус фактической зоны приема не известны. Отменяет действие предыдущего пункта по ограничению размера зоны приема. Установка 'Нет' вводит запрет на отображение самолетов, которые находятся вне этой зоны.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedUseLocalDecodeForInitialPosition" xml:space="preserve">
+    <value>"Да" - местоположение самолетов определяется быстрее, но первоначальные позиции могут быть неточными. Действует, если было введено местоположение приемника.</value>
+  </data>
+  <data name="SuppressReceiverRangeCheck" xml:space="preserve">
+    <value>Отображать самолеты за пределами зоны приема</value>
+  </data>
+  <data name="UseLocalDecodeForInitialPosition" xml:space="preserve">
+    <value>Использовать декодирование в местном масштабе для определения начального местоположения</value>
+    <comment>Местоположение может быть декодировано методом местного декодирования, используя предыдущее местоположение цели в качестве исходного.</comment>
+  </data>
+  <data name="LatitudeCannotBeZero" xml:space="preserve">
+    <value>Широта не может быть нулевой</value>
+  </data>
+  <data name="ShuttingDownRebroadcastServer" xml:space="preserve">
+    <value>Остановка ретранслирующих серверов</value>
+  </data>
+  <data name="ADSB" xml:space="preserve">
+    <value>ADS-B</value>
+  </data>
+  <data name="BadChecksum" xml:space="preserve">
+    <value>Ошибка контрольной суммы</value>
+  </data>
+  <data name="BadlyFormatted" xml:space="preserve">
+    <value>Ошибка формата</value>
+  </data>
+  <data name="BytesReceived" xml:space="preserve">
+    <value>Принято, Байт</value>
+  </data>
+  <data name="Connection" xml:space="preserve">
+    <value>Соединение с источником данных</value>
+  </data>
+  <data name="Count" xml:space="preserve">
+    <value>Количество</value>
+  </data>
+  <data name="DF" xml:space="preserve">
+    <value>DF</value>
+  </data>
+  <data name="LongFrame" xml:space="preserve">
+    <value>Удлиненных сообщений</value>
+  </data>
+  <data name="PIBadParity" xml:space="preserve">
+    <value>С ошибкой четности PI</value>
+  </data>
+  <data name="menuStatistics" xml:space="preserve">
+    <value>Статистика</value>
+  </data>
+  <data name="MessagesReceived" xml:space="preserve">
+    <value>Принято сообщений</value>
+  </data>
+  <data name="ModeS" xml:space="preserve">
+    <value>Mode-S</value>
+  </data>
+  <data name="NoAdsbPayload" xml:space="preserve">
+    <value>Не ADS-B типа</value>
+  </data>
+  <data name="PositionResets" xml:space="preserve">
+    <value>Сброс местоположения</value>
+  </data>
+  <data name="PositionsOutOfRange" xml:space="preserve">
+    <value>Вне зоны приема</value>
+  </data>
+  <data name="ResetCounters" xml:space="preserve">
+    <value>Сбросить счетчики</value>
+  </data>
+  <data name="ShortFrame" xml:space="preserve">
+    <value>Коротких сообщений</value>
+  </data>
+  <data name="ShortFrameUnusable" xml:space="preserve">
+    <value>Неиспользуемых</value>
+  </data>
+  <data name="SpeedChecksExceeded" xml:space="preserve">
+    <value>Недопустимая скорость</value>
+  </data>
+  <data name="StatisticsTitle" xml:space="preserve">
+    <value>Статистика</value>
+  </data>
+  <data name="Throughput" xml:space="preserve">
+    <value>Интенсивность потока</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="AdsbRejected" xml:space="preserve">
+    <value>Исключено настройкой</value>
+  </data>
+  <data name="AcronymKilobytePerSecond" xml:space="preserve">
+    <value>кбит/с</value>
+  </data>
+  <data name="AutoReconnectAtStartup" xml:space="preserve">
+    <value>Восстанавливать соединение при загрузке</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesAutoReconnectAtStartup" xml:space="preserve">
+    <value>"Да" - автоматически пытаться установить соединение с источником данных при запуске программы, "Нет" - попытаться один раз и сообщить об ошибке, если соединение не может быть установлено.</value>
+  </data>
+  <data name="DurationBeforeAircraftRemovedFromTracking" xml:space="preserve">
+    <value>Завершить отслеживание после исчезновения сигнала, с</value>
+  </data>
+  <data name="OptionsDescribeGeneralTrackingTimeoutSeconds" xml:space="preserve">
+    <value>Количество секунд, которое должно пройти с момента получения последнего сообщения, прежде чем завершится его отслеживание.</value>
+  </data>
+  <data name="TrackingTimeoutLessThanDisplayTimeout" xml:space="preserve">
+    <value>Тайм-аут отслеживания не может быть меньше, чем тайм-аут отображения</value>
+  </data>
+  <data name="TrackingTimeoutOutOfBounds" xml:space="preserve">
+    <value>Тайм-аут отслеживания не может быть больше 3600 с (1 ч)</value>
+  </data>
+  <data name="AcceptIcaoInNonPICount" xml:space="preserve">
+    <value>Количество сообщений Mode-S</value>
+  </data>
+  <data name="AcceptIcaoInNonPICountOutOfBounds" xml:space="preserve">
+    <value>Значение количества Mode-S сообщений должно быть от 0 до 100</value>
+  </data>
+  <data name="AcceptIcaoInNonPISeconds" xml:space="preserve">
+    <value>Интервал времени приема Mode-S, с</value>
+  </data>
+  <data name="AcceptIcaoInNonPISecondsOutOfBounds" xml:space="preserve">
+    <value>Значение интервала времени приема Mode-S сообщений должно быть от 1 до 30</value>
+  </data>
+  <data name="AcceptIcaoInPI0Count" xml:space="preserve">
+    <value>Количество сообщений ADS-B</value>
+  </data>
+  <data name="AcceptIcaoInPI0CountOutOfBounds" xml:space="preserve">
+    <value>Значение количества ADS-B сообщений должно быть от 1 до 10</value>
+  </data>
+  <data name="AcceptIcaoInPI0Seconds" xml:space="preserve">
+    <value>Интервал времени приема ADS-B, с</value>
+  </data>
+  <data name="AcceptIcaoInPI0SecondsOutOfBounds" xml:space="preserve">
+    <value>Значение интервала времени приема ADS-B сообщений должно быть от 1 до 60</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInNonPICount" xml:space="preserve">
+    <value>Количество принятых сообщений, у которых нет поля четности PI (Mode-S), прежде чем их ICAO-адрес будет признан достоверным. Если указано 0, то для этого ICAO-адреса будут использоваться только сообщения с полем четности PI (ADS-B), при PI=0. Как только данный ICAO-адрес будет признан достоверным все дальнейшие сообщения с ним так же будут использоваться.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInNonPISeconds" xml:space="preserve">
+    <value>Количество секунд, в течение которых должны быть приняты сообщения, у которых нет поля четности PI (Mode-S), прежде чем их ICAO-адрес будет признан достоверным.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Count" xml:space="preserve">
+    <value>Количество принятых сообщений, у которых есть поле четности PI (ADS-B), при PI=0, прежде чем их ICAO-адрес будет признан достоверным. Как только данный ICAO-адрес будет признан достоверным все дальнейшие сообщения с ним так же будут использоваться.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Seconds" xml:space="preserve">
+    <value>Количество секунд, в течение которых должны быть приняты сообщения, у которых есть поле четности PI (ADS-B), при PI=0, прежде чем их ICAO-адрес будет признан достоверным.</value>
+  </data>
+  <data name="OptionsRawFeedAcceptIcaoAsValidCategory" xml:space="preserve">
+    <value>Параметры проверки ICAO-адреса</value>
+  </data>
+  <data name="InternetClientCanSubmitRoutes" xml:space="preserve">
+    <value>Интернет-пользователи могут добавлять маршруты</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanSubmitRoutes" xml:space="preserve">
+    <value>"Да" - отображать Интернет-пользователям ссылку, позволяющую добавлять в базу новые маршруты или корректировать существующие.</value>
+  </data>
+  <data name="OptionsDescribeWebSitePreferIataAirportCodes" xml:space="preserve">
+    <value>"Да" - отображать коды аэропортов по стандарту ИАТА (Международной ассоциации воздушного транспорта), например, а/п Домодедово - DME, "Нет" - отображать в стандарте ИКАО (Международной организации гражданской авиации), например, а/п Домодедово - UUDD).</value>
+  </data>
+  <data name="PreferIataAirportCodes" xml:space="preserve">
+    <value>Отображать ИАТА коды аэропортов</value>
+  </data>
+  <data name="BytesBuffered" xml:space="preserve">
+    <value>Буферизировано, Байт</value>
+  </data>
+  <data name="PleaseSelectSiteRootFolder" xml:space="preserve">
+    <value>Выберите корневую директорию сайта</value>
+  </data>
+  <data name="OptionsWebSiteCustomisationCategory" xml:space="preserve">
+    <value>Кастомизация веб-сайта</value>
+  </data>
+  <data name="EnableBundling" xml:space="preserve">
+    <value>Включить группирование</value>
+    <comment>"Bundling" is where multiple files are bundled together into a single file to improve a page's load time</comment>
+  </data>
+  <data name="EnableMinifying" xml:space="preserve">
+    <value>Включить сжатие CSS и JavaScript</value>
+    <comment>"Minifying" is where a CSS or JavaScript source file is compressed to improve a page's load time and to improve the speed at which they are executed by the browser.</comment>
+  </data>
+  <data name="OptionsDescribeEnableBundling" xml:space="preserve">
+    <value>"Да", чтобы объединить несколько CSS или JavaScript файлов при скачивании, "Нет", чтобы скачивать файлы без изменений.</value>
+  </data>
+  <data name="OptionsDescribeEnableMinifying" xml:space="preserve">
+    <value>"Да", чтобы сжать CSS и JavaScript файлы при отправке их в браузер, "Нет" - отправлять файлы без изменений.</value>
+  </data>
+  <data name="OptionsDescribeReceiverLocationLatitude" xml:space="preserve">
+    <value>Координата широты приемника. Может быть от -90° до 90°, но не равняться нулю.</value>
+  </data>
+  <data name="OptionsDescribeReceiverLocationLongitude" xml:space="preserve">
+    <value>Координата долготы приемника. Может быть от -180° до 180°.</value>
+  </data>
+  <data name="OptionsDescribeReceiverLocationName" xml:space="preserve">
+    <value>Уникальное название местоположения.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerEnabled" xml:space="preserve">
+    <value>"Да", чтобы включить обслуживание запросов, "Нет", для отключения.</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerFormat" xml:space="preserve">
+    <value>Формат данных.</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerName" xml:space="preserve">
+    <value>Уникальное имя ретранслирующего сервера.</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerPort" xml:space="preserve">
+    <value>Номер порта</value>
+  </data>
+  <data name="OptionsDescribeReceiverEnabled" xml:space="preserve">
+    <value>"Да", чтобы включить приемник, "Нет", для отключения. По крайней мере один приемник должен быть включен.</value>
+  </data>
+  <data name="OptionsDescribeReceiverName" xml:space="preserve">
+    <value>Уникальное имя приемника. Не должно совпадать с именами объединенных потоков.</value>
+  </data>
+  <data name="Receivers" xml:space="preserve">
+    <value>Приемники</value>
+  </data>
+  <data name="PleaseConfigureAtLeastOneReceiver" xml:space="preserve">
+    <value>Настройте, по крайней мере, один приемник.</value>
+  </data>
+  <data name="PleaseEnableAtLeastOneReceiver" xml:space="preserve">
+    <value>Включите, по крайней мере, один приемник.</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastReceiver" xml:space="preserve">
+    <value>Приемник, сообщения которого вы хотите ретранслировать.</value>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>Приемник</value>
+  </data>
+  <data name="ReceiverRequired" xml:space="preserve">
+    <value>Определите параметры приемника.</value>
+  </data>
+  <data name="AircraftCountTitle" xml:space="preserve">
+    <value>Самолетов отслеживается </value>
+  </data>
+  <data name="ConnectionStatusTitle" xml:space="preserve">
+    <value>Состояние подключения</value>
+  </data>
+  <data name="NameTitle" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="TotalBadMessagesTitle" xml:space="preserve">
+    <value>Сообщений с ошибками</value>
+  </data>
+  <data name="TotalMessagesTitle" xml:space="preserve">
+    <value>Сообщений всего</value>
+  </data>
+  <data name="OptionsDescribeWebSiteReceiverId" xml:space="preserve">
+    <value>Приемник, который будет использоваться при первом посещении веб-сайта.</value>
+  </data>
+  <data name="WebSiteReceiverId" xml:space="preserve">
+    <value>Приемник для веб-сайта</value>
+  </data>
+  <data name="WebSiteReceiverRequired" xml:space="preserve">
+    <value>Определите основной приемник для веб-сайта</value>
+  </data>
+  <data name="ClosestAircraftReceiverRequired" xml:space="preserve">
+    <value>Определите приемник для виджета рабочего стола "Closest Aircraft"</value>
+  </data>
+  <data name="ClosestAircraftReceiverId" xml:space="preserve">
+    <value>Приемник для виджета рабочего стола</value>
+  </data>
+  <data name="OptionsDescribeClosestAircraftReceiverId" xml:space="preserve">
+    <value>Приемник для виджета рабочего стола "Closest Aircraft".</value>
+  </data>
+  <data name="IcaoTimeout" xml:space="preserve">
+    <value>ИКАО тайм-аут</value>
+  </data>
+  <data name="MergedFeeds" xml:space="preserve">
+    <value>Объединенные потоки</value>
+  </data>
+  <data name="OptionsDescribeIcaoTimeout" xml:space="preserve">
+    <value>Количество секунд после прекращения поступления сообщений о самолете с конкретным ИКАО-адресом, прежде чем приемник, выдававший эти сообщения, перестанет считаться для него основным. Если это время слишком малое, то самолеты могут прыгать назад. Если слишком большое, то могут быть замирания метки, когда самолет переходит от одного приемника к другому.</value>
+  </data>
+  <data name="OptionsDescribeMergedFeedEnabled" xml:space="preserve">
+    <value>"Да", для включения этого объединенного потока, "Нет" - для выключения.</value>
+  </data>
+  <data name="OptionsDescribeMergedFeedName" xml:space="preserve">
+    <value>Этому объединенному потоку должно быть присвоено уникальное имя. Не должно совпадать с именами приемников.</value>
+  </data>
+  <data name="OptionsDescribeMergedFeedReceviers" xml:space="preserve">
+    <value>Приемники, данные от которых объединяются в общий поток.</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Исключить</value>
+  </data>
+  <data name="IcaoTimeoutOutOfBounds" xml:space="preserve">
+    <value>Тайм-аут должен быть от 1 до 30 с</value>
+  </data>
+  <data name="MergedFeedNeedsAtLeastTwoReceivers" xml:space="preserve">
+    <value>Подключите, по крайней мере, 2 приемника для объединения их данных в поток</value>
+  </data>
+  <data name="NameCannotContainComma" xml:space="preserve">
+    <value>Имя не может содержать запятую</value>
+  </data>
+  <data name="ReceiversAndMergedFeedNamesMustBeUnique" xml:space="preserve">
+    <value>Приемники и объединенные каналы должны иметь уникальные имена</value>
+  </data>
+  <data name="IgnoreAircraftWithNoPosition" xml:space="preserve">
+    <value>Игнорировать самолеты без координат</value>
+  </data>
+  <data name="OptionsDescribeIgnoreAircraftWithNoPosition" xml:space="preserve">
+    <value>"True", включать в объединенный поток только самолеты с координатами, "False" - включать все.</value>
+  </data>
+  <data name="FeedStatus" xml:space="preserve">
+    <value>Состояние потока</value>
+  </data>
+  <data name="FlightSimulatorXReceiverId" xml:space="preserve">
+    <value>Приемник для Flight Simulator X</value>
+  </data>
+  <data name="OptionsDescribeFlightSimulatorXReceiverId" xml:space="preserve">
+    <value>Приемник для Flight Simulator X "ride-along".</value>
+  </data>
+  <data name="FlightSimulatorXReceiverRequired" xml:space="preserve">
+    <value>Определите приемник для FSX ride-along</value>
+  </data>
+  <data name="CompressedPort30003" xml:space="preserve">
+    <value>Compressed VRS</value>
+  </data>
+  <data name="MinimiseToSystemTray" xml:space="preserve">
+    <value>Свернуть в трей</value>
+  </data>
+  <data name="OptionsDescribeMinimiseToSystemTray" xml:space="preserve">
+    <value>"Да", чтобы свернуть программу в трей, "Нет" - на панель задач.</value>
+  </data>
+  <data name="menuShowWindow" xml:space="preserve">
+    <value>&amp;Показать окно</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesSearchPictureSubFolders" xml:space="preserve">
+    <value>"Да", чтобы искать изображения в поддиректориях, "Нет" - только в указанной директории.</value>
+  </data>
+  <data name="SearchPictureSubFolders" xml:space="preserve">
+    <value>Поиск изображений в поддиректориях</value>
+  </data>
+  <data name="BadListenerTimeout" xml:space="preserve">
+    <value>Недопустимое значение ListenerTimeout</value>
+  </data>
+  <data name="CoarseListenerTimeoutInvalid" xml:space="preserve">
+    <value>-ListenerTimeout должен быть не менее 10 с</value>
+  </data>
+  <data name="CoarseListenerTimeoutUnparseable" xml:space="preserve">
+    <value>Не удается разобрать значение -ListenerTimeout для "{0}"</value>
+  </data>
+  <data name="EnableCompression" xml:space="preserve">
+    <value>Включить сжатие</value>
+  </data>
+  <data name="OptionsDescribeEnableCompression" xml:space="preserve">
+    <value>"Да", чтобы сжать отправляемые браузеру ответы, "Нет" - посылать несжатыми</value>
+  </data>
+  <data name="DesktopVersionOld" xml:space="preserve">
+    <value>Прежняя Desktop версия</value>
+  </data>
+  <data name="FlightSimVersionOld" xml:space="preserve">
+    <value>Прежняя Flight Sim версия</value>
+  </data>
+  <data name="MobileVersionOld" xml:space="preserve">
+    <value>Прежняя Mobile версия</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Форвард прокси-сервер</value>
+  </data>
+  <data name="OptionsDescribeProxyType" xml:space="preserve">
+    <value>Тип прокси, за которым находится сервер. Если вы не уверены, находится ли сервер за прокси, то оставьте значение "Неизвестный".</value>
+  </data>
+  <data name="ProxyType" xml:space="preserve">
+    <value>Тип прокси</value>
+  </data>
+  <data name="Reverse" xml:space="preserve">
+    <value>Обратный прокси-сервер</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Неизвестный</value>
+  </data>
+  <data name="SettingsPage" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+</root>

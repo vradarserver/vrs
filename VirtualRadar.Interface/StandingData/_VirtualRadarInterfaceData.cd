@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="VirtualRadar.Interface.StandingData.AircraftType">
+    <Position X="0.5" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAMAAQAAAAAAAAEAAAAABAAAAAAAAAABQgAAAAAAAA=</HashCode>
+      <FileName>StandingData\AircraftType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.StandingData.CodeBlock">
+    <Position X="6" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StandingData\CodeBlock.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.StandingData.Route">
+    <Position X="3.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAIAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StandingData\Route.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Stopovers" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="VirtualRadar.Interface.StandingData.Airport">
+    <Position X="3.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAIAAAAAEAAAAAECAAIAAQAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StandingData\Airport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="VirtualRadar.Interface.StandingData.IStandingDataManager">
+    <Position X="3" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAQgAAAgAAEAAAAAAAAABAAAAAAAAAAAAAAQAAgACQ=</HashCode>
+      <FileName>StandingData\IStandingDataManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

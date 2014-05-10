@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic,greek,vietnamese' rel='stylesheet' type='text/css'>
+
+    <!-- iOS / mobile configuration -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script type="text/javascript">
+        document.write('<link rel="apple-touch-icon" href="images/');
+        if(navigator.platform === 'iPad') document.write('File-ipad/');
+        document.write('iPhoneSplash.png" />');
+    </script>
+    <script type="text/javascript">
+        window.VRS = window.VRS || {};
+        VRS.globalOptions = VRS.globalOptions || {};
+        VRS.globalOptions.isMobile = true;
+    </script>
+
+    <title>VirtualRadar</title>         <!-- This is fixed for all languages. The text is about the maximum you can have for a web-app title. -->
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/vrs-common.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/vrs-mobile.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/jquery-ui/jquery-ui.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/jquery.colourPicker.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/jquery.dlmenu.css" type="text/css" media="screen" />
+
+    <!-- [[ JS BUNDLE START ]] -->
+    <!-- 3rd party javascript libraries and plugins -->
+    <script src="script/jquery.js" type="text/javascript"></script>
+    <script src="script/globalize.js" type="text/javascript"></script>
+    <script src="script/jquery-ui.js" type="text/javascript"></script>
+    <script src="script/jquery.ui.touch-punch.js" type="text/javascript"></script>
+    <script src="script/jquery.colorPicker.js" type="text/javascript"></script>
+    <script src="script/jquery.dlmenu.js" type="text/javascript"></script>
+    <script src="script/jstorage.js" type="text/javascript"></script>
+    <script src="script/purl.js" type="text/javascript"></script>
+
+    <!-- VRS modules that are used by everything -->
+    <script src="script/vrs/enums.js" type="text/javascript"></script>
+    <script src="script/vrs/string.js" type="text/javascript"></script>
+    <script src="script/vrs/event.js" type="text/javascript"></script>
+    <script src="script/vrs/format.js" type="text/javascript"></script>
+    <script src="script/vrs/scriptManager.js" type="text/javascript"></script>
+    <script src="script/vrs/serverConfiguration.js" type="text/javascript"></script>
+    <script src="script/vrs/configStorage.js" type="text/javascript"></script>
+    <script src="script/i18n/localise.js" type="text/javascript"></script>
+    <script src="script/vrs/utility.js" type="text/javascript"></script>
+
+    <!-- VRS javascript modules used by this page -->
+    <script src="script/vrs/menuUI.js" type="text/javascript"></script>
+    <script src="script/vrs/optionsUI.js" type="text/javascript"></script>
+    <script src="script/vrs/filter.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraft.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftFilter.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftRenderer.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftAutoSelect.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftList.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftListFetcher.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftListFilter.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftListSorter.js" type="text/javascript"></script>
+    <script src="script/vrs/aircraftPlotter.js" type="text/javascript"></script>
+    <script src="script/vrs/airportDataApi.js" type="text/javascript"></script>
+    <script src="script/vrs/audio.js" type="text/javascript"></script>
+    <script src="script/vrs/currentLocation.js" type="text/javascript"></script>
+    <script src="script/vrs/layoutManager.js" type="text/javascript"></script>
+    <script src="script/vrs/linksRenderer.js" type="text/javascript"></script>
+    <script src="script/vrs/pageManager.js" type="text/javascript"></script>
+    <script src="script/vrs/polarPlotter.js" type="text/javascript"></script>
+    <script src="script/vrs/refreshManager.js" type="text/javascript"></script>
+    <script src="script/vrs/timeoutManager.js" type="text/javascript"></script>
+    <script src="script/vrs/unitDisplayPreferences.js" type="text/javascript"></script>
+
+    <!-- VRS jQuery UI plugins used by this page -->
+    <script src="script/jquiplugin/jquery.vrs.aircraftDetail.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.aircraftInfoWindow.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.aircraftLinks.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.aircraftList.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.aircraftPositionMap.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.map.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.mapNextPageButton.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.menu.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionDialog.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionPane.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionForm.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldButton.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldCheckBox.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldColour.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldComboBox.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldLabel.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldLinkLabel.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldNumeric.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldOrderedSubset.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldPaneList.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldRadioButton.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.optionFieldTextBox.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.pagePanel.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.selectDialog.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.splitter.js" type="text/javascript"></script>
+    <script src="script/jquiplugin/jquery.vrs.timeoutMessageBox.js" type="text/javascript"></script>
+
+    <!-- VRS bootstrap code for the page -->
+    <script src="script/vrs/bootstrap.js" type="text/javascript"></script>
+    <script src="script/vrs/bootstrapMap.js" type="text/javascript"></script>
+    <script src="script/vrs/bootstrapMapMobile.js" type="text/javascript"></script>
+
+    <!-- [[ BUNDLE END ]] -->
+</head>
+<body>
+<div id="pages"></div>
+<div id="map" class="map"></div>
+<div id="aircraftDetail"></div>
+<div id="aircraftList"></div>
+<div class="modal"></div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        VRS.serverConfig.fetch(function() {
+            // Ensure that any accidental attempts to use globalised text before the bootstrapper has loaded the
+            // correct locale will not throw an exception.
+            VRS.globalisation.setLocale('en-GB');
+
+            // Boot the page
+            var bootstrap = new VRS.BootstrapMapMobile();
+            VRS.globalDispatch.raise(VRS.globalEvent.bootstrapCreated, [ bootstrap ] );
+
+            bootstrap.initialise({
+                pagesJQ: $('#pages'),
+                mapJQ: $('#map'),
+                aircraftDetailJQ: $('#aircraftDetail'),
+                aircraftListJQ: $('#aircraftList')
+            });
+        });
+    });
+</script>
+</body>
+</html>

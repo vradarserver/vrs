@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AircraftReport_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\aircraftreport.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Common_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\common.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="DateReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\datereportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="DateReport_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\datereport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Events_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\events.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="FlightReport_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\flightreport.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapAircraftCollection_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapaircraftcollection.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapAircraftDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapAircraftListColumns_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapaircraftlistcolumns.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapAircraftListOptions_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapaircraftlistoptions.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapAircraftList_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapaircraftlist.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapAudio_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapaudio.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapAutoSelect_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapautoselect.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapCurrentLocation_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapcurrentlocation.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapGeolocation_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapgeolocation.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapGotoCurrentLocationButton_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapgotocurrentlocationbutton.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapInfoButton_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapinfobutton.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapMarkerCollection_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapmarkercollection.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapMarker_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapmarker.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapMovingMapControl_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapmovingmapcontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapOptionsUI_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapoptionsui.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapOptions_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapoptions.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapOutline_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapoutline.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapReverseGeocode_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapreversegeocode.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapSidebar_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapsidebar.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapTimeout_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemaptimeout.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMapVolumeControl_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemapvolumecontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMap_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemap.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="GoogleMap_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\googlemap.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="IcaoReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\icaoreportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="IcaoReport_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\icaoreport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="iPhoneMapAircraftDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\iphone\iphonemapaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="iPhoneMapInfoWindow_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\iphone\iphonemapinfowindow.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="iPhoneMapOptionsUI_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\iphone\iphonemapoptionsui.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="iPhoneMapPages_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\iphone\iphonemappages.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="iPhoneMapPlaneList_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\iphone\iphonemapplanelist.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="iPhoneMapStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\iphone\iphonemapstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="iPhoneMap_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\iphone\iphonemap.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="RegReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\regreportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="RegReport_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\regreport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportAircraftDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportAircraftFlights_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportaircraftflights.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportFlightsDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportflightsdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportFlights_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportflights.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportMap_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportmap.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportPageControl_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportpagecontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportPrintStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportprintstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportRowProvider_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportrowprovider.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ReportScreenStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\reportscreenstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Report_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\reports\report.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="XHR_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\xhr.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AircraftList_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\diagnostics\aircraftlist.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="jQuery_1_6_4_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\jquery\jquery-1.6.4.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="jQuery_1_6_4_min_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\jquery\jquery-1.6.4.min.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MarkerWithLabel_min_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\googlemap\markerwithlabel.min.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ServerConfig_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>site\serverconfig.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+</root>

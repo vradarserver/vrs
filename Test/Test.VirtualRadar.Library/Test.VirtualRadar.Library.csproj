@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FD7ACA3B-540C-47AD-9FBE-0B6512D52778}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Test.VirtualRadar.Library</RootNamespace>
+    <AssemblyName>Test.VirtualRadar.Library</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Moq">
+      <HintPath>..\..\Dependencies\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adsb\AdsbTranslatorTests.cs" />
+    <Compile Include="Adsb\CompactPositionReportingTests.cs" />
+    <Compile Include="AircraftComparerTests.cs" />
+    <Compile Include="AircraftDetailFetcherTests.cs" />
+    <Compile Include="AircraftSanityCheckerTests.cs" />
+    <Compile Include="AircraftTests.cs" />
+    <Compile Include="AssemblyInitialise.cs" />
+    <Compile Include="AudioTests.cs" />
+    <Compile Include="AutoConfigPictureFolderCacheTests.cs" />
+    <Compile Include="BaseStation\BaseStationAircraftListTests.cs" />
+    <Compile Include="BaseStation\RawMessageTranslatorTests.cs" />
+    <Compile Include="CallsignParserTests.cs" />
+    <Compile Include="ClockTests.cs" />
+    <Compile Include="BaseStation\BaseStationMessageCompressorTests.cs" />
+    <Compile Include="BaseStation\BaseStationMessageTranslatorTests.cs" />
+    <Compile Include="BitStreamTests.cs" />
+    <Compile Include="Listener\BeastMessageBytesExtractorTests.cs" />
+    <Compile Include="Listener\CommonListenerTests.cs" />
+    <Compile Include="Listener\CommonMessageBytesExtractorTests.cs" />
+    <Compile Include="ConnectionLoggerTests.cs" />
+    <Compile Include="DirectoryCacheTests.cs" />
+    <Compile Include="Listener\CompressedMessageBytesExtractorTests.cs" />
+    <Compile Include="Listener\ListenerTests.cs" />
+    <Compile Include="Listener\MergedFeedListenerTests.cs" />
+    <Compile Include="Listener\MockMessageBytesExtractor.cs" />
+    <Compile Include="Listener\PolarPlotterTests.cs" />
+    <Compile Include="Listener\Port30003MessageBytesExtractorTests.cs" />
+    <Compile Include="Listener\Sbs3MessageBytesExtractorTests.cs" />
+    <Compile Include="Listener\MockListenerProvider.cs" />
+    <Compile Include="ModeS\ModeSParityTests.cs" />
+    <Compile Include="PluginManagerTests.cs" />
+    <Compile Include="Presenter\ConnectionClientLogPresenterTests.cs" />
+    <Compile Include="Presenter\ConnectionSessionLogPresenterTests.cs" />
+    <Compile Include="Presenter\DownloadDataPresenterTests.cs" />
+    <Compile Include="Presenter\FlightSimulatorXPresenterTests.cs" />
+    <Compile Include="Presenter\InvalidPluginsPresenterTests.cs" />
+    <Compile Include="Presenter\OptionsPresenterTests.cs" />
+    <Compile Include="Presenter\PluginsPresenterTests.cs" />
+    <Compile Include="Presenter\ShutdownPresenterTests.cs" />
+    <Compile Include="Presenter\SplashPresenterTests.cs" />
+    <Compile Include="ModeS\ModeSTranslatorTests.cs" />
+    <Compile Include="Presenter\StatisticsPresenterTests.cs" />
+    <Compile Include="RebroadcastServerManagerTests.cs" />
+    <Compile Include="RebroadcastServerTests.cs" />
+    <Compile Include="FeedManagerTests.cs" />
+    <Compile Include="FeedTests.cs" />
+    <Compile Include="RuntimeEnvironmentTests.cs" />
+    <Compile Include="Settings\ConfigurationStorageTests.cs" />
+    <Compile Include="Settings\InstallerSettingsStorageTests.cs" />
+    <Compile Include="EventArgsTests.cs" />
+    <Compile Include="ExternalIPAddressServiceTests.cs" />
+    <Compile Include="FlightSimulatorX\FlightSimulatorXTests.cs" />
+    <Compile Include="LogTests.cs" />
+    <Compile Include="NewVersionCheckerTests.cs" />
+    <Compile Include="Presenter\AboutPresenterTests.cs" />
+    <Compile Include="Presenter\MainPresenterTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\PluginManifestStorageTests.cs" />
+    <Compile Include="Settings\PluginSettingsStorageTests.cs" />
+    <Compile Include="SimpleAircraftListTests.cs" />
+    <Compile Include="StatisticsTests.cs" />
+    <Compile Include="TestResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Library\VirtualRadar.Library.csproj">
+      <Project>{4BC834F4-005B-4EF9-BDA4-078C3F1745D3}</Project>
+      <Name>VirtualRadar.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar\VirtualRadar.csproj">
+      <Project>{A3F353C9-0CD5-48BF-A788-EFA83790237A}</Project>
+      <Name>VirtualRadar</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
+      <Project>{94F0A821-51BB-4381-9413-1A3FAD661D82}</Project>
+      <Name>Test.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.VirtualRadar.Interface\Test.VirtualRadar.Interface.csproj">
+      <Project>{D458EB9E-7E35-46F2-9921-34D110C74BDB}</Project>
+      <Name>Test.VirtualRadar.Interface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestResources\Countries.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
