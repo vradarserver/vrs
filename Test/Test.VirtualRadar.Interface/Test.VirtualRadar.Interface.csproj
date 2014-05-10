@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D458EB9E-7E35-46F2-9921-34D110C74BDB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Test.VirtualRadar.Interface</RootNamespace>
+    <AssemblyName>Test.VirtualRadar.Interface</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Moq">
+      <HintPath>..\..\Dependencies\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adsb\AdsbMessageTests.cs" />
+    <Compile Include="Adsb\AirbornePositionMessageTests.cs" />
+    <Compile Include="Adsb\AircraftOperationalStatusMessageTests.cs" />
+    <Compile Include="Adsb\AircraftStatusMessageTests.cs" />
+    <Compile Include="Adsb\CompactPositionReportingCoordinateTests.cs" />
+    <Compile Include="Adsb\EmergencyStatusTests.cs" />
+    <Compile Include="Adsb\GlobalCoordinateTests.cs" />
+    <Compile Include="Adsb\IdentifierAndCategoryMessageTests.cs" />
+    <Compile Include="Adsb\SurfacePositionMessageTests.cs" />
+    <Compile Include="Adsb\TargetStateAndStatusMessageTests.cs" />
+    <Compile Include="Adsb\TargetStateAndStatusVersion1Tests.cs" />
+    <Compile Include="Adsb\TargetStateAndStatusVersion2Tests.cs" />
+    <Compile Include="Adsb\TcasResolutionAdvisoryTests.cs" />
+    <Compile Include="Adsb\VectorVelocityTests.cs" />
+    <Compile Include="Adsb\AirborneVelocityMessageTests.cs" />
+    <Compile Include="AircraftDetailTests.cs" />
+    <Compile Include="AirportDataThumbnailJsonTests.cs" />
+    <Compile Include="AirportDataThumbnailsJsonTests.cs" />
+    <Compile Include="BaseStation\BaseStationMessageEventArgsTests.cs" />
+    <Compile Include="BaseStation\BaseStationMessageHelperTests.cs" />
+    <Compile Include="BaseStation\BaseStationSupplementaryMessageTests.cs" />
+    <Compile Include="BaseStation\BaseStationMessageTests.cs" />
+    <Compile Include="BaseStation\BaseStationTranslatorExceptionTests.cs" />
+    <Compile Include="Listener\PolarPlotSliceTests.cs" />
+    <Compile Include="Listener\PolarPlotTests.cs" />
+    <Compile Include="Crc32ModeSTimingTests.cs" />
+    <Compile Include="Database\BaseStationAircraftTests.cs" />
+    <Compile Include="Database\BaseStationDBHistoryTests.cs" />
+    <Compile Include="Database\BaseStationDBInfoTests.cs" />
+    <Compile Include="Database\BaseStationFlightTests.cs" />
+    <Compile Include="Database\BaseStationLocationTests.cs" />
+    <Compile Include="Database\BaseStationSessionTests.cs" />
+    <Compile Include="Database\BaseStationSystemEventsTests.cs" />
+    <Compile Include="Database\LogClientTests.cs" />
+    <Compile Include="Database\LogSessionTests.cs" />
+    <Compile Include="Data\AircraftTypeTests.cs" />
+    <Compile Include="Data\AirlineTests.cs" />
+    <Compile Include="Data\AirportTests.cs" />
+    <Compile Include="Data\CodeBlockTests.cs" />
+    <Compile Include="Data\FlightNumberTests.cs" />
+    <Compile Include="Data\RouteTests.cs" />
+    <Compile Include="FilterBoolTests.cs" />
+    <Compile Include="FilterEnumTests.cs" />
+    <Compile Include="FilterRangeTests.cs" />
+    <Compile Include="FilterStringTests.cs" />
+    <Compile Include="IPAddressComparerTests.cs" />
+    <Compile Include="JsonSerialiserTests.cs" />
+    <Compile Include="Listener\ExtractedBytesTests.cs" />
+    <Compile Include="ModeS\ModeSMessageTests.cs" />
+    <Compile Include="PictureDetailTests.cs" />
+    <Compile Include="PluginEventArgsTests.cs" />
+    <Compile Include="PluginStartupParametersTests.cs" />
+    <Compile Include="ModeS\ModeSMessageEventArgsTests.cs" />
+    <Compile Include="BroadcastEventArgsTests.cs" />
+    <Compile Include="RoundTests.cs" />
+    <Compile Include="Settings\BaseStationSettingsTests.cs" />
+    <Compile Include="Settings\ConfigurationTests.cs" />
+    <Compile Include="Settings\AudioSettingsTests.cs" />
+    <Compile Include="Settings\InternetClientSettingsTests.cs" />
+    <Compile Include="Settings\InstallerSettingsTests.cs" />
+    <Compile Include="Settings\MergedFeedTests.cs" />
+    <Compile Include="Settings\PluginManifestTests.cs" />
+    <Compile Include="Settings\PluginSettingsTests.cs" />
+    <Compile Include="Settings\RawDecodingSettingsTests.cs" />
+    <Compile Include="Settings\RebroadcastSettingsTests.cs" />
+    <Compile Include="Settings\ReceiverLocationTests.cs" />
+    <Compile Include="Settings\ReceiverTests.cs" />
+    <Compile Include="Settings\VersionCheckSettingsTests.cs" />
+    <Compile Include="Settings\GoogleMapSettingsTests.cs" />
+    <Compile Include="Settings\FlightRouteSettingsTests.cs" />
+    <Compile Include="Settings\HashTests.cs" />
+    <Compile Include="Settings\WebServerSettingsTests.cs" />
+    <Compile Include="CoordinateTests.cs" />
+    <Compile Include="DescribeTests.cs" />
+    <Compile Include="EventArgsTests.cs" />
+    <Compile Include="FlightSimulatorX\FlightSimulatorXExceptionTests.cs" />
+    <Compile Include="GreatCircleMathsTests.cs" />
+    <Compile Include="IPEndPointHelperTests.cs" />
+    <Compile Include="JavascriptHelperTests.cs" />
+    <Compile Include="PairTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamHelperTests.cs" />
+    <Compile Include="StringDeduplicatorTests.cs" />
+    <Compile Include="View\ValidationResultTests.cs" />
+    <Compile Include="WebRequestResultTests.cs" />
+    <Compile Include="WebServer\AuthenticationRequiredEventArgsTests.cs" />
+    <Compile Include="WebServer\MimeTypeTests.cs" />
+    <Compile Include="WebServer\RequestExceptionTests.cs" />
+    <Compile Include="WebServer\RequestReceivedEventArgsTests.cs" />
+    <Compile Include="WebServer\ResponseSentEventArgsTests.cs" />
+    <Compile Include="WebSite\AircraftJsonTests.cs" />
+    <Compile Include="WebSite\AircraftListJsonTests.cs" />
+    <Compile Include="WebSite\AircraftReportJsonTests.cs" />
+    <Compile Include="WebSite\ChecksumFileEntryTests.cs" />
+    <Compile Include="WebSite\FeedJsonTests.cs" />
+    <Compile Include="WebSite\FlightReportJsonTests.cs" />
+    <Compile Include="WebSite\ProximityGadgetAircraftJsonTests.cs" />
+    <Compile Include="WebSite\ProximityGadgetClosestAircraftJsonTests.cs" />
+    <Compile Include="WebSite\ReportAircraftJsonTests.cs" />
+    <Compile Include="WebSite\ReportAirportJsonTests.cs" />
+    <Compile Include="WebSite\ReportFlightJsonTests.cs" />
+    <Compile Include="WebSite\ReportRouteJsonTests.cs" />
+    <Compile Include="WebSite\ServerConfigJsonTests.cs" />
+    <Compile Include="WebSite\ServerReceiverJsonTests.cs" />
+    <Compile Include="WebSite\SimpleContentTests.cs" />
+    <Compile Include="WebSite\SiteRootTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
+      <Project>{94F0A821-51BB-4381-9413-1A3FAD661D82}</Project>
+      <Name>Test.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

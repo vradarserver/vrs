@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="VirtualRadar.Interface.Database.BaseStationAircraft" Collapsed="true">
+    <Position X="7" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgIigEUCAwAaIAAEAoQAgQCAgIABAACAQAwAQhEAAg=</HashCode>
+      <FileName>Database\BaseStationAircraft.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.BaseStationDBHistory" Collapsed="true">
+    <Position X="7" Y="1.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAIAAACAAAAgAQAAAAAAAAAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Database\BaseStationDBHistory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.BaseStationDBInfo" Collapsed="true">
+    <Position X="7" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Database\BaseStationDBInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.BaseStationFlight" Collapsed="true">
+    <Position X="7" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ASAAAAoMAAIAIIAAZAAAAQAMIiwyAAgkUKxACAAAEAQ=</HashCode>
+      <FileName>Database\BaseStationFlight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.BaseStationLocation" Collapsed="true">
+    <Position X="7" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACEAAAAAAAAIIgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Database\BaseStationLocation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.BaseStationSession" Collapsed="true">
+    <Position X="7" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAIIAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Database\BaseStationSession.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.BaseStationSystemEvents" Collapsed="true">
+    <Position X="7" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAABAAAAAAACAAgAAA=</HashCode>
+      <FileName>Database\BaseStationSystemEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.LogClient" Collapsed="true">
+    <Position X="2.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAACAABAAAAEAQAAAACAAEAAAAAAAAQiAAAAAAAAAAA=</HashCode>
+      <FileName>Database\LogClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRadar.Interface.Database.LogSession" Collapsed="true">
+    <Position X="2.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACAAAAAAAKAAAIgAAACAAAIACgAAAAAIQAAAAAAAA=</HashCode>
+      <FileName>Database\LogSession.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="VirtualRadar.Interface.Database.IBaseStationDatabase">
+    <Position X="4.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAGAADQAAGAiBGEQAggCRIAACIAUACggABBgDACAE=</HashCode>
+      <FileName>Database\IBaseStationDatabase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="VirtualRadar.Interface.Database.IAutoConfigBaseStationDatabase">
+    <Position X="0.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Database\IAutoConfigBaseStationDatabase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Database" />
+    </ShowAsAssociation>
+  </Interface>
+  <Interface Name="VirtualRadar.Interface.Database.ILogDatabase">
+    <Position X="0.5" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAgAQAAAAAAAAAJAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Database\ILogDatabase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

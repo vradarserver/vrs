@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<!-- Chrome leaks like a sieve with ajax calls -->
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>Leak</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="XHR.js"></script>
+        <script type="text/javascript">
+            var copyOfString = '';
+
+            $(document).ready(function($) {
+                ajaxFetch();
+                //vrsFetch();
+            });
+
+            function ajaxFetch()
+            {
+//                var params = {};
+//                if(copyOfString !== '') params.ldv = copyOfString;
+
+                $.getJSON('AircraftList.json', { ldv: copyOfString }, function(data) {
+                    copyOfString = data.lastDv;
+                    data = null;
+                    setTimeout(ajaxFetch, 1000);
+                });
+            };
+
+            var _XHR = new XHR();
+            function vrsFetch()
+            {
+                var url = 'AircraftList.json';
+                if(copyOfString !== '') url += '?ldv=' + copyOfString;
+                _XHR.beginSend('GET', url, null, null, 10000, showAircraftHandler, null, null);
+            };
+
+            function showAircraftHandler(status, responseText)
+            {
+                if(status !== 200) {
+                    // Wait a little while before trying again - don't want to hammer it if it's not there
+                    setTimeout(showAircraft, 15 * 1000);
+                } else {
+                    var content = eval('(' + responseText + ')');
+
+                    copyOfString = content.lastDv;
+
+                    setTimeout(vrsFetch, 1000);
+                }
+            };
+
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

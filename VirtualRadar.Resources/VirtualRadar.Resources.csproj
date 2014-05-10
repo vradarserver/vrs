@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar.Resources</RootNamespace>
+    <AssemblyName>VirtualRadar.Resources</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ReleaseVersion>2.0.2</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <DocumentationFile>bin\x86\Release\VirtualRadar.Resources.XML</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BinaryResources.cs" />
+    <Compile Include="Images.cs" />
+    <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="InternalResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InternalResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="application.ico" />
+    <Content Include="Images\CloseSlider.png" />
+    <Content Include="Images\Compass.png" />
+    <EmbeddedResource Include="Images\Favicon.ico" />
+    <Content Include="Images\Corner_BottomLeft.png" />
+    <Content Include="Images\Corner_BottomRight.png" />
+    <Content Include="Images\Corner_TopLeft.png" />
+    <Content Include="Images\Corner_TopRight.png" />
+    <Content Include="Images\FollowMe.png" />
+    <Content Include="Images\GotoCurrentLocation.png" />
+    <Content Include="Images\HideList.png" />
+    <Content Include="Images\IPadSplash.png" />
+    <Content Include="Images\IPhoneIcon.png" />
+    <Content Include="Images\ChevronBlueCircle.png" />
+    <Content Include="Images\ChevronGreenCircle.png" />
+    <Content Include="Images\ChevronRedCircle.png" />
+    <Content Include="Images\Crosshair.png" />
+    <Content Include="Images\IPhoneBackButton.png" />
+    <Content Include="Images\IPhoneBlueButton.png" />
+    <Content Include="Images\IPhoneChevron.png" />
+    <Content Include="Images\IPhoneGrayButton.png" />
+    <Content Include="Images\IPhoneListGroup.png" />
+    <Content Include="Images\IPhoneOnOff.png" />
+    <Content Include="Images\IPhonePinstripes.png" />
+    <Content Include="Images\IPhoneSelectedTick.png" />
+    <Content Include="Images\IPhoneSelection.png" />
+    <Content Include="Images\IPhoneSplash.png" />
+    <Content Include="Images\IPhoneToolbar.png" />
+    <Content Include="Images\IPhoneToolButton.png" />
+    <Content Include="Images\IPhoneWhiteButton.png" />
+    <Content Include="Images\Logo128x128.png" />
+    <Content Include="Images\Marker_AirplaneSelected.png" />
+    <Content Include="Images\Marker_Airplane.png" />
+    <Content Include="Images\BlueBall.png" />
+    <Content Include="Images\HelpAbout.png" />
+    <Content Include="Images\Collapse.png" />
+    <Content Include="Images\Expand.png" />
+    <Content Include="Images\MovingMapChecked.png" />
+    <Content Include="Images\MovingMapUnchecked.png" />
+    <Content Include="Images\OpenSlider.png" />
+    <Content Include="Images\RowHeader.png" />
+    <Content Include="Images\RowHeaderSelected.png" />
+    <Content Include="Images\ShowList.png" />
+    <Content Include="Images\SmallPlaneNorth.png" />
+    <Content Include="Images\TestSquare.png" />
+    <Content Include="Images\Tower.png" />
+    <Content Include="Images\Transparent-25.png" />
+    <Content Include="Images\Transparent-50.png" />
+    <Content Include="Images\Volume0.png" />
+    <Content Include="Images\Volume100.png" />
+    <Content Include="Images\Volume25.png" />
+    <Content Include="Images\Volume50.png" />
+    <Content Include="Images\Volume75.png" />
+    <Content Include="Images\VolumeDown.png" />
+    <Content Include="Images\VolumeMute.png" />
+    <Content Include="Images\VolumeUp.png" />
+    <Content Include="Images\WarningBitmap.png" />
+    <Content Include="Images\WarningIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="InternalResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InternalResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

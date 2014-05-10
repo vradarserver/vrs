@@ -1,0 +1,470 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3A1330D8-1E7D-4C70-BA9A-39851389CFFF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar.WinForms</RootNamespace>
+    <AssemblyName>VirtualRadar.WinForms</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>bin\x86\Release\VirtualRadar.WinForms.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BaseUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BusyViewHelper.cs" />
+    <Compile Include="CommonBaseBehaviour.cs" />
+    <Compile Include="ConnectionClientLogView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectionClientLogView.Designer.cs">
+      <DependentUpon>ConnectionClientLogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectionSessionLogView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectionSessionLogView.Designer.cs">
+      <DependentUpon>ConnectionSessionLogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AircraftListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AircraftListControl.Designer.cs">
+      <DependentUpon>AircraftListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConnectionClientListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ConnectionClientListControl.Designer.cs">
+      <DependentUpon>ConnectionClientListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConnectionSessionListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ConnectionSessionListControl.Designer.cs">
+      <DependentUpon>ConnectionSessionListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FeedIdEventArgs.cs" />
+    <Compile Include="Controls\FolderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FolderControl.Designer.cs">
+      <DependentUpon>FolderControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FileNameControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FileNameControl.Designer.cs">
+      <DependentUpon>FileNameControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InvalidPluginCountControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InvalidPluginCountControl.designer.cs">
+      <DependentUpon>InvalidPluginCountControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InvalidPluginsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InvalidPluginsControl.Designer.cs">
+      <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NamespaceDoc.cs" />
+    <Compile Include="Controls\PluginDetailPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PluginDetailPanel.Designer.cs">
+      <DependentUpon>PluginDetailPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PluginDetailsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PluginDetailsControl.Designer.cs">
+      <DependentUpon>PluginDetailsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RebroadcastStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RebroadcastStatusControl.Designer.cs">
+      <DependentUpon>RebroadcastStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FeedSelectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FeedSelectControl.Designer.cs">
+      <DependentUpon>FeedSelectControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FeedStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FeedStatusControl.Designer.cs">
+      <DependentUpon>FeedStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SheetHostControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SheetHostControl.Designer.cs">
+      <DependentUpon>SheetHostControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WebServerStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WebServerStatusControl.Designer.cs">
+      <DependentUpon>WebServerStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WebServerUserListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WebServerUserListControl.Designer.cs">
+      <DependentUpon>WebServerUserListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DownloadDataView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DownloadDataView.Designer.cs">
+      <DependentUpon>DownloadDataView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FlightSimulatorXView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FlightSimulatorXView.Designer.cs">
+      <DependentUpon>FlightSimulatorXView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvalidPluginsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvalidPluginsView.Designer.cs">
+      <DependentUpon>InvalidPluginsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListDetailEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainView.Designer.cs">
+      <DependentUpon>MainView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MonoAutoScaleMode.cs" />
+    <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="OnlineHelpHelper.cs" />
+    <Compile Include="OptionsPropertySheetView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptionsPropertySheetView.Designer.cs">
+      <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\BaudRateConverter.cs" />
+    <Compile Include="Options\FeedParentPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\FeedTypeConverter.cs" />
+    <Compile Include="Options\MergedFeedTypeConverter.cs" />
+    <Compile Include="Options\DisplayOrderAttribute.cs" />
+    <Compile Include="Options\ParentPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ParentPage.Designer.cs">
+      <DependentUpon>ParentPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ParentPageMergedFeeds.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ParentPageMergedFeeds.Designer.cs">
+      <DependentUpon>ParentPageMergedFeeds.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ParentPageRebroadcastServers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ParentPageRebroadcastServers.Designer.cs">
+      <DependentUpon>ParentPageRebroadcastServers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ParentPageReceiverLocations.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ParentPageReceiverLocations.Designer.cs">
+      <DependentUpon>ParentPageReceiverLocations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ParentPageReceivers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\ParentPageReceivers.Designer.cs">
+      <DependentUpon>ParentPageReceivers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ProxyTypeEnumConverter.cs" />
+    <Compile Include="Options\RebroadcastFormatEnumConverter.cs" />
+    <Compile Include="Options\ReceiverIdCollectionTypeConverter.cs" />
+    <Compile Include="Options\ReceiverIdCollectionUITypeEditor.cs" />
+    <Compile Include="Options\ReceiverLocationsTypeConverter.cs" />
+    <Compile Include="Options\ReceiverTypeConverter.cs" />
+    <Compile Include="Options\SheetEventArgs.cs" />
+    <Compile Include="Options\SheetMergedFeedOptions.cs" />
+    <Compile Include="Options\SheetRebroadcastServerOptions.cs" />
+    <Compile Include="Options\SheetReceiverPageOptions.cs" />
+    <Compile Include="Options\SheetReceiverLocationOptions.cs" />
+    <Compile Include="Options\SheetReceiverOptions.cs" />
+    <Compile Include="Options\YesNoConverter.cs" />
+    <Compile Include="Options\ComPortConverter.cs" />
+    <Compile Include="Options\ConnectionTypeEnumConverter.cs" />
+    <Compile Include="Options\DataBitsConverter.cs" />
+    <Compile Include="Options\DataSourceEnumConverter.cs" />
+    <Compile Include="Options\DistanceUnitEnumConverter.cs" />
+    <Compile Include="Options\DropdownListConverter.cs" />
+    <Compile Include="Options\FileNameBrowserAttribute.cs" />
+    <Compile Include="Options\FileNameUITypeEditor.cs" />
+    <Compile Include="Options\FolderBrowserAttribute.cs" />
+    <Compile Include="Options\FolderUITypeEditor.cs" />
+    <Compile Include="Options\GoogleMapStyleTypeConverter.cs" />
+    <Compile Include="Options\HandshakeEnumConverter.cs" />
+    <Compile Include="Options\HeightUnitEnumConverter.cs" />
+    <Compile Include="Options\ISheet.cs" />
+    <Compile Include="Options\ParityEnumConverter.cs" />
+    <Compile Include="Options\RaisesValuesChangedAttribute.cs" />
+    <Compile Include="Options\Sheet.cs" />
+    <Compile Include="Options\SheetDataSourceOptions.cs" />
+    <Compile Include="Options\SheetGeneralOptions.cs" />
+    <Compile Include="Options\SheetRawFeedOptions.cs" />
+    <Compile Include="Options\SheetWebServerOptions.cs" />
+    <Compile Include="Options\SheetWebSiteOptions.cs" />
+    <Compile Include="Options\SpeedUnitEnumConverter.cs" />
+    <Compile Include="Options\StopBitsEnumConverter.cs" />
+    <Compile Include="Options\TextToSpeechVoiceTypeConverter.cs" />
+    <Compile Include="PluginsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PluginsView.Designer.cs">
+      <DependentUpon>PluginsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AboutView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutView.Designer.cs">
+      <DependentUpon>AboutView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReceiverListView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReceiverListView.Designer.cs">
+      <DependentUpon>ReceiverListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShutdownView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShutdownView.Designer.cs">
+      <DependentUpon>ShutdownView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SplashView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashView.Designer.cs">
+      <DependentUpon>SplashView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StatisticsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatisticsView.Designer.cs">
+      <DependentUpon>StatisticsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UsersView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UsersView.Designer.cs">
+      <DependentUpon>UsersView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ValidationHelper.cs" />
+    <Compile Include="ValueChangedHelper.cs" />
+    <Compile Include="ValueDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AboutView.resx">
+      <DependentUpon>AboutView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionClientLogView.resx">
+      <DependentUpon>ConnectionClientLogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionSessionLogView.resx">
+      <DependentUpon>ConnectionSessionLogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\AircraftListControl.resx">
+      <DependentUpon>AircraftListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ConnectionClientListControl.resx">
+      <DependentUpon>ConnectionClientListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ConnectionSessionListControl.resx">
+      <DependentUpon>ConnectionSessionListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FolderControl.resx">
+      <DependentUpon>FolderControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FileNameControl.resx">
+      <DependentUpon>FileNameControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InvalidPluginCountControl.resx">
+      <DependentUpon>InvalidPluginCountControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InvalidPluginsControl.resx">
+      <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PluginDetailPanel.resx">
+      <DependentUpon>PluginDetailPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PluginDetailsControl.resx">
+      <DependentUpon>PluginDetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RebroadcastStatusControl.resx">
+      <DependentUpon>RebroadcastStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FeedSelectControl.resx">
+      <DependentUpon>FeedSelectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FeedStatusControl.resx">
+      <DependentUpon>FeedStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SheetHostControl.resx">
+      <DependentUpon>SheetHostControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WebServerStatusControl.resx">
+      <DependentUpon>WebServerStatusControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WebServerUserListControl.resx">
+      <DependentUpon>WebServerUserListControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DownloadDataView.resx">
+      <DependentUpon>DownloadDataView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FlightSimulatorXView.resx">
+      <DependentUpon>FlightSimulatorXView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvalidPluginsView.resx">
+      <DependentUpon>InvalidPluginsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainView.resx">
+      <DependentUpon>MainView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPropertySheetView.resx">
+      <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\ParentPageMergedFeeds.resx">
+      <DependentUpon>ParentPageMergedFeeds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\ParentPageRebroadcastServers.resx">
+      <DependentUpon>ParentPageRebroadcastServers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\ParentPageReceiverLocations.resx">
+      <DependentUpon>ParentPageReceiverLocations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\ParentPageReceivers.resx">
+      <DependentUpon>ParentPageReceivers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginsView.resx">
+      <DependentUpon>PluginsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReceiverListView.resx">
+      <DependentUpon>ReceiverListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShutdownView.resx">
+      <DependentUpon>ShutdownView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashView.resx">
+      <DependentUpon>SplashView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StatisticsView.resx">
+      <DependentUpon>StatisticsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UsersView.resx">
+      <DependentUpon>UsersView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</Project>
+      <Name>VirtualRadar.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

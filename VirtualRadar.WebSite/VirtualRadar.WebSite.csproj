@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EACC3459-9586-4977-A664-AE5827699B30}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar.WebSite</RootNamespace>
+    <AssemblyName>VirtualRadar.WebSite</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ReleaseVersion>2.0.2</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <NoWarn>1570 1587</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <DocumentationFile>bin\x86\Release\VirtualRadar.WebSite.XML</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxMin">
+      <HintPath>..\Dependencies\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\Dependencies\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AircraftListJsonBuilder.cs" />
+    <Compile Include="AircraftListJsonBuilderArgs.cs" />
+    <Compile Include="AircraftListJsonBuilderFilter.cs" />
+    <Compile Include="AircraftListJsonPage.cs" />
+    <Compile Include="AirportDataProxyPage.cs" />
+    <Compile Include="AudioPage.cs" />
+    <Compile Include="Bundler.cs" />
+    <Compile Include="FaviconPage.cs" />
+    <Compile Include="FileSystemPage.cs" />
+    <Compile Include="FontCache.cs" />
+    <Compile Include="ImagePage.cs" />
+    <Compile Include="Implementations.cs" />
+    <Compile Include="Minifier.cs" />
+    <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="Page.cs" />
+    <Compile Include="PolarPlotJsonPage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ClosestAircraftJsonPage.cs" />
+    <Compile Include="ReportRowsJsonPage.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerConfigJsonPage.cs" />
+    <Compile Include="SiteResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SiteResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TextContent.cs" />
+    <Compile Include="TextPage.cs" />
+    <Compile Include="TrailType.cs" />
+    <Compile Include="WebSite.cs" />
+    <Compile Include="WebSiteExtender.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</Project>
+      <Name>VirtualRadar.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Site\.idea\encodings.xml" />
+    <Content Include="Site\.idea\jsLibraryMappings.xml" />
+    <Content Include="Site\.idea\misc.xml" />
+    <Content Include="Site\.idea\modules.xml" />
+    <Content Include="Site\.idea\vcs.xml" />
+    <Content Include="Site\.idea\workspace.xml" />
+    <Content Include="Site\.idea\inspectionProfiles\profiles_settings.xml" />
+    <Content Include="Site\.idea\inspectionProfiles\Project_Default.xml" />
+    <Content Include="Site\.idea\libraries\3rd_party.xml" />
+    <Content Include="Site\.idea\scopes\scope_settings.xml" />
+    <Content Include="Site\Checksums.txt" />
+    <Content Include="Site\Diagnostics\AircraftList.htm" />
+    <Content Include="Site\Common.js" />
+    <Content Include="Site\Events.js" />
+    <Content Include="Site\.idea\.name" />
+    <Content Include="Site\GoogleMap\GoogleMap.htm" />
+    <Content Include="Site\GoogleMap\GoogleMap.js" />
+    <Content Include="Site\GoogleMap\GoogleMapAircraftCollection.js" />
+    <Content Include="Site\GoogleMap\GoogleMapAircraftDetail.js" />
+    <Content Include="Site\GoogleMap\GoogleMapAircraftList.js" />
+    <Content Include="Site\GoogleMap\GoogleMapAircraftListColumns.js" />
+    <Content Include="Site\GoogleMap\GoogleMapAircraftListOptions.js" />
+    <Content Include="Site\GoogleMap\GoogleMapAudio.js" />
+    <Content Include="Site\GoogleMap\GoogleMapAutoSelect.js" />
+    <Content Include="Site\GoogleMap\GoogleMapCurrentLocation.js" />
+    <Content Include="Site\GoogleMap\GoogleMapGeolocation.js" />
+    <Content Include="Site\GoogleMap\GoogleMapGotoCurrentLocationButton.js" />
+    <Content Include="Site\GoogleMap\GoogleMapInfoButton.js" />
+    <Content Include="Site\GoogleMap\GoogleMapMarker.js" />
+    <Content Include="Site\GoogleMap\GoogleMapMarkerCollection.js" />
+    <Content Include="Site\GoogleMap\GoogleMapMovingMapControl.js" />
+    <Content Include="Site\GoogleMap\GoogleMapOptions.js" />
+    <Content Include="Site\GoogleMap\GoogleMapOptionsUI.js" />
+    <Content Include="Site\GoogleMap\GoogleMapOutline.js" />
+    <Content Include="Site\GoogleMap\GoogleMapReverseGeocode.js" />
+    <Content Include="Site\GoogleMap\GoogleMapSidebar.js" />
+    <Content Include="Site\GoogleMap\GoogleMapStylesheet.css" />
+    <Content Include="Site\GoogleMap\GoogleMapTimeout.js" />
+    <Content Include="Site\GoogleMap\GoogleMapVolumeControl.js" />
+    <Content Include="Site\GoogleMap\MarkerWithLabel.min.js" />
+    <Content Include="Site\iPhone\iPhoneMap.htm" />
+    <Content Include="Site\iPhone\iPhoneMapAircraftDetail.js" />
+    <Content Include="Site\iPhone\iPhoneMapInfoWindow.js" />
+    <Content Include="Site\iPhone\iPhoneMapOptionsUI.js" />
+    <Content Include="Site\iPhone\iPhoneMapPages.js" />
+    <Content Include="Site\iPhone\iPhoneMapPlaneList.js" />
+    <Content Include="Site\iPhone\iPhoneMapStylesheet.css" />
+    <Content Include="Site\jQuery\jQuery-1.6.4.js" />
+    <Content Include="Site\jQuery\jQuery-1.6.4.min.js" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_thick_40_eeeeee_40x40.png" />
+    <Content Include="Site\Web\fonts\icomoon-content.txt" />
+    <Content Include="Site\Web\fsx.html" />
+    <Content Include="Site\Web\images\location.png" />
+    <Content Include="Site\Web\images\regions\fi.bmp" />
+    <Content Include="Site\Web\images\regions\no.bmp" />
+    <Content Include="Site\Web\images\regions\se.bmp" />
+    <Content Include="Site\Web\mobileReport.html" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi-FI.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-BE.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-CA.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-CH.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-FR.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-LU.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-MC.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se-FI.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se-NO.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se-SE.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se.js" />
+    <Content Include="Site\Web\script\i18n\strings.fr.js" />
+    <Content Include="Site\Web\script\jquery.colorPicker.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLinkLabel.js" />
+    <Content Include="Site\Web\script\vrs\airportDataApi.js" />
+    <Content Include="Site\Web\script\vrs\bootstrap.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapMapFsx.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapReportMobile.js" />
+    <Content Include="Site\Web\script\vrs\polarPlotter.js" />
+    <Content Include="Site\Web\script\vrs\refreshManager.js" />
+    <Content Include="Site\Web\zz-norel-duplicateStrings.html" />
+    <Content Include="Site\Reports\AircraftReport.htm" />
+    <Content Include="Site\Reports\DateReport.js" />
+    <Content Include="Site\Reports\DateReportCriteria.js" />
+    <Content Include="Site\Reports\FlightReport.htm" />
+    <Content Include="Site\Reports\IcaoReport.js" />
+    <Content Include="Site\Reports\IcaoReportCriteria.js" />
+    <Content Include="Site\Reports\RegReport.js" />
+    <Content Include="Site\Reports\RegReportCriteria.js" />
+    <Content Include="Site\Reports\Report.js" />
+    <Content Include="Site\Reports\ReportAircraftDetail.js" />
+    <Content Include="Site\Reports\ReportAircraftFlights.js" />
+    <Content Include="Site\Reports\ReportCriteria.js" />
+    <Content Include="Site\Reports\ReportFlights.js" />
+    <Content Include="Site\Reports\ReportFlightsDetail.js" />
+    <Content Include="Site\Reports\ReportMap.js" />
+    <Content Include="Site\Reports\ReportPageControl.js" />
+    <Content Include="Site\Reports\ReportPrintStylesheet.css" />
+    <Content Include="Site\Reports\ReportRowProvider.js" />
+    <Content Include="Site\Reports\ReportScreenStylesheet.css" />
+    <Content Include="Site\ServerConfig.js" />
+    <Content Include="Site\Web\css\jquery.dlmenu.css" />
+    <Content Include="Site\Web\css\jquery-ui\images\animated-overlay.gif" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_diagonals-thick_40_eeeeee_40x40.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_0_333333_40x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_100_f0f0f0_40x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_55_e13737_40x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_55_ffffff_40x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_65_ffffff_40x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_highlight-soft_25_0073ea_1x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-bg_highlight-soft_50_dddddd_1x100.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-icons_0073ea_256x240.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-icons_454545_256x240.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-icons_666666_256x240.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-icons_ede41b_256x240.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-icons_ff0084_256x240.png" />
+    <Content Include="Site\Web\css\jquery-ui\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Site\Web\css\jquery-ui\jquery-ui.css" />
+    <Content Include="Site\Web\css\vrs-common.css" />
+    <Content Include="Site\Web\css\vrs-desktop.css" />
+    <Content Include="Site\Web\css\vrs-mobile.css" />
+    <Content Include="Site\Web\fonts\icomoon.svg" />
+    <Content Include="Site\Web\fonts\icomoon-license.txt" />
+    <Content Include="Site\Web\images\collapse-down.gif" />
+    <Content Include="Site\Web\images\collapse-left.gif" />
+    <Content Include="Site\Web\images\collapse-right.gif" />
+    <Content Include="Site\Web\images\collapse-up.gif" />
+    <Content Include="Site\Web\images\markerLabelBackground.png" />
+    <Content Include="Site\Web\images\regions\be.bmp" />
+    <Content Include="Site\Web\images\regions\ca.bmp" />
+    <Content Include="Site\Web\images\regions\bz.bmp" />
+    <Content Include="Site\Web\images\regions\au.bmp" />
+    <Content Include="Site\Web\images\regions\ie.bmp" />
+    <Content Include="Site\Web\images\regions\in.bmp" />
+    <Content Include="Site\Web\images\regions\jm.bmp" />
+    <Content Include="Site\Web\images\regions\lu.bmp" />
+    <Content Include="Site\Web\images\regions\mc.bmp" />
+    <Content Include="Site\Web\images\regions\my.bmp" />
+    <Content Include="Site\Web\images\regions\nz.bmp" />
+    <Content Include="Site\Web\images\regions\sg.bmp" />
+    <Content Include="Site\Web\images\regions\ch.bmp" />
+    <Content Include="Site\Web\images\regions\za.bmp" />
+    <Content Include="Site\Web\images\regions\tt.bmp" />
+    <Content Include="Site\Web\images\regions\us.bmp" />
+    <Content Include="Site\Web\index.html" />
+    <Content Include="Site\Web\mobile.html" />
+    <Content Include="Site\Web\script\jquery.dlmenu.js" />
+    <Content Include="Site\Web\script\jquery.ui.touch-punch.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftPositionMap.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.menu.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldDate.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportDetail.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportMap.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportPager.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.js" />
+    <Content Include="Site\Web\script\markerWithLabel.js" />
+    <Content Include="Site\Web\script\purl.js" />
+    <Content Include="Site\Web\desktopReport.html" />
+    <Content Include="Site\Web\script\vrs\audio.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapReportDesktop.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapMap.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapMapMobile.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapReport.js" />
+    <Content Include="Site\Web\script\vrs\filter.js" />
+    <Content Include="Site\Web\script\vrs\format.js" />
+    <Content Include="Site\Web\script\vrs\linksRenderer.js" />
+    <Content Include="Site\Web\script\vrs\pageManager.js" />
+    <Content Include="Site\Web\script\vrs\report.js" />
+    <Content Include="Site\Web\script\vrs\reportRenderer.js" />
+    <Content Include="Site\Web\script\vrs\reportFilter.js" />
+    <Content Include="Site\Web\script\vrs\serverConfiguration.js" />
+    <Content Include="Site\Web\script\vrs\timeoutManager.js" />
+    <Content Include="Site\Web\zz-norel-test.html" />
+    <Content Include="Site\Web\_WARNING.txt" />
+    <Content Include="Site\_external\_googleMaps.js" />
+    <Content Include="Site\_external\_jQuery-1-9.js" />
+    <Content Include="Site\_external\_jQuery-UI.js" />
+    <Content Include="Site\_external\_typedefs.js" />
+    <EmbeddedResource Include="SiteResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SiteResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Site\Web\favicon.ico" />
+    <Content Include="Site\Web\images\regions\en.bmp" />
+    <Content Include="Site\Web\images\regions\fr.bmp" />
+    <Content Include="Site\Web\images\regions\pl.bmp" />
+    <Content Include="Site\Web\images\regions\ru.bmp" />
+    <Content Include="Site\Web\images\wait.gif" />
+    <Content Include="Site\Web\desktop.html" />
+    <Content Include="Site\Web\zz-norel-leak.html" />
+    <Content Include="Site\Web\script\globalize.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-029.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-AU.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-BZ.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-CA.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-GB.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-IE.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-IN.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-JM.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-MY.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-NZ.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-SG.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-TT.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-US.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-ZA.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.ru-RU.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.ru.js" />
+    <Content Include="Site\Web\script\i18n\localise.js" />
+    <Content Include="Site\Web\script\i18n\strings.en.js" />
+    <Content Include="Site\Web\script\i18n\strings.ru.js" />
+    <Content Include="Site\Web\script\jquery-ui.js" />
+    <Content Include="Site\Web\script\jquery.js" />
+    <Content Include="Site\Web\script\jquery.json.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftList.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionDialog.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldButton.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldCheckBox.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldComboBox.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLabel.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldNumeric.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldOrderedSubset.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldPaneList.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldRadioButton.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldTextBox.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.js" />
+    <Content Include="Site\Web\script\jstorage.js" />
+    <Content Include="Site\Web\script\stacktrace.js" />
+    <Content Include="Site\Web\script\vrs\aircraft.js" />
+    <Content Include="Site\Web\script\vrs\aircraftAutoSelect.js" />
+    <Content Include="Site\Web\script\vrs\aircraftFilter.js" />
+    <Content Include="Site\Web\script\vrs\aircraftList.js" />
+    <Content Include="Site\Web\script\vrs\aircraftListFetcher.js" />
+    <Content Include="Site\Web\script\vrs\aircraftListFilter.js" />
+    <Content Include="Site\Web\script\vrs\aircraftListSorter.js" />
+    <Content Include="Site\Web\script\vrs\aircraftPlotter.js" />
+    <Content Include="Site\Web\script\vrs\aircraftRenderer.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapMapDesktop.js" />
+    <Content Include="Site\Web\script\vrs\configStorage.js" />
+    <Content Include="Site\Web\script\vrs\currentLocation.js" />
+    <Content Include="Site\Web\script\vrs\enums.js" />
+    <Content Include="Site\Web\script\vrs\event.js" />
+    <Content Include="Site\Web\script\vrs\layoutManager.js" />
+    <Content Include="Site\Web\script\vrs\menuUI.js" />
+    <Content Include="Site\Web\script\vrs\optionsUI.js" />
+    <Content Include="Site\Web\script\vrs\scriptManager.js" />
+    <Content Include="Site\Web\script\vrs\string.js" />
+    <Content Include="Site\Web\script\vrs\titleUpdater.js" />
+    <Content Include="Site\Web\script\vrs\unitDisplayPreferences.js" />
+    <Content Include="Site\Web\script\vrs\utility.js" />
+    <Content Include="Site\Web\settings.html" />
+    <Content Include="Site\XHR.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportList.js" />
+    <None Include="Site\.idea\Site.iml" />
+    <None Include="Site\Web\fonts\icomoon.eot" />
+    <None Include="Site\Web\fonts\icomoon.ttf" />
+    <None Include="Site\Web\fonts\icomoon.woff" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PostBuild.sh" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent Condition="'$(OS)' != 'Unix'">"$(ProjectDir)_PostBuild.bat" "$(ProjectDir)Site\Web" "$(SolutionDir)VirtualRadar\$(OutDir)Web"</PostBuildEvent>
+    <PostBuildEvent Condition="'$(OS)' == 'Unix'">/bin/sh "$(ProjectDir)_PostBuild.sh" "$(ProjectDir)Site\Web" "$(SolutionDir)VirtualRadar.Mac\$(OutDir)Web"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent Condition="'$(OS)' != 'Unix'">"$(SolutionDir)Dependencies\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
+    <PreBuildEvent Condition="'$(OS)' == 'Unix'">mono "$(SolutionDir)Dependencies\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

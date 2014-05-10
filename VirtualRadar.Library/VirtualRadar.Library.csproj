@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{4BC834F4-005B-4EF9-BDA4-078C3F1745D3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar.Library</RootNamespace>
+    <AssemblyName>VirtualRadar.Library</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ReleaseVersion>2.0.2</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DocumentationFile>bin\x86\Release\VirtualRadar.Library.XML</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\x86\Release\VirtualRadar.Library.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.FlightSimulator.SimConnect">
+      <HintPath>..\Dependencies\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Speech" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adsb\AdsbTranslator.cs" />
+    <Compile Include="Adsb\CompactPositionReporting.cs" />
+    <Compile Include="Aircraft.cs" />
+    <Compile Include="AircraftComparer.cs" />
+    <Compile Include="AircraftDetailFetcher.cs" />
+    <Compile Include="AircraftPictureManager.cs" />
+    <Compile Include="AircraftSanityChecker.cs" />
+    <Compile Include="AirportDataDotCom.cs" />
+    <Compile Include="Audio.cs" />
+    <Compile Include="AutoConfigPictureFolderCache.cs" />
+    <Compile Include="BackgroundWorker.cs" />
+    <Compile Include="BaseStation\BaseStationAircraftList.cs" />
+    <Compile Include="BaseStation\RawMessageTranslator.cs" />
+    <Compile Include="BroadcastProvider.cs" />
+    <Compile Include="CallsignParser.cs" />
+    <Compile Include="Clock.cs" />
+    <Compile Include="BaseStation\BaseStationMessageCompressor.cs" />
+    <Compile Include="BaseStation\BaseStationMessageTranslator.cs" />
+    <Compile Include="BitStream.cs" />
+    <Compile Include="ConnectionLogger.cs" />
+    <Compile Include="DirectoryCache.cs" />
+    <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />
+    <Compile Include="FlightSimulatorX\MonoSimConnectWrapper.cs" />
+    <Compile Include="Listener\BeastMessageBytesExtractor.cs" />
+    <Compile Include="Listener\CompressedMessageBytesExtractor.cs" />
+    <Compile Include="Listener\Listener.cs" />
+    <Compile Include="Listener\MergedFeedListener.cs" />
+    <Compile Include="Listener\PolarPlotter.cs" />
+    <Compile Include="Listener\SerialListenerProvider.cs" />
+    <Compile Include="Listener\Port30003MessageBytesExtractor.cs" />
+    <Compile Include="Listener\Sbs3MessageBytesExtractor.cs" />
+    <Compile Include="ModeS\ModeATranslator.cs" />
+    <Compile Include="ModeS\ModeSCharacterTranslator.cs" />
+    <Compile Include="ModeS\ModeSParity.cs" />
+    <Compile Include="MonoSpeechSynthesizerWrapper.cs" />
+    <Compile Include="Listener\TcpListenerProvider.cs" />
+    <Compile Include="ModeS\ModeSAltitudeConversion.cs" />
+    <Compile Include="ModeS\ModeSTranslator.cs" />
+    <Compile Include="FeedManager.cs" />
+    <Compile Include="Feed.cs" />
+    <Compile Include="Presenter\EditorPresenter.cs" />
+    <Compile Include="Presenter\ListDetailEditorPresenter.cs" />
+    <Compile Include="Presenter\Presenter.cs" />
+    <Compile Include="Presenter\UsersPresenter.cs" />
+    <Compile Include="TcpClientWrapper.cs" />
+    <Compile Include="Presenter\StatisticsPresenter.cs" />
+    <Compile Include="RebroadcastServer.cs" />
+    <Compile Include="RebroadcastServerManager.cs" />
+    <Compile Include="RuntimeEnvironment.cs" />
+    <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="PluginManager.cs" />
+    <Compile Include="Presenter\ConnectionClientLogPresenter.cs" />
+    <Compile Include="Presenter\ConnectionSessionLogPresenter.cs" />
+    <Compile Include="Presenter\DownloadDataPresenter.cs" />
+    <Compile Include="Presenter\FlightSimulatorXPresenter.cs" />
+    <Compile Include="Presenter\InvalidPluginsPresenter.cs" />
+    <Compile Include="Presenter\OptionsPresenter.cs" />
+    <Compile Include="Presenter\PluginsPresenter.cs" />
+    <Compile Include="Presenter\ShutdownPresenter.cs" />
+    <Compile Include="Presenter\SplashPresenter.cs" />
+    <Compile Include="Settings\InstallerSettingsStorage.cs" />
+    <Compile Include="ExternalIPAddressService.cs" />
+    <Compile Include="FlightSimulatorX\FlightSimulatorX.cs" />
+    <Compile Include="FlightSimulatorX\DotNetSimConnectWrapper.cs" />
+    <Compile Include="HeartbeatService.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="NewVersionChecker.cs" />
+    <Compile Include="ParallelAccessImageFileManager.cs" />
+    <Compile Include="Presenter\AboutPresenter.cs" />
+    <Compile Include="Presenter\MainPresenter.cs" />
+    <Compile Include="Implementations.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\ConfigurationStorage.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\PluginManifestStorage.cs" />
+    <Compile Include="Settings\PluginSettingsStorage.cs" />
+    <Compile Include="SimpleAircraftList.cs" />
+    <Compile Include="Statistics.cs" />
+    <Compile Include="TcpConnectionStateService.cs" />
+    <Compile Include="VersionComparer.cs" />
+    <Compile Include="Web References\webservice.virtualradarserver.co.uk\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interop\VirtualRadar.Interop.csproj">
+      <Project>{801D6F1C-21A1-4336-9F32-16D5C16B3C81}</Project>
+      <Name>VirtualRadar.Interop</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\webservice.virtualradarserver.co.uk\ClientSupport.disco" />
+    <None Include="Web References\webservice.virtualradarserver.co.uk\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Web References\webservice.virtualradarserver.co.uk\ClientSupport.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://webservice.virtualradarserver.co.uk/ClientSupport.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\webservice.virtualradarserver.co.uk\</RelPath>
+      <UpdateFromURL>http://webservice.virtualradarserver.co.uk/ClientSupport.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>VirtualRadar_Library_webservice_virtualradarserver_co_uk_ClientSupport</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

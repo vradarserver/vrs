@@ -1,0 +1,466 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar.Interface</RootNamespace>
+    <AssemblyName>VirtualRadar.Interface</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ReleaseVersion>2.0.2</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>bin\x86\Release\VirtualRadar.Interface.XML</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\x86\Release\VirtualRadar.Interface.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adsb\AdsbMessage.cs" />
+    <Compile Include="Adsb\AirborneCapabilityVersion0.cs" />
+    <Compile Include="Adsb\AirborneCapabilityVersion1.cs" />
+    <Compile Include="Adsb\AirborneCapabilityVersion2.cs" />
+    <Compile Include="Adsb\AirbornePositionMessage.cs" />
+    <Compile Include="Adsb\AircraftOperationalStatusMessage.cs" />
+    <Compile Include="Adsb\AircraftOperationalStatusType.cs" />
+    <Compile Include="Adsb\AircraftStatusMessage.cs" />
+    <Compile Include="Adsb\AircraftStatusType.cs" />
+    <Compile Include="Adsb\CompactPositionReportingCoordinate.cs" />
+    <Compile Include="Adsb\EmergencyState.cs" />
+    <Compile Include="Adsb\EmergencyStatus.cs" />
+    <Compile Include="Adsb\EmitterCategory.cs" />
+    <Compile Include="Adsb\GlobalCoordinate.cs" />
+    <Compile Include="Adsb\HorizontalDataSource.cs" />
+    <Compile Include="Adsb\HorizontalModeIndicator.cs" />
+    <Compile Include="Adsb\IAdsbTranslator.cs" />
+    <Compile Include="Adsb\ICompactPositionReporting.cs" />
+    <Compile Include="Adsb\IdentifierAndCategoryMessage.cs" />
+    <Compile Include="Adsb\MessageFormat.cs" />
+    <Compile Include="Adsb\MultipleThreatResolutionAdvisory.cs" />
+    <Compile Include="Adsb\NamespaceDoc.cs" />
+    <Compile Include="Adsb\OperationalMode.cs" />
+    <Compile Include="Adsb\ResolutionAdvisoryComplement.cs" />
+    <Compile Include="Adsb\SingleThreatResolutionAdvisory.cs" />
+    <Compile Include="Adsb\SurfaceCapability.cs" />
+    <Compile Include="Adsb\SurfacePositionMessage.cs" />
+    <Compile Include="Adsb\SurveillanceStatus.cs" />
+    <Compile Include="Adsb\SystemDesignAssurance.cs" />
+    <Compile Include="Adsb\TargetAltitudeCapability.cs" />
+    <Compile Include="Adsb\TargetStateAndStatusMessage.cs" />
+    <Compile Include="Adsb\TargetStateAndStatusType.cs" />
+    <Compile Include="Adsb\TargetStateAndStatusVersion1.cs" />
+    <Compile Include="Adsb\TargetStateAndStatusVersion2.cs" />
+    <Compile Include="Adsb\TcasCapabilityMode.cs" />
+    <Compile Include="Adsb\TcasResolutionAdvisory.cs" />
+    <Compile Include="Adsb\VectorVelocity.cs" />
+    <Compile Include="Adsb\AirborneVelocityMessage.cs" />
+    <Compile Include="Adsb\VelocityType.cs" />
+    <Compile Include="Adsb\VerticalDataSource.cs" />
+    <Compile Include="Adsb\VerticalModeIndicator.cs" />
+    <Compile Include="AircraftFetcher.cs" />
+    <Compile Include="AirportDataThumbnailJson.cs" />
+    <Compile Include="AirportDataThumbnailsJson.cs" />
+    <Compile Include="BackgroundThreadQueue.cs" />
+    <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
+    <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
+    <Compile Include="BaseStation\IRawMessageTranslator.cs" />
+    <Compile Include="AircraftDetail.cs" />
+    <Compile Include="Certainty.cs" />
+    <Compile Include="IAircraftSanityChecker.cs" />
+    <Compile Include="Listener\IPolarPlotter.cs" />
+    <Compile Include="Listener\PolarPlot.cs" />
+    <Compile Include="Listener\PolarPlotSlice.cs" />
+    <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
+    <Compile Include="IAirportDataDotCom.cs" />
+    <Compile Include="ITcpConnectionStateService.cs" />
+    <Compile Include="Presenter\IUsersPresenter.cs" />
+    <Compile Include="RebroadcastServerConnection.cs" />
+    <Compile Include="Settings\IUser.cs" />
+    <Compile Include="Settings\IUserManager.cs" />
+    <Compile Include="StandingData\CallsignRouteDetail.cs" />
+    <Compile Include="IAircraftDetailFetcher.cs" />
+    <Compile Include="StandingData\ICallsignRouteFetcher.cs" />
+    <Compile Include="ICallsignParser.cs" />
+    <Compile Include="Crc32ModeS.cs" />
+    <Compile Include="Filter.cs" />
+    <Compile Include="FilterBool.cs" />
+    <Compile Include="FilterCondition.cs" />
+    <Compile Include="FilterEnum.cs" />
+    <Compile Include="FilterRange.cs" />
+    <Compile Include="FilterString.cs" />
+    <Compile Include="IClock.cs" />
+    <Compile Include="IFeedManager.cs" />
+    <Compile Include="IFeed.cs" />
+    <Compile Include="Listener\ICompressedMessageBytesExtractor.cs" />
+    <Compile Include="Listener\IMergedFeedListener.cs" />
+    <Compile Include="PictureDetail.cs" />
+    <Compile Include="Settings\MergedFeed.cs" />
+    <Compile Include="Settings\ProxyType.cs" />
+    <Compile Include="Settings\RebroadcastFormatConverter.cs" />
+    <Compile Include="Settings\Receiver.cs" />
+    <Compile Include="SimpleStringBuffer.cs" />
+    <Compile Include="SpinLock.cs" />
+    <Compile Include="StandingData\AircraftType.cs" />
+    <Compile Include="StandingData\Airline.cs" />
+    <Compile Include="StandingData\Airport.cs" />
+    <Compile Include="StandingData\CodeBlock.cs" />
+    <Compile Include="StandingData\FlightNumber.cs" />
+    <Compile Include="StandingData\Route.cs" />
+    <Compile Include="SQLite\ISQLiteConnectionProvider.cs" />
+    <Compile Include="SQLite\ISQLiteConnectionStringBuilder.cs" />
+    <Compile Include="IRebroadcastServer.cs" />
+    <Compile Include="IBroadcastProvider.cs" />
+    <Compile Include="IRebroadcastServerManager.cs" />
+    <Compile Include="IStatistics.cs" />
+    <Compile Include="Listener\ExtractedBytes.cs" />
+    <Compile Include="Listener\ExtractedBytesFormat.cs" />
+    <Compile Include="Listener\IBeastMessageBytesExtractor.cs" />
+    <Compile Include="Listener\IListener.cs" />
+    <Compile Include="Listener\IListenerProvider.cs" />
+    <Compile Include="Listener\IMessageBytesExtractor.cs" />
+    <Compile Include="Listener\ITcpListenerProvider.cs" />
+    <Compile Include="BaseStation\NamespaceDoc.cs" />
+    <Compile Include="Crc16.cs" />
+    <Compile Include="Crc16Ccitt.cs" />
+    <Compile Include="Database\BaseStationDBHistory.cs" />
+    <Compile Include="Database\BaseStationDBInfo.cs" />
+    <Compile Include="Database\BaseStationLocation.cs" />
+    <Compile Include="Database\BaseStationSession.cs" />
+    <Compile Include="Database\BaseStationSystemEvents.cs" />
+    <Compile Include="Database\IAutoConfigBaseStationDatabase.cs" />
+    <Compile Include="Database\IBaseStationDatabaseProvider.cs" />
+    <Compile Include="Database\ITransactionable.cs" />
+    <Compile Include="Database\NamespaceDoc.cs" />
+    <Compile Include="StandingData\IBackgroundDataDownloader.cs" />
+    <Compile Include="StandingData\IBackgroundDataDownloaderProvider.cs" />
+    <Compile Include="StandingData\IStandingDataManagerProvider.cs" />
+    <Compile Include="StandingData\IStandingDataUpdaterProvider.cs" />
+    <Compile Include="StandingData\NamespaceDoc.cs" />
+    <Compile Include="DistanceUnit.cs" />
+    <Compile Include="FlightSimulatorX\FlightSimulatorXEventId.cs" />
+    <Compile Include="FlightSimulatorX\NamespaceDoc.cs" />
+    <Compile Include="HeightUnit.cs" />
+    <Compile Include="IApplicationInformation.cs" />
+    <Compile Include="IAutoConfigPictureFolderCache.cs" />
+    <Compile Include="IBackgroundWorker.cs" />
+    <Compile Include="IBitStream.cs" />
+    <Compile Include="IConnectionLogger.cs" />
+    <Compile Include="IDirectoryCache.cs" />
+    <Compile Include="IDirectoryCacheProvider.cs" />
+    <Compile Include="IRuntimeEnvironment.cs" />
+    <Compile Include="ILogProvider.cs" />
+    <Compile Include="ISpeechSynthesizerWrapper.cs" />
+    <Compile Include="JsonSerialiser.cs" />
+    <Compile Include="Listener\IPort30003MessageBytesExtractor.cs" />
+    <Compile Include="Listener\ISbs3MessageBytesExtractor.cs" />
+    <Compile Include="Listener\ISerialListenerProvider.cs" />
+    <Compile Include="Listener\NamespaceDoc.cs" />
+    <Compile Include="ModeS\IModeSParity.cs" />
+    <Compile Include="ModeS\NamespaceDoc.cs" />
+    <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="OnlineHelpAddress.cs" />
+    <Compile Include="IPAddressComparer.cs" />
+    <Compile Include="IPlugin.cs" />
+    <Compile Include="IPluginManager.cs" />
+    <Compile Include="IPluginManagerProvider.cs" />
+    <Compile Include="PluginEventArgs.cs" />
+    <Compile Include="PluginStartupParameters.cs" />
+    <Compile Include="Presenter\IDownloadDataPresenter.cs" />
+    <Compile Include="Presenter\IConnectionClientLogPresenter.cs" />
+    <Compile Include="Presenter\IConnectionClientLogPresenterProvider.cs" />
+    <Compile Include="Presenter\IConnectionSessionLogPresenter.cs" />
+    <Compile Include="Presenter\IFlightSimulatorXPresenter.cs" />
+    <Compile Include="Presenter\IFlightSimulatorXPresenterProvider.cs" />
+    <Compile Include="Presenter\IInvalidPluginsPresenter.cs" />
+    <Compile Include="Presenter\IOptionsPresenter.cs" />
+    <Compile Include="Presenter\IOptionsPresenterProvider.cs" />
+    <Compile Include="Presenter\IPluginsPresenter.cs" />
+    <Compile Include="Presenter\IPresenter.cs" />
+    <Compile Include="Presenter\IRebroadcastOptionsPresenter.cs" />
+    <Compile Include="Presenter\IReceiverLocationsPresenter.cs" />
+    <Compile Include="Presenter\IShutdownPresenter.cs" />
+    <Compile Include="Presenter\ISplashPresenter.cs" />
+    <Compile Include="Presenter\ISplashPresenterProvider.cs" />
+    <Compile Include="Presenter\IStatisticsPresenter.cs" />
+    <Compile Include="Presenter\NamespaceDoc.cs" />
+    <Compile Include="ModeS\ApplicationField.cs" />
+    <Compile Include="ModeS\Capability.cs" />
+    <Compile Include="ModeS\ControlField.cs" />
+    <Compile Include="ModeS\DownlinkFormat.cs" />
+    <Compile Include="ModeS\ElmControl.cs" />
+    <Compile Include="ModeS\FlightStatus.cs" />
+    <Compile Include="ModeS\IModeSTranslator.cs" />
+    <Compile Include="ModeS\ModeSMessageEventArgs.cs" />
+    <Compile Include="ModeS\ModeSMessage.cs" />
+    <Compile Include="ModeS\VerticalStatus.cs" />
+    <Compile Include="BroadcastEventArgs.cs" />
+    <Compile Include="Round.cs" />
+    <Compile Include="Settings\ConnectionType.cs" />
+    <Compile Include="Settings\IConfigurationStorageProvider.cs" />
+    <Compile Include="Settings\IInstallerSettingsStorageProvider.cs" />
+    <Compile Include="Database\ILogDatabaseProvider.cs" />
+    <Compile Include="FlightSimulatorX\ReadAircraftInformation.cs" />
+    <Compile Include="FlightSimulatorX\FlightSimulatorXException.cs" />
+    <Compile Include="FlightSimulatorX\FlightSimulatorXExceptionCode.cs" />
+    <Compile Include="FlightSimulatorX\ISimConnectWrapper.cs" />
+    <Compile Include="FlightSimulatorX\WriteAircraftInformation.cs" />
+    <Compile Include="IAircraftComparer.cs" />
+    <Compile Include="AircraftComparerColumn.cs" />
+    <Compile Include="AircraftListSource.cs" />
+    <Compile Include="BaseStation\BaseStationMessageEventArgs.cs" />
+    <Compile Include="BaseStation\BaseStationMessageHelper.cs" />
+    <Compile Include="BaseStation\BaseStationMessageType.cs" />
+    <Compile Include="BaseStation\BaseStationStatusCode.cs" />
+    <Compile Include="BaseStation\BaseStationTransmissionType.cs" />
+    <Compile Include="ConnectionStatus.cs" />
+    <Compile Include="BaseStation\BaseStationMessage.cs" />
+    <Compile Include="BaseStation\IBaseStationMessageCompressor.cs" />
+    <Compile Include="Settings\AudioSettings.cs" />
+    <Compile Include="Settings\BaseStationSettings.cs" />
+    <Compile Include="Settings\Configuration.cs" />
+    <Compile Include="Settings\FlightRouteSettings.cs" />
+    <Compile Include="Settings\GoogleMapSettings.cs" />
+    <Compile Include="Settings\Hash.cs" />
+    <Compile Include="Settings\IInstallerSettingsStorage.cs" />
+    <Compile Include="Settings\InstallerSettings.cs" />
+    <Compile Include="Settings\InternetClientSettings.cs" />
+    <Compile Include="Settings\IPluginManifestStorage.cs" />
+    <Compile Include="Settings\IPluginManifestStorageProvider.cs" />
+    <Compile Include="Settings\IPluginSettingsStorage.cs" />
+    <Compile Include="Settings\IPluginSettingsStorageProvider.cs" />
+    <Compile Include="Settings\NamespaceDoc.cs" />
+    <Compile Include="Settings\PluginManifest.cs" />
+    <Compile Include="Settings\PluginSettings.cs" />
+    <Compile Include="Settings\RawDecodingSettings.cs" />
+    <Compile Include="Settings\RebroadcastFormat.cs" />
+    <Compile Include="Settings\RebroadcastSettings.cs" />
+    <Compile Include="Settings\ReceiverLocation.cs" />
+    <Compile Include="Settings\DataSource.cs" />
+    <Compile Include="Settings\VersionCheckSettings.cs" />
+    <Compile Include="Settings\WebServerSettings.cs" />
+    <Compile Include="Coordinate.cs" />
+    <Compile Include="Database\SearchBaseStationCriteria.cs" />
+    <Compile Include="Database\BaseStationAircraft.cs" />
+    <Compile Include="Database\IBaseStationDatabase.cs" />
+    <Compile Include="Database\BaseStationFlight.cs" />
+    <Compile Include="BaseStation\IBaseStationMessageTranslator.cs" />
+    <Compile Include="Settings\IConfigurationStorage.cs" />
+    <Compile Include="Database\LogClient.cs" />
+    <Compile Include="Database\ILogDatabase.cs" />
+    <Compile Include="Database\LogSession.cs" />
+    <Compile Include="StandingData\EngineType.cs" />
+    <Compile Include="StandingData\IStandingDataManager.cs" />
+    <Compile Include="StandingData\IStandingDataUpdater.cs" />
+    <Compile Include="StandingData\Species.cs" />
+    <Compile Include="StandingData\WakeTurbulenceCategory.cs" />
+    <Compile Include="Describe.cs" />
+    <Compile Include="EventArgs.cs" />
+    <Compile Include="GreatCircleMaths.cs" />
+    <Compile Include="IAircraft.cs" />
+    <Compile Include="IAircraftList.cs" />
+    <Compile Include="IAircraftPictureManager.cs" />
+    <Compile Include="IAudio.cs" />
+    <Compile Include="BaseStation\IBaseStationAircraftList.cs" />
+    <Compile Include="IBackgroundThreadExceptionCatcher.cs" />
+    <Compile Include="IExternalIPAddressService.cs" />
+    <Compile Include="FlightSimulatorX\IFlightSimulatorX.cs" />
+    <Compile Include="IExternalIPAddressServiceProvider.cs" />
+    <Compile Include="IHeartbeatService.cs" />
+    <Compile Include="IImageFileManager.cs" />
+    <Compile Include="ILog.cs" />
+    <Compile Include="INewVersionChecker.cs" />
+    <Compile Include="INewVersionCheckerProvider.cs" />
+    <Compile Include="IPEndPointHelper.cs" />
+    <Compile Include="ISimpleAircraftList.cs" />
+    <Compile Include="ISingleton.cs" />
+    <Compile Include="JavascriptHelper.cs" />
+    <Compile Include="Pair.cs" />
+    <Compile Include="Presenter\IAboutPresenter.cs" />
+    <Compile Include="Presenter\IMainPresenter.cs" />
+    <Compile Include="SpeedType.cs" />
+    <Compile Include="SpeedUnit.cs" />
+    <Compile Include="SQLite\NamespaceDoc.cs" />
+    <Compile Include="SQLite\SQLiteDateFormats.cs" />
+    <Compile Include="SQLite\SQLiteJournalModeEnum.cs" />
+    <Compile Include="SQLite\SynchronizationModes.cs" />
+    <Compile Include="StreamHelper.cs" />
+    <Compile Include="View\IBusyView.cs" />
+    <Compile Include="View\IConfirmView.cs" />
+    <Compile Include="View\IConnectionClientLogView.cs" />
+    <Compile Include="View\IConnectionSessionLogView.cs" />
+    <Compile Include="View\IDownloadDataView.cs" />
+    <Compile Include="View\IFlightSimulatorXView.cs" />
+    <Compile Include="View\IInvalidPluginsView.cs" />
+    <Compile Include="View\IListDetailEditorView.cs" />
+    <Compile Include="View\IOptionsView.cs" />
+    <Compile Include="View\IPluginsView.cs" />
+    <Compile Include="View\IRebroadcastOptionsView.cs" />
+    <Compile Include="View\IReceiverLocationsView.cs" />
+    <Compile Include="View\IShutdownView.cs" />
+    <Compile Include="View\ISplashView.cs" />
+    <Compile Include="View\IStatisticsView.cs" />
+    <Compile Include="View\IUsersView.cs" />
+    <Compile Include="View\IValidateView.cs" />
+    <Compile Include="View\IView.cs" />
+    <Compile Include="View\NamespaceDoc.cs" />
+    <Compile Include="View\ValidationField.cs" />
+    <Compile Include="View\ValidationResult.cs" />
+    <Compile Include="WeakEventHandler.cs" />
+    <Compile Include="WebRequestResult.cs" />
+    <Compile Include="WebServer\IAutoConfigWebServer.cs" />
+    <Compile Include="WebServer\IPortMapping.cs" />
+    <Compile Include="WebServer\IUniversalPlugAndPlayManager.cs" />
+    <Compile Include="WebServer\IUniversalPlugAndPlayManagerProvider.cs" />
+    <Compile Include="View\IAboutView.cs" />
+    <Compile Include="View\IMainView.cs" />
+    <Compile Include="WebServer\IResponder.cs" />
+    <Compile Include="WebServer\NamespaceDoc.cs" />
+    <Compile Include="WebServer\RequestException.cs" />
+    <Compile Include="WebServer\ResponseSentEventArgs.cs" />
+    <Compile Include="WebServer\WebServerResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebServerResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSite\AircraftJson.cs" />
+    <Compile Include="WebSite\AircraftReportJson.cs" />
+    <Compile Include="WebSite\ChecksumFile.cs" />
+    <Compile Include="WebSite\ChecksumFileEntry.cs" />
+    <Compile Include="WebSite\FeedJson.cs" />
+    <Compile Include="WebSite\HtmlContentInjector.cs" />
+    <Compile Include="WebSite\FlightReportJson.cs" />
+    <Compile Include="WebSite\IBundler.cs" />
+    <Compile Include="WebSite\IMinifier.cs" />
+    <Compile Include="WebSite\IWebSite.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringDeduplicator.cs" />
+    <Compile Include="WebSite\AircraftListJson.cs" />
+    <Compile Include="WebServer\AuthenticationRequiredEventArgs.cs" />
+    <Compile Include="WebServer\ContentClassification.cs" />
+    <Compile Include="WebServer\IRequest.cs" />
+    <Compile Include="WebServer\IContext.cs" />
+    <Compile Include="WebServer\IResponse.cs" />
+    <Compile Include="WebServer\IWebServer.cs" />
+    <Compile Include="WebServer\IWebServerProvider.cs" />
+    <Compile Include="WebServer\MimeType.cs" />
+    <Compile Include="WebServer\RequestReceivedEventArgs.cs" />
+    <Compile Include="WebSite\IWebSiteExtender.cs" />
+    <Compile Include="WebSite\IWebSiteProvider.cs" />
+    <Compile Include="WebSite\NamespaceDoc.cs" />
+    <Compile Include="WebSite\PolarPlotJson.cs" />
+    <Compile Include="WebSite\PolarPlotsJson.cs" />
+    <Compile Include="WebSite\PolarPlotsSliceJson.cs" />
+    <Compile Include="WebSite\ProximityGadgetAircraftJson.cs" />
+    <Compile Include="WebSite\ProximityGadgetClosestAircraftJson.cs" />
+    <Compile Include="WebSite\ReportAircraftJson.cs" />
+    <Compile Include="WebSite\ReportAirportJson.cs" />
+    <Compile Include="WebSite\ReportFlightJson.cs" />
+    <Compile Include="WebSite\ReportRouteJson.cs" />
+    <Compile Include="WebSite\ReportRowsJson.cs" />
+    <Compile Include="WebSite\ServerConfigJson.cs" />
+    <Compile Include="WebSite\ServerReceiverJson.cs" />
+    <Compile Include="WebSite\SimpleContent.cs" />
+    <Compile Include="WebSite\SiteRoot.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Adsb\_VirtualRadarInterfaceAdsb.cd" />
+    <None Include="BaseStation\_VirtualRadarInterfaceBaseStation.cd" />
+    <None Include="Database\_VirtualRadarInterfaceDatabase.cd" />
+    <None Include="SQLite\_VirtualRadarInterfaceSQLite.cd" />
+    <None Include="StandingData\_VirtualRadarInterfaceData.cd" />
+    <None Include="FlightSimulatorX\_VirtualRadarInterfaceFlightSimulatorX.cd" />
+    <None Include="Listener\_VirtualRadarInterfaceListener.cd" />
+    <None Include="ModeS\_VirtualRadarInterfaceModeS.cd" />
+    <None Include="Settings\_VirtualRadarInterfaceSettings.cd" />
+    <None Include="WebServer\_VirtualRadarInterfaceWebServer.cd" />
+    <None Include="WebSite\_VirtualRadarInterfaceWebSite.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WebServer\MimeTypes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WebServer\WebServerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebServerResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
