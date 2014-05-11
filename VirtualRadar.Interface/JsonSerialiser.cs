@@ -66,6 +66,13 @@ namespace VirtualRadar.Interface
         private Dictionary<Type, Type[]> _GenericTypeArgumentsMap = new Dictionary<Type,Type[]>();
 
         /// <summary>
+        /// The lock on the _GenericTypeArgumentsMap field. In principle this class is not thread safe, but it is possible for
+        /// multi-threaded calls to WriteObject for the same type to crash with multiple adds to this field, which I think most
+        /// people would find surprising, so I'm making an exception and adding a lock around the manipulation of the field.
+        /// </summary>
+        private SpinLock _GenericTypeArgumentsMapLock = new SpinLock();
+
+        /// <summary>
         /// Initialises the serialiser.
         /// </summary>
         /// <param name="type"></param>
@@ -131,9 +138,14 @@ namespace VirtualRadar.Interface
         {
             Type[] result = null;
 
-            if(!_GenericTypeArgumentsMap.TryGetValue(type, out result) && type.IsGenericType) {
-                result = type.GetGenericArguments();
-                _GenericTypeArgumentsMap.Add(type, result);
+            _GenericTypeArgumentsMapLock.Lock();
+            try {
+                if(!_GenericTypeArgumentsMap.TryGetValue(type, out result) && type.IsGenericType) {
+                    result = type.GetGenericArguments();
+                    _GenericTypeArgumentsMap.Add(type, result);
+                }
+            } finally {
+                _GenericTypeArgumentsMapLock.Unlock();
             }
 
             return result;
