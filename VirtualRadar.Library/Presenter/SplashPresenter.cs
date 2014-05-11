@@ -96,9 +96,13 @@ namespace VirtualRadar.Library.Presenter
 
             ParseCommandLineParameters(configurationStorage);
             InitialiseLog(configurationStorage);
+
+            // The user manager needs to be initialised before the configuration is loaded, the Load
+            // method can make calls on the user manager.
+            InitialiseUserManager();
+
             var configuration = LoadConfiguration(configurationStorage);
             Factory.Singleton.Resolve<IHeartbeatService>().Singleton.Start();
-            InitialiseUserManager();
             LoadPictureFolderCache();
             TestBaseStationDatabaseConnection();
             LoadStandingData();

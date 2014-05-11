@@ -836,6 +836,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Converted Basic Authentication User.
+        /// </summary>
+        public static string ConvertedBasicAuthenticationUser {
+            get {
+                return ResourceManager.GetString("ConvertedBasicAuthenticationUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copyright © 2010 onwards, Andrew Whewell.
         /// </summary>
         public static string Copyright {

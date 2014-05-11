@@ -20,6 +20,7 @@ using System.Text;
 using System.Xml.Serialization;
 using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Library.Settings
 {
@@ -120,15 +121,16 @@ namespace VirtualRadar.Library.Settings
             Configuration result = null;
 
             if(File.Exists(FileName)) {
-                bool hasChangesThatNeedResaving = false;
+                bool needResave = false;
                 using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
                     XmlSerializer serialiser = new XmlSerializer(typeof(Configuration));
                     result = (Configuration)serialiser.Deserialize(stream);
-                    hasChangesThatNeedResaving = GenerateRebroadcastServerUniqueIds(result);
+                    if(GenerateRebroadcastServerUniqueIds(result)) needResave = true;
+                    if(ConvertBasicAuthenticationUser(result))     needResave = true;
                     if(result.Receivers.Count == 0) CreateInitialReceiverLocations(result);
                 }
 
-                if(hasChangesThatNeedResaving) Save(result);
+                if(needResave) Save(result);
             }
 
             if(result == null) {
@@ -227,6 +229,39 @@ namespace VirtualRadar.Library.Settings
             foreach(var rebroadcastServer in configuration.RebroadcastSettings) {
                 rebroadcastServer.ReceiverId = configuration.Receivers[0].UniqueId;
             }
+        }
+
+        /// <summary>
+        /// Attempts to convert the old BasicAuthentication user to an IUserManager user.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        private bool ConvertBasicAuthenticationUser(Configuration configuration)
+        {
+            var modified = false;
+
+            var settings = configuration == null ? null : configuration.WebServerSettings;
+            if(settings != null && !settings.ConvertedUser && !String.IsNullOrEmpty(settings.BasicAuthenticationUser)) {
+                var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+                var user = userManager.GetUserByLoginName(settings.BasicAuthenticationUser);
+                if(user == null && userManager.CanCreateUsersWithHash) {
+                    user = Factory.Singleton.Resolve<IUser>();
+                    user.Enabled = true;
+                    user.LoginName = settings.BasicAuthenticationUser;
+                    user.Name = Strings.ConvertedBasicAuthenticationUser;
+                    userManager.CreateUserWithHash(user, settings.BasicAuthenticationPasswordHash);
+                }
+
+                if(user != null) {
+                    if(!settings.BasicAuthenticationUserIds.Contains(user.UniqueId)) {
+                        settings.BasicAuthenticationUserIds.Add(user.UniqueId);
+                    }
+                    settings.ConvertedUser = true;
+                    modified = true;
+                }
+            }
+
+            return modified;
         }
 
         /// <summary>

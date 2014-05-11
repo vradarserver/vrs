@@ -28,12 +28,39 @@ namespace VirtualRadar.Interface.Settings
         /// <summary>
         /// Gets or sets the user for basic authentication.
         /// </summary>
+        /// <remarks>
+        /// Last used in version 2.0.2, now superceded by <see cref="BasicAuthenticationUserIds"/>.
+        /// </remarks>
         public string BasicAuthenticationUser { get; set; }
 
         /// <summary>
         /// Gets or sets the hash of the password for the basic authentication user.
         /// </summary>
+        /// <remarks>
+        /// Last used in version 2.0.2, now superceded by <see cref="BasicAuthenticationUserIds"/>.
+        /// </remarks>
         public Hash BasicAuthenticationPasswordHash { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the <see cref="BasicAuthenticationUser"/> and
+        /// <see cref="BasicAuthenticationPasswordHash"/> have been converted to an <see cref="IUser"/>
+        /// and are now managed by the <see cref="IUserManager"/>.
+        /// </summary>
+        /// <remarks>
+        /// The user is converted the first time version 2.0.3 is run, but only if the user manager
+        /// allows new users to be created. If creation is permitted then the user is added to the
+        /// <see cref="BasicAuthenticationUserIds"/> list.
+        /// </remarks>
+        public bool ConvertedUser { get; set; }
+
+        private List<string> _BasicAuthenticationUserIds = new List<string>();
+        /// <summary>
+        /// Gets the list of users that can log onto the site with Basic authentication.
+        /// </summary>
+        public List<string> BasicAuthenticationUserIds
+        {
+            get { return _BasicAuthenticationUserIds; }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating that the server is allowed to control UPnP NAT routers.

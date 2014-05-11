@@ -38,13 +38,16 @@ namespace Test.VirtualRadar.Interface.Settings
 
         public static void CheckProperties(WebServerSettings settings)
         {
-            TestUtilities.TestProperty(settings, "AuthenticationScheme", AuthenticationSchemes.Anonymous, AuthenticationSchemes.Basic);
-            TestUtilities.TestProperty(settings, "AutoStartUPnP", false);
-            TestUtilities.TestProperty(settings, "BasicAuthenticationUser", null, "Bb");
-            TestUtilities.TestProperty(settings, "BasicAuthenticationPasswordHash", null, new Hash());
-            TestUtilities.TestProperty(settings, "EnableUPnp", false);
-            TestUtilities.TestProperty(settings, "IsOnlyInternetServerOnLan", true);
-            TestUtilities.TestProperty(settings, "UPnpPort", 80, 99);
+            Assert.AreEqual(0, settings.BasicAuthenticationUserIds.Count);
+
+            TestUtilities.TestProperty(settings, r => r.AuthenticationScheme, AuthenticationSchemes.Anonymous, AuthenticationSchemes.Basic);
+            TestUtilities.TestProperty(settings, r => r.AutoStartUPnP, false);
+            TestUtilities.TestProperty(settings, r => r.BasicAuthenticationUser, null, "Bb");
+            TestUtilities.TestProperty(settings, r => r.BasicAuthenticationPasswordHash, null, new Hash());
+            TestUtilities.TestProperty(settings, r => r.ConvertedUser, false);
+            TestUtilities.TestProperty(settings, r => r.EnableUPnp, false);
+            TestUtilities.TestProperty(settings, r => r.IsOnlyInternetServerOnLan, true);
+            TestUtilities.TestProperty(settings, r => r.UPnpPort, 80, 99);
         }
     }
 }
