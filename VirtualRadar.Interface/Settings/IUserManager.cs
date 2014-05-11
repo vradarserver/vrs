@@ -22,6 +22,18 @@ namespace VirtualRadar.Interface.Settings
         bool CanCreateUsers { get; }
 
         /// <summary>
+        /// Gets a value indicating that the manager can create a user and make use
+        /// of a password hash supplied by VRS.
+        /// </summary>
+        /// <remarks>
+        /// This is only used to port the old Basic Authentication user from legacy
+        /// versions of VRS into IUserManager - it is expected that most 3rd party
+        /// user repositories can't support this, in which case they should return
+        /// false here.
+        /// </remarks>
+        bool CanCreateUsersWithHash { get; }
+
+        /// <summary>
         /// Gets a value indicating that the manager can modify user accounts.
         /// </summary>
         bool CanEditUsers { get; }
@@ -81,6 +93,13 @@ namespace VirtualRadar.Interface.Settings
         void CreateUser(IUser user);
 
         /// <summary>
+        /// Creates a new user. If <see cref="CanCreateUsersWithHash"/> is false then this should throw an exception when called.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="passwordHash"></param>
+        void CreateUserWithHash(IUser user, Hash passwordHash);
+
+        /// <summary>
         /// Edits an existing user. Throw an exception if the change is not permitted, otherwise modify the backing store to
         /// reflect the change in details for the user with the appropriate UniqueID.
         /// </summary>
@@ -94,6 +113,13 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         /// <param name="user"></param>
         void DeleteUser(IUser user);
+
+        /// <summary>
+        /// Returns the user with the login name specified or null if no such user exists.
+        /// </summary>
+        /// <param name="loginName"></param>
+        /// <returns>The user record or null.</returns>
+        IUser GetUserByLoginName(string loginName);
 
         /// <summary>
         /// Returns a list of all users. Throw an exception if <see cref="CanListUsers"/> is false.

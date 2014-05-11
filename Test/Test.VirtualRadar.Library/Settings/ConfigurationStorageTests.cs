@@ -23,33 +23,60 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Library;
 using VirtualRadar.Library.Settings;
+using Moq;
+using System.IO;
 
 namespace Test.VirtualRadar.Library.Settings
 {
     [TestClass]
     public class ConfigurationStorageTests
     {
+        #region Private class - TestProvider
         class TestProvider : IConfigurationStorageProvider
         {
             public string Folder { get; set; }
         }
+        #endregion
 
+        #region TestContext, fields, TestInitialise, TestCleanup
         public TestContext TestContext { get; set; }
+        private IClassFactory _OriginalFactory;
         private IConfigurationStorage _Implementation;
         private TestProvider _Provider;
         private EventRecorder<EventArgs> _ConfigurationChangedEvent;
+        private Mock<IUserManager> _UserManager;
+        private Mock<IUser> _User;
 
         [TestInitialize]
         public void TestInitialise()
         {
+            _OriginalFactory = Factory.TakeSnapshot();
+
             _Provider = new TestProvider();
             _Provider.Folder = TestContext.TestDeploymentDir;
             _Implementation = Factory.Singleton.Resolve<IConfigurationStorage>();
             _Implementation.Provider = _Provider;
 
             _ConfigurationChangedEvent = new EventRecorder<EventArgs>();
+
+            _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
+            _UserManager.Setup(r => r.CanCreateUsers).Returns(true);
+            _UserManager.Setup(r => r.CanCreateUsersWithHash).Returns(true);
+            _UserManager.Setup(r => r.GetUserByLoginName(It.IsAny<string>())).Returns((IUser)null);
+            _User = TestUtilities.CreateMockImplementation<IUser>();
         }
 
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Factory.RestoreSnapshot(_OriginalFactory);
+            
+            var settingsFileName = Path.Combine(TestContext.TestDeploymentDir, "Configuration.xml");
+            if(File.Exists(settingsFileName)) File.Delete(settingsFileName);
+        }
+        #endregion
+
+        #region Ctor and properties
         [TestMethod]
         public void ConfigurationStorage_Initialises_To_Known_State_And_Properties_Work()
         {
@@ -73,6 +100,21 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.AreSame(obj1.Singleton, obj2.Singleton);
         }
 
+        [TestMethod]
+        public void ConfigurationStorage_SetFolder_Stores_Folder()
+        {
+            _Implementation.Folder = "xX";
+            Assert.AreEqual("xX", _Provider.Folder);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_GetFolder_Retrieves_Folder()
+        {
+            Assert.AreEqual(TestContext.TestDeploymentDir, _Implementation.Folder);
+        }
+        #endregion
+
+        #region Erase
         [TestMethod]
         public void ConfigurationStorage_Erase_Deletes_Existing_Settings()
         {
@@ -103,32 +145,6 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_SetFolder_Stores_Folder()
-        {
-            _Implementation.Folder = "xX";
-            Assert.AreEqual("xX", _Provider.Folder);
-        }
-
-        [TestMethod]
-        public void ConfigurationStorage_GetFolder_Retrieves_Folder()
-        {
-            Assert.AreEqual(TestContext.TestDeploymentDir, _Implementation.Folder);
-        }
-
-        [TestMethod]
-        public void ConfigurationStorage_Save_Raises_ConfigurationChanged()
-        {
-            var configuration = new Configuration() { AudioSettings = new AudioSettings() { VoiceName = "This was saved" } };
-            _Implementation.ConfigurationChanged += _ConfigurationChangedEvent.Handler;
-            _ConfigurationChangedEvent.EventRaised += (object sender, EventArgs args) => { Assert.AreEqual("This was saved", _Implementation.Load().AudioSettings.VoiceName); };
-
-            _Implementation.Save(configuration);
-            Assert.AreEqual(1, _ConfigurationChangedEvent.CallCount);
-            Assert.IsNotNull(_ConfigurationChangedEvent.Args);
-            Assert.AreSame(_Implementation, _ConfigurationChangedEvent.Sender);
-        }
-
-        [TestMethod]
         public void ConfigurationStorage_Erase_Raises_ConfigurationChanged()
         {
             var configuration = new Configuration() { AudioSettings = new AudioSettings() { VoiceName = "This was saved" } };
@@ -143,18 +159,20 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsNotNull(_ConfigurationChangedEvent.Args);
             Assert.AreSame(_Implementation, _ConfigurationChangedEvent.Sender);
         }
+        #endregion
 
+        #region Save
         [TestMethod]
-        public void ConfigurationStorage_Resets_IgnoreBadMessages()
+        public void ConfigurationStorage_Save_Raises_ConfigurationChanged()
         {
-            // The connection flag "IgnoreBadMessages" has been retired. If the user has the value set to false in their
-            // configuration then Load overrides this and forces it to true. It is no longer presented to the user.
-            var configuration = new Configuration();
-            configuration.BaseStationSettings.IgnoreBadMessages = false;
-            _Implementation.Save(configuration);
+            var configuration = new Configuration() { AudioSettings = new AudioSettings() { VoiceName = "This was saved" } };
+            _Implementation.ConfigurationChanged += _ConfigurationChangedEvent.Handler;
+            _ConfigurationChangedEvent.EventRaised += (object sender, EventArgs args) => { Assert.AreEqual("This was saved", _Implementation.Load().AudioSettings.VoiceName); };
 
-            var readBack = _Implementation.Load();
-            Assert.IsTrue(readBack.BaseStationSettings.IgnoreBadMessages);
+            _Implementation.Save(configuration);
+            Assert.AreEqual(1, _ConfigurationChangedEvent.CallCount);
+            Assert.IsNotNull(_ConfigurationChangedEvent.Args);
+            Assert.AreSame(_Implementation, _ConfigurationChangedEvent.Sender);
         }
 
         [TestMethod]
@@ -202,6 +220,10 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(8181, readBack.WebServerSettings.UPnpPort);
                         Assert.AreEqual(false, readBack.WebServerSettings.IsOnlyInternetServerOnLan);
                         Assert.AreEqual(true, readBack.WebServerSettings.AutoStartUPnP);
+                        Assert.AreEqual(true, readBack.WebServerSettings.ConvertedUser);
+                        Assert.AreEqual(2, readBack.WebServerSettings.BasicAuthenticationUserIds.Count);
+                        Assert.AreEqual("First", readBack.WebServerSettings.BasicAuthenticationUserIds[0]);
+                        Assert.AreEqual("Second", readBack.WebServerSettings.BasicAuthenticationUserIds[1]);
                         break;
                     case "GoogleMapSettings":
                         Assert.AreEqual(-12.123456, readBack.GoogleMapSettings.InitialMapLatitude);
@@ -405,6 +427,11 @@ namespace Test.VirtualRadar.Library.Settings
                                                         UPnpPort = 8181,
                                                         IsOnlyInternetServerOnLan = false,
                                                         AutoStartUPnP = true,
+                                                        ConvertedUser = true,
+                                                        BasicAuthenticationUserIds = {
+                                                            "First",
+                                                            "Second",
+                                                        }
                                                     }; break;
                     case "GoogleMapSettings":       result.GoogleMapSettings = new GoogleMapSettings() {
                                                         InitialMapLatitude = -12.123456,
@@ -569,7 +596,24 @@ namespace Test.VirtualRadar.Library.Settings
 
             return result;
         }
+        #endregion
 
+        #region IgnoreBadMessages automated modifications
+        [TestMethod]
+        public void ConfigurationStorage_Resets_IgnoreBadMessages()
+        {
+            // The connection flag "IgnoreBadMessages" has been retired. If the user has the value set to false in their
+            // configuration then Load overrides this and forces it to true. It is no longer presented to the user.
+            var configuration = new Configuration();
+            configuration.BaseStationSettings.IgnoreBadMessages = false;
+            _Implementation.Save(configuration);
+
+            var readBack = _Implementation.Load();
+            Assert.IsTrue(readBack.BaseStationSettings.IgnoreBadMessages);
+        }
+        #endregion
+
+        #region RebroadcastServer automated modifications
         [TestMethod]
         public void ConfigurationStorage_Automatically_Assigns_UniqueId_To_Old_RebroadcastServer_Settings()
         {
@@ -589,7 +633,9 @@ namespace Test.VirtualRadar.Library.Settings
             }
             Assert.AreEqual(3, readback.RebroadcastSettings.Select(r => r.UniqueId).Distinct().Count());
         }
+        #endregion
 
+        #region Receiver automated modifications
         [TestMethod]
         public void ConfigurationStorage_Creates_Initial_Receiver_If_None_Exists()
         {
@@ -692,5 +738,156 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.AreNotEqual(0, readBack.GoogleMapSettings.FlightSimulatorXReceiverId);
             Assert.AreNotEqual(0, readBack.GoogleMapSettings.WebSiteReceiverId);
         }
+        #endregion
+
+        #region BasicAuthentication automated modifications
+        private byte[] SaveBasicAuthenticationConfiguration(Action<Configuration> modifyConfiguration = null)
+        {
+            var configuration = new Configuration();
+            var hashBytes = new byte[] { 0x01, 0x02, 0x03, };
+            var hash = new Hash() {
+                Version = 999,
+            };
+            hash.Buffer.AddRange(hashBytes);
+            configuration.WebServerSettings.BasicAuthenticationUser = "MyUser";
+            configuration.WebServerSettings.BasicAuthenticationPasswordHash = hash;
+            if(modifyConfiguration != null) modifyConfiguration(configuration);
+
+            _Implementation.Save(configuration);
+
+            return hashBytes;
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Automatically_Converts_Existing_BasicAuthentication_User_To_IUser()
+        {
+            var hashBytes = SaveBasicAuthenticationConfiguration();
+
+            IUser createdUser = null;
+            Hash createdHash = null;
+            _UserManager.Setup(r => r.CreateUserWithHash(It.IsAny<IUser>(), It.IsAny<Hash>())).Callback((IUser user, Hash copyHash) => {
+                user.UniqueId = "AssignedID";
+                createdUser = user;
+                createdHash = copyHash;
+            });
+
+            var config = _Implementation.Load();
+
+            var settings = config.WebServerSettings;
+            Assert.IsTrue(settings.ConvertedUser);
+            Assert.AreEqual(1, settings.BasicAuthenticationUserIds.Count);
+            Assert.AreEqual("AssignedID", settings.BasicAuthenticationUserIds[0]);
+
+            Assert.AreEqual("MyUser", createdUser.LoginName);
+            Assert.AreEqual("Converted Basic Authentication User", createdUser.Name);
+            Assert.AreEqual(true, createdUser.Enabled);
+            Assert.AreEqual(999, createdHash.Version);
+            Assert.IsTrue(hashBytes.SequenceEqual(createdHash.Buffer));
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Does_Not_Convert_User_If_User_Already_Converted()
+        {
+            SaveBasicAuthenticationConfiguration(r => r.WebServerSettings.ConvertedUser = true);
+
+            var config = _Implementation.Load();
+
+            _UserManager.Verify(r => r.CreateUserWithHash(It.IsAny<IUser>(), It.IsAny<Hash>()), Times.Never());
+            Assert.AreEqual(true, config.WebServerSettings.ConvertedUser);
+            Assert.AreEqual(0, config.WebServerSettings.BasicAuthenticationUserIds.Count);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Does_Not_Convert_User_If_User_Name_Is_Null()
+        {
+            var saveConfig = new Configuration();
+            saveConfig.WebServerSettings.BasicAuthenticationUser = null;
+            _Implementation.Save(saveConfig);
+
+            var config = _Implementation.Load();
+
+            _UserManager.Verify(r => r.CreateUserWithHash(It.IsAny<IUser>(), It.IsAny<Hash>()), Times.Never());
+            Assert.AreEqual(false, config.WebServerSettings.ConvertedUser);
+            Assert.AreEqual(0, config.WebServerSettings.BasicAuthenticationUserIds.Count);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Does_Not_Convert_User_If_User_Name_Is_Empty()
+        {
+            var saveConfig = new Configuration();
+            saveConfig.WebServerSettings.BasicAuthenticationUser = "";
+            _Implementation.Save(saveConfig);
+
+            var config = _Implementation.Load();
+
+            _UserManager.Verify(r => r.CreateUserWithHash(It.IsAny<IUser>(), It.IsAny<Hash>()), Times.Never());
+            Assert.AreEqual(false, config.WebServerSettings.ConvertedUser);
+            Assert.AreEqual(0, config.WebServerSettings.BasicAuthenticationUserIds.Count);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Does_Not_Convert_User_If_UserManager_Does_Not_Support_VRS_Hashes()
+        {
+            SaveBasicAuthenticationConfiguration();
+
+            _UserManager.Setup(r => r.CanCreateUsersWithHash).Returns(false);
+            var config = _Implementation.Load();
+
+            _UserManager.Verify(r => r.CreateUserWithHash(It.IsAny<IUser>(), It.IsAny<Hash>()), Times.Never());
+            Assert.AreEqual(false, config.WebServerSettings.ConvertedUser);
+            Assert.AreEqual(0, config.WebServerSettings.BasicAuthenticationUserIds.Count);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Can_Convert_Basic_Authentication_User_To_Existing_User()
+        {
+            var hashBytes = SaveBasicAuthenticationConfiguration();
+
+            _User.Setup(r => r.UniqueId).Returns("ABC123");
+            _UserManager.Setup(r => r.GetUserByLoginName("MyUser")).Returns(_User.Object);
+
+            var config = _Implementation.Load();
+
+            var settings = config.WebServerSettings;
+            Assert.IsTrue(settings.ConvertedUser);
+            Assert.AreEqual(1, settings.BasicAuthenticationUserIds.Count);
+            Assert.AreEqual("ABC123", settings.BasicAuthenticationUserIds[0]);
+
+            _UserManager.Verify(r => r.CreateUser(It.IsAny<IUser>()), Times.Never());
+            _UserManager.Verify(r => r.CreateUserWithHash(It.IsAny<IUser>(), It.IsAny<Hash>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Can_Use_Existing_User_Even_If_UserManager_Disallows_Use_Of_VRS_Hash()
+        {
+            var hashBytes = SaveBasicAuthenticationConfiguration();
+
+            _User.Setup(r => r.UniqueId).Returns("ABC123");
+            _UserManager.Setup(r => r.GetUserByLoginName("MyUser")).Returns(_User.Object);
+            _UserManager.Setup(r => r.CanCreateUsersWithHash).Returns(false);
+
+            var config = _Implementation.Load();
+
+            var settings = config.WebServerSettings;
+            Assert.IsTrue(settings.ConvertedUser);
+            Assert.AreEqual("ABC123", settings.BasicAuthenticationUserIds[0]);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Does_Not_Convert_The_User_If_It_Is_Already_In_The_List()
+        {
+            var hashBytes = SaveBasicAuthenticationConfiguration(r => r.WebServerSettings.BasicAuthenticationUserIds.Add("ABC123"));
+
+            _User.Setup(r => r.UniqueId).Returns("ABC123");
+            _UserManager.Setup(r => r.GetUserByLoginName("MyUser")).Returns(_User.Object);
+
+            var config = _Implementation.Load();
+
+            var settings = config.WebServerSettings;
+            Assert.IsTrue(settings.ConvertedUser);
+            Assert.AreEqual(1, settings.BasicAuthenticationUserIds.Count);
+            Assert.AreEqual("ABC123", settings.BasicAuthenticationUserIds[0]);
+        }
+        #endregion
     }
 }

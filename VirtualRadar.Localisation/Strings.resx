@@ -2016,4 +2016,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="UserManagerName" xml:space="preserve">
     <value>Virtual Radar Server</value>
   </data>
+  <data name="ConvertedBasicAuthenticationUser" xml:space="preserve">
+    <value>Converted Basic Authentication User</value>
+  </data>
 </root>

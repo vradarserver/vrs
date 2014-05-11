@@ -49,6 +49,11 @@ namespace VirtualRadar.Database.Users
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public bool CanCreateUsersWithHash { get { return true; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool CanEditUsers { get { return true; } }
 
         /// <summary>
@@ -175,15 +180,22 @@ namespace VirtualRadar.Database.Users
         public void CreateUser(IUser user)
         {
             var hash = new Hash(user.UIPassword);
-            var result = new User() {
-                Enabled =               user.Enabled,
-                LoginName =             user.LoginName,
-                Name =                  user.Name,
-                PasswordHashVersion =   hash.Version,
-                PasswordHash =          hash.Buffer.ToArray(),
-            };
+            CreateUserWithHash(user, hash);
+        }
 
-            _Database.UserInsert(result);
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="passwordHash"></param>
+        public void CreateUserWithHash(IUser user, Hash passwordHash)
+        {
+            var ourUser = CastUser(user);
+            if(passwordHash == null) passwordHash = new Hash("");
+            ourUser.PasswordHashVersion = passwordHash.Version;
+            ourUser.PasswordHash = passwordHash.Buffer.ToArray();
+
+            _Database.UserInsert(ourUser);
         }
 
         /// <summary>
@@ -216,7 +228,17 @@ namespace VirtualRadar.Database.Users
         }
         #endregion
 
-        #region GetUsers
+        #region GetUser, GetUsers
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="loginName"></param>
+        /// <returns></returns>
+        public IUser GetUserByLoginName(string loginName)
+        {
+            return _Database.UserGetByLoginName(loginName);
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

@@ -24,7 +24,7 @@ namespace VirtualRadar.Library.Presenter
     /// </summary>
     class UsersPresenter : ListDetailEditorPresenter<IUsersView, IUser>, IUsersPresenter
     {
-        private static readonly string _DefaultPassword = "_DEFAULT_PASSWORD_IF_THE_USER_WERE_TO_ENTER_THIS_IT_WOULD_NOT_BE_SAVED_:(_=@:DKSJ!";
+        private static readonly string _PasswordPlaceholder = "\t\t\t\t\t\t\t\t";
 
         public override void Initialise(IUsersView view)
         {
@@ -49,7 +49,7 @@ namespace VirtualRadar.Library.Presenter
             if(users != null) result.AddRange(users);
 
             foreach(var user in result) {
-                user.UIPassword = _DefaultPassword;
+                user.UIPassword = _PasswordPlaceholder;
             }
 
             return result;
@@ -70,14 +70,14 @@ namespace VirtualRadar.Library.Presenter
                             record.LoginName = current.LoginName;
                         }
                         if(!userManager.CanChangeEnabledState) record.Enabled = current.Enabled;
-                        if(!userManager.CanChangePassword) record.UIPassword = _DefaultPassword;
+                        if(!userManager.CanChangePassword) record.UIPassword = _PasswordPlaceholder;
 
                         if(record.Enabled !=    current.Enabled ||
                            record.LoginName !=  current.LoginName ||
                            record.Name !=       current.Name ||
-                           record.UIPassword != _DefaultPassword
+                           record.UIPassword != _PasswordPlaceholder
                         ) {
-                            userManager.UpdateUser(record, record.UIPassword == _DefaultPassword ? null : record.UIPassword);
+                            userManager.UpdateUser(record, record.UIPassword == _PasswordPlaceholder ? null : record.UIPassword);
                         }
                     }
                 }
@@ -85,9 +85,9 @@ namespace VirtualRadar.Library.Presenter
                 // Insert new records
                 if(userManager.CanCreateUsers) {
                     foreach(var record in records.Where(r => !r.IsPersisted)) {
-                        if(record.UIPassword == _DefaultPassword) record.UIPassword = null;
+                        if(record.UIPassword == _PasswordPlaceholder) record.UIPassword = null;
                         userManager.CreateUser(record);
-                        record.UIPassword = _DefaultPassword;
+                        record.UIPassword = _PasswordPlaceholder;
                     }
                 }
 
