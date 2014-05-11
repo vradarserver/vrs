@@ -12,72 +12,77 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.Presenter;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.Settings;
+using InterfaceFactory;
 
-namespace VirtualRadar.Database.Users
+namespace VirtualRadar.Library.Presenter
 {
     /// <summary>
-    /// The default implementation of <see cref="IUser"/>.
+    /// The default implementation of <see cref="IUsersListPresenter"/>.
     /// </summary>
-    class User : IUser
+    class UsersListPresenter : Presenter<IUsersListView>, IUsersListPresenter
     {
-        /// <summary>
-        /// Gets or sets the unique identifier of the user.
-        /// </summary>
-        public long Id { get; set; }
+        #region Fields
+        private IUserManager _UserManager;
+        #endregion
 
+        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string UniqueId
+        public bool CanListAllUsers { get { return _UserManager == null ? false : _UserManager.CanListUsers; } }
+        #endregion
+
+        #region Initialise
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="view"></param>
+        public override void Initialise(IUsersListView view)
         {
-            get { return Id.ToString(); }
-            set { Id = String.IsNullOrEmpty(value) ? 0L : long.Parse(value); }
+            base.Initialise(view);
+
+            _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+        }
+        #endregion
+
+        #region GetUserList, GetUserByLoginName
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public List<IUser> GetUserList()
+        {
+            var result = new List<IUser>();
+
+            if(_UserManager != null) {
+                var busyState = _View.ShowBusy(true, null);
+                try {
+                    var users = _UserManager.CanListUsers ? _UserManager.GetUsers() : _UserManager.GetUsersByUniqueId(_View.UserIds);
+                    result.AddRange(users.OrderBy(r => r.LoginName));
+                } finally {
+                    _View.ShowBusy(false, busyState);
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool IsPersisted { get { return Id > 0; } }
+        /// <param name="loginName"></param>
+        /// <returns></returns>
+        public IUser GetUserByLoginName(string loginName)
+        {
+            IUser result = null;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool Enabled { get; set; }
+            if(_UserManager != null) result = _UserManager.GetUserByLoginName(loginName);
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string LoginName { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string UIPassword { get; set; }
-
-        /// <summary>
-        /// Gets or sets the format of the hashing function used to generate the stored hash.
-        /// </summary>
-        public int PasswordHashVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets the stored hash of the password.
-        /// </summary>
-        public byte[] PasswordHash { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time that the record was created.
-        /// </summary>
-        public DateTime CreatedUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time that the record was updated.
-        /// </summary>
-        public DateTime UpdatedUtc { get; set; }
+            return result;
+        }
+        #endregion
     }
 }

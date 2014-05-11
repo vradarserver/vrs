@@ -111,6 +111,18 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
+        /// Gets the tags associated with all checked items in a list view.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="listView"></param>
+        /// <returns></returns>
+        protected T[] GetAllCheckedListViewTag<T>(ListView listView)
+            where T: class
+        {
+            return _CommonBaseBehaviour.GetAllCheckedListViewTag<T>(listView);
+        }
+
+        /// <summary>
         /// Selects the list view item associated with the tag value passed across.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -220,6 +232,19 @@ namespace VirtualRadar.WinForms
             where T: class
         {
             _CommonBaseBehaviour.FillListViewItem<T>(item, extractColumnText);
+        }
+
+        /// <summary>
+        /// Fills a list view item with text columns and sets the Checked state on the assumption that the item's tag contains a reference to a record.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <param name="extractColumnText"></param>
+        /// <param name="extractChecked"></param>
+        protected void FillAndCheckListViewItem<T>(ListViewItem item, Func<T, string[]> extractColumnText, Func<T, bool> extractChecked)
+            where T: class
+        {
+            _CommonBaseBehaviour.FillAndCheckListViewItem<T>(item, extractColumnText, extractChecked);
         }
 
         /// <summary>

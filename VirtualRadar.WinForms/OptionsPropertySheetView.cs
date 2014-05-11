@@ -485,28 +485,13 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string WebServerUserName
+        public List<string> WebServerUserIds
         {
-            get { return _WebServerSheet.UserName; }
-            set { _WebServerSheet.UserName = value; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool WebServerPasswordHasChanged
-        {
-            get { return WebServerPassword != _SurrogatePassword; }
-            set { if(!value) WebServerPassword = _SurrogatePassword; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string WebServerPassword
-        {
-            get { return _WebServerSheet.Password; }
-            set { _WebServerSheet.Password = value; }
+            get
+            {
+                if(_WebServerSheet.PermittedUserIds == null) _WebServerSheet.PermittedUserIds = new List<string>();
+                return _WebServerSheet.PermittedUserIds;
+            }
         }
 
         /// <summary>

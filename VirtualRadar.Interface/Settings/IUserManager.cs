@@ -122,9 +122,28 @@ namespace VirtualRadar.Interface.Settings
         IUser GetUserByLoginName(string loginName);
 
         /// <summary>
+        /// Returns a collection of users that have the unique identifiers passed across. 
+        /// </summary>
+        /// <param name="uniqueIdentifiers"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// It is very likely that you will be passed identifiers for users that do not exist,
+        /// or had existed at one point but were since deleted. This is because the UI to maintain
+        /// users is separate from the configuration UI. When you are passed a unique ID that no
+        /// longer exists you should omit it entirely from the result - do not return null
+        /// elements for them. If every unique ID passed across has no user associated with it
+        /// then you would return an empty list.
+        /// </remarks>
+        IEnumerable<IUser> GetUsersByUniqueId(IEnumerable<string> uniqueIdentifiers);
+
+        /// <summary>
         /// Returns a list of all users. Throw an exception if <see cref="CanListUsers"/> is false.
         /// </summary>
         /// <returns></returns>
+        /// <remarks>
+        /// Do not return deleted users in this list. Do not consider the Enabled flag - this must
+        /// return both enabled and disabled users.
+        /// </remarks>
         IEnumerable<IUser> GetUsers();
 
         /// <summary>

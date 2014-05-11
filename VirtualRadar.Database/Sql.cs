@@ -93,11 +93,25 @@ namespace VirtualRadar.Database
             if(namedValues.Count != command.Parameters.Count) throw new InvalidOperationException(String.Format("{0} parameters were passed to SetNamedParameters for a command that is expecting {1}", namedValues.Count, command.Parameters.Count));
             var paramPosn = 0;
             foreach(var namedValue in namedValues) {
-                var parameter = (IDbDataParameter)command.Parameters[paramPosn++];
-                parameter.ParameterName = namedValue.Key;
-                parameter.Value = namedValue.Value;
+                SetNamedParameter(command, paramPosn++, namedValue.Key, namedValue.Value);
             }
         }
+
+        /// <summary>
+        /// Sets a single named parameter.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="index"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public static void SetNamedParameter(IDbCommand command, int index, string name, object value)
+        {
+            if(index > command.Parameters.Count) throw new InvalidOperationException(String.Format("Could not set the named parameter at index {0}, there are only {1} parameters on the command", index, command.Parameters.Count));
+            var parameter = (IDbDataParameter)command.Parameters[index];
+            parameter.ParameterName = name;
+            parameter.Value = value;
+        }
+
 
         /// <summary>
         /// Adds many parameters to the command passed across.

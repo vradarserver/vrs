@@ -134,6 +134,7 @@
     <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
     <Compile Include="IAirportDataDotCom.cs" />
     <Compile Include="ITcpConnectionStateService.cs" />
+    <Compile Include="Presenter\IUsersListPresenter.cs" />
     <Compile Include="Presenter\IUsersPresenter.cs" />
     <Compile Include="RebroadcastServerConnection.cs" />
     <Compile Include="Settings\IUser.cs" />
@@ -360,6 +361,7 @@
     <Compile Include="View\IShutdownView.cs" />
     <Compile Include="View\ISplashView.cs" />
     <Compile Include="View\IStatisticsView.cs" />
+    <Compile Include="View\IUsersListView.cs" />
     <Compile Include="View\IUsersView.cs" />
     <Compile Include="View\IValidateView.cs" />
     <Compile Include="View\IView.cs" />

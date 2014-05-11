@@ -1,9 +1,20 @@
-﻿using System;
+﻿// Copyright © 2014 onwards, Andrew Whewell
+// All rights reserved.
+//
+// Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+//    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data;
 using System.IO;
+using System.Linq;
+using System.Text;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Database.Users
 {
@@ -144,6 +155,41 @@ namespace VirtualRadar.Database.Users
 
         #region GetByLoginName, GetAll
         /// <summary>
+        /// Returns the user for the ID passed across or null if no such user exists.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="log"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public User GetById(IDbConnection connection, IDbTransaction transaction, TextWriter log, long id)
+        {
+            User result = null;
+
+            var command = PrepareGetById(connection, transaction);
+            SetNamedParameter(command, 0, "Id", id);
+
+            using(var reader = command.Command.ExecuteReader()) {
+                if(reader.Read()) {
+                    result = BuildFromReader(reader);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Prepares the command to fetch a single record by ID. This is used by more than one public Get method.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        private SqlPreparedCommand PrepareGetById(IDbConnection connection, IDbTransaction transaction)
+        {
+            return PrepareCommand(connection, transaction, "GetById", String.Format("SELECT * FROM [{0}] WHERE [Id] = @Id", TableName), 1);
+        }
+
+        /// <summary>
         /// Returns the user record for a login name or null if no such user record exists.
         /// </summary>
         /// <param name="connection"></param>
@@ -177,9 +223,9 @@ namespace VirtualRadar.Database.Users
         /// <param name="transaction"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        public List<User> GetAll(IDbConnection connection, IDbTransaction transaction, TextWriter log)
+        public List<IUser> GetAll(IDbConnection connection, IDbTransaction transaction, TextWriter log)
         {
-            var result = new List<User>();
+            var result = new List<IUser>();
 
             var command = PrepareCommandAndParams(connection, transaction, "GetAll",
                 "SELECT * FROM [{0}] ORDER BY [LoginName]",
@@ -189,6 +235,29 @@ namespace VirtualRadar.Database.Users
             using(var reader = command.Command.ExecuteReader()) {
                 while(reader.Read()) {
                     result.Add(BuildFromReader(reader));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a collection of every user matching the ID passed across.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="log"></param>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public List<IUser> GetManyById(IDbConnection connection, IDbTransaction transaction, TextWriter log, List<long> ids)
+        {
+            var result = new List<IUser>();
+
+            var command = PrepareGetById(connection, transaction);
+            foreach(var id in ids) {
+                SetNamedParameter(command, 0, "Id", id);
+                using(var reader = command.Command.ExecuteReader()) {
+                    if(reader.Read()) result.Add(BuildFromReader(reader));
                 }
             }
 

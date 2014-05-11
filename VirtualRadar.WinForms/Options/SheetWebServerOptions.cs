@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Localisation;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -42,20 +43,13 @@ namespace VirtualRadar.WinForms.Options
         public bool ShouldSerializeUserMustAuthenticate() { return ValueHasChanged(r => r.UserMustAuthenticate); }
 
         [DisplayOrder(20)]
-        [LocalisedDisplayName("UserName")]
+        [LocalisedDisplayName("PermittedUsers")]
         [LocalisedCategory("Authentication", AuthenticationCategory, TotalCategories)]
-        [LocalisedDescription("OptionsDescribeWebServerUserName")]
-        [RaisesValuesChanged]
-        public string UserName { get; set; }
-        public bool ShouldSerializeUserName() { return ValueHasChanged(r => r.UserName); }
-
-        [DisplayOrder(30)]
-        [LocalisedDisplayName("Password")]
-        [LocalisedCategory("Authentication", AuthenticationCategory, TotalCategories)]
-        [LocalisedDescription("OptionsDescribeWebServerPassword")]
-        [PasswordPropertyText(true)]
-        public string Password { get; set; }
-        public bool ShouldSerializePassword() { return ValueHasChanged(r => r.Password); }
+        [LocalisedDescription("OptionsDescribeWebServerPermittedUsers")]
+        [TypeConverter(typeof(UsersListTypeConverter))]
+        [Editor(typeof(UsersListUITypeEditor), typeof(UITypeEditor))]
+        public List<string> PermittedUserIds { get; set; }
+        public bool ShouldSerializePermittedUserIds() { return ValueHasChanged(r => r.PermittedUserIds); }
 
         [DisplayOrder(40)]
         [LocalisedDisplayName("EnableUPnp")]

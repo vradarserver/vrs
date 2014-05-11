@@ -48,6 +48,18 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
+        /// Gets the tags associated with all checked items in a list view.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="listView"></param>
+        /// <returns></returns>
+        public T[] GetAllCheckedListViewTag<T>(ListView listView)
+            where T: class
+        {
+            return listView.CheckedItems.OfType<ListViewItem>().Select(r => r.Tag as T).Where(r => r != null).ToArray();
+        }
+
+        /// <summary>
         /// Selects the list view item associated with the tag value passed across.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -187,7 +199,7 @@ namespace VirtualRadar.WinForms
                 listView.Items.Add(item);
             }
 
-            if(records.Contains(selectedRecord)) selectRecord(selectedRecord);
+            if(selectRecord != null && records.Contains(selectedRecord)) selectRecord(selectedRecord);
         }
 
         /// <summary>
@@ -199,13 +211,29 @@ namespace VirtualRadar.WinForms
         public void FillListViewItem<T>(ListViewItem item, Func<T, string[]> extractColumnText)
             where T: class
         {
+            FillAndCheckListViewItem<T>(item, extractColumnText, null);
+        }
+
+        /// <summary>
+        /// Fills a list view item with text columns and sets the Checked state on the assumption that the item's tag contains a reference to a record.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <param name="extractColumnText"></param>
+        /// <param name="extractChecked"></param>
+        public void FillAndCheckListViewItem<T>(ListViewItem item, Func<T, string[]> extractColumnText, Func<T, bool> extractChecked)
+            where T: class
+        {
             var record = (T)item.Tag;
             var columnText = extractColumnText(record);
+            var ticked = extractChecked == null ? false : extractChecked(record);
 
             while(item.SubItems.Count < columnText.Length) item.SubItems.Add("");
             for(var i = 0;i < columnText.Length;++i) {
                 item.SubItems[i].Text = columnText[i];
             }
+
+            if(extractChecked != null) item.Checked = ticked;
         }
 
         /// <summary>

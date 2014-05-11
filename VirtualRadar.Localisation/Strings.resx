@@ -401,9 +401,6 @@ French translation by Francois /F5ANN.</value>
   <data name="UserMustAuthenticate" xml:space="preserve">
     <value>User must authenticate</value>
   </data>
-  <data name="UserName" xml:space="preserve">
-    <value>User name</value>
-  </data>
   <data name="WebServerOffline" xml:space="preserve">
     <value>The web server is offline</value>
   </data>
@@ -842,9 +839,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Virtual Radar Server</value>
     <comment>The name of the application</comment>
   </data>
-  <data name="UserNameMissing" xml:space="preserve">
-    <value>Please enter the name that users must enter when accessing the web site</value>
-  </data>
   <data name="SplashScreenLoadingStandingData" xml:space="preserve">
     <value>Loading standing data</value>
   </data>
@@ -1237,17 +1231,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeWebServerIsOnlyVirtualRadarServerOnLan" xml:space="preserve">
     <value>Yes if this is the only computer running VRS on this network that you want to put onto the Internet, no if it is not.</value>
   </data>
-  <data name="OptionsDescribeWebServerPassword" xml:space="preserve">
-    <value>The password that users must enter when logging onto the web site.</value>
-  </data>
   <data name="OptionsDescribeWebServerUPnpPort" xml:space="preserve">
     <value>The port number that Internet traffic will connect to on the UPnP router to access Virtual Radar Server.</value>
   </data>
   <data name="OptionsDescribeWebServerUserMustAuthenticate" xml:space="preserve">
     <value>Yes if users must authenticate before browing the web site, no if they do not.</value>
-  </data>
-  <data name="OptionsDescribeWebServerUserName" xml:space="preserve">
-    <value>The name that users must enter when logging onto the web site.</value>
   </data>
   <data name="OptionsDescribeWebSiteInitialDistanceUnit" xml:space="preserve">
     <value>How distances are shown. Only used on a browser's first visit to the web site.</value>
@@ -2018,5 +2006,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="ConvertedBasicAuthenticationUser" xml:space="preserve">
     <value>Converted Basic Authentication User</value>
+  </data>
+  <data name="OptionsDescribeWebServerPermittedUsers" xml:space="preserve">
+    <value>Select the users that have permission to connect to the web server</value>
+  </data>
+  <data name="PermittedUsers" xml:space="preserve">
+    <value>Permitted users</value>
+  </data>
+  <data name="LoginNameUnknown" xml:space="preserve">
+    <value>Cannot find a user with the login name '{0}'</value>
   </data>
 </root>
