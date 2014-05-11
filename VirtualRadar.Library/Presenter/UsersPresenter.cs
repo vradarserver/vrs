@@ -60,6 +60,8 @@ namespace VirtualRadar.Library.Presenter
             var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
             if(userManager.CanListUsers) {
                 var existing = userManager.GetUsers();
+                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configuration = configurationStorage.Load();
 
                 // Update existing records
                 foreach(var record in records) {
@@ -95,8 +97,14 @@ namespace VirtualRadar.Library.Presenter
                 if(userManager.CanDeleteUsers) {
                     foreach(var missing in existing.Where(r => !records.Any(i => i.IsPersisted && i.UniqueId == r.UniqueId))) {
                         userManager.DeleteUser(missing);
+
+                        var webServerIndex = configuration.WebServerSettings.BasicAuthenticationUserIds.IndexOf(missing.UniqueId);
+                        if(webServerIndex != -1) configuration.WebServerSettings.BasicAuthenticationUserIds.RemoveAt(webServerIndex);
                     }
                 }
+
+                // Save the configuration to force any cached users to be reloaded, and to save any changes we've made
+                configurationStorage.Save(configuration);
             }
         }
 

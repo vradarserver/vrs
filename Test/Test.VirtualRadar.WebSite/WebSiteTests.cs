@@ -95,6 +95,10 @@ namespace Test.VirtualRadar.WebSite
         private List<PolarPlotSlice> _PolarPlotSlices;
         private Mock<ICallsignParser> _CallsignParser;
         private Dictionary<string, List<string>> _RouteCallsigns;
+        private Mock<IUserManager> _UserManager;
+        private Mock<IUser> _User1;
+        private Mock<IUser> _User2;
+        private string _PasswordForUser;
 
         // The named colours (Black, Green etc.) don't compare well to the colors returned by Bitmap.GetPixel - e.g.
         // Color.Black == new Color(0, 0, 0) is false even though the ARGB values are equal. Further Color.Green isn't
@@ -226,6 +230,27 @@ namespace Test.VirtualRadar.WebSite
                 return result;
             });
             _RouteCallsigns = new Dictionary<string,List<string>>();
+
+            _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
+            _User1 = TestUtilities.CreateMockInstance<IUser>();
+            _User1.Object.UniqueId = "1";
+            _User1.Object.Enabled = true;
+            _User1.Object.LoginName = "Deckard";
+            _User2 = TestUtilities.CreateMockInstance<IUser>();
+            _User2.Object.UniqueId = "2";
+            _User2.Object.Enabled = true;
+            _User2.Object.LoginName = "Leon";
+
+            _PasswordForUser = null;
+            _UserManager.Setup(r => r.GetUsersByUniqueId(It.IsAny<IEnumerable<string>>())).Returns((IEnumerable<string> ids) => {
+                var users = new List<IUser>();
+                if(ids.Contains("1")) users.Add(_User1.Object);
+                if(ids.Contains("2")) users.Add(_User2.Object);
+                return users;
+            });
+            _UserManager.Setup(r => r.PasswordMatches(It.IsAny<IUser>(), It.IsAny<string>())).Returns((IUser user, string password) => {
+                return _PasswordForUser != null && password == _PasswordForUser;
+            });
 
             // Initialise this last, just in case the constructor uses any of the mocks
             _WebSite = Factory.Singleton.Resolve<IWebSite>();
@@ -1732,9 +1757,9 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_Authentication_Accepts_Basic_Authentication_Credentials_From_Configuration()
         {
+            _PasswordForUser = "B26354";
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
             _WebSite.AttachSiteToServer(_WebServer.Object);
             var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
 
@@ -1745,11 +1770,42 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_Authentication_Rejects_Wrong_User_For_Basic_Authentication()
+        public void WebSite_Authentication_Rejects_Basic_Authentication_Credentials_For_Disabled_Users()
+        {
+            _User1.Object.Enabled = false;
+            _PasswordForUser = "B26354";
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
+
+            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
+
+            Assert.IsFalse(args.IsAuthenticated);
+            Assert.IsTrue(args.IsHandled);
+        }
+
+        [TestMethod]
+        public void WebSite_Authentication_Rejects_Old_Basic_Authentication_Credentials_From_Configuration()
         {
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
             _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
             _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
+
+            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
+
+            Assert.IsFalse(args.IsAuthenticated);
+            Assert.IsTrue(args.IsHandled);
+        }
+
+        [TestMethod]
+        public void WebSite_Authentication_Rejects_Wrong_User_For_Basic_Authentication()
+        {
+            _PasswordForUser = "B26354";
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
             _WebSite.AttachSiteToServer(_WebServer.Object);
             var args = new AuthenticationRequiredEventArgs("Zhora", "B26354");
 
@@ -1760,13 +1816,14 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_Authentication_Rejects_Null_User_For_Basic_Authentication()
+        public void WebSite_Authentication_Rejects_Wrong_Cased_User_When_User_Manager_Is_Case_Sensitive()
         {
+            _UserManager.Setup(r => r.LoginNameIsCaseSensitive).Returns(true);
+            _PasswordForUser = "B26354";
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
             _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs(null, "B26354");
+            var args = new AuthenticationRequiredEventArgs("DECKARD", "B26354");
 
             _WebServer.Raise(m => m.AuthenticationRequired += null, args);
 
@@ -1775,11 +1832,11 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_Authentication_Basic_Authentication_User_Is_Not_Case_Sensitive()
+        public void WebSite_Authentication_Accepts_Wrong_Cased_User_When_User_Manager_Is_Not_Case_Sensitive()
         {
+            _PasswordForUser = "B26354";
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
             _WebSite.AttachSiteToServer(_WebServer.Object);
             var args = new AuthenticationRequiredEventArgs("DECKARD", "B26354");
 
@@ -1790,11 +1847,27 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
+        public void WebSite_Authentication_Rejects_Null_User_For_Basic_Authentication()
+        {
+            _PasswordForUser = "B26354";
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+            var args = new AuthenticationRequiredEventArgs(null, "B26354");
+
+            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
+
+            Assert.IsFalse(args.IsAuthenticated);
+            Assert.IsTrue(args.IsHandled);
+        }
+
+        [TestMethod]
         public void WebSite_Authentication_Rejects_Wrong_Password_For_Basic_Authentication()
         {
+            _PasswordForUser = "B26354";
+
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
             _WebSite.AttachSiteToServer(_WebServer.Object);
             var args = new AuthenticationRequiredEventArgs("Deckard", "b26354");
 
@@ -1811,8 +1884,8 @@ namespace Test.VirtualRadar.WebSite
                 if(scheme == AuthenticationSchemes.Basic) continue;
 
                 _Configuration.WebServerSettings.AuthenticationScheme = scheme;
-                _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-                _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+                _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
+                _PasswordForUser = "B26354";
                 _WebSite.AttachSiteToServer(_WebServer.Object);
                 var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
 
@@ -1827,8 +1900,8 @@ namespace Test.VirtualRadar.WebSite
         public void WebSite_Authentication_Ignores_Events_That_Have_Already_Been_Handled()
         {
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
+            _PasswordForUser = "B26354";
             _WebSite.AttachSiteToServer(_WebServer.Object);
             var args = new AuthenticationRequiredEventArgs("Deckard", "B26354") { IsHandled = true };
 
@@ -1848,33 +1921,16 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_Configuration_Picks_Up_Change_In_Basic_Authentication_User()
         {
+            _PasswordForUser = "B26354";
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "JFSebastian";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("2");
             _WebSite.AttachSiteToServer(_WebServer.Object);
             var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
             _WebServer.Raise(m => m.AuthenticationRequired += null, args);
 
             args.IsHandled = false;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsTrue(args.IsAuthenticated);
-        }
-
-        [TestMethod]
-        public void WebSite_Configuration_Picks_Up_Change_In_Basic_Authentication_Password()
-        {
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("16417");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            args.IsHandled = false;
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
             _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             _WebServer.Raise(m => m.AuthenticationRequired += null, args);
 
