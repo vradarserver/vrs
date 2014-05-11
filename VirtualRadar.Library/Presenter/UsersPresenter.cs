@@ -24,7 +24,7 @@ namespace VirtualRadar.Library.Presenter
     /// </summary>
     class UsersPresenter : ListDetailEditorPresenter<IUsersView, IUser>, IUsersPresenter
     {
-        private static readonly string _PasswordPlaceholder = "\t\t\t\t\t\t\t\t";
+        private static readonly string _PasswordPlaceholder = "A\t\t\t\t\t\tA"; // The user shouldn't be able to enter this through the GUI
 
         public override void Initialise(IUsersView view)
         {
