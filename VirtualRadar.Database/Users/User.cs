@@ -79,5 +79,21 @@ namespace VirtualRadar.Database.Users
         /// Gets or sets the date and time that the record was updated.
         /// </summary>
         public DateTime UpdatedUtc { get; set; }
+
+        private Hash _Hash;
+        /// <summary>
+        /// Gets the password hash object.
+        /// </summary>
+        public Hash Hash
+        {
+            get
+            {
+                if(_Hash == null) {
+                    _Hash = new Hash(PasswordHashVersion);
+                    _Hash.Buffer.AddRange(PasswordHash);
+                }
+                return _Hash;
+            }
+        }
     }
 }

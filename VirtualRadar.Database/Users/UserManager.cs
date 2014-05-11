@@ -54,6 +54,11 @@ namespace VirtualRadar.Database.Users
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public bool LoginNameIsCaseSensitive { get { return false; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool CanCreateUsers { get { return true; } }
 
         /// <summary>
@@ -276,64 +281,17 @@ namespace VirtualRadar.Database.Users
         }
         #endregion
 
-        #region LoginWebsiteUser, GenerateServiceUserHash, LoginServiceUser
+        #region PasswordMatches
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="loginName"></param>
-        /// <param name="passwordHash"></param>
-        /// <param name="hashVersion"></param>
-        /// <returns></returns>
-        public IUser LoginWebsiteUser(string loginName, byte[] passwordHash, int hashVersion)
-        {
-            return DoLoginUser(loginName, passwordHash, hashVersion);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="loginName"></param>
+        /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public Hash GenerateServiceUserHash(string loginName, string password)
+        public bool PasswordMatches(IUser user, string password)
         {
-            return new Hash(password);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="loginName"></param>
-        /// <param name="passwordHash"></param>
-        /// <param name="hashVersion"></param>
-        /// <returns></returns>
-        public IUser LoginServiceUser(string loginName, byte[] passwordHash, int hashVersion)
-        {
-            return DoLoginUser(loginName, passwordHash, hashVersion);
-        }
-
-        /// <summary>
-        /// Performs the work for the two login methods. In the default manager we don't
-        /// need to distinguish between website users and service users.
-        /// </summary>
-        /// <param name="loginName"></param>
-        /// <param name="passwordHash"></param>
-        /// <param name="hashVersion"></param>
-        /// <returns></returns>
-        private IUser DoLoginUser(string loginName, byte[] passwordHash, int hashVersion)
-        {
-            IUser result = null;
-
-            if(!String.IsNullOrEmpty(loginName) && passwordHash != null) {
-                var existingUser = _Database.UserGetByLoginName(loginName);
-                if(hashVersion == existingUser.PasswordHashVersion) {
-                    if(passwordHash.SequenceEqual(existingUser.PasswordHash)) {
-                        result = existingUser;
-                    }
-                }
-            }
-
-            return result;
+            var ourUser = CastUser(user);
+            return ourUser.Hash.PasswordMatches(password);
         }
         #endregion
     }

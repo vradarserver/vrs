@@ -1471,6 +1471,8 @@ namespace Test.VirtualRadar.WebSite
             _ReportRowsAddress.Report = report;
             _ReportRowsAddress.Icao24 = _ReportRowsAddress.Registration = new StringFilter("A", FilterCondition.Equals, false);
 
+            // Row numbers sent in to the report are 0-based, not 1-based.
+
             switch(reportClass) {
                 case ReportJsonClass.Aircraft:  AddBlankDatabaseFlightsForAircraft(2); break;
                 case ReportJsonClass.Flight:    AddBlankDatabaseFlights(2); break;
@@ -1485,20 +1487,20 @@ namespace Test.VirtualRadar.WebSite
             _ReportRowsAddress.FromRow = 1;
             json = SendJsonRequest(ReportJsonType(reportClass), _ReportRowsAddress.Address);
             Assert.AreEqual(2, json.Flights.Count);
-            Assert.AreEqual(1, json.Flights[0].RowNumber);
-            Assert.AreEqual(2, json.Flights[1].RowNumber);
+            Assert.AreEqual(2, json.Flights[0].RowNumber);
+            Assert.AreEqual(3, json.Flights[1].RowNumber);
 
             _ReportRowsAddress.FromRow = 2;
             json = SendJsonRequest(ReportJsonType(reportClass), _ReportRowsAddress.Address);
             Assert.AreEqual(2, json.Flights.Count);
-            Assert.AreEqual(2, json.Flights[0].RowNumber);
-            Assert.AreEqual(3, json.Flights[1].RowNumber);
+            Assert.AreEqual(3, json.Flights[0].RowNumber);
+            Assert.AreEqual(4, json.Flights[1].RowNumber);
 
             _ReportRowsAddress.FromRow = 3;
             json = SendJsonRequest(ReportJsonType(reportClass), _ReportRowsAddress.Address);
             Assert.AreEqual(2, json.Flights.Count);
-            Assert.AreEqual(3, json.Flights[0].RowNumber);
-            Assert.AreEqual(4, json.Flights[1].RowNumber);
+            Assert.AreEqual(4, json.Flights[0].RowNumber);
+            Assert.AreEqual(5, json.Flights[1].RowNumber);
         }
 
         private void Do_WebSite_ReportRows_Report_Returns_Aircraft_From_FetchRows(string report, ReportJsonClass reportClass)

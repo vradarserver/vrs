@@ -44,19 +44,36 @@ namespace VirtualRadar.Interface.Settings
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public Hash()
+        public Hash() : this(LatestVersion)
         {
-            Version = LatestVersion;
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="version"></param>
+        public Hash(int version)
+        {
+            Version = version;
         }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="password"></param>
-        public Hash(string password) : this()
+        public Hash(string password) : this(LatestVersion, password)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="password"></param>
+        public Hash(int version, string password) : this(version)
         {
             if(password == null) throw new ArgumentNullException("password");
-            _Buffer.AddRange(HashText(LatestVersion, password));
+            _Buffer.AddRange(HashText(version, password));
         }
 
         /// <summary>
@@ -92,8 +109,14 @@ namespace VirtualRadar.Interface.Settings
         {
             List<byte> result = new List<byte>();
 
-            SHA256Managed hashAlgorithm = new SHA256Managed();
-            result.AddRange(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(text)));
+            switch(version) {
+                case 1:
+                    SHA256Managed hashAlgorithm = new SHA256Managed();
+                    result.AddRange(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(text)));
+                    break;
+                default:
+                    throw new InvalidOperationException(String.Format("Unknown hash version {0}", version));
+            }
 
             return result;
         }

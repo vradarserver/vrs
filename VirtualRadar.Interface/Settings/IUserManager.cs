@@ -59,6 +59,11 @@ namespace VirtualRadar.Interface.Settings
         bool CanListUsers { get; }
 
         /// <summary>
+        /// Gets a value indicating that the login name is case sensitive.
+        /// </summary>
+        bool LoginNameIsCaseSensitive { get; }
+
+        /// <summary>
         /// Initialises the manager.
         /// </summary>
         void Initialise();
@@ -147,34 +152,11 @@ namespace VirtualRadar.Interface.Settings
         IEnumerable<IUser> GetUsers();
 
         /// <summary>
-        /// Returns a user record when given credentials supplied by the web site. Returns null
-        /// if the credentials are invalid.
+        /// Returns true if the password is a match for the user's password.
         /// </summary>
-        /// <param name="loginName">The user name, as supplied by the web site.</param>
-        /// <param name="passwordHash">The password hash created by the web site.</param>
-        /// <param name="hashVersion">The version of the algorithm used by the web site to generate the hash,
-        /// as supplied by the web site.</param>
-        /// <returns></returns>
-        IUser LoginWebsiteUser(string loginName, byte[] passwordHash, int hashVersion);
-
-        /// <summary>
-        /// Generates a Hash object given a service user's login name and password. These hashes are
-        /// used by push rebroadcast servers to send feeds to a remote instance of VRS.
-        /// </summary>
-        /// <param name="loginName"></param>
+        /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        Hash GenerateServiceUserHash(string loginName, string password);
-
-        /// <summary>
-        /// Returns a user record when given credentials supplied by a remote feed server. Returns
-        /// null if the credentials are invalid.
-        /// </summary>
-        /// <param name="loginName">The user name, as supplied by the remote feed.</param>
-        /// <param name="passwordHash">The password hash created by the remote feed.</param>
-        /// <param name="hashVersion">The version of the algorithm used to generate the password hash, as
-        /// supplied by the remote feed.</param>
-        /// <returns></returns>
-        IUser LoginServiceUser(string loginName, byte[] passwordHash, int hashVersion);
+        bool PasswordMatches(IUser user, string password);
     }
 }

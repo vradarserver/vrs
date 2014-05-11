@@ -131,6 +131,18 @@ namespace VirtualRadar.WebSite
         }
         #endregion
 
+        #region Private class - CachedUser
+        /// <summary>
+        /// The cached information about a valid user.
+        /// </summary>
+        class CachedUser
+        {
+            public IUser User;
+
+            public string KnownGoodPassword;
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// The object that synchronises threads that are performing authentication tasks for the site.
@@ -138,14 +150,14 @@ namespace VirtualRadar.WebSite
         private object _AuthenticationSyncLock = new object();
 
         /// <summary>
-        /// The user that the server will allow when basic authentication is selected.
+        /// A map of every user that is allowed to view the web site, indexed by login name.
         /// </summary>
-        private string _BasicAuthenticationUser;
+        Dictionary<string, CachedUser> _BasicAuthenticationUsers = new Dictionary<string,CachedUser>();
 
         /// <summary>
-        /// The password hash that the server will allow when basic authentication is selected.
+        /// A reference to the singleton user manager - saves us having to keep reloading it.
         /// </summary>
-        private Hash _BasicAuthenticationPasswordHash;
+        private IUserManager _UserManager;
 
         /// <summary>
         /// The object that will bundle JavaScript in HTML files for us.
@@ -270,6 +282,8 @@ namespace VirtualRadar.WebSite
             if(WebServer != server) {
                 if(WebServer != null) throw new InvalidOperationException("The web site can only be attached to one server");
 
+                _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+
                 var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
@@ -320,8 +334,16 @@ namespace VirtualRadar.WebSite
 
             bool result = false;
             lock(_AuthenticationSyncLock) {
-                _BasicAuthenticationUser = configuration.WebServerSettings.BasicAuthenticationUser;
-                _BasicAuthenticationPasswordHash = configuration.WebServerSettings.BasicAuthenticationPasswordHash;
+                _BasicAuthenticationUsers.Clear();
+
+                foreach(var user in _UserManager.GetUsersByUniqueId(configuration.WebServerSettings.BasicAuthenticationUserIds)) {
+                    if(user.Enabled && !_BasicAuthenticationUsers.ContainsKey(user.LoginName)) {
+                        var key = _UserManager.LoginNameIsCaseSensitive ? user.LoginName : user.LoginName.ToUpperInvariant();
+                        _BasicAuthenticationUsers.Add(key, new CachedUser() {
+                            User = user,
+                        });
+                    }
+                }
                 if(WebServer.AuthenticationScheme != configuration.WebServerSettings.AuthenticationScheme) {
                     result = true;
                     WebServer.AuthenticationScheme = configuration.WebServerSettings.AuthenticationScheme;
@@ -595,8 +617,19 @@ namespace VirtualRadar.WebSite
         {
             lock(_AuthenticationSyncLock) {
                 if(!args.IsHandled && WebServer.AuthenticationScheme == AuthenticationSchemes.Basic) {
-                    args.IsAuthenticated = args.User != null && args.User.Equals(_BasicAuthenticationUser, StringComparison.OrdinalIgnoreCase);
-                    if(args.IsAuthenticated) args.IsAuthenticated = _BasicAuthenticationPasswordHash.PasswordMatches(args.Password);
+                    args.IsAuthenticated = args.User != null;
+                    if(args.IsAuthenticated) {
+                        CachedUser cachedUser;
+                        var key = _UserManager.LoginNameIsCaseSensitive ? args.User : args.User.ToUpperInvariant();
+                        _BasicAuthenticationUsers.TryGetValue(key, out cachedUser);
+
+                        if(cachedUser == null) args.IsAuthenticated = false;
+                        else if(cachedUser.KnownGoodPassword != null && cachedUser.KnownGoodPassword == args.Password) args.IsAuthenticated = true;
+                        else {
+                            args.IsAuthenticated = _UserManager.PasswordMatches(cachedUser.User, args.Password);
+                            if(args.IsAuthenticated) cachedUser.KnownGoodPassword = args.Password;
+                        }
+                    }
                     args.IsHandled = true;
                 }
             }
