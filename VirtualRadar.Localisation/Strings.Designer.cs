@@ -1921,6 +1921,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find a user with the login name &apos;{0}&apos;.
+        /// </summary>
+        public static string LoginNameUnknown {
+            get {
+                return ResourceManager.GetString("LoginNameUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Long frame.
         /// </summary>
         public static string LongFrame {
@@ -3136,11 +3145,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The password that users must enter when logging onto the web site..
+        ///   Looks up a localized string similar to Select the users that have permission to connect to the web server.
         /// </summary>
-        public static string OptionsDescribeWebServerPassword {
+        public static string OptionsDescribeWebServerPermittedUsers {
             get {
-                return ResourceManager.GetString("OptionsDescribeWebServerPassword", resourceCulture);
+                return ResourceManager.GetString("OptionsDescribeWebServerPermittedUsers", resourceCulture);
             }
         }
         
@@ -3159,15 +3168,6 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeWebServerUserMustAuthenticate {
             get {
                 return ResourceManager.GetString("OptionsDescribeWebServerUserMustAuthenticate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The name that users must enter when logging onto the web site..
-        /// </summary>
-        public static string OptionsDescribeWebServerUserName {
-            get {
-                return ResourceManager.GetString("OptionsDescribeWebServerUserName", resourceCulture);
             }
         }
         
@@ -3393,6 +3393,15 @@ namespace VirtualRadar.Localisation {
         public static string PasswordMissing {
             get {
                 return ResourceManager.GetString("PasswordMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permitted users.
+        /// </summary>
+        public static string PermittedUsers {
+            get {
+                return ResourceManager.GetString("PermittedUsers", resourceCulture);
             }
         }
         
@@ -5177,24 +5186,6 @@ namespace VirtualRadar.Localisation {
         public static string UserMustAuthenticate {
             get {
                 return ResourceManager.GetString("UserMustAuthenticate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User name.
-        /// </summary>
-        public static string UserName {
-            get {
-                return ResourceManager.GetString("UserName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please enter the name that users must enter when accessing the web site.
-        /// </summary>
-        public static string UserNameMissing {
-            get {
-                return ResourceManager.GetString("UserNameMissing", resourceCulture);
             }
         }
         

@@ -193,25 +193,10 @@ namespace VirtualRadar.Interface.View
         bool WebServerUserMustAuthenticate { get; set; }
 
         /// <summary>
-        /// Gets or sets the user name that a browser has to supply in order to authenticate.
+        /// Gets a collection of identifiers of users that are allowed to attach to the web server when
+        /// <see cref="WebServerUserMustAuthenticate"/> is true.
         /// </summary>
-        string WebServerUserName { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that <see cref="WebServerPassword"/> has been entered by the user.
-        /// </summary>
-        /// <remarks>
-        /// The website password is stored as a hash, so we don't have the original password to put into the field.
-        /// Instead a dummy password is shown. If the user changes the dummy value, or wipes it out altogether, then
-        /// this property is true, otherwise if <see cref="WebServerPassword"/> is the dummy value then it'll be false.
-        /// </remarks>
-        bool WebServerPasswordHasChanged { get; set; }
-
-        /// <summary>
-        /// Gets or sets the content of the password field. Note that if <see cref="WebServerPasswordHasChanged"/> is false
-        /// then this is likely to be gibberish.
-        /// </summary>
-        string WebServerPassword { get; set; }
+        List<string> WebServerUserIds { get; }
 
         /// <summary>
         /// Gets or sets a value indicating that the user wants the server to use UPnP to get the server onto and off the Internet.

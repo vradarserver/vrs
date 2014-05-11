@@ -10,74 +10,51 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Database.Users
+namespace VirtualRadar.WinForms.Options
 {
     /// <summary>
-    /// The default implementation of <see cref="IUser"/>.
+    /// A UITypeEditor that can display a list of users registered with the system and allow
+    /// the user to select a subset of them.
     /// </summary>
-    class User : IUser
+    class UsersListUITypeEditor : UITypeEditor
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the user.
+        /// See base docs.
         /// </summary>
-        public long Id { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string UniqueId
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
         {
-            get { return Id.ToString(); }
-            set { Id = String.IsNullOrEmpty(value) ? 0L : long.Parse(value); }
+            return UITypeEditorEditStyle.Modal;
         }
 
         /// <summary>
-        /// See interface docs.
+        /// Displays the editor for the collection of users being edited.
         /// </summary>
-        public bool IsPersisted { get { return Id > 0; } }
+        /// <param name="context"></param>
+        /// <param name="provider"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            var result = value as List<string>;
+            if(result != null) {
+                using(var dialog = new UsersListView()) {
+                    dialog.UserIds.AddRange(result);
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool Enabled { get; set; }
+                    dialog.ShowDialog();
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string LoginName { get; set; }
+                    result.Clear();
+                    result.AddRange(dialog.UserIds);
+                }
+            }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string UIPassword { get; set; }
-
-        /// <summary>
-        /// Gets or sets the format of the hashing function used to generate the stored hash.
-        /// </summary>
-        public int PasswordHashVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets the stored hash of the password.
-        /// </summary>
-        public byte[] PasswordHash { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time that the record was created.
-        /// </summary>
-        public DateTime CreatedUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time that the record was updated.
-        /// </summary>
-        public DateTime UpdatedUtc { get; set; }
+            return result;
+        }
     }
 }

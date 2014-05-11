@@ -181,8 +181,7 @@ namespace Test.VirtualRadar.Library.Presenter
         };
 
         private readonly List<ConfigurationProperty> _WebServerOptions = new List<ConfigurationProperty>() {
-            new ConfigurationProperty("AuthenticationScheme",       (w, c) => w.ParseEnum<AuthenticationSchemes>(c), (w, c) => w.Bool(c), r => r.WebServerSettings.AuthenticationScheme,      (r, v) => r.WebServerSettings.AuthenticationScheme = (AuthenticationSchemes)v, r => r.WebServerUserMustAuthenticate,   (r, v) => { r.WebServerUserMustAuthenticate = (bool)v; r.WebServerUserName = "a"; }),
-            new ConfigurationProperty("BasicAuthenticationUser",    (w, c) => w.EString(c),                                               r => r.WebServerSettings.BasicAuthenticationUser,   (r, v) => r.WebServerSettings.BasicAuthenticationUser = (string)v,             r => r.WebServerUserName,               (r, v) => r.WebServerUserName = (string)v),
+            new ConfigurationProperty("AuthenticationScheme",       (w, c) => w.ParseEnum<AuthenticationSchemes>(c), (w, c) => w.Bool(c), r => r.WebServerSettings.AuthenticationScheme,      (r, v) => r.WebServerSettings.AuthenticationScheme = (AuthenticationSchemes)v, r => r.WebServerUserMustAuthenticate,   (r, v) => r.WebServerUserMustAuthenticate = (bool)v),
             new ConfigurationProperty("EnableUPnp",                 (w, c) => w.Bool(c),                                                  r => r.WebServerSettings.EnableUPnp,                (r, v) => r.WebServerSettings.EnableUPnp = (bool)v,                            r => r.EnableUPnpFeatures,              (r, v) => r.EnableUPnpFeatures = (bool)v),
             new ConfigurationProperty("IsOnlyInternetServerOnLan",  (w, c) => w.Bool(c),                                                  r => r.WebServerSettings.IsOnlyInternetServerOnLan, (r, v) => r.WebServerSettings.IsOnlyInternetServerOnLan = (bool)v,             r => r.IsOnlyVirtualRadarServerOnLan,   (r, v) => r.IsOnlyVirtualRadarServerOnLan = (bool)v),
             new ConfigurationProperty("AutoStartUPnP",              (w, c) => w.Bool(c),                                                  r => r.WebServerSettings.AutoStartUPnP,             (r, v) => r.WebServerSettings.AutoStartUPnP = (bool)v,                         r => r.AutoStartUPnp,                   (r, v) => r.AutoStartUPnp = (bool)v),
@@ -379,24 +378,6 @@ namespace Test.VirtualRadar.Library.Presenter
         }
 
         [TestMethod]
-        public void OptionsPresenter_Initialise_Copies_Empty_Password_Hash_From_Configuration_To_WebServer_Options_UI()
-        {
-            _Presenter.Initialise(_View.Object);
-
-            Assert.AreEqual(true, _View.Object.WebServerPasswordHasChanged);
-        }
-
-        [TestMethod]
-        public void OptionsPresenter_Initialise_Copies_NonEmpty_Password_Hash_From_Configuration_To_WebServer_Options_UI()
-        {
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("abc");
-
-            _Presenter.Initialise(_View.Object);
-
-            Assert.AreEqual(false, _View.Object.WebServerPasswordHasChanged);
-        }
-
-        [TestMethod]
         public void OptionsPresenter_Initialise_Populates_Audio_Options_Page_With_Voice_Names()
         {
             var names = new List<string>();
@@ -451,6 +432,20 @@ namespace Test.VirtualRadar.Library.Presenter
             Assert.AreEqual(2, _View.Object.MergedFeeds.Count);
             Assert.AreSame(line1, _View.Object.MergedFeeds[0]);
             Assert.AreSame(line2, _View.Object.MergedFeeds[1]);
+        }
+
+        [TestMethod]
+        public void OptionsPresenter_Initialise_Copies_BasicAuthentication_Users_From_Configuration_To_UI()
+        {
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("First");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("Second");
+
+            _Presenter.Initialise(_View.Object);
+            
+            Assert.AreEqual(2, _View.Object.WebServerUserIds.Count);
+            Assert.AreEqual("First", _View.Object.WebServerUserIds[0]);
+            Assert.AreEqual("Second", _View.Object.WebServerUserIds[1]);
         }
         #endregion
 
@@ -546,7 +541,6 @@ namespace Test.VirtualRadar.Library.Presenter
                         case "UPnpPort":                            _View.Object.UPnpPort = worksheet.Int(valueColumn); break;
                         case "WebAuthenticateUser":                 _View.Object.WebServerUserMustAuthenticate = worksheet.Bool(valueColumn); break;
                         case "WebSiteReceiverId":                   _View.Object.WebSiteReceiverId = worksheet.Int(valueColumn); break;
-                        case "WebUserName":                         _View.Object.WebServerUserName = worksheet.EString(valueColumn); break;
                         default:                                    throw new NotImplementedException();
                     }
                 }
@@ -795,55 +789,24 @@ namespace Test.VirtualRadar.Library.Presenter
         }
 
         [TestMethod]
-        public void OptionsPresenter_SaveClicked_Copies_WebServer_Password_Hash_Correctly_If_User_Enters_Null_Password()
+        public void OptionsPresenter_SaveClicked_Copies_BasicAuthentication_Users_From_View_To_Configuration()
         {
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("Old password");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("Will be deleted");
+
             _Presenter.Initialise(_View.Object);
 
-            _View.Object.WebServerPasswordHasChanged = true;
-            _View.Object.WebServerPassword = null;
+            _View.Object.WebServerUserIds.Clear();
+            _View.Object.WebServerUserIds.Add("Added");
+
+            _ConfigurationStorage.Setup(c => c.Save(_Configuration)).Callback(() => {
+                Assert.AreEqual(1, _Configuration.WebServerSettings.BasicAuthenticationUserIds.Count);
+                Assert.AreEqual("Added", _Configuration.WebServerSettings.BasicAuthenticationUserIds[0]);
+            });
 
             _View.Raise(v => v.SaveClicked += null, EventArgs.Empty);
 
-            Assert.AreEqual(null, _Configuration.WebServerSettings.BasicAuthenticationPasswordHash);
-        }
-
-        [TestMethod]
-        public void OptionsPresenter_SaveClicked_Copies_WebServer_Password_Hash_Correctly_If_User_Enters_Empty_Password()
-        {
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("Old password");
-            _Presenter.Initialise(_View.Object);
-
-            _View.Object.WebServerPasswordHasChanged = true;
-            _View.Object.WebServerPassword = "";
-
-            _View.Raise(v => v.SaveClicked += null, EventArgs.Empty);
-
-            Assert.IsTrue(_Configuration.WebServerSettings.BasicAuthenticationPasswordHash.PasswordMatches(""));
-        }
-
-        [TestMethod]
-        public void OptionsPresenter_SaveClicked_Copies_WebServer_Password_Hash_Correctly_If_User_Enters_NonEmpty_Password()
-        {
-            _Presenter.Initialise(_View.Object);
-
-            _View.Object.WebServerPasswordHasChanged = true;
-            _View.Object.WebServerPassword = "hello";
-
-            _View.Raise(v => v.SaveClicked += null, EventArgs.Empty);
-
-            Assert.IsTrue(_Configuration.WebServerSettings.BasicAuthenticationPasswordHash.PasswordMatches("hello"));
-        }
-
-        [TestMethod]
-        public void OptionsPresenter_SaveClicked_Copies_WebServer_Password_Hash_Correctly_If_User_Does_Not_Change_Password()
-        {
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("Blomp");
-            _Presenter.Initialise(_View.Object);
-
-            _View.Raise(v => v.SaveClicked += null, EventArgs.Empty);
-
-            Assert.IsTrue(_Configuration.WebServerSettings.BasicAuthenticationPasswordHash.PasswordMatches("Blomp"));
+            _ConfigurationStorage.Verify(c => c.Save(_Configuration), Times.Once());
         }
         #endregion
 

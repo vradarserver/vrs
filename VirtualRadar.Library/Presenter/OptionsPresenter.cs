@@ -277,8 +277,7 @@ namespace VirtualRadar.Library.Presenter
             _View.CheckForNewVersionsPeriodDays = configuration.VersionCheckSettings.CheckPeriodDays;
 
             _View.WebServerUserMustAuthenticate = configuration.WebServerSettings.AuthenticationScheme == AuthenticationSchemes.Basic;
-            _View.WebServerUserName = configuration.WebServerSettings.BasicAuthenticationUser;
-            _View.WebServerPasswordHasChanged = configuration.WebServerSettings.BasicAuthenticationPasswordHash == null;
+            _View.WebServerUserIds.AddRange(configuration.WebServerSettings.BasicAuthenticationUserIds);
             _View.EnableUPnpFeatures = configuration.WebServerSettings.EnableUPnp;
             _View.IsOnlyVirtualRadarServerOnLan = configuration.WebServerSettings.IsOnlyInternetServerOnLan;
             _View.AutoStartUPnp = configuration.WebServerSettings.AutoStartUPnP;
@@ -363,7 +362,8 @@ namespace VirtualRadar.Library.Presenter
             configuration.VersionCheckSettings.CheckPeriodDays = _View.CheckForNewVersionsPeriodDays;
 
             configuration.WebServerSettings.AuthenticationScheme = _View.WebServerUserMustAuthenticate ? AuthenticationSchemes.Basic : AuthenticationSchemes.Anonymous;
-            configuration.WebServerSettings.BasicAuthenticationUser = _View.WebServerUserName;
+            configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
+            configuration.WebServerSettings.BasicAuthenticationUserIds.AddRange(_View.WebServerUserIds);
             configuration.WebServerSettings.EnableUPnp = _View.EnableUPnpFeatures;
             configuration.WebServerSettings.IsOnlyInternetServerOnLan = _View.IsOnlyVirtualRadarServerOnLan;
             configuration.WebServerSettings.AutoStartUPnP = _View.AutoStartUPnp;
@@ -384,8 +384,6 @@ namespace VirtualRadar.Library.Presenter
             configuration.RawDecodingSettings.AcceptIcaoInNonPISeconds = _View.AcceptIcaoInNonPISeconds;
             configuration.RawDecodingSettings.AcceptIcaoInPI0Count = _View.AcceptIcaoInPI0Count;
             configuration.RawDecodingSettings.AcceptIcaoInPI0Seconds = _View.AcceptIcaoInPI0Seconds;
-
-            if(_View.WebServerPasswordHasChanged) configuration.WebServerSettings.BasicAuthenticationPasswordHash = _View.WebServerPassword == null ? null : new Hash(_View.WebServerPassword);
         }
         #endregion
 
@@ -458,7 +456,6 @@ namespace VirtualRadar.Library.Presenter
             ValidateWithinBounds(ValidationField.MinimumGoogleMapRefreshSeconds, _View.MinimumGoogleMapRefreshSeconds, 0, 3600, Strings.MinimumRefreshOutOfBounds, result);
             if(_View.InitialGoogleMapRefreshSeconds > 3600) result.Add(new ValidationResult(ValidationField.InitialGoogleMapRefreshSeconds, Strings.InitialRefreshOutOfBounds));
             if(_View.InitialGoogleMapRefreshSeconds < _View.MinimumGoogleMapRefreshSeconds) result.Add(new ValidationResult(ValidationField.InitialGoogleMapRefreshSeconds, Strings.InitialRefreshLessThanMinimumRefresh));
-            if(String.IsNullOrEmpty(_View.WebServerUserName) && _View.WebServerUserMustAuthenticate) result.Add(new ValidationResult(ValidationField.WebUserName, Strings.UserNameMissing));
             if(_View.WebSiteReceiverId == 0) result.Add(new ValidationResult(ValidationField.WebSiteReceiver, Strings.WebSiteReceiverRequired));
             if(_View.ClosestAircraftReceiverId == 0) result.Add(new ValidationResult(ValidationField.ClosestAircraftReceiver, Strings.ClosestAircraftReceiverRequired));
             if(_View.FlightSimulatorXReceiverId == 0) result.Add(new ValidationResult(ValidationField.FlightSimulatorXReceiver, Strings.FlightSimulatorXReceiverRequired));

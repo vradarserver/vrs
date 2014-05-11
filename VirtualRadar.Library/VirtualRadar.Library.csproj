@@ -130,6 +130,7 @@
     <Compile Include="Presenter\EditorPresenter.cs" />
     <Compile Include="Presenter\ListDetailEditorPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
+    <Compile Include="Presenter\UsersListPresenter.cs" />
     <Compile Include="Presenter\UsersPresenter.cs" />
     <Compile Include="TcpClientWrapper.cs" />
     <Compile Include="Presenter\StatisticsPresenter.cs" />

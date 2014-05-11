@@ -146,6 +146,18 @@ namespace VirtualRadar.Database
         }
 
         /// <summary>
+        /// Sets the named parameter at the index passed across.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="index"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        protected void SetNamedParameter(SqlPreparedCommand command, int index, string name, object value)
+        {
+            Sql.SetNamedParameter(command.Command, index, name, value);
+        }
+
+        /// <summary>
         /// Prepares and executes an insert operation.
         /// </summary>
         /// <param name="connection"></param>

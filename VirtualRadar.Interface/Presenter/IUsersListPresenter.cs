@@ -13,71 +13,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 
-namespace VirtualRadar.Database.Users
+namespace VirtualRadar.Interface.Presenter
 {
     /// <summary>
-    /// The default implementation of <see cref="IUser"/>.
+    /// The presenter for objects that hold the business logic for IUserListViews.
     /// </summary>
-    class User : IUser
+    public interface IUsersListPresenter : IPresenter<IUsersListView>
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the user.
+        /// Gets a value indicating that we can fetch every user registered on the system. If this
+        /// is true then we do not show the controls that allow the addition of users by login name.
         /// </summary>
-        public long Id { get; set; }
+        bool CanListAllUsers { get; }
 
         /// <summary>
-        /// See interface docs.
+        /// Fetches a list of every known user. If the user manager doesn't support fetching of lists
+        /// then this returns a list of every user ID supplied to the view.
         /// </summary>
-        public string UniqueId
-        {
-            get { return Id.ToString(); }
-            set { Id = String.IsNullOrEmpty(value) ? 0L : long.Parse(value); }
-        }
+        /// <returns></returns>
+        List<IUser> GetUserList();
 
         /// <summary>
-        /// See interface docs.
+        /// Fetches the user for the login name passed across. Return null if the login name doesn't
+        /// correspond with any user.
         /// </summary>
-        public bool IsPersisted { get { return Id > 0; } }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool Enabled { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string LoginName { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string UIPassword { get; set; }
-
-        /// <summary>
-        /// Gets or sets the format of the hashing function used to generate the stored hash.
-        /// </summary>
-        public int PasswordHashVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets the stored hash of the password.
-        /// </summary>
-        public byte[] PasswordHash { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time that the record was created.
-        /// </summary>
-        public DateTime CreatedUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time that the record was updated.
-        /// </summary>
-        public DateTime UpdatedUtc { get; set; }
+        /// <param name="loginName"></param>
+        /// <returns></returns>
+        IUser GetUserByLoginName(string loginName);
     }
 }
