@@ -631,9 +631,10 @@ namespace VirtualRadar.Database.BaseStation
                 OpenConnection();
                 if(_Connection != null) {
                     _AircraftTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
-                    OnAircraftUpdated(new EventArgs<BaseStationAircraft>(aircraft));
                 }
             }
+
+            OnAircraftUpdated(new EventArgs<BaseStationAircraft>(aircraft));
         }
 
         /// <summary>
