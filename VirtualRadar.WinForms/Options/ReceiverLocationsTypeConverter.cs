@@ -15,6 +15,7 @@ using System.Text;
 using VirtualRadar.Interface.Settings;
 using System.ComponentModel;
 using System.Globalization;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -27,6 +28,28 @@ namespace VirtualRadar.WinForms.Options
         /// The shared list of receiver locations.
         /// </summary>
         public static List<ReceiverLocation> ReceiverLocations { get; private set; }
+
+        /// <summary>
+        /// The empty receiver location.
+        /// </summary>
+        public static readonly ReceiverLocation EmptyReceiver = new ReceiverLocation() {
+            Name = String.Format("< {0} >", Strings.None),
+            UniqueId = 0,
+        };
+
+        /// <summary>
+        /// Gets a list of receiver locations with an entry for the empty location.
+        /// </summary>
+        internal static List<ReceiverLocation> ReceiverLocationsAndEmpty
+        {
+            get
+            {
+                var result = new List<ReceiverLocation>();
+                result.Add(EmptyReceiver);
+                result.AddRange(ReceiverLocations);
+                return result;
+            }
+        }
 
         /// <summary>
         /// The static constructor.
@@ -63,7 +86,7 @@ namespace VirtualRadar.WinForms.Options
         /// <returns></returns>
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(ReceiverLocations.Select(r => r.UniqueId).ToList());
+            return new StandardValuesCollection(ReceiverLocationsAndEmpty.Select(r => r.UniqueId).ToList());
         }
 
         /// <summary>
@@ -87,7 +110,7 @@ namespace VirtualRadar.WinForms.Options
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             var name = (string)value;
-            return ReceiverLocations.Where(r => r.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.UniqueId).FirstOrDefault();
+            return ReceiverLocationsAndEmpty.Where(r => r.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.UniqueId).FirstOrDefault();
         }
 
         /// <summary>
@@ -112,7 +135,7 @@ namespace VirtualRadar.WinForms.Options
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             var uniqueId = (int)value;
-            return ReceiverLocations.Where(r => r.UniqueId == uniqueId).Select(r => r.Name).FirstOrDefault() ?? "";
+            return ReceiverLocationsAndEmpty.Where(r => r.UniqueId == uniqueId).Select(r => r.Name).FirstOrDefault() ?? "";
         }
     }
 }
