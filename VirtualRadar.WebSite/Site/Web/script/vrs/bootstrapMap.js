@@ -452,6 +452,15 @@
                 }));
             });
 
+            if(countFeeds > 1) {
+                result.subItems.push(null);
+                result.subItems.push(new VRS.MenuItem({
+                    name: 'polarPlotter-masterRemoveAll',
+                    labelKey: 'RemoveAll',
+                    clickCallback: function() { pageSettings.polarPlotter.removeAllSlicesForAllFeeds(); }
+                }));
+            }
+
             return result;
         };
 

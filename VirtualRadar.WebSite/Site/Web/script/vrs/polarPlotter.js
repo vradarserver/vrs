@@ -639,8 +639,19 @@
             $.each(_PlotsOnDisplay, function(/** number */ idx, /** Object */ displayInfo) {
                 if(displayInfo.feedId === feedId) slices.push(displayInfo.slice);
             });
-            $.each(slices, function(/** number */ idx, /** Object */ slice) {
+            $.each(slices, function(/** number */ idx, /** VRS_POLAR_PLOT_DISPLAY */ slice) {
                 that.removePolarPlotSlice(feedId, slice);
+            });
+        };
+
+        /**
+         * Removes all plots for all feeds on display.
+         */
+        this.removeAllSlicesForAllFeeds = function()
+        {
+            var plotsOnDisplay = _PlotsOnDisplay.slice();
+            $.each(plotsOnDisplay, function(/** number */ idx, /** VRS_POLAR_PLOT_DISPLAY */ plot) {
+                that.removePolarPlotSlice(plot.feedId, plot.slice);
             });
         };
 
