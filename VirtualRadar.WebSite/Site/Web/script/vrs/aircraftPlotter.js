@@ -30,7 +30,8 @@
     VRS.globalOptions.aircraftMarkerPinTextLineHeight = VRS.globalOptions.aircraftMarkerPinTextLineHeight || 12;        // The height added to each marker for each line of pin text.
     VRS.globalOptions.aircraftMarkerRotate = VRS.globalOptions.aircraftMarkerRotate !== undefined ? VRS.globalOptions.aircraftMarkerRotate : true;     // True to rotate aircraft markers to follow the aircraft heading, false otherwise.
     VRS.globalOptions.aircraftMarkerRotationGranularity = VRS.globalOptions.aircraftMarkerRotationGranularity || 5;     // The smallest number of degrees that an aircraft's heading will be rotated when displaying its marker.
-    VRS.globalOptions.aircraftMarkerAllowAltitudeStalk = VRS.globalOptions.aircraftMarkerAllowAltitudeStalk !== undefined ? VRS.globalOptions.aircraftMarkerAllowAltitudeStalk : true;    // True if altitude stalks can be shown, false if they are permanently suppressed.
+    VRS.globalOptions.aircraftMarkerAllowAltitudeStalk = VRS.globalOptions.aircraftMarkerAllowAltitudeStalk !== undefined ? VRS.globalOptions.aircraftMarkerAllowAltitudeStalk : true;  // True if altitude stalks can be shown, false if they are permanently suppressed.
+    VRS.globalOptions.aircraftMarkerShowAltitudeStalk = VRS.globalOptions.aircraftMarkerShowAltitudeStalk !== undefined ? VRS.globalOptions.aircraftMarkerShowAltitudeStalk : true;     // True if altitude stalks are to be shown, false if they are to be suppressed.
     VRS.globalOptions.aircraftMarkerAllowPinText = VRS.globalOptions.aircraftMarkerAllowPinText !== undefined ? VRS.globalOptions.aircraftMarkerAllowPinText : true;  // True to allow the user to display pin text on the markers. This can be overridden by server options.
     VRS.globalOptions.aircraftMarkerDefaultPinTexts = VRS.globalOptions.aircraftMarkerDefaultPinTexts ||                // An array of VRS.RenderProperty entries to use for browsers that have never accessed the site before.
         [
@@ -184,7 +185,7 @@
         //region -- Initialise settings
         settings = $.extend({
             name:                               'default',
-            showAltitudeStalk:                  VRS.globalOptions.aircraftMarkerAllowAltitudeStalk,
+            showAltitudeStalk:                  VRS.globalOptions.aircraftMarkerAllowAltitudeStalk && VRS.globalOptions.aircraftMarkerShowAltitudeStalk,
             suppressAltitudeStalkWhenZoomed:    VRS.globalOptions.aircraftMarkerSuppressAltitudeStalkWhenZoomed,
             showPinText:                        VRS.globalOptions.aircraftMarkerAllowPinText,
             pinTexts:                           VRS.globalOptions.aircraftMarkerDefaultPinTexts,
@@ -1357,7 +1358,8 @@
          */
         function allowIconAltitudeStalk(mapZoomLevel)
         {
-            return _Settings.plotterOptions.getShowAltitudeStalk() &&
+            return VRS.globalOptions.aircraftMarkerAllowAltitudeStalk &&
+                   _Settings.plotterOptions.getShowAltitudeStalk() &&
                    (!_Settings.plotterOptions.getSuppressAltitudeStalkWhenZoomedOut() || mapZoomLevel >= _Settings.suppressAltitudeStalkAboveZoom);
         }
 
