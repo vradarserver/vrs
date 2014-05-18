@@ -832,7 +832,7 @@
         headingAlignment:       VRS.Alignment.Centre,
         sortableField:          VRS.AircraftListSortableField.OperatorIcao,
         fixedWidth:             function() { return Math.max(VRS.globalOptions.aircraftSilhouetteSize.width, VRS.globalOptions.aircraftOperatorFlagSize.width).toString() + 'px'; },
-        hasChangedCallback:     function(aircraft) { return aircraft.modelIcao.chg || aircraft.operatorIcao.chg; },
+        hasChangedCallback:     function(aircraft) { return aircraft.modelIcao.chg || aircraft.operatorIcao.chg || aircraft.registration.chg; },
         renderCallback:         function(aircraft) { return aircraft.formatModelIcaoImageHtml() + aircraft.formatOperatorIcaoImageHtml(); },
         tooltipChangedCallback: function(aircraft) { return aircraft.model.chg || aircraft.modelIcao.chg || aircraft.countEngines.chg || aircraft.engineType.chg || aircraft.species.chg || aircraft.wakeTurbulenceCat.chg || aircraft.operatorIcao.chg || aircraft.operator.chg; },
         tooltipCallback:        function(aircraft) {

@@ -1068,7 +1068,7 @@
          */
         this.formatModelIcaoImageHtml = function()
         {
-            return VRS.format.modelIcaoImageHtml(this.modelIcao.val, this.icao.val);
+            return VRS.format.modelIcaoImageHtml(this.modelIcao.val, this.icao.val, this.registration.val);
         };
 
         /**
@@ -1113,7 +1113,7 @@
          */
         this.formatOperatorIcaoImageHtml = function()
         {
-            return VRS.format.operatorIcaoImageHtml(this.operator.val, this.operatorIcao.val, this.icao.val);
+            return VRS.format.operatorIcaoImageHtml(this.operator.val, this.operatorIcao.val, this.icao.val, this.registration.val);
         };
 
         //noinspection JSUnusedLocalSymbols

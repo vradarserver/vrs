@@ -21,6 +21,7 @@
     VRS.globalOptions.aircraftSilhouetteSize = VRS.globalOptions.aircraftSilhouetteSize || { width: 85, height: 20 };           // The dimensions of silhouette flags
     VRS.globalOptions.aircraftBearingCompassSize = VRS.globalOptions.aircraftBearingCompassSize || { width: 16, height: 16 };   // The dimensions of the bearing compass image.
     VRS.globalOptions.aircraftFlagUncertainCallsigns = VRS.globalOptions.aircraftFlagUncertainCallsigns !== undefined ? VRS.globalOptions.aircraftFlagUncertainCallsigns : true;    // True if callsigns that we're not 100% sure about are to be shown with an asterisk against them.
+    VRS.globalOptions.aircraftAllowRegistrationFlagOverride = VRS.globalOptions.aircraftAllowRegistrationFlagOverride !== undefined ? VRS.globalOptions.aircraftAllowRegistrationFlagOverride : false;  // True if the user wants to support searching for operator and silhouette flags by registration. Note that some registrations are not distinct from operator and ICAO8643 codes.
     //endregion
 
     VRS.Format = function()
@@ -541,11 +542,12 @@
          * Formats the aircraft's ICAO code for its model as an HTML IMG tag for a silhouette image.
          * @param {string} modelIcao    The aircraft model ICAO to format.
          * @param {string} icao         The ICAO for the aircraft.
+         * @param {string} registration The registration for the aircraft.
          * @returns {string}
          */
-        this.modelIcaoImageHtml = function(modelIcao, icao)
+        this.modelIcaoImageHtml = function(modelIcao, icao, registration)
         {
-            var codeToUse = buildLogoCodeToUse(modelIcao, icao);
+            var codeToUse = buildLogoCodeToUse(modelIcao, icao, registration);
             var size = VRS.globalOptions.aircraftSilhouetteSize;
             var result = '<img src="images/File-' + encodeURIComponent(codeToUse);
             if(VRS.browserHelper.isHighDpi()) result += '/HiDpi';
@@ -644,11 +646,12 @@
          * @param {string} operator
          * @param {string} operatorIcao
          * @param {string} icao
+         * @param {string} registration
          * @returns {string}
          */
-        this.operatorIcaoImageHtml = function(operator, operatorIcao, icao)
+        this.operatorIcaoImageHtml = function(operator, operatorIcao, icao, registration)
         {
-            var codeToUse = buildLogoCodeToUse(operatorIcao, icao);
+            var codeToUse = buildLogoCodeToUse(operatorIcao, icao, registration);
             var size = VRS.globalOptions.aircraftOperatorFlagSize;
             var result = '<img src="images/File-' + encodeURIComponent(codeToUse);
             if(VRS.browserHelper.isHighDpi()) result += '/HiDpi';
@@ -664,9 +667,10 @@
          * Joins together a logo code and the ICAO for operator flag and silhouette logos.
          * @param {string}  logoCode
          * @param {string}  icao
+         * @param {string}  registration
          * @returns {string}
          */
-        function buildLogoCodeToUse(logoCode, icao)
+        function buildLogoCodeToUse(logoCode, icao, registration)
         {
             var result = '';
 
@@ -676,7 +680,9 @@
                     result += code;
                 }
             };
+
             addCode(icao);
+            if(VRS.globalOptions.aircraftAllowRegistrationFlagOverride) addCode(registration);
             addCode(logoCode);
 
             return result;

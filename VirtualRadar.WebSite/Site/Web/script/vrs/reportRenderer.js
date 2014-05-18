@@ -311,8 +311,8 @@
         labelKey:           'OperatorFlag',
         headingAlignment:   VRS.Alignment.Centre,
         fixedWidth:         function() { return VRS.globalOptions.aircraftOperatorFlagSize.width.toString() + 'px'; },
-        hasValue:           function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return !!json.opFlag || !!json.icao; },
-        renderCallback:     function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return VRS.format.operatorIcaoImageHtml(json.owner, json.opFlag, json.icao); },
+        hasValue:           function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return !!json.opFlag || !!json.icao || !json.reg; },
+        renderCallback:     function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return VRS.format.operatorIcaoImageHtml(json.owner, json.opFlag, json.icao, json.reg); },
         tooltipCallback:    function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return VRS.format.operatorIcaoAndName(json.owner, json.opFlag); }
     });
 
@@ -417,8 +417,8 @@
         surfaces:           VRS.ReportSurface.List,
         headingAlignment:   VRS.Alignment.Centre,
         fixedWidth:         function() { return VRS.globalOptions.aircraftSilhouetteSize.width.toString() + 'px'; },
-        hasValue:           function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return !!json.icaoType || !!json.icao; },
-        renderCallback:     function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return VRS.format.modelIcaoImageHtml(json.icaoType, json.icao); },
+        hasValue:           function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return !!json.icaoType || !!json.icao || !!json.reg; },
+        renderCallback:     function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return VRS.format.modelIcaoImageHtml(json.icaoType, json.icao, json.reg); },
         tooltipCallback:    function(/** VRS_JSON_REPORT_AIRCRAFT */ json) { return VRS.format.modelIcaoNameAndDetail(json.icaoType, json.type, json.engines, json.engType, json.species, json.wtc); }
     });
 
