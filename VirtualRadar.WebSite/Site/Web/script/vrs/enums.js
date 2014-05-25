@@ -86,7 +86,8 @@
         Squawk:             'sqk',
         TimeTracked:        'tim',
         UserTag:            'tag',
-        VerticalSpeed:      'vsi'
+        VerticalSpeed:      'vsi',
+        VerticalSpeedType:  'vty'
     };
     //endregion
 
@@ -406,6 +407,7 @@
         TimeTracked:                    'tim',
         UserTag:                        'tag',
         VerticalSpeed:                  'vsi',
+        VerticalSpeedType:              'vty',
         Wtc:                            'wtc'
     };
     //endregion

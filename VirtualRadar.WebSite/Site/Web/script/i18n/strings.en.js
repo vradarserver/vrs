@@ -271,6 +271,7 @@
     VRS.$$.ListTotalHours =                             'Total Hours';
     VRS.$$.ListUserTag =                                'Tag';
     VRS.$$.ListVerticalSpeed =                          'V.Speed';
+    VRS.$$.ListVerticalSpeedType =                      'V.Speed Type';
     VRS.$$.ListWtc =                                    'WTC';
     VRS.$$.ListYearBuilt =                              'Built';
     VRS.$$.Longitude =                                  'Longitude';
@@ -413,6 +414,7 @@
     VRS.$$.ShowRangeCircles =                           'Show range circles';
     VRS.$$.ShowShortTrails =                            'Show short trails';
     VRS.$$.ShowUnits =                                  'Show units';
+    VRS.$$.ShowVerticalSpeedType =                      'Show vertical speed type';
     VRS.$$.ShowVsiInSeconds =                           'Show vertical speed per second';
     VRS.$$.SignalLevel =                                'Signal Level';
     VRS.$$.Silhouette =                                 'Silhouette';
@@ -454,6 +456,7 @@
     VRS.$$.UseRelativeDates =                           'Use relative dates';
     VRS.$$.UserTag =                                    'User Tag';
     VRS.$$.VerticalSpeed =                              'Vertical Speed';
+    VRS.$$.VerticalSpeedType =                          'Vertical Speed Type';
     VRS.$$.VirtualRadar =                               'Virtual Radar';
     VRS.$$.Volume25 =                                   'Volume 25%';
     VRS.$$.Volume50 =                                   'Volume 50%';

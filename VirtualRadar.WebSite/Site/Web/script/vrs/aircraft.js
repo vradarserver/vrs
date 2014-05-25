@@ -1265,12 +1265,22 @@
          * @param {VRS.Height}  heightUnit  The VRS.Height unit to use when formatting.
          * @param {bool}        perSecond   True if the VSI is /second, false if it's /minute.
          * @param {bool}        showUnit    True if units are to be shown.
+         * @param {bool}        showType    True if the vertical speed type is to be shown.
          * @returns {string}
          */
-        this.formatVerticalSpeed = function(heightUnit, perSecond, showUnit)
+        this.formatVerticalSpeed = function(heightUnit, perSecond, showUnit, showType)
         {
-            return VRS.format.verticalSpeed(this.verticalSpeed.val, heightUnit, perSecond, showUnit);
+            return VRS.format.verticalSpeed(this.verticalSpeed.val, this.verticalSpeedType.val, heightUnit, perSecond, showUnit, showType);
         };
+
+        /**
+         * Returns the vertical speed type formatted as a string.
+         * @returns {string}
+         */
+        this.formatVerticalSpeedType = function()
+        {
+            return VRS.format.verticalSpeedType(this.verticalSpeedType.val);
+        }
 
         /**
          * Returns the wake turbulence category formatted as a string.
