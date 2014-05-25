@@ -1460,7 +1460,8 @@ VRS_STATE_SPLITTER_GROUP;
 * flTransitionUnit:   VRS.Height,
 * flHeightUnit:       VRS.Height,
 * showAltType:        Boolean,
-* showVsiType:        Boolean
+* showVsiType:        Boolean,
+* showSpeedType:      Boolean
 * }} VRS_STATE_UNITDISPLAYPREFERENCES
 */
 VRS_STATE_UNITDISPLAYPREFERENCES;

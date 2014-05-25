@@ -145,6 +145,7 @@
     VRS.$$.GotoCurrentLocation =                        'Go to current location';
     VRS.$$.GotoSelectedAircraft =                       'Go to selected aircraft';
     VRS.$$.GroundAbbreviation =                         'GND';
+    VRS.$$.Ground =                                     'Ground';
     VRS.$$.GroundVehicle =                              'Ground Vehicle';
     VRS.$$.Gyrocopter =                                 'Gyrocopter';
     VRS.$$.HadAlert =                                   'Had Alert';
@@ -161,6 +162,8 @@
     VRS.$$.Icao =                                       'ICAO';
     VRS.$$.Index =                                      'Index';
     VRS.$$.IsMilitary =                                 'Military';
+    VRS.$$.IndicatedAirSpeed =                          'Indicated';
+    VRS.$$.IndicatedAirSpeedShort =                     'IAS';                              // <-- please try to keep this short, an abbreviation if possible
     VRS.$$.Interesting =                                'Interesting';
     VRS.$$.IntervalSeconds =                            'Update interval (secs)';
     VRS.$$.Jet =                                        'Jet';
@@ -265,6 +268,7 @@
     VRS.$$.ListSignalLevel =                            'Signal';
     VRS.$$.ListSpecies =                                'Species';
     VRS.$$.ListSpeed =                                  'Speed';
+    VRS.$$.ListSpeedType =                              'Speed Type';
     VRS.$$.ListSquawk =                                 'Squawk';
     VRS.$$.ListStartTime =                              'Seen';
     VRS.$$.ListStatus =                                 'Status';
@@ -384,6 +388,8 @@
     VRS.$$.Reports =                                    'Reports';
     VRS.$$.ReportsAreDisabled =                         'Server permissions prohibit the running of reports';
     VRS.$$.Resume =                                     'Resume';
+    VRS.$$.Reversing =                                  'Reversing';
+    VRS.$$.ReversingShort =                             'REV';
     VRS.$$.Route =                                      'Route';
     VRS.$$.RouteShort =                                 'Route (short)';
     VRS.$$.RouteFull =                                  'Route (full)';
@@ -413,6 +419,7 @@
     VRS.$$.ShowForSelectedOnly =                        'Show just for the selected aircraft';
     VRS.$$.ShowRangeCircles =                           'Show range circles';
     VRS.$$.ShowShortTrails =                            'Show short trails';
+    VRS.$$.ShowSpeedType =                              'Show speed type';
     VRS.$$.ShowUnits =                                  'Show units';
     VRS.$$.ShowVerticalSpeedType =                      'Show vertical speed type';
     VRS.$$.ShowVsiInSeconds =                           'Show vertical speed per second';
@@ -425,6 +432,7 @@
     VRS.$$.Speed =                                      'Speed';
     VRS.$$.SpeedGraph =                                 'Speed Graph';
     VRS.$$.Speeds =                                     'Speeds';
+    VRS.$$.SpeedType =                                  'Speed Type';
     VRS.$$.Squawk =                                     'Squawk';
     VRS.$$.Start =                                      'Start';
     VRS.$$.StartsWith =                                 'Starts With';
@@ -450,6 +458,8 @@
     VRS.$$.TotalHours =                                 'Total Hours';
     VRS.$$.TrackingCountAircraft =                      'Tracking {0:N0} aircraft';
     VRS.$$.TrackingCountAircraftOutOf =                 'Tracking {0:N0} aircraft (out of {1:N0})';
+    VRS.$$.TrueAirSpeed =                               'True';
+    VRS.$$.TrueAirSpeedShort =                          'TAS';                          // Keep this one short, an abbreviation if possible.
     VRS.$$.Turbo =                                      'Turbo';
     VRS.$$.Unknown =                                    'Unknown';
     VRS.$$.UseBrowserLocation =                         'Use GPS location';

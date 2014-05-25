@@ -227,6 +227,12 @@
         getNumberCallback:  function(aircraft) { return aircraft.speed.val; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.SpeedType] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.SpeedType,
+        labelKey:           'SpeedType',
+        getStringCallback:  function(aircraft) { return aircraft.formatSpeedType(); }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Squawk] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.Squawk,
         labelKey:           'Squawk',

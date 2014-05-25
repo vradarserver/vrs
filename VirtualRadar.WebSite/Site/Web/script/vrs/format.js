@@ -1092,17 +1092,26 @@
 
         /**
          * Returns the speed formatted as a string.
-         * @param {number}      speed       The speed in knots to format.
-         * @param {VRS.Speed}   speedUnit   The VRS.Speed unit to use when formatting the speed.
-         * @param {bool}        showUnit    True if the units are to be shown.
+         * @param {number}          speed       The speed in knots to format.
+         * @param {VRS.SpeedType}   speedType   The type of speed.
+         * @param {VRS.Speed}       speedUnit   The VRS.Speed unit to use when formatting the speed.
+         * @param {bool}            showUnit    True if the units are to be shown.
+         * @param {bool}            showType    True if the type of speed is to be shown.
          * @returns {string}
          */
-        this.speed = function(speed, speedUnit, showUnit)
+        this.speed = function(speed, speedType, speedUnit, showUnit, showType)
         {
             /** @type {*} */
             var result = VRS.unitConverter.convertSpeed(speed, VRS.Speed.Knots, speedUnit);
             if(result || result === 0) result = VRS.stringUtility.formatNumber(result, '0.0');
             if(showUnit && result) result = VRS.stringUtility.format(VRS.unitConverter.speedUnitAbbreviation(speedUnit), result);
+            if(showType && result && speedType !== VRS.SpeedType.Ground) {
+                switch(speedType) {
+                    case VRS.SpeedType.GroundReversing:     result += ' ' + VRS.$$.ReversingShort; break;
+                    case VRS.SpeedType.IndicatedAirSpeed:   result += ' ' + VRS.$$.IndicatedAirSpeedShort; break;
+                    case VRS.SpeedType.TrueAirSpeed:        result += ' ' + VRS.$$.TrueAirSpeedShort; break;
+                }
+            }
 
             return result ? result : '';
         };
@@ -1117,9 +1126,31 @@
          */
         this.speedFromTo = function(fromSpeed, toSpeed, speedUnit, showUnits)
         {
-            var first = that.speed(fromSpeed, speedUnit, showUnits);
-            var last  = that.speed(toSpeed, speedUnit, showUnits);
+            var first = that.speed(fromSpeed, VRS.SpeedType.Ground, speedUnit, showUnits, false);
+            var last  = that.speed(toSpeed, VRS.SpeedType.Ground, speedUnit, showUnits, false);
             return formatFromTo(first, last, VRS.$$.FromToSpeed);
+        };
+
+        /**
+         * Returns the speed type formatted as a string.
+         * @param {VRS.SpeedType} speedType
+         * @returns {string}
+         */
+        this.speedType = function(speedType)
+        {
+            var result = '';
+
+            if(speedType !== undefined) {
+                switch(speedType) {
+                    case VRS.SpeedType.Ground:              result = VRS.$$.Ground; break;
+                    case VRS.SpeedType.GroundReversing:     result = VRS.$$.Reversing; break;
+                    case VRS.SpeedType.IndicatedAirSpeed:   result = VRS.$$.IndicatedAirSpeed; break;
+                    case VRS.SpeedType.TrueAirSpeed:        result = VRS.$$.TrueAirSpeed; break;
+                    default:                                result = VRS.$$.Unknown;
+                }
+            }
+
+            return result;
         };
 
         /**
