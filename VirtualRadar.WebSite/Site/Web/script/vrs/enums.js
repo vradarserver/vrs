@@ -62,6 +62,7 @@
     VRS.AircraftListSortableField = {
         None:               '---',
         Altitude:           'alt',
+        AltitudeType:       'aty',
         AverageSignalLevel: 'avs',
         Bearing:            'bng',
         Callsign:           'csn',
@@ -128,6 +129,18 @@
         Left:           'l',
         Centre:         'c',
         Right:          'r'
+    };
+    //endregion
+
+    //region AltitudeType
+    /**
+     * An enumeration of the different altitude types.
+     * @enum {number}
+     * @readonly
+     */
+    VRS.AltitudeType = {
+        Barometric:     0,
+        Geometric:      1
     };
     //endregion
 
@@ -352,6 +365,7 @@
 //        AltitudeAndSpeedGraph:          'als',
         AltitudeAndVerticalSpeed:       'alv',
 //        AltitudeGraph:                  'alg',
+        AltitudeType:                   'aty',
         AverageSignalLevel:             'avs',
         Bearing:                        'bng',
         Callsign:                       'csn',
@@ -582,6 +596,20 @@
         Knots:              'kt',
         MilesPerHour:       'ml',
         KilometresPerHour:  'km'
+    };
+    //endregion
+
+    //region SpeedType
+    /**
+     * An enumeration of the different types of speed that can be transmitted by the aircraft.
+     * @enum {number}
+     * @readonly
+     */
+    VRS.SpeedType = {
+        Ground:             0,
+        GroundReversing:    1,
+        IndicatedAirSpeed:  2,
+        TrueAirSpeed:       3
     };
     //endregion
 

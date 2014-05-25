@@ -95,6 +95,12 @@
         getNumberCallback:  function(aircraft) { return aircraft.altitude.val; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AltitudeType] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.AltitudeType,
+        labelKey:           'AltitudeType',
+        getStringCallback:  function(aircraft) { return aircraft.formatAltitudeType(); }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AverageSignalLevel] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.AverageSignalLevel,
         labelKey:           'AverageSignalLevel',

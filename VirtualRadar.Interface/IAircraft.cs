@@ -99,7 +99,15 @@ namespace VirtualRadar.Interface
         long AltitudeChanged { get; }
 
         /// <summary>
-        /// Gets or sets the ground (in knots) that the aircraft last reported.
+        /// Gets or sets the type of altitude being transmitted by the aircraft.
+        /// </summary>
+        AltitudeType AltitudeType { get; set; }
+
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="AltitudeType"/> was last changed.
+        long AltitudeTypeChanged { get; set; }
+
+        /// <summary>
+        /// Gets or sets the speed (in knots) that the aircraft last reported.
         /// </summary>
         float? GroundSpeed { get; set; }
 
@@ -107,6 +115,14 @@ namespace VirtualRadar.Interface
         /// Gets the <see cref="DataVersion"/> that was current when <see cref="GroundSpeed"/> was last changed.
         /// </summary>
         long GroundSpeedChanged { get; }
+
+        /// <summary>
+        /// Gets or sets the type of speed being transmitted by the aircraft.
+        /// </summary>
+        SpeedType SpeedType { get; set; }
+
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="SpeedType"/> was last changed.
+        long SpeedTypeChanged { get; set; }
 
         /// <summary>
         /// Gets the last reported latitude of the aircraft.
@@ -154,6 +170,17 @@ namespace VirtualRadar.Interface
         long TrackChanged { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the <see cref="Track"/> is the heading of the aircraft. If this
+        /// is false then <see cref="Track"/> is the ground track, which is the default.
+        /// </summary>
+        bool TrackIsHeading { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="TrackIsHeading"/> was last changed.
+        /// </summary>
+        long TrackIsHeadingChanged { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating that the aircraft is transmitting its track, or at least that BaseStation
         /// is reporting one for it.
         /// </summary>
@@ -168,6 +195,14 @@ namespace VirtualRadar.Interface
         /// Gets the <see cref="DataVersion"/> that was current when <see cref="VerticalRate"/> was last changed.
         /// </summary>
         long VerticalRateChanged { get; }
+
+        /// <summary>
+        /// Gets or sets the type of vertical rate being transmitted by the aircraft.
+        /// </summary>
+        AltitudeType VerticalRateType { get; set; }
+
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="VerticalRateType"/> was last changed.
+        long VerticalRateTypeChanged { get; set; }
 
         /// <summary>
         /// Gets or sets the squawk code transmitted by the aircraft.
@@ -476,14 +511,6 @@ namespace VirtualRadar.Interface
         /// Gets the <see cref="DataVersion"/> that was current when <see cref="OnGround"/> was last changed.
         /// </summary>
         long OnGroundChanged { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of speed being transmitted by the aircraft.
-        /// </summary>
-        SpeedType SpeedType { get; set; }
-
-        /// Gets the <see cref="DataVersion"/> that was current when <see cref="SpeedType"/> was last changed.
-        long SpeedTypeChanged { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that the callsign came from a possible BDS2,0 message instead of an

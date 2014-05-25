@@ -90,6 +90,12 @@ namespace VirtualRadar.Interface.WebSite
         public int? Altitude { get; set; }
 
         /// <summary>
+        /// Gets or sets the type of altitude transmitted by the aircraft.
+        /// </summary>
+        [DataMember(Name="AltT", IsRequired=false, EmitDefaultValue=false)]
+        public int? AltitudeType { get; set; }
+
+        /// <summary>
         /// Gets or sets the aircraft's callsign.
         /// </summary>
         [DataMember(Name="Call", IsRequired=false, EmitDefaultValue=false)]
@@ -125,6 +131,12 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         [DataMember(Name="Trak", IsRequired=false, EmitDefaultValue=false)]
         public float? Track { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the track is the aircraft's heading, not its ground track.
+        /// </summary>
+        [DataMember(Name="TrkH", IsRequired=false, EmitDefaultValue=false)]
+        public bool? TrackIsHeading { get; set; }
 
         /// <summary>
         /// Gets or sets the ICAO8643 type code of the aircraft.
@@ -191,6 +203,12 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         [DataMember(Name="Vsi", IsRequired=false, EmitDefaultValue=false)]
         public int? VerticalRate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of altitude reported in <see cref="VerticalRate"/>.
+        /// </summary>
+        [DataMember(Name="VsiT", IsRequired=false, EmitDefaultValue=false)]
+        public int? VerticalRateType { get; set; }
 
         /// <summary>
         /// Gets or sets the distance from the browser's location to the aircraft in kilometres.

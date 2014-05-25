@@ -276,8 +276,25 @@
         sortableField:          VRS.AircraftListSortableField.Altitude,
         alignment:              VRS.Alignment.Right,
         hasChangedCallback:     function(aircraft) { return aircraft.altitude.chg || aircraft.isOnGround.chg; },
-        contentCallback:        function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) { return aircraft.formatAltitude(options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits); },
+        contentCallback:        function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) {
+            return aircraft.formatAltitude(
+                options.unitDisplayPreferences.getHeightUnit(),
+                options.distinguishOnGround,
+                options.showUnits,
+                options.unitDisplayPreferences.getShowAltitudeType()
+            );
+        },
         usesDisplayUnit:        function(displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Height; }
+    });
+
+    VRS.renderPropertyHandlers[VRS.RenderProperty.AltitudeType] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.AltitudeType,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListAltitudeType',
+        labelKey:               'AltitudeType',
+        sortableField:          VRS.AircraftListSortableField.AltitudeType,
+        hasChangedCallback:     function(aircraft) { return aircraft.altitudeType.chg; },
+        contentCallback:        function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) { return aircraft.formatAltitudeType(); }
     });
 
     /*
@@ -302,7 +319,7 @@
         usesDisplayUnit:        function(displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Height || displayUnitDependency === VRS.DisplayUnitDependency.VsiSeconds; },
         renderCallback:         function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) {
             return VRS.format.stackedValues(
-                aircraft.formatAltitude(options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits),
+                aircraft.formatAltitude(options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, options.unitDisplayPreferences.getShowAltitudeType()),
                 aircraft.formatVerticalSpeed(options.unitDisplayPreferences.getHeightUnit(), options.unitDisplayPreferences.getShowVerticalSpeedPerSecond(), options.showUnits)
             );
         }
@@ -470,7 +487,8 @@
             options.unitDisplayPreferences.getFlightLevelHeightUnit(),
             options.unitDisplayPreferences.getHeightUnit(),
             options.distinguishOnGround,
-            options.showUnits
+            options.showUnits,
+            options.unitDisplayPreferences.getShowAltitudeType()
         ); },
         usesDisplayUnit:        function(displayUnitDependency) {
             switch(displayUnitDependency) {
@@ -500,7 +518,8 @@
                     options.unitDisplayPreferences.getFlightLevelHeightUnit(),
                     options.unitDisplayPreferences.getHeightUnit(),
                     options.distinguishOnGround,
-                    options.showUnits
+                    options.showUnits,
+                    options.unitDisplayPreferences.getShowAltitudeType()
                 ),
                 aircraft.formatVerticalSpeed(
                     options.unitDisplayPreferences.getHeightUnit(),

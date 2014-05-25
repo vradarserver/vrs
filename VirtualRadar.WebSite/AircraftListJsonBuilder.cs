@@ -198,6 +198,7 @@ namespace VirtualRadar.WebSite
                 bool firstTimeSeen = !args.PreviousAircraft.Contains(aircraftSnapshot.UniqueId);
 
                 if(firstTimeSeen || aircraftSnapshot.AltitudeChanged > args.PreviousDataVersion)                aircraftJson.Altitude = aircraftSnapshot.Altitude;
+                if(firstTimeSeen || aircraftSnapshot.AltitudeTypeChanged > args.PreviousDataVersion)            aircraftJson.AltitudeType = (int)aircraftSnapshot.AltitudeType;
                 if(firstTimeSeen || aircraftSnapshot.CallsignChanged > args.PreviousDataVersion)                aircraftJson.Callsign = aircraftSnapshot.Callsign;
                 if(firstTimeSeen || aircraftSnapshot.CallsignIsSuspectChanged > args.PreviousDataVersion)       aircraftJson.CallsignIsSuspect = aircraftSnapshot.CallsignIsSuspect;
                 if(firstTimeSeen || aircraftSnapshot.ConstructionNumberChanged > args.PreviousDataVersion)      aircraftJson.ConstructionNumber = aircraftSnapshot.ConstructionNumber;
@@ -232,9 +233,11 @@ namespace VirtualRadar.WebSite
                 if(firstTimeSeen || aircraftSnapshot.SpeedTypeChanged > args.PreviousDataVersion)               aircraftJson.SpeedType = (int)aircraftSnapshot.SpeedType;
                 if(firstTimeSeen || aircraftSnapshot.SquawkChanged > args.PreviousDataVersion)                  aircraftJson.Squawk = String.Format("{0:0000}", aircraftSnapshot.Squawk);
                 if(firstTimeSeen || aircraftSnapshot.TrackChanged > args.PreviousDataVersion)                   aircraftJson.Track = Round.Track(aircraftSnapshot.Track);
+                if(firstTimeSeen || aircraftSnapshot.TrackIsHeadingChanged > args.PreviousDataVersion)          aircraftJson.TrackIsHeading = aircraftSnapshot.TrackIsHeading;
                 if(firstTimeSeen || aircraftSnapshot.TypeChanged > args.PreviousDataVersion)                    aircraftJson.Type = aircraftSnapshot.Type;
                 if(firstTimeSeen || aircraftSnapshot.UserTagChanged > args.PreviousDataVersion)                 aircraftJson.UserTag = aircraftSnapshot.UserTag;
                 if(firstTimeSeen || aircraftSnapshot.VerticalRateChanged > args.PreviousDataVersion)            aircraftJson.VerticalRate = aircraftSnapshot.VerticalRate;
+                if(firstTimeSeen || aircraftSnapshot.VerticalRateTypeChanged > args.PreviousDataVersion)        aircraftJson.VerticalRateType = (int)aircraftSnapshot.VerticalRateType;
                 if(firstTimeSeen || aircraftSnapshot.WakeTurbulenceCategoryChanged > args.PreviousDataVersion)  aircraftJson.WakeTurbulenceCategory = (int)aircraftSnapshot.WakeTurbulenceCategory;
 
                 if(aircraftSnapshot.Stopovers.Count > 0 && (firstTimeSeen || aircraftSnapshot.StopoversChanged > args.PreviousDataVersion)) {

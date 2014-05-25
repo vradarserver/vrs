@@ -289,6 +289,8 @@ namespace Test.VirtualRadar.Library
                             case "CountMessagesReceivedChanged":    value = _Aircraft.CountMessagesReceivedChanged; break;
                             case "Altitude":                        value = _Aircraft.Altitude = intValue; break;
                             case "AltitudeChanged":                 value = _Aircraft.AltitudeChanged; break;
+                            case "AltitudeType":                    value = _Aircraft.AltitudeType = AltitudeType.Geometric; break;
+                            case "AltitudeTypeChanged":             value = _Aircraft.AltitudeTypeChanged; break;
                             case "GroundSpeed":                     value = _Aircraft.GroundSpeed = intValue; break;
                             case "GroundSpeedChanged":              value = _Aircraft.GroundSpeedChanged; break;
                             case "Latitude":                        value = _Aircraft.Latitude = doubleValue; break;
@@ -367,6 +369,10 @@ namespace Test.VirtualRadar.Library
                             case "PictureWidthChanged":             value = _Aircraft.PictureWidthChanged; break;
                             case "PictureHeight":                   value = _Aircraft.PictureHeight = intValue; break;
                             case "PictureHeightChanged":            value = _Aircraft.PictureHeightChanged; break;
+                            case "VerticalRateType":                value = _Aircraft.VerticalRateType = AltitudeType.Geometric; break;
+                            case "VerticalRateTypeChanged":         value = _Aircraft.VerticalRateTypeChanged; break;
+                            case "TrackIsHeading":                  value = _Aircraft.TrackIsHeading = property.Name == trueBool; break;
+                            case "TrackIsHeadingChanged":           value = _Aircraft.TrackIsHeadingChanged; break;
                             default:                                throw new NotImplementedException();
                         }
 
