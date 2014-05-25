@@ -27,6 +27,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             var aircraftJson = new AircraftJson();
 
             TestUtilities.TestProperty(aircraftJson, r => r.Altitude, null, 12);
+            TestUtilities.TestProperty(aircraftJson, r => r.AltitudeType, null, 1);
             TestUtilities.TestProperty(aircraftJson, r => r.BearingFromHere, null, 12.3);
             TestUtilities.TestProperty(aircraftJson, r => r.Callsign, null, "ND");
             TestUtilities.TestProperty(aircraftJson, r => r.CallsignIsSuspect, null, true);
@@ -64,11 +65,13 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(aircraftJson, r => r.Squawk, null, "4721");
             TestUtilities.TestProperty(aircraftJson, r => r.Stopovers, null, new List<string>() { "Hd" });
             TestUtilities.TestProperty(aircraftJson, r => r.Track, null, 12.34f);
+            TestUtilities.TestProperty(aircraftJson, r => r.TrackIsHeading, null, true);
             TestUtilities.TestProperty(aircraftJson, r => r.TrailType, null, "a");
             TestUtilities.TestProperty(aircraftJson, r => r.Type, null, "B747");
             TestUtilities.TestProperty(aircraftJson, r => r.UniqueId, 0, 12);
             TestUtilities.TestProperty(aircraftJson, r => r.UserTag, null, "Abc");
             TestUtilities.TestProperty(aircraftJson, r => r.VerticalRate, null, -239);
+            TestUtilities.TestProperty(aircraftJson, r => r.VerticalRateType, null, 1);
             TestUtilities.TestProperty(aircraftJson, r => r.WakeTurbulenceCategory, null, 7);
         }
     }

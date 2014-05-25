@@ -442,8 +442,11 @@ namespace VirtualRadar.Library.BaseStation
 
                 var supplementaryMessage = message != null && message.Supplementary != null ? message.Supplementary : null;
                 if(supplementaryMessage != null) {
-                    if(supplementaryMessage.SpeedType != null) aircraft.SpeedType = supplementaryMessage.SpeedType.Value;
-                    if(supplementaryMessage.CallsignIsSuspect != null) aircraft.CallsignIsSuspect = supplementaryMessage.CallsignIsSuspect.Value;
+                    if(supplementaryMessage.AltitudeIsGeometric != null)        aircraft.AltitudeType = supplementaryMessage.AltitudeIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
+                    if(supplementaryMessage.VerticalRateIsGeometric != null)    aircraft.VerticalRateType = supplementaryMessage.VerticalRateIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
+                    if(supplementaryMessage.SpeedType != null)                  aircraft.SpeedType = supplementaryMessage.SpeedType.Value;
+                    if(supplementaryMessage.CallsignIsSuspect != null)          aircraft.CallsignIsSuspect = supplementaryMessage.CallsignIsSuspect.Value;
+                    if(supplementaryMessage.TrackIsHeading != null)             aircraft.TrackIsHeading = supplementaryMessage.TrackIsHeading.Value;
                 }
 
                 var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);

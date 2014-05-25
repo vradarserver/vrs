@@ -67,14 +67,16 @@
 
         /**
          * Formats the altitude as a string.
-         * @param {Number}      altitude            The altitude to format.
-         * @param {boolean}     isOnGround          True if the aircraft is on the ground.
-         * @param {VRS.Height}  heightUnit          The VRS.Height unit to use.
-         * @param {bool}        distinguishOnGround True if aircraft on the ground are to be shown as 'GND' instead of the altitude.
-         * @param {bool}        showUnits           True if units are to be shown.
+         * @param {Number}              altitude            The altitude to format.
+         * @param {VRS.AltitudeType}    altitudeType        The type of altitude.
+         * @param {boolean}             isOnGround          True if the aircraft is on the ground.
+         * @param {VRS.Height}          heightUnit          The VRS.Height unit to use.
+         * @param {bool}                distinguishOnGround True if aircraft on the ground are to be shown as 'GND' instead of the altitude.
+         * @param {bool}                showUnits           True if units are to be shown.
+         * @param {bool}                showType            True if the type is to be shown to the user.
          * @returns {string}
          */
-        this.altitude = function(altitude, isOnGround, heightUnit, distinguishOnGround, showUnits)
+        this.altitude = function(altitude, altitudeType, isOnGround, heightUnit, distinguishOnGround, showUnits, showType)
         {
             /** @type {*} */
             var result = undefined;
@@ -83,6 +85,7 @@
                 result = VRS.unitConverter.convertHeight(altitude, VRS.Height.Feet, heightUnit);
                 if(result || result === 0) result = VRS.stringUtility.formatNumber(result, '0');
                 if(showUnits && result) result = VRS.stringUtility.format(VRS.unitConverter.heightUnitAbbreviation(heightUnit), result);
+                if(showType && result && altitudeType === VRS.AltitudeType.Geometric) result += ' ' + VRS.$$.GeometricAltitudeIndicator;
             }
 
             return result ? result.toString() : '';
@@ -100,9 +103,29 @@
          */
         this.altitudeFromTo = function(firstAltitude, firstIsOnGround, lastAltitude, lastIsOnGround, heightUnit, distinguishOnGround, showUnits)
         {
-            var first = that.altitude(firstAltitude, firstIsOnGround, heightUnit, distinguishOnGround, showUnits);
-            var last  = that.altitude(lastAltitude, lastIsOnGround, heightUnit, distinguishOnGround, showUnits);
+            var first = that.altitude(firstAltitude, VRS.AltitudeType.Barometric, firstIsOnGround, heightUnit, distinguishOnGround, showUnits, false);
+            var last  = that.altitude(lastAltitude, VRS.AltitudeType.Barometric, lastIsOnGround, heightUnit, distinguishOnGround, showUnits, false);
             return formatFromTo(first, last, VRS.$$.FromToAltitude);
+        };
+
+        /**
+         * Formats an altitude type as a string.
+         * @param {VRS.AltitudeType} altitudeType
+         * @returns {string}
+         */
+        this.altitudeType = function(altitudeType)
+        {
+            var result = '';
+
+            if(altitudeType !== undefined) {
+                switch(altitudeType) {
+                    case VRS.AltitudeType.Barometric:   result = VRS.$$.Barometric; break;
+                    case VRS.AltitudeType.Geometric:    result = VRS.$$.Geometric; break;
+                    default:                            result = VRS.$$.Unknown; break;
+                }
+            }
+
+            return result;
         };
 
         /**
@@ -318,17 +341,19 @@
 
         /**
          * Formats the flight level as a string.
-         * @param {number}      altitude                The altitude in feet.
-         * @param {boolean}     isOnGround              True if the aircraft is on the ground.
-         * @param {number}      transitionAltitude      The altitude above which flight levels are reported and below which altitudes are reported.
-         * @param {VRS.Height}  transitionAltitudeUnit  The VRS.Height unit that the transition altitude is in.
-         * @param {VRS.Height}  flightLevelAltitudeUnit The VRS.Height unit to report flight levels with.
-         * @param {VRS.Height}  altitudeUnit            The VRS.Height unit to report altitudes with.
-         * @param {bool=}       distinguishOnGround     True if aircraft on the ground are to be reported as GND.
-         * @param {bool=}       showUnits               True if units are to be shown.
+         * @param {number}              altitude                The altitude in feet.
+         * @param {VRS.AltitudeType}    altitudeType            The type of altitude transmitted by the aircraft.
+         * @param {boolean}             isOnGround              True if the aircraft is on the ground.
+         * @param {number}              transitionAltitude      The altitude above which flight levels are reported and below which altitudes are reported.
+         * @param {VRS.Height}          transitionAltitudeUnit  The VRS.Height unit that the transition altitude is in.
+         * @param {VRS.Height}          flightLevelAltitudeUnit The VRS.Height unit to report flight levels with.
+         * @param {VRS.Height}          altitudeUnit            The VRS.Height unit to report altitudes with.
+         * @param {bool=}               distinguishOnGround     True if aircraft on the ground are to be reported as GND.
+         * @param {bool=}               showUnits               True if units are to be shown.
+         * @param {bool=}               showType                True if the altitude type is to be shown.
          * @returns {string}
          */
-        this.flightLevel = function(altitude, isOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits)
+        this.flightLevel = function(altitude, altitudeType, isOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType)
         {
             /** @type {*} */
             var result = altitude;
@@ -337,10 +362,11 @@
                 else {
                     var transitionAltitudeFeet = VRS.unitConverter.convertHeight(transitionAltitude, transitionAltitudeUnit, VRS.Height.Feet);
                     if(result < transitionAltitudeFeet) {
-                        result = that.altitude(altitude, isOnGround, altitudeUnit, distinguishOnGround, showUnits);
+                        result = that.altitude(altitude, altitudeType, isOnGround, altitudeUnit, distinguishOnGround, showUnits, showType);
                     } else {
                         result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, flightLevelAltitudeUnit);
                         result = VRS.stringUtility.format(VRS.$$.FlightLevelAbbreviation, Math.max(0, Math.round(result / 100)));
+                        if(showType && result && altitudeType === VRS.AltitudeType.Geometric) result += ' ' + VRS.$$.GeometricAltitudeIndicator;
                     }
                 }
             }
@@ -364,8 +390,8 @@
          */
         this.flightLevelFromTo = function(firstAltitude, firstIsOnGround, lastAltitude, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits)
         {
-            var first = that.flightLevel(firstAltitude, firstIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits);
-            var last = that.flightLevel(lastAltitude, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits);
+            var first = that.flightLevel(firstAltitude, VRS.AltitudeType.Barometric, firstIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
+            var last = that.flightLevel(lastAltitude, VRS.AltitudeType.Barometric, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
             return formatFromTo(first, last, VRS.$$.FromToFlightLevel);
         };
 

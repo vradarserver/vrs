@@ -129,6 +129,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long AltitudeChanged { get; private set; }
 
+        private AltitudeType _AltitudeType;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public AltitudeType AltitudeType { get { return _AltitudeType; } set { if(value != _AltitudeType) { _AltitudeType = value; AltitudeTypeChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long AltitudeTypeChanged { get; set; }
+
         private float? _GroundSpeed;
         /// <summary>
         /// See interface docs.
@@ -139,6 +150,17 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public long GroundSpeedChanged { get; private set; }
+
+        private SpeedType _SpeedType;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public SpeedType SpeedType { get { return _SpeedType; } set { if(value != _SpeedType) { _SpeedType = value; SpeedTypeChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long SpeedTypeChanged { get; set; }
 
         private double? _Latitude;
         /// <summary>
@@ -184,6 +206,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long TrackChanged { get; private set; }
 
+        private bool _TrackIsHeading;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool TrackIsHeading { get { return _TrackIsHeading; } set { if(value != _TrackIsHeading) { _TrackIsHeading = value; TrackIsHeadingChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long TrackIsHeadingChanged { get; private set; }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -199,6 +232,17 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public long VerticalRateChanged { get; private set; }
+
+        private AltitudeType _VerticalRateType;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public AltitudeType VerticalRateType { get { return _VerticalRateType; } set { if(value != _VerticalRateType) { _VerticalRateType = value; VerticalRateTypeChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long VerticalRateTypeChanged { get; set; }
 
         private int? _Squawk;
         /// <summary>
@@ -544,17 +588,6 @@ namespace VirtualRadar.Library
         /// </summary>
         public long OnGroundChanged { get; set; }
 
-        private SpeedType _SpeedType;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public SpeedType SpeedType { get { return _SpeedType; } set { if(value != _SpeedType) { _SpeedType = value; SpeedTypeChanged = DataVersion; } } }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public long SpeedTypeChanged { get; set; }
-
         private bool _CallsignIsSuspect;
         /// <summary>
         /// See interface docs.
@@ -605,6 +638,7 @@ namespace VirtualRadar.Library
 
             lock(this) {
                 result.Altitude = Altitude;
+                result.AltitudeType = AltitudeType;
                 result.Callsign = Callsign;
                 result.CallsignIsSuspect = CallsignIsSuspect;
                 result.ConstructionNumber = ConstructionNumber;
@@ -649,10 +683,12 @@ namespace VirtualRadar.Library
                 result.SpeedType = SpeedType;
                 result.Squawk = Squawk;
                 result.Track = Track;
+                result.TrackIsHeading = TrackIsHeading;
                 result.Type = Type;
                 result.UniqueId = UniqueId;
                 result.UserTag = UserTag;
                 result.VerticalRate = VerticalRate;
+                result.VerticalRateType = VerticalRateType;
                 result.WakeTurbulenceCategory = WakeTurbulenceCategory;
 
                 foreach(var stopover in Stopovers) {
@@ -660,6 +696,7 @@ namespace VirtualRadar.Library
                 }
 
                 result.AltitudeChanged = AltitudeChanged;
+                result.AltitudeTypeChanged = AltitudeTypeChanged;
                 result.CallsignChanged = CallsignChanged;
                 result.CallsignIsSuspectChanged = CallsignIsSuspectChanged;
                 result.ConstructionNumberChanged = ConstructionNumberChanged;
@@ -697,9 +734,11 @@ namespace VirtualRadar.Library
                 result.SquawkChanged = SquawkChanged;
                 result.StopoversChanged = StopoversChanged;
                 result.TrackChanged = TrackChanged;
+                result.TrackIsHeadingChanged = TrackIsHeadingChanged;
                 result.TypeChanged = TypeChanged;
                 result.UserTagChanged = UserTagChanged;
                 result.VerticalRateChanged = VerticalRateChanged;
+                result.VerticalRateTypeChanged = VerticalRateTypeChanged;
                 result.WakeTurbulenceCategoryChanged = WakeTurbulenceCategoryChanged;
             }
 

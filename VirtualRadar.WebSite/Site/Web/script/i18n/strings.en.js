@@ -43,15 +43,18 @@
     VRS.$$.AllAltitudes =                               'All altitudes';
     VRS.$$.AllRows =                                    'All rows';
     VRS.$$.Altitude =                                   'Altitude';
+    VRS.$$.AltitudeType =                               'Altitude Type';
     VRS.$$.AltitudeAndSpeedGraph =                      'Altitude & Speed Graph';
     VRS.$$.AltitudeAndVerticalSpeed =                   'Altitude & VSI';
     VRS.$$.AltitudeGraph =                              'Altitude Graph';
+    VRS.$$.AltitudeType =                               'Altitude Type';
     VRS.$$.AllAircraft =                                'List all';
     VRS.$$.Amphibian =                                  'Amphibian';
     VRS.$$.AnnounceSelected =                           'Announce details of selected aircraft';
     VRS.$$.Ascending =                                  'Ascending';
     VRS.$$.AutoSelectAircraft =                         'Auto-select aircraft';
     VRS.$$.AverageSignalLevel =                         'Avg. Signal Level';
+    VRS.$$.Barometric =                                 'Barometric';
     VRS.$$.Bearing =                                    'Bearing';
     VRS.$$.Between =                                    'Between';
     VRS.$$.Callsign =                                   'Callsign';
@@ -136,6 +139,8 @@
     VRS.$$.FromToSquawk =                               '{0} to {1}';
     VRS.$$.FurthestFromCurrentLocation =                'Furthest from current location';
     VRS.$$.GenericName =                                'Generic Name';
+    VRS.$$.Geometric =                                  'Geometric';
+    VRS.$$.GeometricAltitudeIndicator =                 'GPS';                              // A ** SHORT ** indication that the reported altitude is geometric (i.e. usually coming from a GPS unit) as opposed to barometric (i.e. coming off one or more pressure sensors).
     VRS.$$.GoogleMapsCouldNotBeLoaded =                 'Google Maps could not be loaded';
     VRS.$$.GotoCurrentLocation =                        'Go to current location';
     VRS.$$.GotoSelectedAircraft =                       'Go to selected aircraft';
@@ -187,6 +192,7 @@
     VRS.$$.ListAircraftClass =                          'A/C Class';
     VRS.$$.ListAirportDataThumbnails =                  'Thumbnails (airport-data.com)';
     VRS.$$.ListAltitude =                               'Altitude';
+    VRS.$$.ListAltitudeType =                           'Alt. Type';
     VRS.$$.ListAltitudeAndVerticalSpeed =               'Alt & VSI';
     VRS.$$.ListAverageSignalLevel =                     'Avg. Signal';
     VRS.$$.ListBearing =                                'Brng.';
@@ -398,6 +404,7 @@
     VRS.$$.SettingsPage =                               'Settings Page';
     VRS.$$.Shortcuts =                                  'Shortcuts';
     VRS.$$.ShowAltitudeStalk =                          'Show altitude stalk';
+    VRS.$$.ShowAltitudeType =                           'Show altitude type';
     VRS.$$.ShowCurrentLocation =                        'Show current location';
     VRS.$$.ShowDetail =                                 'Show detail';
     VRS.$$.ShowForAllAircraft =                         'Show for all aircraft';
@@ -442,6 +449,7 @@
     VRS.$$.TrackingCountAircraft =                      'Tracking {0:N0} aircraft';
     VRS.$$.TrackingCountAircraftOutOf =                 'Tracking {0:N0} aircraft (out of {1:N0})';
     VRS.$$.Turbo =                                      'Turbo';
+    VRS.$$.Unknown =                                    'Unknown';
     VRS.$$.UseBrowserLocation =                         'Use GPS location';
     VRS.$$.UseRelativeDates =                           'Use relative dates';
     VRS.$$.UserTag =                                    'User Tag';

@@ -484,8 +484,8 @@
             lowAltitude = range.lowAlt;
             highAltitude = range.highAlt;
 
-            var lowAlt = VRS.format.altitude(lowAltitude, false, settings.unitDisplayPreferences.getHeightUnit(), false, true);
-            var highAlt = VRS.format.altitude(highAltitude, false, settings.unitDisplayPreferences.getHeightUnit(), false, true);
+            var lowAlt = VRS.format.altitude(lowAltitude, VRS.AltitudeType.Barometric, false, settings.unitDisplayPreferences.getHeightUnit(), false, true, false);
+            var highAlt = VRS.format.altitude(highAltitude, VRS.AltitudeType.Barometric, false, settings.unitDisplayPreferences.getHeightUnit(), false, true, false);
 
             return lowAltitude === -1 && highAltitude === -1 ? VRS.$$.AllAltitudes
                  : lowAltitude === -1                        ? VRS.stringUtility.format(VRS.$$.ToAltitude, highAlt)

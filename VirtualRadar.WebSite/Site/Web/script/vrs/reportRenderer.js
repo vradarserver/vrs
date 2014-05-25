@@ -473,24 +473,6 @@
         contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitudeFromTo(json.fAlt, json.fOnGnd, json.lAlt, json.lOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits); }
     });
 
-    VRS.reportPropertyHandlers[VRS.ReportFlightProperty.LastFlightLevel] = new VRS.ReportPropertyHandler({
-        property:           VRS.ReportFlightProperty.LastFlightLevel,
-        headingKey:         'ListLastFlightLevel',
-        labelKey:           'LastFlightLevel',
-        alignment:          VRS.Alignment.Right,
-        hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.lAlt !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.flightLevel(
-            json.lAlt,
-            json.fOnGnd,
-            options.unitDisplayPreferences.getFlightLevelTransitionAltitude(),
-            options.unitDisplayPreferences.getFlightLevelTransitionHeightUnit(),
-            options.unitDisplayPreferences.getFlightLevelHeightUnit(),
-            options.unitDisplayPreferences.getHeightUnit(),
-            options.distinguishOnGround,
-            options.showUnits
-        ); }
-    });
-
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.Callsign] = new VRS.ReportPropertyHandler({
         property:           VRS.ReportFlightProperty.Callsign,
         surfaces:           VRS.ReportSurface.List + VRS.ReportSurface.DetailHead,
@@ -553,7 +535,7 @@
         labelKey:           'FirstAltitude',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.fAlt !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.fAlt, json.fOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.fAlt, VRS.AltitudeType.Barometric, json.fOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false); }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.FirstFlightLevel] = new VRS.ReportPropertyHandler({
@@ -564,13 +546,15 @@
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.fAlt !== undefined; },
         contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.flightLevel(
             json.fAlt,
+            VRS.AltitudeType.Barometric,
             json.fOnGnd,
             options.unitDisplayPreferences.getFlightLevelTransitionAltitude(),
             options.unitDisplayPreferences.getFlightLevelTransitionHeightUnit(),
             options.unitDisplayPreferences.getFlightLevelHeightUnit(),
             options.unitDisplayPreferences.getHeightUnit(),
             options.distinguishOnGround,
-            options.showUnits
+            options.showUnits,
+            false
         ); }
     });
 
@@ -686,7 +670,7 @@
         labelKey:           'LastAltitude',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.lAlt !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.lAlt, json.lOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.lAlt, VRS.AltitudeType.Barometric, json.lOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false); }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.LastFlightLevel] = new VRS.ReportPropertyHandler({
@@ -697,13 +681,15 @@
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.lAlt !== undefined; },
         contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.flightLevel(
             json.lAlt,
+            VRS.AltitudeType.Barometric,
             json.fOnGnd,
             options.unitDisplayPreferences.getFlightLevelTransitionAltitude(),
             options.unitDisplayPreferences.getFlightLevelTransitionHeightUnit(),
             options.unitDisplayPreferences.getFlightLevelHeightUnit(),
             options.unitDisplayPreferences.getHeightUnit(),
             options.distinguishOnGround,
-            options.showUnits
+            options.showUnits,
+            false
         ); }
     });
 

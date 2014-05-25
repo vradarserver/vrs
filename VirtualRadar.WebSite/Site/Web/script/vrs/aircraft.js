@@ -371,15 +371,18 @@
         this.icaoInvalid =              new VRS.BoolValue();
         this.registration =             new VRS.StringValue();
         this.altitude =                 new VRS.NumberValue();
+        this.altitudeType =             new VRS.NumberValue();
         this.callsign =                 new VRS.StringValue();
         this.callsignSuspect =          new VRS.BoolValue();
         this.latitude =                 new VRS.NumberValue();
         this.longitude =                new VRS.NumberValue();
         this.positionTime =             new VRS.NumberValue();
         this.speed =                    new VRS.NumberValue();
-        this.speedType =                new VRS.StringValue();
+        this.speedType =                new VRS.NumberValue();
         this.verticalSpeed =            new VRS.NumberValue();
-        this.heading =                  new VRS.NumberValue();            // The compass heading that the aircraft is pointing at, aka the track
+        this.verticalSpeedType =        new VRS.NumberValue();
+        this.heading =                  new VRS.NumberValue();            // The track across the ground that the aircraft is following, unless headingIsTrue is true in which case it's the aircraft's true heading (i.e. the direction the nose is pointing in)
+        this.headingIsTrue =            new VRS.BoolValue();              // True if heading is the aircraft's true heading, false if it's the ground track.
         this.model =                    new VRS.StringValue();
         this.modelIcao =                new VRS.StringValue();
         this.from =                     new VRS.RouteValue();
@@ -439,6 +442,7 @@
             setValue(this.icaoInvalid,          aircraftJson.Bad);
             setValue(this.registration,         aircraftJson.Reg);
             setValue(this.altitude,             aircraftJson.Alt);
+            setValue(this.altitudeType,         aircraftJson.AltT);
             setValue(this.callsign,             aircraftJson.Call);
             setValue(this.callsignSuspect,      aircraftJson.CallSus);
             setValue(this.latitude,             aircraftJson.Lat);
@@ -447,7 +451,9 @@
             setValue(this.speed,                aircraftJson.Spd);
             setValue(this.speedType,            aircraftJson.SpdTyp);
             setValue(this.verticalSpeed,        aircraftJson.Vsi);
+            setValue(this.verticalSpeedType,    aircraftJson.VsiT);
             setValue(this.heading,              aircraftJson.Trak);
+            setValue(this.headingIsTrue,        aircraftJson.TrkH);
             setValue(this.model,                aircraftJson.Mdl);
             setValue(this.modelIcao,            aircraftJson.Type);
             setValue(this.from,                 aircraftJson.From);
@@ -887,11 +893,21 @@
          * @param {VRS.Height}  heightUnit          The VRS.Height unit to use.
          * @param {bool}        distinguishOnGround True if aircraft on the ground are to be shown as 'GND' instead of the altitude.
          * @param {bool}        showUnits           True if units are to be shown.
+         * @param {bool}        showType            True if the type of altitude is to be shown.
          * @returns {string}
          */
-        this.formatAltitude = function(heightUnit, distinguishOnGround, showUnits)
+        this.formatAltitude = function(heightUnit, distinguishOnGround, showUnits, showType)
         {
-            return VRS.format.altitude(this.altitude.val, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits);
+            return VRS.format.altitude(this.altitude.val, this.altitudeType.val, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
+        };
+
+        /**
+         * Formats the altitude type as a string.
+         * @returns {string}
+         */
+        this.formatAltitudeType = function()
+        {
+            return VRS.format.altitudeType(this.altitudeType.val);
         };
 
         /**
@@ -989,11 +1005,12 @@
          * @param {VRS.Height}  altitudeUnit            The VRS.Height unit to report altitudes with.
          * @param {bool}        distinguishOnGround     True if aircraft on the ground are to be reported as GND.
          * @param {bool}        showUnits               True if units are to be shown.
+         * @param {bool}        showType                True if altitude type is to be shown.
          * @returns {string}
          */
-        this.formatFlightLevel = function(transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits)
+        this.formatFlightLevel = function(transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType)
         {
-            return VRS.format.flightLevel(this.altitude.val, this.isOnGround.val, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits);
+            return VRS.format.flightLevel(this.altitude.val, this.altitudeType.val, this.isOnGround.val, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType);
         };
 
         /**

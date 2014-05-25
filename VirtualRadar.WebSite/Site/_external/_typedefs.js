@@ -151,6 +151,7 @@ VRS_GOOGLE_ICON;
 * Bad:          boolean,
 * Reg:          String,
 * Alt:          Number,
+* AltT:         Number,
 * Call:         String,
 * CallSus:      boolean,
 * Lat:          Number,
@@ -159,7 +160,9 @@ VRS_GOOGLE_ICON;
 * Spd:          Number,
 * SpdTyp:       Number,
 * Vsi:          Number,
+* VsiT:         Number,
 * Trak:         Number,
+* TrkH:         boolean,
 * Mdl:          String,
 * Type:         String,
 * From:         String,
@@ -1455,7 +1458,8 @@ VRS_STATE_SPLITTER_GROUP;
 * vsiPerSecond:       Boolean,
 * flTransitionAlt:    Number,
 * flTransitionUnit:   VRS.Height,
-* flHeightUnit:       VRS.Height
+* flHeightUnit:       VRS.Height,
+* showAltType:        Boolean
 * }} VRS_STATE_UNITDISPLAYPREFERENCES
 */
 VRS_STATE_UNITDISPLAYPREFERENCES;
