@@ -561,7 +561,18 @@
         sortableField:          VRS.AircraftListSortableField.Heading,
         alignment:              VRS.Alignment.Right,
         hasChangedCallback:     function(aircraft) { return aircraft.heading.chg; },
-        contentCallback:        function(aircraft, options) { return aircraft.formatHeading(options.showUnits); }
+        contentCallback:        function(aircraft, options) { return aircraft.formatHeading(options.showUnits, options.unitDisplayPreferences.getShowTrackType()); },
+        usesDisplayUnit:        function(displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Angle; }
+    });
+
+    VRS.renderPropertyHandlers[VRS.RenderProperty.HeadingType] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.HeadingType,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListHeadingType',
+        labelKey:               'HeadingType',
+        sortableField:          VRS.AircraftListSortableField.HeadingType,
+        hasChangedCallback:     function(aircraft) { return aircraft.headingIsTrue.chg; },
+        contentCallback:        function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) { return aircraft.formatHeadingType(); }
     });
 
     VRS.renderPropertyHandlers[VRS.RenderProperty.Icao] = new VRS.RenderPropertyHandler({

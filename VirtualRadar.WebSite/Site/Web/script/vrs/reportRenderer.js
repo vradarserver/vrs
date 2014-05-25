@@ -564,7 +564,7 @@
         labelKey:           'FirstHeading',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.fTrk !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.heading(json.fTrk, options.showUnits); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.heading(json.fTrk, false, options.showUnits, false); }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.FirstLatitude] = new VRS.ReportPropertyHandler({
@@ -707,7 +707,7 @@
         labelKey:           'LastHeading',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.lTrk !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.heading(json.lTrk, options.showUnits); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.heading(json.lTrk, false, options.showUnits, false); }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.LastLatitude] = new VRS.ReportPropertyHandler({

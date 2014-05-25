@@ -1016,11 +1016,21 @@
         /**
          * Formats the aircraft's heading as a string.
          * @param {bool} showUnit True if the units are to be shown.
+         * @param {bool} showType True if the type of heading is to be shown.
          * @returns {string}
          */
-        this.formatHeading = function(showUnit)
+        this.formatHeading = function(showUnit, showType)
         {
-            return VRS.format.heading(this.heading.val, showUnit);
+            return VRS.format.heading(this.heading.val, this.headingIsTrue.val, showUnit, showType);
+        };
+
+        /**
+         * Formats the aircraft's heading type as a string.
+         * @returns {string}
+         */
+        this.formatHeadingType = function()
+        {
+            return VRS.format.headingType(this.headingIsTrue.val);
         };
 
         /**
