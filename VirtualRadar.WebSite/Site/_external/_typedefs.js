@@ -1462,6 +1462,7 @@ VRS_STATE_SPLITTER_GROUP;
 * showAltType:        Boolean,
 * showVsiType:        Boolean,
 * showSpeedType:      Boolean
+* showTrackType:      Boolean
 * }} VRS_STATE_UNITDISPLAYPREFERENCES
 */
 VRS_STATE_UNITDISPLAYPREFERENCES;

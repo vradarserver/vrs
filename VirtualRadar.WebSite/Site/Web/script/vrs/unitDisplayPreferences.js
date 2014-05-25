@@ -27,6 +27,7 @@
     VRS.globalOptions.unitDisplayAltitudeType = VRS.globalOptions.unitDisplayAltitudeType !== undefined ? VRS.globalOptions.unitDisplayAltitudeType : false;                // True if altitude types are to be shown by default.
     VRS.globalOptions.unitDisplayVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType !== undefined ? VRS.globalOptions.unitDisplayVerticalSpeedType : false; // True if vertical speed types are to be shown by default.
     VRS.globalOptions.unitDisplaySpeedType = VRS.globalOptions.unitDisplaySpeedType !== undefined ? VRS.globalOptions.unitDisplaySpeedType : true;                          // True if speed types are to be shown by default.
+    VRS.globalOptions.unitDisplayTrackType = VRS.globalOptions.unitDisplayTrackType !== undefined ? VRS.globalOptions.unitDisplayTrackType : false;                         // True if track types are to be shown by default.
     //endregion
 
     //region UnitDisplayPreferences
@@ -55,7 +56,8 @@
             flHeightUnitChanged:            'flHeightUnitChanged',
             showAltitudeTypeChanged:        'showAltTypeChanged',
             showVerticalSpeedTypeChanged:   'showVsiTypeChanged',
-            showSpeedTypeChanged:           'showSpeedTypeChanged'
+            showSpeedTypeChanged:           'showSpeedTypeChanged',
+            showTrackTypeChanged:           'showTrackTypeChanged'
         };
         //endregion
 
@@ -141,6 +143,17 @@
             }
         };
 
+        /** @type {boolean} @private */
+        var _ShowTrackType = VRS.globalOptions.unitDisplayTrackType;
+        this.getShowTrackType = function() { return _ShowTrackType; };
+        this.setShowTrackType = function(/** boolean */ value) {
+            if(_ShowTrackType !== value) {
+                _ShowTrackType = value;
+                _Dispatcher.raise(_Events.showTrackTypeChanged);
+                _Dispatcher.raise(_Events.unitChanged, [ VRS.DisplayUnitDependency.Angle ]);
+            }
+        };
+
         /** @type {number} @private */
         var _FlightLevelTransitionAltitude = VRS.globalOptions.unitDisplayFLTransitionAltitude;
         this.getFlightLevelTransitionAltitude = function() { return _FlightLevelTransitionAltitude; };
@@ -184,6 +197,7 @@
         this.hookShowAltitudeTypeChanged =                  function(callback, forceThis) { return _Dispatcher.hook(_Events.showAltitudeTypeChanged, callback, forceThis); };
         this.hookShowVerticalSpeedTypeChanged =             function(callback, forceThis) { return _Dispatcher.hook(_Events.showVerticalSpeedTypeChanged, callback, forceThis); };
         this.hookShowSpeedTypeChanged =                     function(callback, forceThis) { return _Dispatcher.hook(_Events.showSpeedTypeChanged, callback, forceThis); };
+        this.hookShowTrackTypeChanged =                     function(callback, forceThis) { return _Dispatcher.hook(_Events.showTrackTypeChanged, callback, forceThis); };
         this.hookFlightLevelTransitionAltitudeChanged =     function(callback, forceThis) { return _Dispatcher.hook(_Events.flAltitudeChanged, callback, forceThis); };
         this.hookFlightLevelTransitionHeightUnitChanged =   function(callback, forceThis) { return _Dispatcher.hook(_Events.flTransUnitChanged, callback, forceThis); };
         this.hookFlightLevelHeightUnitChanged =             function(callback, forceThis) { return _Dispatcher.hook(_Events.flHeightUnitChanged, callback, forceThis); };
@@ -258,6 +272,14 @@
                     labelKey:       'ShowSpeedType',
                     getValue:       that.getShowSpeedType,
                     setValue:       that.setShowSpeedType,
+                    saveState:      that.saveState
+                }));
+
+                pane.addField(new VRS.OptionFieldCheckBox({
+                    name:           'showTrackType',
+                    labelKey:       'ShowTrackType',
+                    getValue:       that.getShowTrackType,
+                    setValue:       that.setShowTrackType,
                     saveState:      that.saveState
                 }));
 
@@ -359,6 +381,7 @@
             that.setShowAltitudeType(settings.showAltType);
             that.setShowVerticalSpeedType(settings.showVsiType);
             that.setShowSpeedType(settings.showSpeedType);
+            that.setShowTrackType(settings.showTrackType);
         };
 
         /**
@@ -394,7 +417,8 @@
                 flHeightUnit:       that.getFlightLevelHeightUnit(),
                 showAltType:        that.getShowAltitudeType(),
                 showVsiType:        that.getShowVerticalSpeedType(),
-                showSpeedType:      that.getShowSpeedType()
+                showSpeedType:      that.getShowSpeedType(),
+                showTrackType:      that.getShowTrackType()
             };
         }
         //endregion

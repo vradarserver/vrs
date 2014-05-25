@@ -155,6 +155,12 @@
         getNumberCallback:  function(aircraft) { return aircraft.heading.val; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.HeadingType] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.HeadingType,
+        labelKey:           'HeadingType',
+        getStringCallback:  function(aircraft) { return aircraft.formatHeadingType(); }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Icao] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.Icao,
         labelKey:           'Icao',

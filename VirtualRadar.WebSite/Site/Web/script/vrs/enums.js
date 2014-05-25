@@ -72,6 +72,7 @@
         Distance:           'dis',
         FlightsCount:       'fct',
         Heading:            'hdg',
+        HeadingType:        'hty',
         Icao:               'ico',
         Latitude:           'lat',
         Longitude:          'lng',
@@ -159,7 +160,8 @@
         VsiSeconds:             'd',
         FLTransitionAltitude:   'e',
         FLTransitionHeightUnit: 'f',
-        FLHeightUnit:           'g'
+        FLHeightUnit:           'g',
+        Angle:                  'h'
     };
     //endregion
 
@@ -381,6 +383,7 @@
         FlightLevelAndVerticalSpeed:    'fav',
         FlightsCount:                   'fct',
         Heading:                        'hdg',
+        HeadingType:                    'hty',
         Icao:                           'ico',
         Interesting:                    'int',
         Latitude:                       'lat',

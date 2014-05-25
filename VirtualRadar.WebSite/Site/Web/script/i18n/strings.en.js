@@ -146,12 +146,14 @@
     VRS.$$.GotoSelectedAircraft =                       'Go to selected aircraft';
     VRS.$$.GroundAbbreviation =                         'GND';
     VRS.$$.Ground =                                     'Ground';
+    VRS.$$.GroundTrack =                                'Ground track';
     VRS.$$.GroundVehicle =                              'Ground Vehicle';
     VRS.$$.Gyrocopter =                                 'Gyrocopter';
     VRS.$$.HadAlert =                                   'Had Alert';
     VRS.$$.HadEmergency =                               'Had Emergency';
     VRS.$$.HadSPI =                                     'Had Ident';                        // SPI is the name of a pulse in Mode-S, used when ATC has asked for ident from aircraft.
     VRS.$$.Heading =                                    'Heading';
+    VRS.$$.HeadingType =                                'Heading Type';
     VRS.$$.Heights =                                    'Heights';
     VRS.$$.Helicopter =                                 'Helicopter';
     VRS.$$.Help =                                       'Help';
@@ -232,6 +234,7 @@
     VRS.$$.ListHadEmergency =                           'Emergency';
     VRS.$$.ListHadSPI =                                 'SPI';                      // Name of a pulse in Mode-S, may not need translation. Used when ATC has asked for ident from aircraft.
     VRS.$$.ListHeading =                                'Hdg.';
+    VRS.$$.ListHeadingType =                            'Hdg. Type';
     VRS.$$.ListIcao =                                   'ICAO';
     VRS.$$.ListInteresting =                            'Interesting';
     VRS.$$.ListLastAltitude =                           'To Alt.';
@@ -420,6 +423,7 @@
     VRS.$$.ShowRangeCircles =                           'Show range circles';
     VRS.$$.ShowShortTrails =                            'Show short trails';
     VRS.$$.ShowSpeedType =                              'Show speed type';
+    VRS.$$.ShowTrackType =                              'Show heading type';
     VRS.$$.ShowUnits =                                  'Show units';
     VRS.$$.ShowVerticalSpeedType =                      'Show vertical speed type';
     VRS.$$.ShowVsiInSeconds =                           'Show vertical speed per second';
@@ -460,6 +464,8 @@
     VRS.$$.TrackingCountAircraftOutOf =                 'Tracking {0:N0} aircraft (out of {1:N0})';
     VRS.$$.TrueAirSpeed =                               'True';
     VRS.$$.TrueAirSpeedShort =                          'TAS';                          // Keep this one short, an abbreviation if possible.
+    VRS.$$.TrueHeading =                                'True heading';
+    VRS.$$.TrueHeadingShort =                           'True';
     VRS.$$.Turbo =                                      'Turbo';
     VRS.$$.Unknown =                                    'Unknown';
     VRS.$$.UseBrowserLocation =                         'Use GPS location';

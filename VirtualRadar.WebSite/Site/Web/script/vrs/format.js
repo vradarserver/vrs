@@ -447,18 +447,33 @@
 
         /**
          * Formats the aircraft's heading as a string.
-         * @param {number}  heading     The heading to format
-         * @param {bool}    showUnit    True if the units are to be shown.
+         * @param {number}  heading         The heading to format
+         * @param {bool}    headingIsTrue   True if the heading is the true heading rather than the ground track.
+         * @param {bool}    showUnit        True if the units are to be shown.
+         * @param {bool}    showType        True if the type of heading is to be shown.
          * @returns {string}
          */
-        this.heading = function(heading, showUnit)
+        this.heading = function(heading, headingIsTrue, showUnit, showType)
         {
             /** @type {*} */
             var result = heading;
             if(result || result === 0) result = VRS.stringUtility.formatNumber(result, '0.0');
             if(showUnit && result) result = VRS.stringUtility.format(VRS.$$.DegreesAbbreviation, result);
+            if(showType && result && headingIsTrue) result += ' ' + VRS.$$.TrueHeadingShort;
 
             return result ? result : '';
+        };
+
+        /**
+         * Formats the heading type as a string.
+         * @param {bool} headingIsTrue  True if the heading is a true heading, false if it's the ground track.
+         * @returns {string}
+         */
+        this.headingType = function(headingIsTrue)
+        {
+            var result = headingIsTrue ? VRS.$$.TrueHeading : VRS.$$.GroundTrack;
+
+            return result;
         };
 
         /**
