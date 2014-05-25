@@ -250,6 +250,12 @@
         labelKey:           'VerticalSpeed',
         getNumberCallback:  function(aircraft) { return aircraft.verticalSpeed.val; }
     });
+
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.VerticalSpeedType] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.VerticalSpeedType,
+        labelKey:           'VerticalSpeedType',
+        getStringCallback:  function(aircraft) { return aircraft.formatVerticalSpeedType(); }
+    });
     //endregion
 
     //region AircraftListSorter

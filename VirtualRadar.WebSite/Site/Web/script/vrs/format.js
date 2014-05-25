@@ -115,6 +115,16 @@
          */
         this.altitudeType = function(altitudeType)
         {
+            return formatAltitudeType(altitudeType);
+        };
+
+        /**
+         * A worker function that translates an altitude type into a string.
+         * @param {VRS.AltitudeType} altitudeType
+         * @returns {string}
+         */
+        function formatAltitudeType(altitudeType)
+        {
             var result = '';
 
             if(altitudeType !== undefined) {
@@ -1183,20 +1193,33 @@
 
         /**
          * Returns the vertical speed formatted as a string.
-         * @param {number}      verticalSpeed   The VSI to format.
-         * @param {VRS.Height}  heightUnit      The VRS.Height unit to use when formatting.
-         * @param {bool}        perSecond       True if the VSI is /second, false if it's /minute.
-         * @param {bool}        showUnit        True if units are to be shown.
+         * @param {number}              verticalSpeed       The VSI to format.
+         * @param {VRS.AltitudeType}    verticalSpeedType   The type of vertical speed.
+         * @param {VRS.Height}          heightUnit          The VRS.Height unit to use when formatting.
+         * @param {bool}                perSecond           True if the VSI is /second, false if it's /minute.
+         * @param {bool}                showUnit            True if units are to be shown.
+         * @param {bool}                showType            True if the vertical speed type is to be shown.
          * @returns {string}
          */
-        this.verticalSpeed = function(verticalSpeed, heightUnit, perSecond, showUnit)
+        this.verticalSpeed = function(verticalSpeed, verticalSpeedType, heightUnit, perSecond, showUnit, showType)
         {
             /** @type {*} */
             var result = VRS.unitConverter.convertVerticalSpeed(verticalSpeed, VRS.Height.Feet, heightUnit, perSecond);
             if(result || result === 0) result = VRS.stringUtility.formatNumber(result, '0');
             if(showUnit && result)     result = VRS.stringUtility.format(VRS.unitConverter.heightUnitOverTimeAbbreviation(heightUnit, perSecond), result);
+            if(showType && result && verticalSpeedType === VRS.AltitudeType.Geometric) result += ' ' + VRS.$$.GeometricAltitudeIndicator;
 
             return result ? result : '';
+        };
+
+        /**
+         * Returns the vertical speed type formatted as a string.
+         * @param {VRS.AltitudeType} verticalSpeedType
+         * @returns {string}
+         */
+        this.verticalSpeedType = function(verticalSpeedType)
+        {
+            return formatAltitudeType(verticalSpeedType);
         };
 
         /**

@@ -24,7 +24,8 @@
     VRS.globalOptions.unitDisplayFLTransitionHeightUnit = VRS.globalOptions.unitDisplayFLTransitionHeightUnit || VRS.Height.Feet;   // The units that FLTransitionAltitude is in.
     VRS.globalOptions.unitDisplayFLHeightUnit = VRS.globalOptions.unitDisplayFLHeightUnit || VRS.Height.Feet;                       // The units that flight levels are displayed in.
     VRS.globalOptions.unitDisplayAllowConfiguration = VRS.globalOptions.unitDisplayAllowConfiguration !== undefined ? VRS.globalOptions.unitDisplayAllowConfiguration : true;   // True if users can configure the display units, false if they cannot.
-    VRS.globalOptions.unitDisplayAltitudeType = VRS.globalOptions.unitDisplayAltitudeType !== undefined ? VRS.globalOptions.unitDisplayAltitudeType : true;   // True if altitude types are to be shown by default.
+    VRS.globalOptions.unitDisplayAltitudeType = VRS.globalOptions.unitDisplayAltitudeType !== undefined ? VRS.globalOptions.unitDisplayAltitudeType : false;                // True if altitude types are to be shown by default.
+    VRS.globalOptions.unitDisplayVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType !== undefined ? VRS.globalOptions.unitDisplayVerticalSpeedType : false; // True if vertical speed types are to be shown by default.
     //endregion
 
     //region UnitDisplayPreferences
@@ -43,15 +44,16 @@
 
         /** @enum {string} @private */
         var _Events = {
-            unitChanged:                'unitChanged',
-            distanceUnitChanged:        'distanceUnitChanged',
-            heightUnitChanged:          'heightUnitChanged',
-            speedUnitChanged:           'speedUnitChanged',
-            showVsiInSecondsChanged:    'showVsiSecondsChanged',
-            flAltitudeChanged:          'flAltitudeChanged',
-            flTransUnitChanged:         'flTransUnitChanged',
-            flHeightUnitChanged:        'flHeightUnitChanged',
-            showAltitudeTypeChanged:    'showAltTypeChanged'
+            unitChanged:                    'unitChanged',
+            distanceUnitChanged:            'distanceUnitChanged',
+            heightUnitChanged:              'heightUnitChanged',
+            speedUnitChanged:               'speedUnitChanged',
+            showVsiInSecondsChanged:        'showVsiSecondsChanged',
+            flAltitudeChanged:              'flAltitudeChanged',
+            flTransUnitChanged:             'flTransUnitChanged',
+            flHeightUnitChanged:            'flHeightUnitChanged',
+            showAltitudeTypeChanged:        'showAltTypeChanged',
+            showVerticalSpeedTypeChanged:   'showVsiTypeChanged'
         };
         //endregion
 
@@ -115,6 +117,17 @@
             }
         };
 
+        /** @type {boolean} @private */
+        var _ShowVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType;
+        this.getShowVerticalSpeedType = function() { return _ShowVerticalSpeedType; };
+        this.setShowVerticalSpeedType = function(/** boolean */ value) {
+            if(_ShowVerticalSpeedType !== value) {
+                _ShowVerticalSpeedType = value;
+                _Dispatcher.raise(_Events.showVerticalSpeedTypeChanged);
+                _Dispatcher.raise(_Events.unitChanged, [ VRS.DisplayUnitDependency.Height ]);
+            }
+        };
+
         /** @type {number} @private */
         var _FlightLevelTransitionAltitude = VRS.globalOptions.unitDisplayFLTransitionAltitude;
         this.getFlightLevelTransitionAltitude = function() { return _FlightLevelTransitionAltitude; };
@@ -156,6 +169,7 @@
         this.hookSpeedUnitChanged =                         function(callback, forceThis) { return _Dispatcher.hook(_Events.speedUnitChanged, callback, forceThis); };
         this.hookShowVerticalSpeedPerSecondChanged =        function(callback, forceThis) { return _Dispatcher.hook(_Events.showVsiInSecondsChanged, callback, forceThis); };
         this.hookShowAltitudeTypeChanged =                  function(callback, forceThis) { return _Dispatcher.hook(_Events.showAltitudeTypeChanged, callback, forceThis); };
+        this.hookShowVerticalSpeedTypeChanged =             function(callback, forceThis) { return _Dispatcher.hook(_Events.showVerticalSpeedTypeChanged, callback, forceThis); };
         this.hookFlightLevelTransitionAltitudeChanged =     function(callback, forceThis) { return _Dispatcher.hook(_Events.flAltitudeChanged, callback, forceThis); };
         this.hookFlightLevelTransitionHeightUnitChanged =   function(callback, forceThis) { return _Dispatcher.hook(_Events.flTransUnitChanged, callback, forceThis); };
         this.hookFlightLevelHeightUnitChanged =             function(callback, forceThis) { return _Dispatcher.hook(_Events.flHeightUnitChanged, callback, forceThis); };
@@ -214,6 +228,14 @@
                     labelKey:       'ShowAltitudeType',
                     getValue:       that.getShowAltitudeType,
                     setValue:       that.setShowAltitudeType,
+                    saveState:      that.saveState
+                }));
+
+                pane.addField(new VRS.OptionFieldCheckBox({
+                    name:           'showVerticalSpeedType',
+                    labelKey:       'ShowVerticalSpeedType',
+                    getValue:       that.getShowVerticalSpeedType,
+                    setValue:       that.setShowVerticalSpeedType,
                     saveState:      that.saveState
                 }));
 
@@ -313,6 +335,7 @@
             that.setFlightLevelTransitionHeightUnit(settings.flTransitionUnit);
             that.setFlightLevelHeightUnit(settings.flHeightUnit);
             that.setShowAltitudeType(settings.showAltType);
+            that.setShowVerticalSpeedType(settings.showVsiType);
         };
 
         /**
@@ -346,7 +369,8 @@
                 flTransitionAlt:    that.getFlightLevelTransitionAltitude(),
                 flTransitionUnit:   that.getFlightLevelTransitionHeightUnit(),
                 flHeightUnit:       that.getFlightLevelHeightUnit(),
-                showAltType:        that.getShowAltitudeType()
+                showAltType:        that.getShowAltitudeType(),
+                showVsiType:        that.getShowVerticalSpeedType()
             };
         }
         //endregion
