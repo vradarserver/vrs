@@ -879,8 +879,24 @@
         sortableField:          VRS.AircraftListSortableField.Speed,
         alignment:              VRS.Alignment.Right,
         hasChangedCallback:     function(aircraft) { return aircraft.speed.chg; },
-        contentCallback:        function(aircraft, options) { return aircraft.formatSpeed(options.unitDisplayPreferences.getSpeedUnit(), options.showUnits); },
+        contentCallback:        function(aircraft, options) {
+            return aircraft.formatSpeed(
+                options.unitDisplayPreferences.getSpeedUnit(),
+                options.showUnits,
+                options.unitDisplayPreferences.getShowSpeedType()
+            );
+        },
         usesDisplayUnit:        function(displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Speed; }
+    });
+
+    VRS.renderPropertyHandlers[VRS.RenderProperty.SpeedType] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.SpeedType,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListSpeedType',
+        labelKey:               'SpeedType',
+        sortableField:          VRS.AircraftListSortableField.SpeedType,
+        hasChangedCallback:     function(aircraft) { return aircraft.speedType.chg; },
+        contentCallback:        function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) { return aircraft.formatSpeedType(); }
     });
 
     /*

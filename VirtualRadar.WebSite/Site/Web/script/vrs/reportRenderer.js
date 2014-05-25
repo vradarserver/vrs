@@ -599,7 +599,15 @@
         labelKey:           'FirstSpeed',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.fSpd !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.speed(json.fSpd, options.unitDisplayPreferences.getSpeedUnit(), options.showUnits); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) {
+            return VRS.format.speed(
+                json.fSpd,
+                VRS.SpeedType.Ground,
+                options.unitDisplayPreferences.getSpeedUnit(),
+                options.showUnits,
+                false
+            );
+        }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.FirstSquawk] = new VRS.ReportPropertyHandler({
@@ -734,7 +742,15 @@
         labelKey:           'LastSpeed',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.lSpd !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.speed(json.lSpd, options.unitDisplayPreferences.getSpeedUnit(), options.showUnits); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) {
+            return VRS.format.speed(
+                json.lSpd,
+                VRS.SpeedType.Ground,
+                options.unitDisplayPreferences.getSpeedUnit(),
+                options.showUnits,
+                false
+            );
+        }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.LastSquawk] = new VRS.ReportPropertyHandler({

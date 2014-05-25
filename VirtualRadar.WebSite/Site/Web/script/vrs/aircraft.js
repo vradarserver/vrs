@@ -1227,11 +1227,21 @@
          * Returns the speed formatted as a string.
          * @param {VRS.Speed}   speedUnit   The VRS.Speed unit to use when formatting the speed.
          * @param {bool}        showUnit    True if the units are to be shown.
+         * @param {bool}        showType    True if the type of speed is to be shown.
          * @returns {string}
          */
-        this.formatSpeed = function(speedUnit, showUnit)
+        this.formatSpeed = function(speedUnit, showUnit, showType)
         {
-            return VRS.format.speed(this.speed.val, speedUnit, showUnit);
+            return VRS.format.speed(this.speed.val, this.speedType.val, speedUnit, showUnit, showType);
+        };
+
+        /**
+         * Returns the speed type formatted as a string.
+         * @returns {string}
+         */
+        this.formatSpeedType = function()
+        {
+            return VRS.format.speedType(this.speedType.val);
         };
 
         /**
@@ -1280,7 +1290,7 @@
         this.formatVerticalSpeedType = function()
         {
             return VRS.format.verticalSpeedType(this.verticalSpeedType.val);
-        }
+        };
 
         /**
          * Returns the wake turbulence category formatted as a string.
