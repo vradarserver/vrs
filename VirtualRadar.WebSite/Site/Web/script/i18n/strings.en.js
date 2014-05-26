@@ -36,6 +36,9 @@
     VRS.$$.AddCondition =                               'Add Condition';
     VRS.$$.AddCriteria =                                'Add Criteria';
     VRS.$$.AddFilter =                                  'Add Filter';
+    VRS.$$.ADSB =                                       'ADS-B';
+    VRS.$$.ADSB1 =                                      'ADS-B v1';
+    VRS.$$.ADSB2 =                                      'ADS-B v2';
     VRS.$$.AircraftNotTransmittingCallsign =            'Aircraft is not transmitting its callsign';
     VRS.$$.AircraftClass =                              'Aircraft Class';
     VRS.$$.Airport =                                    'Airport';
@@ -276,6 +279,8 @@
     VRS.$$.ListStartTime =                              'Seen';
     VRS.$$.ListStatus =                                 'Status';
     VRS.$$.ListTotalHours =                             'Total Hours';
+    VRS.$$.ListTransponderType =                        'Transponder';
+    VRS.$$.ListTransponderTypeFlag =                    '';
     VRS.$$.ListUserTag =                                'Tag';
     VRS.$$.ListVerticalSpeed =                          'V.Speed';
     VRS.$$.ListVerticalSpeedType =                      'V.Speed Type';
@@ -299,6 +304,7 @@
     VRS.$$.MobileReportPage =                           'Mobile Report Page';
     VRS.$$.Model =                                      'Model';
     VRS.$$.ModelIcao =                                  'Model Code';
+    VRS.$$.ModeS =                                      'Mode-S';
     VRS.$$.ModeSCountry =                               'Mode-S Country';
     VRS.$$.MovingMap =                                  'Moving Map';
     VRS.$$.MuteOff =                                    'Mute Off';
@@ -462,6 +468,8 @@
     VRS.$$.TotalHours =                                 'Total Hours';
     VRS.$$.TrackingCountAircraft =                      'Tracking {0:N0} aircraft';
     VRS.$$.TrackingCountAircraftOutOf =                 'Tracking {0:N0} aircraft (out of {1:N0})';
+    VRS.$$.TransponderType =                            'Transponder';
+    VRS.$$.TransponderTypeFlag =                        'Transponder Flag';
     VRS.$$.TrueAirSpeed =                               'True';
     VRS.$$.TrueAirSpeedShort =                          'TAS';                          // Keep this one short, an abbreviation if possible.
     VRS.$$.TrueHeading =                                'True heading';

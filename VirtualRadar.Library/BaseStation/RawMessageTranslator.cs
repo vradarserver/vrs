@@ -622,6 +622,18 @@ namespace VirtualRadar.Library.BaseStation
         }
 
         /// <summary>
+        /// Creates a <see cref="BaseStationSupplementaryMessage"/> and returns it, or returns it if it already exists.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private BaseStationSupplementaryMessage CreateSupplementary(BaseStationMessage message)
+        {
+            if(message.Supplementary == null) message.Supplementary = new BaseStationSupplementaryMessage();
+
+            return message.Supplementary;
+        }
+
+        /// <summary>
         /// Applies values from the Mode-S message to the BaseStation message being formed.
         /// </summary>
         /// <param name="modeSMessage"></param>
@@ -653,8 +665,7 @@ namespace VirtualRadar.Library.BaseStation
 
             if(!String.IsNullOrEmpty(modeSMessage.PossibleCallsign) && !SuppressCallsignsFromBds20 && !trackedAircraft.SeenAdsbCallsign) {
                 baseStationMessage.Callsign = modeSMessage.PossibleCallsign.Trim();
-                if(baseStationMessage.Supplementary == null) baseStationMessage.Supplementary = new BaseStationSupplementaryMessage();
-                baseStationMessage.Supplementary.CallsignIsSuspect = true;
+                CreateSupplementary(baseStationMessage).CallsignIsSuspect = true;
             }
         }
 
@@ -680,8 +691,7 @@ namespace VirtualRadar.Library.BaseStation
             if(adsbMessage.AirbornePosition.BarometricAltitude != null) baseStationMessage.Altitude = adsbMessage.AirbornePosition.BarometricAltitude;
             else if(adsbMessage.AirbornePosition.GeometricAltitude != null) {
                 baseStationMessage.Altitude = adsbMessage.AirbornePosition.GeometricAltitude;
-                if(baseStationMessage.Supplementary == null) baseStationMessage.Supplementary = new BaseStationSupplementaryMessage();
-                baseStationMessage.Supplementary.AltitudeIsGeometric = true;
+                CreateSupplementary(baseStationMessage).AltitudeIsGeometric = true;
             }
 
             if(adsbMessage.AirbornePosition.CompactPosition != null) {
@@ -702,15 +712,14 @@ namespace VirtualRadar.Library.BaseStation
                 baseStationMessage.GroundSpeed = (float?)adsbMessage.AirborneVelocity.Airspeed;
                 baseStationMessage.Track = (float?)adsbMessage.AirborneVelocity.Heading;
 
-                if(baseStationMessage.Supplementary == null) baseStationMessage.Supplementary = new BaseStationSupplementaryMessage();
+                CreateSupplementary(baseStationMessage);
                 baseStationMessage.Supplementary.SpeedType = adsbMessage.AirborneVelocity.AirspeedIsTrueAirspeed ? SpeedType.TrueAirSpeed : SpeedType.IndicatedAirSpeed;
                 baseStationMessage.Supplementary.TrackIsHeading = true;
             }
 
             baseStationMessage.VerticalRate = adsbMessage.AirborneVelocity.VerticalRate;
             if(adsbMessage.AirborneVelocity.VerticalRateIsBarometric) {
-                if(baseStationMessage.Supplementary == null) baseStationMessage.Supplementary = new BaseStationSupplementaryMessage();
-                baseStationMessage.Supplementary.VerticalRateIsGeometric = true;
+                CreateSupplementary(baseStationMessage).VerticalRateIsGeometric = true;
             }
         }
 
@@ -727,8 +736,7 @@ namespace VirtualRadar.Library.BaseStation
             if(adsbMessage.IdentifierAndCategory.Identification != null) {
                 trackedAircraft.SeenAdsbCallsign = true;
                 baseStationMessage.Callsign = adsbMessage.IdentifierAndCategory.Identification.Trim();
-                if(baseStationMessage.Supplementary == null) baseStationMessage.Supplementary = new BaseStationSupplementaryMessage();
-                baseStationMessage.Supplementary.CallsignIsSuspect = false;
+                CreateSupplementary(baseStationMessage).CallsignIsSuspect = false;
             }
         }
 
@@ -738,8 +746,7 @@ namespace VirtualRadar.Library.BaseStation
             baseStationMessage.GroundSpeed = (float?)adsbMessage.SurfacePosition.GroundSpeed;
             baseStationMessage.Track = (float?)adsbMessage.SurfacePosition.GroundTrack;
             if(adsbMessage.SurfacePosition.IsReversing) {
-                if(baseStationMessage.Supplementary == null) baseStationMessage.Supplementary = new BaseStationSupplementaryMessage();
-                baseStationMessage.Supplementary.SpeedType = SpeedType.GroundSpeedReversing;
+                CreateSupplementary(baseStationMessage).SpeedType = SpeedType.GroundSpeedReversing;
             }
 
             if(adsbMessage.SurfacePosition.CompactPosition != null) {
@@ -752,6 +759,11 @@ namespace VirtualRadar.Library.BaseStation
         {
             if(adsbMessage.TargetStateAndStatus.Version1 != null) {
                 baseStationMessage.Emergency = adsbMessage.TargetStateAndStatus.Version1.EmergencyState != EmergencyState.None;
+                CreateSupplementary(baseStationMessage).TransponderType = TransponderType.Adsb1;
+            }
+
+            if(adsbMessage.TargetStateAndStatus.Version2 != null) {
+                CreateSupplementary(baseStationMessage).TransponderType = TransponderType.Adsb2;
             }
         }
 

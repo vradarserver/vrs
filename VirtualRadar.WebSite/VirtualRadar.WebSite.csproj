@@ -181,7 +181,15 @@
     <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_thick_40_eeeeee_40x40.png" />
     <Content Include="Site\Web\fonts\icomoon-content.txt" />
     <Content Include="Site\Web\fsx.html" />
+    <Content Include="Site\Web\images\ADSB%402x.png" />
+    <Content Include="Site\Web\images\ADSB-1%402x.png" />
+    <Content Include="Site\Web\images\ADSB-1.png" />
+    <Content Include="Site\Web\images\ADSB-2%402x.png" />
+    <Content Include="Site\Web\images\ADSB-2.png" />
+    <Content Include="Site\Web\images\ADSB.png" />
     <Content Include="Site\Web\images\location.png" />
+    <Content Include="Site\Web\images\Mode-S%402x.png" />
+    <Content Include="Site\Web\images\Mode-S.png" />
     <Content Include="Site\Web\images\regions\fi.bmp" />
     <Content Include="Site\Web\images\regions\no.bmp" />
     <Content Include="Site\Web\images\regions\se.bmp" />

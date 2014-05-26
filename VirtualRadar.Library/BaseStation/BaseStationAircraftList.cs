@@ -423,7 +423,10 @@ namespace VirtualRadar.Library.BaseStation
                 aircraft.ReceiverId = message.ReceiverId;
                 aircraft.SignalLevel = message.SignalLevel;
                 ++aircraft.CountMessagesReceived;
-                if(isNewAircraft) aircraft.FirstSeen = now;
+                if(isNewAircraft) {
+                    aircraft.FirstSeen = now;
+                    aircraft.TransponderType = TransponderType.ModeS;
+                }
                 if(aircraft.Icao24 == null) aircraft.Icao24 = message.Icao24;
 
                 if(!String.IsNullOrEmpty(message.Callsign)) aircraft.Callsign = message.Callsign;
@@ -440,6 +443,16 @@ namespace VirtualRadar.Library.BaseStation
                     aircraft.Emergency = message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700;
                 }
 
+                if(aircraft.TransponderType == TransponderType.ModeS) {
+                    if((message.GroundSpeed != null && message.GroundSpeed != 0) ||
+                       (message.VerticalRate != null && message.VerticalRate != 0) ||
+                       (message.Latitude != null && message.Latitude != 0) ||
+                       (message.Longitude != null && message.Longitude != 0) ||
+                       (message.Track != null && message.Track != 0)) {
+                        aircraft.TransponderType = TransponderType.Adsb;
+                    }
+                }
+
                 var supplementaryMessage = message != null && message.Supplementary != null ? message.Supplementary : null;
                 if(supplementaryMessage != null) {
                     if(supplementaryMessage.AltitudeIsGeometric != null)        aircraft.AltitudeType = supplementaryMessage.AltitudeIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
@@ -447,6 +460,14 @@ namespace VirtualRadar.Library.BaseStation
                     if(supplementaryMessage.SpeedType != null)                  aircraft.SpeedType = supplementaryMessage.SpeedType.Value;
                     if(supplementaryMessage.CallsignIsSuspect != null)          aircraft.CallsignIsSuspect = supplementaryMessage.CallsignIsSuspect.Value;
                     if(supplementaryMessage.TrackIsHeading != null)             aircraft.TrackIsHeading = supplementaryMessage.TrackIsHeading.Value;
+
+                    if(supplementaryMessage.TransponderType != null) {
+                        if(supplementaryMessage.TransponderType.Value == TransponderType.Adsb1 && aircraft.TransponderType != TransponderType.Adsb2) {
+                            aircraft.TransponderType = TransponderType.Adsb1;
+                        } else if(supplementaryMessage.TransponderType.Value == TransponderType.Adsb2) {
+                            aircraft.TransponderType = TransponderType.Adsb2;
+                        }
+                    }
                 }
 
                 var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);

@@ -347,6 +347,7 @@
     <Compile Include="SQLite\SQLiteJournalModeEnum.cs" />
     <Compile Include="SQLite\SynchronizationModes.cs" />
     <Compile Include="StreamHelper.cs" />
+    <Compile Include="TransponderType.cs" />
     <Compile Include="View\IBusyView.cs" />
     <Compile Include="View\IConfirmView.cs" />
     <Compile Include="View\IConnectionClientLogView.cs" />

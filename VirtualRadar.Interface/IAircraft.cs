@@ -448,6 +448,16 @@ namespace VirtualRadar.Interface
         long PictureHeightChanged { get; }
 
         /// <summary>
+        /// Gets or sets the transponder type used by the aircraft.
+        /// </summary>
+        TransponderType TransponderType { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="TransponderType"/> was last changed.
+        /// </summary>
+        long TransponderTypeChanged { get; }
+
+        /// <summary>
         /// Gets or sets the <see cref="DataVersion"/> that was current when the coordinates were first started for the aircraft.
         /// </summary>
         long FirstCoordinateChanged { get; set; }

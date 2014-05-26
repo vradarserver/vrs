@@ -87,6 +87,7 @@
         SpeedType:          'sty',
         Squawk:             'sqk',
         TimeTracked:        'tim',
+        TransponderType:    'trt',
         UserTag:            'tag',
         VerticalSpeed:      'vsi',
         VerticalSpeedType:  'vty'
@@ -410,6 +411,8 @@
 //        SpeedGraph:                     'spg',
         Squawk:                         'sqk',
         TimeTracked:                    'tim',
+        TransponderType:                'trt',
+        TransponderTypeFlag:            'trf',
         UserTag:                        'tag',
         VerticalSpeed:                  'vsi',
         VerticalSpeedType:              'vty',
@@ -646,6 +649,16 @@
         FullAltitude:   'd',            // Full trail, colour indicate altitude
         ShortSpeed:     'e',            // Short trail, colour indicates speed
         FullSpeed:      'f'             // Full trail, colour indicates speed
+    };
+    //endregion
+
+    //region TransponderType
+    VRS.TransponderType = {
+        Unknown:        0,              // Transponder type is unknown
+        ModeS:          1,              // Mode-S transponder with no ADS-B
+        Adsb:           2,              // Mode-S transponder with ADS-B, cannot be certain about ADS-B version
+        Adsb1:          3,              // Mode-S transponder with ADS-B, certain that it is version 1
+        Adsb2:          4               // Mode-S transponder with ADS-B, certain that it is version 2
     };
     //endregion
 

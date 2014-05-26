@@ -327,6 +327,12 @@ namespace VirtualRadar.Interface.WebSite
         public string TrailType { get; set; }
 
         /// <summary>
+        /// Gets or sets the transponder type.
+        /// </summary>
+        [DataMember(Name="Trt", IsRequired=false, EmitDefaultValue=false)]
+        public int? TransponderType { get; set; }
+
+        /// <summary>
         /// Gets or sets a list of coordinates representing the full trail for the aircraft. If <see cref="ResetTrail"/>
         /// is true then it is the entire trail, otherwise it extends the existing trail.
         /// </summary>
