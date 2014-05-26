@@ -189,6 +189,7 @@ VRS_GOOGLE_ICON;
 * Interested:   boolean,
 * Stops:        String[],
 * TT:           String,
+* Trt:          Number,
 * Cos:          Number[],
 * Cot:          Number[],
 * ResetTrail:   boolean,

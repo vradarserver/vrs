@@ -530,6 +530,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long PictureHeightChanged { get; private set; }
 
+        private TransponderType _TransponderType;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public TransponderType TransponderType { get { return _TransponderType; } set { if(value != _TransponderType) { _TransponderType = value; TransponderTypeChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long TransponderTypeChanged { get; private set; }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -684,6 +695,7 @@ namespace VirtualRadar.Library
                 result.Squawk = Squawk;
                 result.Track = Track;
                 result.TrackIsHeading = TrackIsHeading;
+                result.TransponderType = TransponderType;
                 result.Type = Type;
                 result.UniqueId = UniqueId;
                 result.UserTag = UserTag;
@@ -735,6 +747,7 @@ namespace VirtualRadar.Library
                 result.StopoversChanged = StopoversChanged;
                 result.TrackChanged = TrackChanged;
                 result.TrackIsHeadingChanged = TrackIsHeadingChanged;
+                result.TransponderTypeChanged = TransponderTypeChanged;
                 result.TypeChanged = TypeChanged;
                 result.UserTagChanged = UserTagChanged;
                 result.VerticalRateChanged = VerticalRateChanged;

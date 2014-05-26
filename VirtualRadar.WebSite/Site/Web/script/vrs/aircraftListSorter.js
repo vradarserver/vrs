@@ -251,6 +251,12 @@
         getNumberCallback:  function(aircraft) { return aircraft.secondsTracked; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.TransponderType] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.TransponderType,
+        labelKey:           'TransponderType',
+        getNumberCallback:  function(aircraft) { return aircraft.transponderType.val; }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.UserTag] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.UserTag,
         labelKey:           'UserTag',

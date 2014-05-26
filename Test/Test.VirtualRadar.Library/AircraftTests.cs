@@ -50,6 +50,7 @@ namespace Test.VirtualRadar.Library
         public void Aircraft_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             Assert.AreEqual(0, _Aircraft.AltitudeChanged);
+            Assert.AreEqual(0, _Aircraft.AltitudeTypeChanged);
             Assert.AreEqual(0, _Aircraft.CallsignChanged);
             Assert.AreEqual(0, _Aircraft.CallsignIsSuspectChanged);
             Assert.AreEqual(0, _Aircraft.ConstructionNumberChanged);
@@ -85,9 +86,12 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.SpeedTypeChanged);
             Assert.AreEqual(0, _Aircraft.SquawkChanged);
             Assert.AreEqual(0, _Aircraft.TrackChanged);
+            Assert.AreEqual(0, _Aircraft.TrackIsHeadingChanged);
+            Assert.AreEqual(0, _Aircraft.TransponderTypeChanged);
             Assert.AreEqual(0, _Aircraft.TypeChanged);
             Assert.AreEqual(0, _Aircraft.UserTagChanged);
             Assert.AreEqual(0, _Aircraft.VerticalRateChanged);
+            Assert.AreEqual(0, _Aircraft.VerticalRateTypeChanged);
             Assert.AreEqual(0, _Aircraft.WakeTurbulenceCategoryChanged);
 
             Assert.AreEqual(0, _Aircraft.FullCoordinates.Count);
@@ -95,6 +99,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.Stopovers.Count);
 
             TestUtilities.TestProperty(_Aircraft, r => r.Altitude, null, 1);
+            TestUtilities.TestProperty(_Aircraft, r => r.AltitudeType, AltitudeType.Barometric, AltitudeType.Geometric);
             TestUtilities.TestProperty(_Aircraft, r => r.Callsign, null, "ABC123");
             TestUtilities.TestProperty(_Aircraft, r => r.CallsignIsSuspect, false);
             TestUtilities.TestProperty(_Aircraft, r => r.ConstructionNumber, null, "GB");
@@ -137,10 +142,13 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.Squawk, null, 7654);
             TestUtilities.TestProperty(_Aircraft, r => r.StopoversChanged, 0L, 123L);
             TestUtilities.TestProperty(_Aircraft, r => r.Track, null, 12.345F);
+            TestUtilities.TestProperty(_Aircraft, r => r.TrackIsHeading, false);
+            TestUtilities.TestProperty(_Aircraft, r => r.TransponderType, TransponderType.Unknown, TransponderType.Adsb2);
             TestUtilities.TestProperty(_Aircraft, r => r.Type, null, "9JH");
             TestUtilities.TestProperty(_Aircraft, r => r.UserTag, null, "ABC");
             TestUtilities.TestProperty(_Aircraft, r => r.UniqueId, 0, 12);
             TestUtilities.TestProperty(_Aircraft, r => r.VerticalRate, null, -120);
+            TestUtilities.TestProperty(_Aircraft, r => r.VerticalRateType, AltitudeType.Barometric, AltitudeType.Geometric);
             TestUtilities.TestProperty(_Aircraft, r => r.WakeTurbulenceCategory, WakeTurbulenceCategory.None, WakeTurbulenceCategory.Heavy);
         }
 
@@ -373,6 +381,8 @@ namespace Test.VirtualRadar.Library
                             case "VerticalRateTypeChanged":         value = _Aircraft.VerticalRateTypeChanged; break;
                             case "TrackIsHeading":                  value = _Aircraft.TrackIsHeading = property.Name == trueBool; break;
                             case "TrackIsHeadingChanged":           value = _Aircraft.TrackIsHeadingChanged; break;
+                            case "TransponderType":                 value = _Aircraft.TransponderType = TransponderType.Adsb2; break;
+                            case "TransponderTypeChanged":          value = _Aircraft.TransponderTypeChanged; break;
                             default:                                throw new NotImplementedException();
                         }
 

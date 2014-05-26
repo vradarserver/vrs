@@ -943,6 +943,30 @@
         contentCallback:        function(aircraft) { return aircraft.formatSecondsTracked(); }
     });
 
+    VRS.renderPropertyHandlers[VRS.RenderProperty.TransponderType] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.TransponderType,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListTransponderType',
+        labelKey:               'TransponderType',
+        sortableField:          VRS.AircraftListSortableField.TransponderType,
+        hasChangedCallback:     function(aircraft) { return aircraft.transponderType.chg; },
+        contentCallback:        function(aircraft) { return aircraft.formatTransponderType(); }
+    });
+
+    VRS.renderPropertyHandlers[VRS.RenderProperty.TransponderTypeFlag] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.TransponderTypeFlag,
+        surfaces:               VRS.RenderSurface.List,
+        headingKey:             'ListTransponderTypeFlag',
+        labelKey:               'TransponderTypeFlag',
+        sortableField:          VRS.AircraftListSortableField.TransponderType,
+        suppressLabelCallback:  function() { return true; },
+        fixedWidth:             function() { return VRS.globalOptions.aircraftTransponderTypeSize.width.toString() + 'px'; },
+        hasChangedCallback:     function(aircraft) { return aircraft.transponderType.chg; },
+        renderCallback:         function(aircraft) { return aircraft.formatTransponderTypeImageHtml(); },
+        tooltipChangedCallback: function(aircraft) { return aircraft.transponderType.chg; },
+        tooltipCallback:        function(aircraft) { return aircraft.formatTransponderType(); }
+    });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.UserTag] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.UserTag,
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,

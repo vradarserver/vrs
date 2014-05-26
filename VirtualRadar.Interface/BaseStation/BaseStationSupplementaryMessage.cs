@@ -77,5 +77,13 @@ namespace VirtualRadar.Interface.BaseStation
         /// aircraft.
         /// </remarks>
         public bool? CallsignIsSuspect { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the message carries some indication about the type of transponder
+        /// carried by the aircraft. Note that this is not set for plain Mode-S messages or ADS-B messages which
+        /// are identical for all versions of ADS-B - it is only set when the message plainly indicates a particular
+        /// version of ADS-B.
+        /// </summary>
+        public TransponderType? TransponderType { get; set; }
     }
 }

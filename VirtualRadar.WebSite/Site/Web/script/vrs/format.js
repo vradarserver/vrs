@@ -20,6 +20,7 @@
     VRS.globalOptions.aircraftOperatorFlagSize = VRS.globalOptions.aircraftOperatorFlagSize || { width: 85, height: 20 };       // The dimensions of operator flags
     VRS.globalOptions.aircraftSilhouetteSize = VRS.globalOptions.aircraftSilhouetteSize || { width: 85, height: 20 };           // The dimensions of silhouette flags
     VRS.globalOptions.aircraftBearingCompassSize = VRS.globalOptions.aircraftBearingCompassSize || { width: 16, height: 16 };   // The dimensions of the bearing compass image.
+    VRS.globalOptions.aircraftTransponderTypeSize = VRS.globalOptions.aircraftTransponderTypeSize || { width: 20, height: 20 }; // The dimensions of the transponder type normal-size images.
     VRS.globalOptions.aircraftFlagUncertainCallsigns = VRS.globalOptions.aircraftFlagUncertainCallsigns !== undefined ? VRS.globalOptions.aircraftFlagUncertainCallsigns : true;    // True if callsigns that we're not 100% sure about are to be shown with an asterisk against them.
     VRS.globalOptions.aircraftAllowRegistrationFlagOverride = VRS.globalOptions.aircraftAllowRegistrationFlagOverride !== undefined ? VRS.globalOptions.aircraftAllowRegistrationFlagOverride : false;  // True if the user wants to support searching for operator and silhouette flags by registration. Note that some registrations are not distinct from operator and ICAO8643 codes.
     //endregion
@@ -1215,6 +1216,58 @@
         this.totalHours = function(totalHours)
         {
             return totalHours || '';
+        };
+
+
+        /**
+         * Formats a transponder type into a string.
+         * @param {VRS.TransponderType} transponderType
+         * @returns {string}
+         */
+        this.transponderType = function(transponderType)
+        {
+            var result = '';
+
+            if(transponderType !== undefined && transponderType !== null) {
+                switch(transponderType) {
+                    case VRS.TransponderType.Unknown:   result = VRS.$$.Unknown; break;
+                    case VRS.TransponderType.ModeS:     result = VRS.$$.ModeS; break;
+                    case VRS.TransponderType.Adsb:      result = VRS.$$.ADSB; break;
+                    case VRS.TransponderType.Adsb1:     result = VRS.$$.ADSB1; break;
+                    case VRS.TransponderType.Adsb2:     result = VRS.$$.ADSB2; break;
+                }
+            }
+
+            return result;
+        };
+
+        /**
+         * Formats a transponder type into an IMG tag for a corresponding image for the type.
+         * @param {VRS.TransponderType} transponderType
+         * @returns {string}
+         */
+        this.transponderTypeImageHtml = function(transponderType)
+        {
+            var result = '';
+
+            if(transponderType) {
+                var name = '';
+                switch(transponderType) {
+                    case VRS.TransponderType.ModeS:     name = 'Mode-S'; break;
+                    case VRS.TransponderType.Adsb:      name = 'ADSB'; break;
+                    case VRS.TransponderType.Adsb1:     name = 'ADSB-1'; break;
+                    case VRS.TransponderType.Adsb2:     name = 'ADSB-2'; break;
+                }
+
+                if(name) {
+                    var size = VRS.globalOptions.aircraftTransponderTypeSize;
+                    if(VRS.browserHelper.isHighDpi()) name += '@2x';
+                    name += '.png';
+                    result = '<img src="images/' + name + '" width="' + size.width + 'px" height="' + size.height + '">';
+                }
+            }
+
+            return result;
         };
 
         /**

@@ -411,6 +411,7 @@
         this.signalLevel =              new VRS.NumberValue();
         this.averageSignalLevel =       new VRS.NumberValue();
         this.airportDataThumbnails =    new VRS.AirportDataThumbnailValue();
+        this.transponderType =          new VRS.NumberValue();
 
         this.shortTrail =               new VRS.ArrayValue();
         this.fullTrail =                new VRS.ArrayValue();
@@ -478,6 +479,7 @@
             setValue(this.isOnGround,           aircraftJson.Gnd);
             setValue(this.userTag,              aircraftJson.Tag);
             setValue(this.userInterested,       aircraftJson.Interested);
+            setValue(this.transponderType,      aircraftJson.Trt);
             setRouteArray(this.via,             aircraftJson.Stops);
 
             if(aircraftJson.HasSig !== undefined) {
@@ -1261,6 +1263,24 @@
         this.formatSquawk = function()
         {
             return VRS.format.squawk(this.squawk.val);
+        };
+
+        /**
+         * Returns the transponder type formatted as a string.
+         * @returns {string}
+         */
+        this.formatTransponderType = function()
+        {
+            return VRS.format.transponderType(this.transponderType.val);
+        };
+
+        /**
+         * Returns the transponder type formatted as an IMG HTML element.
+         * @returns {string}
+         */
+        this.formatTransponderTypeImageHtml = function()
+        {
+            return VRS.format.transponderTypeImageHtml(this.transponderType.val);
         };
 
         /**

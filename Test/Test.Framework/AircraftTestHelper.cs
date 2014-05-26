@@ -47,6 +47,7 @@ namespace Test.Framework
                    propertyType == typeof(SpeedType) ? SpeedType.IndicatedAirSpeed :
                    propertyType == typeof(List<Coordinate>) ? new Coordinate(1L, 2L, 3f, 4f, 5f) :
                    propertyType == typeof(AltitudeType) ? AltitudeType.Geometric :
+                   propertyType == typeof(TransponderType) ? TransponderType.Adsb2 :
                    (object)"XYZ";
         }
     }

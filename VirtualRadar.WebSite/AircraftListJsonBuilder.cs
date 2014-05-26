@@ -234,6 +234,7 @@ namespace VirtualRadar.WebSite
                 if(firstTimeSeen || aircraftSnapshot.SquawkChanged > args.PreviousDataVersion)                  aircraftJson.Squawk = String.Format("{0:0000}", aircraftSnapshot.Squawk);
                 if(firstTimeSeen || aircraftSnapshot.TrackChanged > args.PreviousDataVersion)                   aircraftJson.Track = Round.Track(aircraftSnapshot.Track);
                 if(firstTimeSeen || aircraftSnapshot.TrackIsHeadingChanged > args.PreviousDataVersion)          aircraftJson.TrackIsHeading = aircraftSnapshot.TrackIsHeading;
+                if(firstTimeSeen || aircraftSnapshot.TransponderTypeChanged > args.PreviousDataVersion)         aircraftJson.TransponderType = (int)aircraftSnapshot.TransponderType;
                 if(firstTimeSeen || aircraftSnapshot.TypeChanged > args.PreviousDataVersion)                    aircraftJson.Type = aircraftSnapshot.Type;
                 if(firstTimeSeen || aircraftSnapshot.UserTagChanged > args.PreviousDataVersion)                 aircraftJson.UserTag = aircraftSnapshot.UserTag;
                 if(firstTimeSeen || aircraftSnapshot.VerticalRateChanged > args.PreviousDataVersion)            aircraftJson.VerticalRate = aircraftSnapshot.VerticalRate;
