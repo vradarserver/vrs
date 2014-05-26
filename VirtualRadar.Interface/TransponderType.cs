@@ -22,18 +22,23 @@ namespace VirtualRadar.Interface
 
         /// <summary>
         /// The transponder is sending Mode-S messages with ADSB content, but the type of ADSB
-        /// content cannot be determined. Assume that it's ADSB-1.
+        /// content cannot be determined. Assume that it's ADSB-0.
         /// </summary>
         Adsb = 2,
 
         /// <summary>
+        /// The transponder is sending Mode-S messages with ADSB-0 content.
+        /// </summary>
+        Adsb0 = 3,
+
+        /// <summary>
         /// The transponder is sending Mode-S messages with ADSB-1 content.
         /// </summary>
-        Adsb1 = 3,
+        Adsb1 = 4,
 
         /// <summary>
         /// The transponder is sending Mode-S messages with ADSB-2 content.
         /// </summary>
-        Adsb2 = 4,
+        Adsb2 = 5,
     }
 }

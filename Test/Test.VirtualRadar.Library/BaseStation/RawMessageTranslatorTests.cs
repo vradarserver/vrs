@@ -1728,6 +1728,56 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
         #endregion
 
+        #region Translate - AircraftOperationalStatus
+        [TestMethod]
+        public void RawMessageTranslator_Translate_AircraftOperationalStatus_Generates_Supplementary_Message_When_ADSB_0_Message()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.AircraftOperationalStatus = new AircraftOperationalStatusMessage() {
+                    AdsbVersion = 0,
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(TransponderType.Adsb0, message.Supplementary.TransponderType);
+            }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_AircraftOperationalStatus_Generates_Supplementary_Message_When_ADSB_1_Message()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.AircraftOperationalStatus = new AircraftOperationalStatusMessage() {
+                    AdsbVersion = 1,
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(TransponderType.Adsb1, message.Supplementary.TransponderType);
+            }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_AircraftOperationalStatus_Generates_Supplementary_Message_When_ADSB_2_Message()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.AircraftOperationalStatus = new AircraftOperationalStatusMessage() {
+                    AdsbVersion = 2,
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(TransponderType.Adsb2, message.Supplementary.TransponderType);
+            }
+        }
+        #endregion
+
         #region Translate - TargetStateAndStatus
         [TestMethod]
         public void RawMessageTranslator_Translate_TargetStateAndStatus_Generates_Supplementary_Message_When_ADSB_1_Message()
@@ -1760,6 +1810,44 @@ namespace Test.VirtualRadar.Library.BaseStation
                 Assert.IsNotNull(message);
                 Assert.IsNotNull(message.Supplementary);
                 Assert.AreEqual(TransponderType.Adsb2, message.Supplementary.TransponderType);
+            }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_TargetStateAndStatus_Fills_Target_Altitude_For_ADSB_1_Messages()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.TargetStateAndStatus = new TargetStateAndStatusMessage() {
+                    TargetStateAndStatusType = TargetStateAndStatusType.Version1,
+                    Version1 = new TargetStateAndStatusVersion1() {
+                        TargetAltitude = 100
+                    }
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(100, message.Supplementary.TargetAltitude);
+            }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_TargetStateAndStatus_Fills_Target_Altitude_For_ADSB_2_Messages()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.TargetStateAndStatus = new TargetStateAndStatusMessage() {
+                    TargetStateAndStatusType = TargetStateAndStatusType.Version2,
+                    Version2 = new TargetStateAndStatusVersion2() {
+                        SelectedAltitude = 100
+                    }
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(100, message.Supplementary.TargetAltitude);
             }
         }
         #endregion

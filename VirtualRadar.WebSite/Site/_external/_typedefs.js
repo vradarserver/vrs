@@ -152,6 +152,7 @@ VRS_GOOGLE_ICON;
 * Reg:          String,
 * Alt:          Number,
 * AltT:         Number,
+* TAlt:         Number,
 * Call:         String,
 * CallSus:      boolean,
 * Lat:          Number,

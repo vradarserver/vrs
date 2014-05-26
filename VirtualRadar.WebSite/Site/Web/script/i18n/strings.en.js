@@ -37,6 +37,7 @@
     VRS.$$.AddCriteria =                                'Add Criteria';
     VRS.$$.AddFilter =                                  'Add Filter';
     VRS.$$.ADSB =                                       'ADS-B';
+    VRS.$$.ADSB0 =                                      'ADS-B v0';
     VRS.$$.ADSB1 =                                      'ADS-B v1';
     VRS.$$.ADSB2 =                                      'ADS-B v2';
     VRS.$$.AircraftNotTransmittingCallsign =            'Aircraft is not transmitting its callsign';
@@ -278,6 +279,7 @@
     VRS.$$.ListSquawk =                                 'Squawk';
     VRS.$$.ListStartTime =                              'Seen';
     VRS.$$.ListStatus =                                 'Status';
+    VRS.$$.ListTargetAltitude =                         'A/P Alt.';
     VRS.$$.ListTotalHours =                             'Total Hours';
     VRS.$$.ListTransponderType =                        'Transponder';
     VRS.$$.ListTransponderTypeFlag =                    '';
@@ -456,6 +458,7 @@
     VRS.$$.SubmitRoute =                                'Submit route';
     VRS.$$.SubmitRouteCorrection =                      'Submit route correction';
     VRS.$$.SuppressAltitudeStalkWhenZoomedOut =         'Suppress altitude stalk when zoomed out';
+    VRS.$$.TargetAltitude =                             'Target Altitude';
     VRS.$$.ThenBy =                                     'then by';
     VRS.$$.Tiltwing =                                   'Tiltwing';
     VRS.$$.TimeTracked =                                'Time Tracked';

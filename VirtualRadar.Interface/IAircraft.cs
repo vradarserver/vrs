@@ -103,8 +103,20 @@ namespace VirtualRadar.Interface
         /// </summary>
         AltitudeType AltitudeType { get; set; }
 
+        /// <summary>
         /// Gets the <see cref="DataVersion"/> that was current when <see cref="AltitudeType"/> was last changed.
+        /// </summary>
         long AltitudeTypeChanged { get; set; }
+
+        /// <summary>
+        /// Gets or sets the altitude (in feet) that the aircraft's autopilot / FMS etc. is set to.
+        /// </summary>
+        int? TargetAltitude { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="TargetAltitude"/> was last changed.
+        /// </summary>
+        long TargetAltitudeChanged { get; }
 
         /// <summary>
         /// Gets or sets the speed (in knots) that the aircraft last reported.

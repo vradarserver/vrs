@@ -678,12 +678,13 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="baseStationMessage"></param>
         private void ApplyAdsbValues(DateTime messageReceivedUtc, AdsbMessage adsbMessage, TrackedAircraft trackedAircraft, BaseStationMessage baseStationMessage)
         {
-            if(adsbMessage.AirbornePosition != null)        ApplyAdsbAirbornePosition(messageReceivedUtc, adsbMessage, trackedAircraft, baseStationMessage);
-            if(adsbMessage.AirborneVelocity != null)        ApplyAdsbAirborneVelocity(adsbMessage, baseStationMessage);
-            if(adsbMessage.AircraftStatus != null)          ApplyAdsbAircraftStatus(adsbMessage, baseStationMessage);
-            if(adsbMessage.IdentifierAndCategory != null)   ApplyAdsbIdentifierAndCategory(adsbMessage, trackedAircraft, baseStationMessage);
-            if(adsbMessage.SurfacePosition != null)         ApplyAdsbSurfacePosition(messageReceivedUtc, adsbMessage, trackedAircraft, baseStationMessage);
-            if(adsbMessage.TargetStateAndStatus != null)    ApplyAdsbTargetStateAndStatus(adsbMessage, baseStationMessage);
+            if(adsbMessage.AirbornePosition != null)            ApplyAdsbAirbornePosition(messageReceivedUtc, adsbMessage, trackedAircraft, baseStationMessage);
+            if(adsbMessage.AirborneVelocity != null)            ApplyAdsbAirborneVelocity(adsbMessage, baseStationMessage);
+            if(adsbMessage.AircraftOperationalStatus != null)   ApplyAdsbAircraftOperationalStatus(adsbMessage, baseStationMessage);
+            if(adsbMessage.AircraftStatus != null)              ApplyAdsbAircraftStatus(adsbMessage, baseStationMessage);
+            if(adsbMessage.IdentifierAndCategory != null)       ApplyAdsbIdentifierAndCategory(adsbMessage, trackedAircraft, baseStationMessage);
+            if(adsbMessage.SurfacePosition != null)             ApplyAdsbSurfacePosition(messageReceivedUtc, adsbMessage, trackedAircraft, baseStationMessage);
+            if(adsbMessage.TargetStateAndStatus != null)        ApplyAdsbTargetStateAndStatus(adsbMessage, baseStationMessage);
         }
 
         private void ApplyAdsbAirbornePosition(DateTime messageReceivedUtc, AdsbMessage adsbMessage, TrackedAircraft trackedAircraft, BaseStationMessage baseStationMessage)
@@ -723,6 +724,16 @@ namespace VirtualRadar.Library.BaseStation
             }
         }
 
+        private void ApplyAdsbAircraftOperationalStatus(AdsbMessage adsbMessage, BaseStationMessage baseStationMessage)
+        {
+            var supplementary = CreateSupplementary(baseStationMessage);
+            switch(adsbMessage.AircraftOperationalStatus.AdsbVersion) {
+                case 0: supplementary.TransponderType = TransponderType.Adsb0; break;
+                case 1: supplementary.TransponderType = TransponderType.Adsb1; break;
+                case 2: supplementary.TransponderType = TransponderType.Adsb2; break;
+            }
+        }
+
         private void ApplyAdsbAircraftStatus(AdsbMessage adsbMessage, BaseStationMessage baseStationMessage)
         {
             if(adsbMessage.AircraftStatus.EmergencyStatus != null) {
@@ -758,12 +769,21 @@ namespace VirtualRadar.Library.BaseStation
         private void ApplyAdsbTargetStateAndStatus(AdsbMessage adsbMessage, BaseStationMessage baseStationMessage)
         {
             if(adsbMessage.TargetStateAndStatus.Version1 != null) {
-                baseStationMessage.Emergency = adsbMessage.TargetStateAndStatus.Version1.EmergencyState != EmergencyState.None;
-                CreateSupplementary(baseStationMessage).TransponderType = TransponderType.Adsb1;
+                var tss1 = adsbMessage.TargetStateAndStatus.Version1;
+
+                baseStationMessage.Emergency = tss1.EmergencyState != EmergencyState.None;
+
+                var supplementary = CreateSupplementary(baseStationMessage);
+                supplementary.TransponderType = TransponderType.Adsb1;
+                if(tss1.TargetAltitude != null) supplementary.TargetAltitude = tss1.TargetAltitude;
             }
 
             if(adsbMessage.TargetStateAndStatus.Version2 != null) {
-                CreateSupplementary(baseStationMessage).TransponderType = TransponderType.Adsb2;
+                var tss2 = adsbMessage.TargetStateAndStatus.Version2;
+
+                var supplementary = CreateSupplementary(baseStationMessage);
+                supplementary.TransponderType = TransponderType.Adsb2;
+                if(tss2.SelectedAltitude != null) supplementary.TargetAltitude = tss2.SelectedAltitude;
             }
         }
 

@@ -932,6 +932,24 @@
         contentCallback:        function(aircraft) { return aircraft.formatSquawk(); }
     });
 
+    VRS.renderPropertyHandlers[VRS.RenderProperty.TargetAltitude] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.TargetAltitude,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListTargetAltitude',
+        labelKey:               'TargetAltitude',
+        sortableField:          VRS.AircraftListSortableField.TargetAltitude,
+        alignment:              VRS.Alignment.Right,
+        hasChangedCallback:     function(aircraft) { return aircraft.targetAltitude.chg; },
+        contentCallback:        function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) {
+            return aircraft.formatTargetAltitude(
+                options.unitDisplayPreferences.getHeightUnit(),
+                options.showUnits,
+                options.unitDisplayPreferences.getShowAltitudeType()
+            );
+        },
+        usesDisplayUnit:        function(displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Height; }
+    });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.TimeTracked] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.TimeTracked,
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,

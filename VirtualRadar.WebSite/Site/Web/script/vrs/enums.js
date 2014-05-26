@@ -86,6 +86,7 @@
         Speed:              'spd',
         SpeedType:          'sty',
         Squawk:             'sqk',
+        TargetAltitude:     'tal',
         TimeTracked:        'tim',
         TransponderType:    'trt',
         UserTag:            'tag',
@@ -410,6 +411,7 @@
         SpeedType:                      'sty',
 //        SpeedGraph:                     'spg',
         Squawk:                         'sqk',
+        TargetAltitude:                 'tal',
         TimeTracked:                    'tim',
         TransponderType:                'trt',
         TransponderTypeFlag:            'trf',
@@ -657,8 +659,9 @@
         Unknown:        0,              // Transponder type is unknown
         ModeS:          1,              // Mode-S transponder with no ADS-B
         Adsb:           2,              // Mode-S transponder with ADS-B, cannot be certain about ADS-B version
-        Adsb1:          3,              // Mode-S transponder with ADS-B, certain that it is version 1
-        Adsb2:          4               // Mode-S transponder with ADS-B, certain that it is version 2
+        Adsb0:          3,              // Mode-S transponder with ADS-B, certain that it is version 0
+        Adsb1:          4,              // Mode-S transponder with ADS-B, certain that it is version 1
+        Adsb2:          5               // Mode-S transponder with ADS-B, certain that it is version 2
     };
     //endregion
 

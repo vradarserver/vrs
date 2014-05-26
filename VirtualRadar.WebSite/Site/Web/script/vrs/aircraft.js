@@ -372,6 +372,7 @@
         this.registration =             new VRS.StringValue();
         this.altitude =                 new VRS.NumberValue();
         this.altitudeType =             new VRS.NumberValue();
+        this.targetAltitude =           new VRS.NumberValue();
         this.callsign =                 new VRS.StringValue();
         this.callsignSuspect =          new VRS.BoolValue();
         this.latitude =                 new VRS.NumberValue();
@@ -444,6 +445,7 @@
             setValue(this.registration,         aircraftJson.Reg);
             setValue(this.altitude,             aircraftJson.Alt);
             setValue(this.altitudeType,         aircraftJson.AltT);
+            setValue(this.targetAltitude,       aircraftJson.TAlt);
             setValue(this.callsign,             aircraftJson.Call);
             setValue(this.callsignSuspect,      aircraftJson.CallSus);
             setValue(this.latitude,             aircraftJson.Lat);
@@ -1263,6 +1265,18 @@
         this.formatSquawk = function()
         {
             return VRS.format.squawk(this.squawk.val);
+        };
+
+        /**
+         * Formats the altitude as a string.
+         * @param {VRS.Height}  heightUnit          The VRS.Height unit to use.
+         * @param {bool}        showUnits           True if units are to be shown.
+         * @param {bool}        showType            True if the type of altitude is to be shown.
+         * @returns {string}
+         */
+        this.formatTargetAltitude = function(heightUnit, showUnits, showType)
+        {
+            return VRS.format.altitude(this.targetAltitude.val, VRS.AltitudeType.Barometric, false, heightUnit, false, showUnits, showType);
         };
 
         /**
