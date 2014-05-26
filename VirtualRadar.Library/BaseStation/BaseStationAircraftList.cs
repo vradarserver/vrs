@@ -455,19 +455,7 @@ namespace VirtualRadar.Library.BaseStation
 
                 var supplementaryMessage = message != null && message.Supplementary != null ? message.Supplementary : null;
                 if(supplementaryMessage != null) {
-                    if(supplementaryMessage.AltitudeIsGeometric != null)        aircraft.AltitudeType = supplementaryMessage.AltitudeIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
-                    if(supplementaryMessage.VerticalRateIsGeometric != null)    aircraft.VerticalRateType = supplementaryMessage.VerticalRateIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
-                    if(supplementaryMessage.SpeedType != null)                  aircraft.SpeedType = supplementaryMessage.SpeedType.Value;
-                    if(supplementaryMessage.CallsignIsSuspect != null)          aircraft.CallsignIsSuspect = supplementaryMessage.CallsignIsSuspect.Value;
-                    if(supplementaryMessage.TrackIsHeading != null)             aircraft.TrackIsHeading = supplementaryMessage.TrackIsHeading.Value;
-
-                    if(supplementaryMessage.TransponderType != null) {
-                        if(supplementaryMessage.TransponderType.Value == TransponderType.Adsb1 && aircraft.TransponderType != TransponderType.Adsb2) {
-                            aircraft.TransponderType = TransponderType.Adsb1;
-                        } else if(supplementaryMessage.TransponderType.Value == TransponderType.Adsb2) {
-                            aircraft.TransponderType = TransponderType.Adsb2;
-                        }
-                    }
+                    ApplySupplementaryMessage(aircraft, supplementaryMessage);
                 }
 
                 var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);
@@ -484,6 +472,39 @@ namespace VirtualRadar.Library.BaseStation
                 var aircraftDetail = _AircraftDetailFetcher.RegisterAircraft(aircraft);
                 if(isNewAircraft) {
                     if(aircraftDetail != null) ApplyAircraftDetail(aircraft, aircraftDetail);
+                }
+            }
+        }
+
+        private static void ApplySupplementaryMessage(IAircraft aircraft, BaseStationSupplementaryMessage supplementaryMessage)
+        {
+            if(supplementaryMessage.AltitudeIsGeometric != null) aircraft.AltitudeType = supplementaryMessage.AltitudeIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
+            if(supplementaryMessage.VerticalRateIsGeometric != null) aircraft.VerticalRateType = supplementaryMessage.VerticalRateIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
+            if(supplementaryMessage.SpeedType != null) aircraft.SpeedType = supplementaryMessage.SpeedType.Value;
+            if(supplementaryMessage.CallsignIsSuspect != null) aircraft.CallsignIsSuspect = supplementaryMessage.CallsignIsSuspect.Value;
+            if(supplementaryMessage.TrackIsHeading != null) aircraft.TrackIsHeading = supplementaryMessage.TrackIsHeading.Value;
+            if(supplementaryMessage.TargetAltitude != null) aircraft.TargetAltitude = supplementaryMessage.TargetAltitude.Value;
+
+            if(supplementaryMessage.TransponderType != null) {
+                switch(supplementaryMessage.TransponderType.Value) {
+                    case TransponderType.Adsb2:
+                        aircraft.TransponderType = TransponderType.Adsb2;
+                        break;
+                    case TransponderType.Adsb1:
+                        if(aircraft.TransponderType != TransponderType.Adsb2) {
+                            aircraft.TransponderType = TransponderType.Adsb1;
+                        }
+                        break;
+                    case TransponderType.Adsb0:
+                        if(aircraft.TransponderType != TransponderType.Adsb1 && aircraft.TransponderType != TransponderType.Adsb2) {
+                            aircraft.TransponderType = TransponderType.Adsb0;
+                        }
+                        break;
+                    case TransponderType.Adsb:
+                        if(aircraft.TransponderType == TransponderType.ModeS) {
+                            aircraft.TransponderType = TransponderType.Adsb;
+                        }
+                        break;
                 }
             }
         }

@@ -64,6 +64,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(aircraftJson, r => r.Species, null, 12);
             TestUtilities.TestProperty(aircraftJson, r => r.Squawk, null, "4721");
             TestUtilities.TestProperty(aircraftJson, r => r.Stopovers, null, new List<string>() { "Hd" });
+            TestUtilities.TestProperty(aircraftJson, r => r.TargetAltitude, null, 1);
             TestUtilities.TestProperty(aircraftJson, r => r.Track, null, 12.34f);
             TestUtilities.TestProperty(aircraftJson, r => r.TrackIsHeading, null, true);
             TestUtilities.TestProperty(aircraftJson, r => r.TrailType, null, "a");

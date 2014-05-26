@@ -96,6 +96,12 @@ namespace VirtualRadar.Interface.WebSite
         public int? AltitudeType { get; set; }
 
         /// <summary>
+        /// Gets or sets the altitude set on the autopilot / FMS etc.
+        /// </summary>
+        [DataMember(Name="TAlt", IsRequired=false, EmitDefaultValue=false)]
+        public int? TargetAltitude { get; set; }
+
+        /// <summary>
         /// Gets or sets the aircraft's callsign.
         /// </summary>
         [DataMember(Name="Call", IsRequired=false, EmitDefaultValue=false)]

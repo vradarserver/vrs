@@ -182,6 +182,8 @@
     <Content Include="Site\Web\fonts\icomoon-content.txt" />
     <Content Include="Site\Web\fsx.html" />
     <Content Include="Site\Web\images\ADSB%402x.png" />
+    <Content Include="Site\Web\images\ADSB-0%402x.png" />
+    <Content Include="Site\Web\images\ADSB-0.png" />
     <Content Include="Site\Web\images\ADSB-1%402x.png" />
     <Content Include="Site\Web\images\ADSB-1.png" />
     <Content Include="Site\Web\images\ADSB-2%402x.png" />

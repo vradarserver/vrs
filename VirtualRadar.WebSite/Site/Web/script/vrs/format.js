@@ -1233,6 +1233,7 @@
                     case VRS.TransponderType.Unknown:   result = VRS.$$.Unknown; break;
                     case VRS.TransponderType.ModeS:     result = VRS.$$.ModeS; break;
                     case VRS.TransponderType.Adsb:      result = VRS.$$.ADSB; break;
+                    case VRS.TransponderType.Adsb0:     result = VRS.$$.ADSB0; break;
                     case VRS.TransponderType.Adsb1:     result = VRS.$$.ADSB1; break;
                     case VRS.TransponderType.Adsb2:     result = VRS.$$.ADSB2; break;
                 }
@@ -1255,6 +1256,7 @@
                 switch(transponderType) {
                     case VRS.TransponderType.ModeS:     name = 'Mode-S'; break;
                     case VRS.TransponderType.Adsb:      name = 'ADSB'; break;
+                    case VRS.TransponderType.Adsb0:     name = 'ADSB-0'; break;
                     case VRS.TransponderType.Adsb1:     name = 'ADSB-1'; break;
                     case VRS.TransponderType.Adsb2:     name = 'ADSB-2'; break;
                 }

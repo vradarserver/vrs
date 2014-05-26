@@ -2128,6 +2128,18 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
+        public void BaseStationAircraftList_TransponderType_Set_To_ADSB0_When_Supplementary_ADSB_0_Is_Present()
+        {
+            _AircraftList.Start();
+            _BaseStationMessage.Supplementary = new BaseStationSupplementaryMessage();
+            _BaseStationMessage.Supplementary.TransponderType = TransponderType.Adsb0;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(TransponderType.Adsb0, aircraft.TransponderType);
+        }
+
+        [TestMethod]
         public void BaseStationAircraftList_TransponderType_Set_To_ADSB1_When_Supplementary_ADSB_1_Is_Present()
         {
             _AircraftList.Start();
@@ -2168,7 +2180,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
-        public void BaseStationAircraftList_TransponderType_Will_Not_Regress_From_ADSB1_To_ADSB()
+        public void BaseStationAircraftList_TransponderType_Will_Not_Regress_From_ADSB1_To_ADSB0()
         {
             _AircraftList.Start();
 
@@ -2176,8 +2188,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _BaseStationMessage.Supplementary.TransponderType = TransponderType.Adsb1;
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
-            _BaseStationMessage.Supplementary = null;
-            _BaseStationMessage.GroundSpeed = 1;
+            _BaseStationMessage.Supplementary.TransponderType = TransponderType.Adsb0;
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
             var aircraft = _AircraftList.FindAircraft(0x4008F6);

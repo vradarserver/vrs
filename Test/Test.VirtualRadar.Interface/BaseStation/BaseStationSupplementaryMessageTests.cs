@@ -27,9 +27,11 @@ namespace Test.VirtualRadar.Interface.BaseStation
         {
             var message = new BaseStationSupplementaryMessage();
 
+            TestUtilities.TestProperty(message, m => m.AcquiringTargetAltitude, null, false);
             TestUtilities.TestProperty(message, m => m.AltitudeIsGeometric, null, false);
             TestUtilities.TestProperty(message, m => m.CallsignIsSuspect, null, false);
             TestUtilities.TestProperty(message, m => m.SpeedType, null, SpeedType.TrueAirSpeed);
+            TestUtilities.TestProperty(message, m => m.TargetAltitude, null, 100);
             TestUtilities.TestProperty(message, m => m.TrackIsHeading, null, false);
             TestUtilities.TestProperty(message, m => m.TransponderType, null, TransponderType.Adsb2);
             TestUtilities.TestProperty(message, m => m.VerticalRateIsGeometric, null, false);

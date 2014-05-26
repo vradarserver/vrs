@@ -14,9 +14,9 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   inkscape:export-filename="C:\Source\CodePlex\VRS\VirtualRadar.WebSite\Site\Web\images\ADSB@2x.png"
-   inkscape:export-xdpi="225"
-   inkscape:export-ydpi="225"
+   inkscape:export-filename="C:\Source\CodePlex\VRS\VirtualRadar.WebSite\Site\Web\images\ADSB-1.png"
+   inkscape:export-xdpi="112.5"
+   inkscape:export-ydpi="112.5"
    sodipodi:docname="ADSB and Mode-S icon.svg">
   <defs
      id="defs2987" />
@@ -28,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.197802"
-     inkscape:cx="-6.2056621"
-     inkscape:cy="13.463398"
+     inkscape:cx="4.7612659"
+     inkscape:cy="9.8594376"
      inkscape:current-layer="g3009"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -61,12 +61,25 @@
      inkscape:groupmode="layer"
      style="display:inline" />
   <g
+     style="display:none"
+     inkscape:label="ADSB-0 Background"
+     id="g3018"
+     inkscape:groupmode="layer">
+    <rect
+       y="0"
+       x="0"
+       height="16"
+       width="16"
+       id="rect3020"
+       style="fill:#003380;fill-opacity:1" />
+  </g>
+  <g
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="ADSB-1 Background"
-     style="display:inline">
+     style="display:none">
     <rect
-       style="fill:#003380;fill-opacity:1"
+       style="fill:#0044aa;fill-opacity:1"
        id="rect2996"
        width="16"
        height="16"
@@ -77,7 +90,7 @@
      inkscape:label="ADSB-2 Background"
      id="g3014"
      inkscape:groupmode="layer"
-     style="display:none">
+     style="display:inline">
     <rect
        y="0"
        x="0"
@@ -103,7 +116,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="ADSB with version"
-     style="display:none">
+     style="display:inline">
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
@@ -118,7 +131,7 @@
          style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans Bold">A</tspan></text>
   </g>
   <g
-     style="display:inline"
+     style="display:none"
      inkscape:label="ADSB no version"
      id="g3009"
      inkscape:groupmode="layer">
@@ -154,6 +167,24 @@
          sodipodi:role="line">S</tspan></text>
   </g>
   <g
+     style="display:none"
+     inkscape:groupmode="layer"
+     id="g3012"
+     inkscape:label="ADSB-0 indicator">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="10"
+       y="8"
+       id="text3014"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3016"
+         x="10"
+         y="8"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Sans;-inkscape-font-specification:Sans Bold">0</tspan></text>
+  </g>
+  <g
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="ADSB-1 indicator"
@@ -175,7 +206,7 @@
      inkscape:label="ADSB-2 indicator"
      id="g3008"
      inkscape:groupmode="layer"
-     style="display:none">
+     style="display:inline">
     <text
        sodipodi:linespacing="125%"
        id="text3010"

@@ -245,6 +245,12 @@
         getStringCallback:  function(aircraft) { return aircraft.squawk.val; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.TargetAltitude] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.TargetAltitude,
+        labelKey:           'TargetAltitude',
+        getNumberCallback:  function(aircraft) { return aircraft.targetAltitude.val; }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.TimeTracked] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.TimeTracked,
         labelKey:           'TimeTracked',
