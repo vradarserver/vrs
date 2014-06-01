@@ -145,6 +145,12 @@ namespace VirtualRadar.Interface.WebSite
         public bool? TrackIsHeading { get; set; }
 
         /// <summary>
+        /// Gets or sets the heading on the aircraft's autopilot or FMS.
+        /// </summary>
+        [DataMember(Name="TTrk", IsRequired=false, EmitDefaultValue=false)]
+        public float? TargetTrack { get; set; }
+
+        /// <summary>
         /// Gets or sets the ICAO8643 type code of the aircraft.
         /// </summary>
         [DataMember(IsRequired=false, EmitDefaultValue=false)]

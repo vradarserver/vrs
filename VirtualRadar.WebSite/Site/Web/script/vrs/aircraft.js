@@ -384,6 +384,7 @@
         this.verticalSpeedType =        new VRS.NumberValue();
         this.heading =                  new VRS.NumberValue();            // The track across the ground that the aircraft is following, unless headingIsTrue is true in which case it's the aircraft's true heading (i.e. the direction the nose is pointing in)
         this.headingIsTrue =            new VRS.BoolValue();              // True if heading is the aircraft's true heading, false if it's the ground track.
+        this.targetHeading =            new VRS.NumberValue();
         this.model =                    new VRS.StringValue();
         this.modelIcao =                new VRS.StringValue();
         this.from =                     new VRS.RouteValue();
@@ -457,6 +458,7 @@
             setValue(this.verticalSpeedType,    aircraftJson.VsiT);
             setValue(this.heading,              aircraftJson.Trak);
             setValue(this.headingIsTrue,        aircraftJson.TrkH);
+            setValue(this.targetHeading,        aircraftJson.TTrk);
             setValue(this.model,                aircraftJson.Mdl);
             setValue(this.modelIcao,            aircraftJson.Type);
             setValue(this.from,                 aircraftJson.From);
@@ -1268,15 +1270,26 @@
         };
 
         /**
-         * Formats the altitude as a string.
+         * Formats the target altitude as a string.
          * @param {VRS.Height}  heightUnit          The VRS.Height unit to use.
          * @param {bool}        showUnits           True if units are to be shown.
-         * @param {bool}        showType            True if the type of altitude is to be shown.
+         * @param {bool}        showType            True if the type of target altitude is to be shown.
          * @returns {string}
          */
         this.formatTargetAltitude = function(heightUnit, showUnits, showType)
         {
             return VRS.format.altitude(this.targetAltitude.val, VRS.AltitudeType.Barometric, false, heightUnit, false, showUnits, showType);
+        };
+
+        /**
+         * Formats the target heading as a string.
+         * @param {bool}    showUnits       True if the degrees symbol should be shown against the heading.
+         * @param {bool}    showType        True if the type of target heading is to be shown.
+         * @returns {string}
+         */
+        this.formatTargetHeading = function(showUnits, showType)
+        {
+            return VRS.format.heading(this.targetHeading.val, false, showUnits, showType);
         };
 
         /**

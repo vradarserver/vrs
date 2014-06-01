@@ -776,6 +776,7 @@ namespace VirtualRadar.Library.BaseStation
                 var supplementary = CreateSupplementary(baseStationMessage);
                 supplementary.TransponderType = TransponderType.Adsb1;
                 if(tss1.TargetAltitude != null) supplementary.TargetAltitude = tss1.TargetAltitude;
+                if(tss1.TargetHeading != null) supplementary.TargetHeading = tss1.TargetHeading;
             }
 
             if(adsbMessage.TargetStateAndStatus.Version2 != null) {
@@ -784,6 +785,7 @@ namespace VirtualRadar.Library.BaseStation
                 var supplementary = CreateSupplementary(baseStationMessage);
                 supplementary.TransponderType = TransponderType.Adsb2;
                 if(tss2.SelectedAltitude != null) supplementary.TargetAltitude = tss2.SelectedAltitude;
+                if(tss2.SelectedHeading != null) supplementary.TargetHeading = (float)tss2.SelectedHeading;
             }
         }
 

@@ -86,6 +86,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.SpeedTypeChanged);
             Assert.AreEqual(0, _Aircraft.SquawkChanged);
             Assert.AreEqual(0, _Aircraft.TargetAltitudeChanged);
+            Assert.AreEqual(0, _Aircraft.TargetTrackChanged);
             Assert.AreEqual(0, _Aircraft.TrackChanged);
             Assert.AreEqual(0, _Aircraft.TrackIsHeadingChanged);
             Assert.AreEqual(0, _Aircraft.TransponderTypeChanged);
@@ -143,6 +144,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.Squawk, null, 7654);
             TestUtilities.TestProperty(_Aircraft, r => r.StopoversChanged, 0L, 123L);
             TestUtilities.TestProperty(_Aircraft, r => r.TargetAltitude, null, 1);
+            TestUtilities.TestProperty(_Aircraft, r => r.TargetTrack, null, 1.234F);
             TestUtilities.TestProperty(_Aircraft, r => r.Track, null, 12.345F);
             TestUtilities.TestProperty(_Aircraft, r => r.TrackIsHeading, false);
             TestUtilities.TestProperty(_Aircraft, r => r.TransponderType, TransponderType.Unknown, TransponderType.Adsb2);
@@ -387,6 +389,8 @@ namespace Test.VirtualRadar.Library
                             case "TransponderTypeChanged":          value = _Aircraft.TransponderTypeChanged; break;
                             case "TargetAltitude":                  value = _Aircraft.TargetAltitude = intValue; break;
                             case "TargetAltitudeChanged":           value = _Aircraft.TargetAltitudeChanged; break;
+                            case "TargetTrack":                     value = _Aircraft.TargetTrack = floatValue; break;
+                            case "TargetTrackChanged":              value = _Aircraft.TargetTrackChanged; break;
                             default:                                throw new NotImplementedException();
                         }
 

@@ -94,7 +94,7 @@ namespace VirtualRadar.Interface.Adsb
         public bool? IsAltitudeHoldActive { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that the message has been rebroadcast by a ground link. It's unlikely that we shall ever see this set.
+        /// Gets or sets a value indicating that the message has been rebroadcast by a ground link.
         /// </summary>
         public bool IsRebroadcast { get; set; }
 

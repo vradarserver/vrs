@@ -950,6 +950,23 @@
         usesDisplayUnit:        function(displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Height; }
     });
 
+    VRS.renderPropertyHandlers[VRS.RenderProperty.TargetHeading] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.TargetHeading,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListTargetHeading',
+        labelKey:               'TargetHeading',
+        sortableField:          VRS.AircraftListSortableField.TargetHeading,
+        alignment:              VRS.Alignment.Right,
+        hasChangedCallback:     function(aircraft) { return aircraft.targetHeading.chg; },
+        contentCallback:        function(aircraft, options) {
+            return aircraft.formatTargetHeading(
+                options.showUnits,
+                options.unitDisplayPreferences.getShowTrackType()
+            );
+        },
+        usesDisplayUnit:        function(displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Angle; }
+    });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.TimeTracked] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.TimeTracked,
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,

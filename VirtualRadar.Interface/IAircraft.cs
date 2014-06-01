@@ -182,6 +182,16 @@ namespace VirtualRadar.Interface
         long TrackChanged { get; }
 
         /// <summary>
+        /// Gets or sets the track or heading on the aircraft's autopilot / FMS etc.
+        /// </summary>
+        float? TargetTrack { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="TargetTrack"/> was last changed.
+        /// </summary>
+        long TargetTrackChanged { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating that the <see cref="Track"/> is the heading of the aircraft. If this
         /// is false then <see cref="Track"/> is the ground track, which is the default.
         /// </summary>
