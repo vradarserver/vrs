@@ -484,6 +484,7 @@ namespace VirtualRadar.Library.BaseStation
             if(supplementaryMessage.CallsignIsSuspect != null) aircraft.CallsignIsSuspect = supplementaryMessage.CallsignIsSuspect.Value;
             if(supplementaryMessage.TrackIsHeading != null) aircraft.TrackIsHeading = supplementaryMessage.TrackIsHeading.Value;
             if(supplementaryMessage.TargetAltitude != null) aircraft.TargetAltitude = supplementaryMessage.TargetAltitude.Value;
+            if(supplementaryMessage.TargetHeading != null) aircraft.TargetTrack = supplementaryMessage.TargetHeading.Value;
 
             if(supplementaryMessage.TransponderType != null) {
                 switch(supplementaryMessage.TransponderType.Value) {

@@ -217,6 +217,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long TrackChanged { get; private set; }
 
+        private float? _TargetTrack;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public float? TargetTrack { get { return _TargetTrack; } set { if(value != _TargetTrack) { _TargetTrack = value; TargetTrackChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long TargetTrackChanged { get; private set; }
+
         private bool _TrackIsHeading;
         /// <summary>
         /// See interface docs.
@@ -705,6 +716,7 @@ namespace VirtualRadar.Library
                 result.SpeedType = SpeedType;
                 result.Squawk = Squawk;
                 result.TargetAltitude = TargetAltitude;
+                result.TargetTrack = TargetTrack;
                 result.Track = Track;
                 result.TrackIsHeading = TrackIsHeading;
                 result.TransponderType = TransponderType;
@@ -758,6 +770,7 @@ namespace VirtualRadar.Library
                 result.SquawkChanged = SquawkChanged;
                 result.StopoversChanged = StopoversChanged;
                 result.TargetAltitudeChanged = TargetAltitudeChanged;
+                result.TargetTrackChanged = TargetTrackChanged;
                 result.TrackChanged = TrackChanged;
                 result.TrackIsHeadingChanged = TrackIsHeadingChanged;
                 result.TransponderTypeChanged = TransponderTypeChanged;

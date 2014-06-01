@@ -87,14 +87,13 @@ namespace VirtualRadar.Interface.BaseStation
         public TransponderType? TransponderType { get; set; }
 
         /// <summary>
-        /// Gets or sets the target altitude settings on the aircraft's auto-pilot / FMS etc.
+        /// Gets or sets the target altitude setting from the aircraft's auto-pilot / FMS etc.
         /// </summary>
         public int? TargetAltitude { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the aircraft is moving towards the target altitude or is maintaining
-        /// the target altitude.
+        /// Gets or sets the target heading from the aircraft's auto-pilot / FMS etc.
         /// </summary>
-        public bool? AcquiringTargetAltitude { get; set; }
+        public float? TargetHeading { get; set; }
     }
 }

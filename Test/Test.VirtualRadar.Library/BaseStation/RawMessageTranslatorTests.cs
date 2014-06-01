@@ -1850,6 +1850,44 @@ namespace Test.VirtualRadar.Library.BaseStation
                 Assert.AreEqual(100, message.Supplementary.TargetAltitude);
             }
         }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_TargetStateAndStatus_Fills_Target_Heading_For_ADSB_1_Messages()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.TargetStateAndStatus = new TargetStateAndStatusMessage() {
+                    TargetStateAndStatusType = TargetStateAndStatusType.Version1,
+                    Version1 = new TargetStateAndStatusVersion1() {
+                        TargetHeading = 100,
+                    }
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(100F, message.Supplementary.TargetHeading);
+            }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_TargetStateAndStatus_Fills_Target_Heading_For_ADSB_2_Messages()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.TargetStateAndStatus = new TargetStateAndStatusMessage() {
+                    TargetStateAndStatusType = TargetStateAndStatusType.Version2,
+                    Version2 = new TargetStateAndStatusVersion2() {
+                        SelectedHeading = 100.23,
+                    }
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(100.23F, message.Supplementary.TargetHeading);
+            }
+        }
         #endregion
     }
 }

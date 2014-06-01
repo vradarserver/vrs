@@ -280,6 +280,7 @@
     VRS.$$.ListStartTime =                              'Seen';
     VRS.$$.ListStatus =                                 'Status';
     VRS.$$.ListTargetAltitude =                         'A/P Alt.';
+    VRS.$$.ListTargetHeading =                          'A/P Hdg.';
     VRS.$$.ListTotalHours =                             'Total Hours';
     VRS.$$.ListTransponderType =                        'Transponder';
     VRS.$$.ListTransponderTypeFlag =                    '';
@@ -459,6 +460,7 @@
     VRS.$$.SubmitRouteCorrection =                      'Submit route correction';
     VRS.$$.SuppressAltitudeStalkWhenZoomedOut =         'Suppress altitude stalk when zoomed out';
     VRS.$$.TargetAltitude =                             'Target Altitude';
+    VRS.$$.TargetHeading =                              'Target Heading';
     VRS.$$.ThenBy =                                     'then by';
     VRS.$$.Tiltwing =                                   'Tiltwing';
     VRS.$$.TimeTracked =                                'Time Tracked';
