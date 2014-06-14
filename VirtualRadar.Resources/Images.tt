@@ -71,7 +71,7 @@ foreach(Project project in dte.Solution.Projects) {
         // Gets or sets the <#=propertyName#> image.
         // </summary>
         // <remarks>
-        // <img src="<#=imageFileName#>" title="<#=propertyName#>" />
+        // <img src="<#=imageFileName#>" alt="" title="<#=propertyName#>" />
         // </remarks>
         public static <#=type#> <#=propertyName#>
         {
