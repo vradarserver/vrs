@@ -71,7 +71,7 @@
   <ItemGroup>
     <Compile Include="BinaryResources.cs" />
     <Compile Include="Images-Original.cs" />
-    <Compile Include="Images1.cs">
+    <Compile Include="Images.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Images.tt</DependentUpon>
@@ -87,7 +87,7 @@
   <ItemGroup>
     <None Include="Images.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Images1.cs</LastGenOutput>
+      <LastGenOutput>Images.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
