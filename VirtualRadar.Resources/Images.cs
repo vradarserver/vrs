@@ -41,7 +41,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the ApplicationIcon image.
         // </summary>
         // <remarks>
-        // <img src="../Images/ApplicationIcon.ico" title="ApplicationIcon" />
+        // <img src="../Images/ApplicationIcon.ico" alt="" title="ApplicationIcon" />
         // </remarks>
         public static Icon ApplicationIcon
         {
@@ -54,7 +54,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the BlueBall image.
         // </summary>
         // <remarks>
-        // <img src="../Images/BlueBall.png" title="BlueBall" />
+        // <img src="../Images/BlueBall.png" alt="" title="BlueBall" />
         // </remarks>
         public static Bitmap BlueBall
         {
@@ -67,7 +67,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the ChevronBlueCircle image.
         // </summary>
         // <remarks>
-        // <img src="../Images/ChevronBlueCircle.png" title="ChevronBlueCircle" />
+        // <img src="../Images/ChevronBlueCircle.png" alt="" title="ChevronBlueCircle" />
         // </remarks>
         public static Bitmap ChevronBlueCircle
         {
@@ -80,7 +80,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the ChevronGreenCircle image.
         // </summary>
         // <remarks>
-        // <img src="../Images/ChevronGreenCircle.png" title="ChevronGreenCircle" />
+        // <img src="../Images/ChevronGreenCircle.png" alt="" title="ChevronGreenCircle" />
         // </remarks>
         public static Bitmap ChevronGreenCircle
         {
@@ -93,7 +93,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the ChevronRedCircle image.
         // </summary>
         // <remarks>
-        // <img src="../Images/ChevronRedCircle.png" title="ChevronRedCircle" />
+        // <img src="../Images/ChevronRedCircle.png" alt="" title="ChevronRedCircle" />
         // </remarks>
         public static Bitmap ChevronRedCircle
         {
@@ -106,7 +106,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the CloseSlider image.
         // </summary>
         // <remarks>
-        // <img src="../Images/CloseSlider.png" title="CloseSlider" />
+        // <img src="../Images/CloseSlider.png" alt="" title="CloseSlider" />
         // </remarks>
         public static Bitmap CloseSlider
         {
@@ -119,7 +119,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Collapse image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Collapse.png" title="Collapse" />
+        // <img src="../Images/Collapse.png" alt="" title="Collapse" />
         // </remarks>
         public static Bitmap Collapse
         {
@@ -132,7 +132,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Compass image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Compass.png" title="Compass" />
+        // <img src="../Images/Compass.png" alt="" title="Compass" />
         // </remarks>
         public static Bitmap Compass
         {
@@ -145,7 +145,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Corner_BottomLeft image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Corner_BottomLeft.png" title="Corner_BottomLeft" />
+        // <img src="../Images/Corner_BottomLeft.png" alt="" title="Corner_BottomLeft" />
         // </remarks>
         public static Bitmap Corner_BottomLeft
         {
@@ -158,7 +158,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Corner_BottomRight image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Corner_BottomRight.png" title="Corner_BottomRight" />
+        // <img src="../Images/Corner_BottomRight.png" alt="" title="Corner_BottomRight" />
         // </remarks>
         public static Bitmap Corner_BottomRight
         {
@@ -171,7 +171,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Corner_TopLeft image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Corner_TopLeft.png" title="Corner_TopLeft" />
+        // <img src="../Images/Corner_TopLeft.png" alt="" title="Corner_TopLeft" />
         // </remarks>
         public static Bitmap Corner_TopLeft
         {
@@ -184,7 +184,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Corner_TopRight image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Corner_TopRight.png" title="Corner_TopRight" />
+        // <img src="../Images/Corner_TopRight.png" alt="" title="Corner_TopRight" />
         // </remarks>
         public static Bitmap Corner_TopRight
         {
@@ -197,7 +197,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Crosshair image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Crosshair.png" title="Crosshair" />
+        // <img src="../Images/Crosshair.png" alt="" title="Crosshair" />
         // </remarks>
         public static Bitmap Crosshair
         {
@@ -210,7 +210,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Expand image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Expand.png" title="Expand" />
+        // <img src="../Images/Expand.png" alt="" title="Expand" />
         // </remarks>
         public static Bitmap Expand
         {
@@ -223,7 +223,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Favicon image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Favicon.ico" title="Favicon" />
+        // <img src="../Images/Favicon.ico" alt="" title="Favicon" />
         // </remarks>
         public static Icon Favicon
         {
@@ -236,7 +236,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the FolderClosed image.
         // </summary>
         // <remarks>
-        // <img src="../Images/FolderClosed.png" title="FolderClosed" />
+        // <img src="../Images/FolderClosed.png" alt="" title="FolderClosed" />
         // </remarks>
         public static Bitmap FolderClosed
         {
@@ -249,7 +249,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the FollowMe image.
         // </summary>
         // <remarks>
-        // <img src="../Images/FollowMe.png" title="FollowMe" />
+        // <img src="../Images/FollowMe.png" alt="" title="FollowMe" />
         // </remarks>
         public static Bitmap FollowMe
         {
@@ -262,7 +262,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the GotoCurrentLocation image.
         // </summary>
         // <remarks>
-        // <img src="../Images/GotoCurrentLocation.png" title="GotoCurrentLocation" />
+        // <img src="../Images/GotoCurrentLocation.png" alt="" title="GotoCurrentLocation" />
         // </remarks>
         public static Bitmap GotoCurrentLocation
         {
@@ -275,7 +275,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the HelpAbout image.
         // </summary>
         // <remarks>
-        // <img src="../Images/HelpAbout.png" title="HelpAbout" />
+        // <img src="../Images/HelpAbout.png" alt="" title="HelpAbout" />
         // </remarks>
         public static Bitmap HelpAbout
         {
@@ -288,7 +288,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the HideList image.
         // </summary>
         // <remarks>
-        // <img src="../Images/HideList.png" title="HideList" />
+        // <img src="../Images/HideList.png" alt="" title="HideList" />
         // </remarks>
         public static Bitmap HideList
         {
@@ -301,7 +301,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPadSplash image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPadSplash.png" title="IPadSplash" />
+        // <img src="../Images/IPadSplash.png" alt="" title="IPadSplash" />
         // </remarks>
         public static Bitmap IPadSplash
         {
@@ -314,7 +314,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneBackButton image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneBackButton.png" title="IPhoneBackButton" />
+        // <img src="../Images/IPhoneBackButton.png" alt="" title="IPhoneBackButton" />
         // </remarks>
         public static Bitmap IPhoneBackButton
         {
@@ -327,7 +327,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneBlueButton image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneBlueButton.png" title="IPhoneBlueButton" />
+        // <img src="../Images/IPhoneBlueButton.png" alt="" title="IPhoneBlueButton" />
         // </remarks>
         public static Bitmap IPhoneBlueButton
         {
@@ -340,7 +340,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneChevron image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneChevron.png" title="IPhoneChevron" />
+        // <img src="../Images/IPhoneChevron.png" alt="" title="IPhoneChevron" />
         // </remarks>
         public static Bitmap IPhoneChevron
         {
@@ -353,7 +353,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneGrayButton image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneGrayButton.png" title="IPhoneGrayButton" />
+        // <img src="../Images/IPhoneGrayButton.png" alt="" title="IPhoneGrayButton" />
         // </remarks>
         public static Bitmap IPhoneGrayButton
         {
@@ -366,7 +366,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneIcon image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneIcon.png" title="IPhoneIcon" />
+        // <img src="../Images/IPhoneIcon.png" alt="" title="IPhoneIcon" />
         // </remarks>
         public static Bitmap IPhoneIcon
         {
@@ -379,7 +379,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneListGroup image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneListGroup.png" title="IPhoneListGroup" />
+        // <img src="../Images/IPhoneListGroup.png" alt="" title="IPhoneListGroup" />
         // </remarks>
         public static Bitmap IPhoneListGroup
         {
@@ -392,7 +392,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneOnOff image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneOnOff.png" title="IPhoneOnOff" />
+        // <img src="../Images/IPhoneOnOff.png" alt="" title="IPhoneOnOff" />
         // </remarks>
         public static Bitmap IPhoneOnOff
         {
@@ -405,7 +405,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhonePinstripes image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhonePinstripes.png" title="IPhonePinstripes" />
+        // <img src="../Images/IPhonePinstripes.png" alt="" title="IPhonePinstripes" />
         // </remarks>
         public static Bitmap IPhonePinstripes
         {
@@ -418,7 +418,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneSelectedTick image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneSelectedTick.png" title="IPhoneSelectedTick" />
+        // <img src="../Images/IPhoneSelectedTick.png" alt="" title="IPhoneSelectedTick" />
         // </remarks>
         public static Bitmap IPhoneSelectedTick
         {
@@ -431,7 +431,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneSelection image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneSelection.png" title="IPhoneSelection" />
+        // <img src="../Images/IPhoneSelection.png" alt="" title="IPhoneSelection" />
         // </remarks>
         public static Bitmap IPhoneSelection
         {
@@ -444,7 +444,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneSplash image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneSplash.png" title="IPhoneSplash" />
+        // <img src="../Images/IPhoneSplash.png" alt="" title="IPhoneSplash" />
         // </remarks>
         public static Bitmap IPhoneSplash
         {
@@ -457,7 +457,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneToolbar image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneToolbar.png" title="IPhoneToolbar" />
+        // <img src="../Images/IPhoneToolbar.png" alt="" title="IPhoneToolbar" />
         // </remarks>
         public static Bitmap IPhoneToolbar
         {
@@ -470,7 +470,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneToolButton image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneToolButton.png" title="IPhoneToolButton" />
+        // <img src="../Images/IPhoneToolButton.png" alt="" title="IPhoneToolButton" />
         // </remarks>
         public static Bitmap IPhoneToolButton
         {
@@ -483,7 +483,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the IPhoneWhiteButton image.
         // </summary>
         // <remarks>
-        // <img src="../Images/IPhoneWhiteButton.png" title="IPhoneWhiteButton" />
+        // <img src="../Images/IPhoneWhiteButton.png" alt="" title="IPhoneWhiteButton" />
         // </remarks>
         public static Bitmap IPhoneWhiteButton
         {
@@ -496,7 +496,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Logo128x128 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Logo128x128.png" title="Logo128x128" />
+        // <img src="../Images/Logo128x128.png" alt="" title="Logo128x128" />
         // </remarks>
         public static Bitmap Logo128x128
         {
@@ -509,7 +509,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Marker_Airplane image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Marker_Airplane.png" title="Marker_Airplane" />
+        // <img src="../Images/Marker_Airplane.png" alt="" title="Marker_Airplane" />
         // </remarks>
         public static Bitmap Marker_Airplane
         {
@@ -522,7 +522,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Marker_AirplaneSelected image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Marker_AirplaneSelected.png" title="Marker_AirplaneSelected" />
+        // <img src="../Images/Marker_AirplaneSelected.png" alt="" title="Marker_AirplaneSelected" />
         // </remarks>
         public static Bitmap Marker_AirplaneSelected
         {
@@ -535,7 +535,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the MovingMapChecked image.
         // </summary>
         // <remarks>
-        // <img src="../Images/MovingMapChecked.png" title="MovingMapChecked" />
+        // <img src="../Images/MovingMapChecked.png" alt="" title="MovingMapChecked" />
         // </remarks>
         public static Bitmap MovingMapChecked
         {
@@ -548,7 +548,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the MovingMapUnchecked image.
         // </summary>
         // <remarks>
-        // <img src="../Images/MovingMapUnchecked.png" title="MovingMapUnchecked" />
+        // <img src="../Images/MovingMapUnchecked.png" alt="" title="MovingMapUnchecked" />
         // </remarks>
         public static Bitmap MovingMapUnchecked
         {
@@ -561,7 +561,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the OpenSlider image.
         // </summary>
         // <remarks>
-        // <img src="../Images/OpenSlider.png" title="OpenSlider" />
+        // <img src="../Images/OpenSlider.png" alt="" title="OpenSlider" />
         // </remarks>
         public static Bitmap OpenSlider
         {
@@ -574,7 +574,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the RowHeader image.
         // </summary>
         // <remarks>
-        // <img src="../Images/RowHeader.png" title="RowHeader" />
+        // <img src="../Images/RowHeader.png" alt="" title="RowHeader" />
         // </remarks>
         public static Bitmap RowHeader
         {
@@ -587,7 +587,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the RowHeaderSelected image.
         // </summary>
         // <remarks>
-        // <img src="../Images/RowHeaderSelected.png" title="RowHeaderSelected" />
+        // <img src="../Images/RowHeaderSelected.png" alt="" title="RowHeaderSelected" />
         // </remarks>
         public static Bitmap RowHeaderSelected
         {
@@ -600,7 +600,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the ShowList image.
         // </summary>
         // <remarks>
-        // <img src="../Images/ShowList.png" title="ShowList" />
+        // <img src="../Images/ShowList.png" alt="" title="ShowList" />
         // </remarks>
         public static Bitmap ShowList
         {
@@ -613,7 +613,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the SmallPlaneNorth image.
         // </summary>
         // <remarks>
-        // <img src="../Images/SmallPlaneNorth.png" title="SmallPlaneNorth" />
+        // <img src="../Images/SmallPlaneNorth.png" alt="" title="SmallPlaneNorth" />
         // </remarks>
         public static Bitmap SmallPlaneNorth
         {
@@ -626,7 +626,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the TestSquare image.
         // </summary>
         // <remarks>
-        // <img src="../Images/TestSquare.png" title="TestSquare" />
+        // <img src="../Images/TestSquare.png" alt="" title="TestSquare" />
         // </remarks>
         public static Bitmap TestSquare
         {
@@ -639,7 +639,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Tower image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Tower.png" title="Tower" />
+        // <img src="../Images/Tower.png" alt="" title="Tower" />
         // </remarks>
         public static Bitmap Tower
         {
@@ -652,7 +652,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Transparent_25 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Transparent-25.png" title="Transparent_25" />
+        // <img src="../Images/Transparent-25.png" alt="" title="Transparent_25" />
         // </remarks>
         public static Bitmap Transparent_25
         {
@@ -665,7 +665,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Transparent_50 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Transparent-50.png" title="Transparent_50" />
+        // <img src="../Images/Transparent-50.png" alt="" title="Transparent_50" />
         // </remarks>
         public static Bitmap Transparent_50
         {
@@ -678,7 +678,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Transparent_16x16 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Transparent_16x16.png" title="Transparent_16x16" />
+        // <img src="../Images/Transparent_16x16.png" alt="" title="Transparent_16x16" />
         // </remarks>
         public static Bitmap Transparent_16x16
         {
@@ -691,7 +691,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Volume0 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Volume0.png" title="Volume0" />
+        // <img src="../Images/Volume0.png" alt="" title="Volume0" />
         // </remarks>
         public static Bitmap Volume0
         {
@@ -704,7 +704,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Volume100 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Volume100.png" title="Volume100" />
+        // <img src="../Images/Volume100.png" alt="" title="Volume100" />
         // </remarks>
         public static Bitmap Volume100
         {
@@ -717,7 +717,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Volume25 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Volume25.png" title="Volume25" />
+        // <img src="../Images/Volume25.png" alt="" title="Volume25" />
         // </remarks>
         public static Bitmap Volume25
         {
@@ -730,7 +730,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Volume50 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Volume50.png" title="Volume50" />
+        // <img src="../Images/Volume50.png" alt="" title="Volume50" />
         // </remarks>
         public static Bitmap Volume50
         {
@@ -743,7 +743,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the Volume75 image.
         // </summary>
         // <remarks>
-        // <img src="../Images/Volume75.png" title="Volume75" />
+        // <img src="../Images/Volume75.png" alt="" title="Volume75" />
         // </remarks>
         public static Bitmap Volume75
         {
@@ -756,7 +756,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the VolumeDown image.
         // </summary>
         // <remarks>
-        // <img src="../Images/VolumeDown.png" title="VolumeDown" />
+        // <img src="../Images/VolumeDown.png" alt="" title="VolumeDown" />
         // </remarks>
         public static Bitmap VolumeDown
         {
@@ -769,7 +769,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the VolumeMute image.
         // </summary>
         // <remarks>
-        // <img src="../Images/VolumeMute.png" title="VolumeMute" />
+        // <img src="../Images/VolumeMute.png" alt="" title="VolumeMute" />
         // </remarks>
         public static Bitmap VolumeMute
         {
@@ -782,7 +782,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the VolumeUp image.
         // </summary>
         // <remarks>
-        // <img src="../Images/VolumeUp.png" title="VolumeUp" />
+        // <img src="../Images/VolumeUp.png" alt="" title="VolumeUp" />
         // </remarks>
         public static Bitmap VolumeUp
         {
@@ -795,7 +795,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the WarningBitmap image.
         // </summary>
         // <remarks>
-        // <img src="../Images/WarningBitmap.png" title="WarningBitmap" />
+        // <img src="../Images/WarningBitmap.png" alt="" title="WarningBitmap" />
         // </remarks>
         public static Bitmap WarningBitmap
         {
@@ -808,7 +808,7 @@ namespace VirtualRadar.Resources
         // Gets or sets the WarningIcon image.
         // </summary>
         // <remarks>
-        // <img src="../Images/WarningIcon.ico" title="WarningIcon" />
+        // <img src="../Images/WarningIcon.ico" alt="" title="WarningIcon" />
         // </remarks>
         public static Icon WarningIcon
         {
