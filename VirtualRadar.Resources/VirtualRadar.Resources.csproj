@@ -70,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryResources.cs" />
-    <Compile Include="Images-Original.cs" />
     <Compile Include="Images.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -91,7 +90,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="application.ico" />
+    <Content Include="Images\ApplicationIcon.ico" />
     <Content Include="Images\CloseSlider.png" />
     <Content Include="Images\Compass.png" />
     <EmbeddedResource Include="Images\Favicon.ico" />
