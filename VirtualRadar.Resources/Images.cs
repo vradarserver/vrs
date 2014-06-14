@@ -37,12 +37,12 @@ namespace VirtualRadar.Resources
     public static class Images
     {
         private static Icon _ApplicationIcon;
-        // <summary>
-        // Gets or sets the ApplicationIcon image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/ApplicationIcon.ico" alt="" title="ApplicationIcon" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the ApplicationIcon image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/ApplicationIcon.ico" alt="" title="ApplicationIcon" />
+        /// </remarks>
         public static Icon ApplicationIcon
         {
             get { return _ApplicationIcon ?? InternalResources.ApplicationIcon; }
@@ -50,12 +50,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _BlueBall;
-        // <summary>
-        // Gets or sets the BlueBall image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/BlueBall.png" alt="" title="BlueBall" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the BlueBall image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/BlueBall.png" alt="" title="BlueBall" />
+        /// </remarks>
         public static Bitmap BlueBall
         {
             get { return _BlueBall ?? InternalResources.BlueBall; }
@@ -63,12 +63,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _ChevronBlueCircle;
-        // <summary>
-        // Gets or sets the ChevronBlueCircle image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/ChevronBlueCircle.png" alt="" title="ChevronBlueCircle" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the ChevronBlueCircle image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/ChevronBlueCircle.png" alt="" title="ChevronBlueCircle" />
+        /// </remarks>
         public static Bitmap ChevronBlueCircle
         {
             get { return _ChevronBlueCircle ?? InternalResources.ChevronBlueCircle; }
@@ -76,12 +76,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _ChevronGreenCircle;
-        // <summary>
-        // Gets or sets the ChevronGreenCircle image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/ChevronGreenCircle.png" alt="" title="ChevronGreenCircle" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the ChevronGreenCircle image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/ChevronGreenCircle.png" alt="" title="ChevronGreenCircle" />
+        /// </remarks>
         public static Bitmap ChevronGreenCircle
         {
             get { return _ChevronGreenCircle ?? InternalResources.ChevronGreenCircle; }
@@ -89,12 +89,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _ChevronRedCircle;
-        // <summary>
-        // Gets or sets the ChevronRedCircle image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/ChevronRedCircle.png" alt="" title="ChevronRedCircle" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the ChevronRedCircle image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/ChevronRedCircle.png" alt="" title="ChevronRedCircle" />
+        /// </remarks>
         public static Bitmap ChevronRedCircle
         {
             get { return _ChevronRedCircle ?? InternalResources.ChevronRedCircle; }
@@ -102,12 +102,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _CloseSlider;
-        // <summary>
-        // Gets or sets the CloseSlider image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/CloseSlider.png" alt="" title="CloseSlider" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the CloseSlider image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/CloseSlider.png" alt="" title="CloseSlider" />
+        /// </remarks>
         public static Bitmap CloseSlider
         {
             get { return _CloseSlider ?? InternalResources.CloseSlider; }
@@ -115,12 +115,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Collapse;
-        // <summary>
-        // Gets or sets the Collapse image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Collapse.png" alt="" title="Collapse" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Collapse image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Collapse.png" alt="" title="Collapse" />
+        /// </remarks>
         public static Bitmap Collapse
         {
             get { return _Collapse ?? InternalResources.Collapse; }
@@ -128,12 +128,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Compass;
-        // <summary>
-        // Gets or sets the Compass image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Compass.png" alt="" title="Compass" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Compass image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Compass.png" alt="" title="Compass" />
+        /// </remarks>
         public static Bitmap Compass
         {
             get { return _Compass ?? InternalResources.Compass; }
@@ -141,12 +141,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Corner_BottomLeft;
-        // <summary>
-        // Gets or sets the Corner_BottomLeft image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Corner_BottomLeft.png" alt="" title="Corner_BottomLeft" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Corner_BottomLeft image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Corner_BottomLeft.png" alt="" title="Corner_BottomLeft" />
+        /// </remarks>
         public static Bitmap Corner_BottomLeft
         {
             get { return _Corner_BottomLeft ?? InternalResources.Corner_BottomLeft; }
@@ -154,12 +154,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Corner_BottomRight;
-        // <summary>
-        // Gets or sets the Corner_BottomRight image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Corner_BottomRight.png" alt="" title="Corner_BottomRight" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Corner_BottomRight image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Corner_BottomRight.png" alt="" title="Corner_BottomRight" />
+        /// </remarks>
         public static Bitmap Corner_BottomRight
         {
             get { return _Corner_BottomRight ?? InternalResources.Corner_BottomRight; }
@@ -167,12 +167,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Corner_TopLeft;
-        // <summary>
-        // Gets or sets the Corner_TopLeft image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Corner_TopLeft.png" alt="" title="Corner_TopLeft" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Corner_TopLeft image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Corner_TopLeft.png" alt="" title="Corner_TopLeft" />
+        /// </remarks>
         public static Bitmap Corner_TopLeft
         {
             get { return _Corner_TopLeft ?? InternalResources.Corner_TopLeft; }
@@ -180,12 +180,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Corner_TopRight;
-        // <summary>
-        // Gets or sets the Corner_TopRight image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Corner_TopRight.png" alt="" title="Corner_TopRight" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Corner_TopRight image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Corner_TopRight.png" alt="" title="Corner_TopRight" />
+        /// </remarks>
         public static Bitmap Corner_TopRight
         {
             get { return _Corner_TopRight ?? InternalResources.Corner_TopRight; }
@@ -193,12 +193,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Crosshair;
-        // <summary>
-        // Gets or sets the Crosshair image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Crosshair.png" alt="" title="Crosshair" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Crosshair image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Crosshair.png" alt="" title="Crosshair" />
+        /// </remarks>
         public static Bitmap Crosshair
         {
             get { return _Crosshair ?? InternalResources.Crosshair; }
@@ -206,12 +206,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Expand;
-        // <summary>
-        // Gets or sets the Expand image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Expand.png" alt="" title="Expand" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Expand image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Expand.png" alt="" title="Expand" />
+        /// </remarks>
         public static Bitmap Expand
         {
             get { return _Expand ?? InternalResources.Expand; }
@@ -219,12 +219,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Icon _Favicon;
-        // <summary>
-        // Gets or sets the Favicon image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Favicon.ico" alt="" title="Favicon" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Favicon image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Favicon.ico" alt="" title="Favicon" />
+        /// </remarks>
         public static Icon Favicon
         {
             get { return _Favicon ?? InternalResources.Favicon; }
@@ -232,12 +232,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _FolderClosed;
-        // <summary>
-        // Gets or sets the FolderClosed image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/FolderClosed.png" alt="" title="FolderClosed" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the FolderClosed image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/FolderClosed.png" alt="" title="FolderClosed" />
+        /// </remarks>
         public static Bitmap FolderClosed
         {
             get { return _FolderClosed ?? InternalResources.FolderClosed; }
@@ -245,12 +245,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _FollowMe;
-        // <summary>
-        // Gets or sets the FollowMe image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/FollowMe.png" alt="" title="FollowMe" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the FollowMe image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/FollowMe.png" alt="" title="FollowMe" />
+        /// </remarks>
         public static Bitmap FollowMe
         {
             get { return _FollowMe ?? InternalResources.FollowMe; }
@@ -258,12 +258,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _GotoCurrentLocation;
-        // <summary>
-        // Gets or sets the GotoCurrentLocation image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/GotoCurrentLocation.png" alt="" title="GotoCurrentLocation" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the GotoCurrentLocation image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/GotoCurrentLocation.png" alt="" title="GotoCurrentLocation" />
+        /// </remarks>
         public static Bitmap GotoCurrentLocation
         {
             get { return _GotoCurrentLocation ?? InternalResources.GotoCurrentLocation; }
@@ -271,12 +271,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _HelpAbout;
-        // <summary>
-        // Gets or sets the HelpAbout image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/HelpAbout.png" alt="" title="HelpAbout" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the HelpAbout image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/HelpAbout.png" alt="" title="HelpAbout" />
+        /// </remarks>
         public static Bitmap HelpAbout
         {
             get { return _HelpAbout ?? InternalResources.HelpAbout; }
@@ -284,12 +284,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _HideList;
-        // <summary>
-        // Gets or sets the HideList image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/HideList.png" alt="" title="HideList" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the HideList image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/HideList.png" alt="" title="HideList" />
+        /// </remarks>
         public static Bitmap HideList
         {
             get { return _HideList ?? InternalResources.HideList; }
@@ -297,12 +297,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPadSplash;
-        // <summary>
-        // Gets or sets the IPadSplash image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPadSplash.png" alt="" title="IPadSplash" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPadSplash image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPadSplash.png" alt="" title="IPadSplash" />
+        /// </remarks>
         public static Bitmap IPadSplash
         {
             get { return _IPadSplash ?? InternalResources.IPadSplash; }
@@ -310,12 +310,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneBackButton;
-        // <summary>
-        // Gets or sets the IPhoneBackButton image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneBackButton.png" alt="" title="IPhoneBackButton" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneBackButton image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneBackButton.png" alt="" title="IPhoneBackButton" />
+        /// </remarks>
         public static Bitmap IPhoneBackButton
         {
             get { return _IPhoneBackButton ?? InternalResources.IPhoneBackButton; }
@@ -323,12 +323,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneBlueButton;
-        // <summary>
-        // Gets or sets the IPhoneBlueButton image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneBlueButton.png" alt="" title="IPhoneBlueButton" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneBlueButton image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneBlueButton.png" alt="" title="IPhoneBlueButton" />
+        /// </remarks>
         public static Bitmap IPhoneBlueButton
         {
             get { return _IPhoneBlueButton ?? InternalResources.IPhoneBlueButton; }
@@ -336,12 +336,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneChevron;
-        // <summary>
-        // Gets or sets the IPhoneChevron image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneChevron.png" alt="" title="IPhoneChevron" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneChevron image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneChevron.png" alt="" title="IPhoneChevron" />
+        /// </remarks>
         public static Bitmap IPhoneChevron
         {
             get { return _IPhoneChevron ?? InternalResources.IPhoneChevron; }
@@ -349,12 +349,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneGrayButton;
-        // <summary>
-        // Gets or sets the IPhoneGrayButton image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneGrayButton.png" alt="" title="IPhoneGrayButton" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneGrayButton image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneGrayButton.png" alt="" title="IPhoneGrayButton" />
+        /// </remarks>
         public static Bitmap IPhoneGrayButton
         {
             get { return _IPhoneGrayButton ?? InternalResources.IPhoneGrayButton; }
@@ -362,12 +362,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneIcon;
-        // <summary>
-        // Gets or sets the IPhoneIcon image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneIcon.png" alt="" title="IPhoneIcon" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneIcon image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneIcon.png" alt="" title="IPhoneIcon" />
+        /// </remarks>
         public static Bitmap IPhoneIcon
         {
             get { return _IPhoneIcon ?? InternalResources.IPhoneIcon; }
@@ -375,12 +375,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneListGroup;
-        // <summary>
-        // Gets or sets the IPhoneListGroup image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneListGroup.png" alt="" title="IPhoneListGroup" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneListGroup image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneListGroup.png" alt="" title="IPhoneListGroup" />
+        /// </remarks>
         public static Bitmap IPhoneListGroup
         {
             get { return _IPhoneListGroup ?? InternalResources.IPhoneListGroup; }
@@ -388,12 +388,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneOnOff;
-        // <summary>
-        // Gets or sets the IPhoneOnOff image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneOnOff.png" alt="" title="IPhoneOnOff" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneOnOff image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneOnOff.png" alt="" title="IPhoneOnOff" />
+        /// </remarks>
         public static Bitmap IPhoneOnOff
         {
             get { return _IPhoneOnOff ?? InternalResources.IPhoneOnOff; }
@@ -401,12 +401,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhonePinstripes;
-        // <summary>
-        // Gets or sets the IPhonePinstripes image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhonePinstripes.png" alt="" title="IPhonePinstripes" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhonePinstripes image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhonePinstripes.png" alt="" title="IPhonePinstripes" />
+        /// </remarks>
         public static Bitmap IPhonePinstripes
         {
             get { return _IPhonePinstripes ?? InternalResources.IPhonePinstripes; }
@@ -414,12 +414,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneSelectedTick;
-        // <summary>
-        // Gets or sets the IPhoneSelectedTick image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneSelectedTick.png" alt="" title="IPhoneSelectedTick" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneSelectedTick image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneSelectedTick.png" alt="" title="IPhoneSelectedTick" />
+        /// </remarks>
         public static Bitmap IPhoneSelectedTick
         {
             get { return _IPhoneSelectedTick ?? InternalResources.IPhoneSelectedTick; }
@@ -427,12 +427,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneSelection;
-        // <summary>
-        // Gets or sets the IPhoneSelection image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneSelection.png" alt="" title="IPhoneSelection" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneSelection image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneSelection.png" alt="" title="IPhoneSelection" />
+        /// </remarks>
         public static Bitmap IPhoneSelection
         {
             get { return _IPhoneSelection ?? InternalResources.IPhoneSelection; }
@@ -440,12 +440,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneSplash;
-        // <summary>
-        // Gets or sets the IPhoneSplash image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneSplash.png" alt="" title="IPhoneSplash" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneSplash image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneSplash.png" alt="" title="IPhoneSplash" />
+        /// </remarks>
         public static Bitmap IPhoneSplash
         {
             get { return _IPhoneSplash ?? InternalResources.IPhoneSplash; }
@@ -453,12 +453,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneToolbar;
-        // <summary>
-        // Gets or sets the IPhoneToolbar image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneToolbar.png" alt="" title="IPhoneToolbar" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneToolbar image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneToolbar.png" alt="" title="IPhoneToolbar" />
+        /// </remarks>
         public static Bitmap IPhoneToolbar
         {
             get { return _IPhoneToolbar ?? InternalResources.IPhoneToolbar; }
@@ -466,12 +466,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneToolButton;
-        // <summary>
-        // Gets or sets the IPhoneToolButton image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneToolButton.png" alt="" title="IPhoneToolButton" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneToolButton image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneToolButton.png" alt="" title="IPhoneToolButton" />
+        /// </remarks>
         public static Bitmap IPhoneToolButton
         {
             get { return _IPhoneToolButton ?? InternalResources.IPhoneToolButton; }
@@ -479,12 +479,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _IPhoneWhiteButton;
-        // <summary>
-        // Gets or sets the IPhoneWhiteButton image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/IPhoneWhiteButton.png" alt="" title="IPhoneWhiteButton" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the IPhoneWhiteButton image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/IPhoneWhiteButton.png" alt="" title="IPhoneWhiteButton" />
+        /// </remarks>
         public static Bitmap IPhoneWhiteButton
         {
             get { return _IPhoneWhiteButton ?? InternalResources.IPhoneWhiteButton; }
@@ -492,12 +492,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Logo128x128;
-        // <summary>
-        // Gets or sets the Logo128x128 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Logo128x128.png" alt="" title="Logo128x128" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Logo128x128 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Logo128x128.png" alt="" title="Logo128x128" />
+        /// </remarks>
         public static Bitmap Logo128x128
         {
             get { return _Logo128x128 ?? InternalResources.Logo128x128; }
@@ -505,12 +505,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Marker_Airplane;
-        // <summary>
-        // Gets or sets the Marker_Airplane image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Marker_Airplane.png" alt="" title="Marker_Airplane" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Marker_Airplane image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Marker_Airplane.png" alt="" title="Marker_Airplane" />
+        /// </remarks>
         public static Bitmap Marker_Airplane
         {
             get { return _Marker_Airplane ?? InternalResources.Marker_Airplane; }
@@ -518,12 +518,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Marker_AirplaneSelected;
-        // <summary>
-        // Gets or sets the Marker_AirplaneSelected image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Marker_AirplaneSelected.png" alt="" title="Marker_AirplaneSelected" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Marker_AirplaneSelected image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Marker_AirplaneSelected.png" alt="" title="Marker_AirplaneSelected" />
+        /// </remarks>
         public static Bitmap Marker_AirplaneSelected
         {
             get { return _Marker_AirplaneSelected ?? InternalResources.Marker_AirplaneSelected; }
@@ -531,12 +531,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _MovingMapChecked;
-        // <summary>
-        // Gets or sets the MovingMapChecked image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/MovingMapChecked.png" alt="" title="MovingMapChecked" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the MovingMapChecked image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/MovingMapChecked.png" alt="" title="MovingMapChecked" />
+        /// </remarks>
         public static Bitmap MovingMapChecked
         {
             get { return _MovingMapChecked ?? InternalResources.MovingMapChecked; }
@@ -544,12 +544,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _MovingMapUnchecked;
-        // <summary>
-        // Gets or sets the MovingMapUnchecked image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/MovingMapUnchecked.png" alt="" title="MovingMapUnchecked" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the MovingMapUnchecked image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/MovingMapUnchecked.png" alt="" title="MovingMapUnchecked" />
+        /// </remarks>
         public static Bitmap MovingMapUnchecked
         {
             get { return _MovingMapUnchecked ?? InternalResources.MovingMapUnchecked; }
@@ -557,12 +557,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _OpenSlider;
-        // <summary>
-        // Gets or sets the OpenSlider image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/OpenSlider.png" alt="" title="OpenSlider" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the OpenSlider image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/OpenSlider.png" alt="" title="OpenSlider" />
+        /// </remarks>
         public static Bitmap OpenSlider
         {
             get { return _OpenSlider ?? InternalResources.OpenSlider; }
@@ -570,12 +570,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _RowHeader;
-        // <summary>
-        // Gets or sets the RowHeader image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/RowHeader.png" alt="" title="RowHeader" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the RowHeader image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/RowHeader.png" alt="" title="RowHeader" />
+        /// </remarks>
         public static Bitmap RowHeader
         {
             get { return _RowHeader ?? InternalResources.RowHeader; }
@@ -583,12 +583,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _RowHeaderSelected;
-        // <summary>
-        // Gets or sets the RowHeaderSelected image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/RowHeaderSelected.png" alt="" title="RowHeaderSelected" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the RowHeaderSelected image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/RowHeaderSelected.png" alt="" title="RowHeaderSelected" />
+        /// </remarks>
         public static Bitmap RowHeaderSelected
         {
             get { return _RowHeaderSelected ?? InternalResources.RowHeaderSelected; }
@@ -596,12 +596,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _ShowList;
-        // <summary>
-        // Gets or sets the ShowList image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/ShowList.png" alt="" title="ShowList" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the ShowList image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/ShowList.png" alt="" title="ShowList" />
+        /// </remarks>
         public static Bitmap ShowList
         {
             get { return _ShowList ?? InternalResources.ShowList; }
@@ -609,12 +609,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _SmallPlaneNorth;
-        // <summary>
-        // Gets or sets the SmallPlaneNorth image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/SmallPlaneNorth.png" alt="" title="SmallPlaneNorth" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the SmallPlaneNorth image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/SmallPlaneNorth.png" alt="" title="SmallPlaneNorth" />
+        /// </remarks>
         public static Bitmap SmallPlaneNorth
         {
             get { return _SmallPlaneNorth ?? InternalResources.SmallPlaneNorth; }
@@ -622,12 +622,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _TestSquare;
-        // <summary>
-        // Gets or sets the TestSquare image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/TestSquare.png" alt="" title="TestSquare" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the TestSquare image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/TestSquare.png" alt="" title="TestSquare" />
+        /// </remarks>
         public static Bitmap TestSquare
         {
             get { return _TestSquare ?? InternalResources.TestSquare; }
@@ -635,12 +635,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Tower;
-        // <summary>
-        // Gets or sets the Tower image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Tower.png" alt="" title="Tower" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Tower image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Tower.png" alt="" title="Tower" />
+        /// </remarks>
         public static Bitmap Tower
         {
             get { return _Tower ?? InternalResources.Tower; }
@@ -648,12 +648,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Transparent_25;
-        // <summary>
-        // Gets or sets the Transparent_25 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Transparent-25.png" alt="" title="Transparent_25" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Transparent_25 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Transparent-25.png" alt="" title="Transparent_25" />
+        /// </remarks>
         public static Bitmap Transparent_25
         {
             get { return _Transparent_25 ?? InternalResources.Transparent_25; }
@@ -661,12 +661,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Transparent_50;
-        // <summary>
-        // Gets or sets the Transparent_50 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Transparent-50.png" alt="" title="Transparent_50" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Transparent_50 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Transparent-50.png" alt="" title="Transparent_50" />
+        /// </remarks>
         public static Bitmap Transparent_50
         {
             get { return _Transparent_50 ?? InternalResources.Transparent_50; }
@@ -674,12 +674,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Transparent_16x16;
-        // <summary>
-        // Gets or sets the Transparent_16x16 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Transparent_16x16.png" alt="" title="Transparent_16x16" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Transparent_16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Transparent_16x16.png" alt="" title="Transparent_16x16" />
+        /// </remarks>
         public static Bitmap Transparent_16x16
         {
             get { return _Transparent_16x16 ?? InternalResources.Transparent_16x16; }
@@ -687,12 +687,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Volume0;
-        // <summary>
-        // Gets or sets the Volume0 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Volume0.png" alt="" title="Volume0" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Volume0 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Volume0.png" alt="" title="Volume0" />
+        /// </remarks>
         public static Bitmap Volume0
         {
             get { return _Volume0 ?? InternalResources.Volume0; }
@@ -700,12 +700,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Volume100;
-        // <summary>
-        // Gets or sets the Volume100 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Volume100.png" alt="" title="Volume100" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Volume100 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Volume100.png" alt="" title="Volume100" />
+        /// </remarks>
         public static Bitmap Volume100
         {
             get { return _Volume100 ?? InternalResources.Volume100; }
@@ -713,12 +713,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Volume25;
-        // <summary>
-        // Gets or sets the Volume25 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Volume25.png" alt="" title="Volume25" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Volume25 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Volume25.png" alt="" title="Volume25" />
+        /// </remarks>
         public static Bitmap Volume25
         {
             get { return _Volume25 ?? InternalResources.Volume25; }
@@ -726,12 +726,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Volume50;
-        // <summary>
-        // Gets or sets the Volume50 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Volume50.png" alt="" title="Volume50" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Volume50 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Volume50.png" alt="" title="Volume50" />
+        /// </remarks>
         public static Bitmap Volume50
         {
             get { return _Volume50 ?? InternalResources.Volume50; }
@@ -739,12 +739,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _Volume75;
-        // <summary>
-        // Gets or sets the Volume75 image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/Volume75.png" alt="" title="Volume75" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the Volume75 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Volume75.png" alt="" title="Volume75" />
+        /// </remarks>
         public static Bitmap Volume75
         {
             get { return _Volume75 ?? InternalResources.Volume75; }
@@ -752,12 +752,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _VolumeDown;
-        // <summary>
-        // Gets or sets the VolumeDown image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/VolumeDown.png" alt="" title="VolumeDown" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the VolumeDown image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/VolumeDown.png" alt="" title="VolumeDown" />
+        /// </remarks>
         public static Bitmap VolumeDown
         {
             get { return _VolumeDown ?? InternalResources.VolumeDown; }
@@ -765,12 +765,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _VolumeMute;
-        // <summary>
-        // Gets or sets the VolumeMute image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/VolumeMute.png" alt="" title="VolumeMute" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the VolumeMute image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/VolumeMute.png" alt="" title="VolumeMute" />
+        /// </remarks>
         public static Bitmap VolumeMute
         {
             get { return _VolumeMute ?? InternalResources.VolumeMute; }
@@ -778,12 +778,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _VolumeUp;
-        // <summary>
-        // Gets or sets the VolumeUp image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/VolumeUp.png" alt="" title="VolumeUp" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the VolumeUp image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/VolumeUp.png" alt="" title="VolumeUp" />
+        /// </remarks>
         public static Bitmap VolumeUp
         {
             get { return _VolumeUp ?? InternalResources.VolumeUp; }
@@ -791,12 +791,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Bitmap _WarningBitmap;
-        // <summary>
-        // Gets or sets the WarningBitmap image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/WarningBitmap.png" alt="" title="WarningBitmap" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the WarningBitmap image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/WarningBitmap.png" alt="" title="WarningBitmap" />
+        /// </remarks>
         public static Bitmap WarningBitmap
         {
             get { return _WarningBitmap ?? InternalResources.WarningBitmap; }
@@ -804,12 +804,12 @@ namespace VirtualRadar.Resources
         }
 
         private static Icon _WarningIcon;
-        // <summary>
-        // Gets or sets the WarningIcon image.
-        // </summary>
-        // <remarks>
-        // <img src="../Images/WarningIcon.ico" alt="" title="WarningIcon" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the WarningIcon image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/WarningIcon.ico" alt="" title="WarningIcon" />
+        /// </remarks>
         public static Icon WarningIcon
         {
             get { return _WarningIcon ?? InternalResources.WarningIcon; }

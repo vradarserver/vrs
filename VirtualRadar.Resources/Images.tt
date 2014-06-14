@@ -67,12 +67,12 @@ foreach(Project project in dte.Solution.Projects) {
             }
 #>
         private static <#=type#> <#=fieldName#>;
-        // <summary>
-        // Gets or sets the <#=propertyName#> image.
-        // </summary>
-        // <remarks>
-        // <img src="<#=imageFileName#>" alt="" title="<#=propertyName#>" />
-        // </remarks>
+        /// <summary>
+        /// Gets or sets the <#=propertyName#> image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="<#=imageFileName#>" alt="" title="<#=propertyName#>" />
+        /// </remarks>
         public static <#=type#> <#=propertyName#>
         {
             get { return <#=fieldName#> ?? InternalResources.<#=propertyName#>; }
