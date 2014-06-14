@@ -1,0 +1,2 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>

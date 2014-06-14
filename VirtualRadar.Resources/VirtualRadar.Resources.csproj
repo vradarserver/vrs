@@ -70,7 +70,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryResources.cs" />
-    <Compile Include="Images.cs" />
+    <Compile Include="Images-Original.cs" />
+    <Compile Include="Images1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Images.tt</DependentUpon>
+    </Compile>
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InternalResources.Designer.cs">
@@ -79,7 +84,12 @@
       <DependentUpon>InternalResources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Images.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Images1.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="application.ico" />
     <Content Include="Images\CloseSlider.png" />
@@ -121,6 +131,7 @@
     <Content Include="Images\MovingMapChecked.png" />
     <Content Include="Images\MovingMapUnchecked.png" />
     <Content Include="Images\OpenSlider.png" />
+    <Content Include="Images\FolderClosed.png" />
     <Content Include="Images\RowHeader.png" />
     <Content Include="Images\RowHeaderSelected.png" />
     <Content Include="Images\ShowList.png" />
@@ -129,6 +140,7 @@
     <Content Include="Images\Tower.png" />
     <Content Include="Images\Transparent-25.png" />
     <Content Include="Images\Transparent-50.png" />
+    <Content Include="Images\Transparent_16x16.png" />
     <Content Include="Images\Volume0.png" />
     <Content Include="Images\Volume100.png" />
     <Content Include="Images\Volume25.png" />
@@ -145,6 +157,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InternalResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -576,6 +576,19 @@ namespace VirtualRadar.Resources
             set { _OpenSlider = value; }
         }
 
+        private static Bitmap _OptionsFolderClosed;
+        /// <summary>
+        /// Gets or sets the OpenSlider image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/OptionsFolderClosed.png" alt="" title="OptionsFolderClosed" />
+        /// </remarks>
+        public static Bitmap OptionsFolderClosed
+        {
+            get { return _OptionsFolderClosed ?? InternalResources.OptionsFolderClosed; }
+            set { _OptionsFolderClosed = value; }
+        }
+
         private static Bitmap _RowHeader;
         /// <summary>
         /// Gets or sets the RowHeader image.
@@ -652,6 +665,19 @@ namespace VirtualRadar.Resources
         {
             get { return _Tower ?? InternalResources.Tower; }
             set { _Tower = value; }
+        }
+
+        private static Bitmap _Transparent_16x16;
+        /// <summary>
+        /// Gets or sets the Transparent_16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Transparent_16x16.png" alt="" title="Transparent_16x16" />
+        /// </remarks>
+        public static Bitmap Transparent_16x16
+        {
+            get { return _Transparent_16x16 ?? InternalResources.Transparent_16x16; }
+            set { _Transparent_16x16 = value; }
         }
 
         private static Bitmap _Transparent_25;
