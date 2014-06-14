@@ -213,6 +213,16 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap FolderClosed {
+            get {
+                object obj = ResourceManager.GetObject("FolderClosed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap FollowMe {
             get {
                 object obj = ResourceManager.GetObject("FollowMe", resourceCulture);
@@ -516,6 +526,16 @@ namespace VirtualRadar.Resources {
         internal static System.Drawing.Bitmap Tower {
             get {
                 object obj = ResourceManager.GetObject("Tower", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Transparent_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Transparent_16x16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
