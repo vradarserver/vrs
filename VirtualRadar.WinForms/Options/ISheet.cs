@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -23,6 +24,11 @@ namespace VirtualRadar.WinForms.Options
     /// </summary>
     public interface ISheet
     {
+        /// <summary>
+        /// Gets or sets the owning options view.
+        /// </summary>
+        OptionsPropertySheetView OptionsView { get; set; }
+
         /// <summary>
         /// Gets a collection of pages that are children of this sheet. The pages are containers for variable length collections
         /// of child sheets.
@@ -48,5 +54,10 @@ namespace VirtualRadar.WinForms.Options
         /// Takes a copy of the current values of the object.
         /// </summary>
         void SetInitialValues();
+
+        /// <summary>
+        /// Shows validation results to the user.
+        /// </summary>
+        void ShowValidationResults(IEnumerable<ValidationResult> results);
     }
 }

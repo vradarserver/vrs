@@ -19,6 +19,7 @@ using VirtualRadar.Localisation;
 using System.Collections;
 using System.Drawing;
 using VirtualRadar.Resources;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -35,6 +36,9 @@ namespace VirtualRadar.WinForms.Options
         #endregion
 
         #region Properties
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public OptionsPropertySheetView OptionsView { get; set; }
+
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<ParentPage> Pages { get; private set; }
 
@@ -243,6 +247,17 @@ namespace VirtualRadar.WinForms.Options
         public virtual List<ParentPage> GetParentPages()
         {
             return new List<ParentPage>();
+        }
+        #endregion
+
+        #region ShowValidationResults
+        /// <summary>
+        /// Does nothing with vanilla sheets, the options view has to show them for us.
+        /// </summary>
+        /// <param name="results"></param>
+        public void ShowValidationResults(IEnumerable<ValidationResult> results)
+        {
+            ;
         }
         #endregion
     }
