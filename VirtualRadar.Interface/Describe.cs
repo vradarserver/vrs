@@ -15,6 +15,7 @@ using System.Text;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Localisation;
+using System.IO.Ports;
 
 namespace VirtualRadar.Interface
 {
@@ -154,6 +155,85 @@ namespace VirtualRadar.Interface
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns a description of a connection type.
+        /// </summary>
+        /// <param name="connectionType"></param>
+        /// <returns></returns>
+        public static string ConnectionType(ConnectionType connectionType)
+        {
+            switch(connectionType) {
+                case Settings.ConnectionType.COM:   return Strings.USBOverCOM;
+                case Settings.ConnectionType.TCP:   return Strings.Network;
+                default:                            throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a description of a number of stop bits.
+        /// </summary>
+        /// <param name="stopBits"></param>
+        /// <returns></returns>
+        public static string StopBits(StopBits stopBits)
+        {
+            switch(stopBits) {
+                case System.IO.Ports.StopBits.None:         return Strings.SerialStopBitsNone;
+                case System.IO.Ports.StopBits.One:          return Strings.SerialStopBitsOne;
+                case System.IO.Ports.StopBits.OnePointFive: return Strings.SerialStopBitsOnePointFive;
+                case System.IO.Ports.StopBits.Two:          return Strings.SerialStopBitsTwo;
+                default:                                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a description of a parity value.
+        /// </summary>
+        /// <param name="parity"></param>
+        /// <returns></returns>
+        public static string Parity(Parity parity)
+        {
+            switch(parity) {
+                case System.IO.Ports.Parity.Even:   return Strings.SerialParityEven;
+                case System.IO.Ports.Parity.Mark:   return Strings.SerialParityMark;
+                case System.IO.Ports.Parity.None:   return Strings.SerialParityNone;
+                case System.IO.Ports.Parity.Odd:    return Strings.SerialParityOdd;
+                case System.IO.Ports.Parity.Space:  return Strings.SerialParitySpace;
+                default:                            throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a description of a serial port handshake.
+        /// </summary>
+        /// <param name="handshake"></param>
+        /// <returns></returns>
+        public static string Handshake(Handshake handshake)
+        {
+            switch(handshake) {
+                case System.IO.Ports.Handshake.None:                    return Strings.SerialHandshakeNone;
+                case System.IO.Ports.Handshake.RequestToSend:           return Strings.SerialHandshakeRts;
+                case System.IO.Ports.Handshake.RequestToSendXOnXOff:    return Strings.SerialHandshakeRtsXOnXOff;
+                case System.IO.Ports.Handshake.XOnXOff:                 return Strings.SerialHandshakeXOnXOff;
+                default:                                                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a description of a feed format, aka DataSource.
+        /// </summary>
+        /// <param name="dataSource"></param>
+        /// <returns></returns>
+        public static string DataSource(DataSource dataSource)
+        {
+            switch(dataSource) {
+                case Settings.DataSource.Beast:         return Strings.BeastModeSFeed;
+                case Settings.DataSource.CompressedVRS: return Strings.CompressedPort30003;
+                case Settings.DataSource.Port30003:     return Strings.Port30003Feed;
+                case Settings.DataSource.Sbs3:          return Strings.SBS3ModeSFeed;
+                default:                                throw new NotImplementedException();
+            }
         }
     }
 }
