@@ -18,6 +18,7 @@ using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -35,6 +36,11 @@ namespace VirtualRadar.WinForms.Options
         /// See base docs.
         /// </summary>
         public override string PageTitle { get { return Strings.MergedFeeds; } }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override Image Icon { get { return Images.MergedFeed16x16; } }
         #endregion
 
         #region Constructor

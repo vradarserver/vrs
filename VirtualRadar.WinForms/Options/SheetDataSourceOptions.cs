@@ -18,6 +18,8 @@ using VirtualRadar.Interface.Settings;
 using System.Globalization;
 using System.Drawing.Design;
 using System.IO.Ports;
+using System.Drawing;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -30,6 +32,11 @@ namespace VirtualRadar.WinForms.Options
         /// See base class docs.
         /// </summary>
         public override string SheetTitle { get { return Strings.OptionsDataSourcesSheetTitle; } }
+
+        /// <summary>
+        /// See base class docs.
+        /// </summary>
+        public override Image Icon { get { return Images.Notebook16x16; } }
 
         // The number and display order of categories on the sheet
         private const int AircraftDataCategory = 0;

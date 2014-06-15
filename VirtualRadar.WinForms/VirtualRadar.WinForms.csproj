@@ -184,6 +184,7 @@
     <Compile Include="DownloadDataView.Designer.cs">
       <DependentUpon>DownloadDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="DynamicImageList.cs" />
     <Compile Include="FlightSimulatorXView.cs">
       <SubType>Form</SubType>
     </Compile>
