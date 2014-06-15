@@ -16,15 +16,16 @@ using System.Text;
 namespace VirtualRadar.WinForms
 {
     /// <summary>
-    /// A value and description.
+    /// A value and description. The value is immutable and is the only property
+    /// considered when evaluating equality and the hash code.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     class ValueDescription<T>
     {
         /// <summary>
-        /// Gets or sets the value.
+        /// Gets the value.
         /// </summary>
-        public T Value { get; set; }
+        public T Value { get; private set; }
 
         /// <summary>
         /// Gets or sets the description associated with the value.
@@ -34,7 +35,15 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public ValueDescription() : this(default(T), null)
+        public ValueDescription() : this(default(T), "")
+        {
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="value"></param>
+        public ValueDescription(T value) : this(value, "")
         {
         }
 
@@ -56,6 +65,31 @@ namespace VirtualRadar.WinForms
         public override string ToString()
         {
             return Description;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            var result = Object.ReferenceEquals(this, obj);
+            if(!result) {
+                var other = obj as ValueDescription<T>;
+                if(other != null) result = Object.Equals(other.Value, Value);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return Value != null ? Value.GetHashCode() : 0;
         }
     }
 }

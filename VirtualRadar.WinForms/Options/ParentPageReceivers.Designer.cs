@@ -28,7 +28,14 @@
         private void InitializeComponent()
         {
             this.buttonNew = new System.Windows.Forms.Button();
-            this.sheetHostControl = new VirtualRadar.WinForms.Controls.SheetHostControl();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.feedWebSiteReceiverId = new VirtualRadar.WinForms.Options.OptionsFeedSelectControl();
+            this.feedClosestAircaftReceiverId = new VirtualRadar.WinForms.Options.OptionsFeedSelectControl();
+            this.feedFlightSimulatorXReceiverId = new VirtualRadar.WinForms.Options.OptionsFeedSelectControl();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonNew
@@ -41,30 +48,81 @@
             this.buttonNew.UseVisualStyleBackColor = true;
             this.buttonNew.Click += new System.EventHandler(this.buttonNew_Click);
             // 
-            // sheetHostControl
+            // label1
             // 
-            this.sheetHostControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.sheetHostControl.Location = new System.Drawing.Point(4, 33);
-            this.sheetHostControl.Name = "sheetHostControl";
-            this.sheetHostControl.Size = new System.Drawing.Size(684, 402);
-            this.sheetHostControl.TabIndex = 1;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 36);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(115, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "::WebSiteReceiverId:::";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 64);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(141, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "::ClosestAircraftReceiverId:::";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 92);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(149, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "::FlightSimulatorXReceiverId:::";
+            // 
+            // feedWebSiteReceiverId
+            // 
+            this.feedWebSiteReceiverId.Location = new System.Drawing.Point(245, 33);
+            this.feedWebSiteReceiverId.Name = "feedWebSiteReceiverId";
+            this.feedWebSiteReceiverId.Size = new System.Drawing.Size(200, 21);
+            this.feedWebSiteReceiverId.TabIndex = 2;
+            // 
+            // feedClosestAircaftReceiverId
+            // 
+            this.feedClosestAircaftReceiverId.Location = new System.Drawing.Point(245, 60);
+            this.feedClosestAircaftReceiverId.Name = "feedClosestAircaftReceiverId";
+            this.feedClosestAircaftReceiverId.Size = new System.Drawing.Size(200, 21);
+            this.feedClosestAircaftReceiverId.TabIndex = 4;
+            // 
+            // feedFlightSimulatorXReceiverId
+            // 
+            this.feedFlightSimulatorXReceiverId.Location = new System.Drawing.Point(245, 87);
+            this.feedFlightSimulatorXReceiverId.Name = "feedFlightSimulatorXReceiverId";
+            this.feedFlightSimulatorXReceiverId.Size = new System.Drawing.Size(200, 21);
+            this.feedFlightSimulatorXReceiverId.TabIndex = 6;
             // 
             // ParentPageReceivers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.sheetHostControl);
+            this.Controls.Add(this.feedFlightSimulatorXReceiverId);
+            this.Controls.Add(this.feedClosestAircaftReceiverId);
+            this.Controls.Add(this.feedWebSiteReceiverId);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonNew);
             this.Name = "ParentPageReceivers";
-            this.Size = new System.Drawing.Size(691, 438);
+            this.Size = new System.Drawing.Size(458, 120);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button buttonNew;
-        private Controls.SheetHostControl sheetHostControl;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private OptionsFeedSelectControl feedWebSiteReceiverId;
+        private OptionsFeedSelectControl feedClosestAircaftReceiverId;
+        private OptionsFeedSelectControl feedFlightSimulatorXReceiverId;
     }
 }

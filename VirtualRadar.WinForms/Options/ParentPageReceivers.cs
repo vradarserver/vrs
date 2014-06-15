@@ -39,15 +39,27 @@ namespace VirtualRadar.WinForms.Options
         public override string PageTitle { get { return Strings.Receivers; } }
 
         /// <summary>
-        /// Gets the options associated with a receiver collection page.
-        /// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        internal SheetReceiverPageOptions ReceiverCollectionOptions { get; private set; }
-
-        /// <summary>
         /// See base docs.
         /// </summary>
         public override Image Icon { get { return Images.iconmonstr_radio_3_icon; } }
+
+        public int WebSiteReceiverId
+        {
+            get { return feedWebSiteReceiverId.SelectedFeedId; }
+            set { feedWebSiteReceiverId.SelectedFeedId = value; }
+        }
+
+        public int ClosestAircraftReceiverId
+        {
+            get { return feedClosestAircaftReceiverId.SelectedFeedId; }
+            set { feedClosestAircaftReceiverId.SelectedFeedId = value; }
+        }
+
+        public int FlightSimulatorXReceiverId
+        {
+            get { return feedFlightSimulatorXReceiverId.SelectedFeedId; }
+            set { feedFlightSimulatorXReceiverId.SelectedFeedId = value; }
+        }
         #endregion
 
         #region Constructors
@@ -57,7 +69,6 @@ namespace VirtualRadar.WinForms.Options
         public ParentPageReceivers() : base()
         {
             InitializeComponent();
-            ReceiverCollectionOptions = new SheetReceiverPageOptions();
         }
         #endregion
 
@@ -70,8 +81,6 @@ namespace VirtualRadar.WinForms.Options
         /// <returns></returns>
         protected override int DoPopulate(OptionsPropertySheetView optionsView, List<ISheet> result)
         {
-            sheetHostControl.OptionsView = optionsView;
-
             _Records = optionsView.Receivers;
             foreach(var record in _Records) {
                 result.Add(CreateSheet(record));
@@ -85,7 +94,7 @@ namespace VirtualRadar.WinForms.Options
         /// </summary>
         public override void SetInitialValues()
         {
-            ReceiverCollectionOptions.SetInitialValues();
+            ;
         }
 
         /// <summary>
@@ -179,10 +188,6 @@ namespace VirtualRadar.WinForms.Options
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            if(!DesignMode) {
-                sheetHostControl.Sheet = ReceiverCollectionOptions;
-            }
         }
 
         /// <summary>

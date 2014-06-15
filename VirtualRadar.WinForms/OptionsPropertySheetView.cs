@@ -765,8 +765,8 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public int WebSiteReceiverId
         {
-            get { return _ReceiversPage.ReceiverCollectionOptions.WebSiteReceiverId; }
-            set { _ReceiversPage.ReceiverCollectionOptions.WebSiteReceiverId = value; }
+            get { return _ReceiversPage.WebSiteReceiverId; }
+            set { _ReceiversPage.WebSiteReceiverId = value; }
         }
 
         /// <summary>
@@ -774,8 +774,8 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public int ClosestAircraftReceiverId
         {
-            get { return _ReceiversPage.ReceiverCollectionOptions.ClosestAircraftReceiverId; }
-            set { _ReceiversPage.ReceiverCollectionOptions.ClosestAircraftReceiverId = value; }
+            get { return _ReceiversPage.ClosestAircraftReceiverId; }
+            set { _ReceiversPage.ClosestAircraftReceiverId = value; }
         }
 
         /// <summary>
@@ -783,8 +783,8 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public int FlightSimulatorXReceiverId
         {
-            get { return _ReceiversPage.ReceiverCollectionOptions.FlightSimulatorXReceiverId; }
-            set { _ReceiversPage.ReceiverCollectionOptions.FlightSimulatorXReceiverId = value; }
+            get { return _ReceiversPage.FlightSimulatorXReceiverId; }
+            set { _ReceiversPage.FlightSimulatorXReceiverId = value; }
         }
         #endregion
         #endregion
