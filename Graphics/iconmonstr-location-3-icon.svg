@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- The icon can be used freely in both personal and commercial projects with no attribution required, but always appreciated. 
+You may NOT sub-license, resell, rent, redistribute or otherwise transfer the icon without express written permission from iconmonstr.com -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   x="0px"
+   y="0px"
+   width="460"
+   height="460"
+   viewBox="0 0 460 460"
+   enable-background="new 0 0 512 512"
+   xml:space="preserve"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="iconmonstr-location-3-icon.svg"
+   inkscape:export-filename="C:\Source\CodePlex\VRS\Graphics\iconmonstr-location-3-icon.png"
+   inkscape:export-xdpi="3.1300001"
+   inkscape:export-ydpi="3.1300001"><metadata
+   id="metadata9"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs7" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="880"
+   inkscape:window-height="663"
+   id="namedview5"
+   showgrid="true"
+   inkscape:zoom="0.4609375"
+   inkscape:cx="-3.2542373"
+   inkscape:cy="256"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="svg2"><inkscape:grid
+     type="xygrid"
+     id="grid2986"
+     empspacing="5"
+     visible="true"
+     enabled="true"
+     snapvisiblegridlinesonly="true" /></sodipodi:namedview>
+<path
+   id="location-3-icon"
+   d="M 230,24 C 157.928,24 99.499997,82.426999 99.499997,154.5 99.499997,261.667 202.141,273.001 230,436 257.861,273 360.5,261.667 360.5,154.5 360.5,82.427 302.074,24 230,24 z m 0,174.133 c -25.848,0 -46.801,-20.953 -46.801,-46.8 0,-25.847 20.953,-46.8 46.801,-46.8 25.848,0 46.801,20.953 46.801,46.8 0,25.847 -20.953,46.8 -46.801,46.8 z"
+   inkscape:connector-curvature="0" />
+</svg>
