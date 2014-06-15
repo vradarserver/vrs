@@ -252,6 +252,7 @@ namespace VirtualRadar.WinForms.Options
 
             if(!DesignMode) {
                 Localise.Control(this);
+                _ValidationHelper = new ValidationHelper(errorProvider, warningProvider);
             }
         }
         #endregion

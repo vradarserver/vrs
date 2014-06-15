@@ -259,6 +259,18 @@
     <Compile Include="Options\ReceiverIdCollectionUITypeEditor.cs" />
     <Compile Include="Options\ReceiverLocationsTypeConverter.cs" />
     <Compile Include="Options\ReceiverTypeConverter.cs" />
+    <Compile Include="Options\SheetControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\SheetControl.Designer.cs">
+      <DependentUpon>SheetControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\SheetDataSourceOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\SheetDataSourceOptionsControl.Designer.cs">
+      <DependentUpon>SheetDataSourceOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Options\SheetEventArgs.cs" />
     <Compile Include="Options\SheetMergedFeedOptions.cs" />
     <Compile Include="Options\SheetRebroadcastServerOptions.cs" />
@@ -275,9 +287,7 @@
     <Compile Include="Options\DistanceUnitEnumConverter.cs" />
     <Compile Include="Options\DropdownListConverter.cs" />
     <Compile Include="Options\FileNameBrowserAttribute.cs" />
-    <Compile Include="Options\FileNameUITypeEditor.cs" />
     <Compile Include="Options\FolderBrowserAttribute.cs" />
-    <Compile Include="Options\FolderUITypeEditor.cs" />
     <Compile Include="Options\GoogleMapStyleTypeConverter.cs" />
     <Compile Include="Options\HandshakeEnumConverter.cs" />
     <Compile Include="Options\HeightUnitEnumConverter.cs" />
@@ -285,7 +295,6 @@
     <Compile Include="Options\ParityEnumConverter.cs" />
     <Compile Include="Options\RaisesValuesChangedAttribute.cs" />
     <Compile Include="Options\Sheet.cs" />
-    <Compile Include="Options\SheetDataSourceOptions.cs" />
     <Compile Include="Options\SheetGeneralOptions.cs" />
     <Compile Include="Options\SheetRawFeedOptions.cs" />
     <Compile Include="Options\SheetWebServerOptions.cs" />
@@ -305,6 +314,11 @@
     </Compile>
     <Compile Include="AboutView.Designer.cs">
       <DependentUpon>AboutView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReceiverListView.cs">
       <SubType>Form</SubType>
@@ -420,6 +434,9 @@
     <EmbeddedResource Include="OptionsPropertySheetView.resx">
       <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Options\ParentPage.resx">
+      <DependentUpon>ParentPage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Options\ParentPageMergedFeeds.resx">
       <DependentUpon>ParentPageMergedFeeds.cs</DependentUpon>
     </EmbeddedResource>
@@ -432,8 +449,18 @@
     <EmbeddedResource Include="Options\ParentPageReceivers.resx">
       <DependentUpon>ParentPageReceivers.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Options\SheetControl.resx">
+      <DependentUpon>SheetControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\SheetDataSourceOptionsControl.resx">
+      <DependentUpon>SheetDataSourceOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PluginsView.resx">
       <DependentUpon>PluginsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ReceiverListView.resx">
       <DependentUpon>ReceiverListView.cs</DependentUpon>

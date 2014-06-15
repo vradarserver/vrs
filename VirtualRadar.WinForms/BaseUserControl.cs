@@ -268,7 +268,7 @@ namespace VirtualRadar.WinForms
         /// <param name="results"></param>
         public virtual void ShowValidationResults(IEnumerable<ValidationResult> results)
         {
-            _ValidationHelper.ShowValidationResults(results);
+            if(_ValidationHelper != null) _ValidationHelper.ShowValidationResults(results);
         }
         #endregion
     }

@@ -39,18 +39,40 @@ namespace VirtualRadar.WinForms
         /// </summary>
         class DisplayElement
         {
-            public ISheet Sheet { get; set; }
+            public ISheet Sheet { get; private set; }
 
-            public ParentPage ParentPage { get; set; }
+            public ParentPage ParentPage { get; private set; }
 
             public DisplayElement(ISheet sheet)
             {
                 Sheet = sheet;
             }
 
+            public override bool Equals(object obj)
+            {
+                var result = Object.ReferenceEquals(this, obj);
+                if(!result) {
+                    var other = obj as DisplayElement;
+                    result = Sheet == other.Sheet && ParentPage == other.ParentPage;
+                }
+
+                return result;
+            }
+
+            public override int GetHashCode()
+            {
+                return Sheet != null ? Sheet.GetHashCode() : ParentPage != null ? ParentPage.GetHashCode() : 0;
+            }
+
             public DisplayElement(ParentPage parentPage)
             {
                 ParentPage = parentPage;
+            }
+
+            public void ShowValidationResults(IEnumerable<ValidationResult> validationResults)
+            {
+                if(Sheet != null)           Sheet.ShowValidationResults(validationResults);
+                else if(ParentPage != null) ParentPage.ShowValidationResults(validationResults);
             }
         }
         #endregion
@@ -67,7 +89,7 @@ namespace VirtualRadar.WinForms
         private OnlineHelpHelper _OnlineHelp;
 
         // Each of the sheets of configuration options.
-        private SheetDataSourceOptions  _DataSourcesSheet =  new SheetDataSourceOptions();
+        private SheetDataSourceOptionsControl  _DataSourcesSheet =  new SheetDataSourceOptionsControl();
         private SheetRawFeedOptions     _RawFeedSheet = new SheetRawFeedOptions();
         private SheetWebServerOptions   _WebServerSheet = new SheetWebServerOptions();
         private SheetWebSiteOptions     _WebSiteSheet = new SheetWebSiteOptions();
@@ -946,6 +968,9 @@ namespace VirtualRadar.WinForms
                 var sheetNode = treeView.Nodes.Add(sheet.ToString());
                 InitialiseTreeNode(sheetNode, sheet);
 
+                var sheetControl = sheet as Control;
+                if(sheetControl != null) splitContainer.Panel2.Controls.Add(sheetControl);
+
                 foreach(var parentPage in sheet.Pages) {
                     parentPage.Visible = false;
                     splitContainer.Panel2.Controls.Add(parentPage);
@@ -980,8 +1005,12 @@ namespace VirtualRadar.WinForms
 
         private void DoSelectSheet(ISheet sheet)
         {
-            ShowPanel2Control(sheetHostControl);
-            sheetHostControl.Sheet = sheet;
+            var sheetControl = sheet as Control;
+            if(sheetControl != null) ShowPanel2Control(sheetControl);
+            else {
+                ShowPanel2Control(sheetHostControl);
+                sheetHostControl.Sheet = sheet;
+            }
 
             var sheetButtonText = "";
             var showResetToRecommended = false;
@@ -1059,6 +1088,7 @@ namespace VirtualRadar.WinForms
         /// <param name="childSheet"></param>
         public void ShowNewChildSheet(ParentPage parentPage, ISheet childSheet)
         {
+            childSheet.OptionsView = this;
             _ChildSheets[parentPage].Add(childSheet);
             AddTreeNodeForChildSheet(parentPage, childSheet);
             SelectedSheet = childSheet;
@@ -1221,16 +1251,30 @@ namespace VirtualRadar.WinForms
             _LastValidationFailed = false;
 
             DisplayElement selectedElement = null;
+            var allAffectedElements = new Dictionary<DisplayElement, List<ValidationResult>>();
             var messages = new StringBuilder();
+
             foreach(var result in results.Where(r => !r.IsWarning)) {
-                selectedElement = AddValidationMessage(selectedElement, messages, result);
+                selectedElement = AddValidationMessage(selectedElement, allAffectedElements, messages, result);
             }
             foreach(var result in results.Where(r => r.IsWarning)) {
-                AddValidationMessage(selectedElement, messages, result);
+                AddValidationMessage(selectedElement, allAffectedElements, messages, result);
             }
 
             labelValidationMessages.Text = messages.ToString();
-            if(selectedElement != null && _IsSaving) SelectedDisplayElement = selectedElement;
+            if(selectedElement != null && _IsSaving) {
+                SelectedDisplayElement = selectedElement;
+            }
+
+            foreach(var parentPage in _ParentPages) {
+                var displayElement = new DisplayElement(parentPage);
+                ShowValidationErrorsForDisplayElement(displayElement, allAffectedElements);
+            }
+
+            foreach(var sheet in _Sheets.Concat(_ChildSheets.Values.SelectMany(r => r))) {
+                var displayElement = new DisplayElement(sheet);
+                ShowValidationErrorsForDisplayElement(displayElement, allAffectedElements);
+            }
 
             if(results.Where(r => !r.IsWarning).Count() > 0) {
                 _LastValidationFailed = true;
@@ -1238,70 +1282,85 @@ namespace VirtualRadar.WinForms
             }
         }
 
-        private DisplayElement AddValidationMessage(DisplayElement selectedElement, StringBuilder messages, ValidationResult result)
+        private void ShowValidationErrorsForDisplayElement(DisplayElement displayElement, Dictionary<DisplayElement, List<ValidationResult>> allValidationResults)
+        {
+            List<ValidationResult> validationResults;
+            allValidationResults.TryGetValue(displayElement, out validationResults);
+            displayElement.ShowValidationResults(validationResults ?? new List<ValidationResult>());
+        }
+
+        private DisplayElement AddValidationMessage(DisplayElement selectedElement, Dictionary<DisplayElement, List<ValidationResult>> allAffectedElements, StringBuilder messages, ValidationResult result)
         {
             if(messages.Length != 0) messages.Append("\r\n");
             messages.AppendFormat("{0}{1}", result.IsWarning ? Localise.GetLocalisedText("::Warning:::") : "", result.Message);
 
-            if(selectedElement == null) {
-                if(result.Record != null) selectedElement = new DisplayElement(GetChildSheetForRecord(result.Record));
-                else {
-                    switch(result.Field) {
-                        case ValidationField.BaseStationAddress:
-                        case ValidationField.BaseStationPort:
-                        case ValidationField.ComPort:
-                        case ValidationField.BaudRate:
-                        case ValidationField.DataBits:
-                        case ValidationField.BaseStationDatabase:
-                        case ValidationField.FlagsFolder:
-                        case ValidationField.PicturesFolder:
-                        case ValidationField.SilhouettesFolder:
-                            selectedElement = new DisplayElement(_DataSourcesSheet);
-                            break;
-                        case ValidationField.Location:
-                        case ValidationField.ReceiverRange:
-                        case ValidationField.AcceptableAirborneLocalPositionSpeed:
-                        case ValidationField.AcceptableSurfaceLocalPositionSpeed:
-                        case ValidationField.AcceptableTransitionLocalPositionSpeed:
-                        case ValidationField.AirborneGlobalPositionLimit:
-                        case ValidationField.FastSurfaceGlobalPositionLimit:
-                        case ValidationField.SlowSurfaceGlobalPositionLimit:
-                        case ValidationField.AcceptIcaoInNonPICount:
-                        case ValidationField.AcceptIcaoInNonPISeconds:
-                        case ValidationField.AcceptIcaoInPI0Count:
-                        case ValidationField.AcceptIcaoInPI0Seconds:
-                            selectedElement = new DisplayElement(_RawFeedSheet);
-                            break;
-                        case ValidationField.WebUserName:
-                        case ValidationField.UPnpPortNumber:
-                        case ValidationField.InternetUserIdleTimeout:
-                            selectedElement = new DisplayElement(_WebServerSheet);
-                            break;
-                        case ValidationField.InitialGoogleMapRefreshSeconds:
-                        case ValidationField.MinimumGoogleMapRefreshSeconds:
-                        case ValidationField.Latitude:
-                        case ValidationField.Longitude:
-                        case ValidationField.GoogleMapZoomLevel:
-                        case ValidationField.SiteRootFolder:
-                            selectedElement = new DisplayElement(_WebSiteSheet);
-                            break;
-                        case ValidationField.CheckForNewVersions:
-                        case ValidationField.DisplayTimeout:
-                        case ValidationField.ShortTrailLength:
-                        case ValidationField.TextToSpeechSpeed:
-                        case ValidationField.TrackingTimeout:
-                            selectedElement = new DisplayElement(_GeneralOptions);
-                            break;
-                        case ValidationField.ClosestAircraftReceiver:
-                        case ValidationField.FlightSimulatorXReceiver:
-                        case ValidationField.WebSiteReceiver:
-                            selectedElement = new DisplayElement(_ReceiversPage);
-                            break;
-                        default:
-                            throw new NotImplementedException();
-                    }
+            DisplayElement displayElement = null;
+            if(result.Record != null) displayElement = new DisplayElement(GetChildSheetForRecord(result.Record));
+            else {
+                switch(result.Field) {
+                    case ValidationField.BaseStationAddress:
+                    case ValidationField.BaseStationPort:
+                    case ValidationField.ComPort:
+                    case ValidationField.BaudRate:
+                    case ValidationField.DataBits:
+                    case ValidationField.BaseStationDatabase:
+                    case ValidationField.FlagsFolder:
+                    case ValidationField.PicturesFolder:
+                    case ValidationField.SilhouettesFolder:
+                        displayElement = new DisplayElement(_DataSourcesSheet);
+                        break;
+                    case ValidationField.Location:
+                    case ValidationField.ReceiverRange:
+                    case ValidationField.AcceptableAirborneLocalPositionSpeed:
+                    case ValidationField.AcceptableSurfaceLocalPositionSpeed:
+                    case ValidationField.AcceptableTransitionLocalPositionSpeed:
+                    case ValidationField.AirborneGlobalPositionLimit:
+                    case ValidationField.FastSurfaceGlobalPositionLimit:
+                    case ValidationField.SlowSurfaceGlobalPositionLimit:
+                    case ValidationField.AcceptIcaoInNonPICount:
+                    case ValidationField.AcceptIcaoInNonPISeconds:
+                    case ValidationField.AcceptIcaoInPI0Count:
+                    case ValidationField.AcceptIcaoInPI0Seconds:
+                        displayElement = new DisplayElement(_RawFeedSheet);
+                        break;
+                    case ValidationField.WebUserName:
+                    case ValidationField.UPnpPortNumber:
+                    case ValidationField.InternetUserIdleTimeout:
+                        displayElement = new DisplayElement(_WebServerSheet);
+                        break;
+                    case ValidationField.InitialGoogleMapRefreshSeconds:
+                    case ValidationField.MinimumGoogleMapRefreshSeconds:
+                    case ValidationField.Latitude:
+                    case ValidationField.Longitude:
+                    case ValidationField.GoogleMapZoomLevel:
+                    case ValidationField.SiteRootFolder:
+                        displayElement = new DisplayElement(_WebSiteSheet);
+                        break;
+                    case ValidationField.CheckForNewVersions:
+                    case ValidationField.DisplayTimeout:
+                    case ValidationField.ShortTrailLength:
+                    case ValidationField.TextToSpeechSpeed:
+                    case ValidationField.TrackingTimeout:
+                        displayElement = new DisplayElement(_GeneralOptions);
+                        break;
+                    case ValidationField.ClosestAircraftReceiver:
+                    case ValidationField.FlightSimulatorXReceiver:
+                    case ValidationField.WebSiteReceiver:
+                        displayElement = new DisplayElement(_ReceiversPage);
+                        break;
+                    default:
+                        throw new NotImplementedException();
                 }
             }
+
+            if(selectedElement == null) selectedElement = displayElement;
+
+            List<ValidationResult> elementResults;
+            if(!allAffectedElements.TryGetValue(displayElement, out elementResults)) {
+                elementResults = new List<ValidationResult>();
+                allAffectedElements.Add(displayElement, elementResults);
+            }
+            elementResults.Add(result);
 
             return selectedElement;
         }
@@ -1318,8 +1377,15 @@ namespace VirtualRadar.WinForms
 
             if(!DesignMode) {
                 Localise.Form(this);
-                sheetHostControl.OptionsView = this;
                 treeView.ImageList = _ImageList.ImageList;
+
+                sheetHostControl.OptionsView = this;
+                foreach(var sheet in _Sheets) {
+                    sheet.OptionsView = this;
+                }
+                foreach(var parentPage in _ParentPages) {
+                    parentPage.View = this;
+                }
 
                 ArrangeControls();
 
@@ -1334,6 +1400,7 @@ namespace VirtualRadar.WinForms
                 RecordInitialValues();
                 treeView.ExpandAll();
                 treeView.SelectedNode = treeView.Nodes.OfType<TreeNode>().FirstOrDefault();
+                DoSelectSheet(SelectedSheet);
 
                 OnValueChanged(this, EventArgs.Empty);
             }
