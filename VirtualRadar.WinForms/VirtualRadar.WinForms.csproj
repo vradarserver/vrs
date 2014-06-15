@@ -223,6 +223,12 @@
     <Compile Include="Options\FeedTypeConverter.cs" />
     <Compile Include="Options\MergedFeedTypeConverter.cs" />
     <Compile Include="Options\DisplayOrderAttribute.cs" />
+    <Compile Include="Options\OptionsFeedSelectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\OptionsFeedSelectControl.Designer.cs">
+      <DependentUpon>OptionsFeedSelectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Options\ParentPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -433,6 +439,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPropertySheetView.resx">
       <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\OptionsFeedSelectControl.resx">
+      <DependentUpon>OptionsFeedSelectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\ParentPage.resx">
       <DependentUpon>ParentPage.cs</DependentUpon>
