@@ -29,7 +29,23 @@
         {
             this.buttonNew = new System.Windows.Forms.Button();
             this.linkLabelUpdateFromDatabase = new System.Windows.Forms.LinkLabel();
+            this.splitContainerControlsDescription.Panel1.SuspendLayout();
+            this.splitContainerControlsDescription.SuspendLayout();
+            this.panelContent.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).BeginInit();
             this.SuspendLayout();
+            // 
+            // splitContainerControlsDescription
+            // 
+            this.splitContainerControlsDescription.Size = new System.Drawing.Size(254, 189);
+            this.splitContainerControlsDescription.SplitterDistance = 121;
+            // 
+            // panelContent
+            // 
+            this.panelContent.Controls.Add(this.buttonNew);
+            this.panelContent.Controls.Add(this.linkLabelUpdateFromDatabase);
+            this.panelContent.Size = new System.Drawing.Size(254, 121);
             // 
             // buttonNew
             // 
@@ -45,7 +61,7 @@
             // 
             this.linkLabelUpdateFromDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabelUpdateFromDatabase.AutoSize = true;
-            this.linkLabelUpdateFromDatabase.Location = new System.Drawing.Point(3, 167);
+            this.linkLabelUpdateFromDatabase.Location = new System.Drawing.Point(5, 105);
             this.linkLabelUpdateFromDatabase.Name = "linkLabelUpdateFromDatabase";
             this.linkLabelUpdateFromDatabase.Size = new System.Drawing.Size(180, 13);
             this.linkLabelUpdateFromDatabase.TabIndex = 7;
@@ -56,12 +72,15 @@
             // ParentPageReceiverLocations
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.linkLabelUpdateFromDatabase);
-            this.Controls.Add(this.buttonNew);
             this.Name = "ParentPageReceiverLocations";
             this.Size = new System.Drawing.Size(254, 189);
+            this.splitContainerControlsDescription.Panel1.ResumeLayout(false);
+            this.splitContainerControlsDescription.ResumeLayout(false);
+            this.panelContent.ResumeLayout(false);
+            this.panelContent.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

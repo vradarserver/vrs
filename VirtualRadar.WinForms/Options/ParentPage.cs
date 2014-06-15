@@ -25,7 +25,7 @@ namespace VirtualRadar.WinForms.Options
     /// <summary>
     /// The base class for all controls that act as parent pages for items in a collection in <see cref="Configuration"/>.
     /// </summary>
-    public partial class ParentPage : BaseUserControl
+    public partial class ParentPage : OptionsPage
     {
         #region Fields
         /// <summary>
@@ -41,19 +41,9 @@ namespace VirtualRadar.WinForms.Options
         public virtual string PageTitle { get { return "missing title"; } }
 
         /// <summary>
-        /// Gets the icon for the page.
-        /// </summary>
-        public virtual Image Icon { get { return null; } }
-
-        /// <summary>
         /// Gets or sets the tree node associated with this parent page.
         /// </summary>
         public TreeNode TreeNode { get; set; }
-
-        /// <summary>
-        /// Gets or sets the view that this page is handling child objects for.
-        /// </summary>
-        public OptionsPropertySheetView View { get; set; }
         #endregion
 
         #region Constructor
@@ -74,7 +64,7 @@ namespace VirtualRadar.WinForms.Options
         /// <returns></returns>
         public List<ISheet> Populate(OptionsPropertySheetView optionsView)
         {
-            View = optionsView;
+            OptionsView = optionsView;
 
             var result = new List<ISheet>();
             _NextUniqueId = DoPopulate(optionsView, result);
@@ -176,7 +166,7 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="sheet"></param>
         protected virtual void ShowNewRecord(ISheet sheet)
         {
-            if(View != null) View.ShowNewChildSheet(this, sheet);
+            if(OptionsView != null) OptionsView.ShowNewChildSheet(this, sheet);
             DoUpdateViewWithNewList();
         }
 

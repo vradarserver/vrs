@@ -26,18 +26,18 @@ namespace VirtualRadar.WinForms.Options
         protected override void DoUpdateViewWithNewList()
         {
             var feedIds = FeedTypeConverter.BuildAllIds().ToList();
-            var receiverIds = View.Receivers.Select(r => r.UniqueId).ToArray();
+            var receiverIds = OptionsView.Receivers.Select(r => r.UniqueId).ToArray();
 
-            ResetMissingSingleReceiverId(feedIds, View.WebSiteReceiverId, () => { View.WebSiteReceiverId = 0; });
-            ResetMissingSingleReceiverId(feedIds, View.ClosestAircraftReceiverId, () => { View.ClosestAircraftReceiverId = 0; });
-            ResetMissingSingleReceiverId(feedIds, View.FlightSimulatorXReceiverId, () => { View.FlightSimulatorXReceiverId = 0; });
+            ResetMissingSingleReceiverId(feedIds, OptionsView.WebSiteReceiverId, () => { OptionsView.WebSiteReceiverId = 0; });
+            ResetMissingSingleReceiverId(feedIds, OptionsView.ClosestAircraftReceiverId, () => { OptionsView.ClosestAircraftReceiverId = 0; });
+            ResetMissingSingleReceiverId(feedIds, OptionsView.FlightSimulatorXReceiverId, () => { OptionsView.FlightSimulatorXReceiverId = 0; });
 
-            foreach(var rebroadcastServer in View.RebroadcastSettings) {
+            foreach(var rebroadcastServer in OptionsView.RebroadcastSettings) {
                 var receiverStillExists = feedIds.Any(r => r == rebroadcastServer.ReceiverId);
                 if(!receiverStillExists) rebroadcastServer.ReceiverId = 0;
             }
 
-            foreach(var mergedFeed in View.MergedFeeds) {
+            foreach(var mergedFeed in OptionsView.MergedFeeds) {
                 var existingIds = mergedFeed.ReceiverIds.Intersect(receiverIds).ToArray();
                 mergedFeed.ReceiverIds.Clear();
                 mergedFeed.ReceiverIds.AddRange(existingIds);
