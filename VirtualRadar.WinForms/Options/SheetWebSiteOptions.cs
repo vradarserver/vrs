@@ -17,6 +17,8 @@ using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface.Settings;
+using System.Drawing;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -29,6 +31,11 @@ namespace VirtualRadar.WinForms.Options
         /// See base docs.
         /// </summary>
         public override string SheetTitle { get { return Strings.OptionsWebSiteTitle; } }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override Image Icon { get { return Images.Site16x16; } }
 
         // Category display orders and totals
         private const int GoogleMapCategory = 0;

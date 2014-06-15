@@ -193,6 +193,16 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Decoding16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Decoding16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Expand {
             get {
                 object obj = ResourceManager.GetObject("Expand", resourceCulture);
@@ -213,9 +223,9 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap FolderClosed {
+        internal static System.Drawing.Bitmap FollowMe {
             get {
-                object obj = ResourceManager.GetObject("FolderClosed", resourceCulture);
+                object obj = ResourceManager.GetObject("FollowMe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,9 +233,9 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap FollowMe {
+        internal static System.Drawing.Bitmap Gear16x16 {
             get {
-                object obj = ResourceManager.GetObject("FollowMe", resourceCulture);
+                object obj = ResourceManager.GetObject("Gear16x16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -256,6 +266,26 @@ namespace VirtualRadar.Resources {
         internal static System.Drawing.Bitmap HideList {
             get {
                 object obj = ResourceManager.GetObject("HideList", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap iconmonstr_location_3_icon {
+            get {
+                object obj = ResourceManager.GetObject("iconmonstr_location_3_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap iconmonstr_radio_3_icon {
+            get {
+                object obj = ResourceManager.GetObject("iconmonstr_radio_3_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -443,6 +473,16 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap MergedFeed16x16 {
+            get {
+                object obj = ResourceManager.GetObject("MergedFeed16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MovingMapChecked {
             get {
                 object obj = ResourceManager.GetObject("MovingMapChecked", resourceCulture);
@@ -463,9 +503,29 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Notebook16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Notebook16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap OpenSlider {
             get {
                 object obj = ResourceManager.GetObject("OpenSlider", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Rebroadcast16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Rebroadcast16x16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -493,9 +553,29 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Server16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Server16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ShowList {
             get {
                 object obj = ResourceManager.GetObject("ShowList", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Site16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Site16x16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

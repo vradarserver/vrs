@@ -41,6 +41,11 @@ namespace VirtualRadar.WinForms.Options
         public virtual string PageTitle { get { return "missing title"; } }
 
         /// <summary>
+        /// Gets the icon for the page.
+        /// </summary>
+        public virtual Image Icon { get { return null; } }
+
+        /// <summary>
         /// Gets or sets the tree node associated with this parent page.
         /// </summary>
         public TreeNode TreeNode { get; set; }

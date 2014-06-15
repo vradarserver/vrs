@@ -15,6 +15,8 @@ using System.Text;
 using VirtualRadar.Localisation;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Drawing;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -27,6 +29,11 @@ namespace VirtualRadar.WinForms.Options
         /// See base docs.
         /// </summary>
         public override string SheetTitle { get { return Strings.OptionsWebServerSheetTitle; } }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override Image Icon { get { return Images.Server16x16; } }
 
         // Category display order and total
         private const int AuthenticationCategory = 0;

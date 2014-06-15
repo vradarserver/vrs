@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -36,6 +37,11 @@ namespace VirtualRadar.WinForms.Options
         /// See base docs.
         /// </summary>
         public override string PageTitle { get { return Strings.ReceiverLocationsTitle; } }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override Image Icon { get { return Images.iconmonstr_location_3_icon; } }
         #endregion
 
         #region Constructors

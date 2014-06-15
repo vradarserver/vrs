@@ -17,6 +17,8 @@ using System.Reflection;
 using System.Text;
 using VirtualRadar.Localisation;
 using System.Collections;
+using System.Drawing;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -44,6 +46,9 @@ namespace VirtualRadar.WinForms.Options
 
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object Tag { get; set; }
+
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public virtual Image Icon { get { return null; } }
         #endregion
 
         #region Static constructor

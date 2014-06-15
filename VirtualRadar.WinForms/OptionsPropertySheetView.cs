@@ -24,6 +24,7 @@ using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.WinForms.Options;
 using System.IO.Ports;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms
 {
@@ -92,6 +93,11 @@ namespace VirtualRadar.WinForms
         /// The list of sheets associated with parent pages, those that allow editing of child objects.
         /// </summary>
         private Dictionary<ParentPage, List<ISheet>> _ChildSheets = new Dictionary<ParentPage, List<ISheet>>();
+
+        /// <summary>
+        /// The object that manages the tree view's image list for us.
+        /// </summary>
+        private DynamicImageList _ImageList = new DynamicImageList();
 
         /// <summary>
         /// The fake password used to determine whether the user has entered a password or not.
@@ -938,15 +944,14 @@ namespace VirtualRadar.WinForms
             treeView.Nodes.Clear();
             foreach(var sheet in _Sheets) {
                 var sheetNode = treeView.Nodes.Add(sheet.ToString());
-                sheetNode.Tag = sheet;
+                InitialiseTreeNode(sheetNode, sheet);
 
                 foreach(var parentPage in sheet.Pages) {
                     parentPage.Visible = false;
                     splitContainer.Panel2.Controls.Add(parentPage);
 
                     var pageNode = sheetNode.Nodes.Add(parentPage.PageTitle);
-                    pageNode.Tag = parentPage;
-                    parentPage.TreeNode = pageNode;
+                    InitialiseTreeNode(pageNode, parentPage);
                 }
             }
         }
@@ -1059,12 +1064,27 @@ namespace VirtualRadar.WinForms
             SelectedSheet = childSheet;
         }
 
-        private static TreeNode AddTreeNodeForChildSheet(ParentPage parentPage, ISheet childSheet)
+        private TreeNode AddTreeNodeForChildSheet(ParentPage parentPage, ISheet childSheet)
         {
             var result = parentPage.TreeNode.Nodes.Add(childSheet.ToString());
-            result.Tag = childSheet;
+            InitialiseTreeNode(result, childSheet);
 
             return result;
+        }
+
+        private void InitialiseTreeNode(TreeNode treeNode, ISheet sheet)
+        {
+            var imageIndex = _ImageList.AddImage(sheet.Icon == null ? Images.Transparent_16x16 : sheet.Icon);
+            treeNode.ImageIndex = treeNode.SelectedImageIndex = imageIndex;
+            treeNode.Tag = sheet;
+        }
+
+        private void InitialiseTreeNode(TreeNode treeNode, ParentPage parentPage)
+        {
+            var imageIndex = _ImageList.AddImage(parentPage.Icon == null ? Images.Transparent_16x16 : parentPage.Icon);
+            treeNode.ImageIndex = treeNode.SelectedImageIndex = imageIndex;
+            treeNode.Tag = parentPage;
+            parentPage.TreeNode = treeNode;
         }
 
         /// <summary>
@@ -1299,6 +1319,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
                 sheetHostControl.OptionsView = this;
+                treeView.ImageList = _ImageList.ImageList;
 
                 ArrangeControls();
 

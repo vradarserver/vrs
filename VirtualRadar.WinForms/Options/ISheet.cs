@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -37,6 +38,11 @@ namespace VirtualRadar.WinForms.Options
         /// Gets or sets a tag against the sheet that is never shown to the user or serialised to the configuration options.
         /// </summary>
         object Tag { get; set; }
+
+        /// <summary>
+        /// Gets the icon to display against the sheet.
+        /// </summary>
+        Image Icon { get; }
 
         /// <summary>
         /// Takes a copy of the current values of the object.

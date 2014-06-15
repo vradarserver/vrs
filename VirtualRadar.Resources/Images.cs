@@ -205,6 +205,19 @@ namespace VirtualRadar.Resources
             set { _Crosshair = value; }
         }
 
+        private static Bitmap _Decoding16x16;
+        /// <summary>
+        /// Gets or sets the Decoding16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Decoding16x16.png" alt="" title="Decoding16x16" />
+        /// </remarks>
+        public static Bitmap Decoding16x16
+        {
+            get { return _Decoding16x16 ?? InternalResources.Decoding16x16; }
+            set { _Decoding16x16 = value; }
+        }
+
         private static Bitmap _Expand;
         /// <summary>
         /// Gets or sets the Expand image.
@@ -231,19 +244,6 @@ namespace VirtualRadar.Resources
             set { _Favicon = value; }
         }
 
-        private static Bitmap _FolderClosed;
-        /// <summary>
-        /// Gets or sets the FolderClosed image.
-        /// </summary>
-        /// <remarks>
-        /// <img src="../Images/FolderClosed.png" alt="" title="FolderClosed" />
-        /// </remarks>
-        public static Bitmap FolderClosed
-        {
-            get { return _FolderClosed ?? InternalResources.FolderClosed; }
-            set { _FolderClosed = value; }
-        }
-
         private static Bitmap _FollowMe;
         /// <summary>
         /// Gets or sets the FollowMe image.
@@ -255,6 +255,19 @@ namespace VirtualRadar.Resources
         {
             get { return _FollowMe ?? InternalResources.FollowMe; }
             set { _FollowMe = value; }
+        }
+
+        private static Bitmap _Gear16x16;
+        /// <summary>
+        /// Gets or sets the Gear16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Gear16x16.png" alt="" title="Gear16x16" />
+        /// </remarks>
+        public static Bitmap Gear16x16
+        {
+            get { return _Gear16x16 ?? InternalResources.Gear16x16; }
+            set { _Gear16x16 = value; }
         }
 
         private static Bitmap _GotoCurrentLocation;
@@ -294,6 +307,32 @@ namespace VirtualRadar.Resources
         {
             get { return _HideList ?? InternalResources.HideList; }
             set { _HideList = value; }
+        }
+
+        private static Bitmap _iconmonstr_location_3_icon;
+        /// <summary>
+        /// Gets or sets the iconmonstr_location_3_icon image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/iconmonstr-location-3-icon.png" alt="" title="iconmonstr_location_3_icon" />
+        /// </remarks>
+        public static Bitmap iconmonstr_location_3_icon
+        {
+            get { return _iconmonstr_location_3_icon ?? InternalResources.iconmonstr_location_3_icon; }
+            set { _iconmonstr_location_3_icon = value; }
+        }
+
+        private static Bitmap _iconmonstr_radio_3_icon;
+        /// <summary>
+        /// Gets or sets the iconmonstr_radio_3_icon image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/iconmonstr-radio-3-icon.png" alt="" title="iconmonstr_radio_3_icon" />
+        /// </remarks>
+        public static Bitmap iconmonstr_radio_3_icon
+        {
+            get { return _iconmonstr_radio_3_icon ?? InternalResources.iconmonstr_radio_3_icon; }
+            set { _iconmonstr_radio_3_icon = value; }
         }
 
         private static Bitmap _IPadSplash;
@@ -530,6 +569,19 @@ namespace VirtualRadar.Resources
             set { _Marker_AirplaneSelected = value; }
         }
 
+        private static Bitmap _MergedFeed16x16;
+        /// <summary>
+        /// Gets or sets the MergedFeed16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/MergedFeed16x16.png" alt="" title="MergedFeed16x16" />
+        /// </remarks>
+        public static Bitmap MergedFeed16x16
+        {
+            get { return _MergedFeed16x16 ?? InternalResources.MergedFeed16x16; }
+            set { _MergedFeed16x16 = value; }
+        }
+
         private static Bitmap _MovingMapChecked;
         /// <summary>
         /// Gets or sets the MovingMapChecked image.
@@ -556,6 +608,19 @@ namespace VirtualRadar.Resources
             set { _MovingMapUnchecked = value; }
         }
 
+        private static Bitmap _Notebook16x16;
+        /// <summary>
+        /// Gets or sets the Notebook16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Notebook16x16.png" alt="" title="Notebook16x16" />
+        /// </remarks>
+        public static Bitmap Notebook16x16
+        {
+            get { return _Notebook16x16 ?? InternalResources.Notebook16x16; }
+            set { _Notebook16x16 = value; }
+        }
+
         private static Bitmap _OpenSlider;
         /// <summary>
         /// Gets or sets the OpenSlider image.
@@ -567,6 +632,19 @@ namespace VirtualRadar.Resources
         {
             get { return _OpenSlider ?? InternalResources.OpenSlider; }
             set { _OpenSlider = value; }
+        }
+
+        private static Bitmap _Rebroadcast16x16;
+        /// <summary>
+        /// Gets or sets the Rebroadcast16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Rebroadcast16x16.png" alt="" title="Rebroadcast16x16" />
+        /// </remarks>
+        public static Bitmap Rebroadcast16x16
+        {
+            get { return _Rebroadcast16x16 ?? InternalResources.Rebroadcast16x16; }
+            set { _Rebroadcast16x16 = value; }
         }
 
         private static Bitmap _RowHeader;
@@ -595,6 +673,19 @@ namespace VirtualRadar.Resources
             set { _RowHeaderSelected = value; }
         }
 
+        private static Bitmap _Server16x16;
+        /// <summary>
+        /// Gets or sets the Server16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Server16x16.png" alt="" title="Server16x16" />
+        /// </remarks>
+        public static Bitmap Server16x16
+        {
+            get { return _Server16x16 ?? InternalResources.Server16x16; }
+            set { _Server16x16 = value; }
+        }
+
         private static Bitmap _ShowList;
         /// <summary>
         /// Gets or sets the ShowList image.
@@ -606,6 +697,19 @@ namespace VirtualRadar.Resources
         {
             get { return _ShowList ?? InternalResources.ShowList; }
             set { _ShowList = value; }
+        }
+
+        private static Bitmap _Site16x16;
+        /// <summary>
+        /// Gets or sets the Site16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Site16x16.png" alt="" title="Site16x16" />
+        /// </remarks>
+        public static Bitmap Site16x16
+        {
+            get { return _Site16x16 ?? InternalResources.Site16x16; }
+            set { _Site16x16 = value; }
         }
 
         private static Bitmap _SmallPlaneNorth;

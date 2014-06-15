@@ -16,6 +16,8 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
+using System.Drawing;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -28,6 +30,11 @@ namespace VirtualRadar.WinForms.Options
         /// See base class docs.
         /// </summary>
         public override string SheetTitle { get { return Name ?? ""; } }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override Image Icon { get { return Images.iconmonstr_radio_3_icon; } }
 
         // The number and display order of categories on the sheet
         private const int GeneralCategory = 0;
