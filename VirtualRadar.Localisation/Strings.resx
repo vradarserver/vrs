@@ -2016,4 +2016,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="LoginNameUnknown" xml:space="preserve">
     <value>Cannot find a user with the login name '{0}'</value>
   </data>
+  <data name="ConnectionParameters" xml:space="preserve">
+    <value>Connection Parameters</value>
+  </data>
 </root>

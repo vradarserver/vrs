@@ -92,70 +92,6 @@ namespace VirtualRadar.WinForms.Options
         }
         #endregion
 
-        #region Event hookers
-        /// <summary>
-        /// Hooks the enter event for the control.
-        /// </summary>
-        /// <param name="control"></param>
-        private void HookControlEnter(Control control)
-        {
-            if(!_HookedEnterControls.Contains(control)) {
-                control.Enter += Control_Enter;
-                _HookedEnterControls.Add(control);
-            }
-        }
-
-        /// <summary>
-        /// Hooks the value changed event for a control.
-        /// </summary>
-        /// <param name="control"></param>
-        private void HookValueChanged(Control control)
-        {
-            if(!_HookedValueChangedControls.Contains(control)) {
-                var hooked = false;
-
-                if(!hooked) hooked = HookValueChanged(control as TextBox);
-                if(!hooked) hooked = HookValueChanged(control as CheckBox);
-                if(!hooked) hooked = HookValueChanged(control as FileNameControl);
-                if(!hooked) hooked = HookValueChanged(control as FolderControl);
-                if(!hooked) hooked = HookValueChanged(control as OptionsFeedSelectControl);
-                if(!hooked) throw new NotImplementedException();
-
-                _HookedValueChangedControls.Add(control);
-            }
-        }
-
-        private bool HookValueChanged(TextBox control)
-        {
-            if(control != null) control.TextChanged += Control_ValueChanged;
-            return control != null;
-        }
-
-        private bool HookValueChanged(CheckBox control)
-        {
-            if(control != null) control.CheckedChanged += Control_ValueChanged;
-            return control != null;
-        }
-
-        private bool HookValueChanged(FileNameControl control)
-        {
-            if(control != null) control.FileNameTextChanged += Control_ValueChanged;
-            return control != null;
-        }
-
-        private bool HookValueChanged(FolderControl control)
-        {
-            if(control != null) control.FolderTextChanged += Control_ValueChanged;
-            return control != null;
-        }
-
-        private bool HookValueChanged(OptionsFeedSelectControl control)
-        {
-            if(control != null) control.SelectedFeedIdChanged += Control_ValueChanged;
-            return control != null;
-        }
-        #endregion
-
         #region AddLocalisedDescription
         /// <summary>
         /// Attaches a localised description to a control.
@@ -219,6 +155,80 @@ namespace VirtualRadar.WinForms.Options
             if(_HookedValueChangedControls.Contains(control)) {
                 OptionsView.RaiseValueChanged(control, EventArgs.Empty);
             }
+        }
+        #endregion
+
+        #region PageSelected
+        /// <summary>
+        /// Called by the options control whenever the page is selected.
+        /// </summary>
+        public virtual void PageSelected()
+        {
+            ;
+        }
+        #endregion
+
+        #region Event hookers
+        /// <summary>
+        /// Hooks the enter event for the control.
+        /// </summary>
+        /// <param name="control"></param>
+        private void HookControlEnter(Control control)
+        {
+            if(!_HookedEnterControls.Contains(control)) {
+                control.Enter += Control_Enter;
+                _HookedEnterControls.Add(control);
+            }
+        }
+
+        /// <summary>
+        /// Hooks the value changed event for a control.
+        /// </summary>
+        /// <param name="control"></param>
+        private void HookValueChanged(Control control)
+        {
+            if(!_HookedValueChangedControls.Contains(control)) {
+                var hooked = false;
+
+                if(!hooked) hooked = HookValueChanged(control as TextBox);
+                if(!hooked) hooked = HookValueChanged(control as CheckBox);
+                if(!hooked) hooked = HookValueChanged(control as FileNameControl);
+                if(!hooked) hooked = HookValueChanged(control as FolderControl);
+                if(!hooked) hooked = HookValueChanged(control as OptionsFeedSelectControl);
+                if(!hooked) throw new NotImplementedException();
+
+                _HookedValueChangedControls.Add(control);
+            }
+        }
+
+        private bool HookValueChanged(TextBox control)
+        {
+            if(control != null) control.TextChanged += Control_ValueChanged;
+            return control != null;
+        }
+
+        private bool HookValueChanged(CheckBox control)
+        {
+            if(control != null) control.CheckedChanged += Control_ValueChanged;
+            return control != null;
+        }
+
+        private bool HookValueChanged(FileNameControl control)
+        {
+            if(control != null) control.FileNameTextChanged += Control_ValueChanged;
+            return control != null;
+        }
+
+        private bool HookValueChanged(FolderControl control)
+        {
+            if(control != null) control.FolderTextChanged += Control_ValueChanged;
+            return control != null;
+        }
+
+        private bool HookValueChanged(OptionsFeedSelectControl control)
+        {
+            if(control != null) control.SelectedFeedIdChanged += Control_ValueChanged;
+            return control != null;
         }
         #endregion
 

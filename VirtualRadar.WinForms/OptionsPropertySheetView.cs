@@ -1033,6 +1033,9 @@ namespace VirtualRadar.WinForms
             linkLabelUseRecommendedSettings.Visible = showResetToRecommended;
 
             buttonSheetButton.Left = buttonDelete.Visible ? _SheetButtonDesignLeft : _SheetButtonDesignLeft + _SheetButtonDesignGap + buttonDelete.Width;
+
+            var optionsPage = sheet as OptionsPage;
+            if(optionsPage != null) optionsPage.PageSelected();
         }
 
         private void DoSelectParentPage(ParentPage page)
@@ -1043,6 +1046,9 @@ namespace VirtualRadar.WinForms
             linkLabelResetToDefaults.Visible = false;
             linkLabelUseIcaoSettings.Visible = false;
             linkLabelUseRecommendedSettings.Visible = false;
+
+            var optionsPage = page as OptionsPage;
+            if(optionsPage != null) optionsPage.PageSelected();
         }
 
         private void ShowPanel2Control(Control control)
@@ -1157,11 +1163,22 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
+        /// Selects the sheet under a parent page.
+        /// </summary>
+        /// <param name="parentPage"></param>
+        /// <param name="sheet"></param>
+        internal void SelectParentPageSheet(ParentPage parentPage, ISheet sheet)
+        {
+            var treeNode = GetTreeNodeForParentPageSheet(parentPage, sheet);
+            if(treeNode != null) treeView.SelectedNode = treeNode;
+        }
+
+        /// <summary>
         /// Returns the child sheet that has this record as a tag or null if no such child sheet exists.
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        private ISheet GetChildSheetForRecord(object record)
+        internal ISheet GetChildSheetForRecord(object record)
         {
             return _ChildSheets.SelectMany(r => r.Value).FirstOrDefault(r => r.Tag == record);
         }

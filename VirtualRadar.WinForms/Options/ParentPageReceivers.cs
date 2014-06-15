@@ -61,6 +61,18 @@ namespace VirtualRadar.WinForms.Options
             get { return feedFlightSimulatorXReceiverId.SelectedFeedId; }
             set { feedFlightSimulatorXReceiverId.SelectedFeedId = value; }
         }
+
+        public Receiver SelectedReceiver
+        {
+            get { return GetSelectedListViewTag<Receiver>(listViewReceivers); }
+            set { SelectListViewItemByTag(listViewReceivers, value); }
+        }
+
+        public Receiver[] SelectedReceivers
+        {
+            get { return GetAllSelectedListViewTag<Receiver>(listViewReceivers); }
+            set { SelectListViewItemsByTags(listViewReceivers, value); }
+        }
         #endregion
 
         #region Constructors
@@ -181,6 +193,66 @@ namespace VirtualRadar.WinForms.Options
         }
         #endregion
 
+        #region PageSelected
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override void PageSelected()
+        {
+            base.PageSelected();
+
+            PopulateReceiversListView();
+        }
+
+        private void PopulateReceiversListView()
+        {
+            PopulateListView<Receiver>(listViewReceivers, OptionsView.Receivers.OrderBy(r => r.Name), SelectedReceiver, PopulateReceiverListViewItem, r => SelectedReceiver = r);
+        }
+
+        private void PopulateReceiverListViewItem(ListViewItem item)
+        {
+            var receiver = item.Tag as Receiver;
+            var location = receiver == null || OptionsView == null ? null : OptionsView.RawDecodingReceiverLocations.FirstOrDefault(r => r.UniqueId == receiver.ReceiverLocationId);
+            item.Checked = receiver == null ? false : receiver.Enabled;
+
+            FillListViewItem<Receiver>(item, r => new string[] {
+                r == null ? "" : r.Name,
+                r == null ? "" : Describe.DataSource(r.DataSource),
+                location == null ? "" : location.Name,
+                r == null ? "" : Describe.ConnectionType(r.ConnectionType),
+                r == null ? "" : DescribeConnectionParameters(r),
+            });
+        }
+
+        private string DescribeConnectionParameters(Receiver receiver)
+        {
+            var result = new StringBuilder();
+
+            switch(receiver.ConnectionType) {
+                case ConnectionType.COM:
+                    result.AppendFormat("{0}, {1}, {2}/{3}, {4}, {5}, \"{6}\", \"{7}\"",
+                        receiver.ComPort,
+                        receiver.BaudRate,
+                        receiver.DataBits,
+                        Describe.StopBits(receiver.StopBits),
+                        Describe.Parity(receiver.Parity),
+                        Describe.Handshake(receiver.Handshake),
+                        receiver.StartupText,
+                        receiver.ShutdownText
+                    );
+                    break;
+                case ConnectionType.TCP:
+                    result.AppendFormat("{0}:{1}",
+                        receiver.Address,
+                        receiver.Port
+                    );
+                    break;
+            }
+
+            return result.ToString();
+        }
+        #endregion
+
         #region Event handlers
         /// <summary>
         /// See base docs.
@@ -191,6 +263,11 @@ namespace VirtualRadar.WinForms.Options
             base.OnLoad(e);
 
             if(!DesignMode) {
+                // Work around the bug in VS2010's designer that completely cocks everything up if
+                // the control has anchors and has an inherited parent
+                listViewReceivers.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
+                buttonNew.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
                 AddLocalisedDescription(feedWebSiteReceiverId,          Strings.WebSiteReceiverId,          Strings.OptionsDescribeWebSiteReceiverId);
                 AddLocalisedDescription(feedClosestAircaftReceiverId,   Strings.ClosestAircraftReceiverId,  Strings.OptionsDescribeClosestAircraftReceiverId);
                 AddLocalisedDescription(feedFlightSimulatorXReceiverId, Strings.FlightSimulatorXReceiverId, Strings.OptionsDescribeFlightSimulatorXReceiverId);
@@ -221,6 +298,35 @@ namespace VirtualRadar.WinForms.Options
             };
             _Records.Add(record);
             ShowNewRecord(CreateSheet(record));
+        }
+
+        /// <summary>
+        /// Called when the user double-clicks an item in the receivers list view.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listViewReceivers_DoubleClick(object sender, EventArgs e)
+        {
+            var sheet = GetSheetForRecord(SelectedReceiver);
+            if(sheet != null) {
+                OptionsView.SelectParentPageSheet(this, sheet);
+            }
+        }
+
+        /// <summary>
+        /// Called when the user changes the checked state of an item in the list view.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listViewReceivers_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            var selectedReceivers = SelectedReceivers;
+            if(selectedReceivers.Length > 0) {
+                var checkState = listViewReceivers.SelectedItems[0].Checked;
+                foreach(var selectedReceiver in selectedReceivers) {
+                    selectedReceiver.Enabled = checkState;
+                }
+            }
         }
         #endregion
     }

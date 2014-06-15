@@ -188,6 +188,22 @@ namespace VirtualRadar.WinForms.Options
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Returns the sheet for a record.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        protected ISheet GetSheetForRecord(object record)
+        {
+            ISheet result = null;
+
+            if(record != null && OptionsView != null) {
+                result = OptionsView.GetChildSheetForRecord(record);
+            }
+
+            return result;
+        }
         #endregion
 
         #region GenerateUniqueId, GenerateUniqueName

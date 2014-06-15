@@ -782,6 +782,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection Parameters.
+        /// </summary>
+        public static string ConnectionParameters {
+            get {
+                return ResourceManager.GetString("ConnectionParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection Session Log.
         /// </summary>
         public static string ConnectionSessionLog {
