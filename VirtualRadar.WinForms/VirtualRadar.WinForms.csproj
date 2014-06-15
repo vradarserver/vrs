@@ -286,7 +286,6 @@
     <Compile Include="Options\SheetEventArgs.cs" />
     <Compile Include="Options\SheetMergedFeedOptions.cs" />
     <Compile Include="Options\SheetRebroadcastServerOptions.cs" />
-    <Compile Include="Options\SheetReceiverPageOptions.cs" />
     <Compile Include="Options\SheetReceiverLocationOptions.cs" />
     <Compile Include="Options\SheetReceiverOptions.cs" />
     <Compile Include="Options\UsersListTypeConverter.cs" />
