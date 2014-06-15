@@ -115,7 +115,7 @@ namespace VirtualRadar.WinForms.Options
         /// </summary>
         protected override void DoUpdateViewWithNewList()
         {
-            foreach(var receiver in View.Receivers) {
+            foreach(var receiver in OptionsView.Receivers) {
                 var rawDecodingUseStillExists = _Records.Any(r => r.UniqueId == receiver.ReceiverLocationId);
                 if(!rawDecodingUseStillExists) receiver.ReceiverLocationId = 0;
             }
@@ -165,7 +165,7 @@ namespace VirtualRadar.WinForms.Options
 
         private void linkLabelUpdateFromDatabase_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if(View != null) View.OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(e);
+            if(OptionsView != null) OptionsView.OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(e);
         }
         #endregion
     }

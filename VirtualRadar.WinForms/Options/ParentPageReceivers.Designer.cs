@@ -34,9 +34,28 @@
             this.feedWebSiteReceiverId = new VirtualRadar.WinForms.Options.OptionsFeedSelectControl();
             this.feedClosestAircaftReceiverId = new VirtualRadar.WinForms.Options.OptionsFeedSelectControl();
             this.feedFlightSimulatorXReceiverId = new VirtualRadar.WinForms.Options.OptionsFeedSelectControl();
+            this.splitContainerControlsDescription.Panel1.SuspendLayout();
+            this.splitContainerControlsDescription.SuspendLayout();
+            this.panelContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).BeginInit();
             this.SuspendLayout();
+            // 
+            // splitContainerControlsDescription
+            // 
+            this.splitContainerControlsDescription.Size = new System.Drawing.Size(450, 190);
+            this.splitContainerControlsDescription.SplitterDistance = 122;
+            // 
+            // panelContent
+            // 
+            this.panelContent.Controls.Add(this.buttonNew);
+            this.panelContent.Controls.Add(this.label1);
+            this.panelContent.Controls.Add(this.label2);
+            this.panelContent.Controls.Add(this.label3);
+            this.panelContent.Controls.Add(this.feedWebSiteReceiverId);
+            this.panelContent.Controls.Add(this.feedClosestAircaftReceiverId);
+            this.panelContent.Controls.Add(this.feedFlightSimulatorXReceiverId);
+            this.panelContent.Size = new System.Drawing.Size(450, 122);
             // 
             // buttonNew
             // 
@@ -77,6 +96,8 @@
             // 
             // feedWebSiteReceiverId
             // 
+            this.warningProvider.SetIconAlignment(this.feedWebSiteReceiverId, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+            this.errorProvider.SetIconAlignment(this.feedWebSiteReceiverId, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
             this.feedWebSiteReceiverId.Location = new System.Drawing.Point(245, 33);
             this.feedWebSiteReceiverId.Name = "feedWebSiteReceiverId";
             this.feedWebSiteReceiverId.Size = new System.Drawing.Size(200, 21);
@@ -84,6 +105,8 @@
             // 
             // feedClosestAircaftReceiverId
             // 
+            this.warningProvider.SetIconAlignment(this.feedClosestAircaftReceiverId, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+            this.errorProvider.SetIconAlignment(this.feedClosestAircaftReceiverId, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
             this.feedClosestAircaftReceiverId.Location = new System.Drawing.Point(245, 60);
             this.feedClosestAircaftReceiverId.Name = "feedClosestAircaftReceiverId";
             this.feedClosestAircaftReceiverId.Size = new System.Drawing.Size(200, 21);
@@ -91,6 +114,8 @@
             // 
             // feedFlightSimulatorXReceiverId
             // 
+            this.warningProvider.SetIconAlignment(this.feedFlightSimulatorXReceiverId, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+            this.errorProvider.SetIconAlignment(this.feedFlightSimulatorXReceiverId, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
             this.feedFlightSimulatorXReceiverId.Location = new System.Drawing.Point(245, 87);
             this.feedFlightSimulatorXReceiverId.Name = "feedFlightSimulatorXReceiverId";
             this.feedFlightSimulatorXReceiverId.Size = new System.Drawing.Size(200, 21);
@@ -99,19 +124,15 @@
             // ParentPageReceivers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.feedFlightSimulatorXReceiverId);
-            this.Controls.Add(this.feedClosestAircaftReceiverId);
-            this.Controls.Add(this.feedWebSiteReceiverId);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonNew);
             this.Name = "ParentPageReceivers";
-            this.Size = new System.Drawing.Size(458, 120);
+            this.Size = new System.Drawing.Size(450, 190);
+            this.splitContainerControlsDescription.Panel1.ResumeLayout(false);
+            this.splitContainerControlsDescription.ResumeLayout(false);
+            this.panelContent.ResumeLayout(false);
+            this.panelContent.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

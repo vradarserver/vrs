@@ -229,6 +229,12 @@
     <Compile Include="Options\OptionsFeedSelectControl.Designer.cs">
       <DependentUpon>OptionsFeedSelectControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Options\OptionsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\OptionsPage.Designer.cs">
+      <DependentUpon>OptionsPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Options\ParentPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -443,8 +449,12 @@
     <EmbeddedResource Include="Options\OptionsFeedSelectControl.resx">
       <DependentUpon>OptionsFeedSelectControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Options\OptionsPage.resx">
+      <DependentUpon>OptionsPage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Options\ParentPage.resx">
       <DependentUpon>ParentPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\ParentPageMergedFeeds.resx">
       <DependentUpon>ParentPageMergedFeeds.cs</DependentUpon>

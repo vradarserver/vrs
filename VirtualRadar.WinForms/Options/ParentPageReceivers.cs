@@ -20,6 +20,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface;
 using VirtualRadar.Resources;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.WinForms.Options
 {
@@ -114,7 +115,7 @@ namespace VirtualRadar.WinForms.Options
         {
             var sheet = (SheetReceiverOptions)ambiguousSheet;
             var tag = (Receiver)sheet.Tag;
-            View.OnTestBaseStationConnectionSettingsClicked(new EventArgs<Receiver>(tag));
+            OptionsView.OnTestBaseStationConnectionSettingsClicked(new EventArgs<Receiver>(tag));
         }
 
         private ISheet CreateSheet(Receiver record)
@@ -188,6 +189,22 @@ namespace VirtualRadar.WinForms.Options
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            if(!DesignMode) {
+                AddLocalisedDescription(feedWebSiteReceiverId,          Strings.WebSiteReceiverId,          Strings.OptionsDescribeWebSiteReceiverId);
+                AddLocalisedDescription(feedClosestAircaftReceiverId,   Strings.ClosestAircraftReceiverId,  Strings.OptionsDescribeClosestAircraftReceiverId);
+                AddLocalisedDescription(feedFlightSimulatorXReceiverId, Strings.FlightSimulatorXReceiverId, Strings.OptionsDescribeFlightSimulatorXReceiverId);
+
+                RaisesValueChanged(
+                    feedWebSiteReceiverId,
+                    feedClosestAircaftReceiverId,
+                    feedFlightSimulatorXReceiverId
+                );
+
+                _ValidationHelper.RegisterValidationField(ValidationField.WebSiteReceiver, feedWebSiteReceiverId);
+                _ValidationHelper.RegisterValidationField(ValidationField.ClosestAircraftReceiver, feedClosestAircaftReceiverId);
+                _ValidationHelper.RegisterValidationField(ValidationField.FlightSimulatorXReceiver, feedFlightSimulatorXReceiverId);
+            }
         }
 
         /// <summary>

@@ -30,6 +30,10 @@
             this.buttonNew = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
+            // panelContent
+            // 
+            this.panelContent.Controls.Add(this.buttonNew);
+            // 
             // buttonNew
             // 
             this.buttonNew.Location = new System.Drawing.Point(4, 4);
@@ -43,7 +47,6 @@
             // ParentPageRebroadcastServers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.buttonNew);
             this.Name = "ParentPageRebroadcastServers";
             this.Size = new System.Drawing.Size(524, 317);
             this.ResumeLayout(false);

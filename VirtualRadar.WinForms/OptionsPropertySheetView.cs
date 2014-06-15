@@ -969,7 +969,10 @@ namespace VirtualRadar.WinForms
                 InitialiseTreeNode(sheetNode, sheet);
 
                 var sheetControl = sheet as Control;
-                if(sheetControl != null) splitContainer.Panel2.Controls.Add(sheetControl);
+                if(sheetControl != null) {
+                    sheetControl.Visible = false;
+                    splitContainer.Panel2.Controls.Add(sheetControl);
+                }
 
                 foreach(var parentPage in sheet.Pages) {
                     parentPage.Visible = false;
@@ -1384,7 +1387,7 @@ namespace VirtualRadar.WinForms
                     sheet.OptionsView = this;
                 }
                 foreach(var parentPage in _ParentPages) {
-                    parentPage.View = this;
+                    parentPage.OptionsView = this;
                 }
 
                 ArrangeControls();
