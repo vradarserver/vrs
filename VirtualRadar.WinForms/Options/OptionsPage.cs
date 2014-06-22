@@ -51,11 +51,24 @@ namespace VirtualRadar.WinForms.Options
         #endregion
 
         #region Properties
+        private OptionsPropertySheetView _OptionsView;
         /// <summary>
         /// Gets or sets the owning view.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public OptionsPropertySheetView OptionsView { get; set; }
+        public OptionsPropertySheetView OptionsView
+        {
+            get {
+                if(!DesignMode && _OptionsView == null) {
+                    for(var parent = Parent;parent != null;parent = parent.Parent) {
+                        _OptionsView = parent as OptionsPropertySheetView;
+                        if(_OptionsView != null) break;
+                    }
+                }
+
+                return _OptionsView;
+            }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -192,9 +205,12 @@ namespace VirtualRadar.WinForms.Options
 
                 if(!hooked) hooked = HookValueChanged(control as TextBox);
                 if(!hooked) hooked = HookValueChanged(control as CheckBox);
+                if(!hooked) hooked = HookValueChanged(control as NumericUpDown);
+                if(!hooked) hooked = HookValueChanged(control as ComboBox);
                 if(!hooked) hooked = HookValueChanged(control as FileNameControl);
                 if(!hooked) hooked = HookValueChanged(control as FolderControl);
                 if(!hooked) hooked = HookValueChanged(control as OptionsFeedSelectControl);
+                if(!hooked) hooked = HookValueChanged(control as OptionsReceiverLocationSelectControl);
                 if(!hooked) throw new NotImplementedException();
 
                 _HookedValueChangedControls.Add(control);
@@ -213,6 +229,18 @@ namespace VirtualRadar.WinForms.Options
             return control != null;
         }
 
+        private bool HookValueChanged(NumericUpDown control)
+        {
+            if(control != null) control.ValueChanged += Control_ValueChanged;
+            return control != null;
+        }
+
+        private bool HookValueChanged(ComboBox control)
+        {
+            if(control != null) control.SelectedIndexChanged += Control_ValueChanged;
+            return control != null;
+        }
+
         private bool HookValueChanged(FileNameControl control)
         {
             if(control != null) control.FileNameTextChanged += Control_ValueChanged;
@@ -228,6 +256,12 @@ namespace VirtualRadar.WinForms.Options
         private bool HookValueChanged(OptionsFeedSelectControl control)
         {
             if(control != null) control.SelectedFeedIdChanged += Control_ValueChanged;
+            return control != null;
+        }
+
+        private bool HookValueChanged(OptionsReceiverLocationSelectControl control)
+        {
+            if(control != null) control.SelectedLocationIdChanged += Control_ValueChanged;
             return control != null;
         }
         #endregion

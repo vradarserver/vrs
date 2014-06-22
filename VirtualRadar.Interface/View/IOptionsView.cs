@@ -63,7 +63,7 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets a list of the settings for the rebroadcast servers.
         /// </summary>
-        List<RebroadcastSettings> RebroadcastSettings { get; }
+        IList<RebroadcastSettings> RebroadcastSettings { get; }
         #endregion
 
         #region Properties - BaseStation Options
@@ -95,19 +95,19 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets the list of receivers configured by the user.
         /// </summary>
-        List<Receiver> Receivers { get; }
+        IList<Receiver> Receivers { get; }
 
         /// <summary>
         /// Gets the list of merged feeds configured by the user.
         /// </summary>
-        List<MergedFeed> MergedFeeds { get; }
+        IList<MergedFeed> MergedFeeds { get; }
         #endregion
 
         #region Properties - Raw Decoding
         /// <summary>
         /// Gets the collection of all known receiver locations defined by the user.
         /// </summary>
-        List<ReceiverLocation> RawDecodingReceiverLocations { get; }
+        IList<ReceiverLocation> RawDecodingReceiverLocations { get; }
 
         /// <summary>
         /// Gets or sets the radius range of the receiver in kilometres.
@@ -196,7 +196,7 @@ namespace VirtualRadar.Interface.View
         /// Gets a collection of identifiers of users that are allowed to attach to the web server when
         /// <see cref="WebServerUserMustAuthenticate"/> is true.
         /// </summary>
-        List<string> WebServerUserIds { get; }
+        IList<string> WebServerUserIds { get; }
 
         /// <summary>
         /// Gets or sets a value indicating that the user wants the server to use UPnP to get the server onto and off the Internet.

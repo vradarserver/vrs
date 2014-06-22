@@ -87,6 +87,11 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Mock<IAutoConfigBaseStationDatabase> _AutoConfigBaseStationDatabase;
         private Mock<IBaseStationDatabase> _BaseStationDatabase;
+        private List<MergedFeed> _ViewMergedFeeds;
+        private List<ReceiverLocation> _ViewRawDecodingReceiverLocations;
+        private List<RebroadcastSettings> _ViewRebroadcastSettings;
+        private List<Receiver> _ViewReceivers;
+        private List<string> _ViewWebServerUserIds;
 
         [TestInitialize]
         public void TestInitialise()
@@ -114,7 +119,19 @@ namespace Test.VirtualRadar.Library.Presenter
             _Provider.Setup(p => p.TestNetworkConnection(It.IsAny<string>(), It.IsAny<int>())).Returns((Exception)null);
             _Provider.Setup(p => p.TestSerialConnection(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<StopBits>(), It.IsAny<Parity>(), It.IsAny<Handshake>())).Returns((Exception)null);
             _Presenter.Provider = _Provider.Object;
+
+            _ViewMergedFeeds = new List<MergedFeed>();
+            _ViewRawDecodingReceiverLocations = new List<ReceiverLocation>();
+            _ViewRebroadcastSettings = new List<RebroadcastSettings>();
+            _ViewReceivers = new List<Receiver>();
+            _ViewWebServerUserIds = new List<string>();
+
             _View = new Mock<IOptionsView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _View.Setup(r => r.RawDecodingReceiverLocations).Returns(_ViewRawDecodingReceiverLocations);
+            _View.Setup(r => r.MergedFeeds).Returns(_ViewMergedFeeds);
+            _View.Setup(r => r.RebroadcastSettings).Returns(_ViewRebroadcastSettings);
+            _View.Setup(r => r.Receivers).Returns(_ViewReceivers);
+            _View.Setup(r => r.WebServerUserIds).Returns(_ViewWebServerUserIds);
         }
 
         [TestCleanup]

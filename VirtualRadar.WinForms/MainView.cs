@@ -520,7 +520,7 @@ namespace VirtualRadar.WinForms
 
         private void menuOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using(var dialog = new OptionsPropertySheetView()) {
+            using(var dialog = new OptionsView()) {
                 dialog.ShowDialog();
             }
         }

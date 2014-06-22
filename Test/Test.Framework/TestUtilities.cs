@@ -124,7 +124,7 @@ namespace Test.Framework
         /// <param name="testForEquals"></param>
         public static void TestProperty<T>(T obj, Expression<Func<T, object>> propertyExpression, object startValue, object newValue, bool testForEquals)
         {
-            TestProperty(obj, ExtractNameOfProperty(propertyExpression), startValue, newValue, testForEquals);
+            TestProperty(obj, PropertyHelper.ExtractName(propertyExpression), startValue, newValue, testForEquals);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace Test.Framework
         /// <param name="newValue"></param>
         public static void TestProperty<T>(T obj, Expression<Func<T, object>> propertyExpression, object startValue, object newValue)
         {
-            TestProperty(obj, ExtractNameOfProperty(propertyExpression), startValue, newValue, false);
+            TestProperty(obj, PropertyHelper.ExtractName(propertyExpression), startValue, newValue, false);
         }
 
         /// <summary>
@@ -174,24 +174,7 @@ namespace Test.Framework
         /// <param name="startValue"></param>
         public static void TestProperty<T>(T obj, Expression<Func<T, object>> propertyExpression, bool startValue)
         {
-            TestProperty(obj, ExtractNameOfProperty(propertyExpression), startValue, !startValue, true);
-        }
-
-        /// <summary>
-        /// Retrieves the name of a property from the lambda expression passed across. Returns null if the expression refers to anything other than a simple property.
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        private static string ExtractNameOfProperty(Expression expression)
-        {
-            var lambdaExpression = (LambdaExpression)expression;
-
-            MemberExpression memberExpression = lambdaExpression.Body.NodeType == ExpressionType.Convert ?
-                                                ((UnaryExpression)lambdaExpression.Body).Operand as MemberExpression :
-                                                lambdaExpression.Body as MemberExpression;
-            var propertyInfo = memberExpression == null ? null : memberExpression.Member as PropertyInfo;
-
-            return propertyInfo == null ? null : propertyInfo.Name;
+            TestProperty(obj, PropertyHelper.ExtractName(propertyExpression), startValue, !startValue, true);
         }
         #endregion
 

@@ -28,7 +28,7 @@ namespace VirtualRadar.WinForms.Options
     public partial class ParentPageRebroadcastServers : ParentPage
     {
         #region Fields
-        private List<RebroadcastSettings> _Records;
+        private IList<RebroadcastSettings> _Records;
         #endregion
 
         #region Properties
@@ -62,12 +62,11 @@ namespace VirtualRadar.WinForms.Options
         /// <summary>
         /// Populates the control.
         /// </summary>
-        /// <param name="optionsView"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected override int DoPopulate(OptionsPropertySheetView optionsView, List<ISheet> result)
+        protected override int DoPopulate(List<ISheet> result)
         {
-            _Records = optionsView.RebroadcastSettings;
+            _Records = OptionsView.RebroadcastSettings;
             foreach(var record in _Records) {
                 result.Add(CreateSheet(record));
             }
@@ -147,7 +146,7 @@ namespace VirtualRadar.WinForms.Options
             ShowNewRecord(CreateSheet(record));
         }
 
-        private int GenerateUniquePort(List<RebroadcastSettings> records, int startPort)
+        private int GenerateUniquePort(IList<RebroadcastSettings> records, int startPort)
         {
             int result = startPort;
             for(;result < 65536 && records.Any(r => r.Port == result);++result) ;

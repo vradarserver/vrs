@@ -260,7 +260,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public List<RebroadcastSettings> RebroadcastSettings { get; private set; }
+        public IList<RebroadcastSettings> RebroadcastSettings { get; private set; }
         #endregion
 
         #region Audio settings
@@ -296,7 +296,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public List<Receiver> Receivers
+        public IList<Receiver> Receivers
         {
             get { return ReceiverTypeConverter.Receivers; }
         }
@@ -304,7 +304,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public List<MergedFeed> MergedFeeds
+        public IList<MergedFeed> MergedFeeds
         {
             get { return MergedFeedTypeConverter.MergedFeeds; }
         }
@@ -359,7 +359,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public List<ReceiverLocation> RawDecodingReceiverLocations
+        public IList<ReceiverLocation> RawDecodingReceiverLocations
         {
             get { return ReceiverLocationsTypeConverter.ReceiverLocations; }
         }
@@ -513,7 +513,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public List<string> WebServerUserIds
+        public IList<string> WebServerUserIds
         {
             get
             {
@@ -959,25 +959,16 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Populates the controls.
+        /// Populates the tree view.
         /// </summary>
-        private void Populate()
+        private void PopulateTreeView()
         {
             treeView.Nodes.Clear();
             foreach(var sheet in _Sheets) {
                 var sheetNode = treeView.Nodes.Add(sheet.ToString());
                 InitialiseTreeNode(sheetNode, sheet);
 
-                var sheetControl = sheet as Control;
-                if(sheetControl != null) {
-                    sheetControl.Visible = false;
-                    splitContainer.Panel2.Controls.Add(sheetControl);
-                }
-
                 foreach(var parentPage in sheet.Pages) {
-                    parentPage.Visible = false;
-                    splitContainer.Panel2.Controls.Add(parentPage);
-
                     var pageNode = sheetNode.Nodes.Add(parentPage.PageTitle);
                     InitialiseTreeNode(pageNode, parentPage);
                 }
@@ -1082,7 +1073,7 @@ namespace VirtualRadar.WinForms
         /// <param name="parentPage"></param>
         private void AddParentPageSheets(ParentPage parentPage)
         {
-            var childSheets = parentPage.Populate(this);
+            var childSheets = parentPage.Populate();
             _ChildSheets.Add(parentPage, childSheets);
 
             foreach(var childSheet in childSheets) {
@@ -1097,9 +1088,9 @@ namespace VirtualRadar.WinForms
         /// <param name="childSheet"></param>
         public void ShowNewChildSheet(ParentPage parentPage, ISheet childSheet)
         {
-            childSheet.OptionsView = this;
             _ChildSheets[parentPage].Add(childSheet);
             AddTreeNodeForChildSheet(parentPage, childSheet);
+            AttachControl(childSheet);
             SelectedSheet = childSheet;
         }
 
@@ -1221,6 +1212,54 @@ namespace VirtualRadar.WinForms
                 if(treeNode != null && treeNode.Text != sheet.SheetTitle) {
                     if(treeNode != null) treeNode.Text = sheet.SheetTitle;
                 }
+            }
+        }
+        #endregion
+
+        #region AttachAllControls
+        /// <summary>
+        /// Attaches all sheets, parent pages and sheets under parent pages to the tree view.
+        /// </summary>
+        private void AttachAllControls()
+        {
+            foreach(var sheet in _Sheets) {
+                AttachControl(sheet);
+            }
+            foreach(var parentPage in _ParentPages) {
+                AttachControl(parentPage);
+            }
+        }
+
+        /// <summary>
+        /// Attaches a parent page and all sheets under the parent page to the tree view.
+        /// </summary>
+        /// <param name="parentPage"></param>
+        /// <returns></returns>
+        private void AttachControl(ParentPage parentPage)
+        {
+            if(parentPage != null) {
+                parentPage.Visible = false;
+                splitContainer.Panel2.Controls.Add(parentPage);
+
+                List<ISheet> childSheets;
+                if(_ChildSheets.TryGetValue(parentPage, out childSheets)) {
+                    foreach(var childSheet in childSheets) {
+                        AttachControl(childSheet);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Attaches a sheet to the tree view.
+        /// </summary>
+        /// <param name="sheet"></param>
+        private void AttachControl(ISheet sheet)
+        {
+            var sheetControl = sheet as SheetControl;
+            if(sheetControl != null) {
+                sheetControl.Visible = false;
+                splitContainer.Panel2.Controls.Add(sheetControl);
             }
         }
         #endregion
@@ -1400,23 +1439,19 @@ namespace VirtualRadar.WinForms
                 treeView.ImageList = _ImageList.ImageList;
 
                 sheetHostControl.OptionsView = this;
-                foreach(var sheet in _Sheets) {
-                    sheet.OptionsView = this;
-                }
-                foreach(var parentPage in _ParentPages) {
-                    parentPage.OptionsView = this;
-                }
 
+                AddAllParentPageSheets();
                 ArrangeControls();
 
-                Populate();
+                PopulateTreeView();
 
                 _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsOptionsDialog);
 
                 _Presenter = Factory.Singleton.Resolve<IOptionsPresenter>();
                 _Presenter.Initialise(this);
 
-                AddAllParentPageSheets();
+                AttachAllControls();
+
                 RecordInitialValues();
                 treeView.ExpandAll();
                 treeView.SelectedNode = treeView.Nodes.OfType<TreeNode>().FirstOrDefault();

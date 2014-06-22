@@ -28,7 +28,7 @@ namespace VirtualRadar.WinForms.Options
     public partial class ParentPageMergedFeeds : FeedParentPage
     {
         #region Fields
-        private List<MergedFeed> _Records;
+        private IList<MergedFeed> _Records;
         #endregion
 
         #region Properties
@@ -57,12 +57,11 @@ namespace VirtualRadar.WinForms.Options
         /// <summary>
         /// Populates the control.
         /// </summary>
-        /// <param name="optionsView"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected override int DoPopulate(OptionsPropertySheetView optionsView, List<ISheet> result)
+        protected override int DoPopulate(List<ISheet> result)
         {
-            _Records = optionsView.MergedFeeds;
+            _Records = OptionsView.MergedFeeds;
             foreach(var record in _Records) {
                 result.Add(CreateSheet(record));
             }

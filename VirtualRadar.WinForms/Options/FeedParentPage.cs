@@ -57,7 +57,7 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="records"></param>
         /// <param name="getUniqueId"></param>
         /// <returns></returns>
-        protected override int GenerateUniqueId<T>(List<T> records, Func<T, int> getUniqueId)
+        protected override int GenerateUniqueId<T>(IList<T> records, Func<T, int> getUniqueId)
         {
             throw new InvalidOperationException("Use the overridden GenerateUniqueId instead");
         }
