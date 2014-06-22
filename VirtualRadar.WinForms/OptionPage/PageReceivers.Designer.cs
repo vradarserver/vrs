@@ -47,11 +47,15 @@
             this.columnHeaderLocation,
             this.columnHeaderConnection,
             this.columnHeaderConnectionParameters});
-            this.listReceivers.Location = new System.Drawing.Point(0, 59);
+            this.listReceivers.Location = new System.Drawing.Point(0, 0);
             this.listReceivers.Name = "listReceivers";
-            this.listReceivers.Size = new System.Drawing.Size(701, 309);
+            this.listReceivers.Size = new System.Drawing.Size(688, 212);
             this.listReceivers.TabIndex = 0;
             this.listReceivers.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listReceivers_FetchRecordContent);
+            this.listReceivers.AddClicked += new System.EventHandler(this.listReceivers_AddClicked);
+            this.listReceivers.DeleteClicked += new System.EventHandler(this.listReceivers_DeleteClicked);
+            this.listReceivers.EditClicked += new System.EventHandler(this.listReceivers_EditClicked);
+            this.listReceivers.CheckedChanged += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordCheckedEventArgs>(this.listReceivers_CheckedChanged);
             // 
             // columnHeaderName
             // 
@@ -83,7 +87,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Controls.Add(this.listReceivers);
             this.Name = "PageReceivers";
-            this.Size = new System.Drawing.Size(701, 474);
+            this.Size = new System.Drawing.Size(688, 212);
             this.ResumeLayout(false);
 
         }

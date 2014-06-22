@@ -1,4 +1,14 @@
-﻿using System;
+﻿// Copyright © 2014 onwards, Andrew Whewell
+// All rights reserved.
+//
+// Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+//    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -228,6 +238,13 @@ namespace VirtualRadar.WinForms
             get { return _CurrentPage; }
             set { DisplayPage(value); }
         }
+
+        /// <summary>
+        /// Gets the highest unique ID for any receiver or merged feed as-at the point
+        /// where configuration began. No new feed IDs may be lower than this value, we
+        /// do not recycle feed IDs.
+        /// </summary>
+        public int HighestConfiguredFeedId { get; private set; }
         #endregion
 
         #region Top-level Page Properties
@@ -368,7 +385,7 @@ namespace VirtualRadar.WinForms
             if(!pages.Contains(page)) pages.Add(page);
 
             page.TreeNode = new TreeNode();
-            FormatTreeNode(page);
+            RefreshPageDescription(page);
             parentNodes.Add(page.TreeNode);
 
             if(!panelPageContent.Controls.Contains(page)) {
@@ -376,6 +393,11 @@ namespace VirtualRadar.WinForms
                 page.Width = panelPageContent.Width - 8;
                 page.Location = new Point(4, 4);
                 page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+                if(page.PageUseFullHeight) {
+                    page.Height = panelPageContent.Height - 8;
+                    page.Anchor |= AnchorStyles.Bottom;
+                }
 
                 panelPageContent.Controls.Add(page);
             }
@@ -392,10 +414,7 @@ namespace VirtualRadar.WinForms
         /// <param name="makeParentCurrent"></param>
         public void RemovePage(Page page, bool makeParentCurrent)
         {
-            var allPages = GetAllPagesInTreeNodeOrder();
-            var pageIndex = allPages.IndexOf(page);
-
-            if(page != null && pageIndex != -1) {
+            if(page != null) {
                 foreach(var subPage in page.ChildPages) {
                     RemovePage(subPage, makeParentCurrent);
                 }
@@ -415,17 +434,21 @@ namespace VirtualRadar.WinForms
                     panelPageContent.Controls.Remove(page);
                 }
 
-                allPages.RemoveAt(pageIndex);
+                var allPages = GetAllPagesInTreeNodeOrder();
+                var pageIndex = allPages.IndexOf(page);
+                if(pageIndex != -1) {
+                    allPages.RemoveAt(pageIndex);
 
-                if(_CurrentPage == page) {
-                    _CurrentPage = null;
-                    if(makeParentCurrent && parentPage != null) {
-                        DisplayPage(parentPage);
-                    } else {
-                        if(pageIndex < allPages.Count) {
-                            DisplayPage(allPages[pageIndex]);
-                        } else if(allPages.Count > 0) {
-                            DisplayPage(allPages[allPages.Count - 1]);
+                    if(_CurrentPage == page) {
+                        _CurrentPage = null;
+                        if(makeParentCurrent && parentPage != null) {
+                            DisplayPage(parentPage);
+                        } else {
+                            if(pageIndex < allPages.Count) {
+                                DisplayPage(allPages[pageIndex]);
+                            } else if(allPages.Count > 0) {
+                                DisplayPage(allPages[allPages.Count - 1]);
+                            }
                         }
                     }
                 }
@@ -450,20 +473,13 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Refreshes the description for a page.
+        /// Displays the page for the page object passed across.
         /// </summary>
-        /// <param name="page"></param>
-        public void RefreshPageDescription(Page page)
+        /// <param name="pageObject"></param>
+        public void DisplayPageForPageObject(object pageObject)
         {
-            if(page.TreeNode != null) {
-                var title = page.PageTitle ?? "";
-                var icon = page.PageIcon ?? Images.Transparent_16x16;
-                var iconIndex = _ImageList.AddImage(icon);
-
-                if(page.TreeNode.Text != title) page.TreeNode.Text = title;
-                if(page.TreeNode.ImageIndex != iconIndex) page.TreeNode.ImageIndex = iconIndex;
-                if(page.TreeNode.SelectedImageIndex != iconIndex) page.TreeNode.SelectedImageIndex = iconIndex;
-            }
+            var page = FindPageForPageObject(pageObject);
+            if(page != null) DisplayPage(page);
         }
 
         /// <summary>
@@ -514,20 +530,43 @@ namespace VirtualRadar.WinForms
 
             return result;
         }
+
+        /// <summary>
+        /// Finds the page that contains the page object passed across. Returns null if no page could
+        /// be found.
+        /// </summary>
+        /// <param name="pageObject"></param>
+        /// <returns></returns>
+        public Page FindPageForPageObject(object pageObject)
+        {
+            Page result = null;
+
+            if(pageObject != null) {
+                result = GetAllPages().FirstOrDefault(r => r.PageObject == pageObject);
+            }
+
+            return result;
+        }
         #endregion
 
-        #region TreeView - FormatTreeNode, FindPageForNode
+        #region TreeView - RefreshPageDescription, FindPageForNode
         /// <summary>
-        /// Formats the appearance of a page's tree node.
+        /// Refreshes the description for a page.
         /// </summary>
         /// <param name="page"></param>
-        private void FormatTreeNode(Page page)
+        public void RefreshPageDescription(Page page)
         {
-            page.TreeNode.Text = page.PageTitle;
+            if(page.TreeNode != null) {
+                var title = page.PageTitle ?? "";
+                var icon = page.PageIcon ?? Images.Transparent_16x16;
+                var iconIndex = _ImageList.AddImage(icon);
+                var colour = page.PageEnabled ? treeViewPagePicker.ForeColor : SystemColors.GrayText;
 
-            var imageIndex = _ImageList.AddImage(page.PageIcon ?? Images.Transparent_16x16);
-            page.TreeNode.ImageIndex = imageIndex;
-            page.TreeNode.SelectedImageIndex = imageIndex;
+                if(page.TreeNode.Text != title) page.TreeNode.Text = title;
+                if(page.TreeNode.ForeColor != colour) page.TreeNode.ForeColor = colour;
+                if(page.TreeNode.ImageIndex != iconIndex) page.TreeNode.ImageIndex = iconIndex;
+                if(page.TreeNode.SelectedImageIndex != iconIndex) page.TreeNode.SelectedImageIndex = iconIndex;
+            }
         }
 
         /// <summary>
@@ -565,6 +604,10 @@ namespace VirtualRadar.WinForms
 
                 _Presenter = Factory.Singleton.Resolve<IOptionsPresenter>();
                 _Presenter.Initialise(this);
+
+                var maxReceiverId = Receivers.Count > 0 ? Receivers.Max(r => r.UniqueId) : 0;
+                var maxMergedFeedId = MergedFeeds.Count > 0 ? MergedFeeds.Max(r => r.UniqueId) : 0;
+                HighestConfiguredFeedId = Math.Max(maxReceiverId, maxMergedFeedId);
 
                 AddPage(PageDataSources);
                 AddPage(PageReceivers);

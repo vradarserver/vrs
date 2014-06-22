@@ -13,40 +13,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.ComponentModel;
 
-namespace VirtualRadar.WinForms.Binding
+namespace VirtualRadar.WinForms.Controls
 {
-    public class BindIntToListComboBox : Binder<ComboBox>
+    /// <summary>
+    /// A subclass of ListView that adds a couple of missing features.
+    /// </summary>
+    public class ListViewPlus : ListView
     {
-        public Observable<int> CastObservable { get { return (Observable<int>)Observable; } }
+        [DefaultValue(true)]
+        public bool ChangeCheckedOnDoubleClick { get; set; }
 
-        public BindIntToListComboBox(Observable<int> observable, ComboBox control) : base(observable, control)
+        public ListViewPlus()
         {
+            ChangeCheckedOnDoubleClick = true;
         }
 
-        protected override object GetControlValue()
+        protected override void WndProc(ref Message m)
         {
-            return Control.SelectedValue == null ? 0 : Control.SelectedValue;
-        }
-
-        protected override void SetControlFromObservable()
-        {
-            Control.SelectedValue = CastObservable.Value;
-        }
-
-        protected override void SetObservableFromControl()
-        {
-            CastObservable.Value = (int)GetControlValue();
-        }
-
-        protected override void HookControlChanged()
-        {
-            Control.SelectedValueChanged += Control_ValueChanged;
-        }
-
-        protected override void UnhookControlChanged()
-        {
-            Control.SelectedValueChanged -= Control_ValueChanged;
+            if(ChangeCheckedOnDoubleClick || m.Msg != 0x203) {
+                base.WndProc(ref m);
+            } else {
+                OnDoubleClick(EventArgs.Empty);
+            }
         }
     }
 }
