@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface.Settings;
@@ -29,7 +30,7 @@ namespace VirtualRadar.WinForms.Options
     public partial class ParentPageReceiverLocations : ParentPage
     {
         #region Fields
-        private List<ReceiverLocation> _Records;
+        private IList<ReceiverLocation> _Records;
         #endregion
 
         #region Properties
@@ -58,12 +59,11 @@ namespace VirtualRadar.WinForms.Options
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="optionsView"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected override int DoPopulate(OptionsPropertySheetView optionsView, List<ISheet> result)
+        protected override int DoPopulate(List<ISheet> result)
         {
-            _Records = optionsView.RawDecodingReceiverLocations;
+            _Records = OptionsView.RawDecodingReceiverLocations;
             foreach(var record in _Records) {
                 result.Add(CreateSheet(record));
             }

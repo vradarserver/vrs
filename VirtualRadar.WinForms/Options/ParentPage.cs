@@ -62,12 +62,10 @@ namespace VirtualRadar.WinForms.Options
         /// </summary>
         /// <param name="optionsView"></param>
         /// <returns></returns>
-        public List<ISheet> Populate(OptionsPropertySheetView optionsView)
+        public List<ISheet> Populate()
         {
-            OptionsView = optionsView;
-
             var result = new List<ISheet>();
-            _NextUniqueId = DoPopulate(optionsView, result);
+            _NextUniqueId = DoPopulate(result);
 
             return result;
         }
@@ -78,7 +76,7 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="optionsView"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected virtual int DoPopulate(OptionsPropertySheetView optionsView, List<ISheet> result)
+        protected virtual int DoPopulate(List<ISheet> result)
         {
             throw new NotImplementedException();
         }
@@ -214,7 +212,7 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="records"></param>
         /// <param name="getUniqueId"></param>
         /// <returns></returns>
-        protected virtual int GenerateUniqueId<T>(List<T> records, Func<T, int> getUniqueId)
+        protected virtual int GenerateUniqueId<T>(IList<T> records, Func<T, int> getUniqueId)
         {
             var result = _NextUniqueId;
             while(records.Any(r => getUniqueId(r) == result)) {
@@ -234,7 +232,7 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="alwaysAppendCounter"></param>
         /// <param name="getName"></param>
         /// <returns></returns>
-        protected virtual string GenerateUniqueName<T>(List<T> records, string prefix, bool alwaysAppendCounter, Func<T, string> getName)
+        protected virtual string GenerateUniqueName<T>(IList<T> records, string prefix, bool alwaysAppendCounter, Func<T, string> getName)
         {
             string result;
             int counter = 1;

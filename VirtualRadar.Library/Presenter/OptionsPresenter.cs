@@ -467,7 +467,7 @@ namespace VirtualRadar.Library.Presenter
             if(_View.TrackingTimeoutSeconds < _View.DisplayTimeoutSeconds) result.Add(new ValidationResult(ValidationField.TrackingTimeout, Strings.TrackingTimeoutLessThanDisplayTimeout));
             else if(_View.TrackingTimeoutSeconds > 3600) result.Add(new ValidationResult(ValidationField.TrackingTimeout, Strings.TrackingTimeoutOutOfBounds));
 
-            if(_View.Receivers.Count == 0) result.Add(new ValidationResult(ValidationField.PicturesFolder, Strings.PleaseConfigureAtLeastOneReceiver));
+            if(_View.Receivers.Count == 0) result.Add(new ValidationResult(ValidationField.ReceiverIds, Strings.PleaseConfigureAtLeastOneReceiver));
             else {
                 if(!_View.Receivers.Any(r => r.Enabled)) result.Add(new ValidationResult(_View.Receivers[0], ValidationField.Enabled, Strings.PleaseEnableAtLeastOneReceiver));
                 foreach(var record in _View.Receivers) {

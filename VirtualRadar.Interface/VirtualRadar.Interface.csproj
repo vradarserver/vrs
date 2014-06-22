@@ -129,6 +129,7 @@
     <Compile Include="AircraftDetail.cs" />
     <Compile Include="Certainty.cs" />
     <Compile Include="IAircraftSanityChecker.cs" />
+    <Compile Include="IListExtensions.cs" />
     <Compile Include="Listener\IPolarPlotter.cs" />
     <Compile Include="Listener\PolarPlot.cs" />
     <Compile Include="Listener\PolarPlotSlice.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="ITcpConnectionStateService.cs" />
     <Compile Include="Presenter\IUsersListPresenter.cs" />
     <Compile Include="Presenter\IUsersPresenter.cs" />
+    <Compile Include="PropertyHelper.cs" />
     <Compile Include="RebroadcastServerConnection.cs" />
     <Compile Include="Settings\IUser.cs" />
     <Compile Include="Settings\IUserManager.cs" />

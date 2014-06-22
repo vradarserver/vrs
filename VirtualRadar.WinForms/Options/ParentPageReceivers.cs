@@ -30,7 +30,7 @@ namespace VirtualRadar.WinForms.Options
     public partial class ParentPageReceivers : FeedParentPage
     {
         #region Fields
-        private List<Receiver> _Records;
+        private IList<Receiver> _Records;
         #endregion
 
         #region Properties
@@ -89,12 +89,11 @@ namespace VirtualRadar.WinForms.Options
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="optionsView"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected override int DoPopulate(OptionsPropertySheetView optionsView, List<ISheet> result)
+        protected override int DoPopulate(List<ISheet> result)
         {
-            _Records = optionsView.Receivers;
+            _Records = OptionsView.Receivers;
             foreach(var record in _Records) {
                 result.Add(CreateSheet(record));
             }
@@ -125,15 +124,16 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="ambiguousSheet"></param>
         protected override void DoSettingButtonClicked(ISheet ambiguousSheet)
         {
-            var sheet = (SheetReceiverOptions)ambiguousSheet;
+            var sheet = (SheetReceiverOptionsControl)ambiguousSheet;
             var tag = (Receiver)sheet.Tag;
             OptionsView.OnTestBaseStationConnectionSettingsClicked(new EventArgs<Receiver>(tag));
         }
 
         private ISheet CreateSheet(Receiver record)
         {
-            return new SheetReceiverOptions() {
+            return new SheetReceiverOptionsControl() {
                 Tag = record,
+                Visible = false,
 
                 Address =                   record.Address,
                 AutoReconnectAtStartup =    record.AutoReconnectAtStartup,
@@ -142,9 +142,9 @@ namespace VirtualRadar.WinForms.Options
                 ConnectionType =            record.ConnectionType,
                 DataBits =                  record.DataBits,
                 DataSource =                record.DataSource,
-                Enabled =                   record.Enabled,
+                RecordEnabled =           record.Enabled,
                 Handshake =                 record.Handshake,
-                Name =                      record.Name,
+                RecordName =              record.Name,
                 Parity =                    record.Parity,
                 Port =                      record.Port,
                 ReceiverLocationId =        record.ReceiverLocationId,
@@ -160,7 +160,7 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="ambiguousSheet"></param>
         protected override void DoSynchroniseValues(ISheet ambiguousSheet)
         {
-            var sheet = (SheetReceiverOptions)ambiguousSheet;
+            var sheet = (SheetReceiverOptionsControl)ambiguousSheet;
             var record = (Receiver)sheet.Tag;
 
             record.Address =                   sheet.Address;
@@ -170,9 +170,9 @@ namespace VirtualRadar.WinForms.Options
             record.ConnectionType =            sheet.ConnectionType;
             record.DataBits =                  sheet.DataBits;
             record.DataSource =                sheet.DataSource;
-            record.Enabled =                   sheet.Enabled;
+            record.Enabled =                   sheet.RecordEnabled;
             record.Handshake =                 sheet.Handshake;
-            record.Name =                      sheet.Name;
+            record.Name =                      sheet.RecordName;
             record.Parity =                    sheet.Parity;
             record.Port =                      sheet.Port;
             record.ReceiverLocationId =        sheet.ReceiverLocationId;
@@ -187,7 +187,7 @@ namespace VirtualRadar.WinForms.Options
         /// <param name="ambiguousSheet"></param>
         protected override void DoRemoveRecordForSheet(ISheet ambiguousSheet)
         {
-            var sheet = (SheetReceiverOptions)ambiguousSheet;
+            var sheet = (SheetReceiverOptionsControl)ambiguousSheet;
             var record = (Receiver)sheet.Tag;
             _Records.Remove(record);
         }

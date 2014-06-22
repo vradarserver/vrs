@@ -25,11 +25,6 @@ namespace VirtualRadar.WinForms.Options
     public interface ISheet
     {
         /// <summary>
-        /// Gets or sets the owning options view.
-        /// </summary>
-        OptionsPropertySheetView OptionsView { get; set; }
-
-        /// <summary>
         /// Gets a collection of pages that are children of this sheet. The pages are containers for variable length collections
         /// of child sheets.
         /// </summary>

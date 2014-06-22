@@ -1,0 +1,604 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
+using VirtualRadar.Resources;
+using VirtualRadar.WinForms.OptionPage;
+using VirtualRadar.Interface.Presenter;
+using InterfaceFactory;
+
+namespace VirtualRadar.WinForms
+{
+    /// <summary>
+    /// The default WinForms implementation of <see cref="IOptionsView"/>.
+    /// </summary>
+    public partial class OptionsView : BaseForm, IOptionsView
+    {
+        #region Fields
+        /// <summary>
+        /// The presenter that handles the business logic for us.
+        /// </summary>
+        private IOptionsPresenter _Presenter;
+
+        /// <summary>
+        /// True if a save event handler is running, false otherwise.
+        /// </summary>
+        private bool _IsSaving;
+
+        /// <summary>
+        /// A list of every top-level page.
+        /// </summary>
+        private List<Page> _TopLevelPages = new List<Page>();
+
+        /// <summary>
+        /// The object that manages the tree view's image list for us.
+        /// </summary>
+        private DynamicImageList _ImageList = new DynamicImageList();
+        #endregion
+
+        #region Options Properties
+
+        #region Data Sources
+        public string BaseStationDatabaseFileName
+        {
+            get { return PageDataSources.DatabaseFileName.Value; }
+            set { PageDataSources.DatabaseFileName.Value = value; }
+        }
+
+        public string OperatorFlagsFolder
+        {
+            get { return PageDataSources.FlagsFolder.Value; }
+            set { PageDataSources.FlagsFolder.Value = value; }
+        }
+
+        public string SilhouettesFolder
+        {
+            get { return PageDataSources.SilhouettesFolder.Value; }
+            set { PageDataSources.SilhouettesFolder.Value = value; }
+        }
+
+        public string PicturesFolder
+        {
+            get { return PageDataSources.PicturesFolder.Value; }
+            set { PageDataSources.PicturesFolder.Value = value; }
+        }
+
+        public bool SearchPictureSubFolders
+        {
+            get { return PageDataSources.SearchPictureSubFolders.Value; }
+            set { PageDataSources.SearchPictureSubFolders.Value = value; }
+        }
+        #endregion
+
+        #region Receivers
+        public IList<Receiver> Receivers { get { return PageReceivers.Receivers.Value; } }
+        #endregion
+
+        #region ReceiverLocations
+        public IList<ReceiverLocation> RawDecodingReceiverLocations { get { return PageReceiverLocations.ReceiverLocations.Value; } }
+        #endregion
+
+        public bool CheckForNewVersions { get; set; }
+
+        public int CheckForNewVersionsPeriodDays { get; set; }
+
+        public bool DownloadFlightRoutes { get; set; }
+
+        public int DisplayTimeoutSeconds { get; set; }
+
+        public int TrackingTimeoutSeconds { get; set; }
+
+        public int ShortTrailLengthSeconds { get; set; }
+
+        public bool MinimiseToSystemTray { get; set; }
+
+        private List<RebroadcastSettings> _RebroadcastSettings = new List<RebroadcastSettings>();
+        public IList<RebroadcastSettings> RebroadcastSettings
+        {
+            get { return _RebroadcastSettings; }
+        }
+
+        private List<MergedFeed> _MergedFeeds = new List<MergedFeed>();
+        public IList<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
+
+        public int RawDecodingReceiverRange { get; set; }
+
+        public bool RawDecodingIgnoreMilitaryExtendedSquitter { get; set; }
+
+        public bool RawDecodingSuppressReceiverRangeCheck { get; set; }
+
+        public bool RawDecodingUseLocalDecodeForInitialPosition { get; set; }
+
+        public int RawDecodingAirborneGlobalPositionLimit { get; set; }
+
+        public int RawDecodingFastSurfaceGlobalPositionLimit { get; set; }
+
+        public int RawDecodingSlowSurfaceGlobalPositionLimit { get; set; }
+
+        public double RawDecodingAcceptableAirborneSpeed { get; set; }
+
+        public double RawDecodingAcceptableAirSurfaceTransitionSpeed { get; set; }
+
+        public double RawDecodingAcceptableSurfaceSpeed { get; set; }
+
+        public bool RawDecodingIgnoreCallsignsInBds20 { get; set; }
+
+        public int AcceptIcaoInNonPICount { get; set; }
+
+        public int AcceptIcaoInNonPISeconds { get; set; }
+
+        public int AcceptIcaoInPI0Count { get; set; }
+
+        public int AcceptIcaoInPI0Seconds { get; set; }
+
+        public bool WebServerUserMustAuthenticate { get; set; }
+
+        private List<string> _WebServerUserIds = new List<string>();
+        public IList<string> WebServerUserIds { get { return _WebServerUserIds; } }
+
+        public bool EnableUPnpFeatures { get; set; }
+
+        public bool IsOnlyVirtualRadarServerOnLan { get; set; }
+
+        public bool AutoStartUPnp { get; set; }
+
+        public int UPnpPort { get; set; }
+
+        public double InitialGoogleMapLatitude { get; set; }
+
+        public double InitialGoogleMapLongitude { get; set; }
+
+        public string InitialGoogleMapType { get; set; }
+
+        public int InitialGoogleMapZoom { get; set; }
+
+        public int InitialGoogleMapRefreshSeconds { get; set; }
+
+        public int MinimumGoogleMapRefreshSeconds { get; set; }
+
+        public DistanceUnit InitialDistanceUnit { get; set; }
+
+        public HeightUnit InitialHeightUnit { get; set; }
+
+        public SpeedUnit InitialSpeedUnit { get; set; }
+
+        public bool PreferIataAirportCodes { get; set; }
+
+        public bool EnableBundling { get; set; }
+
+        public bool EnableMinifying { get; set; }
+
+        public bool EnableCompression { get; set; }
+
+        public int WebSiteReceiverId { get; set; }
+
+        public int ClosestAircraftReceiverId { get; set; }
+
+        public int FlightSimulatorXReceiverId { get; set; }
+
+        public ProxyType ProxyType { get; set; }
+
+        public bool InternetClientCanRunReports { get; set; }
+
+        public bool InternetClientCanPlayAudio { get; set; }
+
+        public bool InternetClientCanSeePictures { get; set; }
+
+        public int InternetClientTimeoutMinutes { get; set; }
+
+        public bool InternetClientCanSeeLabels { get; set; }
+
+        public bool AllowInternetProximityGadgets { get; set; }
+
+        public bool InternetClientCanSubmitRoutes { get; set; }
+
+        public bool InternetClientCanShowPolarPlots { get; set; }
+
+        public bool AudioEnabled { get; set; }
+
+        public string TextToSpeechVoice { get; set; }
+
+        public int TextToSpeechSpeed { get; set; }
+        #endregion
+
+        #region Form properties
+        public string InlineHelpTitle
+        {
+            get { return labelInlineHelpTitle.Text; }
+            set { labelInlineHelpTitle.Text = value; }
+        }
+
+        public string InlineHelp
+        {
+            get { return labelInlineHelp.Text; }
+            set { labelInlineHelp.Text = value; }
+        }
+
+        private Page _CurrentPage;
+        public Page CurrentPage
+        {
+            get { return _CurrentPage; }
+            set { DisplayPage(value); }
+        }
+        #endregion
+
+        #region Top-level Page Properties
+        public PageDataSources          PageDataSources { get; private set; }
+        public PageReceivers            PageReceivers { get; private set; }
+        public PageReceiverLocations    PageReceiverLocations { get; private set; }
+        #endregion
+
+        #region Events exposed
+        public event EventHandler ResetToDefaultsClicked;
+
+        public event EventHandler SaveClicked;
+        protected virtual void OnSaveClicked(EventArgs args)
+        {
+            if(SaveClicked != null) SaveClicked(this, args);
+        }
+
+        public event EventHandler<EventArgs<Receiver>> TestConnectionClicked;
+
+        public event EventHandler TestTextToSpeechSettingsClicked;
+
+        public event EventHandler UpdateReceiverLocationsFromBaseStationDatabaseClicked;
+
+        public event EventHandler UseIcaoRawDecodingSettingsClicked;
+
+        public event EventHandler UseRecommendedRawDecodingSettingsClicked;
+        #endregion
+
+        #region Ctor
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public OptionsView()
+        {
+            PageDataSources = new PageDataSources();
+            PageReceivers = new PageReceivers();
+            PageReceiverLocations = new PageReceiverLocations();
+
+            InitializeComponent();
+        }
+        #endregion
+
+        #region Validation - ShowValidationResults
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="results"></param>
+        public override void ShowValidationResults(IEnumerable<ValidationResult> results)
+        {
+            errorProvider.ClearErrors();
+            warningProvider.ClearErrors();
+
+            var hasWarnings = results.Any(r => r.IsWarning);
+            var hasErrors = results.Any(r => !r.IsWarning);
+
+            var allPages = GetAllPagesInTreeNodeOrder();
+            Page showPage = null;
+            foreach(var result in results) {
+                Page fieldPage = null;
+                Control fieldControl = null;
+
+                foreach(var page in allPages) {
+                    fieldControl = page.GetControlForValidationField(result.Record, result.Field);
+                    if(fieldControl != null) {
+                        fieldPage = page;
+                        break;
+                    }
+                }
+                if(fieldPage == null || fieldControl == null) throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}", result.Field, result.Record));
+
+                if(result.IsWarning) {
+                    warningProvider.SetClearableError(fieldControl, result.Message);
+                } else {
+                    errorProvider.SetClearableError(fieldControl, result.Message);
+                    if(_IsSaving) {
+                        if(showPage == null || allPages.IndexOf(showPage) > allPages.IndexOf(fieldPage)) {
+                            showPage = fieldPage;
+                        }
+                    }
+                }
+            }
+
+            if(hasErrors) {
+                DialogResult = DialogResult.None;
+            }
+
+            if(showPage != null) DisplayPage(showPage);
+        }
+
+        /// <summary>
+        /// Sets the alignment of error icons for a control.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="alignment"></param>
+        public void SetControlErrorAlignment(Control control, ErrorIconAlignment alignment)
+        {
+            errorProvider.SetIconAlignment(control, alignment);
+            warningProvider.SetIconAlignment(control, alignment);
+        }
+        #endregion
+
+        #region IOptionsView methods - PopulateTextToSpeechVoices, MergeBaseStationDatabaseReceiverLocations, ShowTestConnectionResults
+        public void PopulateTextToSpeechVoices(IEnumerable<string> voiceNames)
+        {
+        }
+
+        public void MergeBaseStationDatabaseReceiverLocations(IEnumerable<ReceiverLocation> receiverLocations)
+        {
+        }
+
+        public void ShowTestConnectionResults(string message, string title)
+        {
+        }
+        #endregion
+
+        #region Pages - AddPage, RemovePage, DisplayPage, GetAllPages
+        /// <summary>
+        /// Adds a top-level page.
+        /// </summary>
+        /// <param name="page"></param>
+        public void AddPage(Page page)
+        {
+            AddPage(page, null);
+        }
+
+        /// <summary>
+        /// Adds a page to the tree-view and to the owner's ChildPages collection. If the
+        /// owner is null then the page is added to the top-level of the pages display.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="owner"></param>
+        public void AddPage(Page page, Page owner)
+        {
+            var pages = owner == null ? _TopLevelPages : owner.ChildPages;
+            var parentNodes = owner == null ? treeViewPagePicker.Nodes : owner.TreeNode.Nodes;
+
+            page.OptionsView = this;
+            if(!pages.Contains(page)) pages.Add(page);
+
+            page.TreeNode = new TreeNode();
+            FormatTreeNode(page);
+            parentNodes.Add(page.TreeNode);
+
+            if(!panelPageContent.Controls.Contains(page)) {
+                page.Visible = false;
+                page.Width = panelPageContent.Width - 8;
+                page.Location = new Point(4, 4);
+                page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+                panelPageContent.Controls.Add(page);
+            }
+
+            foreach(var subPage in page.ChildPages) {
+                AddPage(subPage, page);
+            }
+        }
+
+        /// <summary>
+        /// Removes the page from display.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="makeParentCurrent"></param>
+        public void RemovePage(Page page, bool makeParentCurrent)
+        {
+            var allPages = GetAllPagesInTreeNodeOrder();
+            var pageIndex = allPages.IndexOf(page);
+
+            if(page != null && pageIndex != -1) {
+                foreach(var subPage in page.ChildPages) {
+                    RemovePage(subPage, makeParentCurrent);
+                }
+
+                if(page.TreeNode != null) {
+                    page.TreeNode.Parent.Nodes.Remove(page.TreeNode);
+                    page.TreeNode = null;
+                }
+
+                var parentPage = FindParentPage(page);
+                var pages = parentPage != null ? parentPage.ChildPages : _TopLevelPages;
+                if(pages.Contains(page)) {
+                    pages.Remove(page);
+                }
+
+                if(panelPageContent.Controls.Contains(page)) {
+                    panelPageContent.Controls.Remove(page);
+                }
+
+                allPages.RemoveAt(pageIndex);
+
+                if(_CurrentPage == page) {
+                    _CurrentPage = null;
+                    if(makeParentCurrent && parentPage != null) {
+                        DisplayPage(parentPage);
+                    } else {
+                        if(pageIndex < allPages.Count) {
+                            DisplayPage(allPages[pageIndex]);
+                        } else if(allPages.Count > 0) {
+                            DisplayPage(allPages[allPages.Count - 1]);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Displays the page passed across.
+        /// </summary>
+        /// <param name="page"></param>
+        public void DisplayPage(Page page)
+        {
+            if(page != null && page != _CurrentPage && GetAllPages().Contains(page)) {
+                if(_CurrentPage != null) _CurrentPage.Visible = false;
+                _CurrentPage = page;
+                _CurrentPage.Visible = true;
+
+                if(treeViewPagePicker.SelectedNode != page.TreeNode) {
+                    treeViewPagePicker.SelectedNode = page.TreeNode;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the description for a page.
+        /// </summary>
+        /// <param name="page"></param>
+        public void RefreshPageDescription(Page page)
+        {
+            if(page.TreeNode != null) {
+                var title = page.PageTitle ?? "";
+                var icon = page.PageIcon ?? Images.Transparent_16x16;
+                var iconIndex = _ImageList.AddImage(icon);
+
+                if(page.TreeNode.Text != title) page.TreeNode.Text = title;
+                if(page.TreeNode.ImageIndex != iconIndex) page.TreeNode.ImageIndex = iconIndex;
+                if(page.TreeNode.SelectedImageIndex != iconIndex) page.TreeNode.SelectedImageIndex = iconIndex;
+            }
+        }
+
+        /// <summary>
+        /// Returns a flattened collection of every page in a random order.
+        /// </summary>
+        /// <returns></returns>
+        private List<Page> GetAllPages()
+        {
+            return _TopLevelPages.Concat(_TopLevelPages.SelectMany(r => r.ChildPages)).ToList();
+        }
+
+        /// <summary>
+        /// Returns a flattened collection of page in the order of their tree node.
+        /// </summary>
+        /// <returns></returns>
+        private List<Page> GetAllPagesInTreeNodeOrder()
+        {
+            var result = new List<Page>();
+            var allPages = GetAllPages();
+
+            AddPages(treeViewPagePicker.Nodes, allPages, result);
+
+            return result;
+        }
+
+        private void AddPages(TreeNodeCollection treeNodes, List<Page> allPages, List<Page> sortedPages)
+        {
+            foreach(TreeNode treeNode in treeNodes) {
+                var page = allPages.FirstOrDefault(r => r.TreeNode == treeNode);
+                if(page != null) sortedPages.Add(page);
+                AddPages(treeNode.Nodes, allPages, sortedPages);
+            }
+        }
+
+        /// <summary>
+        /// Finds the page that is the parent of the one passed across. Returns null if there is no
+        /// parent page for it.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public Page FindParentPage(Page page)
+        {
+            Page result = null;
+
+            if(page != null) {
+                result = GetAllPages().FirstOrDefault(r => r.ChildPages.Contains(page));
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region TreeView - FormatTreeNode, FindPageForNode
+        /// <summary>
+        /// Formats the appearance of a page's tree node.
+        /// </summary>
+        /// <param name="page"></param>
+        private void FormatTreeNode(Page page)
+        {
+            page.TreeNode.Text = page.PageTitle;
+
+            var imageIndex = _ImageList.AddImage(page.PageIcon ?? Images.Transparent_16x16);
+            page.TreeNode.ImageIndex = imageIndex;
+            page.TreeNode.SelectedImageIndex = imageIndex;
+        }
+
+        /// <summary>
+        /// Returns the page associated with the tree node or null if no such page exists.
+        /// </summary>
+        /// <param name="treeNode"></param>
+        /// <returns></returns>
+        private Page FindPageForNode(TreeNode treeNode)
+        {
+            Page result = null;
+
+            if(treeNode != null) {
+                var allPages = GetAllPages();
+                result = allPages.FirstOrDefault(r => r.TreeNode == treeNode);
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region OnLoad
+        /// <summary>
+        /// Called after the form has been loaded but before it is shown to the user.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if(!DesignMode) {
+                InlineHelp = InlineHelpTitle = "";
+
+                Localise.Form(this);
+                treeViewPagePicker.ImageList = _ImageList.ImageList;
+
+                _Presenter = Factory.Singleton.Resolve<IOptionsPresenter>();
+                _Presenter.Initialise(this);
+
+                AddPage(PageDataSources);
+                AddPage(PageReceivers);
+                AddPage(PageReceiverLocations);
+
+                treeViewPagePicker.ExpandAll();
+                var firstNode = treeViewPagePicker.Nodes[0];
+                treeViewPagePicker.SelectedNode = firstNode;
+
+                // Trigger a validation of the content now that we're all set up
+                OnValueChanged(this, EventArgs.Empty);
+            }
+        }
+        #endregion
+
+        #region TreeView events subscribed
+        private void treeViewPagePicker_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            var page = FindPageForNode(treeViewPagePicker.SelectedNode);
+            DisplayPage(page);
+        }
+        #endregion
+
+        #region Button events subscribed
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+            var isSaving = _IsSaving;
+            _IsSaving = true;
+            try {
+                OnSaveClicked(e);
+            } finally {
+                _IsSaving = isSaving;
+            }
+        }
+        #endregion
+    }
+}
