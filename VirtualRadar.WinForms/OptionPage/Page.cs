@@ -1,4 +1,14 @@
-﻿using System;
+﻿// Copyright © 2014 onwards, Andrew Whewell
+// All rights reserved.
+//
+// Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+//    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,6 +23,7 @@ using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Binding;
 using System.Collections;
+using VirtualRadar.WinForms.Controls;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -75,9 +86,14 @@ namespace VirtualRadar.WinForms.OptionPage
         private List<Page> _HookedPagePropertyChangeds = new List<Page>();
 
         /// <summary>
-        /// Gets the observable whose value will be used as the page title.
+        /// The observable whose value will be used as the page title.
         /// </summary>
         private IObservable _PageTitleObservable;
+
+        /// <summary>
+        /// The observable whose value will be used as the page enabled value.
+        /// </summary>
+        private IObservable _PageEnabledObservable;
 
         /// <summary>
         /// Set to true if the observables are being initialised from a PageObject.
@@ -102,6 +118,22 @@ namespace VirtualRadar.WinForms.OptionPage
                 return result;
             }
         }
+        
+        /// <summary>
+        /// Gets a value indicating that the page should be shown as enabled in the list of pages.
+        /// </summary>
+        public virtual bool PageEnabled
+        {
+            get {
+                var result = true;
+                if(_PageEnabledObservable != null) {
+                    var enabled = _PageEnabledObservable.GetValue();
+                    result = enabled == null ? true : Convert.ToBoolean(enabled);
+                }
+
+                return result;
+            }
+        }
 
         /// <summary>
         /// Gets the icon for the page.
@@ -112,6 +144,11 @@ namespace VirtualRadar.WinForms.OptionPage
         /// Gets the settings object being modified by this page.
         /// </summary>
         public virtual object PageObject { get; protected set; }
+
+        /// <summary>
+        /// If true then the page is stretched vertically to fill the available space.
+        /// </summary>
+        public virtual bool PageUseFullHeight { get { return false; } }
 
         /// <summary>
         /// Gets or sets the owning options view.
@@ -171,6 +208,7 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             CreateBindings();
             RecordPageTitleObservable();
+            RecordPageEnabledObservable();
         }
 
         /// <summary>
@@ -182,6 +220,20 @@ namespace VirtualRadar.WinForms.OptionPage
                 var titleAttribute = property.GetCustomAttributes(typeof(PageTitleAttribute), true).OfType<PageTitleAttribute>().FirstOrDefault();
                 if(titleAttribute != null) {
                     _PageTitleObservable = property.GetValue(this, null) as IObservable;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the observable property that has the PageEnabled attribute.
+        /// </summary>
+        private void RecordPageEnabledObservable()
+        {
+            foreach(var property in GetType().GetProperties()) {
+                var enabledAttribute = property.GetCustomAttributes(typeof(PageEnabledAttribute), true).OfType<PageEnabledAttribute>().FirstOrDefault();
+                if(enabledAttribute != null) {
+                    _PageEnabledObservable = property.GetValue(this, null) as IObservable;
                     break;
                 }
             }
@@ -549,12 +601,56 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             if(childPage != null && ChildPages.Contains(childPage)) {
                 UnhookPropertyValueChanged(childPage);
-                ChildPages.Remove(childPage);
 
                 if(OptionsView != null && childPage.IsInOptionView) {
                     OptionsView.RemovePage(childPage, makeParentCurrent: true);
                 }
+
+                if(ChildPages.Contains(childPage)) {
+                    ChildPages.Remove(childPage);
+                }
             }
+        }
+        #endregion
+
+        #region Child record creation helpers - GenerateUniqueId, GenerateUniqueName
+        /// <summary>
+        /// Creates a unique ID for a new record.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nextUniqueId"></param>
+        /// <param name="records"></param>
+        /// <param name="getUniqueId"></param>
+        /// <returns></returns>
+        protected virtual int GenerateUniqueId<T>(int nextUniqueId, IList<T> records, Func<T, int> getUniqueId)
+        {
+            var result = nextUniqueId;
+            while(records.Any(r => getUniqueId(r) == result)) {
+                ++result;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a unique case-insensitive name for a new record.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="records"></param>
+        /// <param name="prefix"></param>
+        /// <param name="alwaysAppendCounter"></param>
+        /// <param name="getName"></param>
+        /// <returns></returns>
+        protected virtual string GenerateUniqueName<T>(IList<T> records, string prefix, bool alwaysAppendCounter, Func<T, string> getName)
+        {
+            string result;
+            int counter = 1;
+            do {
+                result = counter != 1 || alwaysAppendCounter ? String.Format("{0} {1}", prefix, counter) : prefix;
+                ++counter;
+            } while(records.Any(r => result.Equals(getName(r), StringComparison.OrdinalIgnoreCase)));
+
+            return result;
         }
         #endregion
 
@@ -626,8 +722,10 @@ namespace VirtualRadar.WinForms.OptionPage
                 if(PageObject != null && !_InitialisingObservables) CopyObservablesToRecord();
 
                 if(OptionsView != null) {
-                    // If the page title has changed then tell the parent view
-                    if(_PageTitleObservable != null && sender == _PageTitleObservable) {
+                    // If a page attribute has changed then tell the parent view
+                    var titleChanged = _PageTitleObservable != null && sender == _PageTitleObservable;
+                    var enabledChanged = _PageEnabledObservable != null && sender == _PageEnabledObservable;
+                    if(titleChanged || enabledChanged) {
                         OptionsView.RefreshPageDescription(this);
                     }
 

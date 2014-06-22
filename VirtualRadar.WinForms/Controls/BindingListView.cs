@@ -1,4 +1,14 @@
-﻿using System;
+﻿// Copyright © 2014 onwards, Andrew Whewell
+// All rights reserved.
+//
+// Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+//    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -9,6 +19,8 @@ using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Collections;
 using VirtualRadar.Localisation;
+using VirtualRadar.Resources;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -36,6 +48,29 @@ namespace VirtualRadar.WinForms.Controls
                 ColumnTexts = new List<string>();
             }
         }
+
+        /// <summary>
+        /// The event args for events that pass the checked state for a single record.
+        /// </summary>
+        public class RecordCheckedEventArgs : EventArgs
+        {
+            public object Record { get; private set; }
+
+            public bool Checked { get; private set; }
+
+            public RecordCheckedEventArgs(object record, bool checkedValue)
+            {
+                Record = record;
+                Checked = checkedValue;
+            }
+        }
+        #endregion
+
+        #region Fields
+        /// <summary>
+        /// True if the control is being populated. Some events are suppressed while this is happening.
+        /// </summary>
+        private bool _Populating;
         #endregion
 
         #region Control Properties
@@ -151,6 +186,76 @@ namespace VirtualRadar.WinForms.Controls
         {
             if(FetchRecordContent != null) FetchRecordContent(this, args);
         }
+
+        /// <summary>
+        /// Raised when the selection changes.
+        /// </summary>
+        public event EventHandler SelectedRecordChanged;
+
+        /// <summary>
+        /// Raises <see cref="SelectedRecordChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnSelectedRecordChanged(EventArgs args)
+        {
+            if(SelectedRecordChanged != null) SelectedRecordChanged(this, args);
+        }
+
+        /// <summary>
+        /// Raised when the add button is clicked.
+        /// </summary>
+        public event EventHandler AddClicked;
+
+        /// <summary>
+        /// Raises <see cref="AddClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnAddClicked(EventArgs args)
+        {
+            if(AddClicked != null) AddClicked(this, args);
+        }
+
+        /// <summary>
+        /// Raised when the delete button is clicked.
+        /// </summary>
+        public event EventHandler DeleteClicked;
+
+        /// <summary>
+        /// Raises <see cref="DeleteClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnDeleteClicked(EventArgs args)
+        {
+            if(DeleteClicked != null) DeleteClicked(this, args);
+        }
+
+        /// <summary>
+        /// Raised when the user wants to edit a record.
+        /// </summary>
+        public event EventHandler EditClicked;
+
+        /// <summary>
+        /// Raises <see cref="EditClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnEditClicked(EventArgs args)
+        {
+            if(EditClicked != null) EditClicked(this, args);
+        }
+
+        /// <summary>
+        /// Raised when the user changes the check state on an item.
+        /// </summary>
+        public event EventHandler<RecordCheckedEventArgs> CheckedChanged;
+
+        /// <summary>
+        /// Raises <see cref="CheckedChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnCheckedChanged(RecordCheckedEventArgs args)
+        {
+            if(CheckedChanged != null) CheckedChanged(this, args);
+        }
         #endregion
 
         #region Ctors
@@ -176,13 +281,20 @@ namespace VirtualRadar.WinForms.Controls
         {
             var selectedRecords = SelectedRecords;
 
-            listView.Items.Clear();
-            foreach(var item in list) {
-                var listViewItem = new ListViewItem() {
-                    Tag = item,
-                };
-                RefreshListViewItem(listViewItem);
-                listView.Items.Add(listViewItem);
+            var populating = _Populating;
+            try {
+                _Populating = true;
+
+                listView.Items.Clear();
+                foreach(var item in list) {
+                    var listViewItem = new ListViewItem() {
+                        Tag = item,
+                    };
+                    RefreshListViewItem(listViewItem);
+                    listView.Items.Add(listViewItem);
+                }
+            } finally {
+                _Populating = populating;
             }
         }
 
@@ -195,8 +307,25 @@ namespace VirtualRadar.WinForms.Controls
             var recordContent = new RecordContentEventArgs(listViewItem.Tag);
             OnFetchRecordContent(recordContent);
 
-            if(CheckBoxes) FillAndCheckListViewItem<object>(listViewItem, r => recordContent.ColumnTexts.ToArray(), r => recordContent.Checked);
-            else           FillListViewItem<object>(listViewItem, r => recordContent.ColumnTexts.ToArray());
+            var populating = _Populating;
+            try {
+                _Populating = true;
+
+                if(CheckBoxes) FillAndCheckListViewItem<object>(listViewItem, r => recordContent.ColumnTexts.ToArray(), r => recordContent.Checked);
+                else           FillListViewItem<object>(listViewItem, r => recordContent.ColumnTexts.ToArray());
+            } finally {
+                _Populating = populating;
+            }
+        }
+        #endregion
+
+        #region EnableDisableControls
+        /// <summary>
+        /// Enables or disables controls based on the state of the object.
+        /// </summary>
+        private void EnableDisableControls()
+        {
+            buttonDelete.Enabled = SelectedRecord != null;
         }
         #endregion
 
@@ -210,6 +339,76 @@ namespace VirtualRadar.WinForms.Controls
             base.OnLoad(e);
 
             if(!DesignMode) {
+                if(!AllowAdd || !AllowDelete) {
+                    if(AllowAdd) {
+                        buttonDelete.Visible = false;
+                    } else if(AllowDelete) {
+                        buttonAdd.Visible = false;
+                        buttonDelete.Location = buttonAdd.Location;
+                    } else {
+                        buttonAdd.Visible = false;
+                        buttonDelete.Visible = false;
+                        listView.Location = new Point(0, 0);
+                    }
+                }
+
+                buttonAdd.Image = Images.Add16x16;
+                buttonDelete.Image = Images.Cancel16x16;
+                buttonAdd.Text = buttonDelete.Text = "";
+
+                EnableDisableControls();
+            }
+        }
+        #endregion
+
+        #region Events subscribed
+        private void listView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnableDisableControls();
+            OnSelectedRecordChanged(e);
+        }
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            OnAddClicked(e);
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            OnDeleteClicked(e);
+        }
+
+        private void listView_DoubleClick(object sender, EventArgs e)
+        {
+            if(SelectedRecord != null) OnEditClicked(e);
+        }
+
+        private void listView_KeyDown(object sender, KeyEventArgs e)
+        {
+            var haveSelectedRecord = SelectedRecord != null;
+
+            if(e.Modifiers == Keys.None) {
+                switch(e.KeyCode) {
+                    case Keys.Insert:
+                        OnAddClicked(e);
+                        e.Handled = true;
+                        break;
+                    case Keys.Delete:
+                        OnDeleteClicked(e);
+                        e.Handled = true;
+                        break;
+                }
+            }
+        }
+
+        private void listView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if(!_Populating) {
+                var record = e.Item == null ? null : e.Item.Tag;
+                if(record != null) {
+                    var args = new RecordCheckedEventArgs(record, e.Item.Checked);
+                    OnCheckedChanged(args);
+                }
             }
         }
         #endregion

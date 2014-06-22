@@ -36,6 +36,19 @@ namespace VirtualRadar.Resources
     /// </para></remarks>
     public static class Images
     {
+        private static Bitmap _Add16x16;
+        /// <summary>
+        /// Gets or sets the Add16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Add16x16.png" alt="" title="Add16x16" />
+        /// </remarks>
+        public static Bitmap Add16x16
+        {
+            get { return _Add16x16 ?? InternalResources.Add16x16; }
+            set { _Add16x16 = value; }
+        }
+
         private static Icon _ApplicationIcon;
         /// <summary>
         /// Gets or sets the ApplicationIcon image.
@@ -60,6 +73,19 @@ namespace VirtualRadar.Resources
         {
             get { return _BlueBall ?? InternalResources.BlueBall; }
             set { _BlueBall = value; }
+        }
+
+        private static Bitmap _Cancel16x16;
+        /// <summary>
+        /// Gets or sets the Cancel16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Cancel16x16.png" alt="" title="Cancel16x16" />
+        /// </remarks>
+        public static Bitmap Cancel16x16
+        {
+            get { return _Cancel16x16 ?? InternalResources.Cancel16x16; }
+            set { _Cancel16x16 = value; }
         }
 
         private static Bitmap _ChevronBlueCircle;

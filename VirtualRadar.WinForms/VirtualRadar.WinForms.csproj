@@ -151,6 +151,9 @@
     <Compile Include="Controls\InvalidPluginsControl.Designer.cs">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ListViewPlus.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\NamespaceDoc.cs" />
     <Compile Include="Controls\ObservableListComboBox.cs">
       <SubType>Component</SubType>
@@ -251,6 +254,7 @@
     <Compile Include="OptionPage\PageDataSources.Designer.cs">
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionPage\PageEnabledAttribute.cs" />
     <Compile Include="OptionPage\PageReceiver.cs">
       <SubType>UserControl</SubType>
     </Compile>
