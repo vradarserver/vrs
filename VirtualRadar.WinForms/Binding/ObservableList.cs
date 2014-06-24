@@ -86,6 +86,34 @@ namespace VirtualRadar.WinForms.Binding
             return typeof(ObservableCollection<T>);
         }
 
+        public void ReplaceContent(IEnumerable<T> newList)
+        {
+            ((IObservableList)this).ReplaceContent(newList.Cast<object>());
+        }
+
+        void IObservableList.ReplaceContent(IEnumerable<object> newList)
+        {
+            var changed = false;
+
+            var suppressEvents = _SuppressEvents;
+            _SuppressEvents = true;
+            try {
+                var list = newList.OfType<T>().ToArray();
+                changed = !list.SequenceEqual(Value);
+
+                if(changed) {
+                    Value.Clear();
+                    foreach(var item in list) {
+                        Value.Add(item);
+                    }
+                }
+            } finally {
+                _SuppressEvents = suppressEvents;
+            }
+
+            if(changed) OnChanged(EventArgs.Empty);
+        }
+
         private void Value_CollectionChanged(object sender, EventArgs args)
         {
             if(!_SuppressEvents) {

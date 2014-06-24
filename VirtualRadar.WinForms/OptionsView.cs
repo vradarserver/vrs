@@ -24,6 +24,7 @@ using VirtualRadar.Resources;
 using VirtualRadar.WinForms.OptionPage;
 using VirtualRadar.Interface.Presenter;
 using InterfaceFactory;
+using VirtualRadar.WinForms.Binding;
 
 namespace VirtualRadar.WinForms
 {
@@ -89,6 +90,24 @@ namespace VirtualRadar.WinForms
         #endregion
 
         #region Receivers
+        public int WebSiteReceiverId
+        {
+            get { return PageReceivers.WebSiteReceiverId.Value; }
+            set { PageReceivers.WebSiteReceiverId.Value = value; }
+        }
+
+        public int ClosestAircraftReceiverId
+        {
+            get { return PageReceivers.ClosestAircraftReceiverId.Value; }
+            set { PageReceivers.ClosestAircraftReceiverId.Value = value; }
+        }
+
+        public int FlightSimulatorXReceiverId
+        {
+            get { return PageReceivers.FlightSimulatorXReceiverId.Value; }
+            set { PageReceivers.FlightSimulatorXReceiverId.Value = value; }
+        }
+
         public IList<Receiver> Receivers { get { return PageReceivers.Receivers.Value; } }
         #endregion
 
@@ -188,12 +207,6 @@ namespace VirtualRadar.WinForms
 
         public bool EnableCompression { get; set; }
 
-        public int WebSiteReceiverId { get; set; }
-
-        public int ClosestAircraftReceiverId { get; set; }
-
-        public int FlightSimulatorXReceiverId { get; set; }
-
         public ProxyType ProxyType { get; set; }
 
         public bool InternetClientCanRunReports { get; set; }
@@ -245,6 +258,11 @@ namespace VirtualRadar.WinForms
         /// do not recycle feed IDs.
         /// </summary>
         public int HighestConfiguredFeedId { get; private set; }
+
+        /// <summary>
+        /// A combined list of receivers and merged feeds.
+        /// </summary>
+        public ObservableList<CombinedFeed> CombinedFeeds { get; private set; }
         #endregion
 
         #region Top-level Page Properties
@@ -284,6 +302,8 @@ namespace VirtualRadar.WinForms
             PageReceiverLocations = new PageReceiverLocations();
 
             InitializeComponent();
+
+            CombinedFeeds = new ObservableList<CombinedFeed>();
         }
         #endregion
 
@@ -313,7 +333,10 @@ namespace VirtualRadar.WinForms
                         break;
                     }
                 }
-                if(fieldPage == null || fieldControl == null) throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}", result.Field, result.Record));
+                if(fieldPage == null || fieldControl == null) throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}. The validation {2} message was {3}", result.Field, result.Record, result.IsWarning ? "warning" : "error", result.Message));
+
+                var validateDelegate = fieldControl as IValidateDelegate;
+                if(validateDelegate != null) fieldControl = validateDelegate.GetValidationDisplayControl(result.IsWarning ? warningProvider : errorProvider);
 
                 if(result.IsWarning) {
                     warningProvider.SetClearableError(fieldControl, result.Message);
@@ -587,6 +610,17 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region CombinedFeed - RefreshCombinedFeed
+        /// <summary>
+        /// Refreshes the content of <see cref="CombinedFeeds"/>.
+        /// </summary>
+        private void RefreshCombinedFeeds()
+        {
+            var newList = Receivers.Select(r => new CombinedFeed(r)).Concat(MergedFeeds.Select(r => new CombinedFeed(r)));
+            CombinedFeeds.ReplaceContent(newList);
+        }
+        #endregion
+
         #region OnLoad
         /// <summary>
         /// Called after the form has been loaded but before it is shown to the user.
@@ -608,6 +642,10 @@ namespace VirtualRadar.WinForms
                 var maxReceiverId = Receivers.Count > 0 ? Receivers.Max(r => r.UniqueId) : 0;
                 var maxMergedFeedId = MergedFeeds.Count > 0 ? MergedFeeds.Max(r => r.UniqueId) : 0;
                 HighestConfiguredFeedId = Math.Max(maxReceiverId, maxMergedFeedId);
+
+                RefreshCombinedFeeds();
+                PageReceivers.Receivers.Changed += (s, a) => RefreshCombinedFeeds();
+                // add merged feeds here once you've done the page for their collection
 
                 AddPage(PageDataSources);
                 AddPage(PageReceivers);

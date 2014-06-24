@@ -21,6 +21,7 @@ using System.Collections;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -28,7 +29,7 @@ namespace VirtualRadar.WinForms.Controls
     /// A list view that deals with the common problems with using a list view to maintain a list
     /// of objects.
     /// </summary>
-    public partial class BindingListView : BaseUserControl
+    public partial class BindingListView : BaseUserControl, IValidateDelegate
     {
         #region Nested class - ColumnTextEventArgs
         /// <summary>
@@ -71,6 +72,10 @@ namespace VirtualRadar.WinForms.Controls
         /// True if the control is being populated. Some events are suppressed while this is happening.
         /// </summary>
         private bool _Populating;
+
+        // The X axis locations of the buttons when an error is being shown.
+        public int _ButtonAddErrorX;
+        public int _ButtonDeleteErrorX;
         #endregion
 
         #region Control Properties
@@ -212,7 +217,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnAddClicked(EventArgs args)
         {
-            if(AddClicked != null) AddClicked(this, args);
+            if(AddClicked != null && AllowAdd) AddClicked(this, args);
         }
 
         /// <summary>
@@ -226,7 +231,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnDeleteClicked(EventArgs args)
         {
-            if(DeleteClicked != null) DeleteClicked(this, args);
+            if(DeleteClicked != null && AllowDelete) DeleteClicked(this, args);
         }
 
         /// <summary>
@@ -240,7 +245,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnEditClicked(EventArgs args)
         {
-            if(EditClicked != null) EditClicked(this, args);
+            if(EditClicked != null && AllowUpdate) EditClicked(this, args);
         }
 
         /// <summary>
@@ -279,7 +284,8 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="list"></param>
         public void PopulateWithList(IList list)
         {
-            var selectedRecords = SelectedRecords;
+            var selectedRecords = SelectedRecords.ToArray();
+            var selectIndex = selectedRecords.Length == 1 ? listView.SelectedIndices[0] : -1;
 
             var populating = _Populating;
             try {
@@ -292,6 +298,15 @@ namespace VirtualRadar.WinForms.Controls
                     };
                     RefreshListViewItem(listViewItem);
                     listView.Items.Add(listViewItem);
+
+                    if(selectedRecords.Contains(item)) {
+                        listViewItem.Selected = true;
+                    }
+                }
+
+                if(selectedRecords.Length == 1 && listView.SelectedIndices.Count == 0 && selectIndex > -1) {
+                    if(selectIndex < listView.Items.Count) listView.Items[selectIndex].Selected = true;
+                    else if(listView.Items.Count > 0) listView.Items[listView.Items.Count - 1].Selected = true;
                 }
             } finally {
                 _Populating = populating;
@@ -325,7 +340,21 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         private void EnableDisableControls()
         {
-            buttonDelete.Enabled = SelectedRecord != null;
+            buttonAdd.Enabled = AllowAdd;
+            buttonDelete.Enabled = AllowDelete && SelectedRecord != null;
+        }
+        #endregion
+
+        #region GetValidationDisplayControl
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="errorProvider"></param>
+        /// <returns></returns>
+        public Control GetValidationDisplayControl(ErrorProvider errorProvider)
+        {
+            errorProvider.SetIconAlignment(labelErrorAnchor, ErrorIconAlignment.BottomLeft);
+            return labelErrorAnchor;
         }
         #endregion
 
@@ -339,18 +368,13 @@ namespace VirtualRadar.WinForms.Controls
             base.OnLoad(e);
 
             if(!DesignMode) {
-                if(!AllowAdd || !AllowDelete) {
-                    if(AllowAdd) {
-                        buttonDelete.Visible = false;
-                    } else if(AllowDelete) {
-                        buttonAdd.Visible = false;
-                        buttonDelete.Location = buttonAdd.Location;
-                    } else {
-                        buttonAdd.Visible = false;
-                        buttonDelete.Visible = false;
-                        listView.Location = new Point(0, 0);
-                    }
-                }
+                labelErrorAnchor.Text = "";
+                labelErrorAnchor.Visible = true;
+                labelErrorAnchor.BringToFront();
+
+                var gap = buttonDelete.Left - buttonAdd.Left;
+                buttonAdd.Left = 4;
+                buttonDelete.Left = buttonAdd.Left + gap;
 
                 buttonAdd.Image = Images.Add16x16;
                 buttonDelete.Image = Images.Cancel16x16;

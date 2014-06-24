@@ -367,6 +367,7 @@
     <Compile Include="View\IStatisticsView.cs" />
     <Compile Include="View\IUsersListView.cs" />
     <Compile Include="View\IUsersView.cs" />
+    <Compile Include="View\IValidateDelegate.cs" />
     <Compile Include="View\IValidateView.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\NamespaceDoc.cs" />

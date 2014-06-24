@@ -83,6 +83,9 @@ namespace VirtualRadar.WinForms
             foreach(var validationResult in validationResults) {
                 Control control;
                 if(_ValidationFieldMap.TryGetValue(validationResult.Field, out control)) {
+                    var validateDelegate = control as IValidateDelegate;
+                    if(validateDelegate != null) control = validateDelegate.GetValidationDisplayControl(validationResult.IsWarning ? _WarningProvider : _ErrorProvider);
+
                     var errorProvider = validationResult.IsWarning ? _WarningProvider : _ErrorProvider;
                     errorProvider.SetError(control, validationResult.Message);
                 }
@@ -103,8 +106,15 @@ namespace VirtualRadar.WinForms
         private void ClearAllMessages()
         {
             foreach(var kvp in _ValidationFieldMap) {
-                if(_ErrorProvider != null)      _ErrorProvider.SetError(kvp.Value, null);
-                if(_WarningProvider != null)    _WarningProvider.SetError(kvp.Value, null);
+                var control = kvp.Value;
+                var validateDelegate = control as IValidateDelegate;
+                if(validateDelegate != null) {
+                    if(_WarningProvider != null) control = validateDelegate.GetValidationDisplayControl(_WarningProvider);
+                    if(_ErrorProvider != null)   control = validateDelegate.GetValidationDisplayControl(_ErrorProvider);
+                }
+
+                if(_ErrorProvider != null)      _ErrorProvider.SetError(control, null);
+                if(_WarningProvider != null)    _WarningProvider.SetError(control, null);
             }
         }
     }

@@ -469,7 +469,7 @@ namespace VirtualRadar.Library.Presenter
 
             if(_View.Receivers.Count == 0) result.Add(new ValidationResult(ValidationField.ReceiverIds, Strings.PleaseConfigureAtLeastOneReceiver));
             else {
-                if(!_View.Receivers.Any(r => r.Enabled)) result.Add(new ValidationResult(_View.Receivers[0], ValidationField.Enabled, Strings.PleaseEnableAtLeastOneReceiver));
+                if(!_View.Receivers.Any(r => r.Enabled)) result.Add(new ValidationResult(ValidationField.ReceiverIds, Strings.PleaseEnableAtLeastOneReceiver));
                 foreach(var record in _View.Receivers) {
                     ValidateNotEmpty(ValidationField.Name, record.Name, Strings.NameRequired, result, record);
                     if(record.Name != null && record.Name.Contains(',')) result.Add(new ValidationResult(record, ValidationField.Name, Strings.NameCannotContainComma, false));

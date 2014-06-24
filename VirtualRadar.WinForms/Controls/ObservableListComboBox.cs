@@ -74,7 +74,13 @@ namespace VirtualRadar.WinForms.Controls
 
         protected virtual void Populate()
         {
-            if(base.DataSource == null) base.DataSource = ObservableList.GetValue();
+            if(base.DataSource == null) {
+                BindingContext = new BindingContext();
+
+                var displayMember = DisplayMember;
+                base.DataSource = ObservableList.GetValue();
+                DisplayMember = displayMember;
+            }
             base.DataManager.Refresh();
         }
 
