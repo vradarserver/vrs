@@ -35,6 +35,7 @@ namespace VirtualRadar.WinForms.OptionPage
         [PageEnabled]
         [LocalisedDisplayName("Enabled")]
         [LocalisedDescription("OptionsDescribeReceiverEnabled")]
+        [ValidationField(ValidationField.Enabled)]
         public Observable<bool> RecordEnabled { get; private set; }
 
         [PageTitle]

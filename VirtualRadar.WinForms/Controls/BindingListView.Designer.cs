@@ -30,6 +30,7 @@
             this.listView = new VirtualRadar.WinForms.Controls.ListViewPlus();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.buttonDelete = new System.Windows.Forms.Button();
+            this.labelErrorAnchor = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // listView
@@ -56,7 +57,7 @@
             // 
             this.buttonAdd.FlatAppearance.BorderSize = 0;
             this.buttonAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAdd.Location = new System.Drawing.Point(0, 0);
+            this.buttonAdd.Location = new System.Drawing.Point(35, 0);
             this.buttonAdd.Margin = new System.Windows.Forms.Padding(3, 3, 6, 0);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(30, 30);
@@ -69,7 +70,7 @@
             // 
             this.buttonDelete.FlatAppearance.BorderSize = 0;
             this.buttonDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonDelete.Location = new System.Drawing.Point(42, 0);
+            this.buttonDelete.Location = new System.Drawing.Point(77, 0);
             this.buttonDelete.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(30, 30);
@@ -78,16 +79,28 @@
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
             // 
+            // labelErrorAnchor
+            // 
+            this.labelErrorAnchor.AutoSize = true;
+            this.labelErrorAnchor.Location = new System.Drawing.Point(16, 20);
+            this.labelErrorAnchor.Name = "labelErrorAnchor";
+            this.labelErrorAnchor.Size = new System.Drawing.Size(13, 13);
+            this.labelErrorAnchor.TabIndex = 3;
+            this.labelErrorAnchor.Text = "<";
+            this.labelErrorAnchor.Visible = false;
+            // 
             // BindingListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.labelErrorAnchor);
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.listView);
             this.Name = "BindingListView";
             this.Size = new System.Drawing.Size(561, 147);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -96,5 +109,6 @@
         private VirtualRadar.WinForms.Controls.ListViewPlus listView;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Label labelErrorAnchor;
     }
 }

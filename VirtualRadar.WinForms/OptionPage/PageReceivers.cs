@@ -37,6 +37,21 @@ namespace VirtualRadar.WinForms.OptionPage
 
         public override bool PageUseFullHeight { get { return true; } }
 
+        [ValidationField(ValidationField.WebSiteReceiver)]
+        [LocalisedDisplayName("WebSiteReceiverId")]
+        [LocalisedDescription("OptionsDescribeWebSiteReceiverId")]
+        public Observable<int> WebSiteReceiverId { get; private set; }
+
+        [ValidationField(ValidationField.ClosestAircraftReceiver)]
+        [LocalisedDisplayName("ClosestAircraftReceiverId")]
+        [LocalisedDescription("OptionsDescribeClosestAircraftReceiverId")]
+        public Observable<int> ClosestAircraftReceiverId { get; private set; }
+
+        [ValidationField(ValidationField.FlightSimulatorXReceiver)]
+        [LocalisedDisplayName("FlightSimulatorXReceiverId")]
+        [LocalisedDescription("OptionsDescribeFlightSimulatorXReceiverId")]
+        public Observable<int> FlightSimulatorXReceiverId { get; private set; }
+
         [ValidationField(ValidationField.ReceiverIds)]
         public ObservableList<Receiver> Receivers { get; private set; }
 
@@ -48,7 +63,17 @@ namespace VirtualRadar.WinForms.OptionPage
 
         protected override void CreateBindings()
         {
+            WebSiteReceiverId = BindProperty<int>(comboBoxWebSiteReceiverId);
+            ClosestAircraftReceiverId = BindProperty<int>(comboBoxClosestAircraftReceiverId);
+            FlightSimulatorXReceiverId = BindProperty<int>(comboBoxFsxReceiverId);
             Receivers = BindListProperty<Receiver>(listReceivers);
+        }
+
+        protected override void InitialiseControls()
+        {
+            comboBoxWebSiteReceiverId.ObservableList =          OptionsView.CombinedFeeds;
+            comboBoxClosestAircraftReceiverId.ObservableList =  OptionsView.CombinedFeeds;
+            comboBoxFsxReceiverId.ObservableList =              OptionsView.CombinedFeeds;
         }
 
         #region Receivers list handling
@@ -100,7 +125,7 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             var record = new Receiver() {
                 Enabled = true,
-                UniqueId = GenerateUniqueId(OptionsView.HighestConfiguredFeedId + 1, Receivers.Value, r => r.UniqueId),
+                UniqueId = GenerateUniqueId(OptionsView.HighestConfiguredFeedId + 1, OptionsView.CombinedFeeds.Value, r => r.UniqueId),
                 Name = GenerateUniqueName(Receivers.Value, "Receiver", false, r => r.Name),
             };
             Receivers.Value.Add(record);
@@ -134,7 +159,6 @@ namespace VirtualRadar.WinForms.OptionPage
         protected override Page CreatePageForNewChildRecord(IObservableList observableList, object record)
         {
             Page result = null;
-
             if(observableList == Receivers) result = new PageReceiver();
 
             return result;

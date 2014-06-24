@@ -242,6 +242,7 @@
     <Compile Include="Binding\IBinder.cs" />
     <Compile Include="Binding\IObservable.cs" />
     <Compile Include="Binding\Observable.cs" />
+    <Compile Include="OptionPage\CombinedFeed.cs" />
     <Compile Include="OptionPage\Page.cs">
       <SubType>UserControl</SubType>
     </Compile>

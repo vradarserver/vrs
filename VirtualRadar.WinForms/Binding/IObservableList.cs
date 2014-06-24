@@ -20,5 +20,12 @@ namespace VirtualRadar.WinForms.Binding
     /// </summary>
     public interface IObservableList : IObservable
     {
+        /// <summary>
+        /// Replaces the content of the existing list with the content of the
+        /// new list in a single action, raising the changed event only if the
+        /// new list is not exactly the same as the current list.
+        /// </summary>
+        /// <param name="newList"></param>
+        void ReplaceContent(IEnumerable<object> newList);
     }
 }
