@@ -29,7 +29,6 @@ namespace VirtualRadar.WinForms.Controls
         {
             public object Value { get; private set; }
             public string Description { get; private set; }
-            public Func<object, object> IdentifierExtractor { get; set; }
 
             public Item() : this(null, "")
             {
@@ -40,45 +39,7 @@ namespace VirtualRadar.WinForms.Controls
                 Value = value;
                 Description = description;
             }
-
-            public override string ToString()
-            {
-                return Description ?? "";
-            }
-
-            public override bool Equals(object obj)
-            {
-                var result = Object.ReferenceEquals(this, obj);
-                if(!result) {
-                    var other = obj as Item;
-                    if(other != null) {
-                        if(IdentifierExtractor == null) result = Object.Equals(other.Value, Value);
-                        else {
-                            var lhs = Value == null ? null : IdentifierExtractor(Value);
-                            var rhs = other.Value == null ? null : IdentifierExtractor(other.Value);
-                            result = Object.Equals(lhs, rhs);
-                        }
-                    }
-                }
-
-                return result;
-            }
-
-            public override int GetHashCode()
-            {
-                return Value == null ? 0 : Value.GetHashCode();
-            }
         }
-
-        /// <summary>
-        /// The value assigned to SelectedSafeValue before the combo box was populated, if any.
-        /// </summary>
-        private object _SelectedSafeValue;
-
-        /// <summary>
-        /// Set to true once one of the Populate methods has been called.
-        /// </summary>
-        private bool _Populated;
 
         [RefreshProperties(RefreshProperties.Repaint)]
         [DefaultValue(ComboBoxStyle.DropDownList)]
@@ -86,31 +47,6 @@ namespace VirtualRadar.WinForms.Controls
         {
             get { return base.DropDownStyle; }
             set { base.DropDownStyle = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the selected value.
-        /// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public new object SelectedValue
-        {
-            get
-            {
-                if(!_Populated) return _SelectedSafeValue;
-                else {
-                    var item = base.SelectedItem as Item;
-                    return item == null ? null : item.Value;
-                }
-            }
-            set
-            {
-                if(!_Populated) _SelectedSafeValue = value;
-                else {
-                    var key = new Item(value, "");
-                    var item = Items.OfType<Item>().FirstOrDefault(r => Object.Equals(r, key));
-                    base.SelectedItem = item;
-                }
-            }
         }
 
         /// <summary>
@@ -128,88 +64,26 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="getDescription"></param>
         public void PopulateWithEnums<T>(Func<T, string> getDescription)
         {
-            PopulateWithObjects<T>(Enum.GetValues(typeof(T)).OfType<T>(), getDescription);
+            PopulateWithCollection<T>(Enum.GetValues(typeof(T)).OfType<T>(), getDescription);
         }
 
         /// <summary>
-        /// Returns the selected value on the assumption that the combo box was populated with enums.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T GetSelectedEnum<T>()
-        {
-            return GetSelectedObject<T>();
-        }
-
-        /// <summary>
-        /// Populates the combo box with a collection of objects. The "value" of each object is the
-        /// object itself.
+        /// Populates the combo box with a collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
         /// <param name="getDescription"></param>
-        public void PopulateWithObjects<T>(IEnumerable<T> items, Func<T, string> getDescription)
+        public void PopulateWithCollection<T>(IEnumerable<T> items, Func<T, string> getDescription)
         {
             var selectedValue = SelectedValue;
 
-            Items.Clear();
-            foreach(var value in items) {
-                var description = getDescription(value);
-                var item = new Item(value, description);
-                Items.Add(item);
-            }
+            var dataSource = items.Select(r => new Item(r, getDescription(r))).ToArray();
+            DataSource = dataSource;
+            DisplayMember = "Description";
+            ValueMember = "Value";
+            DataManager.Refresh();
 
-            _Populated = true;
-            SelectedValue = selectedValue;
-        }
-
-        /// <summary>
-        /// Gets the selected object cast
-        /// </summary>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public T GetSelectedObject<T>(T defaultValue = default(T))
-        {
-            var value = SelectedValue;
-            return value == null ? defaultValue : (T)value;
-        }
-
-        /// <summary>
-        /// Populates the combo box with objects that have an identifier. Assignment of different
-        /// instances of the object with the same identifier will assign values from the item list.
-        /// </summary>
-        /// <typeparam name="TRecord"></typeparam>
-        /// <typeparam name="TIdentifier"></typeparam>
-        /// <param name="items"></param>
-        /// <param name="getIdentifier"></param>
-        /// <param name="getDescription"></param>
-        public void PopulateWithIdObjects<TRecord, TIdentifier>(IEnumerable<TRecord> items, Func<TRecord, TIdentifier> getIdentifier, Func<TRecord, string> getDescription)
-        {
-            var selectedValue = SelectedValue;
-            Func<object, object> identifierExtractor = (r) => (object)getIdentifier((TRecord)r);
-
-            Items.Clear();
-            foreach(var value in items) {
-                var description = getDescription(value);
-                var item = new Item(value, description) {
-                    IdentifierExtractor = identifierExtractor,
-                };
-                Items.Add(item);
-            }
-
-            _Populated = true;
-            SelectedValue = selectedValue;
-        }
-
-        /// <summary>
-        /// Gets the selected ID object.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public T GetSelectedIdObject<T>(T defaultValue = default(T))
-        {
-            return GetSelectedObject<T>(defaultValue);
+            if(selectedValue != null) SelectedValue = selectedValue;
         }
     }
 }

@@ -84,6 +84,11 @@ namespace VirtualRadar.WinForms.Controls
             base.DataManager.Refresh();
         }
 
+        public virtual void RefreshContent()
+        {
+            Populate();
+        }
+
         private void ObservableList_Changed(object sender, EventArgs args)
         {
             Populate();

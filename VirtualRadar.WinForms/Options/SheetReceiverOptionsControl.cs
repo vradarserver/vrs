@@ -52,13 +52,13 @@ namespace VirtualRadar.WinForms.Options
 
         public DataSource DataSource
         {
-            get { return comboBoxDataSource.GetSelectedEnum<DataSource>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxDataSource.SelectedValue = value; }
         }
 
         public ConnectionType ConnectionType
         {
-            get { return comboBoxConnectionType.GetSelectedEnum<ConnectionType>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxConnectionType.SelectedValue = value; }
         }
 
@@ -82,37 +82,37 @@ namespace VirtualRadar.WinForms.Options
 
         public string ComPort
         {
-            get { return comboBoxSerialComPort.GetSelectedObject<string>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxSerialComPort.SelectedValue = value; }
         }
 
         public int BaudRate
         {
-            get { return comboBoxSerialBaudRate.GetSelectedObject<int>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxSerialBaudRate.SelectedValue = value; }
         }
 
         public int DataBits
         {
-            get { return comboBoxSerialDataBits.GetSelectedObject<int>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxSerialDataBits.SelectedValue = value; }
         }
 
         public StopBits StopBits
         {
-            get { return comboBoxSerialStopBits.GetSelectedEnum<StopBits>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxSerialStopBits.SelectedValue = value; }
         }
 
         public Parity Parity
         {
-            get { return comboBoxSerialParity.GetSelectedEnum<Parity>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxSerialParity.SelectedValue = value; }
         }
 
         public Handshake Handshake
         {
-            get { return comboBoxSerialHandshake.GetSelectedEnum<Handshake>(); }
+            get { throw new NotImplementedException(); }
             set { comboBoxSerialHandshake.SelectedValue = value; }
         }
 
@@ -153,8 +153,8 @@ namespace VirtualRadar.WinForms.Options
                 comboBoxSerialHandshake.PopulateWithEnums<Handshake>(Describe.Handshake);
 
                 // Populate the combo boxes
-                comboBoxSerialComPort.PopulateWithObjects<string>(SerialPort.GetPortNames().OrderBy(r => r), r => r);
-                comboBoxSerialBaudRate.PopulateWithObjects<int>(new int[] {
+                comboBoxSerialComPort.PopulateWithCollection<string>(SerialPort.GetPortNames().OrderBy(r => r), r => r);
+                comboBoxSerialBaudRate.PopulateWithCollection<int>(new int[] {
                     110,
                     300,
                     1200,
@@ -170,7 +170,7 @@ namespace VirtualRadar.WinForms.Options
                     921600,
                     3000000,
                 }, r => r.ToString());
-                comboBoxSerialDataBits.PopulateWithObjects<int>(new int[] {
+                comboBoxSerialDataBits.PopulateWithCollection<int>(new int[] {
                     5,
                     6,
                     7,

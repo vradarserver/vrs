@@ -93,6 +93,7 @@
     <Content Include="Images\Add16x16.png" />
     <Content Include="Images\ApplicationIcon.ico" />
     <Content Include="Images\Cancel16x16.png" />
+    <Content Include="Images\CancelSmall16x16.png" />
     <Content Include="Images\CloseSlider.png" />
     <Content Include="Images\Compass.png" />
     <EmbeddedResource Include="Images\Favicon.ico" />

@@ -710,6 +710,15 @@ namespace VirtualRadar.WinForms.OptionPage
         }
         #endregion
 
+        #region PageSelected
+        /// <summary>
+        /// Called whenever the page is selected.
+        /// </summary>
+        public virtual void PageSelected()
+        {
+        }
+        #endregion
+
         #region Observable event handlers
         protected virtual void Observable_Changed(object sender, EventArgs args)
         {

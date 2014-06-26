@@ -88,6 +88,19 @@ namespace VirtualRadar.Resources
             set { _Cancel16x16 = value; }
         }
 
+        private static Bitmap _CancelSmall16x16;
+        /// <summary>
+        /// Gets or sets the CancelSmall16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/CancelSmall16x16.png" alt="" title="CancelSmall16x16" />
+        /// </remarks>
+        public static Bitmap CancelSmall16x16
+        {
+            get { return _CancelSmall16x16 ?? InternalResources.CancelSmall16x16; }
+            set { _CancelSmall16x16 = value; }
+        }
+
         private static Bitmap _ChevronBlueCircle;
         /// <summary>
         /// Gets or sets the ChevronBlueCircle image.

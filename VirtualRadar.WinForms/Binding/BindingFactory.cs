@@ -37,12 +37,13 @@ namespace VirtualRadar.WinForms.Binding
             } else if(valueType == typeof(bool)) {
                 if(IsKindOf<CheckBox>(control))             result = new BindBoolToCheckbox((Observable<bool>)observable, (CheckBox)control);
             } else if(valueType == typeof(int)) {
-                var comboBox = control as ComboBox;
-                if(comboBox.DropDownStyle == ComboBoxStyle.DropDownList) {
-                    result = new BindIntToListComboBox((Observable<int>)observable, comboBox);
-                }
+                if(IsKindOf<NumericUpDown>(control))        result = new BindIntToNumericUpDown((Observable<int>)observable, (NumericUpDown)control);
             } else if(isList) {
                 if(IsKindOf<BindingListView>(control))      result = new BindCollectionToListView(observable, (BindingListView)control);
+            }
+
+            if(result == null && IsKindOf<ComboBox>(control)) {
+                result = new BindToComboBox(observable, (ComboBox)control);
             }
 
             if(result == null) {
@@ -56,7 +57,7 @@ namespace VirtualRadar.WinForms.Binding
             where T: Control
         {
             var controlType = control.GetType();
-            var result = controlType.IsAssignableFrom(typeof(T));
+            var result = typeof(T).IsAssignableFrom(control.GetType());
 
             return result;
         }
