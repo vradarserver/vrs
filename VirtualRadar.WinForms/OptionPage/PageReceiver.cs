@@ -22,6 +22,7 @@ using VirtualRadar.WinForms.Binding;
 using VirtualRadar.Resources;
 using VirtualRadar.Interface.Settings;
 using System.IO.Ports;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -31,6 +32,8 @@ namespace VirtualRadar.WinForms.OptionPage
     public partial class PageReceiver : Page
     {
         public override Image PageIcon { get { return Images.iconmonstr_radio_3_icon; } }
+
+        public Receiver Receiver { get { return PageObject as Receiver; } }
 
         [PageEnabled]
         [LocalisedDisplayName("Enabled")]
@@ -78,10 +81,12 @@ namespace VirtualRadar.WinForms.OptionPage
 
         [LocalisedDisplayName("SerialBaudRate")]
         [LocalisedDescription("OptionsDescribeDataSourcesBaudRate")]
+        [ValidationField(ValidationField.BaudRate)]
         public Observable<int> BaudRate { get; private set; }
 
         [LocalisedDisplayName("SerialDataBits")]
         [LocalisedDescription("OptionsDescribeDataSourcesDataBits")]
+        [ValidationField(ValidationField.DataBits)]
         public Observable<int> DataBits { get; private set; }
 
         [LocalisedDisplayName("SerialStopBits")]
@@ -112,30 +117,119 @@ namespace VirtualRadar.WinForms.OptionPage
 
         protected override void CreateBindings()
         {
-            RecordEnabled = BindProperty<bool>(checkBoxEnabled);
-            RecordName = BindProperty<string>(textBoxName);
-            ReceiverLocationId = BindProperty<int>(comboBoxLocationId);
+            RecordEnabled =             BindProperty<bool>(checkBoxEnabled);
+            RecordName =                BindProperty<string>(textBoxName);
+            DataSource =                BindProperty<DataSource>(comboBoxDataSource);
+            AutoReconnectAtStartup =    BindProperty<bool>(checkBoxAutoReconnectAtStartup);
+            ReceiverLocationId =        BindProperty<int>(comboBoxLocationId);
+            ConnectionType =            BindProperty<ConnectionType>(comboBoxConnectionType);
+
+            Address =                   BindProperty<string>(textBoxAddress);
+            Port =                      BindProperty<int>(numericPort);
+
+            ComPort =                   BindProperty<string>(comboBoxSerialComPort);
+            BaudRate =                  BindProperty<int>(comboBoxSerialBaudRate);
+            DataBits =                  BindProperty<int>(comboBoxSerialDataBits);
+            StopBits =                  BindProperty<StopBits>(comboBoxSerialStopBits);
+            Parity =                    BindProperty<Parity>(comboBoxSerialParity);
+            Handshake =                 BindProperty<Handshake>(comboBoxSerialHandshake);
+            StartupText =               BindProperty<string>(textBoxSerialStartupText);
+            ShutdownText =              BindProperty<string>(textBoxSerialShutdownText);
         }
 
         protected override void CopyRecordToObservables()
         {
-            var receiver = (Receiver)PageObject;
-            RecordEnabled.Value =       receiver.Enabled;
-            RecordName.Value =          receiver.Name;
-            ReceiverLocationId.Value =  receiver.ReceiverLocationId;
+            RecordEnabled.Value =           Receiver.Enabled;
+            RecordName.Value =              Receiver.Name;
+            DataSource.Value =              Receiver.DataSource;
+            AutoReconnectAtStartup.Value =  Receiver.AutoReconnectAtStartup;
+            ReceiverLocationId.Value =      Receiver.ReceiverLocationId;
+            ConnectionType.Value =          Receiver.ConnectionType;
+
+            Address.Value =                 Receiver.Address;
+            Port.Value =                    Receiver.Port;
+
+            ComPort.Value =                 Receiver.ComPort;
+            BaudRate.Value =                Receiver.BaudRate;
+            DataBits.Value =                Receiver.DataBits;
+            StopBits.Value =                Receiver.StopBits;
+            Parity.Value =                  Receiver.Parity;
+            Handshake.Value =               Receiver.Handshake;
+            StartupText.Value =             Receiver.StartupText;
+            ShutdownText.Value =            Receiver.ShutdownText;
         }
 
         protected override void CopyObservablesToRecord()
         {
-            var receiver = (Receiver)PageObject;
-            receiver.Enabled =              RecordEnabled.Value;
-            receiver.Name =                 RecordName.Value;
-            receiver.ReceiverLocationId =   ReceiverLocationId.Value;
+            Receiver.Enabled =                  RecordEnabled.Value;
+            Receiver.Name =                     RecordName.Value;
+            Receiver.DataSource =               DataSource.Value;
+            Receiver.AutoReconnectAtStartup =   AutoReconnectAtStartup.Value;
+            Receiver.ReceiverLocationId =       ReceiverLocationId.Value;
+            Receiver.ConnectionType =           ConnectionType.Value;
+
+            Receiver.Address =                  Address.Value;
+            Receiver.Port =                     Port.Value;
+
+            Receiver.ComPort =                  ComPort.Value;
+            Receiver.BaudRate =                 BaudRate.Value;
+            Receiver.DataBits =                 DataBits.Value;
+            Receiver.StopBits =                 StopBits.Value;
+            Receiver.Parity =                   Parity.Value;
+            Receiver.Handshake =                Handshake.Value;
+            Receiver.StartupText =              StartupText.Value;
+            Receiver.ShutdownText =             ShutdownText.Value;
         }
 
         protected override void InitialiseControls()
         {
             comboBoxLocationId.ObservableList = OptionsView.PageReceiverLocations.ReceiverLocations;
+
+            comboBoxDataSource.PopulateWithEnums<DataSource>(Describe.DataSource);
+            comboBoxConnectionType.PopulateWithEnums<ConnectionType>(Describe.ConnectionType);
+            comboBoxSerialStopBits.PopulateWithEnums<StopBits>(Describe.StopBits);
+            comboBoxSerialParity.PopulateWithEnums<Parity>(Describe.Parity);
+            comboBoxSerialHandshake.PopulateWithEnums<Handshake>(Describe.Handshake);
+            comboBoxSerialComPort.PopulateWithCollection<string>(SerialPort.GetPortNames().OrderBy(r => r), r => r);
+            comboBoxSerialBaudRate.PopulateWithCollection<int>(new int[] {
+                110,
+                300,
+                1200,
+                2400,
+                4800,
+                9600,
+                19200,
+                38400,
+                57600,
+                115200,
+                230400,
+                460800,
+                921600,
+                3000000,
+            }, r => r.ToString());
+            comboBoxSerialDataBits.PopulateWithCollection<int>(new int[] {
+                5,
+                6,
+                7,
+                8,
+            }, r => r.ToString());
+        }
+
+        private void buttonClearLocationId_Click(object sender, EventArgs e)
+        {
+            ReceiverLocationId.Value = 0;
+        }
+
+        private void comboBoxConnectionType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            groupBoxNetwork.Enabled = ConnectionType.Value == Interface.Settings.ConnectionType.TCP;
+            groupBoxSerial.Enabled = ConnectionType.Value == Interface.Settings.ConnectionType.COM;
+        }
+
+        private void buttonTestConnection_Click(object sender, EventArgs e)
+        {
+            CopyObservablesToRecord();
+            OptionsView.RaiseTestConnectionClicked(new EventArgs<Receiver>(Receiver));
         }
     }
 }

@@ -23,6 +23,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.WinForms.Controls;
 using VirtualRadar.Interface;
+using System.IO.Ports;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -74,6 +75,15 @@ namespace VirtualRadar.WinForms.OptionPage
             comboBoxWebSiteReceiverId.ObservableList =          OptionsView.CombinedFeeds;
             comboBoxClosestAircraftReceiverId.ObservableList =  OptionsView.CombinedFeeds;
             comboBoxFsxReceiverId.ObservableList =              OptionsView.CombinedFeeds;
+        }
+
+        public override void PageSelected()
+        {
+            base.PageSelected();
+
+            comboBoxWebSiteReceiverId.RefreshContent();
+            comboBoxClosestAircraftReceiverId.RefreshContent();
+            comboBoxFsxReceiverId.RefreshContent();
         }
 
         #region Receivers list handling

@@ -282,6 +282,11 @@ namespace VirtualRadar.WinForms
 
         public event EventHandler<EventArgs<Receiver>> TestConnectionClicked;
 
+        public void RaiseTestConnectionClicked(EventArgs<Receiver> args)
+        {
+            if(TestConnectionClicked != null) TestConnectionClicked(this, args);
+        }
+
         public event EventHandler TestTextToSpeechSettingsClicked;
 
         public event EventHandler UpdateReceiverLocationsFromBaseStationDatabaseClicked;
@@ -380,6 +385,7 @@ namespace VirtualRadar.WinForms
 
         public void ShowTestConnectionResults(string message, string title)
         {
+            MessageBox.Show(message, title);
         }
         #endregion
 
@@ -492,6 +498,8 @@ namespace VirtualRadar.WinForms
                 if(treeViewPagePicker.SelectedNode != page.TreeNode) {
                     treeViewPagePicker.SelectedNode = page.TreeNode;
                 }
+
+                page.PageSelected();
             }
         }
 

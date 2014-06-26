@@ -48,7 +48,7 @@ namespace VirtualRadar.WinForms.Binding
         public void SetValue(object value, bool suppressEvents)
         {
             if(!Object.Equals(value, _Value)) {
-                _Value = (T)value;
+                _Value = (T)(value ?? default(T));
                 if(!suppressEvents) OnChanged(EventArgs.Empty);
             }
         }
