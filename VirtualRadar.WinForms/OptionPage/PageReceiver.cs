@@ -215,6 +215,13 @@ namespace VirtualRadar.WinForms.OptionPage
             }, r => r.ToString());
         }
 
+        public override void PageSelected()
+        {
+            base.PageSelected();
+
+            comboBoxLocationId.RefreshContent();
+        }
+
         private void buttonClearLocationId_Click(object sender, EventArgs e)
         {
             ReceiverLocationId.Value = 0;

@@ -20,6 +20,7 @@ using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Binding;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -28,6 +29,8 @@ namespace VirtualRadar.WinForms.OptionPage
         public override string PageTitle { get { return Strings.ReceiverLocationsTitle; } }
 
         public override Image PageIcon { get { return Images.iconmonstr_location_3_icon; } }
+
+        public override bool PageUseFullHeight { get { return true; } }
 
         public ObservableList<ReceiverLocation> ReceiverLocations { get; private set; }
 
@@ -40,6 +43,58 @@ namespace VirtualRadar.WinForms.OptionPage
         protected override void CreateBindings()
         {
             ReceiverLocations = BindListProperty<ReceiverLocation>(listReceiverLocations);
+        }
+
+        protected override Page CreatePageForNewChildRecord(IObservableList observableList, object record)
+        {
+            Page result = null;
+            if(observableList == ReceiverLocations) result = new PageReceiverLocation();
+
+            return result;
+        }
+
+        private void listReceiverLocations_FetchRecordContent(object sender, Controls.BindingListView.RecordContentEventArgs e)
+        {
+            var receiver = (ReceiverLocation)e.Record;
+
+            if(receiver != null) {
+                e.ColumnTexts.Add(receiver.Name);
+                e.ColumnTexts.Add(receiver.Latitude.ToString("N6"));
+                e.ColumnTexts.Add(receiver.Longitude.ToString("N6"));
+            }
+        }
+
+        private void listReceiverLocations_AddClicked(object sender, EventArgs e)
+        {
+            var record = new ReceiverLocation() {
+                UniqueId = GenerateUniqueId(1, ReceiverLocations.Value, r => r.UniqueId),
+                Name = GenerateUniqueName(ReceiverLocations.Value, "Location", false, r => r.Name),
+                Latitude = 0.0,
+                Longitude = 0.0,
+            };
+            ReceiverLocations.Value.Add(record);
+
+            listReceiverLocations.SelectedRecord = record;
+            OptionsView.DisplayPageForPageObject(record);
+        }
+
+        private void listReceiverLocations_DeleteClicked(object sender, EventArgs e)
+        {
+            var deleteRecords = listReceiverLocations.SelectedRecords.OfType<ReceiverLocation>().ToArray();
+            foreach(var deleteRecord in deleteRecords) {
+                ReceiverLocations.Value.Remove(deleteRecord);
+            }
+        }
+
+        private void listReceiverLocations_EditClicked(object sender, EventArgs e)
+        {
+            var record = listReceiverLocations.SelectedRecord as ReceiverLocation;
+            if(record != null) OptionsView.DisplayPageForPageObject(record);
+        }
+
+        private void linkLabelUpdateFromBaseStationDatabase_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            OptionsView.RaiseUpdateReceiverLocationsFromBaseStationDatabaseClicked(e);
         }
     }
 }

@@ -38,6 +38,8 @@ namespace VirtualRadar.WinForms.Binding
                 if(IsKindOf<CheckBox>(control))             result = new BindBoolToCheckbox((Observable<bool>)observable, (CheckBox)control);
             } else if(valueType == typeof(int)) {
                 if(IsKindOf<NumericUpDown>(control))        result = new BindIntToNumericUpDown((Observable<int>)observable, (NumericUpDown)control);
+            } else if(valueType == typeof(double)) {
+                if(IsKindOf<NumericUpDown>(control))        result = new BindDoubleToNumericUpDown((Observable<double>)observable, (NumericUpDown)control);
             } else if(isList) {
                 if(IsKindOf<BindingListView>(control))      result = new BindCollectionToListView(observable, (BindingListView)control);
             }

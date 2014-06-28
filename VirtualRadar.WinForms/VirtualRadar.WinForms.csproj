@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="Binding\BindBoolToCheckbox.cs" />
     <Compile Include="Binding\BindCollectionToListView.cs" />
+    <Compile Include="Binding\BindDoubleToNumericUpDown.cs" />
     <Compile Include="Binding\BindIntToNumericUpDown.cs" />
     <Compile Include="Binding\BindToComboBox.cs" />
     <Compile Include="Binding\BindingFactory.cs" />
@@ -262,6 +263,12 @@
     </Compile>
     <Compile Include="OptionPage\PageReceiver.Designer.cs">
       <DependentUpon>PageReceiver.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPage\PageReceiverLocation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageReceiverLocation.Designer.cs">
+      <DependentUpon>PageReceiverLocation.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\PageReceiverLocations.cs">
       <SubType>UserControl</SubType>
@@ -535,6 +542,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageReceiver.resx">
       <DependentUpon>PageReceiver.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageReceiverLocation.resx">
+      <DependentUpon>PageReceiverLocation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageReceiverLocations.resx">
       <DependentUpon>PageReceiverLocations.cs</DependentUpon>
