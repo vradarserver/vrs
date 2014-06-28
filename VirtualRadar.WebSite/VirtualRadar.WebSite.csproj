@@ -195,6 +195,7 @@
     <Content Include="Site\Web\images\regions\fi.bmp" />
     <Content Include="Site\Web\images\regions\no.bmp" />
     <Content Include="Site\Web\images\regions\se.bmp" />
+    <Content Include="Site\Web\images\regions\zh.bmp" />
     <Content Include="Site\Web\mobileReport.html" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi-FI.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi.js" />
@@ -209,7 +210,10 @@
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se-NO.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se-SE.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.zh-CN.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.zh.js" />
     <Content Include="Site\Web\script\i18n\strings.fr.js" />
+    <Content Include="Site\Web\script\i18n\strings.zh.js" />
     <Content Include="Site\Web\script\jquery.colorPicker.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js" />
