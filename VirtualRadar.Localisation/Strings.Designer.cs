@@ -359,7 +359,7 @@ namespace VirtualRadar.Localisation {
         ///
         ///iPhone CSS was lifted from the jQTouch project (http://www.jqtouch.com).
         ///
-        ///German tran [rest of string was truncated]&quot;;.
+        ///Chinese tra [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ApplicationDescription {
             get {
