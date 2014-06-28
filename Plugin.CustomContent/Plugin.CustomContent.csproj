@@ -113,6 +113,7 @@
       <LastGenOutput>CustomContentStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomContentStrings.ru-RU.resx" />
+    <EmbeddedResource Include="CustomContentStrings.zh-CN.resx" />
     <EmbeddedResource Include="WinForms\OptionsView.resx">
       <DependentUpon>OptionsView.cs</DependentUpon>
     </EmbeddedResource>

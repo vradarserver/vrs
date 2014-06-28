@@ -116,6 +116,7 @@
       <LastGenOutput>PluginStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="PluginStrings.ru-RU.resx" />
+    <EmbeddedResource Include="PluginStrings.zh-CN.resx" />
     <EmbeddedResource Include="WinForms\OptionsView.resx">
       <DependentUpon>OptionsView.cs</DependentUpon>
     </EmbeddedResource>
