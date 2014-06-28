@@ -542,7 +542,7 @@ namespace VirtualRadar.WinForms.OptionPage
         /// Calls <see cref="CopyRecordToObservables"/> with a flag set that prevents calls to <see cref="CopyObservablesToRecord"/>
         /// while the observables are being initialised.
         /// </summary>
-        private void InitialisePageWithPageObject()
+        public void RefreshPageFromPageObject()
         {
             var initialisingObservables = _InitialisingObservables;
             _InitialisingObservables = true;
@@ -582,7 +582,7 @@ namespace VirtualRadar.WinForms.OptionPage
             var page = CreatePageForNewChildRecord(list, record);
             if(page != null) {
                 page.PageObject = record;
-                page.InitialisePageWithPageObject();
+                page.RefreshPageFromPageObject();
                 HookPropertyValueChanged(page);
 
                 ChildPages.Add(page);
@@ -622,7 +622,7 @@ namespace VirtualRadar.WinForms.OptionPage
         /// <param name="records"></param>
         /// <param name="getUniqueId"></param>
         /// <returns></returns>
-        protected virtual int GenerateUniqueId<T>(int nextUniqueId, IList<T> records, Func<T, int> getUniqueId)
+        public static int GenerateUniqueId<T>(int nextUniqueId, IList<T> records, Func<T, int> getUniqueId)
         {
             var result = nextUniqueId;
             while(records.Any(r => getUniqueId(r) == result)) {
@@ -641,7 +641,7 @@ namespace VirtualRadar.WinForms.OptionPage
         /// <param name="alwaysAppendCounter"></param>
         /// <param name="getName"></param>
         /// <returns></returns>
-        protected virtual string GenerateUniqueName<T>(IList<T> records, string prefix, bool alwaysAppendCounter, Func<T, string> getName)
+        public static string GenerateUniqueName<T>(IList<T> records, string prefix, bool alwaysAppendCounter, Func<T, string> getName)
         {
             string result;
             int counter = 1;

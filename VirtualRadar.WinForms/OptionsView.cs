@@ -266,9 +266,9 @@ namespace VirtualRadar.WinForms
         #endregion
 
         #region Top-level Page Properties
-        public PageDataSources          PageDataSources { get; private set; }
-        public PageReceivers            PageReceivers { get; private set; }
-        public PageReceiverLocations    PageReceiverLocations { get; private set; }
+        public PageDataSources          PageDataSources         { get; private set; }
+        public PageReceivers            PageReceivers           { get; private set; }
+        public PageReceiverLocations    PageReceiverLocations   { get; private set; }
         #endregion
 
         #region Events exposed
@@ -290,6 +290,11 @@ namespace VirtualRadar.WinForms
         public event EventHandler TestTextToSpeechSettingsClicked;
 
         public event EventHandler UpdateReceiverLocationsFromBaseStationDatabaseClicked;
+
+        public void RaiseUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs args)
+        {
+            if(UpdateReceiverLocationsFromBaseStationDatabaseClicked != null) UpdateReceiverLocationsFromBaseStationDatabaseClicked(this, args);
+        }
 
         public event EventHandler UseIcaoRawDecodingSettingsClicked;
 
@@ -379,10 +384,48 @@ namespace VirtualRadar.WinForms
         {
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="receiverLocations"></param>
         public void MergeBaseStationDatabaseReceiverLocations(IEnumerable<ReceiverLocation> receiverLocations)
         {
+            var viewList = PageReceiverLocations.ReceiverLocations.Value;
+
+            var updateList = viewList.Where(r => r.IsBaseStationLocation && receiverLocations.Any(i => i.Name == r.Name));
+            var deleteList = viewList.Where(r => r.IsBaseStationLocation).Except(updateList);
+            var insertList = receiverLocations.Where(r => !updateList.Any(i => i.Name == r.Name));
+
+            foreach(var location in updateList) {
+                var newLocation = receiverLocations.First(r => r.Name == location.Name);
+                location.Latitude = newLocation.Latitude;
+                location.Longitude = newLocation.Longitude;
+
+                var page = FindPageForPageObject(location);
+                if(page != null) page.RefreshPageFromPageObject();
+            }
+
+            foreach(var deleteLocation in deleteList) {
+                viewList.Remove(deleteLocation);
+            }
+
+            foreach(var location in insertList) {
+                var newLocation = new ReceiverLocation() {
+                    Name = Page.GenerateUniqueName(viewList, location.Name, false, r => r.Name),
+                    UniqueId = Page.GenerateUniqueId(1, viewList, r => r.UniqueId),
+                    Latitude = location.Latitude,
+                    Longitude = location.Longitude,
+                    IsBaseStationLocation = true,
+                };
+                viewList.Add(newLocation);
+            }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
         public void ShowTestConnectionResults(string message, string title)
         {
             MessageBox.Show(message, title);
