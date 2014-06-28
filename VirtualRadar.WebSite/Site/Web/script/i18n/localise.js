@@ -505,5 +505,9 @@
     VRS.globalisation.addCultureInfo('ru',    { language: 'ru', englishName: 'Russian',                 nativeName: 'Русский' });
     VRS.globalisation.addCultureInfo('ru-RU', { language: 'ru', englishName: 'Russian (Russia)',        nativeName: 'Русский (Россия)' });
 
+    // Chinese
+    VRS.globalisation.addCultureInfo('zh',    { language: 'zh', englishName: 'Chinese',                 nativeName: '中文' });
+    VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)',         nativeName: '中文 (中国)' });
+
     //endregion
 }(window.VRS = window.VRS || {}, jQuery));
