@@ -29,8 +29,8 @@
         {
             this.numericLatitude = new System.Windows.Forms.NumericUpDown();
             this.numericLongitude = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.labelLatitude = new System.Windows.Forms.Label();
+            this.labelLongitude = new System.Windows.Forms.Label();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.panelBorder = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.numericLatitude)).BeginInit();
@@ -55,6 +55,7 @@
             this.numericLatitude.Name = "numericLatitude";
             this.numericLatitude.Size = new System.Drawing.Size(120, 20);
             this.numericLatitude.TabIndex = 0;
+            this.numericLatitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericLatitude.ValueChanged += new System.EventHandler(this.numeric_ValueChanged);
             // 
             // numericLongitude
@@ -74,25 +75,26 @@
             this.numericLongitude.Name = "numericLongitude";
             this.numericLongitude.Size = new System.Drawing.Size(120, 20);
             this.numericLongitude.TabIndex = 1;
+            this.numericLongitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericLongitude.ValueChanged += new System.EventHandler(this.numeric_ValueChanged);
             // 
-            // label1
+            // labelLatitude
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 2);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "::Latitude:::";
+            this.labelLatitude.AutoSize = true;
+            this.labelLatitude.Location = new System.Drawing.Point(0, 2);
+            this.labelLatitude.Name = "labelLatitude";
+            this.labelLatitude.Size = new System.Drawing.Size(60, 13);
+            this.labelLatitude.TabIndex = 2;
+            this.labelLatitude.Text = "::Latitude:::";
             // 
-            // label2
+            // labelLongitude
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 28);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "::Longitude:::";
+            this.labelLongitude.AutoSize = true;
+            this.labelLongitude.Location = new System.Drawing.Point(0, 28);
+            this.labelLongitude.Name = "labelLongitude";
+            this.labelLongitude.Size = new System.Drawing.Size(69, 13);
+            this.labelLongitude.TabIndex = 3;
+            this.labelLongitude.Text = "::Longitude:::";
             // 
             // webBrowser
             // 
@@ -127,8 +129,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelBorder);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelLongitude);
+            this.Controls.Add(this.labelLatitude);
             this.Controls.Add(this.numericLongitude);
             this.Controls.Add(this.numericLatitude);
             this.Name = "LocationMapControl";
@@ -145,8 +147,8 @@
 
         private System.Windows.Forms.NumericUpDown numericLatitude;
         private System.Windows.Forms.NumericUpDown numericLongitude;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelLatitude;
+        private System.Windows.Forms.Label labelLongitude;
         private System.Windows.Forms.WebBrowser webBrowser;
         private System.Windows.Forms.Panel panelBorder;
     }

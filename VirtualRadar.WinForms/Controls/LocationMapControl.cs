@@ -25,6 +25,20 @@ namespace VirtualRadar.WinForms.Controls
         private bool _BrowserInitialised;
         private bool _IsMono;
 
+        [DefaultValue("::Latitude:::")]
+        public string LatitudeLabel
+        {
+            get { return labelLatitude.Text; }
+            set { labelLatitude.Text = value; }
+        }
+
+        [DefaultValue("::Longitude:::")]
+        public string LongitudeLabel
+        {
+            get { return labelLongitude.Text; }
+            set { labelLongitude.Text = value; }
+        }
+
         [DefaultValue(0.0)]
         public double Latitude
         {
@@ -57,8 +71,6 @@ namespace VirtualRadar.WinForms.Controls
 
         public LocationMapControl()
         {
-            _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
-
             InitializeComponent();
         }
 
@@ -67,6 +79,7 @@ namespace VirtualRadar.WinForms.Controls
             base.OnLoad(e);
 
             if(!DesignMode) {
+                _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
                 if(_IsMono) webBrowser.Visible = false;
                 else        LoadBrowser();
             }
