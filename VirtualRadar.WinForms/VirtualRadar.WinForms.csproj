@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="Binding\BindBoolToCheckbox.cs" />
     <Compile Include="Binding\BindCollectionToListView.cs" />
+    <Compile Include="Binding\BindCollectionToObservableListView.cs" />
     <Compile Include="Binding\BindDoubleToNumericUpDown.cs" />
     <Compile Include="Binding\BindIntToNumericUpDown.cs" />
     <Compile Include="Binding\BindToComboBox.cs" />
@@ -159,6 +160,9 @@
     <Compile Include="Controls\NamespaceDoc.cs" />
     <Compile Include="Controls\ObservableListComboBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ObservableListView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\PluginDetailPanel.cs">
       <SubType>UserControl</SubType>
@@ -258,6 +262,18 @@
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\PageEnabledAttribute.cs" />
+    <Compile Include="OptionPage\PageMergedFeed.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageMergedFeed.Designer.cs">
+      <DependentUpon>PageMergedFeed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPage\PageMergedFeeds.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageMergedFeeds.Designer.cs">
+      <DependentUpon>PageMergedFeeds.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionPage\PageReceiver.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -539,6 +555,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageDataSources.resx">
       <DependentUpon>PageDataSources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageMergedFeed.resx">
+      <DependentUpon>PageMergedFeed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageMergedFeeds.resx">
+      <DependentUpon>PageMergedFeeds.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageReceiver.resx">
       <DependentUpon>PageReceiver.cs</DependentUpon>

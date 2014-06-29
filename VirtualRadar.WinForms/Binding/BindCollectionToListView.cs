@@ -23,18 +23,20 @@ namespace VirtualRadar.WinForms.Binding
     /// </summary>
     public class BindCollectionToListView : Binder<BindingListView>
     {
-        public BindCollectionToListView(IObservable observable, BindingListView control) : base(observable, control)
+        public IObservableList CastObservable { get { return (IObservableList)Observable; } }
+
+        public BindCollectionToListView(IObservableList observable, BindingListView control) : base(observable, control)
         {
         }
 
         protected override void SetControlFromObservable()
         {
-            Control.Records = (IList)Observable.GetValue();
+            Control.Records = CastObservable.GetListValue();
         }
 
         protected override void SetObservableFromControl()
         {
-            Observable.SetValue(Control.Records);
+            CastObservable.SetListValue(Control.Records);
         }
 
         protected override void HookControlChanged()
@@ -49,10 +51,10 @@ namespace VirtualRadar.WinForms.Binding
 
         protected override bool ControlValueEqualsObservableValue(bool fromControlToObservable)
         {
-            var observableList = (Observable.GetValue() as IList) ?? new object[]{};
+            var observableList = CastObservable.GetListValue() ?? new object[]{};
             var controlList = Control.Records ?? new object[]{};
 
-            return observableList.HasSameContentAs(controlList);
+            return observableList.HasSameContentAs(controlList, orderMustMatch: false);
         }
     }
 }

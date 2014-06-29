@@ -115,6 +115,10 @@ namespace VirtualRadar.WinForms
         public IList<ReceiverLocation> RawDecodingReceiverLocations { get { return PageReceiverLocations.ReceiverLocations.Value; } }
         #endregion
 
+        #region MergedFeeds
+        public IList<MergedFeed> MergedFeeds { get { return PageMergedFeeds.MergedFeeds.Value; } }
+        #endregion
+
         public bool CheckForNewVersions { get; set; }
 
         public int CheckForNewVersionsPeriodDays { get; set; }
@@ -134,9 +138,6 @@ namespace VirtualRadar.WinForms
         {
             get { return _RebroadcastSettings; }
         }
-
-        private List<MergedFeed> _MergedFeeds = new List<MergedFeed>();
-        public IList<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
 
         public int RawDecodingReceiverRange { get; set; }
 
@@ -269,6 +270,7 @@ namespace VirtualRadar.WinForms
         public PageDataSources          PageDataSources         { get; private set; }
         public PageReceivers            PageReceivers           { get; private set; }
         public PageReceiverLocations    PageReceiverLocations   { get; private set; }
+        public PageMergedFeeds          PageMergedFeeds         { get; private set; }
         #endregion
 
         #region Events exposed
@@ -310,6 +312,7 @@ namespace VirtualRadar.WinForms
             PageDataSources = new PageDataSources();
             PageReceivers = new PageReceivers();
             PageReceiverLocations = new PageReceiverLocations();
+            PageMergedFeeds = new OptionPage.PageMergedFeeds();
 
             InitializeComponent();
 
@@ -696,11 +699,12 @@ namespace VirtualRadar.WinForms
 
                 RefreshCombinedFeeds();
                 PageReceivers.Receivers.Changed += (s, a) => RefreshCombinedFeeds();
-                // add merged feeds here once you've done the page for their collection
+                PageMergedFeeds.MergedFeeds.Changed += (s, a) => RefreshCombinedFeeds();
 
                 AddPage(PageDataSources);
                 AddPage(PageReceivers);
                 AddPage(PageReceiverLocations);
+                AddPage(PageMergedFeeds);
 
                 treeViewPagePicker.ExpandAll();
                 var firstNode = treeViewPagePicker.Nodes[0];

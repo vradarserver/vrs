@@ -1484,6 +1484,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ICAO Timeout.
+        /// </summary>
+        public static string IcaoTimeoutTitle {
+            get {
+                return ResourceManager.GetString("IcaoTimeoutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore aircraft with no position.
         /// </summary>
         public static string IgnoreAircraftWithNoPosition {
@@ -2376,6 +2385,15 @@ namespace VirtualRadar.Localisation {
         public static string None {
             get {
                 return ResourceManager.GetString("None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Position.
+        /// </summary>
+        public static string NoPosition {
+            get {
+                return ResourceManager.GetString("NoPosition", resourceCulture);
             }
         }
         

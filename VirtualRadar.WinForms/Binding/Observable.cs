@@ -29,7 +29,6 @@ namespace VirtualRadar.WinForms.Binding
         }
 
         public event EventHandler Changed;
-
         protected virtual void OnChanged(EventArgs args)
         {
             if(Changed != null) Changed(this, args);

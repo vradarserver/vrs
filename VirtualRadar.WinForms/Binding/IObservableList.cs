@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace VirtualRadar.WinForms.Binding
 {
@@ -20,6 +21,18 @@ namespace VirtualRadar.WinForms.Binding
     /// </summary>
     public interface IObservableList : IObservable
     {
+        /// <summary>
+        /// Gets the value as a list.
+        /// </summary>
+        /// <returns></returns>
+        IList GetListValue();
+
+        /// <summary>
+        /// Sets the value as a list.
+        /// </summary>
+        /// <param name="value"></param>
+        void SetListValue(IList value);
+
         /// <summary>
         /// Replaces the content of the existing list with the content of the
         /// new list in a single action, raising the changed event only if the

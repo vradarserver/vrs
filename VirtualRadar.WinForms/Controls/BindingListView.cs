@@ -96,6 +96,16 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         [DefaultValue(true)]
         public bool AllowDelete { get; set; }
+        
+        /// <summary>
+        /// Gets or sets a value indicating that all controls except the list are to be hidden.
+        /// </summary>
+        /// <remarks>
+        /// In this mode the user control is set to be the error provider control, there's nowhere
+        /// to display errors within the user control.
+        /// </remarks>
+        [DefaultValue(false)]
+        public bool HideAllButList { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the list should show check boxes.
@@ -137,6 +147,16 @@ namespace VirtualRadar.WinForms.Controls
         {
             get { return listView.Columns; }
         }
+
+        /// <summary>
+        /// Gets or sets the automatic sorting sort order.
+        /// </summary>
+        [DefaultValue(SortOrder.None)]
+        public SortOrder Sorting
+        {
+            get { return listView.Sorting; }
+            set { listView.Sorting = value; }
+        }
         #endregion
 
         #region Other properties
@@ -174,6 +194,13 @@ namespace VirtualRadar.WinForms.Controls
         {
             get { return GetAllSelectedListViewTag<object>(listView); }
             set { SelectListViewItemsByTags<object>(listView, value); }
+        }
+
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IEnumerable<object> CheckedRecords
+        {
+            get { return GetAllCheckedListViewTag<object>(listView); }
+            set { CheckListViewItemsByTags<object>(listView, value); }
         }
         #endregion
 
@@ -292,15 +319,17 @@ namespace VirtualRadar.WinForms.Controls
                 _Populating = true;
 
                 listView.Items.Clear();
-                foreach(var item in list) {
-                    var listViewItem = new ListViewItem() {
-                        Tag = item,
-                    };
-                    RefreshListViewItem(listViewItem);
-                    listView.Items.Add(listViewItem);
+                if(list != null) {
+                    foreach(var item in list) {
+                        var listViewItem = new ListViewItem() {
+                            Tag = item,
+                        };
+                        RefreshListViewItem(listViewItem);
+                        listView.Items.Add(listViewItem);
 
-                    if(selectedRecords.Contains(item)) {
-                        listViewItem.Selected = true;
+                        if(selectedRecords.Contains(item)) {
+                            listViewItem.Selected = true;
+                        }
                     }
                 }
 
@@ -332,6 +361,17 @@ namespace VirtualRadar.WinForms.Controls
                 _Populating = populating;
             }
         }
+
+        /// <summary>
+        /// Checks or unchecks a record in the list view.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="ticked"></param>
+        public void CheckRecord(object record, bool ticked)
+        {
+            var listViewItem = listView.Items.OfType<ListViewItem>().FirstOrDefault(r => Object.Equals(record, r.Tag));
+            if(listViewItem != null) listViewItem.Checked = ticked;
+        }
         #endregion
 
         #region EnableDisableControls
@@ -353,8 +393,12 @@ namespace VirtualRadar.WinForms.Controls
         /// <returns></returns>
         public Control GetValidationDisplayControl(ErrorProvider errorProvider)
         {
-            errorProvider.SetIconAlignment(labelErrorAnchor, ErrorIconAlignment.BottomLeft);
-            return labelErrorAnchor;
+            var result = HideAllButList ? (Control)this : (Control)labelErrorAnchor;
+            if(!HideAllButList) {
+                errorProvider.SetIconAlignment(labelErrorAnchor, ErrorIconAlignment.BottomLeft);
+            }
+
+            return result;
         }
         #endregion
 
@@ -379,6 +423,13 @@ namespace VirtualRadar.WinForms.Controls
                 buttonAdd.Image = Images.Add16x16;
                 buttonDelete.Image = Images.Cancel16x16;
                 buttonAdd.Text = buttonDelete.Text = "";
+
+                if(HideAllButList) {
+                    labelErrorAnchor.Visible = false;
+                    buttonAdd.Visible = false;
+                    buttonDelete.Visible = false;
+                    listView.Dock = DockStyle.Fill;
+                }
 
                 EnableDisableControls();
             }

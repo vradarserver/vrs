@@ -41,7 +41,8 @@ namespace VirtualRadar.WinForms.Binding
             } else if(valueType == typeof(double)) {
                 if(IsKindOf<NumericUpDown>(control))        result = new BindDoubleToNumericUpDown((Observable<double>)observable, (NumericUpDown)control);
             } else if(isList) {
-                if(IsKindOf<BindingListView>(control))      result = new BindCollectionToListView(observable, (BindingListView)control);
+                if(IsKindOf<ObservableListView>(control))   result = new BindCollectionToObservableListView((IObservableList)observable, (ObservableListView)control);
+                else if(IsKindOf<BindingListView>(control)) result = new BindCollectionToListView((IObservableList)observable, (BindingListView)control);
             }
 
             if(result == null && IsKindOf<ComboBox>(control)) {

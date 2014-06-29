@@ -2020,4 +2020,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ConnectionParameters" xml:space="preserve">
     <value>Connection Parameters</value>
   </data>
+  <data name="NoPosition" xml:space="preserve">
+    <value>No Position</value>
+  </data>
+  <data name="IcaoTimeoutTitle" xml:space="preserve">
+    <value>ICAO Timeout</value>
+  </data>
 </root>
