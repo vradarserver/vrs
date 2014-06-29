@@ -255,11 +255,12 @@ namespace VirtualRadar.WinForms.OptionPage
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="control"></param>
+        /// <param name="propertyName"></param>
         /// <returns></returns>
-        protected Observable<T> BindProperty<T>(Control control)
+        protected Observable<T> BindProperty<T>(Control control, string propertyName = null)
         {
             var result = new Observable<T>();
-            AddBinder(result, control);
+            AddBinder(result, control, propertyName);
 
             return result;
         }
@@ -269,11 +270,12 @@ namespace VirtualRadar.WinForms.OptionPage
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="control"></param>
+        /// <param name="propertyName"></param>
         /// <returns></returns>
-        protected ObservableList<T> BindListProperty<T>(Control control)
+        protected ObservableList<T> BindListProperty<T>(Control control, string propertyName = null)
         {
             var result = new ObservableList<T>();
-            AddBinder(result, control);
+            AddBinder(result, control, propertyName);
 
             return result;
         }
@@ -283,9 +285,10 @@ namespace VirtualRadar.WinForms.OptionPage
         /// </summary>
         /// <param name="observable"></param>
         /// <param name="control"></param>
-        private void AddBinder(IObservable observable, Control control)
+        /// <param name="propertyName"></param>
+        private void AddBinder(IObservable observable, Control control, string propertyName)
         {
-            _Binders.Add(BindingFactory.CreateBinder(observable, control));
+            _Binders.Add(BindingFactory.CreateBinder(observable, control, propertyName));
             HookObservableChanged(observable);
         }
 

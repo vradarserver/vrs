@@ -68,18 +68,21 @@ namespace VirtualRadar.Localisation
         /// <param name="control"></param>
         public void Control(Control control)
         {
-            control.Text = GetLocalisedText(control.Text);
+            var webBrowser = control as WebBrowser;
+            if(webBrowser == null) {
+                control.Text = GetLocalisedText(control.Text);
 
-            ListView listView = control as ListView;
-            if(listView != null) ListViewColumns(listView);
-            else {
-                var toolStrip = control as ToolStrip;
-                if(toolStrip != null) ToolStrip(toolStrip);
-            }
+                ListView listView = control as ListView;
+                if(listView != null) ListViewColumns(listView);
+                else {
+                    var toolStrip = control as ToolStrip;
+                    if(toolStrip != null) ToolStrip(toolStrip);
+                }
 
-            if(control.HasChildren) {
-                foreach(Control child in control.Controls) {
-                    Control(child);
+                if(control.HasChildren) {
+                    foreach(Control child in control.Controls) {
+                        Control(child);
+                    }
                 }
             }
         }

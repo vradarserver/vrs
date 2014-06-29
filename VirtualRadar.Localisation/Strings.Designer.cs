@@ -890,6 +890,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not load Google Maps.
+        /// </summary>
+        public static string CouldNotLoadGoogleMaps {
+            get {
+                return ResourceManager.GetString("CouldNotLoadGoogleMaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not parse manifest: {0}.
         /// </summary>
         public static string CouldNotParseManifest {

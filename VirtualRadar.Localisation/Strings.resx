@@ -2041,4 +2041,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeUserPassword" xml:space="preserve">
     <value>The password that the user must supply when logging in.</value>
   </data>
+  <data name="CouldNotLoadGoogleMaps" xml:space="preserve">
+    <value>Could not load Google Maps</value>
+  </data>
 </root>

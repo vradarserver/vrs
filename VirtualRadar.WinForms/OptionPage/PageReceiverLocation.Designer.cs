@@ -27,81 +27,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label3 = new System.Windows.Forms.Label();
-            this.numericLongitude = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.numericLatitude = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.numericLongitude)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericLatitude)).BeginInit();
+            this.locationMap = new VirtualRadar.WinForms.Controls.LocationMapControl();
             this.SuspendLayout();
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(0, 55);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 13);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "::Longitude:::";
-            // 
-            // numericLongitude
-            // 
-            this.numericLongitude.DecimalPlaces = 6;
-            this.numericLongitude.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
-            this.numericLongitude.Location = new System.Drawing.Point(155, 53);
-            this.numericLongitude.Maximum = new decimal(new int[] {
-            180,
-            0,
-            0,
-            0});
-            this.numericLongitude.Minimum = new decimal(new int[] {
-            180,
-            0,
-            0,
-            -2147483648});
-            this.numericLongitude.Name = "numericLongitude";
-            this.numericLongitude.Size = new System.Drawing.Size(120, 20);
-            this.numericLongitude.TabIndex = 7;
-            this.numericLongitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "::Latitude:::";
-            // 
-            // numericLatitude
-            // 
-            this.numericLatitude.DecimalPlaces = 6;
-            this.numericLatitude.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
-            this.numericLatitude.Location = new System.Drawing.Point(155, 27);
-            this.numericLatitude.Maximum = new decimal(new int[] {
-            90,
-            0,
-            0,
-            0});
-            this.numericLatitude.Minimum = new decimal(new int[] {
-            90,
-            0,
-            0,
-            -2147483648});
-            this.numericLatitude.Name = "numericLatitude";
-            this.numericLatitude.Size = new System.Drawing.Size(120, 20);
-            this.numericLatitude.TabIndex = 5;
-            this.numericLatitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label2
             // 
@@ -121,19 +50,24 @@
             this.textBoxName.Size = new System.Drawing.Size(481, 20);
             this.textBoxName.TabIndex = 4;
             // 
+            // locationMap
+            // 
+            this.locationMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.locationMap.Location = new System.Drawing.Point(0, 26);
+            this.locationMap.Name = "locationMap";
+            this.locationMap.Size = new System.Drawing.Size(636, 349);
+            this.locationMap.TabIndex = 9;
+            // 
             // PageReceiverLocation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.numericLongitude);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.numericLatitude);
+            this.Controls.Add(this.locationMap);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxName);
             this.Name = "PageReceiverLocation";
             this.Size = new System.Drawing.Size(636, 375);
-            ((System.ComponentModel.ISupportInitialize)(this.numericLongitude)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericLatitude)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,9 +77,6 @@
 
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxName;
-        private System.Windows.Forms.NumericUpDown numericLatitude;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.NumericUpDown numericLongitude;
+        private Controls.LocationMapControl locationMap;
     }
 }

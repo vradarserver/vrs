@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Location Map</title>
+    <style type="text/css">
+        html            { height: 100%; }
+        body            { height: 100%; margin: 0; padding: 0; font-family: Verdana, Sans-Serif; font-size: 0.9em; }
+        #map            { height: 100%; width: 100%; }
+        #map.failed     { background: #FFFFFF; position: relative; }
+        #map.failed div { text-align:center; width: 100%; position: absolute; top: 50%; }
+    </style>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <script type="text/javascript">
+        var googleMap;
+        var googleMapMarker;
+        var failedToLoad = '';
+        var latitude = 0.0;
+        var longitude = 0.0;
+
+        function showErrorMessage(errorMessage)
+        {
+            map.innerHTML = '<div>' + errorMessage + '</div>';
+            map.className = 'failed';
+        }
+
+        function initialiseFromForm()
+        {
+            var result = true;
+
+            try {
+                failedToLoad = window.external.BrowserGetFailedErrorText();
+                latitude = window.external.BrowserGetLatitude();
+                longitude = window.external.BrowserGetLongitude();
+            } catch(exception) {
+                showErrorMessage('Could not talk to form: ' + exception);
+                result = false;
+            }
+
+            return result;
+        }
+
+        function sendPositionToForm()
+        {
+            try {
+                window.external.BrowserSetPosititon(latitude, longitude);
+            } catch(exception) {
+                ;
+            }
+        }
+
+        function setPositionFromForm(lat, lng)
+        {
+            if(googleMapMarker) {
+                latitude = lat;
+                longitude = lng;
+                try {
+                    var latLng = new google.maps.LatLng(latitude, longitude);
+                    googleMapMarker.setPosition(latLng);
+                    googleMap.setCenter(latLng);
+                } catch(exception) {
+                    ;
+                }
+            }
+        }
+
+        window.onload = function() {
+            if(initialiseFromForm()) {
+                var map = document.getElementById('map');
+                try {
+                    googleMap = new google.maps.Map(map, {
+                        center:             new google.maps.LatLng(latitude, longitude),
+                        streetViewControl:  false,
+                        zoom:               10,
+                        zoomControl:        true
+                    });
+
+                    googleMapMarker = new google.maps.Marker({
+                        position:           new google.maps.LatLng(latitude, longitude),
+                        clickable:          false,
+                        draggable:          true,
+                        map:                googleMap
+                    });
+                    google.maps.event.addListener(googleMapMarker, 'dragend', function() {
+                        var latLng = googleMapMarker.getPosition();
+                        latitude = latLng.lat();
+                        longitude = latLng.lng();
+
+                        sendPositionToForm();
+                        googleMap.setCenter(latLng);
+                    });
+                } catch(exception) {
+                    googleMap = null;
+                    showErrorMessage(failedToLoad);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
