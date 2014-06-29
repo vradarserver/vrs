@@ -33,6 +33,7 @@ namespace VirtualRadar.WinForms.Binding
             if(valueType == typeof(string)) {
                 if(IsKindOf<FileNameControl>(control))      result = new BindStringToFileName((Observable<string>)observable, (FileNameControl)control);
                 else if(IsKindOf<FolderControl>(control))   result = new BindStringToFolder((Observable<string>)observable, (FolderControl)control);
+                else if(IsKindOf<PasswordControl>(control)) result = new BindStringToPassword((Observable<string>)observable, (PasswordControl)control);
                 else if(IsKindOf<TextBox>(control))         result = new BindStringToTextBox((Observable<string>)observable, (TextBox)control);
             } else if(valueType == typeof(bool)) {
                 if(IsKindOf<CheckBox>(control))             result = new BindBoolToCheckbox((Observable<bool>)observable, (CheckBox)control);

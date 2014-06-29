@@ -78,6 +78,7 @@
     <Compile Include="Binding\BindCollectionToObservableListView.cs" />
     <Compile Include="Binding\BindDoubleToNumericUpDown.cs" />
     <Compile Include="Binding\BindIntToNumericUpDown.cs" />
+    <Compile Include="Binding\BindStringToPassword.cs" />
     <Compile Include="Binding\BindToComboBox.cs" />
     <Compile Include="Binding\BindingFactory.cs" />
     <Compile Include="Binding\BindStringToFileName.cs" />
@@ -163,6 +164,12 @@
     </Compile>
     <Compile Include="Controls\ObservableListView.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PasswordControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PasswordControl.Designer.cs">
+      <DependentUpon>PasswordControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PluginDetailPanel.cs">
       <SubType>UserControl</SubType>
@@ -305,6 +312,19 @@
       <DependentUpon>PageReceivers.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\PageTitleAttribute.cs" />
+    <Compile Include="OptionPage\PageUser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageUser.Designer.cs">
+      <DependentUpon>PageUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPage\PageUsers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageUsers.Designer.cs">
+      <DependentUpon>PageUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPage\RecordListHelper.cs" />
     <Compile Include="OptionPage\ValidationFieldAttribute.cs" />
     <Compile Include="OptionsPropertySheetView.cs">
       <SubType>Form</SubType>
@@ -520,6 +540,9 @@
     <EmbeddedResource Include="Controls\InvalidPluginsControl.resx">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PasswordControl.resx">
+      <DependentUpon>PasswordControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\PluginDetailPanel.resx">
       <DependentUpon>PluginDetailPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -582,6 +605,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageReceivers.resx">
       <DependentUpon>PageReceivers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageUser.resx">
+      <DependentUpon>PageUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageUsers.resx">
+      <DependentUpon>PageUsers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPropertySheetView.resx">
       <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>

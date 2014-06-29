@@ -225,6 +225,9 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="configuration"></param>
         private void CopyConfigurationToUI(Configuration configuration)
         {
+            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            _View.Users.AddRange(userManager.GetUsers());
+
             _View.AudioEnabled = configuration.AudioSettings.Enabled;
             _View.TextToSpeechSpeed = configuration.AudioSettings.VoiceRate;
             _View.TextToSpeechVoice = String.IsNullOrEmpty(configuration.AudioSettings.VoiceName) ? null : configuration.AudioSettings.VoiceName;
