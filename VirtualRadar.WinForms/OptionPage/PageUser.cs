@@ -62,7 +62,7 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             RecordEnabled = BindProperty<bool>(checkBoxEnabled);
             LoginName = BindProperty<string>(textBoxLoginName);
-            Password = BindProperty<string>(passwordControl);
+            Password = BindProperty<string>(textBoxPassword);
             UserName = BindProperty<string>(textBoxUserName);
         }
 
@@ -71,7 +71,7 @@ namespace VirtualRadar.WinForms.OptionPage
             var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
             checkBoxEnabled.Enabled = userManager.CanEditUsers && userManager.CanChangeEnabledState;
             textBoxLoginName.Enabled = userManager.CanEditUsers;
-            passwordControl.Enabled = userManager.CanEditUsers && userManager.CanChangePassword;
+            textBoxPassword.Enabled = userManager.CanEditUsers && userManager.CanChangePassword;
             textBoxUserName.Enabled = userManager.CanEditUsers;
         }
 

@@ -167,11 +167,6 @@ namespace VirtualRadar.Interface.View
         /// <param name="url"></param>
         /// <param name="bytesSent"></param>
         void ShowWebRequestHasBeenServiced(string address, string url, long bytesSent);
-
-        /// <summary>
-        /// Disables the Users menu entry.
-        /// </summary>
-        void DisableUsersMenu();
         #endregion
     }
 }

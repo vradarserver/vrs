@@ -147,6 +147,11 @@ namespace VirtualRadar.Library.Presenter
         /// The cache of file system results.
         /// </summary>
         private List<CachedFileSystemResult> _CachedFileSystemResults = new List<CachedFileSystemResult>();
+
+        /// <summary>
+        /// The password that we use to indicate that the password has not been changed by the user.
+        /// </summary>
+        private string _DefaultPassword = "A\t\t\t\t\tA";
         #endregion
 
         #region Properties
@@ -226,7 +231,8 @@ namespace VirtualRadar.Library.Presenter
         private void CopyConfigurationToUI(Configuration configuration)
         {
             var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
-            _View.Users.AddRange(userManager.GetUsers());
+            var users = userManager.GetUsers().Select(r => { r.UIPassword = _DefaultPassword; return r; });
+            _View.Users.AddRange(users);
 
             _View.AudioEnabled = configuration.AudioSettings.Enabled;
             _View.TextToSpeechSpeed = configuration.AudioSettings.VoiceRate;
@@ -433,6 +439,13 @@ namespace VirtualRadar.Library.Presenter
         {
             List<ValidationResult> result = new List<ValidationResult>();
 
+            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            if(userManager.CanEditUsers) {
+                foreach(var user in _View.Users) {
+                    userManager.ValidateUser(result, user, user, _View.Users);
+                }
+            }
+
             ValidateFileExists(ValidationField.BaseStationDatabase, _View.BaseStationDatabaseFileName, result);
             ValidateFolderExists(ValidationField.FlagsFolder, _View.OperatorFlagsFolder, result);
             ValidateFolderExists(ValidationField.PicturesFolder, _View.PicturesFolder, result);
@@ -628,6 +641,54 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region SaveUsers
+        /// <summary>
+        /// Saves changes to the users to the database.
+        /// </summary>
+        private void SaveUsers()
+        {
+            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            var existing = userManager.GetUsers();
+
+            // Update existing records
+            foreach(var record in _View.Users) {
+                var current = existing.FirstOrDefault(r => r.UniqueId == record.UniqueId);
+                if(current != null) {
+                    if(!userManager.CanEditUsers) {
+                        record.Name = current.Name;
+                        record.LoginName = current.LoginName;
+                    }
+                    if(!userManager.CanChangeEnabledState) record.Enabled = current.Enabled;
+                    if(!userManager.CanChangePassword) record.UIPassword = _DefaultPassword;
+
+                    if(record.Enabled !=    current.Enabled ||
+                       record.LoginName !=  current.LoginName ||
+                       record.Name !=       current.Name ||
+                       record.UIPassword != _DefaultPassword
+                    ) {
+                        userManager.UpdateUser(record, record.UIPassword == _DefaultPassword ? null : record.UIPassword);
+                    }
+                }
+            }
+
+            // Insert new records
+            if(userManager.CanCreateUsers) {
+                foreach(var record in _View.Users.Where(r => !r.IsPersisted)) {
+                    if(record.UIPassword == _DefaultPassword) record.UIPassword = null;
+                    userManager.CreateUser(record);
+                    record.UIPassword = _DefaultPassword;
+                }
+            }
+
+            // Delete missing records
+            if(userManager.CanDeleteUsers) {
+                foreach(var missing in existing.Where(r => !_View.Users.Any(i => i.IsPersisted && i.UniqueId == r.UniqueId))) {
+                    userManager.DeleteUser(missing);
+                }
+            }
+        }
+        #endregion
+
         #region Events subscribed
         /// <summary>
         /// Raised when the user wants to reset the view to default values.
@@ -658,6 +719,7 @@ namespace VirtualRadar.Library.Presenter
                 var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                 var configuration = configurationStorage.Load();
 
+                SaveUsers();
                 CopyUIToConfiguration(configuration);
 
                 configurationStorage.Save(configuration);

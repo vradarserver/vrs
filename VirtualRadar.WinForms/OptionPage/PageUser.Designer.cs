@@ -31,9 +31,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxLoginName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.passwordControl = new VirtualRadar.WinForms.Controls.PasswordControl();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxUserName = new System.Windows.Forms.TextBox();
+            this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -42,7 +42,7 @@
             this.checkBoxEnabled.Location = new System.Drawing.Point(155, 0);
             this.checkBoxEnabled.Name = "checkBoxEnabled";
             this.checkBoxEnabled.Size = new System.Drawing.Size(77, 17);
-            this.checkBoxEnabled.TabIndex = 1;
+            this.checkBoxEnabled.TabIndex = 0;
             this.checkBoxEnabled.Text = "::Enabled::";
             this.checkBoxEnabled.UseVisualStyleBackColor = true;
             // 
@@ -52,7 +52,7 @@
             this.label2.Location = new System.Drawing.Point(0, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
-            this.label2.TabIndex = 3;
+            this.label2.TabIndex = 1;
             this.label2.Text = "::LoginName:::";
             // 
             // textBoxLoginName
@@ -62,7 +62,7 @@
             this.textBoxLoginName.Location = new System.Drawing.Point(155, 23);
             this.textBoxLoginName.Name = "textBoxLoginName";
             this.textBoxLoginName.Size = new System.Drawing.Size(481, 20);
-            this.textBoxLoginName.TabIndex = 4;
+            this.textBoxLoginName.TabIndex = 2;
             // 
             // label1
             // 
@@ -70,17 +70,8 @@
             this.label1.Location = new System.Drawing.Point(0, 52);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 13);
-            this.label1.TabIndex = 5;
+            this.label1.TabIndex = 3;
             this.label1.Text = "::Password:::";
-            // 
-            // passwordControl
-            // 
-            this.passwordControl.Location = new System.Drawing.Point(155, 50);
-            this.passwordControl.Name = "passwordControl";
-            this.passwordControl.Password = "";
-            this.passwordControl.ShowEmptyPassword = false;
-            this.passwordControl.Size = new System.Drawing.Size(150, 20);
-            this.passwordControl.TabIndex = 6;
             // 
             // label3
             // 
@@ -88,7 +79,7 @@
             this.label3.Location = new System.Drawing.Point(0, 79);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(50, 13);
-            this.label3.TabIndex = 7;
+            this.label3.TabIndex = 5;
             this.label3.Text = "::Name:::";
             // 
             // textBoxUserName
@@ -98,14 +89,22 @@
             this.textBoxUserName.Location = new System.Drawing.Point(155, 76);
             this.textBoxUserName.Name = "textBoxUserName";
             this.textBoxUserName.Size = new System.Drawing.Size(481, 20);
-            this.textBoxUserName.TabIndex = 8;
+            this.textBoxUserName.TabIndex = 6;
+            // 
+            // textBoxPassword
+            // 
+            this.textBoxPassword.Location = new System.Drawing.Point(155, 49);
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.Size = new System.Drawing.Size(150, 20);
+            this.textBoxPassword.TabIndex = 4;
+            this.textBoxPassword.UseSystemPasswordChar = true;
             // 
             // PageUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxUserName);
-            this.Controls.Add(this.passwordControl);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxLoginName);
@@ -123,8 +122,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxLoginName;
         private System.Windows.Forms.Label label1;
-        private Controls.PasswordControl passwordControl;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxUserName;
+        private System.Windows.Forms.TextBox textBoxPassword;
     }
 }

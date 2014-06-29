@@ -53,8 +53,6 @@ namespace VirtualRadar.WinForms.Options
         [LocalisedDisplayName("PermittedUsers")]
         [LocalisedCategory("Authentication", AuthenticationCategory, TotalCategories)]
         [LocalisedDescription("OptionsDescribeWebServerPermittedUsers")]
-        [TypeConverter(typeof(UsersListTypeConverter))]
-        [Editor(typeof(UsersListUITypeEditor), typeof(UITypeEditor))]
         public List<string> PermittedUserIds { get; set; }
         public bool ShouldSerializePermittedUserIds() { return ValueHasChanged(r => r.PermittedUserIds); }
 

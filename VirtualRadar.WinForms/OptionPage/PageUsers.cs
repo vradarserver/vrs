@@ -85,7 +85,9 @@ namespace VirtualRadar.WinForms.OptionPage
 
         private void listUsers_CheckedChanged(object sender, Controls.BindingListView.RecordCheckedEventArgs e)
         {
-            _ListHelper.SetEnabledForListCheckedChanged(e, r => r.RecordEnabled);
+            if(listUsers.CheckBoxes) {
+                _ListHelper.SetEnabledForListCheckedChanged(e, r => r.RecordEnabled);
+            }
         }
 
         private void listUsers_DeleteClicked(object sender, EventArgs e)

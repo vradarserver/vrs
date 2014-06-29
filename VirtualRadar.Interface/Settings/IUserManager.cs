@@ -98,7 +98,7 @@ namespace VirtualRadar.Interface.Settings
         /// the changing of the password, then return an appropriate validation message. However the UI should have
         /// taken care not to let such modifications get this far.
         /// </remarks>
-        void ValidateUser(List<ValidationResult> results, IUser record, IUser currentRecord, List<IUser> allRecords);
+        void ValidateUser(List<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords);
 
         /// <summary>
         /// Creates a new user. If <see cref="CanCreateUsers"/> is false then this should throw an exception when called.

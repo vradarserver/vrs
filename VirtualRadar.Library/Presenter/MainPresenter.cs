@@ -135,9 +135,6 @@ namespace VirtualRadar.Library.Presenter
             _RebroadcastServerManager = Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton;
             DoDisplayRebroadcastServerConnections();
 
-            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
-            if(!userManager.CanListUsers) View.DisableUsersMenu();
-
             var configurationStorage = DisplayConfigurationSettings();
             configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
