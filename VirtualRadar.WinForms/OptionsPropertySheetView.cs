@@ -513,17 +513,8 @@ namespace VirtualRadar.WinForms
             set { _WebServerSheet.UserMustAuthenticate = value; }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IList<string> WebServerUserIds
-        {
-            get
-            {
-                if(_WebServerSheet.PermittedUserIds == null) _WebServerSheet.PermittedUserIds = new List<string>();
-                return _WebServerSheet.PermittedUserIds;
-            }
-        }
+        private List<IUser> _WebServerUsers = new List<IUser>();
+        public IList<IUser> WebServerUsers { get { return _WebServerUsers; } }
 
         /// <summary>
         /// See interface docs.

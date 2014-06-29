@@ -754,7 +754,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>License</value>
   </data>
   <data name="UPnpPort" xml:space="preserve">
-    <value>Internet port number</value>
+    <value>UPnP port number</value>
     <comment>As in a TCP/IP port number, not the sailing kind</comment>
   </data>
   <data name="PutOnInternet" xml:space="preserve">

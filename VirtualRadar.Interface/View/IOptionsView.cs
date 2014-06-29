@@ -193,10 +193,10 @@ namespace VirtualRadar.Interface.View
         bool WebServerUserMustAuthenticate { get; set; }
 
         /// <summary>
-        /// Gets a collection of identifiers of users that are allowed to attach to the web server when
+        /// Gets a collection of users that are allowed to attach to the web server when
         /// <see cref="WebServerUserMustAuthenticate"/> is true.
         /// </summary>
-        IList<string> WebServerUserIds { get; }
+        IList<IUser> WebServerUsers { get; }
 
         /// <summary>
         /// Gets or sets a value indicating that the user wants the server to use UPnP to get the server onto and off the Internet.
@@ -369,7 +369,7 @@ namespace VirtualRadar.Interface.View
 
         #region Properties - Users
         /// <summary>
-        /// Gets the list of users. This will be empty if the user manager cannot support listing users.
+        /// Gets the list of users.
         /// </summary>
         IList<IUser> Users { get; }
         #endregion

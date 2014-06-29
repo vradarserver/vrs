@@ -91,7 +91,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private List<ReceiverLocation> _ViewRawDecodingReceiverLocations;
         private List<RebroadcastSettings> _ViewRebroadcastSettings;
         private List<Receiver> _ViewReceivers;
-        private List<string> _ViewWebServerUserIds;
+        private List<IUser> _ViewWebServerUsers;
         private Mock<IUserManager> _UserManager;
         private List<IUser> _UserManagerUsers;
         private List<IUser> _ViewUsers;
@@ -132,7 +132,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _ViewRebroadcastSettings = new List<RebroadcastSettings>();
             _ViewReceivers = new List<Receiver>();
             _ViewUsers = new List<IUser>();
-            _ViewWebServerUserIds = new List<string>();
+            _ViewWebServerUsers = new List<IUser>();
 
             _View = new Mock<IOptionsView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _View.Setup(r => r.RawDecodingReceiverLocations).Returns(_ViewRawDecodingReceiverLocations);
@@ -140,7 +140,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _View.Setup(r => r.RebroadcastSettings).Returns(_ViewRebroadcastSettings);
             _View.Setup(r => r.Receivers).Returns(_ViewReceivers);
             _View.Setup(r => r.Users).Returns(_ViewUsers);
-            _View.Setup(r => r.WebServerUserIds).Returns(_ViewWebServerUserIds);
+            _View.Setup(r => r.WebServerUsers).Returns(_ViewWebServerUsers);
         }
 
         [TestCleanup]
@@ -466,12 +466,21 @@ namespace Test.VirtualRadar.Library.Presenter
             _Configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
             _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("First");
             _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("Second");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("Missing");
+
+            Action<string> addUser = (uniqueId) => {
+                var user = TestUtilities.CreateMockInstance<IUser>();
+                user.Object.UniqueId = uniqueId;
+                _UserManagerUsers.Add(user.Object);
+            };
+            addUser("First");
+            addUser("Second");
 
             _Presenter.Initialise(_View.Object);
             
-            Assert.AreEqual(2, _View.Object.WebServerUserIds.Count);
-            Assert.AreEqual("First", _View.Object.WebServerUserIds[0]);
-            Assert.AreEqual("Second", _View.Object.WebServerUserIds[1]);
+            Assert.AreEqual(2, _View.Object.WebServerUsers.Count);
+            Assert.AreEqual("First", _View.Object.WebServerUsers[0].UniqueId);
+            Assert.AreEqual("Second", _View.Object.WebServerUsers[1].UniqueId);
         }
 
         [TestMethod]
@@ -835,27 +844,6 @@ namespace Test.VirtualRadar.Library.Presenter
         public void OptionsPresenter_SaveClicked_Copies_Values_From_RawDecoding_Options_UI_To_Configuration_Before_Save()
         {
             Check_SaveClicked_Copies_Values_From_View_To_Configuration(_RawDecodingOptions);
-        }
-
-        [TestMethod]
-        public void OptionsPresenter_SaveClicked_Copies_BasicAuthentication_Users_From_View_To_Configuration()
-        {
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("Will be deleted");
-
-            _Presenter.Initialise(_View.Object);
-
-            _View.Object.WebServerUserIds.Clear();
-            _View.Object.WebServerUserIds.Add("Added");
-
-            _ConfigurationStorage.Setup(c => c.Save(_Configuration)).Callback(() => {
-                Assert.AreEqual(1, _Configuration.WebServerSettings.BasicAuthenticationUserIds.Count);
-                Assert.AreEqual("Added", _Configuration.WebServerSettings.BasicAuthenticationUserIds[0]);
-            });
-
-            _View.Raise(v => v.SaveClicked += null, EventArgs.Empty);
-
-            _ConfigurationStorage.Verify(c => c.Save(_Configuration), Times.Once());
         }
 
         [TestMethod]

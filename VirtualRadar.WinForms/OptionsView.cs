@@ -62,6 +62,7 @@ namespace VirtualRadar.WinForms
         public PageMergedFeeds          PageMergedFeeds         { get; private set; }
         public PageRawFeedDecoding      PageRawFeedDecoding     { get; private set; }
         public PageUsers                PageUsers               { get; private set; }
+        public PageWebServer            PageWebServer           { get; private set; }
         #endregion
 
         #region Options Properties
@@ -224,6 +225,88 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region WebServer
+        public bool WebServerUserMustAuthenticate
+        {
+            get { return PageWebServer.Authentication.UsersMustAuthenticate.Value; }
+            set { PageWebServer.Authentication.UsersMustAuthenticate.Value = value; }
+        }
+
+        public IList<IUser> WebServerUsers { get { return PageWebServer.Authentication.WebServerUsers.Value; } }
+
+        public bool EnableUPnpFeatures
+        {
+            get { return PageWebServer.EnableUPnpFeatures.Value; }
+            set { PageWebServer.EnableUPnpFeatures.Value = value; }
+        }
+
+        public bool IsOnlyVirtualRadarServerOnLan
+        {
+            get { return PageWebServer.IsOnlyVirtualRadarServerOnLan.Value; }
+            set { PageWebServer.IsOnlyVirtualRadarServerOnLan.Value = value; }
+        }
+
+        public bool AutoStartUPnp
+        {
+            get { return PageWebServer.AutoStartUPnp.Value; }
+            set { PageWebServer.AutoStartUPnp.Value = value; }
+        }
+
+        public int UPnpPort
+        {
+            get { return PageWebServer.UPnpPort.Value; }
+            set { PageWebServer.UPnpPort.Value = value; }
+        }
+
+        public bool InternetClientCanRunReports
+        {
+            get { return PageWebServer.InternetClientCanRunReports.Value; }
+            set { PageWebServer.InternetClientCanRunReports.Value = value; }
+        }
+
+        public bool InternetClientCanPlayAudio
+        {
+            get { return PageWebServer.InternetClientCanPlayAudio.Value; }
+            set { PageWebServer.InternetClientCanPlayAudio.Value = value; }
+        }
+
+        public bool InternetClientCanSeePictures
+        {
+            get { return PageWebServer.InternetClientCanSeePictures.Value; }
+            set { PageWebServer.InternetClientCanSeePictures.Value = value; }
+        }
+
+        public int InternetClientTimeoutMinutes
+        {
+            get { return PageWebServer.InternetClientTimeoutMinutes.Value; }
+            set { PageWebServer.InternetClientTimeoutMinutes.Value = value; }
+        }
+
+        public bool InternetClientCanSeeLabels
+        {
+            get { return PageWebServer.InternetClientCanSeeLabels.Value; }
+            set { PageWebServer.InternetClientCanSeeLabels.Value = value; }
+        }
+
+        public bool AllowInternetProximityGadgets
+        {
+            get { return PageWebServer.AllowInternetProximityGadgets.Value; }
+            set { PageWebServer.AllowInternetProximityGadgets.Value = value; }
+        }
+
+        public bool InternetClientCanSubmitRoutes
+        {
+            get { return PageWebServer.InternetClientCanSubmitRoutes.Value; }
+            set { PageWebServer.InternetClientCanSubmitRoutes.Value = value; }
+        }
+
+        public bool InternetClientCanShowPolarPlots
+        {
+            get { return PageWebServer.InternetClientCanShowPolarPlots.Value; }
+            set { PageWebServer.InternetClientCanShowPolarPlots.Value = value; }
+        }
+        #endregion
+
         public bool CheckForNewVersions { get; set; }
 
         public int CheckForNewVersionsPeriodDays { get; set; }
@@ -243,19 +326,6 @@ namespace VirtualRadar.WinForms
         {
             get { return _RebroadcastSettings; }
         }
-
-        public bool WebServerUserMustAuthenticate { get; set; }
-
-        private List<string> _WebServerUserIds = new List<string>();
-        public IList<string> WebServerUserIds { get { return _WebServerUserIds; } }
-
-        public bool EnableUPnpFeatures { get; set; }
-
-        public bool IsOnlyVirtualRadarServerOnLan { get; set; }
-
-        public bool AutoStartUPnp { get; set; }
-
-        public int UPnpPort { get; set; }
 
         public double InitialGoogleMapLatitude { get; set; }
 
@@ -284,22 +354,6 @@ namespace VirtualRadar.WinForms
         public bool EnableCompression { get; set; }
 
         public ProxyType ProxyType { get; set; }
-
-        public bool InternetClientCanRunReports { get; set; }
-
-        public bool InternetClientCanPlayAudio { get; set; }
-
-        public bool InternetClientCanSeePictures { get; set; }
-
-        public int InternetClientTimeoutMinutes { get; set; }
-
-        public bool InternetClientCanSeeLabels { get; set; }
-
-        public bool AllowInternetProximityGadgets { get; set; }
-
-        public bool InternetClientCanSubmitRoutes { get; set; }
-
-        public bool InternetClientCanShowPolarPlots { get; set; }
 
         public bool AudioEnabled { get; set; }
 
@@ -389,6 +443,7 @@ namespace VirtualRadar.WinForms
             PageMergedFeeds = new PageMergedFeeds();
             PageRawFeedDecoding = new PageRawFeedDecoding();
             PageUsers = new PageUsers();
+            PageWebServer = new PageWebServer();
 
             InitializeComponent();
 
@@ -783,6 +838,7 @@ namespace VirtualRadar.WinForms
                 AddPage(PageMergedFeeds);
                 AddPage(PageUsers);
                 AddPage(PageRawFeedDecoding);
+                AddPage(PageWebServer);
 
                 treeViewPagePicker.ExpandAll();
                 var firstNode = treeViewPagePicker.Nodes[0];
