@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace VirtualRadar.WinForms.Binding
 {
@@ -27,7 +28,6 @@ namespace VirtualRadar.WinForms.Binding
         }
 
         public event EventHandler Changed;
-
         protected virtual void OnChanged(EventArgs args)
         {
             if(Changed != null) Changed(this, args);
@@ -43,6 +43,11 @@ namespace VirtualRadar.WinForms.Binding
             return _Value;
         }
 
+        public IList GetListValue()
+        {
+            return _Value;
+        }
+
         public void SetValue(IEnumerable<T> value)
         {
             SetValue((object)value, false);
@@ -54,6 +59,11 @@ namespace VirtualRadar.WinForms.Binding
         }
 
         public void SetValue(object value)
+        {
+            SetValue(value, false);
+        }
+
+        public void SetListValue(IList value)
         {
             SetValue(value, false);
         }
@@ -111,7 +121,7 @@ namespace VirtualRadar.WinForms.Binding
                 _SuppressEvents = suppressEvents;
             }
 
-            if(changed) OnChanged(EventArgs.Empty);
+            if(changed && !_SuppressEvents) OnChanged(EventArgs.Empty);
         }
 
         private void Value_CollectionChanged(object sender, EventArgs args)

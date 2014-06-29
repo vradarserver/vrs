@@ -55,16 +55,37 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="list"></param>
         /// <param name="other"></param>
+        /// <param name="orderMustMatch"></param>
         /// <returns></returns>
-        public static bool HasSameContentAs(this IList list, IList other)
+        public static bool HasSameContentAs(this IList list, IList other, bool orderMustMatch)
         {
             var result = Object.ReferenceEquals(list, other);
             if(!result) {
                 result = list.Count == other.Count;
                 if(result) {
-                    for(var i = 0;i < list.Count;++i) {
-                        result = Object.Equals(list[i], other[i]);
-                        if(!result) break;
+                    if(orderMustMatch) {
+                        for(var i = 0;i < list.Count;++i) {
+                            result = Object.Equals(list[i], other[i]);
+                            if(!result) break;
+                        }
+                    } else {
+                        var unmatched = new LinkedList<object>();
+                        foreach(var item in other) {
+                            unmatched.AddLast(item);
+                        }
+
+                        foreach(var thisItem in list) {
+                            var matched = false;
+                            for(var node = unmatched.First;node != null;node = node.Next) {
+                                if(Object.Equals(thisItem, node.Value)) {
+                                    unmatched.Remove(node);
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                            result = matched;
+                            if(!result) break;
+                        }
                     }
                 }
             }

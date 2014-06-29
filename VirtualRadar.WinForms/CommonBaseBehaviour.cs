@@ -96,6 +96,23 @@ namespace VirtualRadar.WinForms
                 }
             }
         }
+
+        /// <summary>
+        /// Sets the checked state of every list view item.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="listView"></param>
+        /// <param name="checkedValues"></param>
+        public void CheckListViewItemsByTags<T>(ListView listView, IEnumerable<T> checkedValues)
+            where T: class
+        {
+            var tags = checkedValues.ToArray();
+            foreach(ListViewItem item in listView.Items) {
+                var tag = item.Tag as T;
+                var ticked = tags.Contains(tag);
+                if(ticked != item.Checked) item.Checked = ticked;
+            }
+        }
         #endregion
 
         #region FillDropDownWithEnumValues, FillDropDownWithValues, GetSelectedComboBoxValue, SelectComboBoxItemByValue

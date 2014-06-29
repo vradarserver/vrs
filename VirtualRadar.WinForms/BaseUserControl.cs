@@ -146,6 +146,18 @@ namespace VirtualRadar.WinForms
         {
             _CommonBaseBehaviour.SelectListViewItemsByTags<T>(listView, values, ensureVisible);
         }
+
+        /// <summary>
+        /// Sets the checked state of every list view item.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="listView"></param>
+        /// <param name="checkedValues"></param>
+        protected void CheckListViewItemsByTags<T>(ListView listView, IEnumerable<T> checkedValues)
+            where T: class
+        {
+            _CommonBaseBehaviour.CheckListViewItemsByTags<T>(listView, checkedValues);
+        }
         #endregion
 
         #region FillDropDownWithEnumValues, FillDropDownWithValues, GetSelectedComboBoxValue, SelectComboBoxItemByValue

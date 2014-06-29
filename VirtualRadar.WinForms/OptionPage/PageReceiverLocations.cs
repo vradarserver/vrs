@@ -55,12 +55,12 @@ namespace VirtualRadar.WinForms.OptionPage
 
         private void listReceiverLocations_FetchRecordContent(object sender, Controls.BindingListView.RecordContentEventArgs e)
         {
-            var receiver = (ReceiverLocation)e.Record;
+            var record = (ReceiverLocation)e.Record;
 
-            if(receiver != null) {
-                e.ColumnTexts.Add(receiver.Name);
-                e.ColumnTexts.Add(receiver.Latitude.ToString("N6"));
-                e.ColumnTexts.Add(receiver.Longitude.ToString("N6"));
+            if(record != null) {
+                e.ColumnTexts.Add(record.Name);
+                e.ColumnTexts.Add(record.Latitude.ToString("N6"));
+                e.ColumnTexts.Add(record.Longitude.ToString("N6"));
             }
         }
 

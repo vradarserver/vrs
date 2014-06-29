@@ -21,7 +21,7 @@ namespace VirtualRadar.WinForms.Binding
     public interface IObservable
     {
         /// <summary>
-        /// Raised when the value is changed.
+        /// Raised after the value has changed.
         /// </summary>
         event EventHandler Changed;
 

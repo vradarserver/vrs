@@ -328,6 +328,7 @@
             this.numericPort.Name = "numericPort";
             this.numericPort.Size = new System.Drawing.Size(77, 20);
             this.numericPort.TabIndex = 3;
+            this.numericPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label5
             // 
