@@ -77,6 +77,9 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        private List<IUser> _Users = new List<IUser>();
+        public IList<IUser> Users { get { return _Users; } }
+
         #region Fields
         /// <summary>
         /// The object that's controlling this view.

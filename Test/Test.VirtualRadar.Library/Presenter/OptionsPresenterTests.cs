@@ -92,6 +92,9 @@ namespace Test.VirtualRadar.Library.Presenter
         private List<RebroadcastSettings> _ViewRebroadcastSettings;
         private List<Receiver> _ViewReceivers;
         private List<string> _ViewWebServerUserIds;
+        private Mock<IUserManager> _UserManager;
+        private List<IUser> _UserManagerUsers;
+        private List<IUser> _ViewUsers;
 
         [TestInitialize]
         public void TestInitialise()
@@ -112,6 +115,10 @@ namespace Test.VirtualRadar.Library.Presenter
             _BaseStationDatabase = new Mock<IBaseStationDatabase>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _AutoConfigBaseStationDatabase.Setup(r => r.Database).Returns(_BaseStationDatabase.Object);
 
+            _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
+            _UserManagerUsers = new List<IUser>();
+            _UserManager.Setup(r => r.GetUsers()).Returns(_UserManagerUsers);
+
             _Presenter = Factory.Singleton.Resolve<IOptionsPresenter>();
             _Provider = new Mock<IOptionsPresenterProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
@@ -124,6 +131,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _ViewRawDecodingReceiverLocations = new List<ReceiverLocation>();
             _ViewRebroadcastSettings = new List<RebroadcastSettings>();
             _ViewReceivers = new List<Receiver>();
+            _ViewUsers = new List<IUser>();
             _ViewWebServerUserIds = new List<string>();
 
             _View = new Mock<IOptionsView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
@@ -131,6 +139,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _View.Setup(r => r.MergedFeeds).Returns(_ViewMergedFeeds);
             _View.Setup(r => r.RebroadcastSettings).Returns(_ViewRebroadcastSettings);
             _View.Setup(r => r.Receivers).Returns(_ViewReceivers);
+            _View.Setup(r => r.Users).Returns(_ViewUsers);
             _View.Setup(r => r.WebServerUserIds).Returns(_ViewWebServerUserIds);
         }
 
@@ -463,6 +472,18 @@ namespace Test.VirtualRadar.Library.Presenter
             Assert.AreEqual(2, _View.Object.WebServerUserIds.Count);
             Assert.AreEqual("First", _View.Object.WebServerUserIds[0]);
             Assert.AreEqual("Second", _View.Object.WebServerUserIds[1]);
+        }
+
+        [TestMethod]
+        public void OptionsPresenter_Initialise_Copies_Users_From_Configuration_To_UI()
+        {
+            var user = TestUtilities.CreateMockInstance<IUser>();
+            _UserManagerUsers.Add(user.Object);
+
+            _Presenter.Initialise(_View.Object);
+
+            Assert.AreEqual(1, _View.Object.Users.Count);
+            Assert.AreSame(user.Object, _View.Object.Users[0]);
         }
         #endregion
 

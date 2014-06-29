@@ -20,23 +20,23 @@ using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Binding;
 using VirtualRadar.Interface.Settings;
-using VirtualRadar.Interface.View;
+using InterfaceFactory;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
-    public partial class PageReceiverLocations : Page
+    public partial class PageUsers : Page
     {
-        private RecordListHelper<ReceiverLocation, PageReceiverLocation> _ListHelper;
+        private RecordListHelper<IUser, PageUser> _ListHelper;
 
-        public override string PageTitle { get { return Strings.ReceiverLocationsTitle; } }
+        public override string PageTitle { get { return Strings.Users; } }
 
-        public override Image PageIcon { get { return Images.iconmonstr_location_3_icon; } }
+        public override Image PageIcon { get { return Images.User16x16; } }
 
         public override bool PageUseFullHeight { get { return true; } }
 
-        public ObservableList<ReceiverLocation> ReceiverLocations { get; private set; }
+        public ObservableList<IUser> Users { get; private set; }
 
-        public PageReceiverLocations()
+        public PageUsers()
         {
             InitializeComponent();
             InitialisePage();
@@ -44,19 +44,28 @@ namespace VirtualRadar.WinForms.OptionPage
 
         protected override void CreateBindings()
         {
-            ReceiverLocations = BindListProperty<ReceiverLocation>(listReceiverLocations);
-
-            _ListHelper = new RecordListHelper<ReceiverLocation,PageReceiverLocation>(this, listReceiverLocations, ReceiverLocations);
+            Users = BindListProperty<IUser>(listUsers);
+            _ListHelper = new RecordListHelper<IUser,PageUser>(this, listUsers, Users);
         }
 
-        private void listReceiverLocations_FetchRecordContent(object sender, Controls.BindingListView.RecordContentEventArgs e)
+        protected override void InitialiseControls()
         {
-            var record = (ReceiverLocation)e.Record;
+            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            labelUserManager.Text = userManager.Name;
+            listUsers.CheckBoxes = userManager.CanEditUsers && userManager.CanChangeEnabledState;
+            listUsers.AllowAdd = userManager.CanCreateUsers;
+            listUsers.AllowUpdate = userManager.CanEditUsers;
+            listUsers.AllowDelete = userManager.CanDeleteUsers;
+        }
+
+        private void listUsers_FetchRecordContent(object sender, Controls.BindingListView.RecordContentEventArgs e)
+        {
+            var record = e.Record as IUser;
 
             if(record != null) {
-                e.ColumnTexts.Add(record.Name);
-                e.ColumnTexts.Add(record.Latitude.ToString("N6"));
-                e.ColumnTexts.Add(record.Longitude.ToString("N6"));
+                e.Checked = record.Enabled;
+                e.ColumnTexts.Add(record.LoginName ?? "");
+                e.ColumnTexts.Add(record.Name ?? "");
             }
         }
 
@@ -65,29 +74,28 @@ namespace VirtualRadar.WinForms.OptionPage
             return _ListHelper.CreatePageForNewChildRecord(observableList, record);
         }
 
-        private void listReceiverLocations_AddClicked(object sender, EventArgs e)
+        private void listUsers_AddClicked(object sender, EventArgs e)
         {
-            _ListHelper.AddClicked(() => new ReceiverLocation() {
-                UniqueId = GenerateUniqueId(1, ReceiverLocations.Value, r => r.UniqueId),
-                Name = GenerateUniqueName(ReceiverLocations.Value, "Location", false, r => r.Name),
-                Latitude = 0.0,
-                Longitude = 0.0,
+            _ListHelper.AddClicked(() => {
+                var result = Factory.Singleton.Resolve<IUser>();
+                result.Enabled = true;
+                return result;
             });
         }
 
-        private void listReceiverLocations_DeleteClicked(object sender, EventArgs e)
+        private void listUsers_CheckedChanged(object sender, Controls.BindingListView.RecordCheckedEventArgs e)
+        {
+            _ListHelper.SetEnabledForListCheckedChanged(e, r => r.RecordEnabled);
+        }
+
+        private void listUsers_DeleteClicked(object sender, EventArgs e)
         {
             _ListHelper.DeleteClicked();
         }
 
-        private void listReceiverLocations_EditClicked(object sender, EventArgs e)
+        private void listUsers_EditClicked(object sender, EventArgs e)
         {
             _ListHelper.EditClicked();
-        }
-
-        private void linkLabelUpdateFromBaseStationDatabase_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OptionsView.RaiseUpdateReceiverLocationsFromBaseStationDatabaseClicked(e);
         }
     }
 }

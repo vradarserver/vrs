@@ -151,6 +151,7 @@
     <Content Include="Images\Transparent-25.png" />
     <Content Include="Images\Transparent-50.png" />
     <Content Include="Images\Transparent_16x16.png" />
+    <Content Include="Images\User16x16.png" />
     <Content Include="Images\Volume0.png" />
     <Content Include="Images\Volume100.png" />
     <Content Include="Images\Volume25.png" />

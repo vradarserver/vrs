@@ -2785,6 +2785,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The name the user enters when logging in..
+        /// </summary>
+        public static string OptionsDescribeLoginName {
+            get {
+                return ResourceManager.GetString("OptionsDescribeLoginName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes to enable this merged feed, no to disable it..
         /// </summary>
         public static string OptionsDescribeMergedFeedEnabled {
@@ -3069,6 +3078,33 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeReceiverName {
             get {
                 return ResourceManager.GetString("OptionsDescribeReceiverName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes if the user&apos;s account is enabled, no if the user may not log in..
+        /// </summary>
+        public static string OptionsDescribeUserEnabled {
+            get {
+                return ResourceManager.GetString("OptionsDescribeUserEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The real name of the user..
+        /// </summary>
+        public static string OptionsDescribeUserName {
+            get {
+                return ResourceManager.GetString("OptionsDescribeUserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password that the user must supply when logging in..
+        /// </summary>
+        public static string OptionsDescribeUserPassword {
+            get {
+                return ResourceManager.GetString("OptionsDescribeUserPassword", resourceCulture);
             }
         }
         

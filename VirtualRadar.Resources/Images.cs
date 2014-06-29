@@ -829,6 +829,19 @@ namespace VirtualRadar.Resources
             set { _Transparent_16x16 = value; }
         }
 
+        private static Bitmap _User16x16;
+        /// <summary>
+        /// Gets or sets the User16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/User16x16.png" alt="" title="User16x16" />
+        /// </remarks>
+        public static Bitmap User16x16
+        {
+            get { return _User16x16 ?? InternalResources.User16x16; }
+            set { _User16x16 = value; }
+        }
+
         private static Bitmap _Volume0;
         /// <summary>
         /// Gets or sets the Volume0 image.

@@ -367,6 +367,13 @@ namespace VirtualRadar.Interface.View
         int TextToSpeechSpeed { get; set; }
         #endregion
 
+        #region Properties - Users
+        /// <summary>
+        /// Gets the list of users. This will be empty if the user manager cannot support listing users.
+        /// </summary>
+        IList<IUser> Users { get; }
+        #endregion
+
         #region Events
         /// <summary>
         /// Raised when the user wants to reset all values to factory defaults.

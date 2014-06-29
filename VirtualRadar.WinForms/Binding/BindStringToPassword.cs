@@ -12,31 +12,50 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.Settings;
+using VirtualRadar.WinForms.Controls;
 
-namespace VirtualRadar.WinForms.OptionPage
+namespace VirtualRadar.WinForms.Binding
 {
     /// <summary>
-    /// Describes a feed item, which is derived from either a receiver or a merged feed.
+    /// Binds strings to password controls.
     /// </summary>
-    public class CombinedFeed
+    public class BindStringToPassword : Binder<PasswordControl>
     {
-        public Receiver Receiver { get; private set; }
+        private Observable<string> CastObservable { get { return (Observable<string>)Observable; } }
 
-        public MergedFeed MergedFeed { get; private set; }
-
-        public int UniqueId { get { return Receiver != null ? Receiver.UniqueId : MergedFeed != null ? MergedFeed.UniqueId : 0; } }
-
-        public string Name { get { return Receiver != null ? Receiver.Name : MergedFeed != null ? MergedFeed.Name : null; } }
-
-        public CombinedFeed(Receiver receiver)
+        public BindStringToPassword(IObservable observable, PasswordControl control) : base(observable, control)
         {
-            Receiver = receiver;
         }
 
-        public CombinedFeed(MergedFeed mergedFeed)
+        protected override void SetControlFromObservable()
         {
-            MergedFeed = mergedFeed;
+            Control.Password = CastObservable.Value;
+        }
+
+        protected override void SetObservableFromControl()
+        {
+            CastObservable.Value = Control.Password;
+        }
+
+        protected override void HookControlChanged()
+        {
+            Control.PasswordTextChanged += Control_ValueChanged;
+        }
+
+        protected override void UnhookControlChanged()
+        {
+            Control.PasswordTextChanged -= Control_ValueChanged;
+        }
+
+        protected override bool ControlValueEqualsObservableValue(bool fromControlToObservable)
+        {
+            bool result = Control.Password == CastObservable.Value;
+
+            if(!result && Control.TrimPassword) {
+                result = Control.Password == (CastObservable.Value ?? "").Trim();
+            }
+
+            return result;
         }
     }
 }

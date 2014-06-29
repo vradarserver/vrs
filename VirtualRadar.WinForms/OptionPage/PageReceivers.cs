@@ -32,6 +32,8 @@ namespace VirtualRadar.WinForms.OptionPage
     /// </summary>
     public partial class PageReceivers : Page
     {
+        private RecordListHelper<Receiver, PageReceiver> _ListHelper;
+
         public override string PageTitle { get { return Strings.Receivers; } }
 
         public override Image PageIcon { get { return Images.iconmonstr_radio_3_icon; } }
@@ -68,6 +70,8 @@ namespace VirtualRadar.WinForms.OptionPage
             ClosestAircraftReceiverId = BindProperty<int>(comboBoxClosestAircraftReceiverId);
             FlightSimulatorXReceiverId = BindProperty<int>(comboBoxFsxReceiverId);
             Receivers = BindListProperty<Receiver>(listReceivers);
+
+            _ListHelper = new RecordListHelper<Receiver,PageReceiver>(this, listReceivers, Receivers);
         }
 
         protected override void InitialiseControls()
@@ -133,45 +137,31 @@ namespace VirtualRadar.WinForms.OptionPage
 
         private void listReceivers_AddClicked(object sender, EventArgs e)
         {
-            var record = new Receiver() {
+            _ListHelper.AddClicked(() => new Receiver() {
                 Enabled = true,
                 UniqueId = GenerateUniqueId(OptionsView.HighestConfiguredFeedId + 1, OptionsView.CombinedFeeds.Value, r => r.UniqueId),
                 Name = GenerateUniqueName(Receivers.Value, "Receiver", false, r => r.Name),
-            };
-            Receivers.Value.Add(record);
-
-            listReceivers.SelectedRecord = record;
-            OptionsView.DisplayPageForPageObject(record);
+            });
         }
 
         private void listReceivers_DeleteClicked(object sender, EventArgs e)
         {
-            var deleteReceivers = listReceivers.SelectedRecords.OfType<Receiver>().ToArray();
-            foreach(var deleteReceiver in deleteReceivers) {
-                Receivers.Value.Remove(deleteReceiver);
-            }
+            _ListHelper.DeleteClicked();
         }
 
         private void listReceivers_EditClicked(object sender, EventArgs e)
         {
-            var receiver = listReceivers.SelectedRecord as Receiver;
-            if(receiver != null) OptionsView.DisplayPageForPageObject(receiver);
+            _ListHelper.EditClicked();
         }
 
         private void listReceivers_CheckedChanged(object sender, BindingListView.RecordCheckedEventArgs e)
         {
-            var page = OptionsView.FindPageForPageObject(e.Record) as PageReceiver;
-            if(page != null && page.RecordEnabled.Value != e.Checked) {
-                page.RecordEnabled.Value = e.Checked;
-            }
+            _ListHelper.SetEnabledForListCheckedChanged(e, r => r.RecordEnabled);
         }
 
         protected override Page CreatePageForNewChildRecord(IObservableList observableList, object record)
         {
-            Page result = null;
-            if(observableList == Receivers) result = new PageReceiver();
-
-            return result;
+            return _ListHelper.CreatePageForNewChildRecord(observableList, record);
         }
         #endregion
     }

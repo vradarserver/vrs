@@ -2029,4 +2029,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="Range" xml:space="preserve">
     <value>Range</value>
   </data>
+  <data name="OptionsDescribeLoginName" xml:space="preserve">
+    <value>The name the user enters when logging in.</value>
+  </data>
+  <data name="OptionsDescribeUserEnabled" xml:space="preserve">
+    <value>Yes if the user's account is enabled, no if the user may not log in.</value>
+  </data>
+  <data name="OptionsDescribeUserName" xml:space="preserve">
+    <value>The real name of the user.</value>
+  </data>
+  <data name="OptionsDescribeUserPassword" xml:space="preserve">
+    <value>The password that the user must supply when logging in.</value>
+  </data>
 </root>

@@ -55,6 +55,15 @@ namespace VirtualRadar.WinForms
         private DynamicImageList _ImageList = new DynamicImageList();
         #endregion
 
+        #region Top-level Page Properties
+        public PageDataSources          PageDataSources         { get; private set; }
+        public PageReceivers            PageReceivers           { get; private set; }
+        public PageReceiverLocations    PageReceiverLocations   { get; private set; }
+        public PageMergedFeeds          PageMergedFeeds         { get; private set; }
+        public PageRawFeedDecoding      PageRawFeedDecoding     { get; private set; }
+        public PageUsers                PageUsers               { get; private set; }
+        #endregion
+
         #region Options Properties
 
         #region Data Sources
@@ -117,6 +126,10 @@ namespace VirtualRadar.WinForms
 
         #region MergedFeeds
         public IList<MergedFeed> MergedFeeds { get { return PageMergedFeeds.MergedFeeds.Value; } }
+        #endregion
+
+        #region Users
+        public IList<IUser> Users { get { return PageUsers.Users.Value; } }
         #endregion
 
         #region RawFeedDecoding
@@ -328,14 +341,6 @@ namespace VirtualRadar.WinForms
         public ObservableList<CombinedFeed> CombinedFeeds { get; private set; }
         #endregion
 
-        #region Top-level Page Properties
-        public PageDataSources          PageDataSources         { get; private set; }
-        public PageReceivers            PageReceivers           { get; private set; }
-        public PageReceiverLocations    PageReceiverLocations   { get; private set; }
-        public PageMergedFeeds          PageMergedFeeds         { get; private set; }
-        public PageRawFeedDecoding      PageRawFeedDecoding     { get; private set; }
-        #endregion
-
         #region Events exposed
         public event EventHandler ResetToDefaultsClicked;
 
@@ -383,6 +388,7 @@ namespace VirtualRadar.WinForms
             PageReceiverLocations = new PageReceiverLocations();
             PageMergedFeeds = new PageMergedFeeds();
             PageRawFeedDecoding = new PageRawFeedDecoding();
+            PageUsers = new PageUsers();
 
             InitializeComponent();
 
@@ -775,6 +781,7 @@ namespace VirtualRadar.WinForms
                 AddPage(PageReceivers);
                 AddPage(PageReceiverLocations);
                 AddPage(PageMergedFeeds);
+                AddPage(PageUsers);
                 AddPage(PageRawFeedDecoding);
 
                 treeViewPagePicker.ExpandAll();
