@@ -119,6 +119,98 @@ namespace VirtualRadar.WinForms
         public IList<MergedFeed> MergedFeeds { get { return PageMergedFeeds.MergedFeeds.Value; } }
         #endregion
 
+        #region RawFeedDecoding
+        public int RawDecodingReceiverRange
+        {
+            get { return PageRawFeedDecoding.ReceiverRange.Value; }
+            set { PageRawFeedDecoding.ReceiverRange.Value = value; }
+        }
+
+        public bool RawDecodingIgnoreMilitaryExtendedSquitter
+        {
+            get { return PageRawFeedDecoding.IgnoreMilitaryExtendedSquitter.Value; }
+            set { PageRawFeedDecoding.IgnoreMilitaryExtendedSquitter.Value = value; }
+        }
+
+        public bool RawDecodingSuppressReceiverRangeCheck
+        {
+            get { return PageRawFeedDecoding.SuppressReceiverRangeCheck.Value; }
+            set { PageRawFeedDecoding.SuppressReceiverRangeCheck.Value = value; }
+        }
+
+        public bool RawDecodingUseLocalDecodeForInitialPosition
+        {
+            get { return PageRawFeedDecoding.UseLocalDecodeForInitialPosition.Value; }
+            set { PageRawFeedDecoding.UseLocalDecodeForInitialPosition.Value = value; }
+        }
+
+        public int RawDecodingAirborneGlobalPositionLimit
+        {
+            get { return PageRawFeedDecoding.AirborneGlobalPositionLimit.Value; }
+            set { PageRawFeedDecoding.AirborneGlobalPositionLimit.Value = value; }
+        }
+
+        public int RawDecodingFastSurfaceGlobalPositionLimit
+        {
+            get { return PageRawFeedDecoding.FastSurfaceGlobalPositionLimit.Value; }
+            set { PageRawFeedDecoding.FastSurfaceGlobalPositionLimit.Value = value; }
+        }
+
+        public int RawDecodingSlowSurfaceGlobalPositionLimit
+        {
+            get { return PageRawFeedDecoding.SlowSurfaceGlobalPositionLimit.Value; }
+            set { PageRawFeedDecoding.SlowSurfaceGlobalPositionLimit.Value = value; }
+        }
+
+        public double RawDecodingAcceptableAirborneSpeed
+        {
+            get { return PageRawFeedDecoding.AcceptableAirborneSpeed.Value; }
+            set { PageRawFeedDecoding.AcceptableAirborneSpeed.Value = value; }
+        }
+
+        public double RawDecodingAcceptableAirSurfaceTransitionSpeed
+        {
+            get { return PageRawFeedDecoding.AcceptableAirSurfaceTransitionSpeed.Value; }
+            set { PageRawFeedDecoding.AcceptableAirSurfaceTransitionSpeed.Value = value; }
+        }
+
+        public double RawDecodingAcceptableSurfaceSpeed
+        {
+            get { return PageRawFeedDecoding.AcceptableSurfaceSpeed.Value; }
+            set { PageRawFeedDecoding.AcceptableSurfaceSpeed.Value = value; }
+        }
+
+        public bool RawDecodingIgnoreCallsignsInBds20
+        {
+            get { return PageRawFeedDecoding.IgnoreCallsignsInBds20.Value; }
+            set { PageRawFeedDecoding.IgnoreCallsignsInBds20.Value = value; }
+        }
+
+        public int AcceptIcaoInNonPICount
+        {
+            get { return PageRawFeedDecoding.AcceptIcaoInNonPICount.Value; }
+            set { PageRawFeedDecoding.AcceptIcaoInNonPICount.Value = value; }
+        }
+
+        public int AcceptIcaoInNonPISeconds
+        {
+            get { return PageRawFeedDecoding.AcceptIcaoInNonPISeconds.Value; }
+            set { PageRawFeedDecoding.AcceptIcaoInNonPISeconds.Value = value; }
+        }
+
+        public int AcceptIcaoInPI0Count
+        {
+            get { return PageRawFeedDecoding.AcceptIcaoInPI0Count.Value; }
+            set { PageRawFeedDecoding.AcceptIcaoInPI0Count.Value = value; }
+        }
+
+        public int AcceptIcaoInPI0Seconds
+        {
+            get { return PageRawFeedDecoding.AcceptIcaoInPI0Seconds.Value; }
+            set { PageRawFeedDecoding.AcceptIcaoInPI0Seconds.Value = value; }
+        }
+        #endregion
+
         public bool CheckForNewVersions { get; set; }
 
         public int CheckForNewVersionsPeriodDays { get; set; }
@@ -138,36 +230,6 @@ namespace VirtualRadar.WinForms
         {
             get { return _RebroadcastSettings; }
         }
-
-        public int RawDecodingReceiverRange { get; set; }
-
-        public bool RawDecodingIgnoreMilitaryExtendedSquitter { get; set; }
-
-        public bool RawDecodingSuppressReceiverRangeCheck { get; set; }
-
-        public bool RawDecodingUseLocalDecodeForInitialPosition { get; set; }
-
-        public int RawDecodingAirborneGlobalPositionLimit { get; set; }
-
-        public int RawDecodingFastSurfaceGlobalPositionLimit { get; set; }
-
-        public int RawDecodingSlowSurfaceGlobalPositionLimit { get; set; }
-
-        public double RawDecodingAcceptableAirborneSpeed { get; set; }
-
-        public double RawDecodingAcceptableAirSurfaceTransitionSpeed { get; set; }
-
-        public double RawDecodingAcceptableSurfaceSpeed { get; set; }
-
-        public bool RawDecodingIgnoreCallsignsInBds20 { get; set; }
-
-        public int AcceptIcaoInNonPICount { get; set; }
-
-        public int AcceptIcaoInNonPISeconds { get; set; }
-
-        public int AcceptIcaoInPI0Count { get; set; }
-
-        public int AcceptIcaoInPI0Seconds { get; set; }
 
         public bool WebServerUserMustAuthenticate { get; set; }
 
@@ -271,6 +333,7 @@ namespace VirtualRadar.WinForms
         public PageReceivers            PageReceivers           { get; private set; }
         public PageReceiverLocations    PageReceiverLocations   { get; private set; }
         public PageMergedFeeds          PageMergedFeeds         { get; private set; }
+        public PageRawFeedDecoding      PageRawFeedDecoding     { get; private set; }
         #endregion
 
         #region Events exposed
@@ -283,7 +346,6 @@ namespace VirtualRadar.WinForms
         }
 
         public event EventHandler<EventArgs<Receiver>> TestConnectionClicked;
-
         public void RaiseTestConnectionClicked(EventArgs<Receiver> args)
         {
             if(TestConnectionClicked != null) TestConnectionClicked(this, args);
@@ -292,15 +354,22 @@ namespace VirtualRadar.WinForms
         public event EventHandler TestTextToSpeechSettingsClicked;
 
         public event EventHandler UpdateReceiverLocationsFromBaseStationDatabaseClicked;
-
         public void RaiseUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs args)
         {
             if(UpdateReceiverLocationsFromBaseStationDatabaseClicked != null) UpdateReceiverLocationsFromBaseStationDatabaseClicked(this, args);
         }
 
         public event EventHandler UseIcaoRawDecodingSettingsClicked;
+        public void RaiseUseIcaoRawDecodingSettingsClicked(EventArgs args)
+        {
+            if(UseIcaoRawDecodingSettingsClicked != null) UseIcaoRawDecodingSettingsClicked(this, args);
+        }
 
         public event EventHandler UseRecommendedRawDecodingSettingsClicked;
+        public void RaiseUseRecommendedRawDecodingSettingsClicked(EventArgs args)
+        {
+            if(UseRecommendedRawDecodingSettingsClicked != null) UseRecommendedRawDecodingSettingsClicked(this, args);
+        }
         #endregion
 
         #region Ctor
@@ -312,7 +381,8 @@ namespace VirtualRadar.WinForms
             PageDataSources = new PageDataSources();
             PageReceivers = new PageReceivers();
             PageReceiverLocations = new PageReceiverLocations();
-            PageMergedFeeds = new OptionPage.PageMergedFeeds();
+            PageMergedFeeds = new PageMergedFeeds();
+            PageRawFeedDecoding = new PageRawFeedDecoding();
 
             InitializeComponent();
 
@@ -705,6 +775,7 @@ namespace VirtualRadar.WinForms
                 AddPage(PageReceivers);
                 AddPage(PageReceiverLocations);
                 AddPage(PageMergedFeeds);
+                AddPage(PageRawFeedDecoding);
 
                 treeViewPagePicker.ExpandAll();
                 var firstNode = treeViewPagePicker.Nodes[0];

@@ -2026,4 +2026,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="IcaoTimeoutTitle" xml:space="preserve">
     <value>ICAO Timeout</value>
   </data>
+  <data name="Range" xml:space="preserve">
+    <value>Range</value>
+  </data>
 </root>
