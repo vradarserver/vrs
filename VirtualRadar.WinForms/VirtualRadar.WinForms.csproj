@@ -324,6 +324,18 @@
     <Compile Include="OptionPage\PageUsers.Designer.cs">
       <DependentUpon>PageUsers.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionPage\PageWebServer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageWebServer.Designer.cs">
+      <DependentUpon>PageWebServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPage\PageWebServerAuthentication.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageWebServerAuthentication.Designer.cs">
+      <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionPage\RecordListHelper.cs" />
     <Compile Include="OptionPage\ValidationFieldAttribute.cs" />
     <Compile Include="OptionsPropertySheetView.cs">
@@ -597,6 +609,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageUsers.resx">
       <DependentUpon>PageUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageWebServer.resx">
+      <DependentUpon>PageWebServer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageWebServerAuthentication.resx">
+      <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPropertySheetView.resx">
       <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>

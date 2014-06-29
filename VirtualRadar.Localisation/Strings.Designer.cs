@@ -5154,7 +5154,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internet port number.
+        ///   Looks up a localized string similar to UPnP port number.
         /// </summary>
         public static string UPnpPort {
             get {

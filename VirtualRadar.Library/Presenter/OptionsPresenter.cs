@@ -231,8 +231,8 @@ namespace VirtualRadar.Library.Presenter
         private void CopyConfigurationToUI(Configuration configuration)
         {
             var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
-            var users = userManager.GetUsers().Select(r => { r.UIPassword = _DefaultPassword; return r; });
-            _View.Users.AddRange(users);
+            var allUsers = userManager.GetUsers().Select(r => { r.UIPassword = _DefaultPassword; return r; }).ToArray();
+            _View.Users.AddRange(allUsers);
 
             _View.AudioEnabled = configuration.AudioSettings.Enabled;
             _View.TextToSpeechSpeed = configuration.AudioSettings.VoiceRate;
@@ -286,7 +286,7 @@ namespace VirtualRadar.Library.Presenter
             _View.CheckForNewVersionsPeriodDays = configuration.VersionCheckSettings.CheckPeriodDays;
 
             _View.WebServerUserMustAuthenticate = configuration.WebServerSettings.AuthenticationScheme == AuthenticationSchemes.Basic;
-            _View.WebServerUserIds.AddRange(configuration.WebServerSettings.BasicAuthenticationUserIds);
+            _View.WebServerUsers.AddRange(GetSubsetOfUsers(allUsers, configuration.WebServerSettings.BasicAuthenticationUserIds));
             _View.EnableUPnpFeatures = configuration.WebServerSettings.EnableUPnp;
             _View.IsOnlyVirtualRadarServerOnLan = configuration.WebServerSettings.IsOnlyInternetServerOnLan;
             _View.AutoStartUPnp = configuration.WebServerSettings.AutoStartUPnP;
@@ -309,12 +309,22 @@ namespace VirtualRadar.Library.Presenter
             _View.AcceptIcaoInPI0Seconds = configuration.RawDecodingSettings.AcceptIcaoInPI0Seconds;
         }
 
+        private IUser[] GetSubsetOfUsers(IUser[] allUsers, IEnumerable<string> selectedUserIds)
+        {
+            var result = selectedUserIds.Select(r => allUsers.FirstOrDefault(i => i.UniqueId == r)).Where(r => r != null).ToArray();
+            return result;
+        }
+
         /// <summary>
         /// Copies the configuration settings from the UI to the user interface.
         /// </summary>
         /// <param name="configuration"></param>
         private void CopyUIToConfiguration(Configuration configuration)
         {
+            // By this point we should have saved changes to the users
+            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            var allUsers = userManager.GetUsers().Select(r => { r.UIPassword = _DefaultPassword; return r; }).ToArray();
+
             configuration.AudioSettings.Enabled = _View.AudioEnabled;
             configuration.AudioSettings.VoiceName = _View.TextToSpeechVoice;
             configuration.AudioSettings.VoiceRate = _View.TextToSpeechSpeed;
@@ -372,7 +382,7 @@ namespace VirtualRadar.Library.Presenter
 
             configuration.WebServerSettings.AuthenticationScheme = _View.WebServerUserMustAuthenticate ? AuthenticationSchemes.Basic : AuthenticationSchemes.Anonymous;
             configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
-            configuration.WebServerSettings.BasicAuthenticationUserIds.AddRange(_View.WebServerUserIds);
+            configuration.WebServerSettings.BasicAuthenticationUserIds.AddRange(GetUniqueIdsForSubsetOfAllUsers(allUsers, _View.WebServerUsers));
             configuration.WebServerSettings.EnableUPnp = _View.EnableUPnpFeatures;
             configuration.WebServerSettings.IsOnlyInternetServerOnLan = _View.IsOnlyVirtualRadarServerOnLan;
             configuration.WebServerSettings.AutoStartUPnP = _View.AutoStartUPnp;
@@ -393,6 +403,12 @@ namespace VirtualRadar.Library.Presenter
             configuration.RawDecodingSettings.AcceptIcaoInNonPISeconds = _View.AcceptIcaoInNonPISeconds;
             configuration.RawDecodingSettings.AcceptIcaoInPI0Count = _View.AcceptIcaoInPI0Count;
             configuration.RawDecodingSettings.AcceptIcaoInPI0Seconds = _View.AcceptIcaoInPI0Seconds;
+        }
+
+        string[] GetUniqueIdsForSubsetOfAllUsers(IUser[] allUsers, IEnumerable<IUser> subset)
+        {
+            var result = subset.Where(r => allUsers.Any(i => i.UniqueId == r.UniqueId)).Select(r => r.UniqueId).ToArray();
+            return result;
         }
         #endregion
 

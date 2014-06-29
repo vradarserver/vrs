@@ -79,6 +79,8 @@ namespace VirtualRadar.WinForms.OptionPage
             _ListHelper.AddClicked(() => {
                 var result = Factory.Singleton.Resolve<IUser>();
                 result.Enabled = true;
+                result.LoginName = "";
+                result.Name = "";
                 return result;
             });
         }
