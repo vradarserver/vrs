@@ -23,7 +23,14 @@ namespace VirtualRadar.WinForms.Binding
     /// </summary>
     public static class BindingFactory
     {
-        public static IBinder CreateBinder(IObservable observable, Control control)
+        /// <summary>
+        /// Binds an observable value to a control. Support for binding to specific control properties is somewhat limited.
+        /// </summary>
+        /// <param name="observable"></param>
+        /// <param name="control"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public static IBinder CreateBinder(IObservable observable, Control control, string propertyName)
         {
             IBinder result = null;
 
@@ -31,19 +38,20 @@ namespace VirtualRadar.WinForms.Binding
             var isList = typeof(IEnumerable).IsAssignableFrom(valueType);
 
             if(valueType == typeof(string)) {
-                if(IsKindOf<FileNameControl>(control))      result = new BindStringToFileName((Observable<string>)observable, (FileNameControl)control);
-                else if(IsKindOf<FolderControl>(control))   result = new BindStringToFolder((Observable<string>)observable, (FolderControl)control);
-                else if(IsKindOf<PasswordControl>(control)) result = new BindStringToPassword((Observable<string>)observable, (PasswordControl)control);
-                else if(IsKindOf<TextBox>(control))         result = new BindStringToTextBox((Observable<string>)observable, (TextBox)control);
+                if(IsKindOf<FileNameControl>(control))          result = new BindStringToFileName((Observable<string>)observable, (FileNameControl)control);
+                else if(IsKindOf<FolderControl>(control))       result = new BindStringToFolder((Observable<string>)observable, (FolderControl)control);
+                else if(IsKindOf<PasswordControl>(control))     result = new BindStringToPassword((Observable<string>)observable, (PasswordControl)control);
+                else if(IsKindOf<TextBox>(control))             result = new BindStringToTextBox((Observable<string>)observable, (TextBox)control);
             } else if(valueType == typeof(bool)) {
-                if(IsKindOf<CheckBox>(control))             result = new BindBoolToCheckbox((Observable<bool>)observable, (CheckBox)control);
+                if(IsKindOf<CheckBox>(control))                 result = new BindBoolToCheckbox((Observable<bool>)observable, (CheckBox)control);
             } else if(valueType == typeof(int)) {
-                if(IsKindOf<NumericUpDown>(control))        result = new BindIntToNumericUpDown((Observable<int>)observable, (NumericUpDown)control);
+                if(IsKindOf<NumericUpDown>(control))            result = new BindIntToNumericUpDown((Observable<int>)observable, (NumericUpDown)control);
             } else if(valueType == typeof(double)) {
-                if(IsKindOf<NumericUpDown>(control))        result = new BindDoubleToNumericUpDown((Observable<double>)observable, (NumericUpDown)control);
+                if(IsKindOf<NumericUpDown>(control))            result = new BindDoubleToNumericUpDown((Observable<double>)observable, (NumericUpDown)control);
+                else if(IsKindOf<LocationMapControl>(control))  result = new BindDoubleToLocationMap((Observable<double>)observable, (LocationMapControl)control, propertyName);
             } else if(isList) {
-                if(IsKindOf<ObservableListView>(control))   result = new BindCollectionToObservableListView((IObservableList)observable, (ObservableListView)control);
-                else if(IsKindOf<BindingListView>(control)) result = new BindCollectionToListView((IObservableList)observable, (BindingListView)control);
+                if(IsKindOf<ObservableListView>(control))       result = new BindCollectionToObservableListView((IObservableList)observable, (ObservableListView)control);
+                else if(IsKindOf<BindingListView>(control))     result = new BindCollectionToListView((IObservableList)observable, (BindingListView)control);
             }
 
             if(result == null && IsKindOf<ComboBox>(control)) {

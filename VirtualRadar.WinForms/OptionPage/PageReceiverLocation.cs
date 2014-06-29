@@ -30,6 +30,8 @@ namespace VirtualRadar.WinForms.OptionPage
 
         public ReceiverLocation ReceiverLocation { get { return PageObject as ReceiverLocation; } }
 
+        public override bool PageUseFullHeight { get { return true; } }
+
         [PageTitle]
         [LocalisedDisplayName("Name")]
         [LocalisedDescription("OptionsDescribeReceiverLocationName")]
@@ -55,8 +57,8 @@ namespace VirtualRadar.WinForms.OptionPage
         protected override void CreateBindings()
         {
             RecordName = BindProperty<string>(textBoxName);
-            Latitude = BindProperty<double>(numericLatitude);
-            Longitude = BindProperty<double>(numericLongitude);
+            Latitude = BindProperty<double>(locationMap, "Latitude");
+            Longitude = BindProperty<double>(locationMap, "Longitude");
         }
 
         protected override void CopyRecordToObservables()

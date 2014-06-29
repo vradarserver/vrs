@@ -76,6 +76,7 @@
     <Compile Include="Binding\BindBoolToCheckbox.cs" />
     <Compile Include="Binding\BindCollectionToListView.cs" />
     <Compile Include="Binding\BindCollectionToObservableListView.cs" />
+    <Compile Include="Binding\BindDoubleToLocationMap.cs" />
     <Compile Include="Binding\BindDoubleToNumericUpDown.cs" />
     <Compile Include="Binding\BindIntToNumericUpDown.cs" />
     <Compile Include="Binding\BindStringToPassword.cs" />
@@ -99,6 +100,11 @@
     </Compile>
     <Compile Include="ConnectionSessionLogView.Designer.cs">
       <DependentUpon>ConnectionSessionLogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ControlResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Controls\AircraftListControl.cs">
       <SubType>UserControl</SubType>
@@ -142,6 +148,12 @@
     </Compile>
     <Compile Include="Controls\FileNameControl.Designer.cs">
       <DependentUpon>FileNameControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LocationMapControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LocationMapControl.Designer.cs">
+      <DependentUpon>LocationMapControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\InvalidPluginCountControl.cs">
       <SubType>UserControl</SubType>
@@ -514,6 +526,10 @@
     <EmbeddedResource Include="ConnectionSessionLogView.resx">
       <DependentUpon>ConnectionSessionLogView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ControlResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ControlResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\AircraftListControl.resx">
       <DependentUpon>AircraftListControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -537,6 +553,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InvalidPluginsControl.resx">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LocationMapControl.resx">
+      <DependentUpon>LocationMapControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PasswordControl.resx">
       <DependentUpon>PasswordControl.cs</DependentUpon>
@@ -694,7 +713,9 @@
       <Name>VirtualRadar.Resources</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Controls\LocationMapControl.html" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
