@@ -63,6 +63,7 @@ namespace VirtualRadar.WinForms
         public PageRawFeedDecoding      PageRawFeedDecoding     { get; private set; }
         public PageUsers                PageUsers               { get; private set; }
         public PageWebServer            PageWebServer           { get; private set; }
+        public PageWebSite              PageWebSite             { get; private set; }
         #endregion
 
         #region Options Properties
@@ -307,6 +308,92 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region WebSite
+        public double InitialGoogleMapLatitude 
+        {
+            get { return PageWebSite.PageGoogleMaps.InitialGoogleMapLatitude.Value; }
+            set { PageWebSite.PageGoogleMaps.InitialGoogleMapLatitude.Value = value; }
+        }
+
+        public double InitialGoogleMapLongitude 
+        {
+            get { return PageWebSite.PageGoogleMaps.InitialGoogleMapLongitude.Value; }
+            set { PageWebSite.PageGoogleMaps.InitialGoogleMapLongitude.Value = value; }
+        }
+
+        public string InitialGoogleMapType 
+        {
+            get { return PageWebSite.PageGoogleMaps.InitialGoogleMapType.Value; }
+            set { PageWebSite.PageGoogleMaps.InitialGoogleMapType.Value = value; }
+        }
+
+        public int InitialGoogleMapZoom 
+        {
+            get { return PageWebSite.PageGoogleMaps.InitialGoogleMapZoom.Value; }
+            set { PageWebSite.PageGoogleMaps.InitialGoogleMapZoom.Value = value; }
+        }
+
+        public int InitialGoogleMapRefreshSeconds 
+        {
+            get { return PageWebSite.InitialGoogleMapRefreshSeconds.Value; }
+            set { PageWebSite.InitialGoogleMapRefreshSeconds.Value = value; }
+        }
+
+        public int MinimumGoogleMapRefreshSeconds 
+        {
+            get { return PageWebSite.MinimumGoogleMapRefreshSeconds.Value; }
+            set { PageWebSite.MinimumGoogleMapRefreshSeconds.Value = value; }
+        }
+
+        public DistanceUnit InitialDistanceUnit 
+        {
+            get { return PageWebSite.InitialDistanceUnit.Value; }
+            set { PageWebSite.InitialDistanceUnit.Value = value; }
+        }
+
+        public HeightUnit InitialHeightUnit 
+        {
+            get { return PageWebSite.InitialHeightUnit.Value; }
+            set { PageWebSite.InitialHeightUnit.Value = value; }
+        }
+
+        public SpeedUnit InitialSpeedUnit 
+        {
+            get { return PageWebSite.InitialSpeedUnit.Value; }
+            set { PageWebSite.InitialSpeedUnit.Value = value; }
+        }
+
+        public bool PreferIataAirportCodes 
+        {
+            get { return PageWebSite.PreferIataAirportCodes.Value; }
+            set { PageWebSite.PreferIataAirportCodes.Value = value; }
+        }
+
+        public bool EnableBundling 
+        {
+            get { return PageWebSite.EnableBundling.Value; }
+            set { PageWebSite.EnableBundling.Value = value; }
+        }
+
+        public bool EnableMinifying 
+        {
+            get { return PageWebSite.EnableMinifying.Value; }
+            set { PageWebSite.EnableMinifying.Value = value; }
+        }
+
+        public bool EnableCompression 
+        {
+            get { return PageWebSite.EnableCompression.Value; }
+            set { PageWebSite.EnableCompression.Value = value; }
+        }
+
+        public ProxyType ProxyType 
+        {
+            get { return PageWebSite.ProxyType.Value; }
+            set { PageWebSite.ProxyType.Value = value; }
+        }
+        #endregion
+
         public bool CheckForNewVersions { get; set; }
 
         public int CheckForNewVersionsPeriodDays { get; set; }
@@ -326,34 +413,6 @@ namespace VirtualRadar.WinForms
         {
             get { return _RebroadcastSettings; }
         }
-
-        public double InitialGoogleMapLatitude { get; set; }
-
-        public double InitialGoogleMapLongitude { get; set; }
-
-        public string InitialGoogleMapType { get; set; }
-
-        public int InitialGoogleMapZoom { get; set; }
-
-        public int InitialGoogleMapRefreshSeconds { get; set; }
-
-        public int MinimumGoogleMapRefreshSeconds { get; set; }
-
-        public DistanceUnit InitialDistanceUnit { get; set; }
-
-        public HeightUnit InitialHeightUnit { get; set; }
-
-        public SpeedUnit InitialSpeedUnit { get; set; }
-
-        public bool PreferIataAirportCodes { get; set; }
-
-        public bool EnableBundling { get; set; }
-
-        public bool EnableMinifying { get; set; }
-
-        public bool EnableCompression { get; set; }
-
-        public ProxyType ProxyType { get; set; }
 
         public bool AudioEnabled { get; set; }
 
@@ -444,6 +503,7 @@ namespace VirtualRadar.WinForms
             PageRawFeedDecoding = new PageRawFeedDecoding();
             PageUsers = new PageUsers();
             PageWebServer = new PageWebServer();
+            PageWebSite = new PageWebSite();
 
             InitializeComponent();
 
@@ -839,6 +899,7 @@ namespace VirtualRadar.WinForms
                 AddPage(PageUsers);
                 AddPage(PageRawFeedDecoding);
                 AddPage(PageWebServer);
+                AddPage(PageWebSite);
 
                 treeViewPagePicker.ExpandAll();
                 var firstNode = treeViewPagePicker.Nodes[0];

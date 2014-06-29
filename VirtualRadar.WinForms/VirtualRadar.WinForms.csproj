@@ -281,6 +281,12 @@
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\PageEnabledAttribute.cs" />
+    <Compile Include="OptionPage\PageGoogleMaps.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageGoogleMaps.Designer.cs">
+      <DependentUpon>PageGoogleMaps.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionPage\PageMergedFeed.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -347,6 +353,12 @@
     </Compile>
     <Compile Include="OptionPage\PageWebServerAuthentication.Designer.cs">
       <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPage\PageWebSite.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageWebSite.Designer.cs">
+      <DependentUpon>PageWebSite.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\RecordListHelper.cs" />
     <Compile Include="OptionPage\ValidationFieldAttribute.cs" />
@@ -602,6 +614,9 @@
     <EmbeddedResource Include="OptionPage\PageDataSources.resx">
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageGoogleMaps.resx">
+      <DependentUpon>PageGoogleMaps.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageMergedFeed.resx">
       <DependentUpon>PageMergedFeed.cs</DependentUpon>
     </EmbeddedResource>
@@ -634,6 +649,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageWebServerAuthentication.resx">
       <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageWebSite.resx">
+      <DependentUpon>PageWebSite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPropertySheetView.resx">
       <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>

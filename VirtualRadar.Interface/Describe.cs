@@ -235,5 +235,64 @@ namespace VirtualRadar.Interface
                 default:                                throw new NotImplementedException();
             }
         }
+
+        /// <summary>
+        /// Returns a description of a distance unit.
+        /// </summary>
+        /// <param name="distanceUnit"></param>
+        /// <returns></returns>
+        public static string DistanceUnit(DistanceUnit distanceUnit)
+        {
+            switch(distanceUnit) {
+                case Interface.DistanceUnit.Kilometres:     return Strings.Kilometres;
+                case Interface.DistanceUnit.Miles:          return Strings.Miles;
+                case Interface.DistanceUnit.NauticalMiles:  return Strings.NauticalMiles;
+                default:                                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a description of a height unit.
+        /// </summary>
+        /// <param name="heightUnit"></param>
+        /// <returns></returns>
+        public static string HeightUnit(HeightUnit heightUnit)
+        {
+            switch(heightUnit) {
+                case Interface.HeightUnit.Feet:     return Strings.Feet;
+                case Interface.HeightUnit.Metres:   return Strings.Metres;
+                default:                            throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a description of a speed unit.
+        /// </summary>
+        /// <param name="speedUnit"></param>
+        /// <returns></returns>
+        public static string SpeedUnit(SpeedUnit speedUnit)
+        {
+            switch(speedUnit) {
+                case Interface.SpeedUnit.KilometresPerHour: return Strings.KilometresPerHour;
+                case Interface.SpeedUnit.Knots:             return Strings.Knots;
+                case Interface.SpeedUnit.MilesPerHour:      return Strings.MilesPerHour;
+                default:                                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns a description of a proxy type.
+        /// </summary>
+        /// <param name="proxyType"></param>
+        /// <returns></returns>
+        public static string ProxyType(ProxyType proxyType)
+        {
+            switch(proxyType) {
+                case Settings.ProxyType.Forward:        return Strings.Forward;
+                case Settings.ProxyType.Reverse:        return Strings.Reverse;
+                case Settings.ProxyType.Unknown:        return Strings.Unknown;
+                default:                                throw new NotImplementedException();
+            }
+        }
     }
 }
