@@ -398,16 +398,6 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region DisableUsersMenu
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public void DisableUsersMenu()
-        {
-            menuUsersToolStripMenuItem.Enabled = false;
-        }
-        #endregion
-
         #region Events consumed
         /// <summary>
         /// Called when the form is ready for use but not yet on screen.
@@ -502,13 +492,6 @@ namespace VirtualRadar.WinForms
         private void menuOpenVirtualRadarLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(LogFileName);
-        }
-
-        private void menuUsersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using(var dialog = new UsersView()) {
-                dialog.ShowDialog();
-            }
         }
 
         private void menuPluginsToolStripMenuItem_Click(object sender, EventArgs e)

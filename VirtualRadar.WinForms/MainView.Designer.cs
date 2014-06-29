@@ -45,7 +45,6 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuDownloadDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuUsersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuPluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -155,7 +154,6 @@
             this.toolStripMenuItem4,
             this.menuDownloadDataToolStripMenuItem,
             this.toolStripMenuItem5,
-            this.menuUsersToolStripMenuItem,
             this.menuPluginsToolStripMenuItem,
             this.menuOptionsToolStripMenuItem});
             this.menuToolsToolStripMenuItem.Name = "menuToolsToolStripMenuItem";
@@ -198,13 +196,6 @@
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
             this.toolStripMenuItem5.Size = new System.Drawing.Size(233, 6);
-            // 
-            // menuUsersToolStripMenuItem
-            // 
-            this.menuUsersToolStripMenuItem.Name = "menuUsersToolStripMenuItem";
-            this.menuUsersToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
-            this.menuUsersToolStripMenuItem.Text = "::menuUsers::";
-            this.menuUsersToolStripMenuItem.Click += new System.EventHandler(this.menuUsersToolStripMenuItem_Click);
             // 
             // menuPluginsToolStripMenuItem
             // 
@@ -460,6 +451,5 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuResetReceiverRangeToolStripMenuItem;
         private System.Windows.Forms.Timer timerRefresh;
-        private System.Windows.Forms.ToolStripMenuItem menuUsersToolStripMenuItem;
     }
 }

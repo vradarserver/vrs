@@ -693,25 +693,5 @@ namespace Test.VirtualRadar.Library.Presenter
             listener.Verify(v => v.Connect(false), Times.Once());
         }
         #endregion
-
-        #region Users
-        [TestMethod]
-        public void MainPresenter_Disables_Users_Menu_When_UserManager_Cannot_List_Users()
-        {
-            _UserManager.Setup(r => r.CanListUsers).Returns(false);
-            _Presenter.Initialise(_View.Object);
-
-            _View.Verify(r => r.DisableUsersMenu(), Times.Once());
-        }
-
-        [TestMethod]
-        public void MainPresenter_Does_Not_Disable_Users_Menu_When_UserManager_Can_List_Users()
-        {
-            _UserManager.Setup(r => r.CanListUsers).Returns(true);
-            _Presenter.Initialise(_View.Object);
-
-            _View.Verify(r => r.DisableUsersMenu(), Times.Never());
-        }
-        #endregion
     }
 }

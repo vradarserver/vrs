@@ -422,8 +422,6 @@
     <Compile Include="Options\SheetReceiverOptionsControl.Designer.cs">
       <DependentUpon>SheetReceiverOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Options\UsersListTypeConverter.cs" />
-    <Compile Include="Options\UsersListUITypeEditor.cs" />
     <Compile Include="Options\YesNoConverter.cs" />
     <Compile Include="Options\ComPortConverter.cs" />
     <Compile Include="Options\ConnectionTypeEnumConverter.cs" />
@@ -488,18 +486,6 @@
     </Compile>
     <Compile Include="StatisticsView.Designer.cs">
       <DependentUpon>StatisticsView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UsersListView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UsersListView.Designer.cs">
-      <DependentUpon>UsersListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UsersView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UsersView.Designer.cs">
-      <DependentUpon>UsersView.cs</DependentUpon>
     </Compile>
     <Compile Include="ValidationHelper.cs" />
     <Compile Include="ValueChangedHelper.cs" />
@@ -670,12 +656,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StatisticsView.resx">
       <DependentUpon>StatisticsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UsersListView.resx">
-      <DependentUpon>UsersListView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UsersView.resx">
-      <DependentUpon>UsersView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -119,7 +119,7 @@ namespace VirtualRadar.Database.Users
         /// <param name="record"></param>
         /// <param name="currentRecord"></param>
         /// <param name="allRecords"></param>
-        public void ValidateUser(List<ValidationResult> results, IUser record, IUser currentRecord, List<IUser> allRecords)
+        public void ValidateUser(List<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords)
         {
             if(allRecords == null) allRecords = GetUsers().ToList();
 
@@ -135,15 +135,15 @@ namespace VirtualRadar.Database.Users
         /// <param name="record"></param>
         /// <param name="currentRecord"></param>
         /// <param name="allRecords"></param>
-        private void ValidateLoginName(List<ValidationResult> results, IUser record, IUser currentRecord, List<IUser> allRecords)
+        private void ValidateLoginName(List<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords)
         {
             var loginName = record.LoginName;
 
-            if(String.IsNullOrEmpty(loginName)) results.Add(new ValidationResult(ValidationField.LoginName, Strings.LoginNameMissing));
+            if(String.IsNullOrEmpty(loginName)) results.Add(new ValidationResult(record, ValidationField.LoginName, Strings.LoginNameMissing));
             else {
                 var existingUser = allRecords.FirstOrDefault(r => (r.LoginName ?? "").Equals(loginName ?? "", StringComparison.CurrentCultureIgnoreCase));
                 if(existingUser != null && existingUser != currentRecord) {
-                    results.Add(new ValidationResult(ValidationField.LoginName, Strings.LoginNameExists));
+                    results.Add(new ValidationResult(record, ValidationField.LoginName, Strings.LoginNameExists));
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace VirtualRadar.Database.Users
         /// <param name="record"></param>
         /// <param name="currentRecord"></param>
         /// <param name="allRecords"></param>
-        private void ValidateName(List<ValidationResult> results, IUser record, IUser currentRecord, List<IUser> allRecords)
+        private void ValidateName(List<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords)
         {
             ;
         }
@@ -167,10 +167,10 @@ namespace VirtualRadar.Database.Users
         /// <param name="record"></param>
         /// <param name="currentRecord"></param>
         /// <param name="allRecords"></param>
-        private void ValidatePassword(List<ValidationResult> results, IUser record, IUser currentRecord, List<IUser> allRecords)
+        private void ValidatePassword(List<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords)
         {
             var password = record.UIPassword;
-            if(String.IsNullOrEmpty(password)) results.Add(new ValidationResult(ValidationField.Password, Strings.PasswordMissing));
+            if(String.IsNullOrEmpty(password)) results.Add(new ValidationResult(record, ValidationField.Password, Strings.PasswordMissing));
         }
         #endregion
 

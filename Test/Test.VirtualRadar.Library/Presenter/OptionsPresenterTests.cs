@@ -485,6 +485,17 @@ namespace Test.VirtualRadar.Library.Presenter
             Assert.AreEqual(1, _View.Object.Users.Count);
             Assert.AreSame(user.Object, _View.Object.Users[0]);
         }
+
+        [TestMethod]
+        public void OptionsPresenter_Initialise_Sets_UIPassword_When_Copying_Users_From_Configuration_To_UI()
+        {
+            var user = TestUtilities.CreateMockInstance<IUser>();
+            _UserManagerUsers.Add(user.Object);
+
+            _Presenter.Initialise(_View.Object);
+
+            Assert.IsFalse(String.IsNullOrEmpty(user.Object.UIPassword));
+        }
         #endregion
 
         #region SaveClicked
@@ -846,6 +857,20 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _ConfigurationStorage.Verify(c => c.Save(_Configuration), Times.Once());
         }
+
+        [TestMethod]
+        public void OptionsPresenter_SaveClicked_Passes_Users_Through_UserManager_Validation()
+        {
+            _UserManager.Setup(r => r.CanEditUsers).Returns(true);
+            var user = TestUtilities.CreateMockInstance<IUser>();
+            _UserManagerUsers.Add(user.Object);
+
+            _Presenter.Initialise(_View.Object);
+
+            _View.Raise(v => v.SaveClicked += null, EventArgs.Empty);
+
+            _UserManager.Verify(r => r.ValidateUser(It.IsAny<List<ValidationResult>>(), user.Object, user.Object, _ViewUsers), Times.Once());
+        }
         #endregion
 
         #region Receivers
@@ -869,7 +894,7 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _View.Object.Receivers.Clear();
             SetupExpectedValidationFields(new ValidationResult[] {
-                new ValidationResult(ValidationField.PicturesFolder, Strings.PleaseConfigureAtLeastOneReceiver)
+                new ValidationResult(null, ValidationField.ReceiverIds, Strings.PleaseConfigureAtLeastOneReceiver)
             });
 
             _View.Raise(r => r.SaveClicked += null, EventArgs.Empty);
@@ -888,7 +913,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _View.Object.Receivers.Add(line2);
 
             SetupExpectedValidationFields(new ValidationResult[] {
-                new ValidationResult(line1, ValidationField.Enabled, Strings.PleaseEnableAtLeastOneReceiver)
+                new ValidationResult(null, ValidationField.ReceiverIds, Strings.PleaseEnableAtLeastOneReceiver)
             });
 
             _View.Raise(r => r.SaveClicked += null, EventArgs.Empty);
@@ -1385,6 +1410,103 @@ namespace Test.VirtualRadar.Library.Presenter
             _View.Raise(v => v.ValueChanged += null, EventArgs.Empty);
 
             _View.Verify(v => v.ShowValidationResults(It.IsAny<IEnumerable<ValidationResult>>()), Times.AtLeastOnce());
+        }
+        #endregion
+
+        #region Users
+        [TestMethod]
+        public void OptionsPresenter_Users_Changes_To_Existing_Users_Passed_To_UpdateUser()
+        {
+            foreach(var field in new string[] { "Enabled", "LoginName", "Name", "Password" }) {
+                foreach(var makeChange in new bool[] { true, false }) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    _UserManager.Setup(r => r.CanEditUsers).Returns(true);
+                    _UserManager.Setup(r => r.CanChangeEnabledState).Returns(true);
+                    _UserManager.Setup(r => r.CanChangePassword).Returns(true);
+
+                    var storeUser = TestUtilities.CreateMockInstance<IUser>();
+                    var viewUser = TestUtilities.CreateMockInstance<IUser>();
+
+                    storeUser.Setup(r => r.IsPersisted).Returns(true);
+                    viewUser.Setup(r => r.IsPersisted).Returns(true);
+                    storeUser.Object.UniqueId   =   viewUser.Object.UniqueId    = "1";
+                    storeUser.Object.LoginName  =   viewUser.Object.LoginName   = "A";
+                    storeUser.Object.Enabled    =   viewUser.Object.Enabled     = true;
+                    storeUser.Object.Name       =   viewUser.Object.Name        = "B";
+
+                    _UserManagerUsers.Add(viewUser.Object);
+                    _Presenter.Initialise(_View.Object);
+
+                    _UserManagerUsers.Clear();
+                    _UserManagerUsers.Add(storeUser.Object);
+
+                    string expectPassword = null;
+                    if(makeChange) {
+                        switch(field) {
+                            case "Enabled":     viewUser.Object.Enabled = false; break;
+                            case "LoginName":   viewUser.Object.LoginName = "X"; break;
+                            case "Name":        viewUser.Object.Name = "Y"; break;
+                            case "Password":    viewUser.Object.UIPassword = expectPassword = "Passw0rd"; break;
+                            default:            throw new NotImplementedException();
+                        }
+                    }
+
+                    _View.Raise(r => r.SaveClicked += null, EventArgs.Empty);
+
+                    if(makeChange)  _UserManager.Verify(r => r.UpdateUser(viewUser.Object, expectPassword), Times.Once());
+                    else            _UserManager.Verify(r => r.UpdateUser(viewUser.Object, expectPassword), Times.Never());
+                    _UserManager.Verify(r => r.CreateUser(viewUser.Object), Times.Never());
+                    _UserManager.Verify(r => r.DeleteUser(viewUser.Object), Times.Never());
+                }
+            }
+        }
+
+        [TestMethod]
+        public void OptionsPresenter_Users_New_Users_Passed_To_CreateUser()
+        {
+            _UserManager.Setup(r => r.CanCreateUsers).Returns(true);
+            _UserManager.Setup(r => r.CanEditUsers).Returns(true);
+
+            _Presenter.Initialise(_View.Object);
+
+            var user = TestUtilities.CreateMockInstance<IUser>();
+            _ViewUsers.Add(user.Object);
+            user.Setup(r => r.IsPersisted).Returns(false);
+            user.Object.Name = "A";
+            user.Object.LoginName = "B";
+            user.Object.Enabled = true;
+            user.Object.UIPassword = "Abc123";
+
+            _View.Raise(r => r.SaveClicked += null, EventArgs.Empty);
+
+            _UserManager.Verify(r => r.CreateUser(user.Object), Times.Once());
+            _UserManager.Verify(r => r.UpdateUser(user.Object, It.IsAny<string>()), Times.Never());
+            _UserManager.Verify(r => r.DeleteUser(user.Object), Times.Never());
+        }
+
+        [TestMethod]
+        public void OptionsPresenter_Users_Deleted_Users_Passed_To_DeleteUser()
+        {
+            _UserManager.Setup(r => r.CanDeleteUsers).Returns(true);
+            _UserManager.Setup(r => r.CanEditUsers).Returns(true);
+
+            var user = TestUtilities.CreateMockInstance<IUser>();
+            user.Object.Name = "A";
+            user.Object.LoginName = "B";
+            user.Object.Enabled = true;
+            user.Object.UIPassword = "Abc123";
+            _UserManagerUsers.Add(user.Object);
+
+            _Presenter.Initialise(_View.Object);
+
+            _ViewUsers.RemoveAt(0);
+            _View.Raise(r => r.SaveClicked += null, EventArgs.Empty);
+
+            _UserManager.Verify(r => r.DeleteUser(user.Object), Times.Once());
+            _UserManager.Verify(r => r.CreateUser(user.Object), Times.Never());
+            _UserManager.Verify(r => r.UpdateUser(user.Object, It.IsAny<string>()), Times.Never());
         }
         #endregion
         #endregion
