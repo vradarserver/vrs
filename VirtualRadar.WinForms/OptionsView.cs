@@ -540,6 +540,12 @@ namespace VirtualRadar.WinForms
         {
             if(UseRecommendedRawDecodingSettingsClicked != null) UseRecommendedRawDecodingSettingsClicked(this, args);
         }
+
+        public event EventHandler FlightSimulatorXOnlyClicked;
+        protected virtual void OnFlightSimulatorXOnlyClicked(EventArgs args)
+        {
+            if(FlightSimulatorXOnlyClicked != null) FlightSimulatorXOnlyClicked(this, args);
+        }
         #endregion
 
         #region Ctor
@@ -937,8 +943,6 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 InlineHelp = InlineHelpTitle = "";
 
-
-
                 Localise.Form(this);
                 treeViewPagePicker.ImageList = _ImageList.ImageList;
 
@@ -993,10 +997,17 @@ namespace VirtualRadar.WinForms
                 _IsSaving = isSaving;
             }
         }
+        #endregion
 
-        private void toolStripResetSettingsToDefault_Click(object sender, EventArgs e)
+        #region Menu events subscribed
+        private void defaultConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OnResetToDefaultsClicked(e);
+        }
+
+        private void justFlightSimulatorXToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnFlightSimulatorXOnlyClicked(e);
         }
         #endregion
     }

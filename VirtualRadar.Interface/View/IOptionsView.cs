@@ -412,6 +412,12 @@ namespace VirtualRadar.Interface.View
         event EventHandler UseRecommendedRawDecodingSettingsClicked;
 
         /// <summary>
+        /// Raised when the user indicates that they don't have any radio, they just want to set this thing up to
+        /// show their aircraft from FSX.
+        /// </summary>
+        event EventHandler FlightSimulatorXOnlyClicked;
+
+        /// <summary>
         /// Raised when values have been changed and it may be appropriate to retry validation.
         /// </summary>
         event EventHandler ValueChanged;
