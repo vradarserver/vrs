@@ -281,6 +281,12 @@
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\PageEnabledAttribute.cs" />
+    <Compile Include="OptionPage\PageGeneral.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageGeneral.Designer.cs">
+      <DependentUpon>PageGeneral.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionPage\PageGoogleMaps.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -613,6 +619,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageDataSources.resx">
       <DependentUpon>PageDataSources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageGeneral.resx">
+      <DependentUpon>PageGeneral.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageGoogleMaps.resx">
       <DependentUpon>PageGoogleMaps.cs</DependentUpon>

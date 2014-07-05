@@ -980,7 +980,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Days between checks for updates.
+        ///   Looks up a localized string similar to Days between checks.
         /// </summary>
         public static string DaysBetweenChecks {
             get {

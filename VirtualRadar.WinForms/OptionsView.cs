@@ -64,6 +64,7 @@ namespace VirtualRadar.WinForms
         public PageUsers                PageUsers               { get; private set; }
         public PageWebServer            PageWebServer           { get; private set; }
         public PageWebSite              PageWebSite             { get; private set; }
+        public PageGeneral              PageGeneral             { get; private set; }
         #endregion
 
         #region Options Properties
@@ -394,19 +395,67 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        public bool CheckForNewVersions { get; set; }
+        #region General
+        public bool CheckForNewVersions
+        {
+            get { return PageGeneral.CheckForNewVersions.Value; }
+            set { PageGeneral.CheckForNewVersions.Value = value; }
+        }
 
-        public int CheckForNewVersionsPeriodDays { get; set; }
+        public int CheckForNewVersionsPeriodDays
+        {
+            get { return PageGeneral.CheckForNewVersionsPeriodDays.Value; }
+            set { PageGeneral.CheckForNewVersionsPeriodDays.Value = value; }
+        }
 
-        public bool DownloadFlightRoutes { get; set; }
+        public bool DownloadFlightRoutes
+        {
+            get { return PageGeneral.DownloadFlightRoutes.Value; }
+            set { PageGeneral.DownloadFlightRoutes.Value = value; }
+        }
 
-        public int DisplayTimeoutSeconds { get; set; }
+        public int DisplayTimeoutSeconds
+        {
+            get { return PageGeneral.DisplayTimeoutSeconds.Value; }
+            set { PageGeneral.DisplayTimeoutSeconds.Value = value; }
+        }
 
-        public int TrackingTimeoutSeconds { get; set; }
+        public int TrackingTimeoutSeconds
+        {
+            get { return PageGeneral.TrackingTimeoutSeconds.Value; }
+            set { PageGeneral.TrackingTimeoutSeconds.Value = value; }
+        }
 
-        public int ShortTrailLengthSeconds { get; set; }
+        public int ShortTrailLengthSeconds
+        {
+            get { return PageGeneral.ShortTrailLengthSeconds.Value; }
+            set { PageGeneral.ShortTrailLengthSeconds.Value = value; }
+        }
 
-        public bool MinimiseToSystemTray { get; set; }
+        public bool MinimiseToSystemTray
+        {
+            get { return PageGeneral.MinimiseToSystemTray.Value; }
+            set { PageGeneral.MinimiseToSystemTray.Value = value; }
+        }
+
+        public bool AudioEnabled
+        {
+            get { return PageGeneral.AudioEnabled.Value; }
+            set { PageGeneral.AudioEnabled.Value = value; }
+        }
+
+        public string TextToSpeechVoice
+        {
+            get { return PageGeneral.TextToSpeechVoice.Value; }
+            set { PageGeneral.TextToSpeechVoice.Value = value; }
+        }
+
+        public int TextToSpeechSpeed
+        {
+            get { return PageGeneral.TextToSpeechSpeed.Value; }
+            set { PageGeneral.TextToSpeechSpeed.Value = value; }
+        }
+        #endregion
 
         private List<RebroadcastSettings> _RebroadcastSettings = new List<RebroadcastSettings>();
         public IList<RebroadcastSettings> RebroadcastSettings
@@ -414,11 +463,6 @@ namespace VirtualRadar.WinForms
             get { return _RebroadcastSettings; }
         }
 
-        public bool AudioEnabled { get; set; }
-
-        public string TextToSpeechVoice { get; set; }
-
-        public int TextToSpeechSpeed { get; set; }
         #endregion
 
         #region Form properties
@@ -470,6 +514,10 @@ namespace VirtualRadar.WinForms
         }
 
         public event EventHandler TestTextToSpeechSettingsClicked;
+        public void RaiseTestTextToSpeechSettingsClicked(EventArgs args)
+        {
+            if(TestTextToSpeechSettingsClicked != null) TestTextToSpeechSettingsClicked(this, args);
+        }
 
         public event EventHandler UpdateReceiverLocationsFromBaseStationDatabaseClicked;
         public void RaiseUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs args)
@@ -504,6 +552,7 @@ namespace VirtualRadar.WinForms
             PageUsers = new PageUsers();
             PageWebServer = new PageWebServer();
             PageWebSite = new PageWebSite();
+            PageGeneral = new PageGeneral();
 
             InitializeComponent();
 
@@ -574,8 +623,13 @@ namespace VirtualRadar.WinForms
         #endregion
 
         #region IOptionsView methods - PopulateTextToSpeechVoices, MergeBaseStationDatabaseReceiverLocations, ShowTestConnectionResults
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="voiceNames"></param>
         public void PopulateTextToSpeechVoices(IEnumerable<string> voiceNames)
         {
+            PageGeneral.PopulateTextToSpeechVoices(voiceNames);
         }
 
         /// <summary>
@@ -900,6 +954,7 @@ namespace VirtualRadar.WinForms
                 AddPage(PageRawFeedDecoding);
                 AddPage(PageWebServer);
                 AddPage(PageWebSite);
+                AddPage(PageGeneral);
 
                 treeViewPagePicker.ExpandAll();
                 var firstNode = treeViewPagePicker.Nodes[0];
