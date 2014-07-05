@@ -2044,4 +2044,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="CouldNotLoadGoogleMaps" xml:space="preserve">
     <value>Could not load Google Maps</value>
   </data>
+  <data name="Stale" xml:space="preserve">
+    <value>Stale</value>
+  </data>
 </root>

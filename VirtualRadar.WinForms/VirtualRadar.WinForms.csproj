@@ -311,6 +311,18 @@
     <Compile Include="OptionPage\PageRawFeedDecoding.Designer.cs">
       <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionPage\PageRebroadcastServer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageRebroadcastServer.Designer.cs">
+      <DependentUpon>PageRebroadcastServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPage\PageRebroadcastServers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionPage\PageRebroadcastServers.Designer.cs">
+      <DependentUpon>PageRebroadcastServers.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionPage\PageReceiver.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -634,6 +646,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageRawFeedDecoding.resx">
       <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageRebroadcastServer.resx">
+      <DependentUpon>PageRebroadcastServer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionPage\PageRebroadcastServers.resx">
+      <DependentUpon>PageRebroadcastServers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionPage\PageReceiver.resx">
       <DependentUpon>PageReceiver.cs</DependentUpon>

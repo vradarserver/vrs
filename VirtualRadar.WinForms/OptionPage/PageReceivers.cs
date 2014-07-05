@@ -94,11 +94,11 @@ namespace VirtualRadar.WinForms.OptionPage
         private void listReceivers_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs e)
         {
             var receiver = (Receiver)e.Record;
-            e.Checked = receiver.Enabled;
 
             if(receiver != null) {
                 var location = OptionsView == null ? null : OptionsView.RawDecodingReceiverLocations.FirstOrDefault(r => r.UniqueId == receiver.ReceiverLocationId);
 
+                e.Checked = receiver.Enabled;
                 e.ColumnTexts.Add(receiver.Name);
                 e.ColumnTexts.Add(Describe.DataSource(receiver.DataSource));
                 e.ColumnTexts.Add(location == null ? "" : location.Name);

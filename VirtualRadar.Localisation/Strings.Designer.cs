@@ -4810,6 +4810,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stale.
+        /// </summary>
+        public static string Stale {
+            get {
+                return ResourceManager.GetString("Stale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximum message age (seconds).
         /// </summary>
         public static string StaleSeconds {
