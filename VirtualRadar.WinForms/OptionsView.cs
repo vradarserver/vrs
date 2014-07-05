@@ -60,6 +60,7 @@ namespace VirtualRadar.WinForms
         public PageReceivers            PageReceivers           { get; private set; }
         public PageReceiverLocations    PageReceiverLocations   { get; private set; }
         public PageMergedFeeds          PageMergedFeeds         { get; private set; }
+        public PageRebroadcastServers   PageRebroadcastServers  { get; private set; }
         public PageRawFeedDecoding      PageRawFeedDecoding     { get; private set; }
         public PageUsers                PageUsers               { get; private set; }
         public PageWebServer            PageWebServer           { get; private set; }
@@ -68,7 +69,6 @@ namespace VirtualRadar.WinForms
         #endregion
 
         #region Options Properties
-
         #region Data Sources
         public string BaseStationDatabaseFileName
         {
@@ -129,6 +129,13 @@ namespace VirtualRadar.WinForms
 
         #region MergedFeeds
         public IList<MergedFeed> MergedFeeds { get { return PageMergedFeeds.MergedFeeds.Value; } }
+        #endregion
+
+        #region Rebroadcast Servers
+        public IList<RebroadcastSettings> RebroadcastSettings
+        {
+            get { return PageRebroadcastServers.RebroadcastServers.Value; }
+        }
         #endregion
 
         #region Users
@@ -456,13 +463,6 @@ namespace VirtualRadar.WinForms
             set { PageGeneral.TextToSpeechSpeed.Value = value; }
         }
         #endregion
-
-        private List<RebroadcastSettings> _RebroadcastSettings = new List<RebroadcastSettings>();
-        public IList<RebroadcastSettings> RebroadcastSettings
-        {
-            get { return _RebroadcastSettings; }
-        }
-
         #endregion
 
         #region Form properties
@@ -548,6 +548,7 @@ namespace VirtualRadar.WinForms
             PageReceivers = new PageReceivers();
             PageReceiverLocations = new PageReceiverLocations();
             PageMergedFeeds = new PageMergedFeeds();
+            PageRebroadcastServers = new PageRebroadcastServers();
             PageRawFeedDecoding = new PageRawFeedDecoding();
             PageUsers = new PageUsers();
             PageWebServer = new PageWebServer();
@@ -950,6 +951,7 @@ namespace VirtualRadar.WinForms
                 AddPage(PageReceivers);
                 AddPage(PageReceiverLocations);
                 AddPage(PageMergedFeeds);
+                AddPage(PageRebroadcastServers);
                 AddPage(PageUsers);
                 AddPage(PageRawFeedDecoding);
                 AddPage(PageWebServer);

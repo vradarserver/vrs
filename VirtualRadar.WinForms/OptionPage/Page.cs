@@ -655,6 +655,22 @@ namespace VirtualRadar.WinForms.OptionPage
 
             return result;
         }
+
+        /// <summary>
+        /// Generates a unique port number for a new record.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="records"></param>
+        /// <param name="startPort"></param>
+        /// <param name="getPort"></param>
+        /// <returns></returns>
+        public static int GenerateUniquePort<T>(IList<T> records, int startPort, Func<T, int> getPort)
+        {
+            int result = startPort;
+            for(;result < 65536 && records.Any(r => getPort(r) == result);++result) ;
+
+            return result;
+        }
         #endregion
 
         #region OnLoad, InitialiseControls
