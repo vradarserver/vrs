@@ -43,6 +43,8 @@
             this.labelInlineHelpTitle = new System.Windows.Forms.Label();
             this.errorProvider = new VirtualRadar.WinForms.Controls.ErrorProviderPlus(this.components);
             this.warningProvider = new VirtualRadar.WinForms.Controls.ErrorProviderPlus(this.components);
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.toolStripResetSettingsToDefault = new System.Windows.Forms.ToolStripButton();
             this.panelContent.SuspendLayout();
             this.splitContainerPagePicker.Panel1.SuspendLayout();
             this.splitContainerPagePicker.Panel2.SuspendLayout();
@@ -55,6 +57,7 @@
             this.panelInlineHelp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).BeginInit();
+            this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -218,6 +221,29 @@
             this.warningProvider.ContainerControl = this;
             this.warningProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("warningProvider.Icon")));
             // 
+            // toolStrip
+            // 
+            this.toolStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripResetSettingsToDefault});
+            this.toolStrip.Location = new System.Drawing.Point(12, 528);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.Size = new System.Drawing.Size(148, 25);
+            this.toolStrip.TabIndex = 3;
+            this.toolStrip.Text = "toolStrip1";
+            // 
+            // toolStripResetSettingsToDefault
+            // 
+            this.toolStripResetSettingsToDefault.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripResetSettingsToDefault.Image = ((System.Drawing.Image)(resources.GetObject("toolStripResetSettingsToDefault.Image")));
+            this.toolStripResetSettingsToDefault.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripResetSettingsToDefault.Name = "toolStripResetSettingsToDefault";
+            this.toolStripResetSettingsToDefault.Size = new System.Drawing.Size(145, 22);
+            this.toolStripResetSettingsToDefault.Text = "::ResetSettingsToDefault::";
+            this.toolStripResetSettingsToDefault.Click += new System.EventHandler(this.toolStripResetSettingsToDefault_Click);
+            // 
             // OptionsView
             // 
             this.AcceptButton = this.buttonOK;
@@ -225,6 +251,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(884, 562);
+            this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.panelContent);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
@@ -247,7 +274,10 @@
             this.panelInlineHelp.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).EndInit();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -267,5 +297,7 @@
         private System.Windows.Forms.Label labelInlineHelpTitle;
         private VirtualRadar.WinForms.Controls.ErrorProviderPlus errorProvider;
         private VirtualRadar.WinForms.Controls.ErrorProviderPlus warningProvider;
+        private System.Windows.Forms.ToolStrip toolStrip;
+        private System.Windows.Forms.ToolStripButton toolStripResetSettingsToDefault;
     }
 }
