@@ -500,6 +500,10 @@ namespace VirtualRadar.WinForms
 
         #region Events exposed
         public event EventHandler ResetToDefaultsClicked;
+        protected virtual void OnResetToDefaultsClicked(EventArgs args)
+        {
+            if(ResetToDefaultsClicked != null) ResetToDefaultsClicked(this, args);
+        }
 
         public event EventHandler SaveClicked;
         protected virtual void OnSaveClicked(EventArgs args)
@@ -933,6 +937,8 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 InlineHelp = InlineHelpTitle = "";
 
+
+
                 Localise.Form(this);
                 treeViewPagePicker.ImageList = _ImageList.ImageList;
 
@@ -986,6 +992,11 @@ namespace VirtualRadar.WinForms
             } finally {
                 _IsSaving = isSaving;
             }
+        }
+
+        private void toolStripResetSettingsToDefault_Click(object sender, EventArgs e)
+        {
+            OnResetToDefaultsClicked(e);
         }
         #endregion
     }
