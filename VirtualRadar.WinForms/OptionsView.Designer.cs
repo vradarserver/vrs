@@ -43,8 +43,11 @@
             this.labelInlineHelpTitle = new System.Windows.Forms.Label();
             this.errorProvider = new VirtualRadar.WinForms.Controls.ErrorProviderPlus(this.components);
             this.warningProvider = new VirtualRadar.WinForms.Controls.ErrorProviderPlus(this.components);
-            this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.toolStripResetSettingsToDefault = new System.Windows.Forms.ToolStripButton();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.presetConfigurationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.justFlightSimulatorXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.defaultConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelContent.SuspendLayout();
             this.splitContainerPagePicker.Panel1.SuspendLayout();
             this.splitContainerPagePicker.Panel2.SuspendLayout();
@@ -57,7 +60,7 @@
             this.panelInlineHelp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).BeginInit();
-            this.toolStrip.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -89,9 +92,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelContent.Controls.Add(this.splitContainerPagePicker);
-            this.panelContent.Location = new System.Drawing.Point(12, 12);
+            this.panelContent.Location = new System.Drawing.Point(12, 30);
+            this.panelContent.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(860, 502);
+            this.panelContent.Size = new System.Drawing.Size(860, 484);
             this.panelContent.TabIndex = 2;
             // 
             // splitContainerPagePicker
@@ -107,7 +111,7 @@
             // splitContainerPagePicker.Panel2
             // 
             this.splitContainerPagePicker.Panel2.Controls.Add(this.splitContainerPageContent);
-            this.splitContainerPagePicker.Size = new System.Drawing.Size(860, 502);
+            this.splitContainerPagePicker.Size = new System.Drawing.Size(860, 484);
             this.splitContainerPagePicker.SplitterDistance = 210;
             this.splitContainerPagePicker.TabIndex = 0;
             // 
@@ -119,7 +123,7 @@
             this.treeViewPagePicker.Location = new System.Drawing.Point(0, 0);
             this.treeViewPagePicker.Name = "treeViewPagePicker";
             this.treeViewPagePicker.ShowRootLines = false;
-            this.treeViewPagePicker.Size = new System.Drawing.Size(210, 502);
+            this.treeViewPagePicker.Size = new System.Drawing.Size(210, 484);
             this.treeViewPagePicker.TabIndex = 0;
             this.treeViewPagePicker.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewPagePicker_AfterSelect);
             // 
@@ -138,8 +142,8 @@
             // splitContainerPageContent.Panel2
             // 
             this.splitContainerPageContent.Panel2.Controls.Add(this.panelInlineHelpBorder);
-            this.splitContainerPageContent.Size = new System.Drawing.Size(646, 502);
-            this.splitContainerPageContent.SplitterDistance = 403;
+            this.splitContainerPageContent.Size = new System.Drawing.Size(646, 484);
+            this.splitContainerPageContent.SplitterDistance = 385;
             this.splitContainerPageContent.TabIndex = 0;
             // 
             // panelPageContentBorder
@@ -149,7 +153,7 @@
             this.panelPageContentBorder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPageContentBorder.Location = new System.Drawing.Point(0, 0);
             this.panelPageContentBorder.Name = "panelPageContentBorder";
-            this.panelPageContentBorder.Size = new System.Drawing.Size(646, 403);
+            this.panelPageContentBorder.Size = new System.Drawing.Size(646, 385);
             this.panelPageContentBorder.TabIndex = 0;
             // 
             // panelPageContent
@@ -161,7 +165,7 @@
             this.panelPageContent.BackColor = System.Drawing.SystemColors.Control;
             this.panelPageContent.Location = new System.Drawing.Point(1, 1);
             this.panelPageContent.Name = "panelPageContent";
-            this.panelPageContent.Size = new System.Drawing.Size(644, 401);
+            this.panelPageContent.Size = new System.Drawing.Size(644, 383);
             this.panelPageContent.TabIndex = 0;
             // 
             // panelInlineHelpBorder
@@ -221,28 +225,44 @@
             this.warningProvider.ContainerControl = this;
             this.warningProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("warningProvider.Icon")));
             // 
-            // toolStrip
+            // menuStrip1
             // 
-            this.toolStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripResetSettingsToDefault});
-            this.toolStrip.Location = new System.Drawing.Point(12, 528);
-            this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(148, 25);
-            this.toolStrip.TabIndex = 3;
-            this.toolStrip.Text = "toolStrip1";
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.presetConfigurationsToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(884, 24);
+            this.menuStrip1.TabIndex = 4;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // toolStripResetSettingsToDefault
+            // presetConfigurationsToolStripMenuItem
             // 
-            this.toolStripResetSettingsToDefault.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripResetSettingsToDefault.Image = ((System.Drawing.Image)(resources.GetObject("toolStripResetSettingsToDefault.Image")));
-            this.toolStripResetSettingsToDefault.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripResetSettingsToDefault.Name = "toolStripResetSettingsToDefault";
-            this.toolStripResetSettingsToDefault.Size = new System.Drawing.Size(145, 22);
-            this.toolStripResetSettingsToDefault.Text = "::ResetSettingsToDefault::";
-            this.toolStripResetSettingsToDefault.Click += new System.EventHandler(this.toolStripResetSettingsToDefault_Click);
+            this.presetConfigurationsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.justFlightSimulatorXToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.defaultConfigurationToolStripMenuItem});
+            this.presetConfigurationsToolStripMenuItem.Name = "presetConfigurationsToolStripMenuItem";
+            this.presetConfigurationsToolStripMenuItem.Size = new System.Drawing.Size(142, 20);
+            this.presetConfigurationsToolStripMenuItem.Text = "::PresetConfigurations::";
+            // 
+            // justFlightSimulatorXToolStripMenuItem
+            // 
+            this.justFlightSimulatorXToolStripMenuItem.Name = "justFlightSimulatorXToolStripMenuItem";
+            this.justFlightSimulatorXToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.justFlightSimulatorXToolStripMenuItem.Text = "::JustFlightSimulatorX::";
+            this.justFlightSimulatorXToolStripMenuItem.Click += new System.EventHandler(this.justFlightSimulatorXToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(195, 6);
+            // 
+            // defaultConfigurationToolStripMenuItem
+            // 
+            this.defaultConfigurationToolStripMenuItem.Name = "defaultConfigurationToolStripMenuItem";
+            this.defaultConfigurationToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.defaultConfigurationToolStripMenuItem.Text = "::DefaultConfiguration::";
+            this.defaultConfigurationToolStripMenuItem.Click += new System.EventHandler(this.defaultConfigurationToolStripMenuItem_Click);
             // 
             // OptionsView
             // 
@@ -251,7 +271,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(884, 562);
-            this.Controls.Add(this.toolStrip);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.panelContent);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
@@ -274,8 +294,8 @@
             this.panelInlineHelp.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).EndInit();
-            this.toolStrip.ResumeLayout(false);
-            this.toolStrip.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -297,7 +317,10 @@
         private System.Windows.Forms.Label labelInlineHelpTitle;
         private VirtualRadar.WinForms.Controls.ErrorProviderPlus errorProvider;
         private VirtualRadar.WinForms.Controls.ErrorProviderPlus warningProvider;
-        private System.Windows.Forms.ToolStrip toolStrip;
-        private System.Windows.Forms.ToolStripButton toolStripResetSettingsToDefault;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem presetConfigurationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem justFlightSimulatorXToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem defaultConfigurationToolStripMenuItem;
     }
 }

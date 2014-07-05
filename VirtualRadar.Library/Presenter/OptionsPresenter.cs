@@ -215,6 +215,7 @@ namespace VirtualRadar.Library.Presenter
             _View.UseIcaoRawDecodingSettingsClicked += View_UseIcaoRawDecodingSettingsClicked;
             _View.UseRecommendedRawDecodingSettingsClicked += View_UseRecommendedRawDecodingSettingsClicked;
             _View.ValueChanged += View_ValueChanged;
+            _View.FlightSimulatorXOnlyClicked += View_FlightSimulatorXOnlyClicked;
 
             _View.PopulateTextToSpeechVoices(Provider.GetVoiceNames());
 
@@ -232,6 +233,7 @@ namespace VirtualRadar.Library.Presenter
         {
             var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
             var allUsers = userManager.GetUsers().Select(r => { r.UIPassword = _DefaultPassword; return r; }).ToArray();
+            _View.Users.Clear();
             _View.Users.AddRange(allUsers);
 
             _View.AudioEnabled = configuration.AudioSettings.Enabled;
@@ -412,7 +414,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region UseIcaoRawDecodingSettings, UseRecommendedRawDecodingSettings
+        #region UseIcaoRawDecodingSettings, UseRecommendedRawDecodingSettings, UseFlightSimulatorXOnlySettings
         /// <summary>
         /// Configures the view with the ICAO raw decoding settings.
         /// </summary>
@@ -443,6 +445,46 @@ namespace VirtualRadar.Library.Presenter
             _View.RawDecodingSlowSurfaceGlobalPositionLimit = defaults.SlowSurfaceGlobalPositionLimit;
             _View.RawDecodingSuppressReceiverRangeCheck = true;
             _View.RawDecodingUseLocalDecodeForInitialPosition = false;
+        }
+
+        /// <summary>
+        /// Configures the view with reasonable settings for use with FSX.
+        /// </summary>
+        private void UseFlightSimulatorXOnlySettings()
+        {
+            // Data source settings
+            _View.BaseStationDatabaseFileName = "";
+            _View.SilhouettesFolder = "";
+            _View.OperatorFlagsFolder = "";
+            _View.PicturesFolder = "";
+            _View.SearchPictureSubFolders = false;
+
+            // Receivers - ideally we'd want none but validation prevents that, and with good
+            // reason. This should fail to connect to anything and if they do happen to have
+            // a radio and it connects the format should cause it to fail to decode.
+            var dummyReceiver = new Receiver() {
+                UniqueId = 1,
+                Name = "Dummy Receiver",
+                Enabled = true,
+                ConnectionType = ConnectionType.TCP,
+                Address = "127.0.0.1",
+                Port = 30003,
+                DataSource = DataSource.Sbs3,
+                AutoReconnectAtStartup = false,
+            };
+            _View.Receivers.Clear();
+            _View.Receivers.Add(dummyReceiver);
+            _View.WebSiteReceiverId = 1;
+            _View.ClosestAircraftReceiverId = 1;
+            _View.FlightSimulatorXReceiverId = 1;
+
+            // Other lists that are meaningless for FSX-only operations
+            _View.RawDecodingReceiverLocations.Clear();
+            _View.MergedFeeds.Clear();
+            _View.RebroadcastSettings.Clear();
+
+            // General settings
+            _View.DownloadFlightRoutes = false;
         }
         #endregion
 
@@ -820,6 +862,16 @@ namespace VirtualRadar.Library.Presenter
         private void View_ValueChanged(object sender, EventArgs args)
         {
             _View.ShowValidationResults(ValidateForm());
+        }
+
+        /// <summary>
+        /// Raised when the user indicates that they don't have a radio, they only have FSX.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void View_FlightSimulatorXOnlyClicked(object sender, EventArgs args)
+        {
+            UseFlightSimulatorXOnlySettings();
         }
         #endregion
     }

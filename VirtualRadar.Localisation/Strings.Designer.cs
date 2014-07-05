@@ -1007,6 +1007,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Configuration.
+        /// </summary>
+        public static string DefaultConfiguration {
+            get {
+                return ResourceManager.GetString("DefaultConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default configuration settings saved - please try to start Virtual Radar Server again.
         /// </summary>
         public static string DefaultSettingsSavedFull {
@@ -1759,6 +1768,15 @@ namespace VirtualRadar.Localisation {
         public static string IPAddress {
             get {
                 return ResourceManager.GetString("IPAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No ADS-B, Just Flight Simulator X.
+        /// </summary>
+        public static string JustFlightSimulatorX {
+            get {
+                return ResourceManager.GetString("JustFlightSimulatorX", resourceCulture);
             }
         }
         
@@ -3748,6 +3766,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preset Configurations.
+        /// </summary>
+        public static string PresetConfigurations {
+            get {
+                return ResourceManager.GetString("PresetConfigurations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proxy type.
         /// </summary>
         public static string ProxyType {
@@ -4059,15 +4086,6 @@ namespace VirtualRadar.Localisation {
         public static string ResetPortAssignmentsOnStartup {
             get {
                 return ResourceManager.GetString("ResetPortAssignmentsOnStartup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset settings to defaults.
-        /// </summary>
-        public static string ResetSettingsToDefault {
-            get {
-                return ResourceManager.GetString("ResetSettingsToDefault", resourceCulture);
             }
         }
         

@@ -213,12 +213,6 @@
     <Compile Include="Controls\FeedStatusControl.Designer.cs">
       <DependentUpon>FeedStatusControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SheetHostControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SheetHostControl.Designer.cs">
-      <DependentUpon>SheetHostControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\WebServerStatusControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -380,125 +374,12 @@
     </Compile>
     <Compile Include="OptionPage\RecordListHelper.cs" />
     <Compile Include="OptionPage\ValidationFieldAttribute.cs" />
-    <Compile Include="OptionsPropertySheetView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OptionsPropertySheetView.Designer.cs">
-      <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>
-    </Compile>
     <Compile Include="OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="OptionsView.Designer.cs">
       <DependentUpon>OptionsView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Options\BaudRateConverter.cs" />
-    <Compile Include="Options\FeedParentPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\FeedTypeConverter.cs" />
-    <Compile Include="Options\MergedFeedTypeConverter.cs" />
-    <Compile Include="Options\DisplayOrderAttribute.cs" />
-    <Compile Include="Options\OptionsFeedSelectControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\OptionsFeedSelectControl.Designer.cs">
-      <DependentUpon>OptionsFeedSelectControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\OptionsPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\OptionsPage.Designer.cs">
-      <DependentUpon>OptionsPage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\OptionsReceiverLocationSelectControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\OptionsReceiverLocationSelectControl.Designer.cs">
-      <DependentUpon>OptionsReceiverLocationSelectControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ParentPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\ParentPage.Designer.cs">
-      <DependentUpon>ParentPage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ParentPageMergedFeeds.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\ParentPageMergedFeeds.Designer.cs">
-      <DependentUpon>ParentPageMergedFeeds.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ParentPageRebroadcastServers.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\ParentPageRebroadcastServers.Designer.cs">
-      <DependentUpon>ParentPageRebroadcastServers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ParentPageReceiverLocations.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\ParentPageReceiverLocations.Designer.cs">
-      <DependentUpon>ParentPageReceiverLocations.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ParentPageReceivers.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\ParentPageReceivers.Designer.cs">
-      <DependentUpon>ParentPageReceivers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\ProxyTypeEnumConverter.cs" />
-    <Compile Include="Options\RebroadcastFormatEnumConverter.cs" />
-    <Compile Include="Options\ReceiverIdCollectionTypeConverter.cs" />
-    <Compile Include="Options\ReceiverIdCollectionUITypeEditor.cs" />
-    <Compile Include="Options\ReceiverLocationsTypeConverter.cs" />
-    <Compile Include="Options\ReceiverTypeConverter.cs" />
-    <Compile Include="Options\SheetControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\SheetControl.Designer.cs">
-      <DependentUpon>SheetControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\SheetDataSourceOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\SheetDataSourceOptionsControl.Designer.cs">
-      <DependentUpon>SheetDataSourceOptionsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\SheetEventArgs.cs" />
-    <Compile Include="Options\SheetMergedFeedOptions.cs" />
-    <Compile Include="Options\SheetRebroadcastServerOptions.cs" />
-    <Compile Include="Options\SheetReceiverLocationOptions.cs" />
-    <Compile Include="Options\SheetReceiverOptions.cs" />
-    <Compile Include="Options\SheetReceiverOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\SheetReceiverOptionsControl.Designer.cs">
-      <DependentUpon>SheetReceiverOptionsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Options\YesNoConverter.cs" />
-    <Compile Include="Options\ComPortConverter.cs" />
-    <Compile Include="Options\ConnectionTypeEnumConverter.cs" />
-    <Compile Include="Options\DataBitsConverter.cs" />
-    <Compile Include="Options\DataSourceEnumConverter.cs" />
-    <Compile Include="Options\DistanceUnitEnumConverter.cs" />
-    <Compile Include="Options\DropdownListConverter.cs" />
-    <Compile Include="Options\FileNameBrowserAttribute.cs" />
-    <Compile Include="Options\FolderBrowserAttribute.cs" />
-    <Compile Include="Options\GoogleMapStyleTypeConverter.cs" />
-    <Compile Include="Options\HandshakeEnumConverter.cs" />
-    <Compile Include="Options\HeightUnitEnumConverter.cs" />
-    <Compile Include="Options\ISheet.cs" />
-    <Compile Include="Options\ParityEnumConverter.cs" />
-    <Compile Include="Options\RaisesValuesChangedAttribute.cs" />
-    <Compile Include="Options\Sheet.cs" />
-    <Compile Include="Options\SheetGeneralOptions.cs" />
-    <Compile Include="Options\SheetRawFeedOptions.cs" />
-    <Compile Include="Options\SheetWebServerOptions.cs" />
-    <Compile Include="Options\SheetWebSiteOptions.cs" />
-    <Compile Include="Options\SpeedUnitEnumConverter.cs" />
-    <Compile Include="Options\StopBitsEnumConverter.cs" />
-    <Compile Include="Options\TextToSpeechVoiceTypeConverter.cs" />
     <Compile Include="PluginsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -605,9 +486,6 @@
     <EmbeddedResource Include="Controls\FeedStatusControl.resx">
       <DependentUpon>FeedStatusControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SheetHostControl.resx">
-      <DependentUpon>SheetHostControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\WebServerStatusControl.resx">
       <DependentUpon>WebServerStatusControl.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -680,45 +558,8 @@
     <EmbeddedResource Include="OptionPage\PageWebSite.resx">
       <DependentUpon>PageWebSite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPropertySheetView.resx">
-      <DependentUpon>OptionsPropertySheetView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="OptionsView.resx">
       <DependentUpon>OptionsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\OptionsFeedSelectControl.resx">
-      <DependentUpon>OptionsFeedSelectControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\OptionsPage.resx">
-      <DependentUpon>OptionsPage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\OptionsReceiverLocationSelectControl.resx">
-      <DependentUpon>OptionsReceiverLocationSelectControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\ParentPage.resx">
-      <DependentUpon>ParentPage.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\ParentPageMergedFeeds.resx">
-      <DependentUpon>ParentPageMergedFeeds.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\ParentPageRebroadcastServers.resx">
-      <DependentUpon>ParentPageRebroadcastServers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\ParentPageReceiverLocations.resx">
-      <DependentUpon>ParentPageReceiverLocations.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\ParentPageReceivers.resx">
-      <DependentUpon>ParentPageReceivers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\SheetControl.resx">
-      <DependentUpon>SheetControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\SheetDataSourceOptionsControl.resx">
-      <DependentUpon>SheetDataSourceOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Options\SheetReceiverOptionsControl.resx">
-      <DependentUpon>SheetReceiverOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PluginsView.resx">
       <DependentUpon>PluginsView.cs</DependentUpon>
