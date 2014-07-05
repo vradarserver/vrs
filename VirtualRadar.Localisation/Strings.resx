@@ -306,7 +306,7 @@ French translation by Francois /F5ANN.</value>
     <comment>Things that are generally to do with audio / sounds</comment>
   </data>
   <data name="DaysBetweenChecks" xml:space="preserve">
-    <value>Days between checks for updates</value>
+    <value>Days between checks</value>
   </data>
   <data name="DefaultVersion" xml:space="preserve">
     <value>Default Version</value>
