@@ -83,6 +83,26 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ArrowBack16x16 {
+            get {
+                object obj = ResourceManager.GetObject("ArrowBack16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ArrowForward16x16 {
+            get {
+                object obj = ResourceManager.GetObject("ArrowForward16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BlueBall {
             get {
                 object obj = ResourceManager.GetObject("BlueBall", resourceCulture);
@@ -303,26 +323,6 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap iconmonstr_location_3_icon {
-            get {
-                object obj = ResourceManager.GetObject("iconmonstr_location_3_icon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap iconmonstr_radio_3_icon {
-            get {
-                object obj = ResourceManager.GetObject("iconmonstr_radio_3_icon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap IPadSplash {
             get {
                 object obj = ResourceManager.GetObject("IPadSplash", resourceCulture);
@@ -473,6 +473,16 @@ namespace VirtualRadar.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Location16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Location16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Logo128x128 {
             get {
                 object obj = ResourceManager.GetObject("Logo128x128", resourceCulture);
@@ -546,6 +556,26 @@ namespace VirtualRadar.Resources {
         internal static System.Drawing.Bitmap OpenSlider {
             get {
                 object obj = ResourceManager.GetObject("OpenSlider", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Radio16x16 {
+            get {
+                object obj = ResourceManager.GetObject("Radio16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Radio48x48 {
+            get {
+                object obj = ResourceManager.GetObject("Radio48x48", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

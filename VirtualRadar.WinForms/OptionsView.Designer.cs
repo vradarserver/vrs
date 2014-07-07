@@ -48,6 +48,7 @@
             this.justFlightSimulatorXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.defaultConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.receiverConfigurationWizardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelContent.SuspendLayout();
             this.splitContainerPagePicker.Panel1.SuspendLayout();
             this.splitContainerPagePicker.Panel2.SuspendLayout();
@@ -228,7 +229,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.presetConfigurationsToolStripMenuItem});
+            this.presetConfigurationsToolStripMenuItem,
+            this.receiverConfigurationWizardToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(884, 24);
@@ -263,6 +265,13 @@
             this.defaultConfigurationToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.defaultConfigurationToolStripMenuItem.Text = "::DefaultConfiguration::";
             this.defaultConfigurationToolStripMenuItem.Click += new System.EventHandler(this.defaultConfigurationToolStripMenuItem_Click);
+            // 
+            // receiverConfigurationWizardToolStripMenuItem
+            // 
+            this.receiverConfigurationWizardToolStripMenuItem.Name = "receiverConfigurationWizardToolStripMenuItem";
+            this.receiverConfigurationWizardToolStripMenuItem.Size = new System.Drawing.Size(185, 20);
+            this.receiverConfigurationWizardToolStripMenuItem.Text = "::ReceiverConfigurationWizard::";
+            this.receiverConfigurationWizardToolStripMenuItem.Click += new System.EventHandler(this.receiverConfigurationWizardToolStripMenuItem_Click);
             // 
             // OptionsView
             // 
@@ -322,5 +331,6 @@
         private System.Windows.Forms.ToolStripMenuItem justFlightSimulatorXToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem defaultConfigurationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem receiverConfigurationWizardToolStripMenuItem;
     }
 }

@@ -92,6 +92,8 @@
   <ItemGroup>
     <Content Include="Images\Add16x16.png" />
     <Content Include="Images\ApplicationIcon.ico" />
+    <Content Include="Images\ArrowBack16x16.png" />
+    <Content Include="Images\ArrowForward16x16.png" />
     <Content Include="Images\Cancel16x16.png" />
     <Content Include="Images\CancelSmall16x16.png" />
     <Content Include="Images\CloseSlider.png" />
@@ -106,8 +108,8 @@
     <Content Include="Images\Gear16x16.png" />
     <Content Include="Images\GotoCurrentLocation.png" />
     <Content Include="Images\HideList.png" />
-    <Content Include="Images\iconmonstr-location-3-icon.png" />
-    <Content Include="Images\iconmonstr-radio-3-icon.png" />
+    <Content Include="Images\Location16x16.png" />
+    <Content Include="Images\Radio16x16.png" />
     <Content Include="Images\IPadSplash.png" />
     <Content Include="Images\IPhoneIcon.png" />
     <Content Include="Images\ChevronBlueCircle.png" />
@@ -139,6 +141,7 @@
     <Content Include="Images\MovingMapUnchecked.png" />
     <Content Include="Images\Notebook16x16.png" />
     <Content Include="Images\OpenSlider.png" />
+    <Content Include="Images\Radio48x48.png" />
     <Content Include="Images\Rebroadcast16x16.png" />
     <Content Include="Images\RowHeader.png" />
     <Content Include="Images\RowHeaderSelected.png" />

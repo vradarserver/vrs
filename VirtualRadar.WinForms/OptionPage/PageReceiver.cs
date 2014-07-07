@@ -31,7 +31,7 @@ namespace VirtualRadar.WinForms.OptionPage
     /// </summary>
     public partial class PageReceiver : Page
     {
-        public override Image PageIcon { get { return Images.iconmonstr_radio_3_icon; } }
+        public override Image PageIcon { get { return Images.Radio16x16; } }
 
         public Receiver Receiver { get { return PageObject as Receiver; } }
 

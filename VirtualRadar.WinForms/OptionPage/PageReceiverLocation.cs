@@ -26,7 +26,7 @@ namespace VirtualRadar.WinForms.OptionPage
 {
     public partial class PageReceiverLocation : Page
     {
-        public override Image PageIcon { get { return Images.iconmonstr_location_3_icon; } }
+        public override Image PageIcon { get { return Images.Location16x16; } }
 
         public ReceiverLocation ReceiverLocation { get { return PageObject as ReceiverLocation; } }
 

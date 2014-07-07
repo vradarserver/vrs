@@ -1009,6 +1009,14 @@ namespace VirtualRadar.WinForms
         {
             OnFlightSimulatorXOnlyClicked(e);
         }
+
+        private void receiverConfigurationWizardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using(var wizard = new ReceiverConfigurationWizard()) {
+                if(wizard.ShowDialog() == DialogResult.OK) {
+                }
+            }
+        }
         #endregion
     }
 }
