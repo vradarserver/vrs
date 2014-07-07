@@ -350,6 +350,7 @@
     <Compile Include="SQLite\SynchronizationModes.cs" />
     <Compile Include="StreamHelper.cs" />
     <Compile Include="TransponderType.cs" />
+    <Compile Include="View\DedicatedReceiver.cs" />
     <Compile Include="View\IBusyView.cs" />
     <Compile Include="View\IConfirmView.cs" />
     <Compile Include="View\IConnectionClientLogView.cs" />
@@ -361,6 +362,7 @@
     <Compile Include="View\IOptionsView.cs" />
     <Compile Include="View\IPluginsView.cs" />
     <Compile Include="View\IRebroadcastOptionsView.cs" />
+    <Compile Include="View\IReceiverConfigurationWizardAnswers.cs" />
     <Compile Include="View\IReceiverLocationsView.cs" />
     <Compile Include="View\IShutdownView.cs" />
     <Compile Include="View\ISplashView.cs" />
@@ -371,6 +373,8 @@
     <Compile Include="View\IValidateView.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\NamespaceDoc.cs" />
+    <Compile Include="View\ReceiverClass.cs" />
+    <Compile Include="View\SdrDecoder.cs" />
     <Compile Include="View\ValidationField.cs" />
     <Compile Include="View\ValidationResult.cs" />
     <Compile Include="WeakEventHandler.cs" />

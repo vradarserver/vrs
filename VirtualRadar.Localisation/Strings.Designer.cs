@@ -4081,11 +4081,20 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the network address of {0}{1}.
+        ///   Looks up a localized string similar to Enter the network address of {0}.
         /// </summary>
-        public static string RecConWizNetworkAddressTitle {
+        public static string RecConWizNetworkHardwareAddressTitle {
             get {
-                return ResourceManager.GetString("RecConWizNetworkAddressTitle", resourceCulture);
+                return ResourceManager.GetString("RecConWizNetworkHardwareAddressTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the network address of the computer that is running {0}.
+        /// </summary>
+        public static string RecConWizNetworkProgramAddressTitle {
+            get {
+                return ResourceManager.GetString("RecConWizNetworkProgramAddressTitle", resourceCulture);
             }
         }
         
@@ -4122,15 +4131,6 @@ namespace VirtualRadar.Localisation {
         public static string RecConWizSdrAdsbSharp {
             get {
                 return ResourceManager.GetString("RecConWizSdrAdsbSharp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cocoa1090.
-        /// </summary>
-        public static string RecConWizSdrCocoa1090 {
-            get {
-                return ResourceManager.GetString("RecConWizSdrCocoa1090", resourceCulture);
             }
         }
         
@@ -5690,6 +5690,15 @@ namespace VirtualRadar.Localisation {
         public static string WindowsVersionTooLowTitle {
             get {
                 return ResourceManager.GetString("WindowsVersionTooLowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wizard.
+        /// </summary>
+        public static string Wizard {
+            get {
+                return ResourceManager.GetString("Wizard", resourceCulture);
             }
         }
         

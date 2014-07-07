@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,26 +12,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.View;
-using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface.Presenter
+namespace VirtualRadar.Interface.View
 {
     /// <summary>
-    /// The presenter for the <see cref="IOptionsView"/>.
+    /// An enumeration of the dedicated receivers that the receiver configuration
+    /// wizard knows about.
     /// </summary>
-    public interface IOptionsPresenter : IPresenter<IOptionsView>, IDisposable
+    public enum DedicatedReceiver
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for the presenter.
+        /// The user has an AirNav RadioBox.
         /// </summary>
-        IOptionsPresenterProvider Provider { get; set; }
+        RadarBox,
 
         /// <summary>
-        /// Applies the answers from a receiver configuration wizard to the receiver passed across.
+        /// The user has a Beast.
         /// </summary>
-        /// <param name="answers"></param>
-        /// <param name="receiver"></param>
-        void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver);
+        Beast,
+
+        /// <summary>
+        /// The user has a Kinetics receiver.
+        /// </summary>
+        KineticAvionicsAll,
+
+        /// <summary>
+        /// The user has a microADSB USB stick receiver.
+        /// </summary>
+        MicroAdsb,
+
+        /// <summary>
+        /// The user has a receiver that we don't know about.
+        /// </summary>
+        Other,
     }
+
 }

@@ -62,6 +62,7 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxConnectionType = new VirtualRadar.WinForms.Controls.ComboBoxPlus();
+            this.buttonWizard = new System.Windows.Forms.Button();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
@@ -70,10 +71,10 @@
             // buttonTestConnection
             // 
             this.buttonTestConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonTestConnection.Location = new System.Drawing.Point(480, 101);
+            this.buttonTestConnection.Location = new System.Drawing.Point(480, 107);
             this.buttonTestConnection.Name = "buttonTestConnection";
             this.buttonTestConnection.Size = new System.Drawing.Size(156, 23);
-            this.buttonTestConnection.TabIndex = 11;
+            this.buttonTestConnection.TabIndex = 12;
             this.buttonTestConnection.Text = "::TestConnection::";
             this.buttonTestConnection.UseVisualStyleBackColor = true;
             this.buttonTestConnection.Click += new System.EventHandler(this.buttonTestConnection_Click);
@@ -83,11 +84,11 @@
             this.buttonClearLocationId.FlatAppearance.BorderSize = 0;
             this.buttonClearLocationId.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonClearLocationId.Image = ((System.Drawing.Image)(resources.GetObject("buttonClearLocationId.Image")));
-            this.buttonClearLocationId.Location = new System.Drawing.Point(308, 77);
+            this.buttonClearLocationId.Location = new System.Drawing.Point(308, 83);
             this.buttonClearLocationId.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.buttonClearLocationId.Name = "buttonClearLocationId";
             this.buttonClearLocationId.Size = new System.Drawing.Size(21, 21);
-            this.buttonClearLocationId.TabIndex = 8;
+            this.buttonClearLocationId.TabIndex = 9;
             this.buttonClearLocationId.UseVisualStyleBackColor = true;
             this.buttonClearLocationId.Click += new System.EventHandler(this.buttonClearLocationId_Click);
             // 
@@ -95,10 +96,10 @@
             // 
             this.comboBoxLocationId.DisplayMember = "Name";
             this.comboBoxLocationId.FormattingEnabled = true;
-            this.comboBoxLocationId.Location = new System.Drawing.Point(155, 77);
+            this.comboBoxLocationId.Location = new System.Drawing.Point(155, 83);
             this.comboBoxLocationId.Name = "comboBoxLocationId";
             this.comboBoxLocationId.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxLocationId.TabIndex = 7;
+            this.comboBoxLocationId.TabIndex = 8;
             this.comboBoxLocationId.ValueMember = "UniqueId";
             // 
             // groupBoxSerial
@@ -121,10 +122,10 @@
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialBaudRate);
             this.groupBoxSerial.Controls.Add(this.label7);
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialComPort);
-            this.groupBoxSerial.Location = new System.Drawing.Point(0, 216);
+            this.groupBoxSerial.Location = new System.Drawing.Point(0, 222);
             this.groupBoxSerial.Name = "groupBoxSerial";
             this.groupBoxSerial.Size = new System.Drawing.Size(636, 157);
-            this.groupBoxSerial.TabIndex = 13;
+            this.groupBoxSerial.TabIndex = 14;
             this.groupBoxSerial.TabStop = false;
             this.groupBoxSerial.Text = "::USBOverCOM::";
             // 
@@ -269,29 +270,29 @@
             // checkBoxAutoReconnectAtStartup
             // 
             this.checkBoxAutoReconnectAtStartup.AutoSize = true;
-            this.checkBoxAutoReconnectAtStartup.Location = new System.Drawing.Point(336, 51);
+            this.checkBoxAutoReconnectAtStartup.Location = new System.Drawing.Point(336, 57);
             this.checkBoxAutoReconnectAtStartup.Name = "checkBoxAutoReconnectAtStartup";
             this.checkBoxAutoReconnectAtStartup.Size = new System.Drawing.Size(157, 17);
-            this.checkBoxAutoReconnectAtStartup.TabIndex = 5;
+            this.checkBoxAutoReconnectAtStartup.TabIndex = 6;
             this.checkBoxAutoReconnectAtStartup.Text = "::AutoReconnectAtStartup::";
             this.checkBoxAutoReconnectAtStartup.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(0, 52);
+            this.label4.Location = new System.Drawing.Point(0, 58);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(54, 13);
-            this.label4.TabIndex = 3;
+            this.label4.TabIndex = 4;
             this.label4.Text = "::Format:::";
             // 
             // comboBoxDataSource
             // 
             this.comboBoxDataSource.FormattingEnabled = true;
-            this.comboBoxDataSource.Location = new System.Drawing.Point(155, 49);
+            this.comboBoxDataSource.Location = new System.Drawing.Point(155, 55);
             this.comboBoxDataSource.Name = "comboBoxDataSource";
             this.comboBoxDataSource.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxDataSource.TabIndex = 4;
+            this.comboBoxDataSource.TabIndex = 5;
             // 
             // groupBoxNetwork
             // 
@@ -301,10 +302,10 @@
             this.groupBoxNetwork.Controls.Add(this.numericPort);
             this.groupBoxNetwork.Controls.Add(this.label5);
             this.groupBoxNetwork.Controls.Add(this.textBoxAddress);
-            this.groupBoxNetwork.Location = new System.Drawing.Point(0, 130);
+            this.groupBoxNetwork.Location = new System.Drawing.Point(0, 136);
             this.groupBoxNetwork.Name = "groupBoxNetwork";
             this.groupBoxNetwork.Size = new System.Drawing.Size(636, 80);
-            this.groupBoxNetwork.TabIndex = 12;
+            this.groupBoxNetwork.TabIndex = 13;
             this.groupBoxNetwork.TabStop = false;
             this.groupBoxNetwork.Text = "::Network::";
             // 
@@ -349,16 +350,16 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(0, 80);
+            this.label3.Location = new System.Drawing.Point(0, 86);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 6;
+            this.label3.TabIndex = 7;
             this.label3.Text = "::Location:::";
             // 
             // checkBoxEnabled
             // 
             this.checkBoxEnabled.AutoSize = true;
-            this.checkBoxEnabled.Location = new System.Drawing.Point(155, 0);
+            this.checkBoxEnabled.Location = new System.Drawing.Point(155, 4);
             this.checkBoxEnabled.Name = "checkBoxEnabled";
             this.checkBoxEnabled.Size = new System.Drawing.Size(77, 17);
             this.checkBoxEnabled.TabIndex = 0;
@@ -368,42 +369,55 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 26);
+            this.label2.Location = new System.Drawing.Point(0, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 13);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 2;
             this.label2.Text = "::Name:::";
             // 
             // textBoxName
             // 
             this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxName.Location = new System.Drawing.Point(155, 23);
+            this.textBoxName.Location = new System.Drawing.Point(155, 29);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(481, 20);
-            this.textBoxName.TabIndex = 2;
+            this.textBoxName.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 106);
+            this.label1.Location = new System.Drawing.Point(0, 112);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 9;
+            this.label1.TabIndex = 10;
             this.label1.Text = "::ConnectionType:::";
             // 
             // comboBoxConnectionType
             // 
             this.comboBoxConnectionType.FormattingEnabled = true;
-            this.comboBoxConnectionType.Location = new System.Drawing.Point(155, 103);
+            this.comboBoxConnectionType.Location = new System.Drawing.Point(155, 109);
             this.comboBoxConnectionType.Name = "comboBoxConnectionType";
             this.comboBoxConnectionType.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxConnectionType.TabIndex = 10;
+            this.comboBoxConnectionType.TabIndex = 11;
             this.comboBoxConnectionType.SelectedIndexChanged += new System.EventHandler(this.comboBoxConnectionType_SelectedIndexChanged);
+            // 
+            // buttonWizard
+            // 
+            this.buttonWizard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonWizard.Location = new System.Drawing.Point(536, 0);
+            this.buttonWizard.Name = "buttonWizard";
+            this.buttonWizard.Size = new System.Drawing.Size(100, 23);
+            this.buttonWizard.TabIndex = 1;
+            this.buttonWizard.Text = "::Wizard::";
+            this.buttonWizard.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.buttonWizard.UseVisualStyleBackColor = true;
+            this.buttonWizard.Click += new System.EventHandler(this.buttonWizard_Click);
             // 
             // PageReceiver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.buttonWizard);
             this.Controls.Add(this.buttonTestConnection);
             this.Controls.Add(this.buttonClearLocationId);
             this.Controls.Add(this.comboBoxLocationId);
@@ -419,7 +433,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBoxConnectionType);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 375);
+            this.Size = new System.Drawing.Size(636, 384);
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
             this.groupBoxNetwork.ResumeLayout(false);
@@ -466,5 +480,6 @@
         private Controls.ObservableListComboBox comboBoxLocationId;
         private System.Windows.Forms.Button buttonClearLocationId;
         private System.Windows.Forms.Button buttonTestConnection;
+        private System.Windows.Forms.Button buttonWizard;
     }
 }

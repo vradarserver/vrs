@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,26 +12,53 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface.Presenter
+namespace VirtualRadar.Interface.View
 {
     /// <summary>
-    /// The presenter for the <see cref="IOptionsView"/>.
+    /// The interface that <see cref="IReceiverConfigurationWizard"/> views
+    /// expose to carry the answers supplied by the user.
     /// </summary>
-    public interface IOptionsPresenter : IPresenter<IOptionsView>, IDisposable
+    public interface IReceiverConfigurationWizardAnswers
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for the presenter.
+        /// Gets or sets the broad class of receiver - SDR vs. Dedicated.
         /// </summary>
-        IOptionsPresenterProvider Provider { get; set; }
+        ReceiverClass ReceiverClass { get; set; }
 
         /// <summary>
-        /// Applies the answers from a receiver configuration wizard to the receiver passed across.
+        /// Gets or sets the SDR decoder in use. Ignore if receiver class is not SDR.
         /// </summary>
-        /// <param name="answers"></param>
-        /// <param name="receiver"></param>
-        void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver);
+        SdrDecoder SdrDecoder { get; set; }
+
+        /// <summary>
+        /// Gets or sets the dedicated receiver in use. Ignore if receiver class is not Dedicated.
+        /// </summary>
+        DedicatedReceiver DedicatedReceiver { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connection type used by the receiver. Ignore if the receiver
+        /// class is SDR, or if the dedicated receiver is anything except Beast.
+        /// </summary>
+        ConnectionType ConnectionType { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the user is using BaseStation. Ignore if the
+        /// receiver is not Kinetics.
+        /// </summary>
+        bool IsUsingBaseStation { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the feed is coming from a program and that
+        /// program is on the same machine as VRS.
+        /// </summary>
+        bool IsLoopback { get; set; }
+
+        /// <summary>
+        /// Gets or sets the address to use if the receiver is reached over the network and
+        /// it cannot be reached over the loopback interface.
+        /// </summary>
+        string NetworkAddress { get; set; }
     }
 }

@@ -183,6 +183,8 @@ namespace VirtualRadar.WinForms.OptionPage
 
         protected override void InitialiseControls()
         {
+            buttonWizard.Image = Images.Wizard16x16;
+
             comboBoxLocationId.ObservableList = OptionsView.PageReceiverLocations.ReceiverLocations;
 
             comboBoxDataSource.PopulateWithEnums<DataSource>(Describe.DataSource);
@@ -237,6 +239,17 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             CopyObservablesToRecord();
             OptionsView.RaiseTestConnectionClicked(new EventArgs<Receiver>(Receiver));
+        }
+
+        private void buttonWizard_Click(object sender, EventArgs e)
+        {
+            using(var dialog = new ReceiverConfigurationWizard()) {
+                if(dialog.ShowDialog() == DialogResult.OK) {
+                    CopyObservablesToRecord();
+                    OptionsView.ApplyReceiverConfigurationWizard(dialog.Answers, Receiver);
+                    RefreshPageFromPageObject();
+                }
+            }
         }
     }
 }

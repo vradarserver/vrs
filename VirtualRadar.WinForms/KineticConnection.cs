@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,26 +12,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.View;
-using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface.Presenter
+namespace VirtualRadar.WinForms
 {
     /// <summary>
-    /// The presenter for the <see cref="IOptionsView"/>.
+    /// An enumeration of the different ways that users can connect
+    /// to Kinetic receivers.
     /// </summary>
-    public interface IOptionsPresenter : IPresenter<IOptionsView>, IDisposable
+    public enum KineticConnection
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for the presenter.
+        /// The user is connecting via BaseStation.
         /// </summary>
-        IOptionsPresenterProvider Provider { get; set; }
+        BaseStation,
 
         /// <summary>
-        /// Applies the answers from a receiver configuration wizard to the receiver passed across.
+        /// The user is connecting directly to the hardware.
         /// </summary>
-        /// <param name="answers"></param>
-        /// <param name="receiver"></param>
-        void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver);
+        DirectToHardware,
     }
 }

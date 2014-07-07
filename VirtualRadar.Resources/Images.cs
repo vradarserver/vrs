@@ -1010,5 +1010,18 @@ namespace VirtualRadar.Resources
             get { return _WarningIcon ?? InternalResources.WarningIcon; }
             set { _WarningIcon = value; }
         }
+
+        private static Bitmap _Wizard16x16;
+        /// <summary>
+        /// Gets or sets the Wizard16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Wizard16x16.png" alt="" title="Wizard16x16" />
+        /// </remarks>
+        public static Bitmap Wizard16x16
+        {
+            get { return _Wizard16x16 ?? InternalResources.Wizard16x16; }
+            set { _Wizard16x16 = value; }
+        }
     }
 }
