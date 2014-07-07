@@ -36,7 +36,7 @@ namespace VirtualRadar.WinForms.OptionPage
 
         public override string PageTitle { get { return Strings.Receivers; } }
 
-        public override Image PageIcon { get { return Images.iconmonstr_radio_3_icon; } }
+        public override Image PageIcon { get { return Images.Radio16x16; } }
 
         public override bool PageUseFullHeight { get { return true; } }
 

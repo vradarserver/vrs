@@ -2053,4 +2053,94 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="PresetConfigurations" xml:space="preserve">
     <value>Preset Configurations</value>
   </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="RecConWizConnectionTypeTitle" xml:space="preserve">
+    <value>How is the receiver connected?</value>
+  </data>
+  <data name="RecConWizDedicatedAirNavRadarBox" xml:space="preserve">
+    <value>AirNav Systems RadarBox</value>
+  </data>
+  <data name="RecConWizDedicatedBeast" xml:space="preserve">
+    <value>Beast</value>
+  </data>
+  <data name="RecConWizDedicatedKinetics" xml:space="preserve">
+    <value>Kinetic Avionics SBS series or Puck</value>
+  </data>
+  <data name="RecConWizDedicatedMicroAdsb" xml:space="preserve">
+    <value>microADSB USB stick</value>
+  </data>
+  <data name="RecConWizDedicatedTitle" xml:space="preserve">
+    <value>What kind of hardware are you using?</value>
+  </data>
+  <data name="RecConWizFinishAction" xml:space="preserve">
+    <value>Click Finish to modify the current receiver or Cancel to abandon your changes.</value>
+  </data>
+  <data name="RecConWizFinishTitle" xml:space="preserve">
+    <value>Finished</value>
+  </data>
+  <data name="RecConWizKineticConDirect" xml:space="preserve">
+    <value>No, connect directly to the receiver</value>
+  </data>
+  <data name="RecConWizKineticConNote" xml:space="preserve">
+    <value>Note: Connecting directly to the hardware is only supported over the network. The receiver must have the latest firmware installed.</value>
+  </data>
+  <data name="RecConWizKineticConTitle" xml:space="preserve">
+    <value>Are you using BaseStation?</value>
+  </data>
+  <data name="RecConWizLoopbackTitle" xml:space="preserve">
+    <value>Is {0} running on this computer?</value>
+  </data>
+  <data name="RecConWizNetworkAddressTitle" xml:space="preserve">
+    <value>Enter the network address of {0}{1}</value>
+  </data>
+  <data name="RecConWizReceiverClassDedicated" xml:space="preserve">
+    <value>A radio that receives and decodes transponder signals</value>
+  </data>
+  <data name="RecConWizReceiverClassSdr" xml:space="preserve">
+    <value>A software defined radio</value>
+  </data>
+  <data name="RecConWizReceiverClassTitle" xml:space="preserve">
+    <value>What kind of receiver do you want to connect to?</value>
+  </data>
+  <data name="RecConWizSdrAdsbSharp" xml:space="preserve">
+    <value>ADSBSharp</value>
+  </data>
+  <data name="RecConWizSdrCocoa1090" xml:space="preserve">
+    <value>Cocoa1090</value>
+  </data>
+  <data name="RecConWizSdrDump1090" xml:space="preserve">
+    <value>Dump1090</value>
+  </data>
+  <data name="RecConWizSdrGrAirModes" xml:space="preserve">
+    <value>gr-air-modes</value>
+  </data>
+  <data name="RecConWizSdrModesdeco" xml:space="preserve">
+    <value>Modesdeco</value>
+  </data>
+  <data name="RecConWizSdrRtl1090" xml:space="preserve">
+    <value>RTL1090</value>
+  </data>
+  <data name="RecConWizSdrTitle" xml:space="preserve">
+    <value>Which decoder program are you using with the SDR?</value>
+  </data>
+  <data name="RecConWizSourceTheReceiver" xml:space="preserve">
+    <value>the receiver</value>
+  </data>
+  <data name="RecConWizSourceTheSdr" xml:space="preserve">
+    <value>the SDR decoder</value>
+  </data>
+  <data name="ReceiverConfigurationWizard" xml:space="preserve">
+    <value>Receiver Configuration Wizard</value>
+  </data>
+  <data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
 </root>

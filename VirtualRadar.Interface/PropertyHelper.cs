@@ -29,5 +29,30 @@ namespace VirtualRadar.Interface
 
             return propertyInfo == null ? null : propertyInfo.Name;
         }
+
+        /// <summary>
+        /// Retrieves the name of a property from the lambda expression passed across. Returns null
+        /// if the expression refers to anything other than a simple property.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        public static string ExtractName<T>(Expression<Func<T, object>> selectorExpression)
+        {
+            return ExtractName((Expression)selectorExpression);
+        }
+
+        /// <summary>
+        /// Retrieves the name of a property from the lambda expression passed across. Returns null
+        /// if the expression refers to anything other than a simple property.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="unused"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        public static string ExtractName<T>(T unused, Expression<Func<T, object>> selectorExpression)
+        {
+            return ExtractName((Expression)selectorExpression);
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace VirtualRadar.WinForms.OptionPage
 
         public override string PageTitle { get { return Strings.ReceiverLocationsTitle; } }
 
-        public override Image PageIcon { get { return Images.iconmonstr_location_3_icon; } }
+        public override Image PageIcon { get { return Images.Location16x16; } }
 
         public override bool PageUseFullHeight { get { return true; } }
 

@@ -413,6 +413,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string Back {
+            get {
+                return ResourceManager.GetString("Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bad checksum.
         /// </summary>
         public static string BadChecksum {
@@ -1327,6 +1336,15 @@ namespace VirtualRadar.Localisation {
         public static string Feet {
             get {
                 return ResourceManager.GetString("Feet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finish.
+        /// </summary>
+        public static string Finish {
+            get {
+                return ResourceManager.GetString("Finish", resourceCulture);
             }
         }
         
@@ -2385,6 +2403,15 @@ namespace VirtualRadar.Localisation {
         public static string New {
             get {
                 return ResourceManager.GetString("New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string Next {
+            get {
+                return ResourceManager.GetString("Next", resourceCulture);
             }
         }
         
@@ -3946,6 +3973,231 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to How is the receiver connected?.
+        /// </summary>
+        public static string RecConWizConnectionTypeTitle {
+            get {
+                return ResourceManager.GetString("RecConWizConnectionTypeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AirNav Systems RadarBox.
+        /// </summary>
+        public static string RecConWizDedicatedAirNavRadarBox {
+            get {
+                return ResourceManager.GetString("RecConWizDedicatedAirNavRadarBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beast.
+        /// </summary>
+        public static string RecConWizDedicatedBeast {
+            get {
+                return ResourceManager.GetString("RecConWizDedicatedBeast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kinetic Avionics SBS series or Puck.
+        /// </summary>
+        public static string RecConWizDedicatedKinetics {
+            get {
+                return ResourceManager.GetString("RecConWizDedicatedKinetics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to microADSB USB stick.
+        /// </summary>
+        public static string RecConWizDedicatedMicroAdsb {
+            get {
+                return ResourceManager.GetString("RecConWizDedicatedMicroAdsb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What kind of hardware are you using?.
+        /// </summary>
+        public static string RecConWizDedicatedTitle {
+            get {
+                return ResourceManager.GetString("RecConWizDedicatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click Finish to modify the current receiver or Cancel to abandon your changes..
+        /// </summary>
+        public static string RecConWizFinishAction {
+            get {
+                return ResourceManager.GetString("RecConWizFinishAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished.
+        /// </summary>
+        public static string RecConWizFinishTitle {
+            get {
+                return ResourceManager.GetString("RecConWizFinishTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No, connect directly to the receiver.
+        /// </summary>
+        public static string RecConWizKineticConDirect {
+            get {
+                return ResourceManager.GetString("RecConWizKineticConDirect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: Connecting directly to the hardware is only supported over the network. The receiver must have the latest firmware installed..
+        /// </summary>
+        public static string RecConWizKineticConNote {
+            get {
+                return ResourceManager.GetString("RecConWizKineticConNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you using BaseStation?.
+        /// </summary>
+        public static string RecConWizKineticConTitle {
+            get {
+                return ResourceManager.GetString("RecConWizKineticConTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is {0} running on this computer?.
+        /// </summary>
+        public static string RecConWizLoopbackTitle {
+            get {
+                return ResourceManager.GetString("RecConWizLoopbackTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the network address of {0}{1}.
+        /// </summary>
+        public static string RecConWizNetworkAddressTitle {
+            get {
+                return ResourceManager.GetString("RecConWizNetworkAddressTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A radio that receives and decodes transponder signals.
+        /// </summary>
+        public static string RecConWizReceiverClassDedicated {
+            get {
+                return ResourceManager.GetString("RecConWizReceiverClassDedicated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A software defined radio.
+        /// </summary>
+        public static string RecConWizReceiverClassSdr {
+            get {
+                return ResourceManager.GetString("RecConWizReceiverClassSdr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What kind of receiver do you want to connect to?.
+        /// </summary>
+        public static string RecConWizReceiverClassTitle {
+            get {
+                return ResourceManager.GetString("RecConWizReceiverClassTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ADSBSharp.
+        /// </summary>
+        public static string RecConWizSdrAdsbSharp {
+            get {
+                return ResourceManager.GetString("RecConWizSdrAdsbSharp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cocoa1090.
+        /// </summary>
+        public static string RecConWizSdrCocoa1090 {
+            get {
+                return ResourceManager.GetString("RecConWizSdrCocoa1090", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dump1090.
+        /// </summary>
+        public static string RecConWizSdrDump1090 {
+            get {
+                return ResourceManager.GetString("RecConWizSdrDump1090", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to gr-air-modes.
+        /// </summary>
+        public static string RecConWizSdrGrAirModes {
+            get {
+                return ResourceManager.GetString("RecConWizSdrGrAirModes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modesdeco.
+        /// </summary>
+        public static string RecConWizSdrModesdeco {
+            get {
+                return ResourceManager.GetString("RecConWizSdrModesdeco", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RTL1090.
+        /// </summary>
+        public static string RecConWizSdrRtl1090 {
+            get {
+                return ResourceManager.GetString("RecConWizSdrRtl1090", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which decoder program are you using with the SDR?.
+        /// </summary>
+        public static string RecConWizSdrTitle {
+            get {
+                return ResourceManager.GetString("RecConWizSdrTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the receiver.
+        /// </summary>
+        public static string RecConWizSourceTheReceiver {
+            get {
+                return ResourceManager.GetString("RecConWizSourceTheReceiver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the SDR decoder.
+        /// </summary>
+        public static string RecConWizSourceTheSdr {
+            get {
+                return ResourceManager.GetString("RecConWizSourceTheSdr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Received {0:N0} messages.
         /// </summary>
         public static string ReceivedCountMessages {
@@ -3960,6 +4212,15 @@ namespace VirtualRadar.Localisation {
         public static string Receiver {
             get {
                 return ResourceManager.GetString("Receiver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Receiver Configuration Wizard.
+        /// </summary>
+        public static string ReceiverConfigurationWizard {
+            get {
+                return ResourceManager.GetString("ReceiverConfigurationWizard", resourceCulture);
             }
         }
         
@@ -5204,6 +5465,15 @@ namespace VirtualRadar.Localisation {
         public static string UPnpPortOutOfBounds {
             get {
                 return ResourceManager.GetString("UPnpPortOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USB.
+        /// </summary>
+        public static string USB {
+            get {
+                return ResourceManager.GetString("USB", resourceCulture);
             }
         }
         

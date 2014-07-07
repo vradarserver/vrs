@@ -62,6 +62,32 @@ namespace VirtualRadar.Resources
             set { _ApplicationIcon = value; }
         }
 
+        private static Bitmap _ArrowBack16x16;
+        /// <summary>
+        /// Gets or sets the ArrowBack16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/ArrowBack16x16.png" alt="" title="ArrowBack16x16" />
+        /// </remarks>
+        public static Bitmap ArrowBack16x16
+        {
+            get { return _ArrowBack16x16 ?? InternalResources.ArrowBack16x16; }
+            set { _ArrowBack16x16 = value; }
+        }
+
+        private static Bitmap _ArrowForward16x16;
+        /// <summary>
+        /// Gets or sets the ArrowForward16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/ArrowForward16x16.png" alt="" title="ArrowForward16x16" />
+        /// </remarks>
+        public static Bitmap ArrowForward16x16
+        {
+            get { return _ArrowForward16x16 ?? InternalResources.ArrowForward16x16; }
+            set { _ArrowForward16x16 = value; }
+        }
+
         private static Bitmap _BlueBall;
         /// <summary>
         /// Gets or sets the BlueBall image.
@@ -348,32 +374,6 @@ namespace VirtualRadar.Resources
             set { _HideList = value; }
         }
 
-        private static Bitmap _iconmonstr_location_3_icon;
-        /// <summary>
-        /// Gets or sets the iconmonstr_location_3_icon image.
-        /// </summary>
-        /// <remarks>
-        /// <img src="../Images/iconmonstr-location-3-icon.png" alt="" title="iconmonstr_location_3_icon" />
-        /// </remarks>
-        public static Bitmap iconmonstr_location_3_icon
-        {
-            get { return _iconmonstr_location_3_icon ?? InternalResources.iconmonstr_location_3_icon; }
-            set { _iconmonstr_location_3_icon = value; }
-        }
-
-        private static Bitmap _iconmonstr_radio_3_icon;
-        /// <summary>
-        /// Gets or sets the iconmonstr_radio_3_icon image.
-        /// </summary>
-        /// <remarks>
-        /// <img src="../Images/iconmonstr-radio-3-icon.png" alt="" title="iconmonstr_radio_3_icon" />
-        /// </remarks>
-        public static Bitmap iconmonstr_radio_3_icon
-        {
-            get { return _iconmonstr_radio_3_icon ?? InternalResources.iconmonstr_radio_3_icon; }
-            set { _iconmonstr_radio_3_icon = value; }
-        }
-
         private static Bitmap _IPadSplash;
         /// <summary>
         /// Gets or sets the IPadSplash image.
@@ -569,6 +569,19 @@ namespace VirtualRadar.Resources
             set { _IPhoneWhiteButton = value; }
         }
 
+        private static Bitmap _Location16x16;
+        /// <summary>
+        /// Gets or sets the Location16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Location16x16.png" alt="" title="Location16x16" />
+        /// </remarks>
+        public static Bitmap Location16x16
+        {
+            get { return _Location16x16 ?? InternalResources.Location16x16; }
+            set { _Location16x16 = value; }
+        }
+
         private static Bitmap _Logo128x128;
         /// <summary>
         /// Gets or sets the Logo128x128 image.
@@ -671,6 +684,32 @@ namespace VirtualRadar.Resources
         {
             get { return _OpenSlider ?? InternalResources.OpenSlider; }
             set { _OpenSlider = value; }
+        }
+
+        private static Bitmap _Radio16x16;
+        /// <summary>
+        /// Gets or sets the Radio16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Radio16x16.png" alt="" title="Radio16x16" />
+        /// </remarks>
+        public static Bitmap Radio16x16
+        {
+            get { return _Radio16x16 ?? InternalResources.Radio16x16; }
+            set { _Radio16x16 = value; }
+        }
+
+        private static Bitmap _Radio48x48;
+        /// <summary>
+        /// Gets or sets the Radio48x48 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Radio48x48.png" alt="" title="Radio48x48" />
+        /// </remarks>
+        public static Bitmap Radio48x48
+        {
+            get { return _Radio48x48 ?? InternalResources.Radio48x48; }
+            set { _Radio48x48 = value; }
         }
 
         private static Bitmap _Rebroadcast16x16;
