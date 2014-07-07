@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,26 +12,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.View;
-using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface.Presenter
+namespace VirtualRadar.Interface.View
 {
     /// <summary>
-    /// The presenter for the <see cref="IOptionsView"/>.
+    /// An enumeration of the different classes of receiver that the
+    /// receiver configuration wizard can collect information about.
     /// </summary>
-    public interface IOptionsPresenter : IPresenter<IOptionsView>, IDisposable
+    public enum ReceiverClass
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for the presenter.
+        /// The receiver is a software defined radio, aka an SDR.
         /// </summary>
-        IOptionsPresenterProvider Provider { get; set; }
+        SoftwareDefinedRadio,
 
         /// <summary>
-        /// Applies the answers from a receiver configuration wizard to the receiver passed across.
+        /// The receiver is a dedicated lump of hardware that was built
+        /// to pick up Mode-S transmissions.
         /// </summary>
-        /// <param name="answers"></param>
-        /// <param name="receiver"></param>
-        void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver);
+        DedicatedHardware,
     }
 }

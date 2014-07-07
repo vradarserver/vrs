@@ -747,6 +747,76 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region Wizards - ApplyReceiverConfigurationWizard
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="answers"></param>
+        /// <param name="receiver"></param>
+        public void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver)
+        {
+            switch(answers.ReceiverClass) {
+                case ReceiverClass.SoftwareDefinedRadio:
+                    receiver.ConnectionType = ConnectionType.TCP;
+                    receiver.DataSource = DataSource.Beast;
+                    receiver.Address = answers.IsLoopback ? "127.0.0.1" : answers.NetworkAddress;
+                    switch(answers.SdrDecoder) {
+                        case SdrDecoder.AdsbSharp:  receiver.Port = 47806; break;
+                        case SdrDecoder.Dump1090:   receiver.Port = 30002; break;
+                        case SdrDecoder.GrAirModes: receiver.Port = 30003; receiver.DataSource = DataSource.Port30003; break; // The source for gr-air-modes mentions a raw server but I couldn't see it being initialised? No idea what the format would be either :(
+                        case SdrDecoder.Modesdeco:  receiver.Port = 30005; break;
+                        case SdrDecoder.Rtl1090:    receiver.Port = 31001; break;
+                        case SdrDecoder.Other:      receiver.Port = 30003; receiver.DataSource = DataSource.Port30003; break; // Most things support vanilla BaseStation
+                        default:                    throw new NotImplementedException();
+                    }
+                    break;
+                case ReceiverClass.DedicatedHardware:
+                    switch(answers.DedicatedReceiver) {
+                        case DedicatedReceiver.Beast:
+                            receiver.DataSource = DataSource.Beast;
+                            receiver.ConnectionType = answers.ConnectionType;
+                            if(receiver.ConnectionType == ConnectionType.TCP) {
+                                receiver.Address = answers.NetworkAddress;
+                                receiver.Port = 30005;
+                            }
+                            break;
+                        case DedicatedReceiver.KineticAvionicsAll:
+                            receiver.DataSource = DataSource.Sbs3;
+                            receiver.ConnectionType = ConnectionType.TCP;
+                            receiver.Address = !answers.IsUsingBaseStation ? answers.NetworkAddress : answers.IsLoopback ? "127.0.0.1" : answers.NetworkAddress;
+                            receiver.Port = answers.IsUsingBaseStation ? 30006 : 10001;
+                            break;
+                        case DedicatedReceiver.MicroAdsb:
+                            receiver.ConnectionType = ConnectionType.COM;
+                            receiver.DataSource = DataSource.Beast;
+                            break;
+                        case DedicatedReceiver.RadarBox:
+                        case DedicatedReceiver.Other:
+                            receiver.ConnectionType = ConnectionType.TCP;
+                            receiver.DataSource = DataSource.Port30003;
+                            receiver.Address = answers.NetworkAddress;
+                            receiver.Port = 30003;
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            if(receiver.ConnectionType == ConnectionType.COM) {
+                if(receiver.BaudRate < 921600) receiver.BaudRate = 921600;
+                receiver.DataBits = 8;
+                receiver.StopBits = StopBits.One;
+                receiver.Parity = Parity.None;
+                receiver.Handshake = Handshake.None;
+                receiver.StartupText = "#43-02\\r";
+                receiver.ShutdownText = "#43-00\\r";
+            }
+        }
+        #endregion
+
         #region Events subscribed
         /// <summary>
         /// Raised when the user wants to reset the view to default values.

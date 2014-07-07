@@ -248,6 +248,7 @@
     <Compile Include="InvalidPluginsView.Designer.cs">
       <DependentUpon>InvalidPluginsView.cs</DependentUpon>
     </Compile>
+    <Compile Include="KineticConnection.cs" />
     <Compile Include="ListDetailEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -408,6 +409,7 @@
     <Compile Include="ReceiverConfigurationWizard.Designer.cs">
       <DependentUpon>ReceiverConfigurationWizard.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReceiverConfigurationWizardAnswers.cs" />
     <Compile Include="ReceiverListView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -467,6 +469,7 @@
     <Compile Include="Wizard\WizardPage.designer.cs">
       <DependentUpon>WizardPage.cs</DependentUpon>
     </Compile>
+    <Compile Include="YesNo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutView.resx">

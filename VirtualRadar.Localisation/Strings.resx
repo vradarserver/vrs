@@ -2098,8 +2098,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="RecConWizLoopbackTitle" xml:space="preserve">
     <value>Is {0} running on this computer?</value>
   </data>
-  <data name="RecConWizNetworkAddressTitle" xml:space="preserve">
-    <value>Enter the network address of {0}{1}</value>
+  <data name="RecConWizNetworkHardwareAddressTitle" xml:space="preserve">
+    <value>Enter the network address of {0}</value>
   </data>
   <data name="RecConWizReceiverClassDedicated" xml:space="preserve">
     <value>A radio that receives and decodes transponder signals</value>
@@ -2112,9 +2112,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="RecConWizSdrAdsbSharp" xml:space="preserve">
     <value>ADSBSharp</value>
-  </data>
-  <data name="RecConWizSdrCocoa1090" xml:space="preserve">
-    <value>Cocoa1090</value>
   </data>
   <data name="RecConWizSdrDump1090" xml:space="preserve">
     <value>Dump1090</value>
@@ -2142,5 +2139,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="USB" xml:space="preserve">
     <value>USB</value>
+  </data>
+  <data name="RecConWizNetworkProgramAddressTitle" xml:space="preserve">
+    <value>Enter the network address of the computer that is running {0}</value>
+  </data>
+  <data name="Wizard" xml:space="preserve">
+    <value>Wizard</value>
+    <comment>As in a software wizard, a set of pages that ask questions to and collect answers from the user. Used in VRS to help with making configuration choices.</comment>
   </data>
 </root>

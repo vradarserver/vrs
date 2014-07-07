@@ -931,6 +931,18 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region Wizard helpers - ApplyReceiverConfigurationWizard
+        /// <summary>
+        /// Applies the answers from a receiver configuration wizard to a receiver.
+        /// </summary>
+        /// <param name="answers"></param>
+        /// <param name="receiver"></param>
+        public void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver)
+        {
+            _Presenter.ApplyReceiverConfigurationWizard(answers, receiver);
+        }
+        #endregion
+
         #region OnLoad
         /// <summary>
         /// Called after the form has been loaded but before it is shown to the user.
@@ -1008,14 +1020,6 @@ namespace VirtualRadar.WinForms
         private void justFlightSimulatorXToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OnFlightSimulatorXOnlyClicked(e);
-        }
-
-        private void receiverConfigurationWizardToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using(var wizard = new ReceiverConfigurationWizard()) {
-                if(wizard.ShowDialog() == DialogResult.OK) {
-                }
-            }
         }
         #endregion
     }
