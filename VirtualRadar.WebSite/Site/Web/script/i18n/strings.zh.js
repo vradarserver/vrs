@@ -43,9 +43,9 @@
     VRS.$$.AllAltitudes =                               '所有高度';
     VRS.$$.AllRows =                                    '所有行';
     VRS.$$.Altitude =                                   '高度';
-    VRS.$$.AltitudeAndSpeedGraph =                      '高度&速度表';
+    VRS.$$.AltitudeAndSpeedGraph =                      '高度&速度图';
     VRS.$$.AltitudeAndVerticalSpeed =                   '高度&垂直速度';
-    VRS.$$.AltitudeGraph =                              '高度表';
+    VRS.$$.AltitudeGraph =                              '高度图';
     VRS.$$.AllAircraft =                                '所有航空器';
     VRS.$$.Amphibian =                                  '两栖飞机';
     VRS.$$.AnnounceSelected =                           '通知所有已选择航空器';
@@ -119,11 +119,11 @@
     VRS.$$.FlightLevelAbbreviation =                    'FL{0}';
     VRS.$$.FlightLevelAndVerticalSpeed =                'FL & VSI';
     VRS.$$.FlightLevelHeightUnit =                      '飞行高度层高度单位';
-    VRS.$$.FlightLevelTransitionAltitude =              '飞行高度层跃迁高度';
+    VRS.$$.FlightLevelTransitionAltitude =              '飞行高度层过渡高度';
     VRS.$$.FlightsCount =                               '观测次数';
     VRS.$$.FlightsListShort =                           '航班';
     VRS.$$.FlightSimPage =                              '飞行模拟版页面';
-    VRS.$$.FlightSimTitle =                             'ADS-B Radar';
+    VRS.$$.FlightSimTitle =                             'Virtual Radar Server';
     VRS.$$.ForcePhoneOff =                              '非移动设备';                      // As in "force the page to ignore the fact that this is a smart phone"
     VRS.$$.ForcePhoneOn =                               '移动设备';                          // As in "force the page to pretend that this is a smart phone"
     VRS.$$.ForceTabletOff =                             '非平板设备';                     // As in "force the page to ignore the fact that this is a tablet PC"
@@ -199,7 +199,7 @@
     VRS.$$.ListCountModeS =                             'Mode-S 消息';
     VRS.$$.ListCountPositions =                         '坐标消息'
     VRS.$$.ListCountry =                                '国家';
-    VRS.$$.ListCurrentRegDate =                         '有效注册日期';             // Date of current registration
+    VRS.$$.ListCurrentRegDate =                         '当前注册日期';             // Date of current registration
     VRS.$$.ListDeRegDate =                              '取消注册日期';              // as in the date it was taken off the register
     VRS.$$.ListDistance =                               '距离';
     VRS.$$.ListDuration =                               '持续时间';
@@ -241,7 +241,7 @@
     VRS.$$.ListMaxTakeoffWeight =                       '最大起飞重量';
     VRS.$$.ListModel =                                  '机型';
     VRS.$$.ListModelIcao =                              '机型';
-    VRS.$$.ListModeSCountry =                           'Mode-S 国家';
+    VRS.$$.ListModeSCountry =                           'Mode-S国家';
     VRS.$$.ListModelSilhouette =                        '轮廓';
     VRS.$$.ListModelSilhouetteAndOpFlag =               '标志';
     VRS.$$.ListOperator =                               '航空公司';
@@ -252,7 +252,7 @@
     VRS.$$.ListPopularName =                            '昵称';
     VRS.$$.ListPreviousId =                             '前一ID';
     VRS.$$.ListReceiver =                               '接收器';
-    VRS.$$.ListRegistration =                           '注册代码';
+    VRS.$$.ListRegistration =                           '注册号';
     VRS.$$.ListRowNumber =                              '行号';
     VRS.$$.ListRoute =                                  '路线';
     VRS.$$.ListSerialNumber =                           '序号';
@@ -285,7 +285,7 @@
     VRS.$$.MobileReportPage =                           '移动版报告页面';
     VRS.$$.Model =                                      '机型';
     VRS.$$.ModelIcao =                                  '机型代码';
-    VRS.$$.ModeSCountry =                               'Mode-S 国家';
+    VRS.$$.ModeSCountry =                               'Mode-S国家';
     VRS.$$.MovingMap =                                  '移动地图';
     VRS.$$.MuteOff =                                    '关闭静音';
     VRS.$$.MuteOn =                                     '开启静音';
@@ -336,7 +336,7 @@
     VRS.$$.PanePermanentLink =                          '永久链接';
     VRS.$$.PaneRangeCircles =                           '范围环';
     VRS.$$.PaneReceiverRange =                          '接收器范围';
-    VRS.$$.PaneSingleAircraft =                         '单独航空器报告';
+    VRS.$$.PaneSingleAircraft =                         '单航空器报告';
     VRS.$$.PaneSortAircraftList =                       '排序航空器列表';
     VRS.$$.PaneSortReport =                             '排序报告';
     VRS.$$.PaneUnits =                                  '单位';
@@ -350,7 +350,7 @@
     VRS.$$.PinTextLines =                               '标签行数';
     VRS.$$.Piston =                                     '活塞引擎';
     VRS.$$.Pixels =                                     '像素';
-    VRS.$$.PoweredByVRS =                               '宏林航空提供技术支持';
+    VRS.$$.PoweredByVRS =                               'Virtual Radar Server提供技术支持';
     VRS.$$.PreviousId =                                 '前一ID';
     VRS.$$.Quantity =                                   '数量';
     VRS.$$.RadioMast =                                  '天线';
@@ -360,8 +360,8 @@
     VRS.$$.Receiver =                                   '接收器';
     VRS.$$.ReceiverRange =                              '接收器范围';
     VRS.$$.Refresh =                                    '刷新';
-    VRS.$$.Registration =                               '注册代码';
-    VRS.$$.RegistrationAndIcao =                        '注册和ICAO代码';
+    VRS.$$.Registration =                               '注册号';
+    VRS.$$.RegistrationAndIcao =                        '注册号和ICAO代码';
     VRS.$$.Remove =                                     '删除';
     VRS.$$.RemoveAll =                                  '删除所有';
     VRS.$$.ReportCallsignInvalid =                      '航班号报告';
@@ -370,8 +370,8 @@
     VRS.$$.ReportFreeForm =                             '自定义报告';
     VRS.$$.ReportIcaoInvalid =                          'ICAO代码报告';
     VRS.$$.ReportIcaoValid =                            'ICAO代码报告: {0}';
-    VRS.$$.ReportRegistrationInvalid =                  '注册代码报告';
-    VRS.$$.ReportRegistrationValid =                    '注册代码报告: {0}';
+    VRS.$$.ReportRegistrationInvalid =                  '注册号报告';
+    VRS.$$.ReportRegistrationValid =                    '注册号报告: {0}';
     VRS.$$.ReportTodaysFlights =                        '当日航班';
     VRS.$$.ReportYesterdaysFlights =                    '昨日航班';
     VRS.$$.Reports =                                    '报告';
@@ -414,7 +414,7 @@
     VRS.$$.SortBy =                                     '排序';
     VRS.$$.Species =                                    '类型';
     VRS.$$.Speed =                                      '速度';
-    VRS.$$.SpeedGraph =                                 '速度表';
+    VRS.$$.SpeedGraph =                                 '速度图';
     VRS.$$.Speeds =                                     '速度';
     VRS.$$.Squawk =                                     'Squawk';
     VRS.$$.Start =                                      '开始';
@@ -446,7 +446,7 @@
     VRS.$$.UseRelativeDates =                           '使用相对日期';
     VRS.$$.UserTag =                                    '使用标签';
     VRS.$$.VerticalSpeed =                              '垂直速度';
-    VRS.$$.VirtualRadar =                               'ADS-B Radar';
+    VRS.$$.VirtualRadar =                               'Virtual Radar Server';
     VRS.$$.Volume25 =                                   '音量 25%';
     VRS.$$.Volume50 =                                   '音量 50%';
     VRS.$$.Volume75 =                                   '音量 75%';
@@ -478,7 +478,7 @@
     VRS.$$.SayIcao =                                    'ICOA代码 {0}.';
     VRS.$$.SayModelIcao =                               '机型 {0}.';
     VRS.$$.SayOperator =                                '航空公司 {0}.';
-    VRS.$$.SayRegistration =                            '注册代码 {0}.';
+    VRS.$$.SayRegistration =                            '注册号 {0}.';
     VRS.$$.SayRouteNotKnown =                           '路线未知.';
     VRS.$$.SayFromTo =                                  '行程从 {0} 至 {1}.';
     VRS.$$.SayFromToVia =                               '行程从 {0} 经过 {1} 至 {2}.';

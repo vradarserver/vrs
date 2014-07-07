@@ -1,101 +1,2047 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
-		Microsoft ResX Schema
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
 
-		Version 1.3
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SomethingDoesNotExist" xml:space="preserve">
+    <value>"{0}" 不存在</value>
+    <comment>Where {0} is a filename or a folder name</comment>
+  </data>
+  <data name="menuAbout" xml:space="preserve">
+    <value>&amp;A关于...</value>
+  </data>
+  <data name="menuCheckForUpdates" xml:space="preserve">
+    <value>&amp;C检查更新</value>
+  </data>
+  <data name="menuDebug" xml:space="preserve">
+    <value>&amp;D调试</value>
+  </data>
+  <data name="menuFakeAircraftMode" xml:space="preserve">
+    <value>&amp;F伪装航空器模式...</value>
+  </data>
+  <data name="menuFile" xml:space="preserve">
+    <value>&amp;F文件</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="menuHelp" xml:space="preserve">
+    <value>&amp;H帮助</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="menuOpenVirtualRadarLog" xml:space="preserve">
+    <value>&amp;O打开 VirtualRadarServerLog.txt</value>
+  </data>
+  <data name="menuOptions" xml:space="preserve">
+    <value>&amp;O选项...</value>
+  </data>
+  <data name="menuPlugins" xml:space="preserve">
+    <value>&amp;P插件...</value>
+  </data>
+  <data name="menuReconnectToDataFeed" xml:space="preserve">
+    <value>&amp;R重新连接到数据源</value>
+  </data>
+  <data name="menuShowWindow" xml:space="preserve">
+    <value>&amp;S显示窗口</value>
+  </data>
+  <data name="menuTools" xml:space="preserve">
+    <value>&amp;T工具</value>
+    <comment>Top-level menu</comment>
+  </data>
+  <data name="menuExit" xml:space="preserve">
+    <value>&amp;x退出</value>
+  </data>
+  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
+    <value>.NET Framework 版本错误</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="CountPluginsCouldNotBeLoaded" xml:space="preserve">
+    <value>{0:N0} 插件不能被加载</value>
+  </data>
+  <data name="RebroadcastServersDescribeMany" xml:space="preserve">
+    <value>{0} 服务器已配置, {1} 已启用</value>
+  </data>
+  <data name="SerialStopBitsNone" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="SerialStopBitsOne" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="RebroadcastServersDescribeSingle" xml:space="preserve">
+    <value>1 服务器已配置, {0} 已启用</value>
+  </data>
+  <data name="SerialStopBitsOnePointFive" xml:space="preserve">
+    <value>1.5</value>
+  </data>
+  <data name="SerialStopBitsTwo" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ADSB" xml:space="preserve">
+    <value>ADS-B</value>
+  </data>
+  <data name="ADSBAircraft" xml:space="preserve">
+    <value>ADS-B 航空器</value>
+    <comment>The aircraft picked up by an ADS-B radio</comment>
+  </data>
+  <data name="AcceptIcaoInPI0Count" xml:space="preserve">
+    <value>ADS-B 消息计数</value>
+  </data>
+  <data name="AcceptIcaoInPI0CountOutOfBounds" xml:space="preserve">
+    <value>ADS-B 消息计数必须在 1 和 10 之间</value>
+  </data>
+  <data name="AcceptIcaoInPI0Seconds" xml:space="preserve">
+    <value>ADS-B 消息秒数</value>
+  </data>
+  <data name="AcceptIcaoInPI0SecondsOutOfBounds" xml:space="preserve">
+    <value>ADS-B 消息秒数必须在 1 和 60 之间</value>
+  </data>
+  <data name="AdsbRejected" xml:space="preserve">
+    <value>ADS-B 已拒绝</value>
+  </data>
+  <data name="RebroadcastFormatAvr" xml:space="preserve">
+    <value>AVR</value>
+    <comment>Probably doesn't need translating, it's a format for transmitting Mode-S messages</comment>
+  </data>
+  <data name="BeastModeSFeed" xml:space="preserve">
+    <value>AVR or Beast Raw Feed</value>
+    <comment>'Beast' is the name of a product and may not need translating</comment>
+  </data>
+  <data name="AcronymByte" xml:space="preserve">
+    <value>B</value>
+    <comment>Shorthand for byte</comment>
+  </data>
+  <data name="RebroadcastFormatPort30003" xml:space="preserve">
+    <value>BaseStation</value>
+    <comment>A rebroadcast server that transmits Kinetic Port 30003 format messages converted from raw messages transmitted by the receiver that VRS is listening to</comment>
+  </data>
+  <data name="Port30003Feed" xml:space="preserve">
+    <value>BaseStation</value>
+    <comment>BaseStation does not need translating</comment>
+  </data>
+  <data name="BaseStation" xml:space="preserve">
+    <value>BaseStation</value>
+    <comment>May not need to be translated, it's the name of a program</comment>
+  </data>
+  <data name="BaseStationStatus" xml:space="preserve">
+    <value>Basestation 状态</value>
+    <comment>BaseStation is a program name and does not need translating, status refers to TCP connection to program</comment>
+  </data>
+  <data name="CompressedPort30003" xml:space="preserve">
+    <value>Compressed VRS</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright © 2010 onwards, Andrew Whewell</value>
+  </data>
+  <data name="LicenseContent" xml:space="preserve">
+    <value>Copyright © 2010 onwards, Andrew Whewell
+All rights reserved.
 
-		The primary goals of this format is to allow a simple XML format 
-		that is mostly human readable. The generation and parsing of the 
-		various data types are done through the TypeConverter classes 
-		associated with the data types.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
-		Example:
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</value>
+    <comment>** MULTILINE FIELD **</comment>
+  </data>
+  <data name="DesktopVersion" xml:space="preserve">
+    <value>Desktop 版本</value>
+    <comment>The version of the site for desktop computers</comment>
+  </data>
+  <data name="DF" xml:space="preserve">
+    <value>DF</value>
+  </data>
+  <data name="menuFlightSimulatorXMode" xml:space="preserve">
+    <value>Flight &amp;Simulator X 模式...</value>
+  </data>
+  <data name="FlightSimVersion" xml:space="preserve">
+    <value>Flight Sim 版本</value>
+    <comment>The version of the site that shows aircraft in Flight Simulator X</comment>
+  </data>
+  <data name="FlightSimulatorXReceiverId" xml:space="preserve">
+    <value>Flight Simulator X 接收器</value>
+  </data>
+  <data name="FlightSimulatorXIsNotInstalled" xml:space="preserve">
+    <value>Flight Simulator X 未安装 (不能加载 SimConnect)</value>
+    <comment>"Flight Simulator X" and "SimConnect" may not need translating</comment>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>正向</value>
+  </data>
+  <data name="AcronymGigabyte" xml:space="preserve">
+    <value>GB</value>
+    <comment>Shorthand for 1024 x 1024 x 1024 bytes</comment>
+  </data>
+  <data name="GoogleMaps" xml:space="preserve">
+    <value>Google Maps</value>
+  </data>
+  <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
+    <value>Google Maps 缩放级别必须在 0 至 19</value>
+  </data>
+  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
+    <value>HttpListener 不被操作系统支持</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="ICAO" xml:space="preserve">
+    <value>ICAO 代码</value>
+    <comment>The initials of the United Nations organisation</comment>
+  </data>
+  <data name="OptionsRawFeedAcceptIcaoAsValidCategory" xml:space="preserve">
+    <value>ICAO24 验证设置</value>
+  </data>
+  <data name="IcaoTimeoutTitle" xml:space="preserve">
+    <value>ICAO代码超时</value>
+  </data>
+  <data name="IcaoTimeout" xml:space="preserve">
+    <value>ICAO代码超时</value>
+  </data>
+  <data name="Internet" xml:space="preserve">
+    <value>Internet</value>
+  </data>
+  <data name="InternetClients" xml:space="preserve">
+    <value>Internet 客户端</value>
+    <comment>Options that affect clients connecting to the web server from the Internet (instead of from the local network)</comment>
+  </data>
+  <data name="InternetUserCanSeeLabels" xml:space="preserve">
+    <value>Internet 用户可以看到航空器标签</value>
+  </data>
+  <data name="InternetUsersCanViewPictures" xml:space="preserve">
+    <value>Internet 用户可以看到航空器图片</value>
+  </data>
+  <data name="InternetClientCanShowPolarPlots" xml:space="preserve">
+    <value>Internet 用户可以看到接收器范围图</value>
+  </data>
+  <data name="InternetUsersCanRunReports" xml:space="preserve">
+    <value>Internet 用户可以生成报告</value>
+  </data>
+  <data name="InternetClientCanSubmitRoutes" xml:space="preserve">
+    <value>Internet 用户可以提交路径</value>
+  </data>
+  <data name="InternetUsersCanListenToAudio" xml:space="preserve">
+    <value>Internet 用户可以听到声音</value>
+  </data>
+  <data name="InternetUserIdleTimeout" xml:space="preserve">
+    <value>Internet 用户空闲超时 (分钟)</value>
+  </data>
+  <data name="InternetUserIdleTimeoutOutOfBounds" xml:space="preserve">
+    <value>Internet 用户空闲超时必须在 0 至 1440</value>
+  </data>
+  <data name="IPAddress" xml:space="preserve">
+    <value>IP地址</value>
+  </data>
+  <data name="AcronymKilobyte" xml:space="preserve">
+    <value>KB</value>
+    <comment>Shorthand for 1024 bytes</comment>
+  </data>
+  <data name="AcronymKilobytePerSecond" xml:space="preserve">
+    <value>KB/sec</value>
+  </data>
+  <data name="AcronymMegabyte" xml:space="preserve">
+    <value>MB</value>
+    <comment>Shorthand for 1024 x 1024 bytes</comment>
+  </data>
+  <data name="MobileVersion" xml:space="preserve">
+    <value>Mobile 版本</value>
+    <comment>The version of the site for smartphones and tablet computers</comment>
+  </data>
+  <data name="ModeS" xml:space="preserve">
+    <value>Mode-S</value>
+  </data>
+  <data name="AcceptIcaoInNonPISecondsOutOfBounds" xml:space="preserve">
+    <value>Mode-S 秒数必须在 1 和 30 之间</value>
+  </data>
+  <data name="AcceptIcaoInNonPICount" xml:space="preserve">
+    <value>Mode-S 消息计数</value>
+  </data>
+  <data name="AcceptIcaoInNonPICountOutOfBounds" xml:space="preserve">
+    <value>Mode-S 消息计数必须在 0 至 100 之间</value>
+  </data>
+  <data name="AcceptIcaoInNonPISeconds" xml:space="preserve">
+    <value>Mode-S 消息秒数</value>
+  </data>
+  <data name="RebroadcastFormatPassthrough" xml:space="preserve">
+    <value>Pass-through</value>
+    <comment>A rebroadcast server that transmits exactly the same bytes that were transmitted by the receiver VRS is listening to</comment>
+  </data>
+  <data name="PIPresent" xml:space="preserve">
+    <value>PI 呈现</value>
+  </data>
+  <data name="Requests" xml:space="preserve">
+    <value>Requests</value>
+    <comment>The number of requests a server gets</comment>
+  </data>
+  <data name="SBS3ModeSFeed" xml:space="preserve">
+    <value>SBS-3 Raw Feed</value>
+  </data>
+  <data name="Sessions" xml:space="preserve">
+    <value>Sessions</value>
+    <comment>The number of times someone has connected to the server</comment>
+  </data>
+  <data name="AcronymTerrabyte" xml:space="preserve">
+    <value>TB</value>
+    <comment>Shorthand for 1024 x 1024 x 1024 x 1024 bytes</comment>
+  </data>
+  <data name="ReadingSpeedOutOfBounds" xml:space="preserve">
+    <value>Text to speech 速度必须在 -10 至 10 之间</value>
+  </data>
+  <data name="TextToSpeechVoice" xml:space="preserve">
+    <value>Text-to-speech 语音</value>
+  </data>
+  <data name="OptionsDescribeGeneralDownloadFlightRoutes" xml:space="preserve">
+    <value>True 允许程序自动下载航班路径更新, False 禁用自动更新.</value>
+  </data>
+  <data name="OptionsUPnPCategory" xml:space="preserve">
+    <value>UPnP</value>
+  </data>
+  <data name="UPnpPort" xml:space="preserve">
+    <value>UPnP 端口号</value>
+    <comment>As in a TCP/IP port number, not the sailing kind</comment>
+  </data>
+  <data name="UPnpPortOutOfBounds" xml:space="preserve">
+    <value>UPnP 端口号必须在 1 至 65535 之间</value>
+    <comment>UPnP may not need translating</comment>
+  </data>
+  <data name="UPnpActiveWhileDisabled" xml:space="preserve">
+    <value>UPnP 支持被禁用 但 Server 已经在 Internet上</value>
+    <comment>UPnP may not need translating</comment>
+  </data>
+  <data name="UPnpDisabled" xml:space="preserve">
+    <value>UPnP 支持未被启用</value>
+    <comment>UPnP probably does not need translating</comment>
+  </data>
+  <data name="VirtualRadarServer" xml:space="preserve">
+    <value>Virtual Radar Server</value>
+    <comment>The name of the application</comment>
+  </data>
+  <data name="UserManagerName" xml:space="preserve">
+    <value>Virtual Radar Server</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesConnectionType" xml:space="preserve">
+    <value>Virtual Radar Server应该如何连接到接收器或者程序</value>
+  </data>
+  <data name="WebServer" xml:space="preserve">
+    <value>Web 服务器</value>
+  </data>
+  <data name="OptionsWebServerSheetTitle" xml:space="preserve">
+    <value>Web 服务器</value>
+  </data>
+  <data name="UPnpInactive" xml:space="preserve">
+    <value>Web 服务器 不在 Internet 上</value>
+  </data>
+  <data name="WebServerOffline" xml:space="preserve">
+    <value>Web 服务器 离线</value>
+  </data>
+  <data name="UPnpActive" xml:space="preserve">
+    <value>Web 服务器 在 Internet上</value>
+  </data>
+  <data name="WebServerOnline" xml:space="preserve">
+    <value>Web 服务器 在线</value>
+  </data>
+  <data name="WebServerStatus" xml:space="preserve">
+    <value>Web 服务器 状态</value>
+  </data>
+  <data name="UPnpNotSupported" xml:space="preserve">
+    <value>Windows 版本不支持 UPnP</value>
+    <comment>UPnP does not need to be translated</comment>
+  </data>
+  <data name="SerialHandshakeXOnXOff" xml:space="preserve">
+    <value>XOn / XOff</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>版本</value>
+    <comment>e.g. Version 1.2.3.4</comment>
+  </data>
+  <data name="VersionCheckResult" xml:space="preserve">
+    <value>版本检测结果</value>
+    <comment>Title for a dialog box displaying the result of a check for a later version</comment>
+  </data>
+  <data name="OptionsDescribeDataSourcesDatabaseFileName" xml:space="preserve">
+    <value>包含关于航空器附加信息的 BaseStation 数据库的完整路径和文件名.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesFlagsFolder" xml:space="preserve">
+    <value>包含使用 ICAO 航空公司代码作为文件名的航空公司标志图像文件的文件夹.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesSilhouettesFolder" xml:space="preserve">
+    <value>包含使用航空器ICAO型号类型代码作为文件名的轮廓图像文件的文件夹.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesPicturesFolder" xml:space="preserve">
+    <value>包含使用航空器注册号和/或 ICAO 代码作为文件名的航空器照片的文件夹.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="WindowsVersionTooLowFull" xml:space="preserve">
+    <value>本程序在您使用的操作系统下无法工作. 如果您正在运行 Windows XP 请安装 Service Pack 2 或者更高版本.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptableSurfaceSpeed" xml:space="preserve">
+    <value>本地解码之前，被视为无效的车辆在地面30秒内行驶的公里数. ICAO 推荐 1.4 公里. 高的值防止检测不正确的本地解码位置.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptableAirSurfaceTransitionSpeed" xml:space="preserve">
+    <value>本地解码之前，被视为无效的航空器30秒内起飞或者降落行驶的公里数. ICAO 推荐 4.63 公里. 高的值防止检测不准确的本地解码位置.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptableAirborneSpeed" xml:space="preserve">
+    <value>本地解码之前，被视为无效的航空器30秒内行驶的公里数。ICAO 推荐 11.112公里. 高的值防止检测不准确的本地解码位置.</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="SerialParityMark" xml:space="preserve">
+    <value>标记</value>
+  </data>
+  <data name="FlagsFolder" xml:space="preserve">
+    <value>标志文件夹</value>
+    <comment>The folder containing images of country or airline flags</comment>
+  </data>
+  <data name="SerialBaudRate" xml:space="preserve">
+    <value>波特率</value>
+    <comment>As in the baud rate of a serial port</comment>
+  </data>
+  <data name="CouldNotFindManifest" xml:space="preserve">
+    <value>不能发现清单</value>
+  </data>
+  <data name="CouldNotLoadGoogleMaps" xml:space="preserve">
+    <value>不能加载 Google Maps</value>
+  </data>
+  <data name="ExceptionWhenCheckingFolder" xml:space="preserve">
+    <value>不能检测文件夹名: {0}</value>
+    <comment>Where {0} is the name of a folder</comment>
+  </data>
+  <data name="ExceptionWhenCheckingFile" xml:space="preserve">
+    <value>不能检测文件名: {0}</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="CouldNotCheckForUpdate" xml:space="preserve">
+    <value>不能检查最新版本</value>
+  </data>
+  <data name="CoarseListenerTimeoutUnparseable" xml:space="preserve">
+    <value>不能解析监听器超时值 "{0}"</value>
+  </data>
+  <data name="CouldNotParseManifest" xml:space="preserve">
+    <value>不能解析清单: {0}</value>
+  </data>
+  <data name="CouldNotConnect" xml:space="preserve">
+    <value>不能连接</value>
+  </data>
+  <data name="CannotConnectToBaseStationTitle" xml:space="preserve">
+    <value>不能连接到数据源</value>
+  </data>
+  <data name="CannotConnectToBaseStationFull" xml:space="preserve">
+    <value>不能连接到数据源: {0}</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="CannotDetermineNetworkAddress" xml:space="preserve">
+    <value>不能确认网络地址</value>
+  </data>
+  <data name="CannotCommunicateWithFlightSimulatorX" xml:space="preserve">
+    <value>不能与 Flight Simulator X 通信</value>
+    <comment>"Flight Simulator X" may not need translating</comment>
+  </data>
+  <data name="TestConnection" xml:space="preserve">
+    <value>测试连接</value>
+    <comment>Testing the connection to a computer</comment>
+  </data>
+  <data name="TestAudioSettings" xml:space="preserve">
+    <value>测试声音</value>
+  </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>插件</value>
+  </data>
+  <data name="PluginThrewExceptionFull" xml:space="preserve">
+    <value>插件 {0} 启动时，抛出一个异常 ({1})  - 仍然被加载但是可能有不正确的行为. 完整详情在日志中.</value>
+  </data>
+  <data name="PluginCannotBeLoaded" xml:space="preserve">
+    <value>插件不能被加载: {0}</value>
+  </data>
+  <data name="PluginMaximumVersionNotMet" xml:space="preserve">
+    <value>插件不能在旧 Virtual Radar Server 版本 {0} 下工作</value>
+  </data>
+  <data name="PluginDoesNotHaveJustOneIPlugin" xml:space="preserve">
+    <value>插件没有一个实现IPlugin接口的类</value>
+  </data>
+  <data name="PluginFileName" xml:space="preserve">
+    <value>插件文件名</value>
+  </data>
+  <data name="PluginMinimumVersionNotMet" xml:space="preserve">
+    <value>插件需要版本 {0} (或者更高) Virtual Radar Server</value>
+  </data>
+  <data name="LongFrame" xml:space="preserve">
+    <value>长帧</value>
+  </data>
+  <data name="IcaoTimeoutOutOfBounds" xml:space="preserve">
+    <value>超时必须在 1 至 30 秒</value>
+  </data>
+  <data name="DotNetVersionTooLowFull" xml:space="preserve">
+    <value>程序需要安装完整的 .NET 3.5 Framework. 想转到微软网站 .NET 3.5下载页面吗 ?</value>
+  </data>
+  <data name="InitialRefresh" xml:space="preserve">
+    <value>初始地图更新间隔秒数</value>
+    <comment>Number of seconds between each update of the map</comment>
+  </data>
+  <data name="InitialMapType" xml:space="preserve">
+    <value>初始地图类型</value>
+    <comment>Default Google map type</comment>
+  </data>
+  <data name="InitialHeightUnits" xml:space="preserve">
+    <value>初始高度单位</value>
+  </data>
+  <data name="InitialLongitude" xml:space="preserve">
+    <value>初始经度</value>
+    <comment>As in a line of longitude on a map</comment>
+  </data>
+  <data name="InitialDistanceUnits" xml:space="preserve">
+    <value>初始距离单位</value>
+  </data>
+  <data name="InitialRefreshOutOfBounds" xml:space="preserve">
+    <value>初始刷新值必须在 0 至 3600</value>
+  </data>
+  <data name="InitialRefreshLessThanMinimumRefresh" xml:space="preserve">
+    <value>初始刷新值不能小于最小刷新值</value>
+  </data>
+  <data name="InitialSpeedUnits" xml:space="preserve">
+    <value>初始速度单位</value>
+  </data>
+  <data name="InitialZoom" xml:space="preserve">
+    <value>初始缩放</value>
+    <comment>Default level of zoom on Google map</comment>
+  </data>
+  <data name="InitialLatitude" xml:space="preserve">
+    <value>初始纬度</value>
+    <comment>As in a line of latitude on a map</comment>
+  </data>
+  <data name="TransmissionType" xml:space="preserve">
+    <value>传输类型</value>
+  </data>
+  <data name="SerialSettings" xml:space="preserve">
+    <value>串口</value>
+    <comment>As in the settings for serial communications</comment>
+  </data>
+  <data name="USBOverCOM" xml:space="preserve">
+    <value>串口</value>
+    <comment>As in a serial port, serial communications etc.</comment>
+  </data>
+  <data name="SerialComPort" xml:space="preserve">
+    <value>串口号</value>
+  </data>
+  <data name="ApplicationDescription" xml:space="preserve">
+    <value>此应用程序免费。
 
-		... ado.net/XML headers & schema ...
-		<resheader name="resmimetype">text/microsoft-resx</resheader>
-		<resheader name="version">1.3</resheader>
-		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-		<data name="Name1">this is my long string</data>
-		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-			[base64 mime encoded serialized .NET Framework object]
-		</data>
-		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-			[base64 mime encoded string representing a byte array form of the .NET Framework object]
-		</data>
+这是一个简单的 Web 服务器用于显示ADS-B接收器收集到的航空器。
 
-		There are any number of "resheader" rows that contain simple 
-		name/value pairs.
+应用程序图标来自 aha-soft (http://www.aha-soft.com)。
 
-		Each data row contains a name, and value. The row also contains a 
-		type or mimetype. Type corresponds to a .NET class that support 
-		text/value conversion through the TypeConverter architecture. 
-		Classes that don't support this are serialized and stored with the 
-		mimetype set.
+民用及军事代码组来自 Kinetic 论坛用户'SabreJV'维护的 countries.dat 文件和Kinetic 论坛用户'Bones'主持的论坛页面
+(http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm)。
 
-		The mimetype is used for serialized objects, and tells the 
-		ResXResourceReader how to depersist the object. This is currently not 
-		extensible. For a given mimetype the value must be set accordingly:
+iPhone CSS 来自 jQTouch 项目 (http://www.jqtouch.com)。
 
-		Note - application/x-microsoft.net.object.binary.base64 is the format 
-		that the ResXResourceWriter will generate, however the reader can 
-		read any of the formats listed below.
+中文翻译由 Vincent Deng完成。
+德语翻译由 Eva Knapp 与 Michael Leigh完成。
+俄语翻译由 Sergey Serov /sergsero 及其 朋友完成。
+法语翻译由 Francois /F5ANN 完成。</value>
+    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>从</value>
+  </data>
+  <data name="InvalidConfigurationFileFull" xml:space="preserve">
+    <value>存在问题 ('{0}') 在从 {1}加载配置文件时. 这可能是由于允许一个无效值输入的配置设置错误引起. 是否重置配置为默认设置并再次尝试?</value>
+    <comment>Where {0} is an exception message and {1} is a filename</comment>
+  </data>
+  <data name="TotalBadMessages" xml:space="preserve">
+    <value>错误消息</value>
+  </data>
+  <data name="TotalBadMessagesTitle" xml:space="preserve">
+    <value>错误消息</value>
+  </data>
+  <data name="BadChecksum" xml:space="preserve">
+    <value>错误校验和</value>
+  </data>
+  <data name="ProxyType" xml:space="preserve">
+    <value>代理类型</value>
+  </data>
+  <data name="CurrentRouteData" xml:space="preserve">
+    <value>当前路径数据</value>
+    <comment>Label for status message describing the flight route data held by the program</comment>
+  </data>
+  <data name="OptionsDescribeDataSourcesBaudRate" xml:space="preserve">
+    <value>当使用串行设备通信时使用的每秒脉冲.仅用于串行数据源。</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesDataBits" xml:space="preserve">
+    <value>当使用串行设备通讯时每字节发送位数. 仅用于串行数据源.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesHandshake" xml:space="preserve">
+    <value>当使用串行设备通讯时使用的流控制协议. 仅用于串行数据源.</value>
+  </data>
+  <data name="LoginNameTitle" xml:space="preserve">
+    <value>登录名</value>
+  </data>
+  <data name="LoginName" xml:space="preserve">
+    <value>登录名</value>
+  </data>
+  <data name="LoginNameExists" xml:space="preserve">
+    <value>登录名已经被使用</value>
+  </data>
+  <data name="OptionsDescribeUserPassword" xml:space="preserve">
+    <value>登录时必须提供的用户密码</value>
+  </data>
+  <data name="OptionsDescribeLoginName" xml:space="preserve">
+    <value>登录时输入的用户名</value>
+  </data>
+  <data name="MinimumRefresh" xml:space="preserve">
+    <value>地图更新最小间隔秒数</value>
+    <comment>The smallest number of seconds a browser can request between map updates</comment>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapType" xml:space="preserve">
+    <value>地图显示类型. 仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="UNC" xml:space="preserve">
+    <value>地址</value>
+    <comment>As in a UNC kind of address, but not using technical acronyms if possible</comment>
+  </data>
+  <data name="CannotResolveAddress" xml:space="preserve">
+    <value>地址 {0} 无法被解析</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>端口</value>
+    <comment>As in a TCP/IP port number</comment>
+  </data>
+  <data name="PortOutOfBounds" xml:space="preserve">
+    <value>端口号必须在 1 至 65535 之间</value>
+  </data>
+  <data name="DurationOfShortTrails" xml:space="preserve">
+    <value>短轨迹持续 (秒)</value>
+    <comment>A short trail is a line drawn behind the aircraft which shows its positions for the past so-many seconds of flight</comment>
+  </data>
+  <data name="DurationOfShortTrailsOutOfBounds" xml:space="preserve">
+    <value>短轨迹值必须在 1 至 1800之间</value>
+  </data>
+  <data name="ShortFrame" xml:space="preserve">
+    <value>短帧</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesShutdownText" xml:space="preserve">
+    <value>断开连接时发送到接收器的命令.MiniADSB-based 接收器 应该发送 #43-00\r. 仅用于串行数据源.</value>
+  </data>
+  <data name="PutOnInternet" xml:space="preserve">
+    <value>发布到 Internet</value>
+  </data>
+  <data name="Reverse" xml:space="preserve">
+    <value>反向</value>
+  </data>
+  <data name="ReverseDNS" xml:space="preserve">
+    <value>反向 DNS</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>范围</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesIgnoreBadConnection" xml:space="preserve">
+    <value>否 当收到错误格式消息断开数据源, 是 忽略错误消息并保持已连接到数据源.</value>
+  </data>
+  <data name="OptionsDescribeProxyType" xml:space="preserve">
+    <value>服务器后台代理类型. 如果你不能确认服务器是否后台代理保留"未知"设置.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialHeightUnit" xml:space="preserve">
+    <value>高度如何被显示.仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="Format" xml:space="preserve">
+    <value>格式</value>
+  </data>
+  <data name="BadlyFormatted" xml:space="preserve">
+    <value>格式错误</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerName" xml:space="preserve">
+    <value>给出转播服务器唯一名称.</value>
+  </data>
+  <data name="OptionsDescribeMergedFeedName" xml:space="preserve">
+    <value>给这个合并源的唯一名称 也必须是所有接收器中的唯一.</value>
+  </data>
+  <data name="TrackingTimeoutOutOfBounds" xml:space="preserve">
+    <value>跟踪超时不能超过3600.</value>
+  </data>
+  <data name="TrackingTimeoutLessThanDisplayTimeout" xml:space="preserve">
+    <value>跟踪超时不能少于显示超时.</value>
+  </data>
+  <data name="Kilometres" xml:space="preserve">
+    <value>公里</value>
+  </data>
+  <data name="Km" xml:space="preserve">
+    <value>公里</value>
+    <comment>Abbreviation of kilometres</comment>
+  </data>
+  <data name="KilometresPerHour" xml:space="preserve">
+    <value>公里每小时</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+    <comment>As in close a dialog box or window</comment>
+  </data>
+  <data name="SerialShutdownText" xml:space="preserve">
+    <value>关闭命令</value>
+    <comment>Text sent to a COM device when disconnecting.</comment>
+  </data>
+  <data name="TakeWebServerOffline" xml:space="preserve">
+    <value>关闭在线</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>关于 Virtual Radar Server</value>
+    <comment>e.g. About Virtual Radar Server</comment>
+  </data>
+  <data name="NauticalMiles" xml:space="preserve">
+    <value>海里</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>航空公司</value>
+    <comment>As in the organisation operating an aircraft</comment>
+  </data>
+  <data name="OptionsDescribeGeneralDisplayTimeoutSeconds" xml:space="preserve">
+    <value>航空器被网站删除显示之前，最后接收到航空器消息起必须经历秒数.</value>
+  </data>
+  <data name="AircraftData" xml:space="preserve">
+    <value>航空器数据</value>
+  </data>
+  <data name="OptionsDescribeMergedFeedReceviers" xml:space="preserve">
+    <value>合并此源的接收器.</value>
+  </data>
+  <data name="MergedFeeds" xml:space="preserve">
+    <value>合并数据源</value>
+  </data>
+  <data name="IgnoreMilitaryExtendedSquitter" xml:space="preserve">
+    <value>忽略 DF19/AF0</value>
+  </data>
+  <data name="IgnoreBadMessages" xml:space="preserve">
+    <value>忽略格式错误消息</value>
+  </data>
+  <data name="IgnoreCallsignsInBds20" xml:space="preserve">
+    <value>忽略来自 BDS2,0 消息的航班号</value>
+  </data>
+  <data name="IgnoreAircraftWithNoPosition" xml:space="preserve">
+    <value>忽略无位置航空器</value>
+  </data>
+  <data name="Count" xml:space="preserve">
+    <value>计数</value>
+  </data>
+  <data name="RidingAircraft" xml:space="preserve">
+    <value>驾驶 {0}</value>
+    <comment>Riding in the cockpit of the aircraft whose registration is {0}</comment>
+  </data>
+  <data name="RideAircraft" xml:space="preserve">
+    <value>驾驶航空器</value>
+    <comment>Ride in the cockpit of an aircraft (using Flight Simulator X)</comment>
+  </data>
+  <data name="SerialParitySpace" xml:space="preserve">
+    <value>间隔</value>
+  </data>
+  <data name="CoarseListenerTimeoutInvalid" xml:space="preserve">
+    <value>监听器超时至少10秒</value>
+  </data>
+  <data name="OptionsDescribeGeneralCheckForNewVersionsPeriodDays" xml:space="preserve">
+    <value>检测新版本间隔多少数.</value>
+  </data>
+  <data name="CheckForNewVersions" xml:space="preserve">
+    <value>检查程序更新</value>
+  </data>
+  <data name="DaysBetweenChecks" xml:space="preserve">
+    <value>检查更新间隔天数</value>
+  </data>
+  <data name="DaysBetweenChecksOutOfBounds" xml:space="preserve">
+    <value>检查新版本间隔必须在 1 至 365 之间</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesDataSource" xml:space="preserve">
+    <value>将发送航空器数据到 Virtual Radar Server的接收器或者程序. AVR 选项支持 *, @ 和 :为消息的  Beast 二进制格式的消息.</value>
+  </data>
+  <data name="OptionsDescribeWebServerUPnpPort" xml:space="preserve">
+    <value>将连接到UPnP路由器访问Virtual Radar Server的Internet流量端口号.</value>
+  </data>
+  <data name="LaterVersionAvailable" xml:space="preserve">
+    <value>较新程序版本有效</value>
+  </data>
+  <data name="Receivers" xml:space="preserve">
+    <value>接收器</value>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>接收器</value>
+  </data>
+  <data name="OptionsDescribeIcaoTimeout" xml:space="preserve">
+    <value>接收器不再被考虑允许作为唯一接收 ICAO 消息的接收器必须经过的秒数. 如果这个值太低你将得到向后跳的飞机.如果这个值太高当飞机从一个接收器移到另一个接收器时将暂停。</value>
+  </data>
+  <data name="ReceiverRange" xml:space="preserve">
+    <value>接收器范围 (公里)</value>
+  </data>
+  <data name="ReceiverRangeOutOfBounds" xml:space="preserve">
+    <value>接收器范围必须在 0 至 99999 之间</value>
+  </data>
+  <data name="ReceiversAndMergedFeedNamesMustBeUnique" xml:space="preserve">
+    <value>接收器和合并源不能共享名称</value>
+  </data>
+  <data name="OptionsDescribeReceiverLocationLongitude" xml:space="preserve">
+    <value>接收器经度. 可以在 -180° 至 180° 之间.</value>
+  </data>
+  <data name="OptionsDescribeReceiverName" xml:space="preserve">
+    <value>接收器唯一名称. 也必须在所有合并源中唯一.</value>
+  </data>
+  <data name="OptionsDescribeReceiverLocationLatitude" xml:space="preserve">
+    <value>接收器维度. 可以在 -90° 至 90°之间 但是不能恰好为0.</value>
+  </data>
+  <data name="ReceiverLocationsTitle" xml:space="preserve">
+    <value>接收器位置</value>
+  </data>
+  <data name="ReceiverLocation" xml:space="preserve">
+    <value>接收器位置</value>
+  </data>
+  <data name="OptionsDescribeRawFeedReceiverLocation" xml:space="preserve">
+    <value>接收器位置. 地面交通ADS-B 位置消息解码到8个地球上可能的离被选择的接收器最近的位置.</value>
+  </data>
+  <data name="OptionsRawFeedReceiverDetailsCategory" xml:space="preserve">
+    <value>接收器详情</value>
+  </data>
+  <data name="OptionsDescribeRawFeedReceiverRange" xml:space="preserve">
+    <value>接收器最大范围.任何远离接收器位置的ADS-B位置解码消息将被抛弃.</value>
+  </data>
+  <data name="Knots" xml:space="preserve">
+    <value>节</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="EndDateCannotBeBeforeStartDate" xml:space="preserve">
+    <value>结束日期必须等于或晚于开始日期</value>
+  </data>
+  <data name="DecoderSettings" xml:space="preserve">
+    <value>解码器设置</value>
+  </data>
+  <data name="CaughtExceptionInReverseDNS" xml:space="preserve">
+    <value>解析DNS期间发生异常</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>经度</value>
+  </data>
+  <data name="LongitudeOutOfBounds" xml:space="preserve">
+    <value>经度必须在 180.0 (东) and -180.0 (西)</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="DesktopVersionOld" xml:space="preserve">
+    <value>旧的 Desktop 版本</value>
+  </data>
+  <data name="FlightSimVersionOld" xml:space="preserve">
+    <value>旧的 Flight Sim 版本</value>
+  </data>
+  <data name="MobileVersionOld" xml:space="preserve">
+    <value>旧的 Mobile 版本</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapLongitude" xml:space="preserve">
+    <value>居中到地图的经度线. 仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapLatitude" xml:space="preserve">
+    <value>居中到地图的维度线. 仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialDistanceUnit" xml:space="preserve">
+    <value>距离如何被显示. 仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>开始</value>
+  </data>
+  <data name="AcceptableSurfaceSpeed" xml:space="preserve">
+    <value>可接受的地面速度 (公里 / 30 秒)</value>
+  </data>
+  <data name="AcceptableSurfaceSpeedOutOfBounds" xml:space="preserve">
+    <value>可接受的地面位置速度必须在 0.001 至 10.0 之间</value>
+  </data>
+  <data name="AcceptableAirSurfaceTransitionSpeed" xml:space="preserve">
+    <value>可接受的过渡速度 (公里 / 30 秒)</value>
+  </data>
+  <data name="AcceptableAirSurfaceTransitionSpeedOutOfBounds" xml:space="preserve">
+    <value>可接受的过渡位置速度必须在 0.003 至 20.0 之间</value>
+  </data>
+  <data name="AcceptableAirborneSpeedOutOfBounds" xml:space="preserve">
+    <value>可接受的空中局部位置速度必须在 0.005 至 45.0 之间</value>
+  </data>
+  <data name="AcceptableAirborneSpeed" xml:space="preserve">
+    <value>可接受的空中速度 (公里 / 30 秒)</value>
+  </data>
+  <data name="SuggestUseDifferentPortTitle" xml:space="preserve">
+    <value>可能的解决方案</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="AirborneGlobalPositionLimit" xml:space="preserve">
+    <value>空中全局位置限制 (秒)</value>
+  </data>
+  <data name="AirborneGlobalPositionLimitOutOfBounds" xml:space="preserve">
+    <value>空中全局位置限制必须在 1 至 30 之间</value>
+  </data>
+  <data name="FastSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>快地面全局位置限制 (秒)</value>
+  </data>
+  <data name="FastSurfaceGlobalPositionLimitOutOfBounds" xml:space="preserve">
+    <value>快地面全局位置限制必须在 1 至 75</value>
+  </data>
+  <data name="ReadingSpeed" xml:space="preserve">
+    <value>朗读速度</value>
+    <comment>How quickly some text is spoken</comment>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>类型</value>
+    <comment>As in aircraft type</comment>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>历时</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>连接</value>
+  </data>
+  <data name="Connection" xml:space="preserve">
+    <value>连接</value>
+  </data>
+  <data name="menuConnectionClientLog" xml:space="preserve">
+    <value>连接 &amp;Client 日志...</value>
+  </data>
+  <data name="menuConnectionSessionLog" xml:space="preserve">
+    <value>连接 &amp;Session 日志...</value>
+  </data>
+  <data name="ConnectionClientLog" xml:space="preserve">
+    <value>连接 Client 日志</value>
+    <comment>Logged connections of clients to the web server</comment>
+  </data>
+  <data name="ConnectionSessionLog" xml:space="preserve">
+    <value>连接 Session 日志</value>
+    <comment>Logged sessions for a client connecting to the web server</comment>
+  </data>
+  <data name="ConnectionParameters" xml:space="preserve">
+    <value>连接参数</value>
+  </data>
+  <data name="ConnectToFlightSimulatorX" xml:space="preserve">
+    <value>连接到 Flight Simulator X</value>
+    <comment>Flight Simulator X is the name of a program, it may not need translating</comment>
+  </data>
+  <data name="ConnectionType" xml:space="preserve">
+    <value>连接类型</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>连接中</value>
+  </data>
+  <data name="ConnectionStatusTitle" xml:space="preserve">
+    <value>连接状态</value>
+  </data>
+  <data name="ConnectionStatus" xml:space="preserve">
+    <value>连接状态</value>
+  </data>
+  <data name="AnotherInstanceRunningFull" xml:space="preserve">
+    <value>另一个 Virtual Radar Server 实例已经运行.</value>
+  </data>
+  <data name="AnotherInstanceRunningTitle" xml:space="preserve">
+    <value>另一个实例正在运行</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="RouteStateFileContentInvalid" xml:space="preserve">
+    <value>路径状态文件目录无效</value>
+    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+  </data>
+  <data name="RouteStateFileInvalid" xml:space="preserve">
+    <value>路径状态文件无效</value>
+    <comment>Route as in flight route</comment>
+  </data>
+  <data name="SilhouettesFolder" xml:space="preserve">
+    <value>轮廓文件夹</value>
+    <comment>The folder containing images of aircraft silhouettes</comment>
+  </data>
+  <data name="SlowSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>慢地面全局位置限制 (秒)</value>
+  </data>
+  <data name="SlowSurfaceGlobalPositionLimitOutOfBounds" xml:space="preserve">
+    <value>慢地面全局位置限制必须在 1 至 150 之间</value>
+  </data>
+  <data name="Metres" xml:space="preserve">
+    <value>米</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>秒</value>
+    <comment>As in hours, minutes, seconds</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="NameTitle" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="NameCannotContainComma" xml:space="preserve">
+    <value>名称不能包含逗号</value>
+  </data>
+  <data name="UnrecognisedCommandLineParameterFull" xml:space="preserve">
+    <value>命令行参数 {0} 未被识别</value>
+    <comment>Where {0} is a string</comment>
+  </data>
+  <data name="DefaultVersion" xml:space="preserve">
+    <value>默认版本</value>
+  </data>
+  <data name="DefaultSettingsSavedTitle" xml:space="preserve">
+    <value>默认配置已保存</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="DefaultSettingsSavedFull" xml:space="preserve">
+    <value>默认配置已保存 - 请再次尝试启动 Virtual Radar Server</value>
+  </data>
+  <data name="DefaultVoice" xml:space="preserve">
+    <value>默认声音</value>
+    <comment>As in the default computer text-to-speech voice</comment>
+  </data>
+  <data name="SomeRouteFilesMissing" xml:space="preserve">
+    <value>某些路径文件丢失</value>
+    <comment>As in flight routes</comment>
+  </data>
+  <data name="OptionsDescribeRebroadcastReceiver" xml:space="preserve">
+    <value>你要转播消息的来源接收器.</value>
+  </data>
+  <data name="SerialParityEven" xml:space="preserve">
+    <value>偶校验</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>配置</value>
+  </data>
+  <data name="ConfigurationFolder" xml:space="preserve">
+    <value>配置文件夹</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>其他</value>
+  </data>
+  <data name="OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>奇偶格式地面位置消息全局解码车辆行驶超过25节可以经历的秒数. ICAO 推荐 25 秒. 高的值会引起车辆最初出现在离真实位置数百英里的偏差的位置.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSlowSurfaceGlobalPositionLimit" xml:space="preserve">
+    <value>奇偶格式地面位置消息全局解码车辆行驶在25节或者以下可以经历的间隔秒数. ICAO 推荐 50 秒.高的值会引起车辆最初出现在离真实位置数百英里的偏差的位置.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAirborneGlobalPositionLimit" xml:space="preserve">
+    <value>奇偶格式空中位置消息全局解码可以经过的间隔秒数. ICAO 推荐 10 秒. 高的值会引起航空器最初出现在离真实位置数百英里的偏差的位置.</value>
+  </data>
+  <data name="SerialParity" xml:space="preserve">
+    <value>奇偶校验</value>
+    <comment>As in the parity check to apply when talking over a serial port.</comment>
+  </data>
+  <data name="SerialParityOdd" xml:space="preserve">
+    <value>奇校验</value>
+  </data>
+  <data name="SerialStartupText" xml:space="preserve">
+    <value>启动命令</value>
+    <comment>Text sent to a COM device when first connected.</comment>
+  </data>
+  <data name="PluginThrewExceptionTitle" xml:space="preserve">
+    <value>启动期间一个插件抛出异常</value>
+  </data>
+  <data name="ResetPortAssignmentsOnStartup" xml:space="preserve">
+    <value>启动时重置端口分配</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="EnableUPnp" xml:space="preserve">
+    <value>启用 UPnP</value>
+  </data>
+  <data name="EnableBundling" xml:space="preserve">
+    <value>启用捆绑</value>
+    <comment>"Bundling" is where multiple files are bundled together into a single file to improve a page's load time</comment>
+  </data>
+  <data name="EnableCompression" xml:space="preserve">
+    <value>启用压缩</value>
+  </data>
+  <data name="TakeWebServerOnline" xml:space="preserve">
+    <value>启用在线</value>
+  </data>
+  <data name="EnableMinifying" xml:space="preserve">
+    <value>启用最小化</value>
+    <comment>"Minifying" is where a CSS or JavaScript source file is compressed to improve a page's load time and to improve the speed at which they are executed by the browser.</comment>
+  </data>
+  <data name="PluginMaximumVersionUnparseable" xml:space="preserve">
+    <value>清单的最大化版本不能被解析</value>
+  </data>
+  <data name="PluginMinumumVersionUnparseable" xml:space="preserve">
+    <value>清单的最小化版本不能被解析</value>
+  </data>
+  <data name="PleaseConfigureAtLeastOneReceiver" xml:space="preserve">
+    <value>请配置至少一个接收器.</value>
+  </data>
+  <data name="PleaseEnableAtLeastOneReceiver" xml:space="preserve">
+    <value>请启用至少一个接收器.</value>
+  </data>
+  <data name="SerialComPortMissing" xml:space="preserve">
+    <value>请输入连接接收器的串口号</value>
+  </data>
+  <data name="DataSourceNetworkAddressMissing" xml:space="preserve">
+    <value>请输入要连接的数据源IP地址</value>
+  </data>
+  <data name="NameMustBeUnique" xml:space="preserve">
+    <value>请输入一个没有被使用的名称</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>请输入一个名称</value>
+  </data>
+  <data name="PortMustBeUnique" xml:space="preserve">
+    <value>请输入一个未被使用的端口号</value>
+  </data>
+  <data name="PleaseEnterNameForLocation" xml:space="preserve">
+    <value>请输入一个位置名称</value>
+  </data>
+  <data name="SerialBaudRateInvalidValue" xml:space="preserve">
+    <value>请输入一个有效的波特率 (如 115200 或 921600)</value>
+  </data>
+  <data name="MergedFeedNeedsAtLeastTwoReceivers" xml:space="preserve">
+    <value>请提供至少两个接收器以进行合并</value>
+  </data>
+  <data name="PleaseSelectSilhouettesFolder" xml:space="preserve">
+    <value>请选择包含航空器轮廓图像的文件夹</value>
+  </data>
+  <data name="PleaseSelectPicturesFolder" xml:space="preserve">
+    <value>请选择包含航空器照片的目录</value>
+  </data>
+  <data name="PleaseSelectFlagsFolder" xml:space="preserve">
+    <value>请选择控制航空公司Logo图像的文件夹</value>
+  </data>
+  <data name="PleaseSelectSiteRootFolder" xml:space="preserve">
+    <value>请选择网站服务的根目录</value>
+  </data>
+  <data name="PleaseSelectAFile" xml:space="preserve">
+    <value>请选择一个文件</value>
+  </data>
+  <data name="PleaseSelectAFolder" xml:space="preserve">
+    <value>请选择一个文件夹</value>
+  </data>
+  <data name="RebroadcastFormatRequired" xml:space="preserve">
+    <value>请选择转播消息格式</value>
+  </data>
+  <data name="ReceiverRequired" xml:space="preserve">
+    <value>请指定接收器.</value>
+  </data>
+  <data name="FlightSimulatorXReceiverRequired" xml:space="preserve">
+    <value>请指定用于FSX ride-along功能使用的接收器</value>
+  </data>
+  <data name="ClosestAircraftReceiverRequired" xml:space="preserve">
+    <value>请指定用于最近航空器桌面小部件的接收器</value>
+  </data>
+  <data name="WebSiteReceiverRequired" xml:space="preserve">
+    <value>请指定在网站上显示的初始接收器.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>确认</value>
+    <comment>As used on OK buttons</comment>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>认证</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSuppressReceiverRangeCheck" xml:space="preserve">
+    <value>如果接收器位置或者范围不正确设置 为 ‘是’,设置为 ’否‘ 将抛弃任何超出接收器范围的位置.</value>
+  </data>
+  <data name="SuggestUseDifferentPortFull" xml:space="preserve">
+    <value>如果由于另一个程序正在监听端口而不能启动 Web 服务器，那么再次运行 Virtual Radar Server 安装程序并选择一个不同的端口.
 
-		mimetype: application/x-microsoft.net.object.binary.base64
-		value   : The object must be serialized with 
-			: System.Serialization.Formatters.Binary.BinaryFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.soap.base64
-		value   : The object must be serialized with 
-			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.bytearray.base64
-		value   : The object must be serialized into a byte array 
-			: using a System.ComponentModel.TypeConverter
-			: and then encoded with base64 encoding.
-	-->
-	
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>1.3</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
+例如当安装程序询问端口号时用8080端口代替80端口.</value>
+    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **
+Suggestion made if the exception could indicate that the port number is in use.</comment>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="SettingsPage" xml:space="preserve">
+    <value>设置页</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>声音</value>
+    <comment>Things that are generally to do with audio / sounds</comment>
+  </data>
+  <data name="PIBadParity" xml:space="preserve">
+    <value>失败的奇偶校验PI</value>
+  </data>
+  <data name="BadListenerTimeout" xml:space="preserve">
+    <value>失败监听器超时</value>
+  </data>
+  <data name="UseFreezeMethod" xml:space="preserve">
+    <value>使用 "freeze" 方式</value>
+    <comment>"Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UseSlewMethod" xml:space="preserve">
+    <value>使用 "slew" 方式</value>
+    <comment>"Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UseIcaoSpecificationSettings" xml:space="preserve">
+    <value>使用 ICAO 规范设置</value>
+  </data>
+  <data name="UseLocalDecodeForInitialPosition" xml:space="preserve">
+    <value>使用本地解码作为初始位置修复.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesStopBits" xml:space="preserve">
+    <value>使用串行设备通讯时每个字节结束的位数. 仅用于串行数据源.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesParity" xml:space="preserve">
+    <value>使用串行设备通讯时应用的奇偶校验. 仅用于串行数据源.</value>
+  </data>
+  <data name="UseDefaultPort" xml:space="preserve">
+    <value>使用默认端口</value>
+  </data>
+  <data name="UseRecommendedSettings" xml:space="preserve">
+    <value>使用推荐的设置</value>
+  </data>
+  <data name="CannotConnectWithSettings" xml:space="preserve">
+    <value>使用这些设置不能创建连接</value>
+  </data>
+  <data name="CanConnectWithSettings" xml:space="preserve">
+    <value>使用这些设置可以创建连接</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="OptionsDescribeWebServerAutoStartUPnp" xml:space="preserve">
+    <value>是 程序启动时将自动使Virtual Radar Server可以在通过 Internet访问,否 将不能被访问直到手动连接 .</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerEnabled" xml:space="preserve">
+    <value>是 该转播服务器可以提供数据源请求服务,否 将不能.</value>
+  </data>
+  <data name="OptionsDescribeEnableBundling" xml:space="preserve">
+    <value>是 合并多个CSS 或者 JavaScript 文件到一个单独的下载, 否  保持文件独立.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedIgnoreMilitaryExtendedSquitter" xml:space="preserve">
+    <value>是 忽略 DF19/AF0 消息, 。否 作为DF17消息解码. 某些 ICAO 文档声称他们可以被视为 DF17 消息对待, 其他文档不同意.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedUseLocalDecodeForInitialPosition" xml:space="preserve">
+    <value>'是' 将很早显示航空器位置，但航空器在极端的范围很大的可能首次出现在不正确的位置. 仅在接收器位置已经被输入时才会生效.</value>
+  </data>
+  <data name="OptionsDescribeIgnoreAircraftWithNoPosition" xml:space="preserve">
+    <value>是 仅显示正在传输位置的航空器,否 显示合并源上所有的航空器.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanSeeLabels" xml:space="preserve">
+    <value>是 来自 Internet  连接用户被允许查看航空器标签,否 将不能. 航空器标签消耗带宽并且会增加服务器的工作负载.该设置不影响局域网用户.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanSeePictures" xml:space="preserve">
+    <value>是 来自 Internet  连接用户被允许查看航空器图片,否 将不能.航空器图片消耗带宽,调整他们会增加服务器的工作负载. 此设置不影响局域网用户.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanRunReports" xml:space="preserve">
+    <value>是 来自 Internet  连接用户被允许生成报告, 否 将不能. 生成报告消耗带宽并且会增加服务器的工作负载. 该设置不影响局域网用户.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanPlayAudio" xml:space="preserve">
+    <value>是 来自 Internet  连接用户被允许使用声音功能, 否 将不能. 声音功能消耗带宽并增加服务器工作负荷. 该设置不影响局域网用户.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanShowPolarPlots" xml:space="preserve">
+    <value>是 来自 Internet  连接用户可以看到接收器范围图. 注意这些图可以精确定位接收器位置.</value>
+  </data>
+  <data name="OptionsDescribeWebServerAllowInternetProximityGadgets" xml:space="preserve">
+    <value>是 来自 Internet 的邻近小工具连接被允许获取航空器数据,否 将不能.局域网中邻近小工具不受本设置影响.</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanSubmitRoutes" xml:space="preserve">
+    <value>是 来自 Internet 的浏览器被允许看到提交路径的链接 , 否 不能看到.</value>
+  </data>
+  <data name="OptionsDescribeWebServerUserMustAuthenticate" xml:space="preserve">
+    <value>是 浏览网站前用户必须被授权, 否 不需要授权.</value>
+  </data>
+  <data name="OptionsDescribeWebServerEnableUPnpFeatures" xml:space="preserve">
+    <value>是 启用程序通用即插即用功能 , 否 禁用.</value>
+  </data>
+  <data name="OptionsDescribeMergedFeedEnabled" xml:space="preserve">
+    <value>是 启用此合并源,否 禁用.</value>
+  </data>
+  <data name="OptionsDescribeReceiverEnabled" xml:space="preserve">
+    <value>是 启用接收器, 否 禁用. 注意至少一个接收器必须被启用.</value>
+  </data>
+  <data name="OptionsDescribeGeneralAudioEnabled" xml:space="preserve">
+    <value>是 启用网站声音功能, 否 禁用.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedIgnoreCallsignsInBds20" xml:space="preserve">
+    <value>是 如果Virtual Radar Server 应该只从ADS-B消息中提取航班号,否 如果可以也尝试检测 BDS2,0 消息 并且 从中提取航班号.</value>
+  </data>
+  <data name="OptionsDescribeUserEnabled" xml:space="preserve">
+    <value>是 如果启用用户的账户,不 如果用户允许不登录。</value>
+  </data>
+  <data name="OptionsDescribeWebServerIsOnlyVirtualRadarServerOnLan" xml:space="preserve">
+    <value>是 如果这是你想发布到Internet上在网络中运行 Virtual Radar Server 的唯一计算机, 否 相反.</value>
+  </data>
+  <data name="OptionsDescribeWebSitePreferIataAirportCodes" xml:space="preserve">
+    <value>是 显示 IATA 机场代码 (例如 LHR), 否 显示 ICAO 机场代码 (例如 EGLL).</value>
+  </data>
+  <data name="OptionsDescribeEnableMinifying" xml:space="preserve">
+    <value>是 压缩发送到浏览器的 CSS 和 JavaScript 文件 , 否 发送未更改的文件.</value>
+  </data>
+  <data name="OptionsDescribeEnableCompression" xml:space="preserve">
+    <value>是 压缩发送到浏览器的响应(responses), 否 发送未压缩的响应(responses).</value>
+  </data>
+  <data name="OptionsDescribeGeneralCheckForNewVersions" xml:space="preserve">
+    <value>是 允许程序在新版本程序有效下载时通知, 否 禁止检测.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesSearchPictureSubFolders" xml:space="preserve">
+    <value>是 在图片文件夹的子文件夹范围内搜索图片, 否 仅在图片文件夹范围内搜索图片.</value>
+  </data>
+  <data name="OptionsDescribeMinimiseToSystemTray" xml:space="preserve">
+    <value>是 最小化应用程序到系统托盘, 否 最小化到任务栏.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesAutoReconnectAtStartup" xml:space="preserve">
+    <value>是，自动在程序启动时保持尝试建立到数据源的连接，否，只尝试一次，并在无法连接时报告错误.</value>
+  </data>
+  <data name="FirstSeen" xml:space="preserve">
+    <value>首次发现</value>
+  </data>
+  <data name="OptionsDescribeWebSiteReceiverId" xml:space="preserve">
+    <value>首次访问网站显示给用户的接收器.</value>
+  </data>
+  <data name="Data" xml:space="preserve">
+    <value>数据</value>
+  </data>
+  <data name="DatabaseFileName" xml:space="preserve">
+    <value>数据库文件名</value>
+  </data>
+  <data name="SerialDataBits" xml:space="preserve">
+    <value>数据位</value>
+    <comment>As in the bits per byte when talking over a serial port</comment>
+  </data>
+  <data name="SerialDataBitsOutOfBounds" xml:space="preserve">
+    <value>数据位必须在 5 至 8 之间</value>
+  </data>
+  <data name="DataSource" xml:space="preserve">
+    <value>数据源</value>
+    <comment>As in SBS1 / Port 30003 data / SBS-3 etc.</comment>
+  </data>
+  <data name="OptionsDataSourcesSheetTitle" xml:space="preserve">
+    <value>数据源</value>
+  </data>
+  <data name="OptionsDataSourcesDataFeed" xml:space="preserve">
+    <value>数据源</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerPort" xml:space="preserve">
+    <value>数据源服务来源端口.</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastServerFormat" xml:space="preserve">
+    <value>数据源提供格式.</value>
+  </data>
+  <data name="DataFeedStatus" xml:space="preserve">
+    <value>数据源状态</value>
+  </data>
+  <data name="FeedStatus" xml:space="preserve">
+    <value>数据源状态</value>
+  </data>
+  <data name="SearchPictureSubFolders" xml:space="preserve">
+    <value>搜索子文件夹图片</value>
+  </data>
+  <data name="SpeedChecksExceeded" xml:space="preserve">
+    <value>速度检测异常</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialSpeedUnit" xml:space="preserve">
+    <value>速度如何被显示.仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapZoom" xml:space="preserve">
+    <value>缩放级别，0显示完全被放大的地球,更高的数值 (到约 20) 显示更多细节. 仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="OptionsDescribeGeneralTrackingTimeoutSeconds" xml:space="preserve">
+    <value>停止跟踪之前，最后接收到航空器消息起必须经历秒数.</value>
+  </data>
+  <data name="StopRidingAircraft" xml:space="preserve">
+    <value>停止驾驶</value>
+    <comment>Stop riding in the cockpit of an aircraft</comment>
+  </data>
+  <data name="SerialStopBits" xml:space="preserve">
+    <value>停止位</value>
+    <comment>As in the number of stop bits at the end of each byte when talking over a serial port</comment>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>通用</value>
+    <comment>Miscellaneous options</comment>
+  </data>
+  <data name="OptionsGeneralCategory" xml:space="preserve">
+    <value>通用设置</value>
+    <comment>As in miscellaneous settings</comment>
+  </data>
+  <data name="menuStatistics" xml:space="preserve">
+    <value>统计</value>
+  </data>
+  <data name="StatisticsTitle" xml:space="preserve">
+    <value>统计</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>图片</value>
+    <comment>A count of images</comment>
+  </data>
+  <data name="PicturesFolder" xml:space="preserve">
+    <value>图片文件夹</value>
+  </data>
+  <data name="Throughput" xml:space="preserve">
+    <value>吞吐量</value>
+  </data>
+  <data name="TakeOffInternet" xml:space="preserve">
+    <value>脱离Internet</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>网络</value>
+    <comment>As in a TCP/IP network or the Internet</comment>
+  </data>
+  <data name="UPnPNotPresent" xml:space="preserve">
+    <value>网络中无法找到支持 UPnP 的路由器</value>
+    <comment>UPnP need not be translated</comment>
+  </data>
+  <data name="OptionsWebSiteTitle" xml:space="preserve">
+    <value>网站</value>
+  </data>
+  <data name="OptionsWebSiteCustomisationCategory" xml:space="preserve">
+    <value>网站定制</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapRefreshSeconds" xml:space="preserve">
+    <value>网站更新航空器数据间隔秒数. 仅用于浏览器首次访问站点.</value>
+  </data>
+  <data name="WebSiteReceiverId" xml:space="preserve">
+    <value>网站接收器</value>
+  </data>
+  <data name="OptionsWebSiteSettingsCategory" xml:space="preserve">
+    <value>网站设置</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientTimeoutMinutes" xml:space="preserve">
+    <value>网站停止响应来自Internet用户连接前可经历非互动多少分钟. 0 禁用该功能. 局域网用户不会超时.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteMinimumGoogleMapRefreshSeconds" xml:space="preserve">
+    <value>网站允许用户选择的选择航空器数据时刷新间隔最小秒数.</value>
+  </data>
+  <data name="FakeAircraftMode" xml:space="preserve">
+    <value>伪装航空器模式</value>
+    <comment>Title for dialog box that lets devs create pretend aircraft to test how they appear on the map</comment>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>纬度</value>
+  </data>
+  <data name="LatitudeOutOfBounds" xml:space="preserve">
+    <value>纬度必须在 -90.0 (南) 至 90.0 (北)</value>
+  </data>
+  <data name="LatitudeCannotBeZero" xml:space="preserve">
+    <value>纬度不能是 0</value>
+  </data>
+  <data name="NotLoaded" xml:space="preserve">
+    <value>未加载</value>
+  </data>
+  <data name="NotConnected" xml:space="preserve">
+    <value>未连接</value>
+    <comment>As in a connection between two computers</comment>
+  </data>
+  <data name="UnrecognisedCommandLineParameterTitle" xml:space="preserve">
+    <value>未识别的命令行参数</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="ShortFrameUnusable" xml:space="preserve">
+    <value>未使用</value>
+  </data>
+  <data name="PasswordMissing" xml:space="preserve">
+    <value>未提供密码</value>
+  </data>
+  <data name="LoginNameMissing" xml:space="preserve">
+    <value>未提供用户登录名</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="Local" xml:space="preserve">
+    <value>位置</value>
+    <comment>As in the local network</comment>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="PositionsOutOfRange" xml:space="preserve">
+    <value>位置超出范围</value>
+  </data>
+  <data name="OptionsDescribeReceiverLocationName" xml:space="preserve">
+    <value>位置的唯一名称.</value>
+  </data>
+  <data name="PositionResets" xml:space="preserve">
+    <value>位置复位</value>
+  </data>
+  <data name="OptionsDescribeGeneralTextToSpeechVoice" xml:space="preserve">
+    <value>文本转换语音使用的声音.</value>
+  </data>
+  <data name="FolderDoesNotExistFull" xml:space="preserve">
+    <value>文件夹 {0} 不存在</value>
+    <comment>Where {0} is the name of a folder</comment>
+  </data>
+  <data name="FolderDoesNotExistTitle" xml:space="preserve">
+    <value>文件夹不存在</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="MissingFolder" xml:space="preserve">
+    <value>文件夹缺失</value>
+  </data>
+  <data name="MissingFileName" xml:space="preserve">
+    <value>文件名缺失</value>
+  </data>
+  <data name="SerialHandshake" xml:space="preserve">
+    <value>握手</value>
+    <comment>As in the handshaking protocol to use when talking over a serial port. Also known as flow control.</comment>
+  </data>
+  <data name="SerialParityNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="SerialHandshakeNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="RebroadcastServersNoneConfigured" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="NoAdsbPayload" xml:space="preserve">
+    <value>无 ADS-B 承载</value>
+  </data>
+  <data name="CannotOpenBaseStationDatabaseTitle" xml:space="preserve">
+    <value>无法打开 BaseStation 数据库</value>
+    <comment>BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotLoadFlightRouteDataTitle" xml:space="preserve">
+    <value>无法加载航班路径数据</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="CannotLoadFlightRouteDataFull" xml:space="preserve">
+    <value>无法加载航班路径数据 - {0}</value>
+    <comment>Where {0} is an exception message</comment>
+  </data>
+  <data name="CannotParseRouteFile" xml:space="preserve">
+    <value>无法解析路由状态文件</value>
+    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+  </data>
+  <data name="CannotConnect" xml:space="preserve">
+    <value>无法连接</value>
+  </data>
+  <data name="CannotOpenBaseStationDatabaseFull" xml:space="preserve">
+    <value>无法连接到 BaseStation 数据库位置: {0}</value>
+    <comment>Where {0} is a filename. BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="CannotStartWebServerTitle" xml:space="preserve">
+    <value>无法启动 Web 服务器</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="CannotStartWebServerFull" xml:space="preserve">
+    <value>无法启动 Web 服务器在端口: {0}</value>
+  </data>
+  <data name="NoPosition" xml:space="preserve">
+    <value>无位置</value>
+  </data>
+  <data name="InvalidPlugins" xml:space="preserve">
+    <value>无效插件</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="menuDownloadData" xml:space="preserve">
+    <value>下载&amp;a数据...</value>
+  </data>
+  <data name="AutomaticallyDownloadNewRoutes" xml:space="preserve">
+    <value>下载航班路径更新</value>
+  </data>
+  <data name="DownloadData" xml:space="preserve">
+    <value>下载数据</value>
+    <comment>Title of dialog box that lets the user force the download of flight route data</comment>
+  </data>
+  <data name="DownloadingPleaseWait" xml:space="preserve">
+    <value>下载中, 请等待</value>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>显示</value>
+  </data>
+  <data name="PreferIataAirportCodes" xml:space="preserve">
+    <value>显示 IATA 机场代码</value>
+  </data>
+  <data name="ShowInternetAddress" xml:space="preserve">
+    <value>显示 Internet 地址</value>
+  </data>
+  <data name="DurationBeforeAircraftRemovedFromMapOutOfBounds" xml:space="preserve">
+    <value>显示超时必须在 5 至 540 之间</value>
+  </data>
+  <data name="ShowLocalAddress" xml:space="preserve">
+    <value>显示局域网地址</value>
+    <comment>As in show the address of the server on 127.0.0.1</comment>
+  </data>
+  <data name="ShowNetworkAddress" xml:space="preserve">
+    <value>显示网络地址</value>
+    <comment>As in show the address of the server on the network</comment>
+  </data>
+  <data name="OptionsWebServerInternetClientsCategory" xml:space="preserve">
+    <value>限制 Internet 用户</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastStaleSeconds" xml:space="preserve">
+    <value>消息被丢弃之前在转播服务器中持续缓存的秒数,以秒为单位.</value>
+  </data>
+  <data name="MessageType" xml:space="preserve">
+    <value>消息类型</value>
+  </data>
+  <data name="TotalMessages" xml:space="preserve">
+    <value>消息总计</value>
+  </data>
+  <data name="TotalMessagesTitle" xml:space="preserve">
+    <value>消息总计</value>
+  </data>
+  <data name="StaleSeconds" xml:space="preserve">
+    <value>消息最大寿命(秒)</value>
+  </data>
+  <data name="StaleSecondsOutOfBounds" xml:space="preserve">
+    <value>消息最大寿命至少1秒</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="DurationBeforeAircraftRemovedFromMap" xml:space="preserve">
+    <value>信号丢失后从地图上删除 (秒)</value>
+  </data>
+  <data name="DurationBeforeAircraftRemovedFromTracking" xml:space="preserve">
+    <value>信号丢失后停止跟踪 (秒)</value>
+  </data>
+  <data name="License" xml:space="preserve">
+    <value>许可</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>选项</value>
+  </data>
+  <data name="SelectBaseStationDatabaseFile" xml:space="preserve">
+    <value>选择 BaseStation 数据库文件</value>
+    <comment>BaseStation is the name of a program and may not need translating</comment>
+  </data>
+  <data name="SelectAnAircraftToRide" xml:space="preserve">
+    <value>选择一个首次驾驶航空器</value>
+    <comment>Validation message, refers to riding in cockpit of an aircraft in Flight Simulator X</comment>
+  </data>
+  <data name="OptionsDescribeWebServerPermittedUsers" xml:space="preserve">
+    <value>选择有权限连接到 web 服务器的用户</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesStartupText" xml:space="preserve">
+    <value>一旦连接建立发送到接收器的命令. MiniADSB-based 接收器 应该发送 #43-02\r. 仅用于串行数据源.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInNonPICount" xml:space="preserve">
+    <value>一个 ICAO24 代码在被接受之前必须在无奇偶校验错误的消息中被发现次数.如果0那么仅 来自校验正确消息的 ICAO24s 代码被接受. 一旦被接受所有以后该 ICAO24 代码的消息将被使用.</value>
+  </data>
+  <data name="ConnectedSuccessfully" xml:space="preserve">
+    <value>已成功连接</value>
+  </data>
+  <data name="BytesStale" xml:space="preserve">
+    <value>已丢弃字节</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>已断开连接</value>
+  </data>
+  <data name="BytesSent" xml:space="preserve">
+    <value>已发送字节</value>
+  </data>
+  <data name="AircraftCountTitle" xml:space="preserve">
+    <value>已跟踪航空器</value>
+  </data>
+  <data name="TrackingAircraft" xml:space="preserve">
+    <value>已跟踪航空器</value>
+  </data>
+  <data name="BytesBuffered" xml:space="preserve">
+    <value>已缓冲字节</value>
+  </data>
+  <data name="RouteFileStatus" xml:space="preserve">
+    <value>已加载 {0:N0} 路径期间 {1:d} 至 {2:d}</value>
+    <comment>Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
+  </data>
+  <data name="ReceivedCountMessages" xml:space="preserve">
+    <value>已接收 {0:N0} 消息</value>
+    <comment>Where {0:N0} is an integer</comment>
+  </data>
+  <data name="MessagesReceived" xml:space="preserve">
+    <value>已接收消息</value>
+  </data>
+  <data name="BytesReceived" xml:space="preserve">
+    <value>已接收字节</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>已连接</value>
+    <comment>As in a connection between two computers</comment>
+  </data>
+  <data name="PermittedUsers" xml:space="preserve">
+    <value>已允许用户</value>
+  </data>
+  <data name="Feet" xml:space="preserve">
+    <value>英尺</value>
+  </data>
+  <data name="Miles" xml:space="preserve">
+    <value>英里</value>
+  </data>
+  <data name="MilesPerHour" xml:space="preserve">
+    <value>英里每小时</value>
+  </data>
+  <data name="SerialHandshakeRts" xml:space="preserve">
+    <value>硬件</value>
+  </data>
+  <data name="SerialHandshakeRtsXOnXOff" xml:space="preserve">
+    <value>硬件 和 XOn / XOff</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="menuUsers" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="UserMustAuthenticate" xml:space="preserve">
+    <value>用户必须授权</value>
+  </data>
+  <data name="UserManager" xml:space="preserve">
+    <value>用户管理器</value>
+  </data>
+  <data name="OptionsDescribeGeneralShortTrailLengthSeconds" xml:space="preserve">
+    <value>用户在网站上看到运动短轨迹的秒数.</value>
+  </data>
+  <data name="OptionsDescribeUserName" xml:space="preserve">
+    <value>用户真实名字</value>
+  </data>
+  <data name="OptionsDescribeFlightSimulatorXReceiverId" xml:space="preserve">
+    <value>用于 Flight Simulator X "ride-along" 功能的接收器.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesComPort" xml:space="preserve">
+    <value>用于读取数据的串行设备名称. 仅用于串行数据源.</value>
+  </data>
+  <data name="OptionsDescribeClosestAircraftReceiverId" xml:space="preserve">
+    <value>用于最近航空器桌面小工具请求最近航空器详情使用的接收器.</value>
+  </data>
+  <data name="FlightSimulatorXShutdown" xml:space="preserve">
+    <value>由于Flight Simulator X正在退出已断开连接</value>
+  </data>
+  <data name="RawDecoding" xml:space="preserve">
+    <value>原始解码</value>
+  </data>
+  <data name="OptionsRawFeedDecoderParametersCategory" xml:space="preserve">
+    <value>原始解码参数</value>
+  </data>
+  <data name="OptionsRawFeedSheetTitle" xml:space="preserve">
+    <value>原始源解码</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>源</value>
+    <comment>As in whether a connection was from the local network or the Internet</comment>
+  </data>
+  <data name="AllowInternetProximityGadgets" xml:space="preserve">
+    <value>允许 Internet 邻近小工具</value>
+    <comment>Allow Windows 7 desktop gadgets that display the closest aircraft details to connect from the Internet</comment>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInNonPISeconds" xml:space="preserve">
+    <value>在 ICAO24 代码 被接受之前无奇偶校验消息必须被接收超过的秒数.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Seconds" xml:space="preserve">
+    <value>在 ICAO24 代码被接受之前，带有正确奇偶校验消息必须被接收超过的秒数.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Count" xml:space="preserve">
+    <value>在 ICAO24 代码被接受之前，在正确奇偶校验消息中被发现的次数. 一旦被接受所有以后该 ICAO24 代码的消息将被使用.</value>
+  </data>
+  <data name="SuppressReceiverRangeCheck" xml:space="preserve">
+    <value>在接收器范围之外显示航空器.</value>
+  </data>
+  <data name="AutoStartUPnP" xml:space="preserve">
+    <value>在启动时将服务器放在 Internet上 </value>
+  </data>
+  <data name="AutoReconnectAtStartup" xml:space="preserve">
+    <value>在启动时重新连接</value>
+  </data>
+  <data name="LoginNameUnknown" xml:space="preserve">
+    <value>找不到用户登录名 '{0}'</value>
+  </data>
+  <data name="PleaseEnterUniqueNameForLocation" xml:space="preserve">
+    <value>这个名称已经被另一个位置使用</value>
+  </data>
+  <data name="LatestVersion" xml:space="preserve">
+    <value>这是程序有效的最新版本</value>
+  </data>
+  <data name="TheseSettingsOnlyAffectInternetBrowsers" xml:space="preserve">
+    <value>这些设置仅影响来自 Internet 连接的浏览器.</value>
+  </data>
+  <data name="SplashScreenInitialisingUPnPManager" xml:space="preserve">
+    <value>正在初始化 UPnP 管理器</value>
+  </data>
+  <data name="SplashScreenInitialisingAircraftList" xml:space="preserve">
+    <value>正在初始化航空器列表</value>
+  </data>
+  <data name="SplashScreenInitialisingConnectionLogger" xml:space="preserve">
+    <value>正在初始化连接记录器</value>
+  </data>
+  <data name="SplashScreenInitialisingLog" xml:space="preserve">
+    <value>正在初始化日志</value>
+  </data>
+  <data name="SplashScreenInitialisingBaseStationListener" xml:space="preserve">
+    <value>正在初始化数据源监听器</value>
+  </data>
+  <data name="SplashScreenInitialisingUserManager" xml:space="preserve">
+    <value>正在初始化用户管理器</value>
+  </data>
+  <data name="SplashScreenOpeningBaseStationDatabase" xml:space="preserve">
+    <value>正在打开 BaseStation 数据库</value>
+  </data>
+  <data name="Disconnecting" xml:space="preserve">
+    <value>正在断开连接</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesAddress" xml:space="preserve">
+    <value>正在发送航空器数据的接收器或者程序的网络地址,仅用于网络数据源.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesPort" xml:space="preserve">
+    <value>正在发送航空器数据的接收器或者程序对端口.仅用于网络数据源.</value>
+  </data>
+  <data name="ShuttingDownPlugin" xml:space="preserve">
+    <value>正在关闭 {0} 插件</value>
+  </data>
+  <data name="ShuttingDownUPnpManager" xml:space="preserve">
+    <value>正在关闭 UPnP</value>
+  </data>
+  <data name="ShuttingDown" xml:space="preserve">
+    <value>正在关闭 Virtual Radar Server</value>
+  </data>
+  <data name="ShuttingDownWebServer" xml:space="preserve">
+    <value>正在关闭 Web 服务器</value>
+  </data>
+  <data name="ShuttingDownBaseStationDatabase" xml:space="preserve">
+    <value>正在关闭BaseStation数据库</value>
+    <comment>BaseStation is the name of an application</comment>
+  </data>
+  <data name="ShuttingDownBaseStationAircraftList" xml:space="preserve">
+    <value>正在关闭航空器列表</value>
+  </data>
+  <data name="ShuttingDownConnectionLogger" xml:space="preserve">
+    <value>正在关闭连接记录器</value>
+  </data>
+  <data name="ShuttingDownLogDatabase" xml:space="preserve">
+    <value>正在关闭日志数据库</value>
+  </data>
+  <data name="ShuttingDownBaseStationListener" xml:space="preserve">
+    <value>正在关闭数据源连接</value>
+  </data>
+  <data name="ShuttingDownUserManager" xml:space="preserve">
+    <value>正在关闭用户管理器</value>
+  </data>
+  <data name="ShuttingDownRebroadcastServer" xml:space="preserve">
+    <value>正在关闭转播服务器</value>
+  </data>
+  <data name="SplashScreenLoadingStandingData" xml:space="preserve">
+    <value>正在加载参照数据</value>
+  </data>
+  <data name="SplashScreenLoadingConfiguration" xml:space="preserve">
+    <value>正在加载配置</value>
+  </data>
+  <data name="SplashScreenParsingCommandLineParameters" xml:space="preserve">
+    <value>正在解析命令行参数</value>
+  </data>
+  <data name="SplashScreenConnectingToBaseStation" xml:space="preserve">
+    <value>正在连接到数据源</value>
+  </data>
+  <data name="SplashScreenStartingWebServer" xml:space="preserve">
+    <value>正在启动 Web 服务器</value>
+  </data>
+  <data name="SplashScreenStartingPlugins" xml:space="preserve">
+    <value>正在启动插件</value>
+  </data>
+  <data name="SplashScreenStartingDataUpdate" xml:space="preserve">
+    <value>正在启动后台数据更新检测</value>
+  </data>
+  <data name="SplashScreenStartingConnectionLogger" xml:space="preserve">
+    <value>正在启动连接记录器</value>
+  </data>
+  <data name="SplashScreenStartingPictureFolderCache" xml:space="preserve">
+    <value>正在启动图片文件夹缓存</value>
+  </data>
+  <data name="SplashScreenStartingRebroadcastServers" xml:space="preserve">
+    <value>正在启动转播服务器</value>
+  </data>
+  <data name="SplashScreenStartingUPnP" xml:space="preserve">
+    <value>正在通过 UPnP 连接服务器到Internet</value>
+  </data>
+  <data name="OptionsDescribeGeneralReadingSpeed" xml:space="preserve">
+    <value>指示文本被转换为语音被应该多快朗读的值. 0值 普通速度, 负值慢于普通速度, 正值加快.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>至</value>
+  </data>
+  <data name="Reconnecting" xml:space="preserve">
+    <value>重新连接中</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="ResetCounters" xml:space="preserve">
+    <value>重置计数器</value>
+  </data>
+  <data name="menuResetReceiverRange" xml:space="preserve">
+    <value>重置接收器范围 &amp;P图</value>
+  </data>
+  <data name="ResetSettingsToDefault" xml:space="preserve">
+    <value>重置默认值设置</value>
+  </data>
+  <data name="InvalidConfigurationFileTitle" xml:space="preserve">
+    <value>重置配置设置?</value>
+    <comment>Title for an error message box</comment>
+  </data>
+  <data name="Reg" xml:space="preserve">
+    <value>注册号</value>
+    <comment>As in aircraft registration</comment>
+  </data>
+  <data name="RebroadcastServersTitle" xml:space="preserve">
+    <value>转播服务器</value>
+  </data>
+  <data name="RebroadcastOptionsTitle" xml:space="preserve">
+    <value>转播服务器</value>
+  </data>
+  <data name="RebroadcastServersLabel" xml:space="preserve">
+    <value>转播服务器</value>
+  </data>
+  <data name="RebroadcastServer" xml:space="preserve">
+    <value>转播服务器</value>
+  </data>
+  <data name="RebroadcastServersStatus" xml:space="preserve">
+    <value>转播服务器状态</value>
+  </data>
+  <data name="OptionsDescribeGeneralRebroadcastServers" xml:space="preserve">
+    <value>转播接收器传输消息服务器配置.</value>
+  </data>
+  <data name="ConvertedBasicAuthenticationUser" xml:space="preserve">
+    <value>转换基本身份验证的用户</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状态</value>
+    <comment>The current state of something</comment>
+  </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>状态代码</value>
+  </data>
+  <data name="UpdateFromBaseStationDatabase" xml:space="preserve">
+    <value>自 BaseStation 数据库更新</value>
+  </data>
+  <data name="LastURL" xml:space="preserve">
+    <value>最后URL</value>
+    <comment>The last URL requested by a client</comment>
+  </data>
+  <data name="LastSeen" xml:space="preserve">
+    <value>最后发现</value>
+  </data>
+  <data name="LastRequest" xml:space="preserve">
+    <value>最后请求</value>
+    <comment>The time of the last request from a client to the server</comment>
+  </data>
+  <data name="ClosestAircraftReceiverId" xml:space="preserve">
+    <value>最近的航空器接收器</value>
+  </data>
+  <data name="MinimiseToSystemTray" xml:space="preserve">
+    <value>最小化到系统托盘</value>
+  </data>
+  <data name="MinimumRefreshOutOfBounds" xml:space="preserve">
+    <value>最小刷新值必须在 0 至 3600</value>
+  </data>
 </root>
