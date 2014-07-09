@@ -15,8 +15,12 @@ using System.Text;
 using VirtualRadar.Interface.View;
 using System.Windows.Forms;
 
-namespace VirtualRadar.WinForms.OptionPage
+namespace VirtualRadar.WinForms
 {
+    /// <summary>
+    /// Describes the <see cref="ValidationField"/> associated with a property
+    /// that has been bound to a control.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple=false)]
     public class ValidationFieldAttribute : Attribute
     {

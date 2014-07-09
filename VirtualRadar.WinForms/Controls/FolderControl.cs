@@ -24,6 +24,7 @@ namespace VirtualRadar.WinForms.Controls
     /// <summary>
     /// A user control containing a directory textbox control and a browse button.
     /// </summary>
+    [DefaultBindingProperty("Folder")]
     public partial class FolderControl : BaseUserControl
     {
         /// <summary>

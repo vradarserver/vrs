@@ -72,32 +72,32 @@ namespace VirtualRadar.WinForms
         #region Data Sources
         public string BaseStationDatabaseFileName
         {
-            get { return PageDataSources.DatabaseFileName.Value; }
-            set { PageDataSources.DatabaseFileName.Value = value; }
+            get { return PageDataSources.DatabaseFileName; }
+            set { PageDataSources.DatabaseFileName= value; }
         }
 
         public string OperatorFlagsFolder
         {
-            get { return PageDataSources.FlagsFolder.Value; }
-            set { PageDataSources.FlagsFolder.Value = value; }
+            get { return PageDataSources.FlagsFolder; }
+            set { PageDataSources.FlagsFolder = value; }
         }
 
         public string SilhouettesFolder
         {
-            get { return PageDataSources.SilhouettesFolder.Value; }
-            set { PageDataSources.SilhouettesFolder.Value = value; }
+            get { return PageDataSources.SilhouettesFolder; }
+            set { PageDataSources.SilhouettesFolder = value; }
         }
 
         public string PicturesFolder
         {
-            get { return PageDataSources.PicturesFolder.Value; }
-            set { PageDataSources.PicturesFolder.Value = value; }
+            get { return PageDataSources.PicturesFolder; }
+            set { PageDataSources.PicturesFolder = value; }
         }
 
         public bool SearchPictureSubFolders
         {
-            get { return PageDataSources.SearchPictureSubFolders.Value; }
-            set { PageDataSources.SearchPictureSubFolders.Value = value; }
+            get { return PageDataSources.SearchPictureSubFolders; }
+            set { PageDataSources.SearchPictureSubFolders = value; }
         }
         #endregion
 
