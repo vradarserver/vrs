@@ -74,6 +74,7 @@
     <Compile Include="BaseUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="BindingTag.cs" />
     <Compile Include="Binding\BindBoolToCheckbox.cs" />
     <Compile Include="Binding\BindCollectionToListView.cs" />
     <Compile Include="Binding\BindCollectionToObservableListView.cs" />
@@ -378,7 +379,7 @@
       <DependentUpon>PageWebSite.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\RecordListHelper.cs" />
-    <Compile Include="OptionPage\ValidationFieldAttribute.cs" />
+    <Compile Include="ValidationFieldAttribute.cs" />
     <Compile Include="OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>

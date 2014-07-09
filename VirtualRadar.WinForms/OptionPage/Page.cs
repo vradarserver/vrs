@@ -24,15 +24,17 @@ using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Binding;
 using System.Collections;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
     /// <summary>
     /// The base for all option pages.
     /// </summary>
-    public partial class Page : BaseUserControl
+    public partial class Page : BaseUserControl, INotifyPropertyChanged
     {
         #region Private class - BinderTag
+        // DELETE THIS
         class BinderTag<T>
         {
             public IBinder Binder;
@@ -63,7 +65,12 @@ namespace VirtualRadar.WinForms.OptionPage
         /// <summary>
         /// A list of binders to their associated validation field attribute.
         /// </summary>
-        private List<BinderTag<ValidationFieldAttribute>> _ValidationFields;
+        private List<BinderTag<ValidationFieldAttribute>> _ValidationFieldsDEPRECATED;
+
+        /// <summary>
+        /// A list of bindings for properties that have <see cref="ValidationFieldAttribute"/>s.
+        /// </summary>
+        private List<BindingTag<ValidationFieldAttribute>> _ValidationFields;
 
         /// <summary>
         /// A list of binders and the inline help for the associated control.
@@ -173,12 +180,66 @@ namespace VirtualRadar.WinForms.OptionPage
 
         #region Events Exposed
         /// <summary>
-        /// Raised whenever an observable changes value.
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private int _OnPropertyChangedRecursiveCallCount;
+        /// <summary>
+        /// Raises <see cref="PropertyChanged."/>. Also raises ValueChanged on the owning
+        /// options view if the property is flagged as raising value changes, does that
+        /// after all of the PropertyChanged events have fired.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            BindingTag<ValidationFieldAttribute> firstBindingTag = null;
+
+            ++_OnPropertyChangedRecursiveCallCount;
+            try {
+                if(PropertyChanged != null) PropertyChanged(this, args);
+                if(firstBindingTag == null) {
+                    var bindingTag = _ValidationFields == null ? null : _ValidationFields.FirstOrDefault(r => r.Binding.DataSource == this && r.Binding.BindingMemberInfo != null && r.Binding.BindingMemberInfo.BindingField == args.PropertyName);
+                    if(bindingTag != null && bindingTag.Tag.RaisesValueChanged) firstBindingTag = bindingTag;
+                }
+            } finally {
+                --_OnPropertyChangedRecursiveCallCount;
+            }
+
+            if(_OnPropertyChangedRecursiveCallCount == 0) {
+                if(firstBindingTag != null && OptionsView != null) OptionsView.RaiseValueChanged(firstBindingTag.Binding.Control, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Simultaneously sets a property's backing field and raises <see cref="PropertyChanged"/>,
+        /// but only if the value actually changes.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
+
+        /// <summary>
+        /// Raised whenever an observable changes value. DELETE THIS
         /// </summary>
         public event EventHandler PropertyValueChanged;
 
         /// <summary>
-        /// Raises <see cref="PropertyValueChanged"/>.
+        /// Raises <see cref="PropertyValueChanged"/>. DELETE THIS
         /// </summary>
         /// <param name="args"></param>
         protected virtual void OnPropertyChangedValue(EventArgs args)
@@ -240,7 +301,7 @@ namespace VirtualRadar.WinForms.OptionPage
         }
         #endregion
 
-        #region Binding - CreateBindings, BindProperty, BindListProperty, FindBinder***
+        #region Binding
         /// <summary>
         /// When overridden by the derivee this creates the bindings between the fields
         /// and the controls.
@@ -249,6 +310,9 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             ;
         }
+        #endregion
+
+        #region Binding - delete this
 
         /// <summary>
         /// Creates an observable field, binds a control to it and returns the field.
@@ -384,20 +448,25 @@ namespace VirtualRadar.WinForms.OptionPage
         }
         #endregion
 
-        #region Validation - GetControlForValidationField, BuildValidationFields
+        #region Validation - BuildValidationFields, GetControlForValidationField, BuildValidationFields
         /// <summary>
         /// Builds the validation field list.
         /// </summary>
         private void BuildValidationFields()
         {
             if(_ValidationFields == null) {
-                _ValidationFields = new List<BinderTag<ValidationFieldAttribute>>();
+                _ValidationFields = GetAllDataBindingsForAttribute<ValidationFieldAttribute>(includeChildControls: true, inherit: true);
+            }
+
+            // DELETE THIS BLOCK
+            if(_ValidationFieldsDEPRECATED == null) {
+                _ValidationFieldsDEPRECATED = new List<BinderTag<ValidationFieldAttribute>>();
                 foreach(var property in GetAllObservableProperties()) {
                     var attribute = property.GetCustomAttributes(typeof(ValidationFieldAttribute), true).OfType<ValidationFieldAttribute>().FirstOrDefault();
                     if(attribute != null) {
                         var binder = FindBinderForProperty(property);
                         if(binder != null) {
-                            _ValidationFields.Add(new BinderTag<ValidationFieldAttribute>(binder, attribute));
+                            _ValidationFieldsDEPRECATED.Add(new BinderTag<ValidationFieldAttribute>(binder, attribute));
                         }
                     }
                 }
@@ -417,25 +486,35 @@ namespace VirtualRadar.WinForms.OptionPage
 
             if(validationObject == PageObject) {
                 BuildValidationFields();
-                result = _ValidationFields.Where(r => r.Tag.ValidationField == validationField).Select(r => r.Binder.Control).FirstOrDefault();
+                result = _ValidationFields.Where(r => r.Tag.ValidationField == validationField).Select(r => r.Binding.Control).FirstOrDefault();
+
+                // DELETE THIS BLOCK
+                if(result == null) result = _ValidationFieldsDEPRECATED.Where(r => r.Tag.ValidationField == validationField).Select(r => r.Binder.Control).FirstOrDefault();
             }
 
             return result;
         }
 
         /// <summary>
-        /// Returns the validation field attribute associated with a binder or null if there isn't one.
+        /// Returns the validation field attribute associated with a control or null if there isn't one.
         /// </summary>
         /// <param name="binder"></param>
         /// <returns></returns>
-        public ValidationFieldAttribute GetValidationFieldAttributeForBinder(IBinder binder)
+        public ValidationFieldAttribute GetValidationAttributeForControl(Control control)
         {
             ValidationFieldAttribute result = null;
 
-            if(binder != null) {
+            if(control != null) {
                 BuildValidationFields();
-                var binderTag = _ValidationFields.FirstOrDefault(r => r.Binder == binder);
-                result = binderTag == null ? null : binderTag.Tag;
+
+                var bindingTag = _ValidationFields.FirstOrDefault(r => r.Binding.Control == control);
+                if(bindingTag != null) result = bindingTag.Tag;
+
+                // DELETE THIS BLOCK
+                if(result == null) {
+                    var binderTag = _ValidationFieldsDEPRECATED.FirstOrDefault(r => r.Binder.Control == control);
+                    result = binderTag == null ? null : binderTag.Tag;
+                }
             }
 
             return result;
@@ -694,7 +773,14 @@ namespace VirtualRadar.WinForms.OptionPage
                 if(firstBinder != null) firstBinder.Control.Focus();
 
                 BuildValidationFields();
-                foreach(var binderTag in _ValidationFields) {
+                foreach(var bindingTag in _ValidationFields) {
+                    var control = bindingTag.Binding.Control;
+                    var attribute = bindingTag.Tag;
+                    OptionsView.SetControlErrorAlignment(control, attribute.IconAlignment);
+                }
+
+                // DELETE THIS BLOCK
+                foreach(var binderTag in _ValidationFieldsDEPRECATED) {
                     var control = binderTag.Binder.Control;
                     var observable = binderTag.Binder.Observable;
                     var attribute = binderTag.Tag;
@@ -758,7 +844,7 @@ namespace VirtualRadar.WinForms.OptionPage
                     }
 
                     // If the validation needs running then do so
-                    var validationAttribute = GetValidationFieldAttributeForBinder(binder);
+                    var validationAttribute = GetValidationAttributeForControl(binder.Control);
                     if(validationAttribute != null && validationAttribute.RaisesValueChanged) {
                         OptionsView.RaiseValueChanged(binder.Control, args);
                     }

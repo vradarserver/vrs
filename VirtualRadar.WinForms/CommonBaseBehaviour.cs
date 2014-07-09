@@ -10,10 +10,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using System.ComponentModel;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms
 {
@@ -277,6 +280,106 @@ namespace VirtualRadar.WinForms
         {
             int result;
             return int.TryParse(text, out result) ? result : (int?)null;
+        }
+        #endregion
+
+        #region GetAllChildControls
+        /// <summary>
+        /// Returns a recursive collection of every control under the control passed across, optionally including the top-level control.
+        /// </summary>
+        /// <param name="topLevel"></param>
+        /// <param name="includeTopLevel"></param>
+        /// <returns></returns>
+        public List<Control> GetAllChildControls(Control topLevel, bool includeTopLevel = false)
+        {
+            var result = new List<Control>();
+            AddChildControls(result, topLevel, includeTopLevel);
+
+            return result;
+        }
+
+        private void AddChildControls(List<Control> controls, Control control, bool includeSelf)
+        {
+            if(includeSelf) controls.Add(control);
+            foreach(Control child in control.Controls) {
+                AddChildControls(controls, child, true);
+            }
+        }
+        #endregion
+
+        #region Binding helpers - AddBinding, GetAllBindings, GetAllDataBindingsForAttribute, GetPropertyInfoForBinding
+        /// <summary>
+        /// Adds a binding between a control and a property on a page.
+        /// </summary>
+        /// <typeparam name="TControl"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="model"></param>
+        /// <param name="control"></param>
+        /// <param name="modelProperty"></param>
+        /// <param name="controlProperty"></param>
+        public void AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty)
+            where TControl: Control
+        {
+            var controlPropertyName = PropertyHelper.ExtractName<TControl>(controlProperty);
+            var modelPropertyName = PropertyHelper.ExtractName<TModel>(modelProperty);
+
+            control.DataBindings.Add(controlPropertyName, model, modelPropertyName);
+        }
+
+        /// <summary>
+        /// Returns a list of all of the bindings on the control passed across and every control under it.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="includeChildControls"></param>
+        /// <returns></returns>
+        public List<System.Windows.Forms.Binding> GetAllDataBindings(Control control, bool includeChildControls)
+        {
+            var allControls = includeChildControls ? (IEnumerable<Control>)GetAllChildControls(control, true) : new Control[] { control };
+            var result = allControls.SelectMany(r => r.DataBindings.OfType<System.Windows.Forms.Binding>()).ToList();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a list of all bindings associated with properties that are tagged with the supplied attribute type.
+        /// The tag is the first instance of each attribute type associated with the property.
+        /// </summary>
+        /// <typeparam name="T">The type of attribute to search for.</typeparam>
+        /// <param name="control">The top-level control to search. This control and all children will be searched.</param>
+        /// <param name="includeChildControls"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public List<BindingTag<T>> GetAllDataBindingsForAttribute<T>(Control control, bool includeChildControls, bool inherit)
+            where T:Attribute
+        {
+            var result = new List<BindingTag<T>>();
+
+            var allBindings = GetAllDataBindings(control, includeChildControls);
+            foreach(var binding in allBindings) {
+                var propertyInfo = GetPropertyInfoForBinding(binding);
+                var attribute = propertyInfo == null ? null : propertyInfo.GetCustomAttributes(typeof(T), inherit).OfType<T>().FirstOrDefault();
+                if(attribute != null) {
+                    result.Add(new BindingTag<T>(binding, attribute));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns the property info associated with a binding or null if it cannot be found.
+        /// </summary>
+        /// <param name="binding"></param>
+        /// <returns></returns>
+        public PropertyInfo GetPropertyInfoForBinding(System.Windows.Forms.Binding binding)
+        {
+            PropertyInfo result = null;
+            if(binding.BindingMemberInfo != null && binding.DataSource != null) {
+                if(!String.IsNullOrEmpty(binding.BindingMemberInfo.BindingPath)) throw new NotImplementedException("Need to implement support for binding to child objects");
+                result = binding.DataSource.GetType().GetProperty(binding.BindingMemberInfo.BindingField);
+            }
+
+            return result;
         }
         #endregion
     }

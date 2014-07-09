@@ -11,15 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
-using VirtualRadar.Interface.View;
 using VirtualRadar.WinForms.Binding;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -32,29 +34,54 @@ namespace VirtualRadar.WinForms.OptionPage
 
         public override Image PageIcon { get { return Images.Notebook16x16; } }
 
+        private string _DatabaseFileName;
         [LocalisedDisplayName("DatabaseFileName")]
         [LocalisedDescription("OptionsDescribeDataSourcesDatabaseFileName")]
         [ValidationField(ValidationField.BaseStationDatabase)]
-        public Observable<string> DatabaseFileName { get; private set; }
+        public string DatabaseFileName
+        {
+            get { return _DatabaseFileName; }
+            set { SetField(ref _DatabaseFileName, value, () => DatabaseFileName); }
+        }
 
+        private string _FlagsFolder;
         [LocalisedDisplayName("FlagsFolder")]
         [LocalisedDescription("OptionsDescribeDataSourcesFlagsFolder")]
         [ValidationField(ValidationField.FlagsFolder)]
-        public Observable<string> FlagsFolder { get; private set; }
+        public string FlagsFolder
+        {
+            get { return _FlagsFolder; }
+            set { SetField(ref _FlagsFolder, value, () => FlagsFolder); }
+        }
 
+        private string _SilhouettesFolder;
         [LocalisedDisplayName("SilhouettesFolder")]
         [LocalisedDescription("OptionsDescribeDataSourcesSilhouettesFolder")]
         [ValidationField(ValidationField.SilhouettesFolder)]
-        public Observable<string> SilhouettesFolder { get; private set; }
+        public string SilhouettesFolder
+        {
+            get { return _SilhouettesFolder; }
+            set { SetField(ref _SilhouettesFolder, value, () => SilhouettesFolder); }
+        }
 
+        private string _PicturesFolder;
         [LocalisedDisplayName("PicturesFolder")]
         [LocalisedDescription("OptionsDescribeDataSourcesPicturesFolder")]
         [ValidationField(ValidationField.PicturesFolder)]
-        public Observable<string> PicturesFolder { get; private set; }
+        public string PicturesFolder
+        {
+            get { return _PicturesFolder; }
+            set { SetField(ref _PicturesFolder, value, () => PicturesFolder); }
+        }
 
+        private bool _SearchPictureSubFolders;
         [LocalisedDisplayName("SearchPictureSubFolders")]
         [LocalisedDescription("OptionsDescribeDataSourcesSearchPictureSubFolders")]
-        public Observable<bool> SearchPictureSubFolders { get; private set; }
+        public bool SearchPictureSubFolders
+        {
+            get { return _SearchPictureSubFolders; }
+            set { SetField(ref _SearchPictureSubFolders, value, () => SearchPictureSubFolders); }
+        }
 
         public PageDataSources() : base()
         {
@@ -64,11 +91,11 @@ namespace VirtualRadar.WinForms.OptionPage
 
         protected override void CreateBindings()
         {
-            DatabaseFileName =          BindProperty<string>(fileDatabaseFileName);
-            FlagsFolder =               BindProperty<string>(folderFlags);
-            SilhouettesFolder =         BindProperty<string>(folderSilhouettes);
-            PicturesFolder =            BindProperty<string>(folderPictures);
-            SearchPictureSubFolders =   BindProperty<bool>(checkBoxSearchPictureSubFolders);
+            AddBinding(this, fileDatabaseFileName,              r => r.DatabaseFileName,        r => r.FileName);
+            AddBinding(this, folderFlags,                       r => r.FlagsFolder,             r => r.Folder);
+            AddBinding(this, folderSilhouettes,                 r => r.SilhouettesFolder,       r => r.Folder);
+            AddBinding(this, folderPictures,                    r => r.PicturesFolder,          r => r.Folder);
+            AddBinding(this, checkBoxSearchPictureSubFolders,   r => r.SearchPictureSubFolders, r => r.Checked);
         }
     }
 }

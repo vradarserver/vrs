@@ -24,6 +24,7 @@ namespace VirtualRadar.WinForms.Controls
     /// <summary>
     /// A user control containing a filename textbox control and a browse button.
     /// </summary>
+    [DefaultBindingProperty("FileName")]
     public partial class FileNameControl : BaseUserControl
     {
         /// <summary>
