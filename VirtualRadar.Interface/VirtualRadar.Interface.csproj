@@ -75,6 +75,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adsb\AdsbMessage.cs" />
@@ -161,7 +162,6 @@
     <Compile Include="PictureDetail.cs" />
     <Compile Include="Settings\MergedFeed.cs" />
     <Compile Include="Settings\ProxyType.cs" />
-    <Compile Include="Settings\RebroadcastFormatConverter.cs" />
     <Compile Include="Settings\Receiver.cs" />
     <Compile Include="SimpleStringBuffer.cs" />
     <Compile Include="SpinLock.cs" />

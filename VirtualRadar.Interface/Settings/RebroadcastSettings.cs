@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -25,42 +27,112 @@ namespace VirtualRadar.Interface.Settings
     /// not use as a key.
     /// </remarks>
     [Serializable]
-    public class RebroadcastSettings
+    public class RebroadcastSettings : INotifyPropertyChanged
     {
+        private int _UniqueId;
         /// <summary>
         /// Gets or sets the unique identifier for the server. This cannot be zero.
         /// </summary>
-        public int UniqueId { get; set; }
+        public int UniqueId
+        {
+            get { return _UniqueId; }
+            set { SetField(ref _UniqueId, value, () => UniqueId); }
+        }
 
+        private string _Name;
         /// <summary>
         /// Gets or sets the unique name for the server.
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _Name; }
+            set { SetField(ref _Name, value, () => Name); }
+        }
 
+        private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating whether the rebroadcast server is enabled.
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled
+        {
+            get { return _Enabled; }
+            set { SetField(ref _Enabled, value, () => Enabled); }
+        }
 
+        private int _ReceiverId;
         /// <summary>
         /// Gets or sets the receiver that the rebroadcast server will rebroadcast.
         /// </summary>
-        public int ReceiverId { get; set; }
+        public int ReceiverId
+        {
+            get { return _ReceiverId; }
+            set { SetField(ref _ReceiverId, value, () => ReceiverId); }
+        }
 
+        private RebroadcastFormat _Format;
         /// <summary>
         /// Gets or sets the format in which to rebroadcast the receiver's messages.
         /// </summary>
-        public RebroadcastFormat Format { get; set; }
+        public RebroadcastFormat Format
+        {
+            get { return _Format; }
+            set { SetField(ref _Format, value, () => Format); }
+        }
 
+        private int _Port;
         /// <summary>
         /// Gets or sets the port number to rebroadcast the receiver's messages on.
         /// </summary>
-        public int Port { get; set; }
+        public int Port
+        {
+            get { return _Port; }
+            set { SetField(ref _Port, value, () => Port); }
+        }
 
+        private int _StaleSeconds;
         /// <summary>
         /// Gets or sets the threshold for discarding buffered messages that are too old.
         /// </summary>
-        public int StaleSeconds { get; set; }
+        public int StaleSeconds
+        {
+            get { return _StaleSeconds; }
+            set { SetField(ref _StaleSeconds, value, () => StaleSeconds); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

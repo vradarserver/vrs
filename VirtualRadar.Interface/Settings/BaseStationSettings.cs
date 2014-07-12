@@ -10,11 +10,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Runtime.Serialization;
+using System.ComponentModel;
 using System.IO;
-using InterfaceFactory;
 using System.IO.Ports;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -27,7 +29,7 @@ namespace VirtualRadar.Interface.Settings
     /// to something that doesn't imply that it's only talking about BaseStation connections but the name
     /// has been serialised into the configuration files and it's not worth the pain of changing it.
     /// </remarks>
-    public class BaseStationSettings
+    public class BaseStationSettings : INotifyPropertyChanged
     {
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
@@ -107,46 +109,87 @@ namespace VirtualRadar.Interface.Settings
         // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
         public string ShutdownText { get; set; }
 
+        private string _DatabaseFileName;
         /// <summary>
         /// Gets or sets the full path to the BaseStation database file to use.
         /// </summary>
-        public string DatabaseFileName { get; set; }
+        public string DatabaseFileName
+        {
+            get { return _DatabaseFileName; }
+            set { SetField(ref _DatabaseFileName, value, () => DatabaseFileName); }
+        }
 
+        private string _OperatorFlagsFolder;
         /// <summary>
         /// Gets or sets the folder that holds operator logo images to display to the user.
         /// </summary>
-        public string OperatorFlagsFolder { get; set; }
+        public string OperatorFlagsFolder
+        {
+            get { return _OperatorFlagsFolder; }
+            set { SetField(ref _OperatorFlagsFolder, value, () => OperatorFlagsFolder); }
+        }
 
+        private string _SilhouettesFolder;
         /// <summary>
         /// Gets or sets the folder that holds aircraft silhouette images to display to the user.
         /// </summary>
-        public string SilhouettesFolder { get; set; }
+        public string SilhouettesFolder
+        {
+            get { return _SilhouettesFolder; }
+            set { SetField(ref _SilhouettesFolder, value, () => SilhouettesFolder); }
+        }
 
+        private string _OutlinesFolder;
         /// <summary>
         /// No longer used.
         /// </summary>
-        public string OutlinesFolder { get; set; }
+        public string OutlinesFolder
+        {
+            get { return _OutlinesFolder; }
+            set { SetField(ref _OutlinesFolder, value, () => OutlinesFolder); }
+        }
 
+        private string _PicturesFolder;
         /// <summary>
         /// Gets or sets the folder that holds pictures of aircraft to display to the user.
         /// </summary>
-        public string PicturesFolder { get; set; }
+        public string PicturesFolder
+        {
+            get { return _PicturesFolder; }
+            set { SetField(ref _PicturesFolder, value, () => PicturesFolder); }
+        }
 
+        private bool _SearchPictureSubFolders;
         /// <summary>
         /// Gets or sets a value indicating that sub-folders of <see cref="PicturesFolder"/> should be searched for aircraft pictures.
         /// </summary>
-        public bool SearchPictureSubFolders { get; set; }
+        public bool SearchPictureSubFolders
+        {
+            get { return _SearchPictureSubFolders; }
+            set { SetField(ref _SearchPictureSubFolders, value, () => SearchPictureSubFolders); }
+        }
 
+        private int _DisplayTimeoutSeconds;
         /// <summary>
         /// Gets or sets the number of seconds that aircraft should remain on display in the browser after their last transmission.
         /// </summary>
-        public int DisplayTimeoutSeconds { get; set; }
+        public int DisplayTimeoutSeconds
+        {
+            get { return _DisplayTimeoutSeconds; }
+            set { SetField(ref _DisplayTimeoutSeconds, value, () => DisplayTimeoutSeconds); }
+        }
 
+        private int _TrackingTimeoutSeconds;
         /// <summary>
         /// Gets or sets the number of seconds that aircraft should remain in the aircraft list after their last transmission.
         /// </summary>
-        public int TrackingTimeoutSeconds { get; set; }
+        public int TrackingTimeoutSeconds
+        {
+            get { return _TrackingTimeoutSeconds; }
+            set { SetField(ref _TrackingTimeoutSeconds, value, () => TrackingTimeoutSeconds); }
+        }
 
+        private bool _IgnoreBadMessages;
         /// <summary>
         /// Gets or sets a value indicating that badly formatted messages on the feed should be ignored rather than triggering a disconnection
         /// from the feed.
@@ -155,12 +198,56 @@ namespace VirtualRadar.Interface.Settings
         /// This has been retired - the program sets this to true and the configuration loader is expected to force it to true on load. Bad
         /// messages will no longer disconnect the listener.
         /// </remarks>
-        public bool IgnoreBadMessages { get; set; }
+        public bool IgnoreBadMessages
+        {
+            get { return _IgnoreBadMessages; }
+            set { SetField(ref _IgnoreBadMessages, value, () => IgnoreBadMessages); }
+        }
 
+        private bool _MinimiseToSystemTray;
         /// <summary>
         /// Gets or sets a value indicating that the program should minimise to the system tray rather than the taskbar.
         /// </summary>
-        public bool MinimiseToSystemTray { get; set; }
+        public bool MinimiseToSystemTray
+        {
+            get { return _MinimiseToSystemTray; }
+            set { SetField(ref _MinimiseToSystemTray, value, () => MinimiseToSystemTray); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

@@ -143,7 +143,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public static string RebroadcastSettingsCollection(List<RebroadcastSettings> settings)
+        public static string RebroadcastSettingsCollection(IList<RebroadcastSettings> settings)
         {
             var result = "";
 

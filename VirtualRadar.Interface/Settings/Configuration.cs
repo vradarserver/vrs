@@ -10,80 +10,158 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// An object that carries all of the configuration settings for the application.
     /// </summary>
-    public class Configuration
+    public class Configuration : INotifyPropertyChanged
     {
         /// <summary>
         /// Gets or sets the object holding settings that describe the source of data that we are listening to.
         /// </summary>
-        public BaseStationSettings BaseStationSettings { get; set; }
+        private BaseStationSettings _BaseStationSettings;
+        public BaseStationSettings BaseStationSettings
+        {
+            get { return _BaseStationSettings; }
+            set { SetField(ref _BaseStationSettings, value, () => BaseStationSettings); }
+        }
 
         /// <summary>
         /// Gets or sets the object holding settings that control how flight routes are used and stored.
         /// </summary>
-        public FlightRouteSettings FlightRouteSettings { get; set; }
+        private FlightRouteSettings _FlightRouteSettings;
+        public FlightRouteSettings FlightRouteSettings
+        {
+            get { return _FlightRouteSettings; }
+            set { SetField(ref _FlightRouteSettings, value, () => FlightRouteSettings); }
+        }
 
         /// <summary>
         /// Gets or sets the object holding the configuration of the web server.
         /// </summary>
-        public WebServerSettings WebServerSettings { get; set; }
+        private WebServerSettings _WebServerSettings;
+        public WebServerSettings WebServerSettings
+        {
+            get { return _WebServerSettings; }
+            set { SetField(ref _WebServerSettings, value, () => WebServerSettings); }
+        }
 
         /// <summary>
         /// Gets or sets the object holding settings that modify how the Google Maps pages are shown to connecting browsers.
         /// </summary>
-        public GoogleMapSettings GoogleMapSettings { get; set; }
+        private GoogleMapSettings _GoogleMapSettings;
+        public GoogleMapSettings GoogleMapSettings
+        {
+            get { return _GoogleMapSettings; }
+            set { SetField(ref _GoogleMapSettings, value, () => GoogleMapSettings); }
+        }
 
         /// <summary>
         /// Gets or sets the object holding settings that control how checks for new versions of the application are made.
         /// </summary>
-        public VersionCheckSettings VersionCheckSettings { get; set; }
+        private VersionCheckSettings _VersionCheckSettings;
+        public VersionCheckSettings VersionCheckSettings
+        {
+            get { return _VersionCheckSettings; }
+            set { SetField(ref _VersionCheckSettings, value, () => VersionCheckSettings); }
+        }
 
         /// <summary>
         /// Gets or sets the object holding settings that control what resources are made available to browsers connecting from public Internet addresses.
         /// </summary>
-        public InternetClientSettings InternetClientSettings { get; set; }
+        private InternetClientSettings _InternetClientSettings;
+        public InternetClientSettings InternetClientSettings
+        {
+            get { return _InternetClientSettings; }
+            set { SetField(ref _InternetClientSettings, value, () => InternetClientSettings); }
+        }
 
         /// <summary>
         /// Gets or sets the object that controls the audio that is sent to browsers.
         /// </summary>
-        public AudioSettings AudioSettings { get; set; }
+        private AudioSettings _AudioSettings;
+        public AudioSettings AudioSettings
+        {
+            get { return _AudioSettings; }
+            set { SetField(ref _AudioSettings, value, () => AudioSettings); }
+        }
 
         /// <summary>
         /// Gets or sets the object that configures the raw message decoding.
         /// </summary>
-        public RawDecodingSettings RawDecodingSettings { get; set; }
+        private RawDecodingSettings _RawDecodingSettings;
+        public RawDecodingSettings RawDecodingSettings
+        {
+            get { return _RawDecodingSettings; }
+            set { SetField(ref _RawDecodingSettings, value, () => RawDecodingSettings); }
+        }
 
-        private List<Receiver> _Receivers = new List<Receiver>();
+        private ObservableCollection<Receiver> _Receivers = new ObservableCollection<Receiver>();
         /// <summary>
         /// Gets a list of every receveiver that the program will listen to.
         /// </summary>
-        public List<Receiver> Receivers { get { return _Receivers; } }
+        public ObservableCollection<Receiver> Receivers { get { return _Receivers; } }
 
-        private List<MergedFeed> _MergedFeeds = new List<MergedFeed>();
+        private ObservableCollection<MergedFeed> _MergedFeeds = new ObservableCollection<MergedFeed>();
         /// <summary>
         /// Gets a list of the merged feeds of receivers that the program will maintain.
         /// </summary>
-        public List<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
+        public ObservableCollection<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
 
-        private List<ReceiverLocation> _ReceiverLocations = new List<ReceiverLocation>();
+        private ObservableCollection<ReceiverLocation> _ReceiverLocations = new ObservableCollection<ReceiverLocation>();
         /// <summary>
         /// Gets a list of every receiver location recorded by the user.
         /// </summary>
-        public List<ReceiverLocation> ReceiverLocations { get { return _ReceiverLocations; } }
+        public ObservableCollection<ReceiverLocation> ReceiverLocations { get { return _ReceiverLocations; } }
 
-        private List<RebroadcastSettings> _RebroadcastSettings = new List<RebroadcastSettings>();
+        private ObservableCollection<RebroadcastSettings> _RebroadcastSettings = new ObservableCollection<RebroadcastSettings>();
         /// <summary>
         /// Gets a list of all of the rebroadcast server settings recorded by the user.
         /// </summary>
-        public List<RebroadcastSettings> RebroadcastSettings { get { return _RebroadcastSettings; } }
+        public ObservableCollection<RebroadcastSettings> RebroadcastSettings { get { return _RebroadcastSettings; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Changes the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

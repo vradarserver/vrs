@@ -16,12 +16,14 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Resources;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface.View;
 using VirtualRadar.WinForms.Binding;
 using VirtualRadar.WinForms.Controls;
+using System.Collections;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -93,7 +95,9 @@ namespace VirtualRadar.WinForms.OptionPage
             MergedFeed.IcaoTimeout =                    (int)(IcaoTimeout.Value * 1000.0);
             MergedFeed.IgnoreAircraftWithNoPosition =   IgnoreAircraftWithNoPosition.Value;
             MergedFeed.ReceiverIds.Clear();
-            MergedFeed.ReceiverIds.AddRange(ReceiverIds.Value);
+            foreach(var value in ReceiverIds.Value) {
+                MergedFeed.ReceiverIds.Add(value);
+            }
         }
 
         protected override void InitialiseControls()

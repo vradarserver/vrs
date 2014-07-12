@@ -10,6 +10,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace VirtualRadar.Interface.Settings
@@ -17,48 +19,123 @@ namespace VirtualRadar.Interface.Settings
     /// <summary>
     /// Settings that control how browsers on the Internet interact with the server.
     /// </summary>
-    public class InternetClientSettings
+    public class InternetClientSettings : INotifyPropertyChanged
     {
+        private bool _CanRunReports;
         /// <summary>
         /// Gets or sets a value indicating that Internet clients are allowed to run reports.
         /// </summary>
-        public bool CanRunReports { get; set; }
+        public bool CanRunReports
+        {
+            get { return _CanRunReports; }
+            set { SetField(ref _CanRunReports, value, () => CanRunReports); }
+        }
 
+        private bool _CanShowPinText;
         /// <summary>
         /// Gets or sets a value indicating that Internet clients are allowed to show text labels on the aircraft pins.
         /// </summary>
-        public bool CanShowPinText { get; set; }
+        public bool CanShowPinText
+        {
+            get { return _CanShowPinText; }
+            set { SetField(ref _CanShowPinText, value, () => CanShowPinText); }
+        }
 
+        private bool _CanPlayAudio;
         /// <summary>
         /// Gets or sets a value indicating that Internet clients are allowed to play audio from the server.
         /// </summary>
-        public bool CanPlayAudio { get; set; }
+        public bool CanPlayAudio
+        {
+            get { return _CanPlayAudio; }
+            set { SetField(ref _CanPlayAudio, value, () => CanPlayAudio); }
+        }
 
+        private bool _CanShowPictures;
         /// <summary>
         /// Gets or sets a value indicating that Internet clients are allowed to see aircraft pictures.
         /// </summary>
-        public bool CanShowPictures { get; set; }
+        public bool CanShowPictures
+        {
+            get { return _CanShowPictures; }
+            set { SetField(ref _CanShowPictures, value, () => CanShowPictures); }
+        }
 
+        private int _TimeoutMinutes;
         /// <summary>
         /// Gets or sets the number of minutes of inactivity before the client times out and stops asking for the aircraft list.
         /// If this is zero then the timeout is disabled.
         /// </summary>
-        public int TimeoutMinutes { get; set; }
+        public int TimeoutMinutes
+        {
+            get { return _TimeoutMinutes; }
+            set { SetField(ref _TimeoutMinutes, value, () => TimeoutMinutes); }
+        }
 
+        private bool _AllowInternetProximityGadgets;
         /// <summary>
         /// Gets or sets a value indicating whether proximity gadgets can connect to this server over the Internet.
         /// </summary>
-        public bool AllowInternetProximityGadgets { get; set; }
+        public bool AllowInternetProximityGadgets
+        {
+            get { return _AllowInternetProximityGadgets; }
+            set { SetField(ref _AllowInternetProximityGadgets, value, () => AllowInternetProximityGadgets); }
+        }
 
+        private bool _CanSubmitRoutes;
         /// <summary>
         /// Gets or sets a value indicating that Internet clients can see the links to submit routes.
         /// </summary>
-        public bool CanSubmitRoutes { get; set; }
+        public bool CanSubmitRoutes
+        {
+            get { return _CanSubmitRoutes; }
+            set { SetField(ref _CanSubmitRoutes, value, () => CanSubmitRoutes); }
+        }
 
+        private bool _CanShowPolarPlots;
         /// <summary>
         /// Gets or sets a value indicating that Internet clients can see polar plots.
         /// </summary>
-        public bool CanShowPolarPlots { get; set; }
+        public bool CanShowPolarPlots
+        {
+            get { return _CanShowPolarPlots; }
+            set { SetField(ref _CanShowPolarPlots, value, () => CanShowPolarPlots); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

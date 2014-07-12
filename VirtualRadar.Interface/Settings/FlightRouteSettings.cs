@@ -10,19 +10,62 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+using System.Linq.Expressions;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// Holds the configuration pertaining to the handling of flight routes.
     /// </summary>
-    public class FlightRouteSettings
+    public class FlightRouteSettings : INotifyPropertyChanged
     {
+        private bool _AutoUpdateEnabled;
         /// <summary>
         /// Gets or sets a value indicating that new flight routes should be automatically downloaded.
         /// </summary>
-        public bool AutoUpdateEnabled { get; set; }
+        public bool AutoUpdateEnabled
+        {
+            get { return _AutoUpdateEnabled; }
+            set { SetField(ref _AutoUpdateEnabled, value, () => AutoUpdateEnabled); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
+
 
         /// <summary>
         /// Creates a new object.
