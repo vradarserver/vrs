@@ -11,23 +11,70 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// The configuration settings controlling the checking for new versions of the server.
     /// </summary>
-    public class VersionCheckSettings
+    public class VersionCheckSettings : INotifyPropertyChanged
     {
+        private bool _CheckAutomatically;
         /// <summary>
         /// Gets and sets a value indicating that the user wants the program to check for itself every so often.
         /// </summary>
-        public bool CheckAutomatically { get; set; }
+        public bool CheckAutomatically
+        {
+            get { return _CheckAutomatically; }
+            set { SetField(ref _CheckAutomatically, value, () => CheckAutomatically); }
+        }
 
+        private int _CheckPeriodDays;
         /// <summary>
         /// Gets and sets the period between automatic checks.
         /// </summary>
-        public int CheckPeriodDays { get; set; }
+        public int CheckPeriodDays
+        {
+            get { return _CheckPeriodDays; }
+            set { SetField(ref _CheckPeriodDays, value, () => CheckPeriodDays); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

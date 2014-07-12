@@ -11,34 +11,57 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// The configuration options for the Google Maps map on the website.
     /// </summary>
-    public class GoogleMapSettings
+    public class GoogleMapSettings : INotifyPropertyChanged
     {
+        private double _InitialMapLatitude;
         /// <summary>
         /// Gets or sets the initial latitude to show. This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
-        public double InitialMapLatitude { get; set; }
+        public double InitialMapLatitude
+        {
+            get { return _InitialMapLatitude; }
+            set { SetField(ref _InitialMapLatitude, value, () => InitialMapLatitude); }
+        }
 
+        private double _InitialMapLongitude;
         /// <summary>
         /// Gets or sets the initial longitude to show. This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
-        public double InitialMapLongitude { get; set; }
+        public double InitialMapLongitude
+        {
+            get { return _InitialMapLongitude; }
+            set { SetField(ref _InitialMapLongitude, value, () => InitialMapLongitude); }
+        }
 
+        private string _InitialMapType;
         /// <summary>
         /// Gets or sets the initial map type to use (terrain, satellite etc.). This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
-        public string InitialMapType { get; set; }
+        public string InitialMapType
+        {
+            get { return _InitialMapType; }
+            set { SetField(ref _InitialMapType, value, () => InitialMapType); }
+        }
 
+        private int _InitialMapZoom;
         /// <summary>
         /// Gets or sets the initial level of zoom to use. This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
-        public int InitialMapZoom { get; set; }
+        public int InitialMapZoom
+        {
+            get { return _InitialMapZoom; }
+            set { SetField(ref _InitialMapZoom, value, () => InitialMapZoom); }
+        }
 
+        private int _InitialRefreshSeconds;
         /// <summary>
         /// Gets or sets the initial refresh period. This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
@@ -46,8 +69,13 @@ namespace VirtualRadar.Interface.Settings
         /// For historical reasons the browser always adds one second to whatever value it has been configured to use. Setting 0 here indicates a 1 second refresh period,
         /// a 1 is 2 seconds and so on.
         /// </remarks>
-        public int InitialRefreshSeconds { get; set; }
+        public int InitialRefreshSeconds
+        {
+            get { return _InitialRefreshSeconds; }
+            set { SetField(ref _InitialRefreshSeconds, value, () => InitialRefreshSeconds); }
+        }
 
+        private int _MinimumRefreshSeconds;
         /// <summary>
         /// Gets or sets the smallest refresh period that the browser will allow the user to set.
         /// </summary>
@@ -55,70 +83,169 @@ namespace VirtualRadar.Interface.Settings
         /// This setting is difficult to police in the server so it should just be taken as a hint to well-behaved code rather than a guarantee that the server will reject
         /// the second and subsequent request under this threshold.
         /// </remarks>
-        public int MinimumRefreshSeconds { get; set; }
+        public int MinimumRefreshSeconds
+        {
+            get { return _MinimumRefreshSeconds; }
+            set { SetField(ref _MinimumRefreshSeconds, value, () => MinimumRefreshSeconds); }
+        }
 
+        private int _ShortTrailLengthSeconds;
         /// <summary>
         /// Gets or sets the number of seconds that short trails are to be stored for.
         /// </summary>
         /// <remarks>
         /// Short trails are lines connecting the current position of the aircraft to each coordinate it was at over the past NN seconds. This property holds the NN value.
         /// </remarks>
-        public int ShortTrailLengthSeconds { get; set; }
+        public int ShortTrailLengthSeconds
+        {
+            get { return _ShortTrailLengthSeconds; }
+            set { SetField(ref _ShortTrailLengthSeconds, value, () => ShortTrailLengthSeconds); }
+        }
 
+        private DistanceUnit _InitialDistanceUnit;
         /// <summary>
         /// Gets or sets the initial unit used to display distances. This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
-        public DistanceUnit InitialDistanceUnit { get; set; }
+        public DistanceUnit InitialDistanceUnit
+        {
+            get { return _InitialDistanceUnit; }
+            set { SetField(ref _InitialDistanceUnit, value, () => InitialDistanceUnit); }
+        }
 
+        private HeightUnit _InitialHeightUnit;
         /// <summary>
         /// Gets or sets the initial unit used to display heights. This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
-        public HeightUnit InitialHeightUnit { get; set; }
+        public HeightUnit InitialHeightUnit
+        {
+            get { return _InitialHeightUnit; }
+            set { SetField(ref _InitialHeightUnit, value, () => InitialHeightUnit); }
+        }
 
+        private SpeedUnit _InitialSpeedUnit;
         /// <summary>
         /// Gets or sets the initial unit used to display speeds. This is overridden by the user's own settings after they have viewed the page the first time.
         /// </summary>
-        public SpeedUnit InitialSpeedUnit { get; set; }
+        public SpeedUnit InitialSpeedUnit
+        {
+            get { return _InitialSpeedUnit; }
+            set { SetField(ref _InitialSpeedUnit, value, () => InitialSpeedUnit); }
+        }
 
+        private bool _PreferIataAirportCodes;
         /// <summary>
         /// Gets or sets a value indicating that IATA codes should be used to describe airports whenever possible.
         /// </summary>
-        public bool PreferIataAirportCodes { get; set; }
+        public bool PreferIataAirportCodes
+        {
+            get { return _PreferIataAirportCodes; }
+            set { SetField(ref _PreferIataAirportCodes, value, () => PreferIataAirportCodes); }
+        }
 
+        private bool _EnableBundling;
         /// <summary>
         /// Gets or sets a value indicating that the server should bundle multiple CSS and JavaScript files into a single download before serving them.
         /// </summary>
-        public bool EnableBundling { get; set; }
+        public bool EnableBundling
+        {
+            get { return _EnableBundling; }
+            set { SetField(ref _EnableBundling, value, () => EnableBundling); }
+        }
 
+        private bool _EnableMinifying;
         /// <summary>
         /// Gets or sets a value indicating that the server should minify CSS and JavaScript files before serving them.
         /// </summary>
-        public bool EnableMinifying { get; set; }
+        public bool EnableMinifying
+        {
+            get { return _EnableMinifying; }
+            set { SetField(ref _EnableMinifying, value, () => EnableMinifying); }
+        }
 
+        private bool _EnableCompression;
         /// <summary>
         /// Gets or sets a value indicating that the server should compress responses.
         /// </summary>
-        public bool EnableCompression { get; set; }
+        public bool EnableCompression
+        {
+            get { return _EnableCompression; }
+            set { SetField(ref _EnableCompression, value, () => EnableCompression); }
+        }
 
+        private int _WebSiteReceiverId;
         /// <summary>
         /// Gets or sets the receiver to show to the user when they visit the web site.
         /// </summary>
-        public int WebSiteReceiverId { get; set; }
+        public int WebSiteReceiverId
+        {
+            get { return _WebSiteReceiverId; }
+            set { SetField(ref _WebSiteReceiverId, value, () => WebSiteReceiverId); }
+        }
 
+        private int _ClosestAircraftReceiverId;
         /// <summary>
         /// Gets or sets the receiver to use when the closest aircraft desktop widget asks for details of the closest aircraft.
         /// </summary>
-        public int ClosestAircraftReceiverId { get; set; }
+        public int ClosestAircraftReceiverId
+        {
+            get { return _ClosestAircraftReceiverId; }
+            set { SetField(ref _ClosestAircraftReceiverId, value, () => ClosestAircraftReceiverId); }
+        }
 
+        private int _FlightSimulatorXReceiverId;
         /// <summary>
         /// Gets or sets the receiver to use with the Flight Simulator X ride-along feature.
         /// </summary>
-        public int FlightSimulatorXReceiverId { get; set; }
+        public int FlightSimulatorXReceiverId
+        {
+            get { return _FlightSimulatorXReceiverId; }
+            set { SetField(ref _FlightSimulatorXReceiverId, value, () => FlightSimulatorXReceiverId); }
+        }
 
+        private ProxyType _ProxyType;
         /// <summary>
         /// Gets or sets the type of proxy that the server is sitting behind.
         /// </summary>
-        public ProxyType ProxyType { get; set; }
+        public ProxyType ProxyType
+        {
+            get { return _ProxyType; }
+            set { SetField(ref _ProxyType, value, () => ProxyType); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

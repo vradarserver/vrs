@@ -23,173 +23,173 @@ namespace VirtualRadar.Interface.Settings
     /// </summary>
     public class Receiver : INotifyPropertyChanged
     {
+        private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating that the receiver is to be used.
         /// </summary>
-        private bool _Enabled;
         public bool Enabled
         {
             get { return _Enabled; }
             set { SetField(ref _Enabled, value, () => Enabled); }
         }
 
+        private int _UniqueId;
         /// <summary>
         /// Gets or sets a unique identifier for the receiever. This is unique across receivers and merged feeds. It cannot be zero.
         /// </summary>
-        private int _UniqueId;
         public int UniqueId
         {
             get { return _UniqueId; }
             set { SetField(ref _UniqueId, value, () => UniqueId); }
         }
 
+        private string _Name;
         /// <summary>
         /// Gets or sets the unique name of the receiver.
         /// </summary>
-        private string _Name;
         public string Name
         {
             get { return _Name; }
             set { SetField(ref _Name, value, () => Name); }
         }
 
+        private DataSource _DataSource;
         /// <summary>
         /// Gets or sets the source of data for the receiever.
         /// </summary>
-        private DataSource _DataSource;
         public DataSource DataSource
         {
             get { return _DataSource; }
             set { SetField(ref _DataSource, value, () => DataSource); }
         }
 
+        private ConnectionType _ConnectionType;
         /// <summary>
         /// Gets or sets the mechanism to use to connect to the data source.
         /// </summary>
-        private ConnectionType _ConnectionType;
         public ConnectionType ConnectionType
         {
             get { return _ConnectionType; }
             set { SetField(ref _ConnectionType, value, () => ConnectionType); }
         }
 
+        private bool _AutoReconnectAtStartup;
         /// <summary>
         /// Gets or sets a value indicating that the program should keep attempting to connect to the data source
         /// if it cannot connect when the program first starts.
         /// </summary>
-        private bool _AutoReconnectAtStartup;
         public bool AutoReconnectAtStartup
         {
             get { return _AutoReconnectAtStartup; }
             set { SetField(ref _AutoReconnectAtStartup, value, () => AutoReconnectAtStartup); }
         }
 
+        private string _Address;
         /// <summary>
         /// Gets or sets the address of the source of data to listen to.
         /// </summary>
-        private string _Address;
         public string Address
         {
             get { return _Address; }
             set { SetField(ref _Address, value, () => Address); }
         }
 
+        private int _Port;
         /// <summary>
         /// Gets or sets the port of the source of data to listen to.
         /// </summary>
-        private int _Port;
         public int Port
         {
             get { return _Port; }
             set { SetField(ref _Port, value, () => Port); }
         }
 
+        private string _ComPort;
         /// <summary>
         /// Gets or sets the COM port to listen to.
         /// </summary>
-        private string _ComPort;
         public string ComPort
         {
             get { return _ComPort; }
             set { SetField(ref _ComPort, value, () => ComPort); }
         }
 
+        private int _BaudRate;
         /// <summary>
         /// Gets or sets the baud rate to use.
         /// </summary>
-        private int _BaudRate;
         public int BaudRate
         {
             get { return _BaudRate; }
             set { SetField(ref _BaudRate, value, () => BaudRate); }
         }
 
+        private int _DataBits;
         /// <summary>
         /// Gets or sets the data bits to use.
         /// </summary>
-        private int _DataBits;
         public int DataBits
         {
             get { return _DataBits; }
             set { SetField(ref _DataBits, value, () => DataBits); }
         }
 
+        private StopBits _StopBits;
         /// <summary>
         /// Gets or sets the stop bits to use.
         /// </summary>
-        private StopBits _StopBits;
         public StopBits StopBits
         {
             get { return _StopBits; }
             set { SetField(ref _StopBits, value, () => StopBits); }
         }
 
+        private Parity _Parity;
         /// <summary>
         /// Gets or sets the parity to use.
         /// </summary>
-        private Parity _Parity;
         public Parity Parity
         {
             get { return _Parity; }
             set { SetField(ref _Parity, value, () => Parity); }
         }
 
+        private Handshake _Handshake;
         /// <summary>
         /// Gets or sets the handshake protocol to use.
         /// </summary>
-        private Handshake _Handshake;
         public Handshake Handshake
         {
             get { return _Handshake; }
             set { SetField(ref _Handshake, value, () => Handshake); }
         }
 
+        private string _StartupText;
         /// <summary>
         /// Gets or sets the text to send across the COM port on startup - a null or empty string will disable the
         /// feature. Can contain \r and \n.
         /// </summary>
-        private string _StartupText;
         public string StartupText
         {
             get { return _StartupText; }
             set { SetField(ref _StartupText, value, () => StartupText); }
         }
 
+        private string _ShutdownText;
         /// <summary>
         /// Gets or sets the text to send across the COM port on shutdown - a null or empty string will disable the
         /// feature. Can contain \r and \n.
         /// </summary>
-        private string _ShutdownText;
         public string ShutdownText
         {
             get { return _ShutdownText; }
             set { SetField(ref _ShutdownText, value, () => ShutdownText); }
         }
 
+        private int _ReceiverLocationId;
         /// <summary>
         /// Gets or sets the identifier of the receiever location record associated with the receiver.
         /// </summary>
-        private int _ReceiverLocationId;
         public int ReceiverLocationId
         {
             get { return _ReceiverLocationId; }

@@ -12,35 +12,54 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Collections.ObjectModel;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// A class that holds the configuration of the web server.
     /// </summary>
-    public class WebServerSettings
+    public class WebServerSettings : INotifyPropertyChanged
     {
+        private AuthenticationSchemes _AuthenticationScheme;
         /// <summary>
         /// Gets or sets the authentication scheme that the server will employ for new connections.
         /// </summary>
-        public AuthenticationSchemes AuthenticationScheme { get; set; }
+        public AuthenticationSchemes AuthenticationScheme
+        {
+            get { return _AuthenticationScheme; }
+            set { SetField(ref _AuthenticationScheme, value, () => AuthenticationScheme); }
+        }
 
+        private string _BasicAuthenticationUser;
         /// <summary>
         /// Gets or sets the user for basic authentication.
         /// </summary>
         /// <remarks>
         /// Last used in version 2.0.2, now superceded by <see cref="BasicAuthenticationUserIds"/>.
         /// </remarks>
-        public string BasicAuthenticationUser { get; set; }
+        public string BasicAuthenticationUser
+        {
+            get { return _BasicAuthenticationUser; }
+            set { SetField(ref _BasicAuthenticationUser, value, () => BasicAuthenticationUser); }
+        }
 
+        private Hash _BasicAuthenticationPasswordHash;
         /// <summary>
         /// Gets or sets the hash of the password for the basic authentication user.
         /// </summary>
         /// <remarks>
         /// Last used in version 2.0.2, now superceded by <see cref="BasicAuthenticationUserIds"/>.
         /// </remarks>
-        public Hash BasicAuthenticationPasswordHash { get; set; }
+        public Hash BasicAuthenticationPasswordHash
+        {
+            get { return _BasicAuthenticationPasswordHash; }
+            set { SetField(ref _BasicAuthenticationPasswordHash, value, () => BasicAuthenticationPasswordHash); }
+        }
 
+        private bool _ConvertedUser;
         /// <summary>
         /// Gets or sets a value indicating that the <see cref="BasicAuthenticationUser"/> and
         /// <see cref="BasicAuthenticationPasswordHash"/> have been converted to an <see cref="IUser"/>
@@ -51,37 +70,96 @@ namespace VirtualRadar.Interface.Settings
         /// allows new users to be created. If creation is permitted then the user is added to the
         /// <see cref="BasicAuthenticationUserIds"/> list.
         /// </remarks>
-        public bool ConvertedUser { get; set; }
+        public bool ConvertedUser
+        {
+            get { return _ConvertedUser; }
+            set { SetField(ref _ConvertedUser, value, () => ConvertedUser); }
+        }
 
-        private List<string> _BasicAuthenticationUserIds = new List<string>();
+        private ObservableCollection<string> _BasicAuthenticationUserIds = new ObservableCollection<string>();
         /// <summary>
         /// Gets the list of users that can log onto the site with Basic authentication.
         /// </summary>
-        public List<string> BasicAuthenticationUserIds
+        public ObservableCollection<string> BasicAuthenticationUserIds
         {
             get { return _BasicAuthenticationUserIds; }
         }
 
+        private bool _EnableUPnp;
         /// <summary>
         /// Gets or sets a value indicating that the server is allowed to control UPnP NAT routers.
         /// </summary>
-        public bool EnableUPnp { get; set; }
+        public bool EnableUPnp
+        {
+            get { return _EnableUPnp; }
+            set { SetField(ref _EnableUPnp, value, () => EnableUPnp); }
+        }
 
+        private int _UPnpPort;
         /// <summary>
         /// Gets or sets the port number that the UPnP NAT router will listen on for traffic to forward to VRS.
         /// </summary>
-        public int UPnpPort { get; set; }
+        public int UPnpPort
+        {
+            get { return _UPnpPort; }
+            set { SetField(ref _UPnpPort, value, () => UPnpPort); }
+        }
 
+        private bool _IsOnlyInternetServerOnLan;
         /// <summary>
         /// Gets or sets a value indicating that this is the only instance of VRS on the LAN that is allowed
         /// to respond to requests from the Internet.
         /// </summary>
-        public bool IsOnlyInternetServerOnLan { get; set; }
+        public bool IsOnlyInternetServerOnLan
+        {
+            get { return _IsOnlyInternetServerOnLan; }
+            set { SetField(ref _IsOnlyInternetServerOnLan, value, () => IsOnlyInternetServerOnLan); }
+        }
 
+        private bool _AutoStartUPnP;
         /// <summary>
         /// Gets or sets a value indicating that server should automatically go onto the Internet when the program first starts up.
         /// </summary>
-        public bool AutoStartUPnP { get; set; }
+        public bool AutoStartUPnP
+        {
+            get { return _AutoStartUPnP; }
+            set { SetField(ref _AutoStartUPnP, value, () => AutoStartUPnP); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

@@ -10,7 +10,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace VirtualRadar.Interface.Settings
@@ -18,22 +20,72 @@ namespace VirtualRadar.Interface.Settings
     /// <summary>
     /// Holds the configuration of the speech-to-audio features that the website can access.
     /// </summary>
-    public class AudioSettings
+    public class AudioSettings : INotifyPropertyChanged
     {
+        private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating that the user wants to use the feature.
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled
+        {
+            get { return _Enabled; }
+            set { SetField(ref _Enabled, value, () => Enabled); }
+        }
 
+        private string _VoiceName;
         /// <summary>
         /// Gets or sets the Microsoft Voice to use.
         /// </summary>
-        public string VoiceName { get; set; }
+        public string VoiceName
+        {
+            get { return _VoiceName; }
+            set { SetField(ref _VoiceName, value, () => VoiceName); }
+        }
 
+        private int _VoiceRate;
         /// <summary>
         /// Gets or sets the speed at which the voice should say the text.
         /// </summary>
-        public int VoiceRate { get; set; }
+        public int VoiceRate
+        {
+            get { return _VoiceRate; }
+            set { SetField(ref _VoiceRate, value, () => VoiceRate); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.

@@ -12,13 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// The interface that describes a user.
     /// </summary>
-    public interface IUser
+    public interface IUser : INotifyPropertyChanged
     {
         /// <summary>
         /// Gets or sets the user's unique identifier.

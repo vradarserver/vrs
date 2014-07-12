@@ -10,7 +10,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace VirtualRadar.Interface.Settings
@@ -20,32 +22,92 @@ namespace VirtualRadar.Interface.Settings
     /// A class describing the location of a receiver.
     /// </summary>
     [Serializable]
-    public class ReceiverLocation : ICloneable
+    public class ReceiverLocation : INotifyPropertyChanged, ICloneable
     {
+        private int _UniqueId;
         /// <summary>
         /// Gets or sets the unique internal identifier of the receiver location.
         /// </summary>
-        public int UniqueId { get; set; }
+        public int UniqueId
+        {
+            get { return _UniqueId; }
+            set { SetField(ref _UniqueId, value, () => UniqueId); }
+        }
 
+        private string _Name;
         /// <summary>
         /// Gets or sets the name of the location.
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _Name; }
+            set { SetField(ref _Name, value, () => Name); }
+        }
 
+        private double _Latitude;
         /// <summary>
         /// Gets or sets the location's latitude.
         /// </summary>
-        public double Latitude { get; set; }
+        public double Latitude
+        {
+            get { return _Latitude; }
+            set { SetField(ref _Latitude, value, () => Latitude); }
+        }
 
+        private double _Longitude;
         /// <summary>
         /// Gets or sets the location's longitude.
         /// </summary>
-        public double Longitude { get; set; }
+        public double Longitude
+        {
+            get { return _Longitude; }
+            set { SetField(ref _Longitude, value, () => Longitude); }
+        }
 
+        private bool _IsBaseStationLocation;
         /// <summary>
         /// Gets or sets a value indicating that the location was copied from the BaseStation database.
         /// </summary>
-        public bool IsBaseStationLocation { get; set; }
+        public bool IsBaseStationLocation
+        {
+            get { return _IsBaseStationLocation; }
+            set { SetField(ref _IsBaseStationLocation, value, () => IsBaseStationLocation); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Returns an English description of the location.
