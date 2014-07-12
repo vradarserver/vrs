@@ -104,23 +104,23 @@ namespace VirtualRadar.WinForms
         #region Receivers
         public int WebSiteReceiverId
         {
-            get { return PageReceivers.WebSiteReceiverId.Value; }
-            set { PageReceivers.WebSiteReceiverId.Value = value; }
+            get { return PageReceivers.WebSiteReceiverId; }
+            set { PageReceivers.WebSiteReceiverId = value; }
         }
 
         public int ClosestAircraftReceiverId
         {
-            get { return PageReceivers.ClosestAircraftReceiverId.Value; }
-            set { PageReceivers.ClosestAircraftReceiverId.Value = value; }
+            get { return PageReceivers.ClosestAircraftReceiverId; }
+            set { PageReceivers.ClosestAircraftReceiverId = value; }
         }
 
         public int FlightSimulatorXReceiverId
         {
-            get { return PageReceivers.FlightSimulatorXReceiverId.Value; }
-            set { PageReceivers.FlightSimulatorXReceiverId.Value = value; }
+            get { return PageReceivers.FlightSimulatorXReceiverId; }
+            set { PageReceivers.FlightSimulatorXReceiverId = value; }
         }
 
-        public IList<Receiver> Receivers { get { return PageReceivers.Receivers.Value; } }
+        public IList<Receiver> Receivers { get { return PageReceivers.Receivers; } }
         #endregion
 
         #region ReceiverLocations
@@ -966,7 +966,7 @@ namespace VirtualRadar.WinForms
                 HighestConfiguredFeedId = Math.Max(maxReceiverId, maxMergedFeedId);
 
                 RefreshCombinedFeeds();
-                PageReceivers.Receivers.Changed += (s, a) => RefreshCombinedFeeds();
+                PageReceivers.Receivers.CollectionChanged += (s, a) => RefreshCombinedFeeds();
                 PageMergedFeeds.MergedFeeds.Changed += (s, a) => RefreshCombinedFeeds();
 
                 AddPage(PageDataSources);

@@ -7,6 +7,10 @@
 //    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//
+// Portions copyright © 2003 Ian Griffiths
+// http://www.interact-sw.co.uk/utilities/bindablelistview/source/
 
 using System;
 using System.Collections.Generic;
@@ -22,6 +26,7 @@ using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.View;
+using System.Collections.Specialized;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -29,6 +34,7 @@ namespace VirtualRadar.WinForms.Controls
     /// A list view that deals with the common problems with using a list view to maintain a list
     /// of objects.
     /// </summary>
+    [DefaultBindingProperty("Records")]
     public partial class BindingListView : BaseUserControl, IValidateDelegate
     {
         #region Nested class - ColumnTextEventArgs
@@ -73,9 +79,15 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         private bool _Populating;
 
-        // The X axis locations of the buttons when an error is being shown.
-        public int _ButtonAddErrorX;
-        public int _ButtonDeleteErrorX;
+        /// <summary>
+        /// The currency manager that we're using.
+        /// </summary>
+        private CurrencyManager _CurrencyManager;
+
+        /// <summary>
+        /// The collection that we're bound to.
+        /// </summary>
+        private INotifyCollectionChanged _NotifyingCollection;
         #endregion
 
         #region Control Properties
@@ -159,6 +171,47 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
+        #region Binding Properties and hooks
+        private object _DataSource;
+        /// <summary>
+        /// Gets or sets the list to bind the control to.
+        /// </summary>
+        public object DataSource
+        {
+            get { return _DataSource; }
+            set
+            {
+                var list = value as INotifyCollectionChanged;
+                if(value != null && list == null) throw new InvalidOperationException("Only ObservableCollection<T> collections can be bound to BindingListViews");
+                if(_DataSource != list) {
+                    _DataSource = list;
+                    SetDataBinding();
+                    OnDataSourceChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnBindingContextChanged(EventArgs e)
+        {
+            base.OnBindingContextChanged(e);
+            SetDataBinding();
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnParentBindingContextChanged(EventArgs e)
+        {
+            base.OnParentBindingContextChanged(e);
+            SetDataBinding();
+        }
+        #endregion
+
         #region Other properties
         /// <summary>
         /// Gets or sets the list of records in the list view.
@@ -205,6 +258,20 @@ namespace VirtualRadar.WinForms.Controls
         #endregion
 
         #region Events
+        /// <summary>
+        /// Raised when the <see cref="DataSource"/> is changed.
+        /// </summary>
+        public event EventHandler DataSourceChanged;
+
+        /// <summary>
+        /// Raises <see cref="DataSourceChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnDataSourceChanged(EventArgs args)
+        {
+            if(DataSourceChanged != null) DataSourceChanged(this, args);
+        }
+
         /// <summary>
         /// Raised to fetch the content of a row that represents a record.
         /// </summary>
@@ -300,6 +367,125 @@ namespace VirtualRadar.WinForms.Controls
             AllowAdd = true;
             AllowUpdate = true;
             AllowDelete = true;
+        }
+        #endregion
+
+        #region SetDataBinding
+        /// <summary>
+        /// Binds the control to the data source.
+        /// </summary>
+        /// <returns>True if the items were loaded by the method.</returns>
+        private bool SetDataBinding()
+        {
+            var result = false;
+
+            if(BindingContext != null) {
+                var reloadItems = false;
+                var currencyManager = DataSource == null ? null : BindingContext[DataSource] as CurrencyManager;
+                var notifyingCollection = currencyManager == null ? null : currencyManager.List as INotifyCollectionChanged;
+
+                if(currencyManager != _CurrencyManager) {
+                    if(_CurrencyManager != null) {
+                        _CurrencyManager.MetaDataChanged -= CurrencyManager_MetaDataChanged;
+                        _CurrencyManager.PositionChanged -= CurrencyManager_PositionChanged;
+                        _CurrencyManager.ItemChanged -= CurrencyManager_ItemChanged;
+                    }
+
+                    _CurrencyManager = currencyManager;
+
+                    if(_CurrencyManager != null) {
+                        reloadItems = true;
+                        _CurrencyManager.MetaDataChanged += CurrencyManager_MetaDataChanged;
+                        _CurrencyManager.PositionChanged += CurrencyManager_PositionChanged;
+                        _CurrencyManager.ItemChanged += CurrencyManager_ItemChanged;
+                    }
+                }
+
+                if(notifyingCollection != _NotifyingCollection) {
+                    if(_NotifyingCollection != null) {
+                        _NotifyingCollection.CollectionChanged -= NotifyingCollection_CollectionChanged;
+                    }
+
+                    _NotifyingCollection = notifyingCollection;
+
+                    if(_NotifyingCollection != null) {
+                        reloadItems = true;
+                        _NotifyingCollection.CollectionChanged += NotifyingCollection_CollectionChanged;
+                    }
+                }
+
+                if(reloadItems) {
+                    LoadItemsFromSource();
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region LoadItemsFromSource, CreateListViewItemForRecord, SetSelectedIndex
+        /// <summary>
+        /// Loads the items in the control from the bound list.
+        /// </summary>
+        private void LoadItemsFromSource()
+        {
+            var populating = _Populating;
+            try {
+                _Populating = true;
+
+                listView.Items.Clear();
+
+                var list = _CurrencyManager == null ? null : _CurrencyManager.List;
+                if(list != null) {
+                    for(var i = 0;i < list.Count;++i) {
+                        listView.Items.Add(CreateListViewItemForRecord(list[i]));
+                    }
+                }
+
+                if(_CurrencyManager != null && _CurrencyManager.Position != -1) {
+                    SetSelectedIndex(_CurrencyManager.Position);
+                }
+            } finally {
+                _Populating = populating;
+            }
+        }
+
+        /// <summary>
+        /// Creates a ListViewItem for the record passed across.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        private ListViewItem CreateListViewItemForRecord(object record)
+        {
+            var result = new ListViewItem() {
+                Tag = record,
+            };
+            RefreshListViewItem(result);
+
+            return result;
+        }
+
+        private bool _InSetSelectedIndex;
+        /// <summary>
+        /// Sets the selected row to the row at the index passed across.
+        /// </summary>
+        /// <param name="index"></param>
+        private void SetSelectedIndex(int index)
+        {
+            if(!_InSetSelectedIndex) {
+                _InSetSelectedIndex = true;
+                try {
+                    listView.SelectedItems.Clear();
+                    var listViewItem = listView.Items.Count >= index ? null : listView.Items[index];
+                    if(listViewItem != null) {
+                        listViewItem.Selected = true;
+                        listViewItem.EnsureVisible();
+                    }
+                } finally {
+                    _InSetSelectedIndex = false;
+                }
+            }
         }
         #endregion
 
@@ -483,6 +669,76 @@ namespace VirtualRadar.WinForms.Controls
                 if(record != null) {
                     var args = new RecordCheckedEventArgs(record, e.Item.Checked);
                     OnCheckedChanged(args);
+                }
+            }
+        }
+        #endregion
+
+        #region Binding events subscribed
+        /// <summary>
+        /// Called when the list we have bound to is changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void NotifyingCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            switch(args.Action) {
+                case NotifyCollectionChangedAction.Add:
+                    foreach(var newRecord in args.NewItems.OfType<object>().Reverse()) {
+                        var newItem = CreateListViewItemForRecord(newRecord);
+                        listView.Items.Insert(args.NewStartingIndex, newItem);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach(var deletedItem in args.OldItems) {
+                        var listViewItem = listView.Items.OfType<ListViewItem>().FirstOrDefault(r => r.Tag == deletedItem);
+                        if(listViewItem != null) {
+                            listView.Items.Remove(listViewItem);
+                        }
+                    }
+                    break;
+                default:
+                    LoadItemsFromSource();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Called when the metadata changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void CurrencyManager_MetaDataChanged(object sender, EventArgs args)
+        {
+            LoadItemsFromSource();
+        }
+
+        /// <summary>
+        /// Called when the user changes position within the source list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void CurrencyManager_PositionChanged(object sender, EventArgs args)
+        {
+            if(_CurrencyManager != null) {
+                SetSelectedIndex(_CurrencyManager.Position);
+            }
+        }
+
+        /// <summary>
+        /// Called when an item changes in the bound list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void CurrencyManager_ItemChanged(object sender, ItemChangedEventArgs args)
+        {
+            // See the comments in the code that I nicked, which in turn borrows from Mark Boulter's code :)
+            // Basically an index of -1 seems to be "everything has changed". In his code he reproduces some
+            // of the code from SetDataBinding but I can't see any harm in just resetting the binding
+            // wholesale.
+            if(args.Index == -1) {
+                if(!SetDataBinding()) {
+                    LoadItemsFromSource();
                 }
             }
         }

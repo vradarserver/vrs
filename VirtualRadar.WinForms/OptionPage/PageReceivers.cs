@@ -10,20 +10,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Binding;
-using VirtualRadar.Interface.Settings;
-using VirtualRadar.Interface.View;
 using VirtualRadar.WinForms.Controls;
-using VirtualRadar.Interface;
-using System.IO.Ports;
+using System.Collections;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -40,23 +42,42 @@ namespace VirtualRadar.WinForms.OptionPage
 
         public override bool PageUseFullHeight { get { return true; } }
 
+        private int _WebSiteReceiverId;
         [ValidationField(ValidationField.WebSiteReceiver)]
         [LocalisedDisplayName("WebSiteReceiverId")]
         [LocalisedDescription("OptionsDescribeWebSiteReceiverId")]
-        public Observable<int> WebSiteReceiverId { get; private set; }
+        public int WebSiteReceiverId
+        {
+            get { return _WebSiteReceiverId; }
+            set { SetField(ref _WebSiteReceiverId, value, () => WebSiteReceiverId); }
+        }
 
+        private int _ClosestAircraftReceiverId;
         [ValidationField(ValidationField.ClosestAircraftReceiver)]
         [LocalisedDisplayName("ClosestAircraftReceiverId")]
         [LocalisedDescription("OptionsDescribeClosestAircraftReceiverId")]
-        public Observable<int> ClosestAircraftReceiverId { get; private set; }
+        public int ClosestAircraftReceiverId
+        {
+            get { return _ClosestAircraftReceiverId; }
+            set { SetField(ref _ClosestAircraftReceiverId, value, () => ClosestAircraftReceiverId); }
+        }
 
+        private int _FlightSimulatorXReceiverId;
         [ValidationField(ValidationField.FlightSimulatorXReceiver)]
         [LocalisedDisplayName("FlightSimulatorXReceiverId")]
         [LocalisedDescription("OptionsDescribeFlightSimulatorXReceiverId")]
-        public Observable<int> FlightSimulatorXReceiverId { get; private set; }
+        public int FlightSimulatorXReceiverId
+        {
+            get { return _FlightSimulatorXReceiverId; }
+            set { SetField(ref _FlightSimulatorXReceiverId, value, () => FlightSimulatorXReceiverId); }
+        }
 
+        private ObservableCollection<Receiver> _Receivers = new ObservableCollection<Receiver>();
         [ValidationField(ValidationField.ReceiverIds)]
-        public ObservableList<Receiver> Receivers { get; private set; }
+        public ObservableCollection<Receiver> Receivers
+        {
+            get { return _Receivers; }
+        }
 
         public PageReceivers()
         {
@@ -66,12 +87,12 @@ namespace VirtualRadar.WinForms.OptionPage
 
         protected override void CreateBindings()
         {
-            WebSiteReceiverId = BindProperty<int>(comboBoxWebSiteReceiverId);
-            ClosestAircraftReceiverId = BindProperty<int>(comboBoxClosestAircraftReceiverId);
-            FlightSimulatorXReceiverId = BindProperty<int>(comboBoxFsxReceiverId);
-            Receivers = BindListProperty<Receiver>(listReceivers);
-
             _ListHelper = new RecordListHelper<Receiver,PageReceiver>(this, listReceivers, Receivers);
+
+            AddBinding(this, comboBoxWebSiteReceiverId,         r => r.WebSiteReceiverId,           r => r.SelectedValue);
+            AddBinding(this, comboBoxClosestAircraftReceiverId, r => r.ClosestAircraftReceiverId,   r => r.SelectedValue);
+            AddBinding(this, comboBoxFsxReceiverId,             r => r.FlightSimulatorXReceiverId,  r => r.SelectedValue);
+            BindList(Receivers, listReceivers);
         }
 
         protected override void InitialiseControls()
@@ -140,7 +161,7 @@ namespace VirtualRadar.WinForms.OptionPage
             _ListHelper.AddClicked(() => new Receiver() {
                 Enabled = true,
                 UniqueId = GenerateUniqueId(OptionsView.HighestConfiguredFeedId + 1, OptionsView.CombinedFeeds.Value, r => r.UniqueId),
-                Name = GenerateUniqueName(Receivers.Value, "Receiver", false, r => r.Name),
+                Name = GenerateUniqueName(Receivers, "Receiver", false, r => r.Name),
             });
         }
 
@@ -159,9 +180,9 @@ namespace VirtualRadar.WinForms.OptionPage
             _ListHelper.SetEnabledForListCheckedChanged(e, r => r.RecordEnabled);
         }
 
-        protected override Page CreatePageForNewChildRecord(IObservableList observableList, object record)
+        protected override Page CreatePageForNewChildRecord(IList list, object record)
         {
-            return _ListHelper.CreatePageForNewChildRecord(observableList, record);
+            return _ListHelper.CreatePageForNewChildRecord(list, record);
         }
         #endregion
     }

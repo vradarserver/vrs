@@ -98,9 +98,9 @@ namespace VirtualRadar.WinForms.OptionPage
 
         protected override void InitialiseControls()
         {
-            listReceivers.MasterList = OptionsView.PageReceivers.Receivers;
+          //  listReceivers.MasterList = OptionsView.PageReceivers.Receivers;
             listReceivers.MapFromCheckedItemToRecord = r => {
-                return OptionsView.PageReceivers.Receivers.Value.FirstOrDefault(i => i.UniqueId == (int)r);
+                return OptionsView.PageReceivers.Receivers.FirstOrDefault(i => i.UniqueId == (int)r);
             };
             listReceivers.MapFromRecordToCheckedItem = r => {
                 return ((Receiver)r).UniqueId;

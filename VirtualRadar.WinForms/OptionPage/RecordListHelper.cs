@@ -16,6 +16,7 @@ using VirtualRadar.WinForms.Controls;
 using VirtualRadar.WinForms.Binding;
 using System.Linq.Expressions;
 using VirtualRadar.Interface;
+using System.Collections;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -29,9 +30,13 @@ namespace VirtualRadar.WinForms.OptionPage
     {
         private Page _ListPage;
         private BindingListView _Control;
-        private IObservableList _List;
+        private IList _List;
 
-        public RecordListHelper(Page listPage, BindingListView listView, IObservableList list)
+        public RecordListHelper(Page listPage, BindingListView listView, IObservableList list) : this(listPage, listView, list.GetListValue())
+        {
+        }
+
+        public RecordListHelper(Page listPage, BindingListView listView, IList list)
         {
             _ListPage = listPage;
             _Control = listView;
@@ -41,7 +46,7 @@ namespace VirtualRadar.WinForms.OptionPage
         public void AddClicked(Func<TRecord> createNewRecord)
         {
             var record = createNewRecord();
-            _List.GetListValue().Add(record);
+            _List.Add(record);
 
             _Control.SelectedRecord = record;
             _ListPage.OptionsView.DisplayPageForPageObject(record);
@@ -51,7 +56,7 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             var deleteRecords = _Control.SelectedRecords.OfType<TRecord>().ToArray();
             foreach(var deleteRecord in deleteRecords) {
-                _List.GetListValue().Remove(deleteRecord);
+                _List.Remove(deleteRecord);
             }
         }
 
@@ -76,8 +81,12 @@ namespace VirtualRadar.WinForms.OptionPage
 
         public Page CreatePageForNewChildRecord(IObservableList observableList, object record)
         {
-            Page result = null;
-            if(observableList == _List) result = new TPage();
+            return CreatePageForNewChildRecord(observableList.GetListValue(), record);
+        }
+
+        public Page CreatePageForNewChildRecord(IList list, object record)
+        {
+            Page result = list == _List ? new TPage() : null;
 
             return result;
         }

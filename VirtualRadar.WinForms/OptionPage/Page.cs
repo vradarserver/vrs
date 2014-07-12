@@ -25,6 +25,8 @@ using VirtualRadar.WinForms.Binding;
 using System.Collections;
 using VirtualRadar.WinForms.Controls;
 using VirtualRadar.Interface;
+using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 
 namespace VirtualRadar.WinForms.OptionPage
 {
@@ -33,6 +35,29 @@ namespace VirtualRadar.WinForms.OptionPage
     /// </summary>
     public partial class Page : BaseUserControl, INotifyPropertyChanged
     {
+        #region Private class - PropertyMetaData
+        /// <summary>
+        /// Describes the metadata associated with a property.
+        /// </summary>
+        class PropertyMetaData
+        {
+            /// <summary>
+            /// Gets or sets the property that carries the metadata.
+            /// </summary>
+            public PropertyInfo PropertyInfo { get; set; }
+
+            /// <summary>
+            /// Gets or sets the control that the property is bound to.
+            /// </summary>
+            public Control Control { get; set; }
+
+            /// <summary>
+            /// Gets or sets the validation field attribute associated with the property.
+            /// </summary>
+            public ValidationFieldAttribute ValidationField { get; set; }
+        }
+        #endregion
+
         #region Private class - BinderTag
         // DELETE THIS
         class BinderTag<T>
@@ -58,6 +83,11 @@ namespace VirtualRadar.WinForms.OptionPage
 
         #region Fields
         /// <summary>
+        /// A collection of all properties that have been tagged with attributes.
+        /// </summary>
+        private List<PropertyMetaData> _PropertyMetaData = new List<PropertyMetaData>();
+
+        /// <summary>
         /// All of the objects that are binding observables to controls.
         /// </summary>
         private List<IBinder> _Binders = new List<IBinder>();
@@ -68,11 +98,6 @@ namespace VirtualRadar.WinForms.OptionPage
         private List<BinderTag<ValidationFieldAttribute>> _ValidationFieldsDEPRECATED;
 
         /// <summary>
-        /// A list of bindings for properties that have <see cref="ValidationFieldAttribute"/>s.
-        /// </summary>
-        private List<BindingTag<ValidationFieldAttribute>> _ValidationFields;
-
-        /// <summary>
         /// A list of binders and the inline help for the associated control.
         /// </summary>
         private List<BinderTag<InlineHelp>> _InlineHelpFields;
@@ -81,6 +106,16 @@ namespace VirtualRadar.WinForms.OptionPage
         /// A list of observables that have had their ValueChanged events hooked.
         /// </summary>
         private List<IObservable> _HookedObservableChangeds = new List<IObservable>();
+
+        /// <summary>
+        /// A list of ObservableCollection objects that have been hooked.
+        /// </summary>
+        private List<INotifyCollectionChanged> _HookedObservableCollections = new List<INotifyCollectionChanged>();
+
+        /// <summary>
+        /// A map of lists to the control that they're bound to.
+        /// </summary>
+        private Dictionary<INotifyCollectionChanged, Control> _ListControls = new Dictionary<INotifyCollectionChanged,Control>();
 
         /// <summary>
         /// A list of controls that have had their Enter and Leave events hooked.
@@ -193,21 +228,20 @@ namespace VirtualRadar.WinForms.OptionPage
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            BindingTag<ValidationFieldAttribute> firstBindingTag = null;
+            PropertyMetaData firstPropertyMetaData = null;
 
             ++_OnPropertyChangedRecursiveCallCount;
             try {
                 if(PropertyChanged != null) PropertyChanged(this, args);
-                if(firstBindingTag == null) {
-                    var bindingTag = _ValidationFields == null ? null : _ValidationFields.FirstOrDefault(r => r.Binding.DataSource == this && r.Binding.BindingMemberInfo != null && r.Binding.BindingMemberInfo.BindingField == args.PropertyName);
-                    if(bindingTag != null && bindingTag.Tag.RaisesValueChanged) firstBindingTag = bindingTag;
+                if(firstPropertyMetaData == null) {
+                    firstPropertyMetaData = _PropertyMetaData.FirstOrDefault(r => r.PropertyInfo.Name == args.PropertyName);
                 }
             } finally {
                 --_OnPropertyChangedRecursiveCallCount;
             }
 
             if(_OnPropertyChangedRecursiveCallCount == 0) {
-                if(firstBindingTag != null && OptionsView != null) OptionsView.RaiseValueChanged(firstBindingTag.Binding.Control, EventArgs.Empty);
+                if(firstPropertyMetaData != null && OptionsView != null) OptionsView.RaiseValueChanged(firstPropertyMetaData.Control, EventArgs.Empty);
             }
         }
 
@@ -268,6 +302,7 @@ namespace VirtualRadar.WinForms.OptionPage
         protected virtual void InitialisePage()
         {
             CreateBindings();
+            ApplyAttributes();
             RecordPageTitleObservable();
             RecordPageEnabledObservable();
         }
@@ -301,6 +336,13 @@ namespace VirtualRadar.WinForms.OptionPage
         }
         #endregion
 
+        #region InitialisePageObject
+        protected virtual void InitialisePageObject(object pageObject)
+        {
+            
+        }
+        #endregion
+
         #region Binding
         /// <summary>
         /// When overridden by the derivee this creates the bindings between the fields
@@ -310,10 +352,24 @@ namespace VirtualRadar.WinForms.OptionPage
         {
             ;
         }
+
+        /// <summary>
+        /// Binds a list to a control.
+        /// </summary>
+        /// <param name="list"></param>
+        protected void BindList<T>(ObservableCollection<T> collection, Control control)
+        {
+            var dataSourcePropertyInfo = control.GetType().GetProperty("DataSource");
+            if(dataSourcePropertyInfo == null) throw new InvalidOperationException(String.Format("Lists cannot be bound to {0} controls", control.GetType().Name));
+            dataSourcePropertyInfo.SetValue(control, collection, null);
+
+            _ListControls.Add(collection, control);
+
+            HookObservableCollection(collection);
+        }
         #endregion
 
         #region Binding - delete this
-
         /// <summary>
         /// Creates an observable field, binds a control to it and returns the field.
         /// </summary>
@@ -410,6 +466,30 @@ namespace VirtualRadar.WinForms.OptionPage
         }
 
         /// <summary>
+        /// Hooks an ObservableCollection's CollectionChanged event.
+        /// </summary>
+        /// <param name="collection"></param>
+        private void HookObservableCollection(INotifyCollectionChanged collection)
+        {
+            if(!_HookedObservableCollections.Contains(collection)) {
+                collection.CollectionChanged += ObservableCollection_CollectionChanged;
+                _HookedObservableCollections.Add(collection);
+            }
+        }
+
+        /// <summary>
+        /// Unhooks an ObservableCollection's CollectionChanged event.
+        /// </summary>
+        /// <param name="collection"></param>
+        private void UnhookObservableCollection(INotifyCollectionChanged collection)
+        {
+            if(_HookedObservableCollections.Contains(collection)) {
+                collection.CollectionChanged -= ObservableCollection_CollectionChanged;
+                _HookedObservableCollections.Remove(collection);
+            }
+        }
+
+        /// <summary>
         /// Hooks a page's PropertyValueChanged event.
         /// </summary>
         /// <param name="page"></param>
@@ -434,6 +514,54 @@ namespace VirtualRadar.WinForms.OptionPage
         }
         #endregion
 
+        #region ApplyAttributes
+        /// <summary>
+        /// Called after the derivee has completed binding to controls, searches for attributes
+        /// on the properties and records them for later use.
+        /// </summary>
+        private void ApplyAttributes()
+        {
+            _PropertyMetaData.Clear();
+
+            foreach(var propertyInfo in GetType().GetProperties()) {
+                var control = FindControlForProperty(propertyInfo);
+                var validationField = (ValidationFieldAttribute)propertyInfo.GetCustomAttributes(typeof(ValidationFieldAttribute), false).FirstOrDefault();
+                if(control != null && validationField != null) {
+                    var propertyMetaData = new PropertyMetaData() {
+                        PropertyInfo = propertyInfo,
+                        Control = control,
+                        ValidationField = validationField,
+                    };
+                    _PropertyMetaData.Add(propertyMetaData);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Searches for the control that is bound to the property passed across.
+        /// </summary>
+        /// <param name="propertyInfo"></param>
+        /// <returns></returns>
+        protected Control FindControlForProperty(PropertyInfo propertyInfo)
+        {
+            Control result = null;
+
+            var bindings = GetAllDataBindings(true);
+            var binding = bindings.FirstOrDefault(r => r.DataSource == this && r.BindingMemberInfo.BindingField == propertyInfo.Name);
+            if(binding != null) result = binding.Control;
+            else {
+                if(typeof(INotifyCollectionChanged).IsAssignableFrom(propertyInfo.PropertyType)) {
+                    var list = (INotifyCollectionChanged)propertyInfo.GetValue(this, null);
+                    if(list != null) {
+                        _ListControls.TryGetValue(list, out result);
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region Property helpers - GetAllObservableProperties
         /// <summary>
         /// Returns a collection of every property on the page that implements IObservable.
@@ -454,10 +582,6 @@ namespace VirtualRadar.WinForms.OptionPage
         /// </summary>
         private void BuildValidationFields()
         {
-            if(_ValidationFields == null) {
-                _ValidationFields = GetAllDataBindingsForAttribute<ValidationFieldAttribute>(includeChildControls: true, inherit: true);
-            }
-
             // DELETE THIS BLOCK
             if(_ValidationFieldsDEPRECATED == null) {
                 _ValidationFieldsDEPRECATED = new List<BinderTag<ValidationFieldAttribute>>();
@@ -486,7 +610,7 @@ namespace VirtualRadar.WinForms.OptionPage
 
             if(validationObject == PageObject) {
                 BuildValidationFields();
-                result = _ValidationFields.Where(r => r.Tag.ValidationField == validationField).Select(r => r.Binding.Control).FirstOrDefault();
+                result = _PropertyMetaData.Where(r => r.ValidationField != null && r.ValidationField.ValidationField == validationField).Select(r => r.Control).FirstOrDefault();
 
                 // DELETE THIS BLOCK
                 if(result == null) result = _ValidationFieldsDEPRECATED.Where(r => r.Tag.ValidationField == validationField).Select(r => r.Binder.Control).FirstOrDefault();
@@ -507,8 +631,8 @@ namespace VirtualRadar.WinForms.OptionPage
             if(control != null) {
                 BuildValidationFields();
 
-                var bindingTag = _ValidationFields.FirstOrDefault(r => r.Binding.Control == control);
-                if(bindingTag != null) result = bindingTag.Tag;
+                var propertyMetaData = _PropertyMetaData.FirstOrDefault(r => r.Control == control);
+                if(propertyMetaData != null) result = propertyMetaData.ValidationField;
 
                 // DELETE THIS BLOCK
                 if(result == null) {
@@ -573,6 +697,30 @@ namespace VirtualRadar.WinForms.OptionPage
         }
 
         /// <summary>
+        /// Called when an observable collection changes. Adds or removes sub-pages, where
+        /// appropriate, to reflect the content of the collection.
+        /// </summary>
+        /// <param name="collection"></param>
+        private void HandleListChanged(INotifyCollectionChanged collection)
+        {
+            if(collection != null && ShowPagesForObservableCollection(collection)) {
+                var list = (IList)collection;
+
+                // Add new pages
+                foreach(var record in list) {
+                    if(FindChildPageForRecord(record) == null) {
+                        AddChildPageForRecord(list, record);
+                    }
+                }
+
+                // Remove dead pages
+                foreach(var childPage in ChildPages.Where(r => !list.Contains(r.PageObject)).ToArray()) {
+                    RemoveChildPage(childPage);
+                }
+            }
+        }
+
+        /// <summary>
         /// Finds all lists that contain the child page's record and refreshes their content in turn.
         /// </summary>
         /// <param name="childPage"></param>
@@ -602,12 +750,34 @@ namespace VirtualRadar.WinForms.OptionPage
         }
 
         /// <summary>
+        /// When overridden by the derivee this determines whether an observable collection has child
+        /// pages created for it.
+        /// </summary>
+        /// <param name="observableCollection"></param>
+        /// <returns></returns>
+        protected virtual bool ShowPagesForObservableCollection(INotifyCollectionChanged observableCollection)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// When overrridden by the derivee this creates a new page for a child record.
         /// </summary>
         /// <param name="observableList"></param>
         /// <param name="record"></param>
         /// <returns></returns>
         protected virtual Page CreatePageForNewChildRecord(IObservableList observableList, object record)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// When overrridden by the derivee this creates a new page for a child record.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        protected virtual Page CreatePageForNewChildRecord(IList list, object record)
         {
             return null;
         }
@@ -660,6 +830,27 @@ namespace VirtualRadar.WinForms.OptionPage
         /// <param name="list"></param>
         /// <param name="record"></param>
         private void AddChildPageForRecord(IObservableList list, object record)
+        {
+            var page = CreatePageForNewChildRecord(list, record);
+            if(page != null) {
+                page.PageObject = record;
+                page.RefreshPageFromPageObject();
+                HookPropertyValueChanged(page);
+
+                ChildPages.Add(page);
+
+                if(OptionsView != null && IsInOptionView) {
+                    OptionsView.AddPage(page, this);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a child page for a record.
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="record"></param>
+        private void AddChildPageForRecord(IList list, object record)
         {
             var page = CreatePageForNewChildRecord(list, record);
             if(page != null) {
@@ -773,10 +964,8 @@ namespace VirtualRadar.WinForms.OptionPage
                 if(firstBinder != null) firstBinder.Control.Focus();
 
                 BuildValidationFields();
-                foreach(var bindingTag in _ValidationFields) {
-                    var control = bindingTag.Binding.Control;
-                    var attribute = bindingTag.Tag;
-                    OptionsView.SetControlErrorAlignment(control, attribute.IconAlignment);
+                foreach(var propertyMetaData in _PropertyMetaData.Where(r => r.ValidationField != null)) {
+                    OptionsView.SetControlErrorAlignment(propertyMetaData.Control, propertyMetaData.ValidationField.IconAlignment);
                 }
 
                 // DELETE THIS BLOCK
@@ -852,6 +1041,27 @@ namespace VirtualRadar.WinForms.OptionPage
 
                 OnPropertyChangedValue(args);
             }
+        }
+        #endregion
+
+        #region ObservableCollection event handlers
+        protected virtual void ObservableCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            var observableCollection = (INotifyCollectionChanged)sender;
+            HandleListChanged(observableCollection);
+
+            if(OptionsView != null) {
+                Control control;
+                if(_ListControls.TryGetValue(observableCollection, out control)) {
+                    // If the validation needs running then do so
+                    var validationAttribute = GetValidationAttributeForControl(control);
+                    if(validationAttribute != null && validationAttribute.RaisesValueChanged) {
+                        OptionsView.RaiseValueChanged(control, args);
+                    }
+                }
+            }
+
+            OnPropertyChangedValue(args);
         }
         #endregion
 
