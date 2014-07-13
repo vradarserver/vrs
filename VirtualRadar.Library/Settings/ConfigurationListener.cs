@@ -35,7 +35,7 @@ namespace VirtualRadar.Library.Settings
 
         #region Events exposed
         /// <summary>
-        /// Raised when a configuration property changes.
+        /// See interface docs.
         /// </summary>
         public event EventHandler<ConfigurationListenerEventArgs> PropertyChanged;
 
@@ -96,7 +96,7 @@ namespace VirtualRadar.Library.Settings
 
         #region Initialise, Release
         /// <summary>
-        /// Initialises the object.
+        /// See interface docs.
         /// </summary>
         /// <param name="configuration"></param>
         public void Initialise(Configuration configuration)
@@ -105,7 +105,7 @@ namespace VirtualRadar.Library.Settings
         }
 
         /// <summary>
-        /// Unhooks the configuration hooked by <see cref="Initialise"/>.
+        /// See interface docs.
         /// </summary>
         public void Release()
         {
@@ -179,11 +179,13 @@ namespace VirtualRadar.Library.Settings
         {
             if(_HookedLists.Contains(list)) UnhookList(list, hookedRecords, recordEventHandler, listEventHandler);
 
-            list.CollectionChanged += listEventHandler;
             foreach(var record in list) {
                 hookedRecords.Add(record);
                 record.PropertyChanged += recordEventHandler;
             }
+
+            list.CollectionChanged += listEventHandler;
+            _HookedLists.Add(list);
         }
 
         /// <summary>
