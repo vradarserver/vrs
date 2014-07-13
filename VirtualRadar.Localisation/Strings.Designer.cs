@@ -1295,6 +1295,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exception caught when checking value: {0}.
+        /// </summary>
+        public static string ExceptionWhenCheckingValue {
+            get {
+                return ResourceManager.GetString("ExceptionWhenCheckingValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fake Aircraft Mode.
         /// </summary>
         public static string FakeAircraftMode {

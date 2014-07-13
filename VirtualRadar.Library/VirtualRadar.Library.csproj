@@ -128,10 +128,12 @@
     <Compile Include="FeedManager.cs" />
     <Compile Include="Feed.cs" />
     <Compile Include="Presenter\EditorPresenter.cs" />
+    <Compile Include="Presenter\SettingsPresenter.cs" />
     <Compile Include="Presenter\ListDetailEditorPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
     <Compile Include="Presenter\UsersListPresenter.cs" />
     <Compile Include="Presenter\UsersPresenter.cs" />
+    <Compile Include="Settings\ConfigurationListener.cs" />
     <Compile Include="TcpClientWrapper.cs" />
     <Compile Include="Presenter\StatisticsPresenter.cs" />
     <Compile Include="RebroadcastServer.cs" />

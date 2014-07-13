@@ -80,16 +80,7 @@ namespace VirtualRadar.WinForms
             ClearAllMessages();
             LastValidationFailed = false;
 
-            foreach(var validationResult in validationResults) {
-                Control control;
-                if(_ValidationFieldMap.TryGetValue(validationResult.Field, out control)) {
-                    var validateDelegate = control as IValidateDelegate;
-                    if(validateDelegate != null) control = validateDelegate.GetValidationDisplayControl(validationResult.IsWarning ? _WarningProvider : _ErrorProvider);
-
-                    var errorProvider = validationResult.IsWarning ? _WarningProvider : _ErrorProvider;
-                    errorProvider.SetError(control, validationResult.Message);
-                }
-            }
+            ShowValidationResultsAgainstControls(validationResults);
 
             if(validationResults.Any(r => !r.IsWarning)) {
                 LastValidationFailed = true;
@@ -101,11 +92,47 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
+        /// Displays a set of results for a single validation field.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="validationField"></param>
+        /// <param name="validationResults"></param>
+        public virtual void ShowSingleFieldValidationResults(object record, ValidationField validationField, IEnumerable<ValidationResult> validationResults)
+        {
+            ClearAllMessages(validationField);
+
+            ShowValidationResultsAgainstControls(validationResults);
+        }
+
+        /// <summary>
+        /// Displays validation results against controls.
+        /// </summary>
+        /// <param name="validationResults"></param>
+        private void ShowValidationResultsAgainstControls(IEnumerable<ValidationResult> validationResults)
+        {
+            foreach(var validationResult in validationResults) {
+                Control control;
+                if(_ValidationFieldMap.TryGetValue(validationResult.Field, out control)) {
+                    var validateDelegate = control as IValidateDelegate;
+                    if(validateDelegate != null) control = validateDelegate.GetValidationDisplayControl(validationResult.IsWarning ? _WarningProvider : _ErrorProvider);
+
+                    var errorProvider = validationResult.IsWarning ? _WarningProvider : _ErrorProvider;
+                    errorProvider.SetError(control, validationResult.Message);
+                }
+            }
+        }
+
+        /// <summary>
         /// Removes all error messages.
         /// </summary>
-        private void ClearAllMessages()
+        /// <param name="justForField"></param>
+        private void ClearAllMessages(ValidationField justForField = ValidationField.None)
         {
             foreach(var kvp in _ValidationFieldMap) {
+                if(justForField != ValidationField.None && kvp.Key != justForField) {
+                    continue;
+                }
+
                 var control = kvp.Value;
                 var validateDelegate = control as IValidateDelegate;
                 if(validateDelegate != null) {

@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -24,6 +25,78 @@ namespace VirtualRadar.Library.Presenter
     class Presenter<T>
         where T: IView
     {
+        protected class ValidationParams
+        {
+            public List<ValidationResult> Results { get; private set; }
+
+            public ValidationField Field { get; private set; }
+
+            public ValidationField ValueChangedField { get; set; }
+
+            public bool FieldMatches { get { return ValueChangedField == ValidationField.None || Field == ValueChangedField; } }
+
+            public object Record { get; set; }
+
+            public bool IsWarning { get; set; }
+
+            public string Message { get; set; }
+
+            public string Format { get; set; }
+
+            public object[] Args { get; set; }
+
+            public bool HasNoMessage { get { return Message == null && Format == null; } }
+
+            public ValidationParams(List<ValidationResult> results, ValidationField field) : this(results, field, null)
+            {
+            }
+
+            public ValidationParams(List<ValidationResult> results, ValidationField field, object record)
+            {
+                Results = results;
+                Field = field;
+                Record = record;
+            }
+
+            public void DefaultMessage(string message)
+            {
+                if(HasNoMessage) Message = message;
+            }
+
+            public void DefaultMessage(string format, params object[] args)
+            {
+                if(HasNoMessage) Message = String.Format(format, args);
+            }
+
+            public bool IsValid(Func<bool> condition)
+            {
+                var fieldMatches = FieldMatches;
+                var valid = !fieldMatches;
+                if(!valid) {
+                    try {
+                        valid = condition();
+                    } catch(Exception ex) {
+                        valid = false;
+                        Message = null;
+                        Format = Strings.ExceptionWhenCheckingValue;
+                        Args = new object[] { ex.Message ?? "" };
+                        IsWarning = false;
+                    }
+                }
+                if(!valid) AddResult();
+
+                return valid;
+            }
+
+            public ValidationResult AddResult()
+            {
+                var result = new ValidationResult(Record, Field, Message ?? String.Format(Format, Args), IsWarning);
+                Results.Add(result);
+
+                return result;
+            }
+        }
+
         /// <summary>
         /// The view that the presenter is controlling.
         /// </summary>
@@ -185,6 +258,52 @@ namespace VirtualRadar.Library.Presenter
             if(!valid) results.Add(new ValidationResult(validationField, message));
 
             return valid;
+        }
+
+        /// <summary>
+        /// Returns true if the file exists, false if it does not.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool FileExists(string fileName, ValidationParams valParams)
+        {
+            valParams.DefaultMessage(Strings.SomethingDoesNotExist, fileName);
+            return valParams.IsValid(() => {
+                var result = true;
+                if(!String.IsNullOrEmpty(fileName)) {
+                    result = File.Exists(fileName);
+                    if(result) {
+                        // If we can't read the file then this should throw an exception
+                        using(var stream = File.OpenRead(fileName)) {
+                            ;
+                        }
+                    }
+                }
+                return result;
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the folder exists, false if it does not.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool FolderExists(string folder, ValidationParams valParams)
+        {
+            valParams.DefaultMessage(Strings.SomethingDoesNotExist, folder);
+            return valParams.IsValid(() => {
+                var result = true;
+                if(!String.IsNullOrEmpty(folder)) {
+                    result = Directory.Exists(folder);
+                    if(result) {
+                        // If we can't read the content of the folder then this should throw an exception
+                        Directory.GetFileSystemEntries(folder);
+                    }
+                }
+                return result;
+            });
         }
     }
 }

@@ -15,6 +15,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -121,6 +122,13 @@ namespace VirtualRadar.Interface.Settings
         {
             Enabled = true;
             IcaoTimeout = 3000;
+
+            _ReceiverIds.CollectionChanged += ReceiverIds_CollectionChanged;
+        }
+
+        private void ReceiverIds_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverIds)));
         }
     }
 }

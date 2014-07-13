@@ -379,6 +379,24 @@
       <DependentUpon>PageWebSite.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\RecordListHelper.cs" />
+    <Compile Include="SettingPage\Page.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\Page.Designer.cs">
+      <DependentUpon>Page.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\PageDataSources.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageDataSources.Designer.cs">
+      <DependentUpon>PageDataSources.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsView.Designer.cs">
+      <DependentUpon>SettingsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ValidationFieldAttribute.cs" />
     <Compile Include="OptionsView.cs">
       <SubType>Form</SubType>
@@ -619,6 +637,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ReceiverListView.resx">
       <DependentUpon>ReceiverListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageDataSources.resx">
+      <DependentUpon>PageDataSources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsView.resx">
+      <DependentUpon>SettingsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ShutdownView.resx">
       <DependentUpon>ShutdownView.cs</DependentUpon>

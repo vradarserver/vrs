@@ -20,14 +20,22 @@ namespace VirtualRadar.Interface
         /// <returns></returns>
         public static string ExtractName(Expression expression)
         {
+            String result;
+
             var lambdaExpression = (LambdaExpression)expression;
+            var parameter = lambdaExpression.Parameters.FirstOrDefault();
 
             MemberExpression memberExpression = lambdaExpression.Body.NodeType == ExpressionType.Convert ?
                                                 ((UnaryExpression)lambdaExpression.Body).Operand as MemberExpression :
                                                 lambdaExpression.Body as MemberExpression;
-            var propertyInfo = memberExpression == null ? null : memberExpression.Member as PropertyInfo;
+            if(parameter != null) {
+                result = memberExpression.ToString().Substring(parameter.Name.Length + 1);
+            } else {
+                var propertyInfo = memberExpression == null ? null : memberExpression.Member as PropertyInfo;
+                result = propertyInfo == null ? null : propertyInfo.Name;
+            }
 
-            return propertyInfo == null ? null : propertyInfo.Name;
+            return result;
         }
 
         /// <summary>

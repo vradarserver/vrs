@@ -137,10 +137,14 @@
     <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
     <Compile Include="IAirportDataDotCom.cs" />
     <Compile Include="ITcpConnectionStateService.cs" />
+    <Compile Include="Presenter\ISettingsPresenter.cs" />
     <Compile Include="Presenter\IUsersListPresenter.cs" />
     <Compile Include="Presenter\IUsersPresenter.cs" />
     <Compile Include="PropertyHelper.cs" />
     <Compile Include="RebroadcastServerConnection.cs" />
+    <Compile Include="Settings\ConfigurationListenerEventArgs.cs" />
+    <Compile Include="Settings\ConfigurationListenerGroup.cs" />
+    <Compile Include="Settings\IConfigurationListener.cs" />
     <Compile Include="Settings\IUser.cs" />
     <Compile Include="Settings\IUserManager.cs" />
     <Compile Include="StandingData\CallsignRouteDetail.cs" />
@@ -364,6 +368,7 @@
     <Compile Include="View\IRebroadcastOptionsView.cs" />
     <Compile Include="View\IReceiverConfigurationWizardAnswers.cs" />
     <Compile Include="View\IReceiverLocationsView.cs" />
+    <Compile Include="View\ISettingsView.cs" />
     <Compile Include="View\IShutdownView.cs" />
     <Compile Include="View\ISplashView.cs" />
     <Compile Include="View\IStatisticsView.cs" />
