@@ -2147,4 +2147,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Wizard</value>
     <comment>As in a software wizard, a set of pages that ask questions to and collect answers from the user. Used in VRS to help with making configuration choices.</comment>
   </data>
+  <data name="ExceptionWhenCheckingValue" xml:space="preserve">
+    <value>Exception caught when checking value: {0}</value>
+  </data>
 </root>

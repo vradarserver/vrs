@@ -503,8 +503,8 @@ namespace VirtualRadar.WinForms
 
         private void menuOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using(var dialog = new OptionsView()) {
-                dialog.ShowDialog();
+            using(var dialog = new SettingsView()) {
+                dialog.ShowDialog(this);
             }
         }
 

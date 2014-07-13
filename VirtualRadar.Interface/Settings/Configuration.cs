@@ -16,6 +16,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Collections.Specialized;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -176,6 +177,11 @@ namespace VirtualRadar.Interface.Settings
             InternetClientSettings = new InternetClientSettings();
             AudioSettings = new AudioSettings();
             RawDecodingSettings = new RawDecodingSettings();
+
+            _MergedFeeds.CollectionChanged +=           MergedFeeds_CollectionChanged;
+            _RebroadcastSettings.CollectionChanged +=   RebroadcastSettings_CollectionChanged;
+            _ReceiverLocations.CollectionChanged +=     ReceiverLocations_CollectionChanged;
+            _Receivers.CollectionChanged +=             Receivers_CollectionChanged;
         }
 
         /// <summary>
@@ -194,6 +200,26 @@ namespace VirtualRadar.Interface.Settings
         public ReceiverLocation ReceiverLocation(int locationUniqueId)
         {
             return ReceiverLocations.FirstOrDefault(r => r.UniqueId == locationUniqueId);
+        }
+
+        private void MergedFeeds_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.MergedFeeds)));
+        }
+
+        private void RebroadcastSettings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.RebroadcastSettings)));
+        }
+
+        private void ReceiverLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverLocations)));
+        }
+
+        private void Receivers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.Receivers)));
         }
     }
 }

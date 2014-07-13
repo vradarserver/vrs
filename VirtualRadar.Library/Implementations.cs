@@ -54,11 +54,13 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Presenter.IMainPresenter, Presenter.MainPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IOptionsPresenter, Presenter.OptionsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IPluginsPresenter, Presenter.PluginsPresenter>();
+            factory.Register<VirtualRadar.Interface.Presenter.ISettingsPresenter, Presenter.SettingsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IShutdownPresenter, Presenter.ShutdownPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ISplashPresenter, Presenter.SplashPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IStatisticsPresenter, Presenter.StatisticsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IUsersListPresenter, Presenter.UsersListPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IUsersPresenter, Presenter.UsersPresenter>();
+            factory.Register<VirtualRadar.Interface.Settings.IConfigurationListener, Settings.ConfigurationListener>();
             factory.Register<VirtualRadar.Interface.Settings.IConfigurationStorage, Settings.ConfigurationStorage>();
             factory.Register<VirtualRadar.Interface.Settings.IInstallerSettingsStorage, Settings.InstallerSettingsStorage>();
             factory.Register<VirtualRadar.Interface.Settings.IPluginManifestStorage, Settings.PluginManifestStorage>();
