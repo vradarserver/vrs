@@ -46,6 +46,33 @@ namespace VirtualRadar.Library.Listener
         }
         #endregion
 
+        #region Private class - MessageReceived
+        class MessageReceived
+        {
+            /// <summary>
+            /// The date and time that the message was received.
+            /// </summary>
+            public DateTime ReceivedUtc;
+
+            /// <summary>
+            /// The listener that picked up the message.
+            /// </summary>
+            public IListener Listener;
+
+            /// <summary>
+            /// The message from the receiver.
+            /// </summary>
+            public BaseStationMessageEventArgs MessageArgs;
+
+            public MessageReceived(DateTime receivedUtc, IListener listener, BaseStationMessageEventArgs message)
+            {
+                ReceivedUtc = receivedUtc;
+                Listener = listener;
+                MessageArgs = message;
+            }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// The object used to protect fields from multithreaded access.
@@ -69,6 +96,23 @@ namespace VirtualRadar.Library.Listener
         /// Set if the slow tick has been hooked.
         /// </summary>
         private bool _HookedSlowTick;
+
+        /// <summary>
+        /// The queue of BaseStation messages waiting to be processed.
+        /// </summary>
+        /// <remarks>
+        /// Originally I was processing messages on the same thread that the listeners were raising Port30003MessageReceived on. Unfortunately
+        /// this had the side-effect of blocking every listener that the merged feed is attached to while one of them was being processed,
+        /// which meant that messages ended up getting processed serially rather than in parallel. The solution was to push the messages from
+        /// the receiver onto a background thread and process from there.
+        /// </remarks>
+        private BackgroundThreadQueue<MessageReceived> _MessageProcessingQueue;
+
+        /// <summary>
+        /// The number of listeners that have been created. We want to ensure that we can have as many listeners as we like
+        /// so this counter is appended to the name of the queue thread to avoid clashes with other listeners.
+        /// </summary>
+        private static int _ListenerCounter;
         #endregion
 
         #region Properties
@@ -208,6 +252,10 @@ namespace VirtualRadar.Library.Listener
             IcaoTimeout = 5000;
             ConnectionStatus = ConnectionStatus.Connected;
 
+            var messageQueueName = String.Format("MergedFeedListenerMessages_{0}", ++_ListenerCounter);
+            _MessageProcessingQueue = new BackgroundThreadQueue<MessageReceived>(messageQueueName);
+            _MessageProcessingQueue.StartBackgroundThread(ProcessReceivedMessage, HandleMessageProcessingException);
+
             var heartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
             heartbeatService.SlowTick += HeartbeatService_SlowTick;
             _HookedSlowTick = true;
@@ -314,8 +362,7 @@ namespace VirtualRadar.Library.Listener
 
         #region FilterMessageFromListener, CleanupOldIcaos, MessageCarriesPosition
         /// <summary>
-        /// Filters BaseStation messages and raises <see cref="Port30003MessageReceived"/> with those messages that
-        /// pass the filter.
+        /// Returns true if the message from a receiver can be used.
         /// </summary>
         /// <param name="receivedUtc"></param>
         /// <param name="listener"></param>
@@ -379,15 +426,36 @@ namespace VirtualRadar.Library.Listener
         {
             try {
                 var listener = (IListener)sender;
-                var hasNoPosition = args.Message.Latitude.GetValueOrDefault() == 0.0 && args.Message.Longitude.GetValueOrDefault() == 0.0;
-                if(FilterMessageFromListener(_Clock.UtcNow, listener, args.Message.Icao24, !hasNoPosition)) {
-                    OnPort30003MessageReceived(args);
-                    ++TotalMessages;
-                }
+                _MessageProcessingQueue.Enqueue(new MessageReceived(_Clock.UtcNow, listener, args));
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }
         }
+
+        /// <summary>
+        /// Processes messages from the receiver on a background thread. Using a background thread prevents
+        /// our processing from interupting the processing of messages by our receivers.
+        /// </summary>
+        /// <param name="messageReceived"></param>
+        private void ProcessReceivedMessage(MessageReceived messageReceived)
+        {
+            var message = messageReceived.MessageArgs.Message;
+            var hasNoPosition = message.Latitude.GetValueOrDefault() == 0.0 && message.Longitude.GetValueOrDefault() == 0.0;
+            if(FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition)) {
+                OnPort30003MessageReceived(messageReceived.MessageArgs);
+                ++TotalMessages;
+            }
+        }
+
+        /// <summary>
+        /// Handles any exception raised while messages are being processed.
+        /// </summary>
+        /// <param name="ex"></param>
+        private void HandleMessageProcessingException(Exception ex)
+        {
+            OnExceptionCaught(new EventArgs<Exception>(ex));
+        }
+
 
         /// <summary>
         /// Called when a listener raises a position reset event.
