@@ -89,6 +89,7 @@
             // buttonTestConnection
             // 
             this.buttonTestConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonTestConnection.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.buttonTestConnection.Location = new System.Drawing.Point(480, 107);
             this.buttonTestConnection.Name = "buttonTestConnection";
             this.buttonTestConnection.Size = new System.Drawing.Size(156, 23);
@@ -165,6 +166,7 @@
             // 
             // label12
             // 
+            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(333, 76);
             this.label12.Name = "label12";
@@ -174,6 +176,7 @@
             // 
             // comboBoxSerialHandshake
             // 
+            this.comboBoxSerialHandshake.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSerialHandshake.DisplayMember = "Name";
             this.comboBoxSerialHandshake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialHandshake.FormattingEnabled = true;
@@ -243,6 +246,7 @@
             // 
             // label10
             // 
+            this.label10.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(333, 49);
             this.label10.Name = "label10";
@@ -261,6 +265,7 @@
             // 
             // comboBoxSerialStopBits
             // 
+            this.comboBoxSerialStopBits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSerialStopBits.DisplayMember = "Name";
             this.comboBoxSerialStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialStopBits.FormattingEnabled = true;
@@ -290,6 +295,7 @@
             // 
             // label8
             // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(333, 22);
             this.label8.Name = "label8";
@@ -323,6 +329,7 @@
             // 
             // comboBoxSerialBaudRate
             // 
+            this.comboBoxSerialBaudRate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSerialBaudRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialBaudRate.FormattingEnabled = true;
             this.comboBoxSerialBaudRate.Location = new System.Drawing.Point(480, 19);
@@ -393,12 +400,12 @@
             // buttonWizard
             // 
             this.buttonWizard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonWizard.Location = new System.Drawing.Point(536, 0);
+            this.buttonWizard.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonWizard.Location = new System.Drawing.Point(480, 0);
             this.buttonWizard.Name = "buttonWizard";
-            this.buttonWizard.Size = new System.Drawing.Size(100, 23);
+            this.buttonWizard.Size = new System.Drawing.Size(156, 23);
             this.buttonWizard.TabIndex = 16;
             this.buttonWizard.Text = "::Wizard::";
-            this.buttonWizard.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.buttonWizard.UseVisualStyleBackColor = true;
             this.buttonWizard.Click += new System.EventHandler(this.buttonWizard_Click);
             // 

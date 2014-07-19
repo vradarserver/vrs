@@ -803,6 +803,19 @@ namespace VirtualRadar.Resources
             set { _SmallPlaneNorth = value; }
         }
 
+        private static Bitmap _Test16x16;
+        /// <summary>
+        /// Gets or sets the Test16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Test16x16.png" alt="" title="Test16x16" />
+        /// </remarks>
+        public static Bitmap Test16x16
+        {
+            get { return _Test16x16 ?? InternalResources.Test16x16; }
+            set { _Test16x16 = value; }
+        }
+
         private static Bitmap _TestSquare;
         /// <summary>
         /// Gets or sets the TestSquare image.
