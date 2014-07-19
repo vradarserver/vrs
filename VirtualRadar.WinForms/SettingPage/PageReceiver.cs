@@ -91,11 +91,11 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
             AddBinding(Receiver, checkBoxEnabled,                   r => r.Enabled,                 r => r.Checked);
-            AddBinding(Receiver, textBoxName,                       r => r.Name,                    r => r.Text);
+            AddBinding(Receiver, textBoxName,                       r => r.Name,                    r => r.Text,            DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(Receiver, comboBoxDataSource,                r => r.DataSource,              r => r.SelectedValue);
             AddBinding(Receiver, checkBoxAutoReconnectAtStartup,    r => r.AutoReconnectAtStartup,  r => r.Checked);
             AddBinding(Receiver, comboBoxLocationId,                r => r.ReceiverLocationId,      r => r.SelectedValue);
-            AddBinding(Receiver, comboBoxConnectionType,            r => r.ConnectionType,          r => r.SelectedValue);
+            AddBinding(Receiver, comboBoxConnectionType,            r => r.ConnectionType,          r => r.SelectedValue,   DataSourceUpdateMode.OnPropertyChanged);
 
             AddBinding(Receiver, textBoxAddress,    r => r.Address,     r => r.Text);
             AddBinding(Receiver, numericPort,       r => r.Port,        r => r.Value);
@@ -108,6 +108,37 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(Receiver, comboBoxSerialHandshake,   r => r.Handshake,       r => r.SelectedValue);
             AddBinding(Receiver, textBoxSerialStartupText,  r => r.StartupText,     r => r.Text);
             AddBinding(Receiver, textBoxSerialShutdownText, r => r.ShutdownText,    r => r.Text);
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if(!DesignMode) {
+                groupBoxSerial.Location = groupBoxNetwork.Location = Point.Empty;
+                ShowHideConnectionTypePanels();
+            }
+        }
+
+        private void ShowHideConnectionTypePanels()
+        {
+            groupBoxNetwork.Visible = Receiver.ConnectionType == ConnectionType.TCP;
+            groupBoxSerial.Visible = Receiver.ConnectionType == ConnectionType.COM;
+            switch(Receiver.ConnectionType) {
+                case ConnectionType.COM: Height = panelConnectionTypeSettings.Top + groupBoxSerial.Height; break;
+                case ConnectionType.TCP: Height = panelConnectionTypeSettings.Top + groupBoxNetwork.Height; break;
+                default:                 throw new NotImplementedException();
+            }
+        }
+
+        internal override void ConfigurationChanged(ConfigurationListenerEventArgs args)
+        {
+            base.ConfigurationChanged(args);
+            if(args.Record == PageObject && SettingsView != null && this.IsHandleCreated) {
+                if(args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.ConnectionType)) {
+                    ShowHideConnectionTypePanels();
+                }
+            }
         }
 
         private void buttonWizard_Click(object sender, EventArgs e)

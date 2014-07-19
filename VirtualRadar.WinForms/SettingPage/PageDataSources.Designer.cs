@@ -41,7 +41,7 @@
             // checkBoxSearchPictureSubFolders
             // 
             this.checkBoxSearchPictureSubFolders.AutoSize = true;
-            this.checkBoxSearchPictureSubFolders.Location = new System.Drawing.Point(198, 106);
+            this.checkBoxSearchPictureSubFolders.Location = new System.Drawing.Point(200, 105);
             this.checkBoxSearchPictureSubFolders.Name = "checkBoxSearchPictureSubFolders";
             this.checkBoxSearchPictureSubFolders.Size = new System.Drawing.Size(158, 17);
             this.checkBoxSearchPictureSubFolders.TabIndex = 17;
@@ -61,27 +61,27 @@
             // 
             this.folderFlags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.folderFlags.Location = new System.Drawing.Point(198, 27);
+            this.folderFlags.Location = new System.Drawing.Point(200, 27);
             this.folderFlags.Name = "folderFlags";
-            this.folderFlags.Size = new System.Drawing.Size(507, 20);
+            this.folderFlags.Size = new System.Drawing.Size(505, 20);
             this.folderFlags.TabIndex = 11;
             // 
             // folderPictures
             // 
             this.folderPictures.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.folderPictures.Location = new System.Drawing.Point(198, 79);
+            this.folderPictures.Location = new System.Drawing.Point(200, 79);
             this.folderPictures.Name = "folderPictures";
-            this.folderPictures.Size = new System.Drawing.Size(507, 20);
+            this.folderPictures.Size = new System.Drawing.Size(505, 20);
             this.folderPictures.TabIndex = 15;
             // 
             // fileDatabaseFileName
             // 
             this.fileDatabaseFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.fileDatabaseFileName.Location = new System.Drawing.Point(198, 0);
+            this.fileDatabaseFileName.Location = new System.Drawing.Point(200, 0);
             this.fileDatabaseFileName.Name = "fileDatabaseFileName";
-            this.fileDatabaseFileName.Size = new System.Drawing.Size(507, 20);
+            this.fileDatabaseFileName.Size = new System.Drawing.Size(505, 20);
             this.fileDatabaseFileName.TabIndex = 9;
             // 
             // label3
@@ -106,9 +106,9 @@
             // 
             this.folderSilhouettes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.folderSilhouettes.Location = new System.Drawing.Point(198, 53);
+            this.folderSilhouettes.Location = new System.Drawing.Point(200, 53);
             this.folderSilhouettes.Name = "folderSilhouettes";
-            this.folderSilhouettes.Size = new System.Drawing.Size(507, 20);
+            this.folderSilhouettes.Size = new System.Drawing.Size(505, 20);
             this.folderSilhouettes.TabIndex = 13;
             // 
             // label2

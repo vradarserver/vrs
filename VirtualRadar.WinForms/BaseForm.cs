@@ -123,10 +123,11 @@ namespace VirtualRadar.WinForms
         /// <param name="control"></param>
         /// <param name="modelProperty"></param>
         /// <param name="controlProperty"></param>
-        public void AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty)
+        /// <param name="dataSourceUpdateMode"></param>
+        public System.Windows.Forms.Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnValidation)
             where TControl: Control
         {
-            _CommonBaseBehaviour.AddBinding<TControl, TModel>(model, control, modelProperty, controlProperty);
+            return _CommonBaseBehaviour.AddBinding<TControl, TModel>(model, control, modelProperty, controlProperty, dataSourceUpdateMode);
         }
 
         /// <summary>

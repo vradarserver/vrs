@@ -63,15 +63,17 @@
             this.checkBoxAutoReconnectAtStartup = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxDataSource = new System.Windows.Forms.ComboBox();
+            this.panelConnectionTypeSettings = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
+            this.panelConnectionTypeSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 129);
+            this.label14.Location = new System.Drawing.Point(6, 210);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(117, 13);
             this.label14.TabIndex = 14;
@@ -80,7 +82,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 103);
+            this.label13.Location = new System.Drawing.Point(6, 184);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(103, 13);
             this.label13.TabIndex = 12;
@@ -93,7 +95,7 @@
             this.buttonTestConnection.Location = new System.Drawing.Point(480, 107);
             this.buttonTestConnection.Name = "buttonTestConnection";
             this.buttonTestConnection.Size = new System.Drawing.Size(156, 23);
-            this.buttonTestConnection.TabIndex = 27;
+            this.buttonTestConnection.TabIndex = 12;
             this.buttonTestConnection.Text = "::TestConnection::";
             this.buttonTestConnection.UseVisualStyleBackColor = true;
             this.buttonTestConnection.Click += new System.EventHandler(this.buttonTestConnection_Click);
@@ -101,10 +103,10 @@
             // checkBoxEnabled
             // 
             this.checkBoxEnabled.AutoSize = true;
-            this.checkBoxEnabled.Location = new System.Drawing.Point(155, 4);
+            this.checkBoxEnabled.Location = new System.Drawing.Point(200, 4);
             this.checkBoxEnabled.Name = "checkBoxEnabled";
             this.checkBoxEnabled.Size = new System.Drawing.Size(77, 17);
-            this.checkBoxEnabled.TabIndex = 15;
+            this.checkBoxEnabled.TabIndex = 0;
             this.checkBoxEnabled.Text = "::Enabled::";
             this.checkBoxEnabled.UseVisualStyleBackColor = true;
             // 
@@ -112,9 +114,9 @@
             // 
             this.textBoxSerialShutdownText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSerialShutdownText.Location = new System.Drawing.Point(153, 126);
+            this.textBoxSerialShutdownText.Location = new System.Drawing.Point(197, 207);
             this.textBoxSerialShutdownText.Name = "textBoxSerialShutdownText";
-            this.textBoxSerialShutdownText.Size = new System.Drawing.Size(477, 20);
+            this.textBoxSerialShutdownText.Size = new System.Drawing.Size(430, 20);
             this.textBoxSerialShutdownText.TabIndex = 15;
             // 
             // label3
@@ -123,12 +125,12 @@
             this.label3.Location = new System.Drawing.Point(0, 86);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 22;
+            this.label3.TabIndex = 7;
             this.label3.Text = "::Location:::";
             // 
             // textBoxAddress
             // 
-            this.textBoxAddress.Location = new System.Drawing.Point(151, 20);
+            this.textBoxAddress.Location = new System.Drawing.Point(197, 20);
             this.textBoxAddress.Name = "textBoxAddress";
             this.textBoxAddress.Size = new System.Drawing.Size(150, 20);
             this.textBoxAddress.TabIndex = 1;
@@ -137,14 +139,14 @@
             // 
             this.textBoxSerialStartupText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSerialStartupText.Location = new System.Drawing.Point(153, 100);
+            this.textBoxSerialStartupText.Location = new System.Drawing.Point(197, 181);
             this.textBoxSerialStartupText.Name = "textBoxSerialStartupText";
-            this.textBoxSerialStartupText.Size = new System.Drawing.Size(477, 20);
+            this.textBoxSerialStartupText.Size = new System.Drawing.Size(430, 20);
             this.textBoxSerialStartupText.TabIndex = 13;
             // 
             // numericPort
             // 
-            this.numericPort.Location = new System.Drawing.Point(151, 47);
+            this.numericPort.Location = new System.Drawing.Point(197, 47);
             this.numericPort.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -168,7 +170,7 @@
             // 
             this.label12.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(333, 76);
+            this.label12.Location = new System.Drawing.Point(6, 157);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(103, 13);
             this.label12.TabIndex = 10;
@@ -176,11 +178,10 @@
             // 
             // comboBoxSerialHandshake
             // 
-            this.comboBoxSerialHandshake.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSerialHandshake.DisplayMember = "Name";
             this.comboBoxSerialHandshake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialHandshake.FormattingEnabled = true;
-            this.comboBoxSerialHandshake.Location = new System.Drawing.Point(480, 73);
+            this.comboBoxSerialHandshake.Location = new System.Drawing.Point(197, 154);
             this.comboBoxSerialHandshake.Name = "comboBoxSerialHandshake";
             this.comboBoxSerialHandshake.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialHandshake.TabIndex = 11;
@@ -189,7 +190,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 76);
+            this.label11.Location = new System.Drawing.Point(6, 130);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(74, 13);
             this.label11.TabIndex = 8;
@@ -201,17 +202,17 @@
             this.label2.Location = new System.Drawing.Point(0, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 13);
-            this.label2.TabIndex = 17;
+            this.label2.TabIndex = 2;
             this.label2.Text = "::Name:::";
             // 
             // textBoxName
             // 
             this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxName.Location = new System.Drawing.Point(155, 29);
+            this.textBoxName.Location = new System.Drawing.Point(200, 29);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(481, 20);
-            this.textBoxName.TabIndex = 18;
+            this.textBoxName.Size = new System.Drawing.Size(436, 20);
+            this.textBoxName.TabIndex = 3;
             // 
             // label1
             // 
@@ -219,7 +220,7 @@
             this.label1.Location = new System.Drawing.Point(0, 112);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 25;
+            this.label1.TabIndex = 10;
             this.label1.Text = "::ConnectionType:::";
             // 
             // comboBoxConnectionType
@@ -227,10 +228,10 @@
             this.comboBoxConnectionType.DisplayMember = "Name";
             this.comboBoxConnectionType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxConnectionType.FormattingEnabled = true;
-            this.comboBoxConnectionType.Location = new System.Drawing.Point(155, 109);
+            this.comboBoxConnectionType.Location = new System.Drawing.Point(200, 109);
             this.comboBoxConnectionType.Name = "comboBoxConnectionType";
             this.comboBoxConnectionType.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxConnectionType.TabIndex = 26;
+            this.comboBoxConnectionType.TabIndex = 11;
             this.comboBoxConnectionType.ValueMember = "Value";
             // 
             // comboBoxSerialParity
@@ -238,7 +239,7 @@
             this.comboBoxSerialParity.DisplayMember = "Name";
             this.comboBoxSerialParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialParity.FormattingEnabled = true;
-            this.comboBoxSerialParity.Location = new System.Drawing.Point(153, 73);
+            this.comboBoxSerialParity.Location = new System.Drawing.Point(197, 127);
             this.comboBoxSerialParity.Name = "comboBoxSerialParity";
             this.comboBoxSerialParity.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialParity.TabIndex = 9;
@@ -248,7 +249,7 @@
             // 
             this.label10.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(333, 49);
+            this.label10.Location = new System.Drawing.Point(6, 103);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(87, 13);
             this.label10.TabIndex = 6;
@@ -265,11 +266,10 @@
             // 
             // comboBoxSerialStopBits
             // 
-            this.comboBoxSerialStopBits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSerialStopBits.DisplayMember = "Name";
             this.comboBoxSerialStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialStopBits.FormattingEnabled = true;
-            this.comboBoxSerialStopBits.Location = new System.Drawing.Point(480, 46);
+            this.comboBoxSerialStopBits.Location = new System.Drawing.Point(197, 100);
             this.comboBoxSerialStopBits.Name = "comboBoxSerialStopBits";
             this.comboBoxSerialStopBits.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialStopBits.TabIndex = 7;
@@ -278,7 +278,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 49);
+            this.label9.Location = new System.Drawing.Point(6, 76);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(88, 13);
             this.label9.TabIndex = 4;
@@ -288,7 +288,7 @@
             // 
             this.comboBoxSerialDataBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialDataBits.FormattingEnabled = true;
-            this.comboBoxSerialDataBits.Location = new System.Drawing.Point(153, 46);
+            this.comboBoxSerialDataBits.Location = new System.Drawing.Point(197, 73);
             this.comboBoxSerialDataBits.Name = "comboBoxSerialDataBits";
             this.comboBoxSerialDataBits.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialDataBits.TabIndex = 5;
@@ -297,7 +297,7 @@
             // 
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(333, 22);
+            this.label8.Location = new System.Drawing.Point(6, 49);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(96, 13);
             this.label8.TabIndex = 2;
@@ -308,11 +308,11 @@
             this.buttonClearLocationId.FlatAppearance.BorderSize = 0;
             this.buttonClearLocationId.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonClearLocationId.Image = ((System.Drawing.Image)(resources.GetObject("buttonClearLocationId.Image")));
-            this.buttonClearLocationId.Location = new System.Drawing.Point(308, 83);
+            this.buttonClearLocationId.Location = new System.Drawing.Point(353, 82);
             this.buttonClearLocationId.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.buttonClearLocationId.Name = "buttonClearLocationId";
             this.buttonClearLocationId.Size = new System.Drawing.Size(21, 21);
-            this.buttonClearLocationId.TabIndex = 24;
+            this.buttonClearLocationId.TabIndex = 9;
             this.buttonClearLocationId.UseVisualStyleBackColor = true;
             this.buttonClearLocationId.Click += new System.EventHandler(this.buttonClearLocationId_Click);
             // 
@@ -321,18 +321,17 @@
             this.comboBoxLocationId.DisplayMember = "Name";
             this.comboBoxLocationId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLocationId.FormattingEnabled = true;
-            this.comboBoxLocationId.Location = new System.Drawing.Point(155, 83);
+            this.comboBoxLocationId.Location = new System.Drawing.Point(200, 82);
             this.comboBoxLocationId.Name = "comboBoxLocationId";
             this.comboBoxLocationId.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxLocationId.TabIndex = 23;
+            this.comboBoxLocationId.TabIndex = 8;
             this.comboBoxLocationId.ValueMember = "UniqueId";
             // 
             // comboBoxSerialBaudRate
             // 
-            this.comboBoxSerialBaudRate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSerialBaudRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialBaudRate.FormattingEnabled = true;
-            this.comboBoxSerialBaudRate.Location = new System.Drawing.Point(480, 19);
+            this.comboBoxSerialBaudRate.Location = new System.Drawing.Point(197, 46);
             this.comboBoxSerialBaudRate.Name = "comboBoxSerialBaudRate";
             this.comboBoxSerialBaudRate.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialBaudRate.TabIndex = 3;
@@ -357,10 +356,10 @@
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialBaudRate);
             this.groupBoxSerial.Controls.Add(this.label7);
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialComPort);
-            this.groupBoxSerial.Location = new System.Drawing.Point(0, 222);
+            this.groupBoxSerial.Location = new System.Drawing.Point(0, 86);
             this.groupBoxSerial.Name = "groupBoxSerial";
-            this.groupBoxSerial.Size = new System.Drawing.Size(636, 157);
-            this.groupBoxSerial.TabIndex = 29;
+            this.groupBoxSerial.Size = new System.Drawing.Size(633, 234);
+            this.groupBoxSerial.TabIndex = 1;
             this.groupBoxSerial.TabStop = false;
             this.groupBoxSerial.Text = "::USBOverCOM::";
             // 
@@ -377,7 +376,7 @@
             // 
             this.comboBoxSerialComPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialComPort.FormattingEnabled = true;
-            this.comboBoxSerialComPort.Location = new System.Drawing.Point(153, 19);
+            this.comboBoxSerialComPort.Location = new System.Drawing.Point(197, 19);
             this.comboBoxSerialComPort.Name = "comboBoxSerialComPort";
             this.comboBoxSerialComPort.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialComPort.TabIndex = 1;
@@ -390,10 +389,10 @@
             this.groupBoxNetwork.Controls.Add(this.numericPort);
             this.groupBoxNetwork.Controls.Add(this.label5);
             this.groupBoxNetwork.Controls.Add(this.textBoxAddress);
-            this.groupBoxNetwork.Location = new System.Drawing.Point(0, 136);
+            this.groupBoxNetwork.Location = new System.Drawing.Point(0, 0);
             this.groupBoxNetwork.Name = "groupBoxNetwork";
-            this.groupBoxNetwork.Size = new System.Drawing.Size(636, 80);
-            this.groupBoxNetwork.TabIndex = 28;
+            this.groupBoxNetwork.Size = new System.Drawing.Size(633, 80);
+            this.groupBoxNetwork.TabIndex = 0;
             this.groupBoxNetwork.TabStop = false;
             this.groupBoxNetwork.Text = "::Network::";
             // 
@@ -404,7 +403,7 @@
             this.buttonWizard.Location = new System.Drawing.Point(480, 0);
             this.buttonWizard.Name = "buttonWizard";
             this.buttonWizard.Size = new System.Drawing.Size(156, 23);
-            this.buttonWizard.TabIndex = 16;
+            this.buttonWizard.TabIndex = 1;
             this.buttonWizard.Text = "::Wizard::";
             this.buttonWizard.UseVisualStyleBackColor = true;
             this.buttonWizard.Click += new System.EventHandler(this.buttonWizard_Click);
@@ -412,10 +411,10 @@
             // checkBoxAutoReconnectAtStartup
             // 
             this.checkBoxAutoReconnectAtStartup.AutoSize = true;
-            this.checkBoxAutoReconnectAtStartup.Location = new System.Drawing.Point(336, 57);
+            this.checkBoxAutoReconnectAtStartup.Location = new System.Drawing.Point(381, 57);
             this.checkBoxAutoReconnectAtStartup.Name = "checkBoxAutoReconnectAtStartup";
             this.checkBoxAutoReconnectAtStartup.Size = new System.Drawing.Size(157, 17);
-            this.checkBoxAutoReconnectAtStartup.TabIndex = 21;
+            this.checkBoxAutoReconnectAtStartup.TabIndex = 6;
             this.checkBoxAutoReconnectAtStartup.Text = "::AutoReconnectAtStartup::";
             this.checkBoxAutoReconnectAtStartup.UseVisualStyleBackColor = true;
             // 
@@ -425,7 +424,7 @@
             this.label4.Location = new System.Drawing.Point(0, 58);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(54, 13);
-            this.label4.TabIndex = 19;
+            this.label4.TabIndex = 4;
             this.label4.Text = "::Format:::";
             // 
             // comboBoxDataSource
@@ -433,15 +432,28 @@
             this.comboBoxDataSource.DisplayMember = "Name";
             this.comboBoxDataSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDataSource.FormattingEnabled = true;
-            this.comboBoxDataSource.Location = new System.Drawing.Point(155, 55);
+            this.comboBoxDataSource.Location = new System.Drawing.Point(200, 55);
             this.comboBoxDataSource.Name = "comboBoxDataSource";
             this.comboBoxDataSource.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxDataSource.TabIndex = 20;
+            this.comboBoxDataSource.TabIndex = 5;
             this.comboBoxDataSource.ValueMember = "Value";
+            // 
+            // panelConnectionTypeSettings
+            // 
+            this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
+            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
+            this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 136);
+            this.panelConnectionTypeSettings.Name = "panelConnectionTypeSettings";
+            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 323);
+            this.panelConnectionTypeSettings.TabIndex = 30;
             // 
             // PageReceiver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.panelConnectionTypeSettings);
             this.Controls.Add(this.buttonTestConnection);
             this.Controls.Add(this.checkBoxEnabled);
             this.Controls.Add(this.label3);
@@ -451,19 +463,18 @@
             this.Controls.Add(this.comboBoxConnectionType);
             this.Controls.Add(this.buttonClearLocationId);
             this.Controls.Add(this.comboBoxLocationId);
-            this.Controls.Add(this.groupBoxSerial);
-            this.Controls.Add(this.groupBoxNetwork);
             this.Controls.Add(this.buttonWizard);
             this.Controls.Add(this.checkBoxAutoReconnectAtStartup);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxDataSource);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 384);
+            this.Size = new System.Drawing.Size(636, 459);
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
             this.groupBoxNetwork.ResumeLayout(false);
             this.groupBoxNetwork.PerformLayout();
+            this.panelConnectionTypeSettings.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -506,5 +517,6 @@
         private System.Windows.Forms.CheckBox checkBoxAutoReconnectAtStartup;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBoxDataSource;
+        private System.Windows.Forms.Panel panelConnectionTypeSettings;
     }
 }
