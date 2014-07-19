@@ -65,7 +65,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseForm.cs">
@@ -74,6 +73,19 @@
     <Compile Include="BaseUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="BindingListView\AggregateBindingListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BindingListView\BindingListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BindingListView\CompositeItemFilter.cs" />
+    <Compile Include="BindingListView\IItemFilter.cs" />
+    <Compile Include="BindingListView\INotifyingEditableObject.cs" />
+    <Compile Include="BindingListView\InvalidSourceListException.cs" />
+    <Compile Include="BindingListView\MultiSourceIndexList.cs" />
+    <Compile Include="BindingListView\ObjectView.cs" />
+    <Compile Include="BindingListView\ProvidedViewPropertyDescriptor.cs" />
     <Compile Include="BindingTag.cs" />
     <Compile Include="Binding\BindBoolToCheckbox.cs" />
     <Compile Include="Binding\BindCollectionToListView.cs" />
@@ -173,6 +185,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\NamespaceDoc.cs" />
+    <Compile Include="Controls\NameValue.cs" />
     <Compile Include="Controls\ObservableListComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -379,6 +392,7 @@
       <DependentUpon>PageWebSite.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionPage\RecordListHelper.cs" />
+    <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -391,6 +405,19 @@
     <Compile Include="SettingPage\PageDataSources.Designer.cs">
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageReceiver.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageReceiver.Designer.cs">
+      <DependentUpon>PageReceiver.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\PageReceivers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageReceivers.Designer.cs">
+      <DependentUpon>PageReceivers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\RecordListHelper.cs" />
     <Compile Include="SettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -641,6 +668,12 @@
     <EmbeddedResource Include="SettingPage\PageDataSources.resx">
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageReceiver.resx">
+      <DependentUpon>PageReceiver.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageReceivers.resx">
+      <DependentUpon>PageReceivers.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SettingsView.resx">
       <DependentUpon>SettingsView.cs</DependentUpon>
     </EmbeddedResource>
@@ -688,6 +721,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BindingListView\_README.txt" />
     <Content Include="Controls\LocationMapControl.html" />
   </ItemGroup>
   <ItemGroup />

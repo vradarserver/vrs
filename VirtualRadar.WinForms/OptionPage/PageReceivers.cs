@@ -72,9 +72,9 @@ namespace VirtualRadar.WinForms.OptionPage
             set { SetField(ref _FlightSimulatorXReceiverId, value, () => FlightSimulatorXReceiverId); }
         }
 
-        private ObservableCollection<Receiver> _Receivers = new ObservableCollection<Receiver>();
+        private BindingList<Receiver> _Receivers = new BindingList<Receiver>();
         [ValidationField(ValidationField.ReceiverIds)]
-        public ObservableCollection<Receiver> Receivers
+        public BindingList<Receiver> Receivers
         {
             get { return _Receivers; }
         }

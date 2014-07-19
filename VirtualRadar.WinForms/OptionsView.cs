@@ -966,7 +966,7 @@ namespace VirtualRadar.WinForms
                 HighestConfiguredFeedId = Math.Max(maxReceiverId, maxMergedFeedId);
 
                 RefreshCombinedFeeds();
-                PageReceivers.Receivers.CollectionChanged += (s, a) => RefreshCombinedFeeds();
+                PageReceivers.Receivers.ListChanged += (s, a) => RefreshCombinedFeeds();
                 PageMergedFeeds.MergedFeeds.Changed += (s, a) => RefreshCombinedFeeds();
 
                 AddPage(PageDataSources);

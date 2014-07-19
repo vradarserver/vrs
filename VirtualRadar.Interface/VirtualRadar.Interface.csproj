@@ -75,7 +75,6 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adsb\AdsbMessage.cs" />
@@ -137,6 +136,7 @@
     <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
     <Compile Include="IAirportDataDotCom.cs" />
     <Compile Include="ITcpConnectionStateService.cs" />
+    <Compile Include="Presenter\ISettingsPresenterProvider.cs" />
     <Compile Include="Presenter\ISettingsPresenter.cs" />
     <Compile Include="Presenter\IUsersListPresenter.cs" />
     <Compile Include="Presenter\IUsersPresenter.cs" />

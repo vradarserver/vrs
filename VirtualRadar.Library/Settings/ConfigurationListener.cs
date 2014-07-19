@@ -24,7 +24,7 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// A collection of hooked lists.
         /// </summary>
-        private List<INotifyCollectionChanged> _HookedLists = new List<INotifyCollectionChanged>();
+        private List<IBindingList> _HookedLists = new List<IBindingList>();
 
         // Lists of child objects that have been hooked.
         private List<Receiver> _HookedReceivers = new List<Receiver>();
@@ -134,10 +134,10 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.VersionCheckSettings.PropertyChanged +=      VersionCheckSettings_PropertyChanged;
                 _Configuration.WebServerSettings.PropertyChanged +=         WebServerSettings_PropertyChanged;
 
-                HookList(_Configuration.MergedFeeds,            _HookedMergedFeeds,         MergedFeed_PropertyChanged,         MergedFeeds_CollectionChanged);
-                HookList(_Configuration.RebroadcastSettings,    _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_CollectionChanged);
-                HookList(_Configuration.ReceiverLocations,      _HookedReceiverLocations,   ReceiverLocation_PropertyChanged,   ReceiverLocations_CollectionChanged);
-                HookList(_Configuration.Receivers,              _HookedReceivers,           Receiver_PropertyChanged,           Receivers_CollectionChanged);
+                HookList(_Configuration.MergedFeeds,            _HookedMergedFeeds,         MergedFeed_PropertyChanged,         MergedFeeds_ListChanged);
+                HookList(_Configuration.RebroadcastSettings,    _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged);
+                HookList(_Configuration.ReceiverLocations,      _HookedReceiverLocations,   ReceiverLocation_PropertyChanged,   ReceiverLocations_ListChanged);
+                HookList(_Configuration.Receivers,              _HookedReceivers,           Receiver_PropertyChanged,           Receivers_ListChanged);
             }
         }
 
@@ -157,10 +157,10 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.VersionCheckSettings.PropertyChanged -=      VersionCheckSettings_PropertyChanged;
                 _Configuration.WebServerSettings.PropertyChanged -=         WebServerSettings_PropertyChanged;
 
-                UnhookList(_Configuration.MergedFeeds,          _HookedMergedFeeds,         MergedFeed_PropertyChanged,         MergedFeeds_CollectionChanged);
-                UnhookList(_Configuration.RebroadcastSettings,  _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_CollectionChanged);
-                UnhookList(_Configuration.ReceiverLocations,    _HookedReceiverLocations,   ReceiverLocation_PropertyChanged,   ReceiverLocations_CollectionChanged);
-                UnhookList(_Configuration.Receivers,            _HookedReceivers,           Receiver_PropertyChanged,           Receivers_CollectionChanged);
+                UnhookList(_Configuration.MergedFeeds,          _HookedMergedFeeds,         MergedFeed_PropertyChanged,         MergedFeeds_ListChanged);
+                UnhookList(_Configuration.RebroadcastSettings,  _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged);
+                UnhookList(_Configuration.ReceiverLocations,    _HookedReceiverLocations,   ReceiverLocation_PropertyChanged,   ReceiverLocations_ListChanged);
+                UnhookList(_Configuration.Receivers,            _HookedReceivers,           Receiver_PropertyChanged,           Receivers_ListChanged);
 
                 _Configuration = null;
             }
@@ -174,7 +174,7 @@ namespace VirtualRadar.Library.Settings
         /// <param name="hookedRecords"></param>
         /// <param name="recordEventHandler"></param>
         /// <param name="listEventHandler"></param>
-        private void HookList<T>(ObservableCollection<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, NotifyCollectionChangedEventHandler listEventHandler)
+        private void HookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler)
             where T: INotifyPropertyChanged
         {
             if(_HookedLists.Contains(list)) UnhookList(list, hookedRecords, recordEventHandler, listEventHandler);
@@ -184,7 +184,7 @@ namespace VirtualRadar.Library.Settings
                 record.PropertyChanged += recordEventHandler;
             }
 
-            list.CollectionChanged += listEventHandler;
+            list.ListChanged += listEventHandler;
             _HookedLists.Add(list);
         }
 
@@ -196,7 +196,7 @@ namespace VirtualRadar.Library.Settings
         /// <param name="hookedRecords"></param>
         /// <param name="recordEventHandler"></param>
         /// <param name="listEventHandler"></param>
-        private void UnhookList<T>(ObservableCollection<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, NotifyCollectionChangedEventHandler listEventHandler)
+        private void UnhookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler)
             where T: INotifyPropertyChanged
         {
             if(_HookedLists.Contains(list)) {
@@ -205,7 +205,7 @@ namespace VirtualRadar.Library.Settings
                 }
                 hookedRecords.Clear();
 
-                list.CollectionChanged -= listEventHandler;
+                list.ListChanged -= listEventHandler;
                 _HookedLists.Remove(list);
             }
         }
@@ -279,24 +279,24 @@ namespace VirtualRadar.Library.Settings
         #endregion
 
         #region Event handlers - CollectionChanged
-        private void MergedFeeds_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void MergedFeeds_ListChanged(object sender, ListChangedEventArgs args)
         {
-            HookList(_Configuration.MergedFeeds, _HookedMergedFeeds, MergedFeed_PropertyChanged, MergedFeeds_CollectionChanged);
+            HookList(_Configuration.MergedFeeds, _HookedMergedFeeds, MergedFeed_PropertyChanged, MergedFeeds_ListChanged);
         }
 
-        private void RebroadcastSettings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void RebroadcastSettings_ListChanged(object sender, ListChangedEventArgs args)
         {
-            HookList(_Configuration.RebroadcastSettings, _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_CollectionChanged);
+            HookList(_Configuration.RebroadcastSettings, _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged);
         }
 
-        private void Receivers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void Receivers_ListChanged(object sender, ListChangedEventArgs args)
         {
-            HookList(_Configuration.Receivers, _HookedReceivers, Receiver_PropertyChanged, Receivers_CollectionChanged);
+            HookList(_Configuration.Receivers, _HookedReceivers, Receiver_PropertyChanged, Receivers_ListChanged);
         }
 
-        private void ReceiverLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void ReceiverLocations_ListChanged(object sender, ListChangedEventArgs args)
         {
-            HookList(_Configuration.ReceiverLocations, _HookedReceiverLocations, ReceiverLocation_PropertyChanged, ReceiverLocations_CollectionChanged);
+            HookList(_Configuration.ReceiverLocations, _HookedReceiverLocations, ReceiverLocation_PropertyChanged, ReceiverLocations_ListChanged);
         }
         #endregion
     }

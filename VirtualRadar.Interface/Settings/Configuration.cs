@@ -105,29 +105,29 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _RawDecodingSettings, value, () => RawDecodingSettings); }
         }
 
-        private ObservableCollection<Receiver> _Receivers = new ObservableCollection<Receiver>();
+        private BindingList<Receiver> _Receivers = new BindingList<Receiver>();
         /// <summary>
         /// Gets a list of every receveiver that the program will listen to.
         /// </summary>
-        public ObservableCollection<Receiver> Receivers { get { return _Receivers; } }
+        public BindingList<Receiver> Receivers { get { return _Receivers; } }
 
-        private ObservableCollection<MergedFeed> _MergedFeeds = new ObservableCollection<MergedFeed>();
+        private BindingList<MergedFeed> _MergedFeeds = new BindingList<MergedFeed>();
         /// <summary>
         /// Gets a list of the merged feeds of receivers that the program will maintain.
         /// </summary>
-        public ObservableCollection<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
+        public BindingList<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
 
-        private ObservableCollection<ReceiverLocation> _ReceiverLocations = new ObservableCollection<ReceiverLocation>();
+        private BindingList<ReceiverLocation> _ReceiverLocations = new BindingList<ReceiverLocation>();
         /// <summary>
         /// Gets a list of every receiver location recorded by the user.
         /// </summary>
-        public ObservableCollection<ReceiverLocation> ReceiverLocations { get { return _ReceiverLocations; } }
+        public BindingList<ReceiverLocation> ReceiverLocations { get { return _ReceiverLocations; } }
 
-        private ObservableCollection<RebroadcastSettings> _RebroadcastSettings = new ObservableCollection<RebroadcastSettings>();
+        private BindingList<RebroadcastSettings> _RebroadcastSettings = new BindingList<RebroadcastSettings>();
         /// <summary>
         /// Gets a list of all of the rebroadcast server settings recorded by the user.
         /// </summary>
-        public ObservableCollection<RebroadcastSettings> RebroadcastSettings { get { return _RebroadcastSettings; } }
+        public BindingList<RebroadcastSettings> RebroadcastSettings { get { return _RebroadcastSettings; } }
 
         /// <summary>
         /// See interface docs.
@@ -178,10 +178,10 @@ namespace VirtualRadar.Interface.Settings
             AudioSettings = new AudioSettings();
             RawDecodingSettings = new RawDecodingSettings();
 
-            _MergedFeeds.CollectionChanged +=           MergedFeeds_CollectionChanged;
-            _RebroadcastSettings.CollectionChanged +=   RebroadcastSettings_CollectionChanged;
-            _ReceiverLocations.CollectionChanged +=     ReceiverLocations_CollectionChanged;
-            _Receivers.CollectionChanged +=             Receivers_CollectionChanged;
+            _MergedFeeds.ListChanged +=           MergedFeeds_ListChanged;
+            _RebroadcastSettings.ListChanged +=   RebroadcastSettings_ListChanged;
+            _ReceiverLocations.ListChanged +=     ReceiverLocations_ListChanged;
+            _Receivers.ListChanged +=             Receivers_ListChanged;
         }
 
         /// <summary>
@@ -202,24 +202,32 @@ namespace VirtualRadar.Interface.Settings
             return ReceiverLocations.FirstOrDefault(r => r.UniqueId == locationUniqueId);
         }
 
-        private void MergedFeeds_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void MergedFeeds_ListChanged(object sender, ListChangedEventArgs args)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.MergedFeeds)));
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.MergedFeeds)));
+            }
         }
 
-        private void RebroadcastSettings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void RebroadcastSettings_ListChanged(object sender, ListChangedEventArgs args)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.RebroadcastSettings)));
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.RebroadcastSettings)));
+            }
         }
 
-        private void ReceiverLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void ReceiverLocations_ListChanged(object sender, ListChangedEventArgs args)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverLocations)));
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverLocations)));
+            }
         }
 
-        private void Receivers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void Receivers_ListChanged(object sender, ListChangedEventArgs args)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.Receivers)));
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.Receivers)));
+            }
         }
     }
 }

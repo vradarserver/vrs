@@ -76,11 +76,11 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _ConvertedUser, value, () => ConvertedUser); }
         }
 
-        private ObservableCollection<string> _BasicAuthenticationUserIds = new ObservableCollection<string>();
+        private BindingList<string> _BasicAuthenticationUserIds = new BindingList<string>();
         /// <summary>
         /// Gets the list of users that can log onto the site with Basic authentication.
         /// </summary>
-        public ObservableCollection<string> BasicAuthenticationUserIds
+        public BindingList<string> BasicAuthenticationUserIds
         {
             get { return _BasicAuthenticationUserIds; }
         }
@@ -169,6 +169,15 @@ namespace VirtualRadar.Interface.Settings
             AuthenticationScheme = AuthenticationSchemes.Anonymous;
             UPnpPort = 80;
             IsOnlyInternetServerOnLan = true;
+
+            BasicAuthenticationUserIds.ListChanged += BasicAuthenticationUserIds_ListChanged;
+        }
+
+        private void BasicAuthenticationUserIds_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.BasicAuthenticationUserIds)));
+            }
         }
     }
 }

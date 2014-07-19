@@ -47,15 +47,20 @@ namespace VirtualRadar.Library.Presenter
 
             public bool HasNoMessage { get { return Message == null && Format == null; } }
 
-            public ValidationParams(List<ValidationResult> results, ValidationField field) : this(results, field, null)
+            public ValidationParams(ValidationField field, List<ValidationResult> results) : this(field, results, null, ValidationField.None)
             {
             }
 
-            public ValidationParams(List<ValidationResult> results, ValidationField field, object record)
+            public ValidationParams(ValidationField field, List<ValidationResult> results, object record) : this(field, results, record, ValidationField.None)
+            {
+            }
+
+            public ValidationParams(ValidationField field, List<ValidationResult> results, object record, ValidationField valueChangedField)
             {
                 Results = results;
                 Field = field;
                 Record = record;
+                ValueChangedField = valueChangedField;
             }
 
             public void DefaultMessage(string message)

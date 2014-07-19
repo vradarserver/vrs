@@ -54,11 +54,11 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _Name, value, () => Name); }
         }
 
-        private ObservableCollection<int> _ReceiverIds = new ObservableCollection<int>();
+        private BindingList<int> _ReceiverIds = new BindingList<int>();
         /// <summary>
         /// Gets a list of the IDs for the receivers that are going to be merged into this feed.
         /// </summary>
-        public ObservableCollection<int> ReceiverIds { get { return _ReceiverIds; } }
+        public BindingList<int> ReceiverIds { get { return _ReceiverIds; } }
 
         private int _IcaoTimeout;
         /// <summary>
@@ -123,12 +123,14 @@ namespace VirtualRadar.Interface.Settings
             Enabled = true;
             IcaoTimeout = 3000;
 
-            _ReceiverIds.CollectionChanged += ReceiverIds_CollectionChanged;
+            _ReceiverIds.ListChanged += ReceiverIds_ListChanged;
         }
 
-        private void ReceiverIds_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void ReceiverIds_ListChanged(object sender, ListChangedEventArgs args)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverIds)));
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverIds)));
+            }
         }
     }
 }

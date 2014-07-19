@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Localisation;
-using System.Collections.ObjectModel;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
+using VirtualRadar.WinForms.Controls;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -56,6 +62,36 @@ namespace VirtualRadar.WinForms.SettingPage
         /// A map of controls to their inline help.
         /// </summary>
         protected Dictionary<Control, InlineHelp> _InlineHelpMap = new Dictionary<Control,InlineHelp>();
+
+        /// <summary>
+        /// The name of the property that is to be used for the page's title.
+        /// </summary>
+        private string _PageTitleProperty;
+
+        /// <summary>
+        /// A delegate that can fetch the page's title.
+        /// </summary>
+        private Func<string> _PageTitleFetcher;
+
+        /// <summary>
+        /// The name of the property that is used for the page's enabled state.
+        /// </summary>
+        private string _PageEnabledProperty;
+
+        /// <summary>
+        /// A delegate that can fetch the page's enabled state.
+        /// </summary>
+        private Func<bool> _PageEnabledFetcher;
+
+        /// <summary>
+        /// The list that is driving the content of the <see cref="ChildPages"/>, if any.
+        /// </summary>
+        private IBindingList _ChildPagesList;
+
+        /// <summary>
+        /// Creates a child page for an object.
+        /// </summary>
+        private Func<Page> _CreateChildPageDelegate;
         #endregion
 
         #region Properties
@@ -64,9 +100,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public virtual string PageTitle
         {
-            get {
-                return "Override PageTitle";
-            }
+            get { return _PageTitleFetcher != null ? _PageTitleFetcher() : ""; }
         }
         
         /// <summary>
@@ -74,11 +108,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public virtual bool PageEnabled
         {
-            get {
-                var result = true;
-
-                return result;
-            }
+            get { return _PageEnabledFetcher != null ? _PageEnabledFetcher() : true; }
         }
 
         /// <summary>
@@ -114,7 +144,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// Gets a collection of every child page under this page.
         /// </summary>
-        public ObservableCollection<Page> ChildPages { get; private set; }
+        public BindingList<Page> ChildPages { get; private set; }
 
         /// <summary>
         /// Gets or sets the tree node that represents this page in the owner view.
@@ -133,7 +163,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public Page()
         {
-            ChildPages = new ObservableCollection<Page>();
+            ChildPages = new BindingList<Page>();
 
             InitializeComponent();
         }
@@ -163,11 +193,21 @@ namespace VirtualRadar.WinForms.SettingPage
             if(SettingsView == null) {
                 ClearBindings();
             } else {
+                AssociateChildPages();
                 InitialiseControls();
                 CreateBindings();
                 AssociateValidationFields();
                 AssociateInlineHelp();
             }
+        }
+
+        /// <summary>
+        /// Gives the derived class the opportunity to synchronise its child pages list with something (or
+        /// just create them if they're not associated with anything).
+        /// </summary>
+        protected virtual void AssociateChildPages()
+        {
+            ;
         }
 
         /// <summary>
@@ -212,6 +252,58 @@ namespace VirtualRadar.WinForms.SettingPage
         protected virtual void AssociateInlineHelp()
         {
             ;
+        }
+        #endregion
+
+        #region CreateSortingBindingSource, CreateSortingEnumSource
+        /// <summary>
+        /// Creates a binding source that automatically sorts the list that it's attached to.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="sortColumn"></param>
+        /// <returns></returns>
+        protected BindingSource CreateSortingBindingSource<T>(IList<T> list, Expression<Func<T, object>> sortColumn)
+        {
+            if(list == null) throw new ArgumentNullException("list");
+
+            var castList = list as IList;
+            if(castList == null) throw new ArgumentException("The list must be castable to IList");
+
+            var bindingListView = new Equin.ApplicationFramework.BindingListView<T>(castList);
+            var result = new BindingSource();
+            result.DataSource = bindingListView;
+            result.Sort = PropertyHelper.ExtractName<T>(sortColumn);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a simple unsorted binding source on a list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        protected BindingSource CreateListBindingSource<T>(IList<T> list)
+        {
+            var result = new BindingSource();
+            result.DataSource = list;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a binding source of enum values sorted by their description.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="describeEnumValue"></param>
+        /// <returns></returns>
+        protected BindingSource CreateSortingEnumSource<T>(Func<T, string> describeEnumValue)
+        {
+            var list = NameValue<T>.EnumList(describeEnumValue).OrderBy(r => r.Name).ToArray();
+            var result = new BindingSource();
+            result.DataSource = list;
+
+            return result;
         }
         #endregion
 
@@ -290,13 +382,138 @@ namespace VirtualRadar.WinForms.SettingPage
         }
         #endregion
 
-        #region PageSelected
+        #region SetPageTitleProperty, SetPageEnabledProperty
+        /// <summary>
+        /// Sets up the automatic page title fetcher.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pageTitleProperty">A LINQ expression that gives the name of the page title property. Set to null if the page title is a composite of many properties.</param>
+        /// <param name="pageTitleFetcher">A function that returns the current value for the page title.</param>
+        protected void SetPageTitleProperty<T>(Expression<Func<T, object>> pageTitleProperty, Func<string> pageTitleFetcher)
+        {
+            _PageTitleProperty = pageTitleProperty == null ? null : PropertyHelper.ExtractName<T>(pageTitleProperty);
+            _PageTitleFetcher = pageTitleFetcher;
+
+            if(SettingsView != null) SettingsView.RefreshPageTreeNode(this);
+        }
+
+        /// <summary>
+        /// Sets up the automatic page enabled fetcher.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pageEnabledProperty">A LINQ expression that gives the name of the page enabled property. Set to null if the page enabled state is not held by a single property.</param>
+        /// <param name="pageEnabledFetcher">A function that returns the current value for the page enabled state.</param>
+        protected void SetPageEnabledProperty<T>(Expression<Func<T, object>> pageEnabledProperty, Func<bool> pageEnabledFetcher)
+        {
+            _PageEnabledProperty = pageEnabledProperty == null ? null : PropertyHelper.ExtractName<T>(pageEnabledProperty);
+            _PageEnabledFetcher = pageEnabledFetcher;
+
+            if(SettingsView != null) SettingsView.RefreshPageTreeNode(this);
+        }
+        #endregion
+
+        #region Child object to page handling
+        /// <summary>
+        /// Hooks up an observable collection with code that creates child pages for that collection's contents.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="createPageForChild"></param>
+        internal void AssociateListWithChildPages<T>(BindingList<T> list, Func<Page> createPageForChild)
+        {
+            _ChildPagesList = list;
+            _CreateChildPageDelegate = createPageForChild;
+            _ChildPagesList.ListChanged += ChildPagesList_ListChanged;
+
+            SynchroniseListToChildPages();
+        }
+
+        /// <summary>
+        /// Synchronises an observable list's content to the child pages collection.
+        /// </summary>
+        private void SynchroniseListToChildPages()
+        {
+            if(_ChildPagesList != null && _CreateChildPageDelegate != null) {
+                // Delete old pages
+                foreach(var childPage in ChildPages.ToArray()) {
+                    if(!((IList)_ChildPagesList).OfType<object>().Any(r => r == childPage.PageObject)) {
+                        ChildPages.Remove(childPage);
+                    }
+                }
+
+                // Add new pages
+                foreach(var record in (IList)_ChildPagesList) {
+                    if(!ChildPages.Any(r => r.PageObject == record)) {
+                        var newChildPage = _CreateChildPageDelegate();
+                        newChildPage.PageObject = record;
+                        ChildPages.Add(newChildPage);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called whenever the observable list that is driving the creation of child pages is changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void ChildPagesList_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            SynchroniseListToChildPages();
+        }
+        #endregion
+
+        #region PageSelected, ConfigurationChanged, PageDetached
         /// <summary>
         /// Called after the page is selected.
         /// </summary>
-        public virtual void PageSelected()
+        internal virtual void PageSelected()
         {
             ;
+        }
+
+        /// <summary>
+        /// Called when a configuration property somewhere has changed.
+        /// </summary>
+        /// <param name="args"></param>
+        internal virtual void ConfigurationChanged(ConfigurationListenerEventArgs args)
+        {
+            var refreshPageTreeNode = false;
+
+            if(args.Record == PageObject && SettingsView != null) {
+                if(_PageTitleFetcher != null) {
+                    if(_PageTitleProperty == null || args.PropertyName == _PageTitleProperty) {
+                        refreshPageTreeNode = true;
+                    }
+                }
+                if(_PageEnabledFetcher != null) {
+                    if(_PageEnabledProperty == null || args.PropertyName == _PageEnabledProperty) {
+                        refreshPageTreeNode = true;
+                    }
+                }
+            }
+
+            if(refreshPageTreeNode) {
+                SettingsView.RefreshPageTreeNode(this);
+            }
+        }
+
+        /// <summary>
+        /// Called when the page is about to be removed from display while the parent form is still active.
+        /// </summary>
+        internal virtual void PageDetaching()
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Called when the page has been removed from display while the parent form is still active.
+        /// </summary>
+        internal virtual void PageDetached()
+        {
+            if(_ChildPagesList != null) {
+                _ChildPagesList.ListChanged -= ChildPagesList_ListChanged;
+            }
         }
         #endregion
     }
