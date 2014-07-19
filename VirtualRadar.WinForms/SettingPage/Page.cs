@@ -305,6 +305,24 @@ namespace VirtualRadar.WinForms.SettingPage
 
             return result;
         }
+
+        /// <summary>
+        /// Creates a binding source of NameValue&lt;T&gt; values. These can be bound to Name and Value
+        /// properties in ComboBoxes and are preferrable over CreateListBindingSource when the content
+        /// of the list may change depending on the environment - if the current value is not present
+        /// in the list it shows an empty combo box instead of the first value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        protected BindingSource CreateNameValueSource<T>(IEnumerable<T> list)
+        {
+            var nameValueList = NameValue<T>.CreateList(list);
+            var result = new BindingSource();
+            result.DataSource = nameValueList;
+
+            return result;
+        }
         #endregion
 
         #region SetValidationFields, GetControlForValidationField
