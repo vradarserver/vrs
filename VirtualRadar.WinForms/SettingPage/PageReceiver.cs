@@ -65,6 +65,8 @@ namespace VirtualRadar.WinForms.SettingPage
         public PageReceiver()
         {
             InitializeComponent();
+            buttonWizard.Image = Images.Wizard16x16;
+            buttonTestConnection.Image = Images.Test16x16;
         }
 
         protected override void InitialiseControls()
