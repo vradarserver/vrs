@@ -74,6 +74,9 @@ namespace VirtualRadar
                     Thread.CurrentThread.CurrentUICulture = ForcedCultureInfo;
                     Thread.CurrentThread.CurrentCulture = ForcedCultureInfo;
                 }
+                if(arg.ToUpper() == "-DEFAULTFONTS") {
+                    VirtualRadar.WinForms.FontFactory.DisableFontReplacement = true;
+                }
             }
 
             Factory.Singleton.Register<IApplicationInformation, ApplicationInformation>();

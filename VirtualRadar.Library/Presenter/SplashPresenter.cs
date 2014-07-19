@@ -120,8 +120,9 @@ namespace VirtualRadar.Library.Presenter
             if(CommandLineArgs != null) {
                 foreach(var arg in CommandLineArgs) {
                     var caselessArg = arg.ToUpper();
-                    if(caselessArg.StartsWith("-CULTURE:")) continue;
-                    else if(arg == "-showConfigFolder") continue;
+                    if(caselessArg.StartsWith("-CULTURE:"))     continue;
+                    else if(caselessArg == "-SHOWCONFIGFOLDER") continue;
+                    else if(caselessArg == "-DEFAULTFONTS")     continue;
                     else if(caselessArg.StartsWith("-WORKINGFOLDER:")) {
                         var folder = arg.Substring(15);
                         if(!Provider.FolderExists(folder)) _View.ReportProblem(String.Format(Strings.FolderDoesNotExistFull, folder), Strings.FolderDoesNotExistTitle, true);

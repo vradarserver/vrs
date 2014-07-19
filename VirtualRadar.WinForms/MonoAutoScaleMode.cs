@@ -33,6 +33,11 @@ namespace VirtualRadar.WinForms
     class MonoAutoScaleMode
     {
         /// <summary>
+        /// Gets or sets a value indicating that font scaling is to be disabled throughout the application.
+        /// </summary>
+        public static bool AlwaysDisableFontScaling;
+
+        /// <summary>
         /// True if we're running under Mono.
         /// </summary>
         private bool _IsMono;
@@ -64,7 +69,7 @@ namespace VirtualRadar.WinForms
             // Unfortunately this MUST be called in the constructor for forms and user controls, which means this will be called at design-time.
             // The factory doesn't have anything in it at design-time, so it'll throw an exception. We need to throw the exception away.
             try {
-                _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+                _IsMono = AlwaysDisableFontScaling ? true : Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
             } catch { }
         }
 
