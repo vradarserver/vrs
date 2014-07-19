@@ -29,6 +29,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
         protected override void CreateBindings()
         {
+            base.CreateBindings();
             AddBinding(SettingsView, fileDatabaseFileName,              r => r.Configuration.BaseStationSettings.DatabaseFileName,          r => r.FileName);
             AddBinding(SettingsView, folderFlags,                       r => r.Configuration.BaseStationSettings.OperatorFlagsFolder,       r => r.Folder);
             AddBinding(SettingsView, folderSilhouettes,                 r => r.Configuration.BaseStationSettings.SilhouettesFolder,         r => r.Folder);
@@ -38,6 +39,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
         protected override void AssociateValidationFields()
         {
+            base.AssociateValidationFields();
             SetValidationFields(new Dictionary<ValidationField, Control>() {
                 { ValidationField.BaseStationDatabase,  fileDatabaseFileName },
                 { ValidationField.FlagsFolder,          folderFlags },
@@ -48,6 +50,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
         protected override void AssociateInlineHelp()
         {
+            base.AssociateInlineHelp();
             SetInlineHelp(fileDatabaseFileName,             Strings.DatabaseFileName,           Strings.OptionsDescribeDataSourcesDatabaseFileName);
             SetInlineHelp(folderFlags,                      Strings.FlagsFolder,                Strings.OptionsDescribeDataSourcesFlagsFolder);
             SetInlineHelp(folderSilhouettes,                Strings.SilhouettesFolder,          Strings.OptionsDescribeDataSourcesSilhouettesFolder);

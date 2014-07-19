@@ -87,7 +87,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <summary>
         /// The collection that we're bound to.
         /// </summary>
-        private INotifyCollectionChanged _NotifyingCollection;
+        private IBindingList _BindingList;
         #endregion
 
         #region Control Properties
@@ -181,8 +181,8 @@ namespace VirtualRadar.WinForms.Controls
             get { return _DataSource; }
             set
             {
-                var list = value as INotifyCollectionChanged;
-                if(value != null && list == null) throw new InvalidOperationException("Only ObservableCollection<T> collections can be bound to BindingListViews");
+                var list = value as IBindingList;
+                if(value != null && list == null) throw new InvalidOperationException("Only IBindingList collections can be bound to BindingListViews");
                 if(_DataSource != list) {
                     _DataSource = list;
                     SetDataBinding();
@@ -382,7 +382,7 @@ namespace VirtualRadar.WinForms.Controls
             if(BindingContext != null) {
                 var reloadItems = false;
                 var currencyManager = DataSource == null ? null : BindingContext[DataSource] as CurrencyManager;
-                var notifyingCollection = currencyManager == null ? null : currencyManager.List as INotifyCollectionChanged;
+                var bindingList = currencyManager == null ? null : currencyManager.List as IBindingList;
 
                 if(currencyManager != _CurrencyManager) {
                     if(_CurrencyManager != null) {
@@ -401,16 +401,16 @@ namespace VirtualRadar.WinForms.Controls
                     }
                 }
 
-                if(notifyingCollection != _NotifyingCollection) {
-                    if(_NotifyingCollection != null) {
-                        _NotifyingCollection.CollectionChanged -= NotifyingCollection_CollectionChanged;
+                if(bindingList != _BindingList) {
+                    if(_BindingList != null) {
+                        _BindingList.ListChanged -= BindingList_ListChanged;
                     }
 
-                    _NotifyingCollection = notifyingCollection;
+                    _BindingList = bindingList;
 
-                    if(_NotifyingCollection != null) {
+                    if(_BindingList != null) {
                         reloadItems = true;
-                        _NotifyingCollection.CollectionChanged += NotifyingCollection_CollectionChanged;
+                        _BindingList.ListChanged += BindingList_ListChanged;
                     }
                 }
 
@@ -421,6 +421,20 @@ namespace VirtualRadar.WinForms.Controls
             }
 
             return result;
+        }
+        #endregion
+
+        #region ResetBinding
+        /// <summary>
+        /// Refreshes the display of a single record.
+        /// </summary>
+        /// <param name="record"></param>
+        public void ResetBinding(object record)
+        {
+            //var listViewItem = listView.Items.OfType<ListViewItem>().FirstOrDefault(r => r.Tag == record);
+            //if(listViewItem != null) {
+            //    RefreshListViewItem(listViewItem);
+            //}
         }
         #endregion
 
@@ -680,26 +694,47 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void NotifyingCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void BindingList_ListChanged(object sender, ListChangedEventArgs args)
         {
-            switch(args.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    foreach(var newRecord in args.NewItems.OfType<object>().Reverse()) {
-                        var newItem = CreateListViewItemForRecord(newRecord);
-                        listView.Items.Insert(args.NewStartingIndex, newItem);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach(var deletedItem in args.OldItems) {
-                        var listViewItem = listView.Items.OfType<ListViewItem>().FirstOrDefault(r => r.Tag == deletedItem);
-                        if(listViewItem != null) {
-                            listView.Items.Remove(listViewItem);
+            var populating = _Populating;
+            try {
+                _Populating = true;
+                switch (args.ListChangedType) {
+                    case ListChangedType.Reset:
+                        LoadItemsFromSource();
+                        break;
+                    case ListChangedType.ItemChanged:
+                        object changedRow = _CurrencyManager.List[args.NewIndex];
+                        listView.BeginUpdate();
+                        listView.Items[args.NewIndex] = CreateListViewItemForRecord(changedRow);
+                        listView.EndUpdate();
+                        break;
+                    case ListChangedType.ItemAdded:
+                        object newRow = _CurrencyManager.List[args.NewIndex];
+                        var drv = newRow as DataRowView;
+                        if(drv == null || !drv.IsNew) {
+                            listView.BeginUpdate();
+                            listView.Items.Insert(args.NewIndex, CreateListViewItemForRecord(newRow));
+                            listView.EndUpdate();
                         }
-                    }
-                    break;
-                default:
-                    LoadItemsFromSource();
-                    break;
+                        break;
+                    case ListChangedType.ItemDeleted:
+                        if(args.NewIndex < listView.Items.Count) {
+                            listView.Items.RemoveAt(args.NewIndex);
+                        }
+                        break;
+                    case ListChangedType.ItemMoved:
+                        listView.BeginUpdate();
+                        var moving = listView.Items[args.OldIndex];
+                        listView.Items.Insert(args.NewIndex, moving);
+                        listView.EndUpdate();
+                        break;
+                    default:
+                        LoadItemsFromSource();
+                        break;
+                }
+            } finally {
+                _Populating = populating;
             }
         }
 
@@ -732,15 +767,24 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         private void CurrencyManager_ItemChanged(object sender, ItemChangedEventArgs args)
         {
-            // See the comments in the code that I nicked, which in turn borrows from Mark Boulter's code :)
-            // Basically an index of -1 seems to be "everything has changed". In his code he reproduces some
-            // of the code from SetDataBinding but I can't see any harm in just resetting the binding
-            // wholesale.
-            if(args.Index == -1) {
-                if(!SetDataBinding()) {
-                    LoadItemsFromSource();
-                }
-            }
+            // The code that I swiped was calling LoadItemsFromSource if the index was set to -1
+            // but this causes problems. This event is called when the source list is a binding
+            // list and the binding list had an item deleted. This event is raised after the 
+            // delete with an index of -1, that causes the list to reload without the deleted
+            // item and then the BindingList_ListChanged event is raised with the delete action,
+            // which then deletes whatever item was at the index of the originally deleted item.
+            //
+            // I'm guessing he only ever bound to DataTables? Dunno. Either way, this is doing
+            // the same thing as BindingList_ListChanged, only one of them should be allowed to
+            // run... so I'm giving this one the chop.
+            //if(args.Index == -1) {
+            //    _BindingList.ListChanged -= new ListChangedEventHandler(BindingList_ListChanged);
+            //    _BindingList = _CurrencyManager.List as IBindingList;
+            //    if(_BindingList!= null) {
+            //        _BindingList.ListChanged += new ListChangedEventHandler(BindingList_ListChanged);
+            //    }
+            //    LoadItemsFromSource();
+            //}
         }
         #endregion
     }

@@ -48,6 +48,11 @@ namespace VirtualRadar.WinForms
         private DynamicImageList _ImageList = new DynamicImageList();
 
         /// <summary>
+        /// The object that is listening to the configuration for changes.
+        /// </summary>
+        private IConfigurationListener _ConfigurationListener;
+
+        /// <summary>
         /// A list of all pages that have had their events hooked.
         /// </summary>
         private List<Page> _HookedPages = new List<Page>();
@@ -60,6 +65,7 @@ namespace VirtualRadar.WinForms
         // All of the top-level pages in the order in which they are shown to the user.
         private Page[] _TopLevelPages = new Page[] {
             new PageDataSources(),
+            new PageReceivers(),
         };
         #endregion
 
@@ -110,15 +116,26 @@ namespace VirtualRadar.WinForms
         public Configuration Configuration
         {
             get { return _Configuration; }
-            set { SetField(ref _Configuration, value, () => Configuration); }
+            set {
+                _ConfigurationListener.Initialise(value);
+                SetField(ref _Configuration, value, () => Configuration);
+            }
         }
 
-
-        private ObservableCollection<IUser> _Users = new ObservableCollection<IUser>();
+        private BindingList<IUser> _Users = new BindingList<IUser>();
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ObservableCollection<IUser> Users { get { return _Users; } }
+        public BindingList<IUser> Users { get { return _Users; } }
+
+        private BindingList<CombinedFeed> _CombinedFeed = new BindingList<CombinedFeed>();
+        /// <summary>
+        /// Gets a combined collection of receivers and merged feeds.
+        /// </summary>
+        public BindingList<CombinedFeed> CombinedFeed
+        {
+            get { return _CombinedFeed; }
+        }
         #endregion
 
         #region Events
@@ -276,6 +293,8 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public SettingsView()
         {
+            _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
+            _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
             InitializeComponent();
         }
         #endregion
@@ -299,12 +318,69 @@ namespace VirtualRadar.WinForms
                 _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
                 _Presenter.Initialise(this);
 
+                InitialiseCombinedFeed();
+
                 foreach(var page in _TopLevelPages) {
                     AddPage(page, null);
                 }
+                treeViewPagePicker.ExpandAll();
 
                 DisplayPage(_TopLevelPages.First());
             }
+        }
+        #endregion
+
+        #region CombinedFeed handling
+        /// <summary>
+        /// One-time setup of the <see cref="CombinedFeed"/> collection, including
+        /// the hooking of the constituent lists.
+        /// </summary>
+        private void InitialiseCombinedFeed()
+        {
+            Configuration.Receivers.ListChanged += CombinedFeed_Source_ListChanged;
+            Configuration.MergedFeeds.ListChanged += CombinedFeed_Source_ListChanged;
+
+            SyncCombinedFeed();
+        }
+
+        /// <summary>
+        /// Ensures that the combined feed contains only those records that are present in the source lists.
+        /// </summary>
+        private void SyncCombinedFeed()
+        {
+            // Sync receivers
+            var cfReceivers = CombinedFeed.Where(r => r.Receiver != null).ToArray();
+            var deletedCfReceivers = cfReceivers.Where(r => !Configuration.Receivers.Any(i => i == r.Receiver)).ToArray();
+            var newCfReceivers = Configuration.Receivers.Except(cfReceivers.Select(r => r.Receiver)).ToArray();
+            foreach(var deleteCombinedFeed in deletedCfReceivers) {
+                CombinedFeed.Remove(deleteCombinedFeed);
+                deleteCombinedFeed.Dispose();
+            }
+            foreach(var newReceiver in newCfReceivers) {
+                CombinedFeed.Add(new CombinedFeed(newReceiver));
+            }
+
+            // Sync merged feeds
+            var cfMergedFeeds = CombinedFeed.Where(r => r.MergedFeed != null).ToArray();
+            var deletedCfMergedFeeds = cfMergedFeeds.Where(r => !Configuration.MergedFeeds.Any(i => i == r.MergedFeed)).ToArray();
+            var newCfMergedFeeds = Configuration.MergedFeeds.Except(cfMergedFeeds.Select(r => r.MergedFeed)).ToArray();
+            foreach(var deleteCombinedFeed in deletedCfMergedFeeds) {
+                CombinedFeed.Remove(deleteCombinedFeed);
+                deleteCombinedFeed.Dispose();
+            }
+            foreach(var newMergedFeed in newCfMergedFeeds) {
+                CombinedFeed.Add(new CombinedFeed(newMergedFeed));
+            }
+        }
+
+        /// <summary>
+        /// Called whenever a source list for the combined feed changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void CombinedFeed_Source_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            SyncCombinedFeed();
         }
         #endregion
 
@@ -339,16 +415,16 @@ namespace VirtualRadar.WinForms
                 panelPageContent.Controls.Add(page);
             }
 
+            if(page.SettingsView == null) {
+                page.SettingsView = this;
+            }
+
             foreach(var subPage in page.ChildPages) {
                 AddPage(subPage, page);
             }
 
             if(!_HookedPages.Contains(page)) {
-                page.ChildPages.CollectionChanged += Page_ChildPages_CollectionChanged;
-            }
-
-            if(page.SettingsView == null) {
-                page.SettingsView = this;
+                page.ChildPages.ListChanged += Page_ChildPages_ListChanged;
             }
         }
 
@@ -360,16 +436,18 @@ namespace VirtualRadar.WinForms
         public void RemovePage(Page page, bool makeParentCurrent)
         {
             if(page != null) {
-                if(page.SettingsView != null) {
-                    page.SettingsView = null;
-                }
+                page.PageDetaching();
                 
                 if(_HookedPages.Contains(page)) {
-                    page.ChildPages.CollectionChanged -= Page_ChildPages_CollectionChanged;
+                    page.ChildPages.ListChanged -= Page_ChildPages_ListChanged;
                 }
 
                 foreach(var subPage in page.ChildPages) {
                     RemovePage(subPage, makeParentCurrent);
+                }
+
+                if(page.SettingsView != null) {
+                    page.SettingsView = null;
                 }
 
                 if(page.TreeNode != null) {
@@ -402,6 +480,8 @@ namespace VirtualRadar.WinForms
                         }
                     }
                 }
+
+                page.PageDetached();
             }
         }
 
@@ -606,7 +686,41 @@ namespace VirtualRadar.WinForms
         /// <param name="title"></param>
         public void ShowTestConnectionResults(string message, string title)
         {
-            throw new NotImplementedException();
+            MessageBox.Show(message, title);
+        }
+        #endregion
+
+        #region Child object creation - CreateReceiver etc.
+        /// <summary>
+        /// Creates a new receiver.
+        /// </summary>
+        /// <returns></returns>
+        internal Receiver CreateReceiver()
+        {
+            return _Presenter.CreateReceiver();
+        }
+        #endregion
+
+        #region Source helpers - GetSerialPortNames
+        /// <summary>
+        /// Returns a collection of serial port names.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetSerialPortNames()
+        {
+            return _Presenter.GetSerialPortNames();
+        }
+        #endregion
+
+        #region Wizard helpers - ApplyReceiverConfigurationWizard
+        /// <summary>
+        /// Applies the answers from a receiver configuration wizard to a receiver.
+        /// </summary>
+        /// <param name="answers"></param>
+        /// <param name="receiver"></param>
+        public void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver)
+        {
+            _Presenter.ApplyReceiverConfigurationWizard(answers, receiver);
         }
         #endregion
 
@@ -718,15 +832,30 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region Events subscribed - ConfigurationListener
+        /// <summary>
+        /// Called when the configuration changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void ConfigurationListener_PropertyChanged(object sender, ConfigurationListenerEventArgs args)
+        {
+            // Tell all the pages that something somewhere has changed the configuration
+            foreach(var page in GetAllPages()) {
+                page.ConfigurationChanged(args);
+            }
+        }
+        #endregion
+
         #region Events subscribed - Page
         /// <summary>
         /// Called when a page's child collection is changed after it has been added to the tree view.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void Page_ChildPages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void Page_ChildPages_ListChanged(object sender, ListChangedEventArgs args)
         {
-            var childPages = (ObservableCollection<Page>)sender;
+            var childPages = (BindingList<Page>)sender;
             var parentPage = GetAllPages().FirstOrDefault(r => r.ChildPages == childPages);
             if(parentPage != null) {
                 SynchroniseTreeViewToChildPages(parentPage);

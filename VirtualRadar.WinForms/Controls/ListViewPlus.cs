@@ -18,7 +18,8 @@ using System.ComponentModel;
 namespace VirtualRadar.WinForms.Controls
 {
     /// <summary>
-    /// A subclass of ListView that adds a couple of missing features.
+    /// A subclass of ListView that doesn't mess about with the check state when
+    /// you double-click a row.
     /// </summary>
     public class ListViewPlus : ListView
     {

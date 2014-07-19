@@ -10,10 +10,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Settings;
-using System.Collections.ObjectModel;
 
 namespace VirtualRadar.Interface.View
 {
@@ -31,7 +32,7 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets the list of configured users.
         /// </summary>
-        ObservableCollection<IUser> Users { get; }
+        BindingList<IUser> Users { get; }
         #endregion
 
         #region Events

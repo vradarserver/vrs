@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.StandingData;
+using System.ComponentModel;
 
 namespace VirtualRadar.Library
 {
@@ -650,8 +651,8 @@ namespace VirtualRadar.Library
         /// </summary>
         public Aircraft()
         {
-            var stopOvers = new ObservableCollection<string>();
-            stopOvers.CollectionChanged += Stopovers_CollectionChanged;
+            var stopOvers = new BindingList<string>();
+            stopOvers.ListChanged += Stopovers_ListChanged;
             Stopovers = stopOvers;
 
             FullCoordinates = new List<Coordinate>();
@@ -865,7 +866,7 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void Stopovers_CollectionChanged(object sender, EventArgs args)
+        private void Stopovers_ListChanged(object sender, EventArgs args)
         {
             StopoversChanged = DataVersion;
         }

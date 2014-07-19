@@ -108,14 +108,14 @@ namespace VirtualRadar.WinForms.OptionPage
         private List<IObservable> _HookedObservableChangeds = new List<IObservable>();
 
         /// <summary>
-        /// A list of ObservableCollection objects that have been hooked.
+        /// A list of list objects that have been hooked.
         /// </summary>
-        private List<INotifyCollectionChanged> _HookedObservableCollections = new List<INotifyCollectionChanged>();
+        private List<IBindingList> _HookedObservableCollections = new List<IBindingList>();
 
         /// <summary>
         /// A map of lists to the control that they're bound to.
         /// </summary>
-        private Dictionary<INotifyCollectionChanged, Control> _ListControls = new Dictionary<INotifyCollectionChanged,Control>();
+        private Dictionary<IBindingList, Control> _ListControls = new Dictionary<IBindingList,Control>();
 
         /// <summary>
         /// A list of controls that have had their Enter and Leave events hooked.
@@ -357,7 +357,7 @@ namespace VirtualRadar.WinForms.OptionPage
         /// Binds a list to a control.
         /// </summary>
         /// <param name="list"></param>
-        protected void BindList<T>(ObservableCollection<T> collection, Control control)
+        protected void BindList<T>(BindingList<T> collection, Control control)
         {
             var dataSourcePropertyInfo = control.GetType().GetProperty("DataSource");
             if(dataSourcePropertyInfo == null) throw new InvalidOperationException(String.Format("Lists cannot be bound to {0} controls", control.GetType().Name));
@@ -466,26 +466,26 @@ namespace VirtualRadar.WinForms.OptionPage
         }
 
         /// <summary>
-        /// Hooks an ObservableCollection's CollectionChanged event.
+        /// Hooks an BindingList's ListChanged event.
         /// </summary>
-        /// <param name="collection"></param>
-        private void HookObservableCollection(INotifyCollectionChanged collection)
+        /// <param name="list"></param>
+        private void HookObservableCollection(IBindingList list)
         {
-            if(!_HookedObservableCollections.Contains(collection)) {
-                collection.CollectionChanged += ObservableCollection_CollectionChanged;
-                _HookedObservableCollections.Add(collection);
+            if(!_HookedObservableCollections.Contains(list)) {
+                list.ListChanged += BindingList_ListChanged;
+                _HookedObservableCollections.Add(list);
             }
         }
 
         /// <summary>
-        /// Unhooks an ObservableCollection's CollectionChanged event.
+        /// Unhooks an BindingList's ListChanged event.
         /// </summary>
-        /// <param name="collection"></param>
-        private void UnhookObservableCollection(INotifyCollectionChanged collection)
+        /// <param name="list"></param>
+        private void UnhookObservableCollection(IBindingList list)
         {
-            if(_HookedObservableCollections.Contains(collection)) {
-                collection.CollectionChanged -= ObservableCollection_CollectionChanged;
-                _HookedObservableCollections.Remove(collection);
+            if(_HookedObservableCollections.Contains(list)) {
+                list.ListChanged -= BindingList_ListChanged;
+                _HookedObservableCollections.Remove(list);
             }
         }
 
@@ -550,8 +550,8 @@ namespace VirtualRadar.WinForms.OptionPage
             var binding = bindings.FirstOrDefault(r => r.DataSource == this && r.BindingMemberInfo.BindingField == propertyInfo.Name);
             if(binding != null) result = binding.Control;
             else {
-                if(typeof(INotifyCollectionChanged).IsAssignableFrom(propertyInfo.PropertyType)) {
-                    var list = (INotifyCollectionChanged)propertyInfo.GetValue(this, null);
+                if(typeof(IBindingList).IsAssignableFrom(propertyInfo.PropertyType)) {
+                    var list = (IBindingList)propertyInfo.GetValue(this, null);
                     if(list != null) {
                         _ListControls.TryGetValue(list, out result);
                     }
@@ -697,15 +697,13 @@ namespace VirtualRadar.WinForms.OptionPage
         }
 
         /// <summary>
-        /// Called when an observable collection changes. Adds or removes sub-pages, where
+        /// Called when a binding list changes. Adds or removes sub-pages, where
         /// appropriate, to reflect the content of the collection.
         /// </summary>
-        /// <param name="collection"></param>
-        private void HandleListChanged(INotifyCollectionChanged collection)
+        /// <param name="list"></param>
+        private void HandleListChanged(IBindingList list)
         {
-            if(collection != null && ShowPagesForObservableCollection(collection)) {
-                var list = (IList)collection;
-
+            if(list != null && ShowPagesForBindingList(list)) {
                 // Add new pages
                 foreach(var record in list) {
                     if(FindChildPageForRecord(record) == null) {
@@ -753,9 +751,9 @@ namespace VirtualRadar.WinForms.OptionPage
         /// When overridden by the derivee this determines whether an observable collection has child
         /// pages created for it.
         /// </summary>
-        /// <param name="observableCollection"></param>
+        /// <param name="list"></param>
         /// <returns></returns>
-        protected virtual bool ShowPagesForObservableCollection(INotifyCollectionChanged observableCollection)
+        protected virtual bool ShowPagesForBindingList(IBindingList list)
         {
             return true;
         }
@@ -1045,14 +1043,14 @@ namespace VirtualRadar.WinForms.OptionPage
         #endregion
 
         #region ObservableCollection event handlers
-        protected virtual void ObservableCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        protected virtual void BindingList_ListChanged(object sender, ListChangedEventArgs args)
         {
-            var observableCollection = (INotifyCollectionChanged)sender;
-            HandleListChanged(observableCollection);
+            var list = (IBindingList)sender;
+            HandleListChanged(list);
 
             if(OptionsView != null) {
                 Control control;
-                if(_ListControls.TryGetValue(observableCollection, out control)) {
+                if(_ListControls.TryGetValue(list, out control)) {
                     // If the validation needs running then do so
                     var validationAttribute = GetValidationAttributeForControl(control);
                     if(validationAttribute != null && validationAttribute.RaisesValueChanged) {
