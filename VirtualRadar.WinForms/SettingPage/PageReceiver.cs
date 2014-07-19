@@ -11,6 +11,8 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.WinForms.Controls;
 using VirtualRadar.Interface;
 using System.IO.Ports;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -108,6 +110,45 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(Receiver, comboBoxSerialHandshake,   r => r.Handshake,       r => r.SelectedValue);
             AddBinding(Receiver, textBoxSerialStartupText,  r => r.StartupText,     r => r.Text);
             AddBinding(Receiver, textBoxSerialShutdownText, r => r.ShutdownText,    r => r.Text);
+        }
+
+        protected override void AssociateValidationFields()
+        {
+            base.AssociateValidationFields();
+            SetValidationFields(new Dictionary<ValidationField, Control>() {
+                { ValidationField.Enabled,              checkBoxEnabled },
+                { ValidationField.Name,                 textBoxName },
+                { ValidationField.Location,             comboBoxLocationId },
+
+                { ValidationField.BaseStationAddress,   textBoxAddress },
+                { ValidationField.BaseStationPort,      numericPort },
+
+                { ValidationField.ComPort,              comboBoxSerialComPort },
+                { ValidationField.BaudRate,             comboBoxSerialBaudRate },
+                { ValidationField.DataBits,             comboBoxSerialDataBits },
+            });
+        }
+
+        protected override void AssociateInlineHelp()
+        {
+            SetInlineHelp(checkBoxEnabled,                  Strings.Enabled,                Strings.OptionsDescribeReceiverEnabled);
+            SetInlineHelp(textBoxName,                      Strings.Name,                   Strings.OptionsDescribeReceiverName);
+            SetInlineHelp(comboBoxLocationId,               Strings.ReceiverLocation,       Strings.OptionsDescribeRawFeedReceiverLocation);
+            SetInlineHelp(comboBoxDataSource,               Strings.DataSource,             Strings.OptionsDescribeDataSourcesDataSource);
+            SetInlineHelp(comboBoxConnectionType,           Strings.ConnectionType,         Strings.OptionsDescribeDataSourcesConnectionType);
+            SetInlineHelp(checkBoxAutoReconnectAtStartup,   Strings.AutoReconnectAtStartup, Strings.OptionsDescribeDataSourcesAutoReconnectAtStartup);
+
+            SetInlineHelp(textBoxAddress,                   Strings.UNC,                    Strings.OptionsDescribeDataSourcesAddress);
+            SetInlineHelp(numericPort,                      Strings.Port,                   Strings.OptionsDescribeDataSourcesPort);
+
+            SetInlineHelp(comboBoxSerialComPort,            Strings.SerialComPort,          Strings.OptionsDescribeDataSourcesComPort);
+            SetInlineHelp(comboBoxSerialBaudRate,           Strings.SerialBaudRate,         Strings.OptionsDescribeDataSourcesBaudRate);
+            SetInlineHelp(comboBoxSerialDataBits,           Strings.SerialDataBits,         Strings.OptionsDescribeDataSourcesDataBits);
+            SetInlineHelp(comboBoxSerialStopBits,           Strings.SerialStopBits,         Strings.OptionsDescribeDataSourcesStopBits);
+            SetInlineHelp(comboBoxSerialParity,             Strings.SerialParity,           Strings.OptionsDescribeDataSourcesParity);
+            SetInlineHelp(comboBoxSerialHandshake,          Strings.SerialHandshake,        Strings.OptionsDescribeDataSourcesHandshake);
+            SetInlineHelp(textBoxSerialStartupText,         Strings.SerialStartupText,      Strings.OptionsDescribeDataSourcesStartupText);
+            SetInlineHelp(textBoxSerialShutdownText,        Strings.SerialShutdownText,     Strings.OptionsDescribeDataSourcesShutdownText);
         }
 
         protected override void OnLoad(EventArgs e)

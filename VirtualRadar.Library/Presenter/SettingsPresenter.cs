@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using InterfaceFactory;
@@ -386,10 +388,13 @@ namespace VirtualRadar.Library.Presenter
             List<ValidationResult> result = new List<ValidationResult>();
 
             ValidateDataSources(result, record, valueChangedField);
+            ValidateGoogleMapSettings(result, record, valueChangedField);
+            ValidateReceiversList(result, record, valueChangedField);
 
             return result;
         }
 
+        #region DataSources
         /// <summary>
         /// Validates the data sources.
         /// </summary>
@@ -420,6 +425,173 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region GoogleMapSettings
+        private void ValidateGoogleMapSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            if(record == null) {
+                var settings = _View.Configuration.GoogleMapSettings;
+                var allReceiverIds = _View.Configuration.Receivers.Select(r => r.UniqueId).Concat(_View.Configuration.MergedFeeds.Select(r => r.UniqueId)).ToArray();
+
+                // Closest aircraft widget receiver has been filled in and is a valid ID
+                if(ValueNotEqual(settings.ClosestAircraftReceiverId, 0, new ValidationParams(ValidationField.ClosestAircraftReceiver, results, record, valueChangedField) {
+                    Message = Strings.ClosestAircraftReceiverRequired,
+                })) {
+                    ValueIsInList(settings.ClosestAircraftReceiverId, allReceiverIds, new ValidationParams(ValidationField.ClosestAircraftReceiver, results, record, valueChangedField) {
+                        Message = Strings.ReceiverOrMergedFeedDoesNotExist,
+                    });
+                }
+
+                // FSX receiver has been filled in and is a valid ID
+                if(ValueNotEqual(settings.FlightSimulatorXReceiverId, 0, new ValidationParams(ValidationField.FlightSimulatorXReceiver, results, record, valueChangedField) {
+                    Message = Strings.FlightSimulatorXReceiverRequired,
+                })) {
+                    ValueIsInList(settings.FlightSimulatorXReceiverId, allReceiverIds, new ValidationParams(ValidationField.FlightSimulatorXReceiver, results, record, valueChangedField) {
+                        Message = Strings.ReceiverOrMergedFeedDoesNotExist,
+                    });
+                }
+
+                // Default website receiver has been filled in and is a valid ID
+                if(ValueNotEqual(settings.WebSiteReceiverId, 0, new ValidationParams(ValidationField.WebSiteReceiver, results, record, valueChangedField) {
+                    Message = Strings.WebSiteReceiverRequired,
+                })) {
+                    ValueIsInList(settings.WebSiteReceiverId, allReceiverIds, new ValidationParams(ValidationField.WebSiteReceiver, results, record, valueChangedField) {
+                        Message = Strings.ReceiverOrMergedFeedDoesNotExist,
+                    });
+                }
+            }
+        }
+        #endregion
+
+        #region Receivers list
+        /// <summary>
+        /// Validates the list of receivers.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
+        private void ValidateReceiversList(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            var receiver = record as Receiver;
+
+            if(record == null) {
+                // LIST OF RECEIVERS
+                var settings = _View.Configuration;
+
+                // There must be at least one receiver
+                if(CollectionIsNotEmpty(settings.Receivers, new ValidationParams(ValidationField.ReceiverIds, results, record, valueChangedField) {
+                    Message = Strings.PleaseConfigureAtLeastOneReceiver,
+                })) {
+                    // At least one receiver must be enabled
+                    ConditionIsTrue(settings.Receivers, r => r.Count(i => i.Enabled) != 0, new ValidationParams(ValidationField.ReceiverIds, results, record, valueChangedField) {
+                        Message = Strings.PleaseEnableAtLeastOneReceiver,
+                    });
+                }
+
+                // Check all of the child records
+                foreach(var child in settings.Receivers) {
+                    ValidateReceiversList(results, child, valueChangedField);
+                }
+            } else if(receiver != null) {
+                // INDIVIDUAL RECEIVER
+
+                // The receiver must have a name
+                if(StringIsNotEmpty(receiver.Name, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    Message = Strings.NameRequired,
+                })) {
+                    // The name cannot be the same as any other receiver or merged feed name
+                    var receiverAndMergedFeedNames = _View.Configuration.Receivers.Where(r => r != receiver).Select(r => r.Name).Concat(_View.Configuration.MergedFeeds.Select(r => r.Name));
+                    ValueIsNotInList(receiver.Name, receiverAndMergedFeedNames, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                        Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
+                    });
+
+                    // The name cannot contain a comma
+                    ConditionIsFalse(receiver.Name, r => r.Contains(","), new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                        Message = Strings.NameCannotContainComma,
+                    });
+                }
+
+                // If a receiver location has been supplied then it must exist
+                if(receiver.ReceiverLocationId != 0) {
+                    ValueIsInList(receiver.ReceiverLocationId, _View.Configuration.ReceiverLocations.Select(r => r.UniqueId), new ValidationParams(ValidationField.Location, results, record, valueChangedField) {
+                        Message = Strings.LocationDoesNotExist,
+                    });
+                }
+
+                // Test values that rely on the connection type
+                switch(receiver.ConnectionType) {
+                    case ConnectionType.TCP:
+                        // The address must be supplied
+                        if(StringIsNotEmpty(receiver.Address, new ValidationParams(ValidationField.BaseStationAddress, results, record, valueChangedField) {
+                            Message = Strings.DataSourceNetworkAddressMissing,
+                        })) {
+                            // The address must resolve to a machine on the network
+                            ConditionIsTrue(receiver.Address, (r) => {
+                                try {
+                                    Dns.GetHostAddresses(r);
+                                    return true;
+                                } catch {
+                                    return false;
+                                }
+                            }, new ValidationParams(ValidationField.BaseStationAddress, results, record, valueChangedField) {
+                                Format = Strings.CannotResolveAddress,
+                                Args = new object[] { receiver.Address },
+                            });
+                        }
+
+                        // The port must be within range
+                        ValueIsInRange(receiver.Port, 1, 65535, new ValidationParams(ValidationField.BaseStationPort, results, record, valueChangedField) {
+                            Message = Strings.PortOutOfBounds,
+                        });
+                        break;
+                    case ConnectionType.COM:
+                        // The COM port must be supplied
+                        if(StringIsNotEmpty(receiver.ComPort, new ValidationParams(ValidationField.ComPort, results, record, valueChangedField) {
+                            Message = Strings.SerialComPortMissing
+                        })) {
+                            // The COM port must be known to the system
+                            ValueIsInList(receiver.ComPort, Provider.GetSerialPortNames(), new ValidationParams(ValidationField.ComPort, results, record, valueChangedField) {
+                                Message = Strings.SerialComPortUnknown,
+                            });
+                        }
+
+                        // The baud rate must be one of the known good baud rates
+                        ConditionIsTrue(receiver.BaudRate, (r) => {
+                            switch(r) {
+                                case 110:
+                                case 300:
+                                case 1200:
+                                case 2400:
+                                case 4800:
+                                case 9600:
+                                case 19200:
+                                case 38400:
+                                case 57600:
+                                case 115200:
+                                case 230400:
+                                case 460800:
+                                case 921600:
+                                case 3000000:
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }, new ValidationParams(ValidationField.BaudRate, results, record, valueChangedField) {
+                            Message = Strings.SerialBaudRateInvalidValue,
+                        });
+
+                        // The data bits value must be a known good value
+                        ValueIsInRange(receiver.DataBits, 5, 8, new ValidationParams(ValidationField.DataBits, results, record, valueChangedField) {
+                            Message = Strings.SerialDataBitsOutOfBounds,
+                        });
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+        }
+        #endregion
+        #endregion
+
         #region HandleConfigurationPropertyChanged
         /// <summary>
         /// Converts from the object and property name to a ValidationField, validates the field and shows the validation
@@ -429,9 +601,13 @@ namespace VirtualRadar.Library.Presenter
         private void HandleConfigurationPropertyChanged(ConfigurationListenerEventArgs args)
         {
             var record = args.IsListChild ? args.Record : null;
+
             var field = ValidationField.None;
             switch(args.Group) {
-                case ConfigurationListenerGroup.BaseStation:    field = ConvertBaseStationPropertyToValidationField(args);  break;
+                case ConfigurationListenerGroup.BaseStation:        field = ConvertBaseStationPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.Configuration:      field = ConvertConfigurationPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.GoogleMapSettings:  field = ConvertGoogleMapPropertyToValidationFields(args); break;
+                case ConfigurationListenerGroup.Receiver:           field = ConvertReceiverPropertyToValidationField(args); break;
                 default:                                        break;
             }
 
@@ -441,15 +617,66 @@ namespace VirtualRadar.Library.Presenter
             }
         }
 
-        private ValidationField ConvertBaseStationPropertyToValidationField(ConfigurationListenerEventArgs args)
+        private ValidationField ValidationFieldForPropertyName<TModel>(ConfigurationListenerEventArgs args, Dictionary<ValidationField, Expression<Func<TModel, object>>> map)
         {
             var result = ValidationField.None;
 
-            if(args.PropertyName == PropertyHelper.ExtractName<BaseStationSettings>(r => r.DatabaseFileName))           result = ValidationField.BaseStationDatabase;
-            else if(args.PropertyName == PropertyHelper.ExtractName<BaseStationSettings>(r => r.OperatorFlagsFolder))   result = ValidationField.FlagsFolder;
-            else if(args.PropertyName == PropertyHelper.ExtractName<BaseStationSettings>(r => r.SilhouettesFolder))     result = ValidationField.SilhouettesFolder;
-            else if(args.PropertyName == PropertyHelper.ExtractName<BaseStationSettings>(r => r.PicturesFolder))        result = ValidationField.PicturesFolder;
+            foreach(var kvp in map) {
+                var propertyName = PropertyHelper.ExtractName<TModel>(kvp.Value);
+                if(args.PropertyName == propertyName) {
+                    result = kvp.Key;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        private ValidationField ConvertBaseStationPropertyToValidationField(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<BaseStationSettings>(args, new Dictionary<ValidationField,Expression<Func<BaseStationSettings,object>>>() {
+                { ValidationField.BaseStationDatabase,  r => r.DatabaseFileName },
+                { ValidationField.FlagsFolder,          r => r.OperatorFlagsFolder },
+                { ValidationField.SilhouettesFolder,    r => r.SilhouettesFolder },
+                { ValidationField.PicturesFolder,       r => r.PicturesFolder },
+            });
             
+            return result;
+        }
+
+        private ValidationField ConvertConfigurationPropertyToValidationField(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<Configuration>(args, new Dictionary<ValidationField,Expression<Func<Configuration,object>>>() {
+                { ValidationField.ReceiverIds,  r => r.Receivers },
+            });
+
+            return result;
+        }
+
+        private ValidationField ConvertGoogleMapPropertyToValidationFields(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<GoogleMapSettings>(args, new Dictionary<ValidationField,Expression<Func<GoogleMapSettings,object>>>() {
+                { ValidationField.ClosestAircraftReceiver,  r => r.ClosestAircraftReceiverId },
+                { ValidationField.FlightSimulatorXReceiver, r => r.FlightSimulatorXReceiverId },
+                { ValidationField.WebSiteReceiver,          r => r.WebSiteReceiverId },
+            });
+
+            return result;
+        }
+
+        private ValidationField ConvertReceiverPropertyToValidationField(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<Receiver>(args, new Dictionary<ValidationField,Expression<Func<Receiver,object>>>() {
+                { ValidationField.Enabled,              r => r.Enabled },
+                { ValidationField.Name,                 r => r.Name },
+                { ValidationField.Location,             r => r.ReceiverLocationId },
+                { ValidationField.BaseStationAddress,   r => r.Address },
+                { ValidationField.BaseStationPort,      r => r.Port },
+                { ValidationField.ComPort,              r => r.ComPort },
+                { ValidationField.BaudRate,             r => r.BaudRate },
+                { ValidationField.DataBits,             r => r.DataBits },
+            });
+
             return result;
         }
         #endregion

@@ -2150,4 +2150,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ExceptionWhenCheckingValue" xml:space="preserve">
     <value>Exception caught when checking value: {0}</value>
   </data>
+  <data name="LocationDoesNotExist" xml:space="preserve">
+    <value>This location does not exist</value>
+  </data>
+  <data name="ReceiverOrMergedFeedDoesNotExist" xml:space="preserve">
+    <value>There is no receiver or merged feed with this identifier</value>
+  </data>
+  <data name="SerialComPortUnknown" xml:space="preserve">
+    <value>The COM port does not exist</value>
+  </data>
 </root>
