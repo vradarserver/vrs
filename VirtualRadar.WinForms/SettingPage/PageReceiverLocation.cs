@@ -10,6 +10,7 @@ using VirtualRadar.Resources;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -41,6 +42,12 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(ReceiverLocation, textBoxName,       r => r.Name,        r => r.Text,    DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(ReceiverLocation, numericLatitude,   r => r.Latitude,    r => r.Value,   DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(ReceiverLocation, numericLongitude,  r => r.Longitude,   r => r.Value,   DataSourceUpdateMode.OnPropertyChanged);
+
+            var mapBindingSource = new BindingSource();
+            mapBindingSource.DataSource = ReceiverLocation;
+            bindingMap.DataSource = mapBindingSource;
+            bindingMap.LatitudeMember = PropertyHelper.ExtractName<ReceiverLocation>(r => r.Latitude);
+            bindingMap.LongitudeMember = PropertyHelper.ExtractName<ReceiverLocation>(r => r.Longitude);
         }
 
         protected override void AssociateValidationFields()

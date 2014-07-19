@@ -132,6 +132,12 @@
     <Compile Include="Controls\BindingListView.Designer.cs">
       <DependentUpon>BindingListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BindingMapControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BindingMapControl.Designer.cs">
+      <DependentUpon>BindingMapControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ComboBoxPlus.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -550,6 +556,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\BindingListView.resx">
       <DependentUpon>BindingListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\BindingMapControl.resx">
+      <DependentUpon>BindingMapControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConnectionClientListControl.resx">
       <DependentUpon>ConnectionClientListControl.cs</DependentUpon>
