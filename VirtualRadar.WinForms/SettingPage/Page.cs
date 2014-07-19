@@ -381,6 +381,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
             _InlineHelpMap.Add(control, new InlineHelp(title, help));
             control.Enter += Control_InlineHelp_Enter;
+            control.Leave += Control_InlineHelp_Leave;
         }
 
         /// <summary>
@@ -395,6 +396,21 @@ namespace VirtualRadar.WinForms.SettingPage
                 if(SettingsView != null) {
                     SettingsView.InlineHelpTitle = help.Title;
                     SettingsView.InlineHelp = help.Help;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the inline help associated with the control.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Control_InlineHelp_Leave(object sender, EventArgs args)
+        {
+            if(_InlineHelpMap.ContainsKey((Control)sender)) {
+                if(SettingsView != null) {
+                    SettingsView.InlineHelpTitle = "";
+                    SettingsView.InlineHelp = "";
                 }
             }
         }

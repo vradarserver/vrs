@@ -67,8 +67,6 @@ namespace VirtualRadar.WinForms.SettingPage
         public PageReceiver()
         {
             InitializeComponent();
-            buttonWizard.Image = Images.Wizard16x16;
-            buttonTestConnection.Image = Images.Test16x16;
         }
 
         protected override void InitialiseControls()
@@ -156,6 +154,9 @@ namespace VirtualRadar.WinForms.SettingPage
             base.OnLoad(e);
 
             if(!DesignMode) {
+                buttonWizard.Image = Images.Wizard16x16;
+                buttonTestConnection.Image = Images.Test16x16;
+
                 groupBoxSerial.Location = groupBoxNetwork.Location = Point.Empty;
                 ShowHideConnectionTypePanels();
             }

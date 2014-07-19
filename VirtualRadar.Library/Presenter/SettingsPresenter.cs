@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
@@ -228,6 +229,7 @@ namespace VirtualRadar.Library.Presenter
 
             _View.SaveClicked += View_SaveClicked;
             _View.TestConnectionClicked += View_TestConnectionClicked;
+            _View.UpdateReceiverLocationsFromBaseStationDatabaseClicked += View_UpdateReceiverLocationsFromBaseStationDatabaseClicked;
 
             var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
             var config = configStorage.Load();
@@ -267,7 +269,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Child object creation - CreateReceiver
+        #region Child object creation - CreateReceiver, CreateReceiverLocation
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -278,6 +280,51 @@ namespace VirtualRadar.Library.Presenter
                 Name = NextCombinedFeedName("Receiver"),
                 Enabled = true,
             };
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public ReceiverLocation CreateReceiverLocation()
+        {
+            return CreateReceiverLocation("Location");
+        }
+
+        private ReceiverLocation CreateReceiverLocation(string prefix)
+        {
+            var result = new ReceiverLocation() {
+                UniqueId = NextUniqueId(_View.Configuration.ReceiverLocations.Select(r => r.UniqueId)),
+                Name = NextName(_View.Configuration.ReceiverLocations.Select(r => r.Name), prefix),
+                IsBaseStationLocation = false,
+                Latitude = 0,
+                Longitude = 0,
+            };
+
+            return result;
+        }
+
+        private int NextUniqueId(IEnumerable<int> existing)
+        {
+            int result = 1;
+
+            if(existing.Count() > 0) {
+                result = existing.Max(r => r) + 1;
+            }
+
+            return result;
+        }
+
+        private string NextName(IEnumerable<string> existingNames, string prefix)
+        {
+            var result = prefix;
+
+            var counter = 2;
+            while(existingNames.Any(r => result.Equals(r, StringComparison.CurrentCultureIgnoreCase))) {
+                result = String.Format("{0} {1}", prefix, counter++);
+            }
 
             return result;
         }
@@ -303,6 +350,47 @@ namespace VirtualRadar.Library.Presenter
             }
 
             return result;
+        }
+        #endregion
+
+        #region UpdateReceiverLocationsFromBaseStationDatabase
+        /// <summary>
+        /// Updates the receiver locations from the BaseStation database.
+        /// </summary>
+        private void UpdateReceiverLocationsFromBaseStationDatabase()
+        {
+            var database = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+            var databaseLocations = database.GetLocations().Select(r => new ReceiverLocation() {
+                Name = r.LocationName,
+                Latitude = r.Latitude,
+                Longitude = r.Longitude,
+                IsBaseStationLocation = true,
+            });
+
+            var viewList = _View.Configuration.ReceiverLocations;
+
+            var updateList = viewList.Where(r => r.IsBaseStationLocation && databaseLocations.Any(i => i.Name == r.Name)).ToArray();
+            var deleteList = viewList.Where(r => r.IsBaseStationLocation).Except(updateList).ToArray();
+            var insertList = databaseLocations.Where(r => !updateList.Any(i => i.Name == r.Name)).ToArray();
+
+            foreach(var location in updateList) {
+                var refreshLocation = databaseLocations.First(r => r.Name == location.Name);
+                location.Latitude = refreshLocation.Latitude;
+                location.Longitude = refreshLocation.Longitude;
+            }
+
+            foreach(var deleteLocation in deleteList) {
+                viewList.Remove(deleteLocation);
+            }
+
+            foreach(var location in insertList) {
+                var newLocation = CreateReceiverLocation(location.Name);
+                newLocation.Latitude = location.Latitude;
+                newLocation.Longitude = location.Longitude;
+                newLocation.IsBaseStationLocation = true;
+
+                viewList.Add(newLocation);
+            }
         }
         #endregion
 
@@ -389,7 +477,8 @@ namespace VirtualRadar.Library.Presenter
 
             ValidateDataSources(result, record, valueChangedField);
             ValidateGoogleMapSettings(result, record, valueChangedField);
-            ValidateReceiversList(result, record, valueChangedField);
+            ValidateReceivers(result, record, valueChangedField);
+            ValidateReceiverLocations(result, record, valueChangedField);
 
             return result;
         }
@@ -462,14 +551,14 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Receivers list
+        #region Receivers
         /// <summary>
         /// Validates the list of receivers.
         /// </summary>
         /// <param name="results"></param>
         /// <param name="record"></param>
         /// <param name="valueChangedField"></param>
-        private void ValidateReceiversList(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        private void ValidateReceivers(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             var receiver = record as Receiver;
 
@@ -488,8 +577,10 @@ namespace VirtualRadar.Library.Presenter
                 }
 
                 // Check all of the child records
-                foreach(var child in settings.Receivers) {
-                    ValidateReceiversList(results, child, valueChangedField);
+                if(valueChangedField == ValidationField.None) {
+                    foreach(var child in settings.Receivers) {
+                        ValidateReceivers(results, child, valueChangedField);
+                    }
                 }
             } else if(receiver != null) {
                 // INDIVIDUAL RECEIVER
@@ -499,8 +590,8 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.NameRequired,
                 })) {
                     // The name cannot be the same as any other receiver or merged feed name
-                    var receiverAndMergedFeedNames = _View.Configuration.Receivers.Where(r => r != receiver).Select(r => r.Name).Concat(_View.Configuration.MergedFeeds.Select(r => r.Name));
-                    ValueIsNotInList(receiver.Name, receiverAndMergedFeedNames, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    var receiverAndMergedFeedNames = _View.Configuration.Receivers.Where(r => r != receiver).Select(r => r.Name).Concat(_View.Configuration.MergedFeeds.Select(r => (r.Name ?? "").ToUpper()));
+                    ValueIsNotInList(receiver.Name.ToUpper(), receiverAndMergedFeedNames, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
                         Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
                     });
 
@@ -590,6 +681,52 @@ namespace VirtualRadar.Library.Presenter
             }
         }
         #endregion
+
+        #region ReceiverLocations
+        /// <summary>
+        /// Validates the list of receivers.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
+        private void ValidateReceiverLocations(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            var receiverLocation = record as ReceiverLocation;
+
+            if(record == null) {
+                if(valueChangedField == ValidationField.None) {
+                    foreach(var child in _View.Configuration.ReceiverLocations) {
+                        ValidateReceiverLocations(results, child, valueChangedField);
+                    }
+                }
+            } else if(receiverLocation != null) {
+                // Name must not be empty and must be unique
+                if(StringIsNotEmpty(receiverLocation.Name, new ValidationParams(ValidationField.Location, results, record, valueChangedField) {
+                    Message = Strings.PleaseEnterNameForLocation,
+                })) {
+                    var names = _View.Configuration.ReceiverLocations.Where(r => r != receiverLocation).Select(r => (r.Name ?? "").ToUpper());
+                    ValueIsNotInList(receiverLocation.Name.ToUpper(), names, new ValidationParams(ValidationField.Location, results, record, valueChangedField) {
+                        Message = Strings.PleaseEnterUniqueNameForLocation,
+                    });
+                }
+
+                // Latitude must be between -90 and 90
+                ValueIsInRange(receiverLocation.Latitude, -90.0, 90.0, new ValidationParams(ValidationField.Latitude, results, record, valueChangedField) {
+                    Message = Strings.LatitudeOutOfBounds,
+                });
+
+                // Longitude must be between -180 and 180
+                ValueIsInRange(receiverLocation.Longitude, -180.0, 180.0, new ValidationParams(ValidationField.Longitude, results, record, valueChangedField) {
+                    Message = Strings.LongitudeOutOfBounds,
+                });
+
+                // Can't have latitude set to zero - will be useless for ground position decoding
+                ValueNotEqual(receiverLocation.Latitude, 0.0, new ValidationParams(ValidationField.Latitude, results, record, valueChangedField) {
+                    Message = Strings.LatitudeCannotBeZero,
+                });
+            }
+        }
+        #endregion
         #endregion
 
         #region HandleConfigurationPropertyChanged
@@ -608,7 +745,8 @@ namespace VirtualRadar.Library.Presenter
                 case ConfigurationListenerGroup.Configuration:      field = ConvertConfigurationPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.GoogleMapSettings:  field = ConvertGoogleMapPropertyToValidationFields(args); break;
                 case ConfigurationListenerGroup.Receiver:           field = ConvertReceiverPropertyToValidationField(args); break;
-                default:                                        break;
+                case ConfigurationListenerGroup.ReceiverLocation:   field = ConvertReceiverLocationPropertyToValidationField(args); break;
+                default:                                            break;
             }
 
             if(field != ValidationField.None) {
@@ -679,6 +817,17 @@ namespace VirtualRadar.Library.Presenter
 
             return result;
         }
+
+        private ValidationField ConvertReceiverLocationPropertyToValidationField(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<ReceiverLocation>(args, new Dictionary<ValidationField,Expression<Func<ReceiverLocation,object>>>() {
+                { ValidationField.Location,     r => r.Name },
+                { ValidationField.Latitude,     r => r.Latitude },
+                { ValidationField.Longitude,    r => r.Longitude },
+            });
+
+            return result;
+        }
         #endregion
 
 
@@ -687,6 +836,16 @@ namespace VirtualRadar.Library.Presenter
         }
 
         #region View events
+        /// <summary>
+        /// Raised when the user wants to import receiver locations from the BaseStation database.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void View_UpdateReceiverLocationsFromBaseStationDatabaseClicked(object sender, EventArgs args)
+        {
+            UpdateReceiverLocationsFromBaseStationDatabase();
+        }
+
         /// <summary>
         /// Raised when the user elects to save their changes.
         /// </summary>

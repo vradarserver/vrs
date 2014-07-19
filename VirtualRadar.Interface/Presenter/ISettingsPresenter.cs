@@ -25,6 +25,12 @@ namespace VirtualRadar.Interface.Presenter
         Receiver CreateReceiver();
 
         /// <summary>
+        /// Creates a new receiver location. The receiver location is not attached to the configuration being edited.
+        /// </summary>
+        /// <returns></returns>
+        ReceiverLocation CreateReceiverLocation();
+
+        /// <summary>
         /// Returns a list of serial port names. Guaranteed not to throw an exception and to be current (i.e. no caching).
         /// </summary>
         /// <returns></returns>
