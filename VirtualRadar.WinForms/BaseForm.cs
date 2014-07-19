@@ -19,6 +19,7 @@ using VirtualRadar.Interface.View;
 using VirtualRadar.WinForms.Controls;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Drawing;
 
 namespace VirtualRadar.WinForms
 {
@@ -95,8 +96,26 @@ namespace VirtualRadar.WinForms
         public BaseForm() : base()
         {
             _MonoAutoScaleMode = new MonoAutoScaleMode(this);
-
             _ValueChangedHelper = new ValueChangedHelper((sender, args) => OnValueChanged(sender, args));
+        }
+        #endregion
+
+        #region OnLoad
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if(!DesignMode) {
+                if(FontFactory.HasPreferredUIFont) {
+                    MonoAutoScaleMode.AlwaysDisableFontScaling = true;
+                }
+                foreach(var control in GetAllChildControls(includeThis: true)) {
+                    var replaceWithFont = FontFactory.GetPreferredUIFont(control.Font);
+                    if(replaceWithFont != null) {
+                        control.Font = replaceWithFont;
+                    }
+                }
+            }
         }
         #endregion
 

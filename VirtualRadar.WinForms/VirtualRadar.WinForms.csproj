@@ -256,6 +256,7 @@
     <Compile Include="FlightSimulatorXView.Designer.cs">
       <DependentUpon>FlightSimulatorXView.cs</DependentUpon>
     </Compile>
+    <Compile Include="FontFactory.cs" />
     <Compile Include="InvalidPluginsView.cs">
       <SubType>Form</SubType>
     </Compile>
