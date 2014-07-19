@@ -66,6 +66,7 @@ namespace VirtualRadar.WinForms
         private Page[] _TopLevelPages = new Page[] {
             new PageDataSources(),
             new PageReceivers(),
+            new PageReceiverLocations(),
         };
         #endregion
 
@@ -698,6 +699,15 @@ namespace VirtualRadar.WinForms
         internal Receiver CreateReceiver()
         {
             return _Presenter.CreateReceiver();
+        }
+
+        /// <summary>
+        /// Creates a new receiver location.
+        /// </summary>
+        /// <returns></returns>
+        internal ReceiverLocation CreateReceiverLocation()
+        {
+            return _Presenter.CreateReceiverLocation();
         }
         #endregion
 

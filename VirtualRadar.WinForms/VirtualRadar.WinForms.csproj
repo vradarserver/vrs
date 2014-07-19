@@ -412,6 +412,18 @@
     <Compile Include="SettingPage\PageReceiver.Designer.cs">
       <DependentUpon>PageReceiver.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageReceiverLocation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageReceiverLocation.Designer.cs">
+      <DependentUpon>PageReceiverLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\PageReceiverLocations.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageReceiverLocations.Designer.cs">
+      <DependentUpon>PageReceiverLocations.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\PageReceivers.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -671,6 +683,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageReceiver.resx">
       <DependentUpon>PageReceiver.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageReceiverLocation.resx">
+      <DependentUpon>PageReceiverLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageReceiverLocations.resx">
+      <DependentUpon>PageReceiverLocations.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageReceivers.resx">
       <DependentUpon>PageReceivers.cs</DependentUpon>
