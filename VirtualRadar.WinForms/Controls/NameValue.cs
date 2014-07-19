@@ -40,12 +40,25 @@ namespace VirtualRadar.WinForms.Controls
         /// <returns></returns>
         public static List<NameValue<T>> EnumList(Func<T, string> describeValue, Func<T, bool> filterValue = null, bool sortList = true)
         {
+            return CreateList(Enum.GetValues(typeof(T)).OfType<T>(), describeValue, filterValue, sortList);
+        }
+
+        /// <summary>
+        /// Returns a list of NameValues for every value in the list.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="describeValue"></param>
+        /// <param name="filterValue"></param>
+        /// <param name="sortList"></param>
+        /// <returns></returns>
+        public static List<NameValue<T>> CreateList(IEnumerable<T> list, Func<T, string> describeValue = null, Func<T, bool> filterValue = null, bool sortList = true)
+        {
             var result = new List<NameValue<T>>();
 
-            foreach(T value in Enum.GetValues(typeof(T))) {
-                if(filterValue != null && !filterValue(value)) continue;
-                var name = describeValue == null ? value.ToString() : describeValue(value);
-                result.Add(new NameValue<T>(value, name));
+            foreach(var item in list) {
+                if(filterValue != null && !filterValue(item)) continue;
+                var name = describeValue == null ? ((object)item) == null ? "" : item.ToString() : describeValue(item) ?? "";
+                result.Add(new NameValue<T>(item, name));
             }
 
             if(sortList) {

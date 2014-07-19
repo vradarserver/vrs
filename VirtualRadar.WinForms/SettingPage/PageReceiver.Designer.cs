@@ -374,12 +374,14 @@
             // 
             // comboBoxSerialComPort
             // 
+            this.comboBoxSerialComPort.DisplayMember = "Name";
             this.comboBoxSerialComPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialComPort.FormattingEnabled = true;
             this.comboBoxSerialComPort.Location = new System.Drawing.Point(197, 19);
             this.comboBoxSerialComPort.Name = "comboBoxSerialComPort";
             this.comboBoxSerialComPort.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialComPort.TabIndex = 1;
+            this.comboBoxSerialComPort.ValueMember = "Value";
             // 
             // groupBoxNetwork
             // 

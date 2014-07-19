@@ -76,7 +76,7 @@ namespace VirtualRadar.WinForms.SettingPage
             comboBoxLocationId.DataSource =         CreateSortingBindingSource<ReceiverLocation>(SettingsView.Configuration.ReceiverLocations, r => r.Name);
             comboBoxConnectionType.DataSource =     CreateSortingEnumSource<ConnectionType>(r => Describe.ConnectionType(r));
 
-            comboBoxSerialComPort.DataSource =      CreateListBindingSource<string>(SettingsView.GetSerialPortNames().OrderBy(r => r).ToArray());
+            comboBoxSerialComPort.DataSource =      CreateNameValueSource<string>(SettingsView.GetSerialPortNames());
             comboBoxSerialBaudRate.DataSource =     CreateListBindingSource<int>(_SupportedBaudRates);
             comboBoxSerialDataBits.DataSource =     CreateListBindingSource<int>(_SupportedDataBits);
             comboBoxSerialStopBits.DataSource =     CreateSortingEnumSource<StopBits>(r => Describe.StopBits(r));
@@ -100,7 +100,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(Receiver, textBoxAddress,    r => r.Address,     r => r.Text);
             AddBinding(Receiver, numericPort,       r => r.Port,        r => r.Value);
 
-            AddBinding(Receiver, comboBoxSerialComPort,     r => r.ComPort,         r => r.SelectedItem);
+            AddBinding(Receiver, comboBoxSerialComPort,     r => r.ComPort,         r => r.SelectedValue);
             AddBinding(Receiver, comboBoxSerialBaudRate,    r => r.BaudRate,        r => r.SelectedItem);
             AddBinding(Receiver, comboBoxSerialDataBits,    r => r.DataBits,        r => r.SelectedItem);
             AddBinding(Receiver, comboBoxSerialStopBits,    r => r.StopBits,        r => r.SelectedValue);
