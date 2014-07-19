@@ -116,6 +116,7 @@ namespace VirtualRadar.Library.Presenter
             _View = view;
         }
 
+        #region Legcay Validation Methods - once nothing is using these, delete them
         /// <summary>
         /// Validates that a required field has been supplied. Returns true if the validation passes, false if it does not.
         /// </summary>
@@ -264,7 +265,9 @@ namespace VirtualRadar.Library.Presenter
 
             return valid;
         }
+        #endregion
 
+        #region Validation methods - FileExists, FolderExists
         /// <summary>
         /// Returns true if the file exists, false if it does not.
         /// </summary>
@@ -310,5 +313,127 @@ namespace VirtualRadar.Library.Presenter
                 return result;
             });
         }
+
+        /// <summary>
+        /// Returns true if the arbitrary condition is true.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="condition"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool ConditionIsTrue<TValue>(TValue value, Func<TValue, bool> condition, ValidationParams valParams)
+        {
+            return valParams.IsValid(() => {
+                return condition(value);
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the arbitrary condition is false.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="condition"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool ConditionIsFalse<TValue>(TValue value, Func<TValue, bool> condition, ValidationParams valParams)
+        {
+            return valParams.IsValid(() => {
+                return !condition(value);
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the collection is not empty.
+        /// </summary>
+        /// <typeparam name="TList"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="collectionIsValid"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool CollectionIsNotEmpty<TList>(IEnumerable<TList> collection, ValidationParams valParams)
+        {
+            return valParams.IsValid(() => {
+                return collection.Count() != 0;
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the string is not null or empty.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool StringIsNotEmpty(string value, ValidationParams valParams)
+        {
+            return valParams.IsValid(() => {
+                return !String.IsNullOrEmpty((value ?? "").Trim());
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the value is not equal to the value passed across.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="notEqualTo"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool ValueNotEqual<TValue>(TValue value, TValue notEqualTo, ValidationParams valParams)
+            where TValue: IComparable
+        {
+            return valParams.IsValid(() => {
+                return value.CompareTo(notEqualTo) != 0;
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the value is within the inclusive range.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="lowInclusive"></param>
+        /// <param name="highInclusive"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool ValueIsInRange<TValue>(TValue value, TValue lowInclusive, TValue highInclusive, ValidationParams valParams)
+            where TValue: IComparable
+        {
+            return valParams.IsValid(() => {
+                return lowInclusive.CompareTo(value) <= 0 && highInclusive.CompareTo(value) >= 0;
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the value is not within the list of values passed across.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="list"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool ValueIsNotInList<TValue>(TValue value, IEnumerable<TValue> list, ValidationParams valParams)
+        {
+            return valParams.IsValid(() => {
+                return !list.Contains(value);
+            });
+        }
+
+        /// <summary>
+        /// Returns true if the value is in the list of values passed across.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="list"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool ValueIsInList<TValue>(TValue value, IEnumerable<TValue> list, ValidationParams valParams)
+        {
+            return valParams.IsValid(() => {
+                return list.Contains(value);
+            });
+        }
+        #endregion
     }
 }

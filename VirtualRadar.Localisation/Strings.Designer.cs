@@ -1957,6 +1957,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This location does not exist.
+        /// </summary>
+        public static string LocationDoesNotExist {
+            get {
+                return ResourceManager.GetString("LocationDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login name.
         /// </summary>
         public static string LoginName {
@@ -4252,6 +4261,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is no receiver or merged feed with this identifier.
+        /// </summary>
+        public static string ReceiverOrMergedFeedDoesNotExist {
+            get {
+                return ResourceManager.GetString("ReceiverOrMergedFeedDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Receiver range (kilometres).
         /// </summary>
         public static string ReceiverRange {
@@ -4509,6 +4527,15 @@ namespace VirtualRadar.Localisation {
         public static string SerialComPortMissing {
             get {
                 return ResourceManager.GetString("SerialComPortMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The COM port does not exist.
+        /// </summary>
+        public static string SerialComPortUnknown {
+            get {
+                return ResourceManager.GetString("SerialComPortUnknown", resourceCulture);
             }
         }
         
