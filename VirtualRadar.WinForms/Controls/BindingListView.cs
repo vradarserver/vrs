@@ -88,6 +88,18 @@ namespace VirtualRadar.WinForms.Controls
         /// The collection that we're bound to.
         /// </summary>
         private IBindingList _BindingList;
+
+        /// <summary>
+        /// True if the <see cref="CheckedSubset"/> list has been hooked. While it is hooked any changes
+        /// to the subset list are reflected as changes in the Checked state of list view items.
+        /// </summary>
+        private bool _CheckedSubsetHooked;
+
+        /// <summary>
+        /// If true then changes in the checked state of list view items are not copied back to the
+        /// <see cref="CheckedSubset"/> list.
+        /// </summary>
+        private bool _SuppressSyncListToCheckedSubset;
         #endregion
 
         #region Control Properties
@@ -209,6 +221,55 @@ namespace VirtualRadar.WinForms.Controls
         {
             base.OnParentBindingContextChanged(e);
             SetDataBinding();
+        }
+        #endregion
+
+        #region CheckedSubset properties
+        private IBindingList _CheckedSubset;
+        /// <summary>
+        /// Gets or sets a binding list that is a subset of values that are derived from the list that we
+        /// have bound the control to.
+        /// </summary>
+        /// <remarks>
+        /// If this property is set then <see cref="ExtractSubsetValue"/> must also be supplied. The subset
+        /// feature is ignored unless checkboxes are switched on for the list. Those items that are checked are
+        /// added to the subset list, those items that are unchecked are removed. Items that are removed from
+        /// the bound list are also removed from the subset. The Checked item in <see cref="FetchRecordContent"/>'s
+        /// value is ignored when a subset is present because the Checked value is managed entirely by the
+        /// control. To check an item you must add it to this list that CheckedSubset is pointing at.
+        /// </remarks>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IBindingList CheckedSubset
+        {
+            get { return _CheckedSubset; }
+            set {
+                UnhookCheckedSubset();
+                if(_CheckedSubset != value) {
+                    _CheckedSubset = value;
+                    InitialiseCheckedSubset();
+                }
+            }
+        }
+
+        private Func<object, object> _ExtractSubsetValue;
+        /// <summary>
+        /// Gets or sets a delegate that can translate between the bound list values and a subset value. Only used
+        /// when <see cref="CheckedSubset"/> has been set.
+        /// </summary>
+        /// <remarks>
+        /// The value passed in is a value from the bound list, the value returned is the corresponding value in
+        /// <see cref="CheckedSubset"/> (if any).
+        /// </remarks>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<object, object> ExtractSubsetValue
+        {
+            get { return _ExtractSubsetValue; }
+            set {
+                if(_ExtractSubsetValue != value) {
+                    _ExtractSubsetValue = value;
+                    InitialiseCheckedSubset();
+                }
+            }
         }
         #endregion
 
@@ -425,10 +486,6 @@ namespace VirtualRadar.WinForms.Controls
         #endregion
 
         #region ResetBinding
-        /// <summary>
-        /// Refreshes the display of a single record.
-        /// </summary>
-        /// <param name="record"></param>
         public void ResetBinding(object record)
         {
             //var listViewItem = listView.Items.OfType<ListViewItem>().FirstOrDefault(r => r.Tag == record);
@@ -460,6 +517,8 @@ namespace VirtualRadar.WinForms.Controls
                 if(_CurrencyManager != null && _CurrencyManager.Position != -1) {
                     SetSelectedIndex(_CurrencyManager.Position);
                 }
+
+                SynchroniseCheckedSubsetToList();
             } finally {
                 _Populating = populating;
             }
@@ -555,6 +614,10 @@ namespace VirtualRadar.WinForms.Controls
             try {
                 _Populating = true;
 
+                if(CheckedSubset != null && ExtractSubsetValue != null) {
+                    recordContent.Checked = CheckedSubsetContainsSubsetOfRecord(recordContent.Record);
+                }
+
                 if(CheckBoxes) FillAndCheckListViewItem<object>(listViewItem, r => recordContent.ColumnTexts.ToArray(), r => recordContent.Checked);
                 else           FillListViewItem<object>(listViewItem, r => recordContent.ColumnTexts.ToArray());
             } finally {
@@ -599,6 +662,103 @@ namespace VirtualRadar.WinForms.Controls
             }
 
             return result;
+        }
+        #endregion
+
+        #region CheckedSubset handling
+        /// <summary>
+        /// Hooks the CheckedSubset list if necessary and synchronises the checked state of the list
+        /// items with the items in the subset.
+        /// </summary>
+        private void InitialiseCheckedSubset()
+        {
+            if(CheckedSubset != null && ExtractSubsetValue != null) {
+                UnhookCheckedSubset();
+                HookCheckedSubset();
+                SynchroniseCheckedSubsetToList();
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the <see cref="CheckedSubset"/> contains a value that
+        /// corresponds to the record passed across.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        private bool CheckedSubsetContainsSubsetOfRecord(object record)
+        {
+            var result = false;
+            if(record != null && CheckedSubset != null && ExtractSubsetValue != null) {
+                var subsetValue = ExtractSubsetValue(record);
+                result = CheckedSubset.Contains(subsetValue);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets or clears the checked state of list view items to match the items present in
+        /// the <see cref="CheckedSubset"/> list. Also removes any items from <see cref="CheckedSubset"/>
+        /// that are not present in the list.
+        /// </summary>
+        private void SynchroniseCheckedSubsetToList()
+        {
+            if(CheckedSubset != null && ExtractSubsetValue != null) {
+                var suppressSetting = _SuppressSyncListToCheckedSubset;
+                _SuppressSyncListToCheckedSubset = true;
+                UnhookCheckedSubset();
+                try {
+                    var notInMasterList = new LinkedList<object>();
+                    if(_BindingList != null) {
+                        foreach(var subsetValue in CheckedSubset) {
+                            notInMasterList.AddLast(subsetValue);
+                        }
+                    }
+
+                    foreach(var listViewItem in listView.Items.OfType<ListViewItem>().Where(r => r.Tag != null)) {
+                        var boundItem = listViewItem.Tag;
+                        var subsetValue = ExtractSubsetValue(boundItem);
+                        var isInSubset = CheckedSubset.Contains(subsetValue);
+                        listViewItem.Checked = CheckedSubset.Contains(subsetValue);
+
+                        if(isInSubset) {
+                            var node = notInMasterList.Find(subsetValue);
+                            if(node != null) notInMasterList.Remove(node);
+                        }
+                    }
+
+                    if(_BindingList != null) {
+                        for(var node = notInMasterList.First;node != null;node = node.Next) {
+                            CheckedSubset.Remove(node.Value);
+                        }
+                    }
+                } finally {
+                    _SuppressSyncListToCheckedSubset = suppressSetting;
+                    HookCheckedSubset();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Hooks events on the <see cref="CheckedSubset"/> control.
+        /// </summary>
+        private void HookCheckedSubset()
+        {
+            if(_CheckedSubset != null && !_CheckedSubsetHooked) {
+                _CheckedSubsetHooked = true;
+                _CheckedSubset.ListChanged += checkedSubset_ListChanged;
+            }
+        }
+
+        /// <summary>
+        /// Unhooks events on the <see cref="CheckedSubset"/> control.
+        /// </summary>
+        private void UnhookCheckedSubset()
+        {
+            if(_CheckedSubset != null && _CheckedSubsetHooked) {
+                _CheckedSubsetHooked = false;
+                _CheckedSubset.ListChanged -= checkedSubset_ListChanged;
+            }
         }
         #endregion
 
@@ -653,6 +813,11 @@ namespace VirtualRadar.WinForms.Controls
             OnDeleteClicked(e);
         }
 
+        private void checkedSubset_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            SynchroniseCheckedSubsetToList();
+        }
+
         private void listView_DoubleClick(object sender, EventArgs e)
         {
             if(SelectedRecord != null) OnEditClicked(e);
@@ -678,11 +843,22 @@ namespace VirtualRadar.WinForms.Controls
 
         private void listView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
+            var record = e.Item == null ? null : e.Item.Tag;
+
             if(!_Populating) {
-                var record = e.Item == null ? null : e.Item.Tag;
                 if(record != null) {
                     var args = new RecordCheckedEventArgs(record, e.Item.Checked);
                     OnCheckedChanged(args);
+                }
+
+                if(!_SuppressSyncListToCheckedSubset && CheckedSubset != null && ExtractSubsetValue != null && record != null) {
+                    var subsetValue = ExtractSubsetValue(record);
+                    var isInSubset = CheckedSubset.Contains(subsetValue);
+                    if(e.Item.Checked) {
+                        if(!isInSubset) CheckedSubset.Add(subsetValue);
+                    } else {
+                        if(isInSubset)  CheckedSubset.Remove(subsetValue);
+                    }
                 }
             }
         }
@@ -733,6 +909,8 @@ namespace VirtualRadar.WinForms.Controls
                         LoadItemsFromSource();
                         break;
                 }
+
+                SynchroniseCheckedSubsetToList();
             } finally {
                 _Populating = populating;
             }

@@ -318,14 +318,20 @@ namespace VirtualRadar.WinForms
         /// <param name="modelProperty"></param>
         /// <param name="controlProperty"></param>
         /// <param name="dataSourceUpdateMode"></param>
-        public System.Windows.Forms.Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode)
+        /// <param name="format"></param>
+        /// <param name="parse"></param>
+        public System.Windows.Forms.Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode, ConvertEventHandler format, ConvertEventHandler parse)
             where TControl: Control
         {
             var controlPropertyName = PropertyHelper.ExtractName<TControl>(controlProperty);
             var modelPropertyName = PropertyHelper.ExtractName<TModel>(modelProperty);
 
-            var result = control.DataBindings.Add(controlPropertyName, model, modelPropertyName);
+            var result = new System.Windows.Forms.Binding(controlPropertyName, model, modelPropertyName);
             result.DataSourceUpdateMode = dataSourceUpdateMode;
+            if(format != null) result.Format += format;
+            if(parse != null) result.Parse += parse;
+
+            control.DataBindings.Add(result);
 
             return result;
         }

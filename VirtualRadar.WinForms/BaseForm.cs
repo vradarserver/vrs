@@ -143,10 +143,12 @@ namespace VirtualRadar.WinForms
         /// <param name="modelProperty"></param>
         /// <param name="controlProperty"></param>
         /// <param name="dataSourceUpdateMode"></param>
-        public System.Windows.Forms.Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnValidation)
+        /// <param name="format"></param>
+        /// <param name="parse"></param>
+        public System.Windows.Forms.Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnValidation, ConvertEventHandler format = null, ConvertEventHandler parse = null)
             where TControl: Control
         {
-            return _CommonBaseBehaviour.AddBinding<TControl, TModel>(model, control, modelProperty, controlProperty, dataSourceUpdateMode);
+            return _CommonBaseBehaviour.AddBinding<TControl, TModel>(model, control, modelProperty, controlProperty, dataSourceUpdateMode, format, parse);
         }
 
         /// <summary>

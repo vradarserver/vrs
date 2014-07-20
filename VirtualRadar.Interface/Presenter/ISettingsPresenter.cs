@@ -19,6 +19,12 @@ namespace VirtualRadar.Interface.Presenter
         ISettingsPresenterProvider Provider { get; set; }
 
         /// <summary>
+        /// Creates a new merged feed. The object is not attached to the configuration being edited.
+        /// </summary>
+        /// <returns></returns>
+        MergedFeed CreateMergedFeed();
+
+        /// <summary>
         /// Creates a new receiver. The receiver is not attached to the configuration being edited.
         /// </summary>
         /// <returns></returns>

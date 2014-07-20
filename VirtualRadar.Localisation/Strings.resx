@@ -2017,9 +2017,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ConnectionParameters" xml:space="preserve">
     <value>Connection Parameters</value>
   </data>
-  <data name="NoPosition" xml:space="preserve">
-    <value>No Position</value>
-  </data>
   <data name="IcaoTimeoutTitle" xml:space="preserve">
     <value>ICAO Timeout</value>
   </data>
@@ -2158,5 +2155,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="SerialComPortUnknown" xml:space="preserve">
     <value>The COM port does not exist</value>
+  </data>
+  <data name="IgnoreModeS" xml:space="preserve">
+    <value>Ignore Mode-S</value>
   </data>
 </root>

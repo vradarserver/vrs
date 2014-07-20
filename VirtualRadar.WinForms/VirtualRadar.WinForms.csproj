@@ -412,6 +412,18 @@
     <Compile Include="SettingPage\PageDataSources.Designer.cs">
       <DependentUpon>PageDataSources.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageMergedFeed.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageMergedFeed.Designer.cs">
+      <DependentUpon>PageMergedFeed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\PageMergedFeeds.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageMergedFeeds.Designer.cs">
+      <DependentUpon>PageMergedFeeds.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\PageReceiver.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -689,6 +701,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageDataSources.resx">
       <DependentUpon>PageDataSources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageMergedFeed.resx">
+      <DependentUpon>PageMergedFeed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageMergedFeeds.resx">
+      <DependentUpon>PageMergedFeeds.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageReceiver.resx">
       <DependentUpon>PageReceiver.cs</DependentUpon>
