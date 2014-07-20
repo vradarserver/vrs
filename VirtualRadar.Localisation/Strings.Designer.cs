@@ -1574,6 +1574,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore Mode-S.
+        /// </summary>
+        public static string IgnoreModeS {
+            get {
+                return ResourceManager.GetString("IgnoreModeS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Images.
         /// </summary>
         public static string Images {
@@ -2457,15 +2466,6 @@ namespace VirtualRadar.Localisation {
         public static string None {
             get {
                 return ResourceManager.GetString("None", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Position.
-        /// </summary>
-        public static string NoPosition {
-            get {
-                return ResourceManager.GetString("NoPosition", resourceCulture);
             }
         }
         

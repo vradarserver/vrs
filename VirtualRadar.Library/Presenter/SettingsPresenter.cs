@@ -269,7 +269,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Child object creation - CreateReceiver, CreateReceiverLocation
+        #region Child object creation - CreateReceiver, CreateReceiverLocation, CreateMergedFeed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -301,6 +301,20 @@ namespace VirtualRadar.Library.Presenter
                 IsBaseStationLocation = false,
                 Latitude = 0,
                 Longitude = 0,
+            };
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public MergedFeed CreateMergedFeed()
+        {
+            var result = new MergedFeed() {
+                UniqueId = NextCombinedFeedUniqueId(),
+                Name = NextCombinedFeedName("Merged Feed"),
+                Enabled = true,
             };
 
             return result;
@@ -477,10 +491,19 @@ namespace VirtualRadar.Library.Presenter
 
             ValidateDataSources(result, record, valueChangedField);
             ValidateGoogleMapSettings(result, record, valueChangedField);
+            ValidateMergedFeeds(result, record, valueChangedField);
             ValidateReceivers(result, record, valueChangedField);
             ValidateReceiverLocations(result, record, valueChangedField);
 
             return result;
+        }
+
+        private string[] CombinedFeedNamesUpperCase(object exceptCurrent)
+        {
+            var receiverNames = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
+            var mergedFeedNames = _View.Configuration.MergedFeeds.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
+
+            return receiverNames.Concat(mergedFeedNames).ToArray();
         }
 
         #region DataSources
@@ -551,6 +574,54 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region MergedFeeds
+        /// <summary>
+        /// Validates the list of merged feeds.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
+        private void ValidateMergedFeeds(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            var mergedFeed = record as MergedFeed;
+
+            if(record == null) {
+                // List of merged feeds. There's no validation on here, just on the child records
+                if(valueChangedField == ValidationField.None) {
+                    foreach(var child in _View.Configuration.MergedFeeds) {
+                        ValidateMergedFeeds(results, child, valueChangedField);
+                    }
+                }
+            } else if(mergedFeed != null) {
+                // There has to be a name
+                if(StringIsNotEmpty(mergedFeed.Name, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    Message = Strings.NameRequired,
+                })) {
+                    // The name cannot be the same as any other receiver or merged feed name
+                    var receiverAndMergedFeedNames = CombinedFeedNamesUpperCase(mergedFeed);
+                    ValueIsNotInList(mergedFeed.Name.ToUpper(), receiverAndMergedFeedNames, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                        Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
+                    });
+
+                    // The name cannot contain a comma
+                    ConditionIsFalse(mergedFeed.Name, r => r.Contains(","), new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                        Message = Strings.NameCannotContainComma,
+                    });
+                }
+
+                // The ICAO timeout has to be between 1000ms and 30000ms
+                ValueIsInRange(mergedFeed.IcaoTimeout, 1000, 30000, new ValidationParams(ValidationField.IcaoTimeout, results, record, valueChangedField) {
+                    Message = Strings.IcaoTimeoutOutOfBounds,
+                });
+
+                // There has to be at least two receivers in the merged feed (although we don't care if they're not enabled)
+                ConditionIsFalse(mergedFeed.ReceiverIds, r => r.Count < 2, new ValidationParams(ValidationField.ReceiverIds, results, record, valueChangedField) {
+                    Message = Strings.MergedFeedNeedsAtLeastTwoReceivers,
+                });
+            }
+        }
+        #endregion
+
         #region Receivers
         /// <summary>
         /// Validates the list of receivers.
@@ -590,7 +661,7 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.NameRequired,
                 })) {
                     // The name cannot be the same as any other receiver or merged feed name
-                    var receiverAndMergedFeedNames = _View.Configuration.Receivers.Where(r => r != receiver).Select(r => r.Name).Concat(_View.Configuration.MergedFeeds.Select(r => (r.Name ?? "").ToUpper()));
+                    var receiverAndMergedFeedNames = CombinedFeedNamesUpperCase(receiver);
                     ValueIsNotInList(receiver.Name.ToUpper(), receiverAndMergedFeedNames, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
                         Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
                     });
@@ -744,6 +815,7 @@ namespace VirtualRadar.Library.Presenter
                 case ConfigurationListenerGroup.BaseStation:        field = ConvertBaseStationPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.Configuration:      field = ConvertConfigurationPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.GoogleMapSettings:  field = ConvertGoogleMapPropertyToValidationFields(args); break;
+                case ConfigurationListenerGroup.MergedFeed:         field = ConvertMergedFeedPropertyToValidationFields(args); break;
                 case ConfigurationListenerGroup.Receiver:           field = ConvertReceiverPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.ReceiverLocation:   field = ConvertReceiverLocationPropertyToValidationField(args); break;
                 default:                                            break;
@@ -797,6 +869,17 @@ namespace VirtualRadar.Library.Presenter
                 { ValidationField.ClosestAircraftReceiver,  r => r.ClosestAircraftReceiverId },
                 { ValidationField.FlightSimulatorXReceiver, r => r.FlightSimulatorXReceiverId },
                 { ValidationField.WebSiteReceiver,          r => r.WebSiteReceiverId },
+            });
+
+            return result;
+        }
+
+        private ValidationField ConvertMergedFeedPropertyToValidationFields(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<MergedFeed>(args, new Dictionary<ValidationField,Expression<Func<MergedFeed,object>>>() {
+                { ValidationField.Name,         r => r.Name },
+                { ValidationField.IcaoTimeout,  r => r.IcaoTimeout },
+                { ValidationField.ReceiverIds,  r => r.ReceiverIds },
             });
 
             return result;
