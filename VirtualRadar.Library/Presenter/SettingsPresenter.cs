@@ -230,6 +230,8 @@ namespace VirtualRadar.Library.Presenter
             _View.SaveClicked += View_SaveClicked;
             _View.TestConnectionClicked += View_TestConnectionClicked;
             _View.UpdateReceiverLocationsFromBaseStationDatabaseClicked += View_UpdateReceiverLocationsFromBaseStationDatabaseClicked;
+            _View.UseIcaoRawDecodingSettingsClicked += View_UseIcaoRawDecodingSettingsClicked;
+            _View.UseRecommendedRawDecodingSettingsClicked += View_UseRecommendedRawDecodingSettingsClicked;
 
             var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
             var config = configStorage.Load();
@@ -408,6 +410,39 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region UseIcaoRawDecodingSettings, UseRecommendedRawDecodingSettings
+        /// <summary>
+        /// Configures the view with the ICAO raw decoding settings.
+        /// </summary>
+        private void UseIcaoRawDecodingSettings()
+        {
+            _View.Configuration.RawDecodingSettings.AcceptableAirborneSpeed = 11.112;
+            _View.Configuration.RawDecodingSettings.AcceptableAirSurfaceTransitionSpeed = 4.63;
+            _View.Configuration.RawDecodingSettings.AcceptableSurfaceSpeed = 1.389;
+            _View.Configuration.RawDecodingSettings.AirborneGlobalPositionLimit = 10;
+            _View.Configuration.RawDecodingSettings.FastSurfaceGlobalPositionLimit = 25;
+            _View.Configuration.RawDecodingSettings.SlowSurfaceGlobalPositionLimit = 50;
+            _View.Configuration.RawDecodingSettings.SuppressReceiverRangeCheck = false;
+            _View.Configuration.RawDecodingSettings.UseLocalDecodeForInitialPosition = false;
+        }
+
+        /// <summary>
+        /// Configures the view with the default raw decoding settings.
+        /// </summary>
+        private void UseRecommendedRawDecodingSettings()
+        {
+            var defaults = new RawDecodingSettings();
+            _View.Configuration.RawDecodingSettings.AcceptableAirborneSpeed = defaults.AcceptableAirborneSpeed;
+            _View.Configuration.RawDecodingSettings.AcceptableAirSurfaceTransitionSpeed = defaults.AcceptableAirSurfaceTransitionSpeed;
+            _View.Configuration.RawDecodingSettings.AcceptableSurfaceSpeed = defaults.AcceptableSurfaceSpeed;
+            _View.Configuration.RawDecodingSettings.AirborneGlobalPositionLimit = defaults.AirborneGlobalPositionLimit;
+            _View.Configuration.RawDecodingSettings.FastSurfaceGlobalPositionLimit = defaults.FastSurfaceGlobalPositionLimit;
+            _View.Configuration.RawDecodingSettings.SlowSurfaceGlobalPositionLimit = defaults.SlowSurfaceGlobalPositionLimit;
+            _View.Configuration.RawDecodingSettings.SuppressReceiverRangeCheck = true;
+            _View.Configuration.RawDecodingSettings.UseLocalDecodeForInitialPosition = false;
+        }
+        #endregion
+
         #region Wizards - ApplyReceiverConfigurationWizard
         /// <summary>
         /// See interface docs.
@@ -492,6 +527,7 @@ namespace VirtualRadar.Library.Presenter
             ValidateDataSources(result, record, valueChangedField);
             ValidateGoogleMapSettings(result, record, valueChangedField);
             ValidateMergedFeeds(result, record, valueChangedField);
+            ValidateRawFeedDecoding(result, record, valueChangedField);
             ValidateReceivers(result, record, valueChangedField);
             ValidateReceiverLocations(result, record, valueChangedField);
 
@@ -617,6 +653,65 @@ namespace VirtualRadar.Library.Presenter
                 // There has to be at least two receivers in the merged feed (although we don't care if they're not enabled)
                 ConditionIsFalse(mergedFeed.ReceiverIds, r => r.Count < 2, new ValidationParams(ValidationField.ReceiverIds, results, record, valueChangedField) {
                     Message = Strings.MergedFeedNeedsAtLeastTwoReceivers,
+                });
+            }
+        }
+        #endregion
+
+        #region RawFeedDecoding
+        /// <summary>
+        /// Validates the raw feed decoding settings.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
+        private void ValidateRawFeedDecoding(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            if(record == null) {
+                var settings = _View.Configuration.RawDecodingSettings;
+
+                ValueIsInRange(settings.ReceiverRange, 0, 99999, new ValidationParams(ValidationField.ReceiverRange, results, record, valueChangedField) {
+                    Message = Strings.ReceiverRangeOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AirborneGlobalPositionLimit, 1, 30, new ValidationParams(ValidationField.AirborneGlobalPositionLimit, results, record, valueChangedField) {
+                    Message = Strings.AirborneGlobalPositionLimitOutOfBounds,
+                });
+
+                ValueIsInRange(settings.FastSurfaceGlobalPositionLimit, 1, 75, new ValidationParams(ValidationField.FastSurfaceGlobalPositionLimit, results, record, valueChangedField) {
+                    Message = Strings.FastSurfaceGlobalPositionLimitOutOfBounds,
+                });
+
+                ValueIsInRange(settings.SlowSurfaceGlobalPositionLimit, 1, 150, new ValidationParams(ValidationField.SlowSurfaceGlobalPositionLimit, results, record, valueChangedField) {
+                    Message = Strings.SlowSurfaceGlobalPositionLimitOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AcceptableAirborneSpeed, 0.005, 45.0, new ValidationParams(ValidationField.AcceptableAirborneLocalPositionSpeed, results, record, valueChangedField) {
+                    Message = Strings.AcceptableAirborneSpeedOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AcceptableAirSurfaceTransitionSpeed, 0.003, 20.0, new ValidationParams(ValidationField.AcceptableTransitionLocalPositionSpeed, results, record, valueChangedField) {
+                    Message = Strings.AcceptableAirSurfaceTransitionSpeedOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AcceptableSurfaceSpeed, 0.001, 10.0, new ValidationParams(ValidationField.AcceptableSurfaceLocalPositionSpeed, results, record, valueChangedField) {
+                    Message = Strings.AcceptableSurfaceSpeedOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AcceptIcaoInNonPICount, 0, 100, new ValidationParams(ValidationField.AcceptIcaoInNonPICount, results, record, valueChangedField) {
+                    Message = Strings.AcceptIcaoInNonPICountOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AcceptIcaoInNonPISeconds, 1, 30, new ValidationParams(ValidationField.AcceptIcaoInNonPISeconds, results, record, valueChangedField) {
+                    Message = Strings.AcceptIcaoInNonPISecondsOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AcceptIcaoInPI0Count, 1, 10, new ValidationParams(ValidationField.AcceptIcaoInPI0Count, results, record, valueChangedField) {
+                    Message = Strings.AcceptIcaoInPI0CountOutOfBounds,
+                });
+
+                ValueIsInRange(settings.AcceptIcaoInPI0Seconds, 1, 60, new ValidationParams(ValidationField.AcceptIcaoInPI0Seconds, results, record, valueChangedField) {
+                    Message = Strings.AcceptIcaoInPI0SecondsOutOfBounds,
                 });
             }
         }
@@ -812,12 +907,13 @@ namespace VirtualRadar.Library.Presenter
 
             var field = ValidationField.None;
             switch(args.Group) {
-                case ConfigurationListenerGroup.BaseStation:        field = ConvertBaseStationPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.Configuration:      field = ConvertConfigurationPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.GoogleMapSettings:  field = ConvertGoogleMapPropertyToValidationFields(args); break;
-                case ConfigurationListenerGroup.MergedFeed:         field = ConvertMergedFeedPropertyToValidationFields(args); break;
-                case ConfigurationListenerGroup.Receiver:           field = ConvertReceiverPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.ReceiverLocation:   field = ConvertReceiverLocationPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.BaseStation:            field = ConvertBaseStationPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.Configuration:          field = ConvertConfigurationPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.GoogleMapSettings:      field = ConvertGoogleMapPropertyToValidationFields(args); break;
+                case ConfigurationListenerGroup.MergedFeed:             field = ConvertMergedFeedPropertyToValidationFields(args); break;
+                case ConfigurationListenerGroup.RawDecodingSettings:    field = ConvertRawFeedDecodingToValidationFields(args); break;
+                case ConfigurationListenerGroup.Receiver:               field = ConvertReceiverPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.ReceiverLocation:       field = ConvertReceiverLocationPropertyToValidationField(args); break;
                 default:                                            break;
             }
 
@@ -880,6 +976,25 @@ namespace VirtualRadar.Library.Presenter
                 { ValidationField.Name,         r => r.Name },
                 { ValidationField.IcaoTimeout,  r => r.IcaoTimeout },
                 { ValidationField.ReceiverIds,  r => r.ReceiverIds },
+            });
+
+            return result;
+        }
+
+        private ValidationField ConvertRawFeedDecodingToValidationFields(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<RawDecodingSettings>(args, new Dictionary<ValidationField,Expression<Func<RawDecodingSettings,object>>>() {
+                { ValidationField.ReceiverRange,                            r => r.ReceiverRange },
+                { ValidationField.AirborneGlobalPositionLimit,              r => r.AirborneGlobalPositionLimit },
+                { ValidationField.FastSurfaceGlobalPositionLimit,           r => r.FastSurfaceGlobalPositionLimit },
+                { ValidationField.SlowSurfaceGlobalPositionLimit,           r => r.SlowSurfaceGlobalPositionLimit },
+                { ValidationField.AcceptableAirborneLocalPositionSpeed,     r => r.AcceptableAirborneSpeed },
+                { ValidationField.AcceptableTransitionLocalPositionSpeed,   r => r.AcceptableAirSurfaceTransitionSpeed },
+                { ValidationField.AcceptableSurfaceLocalPositionSpeed,      r => r.AcceptableSurfaceSpeed },
+                { ValidationField.AcceptIcaoInPI0Count,                     r => r.AcceptIcaoInPI0Count },
+                { ValidationField.AcceptIcaoInPI0Seconds,                   r => r.AcceptIcaoInPI0Seconds },
+                { ValidationField.AcceptIcaoInNonPICount,                   r => r.AcceptIcaoInNonPICount },
+                { ValidationField.AcceptIcaoInNonPISeconds,                 r => r.AcceptIcaoInNonPISeconds },
             });
 
             return result;
@@ -975,6 +1090,26 @@ namespace VirtualRadar.Library.Presenter
 
             if(exception == null)   _View.ShowTestConnectionResults(Strings.CanConnectWithSettings, Strings.ConnectedSuccessfully);
             else                    _View.ShowTestConnectionResults(String.Format("{0} {1}", Strings.CannotConnectWithSettings, exception.Message), Strings.CannotConnect);
+        }
+
+        /// <summary>
+        /// Raised when the user wants to use the ICAO recommended raw decoder settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void View_UseIcaoRawDecodingSettingsClicked(object sender, EventArgs args)
+        {
+            UseIcaoRawDecodingSettings();
+        }
+
+        /// <summary>
+        /// Raised when the user wants to use the default raw decoder settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void View_UseRecommendedRawDecodingSettingsClicked(object sender, EventArgs args)
+        {
+            UseRecommendedRawDecodingSettings();
         }
         #endregion
 

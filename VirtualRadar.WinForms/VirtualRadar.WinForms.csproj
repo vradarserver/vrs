@@ -424,6 +424,12 @@
     <Compile Include="SettingPage\PageMergedFeeds.Designer.cs">
       <DependentUpon>PageMergedFeeds.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageRawFeedDecoding.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageRawFeedDecoding.Designer.cs">
+      <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\PageReceiver.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -707,6 +713,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageMergedFeeds.resx">
       <DependentUpon>PageMergedFeeds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageRawFeedDecoding.resx">
+      <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageReceiver.resx">
       <DependentUpon>PageReceiver.cs</DependentUpon>
