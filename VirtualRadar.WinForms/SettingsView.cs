@@ -68,6 +68,7 @@ namespace VirtualRadar.WinForms
             new PageReceivers(),
             new PageReceiverLocations(),
             new PageMergedFeeds(),
+            new PageRawFeedDecoding(),
         };
         #endregion
 
