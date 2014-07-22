@@ -43,6 +43,12 @@ namespace VirtualRadar.Interface.Presenter
         ReceiverLocation CreateReceiverLocation();
 
         /// <summary>
+        /// Creates a new user. The user is not attached to the configuration being edited.
+        /// </summary>
+        /// <returns></returns>
+        IUser CreateUser();
+
+        /// <summary>
         /// Returns a list of serial port names. Guaranteed not to throw an exception and to be current (i.e. no caching).
         /// </summary>
         /// <returns></returns>
