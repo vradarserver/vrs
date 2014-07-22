@@ -25,6 +25,12 @@ namespace VirtualRadar.Interface.Presenter
         MergedFeed CreateMergedFeed();
 
         /// <summary>
+        /// Creates a new rebroadcast server. The object is not attached to the configuration being edited.
+        /// </summary>
+        /// <returns></returns>
+        RebroadcastSettings CreateRebroadcastServer();
+
+        /// <summary>
         /// Creates a new receiver. The receiver is not attached to the configuration being edited.
         /// </summary>
         /// <returns></returns>
