@@ -21,11 +21,6 @@ namespace VirtualRadar.Interface.Settings
     /// <summary>
     /// The settings for the rebroadcast server.
     /// </summary>
-    /// <remarks>
-    /// Equals is overridden on this object but GetHashCode is not - the object is mutable and
-    /// is not safe for use as a key, there was no requirement to implement GetHashCode. Do
-    /// not use as a key.
-    /// </remarks>
     [Serializable]
     public class RebroadcastSettings : INotifyPropertyChanged
     {

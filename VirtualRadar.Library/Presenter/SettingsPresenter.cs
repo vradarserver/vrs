@@ -271,7 +271,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Child object creation - CreateReceiver, CreateReceiverLocation, CreateMergedFeed
+        #region Child object creation - CreateReceiver, CreateReceiverLocation, CreateMergedFeed, CreateRebroadcastServer
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -322,6 +322,23 @@ namespace VirtualRadar.Library.Presenter
             return result;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public RebroadcastSettings CreateRebroadcastServer()
+        {
+            var result = new RebroadcastSettings() {
+                UniqueId = NextUniqueId(_View.Configuration.RebroadcastSettings.Select(r => r.UniqueId)),
+                Name = NextName(_View.Configuration.RebroadcastSettings.Select(r => r.Name), "Rebroadcast Server"),
+                Port = NextPort(_View.Configuration.RebroadcastSettings.Select(r => r.Port), 33001),
+                Format = RebroadcastFormat.Port30003,
+                Enabled = true,
+            };
+
+            return result;
+        }
+
         private int NextUniqueId(IEnumerable<int> existing)
         {
             int result = 1;
@@ -363,6 +380,17 @@ namespace VirtualRadar.Library.Presenter
             var counter = 2;
             while(existingNames.Any(r => result.Equals(r, StringComparison.CurrentCultureIgnoreCase))) {
                 result = String.Format("{0} {1}", prefix, counter++);
+            }
+
+            return result;
+        }
+
+        private int NextPort(IEnumerable<int> existingPorts, int firstPort)
+        {
+            int result = firstPort;
+
+            while(existingPorts.Contains(result)) {
+                ++result;
             }
 
             return result;
@@ -528,10 +556,19 @@ namespace VirtualRadar.Library.Presenter
             ValidateGoogleMapSettings(result, record, valueChangedField);
             ValidateMergedFeeds(result, record, valueChangedField);
             ValidateRawFeedDecoding(result, record, valueChangedField);
+            ValidateRebroadcastServers(result, record, valueChangedField);
             ValidateReceivers(result, record, valueChangedField);
             ValidateReceiverLocations(result, record, valueChangedField);
 
             return result;
+        }
+
+        private int[] CombinedFeedUniqueIds(object exceptCurrent)
+        {
+            var receiverIds = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => r.UniqueId);
+            var mergedFeedIds = _View.Configuration.MergedFeeds.Where(r => r != exceptCurrent).Select(r => r.UniqueId);
+
+            return receiverIds.Concat(mergedFeedIds).ToArray();
         }
 
         private string[] CombinedFeedNamesUpperCase(object exceptCurrent)
@@ -712,6 +749,64 @@ namespace VirtualRadar.Library.Presenter
 
                 ValueIsInRange(settings.AcceptIcaoInPI0Seconds, 1, 60, new ValidationParams(ValidationField.AcceptIcaoInPI0Seconds, results, record, valueChangedField) {
                     Message = Strings.AcceptIcaoInPI0SecondsOutOfBounds,
+                });
+            }
+        }
+        #endregion
+
+        #region RebroadcastServers
+        /// <summary>
+        /// Handles the validation of the rebroadcast servers.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
+        private void ValidateRebroadcastServers(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            var server = record as RebroadcastSettings;
+
+            if(record == null) {
+                if(valueChangedField == ValidationField.None) {
+                    foreach(var child in _View.Configuration.RebroadcastSettings) {
+                        ValidateRebroadcastServers(results, child, valueChangedField);
+                    }
+                }
+            } else if(server != null) {
+                // The name must be supplied
+                if(StringIsNotEmpty(server.Name, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    Message = Strings.NameRequired,
+                })) {
+                    // Name must be unique
+                    var names = _View.Configuration.RebroadcastSettings.Where(r => r != server).Select(r => (r.Name ?? "").ToUpper()).ToArray();
+                    ValueIsNotInList(server.Name, names, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                        Message = Strings.NameMustBeUnique,
+                    });
+                }
+
+                // Port must be within range
+                ValueIsInRange(server.Port, 1, 65535, new ValidationParams(ValidationField.RebroadcastServerPort, results, record, valueChangedField) {
+                    Message = Strings.PortOutOfBounds,
+                });
+
+                // Port is unique
+                var ports = _View.Configuration.RebroadcastSettings.Where(r => r != server).Select(r => r.Port).ToArray();
+                ValueIsNotInList(server.Port, ports, new ValidationParams(ValidationField.RebroadcastServerPort, results, record, valueChangedField) {
+                    Message = Strings.PortMustBeUnique,
+                });
+
+                // Format is correct
+                ValueNotEqual(server.Format, RebroadcastFormat.None, new ValidationParams(ValidationField.Format, results, record, valueChangedField) {
+                    Message = Strings.RebroadcastFormatRequired,
+                });
+
+                // Receiver has been supplied
+                ValueIsInList(server.ReceiverId, CombinedFeedUniqueIds(null), new ValidationParams(ValidationField.RebroadcastReceiver, results, record, valueChangedField) {
+                    Message = Strings.ReceiverRequired,
+                });
+
+                // Stale seconds is valid
+                ConditionIsTrue(server.StaleSeconds, r => r > 0, new ValidationParams(ValidationField.StaleSeconds, results, record, valueChangedField) {
+                    Message = Strings.StaleSecondsOutOfBounds,
                 });
             }
         }
@@ -912,6 +1007,7 @@ namespace VirtualRadar.Library.Presenter
                 case ConfigurationListenerGroup.GoogleMapSettings:      field = ConvertGoogleMapPropertyToValidationFields(args); break;
                 case ConfigurationListenerGroup.MergedFeed:             field = ConvertMergedFeedPropertyToValidationFields(args); break;
                 case ConfigurationListenerGroup.RawDecodingSettings:    field = ConvertRawFeedDecodingToValidationFields(args); break;
+                case ConfigurationListenerGroup.RebroadcastSetting:     field = ConvertRebroadcastServerToValidationFields(args); break;
                 case ConfigurationListenerGroup.Receiver:               field = ConvertReceiverPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.ReceiverLocation:       field = ConvertReceiverLocationPropertyToValidationField(args); break;
                 default:                                            break;
@@ -995,6 +1091,19 @@ namespace VirtualRadar.Library.Presenter
                 { ValidationField.AcceptIcaoInPI0Seconds,                   r => r.AcceptIcaoInPI0Seconds },
                 { ValidationField.AcceptIcaoInNonPICount,                   r => r.AcceptIcaoInNonPICount },
                 { ValidationField.AcceptIcaoInNonPISeconds,                 r => r.AcceptIcaoInNonPISeconds },
+            });
+
+            return result;
+        }
+
+        private ValidationField ConvertRebroadcastServerToValidationFields(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<RebroadcastSettings>(args, new Dictionary<ValidationField,Expression<Func<RebroadcastSettings,object>>>() {
+                { ValidationField.Name,                     r => r.Name },
+                { ValidationField.RebroadcastServerPort,    r => r.Port },
+                { ValidationField.Format,                   r => r.Format },
+                { ValidationField.RebroadcastReceiver,      r => r.ReceiverId },
+                { ValidationField.StaleSeconds,             r => r.StaleSeconds },
             });
 
             return result;

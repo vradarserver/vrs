@@ -68,6 +68,7 @@ namespace VirtualRadar.WinForms
             new PageReceivers(),
             new PageReceiverLocations(),
             new PageMergedFeeds(),
+            new PageRebroadcastServers(),
             new PageRawFeedDecoding(),
         };
         #endregion
@@ -719,6 +720,15 @@ namespace VirtualRadar.WinForms
         internal MergedFeed CreateMergedFeed()
         {
             return _Presenter.CreateMergedFeed();
+        }
+
+        /// <summary>
+        /// Creates a new rebroadcast server.
+        /// </summary>
+        /// <returns></returns>
+        internal RebroadcastSettings CreateRebroadcastServer()
+        {
+            return _Presenter.CreateRebroadcastServer();
         }
         #endregion
 

@@ -430,6 +430,18 @@
     <Compile Include="SettingPage\PageRawFeedDecoding.Designer.cs">
       <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageRebroadcastServer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageRebroadcastServer.Designer.cs">
+      <DependentUpon>PageRebroadcastServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\PageRebroadcastServers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageRebroadcastServers.Designer.cs">
+      <DependentUpon>PageRebroadcastServers.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\PageReceiver.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -716,6 +728,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageRawFeedDecoding.resx">
       <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageRebroadcastServer.resx">
+      <DependentUpon>PageRebroadcastServer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageRebroadcastServers.resx">
+      <DependentUpon>PageRebroadcastServers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageReceiver.resx">
       <DependentUpon>PageReceiver.cs</DependentUpon>
