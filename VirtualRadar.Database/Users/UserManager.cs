@@ -141,8 +141,8 @@ namespace VirtualRadar.Database.Users
 
             if(String.IsNullOrEmpty(loginName)) results.Add(new ValidationResult(record, ValidationField.LoginName, Strings.LoginNameMissing));
             else {
-                var existingUser = allRecords.FirstOrDefault(r => (r.LoginName ?? "").Equals(loginName ?? "", StringComparison.CurrentCultureIgnoreCase));
-                if(existingUser != null && existingUser != currentRecord) {
+                var existingUser = allRecords.Where(r => r != currentRecord).Any(r => (r.LoginName ?? "").Equals(loginName ?? "", StringComparison.CurrentCultureIgnoreCase));
+                if(existingUser) {
                     results.Add(new ValidationResult(record, ValidationField.LoginName, Strings.LoginNameExists));
                 }
             }

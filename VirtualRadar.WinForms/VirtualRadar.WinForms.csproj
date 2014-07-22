@@ -466,6 +466,18 @@
     <Compile Include="SettingPage\PageReceivers.Designer.cs">
       <DependentUpon>PageReceivers.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageUser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageUser.Designer.cs">
+      <DependentUpon>PageUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\PageUsers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageUsers.Designer.cs">
+      <DependentUpon>PageUsers.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\RecordListHelper.cs" />
     <Compile Include="SettingsView.cs">
       <SubType>Form</SubType>
@@ -746,6 +758,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageReceivers.resx">
       <DependentUpon>PageReceivers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageUser.resx">
+      <DependentUpon>PageUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageUsers.resx">
+      <DependentUpon>PageUsers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsView.resx">
       <DependentUpon>SettingsView.cs</DependentUpon>

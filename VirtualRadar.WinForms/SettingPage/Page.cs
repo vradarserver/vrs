@@ -444,6 +444,33 @@ namespace VirtualRadar.WinForms.SettingPage
 
             if(SettingsView != null) SettingsView.RefreshPageTreeNode(this);
         }
+
+        /// <summary>
+        /// Refreshes the tree nodes for pages that have set up PageEnabled or PageTitle properties.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="propertyName"></param>
+        private void RefreshTreeNodeForRecordProperty(object record, string propertyName)
+        {
+            var refreshPageTreeNode = false;
+
+            if(record == PageObject && SettingsView != null) {
+                if(_PageTitleFetcher != null) {
+                    if(_PageTitleProperty == null || propertyName == _PageTitleProperty) {
+                        refreshPageTreeNode = true;
+                    }
+                }
+                if(_PageEnabledFetcher != null) {
+                    if(_PageEnabledProperty == null || propertyName == _PageEnabledProperty) {
+                        refreshPageTreeNode = true;
+                    }
+                }
+            }
+
+            if(refreshPageTreeNode) {
+                SettingsView.RefreshPageTreeNode(this);
+            }
+        }
         #endregion
 
         #region Child object to page handling
@@ -512,23 +539,18 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <param name="args"></param>
         internal virtual void ConfigurationChanged(ConfigurationListenerEventArgs args)
         {
-            var refreshPageTreeNode = false;
+            RefreshTreeNodeForRecordProperty(args.Record, args.PropertyName);
+        }
 
-            if(args.Record == PageObject && SettingsView != null) {
-                if(_PageTitleFetcher != null) {
-                    if(_PageTitleProperty == null || args.PropertyName == _PageTitleProperty) {
-                        refreshPageTreeNode = true;
-                    }
-                }
-                if(_PageEnabledFetcher != null) {
-                    if(_PageEnabledProperty == null || args.PropertyName == _PageEnabledProperty) {
-                        refreshPageTreeNode = true;
-                    }
-                }
-            }
-
-            if(refreshPageTreeNode) {
-                SettingsView.RefreshPageTreeNode(this);
+        /// <summary>
+        /// Called when the users list, or any user in the list, changes.
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="args"></param>
+        internal virtual void UsersChanged(IList<IUser> users, ListChangedEventArgs args)
+        {
+            if(args.ListChangedType == ListChangedType.ItemChanged) {
+                RefreshTreeNodeForRecordProperty(users[args.NewIndex], args.PropertyDescriptor.Name);
             }
         }
 

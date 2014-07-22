@@ -14,6 +14,7 @@ using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
+using System.ComponentModel;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -169,6 +170,17 @@ namespace VirtualRadar.Library.Presenter
         /// we create new receivers and merged feeds.
         /// </summary>
         private int _InitialMaxCombinedFeedId;
+
+        /// <summary>
+        /// The user manager that the presenter is deferring all user handling to.
+        /// </summary>
+        private IUserManager _UserManager;
+
+        /// <summary>
+        /// The password that we use to indicate that a password has not been changed by the user.
+        /// Needs to be something that is unlikely or impossible to have been entered via the UI.
+        /// </summary>
+        private string _DefaultPassword = "A\t\t\t\t\tA";
         #endregion
 
         #region Properties
@@ -236,6 +248,9 @@ namespace VirtualRadar.Library.Presenter
             var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
             var config = configStorage.Load();
 
+            _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            _View.UserManager = _UserManager.Name;
+
             var highestReceiver = config.Receivers.OrderBy(r => r.UniqueId).LastOrDefault();
             var highestMergedFeed = config.MergedFeeds.OrderBy(r => r.UniqueId).LastOrDefault();
             _InitialMaxCombinedFeedId = Math.Max(highestReceiver == null ? 0 : highestReceiver.UniqueId, highestMergedFeed == null ? 0 : highestMergedFeed.UniqueId);
@@ -243,6 +258,8 @@ namespace VirtualRadar.Library.Presenter
             _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
             _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
             _ConfigurationListener.Initialise(config);
+
+            _View.Users.ListChanged += Users_ListChanged;
 
             CopyConfigurationToView(config);
         }
@@ -255,6 +272,10 @@ namespace VirtualRadar.Library.Presenter
         {
             using(new DisableValidationOnViewChanged(this)) {
                 _View.Configuration = config;
+
+                var allUsers = _UserManager.GetUsers().Select(r => { r.UIPassword = _DefaultPassword; return r; }).ToArray();
+                _View.Users.Clear();
+                _View.Users.AddRange(allUsers);
             }
             ValidateForm();
         }
@@ -271,7 +292,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Child object creation - CreateReceiver, CreateReceiverLocation, CreateMergedFeed, CreateRebroadcastServer
+        #region Child object creation - CreateReceiver, CreateReceiverLocation, CreateMergedFeed, CreateRebroadcastServer, CreateUser
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -335,6 +356,20 @@ namespace VirtualRadar.Library.Presenter
                 Format = RebroadcastFormat.Port30003,
                 Enabled = true,
             };
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IUser CreateUser()
+        {
+            var result = Factory.Singleton.Resolve<IUser>();
+            result.Enabled = true;
+            result.LoginName = "";
+            result.Name = "";
 
             return result;
         }
@@ -559,6 +594,7 @@ namespace VirtualRadar.Library.Presenter
             ValidateRebroadcastServers(result, record, valueChangedField);
             ValidateReceivers(result, record, valueChangedField);
             ValidateReceiverLocations(result, record, valueChangedField);
+            ValidateUsers(result, record, valueChangedField);
 
             return result;
         }
@@ -988,6 +1024,32 @@ namespace VirtualRadar.Library.Presenter
             }
         }
         #endregion
+
+        #region Users
+        private void ValidateUsers(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            var user = record as IUser;
+
+            if(record == null) {
+                if(valueChangedField == ValidationField.None) {
+                    foreach(var child in _View.Users) {
+                        ValidateUsers(results, child, valueChangedField);
+                    }
+                }
+            } else if(user != null) {
+                if(_UserManager.CanEditUsers) {
+                    switch(valueChangedField) {
+                        case ValidationField.None:
+                        case ValidationField.LoginName:
+                        case ValidationField.Password:
+                        case ValidationField.Name:
+                            _UserManager.ValidateUser(results, user, user, _View.Users);
+                            break;
+                    }
+                }
+            }
+        }
+        #endregion
         #endregion
 
         #region HandleConfigurationPropertyChanged
@@ -1019,13 +1081,36 @@ namespace VirtualRadar.Library.Presenter
             }
         }
 
-        private ValidationField ValidationFieldForPropertyName<TModel>(ConfigurationListenerEventArgs args, Dictionary<ValidationField, Expression<Func<TModel, object>>> map)
+        /// <summary>
+        /// Converts from the object and property name to a ValidationField, validates the field and shows the validation
+        /// results to the user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="propertyName"></param>
+        private void HandleUsersPropertyChanged(IUser user, string propertyName)
+        {
+            if(user != null) {
+                var field = ValidationFieldForPropertyName<IUser>(propertyName, new Dictionary<ValidationField,Expression<Func<IUser,object>>>() {
+                    { ValidationField.LoginName,    r => r.LoginName },
+                    { ValidationField.Password,     r => r.UIPassword },
+                    { ValidationField.Name,         r => r.Name },
+                });
+
+                if(field != ValidationField.None) {
+                    var results = ValidateForm(user, field);
+                    _View.ShowSingleFieldValidationResults(user, field, results);
+                }
+            }
+        }
+
+
+        private ValidationField ValidationFieldForPropertyName<TModel>(string propertyName, Dictionary<ValidationField, Expression<Func<TModel, object>>> map)
         {
             var result = ValidationField.None;
 
             foreach(var kvp in map) {
-                var propertyName = PropertyHelper.ExtractName<TModel>(kvp.Value);
-                if(args.PropertyName == propertyName) {
+                var fieldPropertyName = PropertyHelper.ExtractName<TModel>(kvp.Value);
+                if(propertyName == fieldPropertyName) {
                     result = kvp.Key;
                     break;
                 }
@@ -1036,7 +1121,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertBaseStationPropertyToValidationField(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<BaseStationSettings>(args, new Dictionary<ValidationField,Expression<Func<BaseStationSettings,object>>>() {
+            var result = ValidationFieldForPropertyName<BaseStationSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<BaseStationSettings,object>>>() {
                 { ValidationField.BaseStationDatabase,  r => r.DatabaseFileName },
                 { ValidationField.FlagsFolder,          r => r.OperatorFlagsFolder },
                 { ValidationField.SilhouettesFolder,    r => r.SilhouettesFolder },
@@ -1048,7 +1133,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertConfigurationPropertyToValidationField(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<Configuration>(args, new Dictionary<ValidationField,Expression<Func<Configuration,object>>>() {
+            var result = ValidationFieldForPropertyName<Configuration>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<Configuration,object>>>() {
                 { ValidationField.ReceiverIds,  r => r.Receivers },
             });
 
@@ -1057,7 +1142,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertGoogleMapPropertyToValidationFields(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<GoogleMapSettings>(args, new Dictionary<ValidationField,Expression<Func<GoogleMapSettings,object>>>() {
+            var result = ValidationFieldForPropertyName<GoogleMapSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<GoogleMapSettings,object>>>() {
                 { ValidationField.ClosestAircraftReceiver,  r => r.ClosestAircraftReceiverId },
                 { ValidationField.FlightSimulatorXReceiver, r => r.FlightSimulatorXReceiverId },
                 { ValidationField.WebSiteReceiver,          r => r.WebSiteReceiverId },
@@ -1068,7 +1153,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertMergedFeedPropertyToValidationFields(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<MergedFeed>(args, new Dictionary<ValidationField,Expression<Func<MergedFeed,object>>>() {
+            var result = ValidationFieldForPropertyName<MergedFeed>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<MergedFeed,object>>>() {
                 { ValidationField.Name,         r => r.Name },
                 { ValidationField.IcaoTimeout,  r => r.IcaoTimeout },
                 { ValidationField.ReceiverIds,  r => r.ReceiverIds },
@@ -1079,7 +1164,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertRawFeedDecodingToValidationFields(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<RawDecodingSettings>(args, new Dictionary<ValidationField,Expression<Func<RawDecodingSettings,object>>>() {
+            var result = ValidationFieldForPropertyName<RawDecodingSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<RawDecodingSettings,object>>>() {
                 { ValidationField.ReceiverRange,                            r => r.ReceiverRange },
                 { ValidationField.AirborneGlobalPositionLimit,              r => r.AirborneGlobalPositionLimit },
                 { ValidationField.FastSurfaceGlobalPositionLimit,           r => r.FastSurfaceGlobalPositionLimit },
@@ -1098,7 +1183,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertRebroadcastServerToValidationFields(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<RebroadcastSettings>(args, new Dictionary<ValidationField,Expression<Func<RebroadcastSettings,object>>>() {
+            var result = ValidationFieldForPropertyName<RebroadcastSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<RebroadcastSettings,object>>>() {
                 { ValidationField.Name,                     r => r.Name },
                 { ValidationField.RebroadcastServerPort,    r => r.Port },
                 { ValidationField.Format,                   r => r.Format },
@@ -1111,7 +1196,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertReceiverPropertyToValidationField(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<Receiver>(args, new Dictionary<ValidationField,Expression<Func<Receiver,object>>>() {
+            var result = ValidationFieldForPropertyName<Receiver>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<Receiver,object>>>() {
                 { ValidationField.Enabled,              r => r.Enabled },
                 { ValidationField.Name,                 r => r.Name },
                 { ValidationField.Location,             r => r.ReceiverLocationId },
@@ -1127,7 +1212,7 @@ namespace VirtualRadar.Library.Presenter
 
         private ValidationField ConvertReceiverLocationPropertyToValidationField(ConfigurationListenerEventArgs args)
         {
-            var result = ValidationFieldForPropertyName<ReceiverLocation>(args, new Dictionary<ValidationField,Expression<Func<ReceiverLocation,object>>>() {
+            var result = ValidationFieldForPropertyName<ReceiverLocation>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<ReceiverLocation,object>>>() {
                 { ValidationField.Location,     r => r.Name },
                 { ValidationField.Latitude,     r => r.Latitude },
                 { ValidationField.Longitude,    r => r.Longitude },
@@ -1222,7 +1307,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region ConfigurationListener Event Handlers
+        #region ConfigurationListener and User Event Handlers
         /// <summary>
         /// Raised when something changes the configuration.
         /// </summary>
@@ -1232,6 +1317,18 @@ namespace VirtualRadar.Library.Presenter
         {
             if(!_ValueChangedValidationDisabled) {
                 HandleConfigurationPropertyChanged(args);
+            }
+        }
+
+        /// <summary>
+        /// Raised when something changes the users list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Users_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            if(args.ListChangedType == ListChangedType.ItemChanged) {
+                HandleUsersPropertyChanged(_View.Users[args.NewIndex], args.PropertyDescriptor.Name);
             }
         }
         #endregion

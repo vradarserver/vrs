@@ -69,6 +69,7 @@ namespace VirtualRadar.WinForms
             new PageReceiverLocations(),
             new PageMergedFeeds(),
             new PageRebroadcastServers(),
+            new PageUsers(),
             new PageRawFeedDecoding(),
         };
         #endregion
@@ -131,6 +132,11 @@ namespace VirtualRadar.WinForms
         /// See interface docs.
         /// </summary>
         public BindingList<IUser> Users { get { return _Users; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string UserManager { get; set; }
 
         private BindingList<CombinedFeed> _CombinedFeed = new BindingList<CombinedFeed>();
         /// <summary>
@@ -299,6 +305,8 @@ namespace VirtualRadar.WinForms
         {
             _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
             _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
+            _Users.ListChanged += Users_ListChanged;
+
             InitializeComponent();
         }
         #endregion
@@ -730,6 +738,15 @@ namespace VirtualRadar.WinForms
         {
             return _Presenter.CreateRebroadcastServer();
         }
+
+        /// <summary>
+        /// Creates a new user.
+        /// </summary>
+        /// <returns></returns>
+        internal IUser CreateUser()
+        {
+            return _Presenter.CreateUser();
+        }
         #endregion
 
         #region Source helpers - GetSerialPortNames
@@ -863,7 +880,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region Events subscribed - ConfigurationListener
+        #region Events subscribed - ConfigurationListener, Users
         /// <summary>
         /// Called when the configuration changes.
         /// </summary>
@@ -871,9 +888,20 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         private void ConfigurationListener_PropertyChanged(object sender, ConfigurationListenerEventArgs args)
         {
-            // Tell all the pages that something somewhere has changed the configuration
             foreach(var page in GetAllPages()) {
                 page.ConfigurationChanged(args);
+            }
+        }
+
+        /// <summary>
+        /// Called when the users change.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Users_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            foreach(var page in GetAllPages()) {
+                page.UsersChanged(_Users, args);
             }
         }
         #endregion

@@ -33,6 +33,11 @@ namespace VirtualRadar.Interface.View
         /// Gets the list of configured users.
         /// </summary>
         BindingList<IUser> Users { get; }
+
+        /// <summary>
+        /// Gets or sets the name of the user manager.
+        /// </summary>
+        string UserManager { get; set; }
         #endregion
 
         #region Events
