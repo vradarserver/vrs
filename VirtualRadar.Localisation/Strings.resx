@@ -1117,9 +1117,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="InternetUserCanSeeLabels" xml:space="preserve">
     <value>Internet users can see aircraft labels</value>
   </data>
-  <data name="InternetUserIdleTimeout" xml:space="preserve">
-    <value>Idle timeout for Internet users (minutes)</value>
-  </data>
   <data name="InternetUsersCanListenToAudio" xml:space="preserve">
     <value>Internet users can listen to audio</value>
   </data>
@@ -2158,5 +2155,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="IgnoreModeS" xml:space="preserve">
     <value>Ignore Mode-S</value>
+  </data>
+  <data name="IdleTimeout" xml:space="preserve">
+    <value>Idle timeout</value>
   </data>
 </root>

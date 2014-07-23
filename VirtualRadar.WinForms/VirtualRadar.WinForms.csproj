@@ -478,6 +478,12 @@
     <Compile Include="SettingPage\PageUsers.Designer.cs">
       <DependentUpon>PageUsers.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageWebServer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageWebServer.Designer.cs">
+      <DependentUpon>PageWebServer.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\RecordListHelper.cs" />
     <Compile Include="SettingsView.cs">
       <SubType>Form</SubType>
@@ -764,6 +770,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageUsers.resx">
       <DependentUpon>PageUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageWebServer.resx">
+      <DependentUpon>PageWebServer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsView.resx">
       <DependentUpon>SettingsView.cs</DependentUpon>

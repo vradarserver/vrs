@@ -589,12 +589,14 @@ namespace VirtualRadar.Library.Presenter
 
             ValidateDataSources(result, record, valueChangedField);
             ValidateGoogleMapSettings(result, record, valueChangedField);
+            ValidateInternetClient(result, record, valueChangedField);
             ValidateMergedFeeds(result, record, valueChangedField);
             ValidateRawFeedDecoding(result, record, valueChangedField);
             ValidateRebroadcastServers(result, record, valueChangedField);
             ValidateReceivers(result, record, valueChangedField);
             ValidateReceiverLocations(result, record, valueChangedField);
             ValidateUsers(result, record, valueChangedField);
+            ValidateWebServer(result, record, valueChangedField);
 
             return result;
         }
@@ -679,6 +681,20 @@ namespace VirtualRadar.Library.Presenter
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
                 }
+            }
+        }
+        #endregion
+
+        #region InternetClientSettings
+        private void ValidateInternetClient(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            if(record == null) {
+                var settings = _View.Configuration.InternetClientSettings;
+
+                // Internet client timeout is within range
+                ValueIsInRange(settings.TimeoutMinutes, 0, 1440, new ValidationParams(ValidationField.InternetUserIdleTimeout, results, record, valueChangedField) {
+                    Message = Strings.InternetUserIdleTimeoutOutOfBounds,
+                });
             }
         }
         #endregion
@@ -1050,6 +1066,20 @@ namespace VirtualRadar.Library.Presenter
             }
         }
         #endregion
+
+        #region WebServer
+        private void ValidateWebServer(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            if(record == null) {
+                var settings = _View.Configuration.WebServerSettings;
+
+                // UPnP port has to be within range
+                ValueIsInRange(settings.UPnpPort, 1, 65535, new ValidationParams(ValidationField.UPnpPortNumber, results, record, valueChangedField) {
+                    Message = Strings.UPnpPortOutOfBounds,
+                });
+            }
+        }
+        #endregion
         #endregion
 
         #region HandleConfigurationPropertyChanged
@@ -1067,11 +1097,13 @@ namespace VirtualRadar.Library.Presenter
                 case ConfigurationListenerGroup.BaseStation:            field = ConvertBaseStationPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.Configuration:          field = ConvertConfigurationPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.GoogleMapSettings:      field = ConvertGoogleMapPropertyToValidationFields(args); break;
+                case ConfigurationListenerGroup.InternetClientSettings: field = ConvertInternetClientPropertyToValidationFields(args); break;
                 case ConfigurationListenerGroup.MergedFeed:             field = ConvertMergedFeedPropertyToValidationFields(args); break;
                 case ConfigurationListenerGroup.RawDecodingSettings:    field = ConvertRawFeedDecodingToValidationFields(args); break;
                 case ConfigurationListenerGroup.RebroadcastSetting:     field = ConvertRebroadcastServerToValidationFields(args); break;
                 case ConfigurationListenerGroup.Receiver:               field = ConvertReceiverPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.ReceiverLocation:       field = ConvertReceiverLocationPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.WebServerSettings:      field = ConvertWebServerPropertyToValidationField(args); break;
                 default:                                            break;
             }
 
@@ -1151,6 +1183,15 @@ namespace VirtualRadar.Library.Presenter
             return result;
         }
 
+        private ValidationField ConvertInternetClientPropertyToValidationFields(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<InternetClientSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<InternetClientSettings,object>>>() {
+                { ValidationField.InternetUserIdleTimeout, r => r.TimeoutMinutes },
+            });
+
+            return result;
+        }
+
         private ValidationField ConvertMergedFeedPropertyToValidationFields(ConfigurationListenerEventArgs args)
         {
             var result = ValidationFieldForPropertyName<MergedFeed>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<MergedFeed,object>>>() {
@@ -1216,6 +1257,15 @@ namespace VirtualRadar.Library.Presenter
                 { ValidationField.Location,     r => r.Name },
                 { ValidationField.Latitude,     r => r.Latitude },
                 { ValidationField.Longitude,    r => r.Longitude },
+            });
+
+            return result;
+        }
+
+        private ValidationField ConvertWebServerPropertyToValidationField(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<WebServerSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<WebServerSettings,object>>>() {
+                { ValidationField.UPnpPortNumber, r => r.UPnpPort },
             });
 
             return result;
