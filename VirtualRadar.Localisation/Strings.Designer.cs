@@ -1538,6 +1538,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Idle timeout.
+        /// </summary>
+        public static string IdleTimeout {
+            get {
+                return ResourceManager.GetString("IdleTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore aircraft with no position.
         /// </summary>
         public static string IgnoreAircraftWithNoPosition {
@@ -1723,15 +1732,6 @@ namespace VirtualRadar.Localisation {
         public static string InternetUserCanSeeLabels {
             get {
                 return ResourceManager.GetString("InternetUserCanSeeLabels", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Idle timeout for Internet users (minutes).
-        /// </summary>
-        public static string InternetUserIdleTimeout {
-            get {
-                return ResourceManager.GetString("InternetUserIdleTimeout", resourceCulture);
             }
         }
         
