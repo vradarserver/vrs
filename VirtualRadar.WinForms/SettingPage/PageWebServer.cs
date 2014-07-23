@@ -26,6 +26,12 @@ namespace VirtualRadar.WinForms.SettingPage
             InitializeComponent();
         }
 
+        protected override void AssociateChildPages()
+        {
+            base.AssociateChildPages();
+            ChildPages.Add(new PageWebServerAuthentication());
+        }
+
         protected override void CreateBindings()
         {
             base.CreateBindings();
