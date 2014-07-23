@@ -601,6 +601,19 @@ namespace VirtualRadar.Library.Presenter
             return result;
         }
 
+        /// <summary>
+        /// Validates a single field.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="field"></param>
+        private void ValidateSingleField(object record, ValidationField field)
+        {
+            if(field != ValidationField.None) {
+                var results = ValidateForm(record, field);
+                _View.ShowSingleFieldValidationResults(record, field, results);
+            }
+        }
+
         private int[] CombinedFeedUniqueIds(object exceptCurrent)
         {
             var receiverIds = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => r.UniqueId);
@@ -680,6 +693,23 @@ namespace VirtualRadar.Library.Presenter
                     ValueIsInList(settings.WebSiteReceiverId, allReceiverIds, new ValidationParams(ValidationField.WebSiteReceiver, results, record, valueChangedField) {
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
+                }
+
+                // Minimum refresh period is within range
+                ValueIsInRange(settings.MinimumRefreshSeconds, 0, 3600, new ValidationParams(ValidationField.MinimumGoogleMapRefreshSeconds, results, record, valueChangedField) {
+                    Message = Strings.MinimumRefreshOutOfBounds,
+                });
+
+                // Initial aircraft list refresh period is within range
+                switch(valueChangedField) {
+                    case ValidationField.InitialGoogleMapRefreshSeconds:
+                    case ValidationField.MinimumGoogleMapRefreshSeconds:
+                        if(ValueIsInRange(settings.InitialRefreshSeconds, settings.MinimumRefreshSeconds, 3600, new ValidationParams(ValidationField.InitialGoogleMapRefreshSeconds, results, record) {
+                            Message = Strings.InitialRefreshLessThanMinimumRefresh
+                        })) {
+                            results.Add(new ValidationResult(ValidationField.InitialGoogleMapRefreshSeconds, "", false));
+                        }
+                        break;
                 }
             }
         }
@@ -1082,7 +1112,7 @@ namespace VirtualRadar.Library.Presenter
         #endregion
         #endregion
 
-        #region HandleConfigurationPropertyChanged
+        #region HandleConfigurationPropertyChanged, HandleUsersPropertyChanged
         /// <summary>
         /// Converts from the object and property name to a ValidationField, validates the field and shows the validation
         /// results to the user.
@@ -1107,10 +1137,7 @@ namespace VirtualRadar.Library.Presenter
                 default:                                            break;
             }
 
-            if(field != ValidationField.None) {
-                var results = ValidateForm(record, field);
-                _View.ShowSingleFieldValidationResults(record, field, results);
-            }
+            ValidateSingleField(record, field);
         }
 
         /// <summary>
@@ -1128,10 +1155,7 @@ namespace VirtualRadar.Library.Presenter
                     { ValidationField.Name,         r => r.Name },
                 });
 
-                if(field != ValidationField.None) {
-                    var results = ValidateForm(user, field);
-                    _View.ShowSingleFieldValidationResults(user, field, results);
-                }
+                ValidateSingleField(user, field);
             }
         }
 
@@ -1175,9 +1199,12 @@ namespace VirtualRadar.Library.Presenter
         private ValidationField ConvertGoogleMapPropertyToValidationFields(ConfigurationListenerEventArgs args)
         {
             var result = ValidationFieldForPropertyName<GoogleMapSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<GoogleMapSettings,object>>>() {
-                { ValidationField.ClosestAircraftReceiver,  r => r.ClosestAircraftReceiverId },
-                { ValidationField.FlightSimulatorXReceiver, r => r.FlightSimulatorXReceiverId },
-                { ValidationField.WebSiteReceiver,          r => r.WebSiteReceiverId },
+                { ValidationField.ClosestAircraftReceiver,          r => r.ClosestAircraftReceiverId },
+                { ValidationField.FlightSimulatorXReceiver,         r => r.FlightSimulatorXReceiverId },
+                { ValidationField.WebSiteReceiver,                  r => r.WebSiteReceiverId },
+
+                { ValidationField.InitialGoogleMapRefreshSeconds,   r => r.InitialRefreshSeconds },
+                { ValidationField.MinimumGoogleMapRefreshSeconds,   r => r.MinimumRefreshSeconds },
             });
 
             return result;

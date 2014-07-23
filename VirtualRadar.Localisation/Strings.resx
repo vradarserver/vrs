@@ -343,7 +343,7 @@ French translation by Francois /F5ANN.</value>
     <comment>Default Google map type</comment>
   </data>
   <data name="InitialRefresh" xml:space="preserve">
-    <value>Seconds between map updates</value>
+    <value>Initial refresh</value>
     <comment>Number of seconds between each update of the map</comment>
   </data>
   <data name="InitialZoom" xml:space="preserve">
@@ -362,7 +362,7 @@ French translation by Francois /F5ANN.</value>
     <value>There is a later version of this program available</value>
   </data>
   <data name="MinimumRefresh" xml:space="preserve">
-    <value>Minimum seconds between map updates</value>
+    <value>Minimum refresh</value>
     <comment>The smallest number of seconds a browser can request between map updates</comment>
   </data>
   <data name="MobileVersion" xml:space="preserve">
@@ -2158,5 +2158,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="IdleTimeout" xml:space="preserve">
     <value>Idle timeout</value>
+  </data>
+  <data name="PSeconds" xml:space="preserve">
+    <value>(seconds)</value>
   </data>
 </root>

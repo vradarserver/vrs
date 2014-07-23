@@ -29,11 +29,11 @@ namespace VirtualRadar.Library.Presenter
         {
             public List<ValidationResult> Results { get; private set; }
 
-            public ValidationField[] Fields { get; private set; }
+            public ValidationField Field { get; private set; }
 
             public ValidationField ValueChangedField { get; set; }
 
-            public bool FieldMatches { get { return ValueChangedField == ValidationField.None || Fields.Contains(ValueChangedField); } }
+            public bool FieldMatches { get { return ValueChangedField == ValidationField.None || Field == ValueChangedField; } }
 
             public object Record { get; set; }
 
@@ -47,22 +47,18 @@ namespace VirtualRadar.Library.Presenter
 
             public bool HasNoMessage { get { return Message == null && Format == null; } }
 
-            public ValidationParams(ValidationField field, List<ValidationResult> results) : this(new ValidationField[] { field }, results, null, ValidationField.None)
+            public ValidationParams(ValidationField field, List<ValidationResult> results) : this(field, results, null, ValidationField.None)
             {
             }
 
-            public ValidationParams(ValidationField field, List<ValidationResult> results, object record) : this(new ValidationField[] { field }, results, record, ValidationField.None)
+            public ValidationParams(ValidationField field, List<ValidationResult> results, object record) : this(field, results, record, ValidationField.None)
             {
             }
 
-            public ValidationParams(ValidationField field, List<ValidationResult> results, object record, ValidationField valueChangedField) : this(new ValidationField[] { field }, results, record, valueChangedField)
-            {
-            }
-
-            public ValidationParams(ValidationField[] fields, List<ValidationResult> results, object record, ValidationField valueChangedField)
+            public ValidationParams(ValidationField field, List<ValidationResult> results, object record, ValidationField valueChangedField)
             {
                 Results = results;
-                Fields = fields;
+                Field = field;
                 Record = record;
                 ValueChangedField = valueChangedField;
             }
@@ -99,7 +95,7 @@ namespace VirtualRadar.Library.Presenter
 
             public ValidationResult AddResult()
             {
-                var result = new ValidationResult(Record, Fields[0], Message ?? String.Format(Format, Args), IsWarning);
+                var result = new ValidationResult(Record, Field, Message ?? String.Format(Format, Args), IsWarning);
                 Results.Add(result);
 
                 return result;
