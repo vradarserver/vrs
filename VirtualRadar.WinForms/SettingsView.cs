@@ -72,6 +72,7 @@ namespace VirtualRadar.WinForms
             new PageUsers(),
             new PageRawFeedDecoding(),
             new PageWebServer(),
+            new PageWebSite(),
         };
         #endregion
 

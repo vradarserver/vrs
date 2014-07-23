@@ -1646,7 +1646,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seconds between map updates.
+        ///   Looks up a localized string similar to Initial refresh.
         /// </summary>
         public static string InitialRefresh {
             get {
@@ -2299,7 +2299,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum seconds between map updates.
+        ///   Looks up a localized string similar to Minimum refresh.
         /// </summary>
         public static string MinimumRefresh {
             get {
@@ -3825,6 +3825,15 @@ namespace VirtualRadar.Localisation {
         public static string ProxyType {
             get {
                 return ResourceManager.GetString("ProxyType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (seconds).
+        /// </summary>
+        public static string PSeconds {
+            get {
+                return ResourceManager.GetString("PSeconds", resourceCulture);
             }
         }
         
