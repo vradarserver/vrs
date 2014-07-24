@@ -55,6 +55,12 @@ namespace VirtualRadar.Interface.Presenter
         IEnumerable<string> GetSerialPortNames();
 
         /// <summary>
+        /// Returns a collection of voice names. A voice name of null indicates the presence of a default voice.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetVoiceNames();
+
+        /// <summary>
         /// Applies the answers from a receiver configuration wizard to the receiver passed across.
         /// </summary>
         /// <param name="answers"></param>

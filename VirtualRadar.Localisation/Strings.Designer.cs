@@ -1169,38 +1169,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove from map after signal loss (seconds).
-        /// </summary>
-        public static string DurationBeforeAircraftRemovedFromMap {
-            get {
-                return ResourceManager.GetString("DurationBeforeAircraftRemovedFromMap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The display timeout must be between 5 and 540.
         /// </summary>
         public static string DurationBeforeAircraftRemovedFromMapOutOfBounds {
             get {
                 return ResourceManager.GetString("DurationBeforeAircraftRemovedFromMapOutOfBounds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stop tracking after signal loss (seconds).
-        /// </summary>
-        public static string DurationBeforeAircraftRemovedFromTracking {
-            get {
-                return ResourceManager.GetString("DurationBeforeAircraftRemovedFromTracking", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Short trail duration (seconds).
-        /// </summary>
-        public static string DurationOfShortTrails {
-            get {
-                return ResourceManager.GetString("DurationOfShortTrails", resourceCulture);
             }
         }
         
@@ -2785,7 +2758,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to True to allow the program to automatically download updates to the flight routes, false to disable automatic updating..
+        ///   Looks up a localized string similar to Yes to allow the program to automatically download updates to the flight routes, no to disable automatic updating..
         /// </summary>
         public static string OptionsDescribeGeneralDownloadFlightRoutes {
             get {
@@ -2821,7 +2794,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The voice to use when converting text to speech..
+        ///   Looks up a localized string similar to The voice to use when converting text to speech. Leave empty to use the default voice..
         /// </summary>
         public static string OptionsDescribeGeneralTextToSpeechVoice {
             get {
@@ -4351,6 +4324,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove from display.
+        /// </summary>
+        public static string RemoveFromDisplay {
+            get {
+                return ResourceManager.GetString("RemoveFromDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove from tracking.
+        /// </summary>
+        public static string RemoveFromTracking {
+            get {
+                return ResourceManager.GetString("RemoveFromTracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requests.
         /// </summary>
         public static string Requests {
@@ -4770,6 +4761,15 @@ namespace VirtualRadar.Localisation {
         public static string ShortFrameUnusable {
             get {
                 return ResourceManager.GetString("ShortFrameUnusable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short trail duration.
+        /// </summary>
+        public static string ShortTrailDuration {
+            get {
+                return ResourceManager.GetString("ShortTrailDuration", resourceCulture);
             }
         }
         

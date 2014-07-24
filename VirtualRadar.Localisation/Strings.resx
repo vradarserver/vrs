@@ -315,13 +315,6 @@ French translation by Francois /F5ANN.</value>
     <value>Desktop Version</value>
     <comment>The version of the site for desktop computers</comment>
   </data>
-  <data name="DurationBeforeAircraftRemovedFromMap" xml:space="preserve">
-    <value>Remove from map after signal loss (seconds)</value>
-  </data>
-  <data name="DurationOfShortTrails" xml:space="preserve">
-    <value>Short trail duration (seconds)</value>
-    <comment>A short trail is a line drawn behind the aircraft which shows its positions for the past so-many seconds of flight</comment>
-  </data>
   <data name="FlightSimVersion" xml:space="preserve">
     <value>Flight Sim Version</value>
     <comment>The version of the site that shows aircraft in Flight Simulator X</comment>
@@ -1161,7 +1154,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>The number of seconds that must elapse since a message from an aircraft was last received before it will be removed from the web site display.</value>
   </data>
   <data name="OptionsDescribeGeneralDownloadFlightRoutes" xml:space="preserve">
-    <value>True to allow the program to automatically download updates to the flight routes, false to disable automatic updating.</value>
+    <value>Yes to allow the program to automatically download updates to the flight routes, no to disable automatic updating.</value>
   </data>
   <data name="OptionsDescribeGeneralReadingSpeed" xml:space="preserve">
     <value>A value indicating how quickly text that has been converted to speech should be spoken. A value of 0 is normal speed, negative values are slower than normal, positive values are quicker.</value>
@@ -1170,7 +1163,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>How many seconds of movement will be shown when the user views short trails on the web site.</value>
   </data>
   <data name="OptionsDescribeGeneralTextToSpeechVoice" xml:space="preserve">
-    <value>The voice to use when converting text to speech.</value>
+    <value>The voice to use when converting text to speech. Leave empty to use the default voice.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptableAirborneSpeed" xml:space="preserve">
     <value>The number of kilometres that an aircraft can travel in 30 seconds before a local decode is deemed to be invalid. ICAO recommend 11.112 km. High values prevent detection of inaccurate local decode positions.</value>
@@ -1653,9 +1646,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="OptionsDescribeDataSourcesAutoReconnectAtStartup" xml:space="preserve">
     <value>Yes to automatically keep trying to establish a connection to a data source when the program starts, no to only try once and report an error if the connection cannot be made.</value>
-  </data>
-  <data name="DurationBeforeAircraftRemovedFromTracking" xml:space="preserve">
-    <value>Stop tracking after signal loss (seconds)</value>
   </data>
   <data name="OptionsDescribeGeneralTrackingTimeoutSeconds" xml:space="preserve">
     <value>The number of seconds that must elapse since a message from an aircraft was last received before it will stop being tracked.</value>
@@ -2161,5 +2151,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="PSeconds" xml:space="preserve">
     <value>(seconds)</value>
+  </data>
+  <data name="RemoveFromDisplay" xml:space="preserve">
+    <value>Remove from display</value>
+  </data>
+  <data name="RemoveFromTracking" xml:space="preserve">
+    <value>Remove from tracking</value>
+  </data>
+  <data name="ShortTrailDuration" xml:space="preserve">
+    <value>Short trail duration</value>
   </data>
 </root>

@@ -90,9 +90,9 @@ namespace VirtualRadar.Library.Presenter
             public IEnumerable<string> GetVoiceNames()
             {
                 List<string> result = new List<string>();
-                result.Add(null);
 
                 try {
+                    result.Add(null);
                     _DefaultVoiceName = _SpeechSynthesizer.DefaultVoiceName;
 
                     foreach(var installedVoiceName in _SpeechSynthesizer.GetInstalledVoiceNames()) {
@@ -241,6 +241,7 @@ namespace VirtualRadar.Library.Presenter
 
             _View.SaveClicked += View_SaveClicked;
             _View.TestConnectionClicked += View_TestConnectionClicked;
+            _View.TestTextToSpeechSettingsClicked += View_TestTextToSpeechSettingsClicked;
             _View.UpdateReceiverLocationsFromBaseStationDatabaseClicked += View_UpdateReceiverLocationsFromBaseStationDatabaseClicked;
             _View.UseIcaoRawDecodingSettingsClicked += View_UseIcaoRawDecodingSettingsClicked;
             _View.UseRecommendedRawDecodingSettingsClicked += View_UseRecommendedRawDecodingSettingsClicked;
@@ -281,7 +282,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Source Helpers - GetSerialPortNames
+        #region Source Helpers - GetSerialPortNames, GetVoiceNames
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -289,6 +290,15 @@ namespace VirtualRadar.Library.Presenter
         public IEnumerable<string> GetSerialPortNames()
         {
             return Provider.GetSerialPortNames();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetVoiceNames()
+        {
+            return Provider.GetVoiceNames();
         }
         #endregion
 
@@ -587,7 +597,8 @@ namespace VirtualRadar.Library.Presenter
         {
             List<ValidationResult> result = new List<ValidationResult>();
 
-            ValidateDataSources(result, record, valueChangedField);
+            ValidateAudioSettings(result, record, valueChangedField);
+            ValidateBaseStation(result, record, valueChangedField);
             ValidateGoogleMapSettings(result, record, valueChangedField);
             ValidateInternetClient(result, record, valueChangedField);
             ValidateMergedFeeds(result, record, valueChangedField);
@@ -596,6 +607,7 @@ namespace VirtualRadar.Library.Presenter
             ValidateReceivers(result, record, valueChangedField);
             ValidateReceiverLocations(result, record, valueChangedField);
             ValidateUsers(result, record, valueChangedField);
+            ValidateVersionCheckSettings(result, record, valueChangedField);
             ValidateWebServer(result, record, valueChangedField);
 
             return result;
@@ -630,18 +642,33 @@ namespace VirtualRadar.Library.Presenter
             return receiverNames.Concat(mergedFeedNames).ToArray();
         }
 
-        #region DataSources
+        #region Audio
+        private void ValidateAudioSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            if(record == null) {
+                var settings = _View.Configuration.AudioSettings;
+
+                // Playback speed is within range
+                ValueIsInRange(settings.VoiceRate, -10, 10, new ValidationParams(ValidationField.TextToSpeechSpeed, results, record, valueChangedField) {
+                    Message = Strings.ReadingSpeedOutOfBounds,
+                });
+            }
+        }
+        #endregion
+
+        #region BaseStation settings
         /// <summary>
-        /// Validates the data sources.
+        /// Validates the BaseStation settings object.
         /// </summary>
         /// <param name="results"></param>
         /// <param name="record"></param>
         /// <param name="valueChangedField"></param>
-        private void ValidateDataSources(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        private void ValidateBaseStation(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             if(record == null) {
                 var settings = _View.Configuration.BaseStationSettings;
 
+                // Files and folders
                 FileExists(settings.DatabaseFileName, new ValidationParams(ValidationField.BaseStationDatabase, results, record, valueChangedField) {
                     IsWarning = true,
                 });
@@ -657,6 +684,24 @@ namespace VirtualRadar.Library.Presenter
                 FolderExists(settings.PicturesFolder, new ValidationParams(ValidationField.PicturesFolder, results, record, valueChangedField) {
                     IsWarning = true,
                 });
+
+                // Tracking timeout is within range
+                ValueIsInRange(settings.TrackingTimeoutSeconds, 1, 3600, new ValidationParams(ValidationField.TrackingTimeout, results, record, valueChangedField) {
+                    Message = Strings.TrackingTimeoutOutOfBounds,
+                });
+
+                // Display timeout is within range
+                switch(valueChangedField) {
+                    case ValidationField.None:
+                    case ValidationField.DisplayTimeout:
+                    case ValidationField.TrackingTimeout:
+                        if(ValueIsInRange(settings.DisplayTimeoutSeconds, 1, settings.TrackingTimeoutSeconds, new ValidationParams(ValidationField.DisplayTimeout, results, record) {
+                            Message = Strings.TrackingTimeoutLessThanDisplayTimeout
+                        })) {
+                            results.Add(new ValidationResult(ValidationField.DisplayTimeout, "", false));
+                        }
+                        break;
+                }
             }
         }
         #endregion
@@ -702,6 +747,7 @@ namespace VirtualRadar.Library.Presenter
 
                 // Initial aircraft list refresh period is within range
                 switch(valueChangedField) {
+                    case ValidationField.None:
                     case ValidationField.InitialGoogleMapRefreshSeconds:
                     case ValidationField.MinimumGoogleMapRefreshSeconds:
                         if(ValueIsInRange(settings.InitialRefreshSeconds, settings.MinimumRefreshSeconds, 3600, new ValidationParams(ValidationField.InitialGoogleMapRefreshSeconds, results, record) {
@@ -725,6 +771,11 @@ namespace VirtualRadar.Library.Presenter
                 // Longitude is in range
                 ValueIsInRange(settings.InitialMapLongitude, -180.0, 180.0, new ValidationParams(ValidationField.Longitude, results, record, valueChangedField) {
                     Message = Strings.LongitudeOutOfBounds,
+                });
+
+                // Short trail length is in range
+                ValueIsInRange(settings.ShortTrailLengthSeconds, 1, 1800, new ValidationParams(ValidationField.ShortTrailLength, results, record, valueChangedField) {
+                    Message = Strings.DurationOfShortTrailsOutOfBounds,
                 });
             }
         }
@@ -1112,6 +1163,20 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region VersionCheckSettings
+        private void ValidateVersionCheckSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        {
+            if(record == null) {
+                var settings = _View.Configuration.VersionCheckSettings;
+
+                // Version check period is within range
+                ValueIsInRange(settings.CheckPeriodDays, 1, 365, new ValidationParams(ValidationField.CheckForNewVersions, results, record, valueChangedField) {
+                    Message = Strings.DaysBetweenChecksOutOfBounds,
+                });
+            }
+        }
+        #endregion
+
         #region WebServer
         private void ValidateWebServer(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
@@ -1139,6 +1204,7 @@ namespace VirtualRadar.Library.Presenter
 
             var field = ValidationField.None;
             switch(args.Group) {
+                case ConfigurationListenerGroup.Audio:                  field = ConvertAudioPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.BaseStation:            field = ConvertBaseStationPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.Configuration:          field = ConvertConfigurationPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.GoogleMapSettings:      field = ConvertGoogleMapPropertyToValidationFields(args); break;
@@ -1148,6 +1214,7 @@ namespace VirtualRadar.Library.Presenter
                 case ConfigurationListenerGroup.RebroadcastSetting:     field = ConvertRebroadcastServerToValidationFields(args); break;
                 case ConfigurationListenerGroup.Receiver:               field = ConvertReceiverPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.ReceiverLocation:       field = ConvertReceiverLocationPropertyToValidationField(args); break;
+                case ConfigurationListenerGroup.VersionCheckSettings:   field = ConvertVersionPropertyToValidationField(args); break;
                 case ConfigurationListenerGroup.WebServerSettings:      field = ConvertWebServerPropertyToValidationField(args); break;
                 default:                                            break;
             }
@@ -1190,6 +1257,15 @@ namespace VirtualRadar.Library.Presenter
             return result;
         }
 
+        private ValidationField ConvertAudioPropertyToValidationField(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<AudioSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<AudioSettings,object>>>() {
+                { ValidationField.TextToSpeechSpeed, r => r.VoiceRate },
+            });
+            
+            return result;
+        }
+
         private ValidationField ConvertBaseStationPropertyToValidationField(ConfigurationListenerEventArgs args)
         {
             var result = ValidationFieldForPropertyName<BaseStationSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<BaseStationSettings,object>>>() {
@@ -1197,6 +1273,9 @@ namespace VirtualRadar.Library.Presenter
                 { ValidationField.FlagsFolder,          r => r.OperatorFlagsFolder },
                 { ValidationField.SilhouettesFolder,    r => r.SilhouettesFolder },
                 { ValidationField.PicturesFolder,       r => r.PicturesFolder },
+
+                { ValidationField.DisplayTimeout,       r => r.DisplayTimeoutSeconds },
+                { ValidationField.TrackingTimeout,      r => r.TrackingTimeoutSeconds },
             });
             
             return result;
@@ -1224,6 +1303,8 @@ namespace VirtualRadar.Library.Presenter
                 { ValidationField.GoogleMapZoomLevel,               r => r.InitialMapZoom },
                 { ValidationField.Latitude,                         r => r.InitialMapLatitude },
                 { ValidationField.Longitude,                        r => r.InitialMapLongitude },
+
+                { ValidationField.ShortTrailLength,                 r => r.ShortTrailLengthSeconds },
             });
 
             return result;
@@ -1308,6 +1389,15 @@ namespace VirtualRadar.Library.Presenter
             return result;
         }
 
+        private ValidationField ConvertVersionPropertyToValidationField(ConfigurationListenerEventArgs args)
+        {
+            var result = ValidationFieldForPropertyName<VersionCheckSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<VersionCheckSettings,object>>>() {
+                { ValidationField.CheckForNewVersions,  r => r.CheckPeriodDays },
+            });
+
+            return result;
+        }
+
         private ValidationField ConvertWebServerPropertyToValidationField(ConfigurationListenerEventArgs args)
         {
             var result = ValidationFieldForPropertyName<WebServerSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<WebServerSettings,object>>>() {
@@ -1380,6 +1470,16 @@ namespace VirtualRadar.Library.Presenter
 
             if(exception == null)   _View.ShowTestConnectionResults(Strings.CanConnectWithSettings, Strings.ConnectedSuccessfully);
             else                    _View.ShowTestConnectionResults(String.Format("{0} {1}", Strings.CannotConnectWithSettings, exception.Message), Strings.CannotConnect);
+        }
+
+        /// <summary>
+        /// Raised when the user requests a test of the text-to-speech settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void View_TestTextToSpeechSettingsClicked(object sender, EventArgs args)
+        {
+            Provider.TestTextToSpeech(_View.Configuration.AudioSettings.VoiceName, _View.Configuration.AudioSettings.VoiceRate);
         }
 
         /// <summary>
