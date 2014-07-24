@@ -241,8 +241,6 @@
     <Compile Include="Presenter\IFlightSimulatorXPresenter.cs" />
     <Compile Include="Presenter\IFlightSimulatorXPresenterProvider.cs" />
     <Compile Include="Presenter\IInvalidPluginsPresenter.cs" />
-    <Compile Include="Presenter\IOptionsPresenter.cs" />
-    <Compile Include="Presenter\IOptionsPresenterProvider.cs" />
     <Compile Include="Presenter\IPluginsPresenter.cs" />
     <Compile Include="Presenter\IPresenter.cs" />
     <Compile Include="Presenter\IRebroadcastOptionsPresenter.cs" />
@@ -363,7 +361,6 @@
     <Compile Include="View\IFlightSimulatorXView.cs" />
     <Compile Include="View\IInvalidPluginsView.cs" />
     <Compile Include="View\IListDetailEditorView.cs" />
-    <Compile Include="View\IOptionsView.cs" />
     <Compile Include="View\IPluginsView.cs" />
     <Compile Include="View\IRebroadcastOptionsView.cs" />
     <Compile Include="View\IReceiverConfigurationWizardAnswers.cs" />

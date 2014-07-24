@@ -327,6 +327,8 @@ namespace VirtualRadar.WinForms
                 treeViewPagePicker.ExpandAll();
 
                 DisplayPage(_TopLevelPages.First());
+
+                _Presenter.ValidateView();
             }
         }
         #endregion

@@ -61,6 +61,11 @@ namespace VirtualRadar.Interface.Presenter
         IEnumerable<string> GetVoiceNames();
 
         /// <summary>
+        /// Validates the current content of the entire form and reports the results back to the view.
+        /// </summary>
+        void ValidateView();
+
+        /// <summary>
         /// Applies the answers from a receiver configuration wizard to the receiver passed across.
         /// </summary>
         /// <param name="answers"></param>

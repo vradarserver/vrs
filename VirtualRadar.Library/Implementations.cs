@@ -52,7 +52,6 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Presenter.IFlightSimulatorXPresenter, Presenter.FlightSimulatorXPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IInvalidPluginsPresenter, Presenter.InvalidPluginsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IMainPresenter, Presenter.MainPresenter>();
-            factory.Register<VirtualRadar.Interface.Presenter.IOptionsPresenter, Presenter.OptionsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IPluginsPresenter, Presenter.PluginsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ISettingsPresenter, Presenter.SettingsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IShutdownPresenter, Presenter.ShutdownPresenter>();

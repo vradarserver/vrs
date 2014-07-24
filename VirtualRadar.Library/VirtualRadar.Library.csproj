@@ -145,7 +145,6 @@
     <Compile Include="Presenter\DownloadDataPresenter.cs" />
     <Compile Include="Presenter\FlightSimulatorXPresenter.cs" />
     <Compile Include="Presenter\InvalidPluginsPresenter.cs" />
-    <Compile Include="Presenter\OptionsPresenter.cs" />
     <Compile Include="Presenter\PluginsPresenter.cs" />
     <Compile Include="Presenter\ShutdownPresenter.cs" />
     <Compile Include="Presenter\SplashPresenter.cs" />
