@@ -23,17 +23,7 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Displays the results of the validation of input to the user.
         /// </summary>
-        /// <param name="results">The fields that have something wrong with them. If a field isn't in this list
-        /// then it has passed validation.</param>
-        void ShowValidationResults(IEnumerable<ValidationResult> results);
-
-        /// <summary>
-        /// Displays the results of the validation of a single field to the user. Other errors on the form are
-        /// to be left on display.
-        /// </summary>
-        /// <param name="record"></param>
-        /// <param name="validationField"></param>
-        /// <param name="results"></param>
-        void ShowSingleFieldValidationResults(object record, ValidationField validationField, IEnumerable<ValidationResult> results);
+        /// <param name="results">An object describing all of the results of a validation.</param>
+        void ShowValidationResults(ValidationResults results);
     }
 }

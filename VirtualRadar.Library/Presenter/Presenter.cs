@@ -9,6 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,12 +30,12 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// An inner class for use by any presenter to handle both single-field and whole-form validations.
         /// </summary>
-        protected class ValidationParams
+        protected class Validation
         {
             /// <summary>
-            /// Gets the list of validation results that this can potentially add to.
+            /// Gets the validation results that this can potentially add to.
             /// </summary>
-            public List<ValidationResult> Results { get; private set; }
+            public ValidationResults Results { get; private set; }
 
             /// <summary>
             /// Gets the validation field that represents the data-entry control that has a problem.
@@ -49,10 +50,25 @@ namespace VirtualRadar.Library.Presenter
             public ValidationField ValueChangedField { get; set; }
 
             /// <summary>
-            /// Gets or sets a value indicating whether the contents of <see cref="Field"/> and <see cref="ValueChangedField"/>
-            /// indicate that we are to actually perform the validation.
+            /// Gets a collection of fields that this validation relies upon. The validation will run if any field in
+            /// this list matches <see cref="ValueChangedField"/>.
             /// </summary>
-            public bool FieldMatches { get { return ValueChangedField == ValidationField.None || Field == ValueChangedField; } }
+            public List<ValidationField> RelatedFields { get; private set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether the contents of <see cref="Field"/>, <see cref="ValueChangedField"/>
+            /// and <see cref="RelatedFields"/> indicate that we are to actually perform the validation.
+            /// </summary>
+            public bool FieldMatches
+            {
+                get {
+                    var result = ValueChangedField == ValidationField.None || Field == ValueChangedField;
+                    if(!result) {
+                        result = RelatedFields.Contains(ValueChangedField);
+                    }
+                    return result;
+                }
+            }
 
             /// <summary>
             /// Gets or sets the child record that is being validated. Set to null if not validating a child record.
@@ -88,9 +104,26 @@ namespace VirtualRadar.Library.Presenter
             /// <summary>
             /// Creates a new object.
             /// </summary>
+            /// <param name="defaults"></param>
+            public Validation(Validation defaults) : this(ValidationField.None, defaults.Results, defaults.Record, defaults.ValueChangedField)
+            {
+            }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="field"></param>
+            /// <param name="defaults"></param>
+            public Validation(ValidationField field, Validation defaults) : this(field, defaults.Results, defaults.Record, defaults.ValueChangedField)
+            {
+            }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
             /// <param name="field"></param>
             /// <param name="results"></param>
-            public ValidationParams(ValidationField field, List<ValidationResult> results) : this(field, results, null, ValidationField.None)
+            public Validation(ValidationField field, ValidationResults results) : this(field, results, null, ValidationField.None)
             {
             }
 
@@ -100,7 +133,7 @@ namespace VirtualRadar.Library.Presenter
             /// <param name="field"></param>
             /// <param name="results"></param>
             /// <param name="record"></param>
-            public ValidationParams(ValidationField field, List<ValidationResult> results, object record) : this(field, results, record, ValidationField.None)
+            public Validation(ValidationField field, ValidationResults results, object record) : this(field, results, record, ValidationField.None)
             {
             }
 
@@ -111,8 +144,9 @@ namespace VirtualRadar.Library.Presenter
             /// <param name="results"></param>
             /// <param name="record"></param>
             /// <param name="valueChangedField"></param>
-            public ValidationParams(ValidationField field, List<ValidationResult> results, object record, ValidationField valueChangedField)
+            public Validation(ValidationField field, ValidationResults results, object record, ValidationField valueChangedField)
             {
+                RelatedFields = new List<ValidationField>();
                 Results = results;
                 Field = field;
                 Record = record;
@@ -146,8 +180,14 @@ namespace VirtualRadar.Library.Presenter
             /// <returns></returns>
             public bool IsValid(Func<bool> condition)
             {
+                if(Field == ValidationField.None) throw new InvalidOperationException("Cannot test the validity of a None field");
+
                 var valid = !FieldMatches;
                 if(!valid) {
+                    if(Results.IsPartialValidation) {
+                        AddPartialValidationField();
+                    }
+
                     try {
                         valid = condition();
                     } catch(Exception ex) {
@@ -164,13 +204,29 @@ namespace VirtualRadar.Library.Presenter
             }
 
             /// <summary>
+            /// Adds a record to the <see cref="Results"/> indicating that a validation test was carried out on the field.
+            /// </summary>
+            /// <returns>The result record describing the validation field or null if there was already an entry for this
+            /// combination of field and record.</returns>
+            public ValidationResult AddPartialValidationField()
+            {
+                ValidationResult result = null;
+                if(!Results.PartialValidationFields.Any(r => r.Record == Record && r.Field == Field)) {
+                    result = new ValidationResult(Record, Field, null);
+                    Results.PartialValidationFields.Add(result);
+                }
+
+                return result;
+            }
+
+            /// <summary>
             /// Adds a validation result to <see cref="Results"/> carrying the warning or error described by the properties.
             /// </summary>
             /// <returns></returns>
             public ValidationResult AddResult()
             {
                 var result = new ValidationResult(Record, Field, Message ?? String.Format(Format, Args), IsWarning);
-                Results.Add(result);
+                Results.Results.Add(result);
 
                 return result;
             }
@@ -202,7 +258,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="fileName"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool FileExists(string fileName, ValidationParams valParams)
+        protected bool FileExists(string fileName, Validation valParams)
         {
             valParams.DefaultMessage(Strings.SomethingDoesNotExist, fileName);
             return valParams.IsValid(() => {
@@ -226,7 +282,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="folder"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool FolderExists(string folder, ValidationParams valParams)
+        protected bool FolderExists(string folder, Validation valParams)
         {
             valParams.DefaultMessage(Strings.SomethingDoesNotExist, folder);
             return valParams.IsValid(() => {
@@ -250,7 +306,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="condition"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool ConditionIsTrue<TValue>(TValue value, Func<TValue, bool> condition, ValidationParams valParams)
+        protected bool ConditionIsTrue<TValue>(TValue value, Func<TValue, bool> condition, Validation valParams)
         {
             return valParams.IsValid(() => {
                 return condition(value);
@@ -265,7 +321,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="condition"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool ConditionIsFalse<TValue>(TValue value, Func<TValue, bool> condition, ValidationParams valParams)
+        protected bool ConditionIsFalse<TValue>(TValue value, Func<TValue, bool> condition, Validation valParams)
         {
             return valParams.IsValid(() => {
                 return !condition(value);
@@ -280,7 +336,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="collectionIsValid"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool CollectionIsNotEmpty<TList>(IEnumerable<TList> collection, ValidationParams valParams)
+        protected bool CollectionIsNotEmpty<TList>(IEnumerable<TList> collection, Validation valParams)
         {
             return valParams.IsValid(() => {
                 return collection.Count() != 0;
@@ -293,7 +349,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="value"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool StringIsNotEmpty(string value, ValidationParams valParams)
+        protected bool StringIsNotEmpty(string value, Validation valParams)
         {
             return valParams.IsValid(() => {
                 return !String.IsNullOrEmpty((value ?? "").Trim());
@@ -308,7 +364,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="notEqualTo"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool ValueNotEqual<TValue>(TValue value, TValue notEqualTo, ValidationParams valParams)
+        protected bool ValueNotEqual<TValue>(TValue value, TValue notEqualTo, Validation valParams)
             where TValue: IComparable
         {
             return valParams.IsValid(() => {
@@ -325,7 +381,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="highInclusive"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool ValueIsInRange<TValue>(TValue value, TValue lowInclusive, TValue highInclusive, ValidationParams valParams)
+        protected bool ValueIsInRange<TValue>(TValue value, TValue lowInclusive, TValue highInclusive, Validation valParams)
             where TValue: IComparable
         {
             return valParams.IsValid(() => {
@@ -341,7 +397,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="list"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool ValueIsNotInList<TValue>(TValue value, IEnumerable<TValue> list, ValidationParams valParams)
+        protected bool ValueIsNotInList<TValue>(TValue value, IEnumerable<TValue> list, Validation valParams)
         {
             return valParams.IsValid(() => {
                 return !list.Contains(value);
@@ -356,7 +412,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="list"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
-        protected bool ValueIsInList<TValue>(TValue value, IEnumerable<TValue> list, ValidationParams valParams)
+        protected bool ValueIsInList<TValue>(TValue value, IEnumerable<TValue> list, Validation valParams)
         {
             return valParams.IsValid(() => {
                 return list.Contains(value);

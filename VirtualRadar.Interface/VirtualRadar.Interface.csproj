@@ -138,8 +138,6 @@
     <Compile Include="ITcpConnectionStateService.cs" />
     <Compile Include="Presenter\ISettingsPresenterProvider.cs" />
     <Compile Include="Presenter\ISettingsPresenter.cs" />
-    <Compile Include="Presenter\IUsersListPresenter.cs" />
-    <Compile Include="Presenter\IUsersPresenter.cs" />
     <Compile Include="PropertyHelper.cs" />
     <Compile Include="RebroadcastServerConnection.cs" />
     <Compile Include="Settings\ConfigurationListenerEventArgs.cs" />
@@ -369,8 +367,6 @@
     <Compile Include="View\IShutdownView.cs" />
     <Compile Include="View\ISplashView.cs" />
     <Compile Include="View\IStatisticsView.cs" />
-    <Compile Include="View\IUsersListView.cs" />
-    <Compile Include="View\IUsersView.cs" />
     <Compile Include="View\IValidateDelegate.cs" />
     <Compile Include="View\IValidateView.cs" />
     <Compile Include="View\IView.cs" />
@@ -379,6 +375,7 @@
     <Compile Include="View\SdrDecoder.cs" />
     <Compile Include="View\ValidationField.cs" />
     <Compile Include="View\ValidationResult.cs" />
+    <Compile Include="View\ValidationResults.cs" />
     <Compile Include="WeakEventHandler.cs" />
     <Compile Include="WebRequestResult.cs" />
     <Compile Include="WebServer\IAutoConfigWebServer.cs" />

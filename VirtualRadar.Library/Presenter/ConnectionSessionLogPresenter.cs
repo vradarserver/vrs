@@ -49,12 +49,12 @@ namespace VirtualRadar.Library.Presenter
         /// </remarks>
         private bool ValidateView()
         {
-            List<ValidationResult> results = new List<ValidationResult>();
+            var results = new ValidationResults(isPartialValidation: false);
 
-            if(_View.EndDate < _View.StartDate) results.Add(new ValidationResult(ValidationField.EndDate, Strings.EndDateCannotBeBeforeStartDate));
+            if(_View.EndDate < _View.StartDate) results.Results.Add(new ValidationResult(ValidationField.EndDate, Strings.EndDateCannotBeBeforeStartDate));
             _View.ShowValidationResults(results);
 
-            return results.Count == 0;
+            return !results.HasErrors;
         }
 
         /// <summary>

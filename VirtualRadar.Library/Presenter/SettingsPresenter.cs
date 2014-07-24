@@ -628,7 +628,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         public void ValidateView()
         {
-            var validationResults = ValidateForm();
+            var validationResults = Validate();
             _View.ShowValidationResults(validationResults);
         }
 
@@ -638,22 +638,23 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="record"></param>
         /// <param name="valueChangedField"></param>
         /// <returns></returns>
-        private List<ValidationResult> ValidateForm(object record = null, ValidationField valueChangedField = ValidationField.None)
+        private ValidationResults Validate(object record = null, ValidationField valueChangedField = ValidationField.None)
         {
-            List<ValidationResult> result = new List<ValidationResult>();
+            var result = new ValidationResults(isPartialValidation: valueChangedField != ValidationField.None);
+            var defaults = new Validation(ValidationField.None, result, record, valueChangedField);
 
-            ValidateAudioSettings(result, record, valueChangedField);
-            ValidateBaseStationSettings(result, record, valueChangedField);
-            ValidateGoogleMapSettings(result, record, valueChangedField);
-            ValidateInternetClient(result, record, valueChangedField);
-            ValidateMergedFeeds(result, record, valueChangedField);
-            ValidateRawFeedDecoding(result, record, valueChangedField);
-            ValidateRebroadcastServers(result, record, valueChangedField);
-            ValidateReceivers(result, record, valueChangedField);
-            ValidateReceiverLocations(result, record, valueChangedField);
-            ValidateUsers(result, record, valueChangedField);
-            ValidateVersionCheckSettings(result, record, valueChangedField);
-            ValidateWebServer(result, record, valueChangedField);
+            ValidateAudioSettings(defaults);
+            ValidateBaseStationSettings(defaults);
+            ValidateGoogleMapSettings(defaults);
+            ValidateInternetClient(defaults);
+            ValidateMergedFeeds(defaults);
+            ValidateRawFeedDecoding(defaults);
+            ValidateRebroadcastServers(defaults);
+            ValidateReceivers(defaults);
+            ValidateReceiverLocations(defaults);
+            ValidateUsers(defaults);
+            ValidateVersionCheckSettings(defaults);
+            ValidateWebServer(defaults);
 
             return result;
         }
@@ -666,8 +667,8 @@ namespace VirtualRadar.Library.Presenter
         private void ValidateAndReportSingleField(object record, ValidationField field)
         {
             if(field != ValidationField.None) {
-                var results = ValidateForm(record, field);
-                _View.ShowSingleFieldValidationResults(record, field, results);
+                var results = Validate(record, field);
+                _View.ShowValidationResults(results);
             }
         }
 
@@ -701,16 +702,14 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the audio settings.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateAudioSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateAudioSettings(Validation defaults)
         {
-            if(record == null) {
+            if(defaults.Record == null) {
                 var settings = _View.Configuration.AudioSettings;
 
                 // Playback speed is within range
-                ValueIsInRange(settings.VoiceRate, -10, 10, new ValidationParams(ValidationField.TextToSpeechSpeed, results, record, valueChangedField) {
+                ValueIsInRange(settings.VoiceRate, -10, 10, new Validation(ValidationField.TextToSpeechSpeed, defaults) {
                     Message = Strings.ReadingSpeedOutOfBounds,
                 });
             }
@@ -721,50 +720,39 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the BaseStation settings object.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateBaseStationSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateBaseStationSettings(Validation defaults)
         {
-            if(record == null) {
+            if(defaults.Record == null) {
                 var settings = _View.Configuration.BaseStationSettings;
 
                 // Files and folders
-                FileExists(settings.DatabaseFileName, new ValidationParams(ValidationField.BaseStationDatabase, results, record, valueChangedField) {
+                FileExists(settings.DatabaseFileName, new Validation(ValidationField.BaseStationDatabase, defaults) {
                     IsWarning = true,
                 });
 
-                FolderExists(settings.OperatorFlagsFolder, new ValidationParams(ValidationField.FlagsFolder, results, record, valueChangedField) {
+                FolderExists(settings.OperatorFlagsFolder, new Validation(ValidationField.FlagsFolder, defaults) {
                     IsWarning = true,
                 });
 
-                FolderExists(settings.SilhouettesFolder, new ValidationParams(ValidationField.SilhouettesFolder, results, record, valueChangedField) {
+                FolderExists(settings.SilhouettesFolder, new Validation(ValidationField.SilhouettesFolder, defaults) {
                     IsWarning = true,
                 });
 
-                FolderExists(settings.PicturesFolder, new ValidationParams(ValidationField.PicturesFolder, results, record, valueChangedField) {
+                FolderExists(settings.PicturesFolder, new Validation(ValidationField.PicturesFolder, defaults) {
                     IsWarning = true,
                 });
 
                 // Tracking timeout is within range
-                ValueIsInRange(settings.TrackingTimeoutSeconds, 1, 3600, new ValidationParams(ValidationField.TrackingTimeout, results, record, valueChangedField) {
+                ValueIsInRange(settings.TrackingTimeoutSeconds, 1, 3600, new Validation(ValidationField.TrackingTimeout, defaults) {
                     Message = Strings.TrackingTimeoutOutOfBounds,
                 });
 
                 // Display timeout is within range
-                switch(valueChangedField) {
-                    case ValidationField.None:
-                    case ValidationField.DisplayTimeout:
-                    case ValidationField.TrackingTimeout:
-                        if(ValueIsInRange(settings.DisplayTimeoutSeconds, 1, settings.TrackingTimeoutSeconds, new ValidationParams(ValidationField.DisplayTimeout, results, record) {
-                            Message = Strings.TrackingTimeoutLessThanDisplayTimeout
-                        })) {
-                            if(valueChangedField != ValidationField.None) {
-                                results.Add(new ValidationResult(ValidationField.DisplayTimeout, "", false));
-                            }
-                        }
-                        break;
-                }
+                ValueIsInRange(settings.DisplayTimeoutSeconds, 1, settings.TrackingTimeoutSeconds, new Validation(ValidationField.DisplayTimeout, defaults) {
+                    Message = Strings.TrackingTimeoutLessThanDisplayTimeout,
+                    RelatedFields = { ValidationField.TrackingTimeout },
+                });
             }
         }
         #endregion
@@ -773,79 +761,68 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the Google Map settings.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateGoogleMapSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateGoogleMapSettings(Validation defaults)
         {
-            if(record == null) {
+            if(defaults.Record == null) {
                 var settings = _View.Configuration.GoogleMapSettings;
                 var allReceiverIds = _View.Configuration.Receivers.Select(r => r.UniqueId).Concat(_View.Configuration.MergedFeeds.Select(r => r.UniqueId)).ToArray();
 
                 // Closest aircraft widget receiver has been filled in and is a valid ID
-                if(ValueNotEqual(settings.ClosestAircraftReceiverId, 0, new ValidationParams(ValidationField.ClosestAircraftReceiver, results, record, valueChangedField) {
+                if(ValueNotEqual(settings.ClosestAircraftReceiverId, 0, new Validation(ValidationField.ClosestAircraftReceiver, defaults) {
                     Message = Strings.ClosestAircraftReceiverRequired,
                 })) {
-                    ValueIsInList(settings.ClosestAircraftReceiverId, allReceiverIds, new ValidationParams(ValidationField.ClosestAircraftReceiver, results, record, valueChangedField) {
+                    ValueIsInList(settings.ClosestAircraftReceiverId, allReceiverIds, new Validation(ValidationField.ClosestAircraftReceiver, defaults) {
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
                 }
 
                 // FSX receiver has been filled in and is a valid ID
-                if(ValueNotEqual(settings.FlightSimulatorXReceiverId, 0, new ValidationParams(ValidationField.FlightSimulatorXReceiver, results, record, valueChangedField) {
+                if(ValueNotEqual(settings.FlightSimulatorXReceiverId, 0, new Validation(ValidationField.FlightSimulatorXReceiver, defaults) {
                     Message = Strings.FlightSimulatorXReceiverRequired,
                 })) {
-                    ValueIsInList(settings.FlightSimulatorXReceiverId, allReceiverIds, new ValidationParams(ValidationField.FlightSimulatorXReceiver, results, record, valueChangedField) {
+                    ValueIsInList(settings.FlightSimulatorXReceiverId, allReceiverIds, new Validation(ValidationField.FlightSimulatorXReceiver, defaults) {
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
                 }
 
                 // Default website receiver has been filled in and is a valid ID
-                if(ValueNotEqual(settings.WebSiteReceiverId, 0, new ValidationParams(ValidationField.WebSiteReceiver, results, record, valueChangedField) {
+                if(ValueNotEqual(settings.WebSiteReceiverId, 0, new Validation(ValidationField.WebSiteReceiver, defaults) {
                     Message = Strings.WebSiteReceiverRequired,
                 })) {
-                    ValueIsInList(settings.WebSiteReceiverId, allReceiverIds, new ValidationParams(ValidationField.WebSiteReceiver, results, record, valueChangedField) {
+                    ValueIsInList(settings.WebSiteReceiverId, allReceiverIds, new Validation(ValidationField.WebSiteReceiver, defaults) {
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
                 }
 
                 // Minimum refresh period is within range
-                ValueIsInRange(settings.MinimumRefreshSeconds, 0, 3600, new ValidationParams(ValidationField.MinimumGoogleMapRefreshSeconds, results, record, valueChangedField) {
+                ValueIsInRange(settings.MinimumRefreshSeconds, 0, 3600, new Validation(ValidationField.MinimumGoogleMapRefreshSeconds, defaults) {
                     Message = Strings.MinimumRefreshOutOfBounds,
                 });
 
                 // Initial aircraft list refresh period is within range
-                switch(valueChangedField) {
-                    case ValidationField.None:
-                    case ValidationField.InitialGoogleMapRefreshSeconds:
-                    case ValidationField.MinimumGoogleMapRefreshSeconds:
-                        if(ValueIsInRange(settings.InitialRefreshSeconds, settings.MinimumRefreshSeconds, 3600, new ValidationParams(ValidationField.InitialGoogleMapRefreshSeconds, results, record) {
-                            Message = Strings.InitialRefreshLessThanMinimumRefresh
-                        })) {
-                            if(valueChangedField != ValidationField.None) {
-                                results.Add(new ValidationResult(ValidationField.InitialGoogleMapRefreshSeconds, "", false));
-                            }
-                        }
-                        break;
-                }
+                ValueIsInRange(settings.InitialRefreshSeconds, settings.MinimumRefreshSeconds, 3600, new Validation(ValidationField.InitialGoogleMapRefreshSeconds, defaults) {
+                    Message = Strings.InitialRefreshLessThanMinimumRefresh,
+                    RelatedFields = { ValidationField.MinimumGoogleMapRefreshSeconds },
+                });
 
                 // Initial zoom level is within range
-                ValueIsInRange(settings.InitialMapZoom, 0, 19, new ValidationParams(ValidationField.GoogleMapZoomLevel, results, record, valueChangedField) {
+                ValueIsInRange(settings.InitialMapZoom, 0, 19, new Validation(ValidationField.GoogleMapZoomLevel, defaults) {
                     Message = Strings.GoogleMapZoomOutOfBounds,
                 });
 
                 // Latitude is in range
-                ValueIsInRange(settings.InitialMapLatitude, -90.0, 90.0, new ValidationParams(ValidationField.Latitude, results, record, valueChangedField) {
+                ValueIsInRange(settings.InitialMapLatitude, -90.0, 90.0, new Validation(ValidationField.Latitude, defaults) {
                     Message = Strings.LatitudeOutOfBounds,
                 });
 
                 // Longitude is in range
-                ValueIsInRange(settings.InitialMapLongitude, -180.0, 180.0, new ValidationParams(ValidationField.Longitude, results, record, valueChangedField) {
+                ValueIsInRange(settings.InitialMapLongitude, -180.0, 180.0, new Validation(ValidationField.Longitude, defaults) {
                     Message = Strings.LongitudeOutOfBounds,
                 });
 
                 // Short trail length is in range
-                ValueIsInRange(settings.ShortTrailLengthSeconds, 1, 1800, new ValidationParams(ValidationField.ShortTrailLength, results, record, valueChangedField) {
+                ValueIsInRange(settings.ShortTrailLengthSeconds, 1, 1800, new Validation(ValidationField.ShortTrailLength, defaults) {
                     Message = Strings.DurationOfShortTrailsOutOfBounds,
                 });
             }
@@ -856,16 +833,14 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the Internet Client settings.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateInternetClient(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateInternetClient(Validation defaults)
         {
-            if(record == null) {
+            if(defaults.Record == null) {
                 var settings = _View.Configuration.InternetClientSettings;
 
                 // Internet client timeout is within range
-                ValueIsInRange(settings.TimeoutMinutes, 0, 1440, new ValidationParams(ValidationField.InternetUserIdleTimeout, results, record, valueChangedField) {
+                ValueIsInRange(settings.TimeoutMinutes, 0, 1440, new Validation(ValidationField.InternetUserIdleTimeout, defaults) {
                     Message = Strings.InternetUserIdleTimeoutOutOfBounds,
                 });
             }
@@ -876,44 +851,43 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the list of merged feeds and/or an individual merged feed.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateMergedFeeds(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateMergedFeeds(Validation defaults)
         {
-            var mergedFeed = record as MergedFeed;
+            var mergedFeed = defaults.Record as MergedFeed;
 
-            if(record == null) {
+            if(defaults.Record == null) {
                 // List of merged feeds. There's no validation on here, just on the child records
-                if(valueChangedField == ValidationField.None) {
+                if(defaults.ValueChangedField == ValidationField.None) {
                     foreach(var child in _View.Configuration.MergedFeeds) {
-                        ValidateMergedFeeds(results, child, valueChangedField);
+                        var childDefaults = new Validation(defaults) { Record = child, };
+                        ValidateMergedFeeds(childDefaults);
                     }
                 }
             } else if(mergedFeed != null) {
                 // There has to be a name
-                if(StringIsNotEmpty(mergedFeed.Name, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                if(StringIsNotEmpty(mergedFeed.Name, new Validation(ValidationField.Name, defaults) {
                     Message = Strings.NameRequired,
                 })) {
                     // The name cannot be the same as any other receiver or merged feed name
                     var receiverAndMergedFeedNames = CombinedFeedNamesUpperCase(mergedFeed);
-                    ValueIsNotInList(mergedFeed.Name.ToUpper(), receiverAndMergedFeedNames, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    ValueIsNotInList(mergedFeed.Name.ToUpper(), receiverAndMergedFeedNames, new Validation(ValidationField.Name, defaults) {
                         Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
                     });
 
                     // The name cannot contain a comma
-                    ConditionIsFalse(mergedFeed.Name, r => r.Contains(","), new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    ConditionIsFalse(mergedFeed.Name, r => r.Contains(","), new Validation(ValidationField.Name, defaults) {
                         Message = Strings.NameCannotContainComma,
                     });
                 }
 
                 // The ICAO timeout has to be between 1000ms and 30000ms
-                ValueIsInRange(mergedFeed.IcaoTimeout, 1000, 30000, new ValidationParams(ValidationField.IcaoTimeout, results, record, valueChangedField) {
+                ValueIsInRange(mergedFeed.IcaoTimeout, 1000, 30000, new Validation(ValidationField.IcaoTimeout, defaults) {
                     Message = Strings.IcaoTimeoutOutOfBounds,
                 });
 
                 // There has to be at least two receivers in the merged feed (although we don't care if they're not enabled)
-                ConditionIsFalse(mergedFeed.ReceiverIds, r => r.Count < 2, new ValidationParams(ValidationField.ReceiverIds, results, record, valueChangedField) {
+                ConditionIsFalse(mergedFeed.ReceiverIds, r => r.Count < 2, new Validation(ValidationField.ReceiverIds, defaults) {
                     Message = Strings.MergedFeedNeedsAtLeastTwoReceivers,
                 });
             }
@@ -924,55 +898,53 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the raw feed decoding settings.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateRawFeedDecoding(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateRawFeedDecoding(Validation defaults)
         {
-            if(record == null) {
+            if(defaults.Record == null) {
                 var settings = _View.Configuration.RawDecodingSettings;
 
-                ValueIsInRange(settings.ReceiverRange, 0, 99999, new ValidationParams(ValidationField.ReceiverRange, results, record, valueChangedField) {
+                ValueIsInRange(settings.ReceiverRange, 0, 99999, new Validation(ValidationField.ReceiverRange, defaults) {
                     Message = Strings.ReceiverRangeOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AirborneGlobalPositionLimit, 1, 30, new ValidationParams(ValidationField.AirborneGlobalPositionLimit, results, record, valueChangedField) {
+                ValueIsInRange(settings.AirborneGlobalPositionLimit, 1, 30, new Validation(ValidationField.AirborneGlobalPositionLimit, defaults) {
                     Message = Strings.AirborneGlobalPositionLimitOutOfBounds,
                 });
 
-                ValueIsInRange(settings.FastSurfaceGlobalPositionLimit, 1, 75, new ValidationParams(ValidationField.FastSurfaceGlobalPositionLimit, results, record, valueChangedField) {
+                ValueIsInRange(settings.FastSurfaceGlobalPositionLimit, 1, 75, new Validation(ValidationField.FastSurfaceGlobalPositionLimit, defaults) {
                     Message = Strings.FastSurfaceGlobalPositionLimitOutOfBounds,
                 });
 
-                ValueIsInRange(settings.SlowSurfaceGlobalPositionLimit, 1, 150, new ValidationParams(ValidationField.SlowSurfaceGlobalPositionLimit, results, record, valueChangedField) {
+                ValueIsInRange(settings.SlowSurfaceGlobalPositionLimit, 1, 150, new Validation(ValidationField.SlowSurfaceGlobalPositionLimit, defaults) {
                     Message = Strings.SlowSurfaceGlobalPositionLimitOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AcceptableAirborneSpeed, 0.005, 45.0, new ValidationParams(ValidationField.AcceptableAirborneLocalPositionSpeed, results, record, valueChangedField) {
+                ValueIsInRange(settings.AcceptableAirborneSpeed, 0.005, 45.0, new Validation(ValidationField.AcceptableAirborneLocalPositionSpeed, defaults) {
                     Message = Strings.AcceptableAirborneSpeedOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AcceptableAirSurfaceTransitionSpeed, 0.003, 20.0, new ValidationParams(ValidationField.AcceptableTransitionLocalPositionSpeed, results, record, valueChangedField) {
+                ValueIsInRange(settings.AcceptableAirSurfaceTransitionSpeed, 0.003, 20.0, new Validation(ValidationField.AcceptableTransitionLocalPositionSpeed, defaults) {
                     Message = Strings.AcceptableAirSurfaceTransitionSpeedOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AcceptableSurfaceSpeed, 0.001, 10.0, new ValidationParams(ValidationField.AcceptableSurfaceLocalPositionSpeed, results, record, valueChangedField) {
+                ValueIsInRange(settings.AcceptableSurfaceSpeed, 0.001, 10.0, new Validation(ValidationField.AcceptableSurfaceLocalPositionSpeed, defaults) {
                     Message = Strings.AcceptableSurfaceSpeedOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AcceptIcaoInNonPICount, 0, 100, new ValidationParams(ValidationField.AcceptIcaoInNonPICount, results, record, valueChangedField) {
+                ValueIsInRange(settings.AcceptIcaoInNonPICount, 0, 100, new Validation(ValidationField.AcceptIcaoInNonPICount, defaults) {
                     Message = Strings.AcceptIcaoInNonPICountOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AcceptIcaoInNonPISeconds, 1, 30, new ValidationParams(ValidationField.AcceptIcaoInNonPISeconds, results, record, valueChangedField) {
+                ValueIsInRange(settings.AcceptIcaoInNonPISeconds, 1, 30, new Validation(ValidationField.AcceptIcaoInNonPISeconds, defaults) {
                     Message = Strings.AcceptIcaoInNonPISecondsOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AcceptIcaoInPI0Count, 1, 10, new ValidationParams(ValidationField.AcceptIcaoInPI0Count, results, record, valueChangedField) {
+                ValueIsInRange(settings.AcceptIcaoInPI0Count, 1, 10, new Validation(ValidationField.AcceptIcaoInPI0Count, defaults) {
                     Message = Strings.AcceptIcaoInPI0CountOutOfBounds,
                 });
 
-                ValueIsInRange(settings.AcceptIcaoInPI0Seconds, 1, 60, new ValidationParams(ValidationField.AcceptIcaoInPI0Seconds, results, record, valueChangedField) {
+                ValueIsInRange(settings.AcceptIcaoInPI0Seconds, 1, 60, new Validation(ValidationField.AcceptIcaoInPI0Seconds, defaults) {
                     Message = Strings.AcceptIcaoInPI0SecondsOutOfBounds,
                 });
             }
@@ -983,54 +955,53 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Handles the validation of the rebroadcast servers.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateRebroadcastServers(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateRebroadcastServers(Validation defaults)
         {
-            var server = record as RebroadcastSettings;
+            var server = defaults.Record as RebroadcastSettings;
 
-            if(record == null) {
-                if(valueChangedField == ValidationField.None) {
+            if(defaults.Record == null) {
+                if(defaults.ValueChangedField == ValidationField.None) {
                     foreach(var child in _View.Configuration.RebroadcastSettings) {
-                        ValidateRebroadcastServers(results, child, valueChangedField);
+                        var childDefaults = new Validation(defaults) { Record = child };
+                        ValidateRebroadcastServers(childDefaults);
                     }
                 }
             } else if(server != null) {
                 // The name must be supplied
-                if(StringIsNotEmpty(server.Name, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                if(StringIsNotEmpty(server.Name, new Validation(ValidationField.Name, defaults) {
                     Message = Strings.NameRequired,
                 })) {
                     // Name must be unique
                     var names = _View.Configuration.RebroadcastSettings.Where(r => r != server).Select(r => (r.Name ?? "").ToUpper()).ToArray();
-                    ValueIsNotInList(server.Name, names, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    ValueIsNotInList(server.Name, names, new Validation(ValidationField.Name, defaults) {
                         Message = Strings.NameMustBeUnique,
                     });
                 }
 
                 // Port must be within range
-                ValueIsInRange(server.Port, 1, 65535, new ValidationParams(ValidationField.RebroadcastServerPort, results, record, valueChangedField) {
+                ValueIsInRange(server.Port, 1, 65535, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortOutOfBounds,
                 });
 
                 // Port is unique
                 var ports = _View.Configuration.RebroadcastSettings.Where(r => r != server).Select(r => r.Port).ToArray();
-                ValueIsNotInList(server.Port, ports, new ValidationParams(ValidationField.RebroadcastServerPort, results, record, valueChangedField) {
+                ValueIsNotInList(server.Port, ports, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortMustBeUnique,
                 });
 
                 // Format is present
-                ValueNotEqual(server.Format, RebroadcastFormat.None, new ValidationParams(ValidationField.Format, results, record, valueChangedField) {
+                ValueNotEqual(server.Format, RebroadcastFormat.None, new Validation(ValidationField.Format, defaults) {
                     Message = Strings.RebroadcastFormatRequired,
                 });
 
                 // Receiver has been supplied
-                ValueIsInList(server.ReceiverId, CombinedFeedUniqueIds(null), new ValidationParams(ValidationField.RebroadcastReceiver, results, record, valueChangedField) {
+                ValueIsInList(server.ReceiverId, CombinedFeedUniqueIds(null), new Validation(ValidationField.RebroadcastReceiver, defaults) {
                     Message = Strings.ReceiverRequired,
                 });
 
                 // Stale seconds is valid
-                ConditionIsTrue(server.StaleSeconds, r => r > 0, new ValidationParams(ValidationField.StaleSeconds, results, record, valueChangedField) {
+                ConditionIsTrue(server.StaleSeconds, r => r > 0, new Validation(ValidationField.StaleSeconds, defaults) {
                     Message = Strings.StaleSecondsOutOfBounds,
                 });
             }
@@ -1041,55 +1012,58 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the list of receivers and/or an individual receiver.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateReceivers(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateReceivers(Validation defaults)
         {
-            var receiver = record as Receiver;
+            var receiver = defaults.Record as Receiver;
 
-            if(record == null) {
-                // LIST OF RECEIVERS
+            // If we're doing a full or partial validation then we should check to see if the receivers list has at least
+            // one enabled receiver in it
+            if(defaults.Record == null || receiver != null) {
                 var settings = _View.Configuration;
 
                 // There must be at least one receiver
-                if(CollectionIsNotEmpty(settings.Receivers, new ValidationParams(ValidationField.ReceiverIds, results, record, valueChangedField) {
+                if(CollectionIsNotEmpty(settings.Receivers, new Validation(ValidationField.ReceiverIds, defaults) {
+                    Record = null,
                     Message = Strings.PleaseConfigureAtLeastOneReceiver,
                 })) {
                     // At least one receiver must be enabled
-                    ConditionIsTrue(settings.Receivers, r => r.Count(i => i.Enabled) != 0, new ValidationParams(ValidationField.ReceiverIds, results, record, valueChangedField) {
+                    ConditionIsTrue(settings.Receivers, r => r.Count(i => i.Enabled) != 0, new Validation(ValidationField.ReceiverIds, defaults) {
                         Message = Strings.PleaseEnableAtLeastOneReceiver,
+                        Record = null,
+                        RelatedFields = { ValidationField.Enabled },    // This only works because the record = null set of ValidationFields doesn't contain an Enabled...
                     });
                 }
+            }
 
+            if(defaults.Record == null) {
                 // Check all of the child records
-                if(valueChangedField == ValidationField.None) {
-                    foreach(var child in settings.Receivers) {
-                        ValidateReceivers(results, child, valueChangedField);
+                if(defaults.ValueChangedField == ValidationField.None) {
+                    foreach(var child in _View.Configuration.Receivers) {
+                        var childDefaults = new Validation(defaults) { Record = child };
+                        ValidateReceivers(childDefaults);
                     }
                 }
             } else if(receiver != null) {
-                // INDIVIDUAL RECEIVER
-
                 // The receiver must have a name
-                if(StringIsNotEmpty(receiver.Name, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                if(StringIsNotEmpty(receiver.Name, new Validation(ValidationField.Name, defaults) {
                     Message = Strings.NameRequired,
                 })) {
                     // The name cannot be the same as any other receiver or merged feed name
-                    var receiverAndMergedFeedNames = CombinedFeedNamesUpperCase(receiver);
-                    ValueIsNotInList(receiver.Name.ToUpper(), receiverAndMergedFeedNames, new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    var allNames = CombinedFeedNamesUpperCase(receiver);
+                    ValueIsNotInList(receiver.Name.ToUpper(), allNames, new Validation(ValidationField.Name, defaults) {
                         Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
                     });
 
-                    // The name cannot contain a comma
-                    ConditionIsFalse(receiver.Name, r => r.Contains(","), new ValidationParams(ValidationField.Name, results, record, valueChangedField) {
+                    // The name cannot contain a comma (can't remember exactly why - easier parsing of the names at the browser?)
+                    ConditionIsFalse(receiver.Name, r => r.Contains(","), new Validation(ValidationField.Name, defaults) {
                         Message = Strings.NameCannotContainComma,
                     });
                 }
 
                 // If a receiver location has been supplied then it must exist
                 if(receiver.ReceiverLocationId != 0) {
-                    ValueIsInList(receiver.ReceiverLocationId, _View.Configuration.ReceiverLocations.Select(r => r.UniqueId), new ValidationParams(ValidationField.Location, results, record, valueChangedField) {
+                    ValueIsInList(receiver.ReceiverLocationId, _View.Configuration.ReceiverLocations.Select(r => r.UniqueId), new Validation(ValidationField.Location, defaults) {
                         Message = Strings.LocationDoesNotExist,
                     });
                 }
@@ -1098,7 +1072,7 @@ namespace VirtualRadar.Library.Presenter
                 switch(receiver.ConnectionType) {
                     case ConnectionType.TCP:
                         // The address must be supplied
-                        if(StringIsNotEmpty(receiver.Address, new ValidationParams(ValidationField.BaseStationAddress, results, record, valueChangedField) {
+                        if(StringIsNotEmpty(receiver.Address, new Validation(ValidationField.BaseStationAddress, defaults) {
                             Message = Strings.DataSourceNetworkAddressMissing,
                         })) {
                             // The address must resolve to a machine on the network
@@ -1109,24 +1083,24 @@ namespace VirtualRadar.Library.Presenter
                                 } catch {
                                     return false;
                                 }
-                            }, new ValidationParams(ValidationField.BaseStationAddress, results, record, valueChangedField) {
+                            }, new Validation(ValidationField.BaseStationAddress, defaults) {
                                 Format = Strings.CannotResolveAddress,
                                 Args = new object[] { receiver.Address },
                             });
                         }
 
                         // The port must be within range
-                        ValueIsInRange(receiver.Port, 1, 65535, new ValidationParams(ValidationField.BaseStationPort, results, record, valueChangedField) {
+                        ValueIsInRange(receiver.Port, 1, 65535, new Validation(ValidationField.BaseStationPort, defaults) {
                             Message = Strings.PortOutOfBounds,
                         });
                         break;
                     case ConnectionType.COM:
                         // The COM port must be supplied
-                        if(StringIsNotEmpty(receiver.ComPort, new ValidationParams(ValidationField.ComPort, results, record, valueChangedField) {
+                        if(StringIsNotEmpty(receiver.ComPort, new Validation(ValidationField.ComPort, defaults) {
                             Message = Strings.SerialComPortMissing
                         })) {
                             // The COM port must be known to the system
-                            ValueIsInList(receiver.ComPort, Provider.GetSerialPortNames(), new ValidationParams(ValidationField.ComPort, results, record, valueChangedField) {
+                            ValueIsInList(receiver.ComPort, Provider.GetSerialPortNames(), new Validation(ValidationField.ComPort, defaults) {
                                 Message = Strings.SerialComPortUnknown,
                             });
                         }
@@ -1152,12 +1126,12 @@ namespace VirtualRadar.Library.Presenter
                                 default:
                                     return false;
                             }
-                        }, new ValidationParams(ValidationField.BaudRate, results, record, valueChangedField) {
+                        }, new Validation(ValidationField.BaudRate, defaults) {
                             Message = Strings.SerialBaudRateInvalidValue,
                         });
 
                         // The data bits value must be a known good value
-                        ValueIsInRange(receiver.DataBits, 5, 8, new ValidationParams(ValidationField.DataBits, results, record, valueChangedField) {
+                        ValueIsInRange(receiver.DataBits, 5, 8, new Validation(ValidationField.DataBits, defaults) {
                             Message = Strings.SerialDataBitsOutOfBounds,
                         });
                         break;
@@ -1172,42 +1146,41 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the list of receivers and/or an individual receiver.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateReceiverLocations(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateReceiverLocations(Validation defaults)
         {
-            var receiverLocation = record as ReceiverLocation;
+            var receiverLocation = defaults.Record as ReceiverLocation;
 
-            if(record == null) {
-                if(valueChangedField == ValidationField.None) {
+            if(defaults.Record == null) {
+                if(defaults.ValueChangedField == ValidationField.None) {
                     foreach(var child in _View.Configuration.ReceiverLocations) {
-                        ValidateReceiverLocations(results, child, valueChangedField);
+                        var childDefaults = new Validation(defaults) { Record = child };
+                        ValidateReceiverLocations(childDefaults);
                     }
                 }
             } else if(receiverLocation != null) {
                 // Name must not be empty and must be unique
-                if(StringIsNotEmpty(receiverLocation.Name, new ValidationParams(ValidationField.Location, results, record, valueChangedField) {
+                if(StringIsNotEmpty(receiverLocation.Name, new Validation(ValidationField.Location, defaults) {
                     Message = Strings.PleaseEnterNameForLocation,
                 })) {
                     var names = _View.Configuration.ReceiverLocations.Where(r => r != receiverLocation).Select(r => (r.Name ?? "").ToUpper());
-                    ValueIsNotInList(receiverLocation.Name.ToUpper(), names, new ValidationParams(ValidationField.Location, results, record, valueChangedField) {
+                    ValueIsNotInList(receiverLocation.Name.ToUpper(), names, new Validation(ValidationField.Location, defaults) {
                         Message = Strings.PleaseEnterUniqueNameForLocation,
                     });
                 }
 
                 // Latitude must be between -90 and 90
-                ValueIsInRange(receiverLocation.Latitude, -90.0, 90.0, new ValidationParams(ValidationField.Latitude, results, record, valueChangedField) {
+                ValueIsInRange(receiverLocation.Latitude, -90.0, 90.0, new Validation(ValidationField.Latitude, defaults) {
                     Message = Strings.LatitudeOutOfBounds,
                 });
 
                 // Longitude must be between -180 and 180
-                ValueIsInRange(receiverLocation.Longitude, -180.0, 180.0, new ValidationParams(ValidationField.Longitude, results, record, valueChangedField) {
+                ValueIsInRange(receiverLocation.Longitude, -180.0, 180.0, new Validation(ValidationField.Longitude, defaults) {
                     Message = Strings.LongitudeOutOfBounds,
                 });
 
                 // Can't have latitude set to zero - will be useless for ground position decoding
-                ValueNotEqual(receiverLocation.Latitude, 0.0, new ValidationParams(ValidationField.Latitude, results, record, valueChangedField) {
+                ValueNotEqual(receiverLocation.Latitude, 0.0, new Validation(ValidationField.Latitude, defaults) {
                     Message = Strings.LatitudeCannotBeZero,
                 });
             }
@@ -1218,27 +1191,26 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the list of users and/or an individual user.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateUsers(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateUsers(Validation defaults)
         {
-            var user = record as IUser;
+            var user = defaults.Record as IUser;
 
-            if(record == null) {
-                if(valueChangedField == ValidationField.None) {
+            if(defaults.Record == null) {
+                if(defaults.ValueChangedField == ValidationField.None) {
                     foreach(var child in _View.Users) {
-                        ValidateUsers(results, child, valueChangedField);
+                        var childDefaults = new Validation(defaults) { Record = child };
+                        ValidateUsers(childDefaults);
                     }
                 }
             } else if(user != null) {
                 if(_UserManager.CanEditUsers) {
-                    switch(valueChangedField) {
+                    switch(defaults.ValueChangedField) {
                         case ValidationField.None:
                         case ValidationField.LoginName:
                         case ValidationField.Password:
                         case ValidationField.Name:
-                            _UserManager.ValidateUser(results, user, user, _View.Users);
+                            _UserManager.ValidateUser(defaults.Results.Results, user, user, _View.Users);
                             break;
                     }
                 }
@@ -1250,16 +1222,14 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the version check settings.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateVersionCheckSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateVersionCheckSettings(Validation defaults)
         {
-            if(record == null) {
+            if(defaults.Record == null) {
                 var settings = _View.Configuration.VersionCheckSettings;
 
                 // Version check period is within range
-                ValueIsInRange(settings.CheckPeriodDays, 1, 365, new ValidationParams(ValidationField.CheckForNewVersions, results, record, valueChangedField) {
+                ValueIsInRange(settings.CheckPeriodDays, 1, 365, new Validation(ValidationField.CheckForNewVersions, defaults) {
                     Message = Strings.DaysBetweenChecksOutOfBounds,
                 });
             }
@@ -1270,16 +1240,14 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the web server settings.
         /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
-        private void ValidateWebServer(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        /// <param name="defaults"></param>
+        private void ValidateWebServer(Validation defaults)
         {
-            if(record == null) {
+            if(defaults.Record == null) {
                 var settings = _View.Configuration.WebServerSettings;
 
                 // UPnP port has to be within range
-                ValueIsInRange(settings.UPnpPort, 1, 65535, new ValidationParams(ValidationField.UPnpPortNumber, results, record, valueChangedField) {
+                ValueIsInRange(settings.UPnpPort, 1, 65535, new Validation(ValidationField.UPnpPortNumber, defaults) {
                     Message = Strings.UPnpPortOutOfBounds,
                 });
             }
@@ -1509,10 +1477,10 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void Save()
         {
-            var validationResults = ValidateForm();
+            var validationResults = Validate();
             _View.ShowValidationResults(validationResults);
 
-            if(!validationResults.Any(r => r.IsWarning == false)) {
+            if(!validationResults.HasErrors) {
                 SaveUsers();
 
                 var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;

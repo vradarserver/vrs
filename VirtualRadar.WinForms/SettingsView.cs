@@ -777,49 +777,36 @@ namespace VirtualRadar.WinForms
         /// See interface docs.
         /// </summary>
         /// <param name="results"></param>
-        public override void ShowValidationResults(IEnumerable<ValidationResult> results)
+        public override void ShowValidationResults(ValidationResults results)
         {
-            errorProvider.ClearErrors();
-            warningProvider.ClearErrors();
+            if(!results.IsPartialValidation) {
+                errorProvider.ClearErrors();
+                warningProvider.ClearErrors();
+            } else {
+                foreach(var page in GetAllPages()) {
+                    foreach(var fieldChecked in results.PartialValidationFields) {
+                        var fieldControl = page.GetControlForValidationField(fieldChecked.Record, fieldChecked.Field);
+                        var warningControl = fieldControl;
+                        var errorControl = fieldControl;
+                        if(fieldControl != null) {
+                            var validateDelegate = fieldControl as IValidateDelegate;
+                            if(validateDelegate != null) {
+                                warningControl = validateDelegate.GetValidationDisplayControl(warningProvider);
+                                errorControl = validateDelegate.GetValidationDisplayControl(errorProvider);
+                            }
+                            if(warningControl != null) warningProvider.SetClearableError(warningControl, null);
+                            if(errorControl != null)   errorProvider.SetClearableError(errorControl, null);
+                        }
+                    }
+                }
+            }
 
-            var hasWarnings = results.Any(r => r.IsWarning);
-            var hasErrors = results.Any(r => !r.IsWarning);
-
-            Page showPage = ShowValidationResultsAgainstControls(results);
-
-            if(hasErrors) {
+            if(results.HasErrors) {
                 DialogResult = DialogResult.None;
             }
 
+            Page showPage = ShowValidationResultsAgainstControls(results);
             if(showPage != null) DisplayPage(showPage);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="record"></param>
-        /// <param name="validationField"></param>
-        /// <param name="results"></param>
-        public override void ShowSingleFieldValidationResults(object record, ValidationField validationField, IEnumerable<ValidationResult> results)
-        {
-            var allPages = GetAllPagesInTreeNodeOrder();
-            foreach(var page in allPages) {
-                var fieldControl = page.GetControlForValidationField(record, validationField);
-                var warningControl = fieldControl;
-                var errorControl = fieldControl;
-                if(fieldControl != null) {
-                    var validateDelegate = fieldControl as IValidateDelegate;
-                    if(validateDelegate != null) {
-                        warningControl = validateDelegate.GetValidationDisplayControl(warningProvider);
-                        errorControl = validateDelegate.GetValidationDisplayControl(errorProvider);
-                    }
-                }
-
-                if(warningControl != null) warningProvider.SetClearableError(warningControl, null);
-                if(errorControl != null)   errorProvider.SetClearableError(errorControl, null);
-            }
-
-            ShowValidationResultsAgainstControls(results);
         }
 
         /// <summary>
@@ -828,12 +815,12 @@ namespace VirtualRadar.WinForms
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private Page ShowValidationResultsAgainstControls(IEnumerable<ValidationResult> results)
+        private Page ShowValidationResultsAgainstControls(ValidationResults results)
         {
             Page result = null;
 
             var allPages = GetAllPagesInTreeNodeOrder();
-            foreach(var validationResult in results) {
+            foreach(var validationResult in results.Results) {
                 Page fieldPage = null;
                 Control fieldControl = null;
 

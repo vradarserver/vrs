@@ -75,14 +75,20 @@ namespace VirtualRadar.WinForms
         /// Displays a set of validation results.
         /// </summary>
         /// <param name="validationResults"></param>
-        public void ShowValidationResults(IEnumerable<ValidationResult> validationResults)
+        public void ShowValidationResults(ValidationResults validationResults)
         {
-            ClearAllMessages();
+            if(!validationResults.IsPartialValidation) {
+                ClearAllMessages();
+            } else {
+                foreach(var fieldChecked in validationResults.PartialValidationFields) {
+                    ClearAllMessages(fieldChecked.Field);
+                }
+            }
             LastValidationFailed = false;
 
             ShowValidationResultsAgainstControls(validationResults);
 
-            if(validationResults.Any(r => !r.IsWarning)) {
+            if(validationResults.HasErrors) {
                 LastValidationFailed = true;
 
                 var donorControl = _ValidationFieldMap.Values.FirstOrDefault();
@@ -92,25 +98,12 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Displays a set of results for a single validation field.
-        /// </summary>
-        /// <param name="record"></param>
-        /// <param name="validationField"></param>
-        /// <param name="validationResults"></param>
-        public virtual void ShowSingleFieldValidationResults(object record, ValidationField validationField, IEnumerable<ValidationResult> validationResults)
-        {
-            ClearAllMessages(validationField);
-
-            ShowValidationResultsAgainstControls(validationResults);
-        }
-
-        /// <summary>
         /// Displays validation results against controls.
         /// </summary>
         /// <param name="validationResults"></param>
-        private void ShowValidationResultsAgainstControls(IEnumerable<ValidationResult> validationResults)
+        private void ShowValidationResultsAgainstControls(ValidationResults validationResults)
         {
-            foreach(var validationResult in validationResults) {
+            foreach(var validationResult in validationResults.Results) {
                 Control control;
                 if(_ValidationFieldMap.TryGetValue(validationResult.Field, out control)) {
                     var validateDelegate = control as IValidateDelegate;
