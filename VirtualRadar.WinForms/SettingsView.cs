@@ -190,20 +190,6 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public event EventHandler ResetToDefaultsClicked;
-
-        /// <summary>
-        /// Raises <see cref="ResetToDefaultsClicked"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnResetToDefaultsClicked(EventArgs args)
-        {
-            if(ResetToDefaultsClicked != null) ResetToDefaultsClicked(this, args);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public event EventHandler SaveClicked;
 
         /// <summary>
@@ -952,6 +938,13 @@ namespace VirtualRadar.WinForms
             } finally {
                 _IsSaving = isSaving;
             }
+        }
+        #endregion
+
+        #region Events subscribed - menu
+        private void justFlightSimulatorXToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnFlightSimulatorXOnlyClicked(e);
         }
         #endregion
     }

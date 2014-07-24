@@ -1036,23 +1036,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>AVR or Beast Raw Feed</value>
     <comment>'Beast' is the name of a product and may not need translating</comment>
   </data>
-  <data name="AcceptableAirborneSpeed" xml:space="preserve">
-    <value>Acceptable airborne speed (km / 30 seconds)</value>
-  </data>
-  <data name="AcceptableAirSurfaceTransitionSpeed" xml:space="preserve">
-    <value>Acceptable transition speed (km / 30 seconds)</value>
-  </data>
-  <data name="AcceptableSurfaceSpeed" xml:space="preserve">
-    <value>Acceptable surface speed (km / 30 seconds)</value>
-  </data>
-  <data name="AirborneGlobalPositionLimit" xml:space="preserve">
-    <value>Airborne global position limit (seconds)</value>
-  </data>
   <data name="DecoderSettings" xml:space="preserve">
     <value>Decoder settings</value>
-  </data>
-  <data name="FastSurfaceGlobalPositionLimit" xml:space="preserve">
-    <value>Fast surface global position limit (seconds)</value>
   </data>
   <data name="IgnoreMilitaryExtendedSquitter" xml:space="preserve">
     <value>Ignore DF19/AF0</value>
@@ -1065,14 +1050,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Raw Decoding</value>
   </data>
   <data name="ReceiverRange" xml:space="preserve">
-    <value>Receiver range (kilometres)</value>
+    <value>Receiver range</value>
   </data>
   <data name="Seconds" xml:space="preserve">
     <value>seconds</value>
     <comment>As in hours, minutes, seconds</comment>
-  </data>
-  <data name="SlowSurfaceGlobalPositionLimit" xml:space="preserve">
-    <value>Slow surface global position limit (seconds)</value>
   </data>
   <data name="UseIcaoSpecificationSettings" xml:space="preserve">
     <value>Use ICAO specification settings</value>
@@ -2032,7 +2014,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Default Configuration</value>
   </data>
   <data name="JustFlightSimulatorX" xml:space="preserve">
-    <value>No ADS-B, Just Flight Simulator X</value>
+    <value>Flight Simulator X Only</value>
   </data>
   <data name="PresetConfigurations" xml:space="preserve">
     <value>Preset Configurations</value>
@@ -2160,5 +2142,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="ShortTrailDuration" xml:space="preserve">
     <value>Short trail duration</value>
+  </data>
+  <data name="AirborneGlobal" xml:space="preserve">
+    <value>Airborne global</value>
+  </data>
+  <data name="FastSurfaceGlobal" xml:space="preserve">
+    <value>Fast surface global</value>
+  </data>
+  <data name="MaxAirborneSpeed" xml:space="preserve">
+    <value>Max airborne speed</value>
+  </data>
+  <data name="MaxSurfaceSpeed" xml:space="preserve">
+    <value>Max surface speed</value>
+  </data>
+  <data name="MaxTransitionSpeed" xml:space="preserve">
+    <value>Max transition speed</value>
+  </data>
+  <data name="PKilometres" xml:space="preserve">
+    <value>(kilometres)</value>
+  </data>
+  <data name="PKilometresOver30Seconds" xml:space="preserve">
+    <value>(km / 30 seconds)</value>
+  </data>
+  <data name="SlowSurfaceGlobal" xml:space="preserve">
+    <value>Slow surface global</value>
   </data>
 </root>

@@ -239,6 +239,7 @@ namespace VirtualRadar.Library.Presenter
         {
             base.Initialise(view);
 
+            _View.FlightSimulatorXOnlyClicked += View_FlightSimulatorXOnlyClicked;
             _View.SaveClicked += View_SaveClicked;
             _View.TestConnectionClicked += View_TestConnectionClicked;
             _View.TestTextToSpeechSettingsClicked += View_TestTextToSpeechSettingsClicked;
@@ -483,20 +484,21 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region UseIcaoRawDecodingSettings, UseRecommendedRawDecodingSettings
+        #region UseIcaoRawDecodingSettings, UseRecommendedRawDecodingSettings, UseFlightSimulatorXOnlySettings
         /// <summary>
         /// Configures the view with the ICAO raw decoding settings.
         /// </summary>
         private void UseIcaoRawDecodingSettings()
         {
-            _View.Configuration.RawDecodingSettings.AcceptableAirborneSpeed = 11.112;
-            _View.Configuration.RawDecodingSettings.AcceptableAirSurfaceTransitionSpeed = 4.63;
-            _View.Configuration.RawDecodingSettings.AcceptableSurfaceSpeed = 1.389;
-            _View.Configuration.RawDecodingSettings.AirborneGlobalPositionLimit = 10;
-            _View.Configuration.RawDecodingSettings.FastSurfaceGlobalPositionLimit = 25;
-            _View.Configuration.RawDecodingSettings.SlowSurfaceGlobalPositionLimit = 50;
-            _View.Configuration.RawDecodingSettings.SuppressReceiverRangeCheck = false;
-            _View.Configuration.RawDecodingSettings.UseLocalDecodeForInitialPosition = false;
+            var settings = _View.Configuration.RawDecodingSettings;
+            settings.AcceptableAirborneSpeed = 11.112;
+            settings.AcceptableAirSurfaceTransitionSpeed = 4.63;
+            settings.AcceptableSurfaceSpeed = 1.389;
+            settings.AirborneGlobalPositionLimit = 10;
+            settings.FastSurfaceGlobalPositionLimit = 25;
+            settings.SlowSurfaceGlobalPositionLimit = 50;
+            settings.SuppressReceiverRangeCheck = false;
+            settings.UseLocalDecodeForInitialPosition = false;
         }
 
         /// <summary>
@@ -504,15 +506,58 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void UseRecommendedRawDecodingSettings()
         {
+            var settings = _View.Configuration.RawDecodingSettings;
             var defaults = new RawDecodingSettings();
-            _View.Configuration.RawDecodingSettings.AcceptableAirborneSpeed = defaults.AcceptableAirborneSpeed;
-            _View.Configuration.RawDecodingSettings.AcceptableAirSurfaceTransitionSpeed = defaults.AcceptableAirSurfaceTransitionSpeed;
-            _View.Configuration.RawDecodingSettings.AcceptableSurfaceSpeed = defaults.AcceptableSurfaceSpeed;
-            _View.Configuration.RawDecodingSettings.AirborneGlobalPositionLimit = defaults.AirborneGlobalPositionLimit;
-            _View.Configuration.RawDecodingSettings.FastSurfaceGlobalPositionLimit = defaults.FastSurfaceGlobalPositionLimit;
-            _View.Configuration.RawDecodingSettings.SlowSurfaceGlobalPositionLimit = defaults.SlowSurfaceGlobalPositionLimit;
-            _View.Configuration.RawDecodingSettings.SuppressReceiverRangeCheck = true;
-            _View.Configuration.RawDecodingSettings.UseLocalDecodeForInitialPosition = false;
+            settings.AcceptableAirborneSpeed = defaults.AcceptableAirborneSpeed;
+            settings.AcceptableAirSurfaceTransitionSpeed = defaults.AcceptableAirSurfaceTransitionSpeed;
+            settings.AcceptableSurfaceSpeed = defaults.AcceptableSurfaceSpeed;
+            settings.AirborneGlobalPositionLimit = defaults.AirborneGlobalPositionLimit;
+            settings.FastSurfaceGlobalPositionLimit = defaults.FastSurfaceGlobalPositionLimit;
+            settings.SlowSurfaceGlobalPositionLimit = defaults.SlowSurfaceGlobalPositionLimit;
+            settings.SuppressReceiverRangeCheck = true;
+            settings.UseLocalDecodeForInitialPosition = false;
+        }
+
+        /// <summary>
+        /// Configures the view with reasonable settings for use with FSX.
+        /// </summary>
+        private void UseFlightSimulatorXOnlySettings()
+        {
+            var settings = _View.Configuration;
+
+            // Data source settings
+            settings.BaseStationSettings.DatabaseFileName= "";
+            settings.BaseStationSettings.SilhouettesFolder = "";
+            settings.BaseStationSettings.OperatorFlagsFolder = "";
+            settings.BaseStationSettings.PicturesFolder = "";
+            settings.BaseStationSettings.SearchPictureSubFolders = false;
+
+            // Receivers - ideally we'd want none but validation prevents that, and with good
+            // reason. This should fail to connect to anything and if they do happen to have
+            // a radio and it connects the format should cause it to fail to decode.
+            var dummyReceiver = new Receiver() {
+                UniqueId = 1,
+                Name = "Dummy Receiver",
+                Enabled = true,
+                ConnectionType = ConnectionType.TCP,
+                Address = "127.0.0.1",
+                Port = 30003,
+                DataSource = DataSource.Sbs3,
+                AutoReconnectAtStartup = false,
+            };
+            settings.Receivers.Clear();
+            settings.Receivers.Add(dummyReceiver);
+            settings.GoogleMapSettings.WebSiteReceiverId = 1;
+            settings.GoogleMapSettings.ClosestAircraftReceiverId = 1;
+            settings.GoogleMapSettings.FlightSimulatorXReceiverId = 1;
+
+            // Other lists that are meaningless for FSX-only operations
+            settings.ReceiverLocations.Clear();
+            settings.MergedFeeds.Clear();
+            settings.RebroadcastSettings.Clear();
+
+            // General settings
+            settings.FlightRouteSettings.AutoUpdateEnabled = false;
         }
         #endregion
 
@@ -1415,13 +1460,13 @@ namespace VirtualRadar.Library.Presenter
 
         #region View events
         /// <summary>
-        /// Raised when the user wants to import receiver locations from the BaseStation database.
+        /// Raised when the user indicates that they don't have a radio, they only have FSX.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void View_UpdateReceiverLocationsFromBaseStationDatabaseClicked(object sender, EventArgs args)
+        private void View_FlightSimulatorXOnlyClicked(object sender, EventArgs args)
         {
-            UpdateReceiverLocationsFromBaseStationDatabase();
+            UseFlightSimulatorXOnlySettings();
         }
 
         /// <summary>
@@ -1480,6 +1525,16 @@ namespace VirtualRadar.Library.Presenter
         private void View_TestTextToSpeechSettingsClicked(object sender, EventArgs args)
         {
             Provider.TestTextToSpeech(_View.Configuration.AudioSettings.VoiceName, _View.Configuration.AudioSettings.VoiceRate);
+        }
+
+        /// <summary>
+        /// Raised when the user wants to import receiver locations from the BaseStation database.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void View_UpdateReceiverLocationsFromBaseStationDatabaseClicked(object sender, EventArgs args)
+        {
+            UpdateReceiverLocationsFromBaseStationDatabase();
         }
 
         /// <summary>
