@@ -403,20 +403,9 @@ namespace VirtualRadar.WinForms
         /// Implements <see cref="IValidateView.ShowValidationResults"/>.
         /// </summary>
         /// <param name="results"></param>
-        public virtual void ShowValidationResults(IEnumerable<ValidationResult> results)
+        public virtual void ShowValidationResults(ValidationResults results)
         {
             if(_ValidationHelper != null) _ValidationHelper.ShowValidationResults(results);
-        }
-
-        /// <summary>
-        /// Implements <see cref="IValidateView.ShowSingleFieldValidationResults"/>.
-        /// </summary>
-        /// <param name="record"></param>
-        /// <param name="validationField"></param>
-        /// <param name="results"></param>
-        public virtual void ShowSingleFieldValidationResults(object record, ValidationField validationField, IEnumerable<ValidationResult> results)
-        {
-            if(_ValidationHelper != null) _ValidationHelper.ShowSingleFieldValidationResults(record, validationField, results);
         }
 
         /// <summary>

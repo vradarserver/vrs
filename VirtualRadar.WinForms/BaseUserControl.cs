@@ -313,7 +313,7 @@ namespace VirtualRadar.WinForms
         /// Implements <see cref="IValidateView.ShowValidationResults"/>.
         /// </summary>
         /// <param name="results"></param>
-        public virtual void ShowValidationResults(IEnumerable<ValidationResult> results)
+        public virtual void ShowValidationResults(ValidationResults results)
         {
             if(_ValidationHelper != null) _ValidationHelper.ShowValidationResults(results);
         }
