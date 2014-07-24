@@ -86,21 +86,6 @@
     <Compile Include="BindingListView\MultiSourceIndexList.cs" />
     <Compile Include="BindingListView\ObjectView.cs" />
     <Compile Include="BindingListView\ProvidedViewPropertyDescriptor.cs" />
-    <Compile Include="BindingTag.cs" />
-    <Compile Include="Binding\BindBoolToCheckbox.cs" />
-    <Compile Include="Binding\BindCollectionToListView.cs" />
-    <Compile Include="Binding\BindCollectionToObservableListView.cs" />
-    <Compile Include="Binding\BindDoubleToLocationMap.cs" />
-    <Compile Include="Binding\BindDoubleToNumericUpDown.cs" />
-    <Compile Include="Binding\BindIntToNumericUpDown.cs" />
-    <Compile Include="Binding\BindStringToPassword.cs" />
-    <Compile Include="Binding\BindToComboBox.cs" />
-    <Compile Include="Binding\BindingFactory.cs" />
-    <Compile Include="Binding\BindStringToFileName.cs" />
-    <Compile Include="Binding\BindStringToFolder.cs" />
-    <Compile Include="Binding\BindStringToTextBox.cs" />
-    <Compile Include="Binding\IObservableList.cs" />
-    <Compile Include="Binding\ObservableList.cs" />
     <Compile Include="BusyViewHelper.cs" />
     <Compile Include="CommonBaseBehaviour.cs" />
     <Compile Include="ConnectionClientLogView.cs">
@@ -138,9 +123,6 @@
     <Compile Include="Controls\BindingMapControl.Designer.cs">
       <DependentUpon>BindingMapControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ComboBoxPlus.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\ConnectionClientListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -169,12 +151,6 @@
     <Compile Include="Controls\FileNameControl.Designer.cs">
       <DependentUpon>FileNameControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LocationMapControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\LocationMapControl.Designer.cs">
-      <DependentUpon>LocationMapControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\InvalidPluginCountControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -192,18 +168,6 @@
     </Compile>
     <Compile Include="Controls\NamespaceDoc.cs" />
     <Compile Include="Controls\NameValue.cs" />
-    <Compile Include="Controls\ObservableListComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\ObservableListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\PasswordControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\PasswordControl.Designer.cs">
-      <DependentUpon>PasswordControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PluginDetailPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -224,12 +188,6 @@
     </Compile>
     <Compile Include="Controls\RebroadcastStatusControl.Designer.cs">
       <DependentUpon>RebroadcastStatusControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FeedSelectControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FeedSelectControl.Designer.cs">
-      <DependentUpon>FeedSelectControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\FeedStatusControl.cs">
       <SubType>UserControl</SubType>
@@ -283,122 +241,6 @@
     <Compile Include="MonoAutoScaleMode.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="OnlineHelpHelper.cs" />
-    <Compile Include="Binding\Binder.cs" />
-    <Compile Include="Binding\IBinder.cs" />
-    <Compile Include="Binding\IObservable.cs" />
-    <Compile Include="Binding\Observable.cs" />
-    <Compile Include="OptionPage\CombinedFeed.cs" />
-    <Compile Include="OptionPage\Page.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\Page.Designer.cs">
-      <DependentUpon>Page.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageDataSources.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageDataSources.Designer.cs">
-      <DependentUpon>PageDataSources.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageEnabledAttribute.cs" />
-    <Compile Include="OptionPage\PageGeneral.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageGeneral.Designer.cs">
-      <DependentUpon>PageGeneral.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageGoogleMaps.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageGoogleMaps.Designer.cs">
-      <DependentUpon>PageGoogleMaps.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageMergedFeed.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageMergedFeed.Designer.cs">
-      <DependentUpon>PageMergedFeed.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageMergedFeeds.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageMergedFeeds.Designer.cs">
-      <DependentUpon>PageMergedFeeds.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageRawFeedDecoding.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageRawFeedDecoding.Designer.cs">
-      <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageRebroadcastServer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageRebroadcastServer.Designer.cs">
-      <DependentUpon>PageRebroadcastServer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageRebroadcastServers.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageRebroadcastServers.Designer.cs">
-      <DependentUpon>PageRebroadcastServers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageReceiver.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageReceiver.Designer.cs">
-      <DependentUpon>PageReceiver.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageReceiverLocation.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageReceiverLocation.Designer.cs">
-      <DependentUpon>PageReceiverLocation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageReceiverLocations.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageReceiverLocations.Designer.cs">
-      <DependentUpon>PageReceiverLocations.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageReceivers.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageReceivers.Designer.cs">
-      <DependentUpon>PageReceivers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageTitleAttribute.cs" />
-    <Compile Include="OptionPage\PageUser.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageUser.Designer.cs">
-      <DependentUpon>PageUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageUsers.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageUsers.Designer.cs">
-      <DependentUpon>PageUsers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageWebServer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageWebServer.Designer.cs">
-      <DependentUpon>PageWebServer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageWebServerAuthentication.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageWebServerAuthentication.Designer.cs">
-      <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\PageWebSite.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionPage\PageWebSite.Designer.cs">
-      <DependentUpon>PageWebSite.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionPage\RecordListHelper.cs" />
     <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>
@@ -516,12 +358,6 @@
       <DependentUpon>SettingsView.cs</DependentUpon>
     </Compile>
     <Compile Include="ValidationFieldAttribute.cs" />
-    <Compile Include="OptionsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OptionsView.Designer.cs">
-      <DependentUpon>OptionsView.cs</DependentUpon>
-    </Compile>
     <Compile Include="PluginsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -650,12 +486,6 @@
     <EmbeddedResource Include="Controls\InvalidPluginsControl.resx">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\LocationMapControl.resx">
-      <DependentUpon>LocationMapControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PasswordControl.resx">
-      <DependentUpon>PasswordControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\PluginDetailPanel.resx">
       <DependentUpon>PluginDetailPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -664,9 +494,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\RebroadcastStatusControl.resx">
       <DependentUpon>RebroadcastStatusControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FeedSelectControl.resx">
-      <DependentUpon>FeedSelectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FeedStatusControl.resx">
       <DependentUpon>FeedStatusControl.cs</DependentUpon>
@@ -691,60 +518,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageDataSources.resx">
-      <DependentUpon>PageDataSources.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageGeneral.resx">
-      <DependentUpon>PageGeneral.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageGoogleMaps.resx">
-      <DependentUpon>PageGoogleMaps.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageMergedFeed.resx">
-      <DependentUpon>PageMergedFeed.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageMergedFeeds.resx">
-      <DependentUpon>PageMergedFeeds.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageRawFeedDecoding.resx">
-      <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageRebroadcastServer.resx">
-      <DependentUpon>PageRebroadcastServer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageRebroadcastServers.resx">
-      <DependentUpon>PageRebroadcastServers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageReceiver.resx">
-      <DependentUpon>PageReceiver.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageReceiverLocation.resx">
-      <DependentUpon>PageReceiverLocation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageReceiverLocations.resx">
-      <DependentUpon>PageReceiverLocations.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageReceivers.resx">
-      <DependentUpon>PageReceivers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageUser.resx">
-      <DependentUpon>PageUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageUsers.resx">
-      <DependentUpon>PageUsers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageWebServer.resx">
-      <DependentUpon>PageWebServer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageWebServerAuthentication.resx">
-      <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionPage\PageWebSite.resx">
-      <DependentUpon>PageWebSite.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsView.resx">
-      <DependentUpon>OptionsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PluginsView.resx">
       <DependentUpon>PluginsView.cs</DependentUpon>
@@ -858,7 +631,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BindingListView\_README.txt" />
-    <Content Include="Controls\LocationMapControl.html" />
+    <Content Include="Controls\BindingMapControl.html" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

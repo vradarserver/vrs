@@ -275,22 +275,6 @@ namespace VirtualRadar.WinForms.Controls
 
         #region Other properties
         /// <summary>
-        /// Gets or sets the list of records in the list view.
-        /// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IList Records
-        {
-            get
-            {
-                return listView.Items.OfType<ListViewItem>().Select(r => r.Tag).ToList();
-            }
-            set
-            {
-                PopulateWithList(value);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the selected record.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -485,16 +469,6 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
-        #region ResetBinding
-        public void ResetBinding(object record)
-        {
-            //var listViewItem = listView.Items.OfType<ListViewItem>().FirstOrDefault(r => r.Tag == record);
-            //if(listViewItem != null) {
-            //    RefreshListViewItem(listViewItem);
-            //}
-        }
-        #endregion
-
         #region LoadItemsFromSource, CreateListViewItemForRecord, SetSelectedIndex
         /// <summary>
         /// Loads the items in the control from the bound list.
@@ -558,46 +532,6 @@ namespace VirtualRadar.WinForms.Controls
                 } finally {
                     _InSetSelectedIndex = false;
                 }
-            }
-        }
-        #endregion
-
-        #region PopulateWithList
-        /// <summary>
-        /// Populates the control with the contents of a list. Attempts to preserve the
-        /// selection across the population.
-        /// </summary>
-        /// <param name="list"></param>
-        public void PopulateWithList(IList list)
-        {
-            var selectedRecords = SelectedRecords.ToArray();
-            var selectIndex = selectedRecords.Length == 1 ? listView.SelectedIndices[0] : -1;
-
-            var populating = _Populating;
-            try {
-                _Populating = true;
-
-                listView.Items.Clear();
-                if(list != null) {
-                    foreach(var item in list) {
-                        var listViewItem = new ListViewItem() {
-                            Tag = item,
-                        };
-                        RefreshListViewItem(listViewItem);
-                        listView.Items.Add(listViewItem);
-
-                        if(selectedRecords.Contains(item)) {
-                            listViewItem.Selected = true;
-                        }
-                    }
-                }
-
-                if(selectedRecords.Length == 1 && listView.SelectedIndices.Count == 0 && selectIndex > -1) {
-                    if(selectIndex < listView.Items.Count) listView.Items[selectIndex].Selected = true;
-                    else if(listView.Items.Count > 0) listView.Items[listView.Items.Count - 1].Selected = true;
-                }
-            } finally {
-                _Populating = populating;
             }
         }
 

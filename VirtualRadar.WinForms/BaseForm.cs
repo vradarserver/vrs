@@ -132,7 +132,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region AddBinding, GetAllDataBindings, GetAllDataBindingsForAttribute, GetPropertyInfoForBinding
+        #region AddBinding
         /// <summary>
         /// A shorthand method for adding bindings with compiler-checked names.
         /// </summary>
@@ -145,43 +145,10 @@ namespace VirtualRadar.WinForms
         /// <param name="dataSourceUpdateMode"></param>
         /// <param name="format"></param>
         /// <param name="parse"></param>
-        public System.Windows.Forms.Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnValidation, ConvertEventHandler format = null, ConvertEventHandler parse = null)
+        public Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnValidation, ConvertEventHandler format = null, ConvertEventHandler parse = null)
             where TControl: Control
         {
             return _CommonBaseBehaviour.AddBinding<TControl, TModel>(model, control, modelProperty, controlProperty, dataSourceUpdateMode, format, parse);
-        }
-
-        /// <summary>
-        /// Returns all bindings for this form and all child controls.
-        /// </summary>
-        /// <param name="includeChildControls"></param>
-        /// <returns></returns>
-        public List<System.Windows.Forms.Binding> GetAllDataBindings(bool includeChildControls)
-        {
-            return _CommonBaseBehaviour.GetAllDataBindings(this, includeChildControls);
-        }
-
-        /// <summary>
-        /// Returns all bindings on this form or any child that is bound to a property that is tagged
-        /// with an attribute of the type passed across.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public List<BindingTag<T>> GetAllDataBindingsForAttribute<T>(bool includeChildControls, bool inherit)
-            where T: Attribute
-        {
-            return _CommonBaseBehaviour.GetAllDataBindingsForAttribute<T>(this, includeChildControls, inherit);
-        }
-
-        /// <summary>
-        /// Returns the property info associated with a binding or null if it cannot be found.
-        /// </summary>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        public PropertyInfo GetPropertyInfoForBinding(System.Windows.Forms.Binding binding)
-        {
-            return GetPropertyInfoForBinding(binding);
         }
         #endregion
 

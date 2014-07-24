@@ -307,7 +307,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region Binding helpers - AddBinding, GetAllBindings, GetAllDataBindingsForAttribute, GetPropertyInfoForBinding
+        #region Binding helpers - AddBinding
         /// <summary>
         /// Adds a binding between a control and a property on a page.
         /// </summary>
@@ -320,7 +320,7 @@ namespace VirtualRadar.WinForms
         /// <param name="dataSourceUpdateMode"></param>
         /// <param name="format"></param>
         /// <param name="parse"></param>
-        public System.Windows.Forms.Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode, ConvertEventHandler format, ConvertEventHandler parse)
+        public Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode, ConvertEventHandler format, ConvertEventHandler parse)
             where TControl: Control
         {
             var controlPropertyName = PropertyHelper.ExtractName<TControl>(controlProperty);
@@ -332,62 +332,6 @@ namespace VirtualRadar.WinForms
             if(parse != null) result.Parse += parse;
 
             control.DataBindings.Add(result);
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns a list of all of the bindings on the control passed across and every control under it.
-        /// </summary>
-        /// <param name="control"></param>
-        /// <param name="includeChildControls"></param>
-        /// <returns></returns>
-        public List<System.Windows.Forms.Binding> GetAllDataBindings(Control control, bool includeChildControls)
-        {
-            var allControls = includeChildControls ? (IEnumerable<Control>)GetAllChildControls(control, true) : new Control[] { control };
-            var result = allControls.SelectMany(r => r.DataBindings.OfType<System.Windows.Forms.Binding>()).ToList();
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns a list of all bindings associated with properties that are tagged with the supplied attribute type.
-        /// The tag is the first instance of each attribute type associated with the property.
-        /// </summary>
-        /// <typeparam name="T">The type of attribute to search for.</typeparam>
-        /// <param name="control">The top-level control to search. This control and all children will be searched.</param>
-        /// <param name="includeChildControls"></param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public List<BindingTag<T>> GetAllDataBindingsForAttribute<T>(Control control, bool includeChildControls, bool inherit)
-            where T:Attribute
-        {
-            var result = new List<BindingTag<T>>();
-
-            var allBindings = GetAllDataBindings(control, includeChildControls);
-            foreach(var binding in allBindings) {
-                var propertyInfo = GetPropertyInfoForBinding(binding);
-                var attribute = propertyInfo == null ? null : propertyInfo.GetCustomAttributes(typeof(T), inherit).OfType<T>().FirstOrDefault();
-                if(attribute != null) {
-                    result.Add(new BindingTag<T>(binding, attribute));
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns the property info associated with a binding or null if it cannot be found.
-        /// </summary>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        public PropertyInfo GetPropertyInfoForBinding(System.Windows.Forms.Binding binding)
-        {
-            PropertyInfo result = null;
-            if(binding.BindingMemberInfo != null && binding.DataSource != null) {
-                if(!String.IsNullOrEmpty(binding.BindingMemberInfo.BindingPath)) throw new NotImplementedException("Need to implement support for binding to child objects");
-                result = binding.DataSource.GetType().GetProperty(binding.BindingMemberInfo.BindingField);
-            }
 
             return result;
         }
