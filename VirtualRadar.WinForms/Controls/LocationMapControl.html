@@ -14,11 +14,92 @@
 <body>
     <div id="map"></div>
     <script type="text/javascript">
+        var highContrastMapStyle = [ // The Google map styles to use for the high contrast map.
+            {
+                featureType: 'poi',
+                stylers: [
+                    { visibility: 'off' }
+                ]
+            },{
+                featureType: 'landscape',
+                stylers: [
+                    { saturation: -70 },
+                    { lightness: -30 },
+                    { gamma: 0.80 }
+                ]
+            },{
+                featureType: 'road',
+                stylers: [
+                    { visibility: 'simplified' },
+                    { weight: 0.4 },
+                    { saturation: -70 },
+                    { lightness: -30 },
+                    { gamma: 0.80 }
+                ]
+            },{
+                featureType: 'road',
+                elementType: 'labels',
+                stylers: [
+                    { visibility: 'simplified' },
+                    { saturation: -46 },
+                    { gamma: 1.82 }
+                ]
+            },{
+                featureType: 'administrative',
+                stylers: [
+                    { weight: 1 }
+                ]
+            },{
+                featureType: 'administrative',
+                elementType: 'labels',
+                stylers: [
+                    { saturation: -100 },
+                    { weight: 0.1 },
+                    { lightness: -60 },
+                    { gamma: 2.0 }
+                ]
+            },{
+                featureType: 'water',
+                stylers: [
+                    { saturation: -72 },
+                    { lightness: -25 }
+                ]
+            },{
+                featureType: 'administrative.locality',
+                stylers: [
+                    { weight: 0.1 }
+                ]
+            },{
+                featureType: 'administrative.province',
+                stylers: [
+                    { lightness: -43 }
+                ]
+            },{
+                "featureType": "transit.line",
+                "stylers": [
+                    { "visibility": "off" }
+                ]
+            },{
+                "featureType": "transit.station.bus",
+                "stylers": [
+                    { "visibility": "off" }
+                ]
+            },{
+                "featureType": "transit.station.rail",
+                "stylers": [
+                    { "visibility": "off" }
+                ]
+            }
+        ];
+
         var googleMap;
         var googleMapMarker;
         var failedToLoad = '';
         var latitude = 0.0;
         var longitude = 0.0;
+        var mapType = 'ROADMAP';
+        var zoomLevel = 10;
+        var highContrastMap;
 
         function showErrorMessage(errorMessage)
         {
@@ -34,21 +115,14 @@
                 failedToLoad = window.external.BrowserGetFailedErrorText();
                 latitude = window.external.BrowserGetLatitude();
                 longitude = window.external.BrowserGetLongitude();
+                mapType = google.maps.MapTypeId[window.external.BrowserGetMapType()];
+                zoomLevel = window.external.BrowserGetZoomLevel();
             } catch(exception) {
                 showErrorMessage('Could not talk to form: ' + exception);
                 result = false;
             }
 
             return result;
-        }
-
-        function sendPositionToForm()
-        {
-            try {
-                window.external.BrowserSetPosititon(latitude, longitude);
-            } catch(exception) {
-                ;
-            }
         }
 
         function setPositionFromForm(lat, lng)
@@ -66,15 +140,82 @@
             }
         }
 
+        function sendPositionToForm()
+        {
+            try {
+                window.external.BrowserSetPosititon(latitude, longitude);
+            } catch(exception) {
+                ;
+            }
+        }
+
+        function setMapTypeFromForm(type)
+        {
+            if(googleMap) {
+                mapType = type;
+                var isCustom = mapType === 'HIGHCONTRAST';
+                googleMap.setMapTypeId(isCustom ? mapType : google.maps.MapTypeId[mapType]);
+            }
+        }
+
+        function sendMapTypeToForm()
+        {
+            try {
+                window.external.BrowserSetMapType(mapType.toString().toUpperCase());
+            } catch(exception) {
+                ;
+            }
+        }
+
+        function setZoomLevelFromForm(level)
+        {
+            if(googleMap) {
+                zoomLevel = level;
+                googleMap.setZoom(zoomLevel);
+            }
+        }
+
+        function sendZoomLevelToForm()
+        {
+            try {
+                window.external.BrowserSetZoomLevel(zoomLevel);
+            } catch(exception) {
+                ;
+            }
+        }
+
         window.onload = function() {
             if(initialiseFromForm()) {
                 var map = document.getElementById('map');
                 try {
+                    highContrastMap = new google.maps.StyledMapType(highContrastMapStyle, { name: 'HIGHCONTRAST' });
+
                     googleMap = new google.maps.Map(map, {
-                        center:             new google.maps.LatLng(latitude, longitude),
-                        streetViewControl:  false,
-                        zoom:               10,
-                        zoomControl:        true
+                        center:                 new google.maps.LatLng(latitude, longitude),
+                        streetViewControl:      false,
+                        zoom:                   zoomLevel,
+                        zoomControl:            true,
+                        mapTypeControlOptions:  {
+                            style:          google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                            mapTypeIds:     [
+                                google.maps.MapTypeId.HYBRID,
+                                google.maps.MapTypeId.ROADMAP,
+                                google.maps.MapTypeId.SATELLITE,
+                                google.maps.MapTypeId.TERRAIN,
+                                'HIGHCONTRAST'
+                            ]
+                        }
+                    });
+                    googleMap.mapTypes.set('HIGHCONTRAST', highContrastMap);
+                    googleMap.setMapTypeId(mapType);
+
+                    google.maps.event.addListener(googleMap, 'maptypeid_changed', function() {
+                        mapType = googleMap.getMapTypeId();
+                        sendMapTypeToForm();
+                    });
+                    google.maps.event.addListener(googleMap, 'zoom_changed', function() {
+                        zoomLevel = googleMap.getZoom();
+                        sendZoomLevelToForm();
                     });
 
                     googleMapMarker = new google.maps.Marker({

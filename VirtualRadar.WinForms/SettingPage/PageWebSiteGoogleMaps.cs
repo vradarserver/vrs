@@ -45,14 +45,16 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, comboBoxInitialMapType,    r => r.Configuration.GoogleMapSettings.InitialMapType,      r => r.SelectedValue);
-            AddBinding(SettingsView, numericInitialZoom,        r => r.Configuration.GoogleMapSettings.InitialMapZoom,      r => r.Value);
-            AddBinding(SettingsView, numericInitialLatitude,    r => r.Configuration.GoogleMapSettings.InitialMapLatitude,  r => r.Value, DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(SettingsView, numericInitialLongitude,   r => r.Configuration.GoogleMapSettings.InitialMapLongitude, r => r.Value, DataSourceUpdateMode.OnPropertyChanged);
+            AddBinding(SettingsView, comboBoxInitialMapType,    r => r.Configuration.GoogleMapSettings.InitialMapType,      r => r.SelectedValue,   DataSourceUpdateMode.OnPropertyChanged);
+            AddBinding(SettingsView, numericInitialZoom,        r => r.Configuration.GoogleMapSettings.InitialMapZoom,      r => r.Value,           DataSourceUpdateMode.OnPropertyChanged);
+            AddBinding(SettingsView, numericInitialLatitude,    r => r.Configuration.GoogleMapSettings.InitialMapLatitude,  r => r.Value,           DataSourceUpdateMode.OnPropertyChanged);
+            AddBinding(SettingsView, numericInitialLongitude,   r => r.Configuration.GoogleMapSettings.InitialMapLongitude, r => r.Value,           DataSourceUpdateMode.OnPropertyChanged);
 
             var mapBindingSource = new BindingSource();
             mapBindingSource.DataSource = SettingsView.Configuration.GoogleMapSettings;
             bindingMap.DataSource = mapBindingSource;
+            bindingMap.MapTypeMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapType);
+            bindingMap.ZoomLevelMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapZoom);
             bindingMap.LatitudeMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapLatitude);
             bindingMap.LongitudeMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapLongitude);
         }

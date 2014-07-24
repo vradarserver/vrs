@@ -30,6 +30,38 @@ namespace VirtualRadar.WinForms.Controls
         #endregion
 
         #region Properties
+        private bool _BindMapType;
+        /// <summary>
+        /// Gets or sets a value indicating that the map type should be bound to the map.
+        /// </summary>
+        [DefaultValue(false)]
+        public bool BindMapType
+        {
+            get { return _BindMapType; }
+            set {
+                if(_BindMapType != value) {
+                    _BindMapType = value;
+                    SetBinding();
+                }
+            }
+        }
+
+        private bool _BindZoomLevel;
+        /// <summary>
+        /// Gets or sets a value indicating that the zoom level should be bound to the map.
+        /// </summary>
+        [DefaultValue(false)]
+        public bool BindZoomLevel
+        {
+            get { return _BindZoomLevel; }
+            set {
+                if(_BindZoomLevel != value) {
+                    _BindZoomLevel = value;
+                    SetBinding();
+                }
+            }
+        }
+
         private object _DataSource;
         /// <summary>
         /// Gets or sets the source of the latitude and longitude values.
@@ -57,21 +89,6 @@ namespace VirtualRadar.WinForms.Controls
             set { 
                 if(_LatitudeMember != value) {
                     _LatitudeMember = value; 
-                    SetBinding();
-                }
-            }
-        }
-
-        private string _LongitudeMember;
-        /// <summary>
-        /// Gets or sets the name of the longitude member to bind to.
-        /// </summary>
-        public string LongitudeMember
-        {
-            get { return _LongitudeMember; }
-            set {
-                if(_LongitudeMember != value) {
-                    _LongitudeMember = value;
                     SetBinding();
                 }
             }
@@ -105,6 +122,21 @@ namespace VirtualRadar.WinForms.Controls
             }
         }
 
+        private string _LongitudeMember;
+        /// <summary>
+        /// Gets or sets the name of the longitude member to bind to.
+        /// </summary>
+        public string LongitudeMember
+        {
+            get { return _LongitudeMember; }
+            set {
+                if(_LongitudeMember != value) {
+                    _LongitudeMember = value;
+                    SetBinding();
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets the longitude that we're bound to.
         /// </summary>
@@ -125,6 +157,88 @@ namespace VirtualRadar.WinForms.Controls
                 if(_CurrencyManager != null) {
                     try {
                         _CurrencyManager.GetItemProperties().Find(LongitudeMember, false).SetValue(_CurrencyManager.Current, value);
+                    } catch {
+                    }
+                }
+            }
+        }
+
+        private string _MapTypeMember;
+        /// <summary>
+        /// Gets or sets the name of the map type member to bind to. Only used if <see cref="BindMapType"/> is true.
+        /// </summary>
+        public string MapTypeMember
+        {
+            get { return _MapTypeMember; }
+            set {
+                if(_MapTypeMember != value) {
+                    _MapTypeMember = value;
+                    SetBinding();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the map type that we're bound to.
+        /// </summary>
+        private string MapType
+        {
+            get {
+                var result = "ROADMAP";
+                if(_CurrencyManager != null && BindMapType) {
+                    try {
+                        var value = _CurrencyManager.GetItemProperties().Find(MapTypeMember, false).GetValue(_CurrencyManager.Current);
+                        result = (value ?? "").ToString();
+                    } catch {
+                    }
+                }
+                return result;
+            }
+            set {
+                if(_CurrencyManager != null && BindMapType) {
+                    try {
+                        _CurrencyManager.GetItemProperties().Find(MapTypeMember, false).SetValue(_CurrencyManager.Current, value);
+                    } catch {
+                    }
+                }
+            }
+        }
+
+        private string _ZoomLevelMember;
+        /// <summary>
+        /// Gets or sets the name of the zoom level member to bind to. Only used if <see cref="BindZoomLevel"/> is true.
+        /// </summary>
+        public string ZoomLevelMember
+        {
+            get { return _ZoomLevelMember; }
+            set {
+                if(_ZoomLevelMember != value) {
+                    _ZoomLevelMember = value;
+                    SetBinding();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the zoom level that we're bound to.
+        /// </summary>
+        private int ZoomLevel
+        {
+            get {
+                var result = 10;
+                if(_CurrencyManager != null && BindZoomLevel) {
+                    try {
+                        var value = _CurrencyManager.GetItemProperties().Find(ZoomLevelMember, false).GetValue(_CurrencyManager.Current);
+                        result = Convert.ToInt32(value);
+                    } catch {
+                    }
+                }
+                return result;
+            }
+            set {
+                if(_CurrencyManager != null && BindZoomLevel) {
+                    try {
+                        _CurrencyManager.GetItemProperties().Find(ZoomLevelMember, false).SetValue(_CurrencyManager.Current, value);
                     } catch {
                     }
                 }
@@ -180,7 +294,11 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         private void SetBinding()
         {
-            if(_DataSource == null || LatitudeMember == null || LongitudeMember == null) {
+            var membersPresent = LatitudeMember != null && LongitudeMember != null;
+            if(BindMapType) membersPresent = membersPresent && MapTypeMember != null;
+            if(BindZoomLevel) membersPresent = membersPresent && ZoomLevelMember != null;
+
+            if(_DataSource == null || !membersPresent) {
                 UnhookBindingEvents();
                 _CurrencyManager = null;
             } else {
@@ -197,7 +315,7 @@ namespace VirtualRadar.WinForms.Controls
                 }
 
                 if(reloadPosition) {
-                    SendPositionToBrowser();
+                    SendBoundValuesToBrowser();
                 }
             }
         }
@@ -277,12 +395,18 @@ namespace VirtualRadar.WinForms.Controls
         /// <summary>
         /// Sends the current position to the browser.
         /// </summary>
-        private void SendPositionToBrowser()
+        private void SendBoundValuesToBrowser()
         {
             UnhookBindingEvents();
             try {
                 if(_BrowserInitialised && _CurrencyManager != null) {
                     webBrowser.Document.InvokeScript("setPositionFromForm", new object[] { Latitude, Longitude });
+                    if(BindMapType) {
+                        webBrowser.Document.InvokeScript("setMapTypeFromForm", new object[] { MapType });
+                    }
+                    if(BindZoomLevel) {
+                        webBrowser.Document.InvokeScript("setZoomLevelFromForm", new object[] { ZoomLevel });
+                    }
                 }
             } finally {
                 HookBindingEvents();
@@ -319,6 +443,24 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
+        /// Returns the map type that we're bound to, or a suitable default if we're not bound.
+        /// </summary>
+        /// <returns></returns>
+        public string BrowserGetMapType()
+        {
+            return MapType;
+        }
+
+        /// <summary>
+        /// Returns the zoom level that we're bound to, or a suitable default if we're not bound.
+        /// </summary>
+        /// <returns></returns>
+        public int BrowserGetZoomLevel()
+        {
+            return ZoomLevel;
+        }
+
+        /// <summary>
         /// Sets both the latitude and longitude in one operation.
         /// </summary>
         /// <param name="latitude"></param>
@@ -333,23 +475,51 @@ namespace VirtualRadar.WinForms.Controls
                 HookBindingEvents();
             }
         }
+
+        /// <summary>
+        /// Sets the map type.
+        /// </summary>
+        /// <param name="mapType"></param>
+        public void BrowserSetMapType(string mapType)
+        {
+            UnhookBindingEvents();
+            try {
+                MapType = mapType;
+            } finally {
+                HookBindingEvents();
+            }
+        }
+
+        /// <summary>
+        /// Sets the zoom level.
+        /// </summary>
+        /// <param name="zoomLevel"></param>
+        public void BrowserSetZoomLevel(int zoomLevel)
+        {
+            UnhookBindingEvents();
+            try {
+                ZoomLevel = zoomLevel;
+            } finally {
+                HookBindingEvents();
+            }
+        }
         #endregion
 
         #region Events subscribed
         private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             _BrowserInitialised = true;
-            SendPositionToBrowser();
+            SendBoundValuesToBrowser();
         }
 
         private void CurrencyManager_CurrentChanged(object sender, EventArgs args)
         {
-            SendPositionToBrowser();
+            SendBoundValuesToBrowser();
         }
 
         private void CurrencyManager_CurrentItemChanged(object sender, EventArgs args)
         {
-            SendPositionToBrowser();
+            SendBoundValuesToBrowser();
         }
         #endregion
     }
