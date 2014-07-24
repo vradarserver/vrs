@@ -88,12 +88,16 @@
             this.bindingMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.bindingMap.BindMapType = true;
+            this.bindingMap.BindZoomLevel = true;
             this.bindingMap.LatitudeMember = null;
             this.bindingMap.Location = new System.Drawing.Point(0, 105);
             this.bindingMap.LongitudeMember = null;
+            this.bindingMap.MapTypeMember = null;
             this.bindingMap.Name = "bindingMap";
             this.bindingMap.Size = new System.Drawing.Size(636, 342);
             this.bindingMap.TabIndex = 12;
+            this.bindingMap.ZoomLevelMember = null;
             // 
             // label3
             // 

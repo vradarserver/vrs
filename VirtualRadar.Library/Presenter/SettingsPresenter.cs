@@ -711,6 +711,21 @@ namespace VirtualRadar.Library.Presenter
                         }
                         break;
                 }
+
+                // Initial zoom level is within range
+                ValueIsInRange(settings.InitialMapZoom, 0, 19, new ValidationParams(ValidationField.GoogleMapZoomLevel, results, record, valueChangedField) {
+                    Message = Strings.GoogleMapZoomOutOfBounds,
+                });
+
+                // Latitude is in range
+                ValueIsInRange(settings.InitialMapLatitude, -90.0, 90.0, new ValidationParams(ValidationField.Latitude, results, record, valueChangedField) {
+                    Message = Strings.LatitudeOutOfBounds,
+                });
+
+                // Longitude is in range
+                ValueIsInRange(settings.InitialMapLongitude, -180.0, 180.0, new ValidationParams(ValidationField.Longitude, results, record, valueChangedField) {
+                    Message = Strings.LongitudeOutOfBounds,
+                });
             }
         }
         #endregion
@@ -1205,6 +1220,10 @@ namespace VirtualRadar.Library.Presenter
 
                 { ValidationField.InitialGoogleMapRefreshSeconds,   r => r.InitialRefreshSeconds },
                 { ValidationField.MinimumGoogleMapRefreshSeconds,   r => r.MinimumRefreshSeconds },
+
+                { ValidationField.GoogleMapZoomLevel,               r => r.InitialMapZoom },
+                { ValidationField.Latitude,                         r => r.InitialMapLatitude },
+                { ValidationField.Longitude,                        r => r.InitialMapLongitude },
             });
 
             return result;
