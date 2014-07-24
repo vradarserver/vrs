@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsView));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.presetConfigurationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.justFlightSimulatorXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelContent = new System.Windows.Forms.Panel();
             this.splitContainerPagePicker = new System.Windows.Forms.SplitContainer();
             this.treeViewPagePicker = new System.Windows.Forms.TreeView();
@@ -45,6 +47,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.errorProvider = new VirtualRadar.WinForms.Controls.ErrorProviderPlus(this.components);
             this.warningProvider = new VirtualRadar.WinForms.Controls.ErrorProviderPlus(this.components);
+            this.menuStrip.SuspendLayout();
             this.panelContent.SuspendLayout();
             this.splitContainerPagePicker.Panel1.SuspendLayout();
             this.splitContainerPagePicker.Panel2.SuspendLayout();
@@ -61,11 +64,28 @@
             // 
             // menuStrip
             // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.presetConfigurationsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(884, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
+            // 
+            // presetConfigurationsToolStripMenuItem
+            // 
+            this.presetConfigurationsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.justFlightSimulatorXToolStripMenuItem});
+            this.presetConfigurationsToolStripMenuItem.Name = "presetConfigurationsToolStripMenuItem";
+            this.presetConfigurationsToolStripMenuItem.Size = new System.Drawing.Size(142, 20);
+            this.presetConfigurationsToolStripMenuItem.Text = "::PresetConfigurations::";
+            // 
+            // justFlightSimulatorXToolStripMenuItem
+            // 
+            this.justFlightSimulatorXToolStripMenuItem.Name = "justFlightSimulatorXToolStripMenuItem";
+            this.justFlightSimulatorXToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.justFlightSimulatorXToolStripMenuItem.Text = "::JustFlightSimulatorX::";
+            this.justFlightSimulatorXToolStripMenuItem.Click += new System.EventHandler(this.justFlightSimulatorXToolStripMenuItem_Click);
             // 
             // panelContent
             // 
@@ -248,6 +268,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "::Options::";
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.panelContent.ResumeLayout(false);
             this.splitContainerPagePicker.Panel1.ResumeLayout(false);
             this.splitContainerPagePicker.Panel2.ResumeLayout(false);
@@ -282,5 +304,7 @@
         private System.Windows.Forms.Button buttonOK;
         private Controls.ErrorProviderPlus errorProvider;
         private Controls.ErrorProviderPlus warningProvider;
+        private System.Windows.Forms.ToolStripMenuItem presetConfigurationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem justFlightSimulatorXToolStripMenuItem;
     }
 }

@@ -52,12 +52,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.numericFastSurfaceGlobalPositionLimit = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBoxUseLocalDecodeForInitialPosition = new System.Windows.Forms.CheckBox();
             this.numericAirborneGlobalPositionLimit = new System.Windows.Forms.NumericUpDown();
             this.checkBoxIgnoreMilitaryExtendedSquitter = new System.Windows.Forms.CheckBox();
             this.linkLabelUseRecommendedSettings = new System.Windows.Forms.LinkLabel();
+            this.label18 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericReceiverRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericAcceptIcaoInNonPISeconds)).BeginInit();
@@ -78,6 +85,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.label18);
             this.groupBox1.Controls.Add(this.checkBoxSuppressReceiverRangeCheck);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.numericReceiverRange);
@@ -92,7 +100,7 @@
             // checkBoxSuppressReceiverRangeCheck
             // 
             this.checkBoxSuppressReceiverRangeCheck.AutoSize = true;
-            this.checkBoxSuppressReceiverRangeCheck.Location = new System.Drawing.Point(335, 45);
+            this.checkBoxSuppressReceiverRangeCheck.Location = new System.Drawing.Point(200, 45);
             this.checkBoxSuppressReceiverRangeCheck.Name = "checkBoxSuppressReceiverRangeCheck";
             this.checkBoxSuppressReceiverRangeCheck.Size = new System.Drawing.Size(188, 17);
             this.checkBoxSuppressReceiverRangeCheck.TabIndex = 2;
@@ -110,7 +118,7 @@
             // 
             // numericReceiverRange
             // 
-            this.numericReceiverRange.Location = new System.Drawing.Point(335, 19);
+            this.numericReceiverRange.Location = new System.Drawing.Point(200, 19);
             this.numericReceiverRange.Maximum = new decimal(new int[] {
             20037,
             0,
@@ -123,7 +131,7 @@
             // 
             // numericAcceptIcaoInNonPISeconds
             // 
-            this.numericAcceptIcaoInNonPISeconds.Location = new System.Drawing.Point(335, 97);
+            this.numericAcceptIcaoInNonPISeconds.Location = new System.Drawing.Point(200, 97);
             this.numericAcceptIcaoInNonPISeconds.Maximum = new decimal(new int[] {
             30,
             0,
@@ -147,7 +155,7 @@
             // numericAcceptableSurfaceSpeed
             // 
             this.numericAcceptableSurfaceSpeed.DecimalPlaces = 3;
-            this.numericAcceptableSurfaceSpeed.Location = new System.Drawing.Point(335, 195);
+            this.numericAcceptableSurfaceSpeed.Location = new System.Drawing.Point(200, 195);
             this.numericAcceptableSurfaceSpeed.Maximum = new decimal(new int[] {
             10,
             0,
@@ -179,7 +187,7 @@
             // 
             // numericAcceptIcaoInNonPICount
             // 
-            this.numericAcceptIcaoInNonPICount.Location = new System.Drawing.Point(335, 71);
+            this.numericAcceptIcaoInNonPICount.Location = new System.Drawing.Point(200, 71);
             this.numericAcceptIcaoInNonPICount.Name = "numericAcceptIcaoInNonPICount";
             this.numericAcceptIcaoInNonPICount.Size = new System.Drawing.Size(77, 20);
             this.numericAcceptIcaoInNonPICount.TabIndex = 5;
@@ -195,14 +203,14 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(6, 197);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(144, 13);
+            this.label7.Size = new System.Drawing.Size(110, 13);
             this.label7.TabIndex = 12;
-            this.label7.Text = "::AcceptableSurfaceSpeed:::";
+            this.label7.Text = "::MaxSurfaceSpeed:::";
             // 
             // checkBoxIgnoreCallsignsInBds20
             // 
             this.checkBoxIgnoreCallsignsInBds20.AutoSize = true;
-            this.checkBoxIgnoreCallsignsInBds20.Location = new System.Drawing.Point(335, 221);
+            this.checkBoxIgnoreCallsignsInBds20.Location = new System.Drawing.Point(200, 221);
             this.checkBoxIgnoreCallsignsInBds20.Name = "checkBoxIgnoreCallsignsInBds20";
             this.checkBoxIgnoreCallsignsInBds20.Size = new System.Drawing.Size(148, 17);
             this.checkBoxIgnoreCallsignsInBds20.TabIndex = 14;
@@ -223,14 +231,14 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(6, 171);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(202, 13);
+            this.label5.Size = new System.Drawing.Size(119, 13);
             this.label5.TabIndex = 10;
-            this.label5.Text = "::AcceptableAirSurfaceTransitionSpeed:::";
+            this.label5.Text = "::MaxTransitionSpeed:::";
             // 
             // numericAcceptableAirSurfaceTransitionSpeed
             // 
             this.numericAcceptableAirSurfaceTransitionSpeed.DecimalPlaces = 3;
-            this.numericAcceptableAirSurfaceTransitionSpeed.Location = new System.Drawing.Point(335, 169);
+            this.numericAcceptableAirSurfaceTransitionSpeed.Location = new System.Drawing.Point(200, 169);
             this.numericAcceptableAirSurfaceTransitionSpeed.Maximum = new decimal(new int[] {
             20,
             0,
@@ -253,7 +261,7 @@
             // 
             // numericAcceptIcaoInPI0Seconds
             // 
-            this.numericAcceptIcaoInPI0Seconds.Location = new System.Drawing.Point(335, 45);
+            this.numericAcceptIcaoInPI0Seconds.Location = new System.Drawing.Point(200, 45);
             this.numericAcceptIcaoInPI0Seconds.Maximum = new decimal(new int[] {
             60,
             0,
@@ -296,7 +304,7 @@
             // 
             // numericAcceptIcaoInPI0Count
             // 
-            this.numericAcceptIcaoInPI0Count.Location = new System.Drawing.Point(335, 19);
+            this.numericAcceptIcaoInPI0Count.Location = new System.Drawing.Point(200, 19);
             this.numericAcceptIcaoInPI0Count.Maximum = new decimal(new int[] {
             10,
             0,
@@ -322,14 +330,14 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(6, 145);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(146, 13);
+            this.label4.Size = new System.Drawing.Size(112, 13);
             this.label4.TabIndex = 8;
-            this.label4.Text = "::AcceptableAirborneSpeed:::";
+            this.label4.Text = "::MaxAirborneSpeed:::";
             // 
             // numericAcceptableAirborneSpeed
             // 
             this.numericAcceptableAirborneSpeed.DecimalPlaces = 3;
-            this.numericAcceptableAirborneSpeed.Location = new System.Drawing.Point(335, 143);
+            this.numericAcceptableAirborneSpeed.Location = new System.Drawing.Point(200, 143);
             this.numericAcceptableAirborneSpeed.Maximum = new decimal(new int[] {
             45,
             0,
@@ -355,9 +363,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(6, 119);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(170, 13);
+            this.label3.Size = new System.Drawing.Size(112, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "::SlowSurfaceGlobalPositionLimit:::";
+            this.label3.Text = "::SlowSurfaceGlobal:::";
             // 
             // label11
             // 
@@ -370,7 +378,7 @@
             // 
             // numericSlowSurfaceGlobalPositionLimit
             // 
-            this.numericSlowSurfaceGlobalPositionLimit.Location = new System.Drawing.Point(335, 117);
+            this.numericSlowSurfaceGlobalPositionLimit.Location = new System.Drawing.Point(200, 117);
             this.numericSlowSurfaceGlobalPositionLimit.Maximum = new decimal(new int[] {
             150,
             0,
@@ -396,9 +404,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 93);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(167, 13);
+            this.label2.Size = new System.Drawing.Size(109, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "::FastSurfaceGlobalPositionLimit:::";
+            this.label2.Text = "::FastSurfaceGlobal:::";
             // 
             // groupBox3
             // 
@@ -423,6 +431,12 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label17);
+            this.groupBox2.Controls.Add(this.label16);
+            this.groupBox2.Controls.Add(this.label15);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.label13);
+            this.groupBox2.Controls.Add(this.label12);
             this.groupBox2.Controls.Add(this.checkBoxIgnoreCallsignsInBds20);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.numericAcceptableSurfaceSpeed);
@@ -445,9 +459,63 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "::OptionsRawFeedDecoderParametersCategory::";
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(283, 197);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(151, 13);
+            this.label17.TabIndex = 20;
+            this.label17.Text = "::PKilometresOver30Seconds::";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(283, 171);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(151, 13);
+            this.label16.TabIndex = 19;
+            this.label16.Text = "::PKilometresOver30Seconds::";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(283, 145);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(151, 13);
+            this.label15.TabIndex = 18;
+            this.label15.Text = "::PKilometresOver30Seconds::";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(283, 119);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(68, 13);
+            this.label14.TabIndex = 17;
+            this.label14.Text = "::PSeconds::";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(283, 93);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(68, 13);
+            this.label13.TabIndex = 16;
+            this.label13.Text = "::PSeconds::";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(283, 67);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(68, 13);
+            this.label12.TabIndex = 15;
+            this.label12.Text = "::PSeconds::";
+            // 
             // numericFastSurfaceGlobalPositionLimit
             // 
-            this.numericFastSurfaceGlobalPositionLimit.Location = new System.Drawing.Point(335, 91);
+            this.numericFastSurfaceGlobalPositionLimit.Location = new System.Drawing.Point(200, 91);
             this.numericFastSurfaceGlobalPositionLimit.Maximum = new decimal(new int[] {
             75,
             0,
@@ -473,14 +541,14 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 67);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(149, 13);
+            this.label1.Size = new System.Drawing.Size(91, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "::AirborneGlobalPositionLimit:::";
+            this.label1.Text = "::AirborneGlobal:::";
             // 
             // checkBoxUseLocalDecodeForInitialPosition
             // 
             this.checkBoxUseLocalDecodeForInitialPosition.AutoSize = true;
-            this.checkBoxUseLocalDecodeForInitialPosition.Location = new System.Drawing.Point(335, 42);
+            this.checkBoxUseLocalDecodeForInitialPosition.Location = new System.Drawing.Point(200, 42);
             this.checkBoxUseLocalDecodeForInitialPosition.Name = "checkBoxUseLocalDecodeForInitialPosition";
             this.checkBoxUseLocalDecodeForInitialPosition.Size = new System.Drawing.Size(197, 17);
             this.checkBoxUseLocalDecodeForInitialPosition.TabIndex = 1;
@@ -489,7 +557,7 @@
             // 
             // numericAirborneGlobalPositionLimit
             // 
-            this.numericAirborneGlobalPositionLimit.Location = new System.Drawing.Point(335, 65);
+            this.numericAirborneGlobalPositionLimit.Location = new System.Drawing.Point(200, 65);
             this.numericAirborneGlobalPositionLimit.Maximum = new decimal(new int[] {
             30,
             0,
@@ -513,7 +581,7 @@
             // checkBoxIgnoreMilitaryExtendedSquitter
             // 
             this.checkBoxIgnoreMilitaryExtendedSquitter.AutoSize = true;
-            this.checkBoxIgnoreMilitaryExtendedSquitter.Location = new System.Drawing.Point(335, 19);
+            this.checkBoxIgnoreMilitaryExtendedSquitter.Location = new System.Drawing.Point(200, 19);
             this.checkBoxIgnoreMilitaryExtendedSquitter.Name = "checkBoxIgnoreMilitaryExtendedSquitter";
             this.checkBoxIgnoreMilitaryExtendedSquitter.Size = new System.Drawing.Size(181, 17);
             this.checkBoxIgnoreMilitaryExtendedSquitter.TabIndex = 0;
@@ -523,13 +591,22 @@
             // linkLabelUseRecommendedSettings
             // 
             this.linkLabelUseRecommendedSettings.AutoSize = true;
-            this.linkLabelUseRecommendedSettings.Location = new System.Drawing.Point(332, 0);
+            this.linkLabelUseRecommendedSettings.Location = new System.Drawing.Point(297, 0);
             this.linkLabelUseRecommendedSettings.Name = "linkLabelUseRecommendedSettings";
             this.linkLabelUseRecommendedSettings.Size = new System.Drawing.Size(148, 13);
             this.linkLabelUseRecommendedSettings.TabIndex = 1;
             this.linkLabelUseRecommendedSettings.TabStop = true;
             this.linkLabelUseRecommendedSettings.Text = "::UseRecommendedSettings::";
             this.linkLabelUseRecommendedSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelUseRecommendedSettings_LinkClicked);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(283, 21);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(74, 13);
+            this.label18.TabIndex = 3;
+            this.label18.Text = "::PKilometres::";
             // 
             // PageRawFeedDecoding
             // 
@@ -596,5 +673,12 @@
         private System.Windows.Forms.NumericUpDown numericAirborneGlobalPositionLimit;
         private System.Windows.Forms.CheckBox checkBoxIgnoreMilitaryExtendedSquitter;
         private System.Windows.Forms.LinkLabel linkLabelUseRecommendedSettings;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label18;
     }
 }

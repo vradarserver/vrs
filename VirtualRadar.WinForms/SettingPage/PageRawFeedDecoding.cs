@@ -71,12 +71,12 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxSuppressReceiverRangeCheck,            Strings.SuppressReceiverRangeCheck,            Strings.OptionsDescribeRawFeedSuppressReceiverRangeCheck);
             SetInlineHelp(checkBoxIgnoreMilitaryExtendedSquitter,        Strings.IgnoreMilitaryExtendedSquitter,        Strings.OptionsDescribeRawFeedIgnoreMilitaryExtendedSquitter);
             SetInlineHelp(checkBoxUseLocalDecodeForInitialPosition,      Strings.UseLocalDecodeForInitialPosition,      Strings.OptionsDescribeRawFeedUseLocalDecodeForInitialPosition);
-            SetInlineHelp(numericAirborneGlobalPositionLimit,            Strings.AirborneGlobalPositionLimit,           Strings.OptionsDescribeRawFeedAirborneGlobalPositionLimit);
-            SetInlineHelp(numericFastSurfaceGlobalPositionLimit,         Strings.FastSurfaceGlobalPositionLimit,        Strings.OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit);
-            SetInlineHelp(numericSlowSurfaceGlobalPositionLimit,         Strings.SlowSurfaceGlobalPositionLimit,        Strings.OptionsDescribeRawFeedSlowSurfaceGlobalPositionLimit);
-            SetInlineHelp(numericAcceptableAirborneSpeed,                Strings.AcceptableAirborneSpeed,               Strings.OptionsDescribeRawFeedAcceptableAirborneSpeed);
-            SetInlineHelp(numericAcceptableAirSurfaceTransitionSpeed,    Strings.AcceptableAirSurfaceTransitionSpeed,   Strings.OptionsDescribeRawFeedAcceptableAirSurfaceTransitionSpeed);
-            SetInlineHelp(numericAcceptableSurfaceSpeed,                 Strings.AcceptableSurfaceSpeed,                Strings.OptionsDescribeRawFeedAcceptableSurfaceSpeed);
+            SetInlineHelp(numericAirborneGlobalPositionLimit,            Strings.AirborneGlobal,                        Strings.OptionsDescribeRawFeedAirborneGlobalPositionLimit);
+            SetInlineHelp(numericFastSurfaceGlobalPositionLimit,         Strings.FastSurfaceGlobal,                     Strings.OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit);
+            SetInlineHelp(numericSlowSurfaceGlobalPositionLimit,         Strings.SlowSurfaceGlobal,                     Strings.OptionsDescribeRawFeedSlowSurfaceGlobalPositionLimit);
+            SetInlineHelp(numericAcceptableAirborneSpeed,                Strings.MaxAirborneSpeed,                      Strings.OptionsDescribeRawFeedAcceptableAirborneSpeed);
+            SetInlineHelp(numericAcceptableAirSurfaceTransitionSpeed,    Strings.MaxTransitionSpeed,                    Strings.OptionsDescribeRawFeedAcceptableAirSurfaceTransitionSpeed);
+            SetInlineHelp(numericAcceptableSurfaceSpeed,                 Strings.MaxSurfaceSpeed,                       Strings.OptionsDescribeRawFeedAcceptableSurfaceSpeed);
             SetInlineHelp(checkBoxIgnoreCallsignsInBds20,                Strings.IgnoreCallsignsInBds20,                Strings.OptionsDescribeRawFeedIgnoreCallsignsInBds20);
             SetInlineHelp(numericAcceptIcaoInPI0Count,                   Strings.AcceptIcaoInPI0Count,                  Strings.OptionsDescribeRawFeedAcceptIcaoInPI0Count);
             SetInlineHelp(numericAcceptIcaoInPI0Seconds,                 Strings.AcceptIcaoInPI0Seconds,                Strings.OptionsDescribeRawFeedAcceptIcaoInPI0Seconds);

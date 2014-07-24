@@ -42,11 +42,6 @@ namespace VirtualRadar.Interface.View
 
         #region Events
         /// <summary>
-        /// Raised when the user wants to reset all values to factory defaults.
-        /// </summary>
-        event EventHandler ResetToDefaultsClicked;
-
-        /// <summary>
         /// Raised when the user wants to save their changes.
         /// </summary>
         event EventHandler SaveClicked;

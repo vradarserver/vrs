@@ -70,15 +70,6 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Acceptable airborne speed (km / 30 seconds).
-        /// </summary>
-        public static string AcceptableAirborneSpeed {
-            get {
-                return ResourceManager.GetString("AcceptableAirborneSpeed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The acceptable airborne local position speed must be between 0.005 and 45.0.
         /// </summary>
         public static string AcceptableAirborneSpeedOutOfBounds {
@@ -88,29 +79,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Acceptable transition speed (km / 30 seconds).
-        /// </summary>
-        public static string AcceptableAirSurfaceTransitionSpeed {
-            get {
-                return ResourceManager.GetString("AcceptableAirSurfaceTransitionSpeed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The acceptable transition position speed must be between 0.003 and 20.0.
         /// </summary>
         public static string AcceptableAirSurfaceTransitionSpeedOutOfBounds {
             get {
                 return ResourceManager.GetString("AcceptableAirSurfaceTransitionSpeedOutOfBounds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Acceptable surface speed (km / 30 seconds).
-        /// </summary>
-        public static string AcceptableSurfaceSpeed {
-            get {
-                return ResourceManager.GetString("AcceptableSurfaceSpeed", resourceCulture);
             }
         }
         
@@ -286,11 +259,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Airborne global position limit (seconds).
+        ///   Looks up a localized string similar to Airborne global.
         /// </summary>
-        public static string AirborneGlobalPositionLimit {
+        public static string AirborneGlobal {
             get {
-                return ResourceManager.GetString("AirborneGlobalPositionLimit", resourceCulture);
+                return ResourceManager.GetString("AirborneGlobal", resourceCulture);
             }
         }
         
@@ -1286,11 +1259,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fast surface global position limit (seconds).
+        ///   Looks up a localized string similar to Fast surface global.
         /// </summary>
-        public static string FastSurfaceGlobalPositionLimit {
+        public static string FastSurfaceGlobal {
             get {
-                return ResourceManager.GetString("FastSurfaceGlobalPositionLimit", resourceCulture);
+                return ResourceManager.GetString("FastSurfaceGlobal", resourceCulture);
             }
         }
         
@@ -1781,7 +1754,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No ADS-B, Just Flight Simulator X.
+        ///   Looks up a localized string similar to Flight Simulator X Only.
         /// </summary>
         public static string JustFlightSimulatorX {
             get {
@@ -2016,6 +1989,33 @@ namespace VirtualRadar.Localisation {
         public static string LongitudeOutOfBounds {
             get {
                 return ResourceManager.GetString("LongitudeOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max airborne speed.
+        /// </summary>
+        public static string MaxAirborneSpeed {
+            get {
+                return ResourceManager.GetString("MaxAirborneSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max surface speed.
+        /// </summary>
+        public static string MaxSurfaceSpeed {
+            get {
+                return ResourceManager.GetString("MaxSurfaceSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max transition speed.
+        /// </summary>
+        public static string MaxTransitionSpeed {
+            get {
+                return ResourceManager.GetString("MaxTransitionSpeed", resourceCulture);
             }
         }
         
@@ -3541,6 +3541,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (kilometres).
+        /// </summary>
+        public static string PKilometres {
+            get {
+                return ResourceManager.GetString("PKilometres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (km / 30 seconds).
+        /// </summary>
+        public static string PKilometresOver30Seconds {
+            get {
+                return ResourceManager.GetString("PKilometresOver30Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please configure at least one receiver..
         /// </summary>
         public static string PleaseConfigureAtLeastOneReceiver {
@@ -4252,7 +4270,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Receiver range (kilometres).
+        ///   Looks up a localized string similar to Receiver range.
         /// </summary>
         public static string ReceiverRange {
             get {
@@ -4918,11 +4936,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Slow surface global position limit (seconds).
+        ///   Looks up a localized string similar to Slow surface global.
         /// </summary>
-        public static string SlowSurfaceGlobalPositionLimit {
+        public static string SlowSurfaceGlobal {
             get {
-                return ResourceManager.GetString("SlowSurfaceGlobalPositionLimit", resourceCulture);
+                return ResourceManager.GetString("SlowSurfaceGlobal", resourceCulture);
             }
         }
         
