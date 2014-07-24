@@ -389,7 +389,7 @@ namespace VirtualRadar.WinForms.Controls
         private void LoadBrowser()
         {
             webBrowser.ObjectForScripting = this;
-            webBrowser.DocumentText = ControlResources.LocationMapControl_html;
+            webBrowser.DocumentText = ControlResources.BindingMapControl_html;
         }
 
         /// <summary>

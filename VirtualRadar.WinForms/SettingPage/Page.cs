@@ -233,8 +233,8 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         protected virtual void ClearBindings()
         {
-            foreach(var binding in GetAllDataBindings(true)) {
-                binding.Control.DataBindings.Clear();
+            foreach(var bindingControl in GetAllChildControls(includeThis: true).Where(r => r.DataBindings.Count > 0)) {
+                bindingControl.DataBindings.Clear();
             }
         }
 

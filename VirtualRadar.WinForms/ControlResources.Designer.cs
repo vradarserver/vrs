@@ -66,22 +66,17 @@ namespace VirtualRadar.WinForms {
         ///&lt;head&gt;
         ///    &lt;title&gt;Location Map&lt;/title&gt;
         ///    &lt;style type=&quot;text/css&quot;&gt;
-        ///        html    { height: 100%; }
-        ///        body    { height: 100%; margin: 0; padding: 0; }
-        ///        #map    { height: 100%; width: 100%; }
+        ///        html            { height: 100%; }
+        ///        body            { height: 100%; margin: 0; padding: 0; font-family: Verdana, Sans-Serif; font-size: 0.9em; }
+        ///        #map            { height: 100%; width: 100%; }
+        ///        #map.failed     { background: #FFFFFF; position: relative; }
+        ///        #map.failed div { text-align:center; width: 100%; position: absolute; top: 50%; }
         ///    &lt;/style&gt;
-        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;https://maps.googleapis.com/maps/api/js&quot;&gt;&lt;/script&gt;
-        ///&lt;/head&gt;
-        ///&lt;body&gt;
-        ///    &lt;div id=&quot;map&quot;&gt;&lt;/div&gt;
-        ///    &lt;script type=&quot;text/javascript&quot;&gt;
-        ///        var googleMap;
-        ///        window.onload = function() {
-        ///            var options = {        /// [rest of string was truncated]&quot;;.
+        ///    &lt;script type=&quot;text/ja [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string LocationMapControl_html {
+        internal static string BindingMapControl_html {
             get {
-                return ResourceManager.GetString("LocationMapControl_html", resourceCulture);
+                return ResourceManager.GetString("BindingMapControl_html", resourceCulture);
             }
         }
     }

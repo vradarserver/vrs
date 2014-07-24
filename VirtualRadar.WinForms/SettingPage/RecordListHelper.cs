@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.WinForms.Controls;
-using VirtualRadar.WinForms.Binding;
 using System.Linq.Expressions;
 using VirtualRadar.Interface;
 using System.Collections;
@@ -72,13 +71,6 @@ namespace VirtualRadar.WinForms.SettingPage
                 if(record != null) {
                     setEnabled(record, args.Checked);
                 }
-            }
-        }
-
-        public void RefreshContent(TRecord record)
-        {
-            if(record != null) {
-                _Control.ResetBinding(record);
             }
         }
     }
