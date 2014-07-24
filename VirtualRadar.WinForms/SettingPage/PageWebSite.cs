@@ -38,6 +38,12 @@ namespace VirtualRadar.WinForms.SettingPage
             InitializeComponent();
         }
 
+        protected override void AssociateChildPages()
+        {
+            base.AssociateChildPages();
+            ChildPages.Add(new PageWebSiteGoogleMaps());
+        }
+
         protected override void InitialiseControls()
         {
             base.InitialiseControls();

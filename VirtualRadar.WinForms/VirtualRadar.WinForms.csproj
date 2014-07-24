@@ -496,6 +496,12 @@
     <Compile Include="SettingPage\PageWebSite.Designer.cs">
       <DependentUpon>PageWebSite.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageWebSiteGoogleMaps.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageWebSiteGoogleMaps.Designer.cs">
+      <DependentUpon>PageWebSiteGoogleMaps.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\RecordListHelper.cs" />
     <Compile Include="SettingsView.cs">
       <SubType>Form</SubType>
@@ -791,6 +797,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageWebSite.resx">
       <DependentUpon>PageWebSite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageWebSiteGoogleMaps.resx">
+      <DependentUpon>PageWebSiteGoogleMaps.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsView.resx">
       <DependentUpon>SettingsView.cs</DependentUpon>

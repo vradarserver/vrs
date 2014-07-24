@@ -314,10 +314,13 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
+        /// <param name="describeValue"></param>
+        /// <param name="filterValue"></param>
+        /// <param name="sortList"></param>
         /// <returns></returns>
-        protected BindingSource CreateNameValueSource<T>(IEnumerable<T> list)
+        protected BindingSource CreateNameValueSource<T>(IEnumerable<T> list, Func<T, string> describeValue = null, Func<T, bool> filterValue = null, bool sortList = true)
         {
-            var nameValueList = NameValue<T>.CreateList(list);
+            var nameValueList = NameValue<T>.CreateList(list, describeValue, filterValue, sortList);
             var result = new BindingSource();
             result.DataSource = nameValueList;
 
