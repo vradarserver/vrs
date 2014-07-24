@@ -827,6 +827,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contrast.
+        /// </summary>
+        public static string ContrastMapTitle {
+            get {
+                return ResourceManager.GetString("ContrastMapTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Converted Basic Authentication User.
         /// </summary>
         public static string ConvertedBasicAuthenticationUser {

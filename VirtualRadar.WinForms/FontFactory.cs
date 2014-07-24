@@ -78,6 +78,11 @@ namespace VirtualRadar.WinForms
         /// The value to scale design fonts by (assuming a design size of 8.25) to get the correct size of preferred font.
         /// </summary>
         private static float _PreferredUIFontScale;
+
+        /// <summary>
+        /// True if the preferred UI font doesn't get on well with WinForms auto-sizing.
+        /// </summary>
+        private static bool _PreferredUIFontClashesWithAutoSize;
         #endregion
 
         #region Properties
@@ -91,6 +96,14 @@ namespace VirtualRadar.WinForms
                 FindAlternateUIFonts();
                 return _PreferredUIFont != null;
             }
+        }
+
+        /// <summary>
+        /// Gets a value indicating that the preferred UI font clashes with WinForms autosizing.
+        /// </summary>
+        public static bool PreferredUIFontClashesWithAutoSizing
+        {
+            get { return HasPreferredUIFont ? _PreferredUIFontClashesWithAutoSize : false; }
         }
 
         /// <summary>
@@ -128,8 +141,9 @@ namespace VirtualRadar.WinForms
                 _SearchedForAlternateUIFonts = true;
 
                 if(!DisableFontReplacement) {
-                    var preferredFontFamilies = new List<string> { "Segoe UI", "Ubuntu" };
-                    var preferredSizes =        new List<float>  { 9F,         9F };
+                    var preferredFontFamilies =     new List<string> {}; // { "Segoe UI", "Ubuntu", };
+                    var preferredSizes =            new List<float>  {}; // { 9F,         9F, };
+                    var preferredDisableAutoSize =  new List<bool>   {}; // { true,       true, };
                 
                     // If this looks like it might be a non-Western code-page then prefer Arial Unicode MS
                     try {
@@ -141,6 +155,7 @@ namespace VirtualRadar.WinForms
                             default:
                                 preferredFontFamilies.Insert(0, "Arial Unicode MS");
                                 preferredSizes.Insert(0, 9F);
+                                preferredDisableAutoSize.Insert(0, true);
                                 break;
                         }
                     } catch {
@@ -150,11 +165,13 @@ namespace VirtualRadar.WinForms
                     for(var i = 0;i < preferredFontFamilies.Count;++i) {
                         var fontFamilyName = preferredFontFamilies[i];
                         var fontSize = preferredSizes[i];
+                        var disableAutoSize = preferredDisableAutoSize[i];
 
                         using(var font = new Font(fontFamilyName, fontSize)) {
                             if(font.FontFamily.Name == fontFamilyName) {
                                 _PreferredUIFont = new FontDescription(font);
                                 _PreferredUIFontScale = fontSize / 8.25F;
+                                _PreferredUIFontClashesWithAutoSize = disableAutoSize;
                                 break;
                             }
                         }

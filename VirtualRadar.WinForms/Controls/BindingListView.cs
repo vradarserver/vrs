@@ -34,7 +34,6 @@ namespace VirtualRadar.WinForms.Controls
     /// A list view that deals with the common problems with using a list view to maintain a list
     /// of objects.
     /// </summary>
-    [DefaultBindingProperty("Records")]
     public partial class BindingListView : BaseUserControl, IValidateDelegate
     {
         #region Nested class - ColumnTextEventArgs

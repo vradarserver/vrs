@@ -97,6 +97,14 @@ namespace VirtualRadar.WinForms
         {
             _MonoAutoScaleMode = new MonoAutoScaleMode(this);
             _ValueChangedHelper = new ValueChangedHelper((sender, args) => OnValueChanged(sender, args));
+
+            try {
+                if(FontFactory.HasPreferredUIFont) {
+                    MonoAutoScaleMode.AlwaysDisableFontScaling = FontFactory.PreferredUIFontClashesWithAutoSizing;
+                }
+            } catch {
+                ;
+            }
         }
         #endregion
 
@@ -107,12 +115,11 @@ namespace VirtualRadar.WinForms
 
             if(!DesignMode) {
                 if(FontFactory.HasPreferredUIFont) {
-                    MonoAutoScaleMode.AlwaysDisableFontScaling = true;
-                }
-                foreach(var control in GetAllChildControls(includeThis: true)) {
-                    var replaceWithFont = FontFactory.GetPreferredUIFont(control.Font);
-                    if(replaceWithFont != null) {
-                        control.Font = replaceWithFont;
+                    foreach(var control in GetAllChildControls(includeThis: true)) {
+                        var replaceWithFont = FontFactory.GetPreferredUIFont(control.Font);
+                        if(replaceWithFont != null) {
+                            control.Font = replaceWithFont;
+                        }
                     }
                 }
             }

@@ -94,7 +94,8 @@
 
         var googleMap;
         var googleMapMarker;
-        var failedToLoad = '';
+        var failedToLoad = 'Failed to load';
+        var contrastMapName = 'Contrast';
         var latitude = 0.0;
         var longitude = 0.0;
         var mapType = 'ROADMAP';
@@ -113,9 +114,11 @@
 
             try {
                 failedToLoad = window.external.BrowserGetFailedErrorText();
+                contrastMapName = window.external.BrowserHighContrastText();
                 latitude = window.external.BrowserGetLatitude();
                 longitude = window.external.BrowserGetLongitude();
-                mapType = google.maps.MapTypeId[window.external.BrowserGetMapType()];
+                mapType = window.external.BrowserGetMapType();
+                if(mapType !== 'HIGHCONTRAST') mapType = google.maps.MapTypeId[mapType];
                 zoomLevel = window.external.BrowserGetZoomLevel();
             } catch(exception) {
                 showErrorMessage('Could not talk to form: ' + exception);
@@ -188,8 +191,6 @@
             if(initialiseFromForm()) {
                 var map = document.getElementById('map');
                 try {
-                    highContrastMap = new google.maps.StyledMapType(highContrastMapStyle, { name: 'HIGHCONTRAST' });
-
                     googleMap = new google.maps.Map(map, {
                         center:                 new google.maps.LatLng(latitude, longitude),
                         streetViewControl:      false,
@@ -206,6 +207,8 @@
                             ]
                         }
                     });
+
+                    highContrastMap = new google.maps.StyledMapType(highContrastMapStyle, { name: contrastMapName });
                     googleMap.mapTypes.set('HIGHCONTRAST', highContrastMap);
                     googleMap.setMapTypeId(mapType);
 

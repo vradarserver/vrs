@@ -2167,4 +2167,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="SlowSurfaceGlobal" xml:space="preserve">
     <value>Slow surface global</value>
   </data>
+  <data name="ContrastMapTitle" xml:space="preserve">
+    <value>Contrast</value>
+  </data>
 </root>
