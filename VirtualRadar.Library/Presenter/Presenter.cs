@@ -25,36 +25,92 @@ namespace VirtualRadar.Library.Presenter
     class Presenter<T>
         where T: IView
     {
+        #region ValidationParams
+        /// <summary>
+        /// An inner class for use by any presenter to handle both single-field and whole-form validations.
+        /// </summary>
         protected class ValidationParams
         {
+            /// <summary>
+            /// Gets the list of validation results that this can potentially add to.
+            /// </summary>
             public List<ValidationResult> Results { get; private set; }
 
+            /// <summary>
+            /// Gets the validation field that represents the data-entry control that has a problem.
+            /// </summary>
             public ValidationField Field { get; private set; }
 
+            /// <summary>
+            /// Gets or sets the single field that has changed on the GUI. Set to <see cref="ValidationField.None"/> if
+            /// we are validating all fields. If this is not None then the validation is not performed unless <see cref="Field"/>
+            /// matches this value - it is assumed to always pass.
+            /// </summary>
             public ValidationField ValueChangedField { get; set; }
 
+            /// <summary>
+            /// Gets or sets a value indicating whether the contents of <see cref="Field"/> and <see cref="ValueChangedField"/>
+            /// indicate that we are to actually perform the validation.
+            /// </summary>
             public bool FieldMatches { get { return ValueChangedField == ValidationField.None || Field == ValueChangedField; } }
 
+            /// <summary>
+            /// Gets or sets the child record that is being validated. Set to null if not validating a child record.
+            /// </summary>
             public object Record { get; set; }
 
+            /// <summary>
+            /// Gets or sets a value indicating that a validation failure is just a warning, it is not an outright fail.
+            /// </summary>
             public bool IsWarning { get; set; }
 
+            /// <summary>
+            /// Gets or sets the message to show to the user when the validation fails. Is mutually exclusive with <see cref="Format"/>
+            /// and <see cref="Args"/>.
+            /// </summary>
             public string Message { get; set; }
 
+            /// <summary>
+            /// Gets or sets the format string to use when formatting a message to show to the user.
+            /// </summary>
             public string Format { get; set; }
 
+            /// <summary>
+            /// Gets or sets the arguments to the <see cref="Format"/> string when formatting a message to show to the user.
+            /// </summary>
             public object[] Args { get; set; }
 
+            /// <summary>
+            /// Gets a value indicating that <see cref="Message"/> and <see cref="Format"/> have not been supplied.
+            /// </summary>
             public bool HasNoMessage { get { return Message == null && Format == null; } }
 
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="field"></param>
+            /// <param name="results"></param>
             public ValidationParams(ValidationField field, List<ValidationResult> results) : this(field, results, null, ValidationField.None)
             {
             }
 
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="field"></param>
+            /// <param name="results"></param>
+            /// <param name="record"></param>
             public ValidationParams(ValidationField field, List<ValidationResult> results, object record) : this(field, results, record, ValidationField.None)
             {
             }
 
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="field"></param>
+            /// <param name="results"></param>
+            /// <param name="record"></param>
+            /// <param name="valueChangedField"></param>
             public ValidationParams(ValidationField field, List<ValidationResult> results, object record, ValidationField valueChangedField)
             {
                 Results = results;
@@ -63,20 +119,34 @@ namespace VirtualRadar.Library.Presenter
                 ValueChangedField = valueChangedField;
             }
 
+            /// <summary>
+            /// Sets the <see cref="Message"/> property, but only if no message has yet been supplied.
+            /// </summary>
+            /// <param name="message"></param>
             public void DefaultMessage(string message)
             {
                 if(HasNoMessage) Message = message;
             }
 
+            /// <summary>
+            /// Sets the <see cref="Message"/> property, but only if no message has yet been supplied.
+            /// </summary>
+            /// <param name="format"></param>
+            /// <param name="args"></param>
             public void DefaultMessage(string format, params object[] args)
             {
                 if(HasNoMessage) Message = String.Format(format, args);
             }
 
+            /// <summary>
+            /// Returns true if the validation passes, i.e. there is no problem with the value being tested. This
+            /// will always return true if <see cref="FieldMatches"/> returns false.
+            /// </summary>
+            /// <param name="condition"></param>
+            /// <returns></returns>
             public bool IsValid(Func<bool> condition)
             {
-                var fieldMatches = FieldMatches;
-                var valid = !fieldMatches;
+                var valid = !FieldMatches;
                 if(!valid) {
                     try {
                         valid = condition();
@@ -93,6 +163,10 @@ namespace VirtualRadar.Library.Presenter
                 return valid;
             }
 
+            /// <summary>
+            /// Adds a validation result to <see cref="Results"/> carrying the warning or error described by the properties.
+            /// </summary>
+            /// <returns></returns>
             public ValidationResult AddResult()
             {
                 var result = new ValidationResult(Record, Field, Message ?? String.Format(Format, Args), IsWarning);
@@ -101,173 +175,27 @@ namespace VirtualRadar.Library.Presenter
                 return result;
             }
         }
+        #endregion
 
+        #region Fields
         /// <summary>
         /// The view that the presenter is controlling.
         /// </summary>
         protected T _View;
+        #endregion
 
+        #region Initialise
         /// <summary>
-        /// Initialises the view.
+        /// See interface docs.
         /// </summary>
         /// <param name="view"></param>
         public virtual void Initialise(T view)
         {
             _View = view;
         }
-
-        #region Legcay Validation Methods - once nothing is using these, delete them
-        /// <summary>
-        /// Validates that a required field has been supplied. Returns true if the validation passes, false if it does not.
-        /// </summary>
-        /// <param name="field"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateRequired(string field, List<ValidationResult> results, ValidationField validationField, string message)
-        {
-            bool valid = !String.IsNullOrEmpty(field);
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
-
-        /// <summary>
-        /// Validates that a required field has been supplied. Returns true if the validation passes, false if it does not.
-        /// </summary>
-        /// <typeparam name="TField"></typeparam>
-        /// <param name="field"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateRequired<TField>(TField field, List<ValidationResult> results, ValidationField validationField, string message)
-            where TField: class
-        {
-            bool valid = field != null;
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
-
-        /// <summary>
-        /// Validates that a record is unique. Returns true if the record is unique, false if it is not.
-        /// </summary>
-        /// <typeparam name="TRecord"></typeparam>
-        /// <param name="field"></param>
-        /// <param name="currentRecord"></param>
-        /// <param name="records"></param>
-        /// <param name="getField"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateMustBeUnique<TRecord>(string field, TRecord currentRecord, List<TRecord> records, Func<TRecord, string> getField, List<ValidationResult> results, ValidationField validationField, string message)
-        {
-            var valid = true;
-            if(currentRecord != null) {
-                valid = !records.Any(r => !Object.ReferenceEquals(r, currentRecord) && (field ?? "").Equals(getField(r), StringComparison.CurrentCultureIgnoreCase));
-            }
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
-
-        /// <summary>
-        /// Validates that a record is unique. Returns true if the record is unique, false if it is not.
-        /// </summary>
-        /// <typeparam name="TRecord"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="field"></param>
-        /// <param name="currentRecord"></param>
-        /// <param name="records"></param>
-        /// <param name="getField"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateMustBeUnique<TRecord, TValue>(TValue field, TRecord currentRecord, List<TRecord> records, Func<TRecord, TValue> getField, List<ValidationResult> results, ValidationField validationField, string message)
-        {
-            var valid = true;
-            if(currentRecord != null) {
-                valid = !records.Any(r => !Object.ReferenceEquals(r, currentRecord) && field.Equals(getField(r)));
-            }
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
-
-        /// <summary>
-        /// Validates that a value is within a given range. Returns true if the value is within range, false if it is not.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="lowerBound"></param>
-        /// <param name="upperBound"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateInBounds(double value, double lowerBound, double upperBound, List<ValidationResult> results, ValidationField validationField, string message)
-        {
-            var valid = value >= lowerBound && value <= upperBound;
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
-
-        /// <summary>
-        /// Validates that a value is within a given range. Returns true if the value is within range, false if it is not.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="lowerBound"></param>
-        /// <param name="upperBound"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateInBounds(long value, long lowerBound, long upperBound, List<ValidationResult> results, ValidationField validationField, string message)
-        {
-            var valid = value >= lowerBound && value <= upperBound;
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
-
-        /// <summary>
-        /// Validates that a condition is true. Returns true if the condition is true, false if it is not.
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateIsTrue(bool condition, List<ValidationResult> results, ValidationField validationField, string message)
-        {
-            var valid = condition;
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
-
-        /// <summary>
-        /// Validates that a file exists. Returns true if the file exists, false if it does not.
-        /// </summary>
-        /// <param name="field"></param>
-        /// <param name="results"></param>
-        /// <param name="validationField"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected bool ValidateFileExists(string field, List<ValidationResult> results, ValidationField validationField, string message)
-        {
-            var valid = File.Exists(field);
-            if(!valid) results.Add(new ValidationResult(validationField, message));
-
-            return valid;
-        }
         #endregion
 
-        #region Validation methods - FileExists, FolderExists
+        #region Validation methods
         /// <summary>
         /// Returns true if the file exists, false if it does not.
         /// </summary>
@@ -283,7 +211,7 @@ namespace VirtualRadar.Library.Presenter
                     result = File.Exists(fileName);
                     if(result) {
                         // If we can't read the file then this should throw an exception
-                        using(var stream = File.OpenRead(fileName)) {
+                        using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                             ;
                         }
                     }

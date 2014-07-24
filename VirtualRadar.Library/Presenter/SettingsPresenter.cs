@@ -140,32 +140,9 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Private class - DisableValidationOnViewChanged
-        /// <summary>
-        /// A private class that simplifies disabling validation on view changes.
-        /// </summary>
-        class DisableValidationOnViewChanged : IDisposable
-        {
-            private bool _RestoreSettingTo;
-            private SettingsPresenter _Presenter;
-
-            public DisableValidationOnViewChanged(SettingsPresenter presenter)
-            {
-                _Presenter = presenter;
-                _RestoreSettingTo = _Presenter._ValueChangedValidationDisabled;
-            }
-
-            public void Dispose()
-            {
-                _Presenter._ValueChangedValidationDisabled = _RestoreSettingTo;
-            }
-        }
-        #endregion
-
         #region Fields
         /// <summary>
-        /// True if validation on changes to values on the view is disabled. See
-        /// <see cref="DisableValidationOnViewChanged"/>.
+        /// True if validation on changes to values on the view is disabled.
         /// </summary>
         private bool _ValueChangedValidationDisabled;
 
@@ -236,13 +213,14 @@ namespace VirtualRadar.Library.Presenter
         {
             if(disposing) {
                 if(Provider != null) Provider.Dispose();
+                if(_ConfigurationListener != null) _ConfigurationListener.Dispose();
             }
         }
         #endregion
 
         #region Initialise
         /// <summary>
-        /// Called by the view when it's ready to be initialised.
+        /// See interface docs.
         /// </summary>
         /// <param name="view"></param>
         public override void Initialise(ISettingsView view)
@@ -282,14 +260,17 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="config"></param>
         private void CopyConfigurationToView(Configuration config)
         {
-            using(new DisableValidationOnViewChanged(this)) {
+            var disableValidation = _ValueChangedValidationDisabled;
+            _ValueChangedValidationDisabled = true;
+            try {
                 _View.Configuration = config;
 
                 var allUsers = _UserManager.GetUsers().Select(r => { r.UIPassword = _DefaultPassword; return r; }).ToArray();
                 _View.Users.Clear();
                 _View.Users.AddRange(allUsers);
+            } finally {
+                _ValueChangedValidationDisabled = disableValidation;
             }
-            ValidateForm();
         }
         #endregion
 
@@ -587,7 +568,7 @@ namespace VirtualRadar.Library.Presenter
                     switch(answers.SdrDecoder) {
                         case SdrDecoder.AdsbSharp:  receiver.Port = 47806; break;
                         case SdrDecoder.Dump1090:   receiver.Port = 30002; break;
-                        case SdrDecoder.GrAirModes: receiver.Port = 30003; receiver.DataSource = DataSource.Port30003; break; // The source for gr-air-modes mentions a raw server but I couldn't see it being initialised? No idea what the format would be either :(
+                        case SdrDecoder.GrAirModes: receiver.Port = 30003; receiver.DataSource = DataSource.Port30003; break; // The source for gr-air-modes mentions a raw server but I couldn't see it being initialised? No idea what the format would be either.
                         case SdrDecoder.Modesdeco:  receiver.Port = 30005; break;
                         case SdrDecoder.Rtl1090:    receiver.Port = 31001; break;
                         case SdrDecoder.Other:      receiver.Port = 30003; receiver.DataSource = DataSource.Port30003; break; // Most things support vanilla BaseStation
@@ -643,6 +624,15 @@ namespace VirtualRadar.Library.Presenter
 
         #region Validation
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void ValidateView()
+        {
+            var validationResults = ValidateForm();
+            _View.ShowValidationResults(validationResults);
+        }
+
+        /// <summary>
         /// Validates the form and returns the results, optionally constraining validation to a single record and field.
         /// </summary>
         /// <param name="record"></param>
@@ -653,7 +643,7 @@ namespace VirtualRadar.Library.Presenter
             List<ValidationResult> result = new List<ValidationResult>();
 
             ValidateAudioSettings(result, record, valueChangedField);
-            ValidateBaseStation(result, record, valueChangedField);
+            ValidateBaseStationSettings(result, record, valueChangedField);
             ValidateGoogleMapSettings(result, record, valueChangedField);
             ValidateInternetClient(result, record, valueChangedField);
             ValidateMergedFeeds(result, record, valueChangedField);
@@ -669,11 +659,11 @@ namespace VirtualRadar.Library.Presenter
         }
 
         /// <summary>
-        /// Validates a single field.
+        /// Validates a single field and reports the results to the view.
         /// </summary>
         /// <param name="record"></param>
         /// <param name="field"></param>
-        private void ValidateSingleField(object record, ValidationField field)
+        private void ValidateAndReportSingleField(object record, ValidationField field)
         {
             if(field != ValidationField.None) {
                 var results = ValidateForm(record, field);
@@ -681,6 +671,11 @@ namespace VirtualRadar.Library.Presenter
             }
         }
 
+        /// <summary>
+        /// Returns an array of the combined unique IDs from receivers and merged feeds.
+        /// </summary>
+        /// <param name="exceptCurrent"></param>
+        /// <returns></returns>
         private int[] CombinedFeedUniqueIds(object exceptCurrent)
         {
             var receiverIds = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => r.UniqueId);
@@ -689,6 +684,11 @@ namespace VirtualRadar.Library.Presenter
             return receiverIds.Concat(mergedFeedIds).ToArray();
         }
 
+        /// <summary>
+        /// Returns an array of the combined names from receivers and merged feeds.
+        /// </summary>
+        /// <param name="exceptCurrent"></param>
+        /// <returns></returns>
         private string[] CombinedFeedNamesUpperCase(object exceptCurrent)
         {
             var receiverNames = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
@@ -698,6 +698,12 @@ namespace VirtualRadar.Library.Presenter
         }
 
         #region Audio
+        /// <summary>
+        /// Validates the audio settings.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
         private void ValidateAudioSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             if(record == null) {
@@ -718,7 +724,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="results"></param>
         /// <param name="record"></param>
         /// <param name="valueChangedField"></param>
-        private void ValidateBaseStation(List<ValidationResult> results, object record, ValidationField valueChangedField)
+        private void ValidateBaseStationSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             if(record == null) {
                 var settings = _View.Configuration.BaseStationSettings;
@@ -753,7 +759,9 @@ namespace VirtualRadar.Library.Presenter
                         if(ValueIsInRange(settings.DisplayTimeoutSeconds, 1, settings.TrackingTimeoutSeconds, new ValidationParams(ValidationField.DisplayTimeout, results, record) {
                             Message = Strings.TrackingTimeoutLessThanDisplayTimeout
                         })) {
-                            results.Add(new ValidationResult(ValidationField.DisplayTimeout, "", false));
+                            if(valueChangedField != ValidationField.None) {
+                                results.Add(new ValidationResult(ValidationField.DisplayTimeout, "", false));
+                            }
                         }
                         break;
                 }
@@ -762,6 +770,12 @@ namespace VirtualRadar.Library.Presenter
         #endregion
 
         #region GoogleMapSettings
+        /// <summary>
+        /// Validates the Google Map settings.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
         private void ValidateGoogleMapSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             if(record == null) {
@@ -808,7 +822,9 @@ namespace VirtualRadar.Library.Presenter
                         if(ValueIsInRange(settings.InitialRefreshSeconds, settings.MinimumRefreshSeconds, 3600, new ValidationParams(ValidationField.InitialGoogleMapRefreshSeconds, results, record) {
                             Message = Strings.InitialRefreshLessThanMinimumRefresh
                         })) {
-                            results.Add(new ValidationResult(ValidationField.InitialGoogleMapRefreshSeconds, "", false));
+                            if(valueChangedField != ValidationField.None) {
+                                results.Add(new ValidationResult(ValidationField.InitialGoogleMapRefreshSeconds, "", false));
+                            }
                         }
                         break;
                 }
@@ -837,6 +853,12 @@ namespace VirtualRadar.Library.Presenter
         #endregion
 
         #region InternetClientSettings
+        /// <summary>
+        /// Validates the Internet Client settings.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
         private void ValidateInternetClient(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             if(record == null) {
@@ -852,7 +874,7 @@ namespace VirtualRadar.Library.Presenter
 
         #region MergedFeeds
         /// <summary>
-        /// Validates the list of merged feeds.
+        /// Validates the list of merged feeds and/or an individual merged feed.
         /// </summary>
         /// <param name="results"></param>
         /// <param name="record"></param>
@@ -997,7 +1019,7 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.PortMustBeUnique,
                 });
 
-                // Format is correct
+                // Format is present
                 ValueNotEqual(server.Format, RebroadcastFormat.None, new ValidationParams(ValidationField.Format, results, record, valueChangedField) {
                     Message = Strings.RebroadcastFormatRequired,
                 });
@@ -1017,7 +1039,7 @@ namespace VirtualRadar.Library.Presenter
 
         #region Receivers
         /// <summary>
-        /// Validates the list of receivers.
+        /// Validates the list of receivers and/or an individual receiver.
         /// </summary>
         /// <param name="results"></param>
         /// <param name="record"></param>
@@ -1148,7 +1170,7 @@ namespace VirtualRadar.Library.Presenter
 
         #region ReceiverLocations
         /// <summary>
-        /// Validates the list of receivers.
+        /// Validates the list of receivers and/or an individual receiver.
         /// </summary>
         /// <param name="results"></param>
         /// <param name="record"></param>
@@ -1193,6 +1215,12 @@ namespace VirtualRadar.Library.Presenter
         #endregion
 
         #region Users
+        /// <summary>
+        /// Validates the list of users and/or an individual user.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
         private void ValidateUsers(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             var user = record as IUser;
@@ -1219,6 +1247,12 @@ namespace VirtualRadar.Library.Presenter
         #endregion
 
         #region VersionCheckSettings
+        /// <summary>
+        /// Validates the version check settings.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
         private void ValidateVersionCheckSettings(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             if(record == null) {
@@ -1233,6 +1267,12 @@ namespace VirtualRadar.Library.Presenter
         #endregion
 
         #region WebServer
+        /// <summary>
+        /// Validates the web server settings.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="record"></param>
+        /// <param name="valueChangedField"></param>
         private void ValidateWebServer(List<ValidationResult> results, object record, ValidationField valueChangedField)
         {
             if(record == null) {
@@ -1274,11 +1314,11 @@ namespace VirtualRadar.Library.Presenter
                 default:                                            break;
             }
 
-            ValidateSingleField(record, field);
+            ValidateAndReportSingleField(record, field);
         }
 
         /// <summary>
-        /// Converts from the object and property name to a ValidationField, validates the field and shows the validation
+        /// Converts from the IUser object and property name to a ValidationField, validates the field and shows the validation
         /// results to the user.
         /// </summary>
         /// <param name="user"></param>
@@ -1292,7 +1332,7 @@ namespace VirtualRadar.Library.Presenter
                     { ValidationField.Name,         r => r.Name },
                 });
 
-                ValidateSingleField(user, field);
+                ValidateAndReportSingleField(user, field);
             }
         }
 
@@ -1463,10 +1503,68 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region Save
+        /// <summary>
+        /// Ensures that the configuration is in a valid state and then, if it is, it saves it.
+        /// </summary>
+        private void Save()
+        {
+            var validationResults = ValidateForm();
+            _View.ShowValidationResults(validationResults);
 
+            if(!validationResults.Any(r => r.IsWarning == false)) {
+                SaveUsers();
+
+                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                configurationStorage.Save(_View.Configuration);
+            }
+        }
+
+        /// <summary>
+        /// Saves the users entered via the configuration screen.
+        /// </summary>
         private void SaveUsers()
         {
+            var existing = _UserManager.GetUsers();
+
+            // Update existing records
+            foreach(var record in _View.Users) {
+                var current = existing.FirstOrDefault(r => r.UniqueId == record.UniqueId);
+                if(current != null) {
+                    if(!_UserManager.CanEditUsers) {
+                        record.Name = current.Name;
+                        record.LoginName = current.LoginName;
+                    }
+                    if(!_UserManager.CanChangeEnabledState) record.Enabled = current.Enabled;
+                    if(!_UserManager.CanChangePassword) record.UIPassword = _DefaultPassword;
+
+                    if(record.Enabled !=    current.Enabled ||
+                       record.LoginName !=  current.LoginName ||
+                       record.Name !=       current.Name ||
+                       record.UIPassword != _DefaultPassword
+                    ) {
+                        _UserManager.UpdateUser(record, record.UIPassword == _DefaultPassword ? null : record.UIPassword);
+                    }
+                }
+            }
+
+            // Insert new records
+            if(_UserManager.CanCreateUsers) {
+                foreach(var record in _View.Users.Where(r => !r.IsPersisted)) {
+                    if(record.UIPassword == _DefaultPassword) record.UIPassword = null;
+                    _UserManager.CreateUser(record);
+                    record.UIPassword = _DefaultPassword;
+                }
+            }
+
+            // Delete missing records
+            if(_UserManager.CanDeleteUsers) {
+                foreach(var missing in existing.Where(r => !_View.Users.Any(i => i.IsPersisted && i.UniqueId == r.UniqueId))) {
+                    _UserManager.DeleteUser(missing);
+                }
+            }
         }
+        #endregion
 
         #region View events
         /// <summary>
@@ -1486,15 +1584,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="args"></param>
         private void View_SaveClicked(object sender, EventArgs args)
         {
-            var validationResults = ValidateForm();
-            _View.ShowValidationResults(validationResults);
-
-            if(validationResults.Where(r => r.IsWarning == false).Count() == 0) {
-                SaveUsers();
-
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
-                configurationStorage.Save(_View.Configuration);
-            }
+            Save();
         }
 
         /// <summary>
