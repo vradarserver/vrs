@@ -73,6 +73,7 @@ namespace VirtualRadar.WinForms
             new PageRawFeedDecoding(),
             new PageWebServer(),
             new PageWebSite(),
+            new PageGeneral(),
         };
         #endregion
 
@@ -751,7 +752,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region Source helpers - GetSerialPortNames
+        #region Source helpers - GetSerialPortNames, GetVoiceNames
         /// <summary>
         /// Returns a collection of serial port names.
         /// </summary>
@@ -759,6 +760,15 @@ namespace VirtualRadar.WinForms
         public IEnumerable<string> GetSerialPortNames()
         {
             return _Presenter.GetSerialPortNames();
+        }
+
+        /// <summary>
+        /// Returns a collection of voice names. A voice name of null indicates the presence of a default voice.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetVoiceNames()
+        {
+            return _Presenter.GetVoiceNames();
         }
         #endregion
 
