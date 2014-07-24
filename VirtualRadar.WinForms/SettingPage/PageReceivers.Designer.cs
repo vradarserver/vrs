@@ -45,9 +45,9 @@
             // 
             this.comboBoxClosestAircraftReceiverId.DisplayMember = "Name";
             this.comboBoxClosestAircraftReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxClosestAircraftReceiverId.Location = new System.Drawing.Point(242, 27);
+            this.comboBoxClosestAircraftReceiverId.Location = new System.Drawing.Point(200, 27);
             this.comboBoxClosestAircraftReceiverId.Name = "comboBoxClosestAircraftReceiverId";
-            this.comboBoxClosestAircraftReceiverId.Size = new System.Drawing.Size(200, 21);
+            this.comboBoxClosestAircraftReceiverId.Size = new System.Drawing.Size(150, 21);
             this.comboBoxClosestAircraftReceiverId.TabIndex = 10;
             this.comboBoxClosestAircraftReceiverId.ValueMember = "UniqueId";
             // 
@@ -55,16 +55,16 @@
             // 
             this.comboBoxWebSiteReceiverId.DisplayMember = "Name";
             this.comboBoxWebSiteReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxWebSiteReceiverId.Location = new System.Drawing.Point(242, 0);
+            this.comboBoxWebSiteReceiverId.Location = new System.Drawing.Point(200, 0);
             this.comboBoxWebSiteReceiverId.Name = "comboBoxWebSiteReceiverId";
-            this.comboBoxWebSiteReceiverId.Size = new System.Drawing.Size(200, 21);
+            this.comboBoxWebSiteReceiverId.Size = new System.Drawing.Size(150, 21);
             this.comboBoxWebSiteReceiverId.TabIndex = 8;
             this.comboBoxWebSiteReceiverId.ValueMember = "UniqueId";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 4);
+            this.label1.Location = new System.Drawing.Point(0, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(115, 13);
             this.label1.TabIndex = 7;
@@ -73,7 +73,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 31);
+            this.label2.Location = new System.Drawing.Point(0, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 9;
@@ -82,7 +82,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(0, 59);
+            this.label3.Location = new System.Drawing.Point(0, 57);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(149, 13);
             this.label3.TabIndex = 11;
@@ -92,9 +92,9 @@
             // 
             this.comboBoxFsxReceiverId.DisplayMember = "Name";
             this.comboBoxFsxReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxFsxReceiverId.Location = new System.Drawing.Point(242, 54);
+            this.comboBoxFsxReceiverId.Location = new System.Drawing.Point(200, 54);
             this.comboBoxFsxReceiverId.Name = "comboBoxFsxReceiverId";
-            this.comboBoxFsxReceiverId.Size = new System.Drawing.Size(200, 21);
+            this.comboBoxFsxReceiverId.Size = new System.Drawing.Size(150, 21);
             this.comboBoxFsxReceiverId.TabIndex = 12;
             this.comboBoxFsxReceiverId.ValueMember = "UniqueId";
             // 

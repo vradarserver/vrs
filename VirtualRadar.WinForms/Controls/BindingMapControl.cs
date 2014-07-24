@@ -425,6 +425,15 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
+        /// Returns the globalised name for the HIGHCONTRAST custom map type.
+        /// </summary>
+        /// <returns></returns>
+        public string BrowserHighContrastText()
+        {
+            return Strings.ContrastMapTitle;
+        }
+
+        /// <summary>
         /// Returns the latitude that we're bound to.
         /// </summary>
         /// <returns></returns>
