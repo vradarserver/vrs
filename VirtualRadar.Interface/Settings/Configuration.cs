@@ -25,80 +25,80 @@ namespace VirtualRadar.Interface.Settings
     /// </summary>
     public class Configuration : INotifyPropertyChanged
     {
+        private BaseStationSettings _BaseStationSettings;
         /// <summary>
         /// Gets or sets the object holding settings that describe the source of data that we are listening to.
         /// </summary>
-        private BaseStationSettings _BaseStationSettings;
         public BaseStationSettings BaseStationSettings
         {
             get { return _BaseStationSettings; }
             set { SetField(ref _BaseStationSettings, value, () => BaseStationSettings); }
         }
 
+        private FlightRouteSettings _FlightRouteSettings;
         /// <summary>
         /// Gets or sets the object holding settings that control how flight routes are used and stored.
         /// </summary>
-        private FlightRouteSettings _FlightRouteSettings;
         public FlightRouteSettings FlightRouteSettings
         {
             get { return _FlightRouteSettings; }
             set { SetField(ref _FlightRouteSettings, value, () => FlightRouteSettings); }
         }
 
+        private WebServerSettings _WebServerSettings;
         /// <summary>
         /// Gets or sets the object holding the configuration of the web server.
         /// </summary>
-        private WebServerSettings _WebServerSettings;
         public WebServerSettings WebServerSettings
         {
             get { return _WebServerSettings; }
             set { SetField(ref _WebServerSettings, value, () => WebServerSettings); }
         }
 
+        private GoogleMapSettings _GoogleMapSettings;
         /// <summary>
         /// Gets or sets the object holding settings that modify how the Google Maps pages are shown to connecting browsers.
         /// </summary>
-        private GoogleMapSettings _GoogleMapSettings;
         public GoogleMapSettings GoogleMapSettings
         {
             get { return _GoogleMapSettings; }
             set { SetField(ref _GoogleMapSettings, value, () => GoogleMapSettings); }
         }
 
+        private VersionCheckSettings _VersionCheckSettings;
         /// <summary>
         /// Gets or sets the object holding settings that control how checks for new versions of the application are made.
         /// </summary>
-        private VersionCheckSettings _VersionCheckSettings;
         public VersionCheckSettings VersionCheckSettings
         {
             get { return _VersionCheckSettings; }
             set { SetField(ref _VersionCheckSettings, value, () => VersionCheckSettings); }
         }
 
+        private InternetClientSettings _InternetClientSettings;
         /// <summary>
         /// Gets or sets the object holding settings that control what resources are made available to browsers connecting from public Internet addresses.
         /// </summary>
-        private InternetClientSettings _InternetClientSettings;
         public InternetClientSettings InternetClientSettings
         {
             get { return _InternetClientSettings; }
             set { SetField(ref _InternetClientSettings, value, () => InternetClientSettings); }
         }
 
+        private AudioSettings _AudioSettings;
         /// <summary>
         /// Gets or sets the object that controls the audio that is sent to browsers.
         /// </summary>
-        private AudioSettings _AudioSettings;
         public AudioSettings AudioSettings
         {
             get { return _AudioSettings; }
             set { SetField(ref _AudioSettings, value, () => AudioSettings); }
         }
 
+        private RawDecodingSettings _RawDecodingSettings;
         /// <summary>
         /// Gets or sets the object that configures the raw message decoding.
         /// </summary>
-        private RawDecodingSettings _RawDecodingSettings;
         public RawDecodingSettings RawDecodingSettings
         {
             get { return _RawDecodingSettings; }

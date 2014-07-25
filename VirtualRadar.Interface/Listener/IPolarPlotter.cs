@@ -22,8 +22,8 @@ namespace VirtualRadar.Interface.Listener
     /// </summary>
     /// <remarks><para>
     /// Polar plots are recorded over a series of slices, where each slice is a range of altitudes between
-    /// two values in feet. The <see cref="Initialise"/> call tells the plotter the dimensions of the slices
-    /// and the location to measure distances and angles from.
+    /// two values in feet. The Initialise call tells the plotter the dimensions of the slices and the
+    /// location to measure distances and angles from.
     /// </para><para>
     /// The plotter calculates the distance and bearing to the aircraft and then rounds the bearing to the
     /// nearest X degrees. If X is 1 then you will get 360 bearings stored for each slice, if X is 5 then you will

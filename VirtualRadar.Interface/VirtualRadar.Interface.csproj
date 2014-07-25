@@ -361,6 +361,7 @@
     <Compile Include="View\IListDetailEditorView.cs" />
     <Compile Include="View\IPluginsView.cs" />
     <Compile Include="View\IRebroadcastOptionsView.cs" />
+    <Compile Include="View\IReceiverConfigurationWizard.cs" />
     <Compile Include="View\IReceiverConfigurationWizardAnswers.cs" />
     <Compile Include="View\IReceiverLocationsView.cs" />
     <Compile Include="View\ISettingsView.cs" />

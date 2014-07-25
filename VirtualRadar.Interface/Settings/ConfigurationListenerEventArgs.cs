@@ -7,7 +7,7 @@ using VirtualRadar.Interface.Settings;
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
-    /// Carries information in events from <see cref="ConfigurationListener"/>.
+    /// Carries information in events from <see cref="IConfigurationListener"/>.
     /// </summary>
     public class ConfigurationListenerEventArgs : EventArgs
     {
