@@ -28,7 +28,7 @@
         private void InitializeComponent()
         {
             this.groupBox = new System.Windows.Forms.GroupBox();
-            this.listView = new System.Windows.Forms.ListView();
+            this.listView = new VirtualRadar.WinForms.Controls.ListViewPlus();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderIPAddress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderPort = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -143,7 +143,7 @@
         private System.Windows.Forms.GroupBox groupBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelDescribeConfiguration;
-        private System.Windows.Forms.ListView listView;
+        private VirtualRadar.WinForms.Controls.ListViewPlus listView;
         private System.Windows.Forms.ColumnHeader columnHeaderIPAddress;
         private System.Windows.Forms.ColumnHeader columnHeaderPort;
         private System.Windows.Forms.ColumnHeader columnHeaderBytesSent;

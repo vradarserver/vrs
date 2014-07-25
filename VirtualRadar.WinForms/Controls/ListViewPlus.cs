@@ -23,16 +23,31 @@ namespace VirtualRadar.WinForms.Controls
     /// </summary>
     public class ListViewPlus : ListView
     {
+        /// <summary>
+        /// Gets or sets a value indicating that the Checked state is toggled when the row is double-clicked. By
+        /// default WinForms list views toggle the checked state.
+        /// </summary>
         [DefaultValue(true)]
         public bool ChangeCheckedOnDoubleClick { get; set; }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public ListViewPlus()
         {
             ChangeCheckedOnDoubleClick = true;
+
+            // Switch on double-buffering
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="m"></param>
         protected override void WndProc(ref Message m)
         {
+            // Optionally prevent the control from toggling Checked on a double-click
             if(ChangeCheckedOnDoubleClick || m.Msg != 0x203) {
                 base.WndProc(ref m);
             } else {

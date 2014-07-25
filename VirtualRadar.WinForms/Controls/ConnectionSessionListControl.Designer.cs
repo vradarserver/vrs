@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listView = new System.Windows.Forms.ListView();
+            this.listView = new VirtualRadar.WinForms.Controls.ListViewPlus();
             this.columnHeaderStart = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderIpAddress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -143,7 +143,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView listView;
+        private VirtualRadar.WinForms.Controls.ListViewPlus listView;
         private System.Windows.Forms.ColumnHeader columnHeaderStart;
         private System.Windows.Forms.ColumnHeader columnHeaderIpAddress;
         private System.Windows.Forms.ColumnHeader columnHeaderSource;
