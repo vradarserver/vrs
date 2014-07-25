@@ -84,7 +84,6 @@
     <Compile Include="Presenter\DownloadDataPresenterTests.cs" />
     <Compile Include="Presenter\FlightSimulatorXPresenterTests.cs" />
     <Compile Include="Presenter\InvalidPluginsPresenterTests.cs" />
-    <Compile Include="Presenter\OptionsPresenterTests.cs" />
     <Compile Include="Presenter\PluginsPresenterTests.cs" />
     <Compile Include="Presenter\ShutdownPresenterTests.cs" />
     <Compile Include="Presenter\SplashPresenterTests.cs" />

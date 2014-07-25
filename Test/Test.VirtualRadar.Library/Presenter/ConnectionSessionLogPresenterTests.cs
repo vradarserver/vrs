@@ -112,19 +112,19 @@ namespace Test.VirtualRadar.Library.Presenter
             _View.Object.StartDate = worksheet.DateTime("StartDate");
             _View.Object.EndDate = worksheet.DateTime("EndDate");
 
-            IEnumerable<ValidationResult> validationResults = null;
-            _View.Setup(v => v.ShowValidationResults(It.IsAny<IEnumerable<ValidationResult>>())).Callback((IEnumerable<ValidationResult> results) => {
+            ValidationResults validationResults = null;
+            _View.Setup(v => v.ShowValidationResults(It.IsAny<ValidationResults>())).Callback((ValidationResults results) => {
                 validationResults = results;
             });
 
             _View.Raise(v => v.ShowSessionsClicked += null, EventArgs.Empty);
 
             Assert.IsNotNull(validationResults);
-            Assert.AreEqual(worksheet.Int("CountErrors"), validationResults.Count());
-            if(validationResults.Count() > 0) {
-                Assert.IsTrue(validationResults.Where(r => r.Field == worksheet.ParseEnum<ValidationField>("Field") &&
-                                                           r.Message == worksheet.String("Message") &&
-                                                           r.IsWarning == worksheet.Bool("IsWarning")).Any());
+            Assert.AreEqual(worksheet.Int("CountErrors"), validationResults.Results.Count());
+            if(validationResults.Results.Count() > 0) {
+                Assert.IsTrue(validationResults.Results.Where(r => r.Field == worksheet.ParseEnum<ValidationField>("Field") &&
+                                                                   r.Message == worksheet.String("Message") &&
+                                                                   r.IsWarning == worksheet.Bool("IsWarning")).Any());
             }
         }
 
