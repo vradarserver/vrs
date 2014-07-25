@@ -20,13 +20,14 @@ using System.IO;
 using InterfaceFactory;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.WinForms;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
 {
     /// <summary>
     /// Displays the options to the user.
     /// </summary>
-    public partial class OptionsView : Form, IOptionsView
+    public partial class OptionsView : BaseForm, IOptionsView
     {
         /// <summary>
         /// See interface docs.
@@ -60,8 +61,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         /// </summary>
         public int ReceiverId
         {
-            get { return feedSelectControl.SelectedFeedId; }
-            set { feedSelectControl.SelectedFeedId = value; }
+            get { return (int)feedSelectControl.SelectedValue; }
+            set { feedSelectControl.SelectedValue = value; }
         }
 
         /// <summary>
@@ -85,8 +86,18 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         {
             base.OnLoad(e);
 
-            PluginLocalise.Form(this);
-            fileNameDatabase.BrowserTitle = PluginStrings.SelectDatabaseFile;
+            if(!DesignMode) {
+                PluginLocalise.Form(this);
+                fileNameDatabase.BrowserTitle = PluginStrings.SelectDatabaseFile;
+                
+                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var config = configurationStorage.Load();
+                var combinedFeed = config.Receivers.Select(r =>   new { UniqueId = r.UniqueId, Name = r.Name })
+                           .Concat(config.MergedFeeds.Select(r => new { UniqueId = r.UniqueId, Name = r.Name }))
+                           .ToArray();
+                var bindingSource = CreateNameValueSource(combinedFeed.Select(r => r.UniqueId), r => combinedFeed.First(i => i.UniqueId == r).Name);
+                feedSelectControl.DataSource = bindingSource;
+            }
         }
 
         private void linkLabelUseDefaultFileName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
