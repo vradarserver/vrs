@@ -167,7 +167,7 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void SplashPresenter_StartApplication_Reports_Problems_With_Unknown_Command_Line_Parameters()
         {
-            foreach(string parameter in new string[] { "culture", "-culture", "workingFolder", "-workingFolder", "-SHOWCONFIGFOLDER" }) {
+            foreach(string parameter in new string[] { "culture", "-culture", "workingFolder", "-workingFolder" }) {
                 TestCleanup();
                 TestInitialise();
 

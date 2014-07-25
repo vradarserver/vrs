@@ -35,6 +35,7 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IListener> _Listener2;
         private List<IListener> _Listeners;
         private Mock<IHeartbeatService> _HeartbeatService;
+        private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
         private EventRecorder<BaseStationMessageEventArgs> _BaseStationMessageEventRecorder;
         private EventRecorder<EventArgs<string>> _PositionResetRecorder;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtRecorder;
@@ -48,6 +49,8 @@ namespace Test.VirtualRadar.Library.Listener
             Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
 
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
+            _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
+            _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
 
             _MergedFeed = Factory.Singleton.Resolve<IMergedFeedListener>();
 
