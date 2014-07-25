@@ -195,6 +195,9 @@
     <Compile Include="Controls\FeedStatusControl.Designer.cs">
       <DependentUpon>FeedStatusControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TreeViewPlus.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WebServerStatusControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -619,6 +622,10 @@
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
       <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interop\VirtualRadar.Interop.csproj">
+      <Project>{801d6f1c-21a1-4336-9f32-16d5c16b3c81}</Project>
+      <Name>VirtualRadar.Interop</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
       <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
