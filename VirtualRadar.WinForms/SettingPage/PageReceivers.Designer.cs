@@ -114,7 +114,6 @@
             this.listReceivers.Location = new System.Drawing.Point(0, 81);
             this.listReceivers.Name = "listReceivers";
             this.listReceivers.Size = new System.Drawing.Size(636, 273);
-            this.listReceivers.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listReceivers.TabIndex = 13;
             this.listReceivers.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listReceivers_FetchRecordContent);
             this.listReceivers.AddClicked += new System.EventHandler(this.listReceivers_AddClicked);

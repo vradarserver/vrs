@@ -304,7 +304,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
                 var feed = feedManager.GetByUniqueId(_Options.ReceiverId);
                 if(feed != _Feed) {
-                    if(_Feed != null) {
+                    if(_Feed != null && _Feed.Listener != null) {
                         _Feed.Listener.Port30003MessageReceived -= MessageListener_MessageReceived;
                         _Feed.Listener.SourceChanged -= MessageListener_SourceChanged;
                     }

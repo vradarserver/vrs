@@ -497,10 +497,10 @@ namespace VirtualRadar.WinForms
             if(page != null && page != CurrentPanelPage && GetAllPages().Contains(page)) {
                 panelPageContent.SuspendLayout();
                 try {
-                    if(CurrentPanelPage != null) CurrentPanelPage.Visible = false;
-
+                    var hidePage = CurrentPanelPage;
                     panelPageContent.Tag = page;
                     CurrentPanelPage.Visible = true;
+                    if(hidePage != null) hidePage.Visible = false;
                 } finally {
                     panelPageContent.ResumeLayout();
                 }
