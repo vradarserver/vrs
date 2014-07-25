@@ -194,16 +194,6 @@ namespace VirtualRadar.WinForms.Controls
         {
             get { return listView.Columns; }
         }
-
-        /// <summary>
-        /// Gets or sets the automatic sorting sort order.
-        /// </summary>
-        [DefaultValue(SortOrder.None)]
-        public SortOrder Sorting
-        {
-            get { return listView.Sorting; }
-            set { listView.Sorting = value; }
-        }
         #endregion
 
         #region Binding Properties and hooks
