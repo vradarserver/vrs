@@ -21,48 +21,88 @@ using InterfaceFactory;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.WinForms;
+using System.Linq.Expressions;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
 {
     /// <summary>
     /// Displays the options to the user.
     /// </summary>
-    public partial class OptionsView : BaseForm, IOptionsView
+    public partial class OptionsView : BaseForm, IOptionsView, INotifyPropertyChanged
     {
+        private bool _PluginEnabled;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public bool PluginEnabled
         {
-            get { return checkBoxEnabled.Checked; }
-            set { checkBoxEnabled.Checked = value; }
+            get { return _PluginEnabled; }
+            set { SetField(ref _PluginEnabled, value, () => PluginEnabled); }
         }
 
+        private bool _AllowUpdateOfOtherDatabases;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public bool AllowUpdateOfOtherDatabases
         {
-            get { return !checkBoxOnlyUpdateDatabasesCreatedByPlugin.Checked; }
-            set { checkBoxOnlyUpdateDatabasesCreatedByPlugin.Checked = !value; }
+            get { return _AllowUpdateOfOtherDatabases; }
+            set { SetField(ref _AllowUpdateOfOtherDatabases, value, () => AllowUpdateOfOtherDatabases); }
         }
 
+        private string _DatabaseFileName;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public string DatabaseFileName
         {
-            get { return fileNameDatabase.FileName.Trim(); }
-            set { fileNameDatabase.FileName = value; }
+            get { return _DatabaseFileName; }
+            set { SetField(ref _DatabaseFileName, value, () => DatabaseFileName); }
         }
 
+        private int _ReceiverId;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public int ReceiverId
         {
-            get { return (int)feedSelectControl.SelectedValue; }
-            set { feedSelectControl.SelectedValue = value; }
+            get { return _ReceiverId; }
+            set { SetField(ref _ReceiverId, value, () => ReceiverId); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if (selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if (body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
         }
 
         /// <summary>
@@ -97,7 +137,22 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
                            .ToArray();
                 var bindingSource = CreateNameValueSource(combinedFeed.Select(r => r.UniqueId), r => combinedFeed.First(i => i.UniqueId == r).Name);
                 feedSelectControl.DataSource = bindingSource;
+
+                AddBinding(this, checkBoxEnabled,                               r => r.PluginEnabled,               r => r.Checked);
+                AddBinding(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,    r => r.AllowUpdateOfOtherDatabases, r => r.Checked, format: AllowUpdateOfOtherDatabases_Format, parse: AllowUpdateOfOtherDatabases_Parse);
+                AddBinding(this, fileNameDatabase,                              r => r.DatabaseFileName,            r => r.FileName);
+                AddBinding(this, feedSelectControl,                             r => r.ReceiverId,                  r => r.SelectedValue);
             }
+        }
+
+        private void AllowUpdateOfOtherDatabases_Format(object sender, ConvertEventArgs args)
+        {
+            args.Value = !((bool)args.Value);
+        }
+
+        private void AllowUpdateOfOtherDatabases_Parse(object sender, ConvertEventArgs args)
+        {
+            args.Value = !((bool)args.Value);
         }
 
         private void linkLabelUseDefaultFileName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
