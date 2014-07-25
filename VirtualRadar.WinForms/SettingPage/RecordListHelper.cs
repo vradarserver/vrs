@@ -29,7 +29,7 @@ namespace VirtualRadar.WinForms.SettingPage
     {
         private Page _ListPage;
         private BindingListView _Control;
-        private IList<TRecord> _List;
+        private IList _List;
 
         /// <summary>
         /// Creates a new object.
@@ -37,7 +37,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <param name="listPage"></param>
         /// <param name="listView"></param>
         /// <param name="list"></param>
-        public RecordListHelper(Page listPage, BindingListView listView, IList<TRecord> list)
+        public RecordListHelper(Page listPage, BindingListView listView, IList list)
         {
             _ListPage = listPage;
             _Control = listView;
