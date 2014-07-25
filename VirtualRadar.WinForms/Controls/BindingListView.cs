@@ -96,11 +96,80 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
+        #region ListViewComparer
+        /// <summary>
+        /// A comparer that can be used to sort the list view.
+        /// </summary>
+        class ListViewComparer : IComparer
+        {
+            /// <summary>
+            /// The control that is using us to sort the list view.
+            /// </summary>
+            private BindingListView _Parent;
+
+            /// <summary>
+            /// Gets or sets a value indicating which column the comparer should sort on.
+            /// </summary>
+            public int SortColumnIndex { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether the sort is ascending or descending.
+            /// </summary>
+            public bool SortAscending { get; set; }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="parent"></param>
+            public ListViewComparer(BindingListView parent)
+            {
+                _Parent = parent;
+                SortAscending = true;
+            }
+
+            /// <summary>
+            /// Sets up the sort settings for the click of a column header.
+            /// </summary>
+            /// <param name="columnHeader"></param>
+            public void ConfigureForColumnHeaderClick(ColumnHeader columnHeader)
+            {
+                if(columnHeader != null) {
+                    var index = columnHeader.DisplayIndex;
+                    if(SortColumnIndex == index) SortAscending = !SortAscending;
+                    else {
+                        SortColumnIndex = index;
+                        SortAscending = true;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// See interface docs.
+            /// </summary>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <returns></returns>
+            public int Compare(object x, object y)
+            {
+                int result = 0;
+                var lhsItem = x as ListViewItem;
+                var rhsItem = y as ListViewItem;
+                var lhsText = lhsItem == null || lhsItem.SubItems.Count <= SortColumnIndex ? null : lhsItem.SubItems[SortColumnIndex].Text;
+                var rhsText = rhsItem == null || rhsItem.SubItems.Count <= SortColumnIndex ? null : rhsItem.SubItems[SortColumnIndex].Text;
+
+                result = String.Compare(lhsText ?? "", rhsText ?? "", StringComparison.CurrentCultureIgnoreCase);
+                if(!SortAscending) result = -result;
+
+                return result;
+            }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// True if the control is being populated. Some events are suppressed while this is happening.
         /// </summary>
-        private bool _Populating;
+        private bool _Populating = true;
 
         /// <summary>
         /// The currency manager that we're using.
@@ -123,6 +192,11 @@ namespace VirtualRadar.WinForms.Controls
         /// <see cref="CheckedSubset"/> list.
         /// </summary>
         private bool _SuppressSyncListToCheckedSubset;
+
+        /// <summary>
+        /// The object that handles sorting the list view for us.
+        /// </summary>
+        private ListViewComparer _SortComparer;
         #endregion
 
         #region Control Properties
@@ -144,6 +218,21 @@ namespace VirtualRadar.WinForms.Controls
         [DefaultValue(true)]
         public bool AllowDelete { get; set; }
         
+        /// <summary>
+        /// Gets or sets a value indicating that the user can sort the listview by clicking column headers.
+        /// </summary>
+        [DefaultValue(true)]
+        public bool AllowSorting
+        {
+            get { return listView.ListViewItemSorter != null; }
+            set {
+                if(value != AllowSorting) {
+                    if(!value) listView.ListViewItemSorter = null;
+                    else       listView.ListViewItemSorter = _SortComparer;
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating that all controls except the list are to be hidden.
         /// </summary>
@@ -185,16 +274,6 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
-        /// Gets or sets a value indicating how the list view will be auto-sorted.
-        /// </summary>
-        [DefaultValue(SortOrder.None)]
-        public SortOrder Sorting
-        {
-            get { return listView.Sorting; }
-            set { listView.Sorting = value; }
-        }
-
-        /// <summary>
         /// Gets the columns to show to the user.
         /// </summary>
         [Editor("System.Windows.Forms.Design.ColumnHeaderCollectionEditor", typeof(UITypeEditor))]
@@ -203,12 +282,6 @@ namespace VirtualRadar.WinForms.Controls
         public ListView.ColumnHeaderCollection Columns
         {
             get { return listView.Columns; }
-        }
-
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool IsSorted
-        {
-            get { return listView.Sorting != SortOrder.None; }
         }
         #endregion
 
@@ -334,7 +407,7 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
-        #region Events
+        #region Events exposed
         /// <summary>
         /// Raised when the <see cref="DataSource"/> is changed.
         /// </summary>
@@ -441,9 +514,13 @@ namespace VirtualRadar.WinForms.Controls
         public BindingListView()
         {
             InitializeComponent();
+
+            _SortComparer = new ListViewComparer(this);
+
             AllowAdd = true;
             AllowUpdate = true;
             AllowDelete = true;
+            AllowSorting = true;
         }
         #endregion
 
@@ -524,11 +601,11 @@ namespace VirtualRadar.WinForms.Controls
                     SetSelectedIndex(_CurrencyManager.Position);
                 }
 
-                SynchroniseCheckedSubsetToList();
-
-                if(IsSorted) {
+                if(AllowSorting) {
                     listView.Sort();
                 }
+
+                SynchroniseCheckedSubsetToList();
             } finally {
                 _Populating = populating;
             }
@@ -768,6 +845,8 @@ namespace VirtualRadar.WinForms.Controls
             base.OnLoad(e);
 
             if(!DesignMode) {
+                _Populating = false;
+
                 labelErrorAnchor.Text = "";
                 labelErrorAnchor.Visible = true;
                 labelErrorAnchor.BringToFront();
@@ -797,6 +876,15 @@ namespace VirtualRadar.WinForms.Controls
         {
             EnableDisableControls();
             OnSelectedRecordChanged(e);
+        }
+
+        private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            var columnHeader = listView.Columns.OfType<ColumnHeader>().FirstOrDefault(r => r.DisplayIndex == e.Column);
+            _SortComparer.ConfigureForColumnHeaderClick(columnHeader);
+            if(AllowSorting) {
+                listView.Sort();
+            }
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -879,7 +967,7 @@ namespace VirtualRadar.WinForms.Controls
                         object changedRow = _CurrencyManager.List[args.NewIndex];
                         var changedItem = FindListViewItemForRecord(changedRow);
                         RefreshListViewItem(changedItem);
-                        if(IsSorted) {
+                        if(AllowSorting) {
                             listView.Sort();
                         }
                         break;
@@ -889,7 +977,7 @@ namespace VirtualRadar.WinForms.Controls
                         if(drv == null || !drv.IsNew) {
                             listView.BeginUpdate();
                             var newItem = CreateListViewItemForRecord(newRow);
-                            if(!IsSorted) {
+                            if(!AllowSorting) {
                                 listView.Items.Insert(args.NewIndex, newItem);
                             } else {
                                 listView.Items.Add(newItem);
