@@ -57,7 +57,7 @@ namespace VirtualRadar.Library.Listener
         public byte[] ReadBuffer { get; private set; }
         #endregion
 
-        #region Properties
+        #region Ctors
         /// <summary>
         /// Creates a new object.
         /// </summary>

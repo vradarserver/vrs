@@ -35,7 +35,7 @@
             this.justFlightSimulatorXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelContent = new System.Windows.Forms.Panel();
             this.splitContainerPagePicker = new System.Windows.Forms.SplitContainer();
-            this.treeViewPagePicker = new System.Windows.Forms.TreeView();
+            this.treeViewPagePicker = new VirtualRadar.WinForms.Controls.TreeViewPlus();
             this.splitContainerPageContent = new System.Windows.Forms.SplitContainer();
             this.panelPageContentBorder = new System.Windows.Forms.Panel();
             this.panelPageContent = new System.Windows.Forms.Panel();
@@ -292,7 +292,7 @@
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.Panel panelContent;
         private System.Windows.Forms.SplitContainer splitContainerPagePicker;
-        private System.Windows.Forms.TreeView treeViewPagePicker;
+        private VirtualRadar.WinForms.Controls.TreeViewPlus treeViewPagePicker;
         private System.Windows.Forms.SplitContainer splitContainerPageContent;
         private System.Windows.Forms.Panel panelPageContentBorder;
         private System.Windows.Forms.Panel panelPageContent;

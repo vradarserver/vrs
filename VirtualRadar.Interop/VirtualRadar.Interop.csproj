@@ -70,6 +70,7 @@
     <Compile Include="FindFileData.cs" />
     <Compile Include="TcpKeepAlive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
