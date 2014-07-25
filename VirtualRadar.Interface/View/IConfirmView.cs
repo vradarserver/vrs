@@ -26,6 +26,7 @@ namespace VirtualRadar.Interface.View
         /// </summary>
         /// <param name="title"></param>
         /// <param name="message"></param>
+        /// <param name="defaultYes"></param>
         /// <returns>True if the answer is Yes, false if the answer is No, null if the answer is Cancel Everything.</returns>
         bool? ConfirmWithUser(string title, string message, bool defaultYes);
     }

@@ -32,7 +32,7 @@ namespace VirtualRadar.WinForms
     /// A wizard that collects information from the user about a receiver that they
     /// want to connect to.
     /// </summary>
-    public partial class ReceiverConfigurationWizard : BaseForm
+    public partial class ReceiverConfigurationWizard : BaseForm, IReceiverConfigurationWizard
     {
         #region Fields
         /// <summary>
