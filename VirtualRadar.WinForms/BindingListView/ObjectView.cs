@@ -35,8 +35,6 @@ namespace Equin.ApplicationFramework
 {
     /// <summary>
     /// Serves a wrapper for items being viewed in a <see cref="BindingListView&lt;T&gt;"/>.
-    /// This class implements <see cref="INotifyEditableObject"/> so will raise the necessary events during 
-    /// the item edit life-cycle.
     /// </summary>
     /// <remarks>
     /// If <typeparamref name="T"/> implements <see cref="System.ComponentModel.IEditableObject"/> this class will call BeginEdit/CancelEdit/EndEdit on the <typeparamref name="T"/> object as well.
@@ -47,9 +45,10 @@ namespace Equin.ApplicationFramework
     public class ObjectView<T> : INotifyingEditableObject, IDataErrorInfo, INotifyPropertyChanged, ICustomTypeDescriptor
     {
         /// <summary>
-        /// Creates a new <see cref="ObjectView&ltT&gt;"/> wrapper for a <typeparamref name="T"/> object.
+        /// Creates a new ObjectView wrapper for a <typeparamref name="T"/> object.
         /// </summary>
         /// <param name="object">The <typeparamref name="T"/> object being wrapped.</param>
+        /// <param name="parent"></param>
         public ObjectView(T @object, AggregateBindingListView<T> parent)
         {
             _parent = parent;
@@ -112,6 +111,11 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public object GetProvidedView(string name)
         {
             return _providedViews[name];
@@ -127,6 +131,11 @@ namespace Equin.ApplicationFramework
             return eo.Object;
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -148,11 +157,19 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return Object.GetHashCode();
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Object.ToString();
@@ -207,6 +224,9 @@ namespace Equin.ApplicationFramework
         [field: NonSerialized]
         public event EventHandler EditEnded;
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         protected virtual void OnEditBegun()
         {
             if (EditBegun != null)
@@ -215,6 +235,9 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         protected virtual void OnEditCancelled()
         {
             if (EditCancelled != null)
@@ -223,6 +246,9 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         protected virtual void OnEditEnded()
         {
             if (EditEnded != null)
@@ -235,6 +261,9 @@ namespace Equin.ApplicationFramework
 
         #region IEditableObject Members
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public void BeginEdit()
         {
             // As per documentation, this method may get called multiple times for a single edit.
@@ -254,6 +283,9 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public void CancelEdit()
         {
             // We can only cancel if currently editing
@@ -272,6 +304,9 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public void EndEdit()
         {
             // We can only end if currently editing
@@ -325,9 +360,17 @@ namespace Equin.ApplicationFramework
 
         #region INotifyPropertyChanged Members
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             if (PropertyChanged != null)

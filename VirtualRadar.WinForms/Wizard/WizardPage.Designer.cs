@@ -11,7 +11,9 @@ namespace Gui.Wizard
 	public class WizardPageDesigner : ParentControlDesigner
 	{
 	
-	
+	    /// <summary>
+	    /// No documentation supplied.
+	    /// </summary>
 		public override DesignerVerbCollection Verbs
 		{
 			get

@@ -51,6 +51,11 @@ namespace Equin.ApplicationFramework
     /// </summary>
     public class IncludeAllItemFilter<T> : IItemFilter<T>
     {
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Include(T item)
         {
             // All items are to be included.
@@ -58,6 +63,10 @@ namespace Equin.ApplicationFramework
             return true;
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "(no filter)";
@@ -123,11 +132,20 @@ namespace Equin.ApplicationFramework
         private string _name;
         private readonly string defaultName = "(predicate filter)";
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Include(T item)
         {
             return _includeDelegate(item);
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return _name;

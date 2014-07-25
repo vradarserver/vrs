@@ -31,6 +31,12 @@ namespace VirtualRadar.WinForms.SettingPage
         private BindingListView _Control;
         private IList<TRecord> _List;
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="listPage"></param>
+        /// <param name="listView"></param>
+        /// <param name="list"></param>
         public RecordListHelper(Page listPage, BindingListView listView, IList<TRecord> list)
         {
             _ListPage = listPage;
@@ -40,6 +46,10 @@ namespace VirtualRadar.WinForms.SettingPage
             listView.DataSource = list;
         }
 
+        /// <summary>
+        /// Handles the Add event.
+        /// </summary>
+        /// <param name="createNewRecord"></param>
         public void AddClicked(Func<TRecord> createNewRecord)
         {
             var record = createNewRecord();
@@ -49,6 +59,9 @@ namespace VirtualRadar.WinForms.SettingPage
             _ListPage.SettingsView.DisplayPageForPageObject(record);
         }
 
+        /// <summary>
+        /// Handles the Delete event.
+        /// </summary>
         public void DeleteClicked()
         {
             var deleteRecords = _Control.SelectedRecords.OfType<TRecord>().ToArray();
@@ -57,13 +70,21 @@ namespace VirtualRadar.WinForms.SettingPage
             }
         }
 
+        /// <summary>
+        /// Handles the Edit event.
+        /// </summary>
         public void EditClicked()
         {
             var record = _Control.SelectedRecord as TRecord;
             if(record != null) _ListPage.SettingsView.DisplayPageForPageObject(record);
         }
 
-        public void SetEnabledForListCheckedChanged(BindingListView.RecordCheckedEventArgs args, Action<TRecord, bool> setEnabled)
+        /// <summary>
+        /// Handles the CheckedChanged event.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="setEnabled"></param>
+        public void CheckedChanged(BindingListView.RecordCheckedEventArgs args, Action<TRecord, bool> setEnabled)
         {
             var page = _ListPage.SettingsView.FindPageForPageObject(args.Record) as TPage;
             if(page != null) {

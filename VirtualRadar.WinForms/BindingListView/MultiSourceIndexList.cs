@@ -42,6 +42,7 @@ namespace Equin.ApplicationFramework
         /// <summary>
         /// Searches for a given source index value, returning the list index of the value.
         /// </summary>
+        /// <param name="sourceList"></param>
         /// <param name="sourceIndex">The source index to find.</param>
         /// <returns>Returns the index in this list of the source index, or -1 if not found.</returns>
         public int IndexOfSourceIndex(IList sourceList, int sourceIndex)
@@ -103,7 +104,7 @@ namespace Equin.ApplicationFramework
         /// <summary>
         /// Checks if the list contains a given <see cref="ObjectView&lt;T&gt;"/> key.
         /// </summary>
-        /// <param name="item">The key to search for.</param>
+        /// <param name="key">The key to search for.</param>
         /// <returns>True if the key is contained in the list, otherwise false.</returns>
         public bool ContainsKey(ObjectView<T> key)
         {

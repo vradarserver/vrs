@@ -109,6 +109,10 @@ namespace VirtualRadar.WinForms
         #endregion
 
         #region OnLoad
+        /// <summary>
+        /// Called after the form has been loaded but before it is shown to the user.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);

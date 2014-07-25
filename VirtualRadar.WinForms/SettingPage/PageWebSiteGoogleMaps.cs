@@ -29,17 +29,32 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebSiteGoogleMaps : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.GoogleMaps; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Site16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageWebSiteGoogleMaps()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
@@ -52,6 +67,9 @@ namespace VirtualRadar.WinForms.SettingPage
             }, sortList: false);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -69,6 +87,9 @@ namespace VirtualRadar.WinForms.SettingPage
             bindingMap.LongitudeMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapLongitude);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -79,6 +100,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

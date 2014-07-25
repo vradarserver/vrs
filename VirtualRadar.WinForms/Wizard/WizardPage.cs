@@ -43,6 +43,9 @@ namespace Gui.Wizard
 	[Designer(typeof(Gui.Wizard.WizardPageDesigner))]
 	public class WizardPage : Panel
 	{
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         [DefaultValue(typeof(Color), "Window")]
         public override Color BackColor
         {
@@ -120,7 +123,9 @@ namespace Gui.Wizard
 				ShowFromNext(wiz, EventArgs.Empty);
 		}
 
-
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
 		[Category("Wizard")]
 		public bool IsFinishPage
 		{
@@ -135,6 +140,9 @@ namespace Gui.Wizard
 		}
 		private bool _IsFinishPage = false;
 	
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public WizardPage() : base()
         {
             BackColor = SystemColors.Window;

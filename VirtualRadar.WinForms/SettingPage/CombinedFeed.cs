@@ -30,6 +30,9 @@ namespace VirtualRadar.WinForms.SettingPage
         private static string _MergedFeedUniqueIdName;
         private static string _MergedFeedNameName;
 
+        /// <summary>
+        /// Initialises the static fields.
+        /// </summary>
         static CombinedFeed()
         {
             _UniqueIdName =             PropertyHelper.ExtractName<CombinedFeed>(r => r.UniqueId);

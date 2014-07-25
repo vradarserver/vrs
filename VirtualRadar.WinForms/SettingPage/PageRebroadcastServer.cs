@@ -29,15 +29,27 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageRebroadcastServer : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Rebroadcast16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public RebroadcastSettings RebroadcastSettings { get { return PageObject as RebroadcastSettings; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageRebroadcastServer()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
@@ -48,6 +60,9 @@ namespace VirtualRadar.WinForms.SettingPage
             SetPageEnabledProperty<RebroadcastSettings>(r => r.Enabled, () => RebroadcastSettings.Enabled);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -59,6 +74,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,    r => r.Value);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -71,6 +89,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

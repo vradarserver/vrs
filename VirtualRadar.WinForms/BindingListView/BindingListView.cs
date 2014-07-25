@@ -49,12 +49,19 @@ namespace Equin.ApplicationFramework
             DataSource = list;
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="container"></param>
         public BindingListView(IContainer container)
             : base(container)
         {
             DataSource = null;
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         [DefaultValue(null)]
         [AttributeProvider(typeof(IListSource))]
         public IList DataSource
@@ -100,6 +107,11 @@ namespace Equin.ApplicationFramework
             return (SourceLists.Count > 0);
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected override void SourceListsChanged(object sender, ListChangedEventArgs e)
         {
             if ((SourceLists.Count > 1 && e.ListChangedType == ListChangedType.ItemAdded) || e.ListChangedType == ListChangedType.ItemDeleted)

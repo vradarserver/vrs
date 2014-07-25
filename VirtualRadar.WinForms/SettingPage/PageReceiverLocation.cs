@@ -29,23 +29,41 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageReceiverLocation : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Location16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public ReceiverLocation ReceiverLocation { get { return PageObject as ReceiverLocation; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageReceiverLocation()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
             SetPageTitleProperty<ReceiverLocation>(r => r.Name, () => ReceiverLocation.Name);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -60,6 +78,9 @@ namespace VirtualRadar.WinForms.SettingPage
             bindingMap.LongitudeMember = PropertyHelper.ExtractName<ReceiverLocation>(r => r.Longitude);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -70,6 +91,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

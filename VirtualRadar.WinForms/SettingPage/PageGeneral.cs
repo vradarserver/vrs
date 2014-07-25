@@ -27,15 +27,27 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageGeneral : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.General; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Gear16x16; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageGeneral()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
@@ -43,6 +55,9 @@ namespace VirtualRadar.WinForms.SettingPage
             comboBoxTextToSpeechVoice.DataSource = CreateNameValueSource<string>(voiceNames);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -59,6 +74,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(SettingsView, numericReadingSpeed,                               r => r.Configuration.AudioSettings.VoiceRate,                       r => r.Value);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -71,6 +89,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

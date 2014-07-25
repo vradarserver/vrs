@@ -32,7 +32,7 @@ namespace VirtualRadar.Library.Listener
         private SpinLock _SlicesLock = new SpinLock();
 
         /// <summary>
-        /// The slices created by <see cref="Initialise"/>, filled in by <see cref="AddCoordinate"/> and
+        /// The slices created by Initialise, filled in by <see cref="AddCoordinate"/> and
         /// exposed by <see cref="TakeSnapshot"/>.
         /// </summary>
         private List<PolarPlotSlice> _Slices = new List<PolarPlotSlice>();

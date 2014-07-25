@@ -28,15 +28,27 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageUser : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.User16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public IUser User { get { return PageObject as IUser; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageUser()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
@@ -44,6 +56,9 @@ namespace VirtualRadar.WinForms.SettingPage
             SetPageEnabledProperty<IUser>(r => r.Enabled, () => User.Enabled);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -53,6 +68,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(User, textBoxUserName,   r => r.Name,        r => r.Text);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -63,6 +81,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

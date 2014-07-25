@@ -324,11 +324,18 @@ namespace RadioPanelApp
     {
         private RadioButton m_rbButtonClicked;
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="rb"></param>
         public RadioSelectionChangedEventArgs(RadioButton rb)
         {
             m_rbButtonClicked = rb;
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public RadioButton RadioButtonClicked
         {
             get
@@ -338,5 +345,10 @@ namespace RadioPanelApp
         }
     }
 
+    /// <summary>
+    /// No documentation supplied.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void RadioSelectionChangedEventHandler(object sender, RadioSelectionChangedEventArgs e);
 }

@@ -22,7 +22,6 @@ namespace VirtualRadar.Interface.View
     /// </summary>
     public interface IReceiverConfigurationWizardAnswers
     {
-        IReceiverConfigurationWizard x;
         /// <summary>
         /// Gets or sets the broad class of receiver - SDR vs. Dedicated.
         /// </summary>

@@ -31,21 +31,36 @@ using System.Text;
 
 namespace Equin.ApplicationFramework
 {
+    /// <summary>
+    /// No documentation supplied.
+    /// </summary>
     [Serializable]
     public class InvalidSourceListException : Exception
     {
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public InvalidSourceListException()
             : base("Source list does not implement IList")
         {
             
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="message"></param>
         public InvalidSourceListException(string message)
             : base(message)
         {
 
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         public InvalidSourceListException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context)
         {

@@ -28,15 +28,27 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageDataSources : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.OptionsDataSourcesSheetTitle; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Notebook16x16; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageDataSources()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -47,6 +59,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(SettingsView, checkBoxSearchPictureSubFolders,   r => r.Configuration.BaseStationSettings.SearchPictureSubFolders,   r => r.Checked);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -58,6 +73,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

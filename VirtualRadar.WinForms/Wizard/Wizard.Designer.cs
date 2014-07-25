@@ -80,6 +80,11 @@ namespace Gui.Wizard
 				return true;
 			return false;
 		}
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="controlDesigner"></param>
+        /// <returns></returns>
 		public override bool CanParent(ControlDesigner controlDesigner)
 		{
 			if (controlDesigner is WizardPageDesigner)
@@ -87,7 +92,11 @@ namespace Gui.Wizard
 			return false;
 		}
 
-
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
 		protected override bool GetHitTest(Point point)
 		{
 			Wizard wiz = this.Control as Wizard;
@@ -108,6 +117,9 @@ namespace Gui.Wizard
 			return false;
 		}
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
 		public override DesignerVerbCollection Verbs
 		{
 			get
@@ -139,6 +151,10 @@ namespace Gui.Wizard
 			dt.Commit();
 		}	
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="pe"></param>
 		protected override void OnPaintAdornments(PaintEventArgs pe)
 		{
 			_allowGrid = false;
