@@ -185,6 +185,16 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
+        /// Gets or sets a value indicating how the list view will be auto-sorted.
+        /// </summary>
+        [DefaultValue(SortOrder.None)]
+        public SortOrder Sorting
+        {
+            get { return listView.Sorting; }
+            set { listView.Sorting = value; }
+        }
+
+        /// <summary>
         /// Gets the columns to show to the user.
         /// </summary>
         [Editor("System.Windows.Forms.Design.ColumnHeaderCollectionEditor", typeof(UITypeEditor))]
@@ -193,6 +203,12 @@ namespace VirtualRadar.WinForms.Controls
         public ListView.ColumnHeaderCollection Columns
         {
             get { return listView.Columns; }
+        }
+
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsSorted
+        {
+            get { return listView.Sorting != SortOrder.None; }
         }
         #endregion
 
@@ -509,6 +525,10 @@ namespace VirtualRadar.WinForms.Controls
                 }
 
                 SynchroniseCheckedSubsetToList();
+
+                if(IsSorted) {
+                    listView.Sort();
+                }
             } finally {
                 _Populating = populating;
             }
@@ -529,18 +549,44 @@ namespace VirtualRadar.WinForms.Controls
             return result;
         }
 
+        /// <summary>
+        /// Returns the list view item for the record at the index specified.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private ListViewItem FindListViewItemAtDataListIndex(int index)
+        {
+            var record = _CurrencyManager == null || _CurrencyManager.List == null || _CurrencyManager.List.Count <= index ? null : _CurrencyManager.List[index];
+            return FindListViewItemForRecord(record);
+        }
+
+        /// <summary>
+        /// Returns the listview item that is associated with the record passed across.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        private ListViewItem FindListViewItemForRecord(object record)
+        {
+            ListViewItem result = null;
+            if(record != null) {
+                result = listView.Items.OfType<ListViewItem>().FirstOrDefault(r => r.Tag == record);
+            }
+
+            return result;
+        }
+
         private bool _InSetSelectedIndex;
         /// <summary>
         /// Sets the selected row to the row at the index passed across.
         /// </summary>
-        /// <param name="index"></param>
-        private void SetSelectedIndex(int index)
+        /// <param name="dataListIndex"></param>
+        private void SetSelectedIndex(int dataListIndex)
         {
             if(!_InSetSelectedIndex) {
                 _InSetSelectedIndex = true;
                 try {
                     listView.SelectedItems.Clear();
-                    var listViewItem = listView.Items.Count >= index ? null : listView.Items[index];
+                    var listViewItem = FindListViewItemAtDataListIndex(dataListIndex);
                     if(listViewItem != null) {
                         listViewItem.Selected = true;
                         listViewItem.EnsureVisible();
@@ -831,30 +877,31 @@ namespace VirtualRadar.WinForms.Controls
                         break;
                     case ListChangedType.ItemChanged:
                         object changedRow = _CurrencyManager.List[args.NewIndex];
-                        listView.BeginUpdate();
-                        listView.Items[args.NewIndex] = CreateListViewItemForRecord(changedRow);
-                        listView.EndUpdate();
+                        var changedItem = FindListViewItemForRecord(changedRow);
+                        RefreshListViewItem(changedItem);
+                        if(IsSorted) {
+                            listView.Sort();
+                        }
                         break;
                     case ListChangedType.ItemAdded:
                         object newRow = _CurrencyManager.List[args.NewIndex];
                         var drv = newRow as DataRowView;
                         if(drv == null || !drv.IsNew) {
                             listView.BeginUpdate();
-                            listView.Items.Insert(args.NewIndex, CreateListViewItemForRecord(newRow));
+                            var newItem = CreateListViewItemForRecord(newRow);
+                            if(!IsSorted) {
+                                listView.Items.Insert(args.NewIndex, newItem);
+                            } else {
+                                listView.Items.Add(newItem);
+                            }
                             listView.EndUpdate();
                         }
                         break;
                     case ListChangedType.ItemDeleted:
-                        if(args.NewIndex < listView.Items.Count) {
-                            listView.Items.RemoveAt(args.NewIndex);
-                        }
-                        break;
                     case ListChangedType.ItemMoved:
-                        listView.BeginUpdate();
-                        var moving = listView.Items[args.OldIndex];
-                        listView.Items.Insert(args.NewIndex, moving);
-                        listView.EndUpdate();
-                        break;
+                        // With the advent of sorting support we can't handle these two any more as
+                        // the listview indexes won't match the source list indexes. In these cases
+                        // we should just fall through to the reload
                     default:
                         LoadItemsFromSource();
                         break;
