@@ -3,7 +3,7 @@
 http://blw.sourceforge.net/
 
 I couldn't find the license on the site but the SourceForge project page indicates
-that it uses the original BSD license, which is:
+that it uses the original BSD license, which would be:
 
 Copyright (c) 2006, Andrew Davey
 All rights reserved.
