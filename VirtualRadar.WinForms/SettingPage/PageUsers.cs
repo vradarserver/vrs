@@ -30,23 +30,41 @@ namespace VirtualRadar.WinForms.SettingPage
     {
         private RecordListHelper<IUser, PageUser> _ListHelper;
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.Users; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.User16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageUsers()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateChildPages()
         {
             base.AssociateChildPages();
             AssociateListWithChildPages(SettingsView.Users, () => new PageUser());
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -84,7 +102,7 @@ namespace VirtualRadar.WinForms.SettingPage
         private void listUsers_CheckedChanged(object sender, Controls.BindingListView.RecordCheckedEventArgs e)
         {
             if(listUsers.CheckBoxes) {
-                _ListHelper.SetEnabledForListCheckedChanged(e, (user, enabled) => user.Enabled = enabled);
+                _ListHelper.CheckedChanged(e, (user, enabled) => user.Enabled = enabled);
             }
         }
         #endregion

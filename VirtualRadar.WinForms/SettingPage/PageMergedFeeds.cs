@@ -30,29 +30,50 @@ namespace VirtualRadar.WinForms.SettingPage
     {
         private RecordListHelper<MergedFeed, PageMergedFeed> _ListHelper;
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.MergedFeeds; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.MergedFeed16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageMergedFeeds()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateChildPages()
         {
             base.AssociateChildPages();
             AssociateListWithChildPages(SettingsView.Configuration.MergedFeeds, () => new PageMergedFeed());
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
             _ListHelper = new RecordListHelper<MergedFeed,PageMergedFeed>(this, listMergedFeeds, SettingsView.Configuration.MergedFeeds);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();
@@ -90,7 +111,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
         private void listMergedFeeds_CheckedChanged(object sender, BindingListView.RecordCheckedEventArgs e)
         {
-            _ListHelper.SetEnabledForListCheckedChanged(e, (mergedFeed, enabled) => mergedFeed.Enabled = enabled);
+            _ListHelper.CheckedChanged(e, (mergedFeed, enabled) => mergedFeed.Enabled = enabled);
         }
         #endregion
     }

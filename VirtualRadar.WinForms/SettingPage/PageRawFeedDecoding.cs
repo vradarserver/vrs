@@ -27,15 +27,27 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageRawFeedDecoding : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.OptionsRawFeedSheetTitle; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Decoding16x16; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageRawFeedDecoding()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -56,6 +68,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(SettingsView, numericAcceptIcaoInNonPISeconds,               r => r.Configuration.RawDecodingSettings.AcceptIcaoInNonPISeconds,              r => r.Value);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -74,6 +89,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

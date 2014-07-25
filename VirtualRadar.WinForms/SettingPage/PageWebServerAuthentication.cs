@@ -29,17 +29,32 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebServerAuthentication : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.Users; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Server16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageWebServerAuthentication()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();

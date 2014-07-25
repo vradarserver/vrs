@@ -30,25 +30,45 @@ using System.Collections.Generic;
 
 namespace Equin.ApplicationFramework
 {
+    /// <summary>
+    /// No documentation supplied.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class CompositeItemFilter<T> : IItemFilter<T>
     {
         private List<IItemFilter<T>> _filters;
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public CompositeItemFilter()
         {
             _filters = new List<IItemFilter<T>>();
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="filter"></param>
         public void AddFilter(IItemFilter<T> filter)
         {
             _filters.Add(filter);
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="filter"></param>
         public void RemoveFilter(IItemFilter<T> filter)
         {
             _filters.Remove(filter);
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Include(T item)
         {
             foreach (IItemFilter<T> filter in _filters)

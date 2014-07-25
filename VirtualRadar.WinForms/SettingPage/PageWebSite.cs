@@ -29,21 +29,36 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebSite : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.OptionsWebSiteTitle; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Site16x16; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageWebSite()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateChildPages()
         {
             base.AssociateChildPages();
             ChildPages.Add(new PageWebSiteGoogleMaps());
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
@@ -53,6 +68,9 @@ namespace VirtualRadar.WinForms.SettingPage
             comboBoxProxyType.DataSource =              CreateSortingEnumSource<ProxyType>(r => Describe.ProxyType(r));
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -69,6 +87,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(SettingsView, checkBoxEnableCompression,         r => r.Configuration.GoogleMapSettings.EnableCompression,   r => r.Checked);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -78,6 +99,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

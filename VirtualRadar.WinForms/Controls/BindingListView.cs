@@ -42,12 +42,25 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         public class RecordContentEventArgs : EventArgs
         {
+            /// <summary>
+            /// Gets the record that the event handler should supply text for.
+            /// </summary>
             public object Record { get; private set; }
 
+            /// <summary>
+            /// Gets a list of the strings for each column in the list view.
+            /// </summary>
             public List<string> ColumnTexts { get; private set; }
 
+            /// <summary>
+            /// Gets or sets a value indicating that the row for the record should be ticked in the list view.
+            /// </summary>
             public bool Checked { get; set; }
 
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="record"></param>
             public RecordContentEventArgs(object record)
             {
                 Record = record;
@@ -60,10 +73,21 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         public class RecordCheckedEventArgs : EventArgs
         {
+            /// <summary>
+            /// Gets or sets the affected record.
+            /// </summary>
             public object Record { get; private set; }
 
+            /// <summary>
+            /// Gets or sets a value indicating whether the record is ticked or unticked.
+            /// </summary>
             public bool Checked { get; private set; }
 
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="record"></param>
+            /// <param name="checkedValue"></param>
             public RecordCheckedEventArgs(object record, bool checkedValue)
             {
                 Record = record;
@@ -293,6 +317,9 @@ namespace VirtualRadar.WinForms.Controls
             set { SelectListViewItemsByTags<object>(listView, value); }
         }
 
+        /// <summary>
+        /// Gets or sets a collection of records that have been checked in the list view.
+        /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IEnumerable<object> CheckedRecords
         {

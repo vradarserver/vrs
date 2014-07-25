@@ -32,23 +32,41 @@ namespace VirtualRadar.WinForms.SettingPage
     {
         private RecordListHelper<RebroadcastSettings, PageRebroadcastServer> _ListHelper;
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.RebroadcastServersTitle; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Rebroadcast16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageRebroadcastServers()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateChildPages()
         {
             base.AssociateChildPages();
             AssociateListWithChildPages(SettingsView.Configuration.RebroadcastSettings, () => new PageRebroadcastServer());
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -89,7 +107,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
         private void listRebroadcastServers_CheckedChanged(object sender, BindingListView.RecordCheckedEventArgs e)
         {
-            _ListHelper.SetEnabledForListCheckedChanged(e, (server, enabled) => server.Enabled = enabled);
+            _ListHelper.CheckedChanged(e, (server, enabled) => server.Enabled = enabled);
         }
         #endregion
     }

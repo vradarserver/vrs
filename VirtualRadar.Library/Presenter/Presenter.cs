@@ -333,7 +333,6 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         /// <typeparam name="TList"></typeparam>
         /// <param name="collection"></param>
-        /// <param name="collectionIsValid"></param>
         /// <param name="valParams"></param>
         /// <returns></returns>
         protected bool CollectionIsNotEmpty<TList>(IEnumerable<TList> collection, Validation valParams)

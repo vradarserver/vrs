@@ -32,23 +32,41 @@ namespace VirtualRadar.WinForms.SettingPage
     {
         private RecordListHelper<Receiver, PageReceiver> _ListHelper;
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override string PageTitle { get { return Strings.Receivers; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.Radio16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageReceivers()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateChildPages()
         {
             base.AssociateChildPages();
             AssociateListWithChildPages(SettingsView.Configuration.Receivers, () => new PageReceiver());
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
@@ -57,6 +75,9 @@ namespace VirtualRadar.WinForms.SettingPage
             comboBoxFsxReceiverId.DataSource =              CreateSortingBindingSource(SettingsView.CombinedFeed, r => r.Name);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -67,6 +88,9 @@ namespace VirtualRadar.WinForms.SettingPage
             _ListHelper = new RecordListHelper<Receiver,PageReceiver>(this, listReceivers, SettingsView.Configuration.Receivers);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -78,6 +102,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();
@@ -151,7 +178,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
         private void listReceivers_CheckedChanged(object sender, BindingListView.RecordCheckedEventArgs e)
         {
-            _ListHelper.SetEnabledForListCheckedChanged(e, (r, enabled) => r.Enabled = enabled);
+            _ListHelper.CheckedChanged(e, (r, enabled) => r.Enabled = enabled);
         }
         #endregion
     }

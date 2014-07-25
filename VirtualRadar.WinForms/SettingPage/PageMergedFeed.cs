@@ -29,17 +29,32 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageMergedFeed : Page
     {
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override Image PageIcon { get { return Images.MergedFeed16x16; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public MergedFeed MergedFeed { get { return PageObject as MergedFeed; } }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         public override bool PageUseFullHeight { get { return true; } }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public PageMergedFeed()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -56,6 +71,9 @@ namespace VirtualRadar.WinForms.SettingPage
             SetPageEnabledProperty<MergedFeed>(r => r.Enabled, () => MergedFeed.Enabled);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -66,6 +84,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();

@@ -37,10 +37,16 @@ using System.Diagnostics;
 
 namespace Equin.ApplicationFramework
 {
+    /// <summary>
+    /// No documentation supplied.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class AggregateBindingListView<T> : Component, IBindingListView, IList, IRaiseItemChangedEvents, ICancelAddNew, ITypedList
     {
         #region Constructors
-
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         public AggregateBindingListView()
         {
             _sourceLists = new BindingList<IList>();
@@ -54,6 +60,10 @@ namespace Equin.ApplicationFramework
             _objectViewCache = new Dictionary<T,ObjectView<T>>();
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="container"></param>
         public AggregateBindingListView(IContainer container)
             : this()
         {
@@ -86,7 +96,7 @@ namespace Equin.ApplicationFramework
         /// </summary>
         private ListSortDescriptionCollection _sorts;
         /// <summary>
-        /// The <see cref="System.Collection.Generic.IComparer">IComparer</see> used to compare items when sorting.
+        /// The IComparer used to compare items when sorting.
         /// </summary>
         private IComparer<KeyValuePair<ListItemPair<T>, int>> _comparer;
         /// <summary>
@@ -244,6 +254,9 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
         [Browsable(false)]
         public string DataMember
         {
@@ -558,6 +571,7 @@ namespace Equin.ApplicationFramework
         /// Handles the <see cref="ObjectView&lt;T&gt;"/> EndedEdit event.
         /// </summary>
         /// <param name="sender">The <see cref="ObjectView&lt;T&gt;"/> that raised the event.</param>
+        /// <param name="e"></param>
         protected virtual void EndedItemEdit(object sender, EventArgs e)
         {
             ObjectView<T> editableObject = (ObjectView<T>)sender;
@@ -748,6 +762,7 @@ namespace Equin.ApplicationFramework
         /// Event handler for when an item in the view changes.
         /// </summary>
         /// <param name="sender">The item that changed.</param>
+        /// <param name="e"></param>
         private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // The changed item may not actually be present in the view
@@ -812,12 +827,19 @@ namespace Equin.ApplicationFramework
         #endregion
 
         #region Filtering
-
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="filter"></param>
         public void ApplyFilter(IItemFilter<T> filter)
         {
             Filter = filter;
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="includeItem"></param>
         public void ApplyFilter(Predicate<T> includeItem)
         {
             if (includeItem == null)
@@ -879,6 +901,11 @@ namespace Equin.ApplicationFramework
             return (Filter != IncludeAllItemFilter<T>.Instance);
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static IItemFilter<T> CreateItemFilter(Predicate<T> predicate)
         {
             if (predicate == null)
@@ -1044,6 +1071,10 @@ namespace Equin.ApplicationFramework
             ApplySort(new ListSortDescriptionCollection(col));
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="comparer"></param>
         public void ApplySort(IComparer<T> comparer)
         {
             if (comparer == null)
@@ -1059,6 +1090,10 @@ namespace Equin.ApplicationFramework
             OnListChanged(ListChangedType.Reset, -1);
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="comparison"></param>
         public void ApplySort(Comparison<T> comparison)
         {
             if (comparison == null)
@@ -1602,7 +1637,7 @@ namespace Equin.ApplicationFramework
         /// Returns the index of the first item in the view who's property equals the given value.
         /// -1 is returned if no item is found.
         /// </summary>
-        /// <param name="property">The property name of each item to check.</param>
+        /// <param name="propertyName">The property name of each item to check.</param>
         /// <param name="key">The value being sought.</param>
         /// <returns>The index of the item, or -1 if not found.</returns>
         /// <remarks>
@@ -1901,9 +1936,6 @@ namespace Equin.ApplicationFramework
         /// </summary>
         /// <param name="index">The index of the item to retrieve.</param>
         /// <returns>An <see cref="ObjectView&lt;T&gt;"/> object.</returns>
-        /// <exception cref="System.NotSupportException">
-        /// Cannot set an item in the view.
-        /// </exception>
         object IList.this[int index]
         {
             get
@@ -2020,16 +2052,32 @@ namespace Equin.ApplicationFramework
             return new PropertyDescriptorCollection(newProps.ToArray());
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
         protected internal bool ShouldProvideView(PropertyDescriptor property)
         {
             return ProvidedViewPropertyDescriptor<T>.CanProvideViewOf(property);
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="sourceListProperty"></param>
+        /// <returns></returns>
         protected internal string GetProvidedViewName(PropertyDescriptor sourceListProperty)
         {
             return sourceListProperty.Name + "View";
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="object"></param>
+        /// <param name="sourceListProperty"></param>
+        /// <returns></returns>
         protected internal object CreateProvidedView(ObjectView<T> @object, PropertyDescriptor sourceListProperty)
         {
             object list = sourceListProperty.GetValue(@object);
@@ -2105,7 +2153,7 @@ namespace Equin.ApplicationFramework
         /// Attaches event handlers to the given <see cref="ObjectView&lt;T&gt;"/>'s 
         /// edit life cycle notification events.
         /// </summary>
-        /// <param name="objectView">The <see cref="ObjectView&lt;T&gt;"/> to listen to.</param>
+        /// <param name="editableObject">The <see cref="ObjectView&lt;T&gt;"/> to listen to.</param>
         private void HookEditableObjectEvents(ObjectView<T> editableObject)
         {
             editableObject.EditBegun += new EventHandler(BegunItemEdit);
@@ -2117,7 +2165,7 @@ namespace Equin.ApplicationFramework
         /// Detaches event handlers from the given <see cref="ObjectView&lt;T&gt;"/>'s 
         /// edit life cycle notification events.
         /// </summary>
-        /// <param name="objectView">The <see cref="ObjectView&lt;T&gt;"/> to stop listening to.</param>
+        /// <param name="editableObject">The <see cref="ObjectView&lt;T&gt;"/> to stop listening to.</param>
         private void UnHookEditableObjectEvents(ObjectView<T> editableObject)
         {
             editableObject.EditBegun -= new EventHandler(BegunItemEdit);
@@ -2128,7 +2176,7 @@ namespace Equin.ApplicationFramework
         /// <summary>
         /// Attaches an event handler to the <see cref="ObjectView&lt;T&gt;"/>'s PropertyChanged event.
         /// </summary>
-        /// <param name="objectView">The <see cref="ObjectView&lt;T&gt;"/> to listen to.</param>
+        /// <param name="editableObject">The <see cref="ObjectView&lt;T&gt;"/> to listen to.</param>
         private void HookPropertyChangedEvent(ObjectView<T> editableObject)
         {
             editableObject.PropertyChanged += new PropertyChangedEventHandler(ItemPropertyChanged);
@@ -2137,7 +2185,7 @@ namespace Equin.ApplicationFramework
         /// <summary>
         /// Detaches the event handler from the <see cref="ObjectView&lt;T&gt;"/>'s PropertyChanged event.
         /// </summary>
-        /// <param name="objectView">The <see cref="ObjectView&lt;T&gt;"/> to stop listening to.</param>
+        /// <param name="editableObject">The <see cref="ObjectView&lt;T&gt;"/> to stop listening to.</param>
         private void UnHookPropertyChangedEvent(ObjectView<T> editableObject)
         {
             editableObject.PropertyChanged -= new PropertyChangedEventHandler(ItemPropertyChanged);
@@ -2152,6 +2200,10 @@ namespace Equin.ApplicationFramework
             }
         }
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <returns></returns>
         protected IEnumerable<IList> GetSourceLists()
         {
             foreach (object obj in _sourceLists)

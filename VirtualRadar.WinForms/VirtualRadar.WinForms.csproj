@@ -231,9 +231,6 @@
       <DependentUpon>InvalidPluginsView.cs</DependentUpon>
     </Compile>
     <Compile Include="KineticConnection.cs" />
-    <Compile Include="ListDetailEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="ListViewSortHelper.cs" />
     <Compile Include="MainView.cs">
       <SubType>Form</SubType>
@@ -363,7 +360,6 @@
     <Compile Include="SettingsView.Designer.cs">
       <DependentUpon>SettingsView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValidationFieldAttribute.cs" />
     <Compile Include="PluginsView.cs">
       <SubType>Form</SubType>
     </Compile>

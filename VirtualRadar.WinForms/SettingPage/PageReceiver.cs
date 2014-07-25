@@ -79,6 +79,9 @@ namespace VirtualRadar.WinForms.SettingPage
             InitializeComponent();
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
@@ -97,6 +100,9 @@ namespace VirtualRadar.WinForms.SettingPage
             SetPageEnabledProperty<Receiver>(r => r.Enabled, () => Receiver.Enabled);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
@@ -120,6 +126,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(Receiver, textBoxSerialShutdownText, r => r.ShutdownText,    r => r.Text);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateValidationFields()
         {
             base.AssociateValidationFields();
@@ -137,6 +146,9 @@ namespace VirtualRadar.WinForms.SettingPage
             });
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void AssociateInlineHelp()
         {
             SetInlineHelp(checkBoxEnabled,                  Strings.Enabled,                Strings.OptionsDescribeReceiverEnabled);
@@ -159,6 +171,10 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(textBoxSerialShutdownText,        Strings.SerialShutdownText,     Strings.OptionsDescribeDataSourcesShutdownText);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -183,6 +199,10 @@ namespace VirtualRadar.WinForms.SettingPage
             }
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="args"></param>
         internal override void ConfigurationChanged(ConfigurationListenerEventArgs args)
         {
             base.ConfigurationChanged(args);

@@ -48,10 +48,19 @@ namespace Gui.Wizard
 	[ToolboxBitmap(typeof(Gui.Wizard.Wizard))]
 	public class Wizard : System.Windows.Forms.UserControl
 	{
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
 		protected internal System.Windows.Forms.Panel pnlButtons;
 		private System.Windows.Forms.Panel pnlButtonBright3d;
 		private System.Windows.Forms.Panel pnlButtonDark3d;
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
 		protected internal System.Windows.Forms.Button btnBack;
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
 		protected internal System.Windows.Forms.Button btnNext;
 		private System.Windows.Forms.Button btnCancel;
 		/// <summary> 
@@ -263,7 +272,10 @@ namespace Gui.Wizard
 //			}
 		}
 
-
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="index"></param>
 		protected internal void ActivatePage(int index)
 		{
 			//If the new page is invalid
@@ -283,6 +295,10 @@ namespace Gui.Wizard
 			ActivatePage(tWizPage);
 		}
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="page"></param>
 		protected internal void ActivatePage(WizardPage page)
 		{
 			//Deactivate the current
@@ -353,6 +369,10 @@ namespace Gui.Wizard
 				this.Invalidate();
 		}
 
+        /// <summary>
+        /// No documentation supplied.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
