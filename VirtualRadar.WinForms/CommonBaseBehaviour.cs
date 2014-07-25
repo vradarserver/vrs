@@ -9,6 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -17,6 +18,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
+using VirtualRadar.WinForms.Controls;
 
 namespace VirtualRadar.WinForms
 {
@@ -307,7 +309,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region Binding helpers - AddBinding
+        #region Binding helpers - AddBinding, Create****BindingSource
         /// <summary>
         /// Adds a binding between a control and a property on a page.
         /// </summary>
@@ -332,6 +334,77 @@ namespace VirtualRadar.WinForms
             if(parse != null) result.Parse += parse;
 
             control.DataBindings.Add(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a binding source that automatically sorts the list that it's attached to.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="sortColumn"></param>
+        /// <returns></returns>
+        public BindingSource CreateSortingBindingSource<T>(IList<T> list, Expression<Func<T, object>> sortColumn)
+        {
+            if(list == null) throw new ArgumentNullException("list");
+
+            var castList = list as IList;
+            if(castList == null) throw new ArgumentException("The list must be castable to IList");
+
+            var bindingListView = new Equin.ApplicationFramework.BindingListView<T>(castList);
+            var result = new BindingSource();
+            result.DataSource = bindingListView;
+            result.Sort = PropertyHelper.ExtractName<T>(sortColumn);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a simple unsorted binding source on a list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public BindingSource CreateListBindingSource<T>(IList<T> list)
+        {
+            var result = new BindingSource();
+            result.DataSource = list;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a binding source of enum values sorted by their description.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="describeEnumValue"></param>
+        /// <returns></returns>
+        public BindingSource CreateSortingEnumSource<T>(Func<T, string> describeEnumValue)
+        {
+            var list = NameValue<T>.EnumList(describeEnumValue).OrderBy(r => r.Name).ToArray();
+            var result = new BindingSource();
+            result.DataSource = list;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a binding source of NameValue&lt;T&gt; values. These can be bound to Name and Value
+        /// properties in ComboBoxes and are preferrable over CreateListBindingSource when the content
+        /// of the list may change depending on the environment - if the current value is not present
+        /// in the list it shows an empty combo box instead of the first value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="describeValue"></param>
+        /// <param name="filterValue"></param>
+        /// <param name="sortList"></param>
+        /// <returns></returns>
+        public BindingSource CreateNameValueSource<T>(IEnumerable<T> list, Func<T, string> describeValue, Func<T, bool> filterValue, bool sortList)
+        {
+            var nameValueList = NameValue<T>.CreateList(list, describeValue, filterValue, sortList);
+            var result = new BindingSource();
+            result.DataSource = nameValueList;
 
             return result;
         }

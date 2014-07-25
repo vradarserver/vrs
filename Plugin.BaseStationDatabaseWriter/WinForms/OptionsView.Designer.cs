@@ -36,7 +36,7 @@
             this.checkBoxOnlyUpdateDatabasesCreatedByPlugin = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.fileNameDatabase = new VirtualRadar.WinForms.Controls.FileNameControl();
-            this.feedSelectControl = new VirtualRadar.WinForms.Controls.FeedSelectControl();
+            this.feedSelectControl = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -137,10 +137,13 @@
             // 
             // feedSelectControl
             // 
+            this.feedSelectControl.DisplayMember = "Name";
+            this.feedSelectControl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.feedSelectControl.Location = new System.Drawing.Point(148, 60);
             this.feedSelectControl.Name = "feedSelectControl";
-            this.feedSelectControl.Size = new System.Drawing.Size(223, 22);
+            this.feedSelectControl.Size = new System.Drawing.Size(150, 21);
             this.feedSelectControl.TabIndex = 3;
+            this.feedSelectControl.ValueMember = "Value";
             // 
             // OptionsView
             // 
@@ -149,7 +152,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(545, 174);
-            this.Controls.Add(this.feedSelectControl);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.fileNameDatabase);
             this.Controls.Add(this.checkBoxOnlyUpdateDatabasesCreatedByPlugin);
@@ -159,6 +161,7 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.checkBoxEnabled);
+            this.Controls.Add(this.feedSelectControl);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OptionsView";
@@ -182,6 +185,6 @@
         private System.Windows.Forms.CheckBox checkBoxOnlyUpdateDatabasesCreatedByPlugin;
         private VirtualRadar.WinForms.Controls.FileNameControl fileNameDatabase;
         private System.Windows.Forms.Label label2;
-        private VirtualRadar.WinForms.Controls.FeedSelectControl feedSelectControl;
+        private System.Windows.Forms.ComboBox feedSelectControl;
     }
 }

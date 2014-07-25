@@ -57,7 +57,7 @@ namespace VirtualRadar.Plugin.CustomContent
                 _View.InjectOf = settings != null ? settings.InjectionLocation : InjectionLocation.Head;
                 _View.InjectPathAndFile = settings != null ? settings.PathAndFile : "";
 
-                _View.ShowValidationResults(new ValidationResult[] { });
+                _View.ShowValidationResults(new ValidationResults(isPartialValidation: false));
             } finally {
                 _SuppressValueChangedEventHandler = currentSuppressSetting;
             }
@@ -67,24 +67,24 @@ namespace VirtualRadar.Plugin.CustomContent
         #region 
         private bool DoValidation()
         {
-            var results = new List<ValidationResult>();
+            var results = new ValidationResults(isPartialValidation: false);
 
             if(_View.PluginEnabled) {
                 var settings = _View.SelectedInjectSettings;
                 if(settings != null) {
                     try {
-                        if(String.IsNullOrEmpty(_View.InjectFileName)) results.Add(new ValidationResult(ValidationField.Name, CustomContentStrings.FileNameRequired));
-                        else if(!File.Exists(_View.InjectFileName))    results.Add(new ValidationResult(ValidationField.Name, String.Format(CustomContentStrings.FileDoesNotExist, _View.InjectFileName)));
+                        if(String.IsNullOrEmpty(_View.InjectFileName)) results.Results.Add(new ValidationResult(ValidationField.Name, CustomContentStrings.FileNameRequired));
+                        else if(!File.Exists(_View.InjectFileName))    results.Results.Add(new ValidationResult(ValidationField.Name, String.Format(CustomContentStrings.FileDoesNotExist, _View.InjectFileName)));
                     } catch(Exception ex) {
                         Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking injection file: {0}", ex.ToString());
-                        results.Add(new ValidationResult(ValidationField.Name, String.Format(CustomContentStrings.ErrorCheckingFileName, ex.Message)));
+                        results.Results.Add(new ValidationResult(ValidationField.Name, String.Format(CustomContentStrings.ErrorCheckingFileName, ex.Message)));
                     }
 
-                    if(String.IsNullOrEmpty(_View.InjectPathAndFile)) results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileRequired));
+                    if(String.IsNullOrEmpty(_View.InjectPathAndFile)) results.Results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileRequired));
                     else if(_View.InjectPathAndFile != "*") {
-                        if(_View.InjectPathAndFile[0] != '/') results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileMissingRoot));
+                        if(_View.InjectPathAndFile[0] != '/') results.Results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileMissingRoot));
                         else if(!_View.InjectPathAndFile.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && !_View.InjectPathAndFile.EndsWith(".htm")) {
-                            results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileMissingExtension));
+                            results.Results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileMissingExtension));
                         }
                     }
                 }
@@ -98,13 +98,13 @@ namespace VirtualRadar.Plugin.CustomContent
                         Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking custom content site root folder: {0}", ex.ToString());
                         message = String.Format(CustomContentStrings.ErrorCheckingFolder, ex.Message);
                     }
-                    if(!String.IsNullOrEmpty(message)) results.Add(new ValidationResult(ValidationField.SiteRootFolder, message));
+                    if(!String.IsNullOrEmpty(message)) results.Results.Add(new ValidationResult(ValidationField.SiteRootFolder, message));
                 }
             }
 
             _View.ShowValidationResults(results);
 
-            return results.Count == 0;
+            return !results.HasErrors;
         }
 
         private bool IsDuplicateSiteRootFolder(string folder)
