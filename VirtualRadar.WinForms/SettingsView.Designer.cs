@@ -33,14 +33,14 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.presetConfigurationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.justFlightSimulatorXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panelContent = new System.Windows.Forms.Panel();
+            this.panelContent = new VirtualRadar.WinForms.Controls.PanelPlus();
             this.splitContainerPagePicker = new System.Windows.Forms.SplitContainer();
             this.treeViewPagePicker = new VirtualRadar.WinForms.Controls.TreeViewPlus();
             this.splitContainerPageContent = new System.Windows.Forms.SplitContainer();
-            this.panelPageContentBorder = new System.Windows.Forms.Panel();
-            this.panelPageContent = new System.Windows.Forms.Panel();
-            this.panelInlineHelpBorder = new System.Windows.Forms.Panel();
-            this.panelInlineHelp = new System.Windows.Forms.Panel();
+            this.panelPageContentBorder = new VirtualRadar.WinForms.Controls.PanelPlus();
+            this.panelPageContent = new VirtualRadar.WinForms.Controls.PanelPlus();
+            this.panelInlineHelpBorder = new VirtualRadar.WinForms.Controls.PanelPlus();
+            this.panelInlineHelp = new VirtualRadar.WinForms.Controls.PanelPlus();
             this.labelInlineHelp = new System.Windows.Forms.Label();
             this.labelInlineHelpTitle = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
@@ -290,14 +290,14 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.Panel panelContent;
+        private VirtualRadar.WinForms.Controls.PanelPlus panelContent;
         private System.Windows.Forms.SplitContainer splitContainerPagePicker;
         private VirtualRadar.WinForms.Controls.TreeViewPlus treeViewPagePicker;
         private System.Windows.Forms.SplitContainer splitContainerPageContent;
-        private System.Windows.Forms.Panel panelPageContentBorder;
-        private System.Windows.Forms.Panel panelPageContent;
-        private System.Windows.Forms.Panel panelInlineHelpBorder;
-        private System.Windows.Forms.Panel panelInlineHelp;
+        private VirtualRadar.WinForms.Controls.PanelPlus panelPageContentBorder;
+        private VirtualRadar.WinForms.Controls.PanelPlus panelPageContent;
+        private VirtualRadar.WinForms.Controls.PanelPlus panelInlineHelpBorder;
+        private VirtualRadar.WinForms.Controls.PanelPlus panelInlineHelp;
         private System.Windows.Forms.Label labelInlineHelp;
         private System.Windows.Forms.Label labelInlineHelpTitle;
         private System.Windows.Forms.Button buttonCancel;

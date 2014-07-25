@@ -495,10 +495,15 @@ namespace VirtualRadar.WinForms
         public void DisplayPage(Page page)
         {
             if(page != null && page != CurrentPanelPage && GetAllPages().Contains(page)) {
-                if(CurrentPanelPage != null) CurrentPanelPage.Visible = false;
+                panelPageContent.SuspendLayout();
+                try {
+                    if(CurrentPanelPage != null) CurrentPanelPage.Visible = false;
 
-                panelPageContent.Tag = page;
-                CurrentPanelPage.Visible = true;
+                    panelPageContent.Tag = page;
+                    CurrentPanelPage.Visible = true;
+                } finally {
+                    panelPageContent.ResumeLayout();
+                }
 
                 if(CurrentTreePage != page) {
                     CurrentTreePage = page;

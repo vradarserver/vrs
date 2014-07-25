@@ -244,6 +244,9 @@
     <Compile Include="MonoAutoScaleMode.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="OnlineHelpHelper.cs" />
+    <Compile Include="Controls\PanelPlus.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>
