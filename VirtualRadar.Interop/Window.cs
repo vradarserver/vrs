@@ -30,6 +30,17 @@ namespace VirtualRadar.Interop
         static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
+        /// The pInvoke for SendMessage with an HDITEM lParam.
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="hditem"></param>
+        /// <returns></returns>
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM hditem);
+
+        /// <summary>
         /// Initialises the static fields.
         /// </summary>
         static Window()
@@ -58,6 +69,24 @@ namespace VirtualRadar.Interop
         private static IntPtr DoNothingIntPtr()
         {
             return IntPtr.Zero;
+        }
+
+        /// <summary>
+        /// Invokes SendMessage with an HDITEM parameter.
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="hditem"></param>
+        /// <returns></returns>
+        public static IntPtr CallSendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM hditem)
+        {
+            return IsInert ? DoNothingIntPtr() : DoSendMessage(hWnd, msg, wParam, ref hditem);
+        }
+
+        private static IntPtr DoSendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM hditem)
+        {
+            return SendMessage(hWnd, msg, wParam, ref hditem);
         }
     }
 }

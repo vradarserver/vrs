@@ -135,5 +135,17 @@ namespace VirtualRadar.WinForms.Controls
                 }
             }
         }
+
+        /// <summary>
+        /// Called after the control has been loaded but before anything is shown to the user.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if(!DesignMode) {
+                _Sorter.RefreshSortIndicators();
+            }
+        }
     }
 }

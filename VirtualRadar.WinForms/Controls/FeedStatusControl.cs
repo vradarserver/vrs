@@ -305,6 +305,7 @@ namespace VirtualRadar.WinForms.Controls
             if(!DesignMode) {
                 Localise.Control(this);
                 Localise.Control(contextMenuStrip);
+                _Sorter.RefreshSortIndicators();
             }
         }
 
