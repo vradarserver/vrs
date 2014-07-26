@@ -55,6 +55,15 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
+        protected override void InitialiseControls()
+        {
+            base.InitialiseControls();
+            listReceiverIds.ListView.ListViewItemSorter = new AutoListViewSorter(listReceiverIds.ListView);
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();

@@ -163,6 +163,7 @@
     <Compile Include="Controls\InvalidPluginsControl.Designer.cs">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\AutoListViewSorter.cs" />
     <Compile Include="Controls\ListViewPlus.cs">
       <SubType>Component</SubType>
     </Compile>

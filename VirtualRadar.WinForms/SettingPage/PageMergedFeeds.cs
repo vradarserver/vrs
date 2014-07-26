@@ -68,7 +68,7 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            _ListHelper = new RecordListHelper<MergedFeed,PageMergedFeed>(this, listMergedFeeds, SettingsView.Configuration.MergedFeeds);
+            _ListHelper = new RecordListHelper<MergedFeed,PageMergedFeed>(this, listMergedFeeds, SettingsView.Configuration.MergedFeeds, listMergedFeeds_GetSortValue);
         }
 
         /// <summary>
@@ -92,6 +92,19 @@ namespace VirtualRadar.WinForms.SettingPage
                 e.ColumnTexts.Add((((double)record.IcaoTimeout) / 1000.0).ToString("N2"));
                 e.ColumnTexts.Add(record.IgnoreAircraftWithNoPosition ? Strings.Yes : Strings.No);
             }
+        }
+
+        private IComparable listMergedFeeds_GetSortValue(object record, ColumnHeader header, IComparable defaultValue)
+        {
+            IComparable result = defaultValue;
+            
+            var mergedFeed = record as MergedFeed;
+            if(mergedFeed != null) {
+                if(header == columnHeaderReceivers)             result = mergedFeed.ReceiverIds.Count;
+                else if(header == columnHeaderIcaoTimeout)      result = mergedFeed.IcaoTimeout;
+            }
+
+            return result;
         }
 
         private void listMergedFeeds_AddClicked(object sender, EventArgs e)

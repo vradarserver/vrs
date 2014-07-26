@@ -68,7 +68,7 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            _ListHelper = new RecordListHelper<ReceiverLocation,PageReceiverLocation>(this, listReceiverLocations, SettingsView.Configuration.ReceiverLocations);
+            _ListHelper = new RecordListHelper<ReceiverLocation,PageReceiverLocation>(this, listReceiverLocations, SettingsView.Configuration.ReceiverLocations, listReceiverLocations_GetSortValue);
         }
 
         /// <summary>
@@ -90,6 +90,19 @@ namespace VirtualRadar.WinForms.SettingPage
                 e.ColumnTexts.Add(record.Latitude.ToString("N6"));
                 e.ColumnTexts.Add(record.Longitude.ToString("N6"));
             }
+        }
+
+        private IComparable listReceiverLocations_GetSortValue(object record, ColumnHeader header, IComparable defaultValue)
+        {
+            IComparable result = defaultValue;
+
+            var receiverLocation = record as ReceiverLocation;
+            if(receiverLocation != null) {
+                if(header == columnHeaderLatitude)          result = receiverLocation.Latitude;
+                else if(header == columnHeaderLongitude)    result = receiverLocation.Longitude;
+            }
+
+            return result;
         }
 
         private void listReceiverLocations_AddClicked(object sender, EventArgs e)
