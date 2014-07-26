@@ -2170,4 +2170,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ContrastMapTitle" xml:space="preserve">
     <value>Contrast</value>
   </data>
+  <data name="PortIsUsedByWebServer" xml:space="preserve">
+    <value>Port {0} is being used by the web server</value>
+  </data>
 </root>

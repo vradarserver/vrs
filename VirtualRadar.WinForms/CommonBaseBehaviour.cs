@@ -333,6 +333,13 @@ namespace VirtualRadar.WinForms
             if(format != null) result.Format += format;
             if(parse != null) result.Parse += parse;
 
+            // There is a bug with stock NumericUpDown controls - if you use the spinner to change the value then
+            // the binding works but if you type a value into them it doesn't. To work around this we need to
+            // force the update mode to PropertyChanged.
+            if(control is NumericUpDown && result.DataSourceUpdateMode != DataSourceUpdateMode.Never) {
+                result.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            }
+
             control.DataBindings.Add(result);
 
             return result;
