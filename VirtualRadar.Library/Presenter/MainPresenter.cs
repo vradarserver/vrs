@@ -304,7 +304,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void WebServer_ResponseSent(object sender, ResponseSentEventArgs args)
         {
-            View.ShowWebRequestHasBeenServiced(args.UserAddressAndPort, args.UrlRequested, args.BytesSent);
+            View.ShowWebRequestHasBeenServiced(args.Request.RemoteEndPoint, args.UrlRequested, args.BytesSent);
         }
         #endregion
     }

@@ -29,6 +29,42 @@ namespace VirtualRadar.WinForms.Controls
     /// </summary>
     public partial class RebroadcastStatusControl : BaseUserControl
     {
+        #region Private class - Sorter
+        /// <summary>
+        /// Manages the sorting of the list view for us.
+        /// </summary>
+        class Sorter : AutoListViewSorter
+        {
+            private RebroadcastStatusControl _Parent;
+
+            public Sorter(RebroadcastStatusControl parent) : base(parent.listView)
+            {
+                _Parent = parent;
+            }
+
+            public override IComparable GetRowValue(ListViewItem listViewItem)
+            {
+                var result = base.GetRowValue(listViewItem);
+                var connection = listViewItem.Tag as RebroadcastServerConnection;
+                if(connection != null) {
+                    var column = SortColumn ?? _Parent.columnHeaderName;
+                    if(column == _Parent.columnHeaderBytesBuffered)     result = connection.BytesBuffered;
+                    else if(column == _Parent.columnHeaderBytesSent)    result = connection.BytesWritten;
+                    else if(column == _Parent.columnHeaderBytesStale)   result = connection.StaleBytesDiscarded;
+                    else if(column == _Parent.columnHeaderIPAddress)    result = new ByteArrayComparable(connection.EndpointIPAddress);
+                    else if(column == _Parent.columnHeaderPort)         result = connection.EndpointPort;
+                }
+
+                return result;
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// The object that sorts the list view for us.
+        /// </summary>
+        private Sorter _Sorter;
+
         /// <summary>
         /// Gets or sets a description of the configuration.
         /// </summary>
@@ -44,6 +80,8 @@ namespace VirtualRadar.WinForms.Controls
         public RebroadcastStatusControl() : base()
         {
             InitializeComponent();
+            _Sorter = new Sorter(this);
+            listView.ListViewItemSorter = _Sorter;
         }
 
         /// <summary>
@@ -69,6 +107,8 @@ namespace VirtualRadar.WinForms.Controls
                     listView.Items.Add(listItem);
                 }
             }
+
+            listView.Sort();
         }
 
         /// <summary>
@@ -87,7 +127,7 @@ namespace VirtualRadar.WinForms.Controls
                 var subItem = listItem.SubItems[i];
                 switch(i) {
                     case 0:     subItem.Text = connection.Name; break;
-                    case 1:     subItem.Text = String.Format("{0}:{1}", connection.EndpointAddress, connection.EndpointPort); break;
+                    case 1:     subItem.Text = connection.EndpointIPAddress == null ? "" : String.Format("{0}:{1}", connection.EndpointIPAddress, connection.EndpointPort); break;
                     case 2:     subItem.Text = connection.LocalPort.ToString(); break;
                     case 3:     subItem.Text = connection.BytesBuffered.ToString("N0"); break;
                     case 4:     subItem.Text = connection.BytesWritten.ToString("N0"); break;

@@ -333,9 +333,14 @@ namespace Test.VirtualRadar.Library.Presenter
         {
             _Presenter.Initialise(_View.Object);
 
-            var args = new ResponseSentEventArgs("url goes here", "192.168.0.44:58301", "127.0.3.4", 10203, ContentClassification.Image, null, 0, 0);
+            var address = new IPAddress(new byte[] { 192, 168, 0, 44 });
+            var endPoint = new IPEndPoint(address, 58301);
+            var request = TestUtilities.CreateMockInstance<IRequest>();
+            request.Setup(r => r.RemoteEndPoint).Returns(endPoint);
+
+            var args = new ResponseSentEventArgs("url goes here", "192.168.0.44:58301", "127.0.3.4", 10203, ContentClassification.Image, request.Object, 0, 0);
             _WebServer.Raise(s => s.ResponseSent += null, args);
-            _View.Verify(v => v.ShowWebRequestHasBeenServiced("192.168.0.44:58301", "url goes here", 10203), Times.Once());
+            _View.Verify(v => v.ShowWebRequestHasBeenServiced(endPoint, "url goes here", 10203), Times.Once());
         }
         #endregion
 

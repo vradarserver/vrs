@@ -8,23 +8,24 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using InterfaceFactory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Interface.View;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.Presenter;
-using VirtualRadar.Localisation;
 using VirtualRadar.Interface.BaseStation;
-using VirtualRadar.Interface.WebServer;
-using InterfaceFactory;
-using System.Diagnostics;
+using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WinForms
 {
@@ -365,12 +366,12 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="remoteEndPoint"></param>
         /// <param name="url"></param>
         /// <param name="bytesSent"></param>
-        public void ShowWebRequestHasBeenServiced(string address, string url, long bytesSent)
+        public void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent)
         {
-            webServerStatusControl.ShowWebRequestHasBeenServiced(address, url, bytesSent);
+            webServerStatusControl.ShowWebRequestHasBeenServiced(remoteEndPoint, url, bytesSent);
         }
 
         /// <summary>

@@ -51,71 +51,43 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
-        #region Private class and enum - Sorter and SortColumn
-        /// <summary>
-        /// An enumeration of the different columns in the list view that can be used to control sorting.
-        /// </summary>
-        enum SortColumn
-        {
-            IpAddress,
-            IsLocal,
-            ReverseDns,
-            FirstSeen,
-            LastSeen,
-            Sessions,
-            Duration,
-            BytesSent,
-        }
-
+        #region Private class and enum
         /// <summary>
         /// A private class that can be used to sort the list view.
         /// </summary>
-        class Sorter : IComparer, IComparer<ListViewItem>
+        class Sorter : AutoListViewSorter
         {
-            private IPAddressComparer _IPAddressComparer = new IPAddressComparer();
+            ConnectionClientListControl _Parent;
 
-            public SortColumn SortColumn { get; set; }
-            public bool Ascending { get; set; }
-
-            public int Compare(ListViewItem lhs, ListViewItem rhs)
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="parent"></param>
+            public Sorter(ConnectionClientListControl parent) : base(parent.listView)
             {
-                int result = Object.ReferenceEquals(lhs, rhs) ? 0 : -1;
-                if(result != 0) {
-                    var lhsClientAndSessions = (ClientAndSessions)lhs.Tag;
-                    var rhsClientAndSessions = (ClientAndSessions)rhs.Tag;
-                    var lhsClient = lhsClientAndSessions.Client;
-                    var rhsClient = rhsClientAndSessions.Client;
+                _Parent = parent;
+            }
 
-                    switch(SortColumn) {
-                        case SortColumn.BytesSent:          result = Compare(lhsClientAndSessions.TotalBytesSent, rhsClientAndSessions.TotalBytesSent); break;
-                        case SortColumn.Duration:           result = TimeSpan.Compare(lhsClientAndSessions.TotalDuration, rhsClientAndSessions.TotalDuration); break;
-                        case SortColumn.FirstSeen:          result = DateTime.Compare(lhsClientAndSessions.FirstSession, rhsClientAndSessions.FirstSession); break;
-                        case SortColumn.IpAddress:          result = _IPAddressComparer.Compare(lhsClient.Address, rhsClient.Address); break;
-                        case SortColumn.IsLocal:            result = Compare(lhsClient.IsLocal, rhsClient.IsLocal); break;
-                        case SortColumn.LastSeen:           result = DateTime.Compare(lhsClientAndSessions.LastSession, rhsClientAndSessions.LastSession); break;
-                        case SortColumn.ReverseDns:         result = String.Compare(lhsClient.ReverseDns, rhsClient.ReverseDns); break;
-                        case SortColumn.Sessions:           result = lhsClientAndSessions.Sessions.Count - rhsClientAndSessions.Sessions.Count; break;
-                        default: throw new NotImplementedException();
-                    }
+            /// <summary>
+            /// Gets the column value to sort on.
+            /// </summary>
+            /// <param name="listViewItem"></param>
+            /// <returns></returns>
+            public override IComparable GetRowValue(ListViewItem listViewItem)
+            {
+                var result = base.GetRowValue(listViewItem);
+                var info = listViewItem.Tag as ClientAndSessions;
+                if(info != null) {
+                    var column = SortColumn ?? _Parent.columnHeaderIpAddress;
+                    if(column== _Parent.columnHeaderBytesSent)              result = info.TotalBytesSent;
+                    else if(column == _Parent.columnHeaderCountSessions)    result = info.Sessions.Count;
+                    else if(column == _Parent.columnHeaderDuration)         result = info.TotalDuration;
+                    else if(column == _Parent.columnHeaderFirstSeen)        result = info.FirstSession;
+                    else if(column == _Parent.columnHeaderLastSeen)         result = info.LastSession;
+                    else if(column == _Parent.columnHeaderIpAddress)        result = new ByteArrayComparable(info.Client.Address);
                 }
 
-                return Ascending ? result : -result;
-            }
-
-            private int Compare(long lhs, long rhs)
-            {
-                var difference = lhs - rhs;
-                return difference < 0L ? -1 : difference > 0L ? 1 : 0;
-            }
-
-            private int Compare(bool lhs, bool rhs)
-            {
-                return lhs && !rhs ? -1 : !lhs && rhs ? 1 : 0;
-            }
-
-            public int Compare(object lhs, object rhs)
-            {
-                return Compare(lhs as ListViewItem, rhs as ListViewItem);
+                return result;
             }
         }
         #endregion
@@ -124,7 +96,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <summary>
         /// The object that can sort rows in the list view.
         /// </summary>
-        private Sorter _Sorter = new Sorter() { SortColumn = SortColumn.IpAddress, Ascending = true };
+        private Sorter _Sorter;
         #endregion
 
         #region Properties
@@ -170,6 +142,8 @@ namespace VirtualRadar.WinForms.Controls
         public ConnectionClientListControl() : base()
         {
             InitializeComponent();
+            _Sorter = new Sorter(this);
+            listView.ListViewItemSorter = _Sorter;
         }
         #endregion
 
@@ -258,34 +232,6 @@ namespace VirtualRadar.WinForms.Controls
         private void listView_SelectedIndexChanged(object sender, EventArgs e)
         {
             OnSelectionChanged(EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Raised when the user clicks a column header.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            SortColumn sortColumn = _Sorter.SortColumn;
-            ColumnHeader header = listView.Columns[e.Column];
-            if(header == columnHeaderBytesSent) sortColumn = SortColumn.BytesSent;
-            else if(header == columnHeaderCountSessions) sortColumn = SortColumn.Sessions;
-            else if(header == columnHeaderDuration) sortColumn = SortColumn.Duration;
-            else if(header == columnHeaderFirstSeen) sortColumn = SortColumn.FirstSeen;
-            else if(header == columnHeaderIpAddress) sortColumn = SortColumn.IpAddress;
-            else if(header == columnHeaderLastSeen) sortColumn = SortColumn.LastSeen;
-            else if(header == columnHeaderSource) sortColumn = SortColumn.IsLocal;
-            else if(header == columnHeaderReverseDns) sortColumn = SortColumn.ReverseDns;
-            else throw new NotImplementedException();
-
-            if(sortColumn == _Sorter.SortColumn) _Sorter.Ascending = !_Sorter.Ascending;
-            else {
-                _Sorter.SortColumn = sortColumn;
-                _Sorter.Ascending = true;
-            }
-
-            listView.Sort();
         }
         #endregion
     }

@@ -42,77 +42,36 @@ namespace VirtualRadar.WinForms.Controls
 
         #region Private class and enum - Sorter and SortColumn
         /// <summary>
-        /// An enumeration of the different columns that the list can be sorted on
+        /// Handles the sorting of the list view.
         /// </summary>
-        enum SortColumn
+        class Sorter : AutoListViewSorter
         {
-            StartTime,
-            IpAddress,
-            IsLocal,
-            Duration,
-            Requests,
-            BytesSent,
-            HtmlBytesSent,
-            JsonBytesSent,
-            ImageBytesSent,
-            AudioBytesSent,
-            OtherBytesSent,
-        }
+            private ConnectionSessionListControl _Parent;
 
-        /// <summary>
-        /// A private class that can manage the sorting of the ListView.
-        /// </summary>
-        class Sorter : IComparer, IComparer<ListViewItem>
-        {
-            private IPAddressComparer _IPAddressComparer = new IPAddressComparer();
-
-            public SortColumn SortColumn { get; set; }
-            public bool Ascending { get; set; }
-
-            public int Compare(ListViewItem lhs, ListViewItem rhs)
+            public Sorter(ConnectionSessionListControl parent) : base(parent.listView)
             {
-                int result = Object.ReferenceEquals(lhs, rhs) ? 0 : -1;
-                if(result != 0) {
-                    ClientAndSession lhsClientAndSession = (ClientAndSession)lhs.Tag;
-                    ClientAndSession rhsClientAndSession = (ClientAndSession)rhs.Tag;
-                    LogClient lhsClient = lhsClientAndSession.Client;
-                    LogClient rhsClient = rhsClientAndSession.Client;
-                    LogSession lhsSession = lhsClientAndSession.Session;
-                    LogSession rhsSession = rhsClientAndSession.Session;
+                _Parent = parent;
+            }
 
-                    switch(SortColumn) {
-                        case SortColumn.AudioBytesSent:     result = Compare(lhsSession.AudioBytesSent, rhsSession.AudioBytesSent); break;
-                        case SortColumn.BytesSent:          result = Compare(lhsSession.TotalBytesSent, rhsSession.TotalBytesSent); break;
-                        case SortColumn.Duration:           result = TimeSpan.Compare(lhsSession.Duration, rhsSession.Duration); break;
-                        case SortColumn.HtmlBytesSent:      result = Compare(lhsSession.HtmlBytesSent, rhsSession.HtmlBytesSent); break;
-                        case SortColumn.ImageBytesSent:     result = Compare(lhsSession.ImageBytesSent, rhsSession.ImageBytesSent); break;
-                        case SortColumn.IpAddress:          result = _IPAddressComparer.Compare(lhsClient.Address, rhsClient.Address); break;
-                        case SortColumn.IsLocal:            result = Compare(lhsClient.IsLocal, rhsClient.IsLocal); break;
-                        case SortColumn.JsonBytesSent:      result = Compare(lhsSession.JsonBytesSent, rhsSession.JsonBytesSent); break;
-                        case SortColumn.OtherBytesSent:     result = Compare(lhsSession.OtherBytesSent, rhsSession.OtherBytesSent); break;
-                        case SortColumn.Requests:           result = Compare(lhsSession.CountRequests, rhsSession.CountRequests); break;
-                        case SortColumn.StartTime:          result = DateTime.Compare(lhsSession.StartTime, rhsSession.StartTime); break;
-                        default:                            throw new NotImplementedException();
-                    }
+            public override IComparable GetRowValue(ListViewItem listViewItem)
+            {
+                var result = base.GetRowValue(listViewItem);
+                var info = listViewItem.Tag as ClientAndSession;
+                if(info != null) {
+                    var column = SortColumn ?? _Parent.columnHeaderStart;
+                    if(column == _Parent.columnHeaderAudioBytes)        result = info.Session.AudioBytesSent;
+                    else if(column == _Parent.columnHeaderBytesSent)    result = info.Session.TotalBytesSent;
+                    else if(column == _Parent.columnHeaderDuration)     result = info.Session.Duration;
+                    else if(column == _Parent.columnHeaderHtmlBytes)    result = info.Session.HtmlBytesSent;
+                    else if(column == _Parent.columnHeaderImageBytes)   result = info.Session.ImageBytesSent;
+                    else if(column == _Parent.columnHeaderIpAddress)    result = new ByteArrayComparable(info.Client.Address);
+                    else if(column == _Parent.columnHeaderJsonBytes)    result = info.Session.JsonBytesSent;
+                    else if(column == _Parent.columnHeaderOtherBytes)   result = info.Session.OtherBytesSent;
+                    else if(column == _Parent.columnHeaderRequests)     result = info.Session.CountRequests;
+                    else if(column == _Parent.columnHeaderStart)        result = info.Session.StartTime;
                 }
 
-                return Ascending ? result : -result;
-            }
-
-            private int Compare(long lhs, long rhs)
-            {
-                var difference = lhs - rhs;
-                return difference < 0L ? -1 : difference > 0L ? 1 : 0;
-            }
-
-            private int Compare(bool lhs, bool rhs)
-            {
-                return lhs && !rhs ? -1 : !lhs && rhs ? 1 : 0;
-            }
-
-            public int Compare(object lhs, object rhs)
-            {
-                return Compare(lhs as ListViewItem, rhs as ListViewItem);
+                return result;
             }
         }
         #endregion
@@ -121,7 +80,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <summary>
         /// The object that will sort the list view for us.
         /// </summary>
-        private Sorter _Sorter = new Sorter() { SortColumn = SortColumn.StartTime, Ascending = false };
+        private Sorter _Sorter;
         #endregion
 
         #region Properties
@@ -157,6 +116,7 @@ namespace VirtualRadar.WinForms.Controls
         public ConnectionSessionListControl() : base()
         {
             InitializeComponent();
+            _Sorter = new Sorter(this);
             listView.ListViewItemSorter = _Sorter;
         }
         #endregion
@@ -199,36 +159,6 @@ namespace VirtualRadar.WinForms.Controls
         #endregion
 
         #region Events consumed
-        /// <summary>
-        /// Raised when the user clicks a column header.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            SortColumn sortColumn = _Sorter.SortColumn;
-            ColumnHeader header = listView.Columns[e.Column];
-            if(header == columnHeaderAudioBytes) sortColumn = SortColumn.AudioBytesSent;
-            else if(header == columnHeaderBytesSent) sortColumn = SortColumn.BytesSent;
-            else if(header == columnHeaderDuration) sortColumn = SortColumn.Duration;
-            else if(header == columnHeaderHtmlBytes) sortColumn = SortColumn.HtmlBytesSent;
-            else if(header == columnHeaderImageBytes) sortColumn = SortColumn.ImageBytesSent;
-            else if(header == columnHeaderIpAddress) sortColumn = SortColumn.IpAddress;
-            else if(header == columnHeaderJsonBytes) sortColumn = SortColumn.JsonBytesSent;
-            else if(header == columnHeaderOtherBytes) sortColumn = SortColumn.OtherBytesSent;
-            else if(header == columnHeaderRequests) sortColumn = SortColumn.Requests;
-            else if(header == columnHeaderSource) sortColumn = SortColumn.IsLocal;
-            else if(header == columnHeaderStart) sortColumn = SortColumn.StartTime;
-            else throw new NotImplementedException();
-
-            if(sortColumn == _Sorter.SortColumn) _Sorter.Ascending = !_Sorter.Ascending;
-            else {
-                _Sorter.SortColumn = sortColumn;
-                _Sorter.Ascending = true;
-            }
-            listView.Sort();
-        }
-
         /// <summary>
         /// Called after the control has been fully constructed but is not yet on display.
         /// </summary>

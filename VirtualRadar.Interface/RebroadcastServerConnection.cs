@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace VirtualRadar.Interface
@@ -36,9 +37,9 @@ namespace VirtualRadar.Interface
         public int LocalPort { get; set; }
 
         /// <summary>
-        /// Gets or sets the address that the client connected from.
+        /// Gets or sets the IP address that the client connected from.
         /// </summary>
-        public string EndpointAddress { get; set; }
+        public IPAddress EndpointIPAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the port that the client connected from.

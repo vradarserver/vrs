@@ -28,59 +28,11 @@ namespace VirtualRadar.WinForms.Controls
     /// </summary>
     public partial class AircraftListControl : BaseUserControl
     {
-        #region Private class and enum - Sorter, SortColumn
-        /// <summary>
-        /// An enumeration of the columns that can be used to control sorting.
-        /// </summary>
-        enum SortColumn
-        {
-            Registration,
-            Icao,
-            Type,
-            Operator,
-        }
-
-        /// <summary>
-        /// A class that can compare rows in the list view.
-        /// </summary>
-        class Sorter : IComparer
-        {
-            public SortColumn SortColumn = SortColumn.Registration;
-            public bool SortAscending = true;
-
-
-            public int Compare(object lhsObject, object rhsObject)
-            {
-                int result = 0;
-
-                if(!Object.ReferenceEquals(lhsObject, rhsObject)) {
-                    var lhs = ((ListViewItem)lhsObject).Tag as IAircraft;
-                    var rhs = ((ListViewItem)rhsObject).Tag as IAircraft;
-                    if(lhs != null && rhs != null) {
-                        string lhsValue = null, rhsValue = null;
-                        switch(SortColumn) {
-                            case AircraftListControl.SortColumn.Icao:           lhsValue = lhs.Icao24; rhsValue = rhs.Icao24; break;
-                            case AircraftListControl.SortColumn.Operator:       lhsValue = lhs.Operator; rhsValue = rhs.Operator; break;
-                            case AircraftListControl.SortColumn.Registration:   lhsValue = lhs.Registration; rhsValue = rhs.Registration; break;
-                            case AircraftListControl.SortColumn.Type:           lhsValue = lhs.Type; rhsValue = rhs.Type; break;
-                            default:                                            throw new NotImplementedException();
-                        }
-
-                        result = String.Compare(lhsValue, rhsValue, true);
-                        if(!SortAscending) result = -result;
-                    }
-                }
-
-                return result;
-            }
-        }
-        #endregion
-
         #region Fields
         /// <summary>
         /// The object that can sort the list for us.
         /// </summary>
-        private Sorter _Sorter = new Sorter();
+        private AutoListViewSorter _Sorter;
         #endregion
 
         #region Properties
@@ -108,6 +60,7 @@ namespace VirtualRadar.WinForms.Controls
         {
             InitializeComponent();
             
+            _Sorter = new AutoListViewSorter(listView);
             listView.ListViewItemSorter = _Sorter;
         }
         #endregion
@@ -218,39 +171,6 @@ namespace VirtualRadar.WinForms.Controls
         {
             base.OnLoad(e);
             if(!DesignMode) Localise.Control(this);
-        }
-
-        /// <summary>
-        /// Called when the user clicks a column header.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            SortColumn sortColumn = ColumnIndexToSortColumn(e.Column);
-            if(_Sorter.SortColumn == sortColumn) _Sorter.SortAscending = !_Sorter.SortAscending;
-            else {
-                _Sorter.SortColumn = sortColumn;
-                _Sorter.SortAscending = true;
-            }
-            Sort();
-        }
-
-        /// <summary>
-        /// Translates from a column index to a <see cref="SortColumn"/>.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private SortColumn ColumnIndexToSortColumn(int index)
-        {
-            SortColumn result = _Sorter.SortColumn;
-
-            if(columnHeaderIcao.Index == index) result = SortColumn.Icao;
-            else if(columnHeaderOperator.Index == index) result = SortColumn.Operator;
-            else if(columnHeaderRegistration.Index == index) result = SortColumn.Registration;
-            else if(columnHeaderType.Index == index) result = SortColumn.Type;
-
-            return result;
         }
         #endregion
     }

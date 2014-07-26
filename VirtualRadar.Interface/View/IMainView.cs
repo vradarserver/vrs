@@ -11,11 +11,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Presenter;
-using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Interface.View
 {
@@ -163,10 +164,10 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Updates a display that shows the requests that the web server is responding to. 
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="remoteEndPoint"></param>
         /// <param name="url"></param>
         /// <param name="bytesSent"></param>
-        void ShowWebRequestHasBeenServiced(string address, string url, long bytesSent);
+        void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent);
         #endregion
     }
 }

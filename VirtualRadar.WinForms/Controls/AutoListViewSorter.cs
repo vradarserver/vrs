@@ -37,7 +37,9 @@ namespace VirtualRadar.WinForms.Controls
         {
             get { return _SortColumn; }
             set {
-                if(_SortColumn == value) SortAscending = !SortAscending;
+                var current = _SortColumn;
+                if(current == null) current = _ListView.Columns.OfType<ColumnHeader>().FirstOrDefault(r => r.Index == 0);
+                if(current == value) SortAscending = !SortAscending;
                 else {
                     _SortColumn = value;
                     SortAscending = true;
