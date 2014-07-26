@@ -219,8 +219,7 @@ namespace VirtualRadar.WinForms.Controls
 
             if(!DesignMode) {
                 Localise.Control(this);
-
-                listView.ListViewItemSorter = _Sorter;
+                _Sorter.RefreshSortIndicators();
             }
         }
 

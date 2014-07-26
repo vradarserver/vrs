@@ -84,8 +84,9 @@ namespace VirtualRadar.WinForms.SettingPage
             _GetSortValue = getSortValue;
 
             _Comparer = new Comparer(this);
-
             listView.ListView.ListViewItemSorter = _Comparer;
+            _Comparer.RefreshSortIndicators();
+
             listView.DataSource = list;
         }
 

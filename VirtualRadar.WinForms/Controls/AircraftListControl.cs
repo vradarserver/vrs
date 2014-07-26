@@ -170,7 +170,10 @@ namespace VirtualRadar.WinForms.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            if(!DesignMode) Localise.Control(this);
+            if(!DesignMode) {
+                Localise.Control(this);
+                _Sorter.RefreshSortIndicators();
+            }
         }
         #endregion
     }

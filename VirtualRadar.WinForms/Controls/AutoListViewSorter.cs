@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interop;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -32,6 +33,11 @@ namespace VirtualRadar.WinForms.Controls
         /// True if <see cref="_ListView"/> has been hooked.
         /// </summary>
         private bool _HookedListView;
+
+        /// <summary>
+        /// True if the native sort indicators have been set up.
+        /// </summary>
+        private bool _UpdatedSortIndicators;
 
         /// <summary>
         /// Gets a value indicating that the list view is currently using this comparer to handle
@@ -54,13 +60,25 @@ namespace VirtualRadar.WinForms.Controls
                     _SortColumn = value;
                     SortAscending = true;
                 }
+
+                _UpdatedSortIndicators = false;
             }
         }
 
+        private bool _SortAscending;
         /// <summary>
         /// Gets or sets a value indicating that the sort direction is in ascending order.
         /// </summary>
-        public bool SortAscending { get; set; }
+        public bool SortAscending
+        {
+            get { return _SortAscending; }
+            set {
+                if(_SortAscending != value) {
+                    _SortAscending = value;
+                    _UpdatedSortIndicators = false;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the sub-item index represented by the <see cref="SortColumn"/>. If <see cref="SortColumn"/>
@@ -77,16 +95,30 @@ namespace VirtualRadar.WinForms.Controls
         public bool IgnoreCase { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the sort column and direction should be shown on
+        /// column headers using the native API.
+        /// </summary>
+        /// <remarks>
+        /// At the time of writing this only has an effect when running under Windows.
+        /// </remarks>
+        public bool ShowNativeSortIndicators { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="listView"></param>
-        public AutoListViewSorter(ListView listView)
+        /// <param name="showNativeSortIndicators"></param>
+        public AutoListViewSorter(ListView listView, bool showNativeSortIndicators = true)
         {
             _ListView = listView;
             _ListView.ColumnClick += ListView_ColumnClick;
             _HookedListView = true;
             SortAscending = true;
+            ShowNativeSortIndicators = showNativeSortIndicators;
             IgnoreCase = true;
+
+            // This is unlikely to do anything if the listview isn't already on display, but we can give it a shot
+            RefreshSortIndicators();
         }
 
         /// <summary>
@@ -170,6 +202,8 @@ namespace VirtualRadar.WinForms.Controls
             var lhsItem = x as ListViewItem;
             var rhsItem = y as ListViewItem;
             if(lhsItem != null && rhsItem != null) {
+                RefreshSortIndicators();
+
                 var lhsValue = GetRowValue(lhsItem);
                 var rhsValue = GetRowValue(rhsItem);
                 result = CompareRowValues(lhsValue, rhsValue);
@@ -177,6 +211,45 @@ namespace VirtualRadar.WinForms.Controls
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Displays the sort indicators on the columns.
+        /// </summary>
+        public void RefreshSortIndicators()
+        {
+            if(_ListView.IsHandleCreated && !_UpdatedSortIndicators && ShowNativeSortIndicators) {
+                _UpdatedSortIndicators = true;
+
+                const uint LVM_GETHEADER = 0x1000 + 31;
+
+                var header = Window.CallSendMessage(_ListView.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+                if(header != IntPtr.Zero) {
+                    for(var i = 0;i < _ListView.Columns.Count;++i) {
+                        var isSortColumn = SortColumn == null ? i == 0 : SortColumn.Index == i;
+                        
+                        var colIndex = new IntPtr(i);
+                        var hditem = new HDITEM() {
+                            mask = HDITEM.HDI_FORMAT,
+                        };
+                        if(Window.CallSendMessage(header, HDITEM.HDM_GETITEM, colIndex, ref hditem) != IntPtr.Zero) {
+                            if(!isSortColumn) {
+                                hditem.fmt &= ~(HDITEM.HDF_SORTUP | HDITEM.HDF_SORTDOWN);
+                            } else {
+                                if(SortAscending) {
+                                    hditem.fmt &= ~HDITEM.HDF_SORTDOWN;
+                                    hditem.fmt |= HDITEM.HDF_SORTUP;
+                                } else {
+                                    hditem.fmt &= ~HDITEM.HDF_SORTUP;
+                                    hditem.fmt |= HDITEM.HDF_SORTDOWN;
+                                }
+                            }
+
+                            Window.CallSendMessage(header, HDITEM.HDM_SETITEM, colIndex, ref hditem);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -191,7 +264,7 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
-        /// Creates a new object.
+        /// Called when the user clicks a column header on the list view.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -200,6 +273,7 @@ namespace VirtualRadar.WinForms.Controls
             var sortColumn = FindColumnHeaderForClickIndex(args.Column);
             SortColumn = sortColumn;
             if(Attached) {
+                RefreshSortIndicators();
                 _ListView.Sort();
             }
         }
