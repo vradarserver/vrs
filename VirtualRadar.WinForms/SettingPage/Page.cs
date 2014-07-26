@@ -157,6 +157,15 @@ namespace VirtualRadar.WinForms.SettingPage
         public BindingList<Page> ChildPages { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating that child pages are to be shown in alphabetical order of
+        /// <see cref="PageTitle"/>. False by default unless the child pages are associated with a list.
+        /// </summary>
+        public virtual bool ShowChildPagesInAlphabeticalOrder
+        {
+            get { return _ChildPagesList != null; }
+        }
+
+        /// <summary>
         /// Gets or sets the tree node that represents this page in the owner view.
         /// </summary>
         public TreeNode TreeNode { get; set; }

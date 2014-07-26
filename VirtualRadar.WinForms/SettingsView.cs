@@ -36,6 +36,65 @@ namespace VirtualRadar.WinForms
     /// </summary>
     public partial class SettingsView : BaseForm, ISettingsView, INotifyPropertyChanged
     {
+        #region TreeViewSorter
+        /// <summary>
+        /// The comparer that keeps the items in the tree view in the correct order.
+        /// </summary>
+        /// <remarks>
+        /// The top-level pages are always shown in the order in which they were added to
+        /// the tree view, they are not sorted. Child pages for parents whose
+        /// <see cref="Page.ShowChildPagesInAlphabeticalOrder"/> is true are shown in
+        /// alphabetical order of page title, otherwise they are shown in the order in
+        /// which they were added.
+        /// </remarks>
+        class TreeViewSorter : IComparer
+        {
+            private SettingsView _Parent;
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="parent"></param>
+            public TreeViewSorter(SettingsView parent)
+            {
+                _Parent = parent;
+            }
+
+            /// <summary>
+            /// See interface docs.
+            /// </summary>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <returns></returns>
+            public int Compare(object x, object y)
+            {
+                int result = 0;
+                var lhsNode = x as TreeNode;
+                var rhsNode = y as TreeNode;
+                if(lhsNode != null && rhsNode != null && lhsNode.Parent == rhsNode.Parent) {
+                    var parentNode = lhsNode.Parent;
+                    var lhsPage = lhsNode.Tag as Page;
+                    var rhsPage = rhsNode.Tag as Page;
+                    var parentPage = parentNode == null ? null : parentNode.Tag as Page;
+
+                    if(parentPage != null && parentPage.ShowChildPagesInAlphabeticalOrder) {
+                        result = String.Compare(lhsPage == null ? null : lhsPage.PageTitle, rhsPage == null ? null : rhsPage.PageTitle, StringComparison.CurrentCultureIgnoreCase);
+                    } else {
+                        var pages = parentPage == null ? (IList<Page>)_Parent._TopLevelPages : parentPage.ChildPages;
+                        var lhsIndex = lhsPage == null ? -1 : pages.IndexOf(lhsPage);
+                        var rhsIndex = rhsPage == null ? -1 : pages.IndexOf(rhsPage);
+                        if(lhsIndex == -1) lhsIndex = int.MaxValue;
+                        if(rhsIndex == -1) rhsIndex = int.MaxValue;
+
+                        result = lhsIndex - rhsIndex;
+                    }
+                }
+
+                return result;
+            }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// The object that holds all of the business logic for the form.
@@ -46,6 +105,11 @@ namespace VirtualRadar.WinForms
         /// The object that manages the tree view's image list for us.
         /// </summary>
         private DynamicImageList _ImageList = new DynamicImageList();
+
+        /// <summary>
+        /// The object that sorts the tree view for us.
+        /// </summary>
+        private TreeViewSorter _TreeViewSorter;
 
         /// <summary>
         /// The object that is listening to the configuration for changes.
@@ -297,6 +361,9 @@ namespace VirtualRadar.WinForms
             _Users.ListChanged += Users_ListChanged;
 
             InitializeComponent();
+
+            _TreeViewSorter = new TreeViewSorter(this);
+            treeViewPagePicker.TreeViewNodeSorter = _TreeViewSorter;
         }
         #endregion
 
@@ -623,6 +690,10 @@ namespace VirtualRadar.WinForms
                 if(page.TreeNode.ForeColor != colour) page.TreeNode.ForeColor = colour;
                 if(page.TreeNode.ImageIndex != iconIndex) page.TreeNode.ImageIndex = iconIndex;
                 if(page.TreeNode.SelectedImageIndex != iconIndex) page.TreeNode.SelectedImageIndex = iconIndex;
+
+                if(page.TreeNode.TreeView == treeViewPagePicker) {
+                    treeViewPagePicker.Sort();
+                }
             }
         }
 
@@ -650,14 +721,7 @@ namespace VirtualRadar.WinForms
                         throw new InvalidOperationException(String.Format("Assertion failed - there are {0} child pages and {1} tree nodes", realPages.Length, page.TreeNode.Nodes.Count));
                     }
 
-                    for(var i = 0;i < realPages.Length;++i) {
-                        var childPage = realPages[i];
-                        if(childPage.TreeNode != page.TreeNode.Nodes[i]) {
-                            var moveNode = page.TreeNode.Nodes.OfType<TreeNode>().Single(r => r.Tag == childPage);
-                            moveNode.Remove();
-                            page.TreeNode.Nodes.Insert(i, moveNode);
-                        }
-                    }
+                    treeViewPagePicker.Sort();
                 } finally {
                     treeViewPagePicker.EndUpdate();
                 }
