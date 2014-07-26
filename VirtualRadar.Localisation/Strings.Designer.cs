@@ -3766,6 +3766,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Port {0} is being used by the web server.
+        /// </summary>
+        public static string PortIsUsedByWebServer {
+            get {
+                return ResourceManager.GetString("PortIsUsedByWebServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter a port that has not already been used.
         /// </summary>
         public static string PortMustBeUnique {

@@ -25,6 +25,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using System.ComponentModel;
+using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -988,6 +989,15 @@ namespace VirtualRadar.Library.Presenter
                 var ports = _View.Configuration.RebroadcastSettings.Where(r => r != server).Select(r => r.Port).ToArray();
                 ValueIsNotInList(server.Port, ports, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortMustBeUnique,
+                });
+
+                // Port cannot clash with the web server port
+                ConditionIsTrue(server.Port, (port) => {
+                    var autoConfigWebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton;
+                    return port != autoConfigWebServer.WebServer.Port;
+                }, new Validation(ValidationField.RebroadcastServerPort, defaults) {
+                    Format = Strings.PortIsUsedByWebServer,
+                    Args = new object[] { server.Port },
                 });
 
                 // Format is present

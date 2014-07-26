@@ -17,7 +17,6 @@ using System.Linq.Expressions;
 
 namespace VirtualRadar.Interface.Settings
 {
-    #pragma warning disable 0659
     /// <summary>
     /// The settings for the rebroadcast server.
     /// </summary>
@@ -137,5 +136,4 @@ namespace VirtualRadar.Interface.Settings
             StaleSeconds = 3;
         }
     }
-    #pragma warning restore 0659
 }
