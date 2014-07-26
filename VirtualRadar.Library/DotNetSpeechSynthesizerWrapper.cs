@@ -28,7 +28,7 @@ namespace VirtualRadar.Library
         /// The speech synthesizer that this class wraps.
         /// </summary>
         #if !__MonoCS__
-        private SpeechSynthesizer _SpeechSynthesizer = new SpeechSynthesizer();
+        private SpeechSynthesizer _SpeechSynthesizer;
         #else
         private IDisposable _SpeechSynthesizer;
         #endif
@@ -39,7 +39,7 @@ namespace VirtualRadar.Library
         public string DefaultVoiceName
         {
             #if !__MonoCS__
-            get { return _SpeechSynthesizer.Voice.Name; }
+            get { return _SpeechSynthesizer != null ? _SpeechSynthesizer.Voice.Name : ""; }
             #else
             get { return "SpeechSynthesisNotSupported"; }
             #endif
@@ -51,13 +51,28 @@ namespace VirtualRadar.Library
         public int Rate
         {
             #if !__MonoCS__
-            get { return _SpeechSynthesizer.Rate; }
-            set { _SpeechSynthesizer.Rate = value; }
+            get { return _SpeechSynthesizer != null ? _SpeechSynthesizer.Rate : 0; }
+            set { if(_SpeechSynthesizer != null) _SpeechSynthesizer.Rate = value; }
             #else
             get { return 0; }
             set { ; }
             #endif
         }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public DotNetSpeechSynthesizerWrapper()
+        {
+            #if !__MonoCS__
+            try {
+                _SpeechSynthesizer = new SpeechSynthesizer();
+            } catch {
+                // On some Windows installs there's no speech synthesizer.
+                _SpeechSynthesizer = null;
+            }
+            #endif
+         }
 
         /// <summary>
         /// Finalises the object.
@@ -95,7 +110,7 @@ namespace VirtualRadar.Library
         public IEnumerable<string> GetInstalledVoiceNames()
         {
             #if !__MonoCS__
-            return _SpeechSynthesizer.GetInstalledVoices().Where(s => s.Enabled).Select(v => v.VoiceInfo.Name);
+            return _SpeechSynthesizer == null ? new string[0] : _SpeechSynthesizer.GetInstalledVoices().Where(s => s.Enabled).Select(v => v.VoiceInfo.Name);
             #else
             return new string[]{};
             #endif
@@ -108,7 +123,7 @@ namespace VirtualRadar.Library
         public void SelectVoice(string name)
         {
             #if !__MonoCS__
-            _SpeechSynthesizer.SelectVoice(name);
+            if(_SpeechSynthesizer != null) _SpeechSynthesizer.SelectVoice(name);
             #endif
         }
 
@@ -118,7 +133,7 @@ namespace VirtualRadar.Library
         public void SetOutputToDefaultAudioDevice()
         {
             #if !__MonoCS__
-            _SpeechSynthesizer.SetOutputToDefaultAudioDevice();
+            if(_SpeechSynthesizer != null) _SpeechSynthesizer.SetOutputToDefaultAudioDevice();
             #endif
         }
 
@@ -129,7 +144,7 @@ namespace VirtualRadar.Library
         public void SpeakAsync(string text)
         {
             #if !__MonoCS__
-            _SpeechSynthesizer.SpeakAsync(text);
+            if(_SpeechSynthesizer != null) _SpeechSynthesizer.SpeakAsync(text);
             #endif
         }
     }
