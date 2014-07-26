@@ -70,7 +70,7 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            _ListHelper = new RecordListHelper<RebroadcastSettings,PageRebroadcastServer>(this, listRebroadcastServers, SettingsView.Configuration.RebroadcastSettings);
+            _ListHelper = new RecordListHelper<RebroadcastSettings,PageRebroadcastServer>(this, listRebroadcastServers, SettingsView.Configuration.RebroadcastSettings, listRebroadcastServers_GetSortValue);
         }
 
         #region Rebroadcast server list handling
@@ -88,6 +88,19 @@ namespace VirtualRadar.WinForms.SettingPage
                 e.ColumnTexts.Add(record.Port.ToString());
                 e.ColumnTexts.Add(record.StaleSeconds.ToString());
             }
+        }
+
+        private IComparable listRebroadcastServers_GetSortValue(object record, ColumnHeader header, IComparable defaultValue)
+        {
+            IComparable result = defaultValue;
+
+            var rebroadcastServer = record as RebroadcastSettings;
+            if(rebroadcastServer != null) {
+                if(header == columnHeaderPort)          result = rebroadcastServer.Port;
+                else if(header == columnHeaderStale)    result = rebroadcastServer.StaleSeconds;
+            }
+
+            return result;
         }
 
         private void listRebroadcastServers_AddClicked(object sender, EventArgs e)
