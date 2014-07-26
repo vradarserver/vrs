@@ -1412,6 +1412,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Format not supported for receiver type.
+        /// </summary>
+        public static string FormatNotSupportedForReceiverType {
+            get {
+                return ResourceManager.GetString("FormatNotSupportedForReceiverType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Forward.
         /// </summary>
         public static string Forward {

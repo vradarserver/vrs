@@ -2173,4 +2173,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="PortIsUsedByWebServer" xml:space="preserve">
     <value>Port {0} is being used by the web server</value>
   </data>
+  <data name="FormatNotSupportedForReceiverType" xml:space="preserve">
+    <value>Format not supported for receiver type</value>
+  </data>
 </root>
