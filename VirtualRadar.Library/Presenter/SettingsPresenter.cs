@@ -1005,6 +1005,49 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.RebroadcastFormatRequired,
                 });
 
+                // Format is valid for the receiver type
+                ConditionIsTrue(server.Format, (format) => {
+                    var formatIsOK = true;
+
+                    var receiver = _View.Configuration.Receivers.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
+                    var mergedFeed = _View.Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
+
+                    if(mergedFeed != null) {
+                        switch(format) {
+                            case RebroadcastFormat.Avr:             formatIsOK = false; break;      // Cannot convert BaseStation to AVR
+                            case RebroadcastFormat.CompressedVRS:   formatIsOK = true; break;
+                            case RebroadcastFormat.Passthrough:     formatIsOK = false; break;      // As-of time of writing Passthrough not raised for merged feed listeners
+                            case RebroadcastFormat.Port30003:       formatIsOK = true; break;
+                            case RebroadcastFormat.None:            break;
+                            default:                                throw new NotImplementedException();
+                        }
+                    } else if(receiver != null) {
+                        var isCooked = false;
+                        switch(receiver.DataSource) {
+                            case DataSource.Beast:          break;
+                            case DataSource.CompressedVRS:  isCooked = true; break;
+                            case DataSource.Port30003:      isCooked = true; break;
+                            case DataSource.Sbs3:           break;
+                            default:                        throw new NotImplementedException();
+                        }
+                        switch(format) {
+                            case RebroadcastFormat.Avr:             formatIsOK = !isCooked; break;
+                            case RebroadcastFormat.CompressedVRS:   formatIsOK = true; break;
+                            case RebroadcastFormat.None:            break;
+                            case RebroadcastFormat.Passthrough:     formatIsOK = true; break;
+                            case RebroadcastFormat.Port30003:       formatIsOK = true; break;
+                            default:                                throw new NotImplementedException();
+                        }
+                    }
+
+                    return formatIsOK;
+                }, new Validation(ValidationField.Format, defaults) {
+                    Message = Strings.FormatNotSupportedForReceiverType,
+                    RelatedFields = {
+                        ValidationField.RebroadcastReceiver,
+                    }
+                });
+
                 // Receiver has been supplied
                 ValueIsInList(server.ReceiverId, CombinedFeedUniqueIds(null), new Validation(ValidationField.RebroadcastReceiver, defaults) {
                     Message = Strings.ReceiverRequired,
