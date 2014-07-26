@@ -11,12 +11,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Localisation;
 using VirtualRadar.Interface;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -32,11 +33,43 @@ namespace VirtualRadar.WinForms.Controls
         class Details
         {
             public ListViewItem ListViewItem;
-            public string Address;
+            public IPEndPoint RemoteEndPoint;
             public DateTime LastRequest;
             public long BytesSent;
             public string LastUrl;
             public bool Changed;
+        }
+        #endregion
+
+        #region Private class - Sorter
+        /// <summary>
+        /// Sorts the list view for us.
+        /// </summary>
+        class Sorter : AutoListViewSorter
+        {
+            WebServerUserListControl _Parent;
+
+            public Sorter(WebServerUserListControl parent) : base(parent.listView)
+            {
+                _Parent = parent;
+            }
+
+            public override IComparable GetRowValue(ListViewItem listViewItem)
+            {
+                var result = base.GetRowValue(listViewItem);
+                var details = listViewItem.Tag as Details;
+                if(details != null) {
+                    var column = SortColumn ?? _Parent.columnHeaderAddress;
+                    if(column == _Parent.columnHeaderAddress) {
+                        if(!_Parent.ShowPortNumber) result = new ByteArrayComparable(details.RemoteEndPoint.Address);
+                        else                        result = new ByteArrayComparable(details.RemoteEndPoint);
+                    }
+                    else if(column == _Parent.columnHeaderBytesSent)    result = details.BytesSent;
+                    else if(column == _Parent.columnHeaderLastRequest)  result = details.LastRequest;
+                }
+
+                return result;
+            }
         }
         #endregion
 
@@ -45,6 +78,11 @@ namespace VirtualRadar.WinForms.Controls
         /// A list of every entry on display.
         /// </summary>
         private List<Details> _Entries = new List<Details>();
+
+        /// <summary>
+        /// The object that's sorting the list view for us.
+        /// </summary>
+        private Sorter _Sorter;
         #endregion
 
         #region Properties
@@ -69,6 +107,8 @@ namespace VirtualRadar.WinForms.Controls
         {
             InitializeComponent();
             ShowPortNumber = true;
+            _Sorter = new Sorter(this);
+            listView.ListViewItemSorter = _Sorter;
         }
         #endregion
 
@@ -76,25 +116,23 @@ namespace VirtualRadar.WinForms.Controls
         /// <summary>
         /// Tells the control about a web request that needs to be displayed / updated.
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="remoteEndPoint"></param>
         /// <param name="requestTime"></param>
         /// <param name="url"></param>
         /// <param name="bytesSent"></param>
         /// <remarks>
         /// This does not update the GUI, it just records information about the request. The GUI is updated on a timer.
         /// </remarks>
-        public void UpdateEntry(string address, DateTime requestTime, string url, long bytesSent)
+        public void UpdateEntry(IPEndPoint remoteEndPoint, DateTime requestTime, string url, long bytesSent)
         {
             if(bytesSent > 0) {
-                if(!ShowPortNumber) {
-                    int portStart = address.LastIndexOf(':');
-                    if(portStart != -1) address = address.Remove(portStart);
-                }
-
                 lock(_Entries) {
-                    Details details = _Entries.Find(delegate(Details listDetails) { return String.Compare(listDetails.Address, address, StringComparison.InvariantCultureIgnoreCase) == 0; });
+                    Details details = _Entries.Find(delegate(Details listDetails) {
+                        var otherEndPoint = listDetails.RemoteEndPoint;
+                        return ShowPortNumber ? remoteEndPoint.Equals(otherEndPoint) : remoteEndPoint.Address.Equals(otherEndPoint.Address);
+                    });
                     if(details == null) {
-                        details = new Details() { Address = address };
+                        details = new Details() { RemoteEndPoint = remoteEndPoint };
                         _Entries.Add(details);
                     }
                     details.LastRequest = requestTime;
@@ -148,7 +186,8 @@ namespace VirtualRadar.WinForms.Controls
             lock(_Entries) {
                 foreach(Details details in _Entries) {
                     if(details.ListViewItem == null) {
-                        details.ListViewItem = new ListViewItem(new string[] { details.Address, "", "", "" });
+                        var address = ShowPortNumber ? details.RemoteEndPoint.ToString() : details.RemoteEndPoint.Address.ToString();
+                        details.ListViewItem = new ListViewItem(new string[] { address, "", "", "" });
                         if(listView.Items.Count > 0) listView.Items.Insert(0, details.ListViewItem);
                         else                         listView.Items.Add(details.ListViewItem);
                     }
@@ -160,6 +199,8 @@ namespace VirtualRadar.WinForms.Controls
                         details.Changed = false;
                     }
                 }
+
+                listView.Sort();
             }
 
             timerRefresh.Start();

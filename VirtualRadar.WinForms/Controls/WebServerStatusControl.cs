@@ -8,14 +8,15 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using InterfaceFactory;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.Net;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
 using VirtualRadar.Localisation;
-using InterfaceFactory;
-using System.Drawing;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -353,12 +354,12 @@ namespace VirtualRadar.WinForms.Controls
         /// <summary>
         /// Reports to the user that a web request has been serviced. This is thread safe.
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="remoteEndPoint"></param>
         /// <param name="url"></param>
         /// <param name="bytesSent"></param>
-        public void ShowWebRequestHasBeenServiced(string address, string url, long bytesSent)
+        public void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent)
         {
-            webServerUserList.UpdateEntry(address, DateTime.Now, url, bytesSent);
+            webServerUserList.UpdateEntry(remoteEndPoint, DateTime.Now, url, bytesSent);
         }
         #endregion
 

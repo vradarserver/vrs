@@ -61,7 +61,6 @@
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
-            this.listView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
             this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
             // 
             // columnHeaderIpAddress
@@ -97,6 +96,7 @@
             // columnHeaderDuration
             // 
             this.columnHeaderDuration.Text = "::Duration::";
+            this.columnHeaderDuration.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.columnHeaderDuration.Width = 70;
             // 
             // columnHeaderBytesSent

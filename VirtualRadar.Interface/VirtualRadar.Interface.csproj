@@ -127,6 +127,7 @@
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
     <Compile Include="BaseStation\IRawMessageTranslator.cs" />
     <Compile Include="AircraftDetail.cs" />
+    <Compile Include="ByteArrayComparable.cs" />
     <Compile Include="Certainty.cs" />
     <Compile Include="IAircraftSanityChecker.cs" />
     <Compile Include="IListExtensions.cs" />

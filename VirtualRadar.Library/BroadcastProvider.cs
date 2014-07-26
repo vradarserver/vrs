@@ -572,7 +572,7 @@ namespace VirtualRadar.Library
 
                     var ipEndPoint = connectedClient.IPEndPoint;
                     if(ipEndPoint != null) {
-                        connection.EndpointAddress = ipEndPoint.Address.ToString();
+                        connection.EndpointIPAddress = ipEndPoint.Address;
                         connection.EndpointPort = ipEndPoint.Port;
                     }
 

@@ -53,6 +53,43 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
+        #region Private class - Sorter
+        /// <summary>
+        /// A private class that handles the sorting of the list view for us.
+        /// </summary>
+        class Sorter : AutoListViewSorter
+        {
+            private FeedStatusControl _Parent;
+
+            public Sorter(FeedStatusControl parent) : base(parent.listView)
+            {
+                _Parent = parent;
+            }
+
+            public override IComparable GetRowValue(ListViewItem listViewItem)
+            {
+                var result = base.GetRowValue(listViewItem);
+                var feedDetail = listViewItem.Tag as FeedDetail;
+                if(feedDetail != null) {
+                    var column = SortColumn ?? _Parent.columnHeaderName;
+                    if(column == _Parent.columnHeaderAircraftCount)         result = feedDetail.AircraftCount;
+                    else if(column == _Parent.columnHeaderConnectionStatus) result = (int)feedDetail.ConnectionStatus;
+                    else if(column == _Parent.columnHeaderTotalBadMessages) result = feedDetail.TotalBadMessages;
+                    else if(column == _Parent.columnHeaderTotalMessages)    result = feedDetail.TotalMessages;
+                }
+
+                return result;
+            }
+        }
+        #endregion
+
+        #region Fields
+        /// <summary>
+        /// The object that takes care of sorting the list view for us.
+        /// </summary>
+        private Sorter _Sorter;
+        #endregion
+
         #region Properties
         /// <summary>
         /// Gets or sets the selected feeds.
@@ -112,6 +149,8 @@ namespace VirtualRadar.WinForms.Controls
         public FeedStatusControl()
         {
             InitializeComponent();
+            _Sorter = new Sorter(this);
+            listView.ListViewItemSorter = _Sorter;
         }
         #endregion
 
@@ -127,6 +166,7 @@ namespace VirtualRadar.WinForms.Controls
                 var feedDetails = GetFeedDetails();
                 AddOrUpdateExistingFeeds(feeds, feedDetails);
                 RemoveOldFeeds(feedDetails);
+                listView.Sort();
             }
         }
 
@@ -140,7 +180,10 @@ namespace VirtualRadar.WinForms.Controls
             else {
                 var feedDetails = GetFeedDetails();
                 var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.UniqueId);
-                if(feedDetail != null) UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
+                if(feedDetail != null) {
+                    UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
+                    listView.Sort();
+                }
             }
         }
 
