@@ -23,6 +23,7 @@ using VirtualRadar.Interface;
 using System.IO.Ports;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
+using InterfaceFactory;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -218,6 +219,15 @@ namespace VirtualRadar.WinForms.SettingPage
             using(var dialog = new ReceiverConfigurationWizard()) {
                 if(dialog.ShowDialog() == DialogResult.OK) {
                     SettingsView.ApplyReceiverConfigurationWizard(dialog.Answers, Receiver);
+
+                    // Under Mono the changes made by the presenter to this receiver will not show up,
+                    // it ignores NotifyPropertyChanged events. I'm not changing how this works just
+                    // for Mono so we're just going to rebind if we have the misfortune of running under
+                    // it.
+                    if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                        ClearBindings();
+                        CreateBindings();
+                    }
                 }
             }
         }
@@ -225,6 +235,13 @@ namespace VirtualRadar.WinForms.SettingPage
         private void buttonClearLocationId_Click(object sender, EventArgs e)
         {
             Receiver.ReceiverLocationId = 0;
+
+            // Under Mono that line doesn't work - Mono ignores the NotifyPropertyChanged event and continues
+            // to show the old value. The workaround is to rebind the control.
+            if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                ClearBindings();
+                CreateBindings();
+            }
         }
 
         private void buttonTestConnection_Click(object sender, EventArgs e)
