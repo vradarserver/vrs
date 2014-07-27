@@ -462,6 +462,11 @@ namespace VirtualRadar.Library.Listener
                         // connect.
                         if(_Log != null) _Log.WriteLine("Failed to connect to {0}, sockect exception {1}. Status is {2}, stopping.", ReceiverName, ex.Message, ConnectionStatus);
                         break;
+                    case ConnectionStatus.Connected:
+                        // This can happen in a similar situation to the above, except the receiver has been
+                        // reconfigured and some background thread is still trying to connect the old receiver.
+                        // In this situation we just want to forget about it.
+                        break;
                     default:
                         OnExceptionCaught(new EventArgs<Exception>(ex)); break;
                 }
