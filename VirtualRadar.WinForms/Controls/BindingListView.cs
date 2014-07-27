@@ -624,6 +624,19 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
+        #region ResetBindings
+        /// <summary>
+        /// Refreshes the control's display. This is largely here for Mono's benefit,
+        /// under Windows the list should refresh without any prompting.
+        /// </summary>
+        public void ResetBindings()
+        {
+            if(_CurrencyManager != null && _BindingList != null) {
+                LoadItemsFromSource();
+            }
+        }
+        #endregion
+
         #region EnableDisableControls
         /// <summary>
         /// Enables or disables controls based on the state of the object.

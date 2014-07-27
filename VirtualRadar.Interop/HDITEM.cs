@@ -27,33 +27,90 @@ namespace VirtualRadar.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct HDITEM
     {
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDI_FORMAT =     0x0004;
+
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDF_LEFT =       0x0000;
+
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDF_STRING =     0x4000;
+
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDF_SORTUP =     0x0400;
+
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDF_SORTDOWN =   0x0200;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDM_FIRST =      0x1200;
+
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDM_GETITEM =    HDM_FIRST + 11;
+
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public const Int32 HDM_SETITEM =    HDM_FIRST + 12;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public Int32 mask;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public Int32 cxy;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         [MarshalAs(UnmanagedType.LPTStr)]
         public String pszText;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public IntPtr hbm;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public Int32 cchTextMax;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public Int32 fmt;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public Int32 lParam;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public Int32 iImage;
 
+        /// <summary>
+        /// See MSDN documentation.
+        /// </summary>
         public Int32 iOrder;
     };
 }
