@@ -8,6 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using InterfaceFactory;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -479,7 +480,16 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         internal virtual void PageSelected()
         {
-            ;
+            // Mono's data binding is flakey at best and completely borked before ~2.10. Even after 2.10
+            // it's failing to raise events that our BindinngListView control relies upon to keep the
+            // display in sync with the list. This workaround only runs under Mono (it would be redundant
+            // under Windows) - it looks for BindingListView controls on the page and refreshes their
+            // bindings.
+            if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                foreach(var bindingListView in Controls.OfType<BindingListView>()) {
+                    bindingListView.ResetBindings();
+                }
+            }
         }
 
         /// <summary>
