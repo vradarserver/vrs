@@ -28,6 +28,25 @@ namespace VirtualRadar.Library.Listener
     /// </summary>
     class TcpListenerProvider : ITcpListenerProvider
     {
+        #region AsyncResultException
+        /// <summary>
+        /// A class that can pass an exception from the BeginConnect call to the EndConnect call.
+        /// </summary>
+        class AsyncResultException : IAsyncResult
+        {
+            public Exception Exception { get; set; }
+            public object AsyncState { get { throw new NotImplementedException(); } }
+            public WaitHandle AsyncWaitHandle { get { throw new NotImplementedException(); } }
+            public bool CompletedSynchronously { get { throw new NotImplementedException(); } }
+            public bool IsCompleted { get { throw new NotImplementedException(); } }
+
+            public AsyncResultException(Exception ex)
+            {
+                Exception = ex;
+            }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// The socket connected to the address and port specified in the <see cref="BeginConnect"/> call.
@@ -78,27 +97,50 @@ namespace VirtualRadar.Library.Listener
         {
             Close();
 
+            Exception resolveException = null;
             IPAddress[] ipAddresses = null;
             var retryCounter = 6;
             while(ipAddresses == null && retryCounter >= 0) {
                 try {
                     ipAddresses = Dns.GetHostAddresses(Address);
                     retryCounter = -1;
-                } catch {
+                } catch(Exception ex) {
                     ipAddresses = null;
                     if(retryCounter-- > 0) Thread.Sleep(500);
-                    else                    throw;
+                    else {
+                        resolveException = ex;
+                        break;
+                    }
                 }
             }
 
-            if(ipAddresses == null || ipAddresses.Length == 0) throw new InvalidOperationException(String.Format("Cannot find an IP address for {0}", Address));
-            var ipAddress = ipAddresses.First();
+            // If we can't resolve the adddress then what we'd ideally do is call the callback method and force that
+            // to throw a socket exception, all from a background thread, so that we can fit in with what the listener
+            // is expecting to see and cause the listener to retry when appropriate.
+            IAsyncResult result = null;
+            if(resolveException != null) {
+                var dummyAsyncResult = new AsyncResultException(resolveException);
+                ThreadPool.QueueUserWorkItem(state => {
+                    try {
+                        callback((IAsyncResult)state);
+                    } catch {
+                        // Can't let this bubble up, it would stop the runtime, and we have no mechanism for
+                        // showing it to the user. It's unlikely to ever get this far though.
+                    }
+                }, dummyAsyncResult);
+            } else {
 
-            var endPoint = new IPEndPoint(ipAddress, Port);
-            _Socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            if(!_IsMono) _Socket.IOControl(IOControlCode.KeepAliveValues, new TcpKeepAlive() { OnOff = 1, KeepAliveTime = 10 * 1000, KeepAliveInterval = 1 * 1000 }.BuildBuffer(), null);
+                if(ipAddresses == null || ipAddresses.Length == 0) throw new InvalidOperationException(String.Format("Cannot find an IP address for {0}", Address));
+                var ipAddress = ipAddresses.First();
 
-            return _Socket.BeginConnect(endPoint, callback, _Socket);
+                var endPoint = new IPEndPoint(ipAddress, Port);
+                _Socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                if(!_IsMono) _Socket.IOControl(IOControlCode.KeepAliveValues, new TcpKeepAlive() { OnOff = 1, KeepAliveTime = 10 * 1000, KeepAliveInterval = 1 * 1000 }.BuildBuffer(), null);
+
+                result = _Socket.BeginConnect(endPoint, callback, _Socket);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -108,6 +150,9 @@ namespace VirtualRadar.Library.Listener
         /// <returns></returns>
         public bool EndConnect(IAsyncResult asyncResult)
         {
+            var rethrowResult = asyncResult as AsyncResultException;
+            if(rethrowResult != null) throw rethrowResult.Exception;
+
             var socket = (Socket)asyncResult.AsyncState;
             socket.EndConnect(asyncResult);
 

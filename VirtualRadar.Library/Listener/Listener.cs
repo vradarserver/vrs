@@ -454,6 +454,14 @@ namespace VirtualRadar.Library.Listener
                     case ConnectionStatus.Reconnecting:
                         Reconnect();
                         break;
+                    case ConnectionStatus.CannotConnect:
+                        // This can happen if the user tries to manually reconnect while another thread
+                        // is reconnecting. The manual reconnect sets the status to CannotConnect before
+                        // the reconnect finishes. We should just give up at this point, it would be
+                        // confusing to the user to suddenly get exceptions showing or for it to actually
+                        // connect.
+                        if(_Log != null) _Log.WriteLine("Failed to connect to {0}, sockect exception {1}. Status is {2}, stopping.", ReceiverName, ex.Message, ConnectionStatus);
+                        break;
                     default:
                         OnExceptionCaught(new EventArgs<Exception>(ex)); break;
                 }
