@@ -21,6 +21,7 @@ using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
+using System.Threading;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -264,9 +265,15 @@ namespace VirtualRadar.Library.Presenter
 
         private void View_ReconnectFeed(object sender, EventArgs<IFeed> args)
         {
-            var feed = args.Value;
-            feed.Listener.Disconnect();
-            feed.Listener.Connect(false);
+            ThreadPool.QueueUserWorkItem(r => {
+                try {
+                    var feed = args.Value;
+                    feed.Listener.Disconnect();
+                    feed.Listener.Connect(false);
+                } catch(Exception ex) {
+                    View.BubbleExceptionToGui(ex);
+                }
+            });
         }
 
         private void View_ToggleServerStatus(object sender, EventArgs args)
