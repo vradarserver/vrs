@@ -643,6 +643,7 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         private void EnableDisableControls()
         {
+            buttonEdit.Enabled = AllowUpdate;
             buttonAdd.Enabled = AllowAdd;
             buttonDelete.Enabled = AllowDelete && SelectedRecord != null;
         }
@@ -779,15 +780,18 @@ namespace VirtualRadar.WinForms.Controls
                 labelErrorAnchor.BringToFront();
 
                 var gap = buttonDelete.Left - buttonAdd.Left;
-                buttonAdd.Left = 4;
+                buttonEdit.Left = 4;
+                buttonAdd.Left = buttonEdit.Left + gap;
                 buttonDelete.Left = buttonAdd.Left + gap;
 
+                buttonEdit.Image = Images.Edit16x16;
                 buttonAdd.Image = Images.Add16x16;
                 buttonDelete.Image = Images.Cancel16x16;
                 buttonAdd.Text = buttonDelete.Text = "";
 
                 if(HideAllButList) {
                     labelErrorAnchor.Visible = false;
+                    buttonEdit.Visible = false;
                     buttonAdd.Visible = false;
                     buttonDelete.Visible = false;
                     listView.Dock = DockStyle.Fill;
@@ -813,6 +817,11 @@ namespace VirtualRadar.WinForms.Controls
         private void buttonDelete_Click(object sender, EventArgs e)
         {
             OnDeleteClicked(e);
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            OnEditClicked(e);
         }
 
         private void checkedSubset_ListChanged(object sender, ListChangedEventArgs args)
