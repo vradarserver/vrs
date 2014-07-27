@@ -188,6 +188,7 @@
             // buttonTestAudio
             // 
             this.buttonTestAudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonTestAudio.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.buttonTestAudio.Location = new System.Drawing.Point(474, 66);
             this.buttonTestAudio.Name = "buttonTestAudio";
             this.buttonTestAudio.Size = new System.Drawing.Size(156, 23);

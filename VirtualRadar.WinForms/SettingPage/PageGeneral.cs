@@ -108,6 +108,14 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericReadingSpeed,                              Strings.ReadingSpeed,                   Strings.OptionsDescribeGeneralReadingSpeed);
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if(!DesignMode) {
+                buttonTestAudio.Image = Images.Test16x16;
+            }
+        }
+
         private void buttonTestAudio_Click(object sender, EventArgs e)
         {
             SettingsView.RaiseTestTextToSpeechSettingsClicked(e);
