@@ -283,6 +283,19 @@ namespace VirtualRadar.Resources
             set { _Decoding16x16 = value; }
         }
 
+        private static Bitmap _Edit16x16;
+        /// <summary>
+        /// Gets or sets the Edit16x16 image.
+        /// </summary>
+        /// <remarks>
+        /// <img src="../Images/Edit16x16.png" alt="" title="Edit16x16" />
+        /// </remarks>
+        public static Bitmap Edit16x16
+        {
+            get { return _Edit16x16 ?? InternalResources.Edit16x16; }
+            set { _Edit16x16 = value; }
+        }
+
         private static Bitmap _Expand;
         /// <summary>
         /// Gets or sets the Expand image.

@@ -98,6 +98,7 @@
     <Content Include="Images\CancelSmall16x16.png" />
     <Content Include="Images\CloseSlider.png" />
     <Content Include="Images\Compass.png" />
+    <Content Include="Images\Edit16x16.png" />
     <Content Include="Images\Test16x16.png" />
     <Content Include="Images\Wizard16x16.png" />
     <EmbeddedResource Include="Images\Favicon.ico" />

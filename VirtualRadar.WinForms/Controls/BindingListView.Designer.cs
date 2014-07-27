@@ -32,6 +32,7 @@
             this.buttonAdd = new System.Windows.Forms.Button();
             this.buttonDelete = new System.Windows.Forms.Button();
             this.labelErrorAnchor = new System.Windows.Forms.Label();
+            this.buttonEdit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listView
@@ -46,7 +47,7 @@
             this.listView.Location = new System.Drawing.Point(0, 33);
             this.listView.Name = "listView";
             this.listView.Size = new System.Drawing.Size(561, 114);
-            this.listView.TabIndex = 2;
+            this.listView.TabIndex = 4;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
             this.listView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView_ItemChecked);
@@ -58,11 +59,11 @@
             // 
             this.buttonAdd.FlatAppearance.BorderSize = 0;
             this.buttonAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonAdd.Location = new System.Drawing.Point(35, 0);
+            this.buttonAdd.Location = new System.Drawing.Point(74, 0);
             this.buttonAdd.Margin = new System.Windows.Forms.Padding(3, 3, 6, 0);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(30, 30);
-            this.buttonAdd.TabIndex = 0;
+            this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "+";
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
@@ -71,11 +72,11 @@
             // 
             this.buttonDelete.FlatAppearance.BorderSize = 0;
             this.buttonDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonDelete.Location = new System.Drawing.Point(77, 0);
+            this.buttonDelete.Location = new System.Drawing.Point(116, 0);
             this.buttonDelete.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(30, 30);
-            this.buttonDelete.TabIndex = 1;
+            this.buttonDelete.TabIndex = 2;
             this.buttonDelete.Text = "-";
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
@@ -90,10 +91,24 @@
             this.labelErrorAnchor.Text = "<";
             this.labelErrorAnchor.Visible = false;
             // 
+            // buttonEdit
+            // 
+            this.buttonEdit.FlatAppearance.BorderSize = 0;
+            this.buttonEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonEdit.Location = new System.Drawing.Point(35, 0);
+            this.buttonEdit.Margin = new System.Windows.Forms.Padding(3, 3, 6, 0);
+            this.buttonEdit.Name = "buttonEdit";
+            this.buttonEdit.Size = new System.Drawing.Size(30, 30);
+            this.buttonEdit.TabIndex = 0;
+            this.buttonEdit.Text = "/";
+            this.buttonEdit.UseVisualStyleBackColor = true;
+            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            // 
             // BindingListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonEdit);
             this.Controls.Add(this.labelErrorAnchor);
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonAdd);
@@ -111,5 +126,6 @@
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.Label labelErrorAnchor;
+        private System.Windows.Forms.Button buttonEdit;
     }
 }
