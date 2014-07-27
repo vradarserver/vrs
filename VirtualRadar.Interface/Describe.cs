@@ -172,6 +172,23 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
+        /// Returns a description of a connection status.
+        /// </summary>
+        /// <param name="connectionStatus"></param>
+        /// <returns></returns>
+        public static string ConnectionStatus(ConnectionStatus connectionStatus)
+        {
+            switch(connectionStatus) {
+                case Interface.ConnectionStatus.CannotConnect:  return Strings.CannotConnect;
+                case Interface.ConnectionStatus.Connecting:     return Strings.Connecting;
+                case Interface.ConnectionStatus.Connected:      return Strings.Connected;
+                case Interface.ConnectionStatus.Disconnected:   return Strings.Disconnected;
+                case Interface.ConnectionStatus.Reconnecting:   return Strings.Reconnecting;
+                default:                                        throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
         /// Returns a description of a number of stop bits.
         /// </summary>
         /// <param name="stopBits"></param>
