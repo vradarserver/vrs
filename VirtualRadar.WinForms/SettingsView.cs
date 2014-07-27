@@ -126,6 +126,11 @@ namespace VirtualRadar.WinForms
         /// </summary>
         private bool _IsSaving;
 
+        /// <summary>
+        /// True if the last full-form validation results indicated a failed validation.
+        /// </summary>
+        private bool _LastValidationFailed;
+
         // All of the top-level pages in the order in which they are shown to the user.
         private Page[] _TopLevelPages = new Page[] {
             new PageDataSources(),
@@ -870,9 +875,10 @@ namespace VirtualRadar.WinForms
                 }
             }
 
-            if(results.HasErrors) {
-                DialogResult = DialogResult.None;
-            }
+            // Normally here we'd set DialogResult to None if we had any errors. Unfortunately Mono's
+            // implementation of DialogResult is broken, we can't use it. Instead we need to set a flag
+            // that the OK button click handler can use to control whether the form closes or not.
+            _LastValidationFailed = results.HasErrors;
 
             Page showPage = ShowValidationResultsAgainstControls(results);
             if(showPage != null) DisplayPage(showPage);
@@ -996,6 +1002,12 @@ namespace VirtualRadar.WinForms
             } finally {
                 _IsSaving = isSaving;
             }
+
+            // We had to set DialogResult to None instead of OK to work around a problem with Mono, whereby the
+            // setting of DialogResult immediately calls the FormClosing events and you can't stop the form from
+            // closing by just setting DialogResult to None. As a workaround I've added _LastValidationFailed
+            // - if that's set to false then we can set DialogResult to OK here.
+            if(!_LastValidationFailed) DialogResult = DialogResult.OK;
         }
         #endregion
 
