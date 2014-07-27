@@ -257,7 +257,7 @@ namespace VirtualRadar.WinForms.Controls
 
             if(feedListener != null) {
                 if(forceRefresh || feedListener.ConnectionStatus != feedDetail.ConnectionStatus) {
-                    item.SubItems[1].Text = TranslateConnectionStatus(feedListener.ConnectionStatus);
+                    item.SubItems[1].Text = Describe.ConnectionStatus(feedListener.ConnectionStatus);
                     feedDetail.ConnectionStatus = feedListener.ConnectionStatus;
                 }
 
@@ -277,18 +277,6 @@ namespace VirtualRadar.WinForms.Controls
                     item.SubItems[4].Text = feedAircraftList.Count.ToString("N0");
                     feedDetail.AircraftCount = feedAircraftList.Count;
                 }
-            }
-        }
-
-        private string TranslateConnectionStatus(ConnectionStatus connectionStatus)
-        {
-            switch(connectionStatus) {
-                case ConnectionStatus.CannotConnect:    return Strings.CannotConnect;
-                case ConnectionStatus.Connecting:       return Strings.Connecting;
-                case ConnectionStatus.Connected:        return Strings.Connected;
-                case ConnectionStatus.Disconnected:     return Strings.Disconnected;
-                case ConnectionStatus.Reconnecting:     return Strings.Reconnecting;
-                default:                                throw new NotImplementedException();
             }
         }
         #endregion
