@@ -21,6 +21,11 @@ namespace VirtualRadar.Interface.Listener
     public interface IMessageBytesExtractor
     {
         /// <summary>
+        /// Gets the number of bytes that the message extractor is currently consuming in buffers.
+        /// </summary>
+        long BufferSize { get; }
+
+        /// <summary>
         /// Returns a collection of byte arrays, each byte array corresponding to a complete message.
         /// </summary>
         /// <param name="bytes"></param>

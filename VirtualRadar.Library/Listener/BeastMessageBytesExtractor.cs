@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Library.Listener
@@ -21,6 +22,11 @@ namespace VirtualRadar.Library.Listener
     /// </summary>
     class BeastMessageBytesExtractor : IBeastMessageBytesExtractor
     {
+        /// <summary>
+        /// The number of bytes we will buffer before we trash it and start again.
+        /// </summary>
+        private const int MaximumBufferSize = 10000;
+
         /// <summary>
         /// The buffer of unprocessed bytes from the last read.
         /// </summary>
@@ -74,6 +80,18 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public long BufferSize
+        {
+            get {
+                var result = _ReadBuffer == null ? 0 : _ReadBuffer.Length;
+                result += _Payload == null ? 0 : _Payload.Length;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="bytes"></param>
         /// <param name="offset"></param>
         /// <param name="bytesRead"></param>
@@ -81,6 +99,11 @@ namespace VirtualRadar.Library.Listener
         public IEnumerable<ExtractedBytes> ExtractMessageBytes(byte[] bytes, int offset, int bytesRead)
         {
             var length = _ReadBufferLength + bytesRead;
+            if(length > MaximumBufferSize) {
+                _ReadBufferLength = 0;
+                length = bytesRead;
+            }
+
             if(_ReadBuffer == null || length > _ReadBuffer.Length) {
                 var newReadBuffer = new byte[length];
                 if(_ReadBuffer != null) _ReadBuffer.CopyTo(newReadBuffer, 0);

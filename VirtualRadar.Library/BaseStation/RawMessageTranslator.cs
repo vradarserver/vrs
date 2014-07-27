@@ -402,7 +402,7 @@ namespace VirtualRadar.Library.BaseStation
 
                     if(isValidMessage) {
                         result = CreateBaseStationMessage(messageReceivedUtc, modeSMessage, adsbMessage, trackedAircraft);
-                        if(Statistics.Lock != null) { lock(Statistics.Lock) Statistics.AdsbAircraftTracked = _TrackedAircraft.Count; }
+                        if(Statistics != null) Statistics.Lock(r => r.AdsbAircraftTracked = _TrackedAircraft.Count);
                     }
                 }
             }
@@ -458,7 +458,7 @@ namespace VirtualRadar.Library.BaseStation
                 case DownlinkFormat.SurveillanceAltitudeReply:
                 case DownlinkFormat.SurveillanceIdentityReply:
                     isValidMessage = IcaoSeenEnoughTimesToBeValid(modeSMessage, messageReceivedUtc);
-                    if(!isValidMessage && Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.ModeSShortFrameWithoutLongFrameMessagesReceived; }
+                    if(!isValidMessage && Statistics != null) Statistics.Lock(r => ++r.ModeSShortFrameWithoutLongFrameMessagesReceived);
                     break;
             }
 
@@ -474,7 +474,9 @@ namespace VirtualRadar.Library.BaseStation
         private bool IsValidParityInterrogatorIdentifierMessage(ModeSMessage modeSMessage, DateTime messageReceivedUtc)
         {
             var result = modeSMessage.ParityInterrogatorIdentifier == 0;
-            if(!result && Statistics.Lock != null && modeSMessage.DownlinkFormat != DownlinkFormat.AllCallReply) lock(Statistics.Lock) ++Statistics.AdsbRejected;
+            if(!result && Statistics != null && modeSMessage.DownlinkFormat != DownlinkFormat.AllCallReply) {
+                Statistics.Lock(r => ++r.AdsbRejected);
+            }
             if(result) result = IcaoSeenEnoughTimesToBeValid(modeSMessage, messageReceivedUtc);
 
             return result;
@@ -837,7 +839,7 @@ namespace VirtualRadar.Library.BaseStation
                 var distance = GreatCircleMaths.Distance(ReceiverLocation.Latitude, ReceiverLocation.Longitude, position.Latitude, position.Longitude);
                 if(distance > ReceiverRangeKilometres) {
                     position = null;
-                    if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.AdsbPositionsOutsideRange; }
+                    if(Statistics != null) Statistics.Lock(r => ++r.AdsbPositionsOutsideRange);
                 }
             }
 
@@ -864,7 +866,7 @@ namespace VirtualRadar.Library.BaseStation
             trackedAircraft.InitialLocalDecodingUnsafe = true;
             trackedAircraft.State = TrackedAircraftState.Acquiring;
 
-            if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.AdsbPositionsReset; }
+            if(Statistics != null) Statistics.Lock(r => ++r.AdsbPositionsReset);
 
             OnPositionReset(new EventArgs<string>(trackedAircraft.Icao24));
 
@@ -917,7 +919,7 @@ namespace VirtualRadar.Library.BaseStation
 
                 if(distance >= allowableDistance) {
                     result = null;
-                    if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.AdsbPositionsExceededSpeedCheck; }
+                    if(Statistics != null) Statistics.Lock(r => ++r.AdsbPositionsExceededSpeedCheck);
                 }
             }
 
@@ -981,7 +983,7 @@ namespace VirtualRadar.Library.BaseStation
                     _TrackedAircraft.Remove(timedOutAircraft.Key);
                 }
             }
-            if(Statistics.Lock != null) { lock(Statistics.Lock) Statistics.AdsbAircraftTracked = _TrackedAircraft.Count; }
+            if(Statistics != null) Statistics.Lock(r => r.AdsbAircraftTracked = _TrackedAircraft.Count);
 
             lock(_AcceptIcaoLock) {
                 RemoveOldEntriesFromAcceptList(_AcceptIcaoParity, AcceptIcaoInPI0Milliseconds);

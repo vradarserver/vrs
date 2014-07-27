@@ -37,7 +37,9 @@ namespace Test.Framework
             var modeSDFCount = new long[Enum.GetValues(typeof(DownlinkFormat)).OfType<DownlinkFormat>().Select(r => (int)r).Max() + 1];
             var adsbMessageFormatCount = new long[Enum.GetValues(typeof(MessageFormat)).OfType<MessageFormat>().Select(r => (int)r).Max() + 1];
 
-            mock.Setup(r => r.Lock).Returns(lockObject);
+            mock.Setup(r => r.Lock(It.IsAny<Action<IStatistics>>())).Callback((Action<IStatistics> del) => {
+                del(mock.Object);
+            });
             mock.Setup(r => r.AdsbTypeCount).Returns(adsbTypeCount);
             mock.Setup(r => r.ModeSDFCount).Returns(modeSDFCount);
             mock.Setup(r => r.AdsbMessageFormatCount).Returns(adsbMessageFormatCount);

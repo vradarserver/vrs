@@ -161,12 +161,12 @@ namespace VirtualRadar.Library.Adsb
                     case 31:    DecodeAircraftOperationalStatus(result); break;
                 }
 
-                if(Statistics.Lock != null) {
-                    lock(Statistics.Lock) {
-                        ++Statistics.AdsbCount;
-                        ++Statistics.AdsbMessageFormatCount[(int)result.MessageFormat];
-                        ++Statistics.AdsbTypeCount[result.Type];
-                    }
+                if(Statistics != null) {
+                    Statistics.Lock(r => {
+                        ++r.AdsbCount;
+                        ++r.AdsbMessageFormatCount[(int)result.MessageFormat];
+                        ++r.AdsbTypeCount[result.Type];
+                    });
                 }
             }
 

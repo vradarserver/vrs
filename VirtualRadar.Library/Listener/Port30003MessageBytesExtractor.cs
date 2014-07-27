@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Library.Listener
@@ -40,6 +41,14 @@ namespace VirtualRadar.Library.Listener
         /// True once the first line-end character has been seen.
         /// </summary>
         bool _SeenValidPacket;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long BufferSize
+        {
+            get { return _Payload == null ? 0 : _Payload.Length; }
+        }
 
         /// <summary>
         /// See interface docs.

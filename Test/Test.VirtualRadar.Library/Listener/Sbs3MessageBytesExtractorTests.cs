@@ -141,5 +141,18 @@ namespace Test.VirtualRadar.Library.Listener
                 else                  Assert.IsNull(extracted, "Extracted SBS3 packet type {0}", i);
             }
         }
+
+        [TestMethod]
+        public void Sbs3MessageBytesExtractor_ExtractMessageBytes_Does_Not_Perpetually_Grow()
+        {
+            var buffer = new byte[512];
+
+            for(var i = 0;i < 100;++i) {
+                _Extractor.ExtractMessageBytes(buffer, 0, buffer.Length).ToArray();
+            }
+
+            Assert.IsTrue(_Extractor.BufferSize > 0);
+            Assert.IsTrue(_Extractor.BufferSize <= 0x2800);
+        }
     }
 }

@@ -440,7 +440,7 @@ namespace VirtualRadar.Library.Listener
         {
             try {
                 if(Provider.EndConnect(ar)) {
-                    if(Statistics.Lock != null) { lock(Statistics.Lock) Statistics.ConnectionTimeUtc = _Clock.UtcNow; }
+                    if(Statistics != null) Statistics.Lock(r => r.ConnectionTimeUtc = _Clock.UtcNow);
                     SetConnectionStatus(ConnectionStatus.Connected);
                     if(_Log != null) _Log.WriteLine("Connected to {0}", ReceiverName);
                     Provider.BeginRead(BytesReceived);
@@ -540,7 +540,7 @@ namespace VirtualRadar.Library.Listener
                         Reconnect();
                     }
                 } else if(bytesRead > 0) {
-                    if(Statistics.Lock != null) { lock(Statistics.Lock) Statistics.BytesReceived += bytesRead; }
+                    if(Statistics != null) Statistics.Lock(r => r.BytesReceived += bytesRead);
                     _LastMessageUtc = now;
 
                     // This is a bit of a cheat - I don't want the overhead of taking a copy of the read buffer if nothing is
@@ -554,7 +554,7 @@ namespace VirtualRadar.Library.Listener
                     foreach(var extractedBytes in BytesExtractor.ExtractMessageBytes(Provider.ReadBuffer, 0, bytesRead)) {
                         if(extractedBytes.ChecksumFailed) {
                             ++TotalBadMessages;
-                            if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.FailedChecksumMessages; }
+                            if(Statistics != null) Statistics.Lock(r => ++r.FailedChecksumMessages);
                         } else {
                             // Another cheat and for the same reason as explained for the RawBytesReceived message - we don't want to
                             // incur the overhead of copying the extracted bytes if there is nothing listening to the event.
@@ -570,6 +570,7 @@ namespace VirtualRadar.Library.Listener
                             }
                         }
                     }
+                    if(Statistics != null) Statistics.Lock(r => r.CurrentBufferSize = BytesExtractor.BufferSize);
                 }
 
                 if(fetchNext) {
@@ -597,12 +598,12 @@ namespace VirtualRadar.Library.Listener
                 var translatedMessage = _Port30003MessageTranslator.Translate(port30003Message, extractedBytes.SignalLevel);
                 if(translatedMessage != null) {
                     ++TotalMessages;
-                    if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.BaseStationMessagesReceived; }
+                    if(Statistics != null) Statistics.Lock(r => ++r.BaseStationMessagesReceived);
                     _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = new BaseStationMessageEventArgs(translatedMessage) });
                 }
             } catch(Exception) {
                 ++TotalBadMessages;
-                if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.BaseStationBadFormatMessagesReceived; }
+                if(Statistics != null) Statistics.Lock(r => ++r.BaseStationBadFormatMessagesReceived);
                 if(!IgnoreBadMessages) throw;
             }
         }
@@ -624,12 +625,12 @@ namespace VirtualRadar.Library.Listener
                 var message = _Compressor.Decompress(bytes);
                 if(message != null) {
                     ++TotalMessages;
-                    if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.BaseStationMessagesReceived; }
+                    if(Statistics != null) Statistics.Lock(r => ++r.BaseStationMessagesReceived);
                     _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = new BaseStationMessageEventArgs(message) });
                 }
             } catch(Exception) {
                 ++TotalBadMessages;
-                if(Statistics.Lock != null) { lock(Statistics.Lock) ++Statistics.BaseStationBadFormatMessagesReceived; }
+                if(Statistics != null) Statistics.Lock(r => ++r.BaseStationBadFormatMessagesReceived);
                 if(!IgnoreBadMessages) throw;
             }
         }
@@ -651,12 +652,12 @@ namespace VirtualRadar.Library.Listener
                         bool isPIWithBadParity = hasPIField && modeSMessage.ParityInterrogatorIdentifier != 0;
                         var adsbMessage = _AdsbMessageTranslator.Translate(modeSMessage);
 
-                        if((hasPIField || isPIWithBadParity || adsbMessage == null) && Statistics.Lock != null) {
-                            lock(Statistics.Lock) {
-                                if(hasPIField) ++Statistics.ModeSWithPIField;
-                                if(isPIWithBadParity) ++Statistics.ModeSWithBadParityPIField;
-                                if(adsbMessage == null) ++Statistics.ModeSNotAdsbCount;
-                            }
+                        if((hasPIField || isPIWithBadParity || adsbMessage == null) && Statistics != null) {
+                            Statistics.Lock(r => {
+                                if(hasPIField) ++r.ModeSWithPIField;
+                                if(isPIWithBadParity) ++r.ModeSWithBadParityPIField;
+                                if(adsbMessage == null) ++r.ModeSNotAdsbCount;
+                            });
                         }
 
                         ++TotalMessages;

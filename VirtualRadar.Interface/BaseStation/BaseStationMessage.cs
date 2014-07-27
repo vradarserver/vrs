@@ -184,5 +184,22 @@ namespace VirtualRadar.Interface.BaseStation
 
             return result.ToString();
         }
+
+        /// <summary>
+        /// Calculates a rough and far-from-accurate size for the object.
+        /// </summary>
+        /// <returns></returns>
+        public int CalculateRoughSize()
+        {
+            var result = /* int=4, int?=8 */        (13 * 4) + 
+                         /* float=4, float?=8) */   (4 * 4) +
+                         /* double=8, double?=12 */ (0 * 8) + (2 * 12) +
+                         /* DateTime=8 */           (2 * 8) +
+                         /* bool=4, bool?=8 */      (8 * 4);
+            if(Icao24 != null) result +=    4 + (Icao24.Length * 2);
+            if(Callsign != null) result +=  4 + (Callsign.Length * 2);
+
+            return result;
+        }
     }
 }

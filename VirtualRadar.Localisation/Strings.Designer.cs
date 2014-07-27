@@ -3883,6 +3883,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read buffer size.
+        /// </summary>
+        public static string ReadBufferSize {
+            get {
+                return ResourceManager.GetString("ReadBufferSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reading speed.
         /// </summary>
         public static string ReadingSpeed {

@@ -51,5 +51,18 @@ namespace Test.VirtualRadar.Library.Listener
             extracted = _Extractor.ExtractMessageBytes(fullMessage, 4, 5).Single();
             Assert.AreEqual("123", Encoding.ASCII.GetString(extracted.Bytes, extracted.Offset, extracted.Length));
         }
+
+        [TestMethod]
+        public void Port30003MessageBytesExtractor_ExtractMessageBytes_Does_Not_Perpetually_Grow()
+        {
+            var buffer = new byte[512];
+
+            for(var i = 0;i < 100;++i) {
+                _Extractor.ExtractMessageBytes(buffer, 0, buffer.Length).ToArray();
+            }
+
+            Assert.IsTrue(_Extractor.BufferSize > 0);
+            Assert.IsTrue(_Extractor.BufferSize < 10240);
+        }
     }
 }

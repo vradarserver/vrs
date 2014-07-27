@@ -93,13 +93,13 @@ namespace VirtualRadar.Library.ModeS
                         case DownlinkFormat.CommD:                          DecodeCommD(result); break;                             // DF24
                     }
 
-                    if(Statistics.Lock != null) {
-                        lock(Statistics.Lock) {
-                            ++Statistics.ModeSMessagesReceived;
-                            ++Statistics.ModeSDFCount[(int)result.DownlinkFormat];
-                            if(isLongFrame) ++Statistics.ModeSLongFrameMessagesReceived;
-                            else ++Statistics.ModeSShortFrameMessagesReceived;
-                        }
+                    if(Statistics != null) {
+                        Statistics.Lock(r => {
+                            ++r.ModeSMessagesReceived;
+                            ++r.ModeSDFCount[(int)result.DownlinkFormat];
+                            if(isLongFrame) ++r.ModeSLongFrameMessagesReceived;
+                            else ++r.ModeSShortFrameMessagesReceived;
+                        });
                     }
                 }
             }

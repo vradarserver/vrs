@@ -939,10 +939,12 @@ namespace Test.VirtualRadar.Library.Listener
             var bytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 };
             _Provider.ConfigureForConnect();
             _Provider.ConfigureForReadStream(new byte[] { 0x01, 0x02 }, int.MinValue, new List<IEnumerable<byte>>() { { new byte[] { 0x03, 0x04, 0x05 } } });
+            _BytesExtractor.Setup(r => r.BufferSize).Returns(12);
 
             ChangeSourceAndConnect();
 
             Assert.AreEqual(5, _Statistics.Object.BytesReceived);
+            Assert.AreEqual(12, _Statistics.Object.CurrentBufferSize);
         }
 
         [TestMethod]
