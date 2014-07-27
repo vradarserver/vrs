@@ -15,6 +15,7 @@ using System.Text;
 using InterfaceFactory;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library.Listener
 {
@@ -42,6 +43,14 @@ namespace VirtualRadar.Library.Listener
         /// The object that can check the validity of a sequence of bytes.
         /// </summary>
         private IBaseStationMessageCompressor _Compressor;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long BufferSize
+        {
+            get { return _ReadBuffer == null ? 0 : _ReadBuffer.Length; }
+        }
 
         /// <summary>
         /// Creates a new object.

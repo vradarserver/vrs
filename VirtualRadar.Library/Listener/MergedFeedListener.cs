@@ -64,11 +64,17 @@ namespace VirtualRadar.Library.Listener
             /// </summary>
             public BaseStationMessageEventArgs MessageArgs;
 
-            public MessageReceived(DateTime receivedUtc, IListener listener, BaseStationMessageEventArgs message)
+            /// <summary>
+            /// A rough indication of how large MessageArgs is.
+            /// </summary>
+            public int MessageArgsSize;
+
+            public MessageReceived(DateTime receivedUtc, IListener listener, BaseStationMessageEventArgs message, int messageArgsSize)
             {
                 ReceivedUtc = receivedUtc;
                 Listener = listener;
                 MessageArgs = message;
+                MessageArgsSize = messageArgsSize;
             }
         }
         #endregion
@@ -107,6 +113,16 @@ namespace VirtualRadar.Library.Listener
         /// the receiver onto a background thread and process from there.
         /// </remarks>
         private BackgroundThreadQueue<MessageReceived> _MessageProcessingQueue;
+
+        /// <summary>
+        /// The total of extracted bytes that have been added to the queue.
+        /// </summary>
+        private long _BytesBuffered;
+
+        /// <summary>
+        /// A spin lock that protects access to <see cref="_BytesBuffered"/>.
+        /// </summary>
+        private SpinLock _BytesBufferedSpinLock = new SpinLock();
 
         /// <summary>
         /// The number of listeners that have been created. We want to ensure that we can have as many listeners as we like
@@ -426,7 +442,16 @@ namespace VirtualRadar.Library.Listener
         {
             try {
                 var listener = (IListener)sender;
-                _MessageProcessingQueue.Enqueue(new MessageReceived(_Clock.UtcNow, listener, args));
+                
+                var argsSize = args.Message.CalculateRoughSize();
+                _BytesBufferedSpinLock.Lock();
+                try {
+                    _BytesBuffered += argsSize;
+                } finally {
+                    _BytesBufferedSpinLock.Unlock();
+                }
+
+                _MessageProcessingQueue.Enqueue(new MessageReceived(_Clock.UtcNow, listener, args, argsSize));
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }
@@ -439,6 +464,13 @@ namespace VirtualRadar.Library.Listener
         /// <param name="messageReceived"></param>
         private void ProcessReceivedMessage(MessageReceived messageReceived)
         {
+            _BytesBufferedSpinLock.Lock();
+            try {
+                _BytesBuffered -= messageReceived.MessageArgsSize;
+            } finally {
+                _BytesBufferedSpinLock.Unlock();
+            }
+
             var message = messageReceived.MessageArgs.Message;
             var hasNoPosition = message.Latitude.GetValueOrDefault() == 0.0 && message.Longitude.GetValueOrDefault() == 0.0;
             if(FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition)) {

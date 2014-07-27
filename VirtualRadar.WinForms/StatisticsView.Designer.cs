@@ -81,6 +81,8 @@
             this.buttonClose = new System.Windows.Forms.Button();
             this.buttonResetCounters = new System.Windows.Forms.Button();
             this.splitContainerEverythingVsAdsb = new System.Windows.Forms.SplitContainer();
+            this.label5 = new System.Windows.Forms.Label();
+            this.labelCurrentBufferSize = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -97,6 +99,8 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.labelCurrentBufferSize);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.labelThroughput);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.labelBytesReceived);
@@ -107,7 +111,7 @@
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(683, 65);
+            this.groupBox1.Size = new System.Drawing.Size(683, 78);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::Connection::";
@@ -200,7 +204,7 @@
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.labelBaseStationMessages);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(0, 71);
+            this.groupBox2.Location = new System.Drawing.Point(0, 84);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(683, 47);
             this.groupBox2.TabIndex = 1;
@@ -267,7 +271,7 @@
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.labelModeSMessages);
             this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Location = new System.Drawing.Point(0, 124);
+            this.groupBox3.Location = new System.Drawing.Point(0, 137);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(683, 152);
             this.groupBox3.TabIndex = 2;
@@ -459,7 +463,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(683, 243);
+            this.groupBox4.Size = new System.Drawing.Size(683, 246);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "::ADSB::";
@@ -499,7 +503,7 @@
             // splitContainerAdsbMessageCounts.Panel2
             // 
             this.splitContainerAdsbMessageCounts.Panel2.Controls.Add(this.listViewAdsbMessageFormatCounts);
-            this.splitContainerAdsbMessageCounts.Size = new System.Drawing.Size(671, 161);
+            this.splitContainerAdsbMessageCounts.Size = new System.Drawing.Size(671, 164);
             this.splitContainerAdsbMessageCounts.SplitterDistance = 328;
             this.splitContainerAdsbMessageCounts.TabIndex = 12;
             // 
@@ -514,7 +518,7 @@
             this.listViewAdsbTypeCounts.HideSelection = false;
             this.listViewAdsbTypeCounts.Location = new System.Drawing.Point(0, 0);
             this.listViewAdsbTypeCounts.Name = "listViewAdsbTypeCounts";
-            this.listViewAdsbTypeCounts.Size = new System.Drawing.Size(328, 161);
+            this.listViewAdsbTypeCounts.Size = new System.Drawing.Size(328, 164);
             this.listViewAdsbTypeCounts.TabIndex = 0;
             this.listViewAdsbTypeCounts.UseCompatibleStateImageBehavior = false;
             this.listViewAdsbTypeCounts.View = System.Windows.Forms.View.Details;
@@ -541,7 +545,7 @@
             this.listViewAdsbMessageFormatCounts.HideSelection = false;
             this.listViewAdsbMessageFormatCounts.Location = new System.Drawing.Point(0, 0);
             this.listViewAdsbMessageFormatCounts.Name = "listViewAdsbMessageFormatCounts";
-            this.listViewAdsbMessageFormatCounts.Size = new System.Drawing.Size(339, 161);
+            this.listViewAdsbMessageFormatCounts.Size = new System.Drawing.Size(339, 164);
             this.listViewAdsbMessageFormatCounts.TabIndex = 0;
             this.listViewAdsbMessageFormatCounts.UseCompatibleStateImageBehavior = false;
             this.listViewAdsbMessageFormatCounts.View = System.Windows.Forms.View.Details;
@@ -641,7 +645,7 @@
             // 
             this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point(622, 553);
+            this.buttonClose.Location = new System.Drawing.Point(622, 568);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 5;
@@ -652,7 +656,7 @@
             // buttonResetCounters
             // 
             this.buttonResetCounters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonResetCounters.Location = new System.Drawing.Point(12, 553);
+            this.buttonResetCounters.Location = new System.Drawing.Point(12, 568);
             this.buttonResetCounters.Name = "buttonResetCounters";
             this.buttonResetCounters.Size = new System.Drawing.Size(153, 23);
             this.buttonResetCounters.TabIndex = 4;
@@ -679,16 +683,36 @@
             // splitContainerEverythingVsAdsb.Panel2
             // 
             this.splitContainerEverythingVsAdsb.Panel2.Controls.Add(this.groupBox4);
-            this.splitContainerEverythingVsAdsb.Size = new System.Drawing.Size(683, 525);
-            this.splitContainerEverythingVsAdsb.SplitterDistance = 278;
+            this.splitContainerEverythingVsAdsb.Size = new System.Drawing.Size(683, 550);
+            this.splitContainerEverythingVsAdsb.SplitterDistance = 300;
             this.splitContainerEverythingVsAdsb.TabIndex = 6;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 58);
+            this.label5.Margin = new System.Windows.Forms.Padding(3);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(96, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "::ReadBufferSize:::";
+            // 
+            // labelCurrentBufferSize
+            // 
+            this.labelCurrentBufferSize.AutoSize = true;
+            this.labelCurrentBufferSize.Location = new System.Drawing.Point(186, 58);
+            this.labelCurrentBufferSize.Margin = new System.Windows.Forms.Padding(3);
+            this.labelCurrentBufferSize.Name = "labelCurrentBufferSize";
+            this.labelCurrentBufferSize.Size = new System.Drawing.Size(111, 13);
+            this.labelCurrentBufferSize.TabIndex = 15;
+            this.labelCurrentBufferSize.Text = "labelCurrentBufferSize";
             // 
             // StatisticsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(709, 588);
+            this.ClientSize = new System.Drawing.Size(709, 603);
             this.Controls.Add(this.splitContainerEverythingVsAdsb);
             this.Controls.Add(this.buttonResetCounters);
             this.Controls.Add(this.buttonClose);
@@ -770,5 +794,7 @@
         private System.Windows.Forms.Label labelAdsbRejected;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.SplitContainer splitContainerEverythingVsAdsb;
+        private System.Windows.Forms.Label labelCurrentBufferSize;
+        private System.Windows.Forms.Label label5;
     }
 }

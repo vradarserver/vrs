@@ -67,29 +67,30 @@ namespace VirtualRadar.Library.Presenter
         private void DoRefreshView()
         {
             var statistics = _View.Statistics;
-            if(statistics != null && statistics.Lock != null) {
-                lock(statistics.Lock) {
-                    _View.BytesReceived = statistics.BytesReceived;
-                    _View.ConnectedDuration = statistics.ConnectionTimeUtc == null ? TimeSpan.Zero : _Clock.UtcNow - statistics.ConnectionTimeUtc.Value;
-                    _View.ReceiverBadChecksum = statistics.FailedChecksumMessages;
-                    _View.BaseStationMessages = statistics.BaseStationMessagesReceived;
-                    _View.BadlyFormedBaseStationMessages = statistics.BaseStationBadFormatMessagesReceived;
-                    _View.ModeSMessageCount = statistics.ModeSMessagesReceived;
-                    _View.ModeSNoAdsbPayload = statistics.ModeSNotAdsbCount;
-                    _View.ModeSShortFrame = statistics.ModeSShortFrameMessagesReceived;
-                    _View.ModeSShortFrameUnusable = statistics.ModeSShortFrameWithoutLongFrameMessagesReceived;
-                    _View.ModeSLongFrame = statistics.ModeSLongFrameMessagesReceived;
-                    _View.ModeSWithPI = statistics.ModeSWithPIField;
-                    _View.ModeSPIBadParity = statistics.ModeSWithBadParityPIField;
-                    _View.AdsbMessages = statistics.AdsbCount;
-                    _View.AdsbRejected = statistics.AdsbRejected;
-                    _View.PositionSpeedCheckExceeded = statistics.AdsbPositionsExceededSpeedCheck;
-                    _View.PositionsReset = statistics.AdsbPositionsReset;
-                    _View.PositionsOutOfRange = statistics.AdsbPositionsOutsideRange;
-                    Array.Copy(statistics.ModeSDFCount, _View.ModeSDFCount, statistics.ModeSDFCount.Length);
-                    Array.Copy(statistics.AdsbMessageFormatCount, _View.AdsbMessageFormatCount, statistics.AdsbMessageFormatCount.Length);
-                    Array.Copy(statistics.AdsbTypeCount, _View.AdsbMessageTypeCount, statistics.AdsbTypeCount.Length);
-                }
+            if(statistics != null) {
+                statistics.Lock(r => {
+                    _View.BytesReceived = r.BytesReceived;
+                    _View.ConnectedDuration = r.ConnectionTimeUtc == null ? TimeSpan.Zero : _Clock.UtcNow - r.ConnectionTimeUtc.Value;
+                    _View.ReceiverBadChecksum = r.FailedChecksumMessages;
+                    _View.CurrentBufferSize = r.CurrentBufferSize;
+                    _View.BaseStationMessages = r.BaseStationMessagesReceived;
+                    _View.BadlyFormedBaseStationMessages = r.BaseStationBadFormatMessagesReceived;
+                    _View.ModeSMessageCount = r.ModeSMessagesReceived;
+                    _View.ModeSNoAdsbPayload = r.ModeSNotAdsbCount;
+                    _View.ModeSShortFrame = r.ModeSShortFrameMessagesReceived;
+                    _View.ModeSShortFrameUnusable = r.ModeSShortFrameWithoutLongFrameMessagesReceived;
+                    _View.ModeSLongFrame = r.ModeSLongFrameMessagesReceived;
+                    _View.ModeSWithPI = r.ModeSWithPIField;
+                    _View.ModeSPIBadParity = r.ModeSWithBadParityPIField;
+                    _View.AdsbMessages = r.AdsbCount;
+                    _View.AdsbRejected = r.AdsbRejected;
+                    _View.PositionSpeedCheckExceeded = r.AdsbPositionsExceededSpeedCheck;
+                    _View.PositionsReset = r.AdsbPositionsReset;
+                    _View.PositionsOutOfRange = r.AdsbPositionsOutsideRange;
+                    Array.Copy(r.ModeSDFCount, _View.ModeSDFCount, statistics.ModeSDFCount.Length);
+                    Array.Copy(r.AdsbMessageFormatCount, _View.AdsbMessageFormatCount, statistics.AdsbMessageFormatCount.Length);
+                    Array.Copy(r.AdsbTypeCount, _View.AdsbMessageTypeCount, statistics.AdsbTypeCount.Length);
+                });
 
                 _View.ReceiverThroughput = CalculateRatio(_View.BytesReceived / 1024.0, _View.ConnectedDuration.TotalSeconds);
                 _View.BadlyFormedBaseStationMessagesRatio = CalculateRatio(_View.BadlyFormedBaseStationMessages, _View.BaseStationMessages);

@@ -50,5 +50,21 @@ namespace Test.VirtualRadar.Library.Listener
             var extracted = _Extractor.ExtractMessageBytes(blob, ignoreMessage.Length, expectedBytes.Length).Single();
             Assert.IsTrue(extracted.Bytes.SequenceEqual(expectedBytes));
         }
+
+        [TestMethod]
+        public void CompressedMessageBytesExtractor_ExtractMessageBytes_Does_Not_Perpetually_Grow()
+        {
+            var buffer = new byte[128];
+            for(var i = 0;i < buffer.Length;++i) {
+                buffer[i] = 0xff;
+            }
+
+            for(var i = 0;i < 1000;++i) {
+                _Extractor.ExtractMessageBytes(buffer, 0, buffer.Length).ToArray();
+            }
+
+            Assert.IsTrue(_Extractor.BufferSize > 0);
+            Assert.IsTrue(_Extractor.BufferSize < 10240);
+        }
     }
 }

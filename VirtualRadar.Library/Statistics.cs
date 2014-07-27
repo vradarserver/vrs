@@ -21,9 +21,14 @@ namespace VirtualRadar.Library
     class Statistics : IStatistics
     {
         /// <summary>
-        /// See interface docs.
+        /// Set when the object has been initialised.
         /// </summary>
-        public object Lock { get; private set; }
+        private bool _Initialised;
+
+        /// <summary>
+        /// The spin lock that controls updates of the values.
+        /// </summary>
+        private SpinLock _Lock = new SpinLock();
 
         /// <summary>
         /// See interface docs.
@@ -34,6 +39,11 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public long BytesReceived { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long CurrentBufferSize { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -135,11 +145,27 @@ namespace VirtualRadar.Library
         /// </summary>
         public void Initialise()
         {
-            if(Lock == null) {
-                Lock = new object();
+            if(!_Initialised) {
                 AdsbTypeCount = new long[256];
                 ModeSDFCount = new long[Enum.GetValues(typeof(DownlinkFormat)).OfType<DownlinkFormat>().Select(r => (int)r).Max() + 1];
                 AdsbMessageFormatCount = new long[Enum.GetValues(typeof(MessageFormat)).OfType<MessageFormat>().Select(r => (int)r).Max() + 1];
+                _Initialised = true;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="lockedDelegate"></param>
+        public void Lock(Action<IStatistics> lockedDelegate)
+        {
+            if(_Initialised) {
+                _Lock.Lock();
+                try {
+                    lockedDelegate(this);
+                } finally {
+                    _Lock.Unlock();
+                }
             }
         }
 
@@ -148,8 +174,8 @@ namespace VirtualRadar.Library
         /// </summary>
         public void ResetMessageCounters()
         {
-            if(Lock != null) {
-                lock(Lock) {
+            if(_Initialised) {
+                Lock(r => {
                     Array.Clear(AdsbTypeCount, 0, AdsbTypeCount.Length);
                     Array.Clear(ModeSDFCount, 0, ModeSDFCount.Length);
                     Array.Clear(AdsbMessageFormatCount, 0, AdsbMessageFormatCount.Length);
@@ -161,6 +187,7 @@ namespace VirtualRadar.Library
                     AdsbRejected = 0;
                     BaseStationBadFormatMessagesReceived = 0;
                     BaseStationMessagesReceived = 0;
+                    CurrentBufferSize = 0;
                     FailedChecksumMessages = 0;
                     ModeSWithBadParityPIField = 0;
                     ModeSLongFrameMessagesReceived = 0;
@@ -169,7 +196,7 @@ namespace VirtualRadar.Library
                     ModeSShortFrameMessagesReceived = 0;
                     ModeSShortFrameWithoutLongFrameMessagesReceived = 0;
                     ModeSWithPIField = 0;
-                }
+                });
             }
         }
 
@@ -178,11 +205,11 @@ namespace VirtualRadar.Library
         /// </summary>
         public void ResetConnectionStatistics()
         {
-            if(Lock != null) {
-                lock(Lock) {
+            if(_Initialised) {
+                Lock(r => {
                     ConnectionTimeUtc = null;
                     BytesReceived = 0;
-                }
+                });
             }
         }
     }

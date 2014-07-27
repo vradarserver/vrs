@@ -37,8 +37,6 @@ namespace Test.VirtualRadar.Library
         {
             _Statistics.Initialise();
 
-            Assert.IsNotNull(_Statistics.Lock);
-
             foreach(DownlinkFormat df in Enum.GetValues(typeof(DownlinkFormat))) {
                 Assert.AreEqual(0, _Statistics.ModeSDFCount[(int)df]);
             }
@@ -61,6 +59,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Statistics, r => r.BaseStationMessagesReceived, 0L, 1L);
             TestUtilities.TestProperty(_Statistics, r => r.BytesReceived, 0L, 1L);
             TestUtilities.TestProperty(_Statistics, r => r.ConnectionTimeUtc, null, DateTime.UtcNow);
+            TestUtilities.TestProperty(_Statistics, r => r.CurrentBufferSize, 0L, 1L);
             TestUtilities.TestProperty(_Statistics, r => r.FailedChecksumMessages, 0L, 1L);
             TestUtilities.TestProperty(_Statistics, r => r.ModeSLongFrameMessagesReceived, 0L, 1L);
             TestUtilities.TestProperty(_Statistics, r => r.ModeSMessagesReceived, 0L, 1L);
@@ -75,10 +74,9 @@ namespace Test.VirtualRadar.Library
         public void Statistics_Initialise_Does_Nothing_When_Called_Twice()
         {
             _Statistics.Initialise();
-            var lockObject = _Statistics.Lock;
-
+            _Statistics.AdsbTypeCount[0] = 1;
             _Statistics.Initialise();
-            Assert.AreSame(lockObject, _Statistics.Lock);
+            Assert.AreEqual(1, _Statistics.AdsbTypeCount[0]);
         }
 
         [TestMethod]
@@ -86,7 +84,6 @@ namespace Test.VirtualRadar.Library
         {
             _Statistics.Initialise();
 
-            object lockObject = null;
             foreach(var property in typeof(IStatistics).GetProperties()) {
                 switch(property.Name) {
                     case "AdsbAircraftTracked":                             _Statistics.AdsbAircraftTracked = 1; break;
@@ -101,8 +98,8 @@ namespace Test.VirtualRadar.Library
                     case "BaseStationMessagesReceived":                     _Statistics.BaseStationMessagesReceived = 1; break;
                     case "BytesReceived":                                   _Statistics.BytesReceived = 1; break;
                     case "ConnectionTimeUtc":                               _Statistics.ConnectionTimeUtc = DateTime.UtcNow; break;
+                    case "CurrentBufferSize":                               _Statistics.CurrentBufferSize = 1; break;
                     case "FailedChecksumMessages":                          _Statistics.FailedChecksumMessages = 1; break;
-                    case "Lock":                                            lockObject = _Statistics.Lock; break;
                     case "ModeSDFCount":                                    _Statistics.ModeSDFCount[0] = 1; break;
                     case "ModeSLongFrameMessagesReceived":                  _Statistics.ModeSLongFrameMessagesReceived = 1; break;
                     case "ModeSMessagesReceived":                           _Statistics.ModeSMessagesReceived = 1; break;
@@ -132,8 +129,8 @@ namespace Test.VirtualRadar.Library
                     case "BaseStationMessagesReceived":                     Assert.AreEqual(0L, _Statistics.BaseStationMessagesReceived); break;
                     case "BytesReceived":                                   Assert.AreEqual(1L, _Statistics.BytesReceived); break;
                     case "ConnectionTimeUtc":                               Assert.IsNotNull(_Statistics.ConnectionTimeUtc); break;
+                    case "CurrentBufferSize":                               Assert.AreEqual(0L, _Statistics.CurrentBufferSize); break;
                     case "FailedChecksumMessages":                          Assert.AreEqual(0L, _Statistics.FailedChecksumMessages); break;
-                    case "Lock":                                            Assert.AreSame(lockObject, _Statistics.Lock); break;
                     case "ModeSDFCount":                                    Assert.AreEqual(0L, _Statistics.ModeSDFCount[0]); break;
                     case "ModeSLongFrameMessagesReceived":                  Assert.AreEqual(0L, _Statistics.ModeSLongFrameMessagesReceived); break;
                     case "ModeSMessagesReceived":                           Assert.AreEqual(0L, _Statistics.ModeSMessagesReceived); break;
@@ -153,7 +150,6 @@ namespace Test.VirtualRadar.Library
         {
             _Statistics.Initialise();
 
-            object lockObject = null;
             foreach(var property in typeof(IStatistics).GetProperties()) {
                 switch(property.Name) {
                     case "AdsbAircraftTracked":                             _Statistics.AdsbAircraftTracked = 1; break;
@@ -168,8 +164,8 @@ namespace Test.VirtualRadar.Library
                     case "BaseStationMessagesReceived":                     _Statistics.BaseStationMessagesReceived = 1; break;
                     case "BytesReceived":                                   _Statistics.BytesReceived = 1; break;
                     case "ConnectionTimeUtc":                               _Statistics.ConnectionTimeUtc = DateTime.UtcNow; break;
+                    case "CurrentBufferSize":                               _Statistics.CurrentBufferSize = 1L; break;
                     case "FailedChecksumMessages":                          _Statistics.FailedChecksumMessages = 1; break;
-                    case "Lock":                                            lockObject = _Statistics.Lock; break;
                     case "ModeSDFCount":                                    _Statistics.ModeSDFCount[0] = 1; break;
                     case "ModeSLongFrameMessagesReceived":                  _Statistics.ModeSLongFrameMessagesReceived = 1; break;
                     case "ModeSMessagesReceived":                           _Statistics.ModeSMessagesReceived = 1; break;
@@ -199,8 +195,8 @@ namespace Test.VirtualRadar.Library
                     case "BaseStationMessagesReceived":                     Assert.AreEqual(1L, _Statistics.BaseStationMessagesReceived); break;
                     case "BytesReceived":                                   Assert.AreEqual(0L, _Statistics.BytesReceived); break;
                     case "ConnectionTimeUtc":                               Assert.IsNull(_Statistics.ConnectionTimeUtc); break;
+                    case "CurrentBufferSize":                               Assert.AreEqual(1L, _Statistics.CurrentBufferSize); break;
                     case "FailedChecksumMessages":                          Assert.AreEqual(1L, _Statistics.FailedChecksumMessages); break;
-                    case "Lock":                                            Assert.AreSame(lockObject, _Statistics.Lock); break;
                     case "ModeSDFCount":                                    Assert.AreEqual(1L, _Statistics.ModeSDFCount[0]); break;
                     case "ModeSLongFrameMessagesReceived":                  Assert.AreEqual(1L, _Statistics.ModeSLongFrameMessagesReceived); break;
                     case "ModeSMessagesReceived":                           Assert.AreEqual(1L, _Statistics.ModeSMessagesReceived); break;

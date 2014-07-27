@@ -47,6 +47,11 @@ namespace VirtualRadar.Interface.View
         long ReceiverBadChecksum { get; set; }
 
         /// <summary>
+        /// Gets or sets the current buffer size.
+        /// </summary>
+        long CurrentBufferSize { get; set; }
+
+        /// <summary>
         /// Gets or sets the count of BaseStation messages received.
         /// </summary>
         long BaseStationMessages { get; set; }

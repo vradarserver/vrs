@@ -629,7 +629,7 @@ namespace VirtualRadar.WinForms.Controls
         /// Refreshes the control's display. This is largely here for Mono's benefit,
         /// under Windows the list should refresh without any prompting.
         /// </summary>
-        public void ResetBindings()
+        public new void ResetBindings()
         {
             if(_CurrencyManager != null && _BindingList != null) {
                 LoadItemsFromSource();

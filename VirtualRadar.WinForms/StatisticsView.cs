@@ -77,6 +77,11 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public long CurrentBufferSize { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public long BaseStationMessages { get; set; }
 
         /// <summary>
@@ -241,6 +246,7 @@ namespace VirtualRadar.WinForms
                 UpdateCounterLabel(labelBytesReceived, BytesReceived);
                 UpdateCounterLabel(labelBadChecksum, ReceiverBadChecksum);
                 UpdateLabel(labelThroughput, String.Format("{0:N2} {1}", ReceiverThroughput, Strings.AcronymKilobytePerSecond));
+                UpdateLabel(labelCurrentBufferSize, String.Format("{0:N0}", CurrentBufferSize));
 
                 UpdateCounterLabel(labelBaseStationMessages, BaseStationMessages);
                 UpdateRatioLabel(labelBaseStationBadlyFormatted, BadlyFormedBaseStationMessages, BadlyFormedBaseStationMessagesRatio);

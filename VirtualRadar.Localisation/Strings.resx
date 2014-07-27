@@ -2176,4 +2176,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="FormatNotSupportedForReceiverType" xml:space="preserve">
     <value>Format not supported for receiver type</value>
   </data>
+  <data name="ReadBufferSize" xml:space="preserve">
+    <value>Read buffer size</value>
+  </data>
 </root>

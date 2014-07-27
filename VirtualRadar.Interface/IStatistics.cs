@@ -21,16 +21,6 @@ namespace VirtualRadar.Interface
     public interface IStatistics
     {
         /// <summary>
-        /// Gets the object that must be locked while statistics are being updated.
-        /// </summary>
-        /// <remarks>
-        /// The object must be locked while statistics are updated. Ideally it should also
-        /// be locked while statistics are retrieved for display / use but that's not quite
-        /// so important, you can lock at your discretion.
-        /// </remarks>
-        object Lock { get; }
-
-        /// <summary>
         /// Gets or sets the date and time at UTC when the connection to the listener was first established.
         /// </summary>
         DateTime? ConnectionTimeUtc { get; set; }
@@ -39,6 +29,11 @@ namespace VirtualRadar.Interface
         /// Gets or sets the number of bytes received by the listener.
         /// </summary>
         long BytesReceived { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size in bytes of the receiver buffers maintained by the listener, either directly or indirectly.
+        /// </summary>
+        long CurrentBufferSize { get; set; }
 
         /// <summary>
         /// Gets or sets a count of BaseStation format messages received.
@@ -145,6 +140,15 @@ namespace VirtualRadar.Interface
         /// Prepares the statistics for first use.
         /// </summary>
         void Initialise();
+
+        /// <summary>
+        /// Calls the delegate within a lock. The delegate must not, under any circumstances,
+        /// call <see cref="Lock "/> or do anything that might call <see cref="Lock"/>.
+        /// A deadlock may occur if it does. Does nothing if the statistics have not been
+        /// initialised.
+        /// </summary>
+        /// <param name="lockedDelegate"></param>
+        void Lock(Action<IStatistics> lockedDelegate);
 
         /// <summary>
         /// Resets all counters associated with listening to a source of messages. Does not reset connection statistics.

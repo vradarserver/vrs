@@ -69,5 +69,21 @@ namespace Test.VirtualRadar.Library.Listener
 
             Assert.IsTrue(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 }.SequenceEqual(extractedBytes));
         }
+
+        [TestMethod]
+        public void BeastMessageBytesExtractor_ExtractMessageBytes_Does_Not_Perpetually_Grow()
+        {
+            var buffer = new byte[2048];
+            for(var i = 0;i < buffer.Length;++i) {
+                buffer[i] = 0x1a;
+            }
+
+            for(var i = 0;i < 100;++i) {
+                _Extractor.ExtractMessageBytes(buffer, 0, buffer.Length).ToArray();
+            }
+
+            Assert.IsTrue(_Extractor.BufferSize > 0);
+            Assert.IsTrue(_Extractor.BufferSize < 10240);
+        }
     }
 }
