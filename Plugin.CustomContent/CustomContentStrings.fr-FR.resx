@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="At" xml:space="preserve">
-    <value>At</value>
+    <value>A</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Annulé</value>
@@ -190,7 +190,7 @@
     <value>Le nom du fichier HTML pour injecter le contenu doit se terminer en .htm ou .html</value>
   </data>
   <data name="PathAndFileMissingRoot" xml:space="preserve">
-    <value>The address of the HTML page must start with a forward-slash</value>
+    <value>L'adresse de la page HTML doit commencé par une barre oblique</value>
   </data>
   <data name="PathAndFileRequired" xml:space="preserve">
     <value>Veuillez entrer le chemin et le nom du fichier HTML pour y injecter le contenu (par exemple/index.html) ou * pour injecter dans tout le HTML</value>

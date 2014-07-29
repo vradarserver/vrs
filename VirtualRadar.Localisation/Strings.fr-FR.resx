@@ -164,26 +164,26 @@
     <value>Le nombre de message ADS-B par seconde doit être compris entre 1 et 60</value>
   </data>
   <data name="AcronymByte" xml:space="preserve">
-    <value>O</value>
+    <value>o</value>
     <comment>Shorthand for byte</comment>
   </data>
   <data name="AcronymGigabyte" xml:space="preserve">
-    <value>GO</value>
+    <value>Go</value>
     <comment>Shorthand for 1024 x 1024 x 1024 bytes</comment>
   </data>
   <data name="AcronymKilobyte" xml:space="preserve">
-    <value>KO</value>
+    <value>Ko</value>
     <comment>Shorthand for 1024 bytes</comment>
   </data>
   <data name="AcronymKilobytePerSecond" xml:space="preserve">
     <value>Ko/sec</value>
   </data>
   <data name="AcronymMegabyte" xml:space="preserve">
-    <value>MO</value>
+    <value>Mo</value>
     <comment>Shorthand for 1024 x 1024 bytes</comment>
   </data>
   <data name="AcronymTerrabyte" xml:space="preserve">
-    <value>TO</value>
+    <value>To</value>
     <comment>Shorthand for 1024 x 1024 x 1024 x 1024 bytes</comment>
   </data>
   <data name="Add" xml:space="preserve">
@@ -1552,7 +1552,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>As in the handshaking protocol to use when talking over a serial port. Also known as flow control.</comment>
   </data>
   <data name="SerialHandshakeNone" xml:space="preserve">
-    <value>None</value>
+    <value>Sans</value>
   </data>
   <data name="SerialHandshakeRts" xml:space="preserve">
     <value>Matériel</value>
@@ -1615,7 +1615,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>The number of times someone has connected to the server</comment>
   </data>
   <data name="SettingsPage" xml:space="preserve">
-    <value>Page config.</value>
+    <value>Config. Page </value>
   </data>
   <data name="ShortFrame" xml:space="preserve">
     <value>Messages courts</value>
