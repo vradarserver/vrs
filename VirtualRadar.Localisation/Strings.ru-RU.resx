@@ -924,7 +924,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Минимальная версия манифеста не может быть разобрана</value>
   </data>
   <data name="CountPluginsCouldNotBeLoaded" xml:space="preserve">
-    <value>{0: N0} плагин(ы) не может быть загружен</value>
+    <value>{0:N0} плагин(ы) не может быть загружен</value>
   </data>
   <data name="PluginFileName" xml:space="preserve">
     <value>Имя файла плагина</value>
@@ -1967,5 +1967,277 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="SettingsPage" xml:space="preserve">
     <value>Настройки</value>
+  </data>
+  <data name="StaleSeconds" xml:space="preserve">
+    <comment>The maximum age of a message buffered on a rebroadcast server</comment>
+    <value>Максимальное время буферизации сообщения, с</value>
+  </data>
+  <data name="StaleSecondsOutOfBounds" xml:space="preserve">
+    <value>Максимальное время буферизации сообщения должно быть не менее 1 с</value>
+  </data>
+  <data name="BytesStale" xml:space="preserve">
+    <value>Байт отброшено</value>
+  </data>
+  <data name="LoginNameExists" xml:space="preserve">
+    <value>Имя пользователя уже используется</value>
+  </data>
+  <data name="LoginNameMissing" xml:space="preserve">
+    <value>Имя пользователя не введено</value>
+  </data>
+  <data name="PasswordMissing" xml:space="preserve">
+    <value>Пароль не совпадает</value>
+  </data>
+  <data name="SplashScreenInitialisingUserManager" xml:space="preserve">
+    <value>Инициализация управления пользователями</value>
+  </data>
+  <data name="ShuttingDownUserManager" xml:space="preserve">
+    <value>Выключение управления пользователями</value>
+  </data>
+  <data name="menuUsers" xml:space="preserve">
+    <value>&amp;Пользователи...</value>
+  </data>
+  <data name="LoginName" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="LoginNameTitle" xml:space="preserve">
+    <value>Имя Пользователя</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Пользователь</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Пользователи</value>
+  </data>
+  <data name="UserManager" xml:space="preserve">
+    <value>Управление пользователями</value>
+  </data>
+  <data name="UserManagerName" xml:space="preserve">
+    <value>Virtual Radar Server</value>
+  </data>
+  <data name="ConvertedBasicAuthenticationUser" xml:space="preserve">
+    <value>Converted Basic Authentication User</value>
+  </data>
+  <data name="OptionsDescribeWebServerPermittedUsers" xml:space="preserve">
+    <value>Выберите пользователей, которым разрешается подключение к ВЕБ-серверу</value>
+  </data>
+  <data name="PermittedUsers" xml:space="preserve">
+    <value>Разрешенные пользователи</value>
+  </data>
+  <data name="LoginNameUnknown" xml:space="preserve">
+    <value>Не удается найти пользователя с именем '{0}'</value>
+  </data>
+  <data name="ConnectionParameters" xml:space="preserve">
+    <value>Параметры соединения</value>
+  </data>
+  <data name="IcaoTimeoutTitle" xml:space="preserve">
+    <value>Тайм-аут ИКАО</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Дальность</value>
+  </data>
+  <data name="OptionsDescribeLoginName" xml:space="preserve">
+    <value>Имя пользователя, вводимое при входе.</value>
+  </data>
+  <data name="OptionsDescribeUserEnabled" xml:space="preserve">
+    <value>"Да", если учетная запись пользователя разрешена, "Нет", если запрещена.</value>
+  </data>
+  <data name="OptionsDescribeUserName" xml:space="preserve">
+    <value>Настоящее имя пользователя.</value>
+  </data>
+  <data name="OptionsDescribeUserPassword" xml:space="preserve">
+    <value>Пароль, который должен ввести пользователь при входе.</value>
+  </data>
+  <data name="CouldNotLoadGoogleMaps" xml:space="preserve">
+    <value>Не удалось загрузить Google Maps</value>
+  </data>
+  <data name="Stale" xml:space="preserve">
+    <value>Stale</value>
+  </data>
+  <data name="DefaultConfiguration" xml:space="preserve">
+    <value>Настройки по умолчанию</value>
+  </data>
+  <data name="JustFlightSimulatorX" xml:space="preserve">
+    <value>Только Flight Simulator X</value>
+  </data>
+  <data name="PresetConfigurations" xml:space="preserve">
+    <value>Предустановленные настройки</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Завершить</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="RecConWizConnectionTypeTitle" xml:space="preserve">
+    <value>Как подключен приемник?</value>
+  </data>
+  <data name="RecConWizDedicatedAirNavRadarBox" xml:space="preserve">
+    <value>AirNav Systems RadarBox</value>
+  </data>
+  <data name="RecConWizDedicatedBeast" xml:space="preserve">
+    <value>Beast</value>
+  </data>
+  <data name="RecConWizDedicatedKinetics" xml:space="preserve">
+    <value>Kinetic Avionics SBS серии или Puck</value>
+  </data>
+  <data name="RecConWizDedicatedMicroAdsb" xml:space="preserve">
+    <value>microADSB USB брелок</value>
+  </data>
+  <data name="RecConWizDedicatedTitle" xml:space="preserve">
+    <value>Какое оборудование вы используете?</value>
+  </data>
+  <data name="RecConWizFinishAction" xml:space="preserve">
+    <value>Нажмите "Готово", чтобы изменить текущий приемник или "Отмена", чтобы отменить изменения.</value>
+  </data>
+  <data name="RecConWizFinishTitle" xml:space="preserve">
+    <value>Выполнено</value>
+  </data>
+  <data name="RecConWizKineticConDirect" xml:space="preserve">
+    <value>Нет, подключение к приемнику напрямую</value>
+  </data>
+  <data name="RecConWizKineticConNote" xml:space="preserve">
+    <value>Примечание: Подключение непосредственно к оборудованию поддерживается только по сети. В приемнике должна быть установлена последняя прошивка.</value>
+  </data>
+  <data name="RecConWizKineticConTitle" xml:space="preserve">
+    <value>Используете ли вы BaseStation?</value>
+  </data>
+  <data name="RecConWizLoopbackTitle" xml:space="preserve">
+    <value>{0} запущен на этом компьютере?</value>
+  </data>
+  <data name="RecConWizNetworkHardwareAddressTitle" xml:space="preserve">
+    <value>Введите сетевой адрес {0}</value>
+  </data>
+  <data name="RecConWizReceiverClassDedicated" xml:space="preserve">
+    <value>Радиоприемник, принимающий и декодирующий сигналы транспондеров</value>
+  </data>
+  <data name="RecConWizReceiverClassSdr" xml:space="preserve">
+    <value>Программно-определяемая радиосистема (SDR)</value>
+  </data>
+  <data name="RecConWizReceiverClassTitle" xml:space="preserve">
+    <value>К какому приемнику вы хотите подключиться?</value>
+  </data>
+  <data name="RecConWizSdrAdsbSharp" xml:space="preserve">
+    <value>ADSBSharp</value>
+  </data>
+  <data name="RecConWizSdrDump1090" xml:space="preserve">
+    <value>Dump1090</value>
+  </data>
+  <data name="RecConWizSdrGrAirModes" xml:space="preserve">
+    <value>gr-air-modes</value>
+  </data>
+  <data name="RecConWizSdrModesdeco" xml:space="preserve">
+    <value>Modesdeco</value>
+  </data>
+  <data name="RecConWizSdrRtl1090" xml:space="preserve">
+    <value>RTL1090</value>
+  </data>
+  <data name="RecConWizSdrTitle" xml:space="preserve">
+    <value>Какую декодирующую программу вы используете с SDR?</value>
+  </data>
+  <data name="RecConWizSourceTheReceiver" xml:space="preserve">
+    <value>приемник</value>
+  </data>
+  <data name="RecConWizSourceTheSdr" xml:space="preserve">
+    <value>программный SDR декодер</value>
+  </data>
+  <data name="ReceiverConfigurationWizard" xml:space="preserve">
+    <value>Мастер настройки приемника</value>
+  </data>
+  <data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+  <data name="RecConWizNetworkProgramAddressTitle" xml:space="preserve">
+    <value>Введите сетевой адрес компьютера, на котором запущен {0}</value>
+  </data>
+  <data name="Wizard" xml:space="preserve">
+    <comment>As in a software wizard, a set of pages that ask questions to and collect answers from the user. Used in VRS to help with making configuration choices.</comment>
+    <value>Мастер</value>
+  </data>
+  <data name="ExceptionWhenCheckingValue" xml:space="preserve">
+    <value>Обнаружено исключение при проверке значения: {0}</value>
+  </data>
+  <data name="LocationDoesNotExist" xml:space="preserve">
+    <value>Это место не существует</value>
+  </data>
+  <data name="ReceiverOrMergedFeedDoesNotExist" xml:space="preserve">
+    <value>Нет приемника или объединенного фида с этим идентификатором</value>
+  </data>
+  <data name="SerialComPortUnknown" xml:space="preserve">
+    <value>СОМ порт не существует</value>
+  </data>
+  <data name="IgnoreModeS" xml:space="preserve">
+    <value>Не использовать Mode-S</value>
+  </data>
+  <data name="IdleTimeout" xml:space="preserve">
+    <value>Время блокирования экрана по бездействию</value>
+  </data>
+  <data name="PSeconds" xml:space="preserve">
+    <value>(с)</value>
+  </data>
+  <data name="RemoveFromDisplay" xml:space="preserve">
+    <value>Удалить из показа</value>
+  </data>
+  <data name="RemoveFromTracking" xml:space="preserve">
+    <value>Удалить из отслеживания</value>
+  </data>
+  <data name="ShortTrailDuration" xml:space="preserve">
+    <value>Продолжительность короткого следа</value>
+  </data>
+  <data name="AirborneGlobal" xml:space="preserve">
+    <value>Airborne global</value>
+  </data>
+  <data name="FastSurfaceGlobal" xml:space="preserve">
+    <value>Fast surface global</value>
+  </data>
+  <data name="MaxAirborneSpeed" xml:space="preserve">
+    <value>Max airborne speed</value>
+  </data>
+  <data name="MaxSurfaceSpeed" xml:space="preserve">
+    <value>Max surface speed</value>
+  </data>
+  <data name="MaxTransitionSpeed" xml:space="preserve">
+    <value>Max transition speed</value>
+  </data>
+  <data name="PKilometres" xml:space="preserve">
+    <value>(км)</value>
+  </data>
+  <data name="PKilometresOver30Seconds" xml:space="preserve">
+    <value>(км / 30 с)</value>
+  </data>
+  <data name="SlowSurfaceGlobal" xml:space="preserve">
+    <value>Slow surface global</value>
+  </data>
+  <data name="ContrastMapTitle" xml:space="preserve">
+    <value>Контраст</value>
+  </data>
+  <data name="PortIsUsedByWebServer" xml:space="preserve">
+    <value>Порт {0} используется на ВЕБ-сервере</value>
+  </data>
+  <data name="FormatNotSupportedForReceiverType" xml:space="preserve">
+    <value>Формат не поддерживается для данного типа приемника</value>
+  </data>
+  <data name="ReadBufferSize" xml:space="preserve">
+    <value>Размер буфера чтения</value>
+  </data>
+  <data name="InternetClientCanShowPolarPlots" xml:space="preserve">
+    <value>Интернет пользователи могут видеть зоны покрытия приемника</value>
+  </data>
+  <data name="OptionsDescribeWebServerInternetClientCanShowPolarPlots" xml:space="preserve">
+    <value>"Да", если пользователи, подключающиеся через Интернет, могут видеть зоны покрытия приемника. Обратите внимание, что по этим зонам можно точно определить расположение приемника.</value>
+  </data>
+  <data name="CannotResolveAddress" xml:space="preserve">
+    <value>Адрес {0} не может быть определен</value>
+  </data>
+  <data name="menuResetReceiverRange" xml:space="preserve">
+    <value>Сбросить &amp;Зону покрытия приемника </value>
+  </data>
+  <data name="OptionsDescribeRebroadcastStaleSeconds" xml:space="preserve">
+    <value>Время нахождения сообщения в буфере ретрансляционного сервера, после которого оно отбрасывается, с.</value>
   </data>
 </root>
