@@ -110,7 +110,7 @@
                 var value = valueText.getValue();
 
                 if(i === 0) firstValue = value;
-                if(value === selectedValue) selectedValueExists = true;
+                if(value == selectedValue) selectedValueExists = true;  // Allow type conversion in comparison here, filters were being saved as strings but the enums are numbers...
 
                 var option =
                     $('<option/>')
