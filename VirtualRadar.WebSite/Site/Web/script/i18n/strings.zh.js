@@ -47,7 +47,6 @@
     VRS.$$.AllAltitudes =                               '所有高度';
     VRS.$$.AllRows =                                    '所有行';
     VRS.$$.Altitude =                                   '高度';
-    VRS.$$.AltitudeType =                               '高度类型';  /** THIS IS NEW! **/
     VRS.$$.AltitudeAndSpeedGraph =                      '高度&速度图';
     VRS.$$.AltitudeAndVerticalSpeed =                   '高度&垂直速度';
     VRS.$$.AltitudeGraph =                              '高度图';
