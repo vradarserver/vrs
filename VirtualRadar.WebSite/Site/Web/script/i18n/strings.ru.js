@@ -47,7 +47,6 @@
     VRS.$$.AllAltitudes =                               'Для всех высот';
     VRS.$$.AllRows =                                    'Все строки';
     VRS.$$.Altitude =                                   'Высота';
-    VRS.$$.AltitudeType =                               'Вид высоты';  /** THIS IS NEW! **/
     VRS.$$.AltitudeAndSpeedGraph =                      'График Высота/Скорость';
     VRS.$$.AltitudeAndVerticalSpeed =                   'Высота и верт.скорость';
     VRS.$$.AltitudeGraph =                              'График высоты';

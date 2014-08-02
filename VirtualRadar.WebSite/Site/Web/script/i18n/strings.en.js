@@ -47,7 +47,6 @@
     VRS.$$.AllAltitudes =                               'All altitudes';
     VRS.$$.AllRows =                                    'All rows';
     VRS.$$.Altitude =                                   'Altitude';
-    VRS.$$.AltitudeType =                               'Altitude Type';
     VRS.$$.AltitudeAndSpeedGraph =                      'Altitude & Speed Graph';
     VRS.$$.AltitudeAndVerticalSpeed =                   'Altitude & VSI';
     VRS.$$.AltitudeGraph =                              'Altitude Graph';
