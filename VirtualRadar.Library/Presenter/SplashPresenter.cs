@@ -195,9 +195,30 @@ namespace VirtualRadar.Library.Presenter
             autoConfigDatabase.Initialise();
 
             var baseStationDatabase = autoConfigDatabase.Database;
+            Exception autoFixException = null;
             if(!String.IsNullOrEmpty(baseStationDatabase.FileName)) {
-                if(!baseStationDatabase.TestConnection()) {
-                    _View.ReportProblem(String.Format(Strings.CannotOpenBaseStationDatabaseFull, baseStationDatabase.FileName), Strings.CannotOpenBaseStationDatabaseTitle, false);
+                try {
+                    if(!baseStationDatabase.TestConnection()) {
+                        _View.ReportProblem(String.Format(Strings.CannotOpenBaseStationDatabaseFull, baseStationDatabase.FileName), Strings.CannotOpenBaseStationDatabaseTitle, false);
+                    }
+                } catch(Exception ex) {
+                    // Ideally I would catch an SQLite exception here - however because I'm using different SQLite implementations
+                    // (Mono's under Mono, SQLite's under .NET), and because I want to be database engine agnostic, I'm just
+                    // assuming that any exception is a database problem and offering to turn it over to the database implementation
+                    // for correction.
+                    var message = String.Format(Strings.CannotOpenDatabaseWantToAutoFix.Replace(@"\r", "\r").Replace(@"\n", "\n"), baseStationDatabase.FileName, ex.Message);
+                    if(_View.YesNoPrompt(message, Strings.CannotOpenBaseStationDatabaseTitle, false)) {
+                        autoFixException = ex;
+                    } else {
+                        _View.ReportProblem(String.Format(Strings.CannotOpenBaseStationDatabaseFull, baseStationDatabase.FileName), Strings.CannotOpenBaseStationDatabaseTitle, quitApplication: true);
+                    }
+                }
+            }
+
+            if(autoFixException != null) {
+                var mightHaveWorked = baseStationDatabase.AttemptAutoFix(autoFixException);
+                if(mightHaveWorked && !baseStationDatabase.TestConnection()) {
+                    _View.ReportProblem(String.Format(Strings.CannotOpenBaseStationDatabaseFull, baseStationDatabase.FileName), Strings.CannotOpenBaseStationDatabaseTitle, true);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,25 +12,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.SQLite;
 
-namespace VirtualRadar.SQLiteWrapper
+namespace VirtualRadar.Interface.SQLite
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// The interface for objects that can wrap an SQLite exception.
     /// </summary>
-    public static class Implementations
+    public interface ISQLiteException
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Gets a value indicating that the exception passed to <see cref="Initialise"/> was
+        /// a valid SQLite exception.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<ISQLiteConnectionProvider,         SQLiteConnectionProvider>();
-            factory.Register<ISQLiteConnectionStringBuilder,    SQLiteConnectionStringBuilderWrapper>();
-            factory.Register<ISQLiteException,                  SQLiteExceptionWrapper>();
-        }
+        bool IsSQLiteException { get; }
+
+        /// <summary>
+        /// Gets the error code from the exception.
+        /// </summary>
+        SQLiteErrorCode ErrorCode { get; }
+
+        /// <summary>
+        /// Gets the exception that was passed to <see cref="Initialise"/>.
+        /// </summary>
+        Exception Exception { get; }
+
+        void Initialise(Exception ex);
     }
 }

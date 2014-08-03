@@ -450,6 +450,96 @@ namespace VirtualRadar.Database.BaseStation
         }
         #endregion
 
+        #region AttemptAutoFix
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="errorException"></param>
+        /// <returns></returns>
+        public bool AttemptAutoFix(Exception errorException)
+        {
+            bool result = false;
+
+            var sqliteException = Factory.Singleton.Resolve<ISQLiteException>();
+            sqliteException.Initialise(errorException);
+            if(sqliteException.IsSQLiteException) {
+                switch(sqliteException.ErrorCode) {
+                    case SQLiteErrorCode.IoErr:
+                        // One of two things. Either the file is trashed, in which case we need to extract everything
+                        // and rebuild the index, or they've had something writing to the file and the journal is
+                        // hanging around after a crash. We're going to try to fix the journal problem as that's the
+                        // most common for now.
+
+                        var journalFileName = String.Format("{0}-journal", FileName);
+                        if(File.Exists(journalFileName)) {
+                            // The easiest way to fix this is to open the file in read-write mode. If that fails then
+                            // we should get rid of the journal file.
+                            result = FixByOpeningInReadWriteMode();
+                            if(!result || File.Exists(journalFileName)) {
+                                result = FixByRenamingJournal(journalFileName);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Forces the connection to be temporarily opened in read-write mode.
+        /// Returns true if it didn't throw an exception. Swallows all exceptions.
+        /// </summary>
+        /// <returns></returns>
+        private bool FixByOpeningInReadWriteMode()
+        {
+            var result = false;
+
+            try {
+                CloseConnection();
+                OpenConnection(writeSupportEnabled: true);
+                result = true;
+            } catch {
+                result = false;
+            } finally {
+                try {
+                    CloseConnection();
+                } catch {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Renames the journal file. Returns true if the file could be successfully renamed.
+        /// </summary>
+        /// <param name="journalFileName"></param>
+        /// <returns></returns>
+        private bool FixByRenamingJournal(string journalFileName)
+        {
+            bool result = false;
+
+            string newFileName = null;
+            for(var i = 1;i < 1000 && newFileName == null;++i) {
+                newFileName = String.Format("{0} (bad){1}", journalFileName, i == 1 ? "" : String.Format(" ({0})", i));
+                if(File.Exists(newFileName)) newFileName = null;
+            }
+
+            if(newFileName != null) {
+                try {
+                    File.Move(journalFileName, newFileName);
+                    result = true;
+                } catch {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region StartTransaction, EndTransaction, RollbackTransaction
         /// <summary>
         /// See interface docs.

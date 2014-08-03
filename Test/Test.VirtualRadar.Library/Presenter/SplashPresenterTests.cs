@@ -477,6 +477,47 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _View.Verify(v => v.ReportProblem(It.IsAny<string>(), Strings.CannotOpenBaseStationDatabaseTitle, It.IsAny<bool>()), Times.Never());
         }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Prompts_For_AutoFix_If_TestConnection_Throws_Exception()
+        {
+            var exception = new Exception();
+            _BaseStationDatabase.Setup(d => d.FileName).Returns("xyz");
+            _BaseStationDatabase.Setup(d => d.TestConnection()).Callback(() => { throw exception; });
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _View.Verify(v => v.YesNoPrompt(It.IsAny<string>(), Strings.CannotOpenBaseStationDatabaseTitle, false), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Calls_AutoFix_If_User_Replies_Yes_After_TestConnection_Throws_Exception()
+        {
+            var exception = new Exception();
+            _BaseStationDatabase.Setup(d => d.FileName).Returns("xyz");
+            _BaseStationDatabase.Setup(d => d.TestConnection()).Callback(() => { throw exception; });
+            _View.Setup(r => r.YesNoPrompt(It.IsAny<string>(), Strings.CannotOpenBaseStationDatabaseTitle, It.IsAny<bool>())).Returns(true);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _BaseStationDatabase.Verify(r => r.AttemptAutoFix(exception), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Stops_Program_If_User_Replies_No_After_TestConnection_Throws_Exception()
+        {
+            var exception = new Exception();
+            _BaseStationDatabase.Setup(d => d.FileName).Returns("xyz");
+            _BaseStationDatabase.Setup(d => d.TestConnection()).Callback(() => { throw exception; });
+            _View.Setup(r => r.YesNoPrompt(It.IsAny<string>(), Strings.CannotOpenBaseStationDatabaseTitle, It.IsAny<bool>())).Returns(false);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _View.Verify(r => r.ReportProblem(It.IsAny<string>(), Strings.CannotOpenBaseStationDatabaseTitle, true), Times.Once());
+        }
         #endregion
 
         #region Picture folder cache

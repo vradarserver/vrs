@@ -122,6 +122,8 @@
     <Compile Include="Settings\IConfigurationListener.cs" />
     <Compile Include="Settings\IUser.cs" />
     <Compile Include="Settings\IUserManager.cs" />
+    <Compile Include="SQLite\ISQLiteException.cs" />
+    <Compile Include="SQLite\SQLiteErrorCode.cs" />
     <Compile Include="StandingData\CallsignRouteDetail.cs" />
     <Compile Include="IAircraftDetailFetcher.cs" />
     <Compile Include="StandingData\ICallsignRouteFetcher.cs" />
