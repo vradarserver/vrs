@@ -10,17 +10,17 @@ rem 5) Name-Of-Plugin-SubFolder
 rem Ensure that the XML manifest file is set to always copy to the output directory on a build
 
     set SLNDIR=%~1
-    set CONFIG=%~2
+    set CONFDIR=%~2
     set TARGETDIR=%~3
-    set TARGETNAME=%~4
-    set PLUGINFOLDER=%~5
+    set ASSEMBLY=%~4
+    set PLUGINDIR=%~5
 
-    if "%PLUGINFOLDER%"=="" goto NOPARAM
+    if "%PLUGINDIR%"=="" goto NOPARAM
 
-    set SOURCEDLL=%TARGETDIR%\%TARGETNAME%.dll
-    set SOURCEXML=%TARGETDIR%\%TARGETNAME%.xml
-    set PLUGINS=%SLNDIR%VirtualRadar\bin\x86\%CONFIG%\Plugins
-    set DEST=%PLUGINS%\%PLUGINFOLDER%
+    set SOURCEDLL=%TARGETDIR%%ASSEMBLY%.dll
+    set SOURCEXML=%TARGETDIR%%ASSEMBLY%.xml
+    set PLUGINS=%SLNDIR%VirtualRadar\bin\x86\%CONFDIR%\Plugins
+    set DEST=%PLUGINS%\%PLUGINDIR%
 
     if exist "%PLUGINS%" goto MKDEST
         md "%PLUGINS%"
@@ -34,10 +34,12 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
     copy "%SOURCEXML%" "%DEST%"
 
     rem You need to modify the batch by hand here to copy the languages that you have translations for
-    set COPYLANG=%~3..\..\..\_PostBuildCopyLanguage.bat
-    rem call "%COPYLANG%" "%SLNDIR%" "%CONFIG%" "%TARGETDIR%" "%TARGETNAME%" de-DE
-    call "%COPYLANG%" "%SLNDIR%" "%CONFIG%" "%TARGETDIR%" "%TARGETNAME%" fr-FR
-    rem call "%COPYLANG%" "%SLNDIR%" "%CONFIG%" "%TARGETDIR%" "%TARGETNAME%" ru-RU
+    set COPYLANG=%TARGETDIR%..\..\..\_PostBuildCopyLanguage.bat
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" fr-FR
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" ru-RU
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" zh-CN
+    rem call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" de-DE
+    rem call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" pl-PL
 
     goto :END
 

@@ -9,8 +9,14 @@ rem 4) $(TargetName)
 rem 5) Language folder name (e.g. fr-FR)
 rem It is intended that this be called from _PostBuild.bat so there isn't any parameter validation
 
-    set SOURCEDLL=%3\%5\%4.resources.dll
-    set DEST=%1VirtualRadar\bin\x86\%2\%5
+    set SLNDIR=%~1
+    set CONFDIR=%~2
+    set TARGETDIR=%~3
+    set ASSEMBLY=%~4
+    set LANG=%~5
+
+    set SOURCEDLL=%TARGETDIR%%LANG%\%ASSEMBLY%.resources.dll
+    set DEST=%SLNDIR%VirtualRadar\bin\x86\%CONFDIR%\%LANG%
 
 :MKDEST
     if exist "%DEST%" goto CPLANG
