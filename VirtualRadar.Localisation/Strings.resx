@@ -2179,4 +2179,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ReadBufferSize" xml:space="preserve">
     <value>Read buffer size</value>
   </data>
+  <data name="CannotOpenDatabaseWantToAutoFix" xml:space="preserve">
+    <value>Could not open {0}, the database engine reported an error: {1}\r\n\r\nWould you like to try an automatic fix of the problem and try to open the file again?</value>
+    <comment>\r\n is a newline in the message dialog, keep those intact</comment>
+  </data>
 </root>

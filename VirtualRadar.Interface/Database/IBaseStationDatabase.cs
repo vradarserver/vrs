@@ -95,6 +95,14 @@ namespace VirtualRadar.Interface.Database
         bool TestConnection();
 
         /// <summary>
+        /// Takes an exception that was thrown from TestConnection and attempts to correct the error that
+        /// was encountered. If it's likely to have succeeded then returns true.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        bool AttemptAutoFix(Exception ex);
+
+        /// <summary>
         /// If the database file is missing or entirely empty then this method creates the file and pre-populates the
         /// tables with roughly the same records that BaseStation prepopulates a new database with.
         /// </summary>

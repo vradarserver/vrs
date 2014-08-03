@@ -593,6 +593,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not open {0}, the database engine reported an error: {1}\r\n\r\nWould you like to try an automatic fix of the problem and try to open the file again?.
+        /// </summary>
+        public static string CannotOpenDatabaseWantToAutoFix {
+            get {
+                return ResourceManager.GetString("CannotOpenDatabaseWantToAutoFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not parse the route state file.
         /// </summary>
         public static string CannotParseRouteFile {

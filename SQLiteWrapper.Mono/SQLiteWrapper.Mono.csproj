@@ -63,6 +63,9 @@
     <Compile Include="..\SQLiteWrapper.DotNet\SQLiteConnectionStringBuilderWrapper.cs">
       <Link>SQLiteConnectionStringBuilderWrapper.cs</Link>
     </Compile>
+    <Compile Include="..\SQLiteWrapper.DotNet\SQLiteExceptionWrapper.cs">
+      <Link>SQLiteExceptionWrapper.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
