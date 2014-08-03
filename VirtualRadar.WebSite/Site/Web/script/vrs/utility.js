@@ -890,15 +890,20 @@
          */
         this.isLatLngInBounds = function(lat, lng, bounds)
         {
+            // This is basically a port of VirtualRadar.WebSite.AircraftListJsonBuilder.IsWithinBounds()
+            // See comments there for an explanation of why this is doing what it does.
+
             var result = !isNaN(lat) && !isNaN(lng);
             if(result) {
                 result = bounds.tlLat >= lat && bounds.brLat <= lat;
                 if(result) {
-                    if(bounds.tlLng >= 0 && bounds.brLng < 0) {
-                        result = lng >= 0 ? bounds.tlLng <= lng : bounds.brLng >= lng;
-                    } else {
-                        result = bounds.tlLng <= lng && bounds.brLng >= lng;
-                    }
+                    lng = lng >= 0 ? lng : lng + 360;
+                    var left = bounds.tlLng >= 0 ? bounds.tlLng : bounds.tlLng + 360;
+                    var right = bounds.brLng >= 0 ? bounds.brLng : bounds.brLng + 360;
+
+                    if(left == right)     result = lng == left;
+                    else if(left > right) result = (lng >= left && lng <= 360.0) || (lng >= 0.0 && lng <= right);
+                    else                  result = lng >= left && lng <= right;
                 }
             }
 

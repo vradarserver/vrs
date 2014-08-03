@@ -424,18 +424,29 @@ namespace VirtualRadar.WebSite
                 if(result) {
                     // Longitude is harder because if the bounding box straddles the anti-meridian then the normal comparison of coordinates
                     // fails. When it straddles the anti-meridian the left edge is a +ve value < 180 and the right edge is a -ve value > -180.
-                    // When this happens we can just look to see if the longitude is +ve or -ve. If it's +ve it has to be between the left
-                    // edge and 180, if it's -ve is has to be between -180 and the right edge. We won't bother enforcing the 180 thing, if they
-                    // enter invalid coordinates then the result is undefined.
-                    if(bounds.First.Longitude >= 0 && bounds.Second.Longitude < 0) {
-                        result = longitude >= 0 ? bounds.First.Longitude <= longitude : bounds.Second.Longitude >= longitude;
-                    } else {
-                        result = bounds.First.Longitude <= longitude && bounds.Second.Longitude >= longitude;
-                    }
+                    // You can also end up with a left edge that is larger than the right edge (e.g. left is 170, Alaska-ish, while right is
+                    // 60, Russia-ish). On top of that -180 and 180 are the same value. The easiest way to cope is to normalise all longitudes
+                    // to a linear scale of angles from 0 through 360 and then check that the longitude lies between the left and right.
+                    //
+                    // If the left degree is larger than the right degree then the bounds straddle the meridian, in which case we need to allow
+                    // all longitudes from the left to 0/360 and all longitudes from 0/360 to the right. If left < right then it's easier, we
+                    // just have to have a longitude between left and right.
+                    longitude = ConvertLongitudeToLinear(longitude.Value);
+                    var left = ConvertLongitudeToLinear(bounds.First.Longitude);
+                    var right = ConvertLongitudeToLinear(bounds.Second.Longitude);
+
+                    if(left == right)     result = longitude == left;
+                    else if(left > right) result = (longitude >= left && longitude <= 360.0) || (longitude >= 0.0 && longitude <= right);
+                    else                  result = longitude >= left && longitude <= right;
                 }
             }
 
             return result;
+        }
+
+        private static double ConvertLongitudeToLinear(double longitude)
+        {
+            return longitude >= 0.0 ? longitude : longitude + 360.0;
         }
         #endregion
 
