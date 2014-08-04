@@ -377,6 +377,7 @@
     <Compile Include="WebSite\AircraftReportJson.cs" />
     <Compile Include="WebSite\ChecksumFile.cs" />
     <Compile Include="WebSite\ChecksumFileEntry.cs" />
+    <Compile Include="WebSite\DirectoryEntryJson.cs" />
     <Compile Include="WebSite\FeedJson.cs" />
     <Compile Include="WebSite\HtmlContentInjector.cs" />
     <Compile Include="WebSite\FlightReportJson.cs" />

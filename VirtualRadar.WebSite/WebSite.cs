@@ -313,6 +313,7 @@ namespace VirtualRadar.WebSite
                 _Pages.Add(_ClosestAircraftJsonPage);
                 _Pages.Add(new AirportDataProxyPage(this));
                 _Pages.Add(new PolarPlotJsonPage(this));
+                _Pages.Add(new DirectoryEntryJsonPage(this));
 
                 foreach(var page in _Pages) {
                     page.Provider = Provider;
