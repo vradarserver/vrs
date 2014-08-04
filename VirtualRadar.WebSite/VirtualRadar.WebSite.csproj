@@ -69,6 +69,7 @@
     <Compile Include="AirportDataProxyPage.cs" />
     <Compile Include="AudioPage.cs" />
     <Compile Include="Bundler.cs" />
+    <Compile Include="DirectoryEntryJsonPage.cs" />
     <Compile Include="FaviconPage.cs" />
     <Compile Include="FileSystemPage.cs" />
     <Compile Include="FontCache.cs" />
