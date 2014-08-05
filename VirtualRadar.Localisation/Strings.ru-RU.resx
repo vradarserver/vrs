@@ -305,13 +305,13 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <comment>Things that are generally to do with audio / sounds</comment>
   </data>
   <data name="DaysBetweenChecks" xml:space="preserve">
-    <value>Периодичность проверки новой версии, дни</value>
+    <value>Интервал проверки, дни</value>
   </data>
   <data name="DefaultVersion" xml:space="preserve">
-    <value>Версия по умолчанию</value>
+    <value>Версия Default</value>
   </data>
   <data name="DesktopVersion" xml:space="preserve">
-    <value>Версия для настольных систем</value>
+    <value>Версия Desktop</value>
     <comment>The version of the site for desktop computers</comment>
   </data>
   <data name="DurationBeforeAircraftRemovedFromMap" xml:space="preserve">
@@ -346,7 +346,7 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <comment>Number of seconds between each update of the map</comment>
   </data>
   <data name="InitialZoom" xml:space="preserve">
-    <value>Детализация карты по умолчанию</value>
+    <value>Детализация по умолчанию</value>
     <comment>Default level of zoom on Google map</comment>
   </data>
   <data name="LastRequest" xml:space="preserve">
@@ -361,11 +361,11 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <value>Доступна новая версия программы</value>
   </data>
   <data name="MinimumRefresh" xml:space="preserve">
-    <value>Минимальный период обновления карты, с</value>
+    <value>Мин. обновление карты, с</value>
     <comment>The smallest number of seconds a browser can request between map updates</comment>
   </data>
   <data name="MobileVersion" xml:space="preserve">
-    <value>Мобильная версия</value>
+    <value>Версия Mobile</value>
     <comment>The version of the site for smartphones and tablet computers</comment>
   </data>
   <data name="Other" xml:space="preserve">
@@ -379,11 +379,11 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <comment>The number of requests a server gets</comment>
   </data>
   <data name="ShowLocalAddress" xml:space="preserve">
-    <value>Адрес localhost</value>
+    <value>Тип адреса: localhost</value>
     <comment>As in show the address of the server on 127.0.0.1</comment>
   </data>
   <data name="ShowNetworkAddress" xml:space="preserve">
-    <value>Адрес в локальной сети</value>
+    <value>Тип адреса: network</value>
     <comment>As in show the address of the server on the network</comment>
   </data>
   <data name="Start" xml:space="preserve">
@@ -787,7 +787,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Аутентификация</value>
   </data>
   <data name="ShowInternetAddress" xml:space="preserve">
-    <value>Интернет-адрес</value>
+    <value>Тип адреса: Internet</value>
   </data>
   <data name="UPnPNotPresent" xml:space="preserve">
     <value>Не найден маршрутизатор с поддержкой UPnP</value>
@@ -1513,7 +1513,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Формат</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>Имя</value>
+    <value>Название</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>Нет</value>
@@ -1600,7 +1600,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Отображать самолеты за пределами зоны приема</value>
   </data>
   <data name="UseLocalDecodeForInitialPosition" xml:space="preserve">
-    <value>Использовать декодирование в местном масштабе для определения начального местоположения</value>
+    <value>В местном масштабе для определения начального местоположения</value>
     <comment>Местоположение может быть декодировано методом местного декодирования, используя предыдущее местоположение цели в качестве исходного.</comment>
   </data>
   <data name="LatitudeCannotBeZero" xml:space="preserve">
@@ -1622,7 +1622,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Принято, Байт</value>
   </data>
   <data name="Connection" xml:space="preserve">
-    <value>Соединение с источником данных</value>
+    <value>Тип соединения</value>
   </data>
   <data name="Count" xml:space="preserve">
     <value>Количество</value>
@@ -1682,7 +1682,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>кбит/с</value>
   </data>
   <data name="AutoReconnectAtStartup" xml:space="preserve">
-    <value>Восстанавливать соединение при загрузке</value>
+    <value>Восстанавливать соединение при запуске</value>
   </data>
   <data name="OptionsDescribeDataSourcesAutoReconnectAtStartup" xml:space="preserve">
     <value>"Да" - автоматически пытаться установить соединение с источником данных при запуске программы, "Нет" - попытаться один раз и сообщить об ошибке, если соединение не может быть установлено.</value>
@@ -1706,7 +1706,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Значение количества Mode-S сообщений должно быть от 0 до 100</value>
   </data>
   <data name="AcceptIcaoInNonPISeconds" xml:space="preserve">
-    <value>Интервал времени приема Mode-S, с</value>
+    <value>Интервал приема Mode-S, с</value>
   </data>
   <data name="AcceptIcaoInNonPISecondsOutOfBounds" xml:space="preserve">
     <value>Значение интервала времени приема Mode-S сообщений должно быть от 1 до 30</value>
@@ -1718,7 +1718,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Значение количества ADS-B сообщений должно быть от 1 до 10</value>
   </data>
   <data name="AcceptIcaoInPI0Seconds" xml:space="preserve">
-    <value>Интервал времени приема ADS-B, с</value>
+    <value>Интервал приема ADS-B, с</value>
   </data>
   <data name="AcceptIcaoInPI0SecondsOutOfBounds" xml:space="preserve">
     <value>Значение интервала времени приема ADS-B сообщений должно быть от 1 до 60</value>
@@ -1828,7 +1828,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Состояние подключения</value>
   </data>
   <data name="NameTitle" xml:space="preserve">
-    <value>Имя</value>
+    <value>Название</value>
   </data>
   <data name="TotalBadMessagesTitle" xml:space="preserve">
     <value>Сообщений с ошибками</value>
@@ -1849,13 +1849,13 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Определите приемник для виджета рабочего стола "Closest Aircraft"</value>
   </data>
   <data name="ClosestAircraftReceiverId" xml:space="preserve">
-    <value>Приемник для виджета рабочего стола</value>
+    <value>Приемник для виджета</value>
   </data>
   <data name="OptionsDescribeClosestAircraftReceiverId" xml:space="preserve">
     <value>Приемник для виджета рабочего стола "Closest Aircraft".</value>
   </data>
   <data name="IcaoTimeout" xml:space="preserve">
-    <value>ИКАО тайм-аут</value>
+    <value>Тайм-аут ИКАО</value>
   </data>
   <data name="MergedFeeds" xml:space="preserve">
     <value>Объединенные потоки</value>
@@ -1891,10 +1891,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Приемники и объединенные каналы должны иметь уникальные имена</value>
   </data>
   <data name="IgnoreAircraftWithNoPosition" xml:space="preserve">
-    <value>Игнорировать самолеты без координат</value>
+    <value>Отбрасывать самолеты без координат</value>
   </data>
   <data name="OptionsDescribeIgnoreAircraftWithNoPosition" xml:space="preserve">
-    <value>"True", включать в объединенный поток только самолеты с координатами, "False" - включать все.</value>
+    <value>"Да", включать в объединенный поток только самолеты с координатами, "Нет" - включать все.</value>
   </data>
   <data name="FeedStatus" xml:space="preserve">
     <value>Состояние потока</value>
@@ -1970,13 +1970,13 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="StaleSeconds" xml:space="preserve">
     <comment>The maximum age of a message buffered on a rebroadcast server</comment>
-    <value>Максимальное время буферизации сообщения, с</value>
+    <value>Макс. буферизация сообщения, с</value>
   </data>
   <data name="StaleSecondsOutOfBounds" xml:space="preserve">
     <value>Максимальное время буферизации сообщения должно быть не менее 1 с</value>
   </data>
   <data name="BytesStale" xml:space="preserve">
-    <value>Байт отброшено</value>
+    <value>Отброшено, Байт</value>
   </data>
   <data name="LoginNameExists" xml:space="preserve">
     <value>Имя пользователя уже используется</value>
@@ -2054,13 +2054,13 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Не удалось загрузить Google Maps</value>
   </data>
   <data name="Stale" xml:space="preserve">
-    <value>Stale</value>
+    <value>Устаревание</value>
   </data>
   <data name="DefaultConfiguration" xml:space="preserve">
     <value>Настройки по умолчанию</value>
   </data>
   <data name="JustFlightSimulatorX" xml:space="preserve">
-    <value>Только Flight Simulator X</value>
+    <value>Только для Flight Simulator X</value>
   </data>
   <data name="PresetConfigurations" xml:space="preserve">
     <value>Предустановленные настройки</value>
@@ -2084,7 +2084,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Beast</value>
   </data>
   <data name="RecConWizDedicatedKinetics" xml:space="preserve">
-    <value>Kinetic Avionics SBS серии или Puck</value>
+    <value>Kinetic Avionics серии SBS или Puck</value>
   </data>
   <data name="RecConWizDedicatedMicroAdsb" xml:space="preserve">
     <value>microADSB USB брелок</value>
@@ -2093,7 +2093,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Какое оборудование вы используете?</value>
   </data>
   <data name="RecConWizFinishAction" xml:space="preserve">
-    <value>Нажмите "Готово", чтобы изменить текущий приемник или "Отмена", чтобы отменить изменения.</value>
+    <value>Нажмите "Готово", чтобы изменить текущий приемник или "Отмена", чтобы не менять.</value>
   </data>
   <data name="RecConWizFinishTitle" xml:space="preserve">
     <value>Выполнено</value>
@@ -2114,13 +2114,13 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Введите сетевой адрес {0}</value>
   </data>
   <data name="RecConWizReceiverClassDedicated" xml:space="preserve">
-    <value>Радиоприемник, принимающий и декодирующий сигналы транспондеров</value>
+    <value>Классический радиоприемник</value>
   </data>
   <data name="RecConWizReceiverClassSdr" xml:space="preserve">
     <value>Программно-определяемая радиосистема (SDR)</value>
   </data>
   <data name="RecConWizReceiverClassTitle" xml:space="preserve">
-    <value>К какому приемнику вы хотите подключиться?</value>
+    <value>К какому виду приемников вы хотите подключиться?</value>
   </data>
   <data name="RecConWizSdrAdsbSharp" xml:space="preserve">
     <value>ADSBSharp</value>
@@ -2138,7 +2138,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>RTL1090</value>
   </data>
   <data name="RecConWizSdrTitle" xml:space="preserve">
-    <value>Какую декодирующую программу вы используете с SDR?</value>
+    <value>Какую декодирующую программу вы используете для SDR?</value>
   </data>
   <data name="RecConWizSourceTheReceiver" xml:space="preserve">
     <value>приемник</value>
@@ -2172,37 +2172,37 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>СОМ порт не существует</value>
   </data>
   <data name="IgnoreModeS" xml:space="preserve">
-    <value>Не использовать Mode-S</value>
+    <value>Отбрасывать без координат</value>
   </data>
   <data name="IdleTimeout" xml:space="preserve">
-    <value>Время блокирования экрана по бездействию</value>
+    <value>Тайм-аут экрана, мин</value>
   </data>
   <data name="PSeconds" xml:space="preserve">
     <value>(с)</value>
   </data>
   <data name="RemoveFromDisplay" xml:space="preserve">
-    <value>Удалить из показа</value>
+    <value>Удалять из показа</value>
   </data>
   <data name="RemoveFromTracking" xml:space="preserve">
-    <value>Удалить из отслеживания</value>
+    <value>Удалять из отслеживания</value>
   </data>
   <data name="ShortTrailDuration" xml:space="preserve">
-    <value>Продолжительность короткого следа</value>
+    <value>Продолж. короткого следа</value>
   </data>
   <data name="AirborneGlobal" xml:space="preserve">
-    <value>Airborne global</value>
+    <value>В воздухе, глобально</value>
   </data>
   <data name="FastSurfaceGlobal" xml:space="preserve">
-    <value>Fast surface global</value>
+    <value>Быстрые, на земле, глобально</value>
   </data>
   <data name="MaxAirborneSpeed" xml:space="preserve">
-    <value>Max airborne speed</value>
+    <value>Макс. в воздухе</value>
   </data>
   <data name="MaxSurfaceSpeed" xml:space="preserve">
-    <value>Max surface speed</value>
+    <value>Макс. на земле</value>
   </data>
   <data name="MaxTransitionSpeed" xml:space="preserve">
-    <value>Max transition speed</value>
+    <value>Макс. в наборе/при снижении</value>
   </data>
   <data name="PKilometres" xml:space="preserve">
     <value>(км)</value>
@@ -2211,7 +2211,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>(км / 30 с)</value>
   </data>
   <data name="SlowSurfaceGlobal" xml:space="preserve">
-    <value>Slow surface global</value>
+    <value>Медленные, на земле, глобально</value>
   </data>
   <data name="ContrastMapTitle" xml:space="preserve">
     <value>Контраст</value>
@@ -2238,6 +2238,11 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Сбросить &amp;Зону покрытия приемника </value>
   </data>
   <data name="OptionsDescribeRebroadcastStaleSeconds" xml:space="preserve">
-    <value>Время нахождения сообщения в буфере ретрансляционного сервера, после которого оно отбрасывается, с.</value>
+    <value>Время нахождения сообщения в буфере ретрансляционного сервера, после которого оно считается устаревшим и отбрасывается, с.</value>
+  </data>
+  <data name="CannotOpenDatabaseWantToAutoFix" xml:space="preserve">
+    <comment>\r\n is a newline in the message dialog, keep those intact</comment>
+    <value>Не удалось открыть {0}, ошибка подсистемы хранения данных: {1}\r\n\r\n  	
+Попытаться автоматически устранить проблему и снова открыть файл?</value>
   </data>
 </root>
