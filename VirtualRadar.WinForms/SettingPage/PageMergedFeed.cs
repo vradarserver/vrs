@@ -102,7 +102,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxEnabled,                      Strings.Enabled,                        Strings.OptionsDescribeMergedFeedEnabled);
             SetInlineHelp(textBoxName,                          Strings.Name,                           Strings.OptionsDescribeMergedFeedName);
             SetInlineHelp(numericIcaoTimeout,                   Strings.IcaoTimeout,                    Strings.OptionsDescribeIcaoTimeout);
-            SetInlineHelp(checkBoxIgnoreAircraftWithNoPosition, Strings.IgnoreAircraftWithNoPosition,   Strings.OptionsDescribeIcaoTimeout);
+            SetInlineHelp(checkBoxIgnoreAircraftWithNoPosition, Strings.IgnoreAircraftWithNoPosition,   Strings.OptionsDescribeIgnoreAircraftWithNoPosition);
             SetInlineHelp(listReceiverIds,                      "",                                     "");
         }
 
