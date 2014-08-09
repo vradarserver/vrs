@@ -186,4 +186,7 @@
   <data name="Receiver" xml:space="preserve">
     <value>Receiver</value>
   </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>Exception caught when processing message: {0}</value>
+  </data>
 </root>

@@ -360,10 +360,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                             _Database.InsertSession(_Session);
                         } catch(ThreadAbortException) {
                         } catch(Exception ex) {
+                            AbandonSession(ex, PluginStrings.ExceptionCaughtWhenStartingSession);
                             Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.StartSession caught exception {0}", ex.ToString()));
-                            Status = PluginStrings.EnabledNotUpdating;
-                            StatusDescription = String.Format(PluginStrings.ExceptionCaughtWhenStartingSession, ex.Message);
-
                             Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on starting session: {0}", ex.ToString());
                         }
                     }
@@ -389,8 +387,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         StatusDescription = null;
                     } catch(ThreadAbortException) {
                     } catch(Exception ex) {
+                        AbandonSession(ex, PluginStrings.ExceptionCaughtWhenClosingSession, Status);
                         Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.EndSession caught exception {0}", ex.ToString()));
-                        StatusDescription = String.Format(PluginStrings.ExceptionCaughtWhenClosingSession, ex.Message);
                         Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on closing session: {0}", ex.ToString());
                     } finally {
                         _Session = null;
@@ -398,6 +396,20 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     OnStatusChanged(EventArgs.Empty);
                 }
             }
+        }
+
+        /// <summary>
+        /// Aborts the current session entirely without attempting any further writes to the database.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="format"></param>
+        /// <param name="status"></param>
+        private void AbandonSession(Exception ex, string format, string status = null)
+        {
+            _Session = null;
+            Status = status ?? PluginStrings.EnabledNotUpdating;
+            StatusDescription = String.Format(format, ex == null ? "null" : ex.Message);
+            OnStatusChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -688,10 +700,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 TrackFlight(args.Message);
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
+                AbandonSession(ex, PluginStrings.ExceptionCaughtWhenProcessingMessage);
                 Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.MessageRelay_MessageReceived caught exception {0}", ex.ToString()));
                 Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
-                StatusDescription = String.Format(PluginStrings.ExceptionCaught, ex.Message);
-                OnStatusChanged(EventArgs.Empty);
             }
         }
 

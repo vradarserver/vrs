@@ -336,7 +336,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
         }
 
@@ -501,7 +501,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Shutdown();
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreNotEqual(null, _StatusChangedEvent.Args);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
         }
@@ -1487,13 +1487,13 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
             _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
+                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
             };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
         }
@@ -1509,13 +1509,13 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
             _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
+                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
             };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
         }
@@ -1531,7 +1531,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
             _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
+                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
             };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
@@ -1540,7 +1540,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             message.Callsign = "Z";
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
         }
@@ -1556,13 +1556,13 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
             _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
+                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
             };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
         }
@@ -1578,13 +1578,13 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
             _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
+                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
             };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
         }
