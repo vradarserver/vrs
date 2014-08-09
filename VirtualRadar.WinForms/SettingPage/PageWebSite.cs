@@ -85,6 +85,8 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(SettingsView, checkBoxEnableBundling,            r => r.Configuration.GoogleMapSettings.EnableBundling,      r => r.Checked);
             AddBinding(SettingsView, checkBoxEnableMinifying,           r => r.Configuration.GoogleMapSettings.EnableMinifying,     r => r.Checked);
             AddBinding(SettingsView, checkBoxEnableCompression,         r => r.Configuration.GoogleMapSettings.EnableCompression,   r => r.Checked);
+
+            AddBinding(SettingsView, textBoxDirectoryEntryKey,          r => r.Configuration.GoogleMapSettings.DirectoryEntryKey,   r => r.Text);
         }
 
         /// <summary>
@@ -116,6 +118,8 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxEnableBundling,           Strings.EnableBundling,     Strings.OptionsDescribeEnableBundling);
             SetInlineHelp(checkBoxEnableMinifying,          Strings.EnableMinifying,    Strings.OptionsDescribeEnableMinifying);
             SetInlineHelp(checkBoxEnableCompression,        Strings.EnableCompression,  Strings.OptionsDescribeEnableCompression);
+
+            SetInlineHelp(textBoxDirectoryEntryKey,         Strings.DirectoryEntryKey,  Strings.OptionsDescribeDirectoryEntryKey);
         }
     }
 }

@@ -46,8 +46,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.numericInitialRefresh = new System.Windows.Forms.NumericUpDown();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBoxDirectoryEntryKey = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericMinimumRefresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericInitialRefresh)).BeginInit();
@@ -258,15 +260,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::OptionsWebSiteSettingsCategory::";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(283, 21);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(68, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "::PSeconds::";
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -276,13 +269,43 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "::PSeconds::";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(283, 21);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(68, 13);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "::PSeconds::";
+            // 
+            // textBoxDirectoryEntryKey
+            // 
+            this.textBoxDirectoryEntryKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxDirectoryEntryKey.Location = new System.Drawing.Point(200, 308);
+            this.textBoxDirectoryEntryKey.MaxLength = 60;
+            this.textBoxDirectoryEntryKey.Name = "textBoxDirectoryEntryKey";
+            this.textBoxDirectoryEntryKey.Size = new System.Drawing.Size(436, 20);
+            this.textBoxDirectoryEntryKey.TabIndex = 2;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 311);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(106, 13);
+            this.label8.TabIndex = 5;
+            this.label8.Text = "::DirectoryEntryKey:::";
+            // 
             // PageWebSite
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.textBoxDirectoryEntryKey);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "PageWebSite";
-            this.Size = new System.Drawing.Size(636, 308);
+            this.Size = new System.Drawing.Size(636, 332);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericMinimumRefresh)).EndInit();
@@ -290,6 +313,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -315,5 +339,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBoxDirectoryEntryKey;
+        private System.Windows.Forms.Label label8;
     }
 }

@@ -1088,6 +1088,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Public directory key.
+        /// </summary>
+        public static string DirectoryEntryKey {
+            get {
+                return ResourceManager.GetString("DirectoryEntryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disconnected.
         /// </summary>
         public static string Disconnected {
@@ -2709,6 +2718,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeDataSourcesStopBits {
             get {
                 return ResourceManager.GetString("OptionsDescribeDataSourcesStopBits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is used to confirm that the site that you have added to the public directory of Virtual Radar Server sites belongs to you. You can add your site to the directory by going to the routes site (http://sdm.virtualradarserver.co.uk), creating an account and then enter your site&apos;s details in the Account section. Copy the key from those details into this field.\r\n\r\nIf you do not want your site added to the public directory then leave this entry empty..
+        /// </summary>
+        public static string OptionsDescribeDirectoryEntryKey {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDirectoryEntryKey", resourceCulture);
             }
         }
         

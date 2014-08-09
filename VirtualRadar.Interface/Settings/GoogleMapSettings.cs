@@ -17,7 +17,9 @@ using System.Linq.Expressions;
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
-    /// The configuration options for the Google Maps map on the website.
+    /// The web site configuration options (originally these were just Google Map settings but they
+    /// expanded over time - unfortunately I can't change the class name without breaking backwards
+    /// compatibility).
     /// </summary>
     public class GoogleMapSettings : INotifyPropertyChanged
     {
@@ -180,6 +182,16 @@ namespace VirtualRadar.Interface.Settings
         {
             get { return _WebSiteReceiverId; }
             set { SetField(ref _WebSiteReceiverId, value, () => WebSiteReceiverId); }
+        }
+
+        private string _DirectoryEntryKey;
+        /// <summary>
+        /// Gets or sets the key that directory entry requests must contain before the site will respond with directory entry information.
+        /// </summary>
+        public string DirectoryEntryKey
+        {
+            get { return _DirectoryEntryKey; }
+            set { SetField(ref _DirectoryEntryKey, value, () => DirectoryEntryKey); }
         }
 
         private int _ClosestAircraftReceiverId;

@@ -2183,4 +2183,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Could not open {0}, the database engine reported an error: {1}\r\n\r\nWould you like to try an automatic fix of the problem and try to open the file again?</value>
     <comment>\r\n is a newline in the message dialog, keep those intact</comment>
   </data>
+  <data name="DirectoryEntryKey" xml:space="preserve">
+    <value>Public directory key</value>
+  </data>
+  <data name="OptionsDescribeDirectoryEntryKey" xml:space="preserve">
+    <value>This is used to confirm that the site that you have added to the public directory of Virtual Radar Server sites belongs to you. You can add your site to the directory by going to the routes site (http://sdm.virtualradarserver.co.uk), creating an account and then enter your site's details in the Account section. Copy the key from those details into this field.\r\n\r\nIf you do not want your site added to the public directory then leave this entry empty.</value>
+  </data>
 </root>
