@@ -8,12 +8,13 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using InterfaceFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 
@@ -24,6 +25,11 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class DirectoryEntryJsonPage : Page
     {
+        /// <summary>
+        /// The directory entry key that the user has configured. We only respond to requests that contain this key.
+        /// </summary>
+        private string _Key;
+
         /// <summary>
         /// The object that gives us access to the feeds.
         /// </summary>
@@ -47,15 +53,27 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// See base docs.
         /// </summary>
+        /// <param name="configuration"></param>
+        protected override void DoLoadConfiguration(Configuration configuration)
+        {
+            _Key = (configuration.GoogleMapSettings.DirectoryEntryKey ?? "").Trim();
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         /// <param name="server"></param>
         /// <param name="args"></param>
         /// <returns></returns>
         protected override bool DoHandleRequest(IWebServer server, RequestReceivedEventArgs args)
         {
             if("/DirectoryEntry.json".Equals(args.PathAndFile, StringComparison.OrdinalIgnoreCase)) {
-                var directoryEntry = BuildDirectoryEntry();
-                Responder.SendJson(args.Request, args.Response, directoryEntry, null, null);
-                args.Handled = true;
+                var key = (args.QueryString["key"] ?? "");
+                if(!String.IsNullOrEmpty(_Key) && _Key.Equals(key, StringComparison.OrdinalIgnoreCase)) {
+                    var directoryEntry = BuildDirectoryEntry();
+                    Responder.SendJson(args.Request, args.Response, directoryEntry, null, null);
+                    args.Handled = true;
+                }
             }
 
             return args.Handled;

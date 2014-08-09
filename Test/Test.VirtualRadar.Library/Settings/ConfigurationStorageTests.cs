@@ -244,6 +244,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(456, readBack.GoogleMapSettings.ClosestAircraftReceiverId);
                         Assert.AreEqual(789, readBack.GoogleMapSettings.FlightSimulatorXReceiverId);
                         Assert.AreEqual(ProxyType.Reverse, readBack.GoogleMapSettings.ProxyType);
+                        Assert.AreEqual("ABC123-456", readBack.GoogleMapSettings.DirectoryEntryKey);
                         break;
                     case "VersionCheckSettings":
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
@@ -452,6 +453,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                         ClosestAircraftReceiverId = 456,
                                                         FlightSimulatorXReceiverId = 789,
                                                         ProxyType = ProxyType.Reverse,
+                                                        DirectoryEntryKey = "ABC123-456",
                                                     }; break;
                     case "VersionCheckSettings":    result.VersionCheckSettings = new VersionCheckSettings() {
                                                         CheckAutomatically = false,

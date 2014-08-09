@@ -58,7 +58,7 @@ namespace VirtualRadar.WinForms.SettingPage
             public InlineHelp(string title, string help)
             {
                 Title = title;
-                Help = help;
+                Help = (help ?? "").Replace(@"\r", "\r").Replace(@"\n", "\n");
             }
         }
         #endregion
