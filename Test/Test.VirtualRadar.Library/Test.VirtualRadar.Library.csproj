@@ -48,6 +48,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessFilterTests.cs" />
     <Compile Include="Adsb\AdsbTranslatorTests.cs" />
     <Compile Include="Adsb\CompactPositionReportingTests.cs" />
     <Compile Include="AircraftComparerTests.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="FeedManagerTests.cs" />
     <Compile Include="FeedTests.cs" />
     <Compile Include="RuntimeEnvironmentTests.cs" />
+    <Compile Include="Settings\ConfigurationListenerTests.cs" />
     <Compile Include="Settings\ConfigurationStorageTests.cs" />
     <Compile Include="Settings\InstallerSettingsStorageTests.cs" />
     <Compile Include="EventArgsTests.cs" />

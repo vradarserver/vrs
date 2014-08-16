@@ -56,7 +56,18 @@ namespace Test.VirtualRadar.Library
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _Configuration = new Configuration();
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
-            _RebroadcastSettings = new RebroadcastSettings() { UniqueId = 22, Name = "A", Enabled = true, Port = 1000, Format = RebroadcastFormat.Passthrough, ReceiverId = 1, StaleSeconds = 3 };
+            _RebroadcastSettings = new RebroadcastSettings() {
+                UniqueId = 22,
+                Name = "A",
+                Enabled = true,
+                Port = 1000,
+                Format = RebroadcastFormat.Passthrough,
+                ReceiverId = 1,
+                StaleSeconds = 3,
+                Access = {
+                    DefaultAccess = DefaultAccess.Allow,
+                }
+            };
             _Configuration.RebroadcastSettings.Add(_RebroadcastSettings);
 
             _Manager = Factory.Singleton.Resolve<IRebroadcastServerManager>();
@@ -163,6 +174,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(RebroadcastFormat.Passthrough, _Server.Object.Format);
             Assert.AreEqual(false, _Server.Object.Online);
             Assert.AreEqual(3, _BroadcastProvider.Object.StaleSeconds);
+            Assert.AreSame(_RebroadcastSettings.Access, _BroadcastProvider.Object.Access);
         }
 
         [TestMethod]
@@ -321,6 +333,20 @@ namespace Test.VirtualRadar.Library
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreEqual(8080, _BroadcastProvider.Object.Port);
+            _Server.Verify(r => r.Dispose(), Times.Once());
+            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Disposes_Of_Old_And_Creates_New_Server_If_Access_Changes()
+        {
+            _Manager.Initialise();
+
+            _RebroadcastSettings.Access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
+            Assert.AreSame(_RebroadcastSettings.Access, _BroadcastProvider.Object.Access);
             _Server.Verify(r => r.Dispose(), Times.Once());
             _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
         }

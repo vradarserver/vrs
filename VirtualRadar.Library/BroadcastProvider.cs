@@ -151,6 +151,16 @@ namespace VirtualRadar.Library
         /// The object that supplies times to us.
         /// </summary>
         private IClock _Clock;
+
+        /// <summary>
+        /// The object that manages the filtering of connections to an optional black / white list.
+        /// </summary>
+        /// <remarks>
+        /// Modification and use of the access filter is not guarded by a lock. You need to take a local reference
+        /// to the _AccessFilter field before use. _AccessFilter might change on another thread but your local
+        /// reference should remain intact.
+        /// </remarks>
+        private volatile IAccessFilter _AccessFilter;
         #endregion
 
         #region Properties
@@ -173,6 +183,11 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public int StaleSeconds { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public Access Access { get; set; }
         #endregion
 
         #region Events exposed
@@ -334,6 +349,13 @@ namespace VirtualRadar.Library
         {
             if(Port < 0 || Port > 65535) throw new InvalidOperationException("The port is out of range");
 
+            if(Access == null) {
+                _AccessFilter = null;
+            } else {
+                _AccessFilter = Factory.Singleton.Resolve<IAccessFilter>();
+                _AccessFilter.Initialise(Access);
+            }
+
             if(_Listener == null) {
                 _Listener = new TcpListener(IPAddress.Any, Port);
                 _Listener.Start();
@@ -367,30 +389,41 @@ namespace VirtualRadar.Library
 
             if(tcpClient != null) {
                 try {
-                    tcpClient.SendTimeout = SendTimeoutMilliseconds;
+                    var accessFilter = _AccessFilter;       // See comments against the _AccessFilter field declaration
+                    var endPoint = tcpClient.Client == null ? null : tcpClient.Client.RemoteEndPoint as IPEndPoint;
+                    if(endPoint == null || (accessFilter != null && !accessFilter.Allow(endPoint.Address))) {
+                        try {
+                            tcpClient.Close();
+                            ((IDisposable)tcpClient).Dispose();
+                        } catch {
+                        }
+                        tcpClient = null;
+                    } else {
+                        tcpClient.SendTimeout = SendTimeoutMilliseconds;
 
-                    Client client = null;
-                    lock(_SyncLock) {
-                        if(_Disposed) client = null;
-                        else {
-                            client = new Client() {
-                                TcpClient = new TcpClientWrapper(tcpClient, takeOwnership: true),
-                                IPEndPoint = tcpClient.Client.RemoteEndPoint as IPEndPoint,
-                                LastConnectionCheckUtc = DateTime.UtcNow,
-                            };
-                            if(client.IPEndPoint == null) {
-                                ((IDisposable)tcpClient).Dispose();
-                                client = null;
-                            } else {
-                                tcpClient.NoDelay = IPEndPointHelper.IsLocalOrLanAddress(client.IPEndPoint);
-                                _ConnectedClients.Add(client);
+                        Client client = null;
+                        lock(_SyncLock) {
+                            if(_Disposed) client = null;
+                            else {
+                                client = new Client() {
+                                    TcpClient = new TcpClientWrapper(tcpClient, takeOwnership: true),
+                                    IPEndPoint = endPoint,
+                                    LastConnectionCheckUtc = DateTime.UtcNow,
+                                };
+                                if(client.IPEndPoint == null) {
+                                    ((IDisposable)tcpClient).Dispose();
+                                    client = null;
+                                } else {
+                                    tcpClient.NoDelay = IPEndPointHelper.IsLocalOrLanAddress(client.IPEndPoint);
+                                    _ConnectedClients.Add(client);
+                                }
                             }
                         }
-                    }
 
-                    if(client != null) {
-                        if(_Log != null) _Log.WriteLine("Rebroadcast server ID {0} accepted connection from {1}:{2}", RebroadcastServerId, client.IPEndPoint.Address, client.IPEndPoint.Port);
-                        OnClientConnected(new BroadcastEventArgs(RebroadcastServerId, client.IPEndPoint, 0, Port));
+                        if(client != null) {
+                            if(_Log != null) _Log.WriteLine("Rebroadcast server ID {0} accepted connection from {1}:{2}", RebroadcastServerId, client.IPEndPoint.Address, client.IPEndPoint.Port);
+                            OnClientConnected(new BroadcastEventArgs(RebroadcastServerId, client.IPEndPoint, 0, Port));
+                        }
                     }
                 } catch(ThreadAbortException) {
                     // We can ignore this, it'll get re-thrown automatically on the end of the try. We don't want to report it.

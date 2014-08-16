@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -9,35 +9,31 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VirtualRadar.Interface.Settings;
-using Test.Framework;
+using System.Text;
 
-namespace Test.VirtualRadar.Interface.Settings
+namespace VirtualRadar.Interface.Settings
 {
-    [TestClass]
-    public class RebroadcastSettingsTests
+    /// <summary>
+    /// An enumeration of the default access allowed to an Internet resource.
+    /// </summary>
+    public enum DefaultAccess
     {
-        [TestMethod]
-        public void RebroadcastSettings_Constructor_Initialises_To_Known_State_And_Properties_Work()
-        {
-            CheckProperties(new RebroadcastSettings());
-        }
+        /// <summary>
+        /// Any user may access the resource. The <see cref="AccessList.Addresses"/> list's
+        /// contents are ignored.
+        /// </summary>
+        Unrestricted,
 
-        public static void CheckProperties(RebroadcastSettings settings)
-        {
-            TestUtilities.TestProperty(settings, r => r.Enabled, false);
-            TestUtilities.TestProperty(settings, r => r.Format, RebroadcastFormat.None, RebroadcastFormat.Passthrough);
-            TestUtilities.TestProperty(settings, r => r.Name, null, "ABC");
-            TestUtilities.TestProperty(settings, r => r.Port, 0, 19000);
-            TestUtilities.TestProperty(settings, r => r.ReceiverId, 0, 1234);
-            TestUtilities.TestProperty(settings, r => r.UniqueId, 0, 456);
-            TestUtilities.TestProperty(settings, r => r.StaleSeconds, 3, 15);
+        /// <summary>
+        /// Allow access to any address except those that are in <see cref="AccessList.Addresses"/>.
+        /// </summary>
+        Allow,
 
-            Assert.IsNotNull(settings.Access);
-        }
+        /// <summary>
+        /// Deny access to all addresses except those that are in <see cref="AccessList.Addresses"/>.
+        /// </summary>
+        Deny,
     }
 }

@@ -26,11 +26,12 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         private List<IBindingList> _HookedLists = new List<IBindingList>();
 
-        // Lists of child objects that have been hooked.
+        // Lists of configuration child objects that have been hooked.
         private List<Receiver> _HookedReceivers = new List<Receiver>();
         private List<MergedFeed> _HookedMergedFeeds = new List<MergedFeed>();
         private List<RebroadcastSettings> _HookedRebroadcastSettings = new List<RebroadcastSettings>();
         private List<ReceiverLocation> _HookedReceiverLocations = new List<ReceiverLocation>();
+        private Dictionary<object, List<object>> _HookedChildren = new Dictionary<object,List<object>>();
         #endregion
 
         #region Events exposed
@@ -135,7 +136,7 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.WebServerSettings.PropertyChanged +=         WebServerSettings_PropertyChanged;
 
                 HookList(_Configuration.MergedFeeds,            _HookedMergedFeeds,         MergedFeed_PropertyChanged,         MergedFeeds_ListChanged);
-                HookList(_Configuration.RebroadcastSettings,    _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged);
+                HookList(_Configuration.RebroadcastSettings,    _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged, RebroadcastSetting_HookChild, RebroadcastSetting_UnhookChild);
                 HookList(_Configuration.ReceiverLocations,      _HookedReceiverLocations,   ReceiverLocation_PropertyChanged,   ReceiverLocations_ListChanged);
                 HookList(_Configuration.Receivers,              _HookedReceivers,           Receiver_PropertyChanged,           Receivers_ListChanged);
             }
@@ -158,7 +159,7 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.WebServerSettings.PropertyChanged -=         WebServerSettings_PropertyChanged;
 
                 UnhookList(_Configuration.MergedFeeds,          _HookedMergedFeeds,         MergedFeed_PropertyChanged,         MergedFeeds_ListChanged);
-                UnhookList(_Configuration.RebroadcastSettings,  _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged);
+                UnhookList(_Configuration.RebroadcastSettings,  _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged, RebroadcastSetting_UnhookChild);
                 UnhookList(_Configuration.ReceiverLocations,    _HookedReceiverLocations,   ReceiverLocation_PropertyChanged,   ReceiverLocations_ListChanged);
                 UnhookList(_Configuration.Receivers,            _HookedReceivers,           Receiver_PropertyChanged,           Receivers_ListChanged);
 
@@ -174,14 +175,17 @@ namespace VirtualRadar.Library.Settings
         /// <param name="hookedRecords"></param>
         /// <param name="recordEventHandler"></param>
         /// <param name="listEventHandler"></param>
-        private void HookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler)
+        /// <param name="hookChild"></param>
+        /// <param name="unhookChild"></param>
+        private void HookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler, Action<T> hookChild = null, Action<T> unhookChild = null)
             where T: INotifyPropertyChanged
         {
-            if(_HookedLists.Contains(list)) UnhookList(list, hookedRecords, recordEventHandler, listEventHandler);
+            if(_HookedLists.Contains(list)) UnhookList(list, hookedRecords, recordEventHandler, listEventHandler, unhookChild);
 
             foreach(var record in list) {
                 hookedRecords.Add(record);
                 record.PropertyChanged += recordEventHandler;
+                if(hookChild != null) hookChild(record);
             }
 
             list.ListChanged += listEventHandler;
@@ -196,17 +200,76 @@ namespace VirtualRadar.Library.Settings
         /// <param name="hookedRecords"></param>
         /// <param name="recordEventHandler"></param>
         /// <param name="listEventHandler"></param>
-        private void UnhookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler)
+        /// <param name="unhookChild"></param>
+        private void UnhookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler, Action<T> unhookChild = null)
             where T: INotifyPropertyChanged
         {
             if(_HookedLists.Contains(list)) {
                 foreach(var record in hookedRecords) {
                     record.PropertyChanged -= recordEventHandler;
+                    if(unhookChild != null) unhookChild(record);
                 }
                 hookedRecords.Clear();
 
                 list.ListChanged -= listEventHandler;
                 _HookedLists.Remove(list);
+            }
+        }
+
+        /// <summary>
+        /// Hooks child objects on a rebroadcast setting.
+        /// </summary>
+        /// <param name="record"></param>
+        private void RebroadcastSetting_HookChild(RebroadcastSettings record)
+        {
+            if(!HaveHookedChildren(record)) {
+                record.Access.PropertyChanged += RebroadcastSetting_Access_PropertyChanged;
+                RecordHookedChild(record, record.Access);
+            }
+        }
+
+        /// <summary>
+        /// Unhooks child objects on a rebroadcast setting.
+        /// </summary>
+        /// <param name="record"></param>
+        private void RebroadcastSetting_UnhookChild(RebroadcastSettings record)
+        {
+            foreach(var child in GetHookedChildren(record).OfType<Access>()) {
+                child.PropertyChanged -= RebroadcastSetting_Access_PropertyChanged;
+                RecordUnhookedChild(record, child);
+            }
+        }
+
+        private bool HaveHookedChildren(object record)
+        {
+            return _HookedChildren.ContainsKey(record);
+        }
+
+        private object[] GetHookedChildren(object record)
+        {
+            List<object> result;
+            _HookedChildren.TryGetValue(record, out result);
+
+            return result.ToArray() ?? new object[0];
+        }
+
+        private void RecordHookedChild(object record, object child)
+        {
+            List<object> hookedChildren;
+            if(!_HookedChildren.TryGetValue(record, out hookedChildren)) {
+                hookedChildren = new List<object>();
+                _HookedChildren.Add(record, hookedChildren);
+            }
+
+            if(!hookedChildren.Contains(child)) hookedChildren.Add(child);
+        }
+
+        private void RecordUnhookedChild(object record, object child)
+        {
+            List<object> hookedChildren;
+            if(_HookedChildren.TryGetValue(record, out hookedChildren)) {
+                if(hookedChildren.Contains(child)) hookedChildren.Remove(child);
+                if(hookedChildren.Count == 0) _HookedChildren.Remove(record);
             }
         }
         #endregion
@@ -215,6 +278,11 @@ namespace VirtualRadar.Library.Settings
         private void Configuration_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             RaisePropertyChanged(sender, ConfigurationListenerGroup.Configuration, args);
+        }
+
+        private void Access_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            RaisePropertyChanged(sender, ConfigurationListenerGroup.Access, args);
         }
 
         private void AudioSettings_PropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -257,6 +325,11 @@ namespace VirtualRadar.Library.Settings
             RaisePropertyChanged(sender, ConfigurationListenerGroup.RebroadcastSetting, args, isListChild: true);
         }
 
+        private void RebroadcastSetting_Access_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            RaisePropertyChanged(sender, ConfigurationListenerGroup.Access, args, isListChild: true);
+        }
+
         private void Receiver_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             RaisePropertyChanged(sender, ConfigurationListenerGroup.Receiver, args, isListChild: true);
@@ -286,7 +359,7 @@ namespace VirtualRadar.Library.Settings
 
         private void RebroadcastSettings_ListChanged(object sender, ListChangedEventArgs args)
         {
-            HookList(_Configuration.RebroadcastSettings, _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged);
+            HookList(_Configuration.RebroadcastSettings, _HookedRebroadcastSettings, RebroadcastSetting_PropertyChanged, RebroadcastSettings_ListChanged, RebroadcastSetting_HookChild, RebroadcastSetting_UnhookChild);
         }
 
         private void Receivers_ListChanged(object sender, ListChangedEventArgs args)

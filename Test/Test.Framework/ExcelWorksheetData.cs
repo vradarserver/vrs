@@ -233,8 +233,13 @@ namespace Test.Framework
         {
             object result = null;
 
-            if(type != typeof(DateTime)) result = Convert.ChangeType(rawValue, type, new CultureInfo("en-GB"));
-            else {
+            if(type != typeof(DateTime)) {
+                var hasHexStart = rawValue != null && rawValue.StartsWith("0x");
+                if(hasHexStart && type == typeof(ushort))       result = Convert.ToUInt16(rawValue.Substring(2), 16);
+                else if(hasHexStart && type == typeof(uint))    result = Convert.ToUInt32(rawValue.Substring(2), 16);
+                else if(hasHexStart && type == typeof(ulong))   result = Convert.ToUInt64(rawValue.Substring(2), 16);
+                else                                            result = Convert.ChangeType(rawValue, type, new CultureInfo("en-GB"));
+            } else {
                 string[] dateParts = rawValue.Split(new char[] {'/', ' ', ':', '.'}, StringSplitOptions.RemoveEmptyEntries);
                 var parsed = new List<int>();
                 var kind = DateTimeKind.Unspecified;
@@ -400,6 +405,36 @@ namespace Test.Framework
         public short Short(short ordinal, short emptyValue)                 { return GetColumn<short>(ordinal, emptyValue); }
 
         /// <summary>
+        /// Returns the content of the cell at <paramref name="columnName"/> cast to a ushort.
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public ushort UShort(string columnName)                             { return GetColumn<ushort>(columnName, 0); }
+
+        /// <summary>
+        /// Returns the content of the cell at <paramref name="columnName"/> cast to a ushort. If the cell is empty then 'emptyValue' is returned.
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="emptyValue"></param>
+        /// <returns></returns>
+        public ushort UShort(string columnName, ushort emptyValue)          { return GetColumn<ushort>(columnName, emptyValue); }
+
+        /// <summary>
+        /// Returns the content of the <em>n</em>th cell cast to a ushort.
+        /// </summary>
+        /// <param name="ordinal"></param>
+        /// <returns></returns>
+        public ushort UShort(int ordinal)                                   { return GetColumn<ushort>(ordinal, 0); }
+
+        /// <summary>
+        /// Returns the content of the <em>n</em>th cell cast to a ushort. If the cell is empty then 'emptyValue' is returned.
+        /// </summary>
+        /// <param name="ordinal"></param>
+        /// <param name="emptyValue"></param>
+        /// <returns></returns>
+        public ushort UShort(int ordinal, ushort emptyValue)                { return GetColumn<ushort>(ordinal, emptyValue); }
+
+        /// <summary>
         /// Returns the content of the cell at <paramref name="columnName"/> cast to an int.
         /// </summary>
         /// <param name="columnName"></param>
@@ -430,6 +465,36 @@ namespace Test.Framework
         public int Int(int ordinal, int emptyValue)                         { return GetColumn<int>(ordinal, emptyValue); }
 
         /// <summary>
+        /// Returns the content of the cell at <paramref name="columnName"/> cast to a uint.
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public uint UInt(string columnName)                                 { return GetColumn<uint>(columnName, 0); }
+
+        /// <summary>
+        /// Returns the content of the cell at <paramref name="columnName"/> cast to a uint. If the cell is empty then 'emptyValue' is returned.
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="emptyValue"></param>
+        /// <returns></returns>
+        public uint UInt(string columnName, uint emptyValue)                { return GetColumn<uint>(columnName, emptyValue); }
+
+        /// <summary>
+        /// Returns the content of the <em>n</em>th cell cast to a uint.
+        /// </summary>
+        /// <param name="ordinal"></param>
+        /// <returns></returns>
+        public uint UInt(int ordinal)                                       { return GetColumn<uint>(ordinal, 0); }
+
+        /// <summary>
+        /// Returns the content of the <em>n</em>th cell cast to a uint. If the cell is empty then 'emptyValue' is returned.
+        /// </summary>
+        /// <param name="ordinal"></param>
+        /// <param name="emptyValue"></param>
+        /// <returns></returns>
+        public uint UInt(int ordinal, uint emptyValue)                      { return GetColumn<uint>(ordinal, emptyValue); }
+
+        /// <summary>
         /// Returns the content of the cell at <paramref name="columnName"/> cast to a long.
         /// </summary>
         /// <param name="columnName"></param>
@@ -458,6 +523,36 @@ namespace Test.Framework
         /// <param name="emptyValue"></param>
         /// <returns></returns>
         public long Long(int ordinal, long emptyValue)                      { return GetColumn<long>(ordinal, emptyValue); }
+
+        /// <summary>
+        /// Returns the content of the cell at <paramref name="columnName"/> cast to a ulong.
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public ulong ULong(string columnName)                               { return GetColumn<ulong>(columnName, 0); }
+
+        /// <summary>
+        /// Returns the content of the cell at <paramref name="columnName"/> cast to a ulong. If the cell is empty then 'emptyValue' is returned.
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="emptyValue"></param>
+        /// <returns></returns>
+        public ulong ULong(string columnName, ulong emptyValue)             { return GetColumn<ulong>(columnName, emptyValue); }
+
+        /// <summary>
+        /// Returns the content of the <em>n</em>th cell cast to a ulong.
+        /// </summary>
+        /// <param name="ordinal"></param>
+        /// <returns></returns>
+        public ulong ULong(int ordinal)                                     { return GetColumn<ulong>(ordinal, 0); }
+
+        /// <summary>
+        /// Returns the content of the <em>n</em>th cell cast to a ulong. If the cell is empty then 'emptyValue' is returned.
+        /// </summary>
+        /// <param name="ordinal"></param>
+        /// <param name="emptyValue"></param>
+        /// <returns></returns>
+        public ulong ULong(int ordinal, ulong emptyValue)                   { return GetColumn<ulong>(ordinal, emptyValue); }
 
         /// <summary>
         /// Returns the content of the cell at <paramref name="columnName"/> cast to a decimal.
