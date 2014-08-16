@@ -17,6 +17,11 @@ namespace VirtualRadar.Interface.Settings
         Configuration,
 
         /// <summary>
+        /// The property belongs to an <see cref="Access"/> object.
+        /// </summary>
+        Access,
+
+        /// <summary>
         /// The property belongs to the <see cref="AudioSettings"/> object.
         /// </summary>
         Audio,

@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,97 +10,38 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace VirtualRadar.Interface.Settings
 {
+    #pragma warning disable 0659        // Implemented Equals but not GetHashCode. These aren't keys, they aren't immutable, would be wrong to implement GetHashCode
     /// <summary>
-    /// The settings for the rebroadcast server.
+    /// A class that holds access lists to Internet resources.
     /// </summary>
-    [Serializable]
-    public class RebroadcastSettings : INotifyPropertyChanged
+    public class Access : INotifyPropertyChanged
     {
-        private int _UniqueId;
+        private DefaultAccess _DefaultAccess;
         /// <summary>
-        /// Gets or sets the unique identifier for the server. This cannot be zero.
+        /// Gets or sets a value indicating the default access to support for the resource.
+        /// This also indicates how <see cref="Addresses"/> is to be interpreted.
         /// </summary>
-        public int UniqueId
+        public DefaultAccess DefaultAccess
         {
-            get { return _UniqueId; }
-            set { SetField(ref _UniqueId, value, () => UniqueId); }
+            get { return _DefaultAccess; }
+            set { SetField(ref _DefaultAccess, value, () => DefaultAccess); }
         }
 
-        private string _Name;
+        private BindingList<string> _Addresses = new BindingList<string>();
         /// <summary>
-        /// Gets or sets the unique name for the server.
+        /// Gets a list of domain or IPv4 CIDR notation addresses that are either explicitly
+        /// denied or allowed access to the resource.
         /// </summary>
-        public string Name
+        public BindingList<string> Addresses
         {
-            get { return _Name; }
-            set { SetField(ref _Name, value, () => Name); }
-        }
-
-        private bool _Enabled;
-        /// <summary>
-        /// Gets or sets a value indicating whether the rebroadcast server is enabled.
-        /// </summary>
-        public bool Enabled
-        {
-            get { return _Enabled; }
-            set { SetField(ref _Enabled, value, () => Enabled); }
-        }
-
-        private int _ReceiverId;
-        /// <summary>
-        /// Gets or sets the receiver that the rebroadcast server will rebroadcast.
-        /// </summary>
-        public int ReceiverId
-        {
-            get { return _ReceiverId; }
-            set { SetField(ref _ReceiverId, value, () => ReceiverId); }
-        }
-
-        private RebroadcastFormat _Format;
-        /// <summary>
-        /// Gets or sets the format in which to rebroadcast the receiver's messages.
-        /// </summary>
-        public RebroadcastFormat Format
-        {
-            get { return _Format; }
-            set { SetField(ref _Format, value, () => Format); }
-        }
-
-        private int _Port;
-        /// <summary>
-        /// Gets or sets the port number to rebroadcast the receiver's messages on.
-        /// </summary>
-        public int Port
-        {
-            get { return _Port; }
-            set { SetField(ref _Port, value, () => Port); }
-        }
-
-        private int _StaleSeconds;
-        /// <summary>
-        /// Gets or sets the threshold for discarding buffered messages that are too old.
-        /// </summary>
-        public int StaleSeconds
-        {
-            get { return _StaleSeconds; }
-            set { SetField(ref _StaleSeconds, value, () => StaleSeconds); }
-        }
-
-        private Access _Access;
-        /// <summary>
-        /// Gets or sets the access settings for the rebroadcast server.
-        /// </summary>
-        public Access Access
-        {
-            get { return _Access; }
-            set { SetField(ref _Access, value, () => Access); }
+            get { return _Addresses; }
         }
 
         /// <summary>
@@ -141,10 +82,35 @@ namespace VirtualRadar.Interface.Settings
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public RebroadcastSettings()
+        public Access()
         {
-            Access = new Access();
-            StaleSeconds = 3;
+            Addresses.ListChanged += Addresses_ListChanged;
+        }
+
+        /// <summary>
+        /// Returns true if the object passed across is an <see cref="Access"/> object with the
+        /// same properties as this one.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            var result = Object.ReferenceEquals(this, obj);
+            if(!result) {
+                var other = obj as Access;
+                result = other != null &&
+                         other.DefaultAccess == DefaultAccess &&
+                         other.Addresses.SequenceEqual(Addresses);
+            }
+
+            return result;
+        }
+
+        void Addresses_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.Addresses)));
+            }
         }
     }
 }

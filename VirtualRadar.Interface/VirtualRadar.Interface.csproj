@@ -105,6 +105,8 @@
     <Compile Include="AircraftDetail.cs" />
     <Compile Include="ByteArrayComparable.cs" />
     <Compile Include="Certainty.cs" />
+    <Compile Include="Cidr.cs" />
+    <Compile Include="IAccessFilter.cs" />
     <Compile Include="IAircraftSanityChecker.cs" />
     <Compile Include="IListExtensions.cs" />
     <Compile Include="Listener\IPolarPlotter.cs" />
@@ -117,8 +119,10 @@
     <Compile Include="Presenter\ISettingsPresenter.cs" />
     <Compile Include="PropertyHelper.cs" />
     <Compile Include="RebroadcastServerConnection.cs" />
+    <Compile Include="Settings\Access.cs" />
     <Compile Include="Settings\ConfigurationListenerEventArgs.cs" />
     <Compile Include="Settings\ConfigurationListenerGroup.cs" />
+    <Compile Include="Settings\DefaultAccess.cs" />
     <Compile Include="Settings\IConfigurationListener.cs" />
     <Compile Include="Settings\IUser.cs" />
     <Compile Include="Settings\IUserManager.cs" />

@@ -62,6 +62,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Settings.IInstallerSettingsStorage, Settings.InstallerSettingsStorage>();
             factory.Register<VirtualRadar.Interface.Settings.IPluginManifestStorage, Settings.PluginManifestStorage>();
             factory.Register<VirtualRadar.Interface.Settings.IPluginSettingsStorage, Settings.PluginSettingsStorage>();
+            factory.Register<IAccessFilter, AccessFilter>();
             factory.Register<IAircraft, Aircraft>();
             factory.Register<IAircraftComparer, AircraftComparer>();
             factory.Register<IAircraftDetailFetcher, AircraftDetailFetcher>();

@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessFilter.cs" />
     <Compile Include="Adsb\AdsbTranslator.cs" />
     <Compile Include="Adsb\CompactPositionReporting.cs" />
     <Compile Include="Aircraft.cs" />

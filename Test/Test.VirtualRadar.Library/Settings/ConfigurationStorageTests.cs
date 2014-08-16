@@ -315,6 +315,15 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(1, readBack.RebroadcastSettings[1].ReceiverId);
                         Assert.AreEqual(10, readBack.RebroadcastSettings[1].StaleSeconds);
 
+                        Assert.AreEqual(DefaultAccess.Deny, readBack.RebroadcastSettings[0].Access.DefaultAccess);
+                        Assert.AreEqual(2, readBack.RebroadcastSettings[0].Access.Addresses.Count);
+                        Assert.AreEqual("1.2.3.4/10", readBack.RebroadcastSettings[0].Access.Addresses[0]);
+                        Assert.AreEqual("virtualradarserver.co.uk", readBack.RebroadcastSettings[0].Access.Addresses[1]);
+
+                        Assert.AreEqual(DefaultAccess.Allow, readBack.RebroadcastSettings[1].Access.DefaultAccess);
+                        Assert.AreEqual(1, readBack.RebroadcastSettings[1].Access.Addresses.Count);
+                        Assert.AreEqual("192.168.0.7", readBack.RebroadcastSettings[1].Access.Addresses[0]);
+
                         break;
                     case "Receivers":
                         Assert.AreEqual(2, readBack.Receivers.Count);
@@ -518,6 +527,13 @@ namespace Test.VirtualRadar.Library.Settings
                                                             Port = 10000,
                                                             ReceiverId = -1,
                                                             StaleSeconds = 7,
+                                                            Access = {
+                                                                DefaultAccess = DefaultAccess.Deny,
+                                                                Addresses = {
+                                                                    "1.2.3.4/10",
+                                                                    "virtualradarserver.co.uk",
+                                                                }
+                                                            },
                                                         },
                                                         new RebroadcastSettings() {
                                                             UniqueId = 2,
@@ -527,6 +543,12 @@ namespace Test.VirtualRadar.Library.Settings
                                                             Port = 10001,
                                                             ReceiverId = 1,
                                                             StaleSeconds = 10,
+                                                            Access = {
+                                                                DefaultAccess = DefaultAccess.Allow,
+                                                                Addresses = {
+                                                                    "192.168.0.7",
+                                                                },
+                                                            },
                                                         },
                                                     });
                                                     break;

@@ -249,7 +249,8 @@ namespace VirtualRadar.Library
                         r.Format == rebroadcastSettings.Format &&
                         r.BroadcastProvider.Port == rebroadcastSettings.Port &&
                         r.UniqueId == rebroadcastSettings.UniqueId &&
-                        r.Listener.ReceiverId == feed.UniqueId
+                        r.Listener.ReceiverId == feed.UniqueId &&
+                        Object.Equals(r.BroadcastProvider.Access, rebroadcastSettings.Access)
                     );
                     if(indexExistingServer == -1) {
                         newServers.Add(rebroadcastSettings);
@@ -274,6 +275,7 @@ namespace VirtualRadar.Library
                 server.BroadcastProvider = Factory.Singleton.Resolve<IBroadcastProvider>();
                 server.BroadcastProvider.Port = rebroadcastSettings.Port;
                 server.BroadcastProvider.StaleSeconds = rebroadcastSettings.StaleSeconds;
+                server.BroadcastProvider.Access = rebroadcastSettings.Access;
                 server.BroadcastProvider.BroadcastSending += BroadcastProvider_BroadcastSending;
                 server.BroadcastProvider.BroadcastSent += BroadcastProvider_BroadcastSent;
                 server.BroadcastProvider.ClientConnected += BroadcastProvider_ClientConnected;

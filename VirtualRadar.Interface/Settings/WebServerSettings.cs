@@ -33,31 +33,21 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _AuthenticationScheme, value, () => AuthenticationScheme); }
         }
 
-        private string _BasicAuthenticationUser;
         /// <summary>
         /// Gets or sets the user for basic authentication.
         /// </summary>
         /// <remarks>
         /// Last used in version 2.0.2, now superceded by <see cref="BasicAuthenticationUserIds"/>.
         /// </remarks>
-        public string BasicAuthenticationUser
-        {
-            get { return _BasicAuthenticationUser; }
-            set { SetField(ref _BasicAuthenticationUser, value, () => BasicAuthenticationUser); }
-        }
+        public string BasicAuthenticationUser { get; set; }
 
-        private Hash _BasicAuthenticationPasswordHash;
         /// <summary>
         /// Gets or sets the hash of the password for the basic authentication user.
         /// </summary>
         /// <remarks>
         /// Last used in version 2.0.2, now superceded by <see cref="BasicAuthenticationUserIds"/>.
         /// </remarks>
-        public Hash BasicAuthenticationPasswordHash
-        {
-            get { return _BasicAuthenticationPasswordHash; }
-            set { SetField(ref _BasicAuthenticationPasswordHash, value, () => BasicAuthenticationPasswordHash); }
-        }
+        public Hash BasicAuthenticationPasswordHash { get; set; }
 
         private bool _ConvertedUser;
         /// <summary>

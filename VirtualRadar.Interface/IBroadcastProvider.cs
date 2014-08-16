@@ -40,6 +40,12 @@ namespace VirtualRadar.Interface
         int StaleSeconds { get; set; }
 
         /// <summary>
+        /// Gets the access control to pass new connections through. IP addresses rejected by an access
+        /// filter built from this will not be allowed to connect.
+        /// </summary>
+        Access Access { get; set; }
+
+        /// <summary>
         /// Raised when a client connects to the provider.
         /// </summary>
         event EventHandler<BroadcastEventArgs> ClientConnected;

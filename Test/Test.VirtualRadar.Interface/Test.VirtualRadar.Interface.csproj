@@ -75,6 +75,7 @@
     <Compile Include="BaseStation\BaseStationSupplementaryMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorExceptionTests.cs" />
+    <Compile Include="CidrTests.cs" />
     <Compile Include="Listener\PolarPlotSliceTests.cs" />
     <Compile Include="Listener\PolarPlotTests.cs" />
     <Compile Include="Crc32ModeSTimingTests.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="ModeS\ModeSMessageEventArgsTests.cs" />
     <Compile Include="BroadcastEventArgsTests.cs" />
     <Compile Include="RoundTests.cs" />
+    <Compile Include="Settings\AccessTests.cs" />
     <Compile Include="Settings\BaseStationSettingsTests.cs" />
     <Compile Include="Settings\ConfigurationTests.cs" />
     <Compile Include="Settings\AudioSettingsTests.cs" />

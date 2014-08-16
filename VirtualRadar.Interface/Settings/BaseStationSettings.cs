@@ -189,7 +189,6 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _TrackingTimeoutSeconds, value, () => TrackingTimeoutSeconds); }
         }
 
-        private bool _IgnoreBadMessages;
         /// <summary>
         /// Gets or sets a value indicating that badly formatted messages on the feed should be ignored rather than triggering a disconnection
         /// from the feed.
@@ -198,11 +197,7 @@ namespace VirtualRadar.Interface.Settings
         /// This has been retired - the program sets this to true and the configuration loader is expected to force it to true on load. Bad
         /// messages will no longer disconnect the listener.
         /// </remarks>
-        public bool IgnoreBadMessages
-        {
-            get { return _IgnoreBadMessages; }
-            set { SetField(ref _IgnoreBadMessages, value, () => IgnoreBadMessages); }
-        }
+        public bool IgnoreBadMessages { get; set; }
 
         private bool _MinimiseToSystemTray;
         /// <summary>
