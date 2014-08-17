@@ -356,7 +356,6 @@
                 if(disabled) jumpElement.addClass('disabled');
                 else         jumpElement.removeClass('disabled');
             };
-            setJumpElementDisabled(state.fetchPageElement, !metrics.isPaged);
             setJumpElementDisabled(state.firstPageElement, !metrics.isPaged || metrics.onFirstPage);
             setJumpElementDisabled(state.prevPageElement, !metrics.isPaged || metrics.onFirstPage);
             setJumpElementDisabled(state.nextPageElement, !metrics.isPaged || metrics.onLastPage);
