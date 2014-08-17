@@ -68,6 +68,12 @@
     <Compile Include="BindingListView\ObjectView.cs" />
     <Compile Include="BindingListView\ProvidedViewPropertyDescriptor.cs" />
     <Compile Include="BusyViewHelper.cs" />
+    <Compile Include="CidrEditView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CidrEditView.Designer.cs">
+      <DependentUpon>CidrEditView.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommonBaseBehaviour.cs" />
     <Compile Include="ConnectionClientLogView.cs">
       <SubType>Form</SubType>
@@ -85,6 +91,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ControlResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BindingCidrList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BindingCidrList.Designer.cs">
+      <DependentUpon>BindingCidrList.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\AircraftListControl.cs">
       <SubType>UserControl</SubType>
@@ -433,6 +445,9 @@
       <DependentUpon>AboutView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="CidrEditView.resx">
+      <DependentUpon>CidrEditView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ConnectionClientLogView.resx">
       <DependentUpon>ConnectionClientLogView.cs</DependentUpon>
     </EmbeddedResource>
@@ -442,6 +457,9 @@
     <EmbeddedResource Include="ControlResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ControlResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\BindingCidrList.resx">
+      <DependentUpon>BindingCidrList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\AircraftListControl.resx">
       <DependentUpon>AircraftListControl.cs</DependentUpon>

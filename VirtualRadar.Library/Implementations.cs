@@ -46,6 +46,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.ModeS.IModeSParity, ModeS.ModeSParity>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSTranslator, ModeS.ModeSTranslator>();
             factory.Register<VirtualRadar.Interface.Presenter.IAboutPresenter, Presenter.AboutPresenter>();
+            factory.Register<VirtualRadar.Interface.Presenter.ICidrEditPresenter, Presenter.CidrEditPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionClientLogPresenter, Presenter.ConnectionClientLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionSessionLogPresenter, Presenter.ConnectionSessionLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IDownloadDataPresenter, Presenter.DownloadDataPresenter>();

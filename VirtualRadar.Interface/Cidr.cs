@@ -70,6 +70,22 @@ namespace VirtualRadar.Interface
         public uint IPv4Bitmask { get; private set; }
 
         /// <summary>
+        /// Gets the first matching address.
+        /// </summary>
+        public IPAddress FirstMatchingAddress
+        {
+            get { return BuildFirstMatchingAddress(); }
+        }
+
+        /// <summary>
+        /// Gets the last matching address.
+        /// </summary>
+        public IPAddress LastMatchingAddress
+        {
+            get { return BuildLastMatchingAddress(); }
+        }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public Cidr()
@@ -138,6 +154,25 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
+        /// Returns the first address that matches the CIDR.
+        /// </summary>
+        /// <returns></returns>
+        private IPAddress BuildFirstMatchingAddress()
+        {
+            return MaskedAddress;
+        }
+
+        /// <summary>
+        /// Returns the last address that matches the CIDR.
+        /// </summary>
+        /// <returns></returns>
+        private IPAddress BuildLastMatchingAddress()
+        {
+            var bytes = ApplyBitmask(Address, IPv4Bitmask, getLastMatchingAddress: true);
+            return new IPAddress(bytes);
+        }
+
+        /// <summary>
         /// Parses an address. Throws exceptions if the parse fails.
         /// </summary>
         /// <param name="address"></param>
@@ -147,6 +182,10 @@ namespace VirtualRadar.Interface
             var result = new Cidr();
 
             if(!String.IsNullOrEmpty(address)) {
+                // IPAddress.Parse is quite happy with addresses like "1" - this just makes sure that we
+                // have something that resembles a dotted-quad
+                if(address.Count(r => r == '.') != 3) throw new ArgumentException("Invalid IPv4 address", "address");
+
                 var ipAddress = address;
                 var bitmask = 32;
 
@@ -197,13 +236,17 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="address"></param>
         /// <param name="bitmask"></param>
+        /// <param name="getLastMatchingAddress">If true then the address is masked, the bitmask inverted and or'd to produce the last matching address.</param>
         /// <returns></returns>
-        private static byte[] ApplyBitmask(IPAddress address, uint bitmask)
+        private static byte[] ApplyBitmask(IPAddress address, uint bitmask, bool getLastMatchingAddress = false)
         {
             var bytes = address.GetAddressBytes();
 
             var addressValue = (uint)(bytes[0] << 24) | (uint)(bytes[1] << 16) | (uint)(bytes[2] << 8) | bytes[3];
             var bitmasked = addressValue & bitmask;
+
+            if(getLastMatchingAddress) bitmasked |= ~bitmask;
+
             bytes[0] = (byte)((uint)(bitmasked & 0xff000000) >> 24);
             bytes[1] = (byte)((uint)(bitmasked & 0x00ff0000) >> 16);
             bytes[2] = (byte)((uint)(bitmasked & 0x0000ff00) >> 8);

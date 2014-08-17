@@ -102,6 +102,7 @@
     <Compile Include="ModeS\ModeSTranslator.cs" />
     <Compile Include="FeedManager.cs" />
     <Compile Include="Feed.cs" />
+    <Compile Include="Presenter\CidrEditPresenter.cs" />
     <Compile Include="Presenter\SettingsPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
     <Compile Include="Settings\ConfigurationListener.cs" />

@@ -300,7 +300,10 @@ namespace VirtualRadar.WinForms.Controls
         public object SelectedRecord
         {
             get { var items = SelectedRecords.ToArray(); return items.Length == 0 ? null : items[0]; }
-            set { SelectedRecords = value == null ? new object[]{} : new object[] { value }; }
+            set {
+                SelectedRecords = value == null ? new object[]{} : new object[] { value };
+                if(listView.SelectedItems.Count != 0) listView.SelectedItems[0].EnsureVisible();
+            }
         }
 
         /// <summary>

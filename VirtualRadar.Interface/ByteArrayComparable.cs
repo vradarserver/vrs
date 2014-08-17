@@ -56,6 +56,21 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Creates a new object.
         /// </summary>
+        /// <param name="cidr"></param>
+        public ByteArrayComparable(Cidr cidr)
+        {
+            if(cidr == null) Array = _Empty;
+            else {
+                var addressBytes = cidr.MaskedAddress.GetAddressBytes();
+                Array = new byte[addressBytes.Length + 1];
+                addressBytes.CopyTo(Array, 0);
+                Array[Array.Length - 1] = (byte)cidr.BitmaskBits;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         /// <param name="array"></param>
         public ByteArrayComparable(byte[] array)
         {

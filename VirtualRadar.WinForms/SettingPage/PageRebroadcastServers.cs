@@ -73,6 +73,23 @@ namespace VirtualRadar.WinForms.SettingPage
             _ListHelper = new RecordListHelper<RebroadcastSettings,PageRebroadcastServer>(this, listRebroadcastServers, SettingsView.Configuration.RebroadcastSettings, listRebroadcastServers_GetSortValue);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <remarks>
+        /// The list view doesn't recognise changes in the <see cref="Access"/> child object so we need
+        /// to pick those up manually.
+        /// </remarks>
+        internal override void ConfigurationChanged(ConfigurationListenerEventArgs args)
+        {
+            base.ConfigurationChanged(args);
+
+            if(args.Group == ConfigurationListenerGroup.Access) {
+                listRebroadcastServers.ResetBindings();
+            }
+        }
+
         #region Rebroadcast server list handling
         private void listRebroadcastServers_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs e)
         {
@@ -87,6 +104,7 @@ namespace VirtualRadar.WinForms.SettingPage
                 e.ColumnTexts.Add(Describe.RebroadcastFormat(record.Format));
                 e.ColumnTexts.Add(record.Port.ToString());
                 e.ColumnTexts.Add(record.StaleSeconds.ToString());
+                e.ColumnTexts.Add(Describe.DefaultAccess(record.Access.DefaultAccess));
             }
         }
 

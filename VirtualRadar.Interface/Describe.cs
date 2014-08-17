@@ -95,6 +95,21 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
+        /// Returns the default access enum formatted as a translated string.
+        /// </summary>
+        /// <param name="defaultAccess"></param>
+        /// <returns></returns>
+        public static string DefaultAccess(DefaultAccess defaultAccess)
+        {
+            switch(defaultAccess) {
+                case Settings.DefaultAccess.Allow:          return Strings.AllowAccess;
+                case Settings.DefaultAccess.Deny:           return Strings.DenyAccess;
+                case Settings.DefaultAccess.Unrestricted:   return Strings.UnrestrictedAccess;
+                default:                                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
         /// Returns the timespan formatted as a number of hours, minutes and seconds.
         /// </summary>
         /// <param name="timeSpan"></param>
