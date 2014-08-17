@@ -33,6 +33,7 @@
             this.columnHeaderFormat = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderPort = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderStale = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderDefaultAccess = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listRebroadcastServers
@@ -43,7 +44,8 @@
             this.columnHeaderReceiver,
             this.columnHeaderFormat,
             this.columnHeaderPort,
-            this.columnHeaderStale});
+            this.columnHeaderStale,
+            this.columnHeaderDefaultAccess});
             this.listRebroadcastServers.DataSource = null;
             this.listRebroadcastServers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listRebroadcastServers.Location = new System.Drawing.Point(0, 0);
@@ -59,7 +61,7 @@
             // columnHeaderName
             // 
             this.columnHeaderName.Text = "::Name::";
-            this.columnHeaderName.Width = 200;
+            this.columnHeaderName.Width = 150;
             // 
             // columnHeaderReceiver
             // 
@@ -81,6 +83,11 @@
             this.columnHeaderStale.Text = "::Stale::";
             this.columnHeaderStale.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // columnHeaderDefaultAccess
+            // 
+            this.columnHeaderDefaultAccess.Text = "::Access::";
+            this.columnHeaderDefaultAccess.Width = 90;
+            // 
             // PageRebroadcastServers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -99,5 +106,6 @@
         private System.Windows.Forms.ColumnHeader columnHeaderFormat;
         private System.Windows.Forms.ColumnHeader columnHeaderPort;
         private System.Windows.Forms.ColumnHeader columnHeaderStale;
+        private System.Windows.Forms.ColumnHeader columnHeaderDefaultAccess;
     }
 }

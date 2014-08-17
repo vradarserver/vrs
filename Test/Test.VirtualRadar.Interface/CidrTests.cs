@@ -75,6 +75,8 @@ namespace Test.VirtualRadar.Interface
                 Assert.AreEqual(GetExcelIPAddress(worksheet, "MaskedAddress"), cidr.MaskedAddress);
                 Assert.AreEqual(worksheet.Int("BitmaskBits"), cidr.BitmaskBits);
                 Assert.AreEqual(worksheet.UInt("IPv4Bitmask"), cidr.IPv4Bitmask);
+                Assert.AreEqual(GetExcelIPAddress(worksheet, "From"), cidr.FirstMatchingAddress);
+                Assert.AreEqual(GetExcelIPAddress(worksheet, "To"), cidr.LastMatchingAddress);
             }
         }
         #endregion

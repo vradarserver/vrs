@@ -106,6 +106,7 @@
     <Compile Include="ByteArrayComparable.cs" />
     <Compile Include="Certainty.cs" />
     <Compile Include="Cidr.cs" />
+    <Compile Include="CidrComparer.cs" />
     <Compile Include="IAccessFilter.cs" />
     <Compile Include="IAircraftSanityChecker.cs" />
     <Compile Include="IListExtensions.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
     <Compile Include="IAirportDataDotCom.cs" />
     <Compile Include="ITcpConnectionStateService.cs" />
+    <Compile Include="Presenter\ICidrEditPresenter.cs" />
     <Compile Include="Presenter\ISettingsPresenterProvider.cs" />
     <Compile Include="Presenter\ISettingsPresenter.cs" />
     <Compile Include="PropertyHelper.cs" />
@@ -335,6 +337,7 @@
     <Compile Include="TransponderType.cs" />
     <Compile Include="View\DedicatedReceiver.cs" />
     <Compile Include="View\IBusyView.cs" />
+    <Compile Include="View\ICidrEditView.cs" />
     <Compile Include="View\IConfirmView.cs" />
     <Compile Include="View\IConnectionClientLogView.cs" />
     <Compile Include="View\IConnectionSessionLogView.cs" />

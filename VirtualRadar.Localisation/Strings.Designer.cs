@@ -169,6 +169,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access.
+        /// </summary>
+        public static string Access {
+            get {
+                return ResourceManager.GetString("Access", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access Control.
+        /// </summary>
+        public static string AccessControl {
+            get {
+                return ResourceManager.GetString("AccessControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to B.
         /// </summary>
         public static string AcronymByte {
@@ -295,11 +313,29 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow.
+        /// </summary>
+        public static string AllowAccess {
+            get {
+                return ResourceManager.GetString("AllowAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow Internet proximity gadgets.
         /// </summary>
         public static string AllowInternetProximityGadgets {
             get {
                 return ResourceManager.GetString("AllowInternetProximityGadgets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow these addresses.
+        /// </summary>
+        public static string AllowTheseAddresses {
+            get {
+                return ResourceManager.GetString("AllowTheseAddresses", resourceCulture);
             }
         }
         
@@ -656,6 +692,33 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CIDR.
+        /// </summary>
+        public static string Cidr {
+            get {
+                return ResourceManager.GetString("Cidr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CIDR Editor.
+        /// </summary>
+        public static string CidrEdit {
+            get {
+                return ResourceManager.GetString("CidrEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid address.
+        /// </summary>
+        public static string CidrInvalid {
+            get {
+                return ResourceManager.GetString("CidrInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Close {
@@ -1007,6 +1070,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default access.
+        /// </summary>
+        public static string DefaultAccess {
+            get {
+                return ResourceManager.GetString("DefaultAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Configuration.
         /// </summary>
         public static string DefaultConfiguration {
@@ -1057,6 +1129,24 @@ namespace VirtualRadar.Localisation {
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deny.
+        /// </summary>
+        public static string DenyAccess {
+            get {
+                return ResourceManager.GetString("DenyAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deny these addresses.
+        /// </summary>
+        public static string DenyTheseAddresses {
+            get {
+                return ResourceManager.GetString("DenyTheseAddresses", resourceCulture);
             }
         }
         
@@ -1453,6 +1543,15 @@ namespace VirtualRadar.Localisation {
         public static string From {
             get {
                 return ResourceManager.GetString("From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From address.
+        /// </summary>
+        public static string FromAddress {
+            get {
+                return ResourceManager.GetString("FromAddress", resourceCulture);
             }
         }
         
@@ -2542,6 +2641,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Either a single IP address or a range of addresses in CIDR format (e.g. 192.168.0.41 or 192.168.0.0/24)..
+        /// </summary>
+        public static string OptionsDescribeCidr {
+            get {
+                return ResourceManager.GetString("OptionsDescribeCidr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The receiver to use when the Closest Aircraft desktop widget asks for details of the closest aircraft..
         /// </summary>
         public static string OptionsDescribeClosestAircraftReceiverId {
@@ -2718,6 +2826,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeDataSourcesStopBits {
             get {
                 return ResourceManager.GetString("OptionsDescribeDataSourcesStopBits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether to allow or reject connections from addresses that do not match any of the CIDR addresses..
+        /// </summary>
+        public static string OptionsDescribeDefaultAccess {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDefaultAccess", resourceCulture);
             }
         }
         
@@ -5397,6 +5514,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To address.
+        /// </summary>
+        public static string ToAddress {
+            get {
+                return ResourceManager.GetString("ToAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bad messages.
         /// </summary>
         public static string TotalBadMessages {
@@ -5510,6 +5636,15 @@ namespace VirtualRadar.Localisation {
         public static string UnrecognisedCommandLineParameterTitle {
             get {
                 return ResourceManager.GetString("UnrecognisedCommandLineParameterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrestricted.
+        /// </summary>
+        public static string UnrestrictedAccess {
+            get {
+                return ResourceManager.GetString("UnrestrictedAccess", resourceCulture);
             }
         }
         

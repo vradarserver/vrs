@@ -2189,4 +2189,52 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeDirectoryEntryKey" xml:space="preserve">
     <value>This is used to confirm that the site that you have added to the public directory of Virtual Radar Server sites belongs to you. You can add your site to the directory by going to the routes site (http://sdm.virtualradarserver.co.uk), creating an account and then enter your site's details in the Account section. Copy the key from those details into this field.\r\n\r\nIf you do not want your site added to the public directory then leave this entry empty.</value>
   </data>
+  <data name="Access" xml:space="preserve">
+    <value>Access</value>
+  </data>
+  <data name="AllowAccess" xml:space="preserve">
+    <value>Allow</value>
+  </data>
+  <data name="DenyAccess" xml:space="preserve">
+    <value>Deny</value>
+  </data>
+  <data name="UnrestrictedAccess" xml:space="preserve">
+    <value>Unrestricted</value>
+  </data>
+  <data name="AccessControl" xml:space="preserve">
+    <value>Access Control</value>
+  </data>
+  <data name="Cidr" xml:space="preserve">
+    <value>CIDR</value>
+    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+  </data>
+  <data name="CidrEdit" xml:space="preserve">
+    <value>CIDR Editor</value>
+    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+  </data>
+  <data name="CidrInvalid" xml:space="preserve">
+    <value>Invalid address</value>
+    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+  </data>
+  <data name="DefaultAccess" xml:space="preserve">
+    <value>Default access</value>
+  </data>
+  <data name="FromAddress" xml:space="preserve">
+    <value>From address</value>
+  </data>
+  <data name="OptionsDescribeCidr" xml:space="preserve">
+    <value>Either a single IP address or a range of addresses in CIDR format (e.g. 192.168.0.41 or 192.168.0.0/24).</value>
+  </data>
+  <data name="OptionsDescribeDefaultAccess" xml:space="preserve">
+    <value>Whether to allow or reject connections from addresses that do not match any of the CIDR addresses.</value>
+  </data>
+  <data name="ToAddress" xml:space="preserve">
+    <value>To address</value>
+  </data>
+  <data name="AllowTheseAddresses" xml:space="preserve">
+    <value>Allow these addresses</value>
+  </data>
+  <data name="DenyTheseAddresses" xml:space="preserve">
+    <value>Deny these addresses</value>
+  </data>
 </root>

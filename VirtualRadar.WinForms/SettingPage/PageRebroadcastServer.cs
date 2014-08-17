@@ -40,6 +40,11 @@ namespace VirtualRadar.WinForms.SettingPage
         public RebroadcastSettings RebroadcastSettings { get { return PageObject as RebroadcastSettings; } }
 
         /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override bool PageUseFullHeight { get { return true; } }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public PageRebroadcastServer()
@@ -53,8 +58,9 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            comboBoxReceiver.DataSource =   CreateSortingBindingSource<CombinedFeed>(SettingsView.CombinedFeed, r => r.Name);
-            comboBoxFormat.DataSource =     CreateSortingEnumSource<RebroadcastFormat>(r => Describe.RebroadcastFormat(r));
+            comboBoxReceiver.DataSource =       CreateSortingBindingSource<CombinedFeed>(SettingsView.CombinedFeed, r => r.Name);
+            comboBoxFormat.DataSource =         CreateSortingEnumSource<RebroadcastFormat>(r => Describe.RebroadcastFormat(r));
+            comboBoxDefaultAccess.DataSource =  CreateSortingEnumSource<DefaultAccess>(r => Describe.DefaultAccess(r));
 
             SetPageTitleProperty<RebroadcastSettings>(r => r.Name, () => RebroadcastSettings.Name);
             SetPageEnabledProperty<RebroadcastSettings>(r => r.Enabled, () => RebroadcastSettings.Enabled);
@@ -72,6 +78,9 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(RebroadcastSettings, comboBoxFormat,         r => r.Format,          r => r.SelectedValue);
             AddBinding(RebroadcastSettings, numericPort,            r => r.Port,            r => r.Value);
             AddBinding(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,    r => r.Value);
+
+            AddBinding(RebroadcastSettings.Access, comboBoxDefaultAccess, r => r.DefaultAccess, r => r.SelectedValue, dataSourceUpdateMode: DataSourceUpdateMode.OnPropertyChanged);
+            bindingCidrList.DataSource = RebroadcastSettings.Access.Addresses;
         }
 
         /// <summary>
@@ -95,12 +104,25 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();
-            SetInlineHelp(checkBoxEnabled,      Strings.Enabled,        Strings.OptionsDescribeRebroadcastServerEnabled);
-            SetInlineHelp(textBoxName,          Strings.Name,           Strings.OptionsDescribeRebroadcastServerName);
-            SetInlineHelp(comboBoxReceiver,     Strings.Receiver,       Strings.OptionsDescribeRebroadcastReceiver);
-            SetInlineHelp(comboBoxFormat,       Strings.Format,         Strings.OptionsDescribeRebroadcastServerFormat);
-            SetInlineHelp(numericPort,          Strings.Port,           Strings.OptionsDescribeRebroadcastServerPort);
-            SetInlineHelp(numericStaleSeconds,  Strings.StaleSeconds,   Strings.OptionsDescribeRebroadcastStaleSeconds);
+            SetInlineHelp(checkBoxEnabled,          Strings.Enabled,        Strings.OptionsDescribeRebroadcastServerEnabled);
+            SetInlineHelp(textBoxName,              Strings.Name,           Strings.OptionsDescribeRebroadcastServerName);
+            SetInlineHelp(comboBoxReceiver,         Strings.Receiver,       Strings.OptionsDescribeRebroadcastReceiver);
+            SetInlineHelp(comboBoxFormat,           Strings.Format,         Strings.OptionsDescribeRebroadcastServerFormat);
+            SetInlineHelp(numericPort,              Strings.Port,           Strings.OptionsDescribeRebroadcastServerPort);
+            SetInlineHelp(numericStaleSeconds,      Strings.StaleSeconds,   Strings.OptionsDescribeRebroadcastStaleSeconds);
+            SetInlineHelp(comboBoxDefaultAccess,    Strings.DefaultAccess,  Strings.OptionsDescribeDefaultAccess);
+        }
+
+        /// <summary>
+        /// Called when the user changes the default access.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void comboBoxDefaultAccess_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var access = RebroadcastSettings.Access.DefaultAccess;
+            bindingCidrList.Enabled = access != DefaultAccess.Unrestricted;
+            labelCidrList.Text = String.Format("{0}:", access == DefaultAccess.Allow ? Strings.DenyTheseAddresses : Strings.AllowTheseAddresses);
         }
     }
 }
