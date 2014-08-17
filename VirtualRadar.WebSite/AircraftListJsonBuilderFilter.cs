@@ -79,6 +79,11 @@ namespace VirtualRadar.WebSite
         public FilterString Operator { get; set; }
 
         /// <summary>
+        /// Gets or sets the text that will be compared to an aircraft's operator code to pass the filter.
+        /// </summary>
+        public FilterString OperatorIcao { get; set; }
+
+        /// <summary>
         /// Gets or sets the lines of latitude and longitude that the aircraft must be within before it can pass the filter.
         /// The first coordinate is Top-Left and the second is Bottom-Right.
         /// </summary>

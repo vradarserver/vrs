@@ -161,6 +161,15 @@
         serverFilterName:   'fOp'
     });
 
+    VRS.aircraftFilterPropertyHandlers[VRS.AircraftFilterProperty.OperatorCode] = new VRS.AircraftFilterPropertyHandler({
+        property:           VRS.AircraftFilterProperty.OperatorCode,
+        type:               VRS.FilterPropertyType.TextMatch,
+        labelKey:           'OperatorCode',
+        inputWidth:         VRS.InputWidth.ThreeChar,
+        getValueCallback:   function(aircraft) { return aircraft.operatorIcao.val; },
+        serverFilterName:   'fOpIcao'
+    });
+
     VRS.aircraftFilterPropertyHandlers[VRS.AircraftFilterProperty.Registration] = new VRS.AircraftFilterPropertyHandler({
         property:           VRS.AircraftFilterProperty.Registration,
         type:               VRS.FilterPropertyType.TextMatch,
