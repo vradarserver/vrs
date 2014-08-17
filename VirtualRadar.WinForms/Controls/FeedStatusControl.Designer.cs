@@ -39,6 +39,8 @@
             this.menuStatisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reconnectDataFeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuResetReceiverRangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuConfigureFeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -109,9 +111,11 @@
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuStatisticsToolStripMenuItem,
             this.reconnectDataFeedToolStripMenuItem,
-            this.menuResetReceiverRangeToolStripMenuItem});
+            this.menuResetReceiverRangeToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.menuConfigureFeedToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(237, 92);
+            this.contextMenuStrip.Size = new System.Drawing.Size(237, 120);
             this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
             // 
             // menuStatisticsToolStripMenuItem
@@ -135,6 +139,18 @@
             this.menuResetReceiverRangeToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.menuResetReceiverRangeToolStripMenuItem.Text = "::menuResetReceiverRange::";
             this.menuResetReceiverRangeToolStripMenuItem.Click += new System.EventHandler(this.menuResetReceiverRangeToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(233, 6);
+            // 
+            // menuConfigureFeedToolStripMenuItem
+            // 
+            this.menuConfigureFeedToolStripMenuItem.Name = "menuConfigureFeedToolStripMenuItem";
+            this.menuConfigureFeedToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.menuConfigureFeedToolStripMenuItem.Text = "::menuConfigureFeed::";
+            this.menuConfigureFeedToolStripMenuItem.Click += new System.EventHandler(this.menuConfigureFeedToolStripMenuItem_Click);
             // 
             // FeedStatusControl
             // 
@@ -162,5 +178,7 @@
         private System.Windows.Forms.ToolStripMenuItem reconnectDataFeedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuStatisticsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuResetReceiverRangeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem menuConfigureFeedToolStripMenuItem;
     }
 }

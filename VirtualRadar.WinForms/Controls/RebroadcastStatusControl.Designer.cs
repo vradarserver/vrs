@@ -119,11 +119,13 @@
             // labelDescribeConfiguration
             // 
             this.labelDescribeConfiguration.AutoSize = true;
+            this.labelDescribeConfiguration.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelDescribeConfiguration.Location = new System.Drawing.Point(136, 20);
             this.labelDescribeConfiguration.Name = "labelDescribeConfiguration";
             this.labelDescribeConfiguration.Size = new System.Drawing.Size(33, 13);
             this.labelDescribeConfiguration.TabIndex = 0;
             this.labelDescribeConfiguration.Text = "None";
+            this.labelDescribeConfiguration.Click += new System.EventHandler(this.labelDescribeConfiguration_Click);
             // 
             // RebroadcastStatusControl
             // 

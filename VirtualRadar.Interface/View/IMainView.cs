@@ -168,6 +168,14 @@ namespace VirtualRadar.Interface.View
         /// <param name="url"></param>
         /// <param name="bytesSent"></param>
         void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent);
+
+        /// <summary>
+        /// Opens the configuration GUI, optionally jumping to a specific page / tab etc. or to the
+        /// GUI for a given configuration object.
+        /// </summary>
+        /// <param name="openOnPageTitle"></param>
+        /// <param name="openOnConfigurationObject"></param>
+        void ShowSettingsConfigurationUI(string openOnPageTitle, object openOnConfigurationObject);
         #endregion
     }
 }

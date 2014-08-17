@@ -55,6 +55,11 @@ namespace VirtualRadar.Library.Presenter
         /// The rebroadcast server manager that we're using.
         /// </summary>
         private IRebroadcastServerManager _RebroadcastServerManager;
+
+        /// <summary>
+        /// The last configuration object loaded.
+        /// </summary>
+        private Configuration _Configuration;
         #endregion
 
         #region Properties
@@ -154,14 +159,14 @@ namespace VirtualRadar.Library.Presenter
         {
             var result = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
 
-            var configuration = result.Load();
-            View.RebroadcastServersConfiguration = Describe.RebroadcastSettingsCollection(configuration.RebroadcastSettings);
+            _Configuration = result.Load();
+            View.RebroadcastServersConfiguration = Describe.RebroadcastSettingsCollection(_Configuration.RebroadcastSettings);
 
             return result;
         }
         #endregion
 
-        #region GetReceiverFeeds
+        #region GetReceiverFeeds, GetFeedConfigurationObject
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -169,6 +174,23 @@ namespace VirtualRadar.Library.Presenter
         public IFeed[] GetReceiverFeeds()
         {
             return Factory.Singleton.Resolve<IFeedManager>().Singleton.Feeds.Where(r => !(r.Listener is IMergedFeedListener)).ToArray();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="feedId"></param>
+        /// <returns></returns>
+        public object GetFeedConfigurationObject(int feedId)
+        {
+            object result = null;
+
+            if(_Configuration != null) {
+                result = _Configuration.Receivers.FirstOrDefault(r => r.UniqueId == feedId);
+                if(result == null) result = _Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == feedId);
+            }
+
+            return result;
         }
         #endregion
 

@@ -140,6 +140,19 @@ namespace VirtualRadar.WinForms.Controls
         {
             if(ResetPolarPlotter != null) ResetPolarPlotter(this, args);
         }
+
+        /// <summary>
+        /// Raised when the user wants to configure a feed.
+        /// </summary>
+        public event EventHandler<FeedIdEventArgs> ConfigureFeed;
+        /// <summary>
+        /// Raises <see cref="ConfigureFeed"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        public virtual void OnConfigureFeed(FeedIdEventArgs args)
+        {
+            if(ConfigureFeed != null) ConfigureFeed(this, args);
+        }
         #endregion
 
         #region Constructors
@@ -320,6 +333,13 @@ namespace VirtualRadar.WinForms.Controls
             }
         }
 
+        private void RaiseEventForAllSelectedReceiverAndMergedFeeds(Action<FeedIdEventArgs> eventCaller)
+        {
+            foreach(var feed in SelectedFeeds) {
+                eventCaller(new FeedIdEventArgs(feed.UniqueId));
+            }
+        }
+
         /// <summary>
         /// Raised when the user elects to reconnect to one or more data feeds.
         /// </summary>
@@ -351,13 +371,26 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
-        /// Raised when the user clicks the content menu item to reset the polar plot.
+        /// Raised when the user clicks the context menu item to reset the polar plot.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void menuResetReceiverRangeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RaiseEventForAllSelectedReceiverFeeds(OnResetPolarPlotter);
+        }
+
+        /// <summary>
+        /// Raised when the user clicks the context menu item to configure feeds.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuConfigureFeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedFeeds = SelectedFeeds;
+            if(selectedFeeds.Length > 0) {
+                OnConfigureFeed(new FeedIdEventArgs(selectedFeeds[0].UniqueId));
+            }
         }
         #endregion
     }

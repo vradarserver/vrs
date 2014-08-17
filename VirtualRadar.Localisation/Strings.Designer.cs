@@ -2173,6 +2173,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure Feed.
+        /// </summary>
+        public static string menuConfigureFeed {
+            get {
+                return ResourceManager.GetString("menuConfigureFeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection &amp;Client Log....
         /// </summary>
         public static string menuConnectionClientLog {

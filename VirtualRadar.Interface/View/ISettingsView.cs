@@ -38,6 +38,17 @@ namespace VirtualRadar.Interface.View
         /// Gets or sets the name of the user manager.
         /// </summary>
         string UserManager { get; set; }
+
+        /// <summary>
+        /// Gets or sets the title of the page to start the view on.
+        /// </summary>
+        string OpenOnPageTitle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the record to start the view on. Note that this will not have the
+        /// same object references as the records in <see cref="Configuration"/>.
+        /// </summary>
+        object OpenOnRecord { get; set; }
         #endregion
 
         #region Events

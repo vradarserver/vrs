@@ -308,6 +308,7 @@
             this.feedStatusControl.ReconnectFeedId += new System.EventHandler<VirtualRadar.WinForms.Controls.FeedIdEventArgs>(this.feedStatusControl_ReconnectFeedId);
             this.feedStatusControl.ShowFeedIdStatistics += new System.EventHandler<VirtualRadar.WinForms.Controls.FeedIdEventArgs>(this.feedStatusControl_ShowFeedIdStatistics);
             this.feedStatusControl.ResetPolarPlotter += new System.EventHandler<VirtualRadar.WinForms.Controls.FeedIdEventArgs>(this.feedStatusControl_ResetPolarPlotter);
+            this.feedStatusControl.ConfigureFeed += new System.EventHandler<VirtualRadar.WinForms.Controls.FeedIdEventArgs>(this.feedStatusControl_ConfigureFeed);
             // 
             // rebroadcastStatusControl
             // 
@@ -317,6 +318,7 @@
             this.rebroadcastStatusControl.Name = "rebroadcastStatusControl";
             this.rebroadcastStatusControl.Size = new System.Drawing.Size(714, 133);
             this.rebroadcastStatusControl.TabIndex = 7;
+            this.rebroadcastStatusControl.ShowRebroadcastServersConfigurationClicked += new System.EventHandler(this.rebroadcastStatusControl_ShowRebroadcastServersConfigurationClicked);
             // 
             // webServerStatusControl
             // 

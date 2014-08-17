@@ -55,6 +55,17 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        internal override bool IsForSameRecord(object record)
+        {
+            var rebroadcastSettings = record as RebroadcastSettings;
+            return rebroadcastSettings != null && RebroadcastSettings != null && rebroadcastSettings.UniqueId == RebroadcastSettings.UniqueId;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
