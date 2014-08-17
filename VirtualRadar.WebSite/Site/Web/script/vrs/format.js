@@ -232,7 +232,7 @@
         {
             /** @type {*} */
             var result = countFlights;
-            if(result || result === 0) result = VRS.stringUtility.formatNumber(result, format || '0');
+            if(result || result === 0) result = VRS.stringUtility.formatNumber(result, format || 'N0');
 
             return result ? result : '';
         };
