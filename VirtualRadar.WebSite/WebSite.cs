@@ -437,12 +437,13 @@ namespace VirtualRadar.WebSite
                         if(!isDefaultPort) hostName = String.Format("{0}:{1}", hostName, args.Request.LocalEndPoint.Port);
                     }
 
-                    string redirectUrl = String.Format("{0}://{1}{2}{3}{4}",
+                    string redirectUrl = String.Format("{0}://{1}{2}{3}{4}{5}",
                         /* 0 */ args.Request.Url.Scheme,
                         /* 1 */ hostName,
-                        /* 2 */ args.Request.RawUrl,
-                        /* 3 */ args.Request.RawUrl.EndsWith("/") ? "" : "/",
-                        /* 4 */ args.IsAndroid || args.IsIPad || args.IsIPhone || args.IsIPod ? "mobile.html" : "desktop.html");
+                        /* 2 */ args.Request.Url.AbsolutePath,
+                        /* 3 */ args.Request.Url.AbsolutePath.EndsWith("/") ? "" : "/",
+                        /* 4 */ args.IsAndroid || args.IsIPad || args.IsIPhone || args.IsIPod ? "mobile.html" : "desktop.html",
+                        /* 5 */ args.Request.Url.Query ?? "");
                     args.Handled = true;
                     args.Response.Redirect(redirectUrl);
                     break;
