@@ -44,6 +44,7 @@
         IsMilitary:     'mil',
         ModelIcao:      'typ',
         Operator:       'opr',
+        OperatorCode:   'opc',
         Registration:   'reg',
         Species:        'spc',
         Squawk:         'sqk',

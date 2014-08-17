@@ -292,6 +292,7 @@ namespace Test.VirtualRadar.WebSite
             public BoolFilter<bool>                     IsInteresting { get; set; }
             public BoolFilter<bool>                     MustTransmitPosition { get; set; }
             public StringFilter                         Operator { get; set; }
+            public StringFilter                         OperatorIcao { get; set; }
             public StringFilter                         Registration { get; set; }
             public BoolFilter<Species>                  Species { get; set; }
             public NumericFilter<int>                   Squawk { get; set; }
@@ -312,6 +313,7 @@ namespace Test.VirtualRadar.WebSite
                 if(IsInteresting != null)           IsInteresting.AddQueryValues("fInt", queryValues);
                 if(MustTransmitPosition != null)    MustTransmitPosition.AddQueryValues("fNoPos", queryValues);
                 if(Operator != null)                Operator.AddQueryValues("fOp", queryValues);
+                if(OperatorIcao != null)            OperatorIcao.AddQueryValues("fOpIcao", queryValues);
                 if(Registration != null)            Registration.AddQueryValues("fReg", queryValues);
                 if(Species != null)                 Species.AddQueryValues("fSpc", queryValues);
                 if(Squawk != null)                  Squawk.AddQueryValues("fSqk", queryValues);
@@ -2189,6 +2191,10 @@ namespace Test.VirtualRadar.WebSite
                 case "Operator":
                     _AircraftListFilter.Operator = new StringFilter("TRU", FilterCondition.Contains, false);
                     aircraft.Operator = complies ? "ERMENUTRUDE AIRLINES" : "DOOGAL INTERNATIONAL";
+                    break;
+                case "OperatorIcao":
+                    _AircraftListFilter.OperatorIcao = new StringFilter("BA", FilterCondition.Contains, false);
+                    aircraft.OperatorIcao = complies ? "BAW" : "VRS";
                     break;
                 case "PositionWithin":
                     _AircraftListFilter.PositionWithin = new Pair<Coordinate>(new Coordinate(4F, 1F), new Coordinate(1F, 4F));

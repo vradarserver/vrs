@@ -356,6 +356,7 @@ namespace VirtualRadar.WebSite
                 if(result && filter.IsMilitary != null)             result = filter.IsMilitary.Passes(aircraft.IsMilitary);
                 if(result && filter.MustTransmitPosition != null)   result = filter.MustTransmitPosition.Passes(aircraft.Latitude != null && aircraft.Longitude != null);
                 if(result && filter.Operator != null)               result = filter.Operator.Passes(aircraft.Operator);
+                if(result && filter.OperatorIcao != null)           result = filter.OperatorIcao.Passes(aircraft.OperatorIcao);
                 if(result && filter.PositionWithin != null)         result = args.SelectedAircraftId == aircraft.UniqueId || IsWithinBounds(aircraft.Latitude, aircraft.Longitude, filter.PositionWithin);
                 if(result && filter.Registration != null)           result = filter.Registration.Passes(aircraft.Registration);
                 if(result && filter.Species != null)                result = filter.Species.Passes(aircraft.Species);

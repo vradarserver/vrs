@@ -217,7 +217,9 @@ namespace VirtualRadar.WebSite
                     case "FIN":     if(caselessName.StartsWith("FINT"))     result.IsInteresting = DecodeBoolFilter(name, args.QueryString[name]); break;
                     case "FMI":     if(caselessName.StartsWith("FMIL"))     result.IsMilitary = DecodeBoolFilter(name, args.QueryString[name]); break;
                     case "FNO":     if(caselessName.StartsWith("FNOPOS"))   result.MustTransmitPosition = DecodeBoolFilter(name, args.QueryString[name]); break;
-                    case "FOP":                                             result.Operator = DecodeStringFilter(name, args.QueryString[name]); break;
+                    case "FOP":     if(caselessName.StartsWith("FOPICAO"))  result.OperatorIcao = DecodeStringFilter(name, args.QueryString[name]);
+                                    else                                    result.Operator = DecodeStringFilter(name, args.QueryString[name]);
+                                    break;
                     case "FRE":     if(caselessName.StartsWith("FREG"))     result.Registration = DecodeStringFilter(name, args.QueryString[name]); break;
                     case "FSP":     if(caselessName.StartsWith("FSPC"))     result.Species = DecodeEnumFilter<Species>(name, args.QueryString[name]); break;
                     case "FSQ":     if(caselessName.StartsWith("FSQK"))     result.Squawk = DecodeIntRangeFilter(result.Squawk, name, args.QueryString[name]); break;
