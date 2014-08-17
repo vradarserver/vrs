@@ -75,6 +75,21 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
+        /// Raised when the user indicates that they want to see the configuration GUI for
+        /// rebroadcast servers.
+        /// </summary>
+        public event EventHandler ShowRebroadcastServersConfigurationClicked;
+
+        /// <summary>
+        /// Raises <see cref="ShowRebroadcastServersConfigurationClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnShowRebroadcastServersConfigurationClicked(EventArgs args)
+        {
+            if(ShowRebroadcastServersConfigurationClicked != null) ShowRebroadcastServersConfigurationClicked(this, args);
+        }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public RebroadcastStatusControl() : base()
@@ -146,6 +161,16 @@ namespace VirtualRadar.WinForms.Controls
             if(!DesignMode) {
                 _Sorter.RefreshSortIndicators();
             }
+        }
+
+        /// <summary>
+        /// Called when the user clicks the configuration description label.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void labelDescribeConfiguration_Click(object sender, EventArgs e)
+        {
+            OnShowRebroadcastServersConfigurationClicked(EventArgs.Empty);
         }
     }
 }

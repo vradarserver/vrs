@@ -2237,4 +2237,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="DenyTheseAddresses" xml:space="preserve">
     <value>Deny these addresses</value>
   </data>
+  <data name="menuConfigureFeed" xml:space="preserve">
+    <value>Configure Feed</value>
+  </data>
 </root>

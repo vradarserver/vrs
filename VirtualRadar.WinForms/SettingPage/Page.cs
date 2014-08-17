@@ -472,6 +472,18 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             SynchroniseListToChildPages();
         }
+
+        /// <summary>
+        /// Returns true if the page is exposing a record with the same properties as the record passed
+        /// across. Note that the record will *NOT* have the same object reference as any records being
+        /// edited by the pages, its properties need to be compared.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        internal virtual bool IsForSameRecord(object record)
+        {
+            return false;
+        }
         #endregion
 
         #region PageSelected, ConfigurationChanged, PageDetached

@@ -384,6 +384,23 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region ShowSettingsConfigurationUI
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="openOnPageTitle"></param>
+        /// <param name="openOnConfigurationObject"></param>
+        public void ShowSettingsConfigurationUI(string openOnPageTitle, object openOnConfigurationObject)
+        {
+            using(var dialog = new SettingsView()) {
+                dialog.OpenOnPageTitle = openOnPageTitle;
+                dialog.OpenOnRecord = openOnConfigurationObject;
+
+                dialog.ShowDialog(this);
+            }
+        }
+        #endregion
+
         #region MinimiseToNotificationTray, RestoreFromNotificationTray
         private void MinimiseToNotificationTray()
         {
@@ -504,9 +521,7 @@ namespace VirtualRadar.WinForms
 
         private void menuOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using(var dialog = new SettingsView()) {
-                dialog.ShowDialog(this);
-            }
+            ShowSettingsConfigurationUI(null, null);
         }
 
         private void FlightSimulatorXView_CloseClicked(object sender, EventArgs e)
@@ -626,6 +641,12 @@ namespace VirtualRadar.WinForms
             if(feed != null && feed.AircraftList != null && feed.AircraftList.PolarPlotter != null) feed.AircraftList.PolarPlotter.ClearPolarPlots();
         }
 
+        private void feedStatusControl_ConfigureFeed(object sender, Controls.FeedIdEventArgs e)
+        {
+            var feedConfiguration = _Presenter.GetFeedConfigurationObject(e.FeedId);
+            if(feedConfiguration != null) ShowSettingsConfigurationUI(null, feedConfiguration);
+        }
+
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             RestoreFromNotificationTray();
@@ -644,6 +665,11 @@ namespace VirtualRadar.WinForms
         private void timerRefresh_Tick(object sender, EventArgs e)
         {
             OnRefreshTimerTicked(EventArgs.Empty);
+        }
+
+        private void rebroadcastStatusControl_ShowRebroadcastServersConfigurationClicked(object sender, EventArgs e)
+        {
+            ShowSettingsConfigurationUI(Strings.RebroadcastServersTitle, null);
         }
         #endregion
     }

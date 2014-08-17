@@ -210,6 +210,16 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public string UserManager { get; set; }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string OpenOnPageTitle { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public object OpenOnRecord { get; set; }
+
         private BindingList<CombinedFeed> _CombinedFeed = new BindingList<CombinedFeed>();
         /// <summary>
         /// Gets a combined collection of receivers and merged feeds.
@@ -372,7 +382,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region OnLoad
+        #region OnLoad, DisplayInitialPage
         /// <summary>
         /// Called after the form has been loaded but before it is shown to the user.
         /// </summary>
@@ -398,10 +408,40 @@ namespace VirtualRadar.WinForms
                 }
                 treeViewPagePicker.ExpandAll();
 
-                DisplayPage(_TopLevelPages.First());
+                DisplayInitialPage();
 
                 _Presenter.ValidateView();
             }
+        }
+
+        /// <summary>
+        /// Gets the initial page on display.
+        /// </summary>
+        private void DisplayInitialPage()
+        {
+            Page initialPage = null;
+
+            if(OpenOnRecord != null) {
+                foreach(var page in GetAllPages()) {
+                    if(page.IsForSameRecord(OpenOnRecord)) {
+                        initialPage = page;
+                        break;
+                    }
+                }
+            }
+
+            if(initialPage == null && OpenOnPageTitle != null) {
+                foreach(var page in GetAllPages()) {
+                    if(page.PageTitle == OpenOnPageTitle) {
+                        initialPage = page;
+                        break;
+                    }
+                }
+            }
+
+            if(initialPage == null) initialPage = _TopLevelPages.First();
+
+            DisplayPage(initialPage);
         }
         #endregion
 

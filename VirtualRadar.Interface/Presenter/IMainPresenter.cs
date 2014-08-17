@@ -38,5 +38,13 @@ namespace VirtualRadar.Interface.Presenter
         /// </summary>
         /// <returns></returns>
         IFeed[] GetReceiverFeeds();
+
+        /// <summary>
+        /// Returns the configuration object associated with a feed ID. Could be either a receiver or
+        /// a merged feed configuration object.
+        /// </summary>
+        /// <param name="feedId"></param>
+        /// <returns></returns>
+        object GetFeedConfigurationObject(int feedId);
     }
 }

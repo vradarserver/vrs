@@ -55,6 +55,17 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        internal override bool IsForSameRecord(object record)
+        {
+            var mergedFeed = record as MergedFeed;
+            return mergedFeed != null && MergedFeed != null && mergedFeed.UniqueId == MergedFeed.UniqueId;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();

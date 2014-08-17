@@ -64,6 +64,17 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        internal override bool IsForSameRecord(object record)
+        {
+            var receiverLocation = record as ReceiverLocation;
+            return receiverLocation != null && ReceiverLocation != null && receiverLocation.UniqueId == ReceiverLocation.UniqueId;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();

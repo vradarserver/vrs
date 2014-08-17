@@ -83,6 +83,17 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        internal override bool IsForSameRecord(object record)
+        {
+            var receiver = record as Receiver;
+            return receiver != null && Receiver != null && receiver.UniqueId == Receiver.UniqueId;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
