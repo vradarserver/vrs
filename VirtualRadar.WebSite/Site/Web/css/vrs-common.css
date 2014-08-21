@@ -294,6 +294,9 @@ body.wait .modal {
 .vrsAircraftDetail .body {
     font-size: 0.9em;
 }
+.vrsAircraftDetail .noLabel {
+    display: none;
+}
 .vrsAircraftDetail .body .label {
     font-weight: 700;
     padding-right: 1em;
