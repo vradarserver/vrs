@@ -494,7 +494,12 @@
                     var suppressLabel = handler.suppressLabelCallback(VRS.ReportSurface.DetailBody);
                     var listItem = $('<li/>')
                         .appendTo(list);
-                    if(!suppressLabel) {
+                    if(suppressLabel) {
+                        // We want an empty label here so that the print media CSS can reserve space for it
+                        $('<div/>')
+                            .addClass('noLabel')
+                            .appendTo(listItem);
+                    } else {
                         $('<div/>')
                             .addClass('label')
                             .append($('<span/>')
