@@ -29,8 +29,9 @@ namespace VirtualRadar.Interface
     /// a using statement, ensuring that the lock and unlock operations are always paired but at the expense of
     /// creating an object for it.
     /// </para><para>
-    /// Unlike the traditional C# lock call a thread can lock itself if it calls <see cref="Lock"/> twice - care must
-    /// be taken to avoid double-locks. What you gain in speed you lose in convenience.
+    /// Previous implementation of this class could deadlock if the same thread called <see cref="Lock"/> twice.
+    /// This should no longer be possible, as long as all nested calls to <see cref="Lock"/> are paired with a
+    /// corresponding call to <see cref="Unlock"/>.
     /// </para></remarks>
     public class SpinLock
     {
@@ -66,23 +67,48 @@ namespace VirtualRadar.Interface
         private int _Locked;
 
         /// <summary>
-        /// Acquires the lock on the SpinLock, blocking indefinitely until it manages to acquire the lock. Ensure that <see cref="Unlock"/> is always
-        /// called after Lock has returned.
+        /// The ID of the thread that has acquired the lock.
+        /// </summary>
+        private int _LockingThread;
+
+        /// <summary>
+        /// The number of times the locking thread has called <see cref="Lock"/> without calling <see cref="Unlock"/>.
+        /// </summary>
+        private int _NestCount;
+
+        /// <summary>
+        /// Acquires the lock on the SpinLock, blocking indefinitely until it manages to acquire the lock.
+        /// Ensure that calls to this are always paired with a corresponding call to <see cref="Unlock"/>.
         /// </summary>
         public void Lock()
         {
-            while(Interlocked.Exchange(ref _Locked, 1) != 0) {
-                Thread.Sleep(0);
+            while(true) {
+                if(Interlocked.Exchange(ref _Locked, 1) == 0) {
+                    _LockingThread = Thread.CurrentThread.ManagedThreadId;
+                    _NestCount = 1;
+                    break;
+                } else if(_LockingThread == Thread.CurrentThread.ManagedThreadId) {
+                    ++_NestCount;
+                    break;
+                } else {
+                    Thread.Sleep(0);
+                }
             }
         }
 
         /// <summary>
-        /// Releases the lock on the SpinLock. This will unlock the SpinLock even if Lock was never called - only call this after <see cref="Lock"/>
-        /// has returned.
+        /// Releases the lock on the SpinLock. Only call this paired with calls to <see cref="Lock"/>.
         /// </summary>
         public void Unlock()
         {
-            Interlocked.Exchange(ref _Locked, 0);
+            if(_LockingThread != Thread.CurrentThread.ManagedThreadId) {
+                throw new InvalidOperationException(String.Format("An attempt was made by thread {0} to unlock a SpinLock that had been locked by thread {1}", Thread.CurrentThread.ManagedThreadId, _LockingThread));
+            }
+
+            if(--_NestCount == 0) {
+                _LockingThread = 0;
+                Interlocked.Exchange(ref _Locked, 0);
+            }
         }
 
         /// <summary>

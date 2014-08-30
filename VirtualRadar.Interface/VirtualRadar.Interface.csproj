@@ -99,6 +99,7 @@
     <Compile Include="AirportDataThumbnailsJson.cs" />
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
+    <Compile Include="BackgroundThreadTimeout.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
     <Compile Include="BaseStation\IRawMessageTranslator.cs" />
@@ -107,8 +108,14 @@
     <Compile Include="Certainty.cs" />
     <Compile Include="Cidr.cs" />
     <Compile Include="CidrComparer.cs" />
+    <Compile Include="Network\ConnectionEventArgs.cs" />
+    <Compile Include="Network\IConnection.cs" />
+    <Compile Include="Network\IIPActiveConnector.cs" />
+    <Compile Include="Network\IPassiveConnector.cs" />
+    <Compile Include="Network\IActiveConnector.cs" />
     <Compile Include="IAccessFilter.cs" />
     <Compile Include="IAircraftSanityChecker.cs" />
+    <Compile Include="Network\IConnector.cs" />
     <Compile Include="IListExtensions.cs" />
     <Compile Include="Listener\IPolarPlotter.cs" />
     <Compile Include="Listener\PolarPlot.cs" />
@@ -334,6 +341,7 @@
     <Compile Include="SQLite\SQLiteJournalModeEnum.cs" />
     <Compile Include="SQLite\SynchronizationModes.cs" />
     <Compile Include="StreamHelper.cs" />
+    <Compile Include="TimestampedException.cs" />
     <Compile Include="TransponderType.cs" />
     <Compile Include="View\DedicatedReceiver.cs" />
     <Compile Include="View\IBusyView.cs" />
