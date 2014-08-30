@@ -84,6 +84,10 @@
     <Compile Include="ConnectionLogger.cs" />
     <Compile Include="DirectoryCache.cs" />
     <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />
+    <Compile Include="Network\Connection.cs" />
+    <Compile Include="Network\Connector.cs" />
+    <Compile Include="Network\IPActiveConnector.cs" />
+    <Compile Include="Network\IPConnector.cs" />
     <Compile Include="FlightSimulatorX\MonoSimConnectWrapper.cs" />
     <Compile Include="Listener\BeastMessageBytesExtractor.cs" />
     <Compile Include="Listener\CompressedMessageBytesExtractor.cs" />
@@ -102,6 +106,7 @@
     <Compile Include="ModeS\ModeSTranslator.cs" />
     <Compile Include="FeedManager.cs" />
     <Compile Include="Feed.cs" />
+    <Compile Include="Network\SocketConnection.cs" />
     <Compile Include="Presenter\CidrEditPresenter.cs" />
     <Compile Include="Presenter\SettingsPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
