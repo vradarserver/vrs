@@ -274,5 +274,10 @@ namespace VirtualRadar.Interface.View
         /// The password for a user account.
         /// </summary>
         Password,
+
+        /// <summary>
+        /// The idle timeout for a receiver.
+        /// </summary>
+        ReceiverIdleTimeout,
     }
 }

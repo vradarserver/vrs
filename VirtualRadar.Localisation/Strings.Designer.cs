@@ -2776,6 +2776,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of seconds to wait before disconnecting the feed when no data has been received and keep-alive packets are not being used..
+        /// </summary>
+        public static string OptionsDescribeDataSourcesIdleTimeout {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDataSourcesIdleTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No to disconnect from the data feed if a badly formatted message is received, yes to ignore bad messages and stay connected to the feed..
         /// </summary>
         public static string OptionsDescribeDataSourcesIgnoreBadConnection {
@@ -2853,6 +2862,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeDataSourcesStopBits {
             get {
                 return ResourceManager.GetString("OptionsDescribeDataSourcesStopBits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to use keep-alive packets to detect a feed that has gone down, no to reset the connection if no data is received after a given number of seconds..
+        /// </summary>
+        public static string OptionsDescribeDataSourcesUseKeepAlive {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDataSourcesUseKeepAlive", resourceCulture);
             }
         }
         
@@ -4450,6 +4468,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The idle timeout must be at least 5 seconds.
+        /// </summary>
+        public static string ReceiverIdleTimeoutOutOfBounds {
+            get {
+                return ResourceManager.GetString("ReceiverIdleTimeoutOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Receiver location.
         /// </summary>
         public static string ReceiverLocation {
@@ -5798,6 +5825,15 @@ namespace VirtualRadar.Localisation {
         public static string UseIcaoSpecificationSettings {
             get {
                 return ResourceManager.GetString("UseIcaoSpecificationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send keep-alive packets.
+        /// </summary>
+        public static string UseKeepAlive {
+            get {
+                return ResourceManager.GetString("UseKeepAlive", resourceCulture);
             }
         }
         

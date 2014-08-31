@@ -85,8 +85,6 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.AreNotSame(_Provider, _Implementation.Provider);
             _Implementation.Provider = _Provider;
             Assert.AreSame(_Provider, _Implementation.Provider);
-
-            TestUtilities.TestProperty(_Implementation, r => r.CoarseListenerTimeout, 0, 120);
         }
 
         [TestMethod]
@@ -337,6 +335,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, receiver.AutoReconnectAtStartup);
                         Assert.AreEqual("192.168.0.1", receiver.Address);
                         Assert.AreEqual(30004, receiver.Port);
+                        Assert.AreEqual(true, receiver.UseKeepAlive);
+                        Assert.AreEqual(30000, receiver.IdleTimeoutMilliseconds);
                         Assert.AreEqual(null, receiver.ComPort);
                         Assert.AreEqual(19200, receiver.BaudRate);
                         Assert.AreEqual(7, receiver.DataBits);
@@ -356,6 +356,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(true, receiver.AutoReconnectAtStartup);
                         Assert.AreEqual("127.0.0.1", receiver.Address);
                         Assert.AreEqual(30003, receiver.Port);
+                        Assert.AreEqual(false, receiver.UseKeepAlive);
+                        Assert.AreEqual(20000, receiver.IdleTimeoutMilliseconds);
                         Assert.AreEqual("COM3", receiver.ComPort);
                         Assert.AreEqual(2400, receiver.BaudRate);
                         Assert.AreEqual(8, receiver.DataBits);
@@ -563,6 +565,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                             AutoReconnectAtStartup = false,
                                                             Address = "192.168.0.1",
                                                             Port = 30004,
+                                                            UseKeepAlive = true,
+                                                            IdleTimeoutMilliseconds = 30000,
                                                             ComPort = null,
                                                             BaudRate = 19200,
                                                             DataBits = 7,
@@ -582,6 +586,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                             AutoReconnectAtStartup = true,
                                                             Address = "127.0.0.1",
                                                             Port = 30003,
+                                                            UseKeepAlive = false,
+                                                            IdleTimeoutMilliseconds = 20000,
                                                             ComPort = "COM3",
                                                             BaudRate = 2400,
                                                             DataBits = 8,

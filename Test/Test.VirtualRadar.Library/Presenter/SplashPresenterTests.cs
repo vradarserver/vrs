@@ -217,13 +217,11 @@ namespace Test.VirtualRadar.Library.Presenter
         }
 
         [TestMethod]
-        public void SplashPresenter_StartApplication_Can_Set_CoarseListenerTimeout_On_ConfigurationStorage()
+        public void SplashPresenter_StartApplication_CoarseListenerTimeout_Command_Line_Switch_Is_Benign()
         {
             _Presenter.CommandLineArgs = new string[] { "-ListenerTimeout:60" };
             _Presenter.Initialise(_View.Object);
             _Presenter.StartApplication();
-
-            Assert.AreEqual(60, _ConfigurationStorage.Object.CoarseListenerTimeout);
         }
 
         [TestMethod]

@@ -128,15 +128,7 @@ namespace VirtualRadar.Library.Presenter
                         if(!Provider.FolderExists(folder)) _View.ReportProblem(String.Format(Strings.FolderDoesNotExistFull, folder), Strings.FolderDoesNotExistTitle, true);
                         else configurationStorage.Folder = folder;
                     } else if(caselessArg.StartsWith("-LISTENERTIMEOUT:")) {
-                        var timeoutText = arg.Substring(17);
-                        int timeout;
-                        if(!int.TryParse(timeoutText, out timeout)) {
-                            _View.ReportProblem(String.Format(Strings.CoarseListenerTimeoutUnparseable, timeoutText), Strings.BadListenerTimeout, true);
-                        } else if(timeout < 10) {
-                            _View.ReportProblem(Strings.CoarseListenerTimeoutInvalid, Strings.BadListenerTimeout, true);
-                        } else {
-                            Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.CoarseListenerTimeout = timeout;
-                        }
+                        // This was removed in 2.0.3 - coarse timeouts are now a per-receiver configuration property
                     } else {
                         _View.ReportProblem(String.Format(Strings.UnrecognisedCommandLineParameterFull, arg), Strings.UnrecognisedCommandLineParameterTitle, true);
                     }
