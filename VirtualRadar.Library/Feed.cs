@@ -305,13 +305,14 @@ namespace VirtualRadar.Library
                     break;
                 case ConnectionType.TCP:
                     var existingTcpProvider = result as IIPActiveConnector;
-                    if(existingTcpProvider == null || existingTcpProvider.Address != receiver.Address || existingTcpProvider.Port != receiver.Port) {
+                    if(existingTcpProvider == null || existingTcpProvider.Address != receiver.Address || existingTcpProvider.Port != receiver.Port ||
+                       existingTcpProvider.UseKeepAlive != receiver.UseKeepAlive || existingTcpProvider.IdleTimeout != receiver.IdleTimeoutMilliseconds) {
                         var ipActiveConnector = Factory.Singleton.Resolve<IIPActiveConnector>();
                         ipActiveConnector.Name =            receiver.Name;
                         ipActiveConnector.Address =         receiver.Address;
                         ipActiveConnector.Port =            receiver.Port;
-                        ipActiveConnector.UseKeepAlive =    true;
-                        ipActiveConnector.IdleTimeout =     60000;
+                        ipActiveConnector.UseKeepAlive =    receiver.UseKeepAlive;
+                        ipActiveConnector.IdleTimeout =     receiver.IdleTimeoutMilliseconds;
                         result = ipActiveConnector;
                     }
                     break;

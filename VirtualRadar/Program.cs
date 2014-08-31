@@ -93,11 +93,6 @@ namespace VirtualRadar
                 MessageBox.Show(folderMessage, "Configuration Folder");
             }
 
-            // Mono doesn't support the heartbeat timer on network connections so we force use of a dirtier equivalent
-            if(Factory.Singleton.Resolve<IRuntimeEnvironment>().IsMono) {
-                Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.CoarseListenerTimeout = 10;
-            }
-
             var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
             pluginManager.LoadPlugins();
 

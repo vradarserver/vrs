@@ -57,18 +57,6 @@ namespace VirtualRadar.Interface.Settings
         string Folder { get; set; }
 
         /// <summary>
-        /// Gets or sets a value that indicates how long (in seconds) a listener will wait before it will automatically attempt a reconnect.
-        /// </summary>
-        /// <remarks>
-        /// This is not a normal configuration option because I don't want people to set it if they don't need to. Few Windows users should need
-        /// to resort to this, the Windows version will use a heartbeat timer on network connections to automatically reconnect if the connection
-        /// goes down. However Mono users do need this, and some Windows users with weird network configurations might find it useful. So it's
-        /// set through a command-line parameter, and automatically set to 10 seconds for Mono users. If it is set to 0 (or less) then it is
-        /// ignored, and it cannot be changed once the application has started. A value of less than 10 seconds will be rejected.
-        /// </remarks>
-        int CoarseListenerTimeout { get; set; }
-
-        /// <summary>
         /// Raised after <see cref="Save"/> has saved a new configuration to disk or <see cref="Erase"/> has deleted the user's configuration.
         /// </summary>
         event EventHandler<EventArgs> ConfigurationChanged;

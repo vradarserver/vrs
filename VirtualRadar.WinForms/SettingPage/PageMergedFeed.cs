@@ -80,7 +80,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.CreateBindings();
             AddBinding(MergedFeed, checkBoxEnabled,                         r => r.Enabled,                         r => r.Checked);
             AddBinding(MergedFeed, textBoxName,                             r => r.Name,                            r => r.Text,    DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(MergedFeed, numericIcaoTimeout,                      r => r.IcaoTimeout,                     r => r.Value,   format: IcaoTimeout_Format, parse: IcaoTimeout_Parse);
+            AddBinding(MergedFeed, numericIcaoTimeout,                      r => r.IcaoTimeout,                     r => r.Value,   format: MillisecondsToSeconds_Format, parse: MillisecondsToSeconds_Parse);
             AddBinding(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,    r => r.IgnoreAircraftWithNoPosition,    r => r.Checked);
 
             listReceiverIds.DataSource = CreateListBindingSource<Receiver>(SettingsView.Configuration.Receivers);
@@ -115,18 +115,6 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericIcaoTimeout,                   Strings.IcaoTimeout,                    Strings.OptionsDescribeIcaoTimeout);
             SetInlineHelp(checkBoxIgnoreAircraftWithNoPosition, Strings.IgnoreAircraftWithNoPosition,   Strings.OptionsDescribeIgnoreAircraftWithNoPosition);
             SetInlineHelp(listReceiverIds,                      "",                                     "");
-        }
-
-        private void IcaoTimeout_Format(object sender, ConvertEventArgs args)
-        {
-            var value = (int)args.Value;
-            args.Value = ((decimal)value) / 1000M;
-        }
-
-        private void IcaoTimeout_Parse(object sender, ConvertEventArgs args)
-        {
-            var value = (decimal)args.Value;
-            args.Value = (int)(value * 1000M);
         }
 
         private void listReceiverIds_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs args)

@@ -1147,6 +1147,13 @@ namespace VirtualRadar.Library.Presenter
                         ValueIsInRange(receiver.Port, 1, 65535, new Validation(ValidationField.BaseStationPort, defaults) {
                             Message = Strings.PortOutOfBounds,
                         });
+
+                        // The idle timeout must be between 5 seconds and int.MaxValue, but only if KeepAlive is switched off
+                        if(!receiver.UseKeepAlive) {
+                            ValueIsInRange(receiver.IdleTimeoutMilliseconds, 5000, int.MaxValue, new Validation(ValidationField.ReceiverIdleTimeout, defaults) {
+                                Message = Strings.ReceiverIdleTimeoutOutOfBounds,
+                            });
+                        }
                         break;
                     case ConnectionType.COM:
                         // The COM port must be supplied

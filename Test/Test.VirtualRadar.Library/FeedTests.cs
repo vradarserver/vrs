@@ -109,17 +109,19 @@ namespace Test.VirtualRadar.Library
         private Mock<IPolarPlotter> _PolarPlotter;
 
         private readonly List<ConnectionProperty> _ConnectionProperties = new List<ConnectionProperty>() {
-            new ConnectionProperty(ConnectionType.TCP, "Address",       c => c.Receivers[0].Address = "9.8.7.6"),
-            new ConnectionProperty(ConnectionType.TCP, "Port",          c => c.Receivers[0].Port = 77),
+            new ConnectionProperty(ConnectionType.TCP, "Address",                   c => c.Receivers[0].Address = "9.8.7.6"),
+            new ConnectionProperty(ConnectionType.TCP, "Port",                      c => c.Receivers[0].Port = 77),
+            new ConnectionProperty(ConnectionType.TCP, "UseKeepAlive",              c => c.Receivers[0].UseKeepAlive = false),
+            new ConnectionProperty(ConnectionType.TCP, "IdleTimeoutMilliseconds",   c => c.Receivers[0].IdleTimeoutMilliseconds = 20000),
 
-            new ConnectionProperty(ConnectionType.COM, "ComPort",       c => c.Receivers[0].ComPort = "COM99"),
-            new ConnectionProperty(ConnectionType.COM, "BaudRate",      c => c.Receivers[0].BaudRate = 9600),
-            new ConnectionProperty(ConnectionType.COM, "DataBits",      c => c.Receivers[0].DataBits = 7),
-            new ConnectionProperty(ConnectionType.COM, "StopBits",      c => c.Receivers[0].StopBits = StopBits.OnePointFive),
-            new ConnectionProperty(ConnectionType.COM, "Parity",        c => c.Receivers[0].Parity = Parity.Odd),
-            new ConnectionProperty(ConnectionType.COM, "Handshake",     c => c.Receivers[0].Handshake = Handshake.XOnXOff),
-            new ConnectionProperty(ConnectionType.COM, "StartupText",   c => c.Receivers[0].StartupText = "UP"),
-            new ConnectionProperty(ConnectionType.COM, "ShutdownText",  c => c.Receivers[0].ShutdownText = "DOWN"),
+            new ConnectionProperty(ConnectionType.COM, "ComPort",                   c => c.Receivers[0].ComPort = "COM99"),
+            new ConnectionProperty(ConnectionType.COM, "BaudRate",                  c => c.Receivers[0].BaudRate = 9600),
+            new ConnectionProperty(ConnectionType.COM, "DataBits",                  c => c.Receivers[0].DataBits = 7),
+            new ConnectionProperty(ConnectionType.COM, "StopBits",                  c => c.Receivers[0].StopBits = StopBits.OnePointFive),
+            new ConnectionProperty(ConnectionType.COM, "Parity",                    c => c.Receivers[0].Parity = Parity.Odd),
+            new ConnectionProperty(ConnectionType.COM, "Handshake",                 c => c.Receivers[0].Handshake = Handshake.XOnXOff),
+            new ConnectionProperty(ConnectionType.COM, "StartupText",               c => c.Receivers[0].StartupText = "UP"),
+            new ConnectionProperty(ConnectionType.COM, "ShutdownText",              c => c.Receivers[0].ShutdownText = "DOWN"),
         };
 
         private readonly List<SettingsProperty> _RawMessageTranslatorProperties = new List<SettingsProperty>() {
@@ -388,6 +390,8 @@ namespace Test.VirtualRadar.Library
 
                 _Receiver.Address = "TCP Address";
                 _Receiver.Port = 12345;
+                _Receiver.UseKeepAlive = true;
+                _Receiver.IdleTimeoutMilliseconds = 30000;
 
                 _Receiver.ComPort = "Serial COM Port";
                 _Receiver.BaudRate = 10;
@@ -415,6 +419,8 @@ namespace Test.VirtualRadar.Library
                     case ConnectionType.TCP:
                         Assert.AreEqual("TCP Address", _IPActiveConnector.Object.Address);
                         Assert.AreEqual(12345, _IPActiveConnector.Object.Port);
+                        Assert.AreEqual(true, _IPActiveConnector.Object.UseKeepAlive);
+                        Assert.AreEqual(30000, _IPActiveConnector.Object.IdleTimeout);
                         break;
                     default:
                         throw new NotImplementedException();

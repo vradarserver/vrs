@@ -2246,4 +2246,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="LastConnectorException" xml:space="preserve">
     <value>Last Exception</value>
   </data>
+  <data name="ReceiverIdleTimeoutOutOfBounds" xml:space="preserve">
+    <value>The idle timeout must be at least 5 seconds</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesIdleTimeout" xml:space="preserve">
+    <value>The number of seconds to wait before disconnecting the feed when no data has been received and keep-alive packets are not being used.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesUseKeepAlive" xml:space="preserve">
+    <value>Yes to use keep-alive packets to detect a feed that has gone down, no to reset the connection if no data is received after a given number of seconds.</value>
+  </data>
+  <data name="UseKeepAlive" xml:space="preserve">
+    <value>Send keep-alive packets</value>
+  </data>
 </root>

@@ -75,8 +75,7 @@ namespace VirtualRadar.Interface.Settings
 
         private bool _AutoReconnectAtStartup;
         /// <summary>
-        /// Gets or sets a value indicating that the program should keep attempting to connect to the data source
-        /// if it cannot connect when the program first starts.
+        /// Obsolete since version 2.0.3. Network connections now always reconnect until you disable them.
         /// </summary>
         public bool AutoReconnectAtStartup
         {
@@ -102,6 +101,27 @@ namespace VirtualRadar.Interface.Settings
         {
             get { return _Port; }
             set { SetField(ref _Port, value, () => Port); }
+        }
+
+        private bool _UseKeepAlive;
+        /// <summary>
+        /// Gets or sets a value indicating that the network connection should use KeepAlive packets.
+        /// </summary>
+        public bool UseKeepAlive
+        {
+            get { return _UseKeepAlive; }
+            set { SetField(ref _UseKeepAlive, value, () => UseKeepAlive); }
+        }
+
+        private int _IdleTimeoutMilliseconds;
+        /// <summary>
+        /// Gets or sets the period of time that must elapse with no received content before the network
+        /// connection is reset.
+        /// </summary>
+        public int IdleTimeoutMilliseconds
+        {
+            get { return _IdleTimeoutMilliseconds; }
+            set { SetField(ref _IdleTimeoutMilliseconds, value, () => IdleTimeoutMilliseconds); }
         }
 
         private string _ComPort;
@@ -242,6 +262,8 @@ namespace VirtualRadar.Interface.Settings
             ConnectionType = ConnectionType.TCP;
             Address = "127.0.0.1";
             Port = 30003;
+            UseKeepAlive = true;
+            IdleTimeoutMilliseconds = 60000;
             BaudRate = 115200;
             DataBits = 8;
             StopBits = StopBits.One;

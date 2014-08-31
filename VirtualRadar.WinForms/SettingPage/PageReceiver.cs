@@ -121,12 +121,13 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(Receiver, checkBoxEnabled,                   r => r.Enabled,                 r => r.Checked);
             AddBinding(Receiver, textBoxName,                       r => r.Name,                    r => r.Text,            DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(Receiver, comboBoxDataSource,                r => r.DataSource,              r => r.SelectedValue);
-            AddBinding(Receiver, checkBoxAutoReconnectAtStartup,    r => r.AutoReconnectAtStartup,  r => r.Checked);
             AddBinding(Receiver, comboBoxLocationId,                r => r.ReceiverLocationId,      r => r.SelectedValue);
             AddBinding(Receiver, comboBoxConnectionType,            r => r.ConnectionType,          r => r.SelectedValue,   DataSourceUpdateMode.OnPropertyChanged);
 
-            AddBinding(Receiver, textBoxAddress,    r => r.Address,     r => r.Text);
-            AddBinding(Receiver, numericPort,       r => r.Port,        r => r.Value);
+            AddBinding(Receiver, textBoxAddress,        r => r.Address,                 r => r.Text);
+            AddBinding(Receiver, numericPort,           r => r.Port,                    r => r.Value);
+            AddBinding(Receiver, checkBoxUseKeepAlive,  r => r.UseKeepAlive,            r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
+            AddBinding(Receiver, numericIdleTimeout,    r => r.IdleTimeoutMilliseconds, r => r.Value,   format: MillisecondsToSeconds_Format, parse: MillisecondsToSeconds_Parse);
 
             AddBinding(Receiver, comboBoxSerialComPort,     r => r.ComPort,         r => r.SelectedValue);
             AddBinding(Receiver, comboBoxSerialBaudRate,    r => r.BaudRate,        r => r.SelectedItem);
@@ -151,6 +152,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
                 { ValidationField.BaseStationAddress,   textBoxAddress },
                 { ValidationField.BaseStationPort,      numericPort },
+                { ValidationField.ReceiverIdleTimeout,  numericIdleTimeout },
 
                 { ValidationField.ComPort,              comboBoxSerialComPort },
                 { ValidationField.BaudRate,             comboBoxSerialBaudRate },
@@ -168,10 +170,11 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(comboBoxLocationId,               Strings.ReceiverLocation,       Strings.OptionsDescribeRawFeedReceiverLocation);
             SetInlineHelp(comboBoxDataSource,               Strings.DataSource,             Strings.OptionsDescribeDataSourcesDataSource);
             SetInlineHelp(comboBoxConnectionType,           Strings.ConnectionType,         Strings.OptionsDescribeDataSourcesConnectionType);
-            SetInlineHelp(checkBoxAutoReconnectAtStartup,   Strings.AutoReconnectAtStartup, Strings.OptionsDescribeDataSourcesAutoReconnectAtStartup);
 
             SetInlineHelp(textBoxAddress,                   Strings.UNC,                    Strings.OptionsDescribeDataSourcesAddress);
             SetInlineHelp(numericPort,                      Strings.Port,                   Strings.OptionsDescribeDataSourcesPort);
+            SetInlineHelp(checkBoxUseKeepAlive,             Strings.UseKeepAlive,           Strings.OptionsDescribeDataSourcesUseKeepAlive);
+            SetInlineHelp(numericIdleTimeout,               Strings.IdleTimeout,            Strings.OptionsDescribeDataSourcesIdleTimeout);
 
             SetInlineHelp(comboBoxSerialComPort,            Strings.SerialComPort,          Strings.OptionsDescribeDataSourcesComPort);
             SetInlineHelp(comboBoxSerialBaudRate,           Strings.SerialBaudRate,         Strings.OptionsDescribeDataSourcesBaudRate);
@@ -197,6 +200,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
                 groupBoxSerial.Location = groupBoxNetwork.Location = Point.Empty;
                 ShowHideConnectionTypePanels();
+                EnableDisableControls();
             }
         }
 
@@ -211,6 +215,11 @@ namespace VirtualRadar.WinForms.SettingPage
             }
         }
 
+        private void EnableDisableControls()
+        {
+            numericIdleTimeout.Enabled = !Receiver.UseKeepAlive;
+        }
+
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -221,6 +230,8 @@ namespace VirtualRadar.WinForms.SettingPage
             if(args.Record == PageObject && SettingsView != null && this.IsHandleCreated) {
                 if(args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.ConnectionType)) {
                     ShowHideConnectionTypePanels();
+                } else if(args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive)) {
+                    EnableDisableControls();
                 }
             }
         }

@@ -273,6 +273,28 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             ;
         }
+
+        /// <summary>
+        /// Binding formatter that converts integer millisecond fields to decimal seconds.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected void MillisecondsToSeconds_Format(object sender, ConvertEventArgs args)
+        {
+            var value = (int)args.Value;
+            args.Value = ((decimal)value) / 1000M;
+        }
+
+        /// <summary>
+        /// Binding parser that converts decimal seconds shown in a control to integer milliseconds.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected void MillisecondsToSeconds_Parse(object sender, ConvertEventArgs args)
+        {
+            var value = (decimal)args.Value;
+            args.Value = (int)(value * 1000M);
+        }
         #endregion
 
         #region SetValidationFields, GetControlForValidationField

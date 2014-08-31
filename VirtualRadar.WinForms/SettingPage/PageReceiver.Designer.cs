@@ -59,14 +59,18 @@
             this.label7 = new System.Windows.Forms.Label();
             this.comboBoxSerialComPort = new System.Windows.Forms.ComboBox();
             this.groupBoxNetwork = new System.Windows.Forms.GroupBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.numericIdleTimeout = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxUseKeepAlive = new System.Windows.Forms.CheckBox();
             this.buttonWizard = new System.Windows.Forms.Button();
-            this.checkBoxAutoReconnectAtStartup = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxDataSource = new System.Windows.Forms.ComboBox();
             this.panelConnectionTypeSettings = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).BeginInit();
             this.panelConnectionTypeSettings.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,7 +99,7 @@
             this.buttonTestConnection.Location = new System.Drawing.Point(480, 107);
             this.buttonTestConnection.Name = "buttonTestConnection";
             this.buttonTestConnection.Size = new System.Drawing.Size(156, 23);
-            this.buttonTestConnection.TabIndex = 12;
+            this.buttonTestConnection.TabIndex = 11;
             this.buttonTestConnection.Text = "::TestConnection::";
             this.buttonTestConnection.UseVisualStyleBackColor = true;
             this.buttonTestConnection.Click += new System.EventHandler(this.buttonTestConnection_Click);
@@ -125,7 +129,7 @@
             this.label3.Location = new System.Drawing.Point(0, 86);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 7;
+            this.label3.TabIndex = 6;
             this.label3.Text = "::Location:::";
             // 
             // textBoxAddress
@@ -220,7 +224,7 @@
             this.label1.Location = new System.Drawing.Point(0, 112);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 10;
+            this.label1.TabIndex = 9;
             this.label1.Text = "::ConnectionType:::";
             // 
             // comboBoxConnectionType
@@ -231,7 +235,7 @@
             this.comboBoxConnectionType.Location = new System.Drawing.Point(200, 109);
             this.comboBoxConnectionType.Name = "comboBoxConnectionType";
             this.comboBoxConnectionType.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxConnectionType.TabIndex = 11;
+            this.comboBoxConnectionType.TabIndex = 10;
             this.comboBoxConnectionType.ValueMember = "Value";
             // 
             // comboBoxSerialParity
@@ -312,7 +316,7 @@
             this.buttonClearLocationId.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.buttonClearLocationId.Name = "buttonClearLocationId";
             this.buttonClearLocationId.Size = new System.Drawing.Size(21, 21);
-            this.buttonClearLocationId.TabIndex = 9;
+            this.buttonClearLocationId.TabIndex = 8;
             this.buttonClearLocationId.UseVisualStyleBackColor = true;
             this.buttonClearLocationId.Click += new System.EventHandler(this.buttonClearLocationId_Click);
             // 
@@ -324,7 +328,7 @@
             this.comboBoxLocationId.Location = new System.Drawing.Point(200, 82);
             this.comboBoxLocationId.Name = "comboBoxLocationId";
             this.comboBoxLocationId.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxLocationId.TabIndex = 8;
+            this.comboBoxLocationId.TabIndex = 7;
             this.comboBoxLocationId.ValueMember = "UniqueId";
             // 
             // comboBoxSerialBaudRate
@@ -356,7 +360,7 @@
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialBaudRate);
             this.groupBoxSerial.Controls.Add(this.label7);
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialComPort);
-            this.groupBoxSerial.Location = new System.Drawing.Point(0, 86);
+            this.groupBoxSerial.Location = new System.Drawing.Point(0, 132);
             this.groupBoxSerial.Name = "groupBoxSerial";
             this.groupBoxSerial.Size = new System.Drawing.Size(633, 234);
             this.groupBoxSerial.TabIndex = 1;
@@ -387,16 +391,71 @@
             // 
             this.groupBoxNetwork.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxNetwork.Controls.Add(this.label16);
+            this.groupBoxNetwork.Controls.Add(this.label15);
+            this.groupBoxNetwork.Controls.Add(this.numericIdleTimeout);
+            this.groupBoxNetwork.Controls.Add(this.checkBoxUseKeepAlive);
             this.groupBoxNetwork.Controls.Add(this.label6);
             this.groupBoxNetwork.Controls.Add(this.numericPort);
             this.groupBoxNetwork.Controls.Add(this.label5);
             this.groupBoxNetwork.Controls.Add(this.textBoxAddress);
             this.groupBoxNetwork.Location = new System.Drawing.Point(0, 0);
             this.groupBoxNetwork.Name = "groupBoxNetwork";
-            this.groupBoxNetwork.Size = new System.Drawing.Size(633, 80);
+            this.groupBoxNetwork.Size = new System.Drawing.Size(633, 126);
             this.groupBoxNetwork.TabIndex = 0;
             this.groupBoxNetwork.TabStop = false;
             this.groupBoxNetwork.Text = "::Network::";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(280, 98);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(68, 13);
+            this.label16.TabIndex = 34;
+            this.label16.Text = "::PSeconds::";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(6, 98);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(77, 13);
+            this.label15.TabIndex = 32;
+            this.label15.Text = "::IdleTimeout:::";
+            // 
+            // numericIdleTimeout
+            // 
+            this.numericIdleTimeout.Location = new System.Drawing.Point(197, 96);
+            this.numericIdleTimeout.Maximum = new decimal(new int[] {
+            86400,
+            0,
+            0,
+            0});
+            this.numericIdleTimeout.Minimum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericIdleTimeout.Name = "numericIdleTimeout";
+            this.numericIdleTimeout.Size = new System.Drawing.Size(77, 20);
+            this.numericIdleTimeout.TabIndex = 33;
+            this.numericIdleTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericIdleTimeout.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // checkBoxUseKeepAlive
+            // 
+            this.checkBoxUseKeepAlive.AutoSize = true;
+            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(197, 73);
+            this.checkBoxUseKeepAlive.Name = "checkBoxUseKeepAlive";
+            this.checkBoxUseKeepAlive.Size = new System.Drawing.Size(105, 17);
+            this.checkBoxUseKeepAlive.TabIndex = 31;
+            this.checkBoxUseKeepAlive.Text = "::UseKeepAlive::";
+            this.checkBoxUseKeepAlive.UseVisualStyleBackColor = true;
             // 
             // buttonWizard
             // 
@@ -409,16 +468,6 @@
             this.buttonWizard.Text = "::Wizard::";
             this.buttonWizard.UseVisualStyleBackColor = true;
             this.buttonWizard.Click += new System.EventHandler(this.buttonWizard_Click);
-            // 
-            // checkBoxAutoReconnectAtStartup
-            // 
-            this.checkBoxAutoReconnectAtStartup.AutoSize = true;
-            this.checkBoxAutoReconnectAtStartup.Location = new System.Drawing.Point(381, 57);
-            this.checkBoxAutoReconnectAtStartup.Name = "checkBoxAutoReconnectAtStartup";
-            this.checkBoxAutoReconnectAtStartup.Size = new System.Drawing.Size(157, 17);
-            this.checkBoxAutoReconnectAtStartup.TabIndex = 6;
-            this.checkBoxAutoReconnectAtStartup.Text = "::AutoReconnectAtStartup::";
-            this.checkBoxAutoReconnectAtStartup.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -445,11 +494,11 @@
             this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
+            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
             this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 136);
             this.panelConnectionTypeSettings.Name = "panelConnectionTypeSettings";
-            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 323);
+            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 369);
             this.panelConnectionTypeSettings.TabIndex = 30;
             // 
             // PageReceiver
@@ -466,16 +515,16 @@
             this.Controls.Add(this.buttonClearLocationId);
             this.Controls.Add(this.comboBoxLocationId);
             this.Controls.Add(this.buttonWizard);
-            this.Controls.Add(this.checkBoxAutoReconnectAtStartup);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxDataSource);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 459);
+            this.Size = new System.Drawing.Size(636, 505);
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
             this.groupBoxNetwork.ResumeLayout(false);
             this.groupBoxNetwork.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).EndInit();
             this.panelConnectionTypeSettings.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -516,9 +565,12 @@
         private System.Windows.Forms.ComboBox comboBoxSerialComPort;
         private System.Windows.Forms.GroupBox groupBoxNetwork;
         private System.Windows.Forms.Button buttonWizard;
-        private System.Windows.Forms.CheckBox checkBoxAutoReconnectAtStartup;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBoxDataSource;
         private System.Windows.Forms.Panel panelConnectionTypeSettings;
+        private System.Windows.Forms.CheckBox checkBoxUseKeepAlive;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.NumericUpDown numericIdleTimeout;
+        private System.Windows.Forms.Label label16;
     }
 }
