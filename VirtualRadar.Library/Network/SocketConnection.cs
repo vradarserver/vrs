@@ -73,10 +73,14 @@ namespace VirtualRadar.Library.Network
                     Socket = null;
 
                     try {
+                        socket.Shutdown(SocketShutdown.Both);
+                    } catch {}
+                    try {
                         socket.Close();
+                    } catch {}
+                    try {
                         ((IDisposable)socket).Dispose();
-                    } catch {
-                    }
+                    } catch {}
                 }
             }
 

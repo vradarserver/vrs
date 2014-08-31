@@ -45,7 +45,7 @@ namespace VirtualRadar.Library.Network
         /// The thread created when <see cref="EstablishConnection"/> is called. This may or may
         /// not live for the lifetime of the connector.
         /// </summary>
-        private Thread _ConnectThread;
+        private Thread _EstablishConnectionThread;
 
         /// <summary>
         /// True once <see cref="EstablishConnection"/> has been called.
@@ -100,7 +100,10 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public abstract IConnection Connection { get; }
+        public virtual IConnection Connection
+        {
+            get { return GetFirstConnection(); }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -291,6 +294,8 @@ namespace VirtualRadar.Library.Network
                         connection.Dispose();
                     }
                     _Connections.Clear();
+                } catch(Exception ex) {
+                    OnExceptionCaught(new EventArgs<Exception>(ex));
                 } finally {
                     _SpinLock.Unlock();
                 }
@@ -312,9 +317,9 @@ namespace VirtualRadar.Library.Network
             if(!IsSingleConnection && !MultiConnectionSupported) throw new InvalidOperationException(String.Format("Multi-connection mode is not supported on {0} connectors", GetType().Name));
 
             using(_SpinLock.AcquireLock()) {
-                if(_ConnectThread == null) {
-                    _ConnectThread = new Thread(BackgroundEstablishConnection);
-                    _ConnectThread.Start();
+                if(_EstablishConnectionThread == null) {
+                    _EstablishConnectionThread = new Thread(BackgroundEstablishConnection);
+                    _EstablishConnectionThread.Start();
                 }
             }
         }
@@ -328,11 +333,43 @@ namespace VirtualRadar.Library.Network
                 DoEstablishConnection();
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
-                _ConnectThread = null;
+                _EstablishConnectionThread = null;
             }
 
             using(_SpinLock.AcquireLock()) {
-                _ConnectThread = null;
+                _EstablishConnectionThread = null;
+            }
+        }
+
+        /// <summary>
+        /// Waits until the thread that is running <see cref="EstablishConnection"/> has finished.
+        /// </summary>
+        /// <param name="timeoutMilliseconds">Pass -1 to wait forever.</param>
+        /// <returns></returns>
+        protected void WaitForEstablishConnectionThreadToFinish(int timeoutMilliseconds = 1000)
+        {
+            var finished = false;
+            var threshold = timeoutMilliseconds > 0 ? DateTime.UtcNow.AddMilliseconds(timeoutMilliseconds) : DateTime.MaxValue;
+
+            while(!finished) {
+                _SpinLock.Lock();
+                try {
+                    finished = _EstablishConnectionThread == null;
+                    if(!finished && DateTime.UtcNow >= threshold) {
+                        try {
+                            _EstablishConnectionThread.Abort();
+                        } catch {
+                        }
+                        _EstablishConnectionThread = null;
+                        finished = true;
+                    }
+                } finally {
+                    _SpinLock.Unlock();
+                }
+
+                if(!finished) {
+                    Thread.Sleep(0);
+                }
             }
         }
 
@@ -344,7 +381,19 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public abstract void CloseConnection();
+        public virtual void CloseConnection()
+        {
+            try {
+                DoCloseConnection();
+            } catch(Exception ex) {
+                OnExceptionCaught(new EventArgs<Exception>(ex));
+            }
+        }
+
+        /// <summary>
+        /// Does the work of closing the connection.
+        /// </summary>
+        protected abstract void DoCloseConnection();
 
         /// <summary>
         /// See interface docs.

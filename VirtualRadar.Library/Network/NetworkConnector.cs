@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
@@ -51,14 +52,14 @@ namespace VirtualRadar.Library.Network
         private SpinLock _SpinLock = new SpinLock();
 
         /// <summary>
-        /// The connection that the connector establishes.
+        /// True if the connector is in the closed state, false if it is in the open state.
         /// </summary>
-        private SocketConnection _Connection;
+        private bool _Closed = true;
 
         /// <summary>
-        /// True if the connector should automatically reconnect if the connection goes down.
+        /// The object that decides whether incoming connections can be accepted.
         /// </summary>
-        private bool _ReconnectAfterAbandon;
+        private IAccessFilter _AccessFilter;
         #endregion
 
         #region Behavioural properties
@@ -69,30 +70,6 @@ namespace VirtualRadar.Library.Network
         #endregion
 
         #region Properties
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public override bool IsPassive
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public override bool IsSingleConnection
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public override IConnection Connection
-        {
-            get { return GetConnection(); }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -142,12 +119,7 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         private SocketConnection GetConnection()
         {
-            _SpinLock.Lock();
-            try {
-                return _Connection;
-            } finally {
-                _SpinLock.Unlock();
-            }
+            return GetFirstConnection() as SocketConnection;
         }
         #endregion
 
@@ -157,25 +129,46 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         protected override void DoEstablishConnection()
         {
-            _ReconnectAfterAbandon = true;
-            Reconnect(ConnectionStatus.Connecting, pauseBeforeConnect: false);
+            _Closed = false;
+            if(IsPassive) {
+                PassiveModeStartListening();
+            } else {
+                ActiveModeReconnect(ConnectionStatus.Connecting, pauseBeforeConnect: false);
+            }
         }
 
-        private static bool _InReconnect;
         /// <summary>
-        /// Keeps attempting to connect until a connection is established.
+        /// See base docs.
+        /// </summary>
+        protected override void DoCloseConnection()
+        {
+            _Closed = true;
+            WaitForEstablishConnectionThreadToFinish(timeoutMilliseconds: 10000);
+            AbandonAllConnections();
+            ConnectionStatus = ConnectionStatus.Disconnected;
+        }
+        #endregion
+
+        #region ActiveModeReconnect, ActiveModeConnect, ActiveModeDisconnect
+        private static bool _InActiveModeReconnect;
+        /// <summary>
+        /// Keeps attempting to connect in active mode until a connection is established.
         /// </summary>
         /// <param name="status"></param>
         /// <param name="pauseBeforeConnect"></param>
-        private void Reconnect(ConnectionStatus status, bool pauseBeforeConnect)
+        private void ActiveModeReconnect(ConnectionStatus status, bool pauseBeforeConnect)
         {
-            if(!_InReconnect) {
-                _InReconnect = true;
+            var inActiveModeReconnect = false;
+            using(_SpinLock.AcquireLock()) {
+                inActiveModeReconnect = _InActiveModeReconnect;
+                if(!inActiveModeReconnect) _InActiveModeReconnect = true;
+            }
+            if(!inActiveModeReconnect) {
                 try {
-                    while(ConnectionStatus != ConnectionStatus.Connected && _ReconnectAfterAbandon) {
+                    while(ConnectionStatus != ConnectionStatus.Connected && !_Closed) {
                         if(pauseBeforeConnect) {
                             var countSleeps = Math.Max(1, RetryConnectTimeout / 100);
-                            for(var i = 0;i < countSleeps && _ReconnectAfterAbandon;++i) {
+                            for(var i = 0;i < countSleeps && !_Closed;++i) {
                                 Thread.Sleep(100);
                             }
                         }
@@ -183,72 +176,157 @@ namespace VirtualRadar.Library.Network
 
                         try {
                             ConnectionStatus = status;
-                            Connect();
+                            ActiveModeConnect();
                         } catch(Exception ex) {
                             OnExceptionCaught(new EventArgs<Exception>(ex));
                         }
                     }
                 } finally {
-                    _InReconnect = false;
+                    _InActiveModeReconnect = false;
                 }
             }
         }
 
         /// <summary>
-        /// See interface docs.
+        /// Connects to the remote machine in active mode.
         /// </summary>
-        public override void CloseConnection()
-        {
-            _ReconnectAfterAbandon = false;
-            var connection = GetConnection();
-            if(connection != null) {
-                connection.Abandon();
-            }
-        }
-        #endregion
-
-        #region Connect, Disconnect, ConnectionAbandoned
-        /// <summary>
-        /// Connects to the remote machine.
-        /// </summary>
-        private void Connect()
+        private void ActiveModeConnect()
         {
             var ipAddress = ResolveAddress(Address);
             var endPoint = new IPEndPoint(ipAddress, Port);
             var socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            if(!UseKeepAlive) {
-                socket.ReceiveTimeout = IdleTimeout;
-                socket.SendTimeout =    IdleTimeout;
-            } else {
-                socket.IOControl(IOControlCode.KeepAliveValues, new TcpKeepAlive() {
-                    OnOff = 1,
-                    KeepAliveTime = 10 * 1000,
-                    KeepAliveInterval = 1 * 1000
-                }.BuildBuffer(), null);
-            }
+            SetSocketKeepAliveAndTimeouts(socket);
 
             var timeoutAction = new BackgroundThreadTimeout(ConnectTimeout, () => {
                 socket.Connect(endPoint);
             });
             timeoutAction.PerformAction();
 
-            SocketConnection connection;
-            using(_SpinLock.AcquireLock()) {
-                _Connection = connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
-            }
-
+            SocketConnection connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
             RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: true);
             connection.ConnectionStatus = ConnectionStatus.Connected;
         }
+        #endregion
+
+        #region PassiveModeStartListening, CreatePassiveModeListeningSocket, CreateNewPassiveConnection
+        private bool _InPassiveModeStartListening;
+        /// <summary>
+        /// Starts the passive mode listener.
+        /// </summary>
+        private void PassiveModeStartListening()
+        {
+            var inPassiveModeStartListening = false;
+            using(_SpinLock.AcquireLock()) {
+                inPassiveModeStartListening = _InPassiveModeStartListening;
+                if(!inPassiveModeStartListening) _InPassiveModeStartListening = true;
+            }
+
+            if(!inPassiveModeStartListening) {
+                ConnectionStatus = ConnectionStatus.Connecting;
+
+                var access = Access;
+                _AccessFilter = access == null ? null : Factory.Singleton.Resolve<IAccessFilter>();
+                if(_AccessFilter != null) {
+                    _AccessFilter.Initialise(access);
+                }
+
+                Socket socket = null;
+                try {
+                    socket = CreatePassiveModeListeningSocket();
+                    ConnectionStatus = ConnectionStatus.Connected;
+
+                    while(!_Closed) {
+                        if(!socket.Poll(100, SelectMode.SelectRead)) {
+                            Thread.Sleep(0);
+                        } else {
+                            CreateNewPassiveConnection(socket);
+                        }
+                    }
+                } finally {
+                    AbandonAllConnections();
+                    if(socket != null) {
+                        try {
+                            socket.Close();
+                            ((IDisposable)socket).Dispose();
+                        } catch {
+                            ;
+                        }
+                    }
+
+                    _InPassiveModeStartListening = false;
+                    ConnectionStatus = ConnectionStatus.Disconnected;
+                }
+            }
+        }
 
         /// <summary>
-        /// Disconnects the socket.
+        /// Creates a listening socket.
         /// </summary>
-        private void Disconnect()
+        /// <returns></returns>
+        private Socket CreatePassiveModeListeningSocket()
+        {
+            var result = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var endPoint = new IPEndPoint(IPAddress.Any, Port);
+            result.Bind(endPoint);
+            result.Listen(200);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a socket for an incoming connection.
+        /// </summary>
+        /// <param name="listeningSocket"></param>
+        private void CreateNewPassiveConnection(Socket listeningSocket)
         {
             try {
-                var connection = GetConnection();
-                if(connection != null) {
+                Socket socket = null;
+                var timeoutAction = new BackgroundThreadTimeout(1000, () => {
+                    socket = listeningSocket.Accept();
+                });
+                timeoutAction.PerformAction();
+
+                if(socket != null) {
+                    var connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
+                    var address = socket.RemoteEndPoint as IPEndPoint;
+
+                    var abandonConnection = false;
+                    if(address == null)                                                     abandonConnection = true;
+                    else if(_AccessFilter != null && !_AccessFilter.Allow(address.Address)) abandonConnection = true;
+                    else if(IsSingleConnection && GetConnections().Length != 0)             abandonConnection = true;
+
+                    if(!abandonConnection) {
+                        try {
+                            SetSocketKeepAliveAndTimeouts(socket);
+                        } catch(Exception ex) {
+                            abandonConnection = true;
+                            OnExceptionCaught(new EventArgs<Exception>(ex));
+                        }
+                    }
+
+                    if(abandonConnection) {
+                        connection.Abandon();
+                    } else {
+                        RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: false);
+                        connection.ConnectionStatus = ConnectionStatus.Connected;
+                    }
+                }
+            } catch(Exception ex) {
+                OnExceptionCaught(new EventArgs<Exception>(ex));
+            }
+        }
+        #endregion
+
+        #region AbandonAllConnections, ConnectionAbandoned
+        /// <summary>
+        /// Closes all connections. Works for both active and passive modes.
+        /// </summary>
+        private void AbandonAllConnections()
+        {
+            if(!_Closed) _Closed = true;
+
+            try {
+                foreach(var connection in GetConnections()) {
                     connection.Abandon();
                 }
             } catch {
@@ -262,25 +340,15 @@ namespace VirtualRadar.Library.Network
         /// <param name="connection"></param>
         internal override void ConnectionAbandoned(IConnection connection)
         {
-            var deregisterConnection = false;
-            using(_SpinLock.AcquireLock()) {
-                if(connection != null && connection == _Connection) {
-                    deregisterConnection = true;
-                    _Connection = null;
-                }
-            }
+            DeregisterConnection(connection, raiseConnectionClosed: true, stopMirroringConnectionState: !IsPassive);
 
-            if(deregisterConnection) {
-                DeregisterConnection(connection, raiseConnectionClosed: true, stopMirroringConnectionState: true);
-            }
-
-            if(_ReconnectAfterAbandon) {
-                Reconnect(ConnectionStatus.Reconnecting, pauseBeforeConnect: true);
+            if(!_Closed && !IsPassive) {
+                ActiveModeReconnect(ConnectionStatus.Reconnecting, pauseBeforeConnect: true);
             }
         }
         #endregion
 
-        #region Helper methods - ResolveAddress
+        #region Helper methods - ResolveAddress, SetSocketKeepAliveAndTimeouts
         /// <summary>
         /// Resolves the address passed across.
         /// </summary>
@@ -293,6 +361,24 @@ namespace VirtualRadar.Library.Network
             if(result == null) throw new InvalidOperationException(String.Format("Cannot resolve {0}", address));
 
             return result;
+        }
+
+        /// <summary>
+        /// Sets the keep-alive and timeout options on the socket.
+        /// </summary>
+        /// <param name="socket"></param>
+        private void SetSocketKeepAliveAndTimeouts(Socket socket)
+        {
+            if(!UseKeepAlive) {
+                socket.ReceiveTimeout = IdleTimeout;
+                socket.SendTimeout = IdleTimeout;
+            } else {
+                socket.IOControl(IOControlCode.KeepAliveValues, new TcpKeepAlive() {
+                    OnOff = 1,
+                    KeepAliveTime = 10 * 1000,
+                    KeepAliveInterval = 1 * 1000
+                }.BuildBuffer(), null);
+            }
         }
         #endregion
     }
