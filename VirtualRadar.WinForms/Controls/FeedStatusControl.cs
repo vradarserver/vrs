@@ -208,19 +208,27 @@ namespace VirtualRadar.WinForms.Controls
         private void AddOrUpdateExistingFeeds(IFeed[] feeds, List<FeedDetail> feedDetails)
         {
             foreach(var feed in feeds) {
-                var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.UniqueId);
-                if(feedDetail != null) {
-                    feedDetails.Remove(feedDetail);
-                    UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
+                var aircraftList = feed.AircraftList;
+                var listener = feed.Listener;
+
+                if(aircraftList == null || listener == null) {
+                    // They can be null if the feed is in the process of being disposed on another thread.
+                    // These need to be left in feedDetails so that the caller knows they no longer exist.
                 } else {
-                    feedDetail = new FeedDetail() {
-                        UniqueId = feed.UniqueId,
-                        IsMergedFeed = feed.Listener is IMergedFeedListener,
-                        HasPolarPlotter = feed.AircraftList.PolarPlotter != null,
-                        ListViewItem = listView.Items.Add(new ListViewItem(new string[] { "", "", "", "", "" })),
-                    };
-                    feedDetail.ListViewItem.Tag = feedDetail;
-                    UpdateFeedDisplay(feed, feedDetail, forceRefresh: true);
+                    var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.UniqueId);
+                    if(feedDetail != null) {
+                        feedDetails.Remove(feedDetail);
+                        UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
+                    } else {
+                        feedDetail = new FeedDetail() {
+                            UniqueId = feed.UniqueId,
+                            IsMergedFeed = listener is IMergedFeedListener,
+                            HasPolarPlotter = aircraftList.PolarPlotter != null,
+                            ListViewItem = listView.Items.Add(new ListViewItem(new string[] { "", "", "", "", "" })),
+                        };
+                        feedDetail.ListViewItem.Tag = feedDetail;
+                        UpdateFeedDisplay(feed, feedDetail, forceRefresh: true);
+                    }
                 }
             }
         }
