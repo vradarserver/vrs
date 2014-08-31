@@ -114,16 +114,6 @@ namespace VirtualRadar.Library.Listener
         private object _SyncLock = new object();
 
         /// <summary>
-        /// True if the fast heartbeat timer has been hooked.
-        /// </summary>
-        private bool _HookedFastHeartbeat;
-
-        /// <summary>
-        /// A copy of the invariant CoarseTimeout setting from <see cref="IConfigurationStorage"/>.
-        /// </summary>
-        private int _CoarseTimeout = -1;
-
-        /// <summary>
         /// Set to the time of the last message from the receiver.
         /// </summary>
         private DateTime _LastMessageUtc;
@@ -355,12 +345,9 @@ namespace VirtualRadar.Library.Listener
             _Disposed = true;
             if(disposing) {
                 lock(_SyncLock) {
-                    if(_HookedFastHeartbeat) {
-                        _HookedFastHeartbeat = false;
-                        Factory.Singleton.Resolve<IHeartbeatService>().Singleton.FastTick -= HeartbeatService_FastTick;
-                    }
                     if(Connector != null) {
                         Connector.CloseConnection();
+                        UnhookConnector();
                         Connector.Dispose();
                     }
                     if(_MessageProcessingAndDispatchQueue != null) {
@@ -385,12 +372,6 @@ namespace VirtualRadar.Library.Listener
 
             lock(_SyncLock) {
                 bool changed = false;
-
-                if(_CoarseTimeout <= 0) _CoarseTimeout = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.CoarseListenerTimeout;
-                if(_CoarseTimeout > 0 && !_HookedFastHeartbeat) {
-                    _HookedFastHeartbeat = true;
-                    Factory.Singleton.Resolve<IHeartbeatService>().Singleton.FastTick += HeartbeatService_FastTick;
-                }
 
                 var connected = Connector != null && Connector.HasConnection;
                 if(connector != Connector || bytesExtractor != BytesExtractor || rawMessageTranslator != RawMessageTranslator) {
@@ -677,22 +658,6 @@ namespace VirtualRadar.Library.Listener
         }
         #endregion
 
-        #region CheckCoarseListenerTimeout
-        /// <summary>
-        /// Checks to see whether the coarse listener timeout has expired and, if it has, force a reconnect.
-        /// </summary>
-        private void CheckCoarseListenerTimeout()
-        {
-            if(_CoarseTimeout > 0 && ConnectionStatus == ConnectionStatus.Connected) {
-                var threshold = _Clock.UtcNow.AddSeconds(-_CoarseTimeout);
-                if(_LastMessageUtc < threshold) {
-                    Disconnect();
-                    Reconnect();
-                }
-            }
-        }
-        #endregion
-
         #region Other subscribed events
         /// <summary>
         /// Called when the connection is established.
@@ -737,16 +702,6 @@ namespace VirtualRadar.Library.Listener
                     stat.ConnectorLastException = args.Value;
                 });
             }
-        }
-
-        /// <summary>
-        /// Called when the fast tick occurs on the heartbeat service. This is called on a background thread.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void HeartbeatService_FastTick(object sender, EventArgs args)
-        {
-            CheckCoarseListenerTimeout();
         }
         #endregion
     }

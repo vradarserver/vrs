@@ -19,15 +19,20 @@ namespace VirtualRadar.Interface.Network
     /// The interface for objects that can establish a connection with a remote machine.
     /// </summary>
     /// <remarks><para>
-    /// Connectors do the work of establishing a link with another machine or a peice of
+    /// Connectors do the work of establishing a link with another machine or a piece of
     /// hardware. The intention is that the connector is created by another object that
     /// then either sends or receives a stream of bytes over the connection.
     /// </para><para>
     /// Connectors and their child connections have the capacity to generate a LOT of
     /// exceptions under the right conditions. All exceptions are caught and routed
     /// through the background thread exception event. The last exception raised is
-    /// also recorded 
+    /// also recorded.
+    /// </para><para>
+    /// You cannot instantiate an <see cref="IConnector"/>. There are other interfaces
+    /// that are based on this that you can instantiate.
     /// </para></remarks>
+    /// <seealso cref="IIPActiveConnector"/>
+    /// <seealso cref="ISerialActiveConnector"/>
     public interface IConnector : IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>
@@ -41,7 +46,7 @@ namespace VirtualRadar.Interface.Network
 
         /// <summary>
         /// Gets a value indicating whether the connector waits for other things to connect
-        /// to it or actively connects to other things.
+        /// to it or it actively connects to other things.
         /// </summary>
         /// <remarks><para>
         /// Passive connectors wait for incoming connections from another machine. They

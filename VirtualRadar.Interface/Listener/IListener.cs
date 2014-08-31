@@ -39,7 +39,7 @@ namespace VirtualRadar.Interface.Listener
         IStatistics Statistics { get; }
 
         /// <summary>
-        /// Gets the connector that is handling the connection for the listener. Do not modify any properties on the provider directly,
+        /// Gets the connector that is handling the connection for the listener. Do not modify any properties on the connection directly,
         /// always use <see cref="ChangeSource"/> to perform configuration changes.
         /// </summary>
         ISingleConnectionConnector Connector { get; }

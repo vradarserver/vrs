@@ -74,16 +74,12 @@ namespace Test.VirtualRadar.Library.Listener
         private BaseStationMessage _Port30003Message;
         private Mock<IStatistics> _Statistics;
         private Mock<IBaseStationMessageCompressor> _Compressor;
-        private Mock<IConfigurationStorage> _ConfigurationStorage;
-        private Mock<IHeartbeatService> _HeartbeatService;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _OriginalClassFactory = Factory.TakeSnapshot();
 
-            _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
-            _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _Statistics = StatisticsHelper.CreateLockableStatistics();
 
             _Clock = new ClockMock();
