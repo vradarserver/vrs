@@ -87,7 +87,6 @@
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\Connector.cs" />
     <Compile Include="Network\NetworkConnector.cs" />
-    <Compile Include="Network\IPNetworkHelper.cs" />
     <Compile Include="FlightSimulatorX\MonoSimConnectWrapper.cs" />
     <Compile Include="Listener\BeastMessageBytesExtractor.cs" />
     <Compile Include="Listener\CompressedMessageBytesExtractor.cs" />

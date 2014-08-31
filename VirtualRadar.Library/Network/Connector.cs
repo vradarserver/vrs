@@ -95,6 +95,11 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public int StaleMessageTimeout { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public abstract IConnection Connection { get; }
 
         /// <summary>
@@ -293,7 +298,7 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
-        #region EstablishConnection, CloseConnection, RestartConnection, GetConnections
+        #region EstablishConnection, CloseConnection, RestartConnection, GetConnections, GetFirstConnection
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -363,6 +368,23 @@ namespace VirtualRadar.Library.Network
                 _SpinLock.Unlock();
             }
         }
+
+        /// <summary>
+        /// Returns the first connection or null if there are no connections.
+        /// </summary>
+        /// <returns></returns>
+        public virtual IConnection GetFirstConnection()
+        {
+            IConnection result;
+            _SpinLock.Lock();
+            try {
+                result = _Connections.Count > 0 ? _Connections[0] : null;
+            } finally {
+                _SpinLock.Unlock();
+            }
+
+            return result;
+        }
         #endregion
 
         #region RegisterConnection, DeregisterConnection, ConnectionAbandoned
@@ -423,6 +445,33 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         /// <param name="connection"></param>
         internal abstract void ConnectionAbandoned(IConnection connection);
+        #endregion
+
+        #region Read
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="readDelegate"></param>
+        public void Read(byte[] buffer, ConnectionReadDelegate readDelegate)
+        {
+            Read(buffer, 0, buffer.Length, readDelegate);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="readDelegate"></param>
+        public void Read(byte[] buffer, int offset, int length, ConnectionReadDelegate readDelegate)
+        {
+            var connection = GetFirstConnection();
+            if(connection != null) {
+                connection.Read(buffer, offset, length, readDelegate);
+            }
+        }
         #endregion
 
         #region Events subscribed
