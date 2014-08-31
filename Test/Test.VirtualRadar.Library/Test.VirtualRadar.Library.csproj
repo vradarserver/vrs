@@ -74,7 +74,7 @@
     <Compile Include="Listener\ListenerTests.cs" />
     <Compile Include="Listener\MergedFeedListenerTests.cs" />
     <Compile Include="Listener\MockMessageBytesExtractor.cs" />
-    <Compile Include="Listener\MockSingleConnectionConnector.cs" />
+    <Compile Include="Listener\MockConnector.cs" />
     <Compile Include="Listener\PolarPlotterTests.cs" />
     <Compile Include="Listener\Port30003MessageBytesExtractorTests.cs" />
     <Compile Include="Listener\Sbs3MessageBytesExtractorTests.cs" />

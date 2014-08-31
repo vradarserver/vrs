@@ -335,7 +335,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedListener_ChangeSource_Throws_Exception()
         {
             _MergedFeed.ChangeSource(
-                TestUtilities.CreateMockInstance<ISingleConnectionConnector>().Object,
+                TestUtilities.CreateMockInstance<IConnector>().Object,
                 TestUtilities.CreateMockInstance<IMessageBytesExtractor>().Object,
                 TestUtilities.CreateMockInstance<IRawMessageTranslator>().Object);
         }

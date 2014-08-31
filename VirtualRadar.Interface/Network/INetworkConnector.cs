@@ -18,7 +18,7 @@ namespace VirtualRadar.Interface.Network
     /// <summary>
     /// An active connector that connects to a single machine over the IP network.
     /// </summary>
-    public interface IIPActiveConnector : IActiveConnector, ISingleConnectionConnector
+    public interface INetworkConnector : IConnector
     {
         /// <summary>
         /// Gets or sets the address of the machine to connect to.

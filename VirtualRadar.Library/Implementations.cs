@@ -43,8 +43,8 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Listener.IPolarPlotter, Listener.PolarPlotter>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSParity, ModeS.ModeSParity>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSTranslator, ModeS.ModeSTranslator>();
-            factory.Register<VirtualRadar.Interface.Network.IIPActiveConnector, Network.IPActiveConnector>();
-            factory.Register<VirtualRadar.Interface.Network.ISerialActiveConnector, Network.SerialActiveConnector>();
+            factory.Register<VirtualRadar.Interface.Network.INetworkConnector, Network.NetworkConnector>();
+            factory.Register<VirtualRadar.Interface.Network.ISerialConnector, Network.SerialConnector>();
             factory.Register<VirtualRadar.Interface.Presenter.IAboutPresenter, Presenter.AboutPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ICidrEditPresenter, Presenter.CidrEditPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionClientLogPresenter, Presenter.ConnectionClientLogPresenter>();

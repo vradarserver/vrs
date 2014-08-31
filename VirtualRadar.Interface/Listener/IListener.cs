@@ -42,7 +42,7 @@ namespace VirtualRadar.Interface.Listener
         /// Gets the connector that is handling the connection for the listener. Do not modify any properties on the connection directly,
         /// always use <see cref="ChangeSource"/> to perform configuration changes.
         /// </summary>
-        ISingleConnectionConnector Connector { get; }
+        IConnector Connector { get; }
 
         /// <summary>
         /// Gets the object that can extract the important bytes from the stream. Do not modify any properties on the extractor directly,
@@ -148,7 +148,7 @@ namespace VirtualRadar.Interface.Listener
         /// <param name="connector"></param>
         /// <param name="bytesExtractor"></param>
         /// <param name="rawMessageTranslator"></param>
-        void ChangeSource(ISingleConnectionConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator);
+        void ChangeSource(IConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator);
 
         /// <summary>
         /// Connects to the source of aircraft data. Incoming messages from the source will raise events on the listener.

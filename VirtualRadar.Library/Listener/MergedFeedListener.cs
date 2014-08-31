@@ -162,7 +162,7 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ISingleConnectionConnector Connector { get; private set; }
+        public IConnector Connector { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -353,7 +353,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="connector"></param>
         /// <param name="bytesExtractor"></param>
         /// <param name="rawMessageTranslator"></param>
-        public void ChangeSource(ISingleConnectionConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator)
+        public void ChangeSource(IConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator)
         {
             throw new InvalidOperationException("You cannot call ChangeSource on a merged feed listener");
         }

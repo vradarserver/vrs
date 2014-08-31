@@ -10,15 +10,57 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 
 namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// A connector that accepts connections from one or many end points.
+    /// An active connector that connects to a device over a serial COM port.
     /// </summary>
-    public interface IPassiveConnector : IConnector
+    public interface ISerialConnector : IConnector
     {
+        /// <summary>
+        /// Gets or sets the COM port to listen to.
+        /// </summary>
+        string ComPort { get; set; }
+
+        /// <summary>
+        /// Gets or sets the baud rate to use.
+        /// </summary>
+        int BaudRate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the data bits to use.
+        /// </summary>
+        int DataBits { get; set; }
+
+        /// <summary>
+        /// Gets or sets the stop bits to use.
+        /// </summary>
+        StopBits StopBits { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parity to use.
+        /// </summary>
+        Parity Parity { get; set; }
+
+        /// <summary>
+        /// Gets or sets the handshake protocol to use.
+        /// </summary>
+        Handshake Handshake { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text to send across the COM port on startup - a null or empty string will disable the
+        /// feature. Can contain \r and \n.
+        /// </summary>
+        string StartupText { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text to send across the COM port on shutdown - a null or empty string will disable the
+        /// feature. Can contain \r and \n.
+        /// </summary>
+        string ShutdownText { get; set; }
     }
 }
