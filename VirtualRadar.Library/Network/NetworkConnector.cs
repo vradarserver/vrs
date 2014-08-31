@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interop;
 
 namespace VirtualRadar.Library.Network
@@ -116,6 +117,11 @@ namespace VirtualRadar.Library.Network
         /// See interface docs.
         /// </summary>
         public int IdleTimeout { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public Access Access { get; set; }
         #endregion
 
         #region Ctor
@@ -207,7 +213,7 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         private void Connect()
         {
-            var ipAddress = IPNetworkHelper.ResolveAddress(Address);
+            var ipAddress = ResolveAddress(Address);
             var endPoint = new IPEndPoint(ipAddress, Port);
             var socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             if(!UseKeepAlive) {
@@ -241,7 +247,7 @@ namespace VirtualRadar.Library.Network
         private void Disconnect()
         {
             try {
-                SocketConnection connection = GetConnection();
+                var connection = GetConnection();
                 if(connection != null) {
                     connection.Abandon();
                 }
@@ -271,6 +277,22 @@ namespace VirtualRadar.Library.Network
             if(_ReconnectAfterAbandon) {
                 Reconnect(ConnectionStatus.Reconnecting, pauseBeforeConnect: true);
             }
+        }
+        #endregion
+
+        #region Helper methods - ResolveAddress
+        /// <summary>
+        /// Resolves the address passed across.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        private static IPAddress ResolveAddress(string address)
+        {
+            var ipAddresses = Dns.GetHostAddresses(address);
+            var result = ipAddresses == null || ipAddresses.Length == 0 ? null : ipAddresses[0];
+            if(result == null) throw new InvalidOperationException(String.Format("Cannot resolve {0}", address));
+
+            return result;
         }
         #endregion
     }

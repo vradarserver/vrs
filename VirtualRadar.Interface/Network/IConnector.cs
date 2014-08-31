@@ -94,6 +94,16 @@ namespace VirtualRadar.Interface.Network
         ConnectionStatus ConnectionStatus { get; }
 
         /// <summary>
+        /// Gets the maximum age (in milliseconds) that a message can sit in the transmit queue
+        /// before it is considered stale and discarded.
+        /// </summary>
+        /// <remarks>
+        /// Only used in passive mode. Set to a value below 1 to disable. Assumes that the entire
+        /// set of bytes sent to the connection's Write constitute an entire message.
+        /// </remarks>
+        int StaleMessageTimeout { get; set; }
+
+        /// <summary>
         /// Raised when a connection has been established. This will usually be raised from
         /// a background thread.
         /// </summary>
@@ -138,5 +148,30 @@ namespace VirtualRadar.Interface.Network
         /// </summary>
         /// <returns></returns>
         IConnection[] GetConnections();
+
+        /// <summary>
+        /// Returns the first established connection or null if there are no connections.
+        /// </summary>
+        /// <returns></returns>
+        IConnection GetFirstConnection();
+
+        /// <summary>
+        /// Reads the next chunk from the first (or only) connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="readDelegate"></param>
+        /// <remarks>
+        /// The call is non-blocking.
+        /// </remarks>
+        void Read(byte[] buffer, ConnectionReadDelegate readDelegate);
+
+        /// <summary>
+        /// Reads the next chunk from the first (or only) connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="readDelegate"></param>
+        void Read(byte[] buffer, int offset, int length, ConnectionReadDelegate readDelegate);
     }
 }

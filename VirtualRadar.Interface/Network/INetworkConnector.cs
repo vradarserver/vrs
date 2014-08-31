@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.Network
 {
@@ -21,12 +22,13 @@ namespace VirtualRadar.Interface.Network
     public interface INetworkConnector : IConnector
     {
         /// <summary>
-        /// Gets or sets the address of the machine to connect to.
+        /// Gets or sets the address of the machine to connect to. Unused if the
+        /// connector is in passive mode.
         /// </summary>
         string Address { get; set; }
 
         /// <summary>
-        /// Gets or sets the port to connect to.
+        /// Gets or sets the port to connect or bind to.
         /// </summary>
         int Port { get; set; }
 
@@ -44,5 +46,14 @@ namespace VirtualRadar.Interface.Network
         /// Gets the period of inactivity (in milliseconds) before the connection is reset.
         /// </summary>
         int IdleTimeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets the access settings for the connection. Unused if the connector is
+        /// in active mode.
+        /// </summary>
+        /// <remarks>
+        /// If this is null then connections are accepted from any address.
+        /// </remarks>
+        Access Access { get; set; }
     }
 }

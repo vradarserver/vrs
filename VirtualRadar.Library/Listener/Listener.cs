@@ -447,7 +447,7 @@ namespace VirtualRadar.Library.Listener
         {
             if(Statistics != null) Statistics.Lock(r => r.ConnectionTimeUtc = _Clock.UtcNow);
             SetConnectionStatus(ConnectionStatus.Connected);
-            Connector.Connection.Read(_Buffer, BytesReceived);
+            Connector.Read(_Buffer, BytesReceived);
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace VirtualRadar.Library.Listener
                     if(Statistics != null) Statistics.Lock(r => r.CurrentBufferSize = BytesExtractor.BufferSize);
                 }
 
-                Connector.Connection.Read(_Buffer, BytesReceived);
+                Connector.Read(_Buffer, BytesReceived);
             } catch(Exception ex) {
                 Disconnect();
                 OnExceptionCaught(new EventArgs<Exception>(ex));
