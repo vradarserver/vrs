@@ -291,7 +291,7 @@ namespace VirtualRadar.Library.Network
                     var address = socket.RemoteEndPoint as IPEndPoint;
 
                     var abandonConnection = false;
-                    if(address == null)                                                     abandonConnection = true;
+                    if(address == null || address.Address == null)                          abandonConnection = true;
                     else if(_AccessFilter != null && !_AccessFilter.Allow(address.Address)) abandonConnection = true;
                     else if(IsSingleConnection && GetConnections().Length != 0)             abandonConnection = true;
 
@@ -325,12 +325,8 @@ namespace VirtualRadar.Library.Network
         {
             if(!_Closed) _Closed = true;
 
-            try {
-                foreach(var connection in GetConnections()) {
-                    connection.Abandon();
-                }
-            } catch {
-                ;
+            foreach(var connection in GetConnections()) {
+                connection.Abandon();
             }
         }
 
