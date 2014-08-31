@@ -55,7 +55,7 @@ namespace Test.VirtualRadar.Library.Listener
         private IClassFactory _OriginalClassFactory;
 
         private IListener _Listener;
-        private MockSingleConnectionConnector _Connector;
+        private MockConnector _Connector;
         private ClockMock _Clock;
         private MockMessageBytesExtractor _BytesExtractor;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
@@ -104,7 +104,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns(_Port30003Message);
 
             _Listener = Factory.Singleton.Resolve<IListener>();
-            _Connector = new MockSingleConnectionConnector();
+            _Connector = new MockConnector();
             _BytesExtractor = new MockMessageBytesExtractor();
 
             _ExceptionCaughtEvent = new EventRecorder<EventArgs<Exception>>();
@@ -132,7 +132,7 @@ namespace Test.VirtualRadar.Library.Listener
         #endregion
 
         #region ChangeSourceAndConnect
-        private void ChangeSourceAndConnect(bool reconnect = false, Mock<ISingleConnectionConnector> connector = null, Mock<IMessageBytesExtractor> bytesExtractor = null, Mock<IRawMessageTranslator> translator = null)
+        private void ChangeSourceAndConnect(bool reconnect = false, Mock<IConnector> connector = null, Mock<IMessageBytesExtractor> bytesExtractor = null, Mock<IRawMessageTranslator> translator = null)
         {
             _Listener.ChangeSource(connector == null ? _Connector.Object : connector.Object,
                                    bytesExtractor == null ? _BytesExtractor.Object : bytesExtractor.Object,
@@ -311,7 +311,7 @@ namespace Test.VirtualRadar.Library.Listener
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003);
 
             ChangeSourceAndConnect();
-            _Listener.ChangeSource(new MockSingleConnectionConnector().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object);
+            _Listener.ChangeSource(new MockConnector().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object);
 
             Assert.AreEqual(0, _Listener.TotalMessages);
         }
@@ -327,7 +327,7 @@ namespace Test.VirtualRadar.Library.Listener
             MakeFormatTranslatorThrowException(TranslatorType.Port30003);
 
             ChangeSourceAndConnect();
-            _Listener.ChangeSource(new MockSingleConnectionConnector().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object);
+            _Listener.ChangeSource(new MockConnector().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object);
 
             Assert.AreEqual(0, _Listener.TotalBadMessages);
         }
@@ -335,7 +335,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_ChangeSource_Is_Not_Raised_If_Nothing_Changes()
         {
-            var newProvider = new MockSingleConnectionConnector();
+            var newProvider = new MockConnector();
             var newExtractor = new MockMessageBytesExtractor();
             var newRawMessageTranslator = new Mock<IRawMessageTranslator>(MockBehavior.Default) { DefaultValue = DefaultValue.Mock };
 
@@ -356,21 +356,6 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Listener_ChangeSource_Disconnects_Existing_Provider_Even_If_Not_Connected()
-        {
-            var firstProvider = new MockSingleConnectionConnector();
-            var firstExtractor = new MockMessageBytesExtractor();
-            firstProvider.ConfigureForConnect();
-
-            _Listener.ChangeSource(firstProvider.Object, firstExtractor.Object, _RawMessageTranslator.Object);
-
-            _Connector.ConfigureForConnect();
-            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
-
-            firstProvider.Verify(p => p.CloseConnection(), Times.Once());
-        }
-
-        [TestMethod]
         public void Listener_ChangeSource_Disposes_Of_Existing_RawMessageTranslator()
         {
             _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
@@ -384,8 +369,34 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_ChangeSource_Does_Not_Dispose_Of_Existing_RawMessageTranslator_If_It_Has_Not_Changed()
         {
             _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
-            _Listener.ChangeSource(new MockSingleConnectionConnector().Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
+            _Listener.ChangeSource(new MockConnector().Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
             _RawMessageTranslator.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
+        public void Listener_ChangeSource_Disposes_Of_Existing_Connector()
+        {
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
+            _Connector.Verify(r => r.Dispose(), Times.Never());
+
+            _Listener.ChangeSource(new MockConnector().Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
+            _Connector.Verify(r => r.Dispose(), Times.Once());
+        }
+
+        [TestMethod]
+        public void Listener_ChangeSource_Does_Not_Dispose_Of_Existing_Connector_If_It_Has_Not_Changed()
+        {
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, new Mock<IRawMessageTranslator>().Object);
+            _Connector.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
+        public void Listener_ChangeSource_Switches_Connector_To_Single_Connection_Mode()
+        {
+            _Connector.Object.IsSingleConnection = false;
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
+            Assert.AreEqual(true, _Connector.Object.IsSingleConnection);
         }
         #endregion
 

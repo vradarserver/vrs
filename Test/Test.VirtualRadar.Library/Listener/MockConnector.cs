@@ -18,11 +18,11 @@ using VirtualRadar.Interface.Network;
 
 namespace Test.VirtualRadar.Library.Listener
 {
-    public class MockSingleConnectionConnector : Mock<ISingleConnectionConnector>
+    public class MockConnector : Mock<IConnector>
     {
         public Mock<IConnection> Connection;
 
-        public MockSingleConnectionConnector() : base()
+        public MockConnector() : base()
         {
             DefaultValue = DefaultValue.Mock;
 
@@ -31,7 +31,6 @@ namespace Test.VirtualRadar.Library.Listener
 
             SetupAllProperties();
             Setup(r => r.Connection).Returns((IConnection)null);
-            Setup(r => r.IsSingleConnection).Returns(true);
         }
 
         public void ConfigureForConnect()

@@ -19,9 +19,9 @@ using VirtualRadar.Interface.Network;
 namespace VirtualRadar.Library.Network
 {
     /// <summary>
-    /// The default implementation of <see cref="ISerialActiveConnector"/>.
+    /// The default implementation of <see cref="ISerialConnector"/>.
     /// </summary>
-    class SerialActiveConnector : Connector, ISerialActiveConnector
+    class SerialConnector : Connector, ISerialConnector
     {
         #region Public fields
         /// <summary>
@@ -40,6 +40,13 @@ namespace VirtualRadar.Library.Network
         /// The connection that the connector establishes.
         /// </summary>
         private SerialConnection _Connection;
+        #endregion
+
+        #region Behavioural properties
+        protected override bool PassiveModeSupported        { get { return false; } }
+        protected override bool ActiveModeSupported         { get { return true; } }
+        protected override bool SingleConnectionSupported   { get { return true; } }
+        protected override bool MultiConnectionSupported    { get { return false; } }
         #endregion
 
         #region Properties
@@ -62,7 +69,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IConnection Connection
+        public override IConnection Connection
         {
             get { return GetConnection(); }
         }

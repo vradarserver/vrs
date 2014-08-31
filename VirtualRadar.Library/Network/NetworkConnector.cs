@@ -22,9 +22,9 @@ using VirtualRadar.Interop;
 namespace VirtualRadar.Library.Network
 {
     /// <summary>
-    /// The default implementation of the <see cref="IPActiveConnector"/>.
+    /// The default implementation of the <see cref="NetworkConnector"/>.
     /// </summary>
-    class IPActiveConnector : Connector, IIPActiveConnector
+    class NetworkConnector : Connector, INetworkConnector
     {
         #region Public fields
         /// <summary>
@@ -60,6 +60,13 @@ namespace VirtualRadar.Library.Network
         private bool _ReconnectAfterAbandon;
         #endregion
 
+        #region Behavioural properties
+        protected override bool PassiveModeSupported        { get { return true; } }
+        protected override bool ActiveModeSupported         { get { return true; } }
+        protected override bool SingleConnectionSupported   { get { return true; } }
+        protected override bool MultiConnectionSupported    { get { return true; } }
+        #endregion
+
         #region Properties
         /// <summary>
         /// See interface docs.
@@ -80,7 +87,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IConnection Connection
+        public override IConnection Connection
         {
             get { return GetConnection(); }
         }
@@ -115,7 +122,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public IPActiveConnector() : base()
+        public NetworkConnector() : base()
         {
             UseKeepAlive = true;
             IdleTimeout = DefaultIdleTimeout;

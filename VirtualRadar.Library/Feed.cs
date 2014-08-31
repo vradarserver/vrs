@@ -279,18 +279,18 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="receiver"></param>
         /// <returns></returns>
-        private ISingleConnectionConnector DetermineConnector(Receiver receiver)
+        private IConnector DetermineConnector(Receiver receiver)
         {
-            ISingleConnectionConnector result = Listener.Connector;
+            IConnector result = Listener.Connector;
 
             switch(receiver.ConnectionType) {
                 case ConnectionType.COM:
-                    var existingSerialProvider = result as ISerialActiveConnector;
+                    var existingSerialProvider = result as ISerialConnector;
                     if(existingSerialProvider == null || existingSerialProvider.BaudRate != receiver.BaudRate || existingSerialProvider.ComPort != receiver.ComPort ||
                        existingSerialProvider.DataBits != receiver.DataBits || existingSerialProvider.Handshake != receiver.Handshake || 
                        existingSerialProvider.Parity != receiver.Parity || existingSerialProvider.ShutdownText != receiver.ShutdownText ||
                        existingSerialProvider.StartupText != receiver.StartupText || existingSerialProvider.StopBits != receiver.StopBits) {
-                        var serialConnector = Factory.Singleton.Resolve<ISerialActiveConnector>();
+                        var serialConnector = Factory.Singleton.Resolve<ISerialConnector>();
                         serialConnector.Name =          receiver.Name;
                         serialConnector.BaudRate =      receiver.BaudRate;
                         serialConnector.ComPort =       receiver.ComPort;
@@ -304,10 +304,10 @@ namespace VirtualRadar.Library
                     }
                     break;
                 case ConnectionType.TCP:
-                    var existingTcpProvider = result as IIPActiveConnector;
+                    var existingTcpProvider = result as INetworkConnector;
                     if(existingTcpProvider == null || existingTcpProvider.Address != receiver.Address || existingTcpProvider.Port != receiver.Port ||
                        existingTcpProvider.UseKeepAlive != receiver.UseKeepAlive || existingTcpProvider.IdleTimeout != receiver.IdleTimeoutMilliseconds) {
-                        var ipActiveConnector = Factory.Singleton.Resolve<IIPActiveConnector>();
+                        var ipActiveConnector = Factory.Singleton.Resolve<INetworkConnector>();
                         ipActiveConnector.Name =            receiver.Name;
                         ipActiveConnector.Address =         receiver.Address;
                         ipActiveConnector.Port =            receiver.Port;

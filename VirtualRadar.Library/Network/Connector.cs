@@ -42,10 +42,22 @@ namespace VirtualRadar.Library.Network
         protected bool _IsMono;
 
         /// <summary>
-        /// The thread created when <see cref="EstablishConnection"/> is called. This thread is
-        /// closed when <see cref="CloseConnection"/> is called.
+        /// The thread created when <see cref="EstablishConnection"/> is called. This may or may
+        /// not live for the lifetime of the connector.
         /// </summary>
         private Thread _ConnectThread;
+
+        /// <summary>
+        /// True once <see cref="EstablishConnection"/> has been called.
+        /// </summary>
+        protected bool _EstablishConnectionCalled;
+        #endregion
+
+        #region Derivee behavioural properties
+        protected abstract bool PassiveModeSupported         { get; }
+        protected abstract bool ActiveModeSupported          { get; }
+        protected abstract bool SingleConnectionSupported    { get; }
+        protected abstract bool MultiConnectionSupported     { get; }
         #endregion
 
         #region Properties
@@ -54,15 +66,36 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public string Name { get; set; }
 
+        private bool _IsPassive;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public abstract bool IsPassive { get; }
+        public virtual bool IsPassive
+        {
+            get { return _IsPassive; }
+            set {
+                if(_EstablishConnectionCalled) throw new InvalidOperationException("Cannot change IsPassive after EstablishConnection has been called");
+                _IsPassive = value;
+            }
+        }
+
+        private bool _IsSingleConnection;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public virtual bool IsSingleConnection
+        {
+            get { return _IsSingleConnection; }
+            set {
+                if(_EstablishConnectionCalled) throw new InvalidOperationException("Cannot change IsSingleConnection after EstablishConnection has been called");
+                _IsSingleConnection = value;
+            }
+        }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public abstract bool IsSingleConnection { get; }
+        public abstract IConnection Connection { get; }
 
         /// <summary>
         /// See interface docs.
@@ -266,6 +299,13 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public virtual void EstablishConnection()
         {
+            _EstablishConnectionCalled = true;
+
+            if(IsPassive && !PassiveModeSupported) throw new InvalidOperationException(String.Format("Passive mode is not supported on {0} connectors", GetType().Name));
+            if(!IsPassive && !ActiveModeSupported) throw new InvalidOperationException(String.Format("Active mode is not supported on {0} connectors", GetType().Name));
+            if(IsSingleConnection && !SingleConnectionSupported) throw new InvalidOperationException(String.Format("Single connection mode is not supported on {0} connectors", GetType().Name));
+            if(!IsSingleConnection && !MultiConnectionSupported) throw new InvalidOperationException(String.Format("Multi-connection mode is not supported on {0} connectors", GetType().Name));
+
             using(_SpinLock.AcquireLock()) {
                 if(_ConnectThread == null) {
                     _ConnectThread = new Thread(BackgroundEstablishConnection);

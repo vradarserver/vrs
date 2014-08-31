@@ -31,8 +31,8 @@ namespace VirtualRadar.Interface.Network
     /// You cannot instantiate an <see cref="IConnector"/>. There are other interfaces
     /// that are based on this that you can instantiate.
     /// </para></remarks>
-    /// <seealso cref="IIPActiveConnector"/>
-    /// <seealso cref="ISerialActiveConnector"/>
+    /// <seealso cref="INetworkConnector"/>
+    /// <seealso cref="ISerialConnector"/>
     public interface IConnector : IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>
@@ -45,10 +45,13 @@ namespace VirtualRadar.Interface.Network
         string Name { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether the connector waits for other things to connect
-        /// to it or it actively connects to other things.
+        /// Gets or sets a value indicating whether the connector waits for other things to
+        /// connect to it or it actively connects to other things.
         /// </summary>
         /// <remarks><para>
+        /// Attempting to change this after <see cref="EstablishConnection"/> has been called
+        /// will throw an exception.
+        /// </para><para>
         /// Passive connectors wait for incoming connections from another machine. They
         /// can accept one or many simultaneous connections.
         /// </para><para>
@@ -56,19 +59,28 @@ namespace VirtualRadar.Interface.Network
         /// machine or hardware and usually keep trying until they manage to establish the
         /// connection. They only create one connection.
         /// </para></remarks>
-        bool IsPassive { get; }
+        bool IsPassive { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether the connector supports multiple connections or
-        /// a single connection.
+        /// Gets or sets a value indicating whether the connector supports multiple connections
+        /// or a single connection.
         /// </summary>
-        bool IsSingleConnection { get; }
+        /// <remarks>
+        /// Attempting to change this after <see cref="EstablishConnection"/> has been called
+        /// will throw an exception.
+        /// </remarks>
+        bool IsSingleConnection { get; set; }
 
         /// <summary>
         /// Gets a value indicating that the connector has established a connection with at
         /// least one end point.
         /// </summary>
         bool HasConnection { get; }
+
+        /// <summary>
+        /// Gets the first (or only) connection established by the connector.
+        /// </summary>
+        IConnection Connection { get; }
 
         /// <summary>
         /// Gets the last exception raised during the course of the connector's work.

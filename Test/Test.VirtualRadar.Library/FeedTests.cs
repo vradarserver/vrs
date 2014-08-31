@@ -89,8 +89,8 @@ namespace Test.VirtualRadar.Library
         private RawDecodingSettings _RawDecodingSettings;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtRecorder;
 
-        private Mock<IIPActiveConnector> _IPActiveConnector;
-        private Mock<ISerialActiveConnector> _SerialActiveConnector;
+        private Mock<INetworkConnector> _IPActiveConnector;
+        private Mock<ISerialConnector> _SerialActiveConnector;
         private Mock<IPort30003MessageBytesExtractor> _Port30003Extractor;
         private Mock<ISbs3MessageBytesExtractor> _Sbs3MessageBytesExtractor;
         private Mock<IBeastMessageBytesExtractor> _BeastMessageBytesExtractor;
@@ -173,12 +173,12 @@ namespace Test.VirtualRadar.Library
             });
 
             _Listener = TestUtilities.CreateMockImplementation<IListener>();
-            _Listener.Setup(r => r.Connector).Returns((ISingleConnectionConnector)null);
+            _Listener.Setup(r => r.Connector).Returns((IConnector)null);
             _Listener.Setup(r => r.BytesExtractor).Returns((IMessageBytesExtractor)null);
             _Listener.Setup(r => r.RawMessageTranslator).Returns((IRawMessageTranslator)null);
             _Listener.Setup(r => r.Statistics).Returns(_Statistics.Object);
-            _Listener.Setup(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()))
-                     .Callback((ISingleConnectionConnector connector, IMessageBytesExtractor extractor, IRawMessageTranslator translator) => {
+            _Listener.Setup(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()))
+                     .Callback((IConnector connector, IMessageBytesExtractor extractor, IRawMessageTranslator translator) => {
                 _Listener.Setup(r => r.Connector).Returns(connector);
                 _Listener.Setup(r => r.BytesExtractor).Returns(extractor);
                 _Listener.Setup(r => r.RawMessageTranslator).Returns(translator);
@@ -232,8 +232,8 @@ namespace Test.VirtualRadar.Library
             // so that every time the code asks for one they'll get the same instance back. This is fine as far as it goes but
             // it makes it hard to test that new instances are created when appropriate. This method creates a new set of objects
             // and registers them as the default object.
-            _IPActiveConnector = TestUtilities.CreateMockImplementation<IIPActiveConnector>();
-            _SerialActiveConnector = TestUtilities.CreateMockImplementation<ISerialActiveConnector>();
+            _IPActiveConnector = TestUtilities.CreateMockImplementation<INetworkConnector>();
+            _SerialActiveConnector = TestUtilities.CreateMockImplementation<ISerialConnector>();
 
             _Port30003Extractor = TestUtilities.CreateMockImplementation<IPort30003MessageBytesExtractor>();
             _Sbs3MessageBytesExtractor = TestUtilities.CreateMockImplementation<ISbs3MessageBytesExtractor>();
@@ -486,7 +486,7 @@ namespace Test.VirtualRadar.Library
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
-            _Listener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
+            _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
             _Listener.Verify(r => r.Connect(), Times.Never());
         }
 
@@ -647,7 +647,7 @@ namespace Test.VirtualRadar.Library
         {
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
 
-            _MergedFeedListener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Never());
+            _MergedFeedListener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Never());
         }
 
         [TestMethod]
@@ -1008,22 +1008,22 @@ namespace Test.VirtualRadar.Library
         public void Feed_ApplyConfiguration_Does_Not_Call_ChangeSource_If_DataSource_Or_ConnectionType_Has_Not_Changed()
         {
             _Feed.Initialise(_Receiver, _Configuration);
-            _Listener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
+            _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
 
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
-            _Listener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
+            _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
 
             _Receiver.DataSource = DataSource.Sbs3;
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
-            _Listener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Exactly(2));
+            _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Exactly(2));
 
             _Receiver.ConnectionType = ConnectionType.COM;
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
-            _Listener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Exactly(3));
+            _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Exactly(3));
 
             _Configuration.RawDecodingSettings.ReceiverRange = 700;
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
-            _Listener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Exactly(3));
+            _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Exactly(3));
         }
         #endregion
 
