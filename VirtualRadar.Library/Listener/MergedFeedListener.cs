@@ -18,6 +18,7 @@ using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.ModeS;
 using InterfaceFactory;
+using VirtualRadar.Interface.Network;
 
 namespace VirtualRadar.Library.Listener
 {
@@ -157,6 +158,11 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public bool IgnoreAircraftWithNoPosition { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public ISingleConnectionConnector Connector { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -346,6 +352,17 @@ namespace VirtualRadar.Library.Listener
         #endregion
 
         #region ChangeSource, Connect, Disconnect
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="connector"></param>
+        /// <param name="bytesExtractor"></param>
+        /// <param name="rawMessageTranslator"></param>
+        public void ChangeSource(ISingleConnectionConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator)
+        {
+            throw new InvalidOperationException("You cannot call ChangeSource on a merged feed listener");
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

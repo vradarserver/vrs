@@ -109,6 +109,7 @@
     <Compile Include="Cidr.cs" />
     <Compile Include="CidrComparer.cs" />
     <Compile Include="Network\ConnectionEventArgs.cs" />
+    <Compile Include="Network\ConnectionReadDelegate.cs" />
     <Compile Include="Network\IConnection.cs" />
     <Compile Include="Network\IIPActiveConnector.cs" />
     <Compile Include="Network\IPassiveConnector.cs" />
@@ -123,6 +124,8 @@
     <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
     <Compile Include="IAirportDataDotCom.cs" />
     <Compile Include="ITcpConnectionStateService.cs" />
+    <Compile Include="Network\ISerialActiveConnector.cs" />
+    <Compile Include="Network\ISingleConnectionConnector.cs" />
     <Compile Include="Presenter\ICidrEditPresenter.cs" />
     <Compile Include="Presenter\ISettingsPresenterProvider.cs" />
     <Compile Include="Presenter\ISettingsPresenter.cs" />

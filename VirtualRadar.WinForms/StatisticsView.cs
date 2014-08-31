@@ -82,6 +82,16 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public long ConnectorExceptionCount { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public Exception ConnectorLastException { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public long BaseStationMessages { get; set; }
 
         /// <summary>
@@ -247,6 +257,7 @@ namespace VirtualRadar.WinForms
                 UpdateCounterLabel(labelBadChecksum, ReceiverBadChecksum);
                 UpdateLabel(labelThroughput, String.Format("{0:N2} {1}", ReceiverThroughput, Strings.AcronymKilobytePerSecond));
                 UpdateLabel(labelCurrentBufferSize, String.Format("{0:N0}", CurrentBufferSize));
+                UpdateLabel(linkLabelConnectorExceptions, String.Format("{0:N0}", ConnectorExceptionCount));
 
                 UpdateCounterLabel(labelBaseStationMessages, BaseStationMessages);
                 UpdateRatioLabel(labelBaseStationBadlyFormatted, BadlyFormedBaseStationMessages, BadlyFormedBaseStationMessagesRatio);
@@ -278,6 +289,11 @@ namespace VirtualRadar.WinForms
         private void UpdateLabel(Label label, string value)
         {
             if(label.Text != value) label.Text = value;
+        }
+
+        private void UpdateLinkLabel(LinkLabel linkLabel, string value)
+        {
+            if(linkLabel.Text != value) linkLabel.Text = value;
         }
 
         /// <summary>
@@ -378,6 +394,26 @@ namespace VirtualRadar.WinForms
         private void buttonClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        /// <summary>
+        /// Called when the user clicks the connector exception count link label.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void linkLabelConnectorExceptions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var exception = ConnectorLastException;
+            if(exception != null) {
+                var buffer = new StringBuilder();
+                buffer.AppendFormat("{0}\r\n{1}\r\n", exception.Message, exception.ToString());
+                for(Exception innerEx = exception.InnerException;innerEx != null;innerEx = innerEx.InnerException) {
+                    buffer.AppendFormat("\r\n-----------\r\n{0}\r\n{1}\r\n", innerEx.Message, innerEx.ToString());
+                }
+                var message = buffer.ToString();
+
+                MessageBox.Show(buffer.ToString(), Strings.LastConnectorException);
+            }
         }
         #endregion
     }

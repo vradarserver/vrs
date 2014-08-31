@@ -87,6 +87,8 @@ namespace VirtualRadar.Library.Presenter
                     _View.PositionSpeedCheckExceeded = r.AdsbPositionsExceededSpeedCheck;
                     _View.PositionsReset = r.AdsbPositionsReset;
                     _View.PositionsOutOfRange = r.AdsbPositionsOutsideRange;
+                    _View.ConnectorExceptionCount = r.ConnectorExceptionCount;
+                    _View.ConnectorLastException = r.ConnectorLastException;
                     Array.Copy(r.ModeSDFCount, _View.ModeSDFCount, statistics.ModeSDFCount.Length);
                     Array.Copy(r.AdsbMessageFormatCount, _View.AdsbMessageFormatCount, statistics.AdsbMessageFormatCount.Length);
                     Array.Copy(r.AdsbTypeCount, _View.AdsbMessageTypeCount, statistics.AdsbTypeCount.Length);

@@ -52,10 +52,17 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public abstract bool IsPassive
-        {
-            get;
-        }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public abstract bool IsPassive { get; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public abstract bool IsSingleConnection { get; }
 
         /// <summary>
         /// See interface docs.
@@ -253,7 +260,7 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
-        #region EstablishConnection, CloseConnection, GetConnections
+        #region EstablishConnection, CloseConnection, RestartConnection, GetConnections
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -293,6 +300,15 @@ namespace VirtualRadar.Library.Network
         /// See interface docs.
         /// </summary>
         public abstract void CloseConnection();
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void RestartConnection()
+        {
+            CloseConnection();
+            EstablishConnection();
+        }
 
         /// <summary>
         /// See interface docs.

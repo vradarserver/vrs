@@ -22,6 +22,7 @@ using VirtualRadar.Interface.Adsb;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.ModeS;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Library.Listener
@@ -54,7 +55,7 @@ namespace Test.VirtualRadar.Library.Listener
         private IClassFactory _OriginalClassFactory;
 
         private IListener _Listener;
-        private MockListenerProvider _Provider;
+        private MockSingleConnectionConnector _Connector;
         private ClockMock _Clock;
         private MockMessageBytesExtractor _BytesExtractor;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
@@ -75,8 +76,6 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IBaseStationMessageCompressor> _Compressor;
         private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Mock<IHeartbeatService> _HeartbeatService;
-        private Mock<ILog> _Log;
-        private List<string> _LogMessages;
 
         [TestInitialize]
         public void TestInitialise()
@@ -108,13 +107,8 @@ namespace Test.VirtualRadar.Library.Listener
             _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Returns(_Port30003Message);
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns(_Port30003Message);
 
-            _Log = TestUtilities.CreateMockSingleton<ILog>();
-            _LogMessages = new List<string>();
-            _Log.Setup(r => r.WriteLine(It.IsAny<string>())).Callback((string message) => _LogMessages.Add(message));
-            _Log.Setup(r => r.WriteLine(It.IsAny<string>(), It.IsAny<object[]>())).Callback((string format, object[] args) => _LogMessages.Add(String.Format(format, args)));
-
             _Listener = Factory.Singleton.Resolve<IListener>();
-            _Provider = new MockListenerProvider();
+            _Connector = new MockSingleConnectionConnector();
             _BytesExtractor = new MockMessageBytesExtractor();
 
             _ExceptionCaughtEvent = new EventRecorder<EventArgs<Exception>>();
@@ -142,13 +136,12 @@ namespace Test.VirtualRadar.Library.Listener
         #endregion
 
         #region ChangeSourceAndConnect
-        private void ChangeSourceAndConnect(bool reconnect = false, Mock<IListenerProvider> provider = null, Mock<IMessageBytesExtractor> bytesExtractor = null, Mock<IRawMessageTranslator> translator = null, bool connectAutoReconnect = false)
+        private void ChangeSourceAndConnect(bool reconnect = false, Mock<ISingleConnectionConnector> connector = null, Mock<IMessageBytesExtractor> bytesExtractor = null, Mock<IRawMessageTranslator> translator = null)
         {
-            _Listener.ChangeSource(provider == null ? _Provider.Object : provider.Object,
+            _Listener.ChangeSource(connector == null ? _Connector.Object : connector.Object,
                                    bytesExtractor == null ? _BytesExtractor.Object : bytesExtractor.Object,
-                                   translator == null ? _RawMessageTranslator.Object : translator.Object,
-                                   reconnect);
-            _Listener.Connect(connectAutoReconnect);
+                                   translator == null ? _RawMessageTranslator.Object : translator.Object);
+            _Listener.Connect(false);
         }
         #endregion
 
@@ -255,17 +248,25 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region Dispose
         [TestMethod]
-        public void Listener_Dispose_Calls_Provider_Close()
+        public void Listener_Dispose_Calls_Connector_CloseConnection()
         {
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
             _Listener.Dispose();
-            _Provider.Verify(p => p.Close(), Times.Once());
+            _Connector.Verify(p => p.CloseConnection(), Times.Once());
+        }
+
+        [TestMethod]
+        public void Listener_Dispose_Calls_Connector_Dispose()
+        {
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
+            _Listener.Dispose();
+            _Connector.Verify(p => p.Dispose(), Times.Once());
         }
 
         [TestMethod]
         public void Listener_Dispose_Disposes_Of_RawMessageTranslator()
         {
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
             _Listener.Dispose();
             _RawMessageTranslator.Verify(r => r.Dispose(), Times.Once());
         }
@@ -275,9 +276,9 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_ChangeSource_Can_Change_Properties()
         {
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
 
-            Assert.AreSame(_Provider.Object, _Listener.Provider);
+            Assert.AreSame(_Connector.Object, _Listener.Connector);
             Assert.AreSame(_Listener.BytesExtractor, _BytesExtractor.Object);
             Assert.AreSame(_RawMessageTranslator.Object, _Listener.RawMessageTranslator);
         }
@@ -286,12 +287,12 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_ChangeSource_Raises_SourceChanged()
         {
             _SourceChangedEvent.EventRaised += (s, a) => {
-                Assert.AreSame(_Provider.Object, _Listener.Provider);
+                Assert.AreSame(_Connector.Object, _Listener.Connector);
                 Assert.AreSame(_BytesExtractor.Object, _Listener.BytesExtractor);
                 Assert.AreSame(_RawMessageTranslator.Object, _Listener.RawMessageTranslator);
             };
 
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
 
             Assert.AreEqual(1, _SourceChangedEvent.CallCount);
             Assert.AreSame(_Listener, _SourceChangedEvent.Sender);
@@ -301,7 +302,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_ChangeSource_Sets_Statistics_Property_On_RawMessageTranslator()
         {
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
 
             Assert.AreSame(_Statistics.Object, _RawMessageTranslator.Object.Statistics);
         }
@@ -309,12 +310,12 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_ChangeSource_Resets_TotalMessages_Counter()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("A");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("A");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003);
 
             ChangeSourceAndConnect();
-            _Listener.ChangeSource(new MockListenerProvider().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object, false);
+            _Listener.ChangeSource(new MockSingleConnectionConnector().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object);
 
             Assert.AreEqual(0, _Listener.TotalMessages);
         }
@@ -324,13 +325,13 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _Listener.IgnoreBadMessages = false;
             RemoveDefaultExceptionCaughtHandler();
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("A");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("A");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003);
             MakeFormatTranslatorThrowException(TranslatorType.Port30003);
 
             ChangeSourceAndConnect();
-            _Listener.ChangeSource(new MockListenerProvider().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object, false);
+            _Listener.ChangeSource(new MockSingleConnectionConnector().Object, new MockMessageBytesExtractor().Object, new Mock<IRawMessageTranslator>().Object);
 
             Assert.AreEqual(0, _Listener.TotalBadMessages);
         }
@@ -338,109 +339,56 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_ChangeSource_Is_Not_Raised_If_Nothing_Changes()
         {
-            var newProvider = new MockListenerProvider();
+            var newProvider = new MockSingleConnectionConnector();
             var newExtractor = new MockMessageBytesExtractor();
             var newRawMessageTranslator = new Mock<IRawMessageTranslator>(MockBehavior.Default) { DefaultValue = DefaultValue.Mock };
 
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
             Assert.AreEqual(1, _SourceChangedEvent.CallCount);
 
-            _Listener.ChangeSource(newProvider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(newProvider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
             Assert.AreEqual(2, _SourceChangedEvent.CallCount);
 
-            _Listener.ChangeSource(newProvider.Object, newExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(newProvider.Object, newExtractor.Object, _RawMessageTranslator.Object);
             Assert.AreEqual(3, _SourceChangedEvent.CallCount);
 
-            _Listener.ChangeSource(newProvider.Object, newExtractor.Object, newRawMessageTranslator.Object, false);
+            _Listener.ChangeSource(newProvider.Object, newExtractor.Object, newRawMessageTranslator.Object);
             Assert.AreEqual(4, _SourceChangedEvent.CallCount);
 
-            _Listener.ChangeSource(newProvider.Object, newExtractor.Object, newRawMessageTranslator.Object, false);
+            _Listener.ChangeSource(newProvider.Object, newExtractor.Object, newRawMessageTranslator.Object);
             Assert.AreEqual(4, _SourceChangedEvent.CallCount);
-        }
-
-        [TestMethod]
-        public void Listener_ChangeSource_AutoReconnect_Reconnects_If_Set()
-        {
-            var firstProvider = new MockListenerProvider();
-            var firstExtractor = new MockMessageBytesExtractor();
-            firstProvider.Setup(p => p.Close()).Callback(() => {
-                Assert.AreSame(firstProvider.Object, _Listener.Provider);
-                Assert.AreSame(firstExtractor.Object, _Listener.BytesExtractor);
-            });
-            firstProvider.ConfigureForConnect();
-
-            _Listener.ChangeSource(firstProvider.Object, firstExtractor.Object, _RawMessageTranslator.Object, false);
-            _Listener.Connect(false);
-
-            _Provider.ConfigureForConnect();
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, true);
-
-            firstProvider.Verify(p => p.Close(), Times.Once());
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_ChangeSource_AutoReconnect_Does_Not_Reconnect_If_Clear()
-        {
-            var firstProvider = new MockListenerProvider();
-            var firstExtractor = new MockMessageBytesExtractor();
-            firstProvider.ConfigureForConnect();
-
-            _Listener.ChangeSource(firstProvider.Object, firstExtractor.Object, _RawMessageTranslator.Object, false);
-            _Listener.Connect(false);
-
-            _Provider.ConfigureForConnect();
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
-
-            firstProvider.Verify(p => p.Close(), Times.Once());
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Never());
         }
 
         [TestMethod]
         public void Listener_ChangeSource_Disconnects_Existing_Provider_Even_If_Not_Connected()
         {
-            var firstProvider = new MockListenerProvider();
+            var firstProvider = new MockSingleConnectionConnector();
             var firstExtractor = new MockMessageBytesExtractor();
             firstProvider.ConfigureForConnect();
 
-            _Listener.ChangeSource(firstProvider.Object, firstExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(firstProvider.Object, firstExtractor.Object, _RawMessageTranslator.Object);
 
-            _Provider.ConfigureForConnect();
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Connector.ConfigureForConnect();
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
 
-            firstProvider.Verify(p => p.Close(), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_ChangeSource_With_Reconnec_True_Connects_New_Provider_Even_If_Not_Originally_Connected()
-        {
-            var firstProvider = new MockListenerProvider();
-            var firstExtractor = new MockMessageBytesExtractor();
-            firstProvider.ConfigureForConnect();
-
-            _Listener.ChangeSource(firstProvider.Object, firstExtractor.Object, _RawMessageTranslator.Object, false);
-
-            _Provider.ConfigureForConnect();
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, true);
-
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Once());
+            firstProvider.Verify(p => p.CloseConnection(), Times.Once());
         }
 
         [TestMethod]
         public void Listener_ChangeSource_Disposes_Of_Existing_RawMessageTranslator()
         {
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
             _RawMessageTranslator.Verify(r => r.Dispose(), Times.Never());
 
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, new Mock<IRawMessageTranslator>().Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, new Mock<IRawMessageTranslator>().Object);
             _RawMessageTranslator.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
         public void Listener_ChangeSource_Does_Not_Dispose_Of_Existing_RawMessageTranslator_If_It_Has_Not_Changed()
         {
-            _Listener.ChangeSource(_Provider.Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
-            _Listener.ChangeSource(new MockListenerProvider().Object, _BytesExtractor.Object, _RawMessageTranslator.Object, false);
+            _Listener.ChangeSource(_Connector.Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
+            _Listener.ChangeSource(new MockSingleConnectionConnector().Object, _BytesExtractor.Object, _RawMessageTranslator.Object);
             _RawMessageTranslator.Verify(r => r.Dispose(), Times.Never());
         }
         #endregion
@@ -448,178 +396,44 @@ namespace Test.VirtualRadar.Library.Listener
         #region Connect - Basics
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Listener_Connect_Without_AutoReconnect_Throws_If_ChangeSource_Never_Called()
+        public void Listener_Connect_Throws_If_ChangeSource_Never_Called()
         {
             _Listener.Connect(false);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Listener_Connect_With_AutoReconnect_Throws_If_ChangeSource_Never_Called()
-        {
-            _Listener.Connect(true);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Calls_BeginConnect()
+        public void Listener_Connect_Calls_EstablishConnection()
         {
             ChangeSourceAndConnect();
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Once());
+            _Connector.Verify(p => p.EstablishConnection(), Times.Once());
         }
 
         [TestMethod]
-        public void Listener_Connect_Does_Not_Call_BeginConnect_After_Disposed()
+        public void Listener_Connect_Does_Not_Call_EstablishConnection_After_Disposed()
         {
             _Listener.Dispose();
 
             ChangeSourceAndConnect();
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Never());
+            _Connector.Verify(p => p.EstablishConnection(), Times.Never());
         }
 
         [TestMethod]
-        public void Listener_Connect_Does_Not_Pass_A_Null_AsyncCallback_To_Provider()
-        {
-            ChangeSourceAndConnect();
-            _Provider.Verify(p => p.BeginConnect(null), Times.Never());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Calls_EndConnect_If_BeginConnect_Works()
-        {
-            var asyncResult = _Provider.ConfigureForConnect();
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.EndConnect(asyncResult), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Does_Not_Call_EndConnect_If_BeginConnect_Never_Completes()
-        {
-            ChangeSourceAndConnect();
-            _Provider.Verify(p => p.EndConnect(It.IsAny<IAsyncResult>()), Times.Never());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Routes_All_Exceptions_From_BeginConnect_Through_ExceptionCaught()
-        {
-            // Connect could be called during a reconnect operation from a background thread so it can't let
-            // exceptions just bubble up.
-            var exception = new InvalidOperationException();
-            _Provider.Setup(p => p.BeginConnect(It.IsAny<AsyncCallback>())).Callback(() => { throw exception; });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
-            Assert.AreSame(_Listener, _ExceptionCaughtEvent.Sender);
-            Assert.AreSame(exception, _ExceptionCaughtEvent.Args.Value);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Disconnects_If_BeginConnect_Throws_Exception()
-        {
-            _Provider.Setup(p => p.BeginConnect(It.IsAny<AsyncCallback>())).Callback(() => { throw new InvalidOperationException(); });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.Close(), Times.Once());
-            Assert.AreEqual(ConnectionStatus.Disconnected, _Listener.ConnectionStatus);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Routes_All_Exceptions_From_EndConnect_Through_ExceptionCaught()
-        {
-            _Provider.ConfigureForConnect();
-
-            var exception = new NotSupportedException();
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Callback(() => { throw exception; });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
-            Assert.AreSame(_Listener, _ExceptionCaughtEvent.Sender);
-            Assert.AreSame(exception, _ExceptionCaughtEvent.Args.Value);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Disconnects_After_EndConnect_Picks_Up_General_Exception()
-        {
-            _Provider.ConfigureForConnect();
-
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Callback(() => { throw new NotSupportedException(); });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.Close(), Times.Once());
-            Assert.AreEqual(ConnectionStatus.Disconnected, _Listener.ConnectionStatus);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Ignores_Exceptions_From_EndConnect_About_The_Connection_Being_Disposed()
-        {
-            // These are just exception spam, we can safely ignore them
-
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Callback(() => { throw new ObjectDisposedException("whatever"); });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(0, _ExceptionCaughtEvent.CallCount);
-            _Provider.Verify(p => p.Close(), Times.Never());
-            Assert.AreEqual(ConnectionStatus.Connecting, _Listener.ConnectionStatus);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Ignores_Exceptions_From_EndConnect_About_The_Connection_Being_Closed()
-        {
-            // These are just exception spam - unfortunately they use a fairly common exception class for these but we still need to ignore them
-
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Callback(() => { throw new InvalidOperationException(); });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(0, _ExceptionCaughtEvent.CallCount);
-            _Provider.Verify(p => p.Close(), Times.Never());
-            Assert.AreEqual(ConnectionStatus.Connecting, _Listener.ConnectionStatus);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Sets_ConnectionStatus_To_Connecting_When_Calling_BeginConnect_With_AutoReconnect_False()
+        public void Listener_Connect_Sets_ConnectionStatus_To_Connecting_When_Calling_EstablishConnection()
         {
             _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
                 Assert.AreEqual(ConnectionStatus.Connecting, _Listener.ConnectionStatus);
             };
 
-            ChangeSourceAndConnect(false, null, null, null, false);
+            ChangeSourceAndConnect(false, null, null, null);
 
             Assert.AreEqual(1, _ConnectionStateChangedEvent.CallCount);
             Assert.AreSame(_Listener, _ConnectionStateChangedEvent.Sender);
         }
 
         [TestMethod]
-        public void Listener_Connect_Sets_ConnectionStatus_To_Reconnecting_When_Calling_BeginConnect_With_AutoReconnect_True()
+        public void Listener_Connect_Sets_ConnectionStatus_To_Connected_When_Connection_Established()
         {
-            _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
-                Assert.AreEqual(ConnectionStatus.Reconnecting, _Listener.ConnectionStatus);
-            };
-
-            ChangeSourceAndConnect(false, null, null, null, true);
-
-            Assert.AreEqual(1, _ConnectionStateChangedEvent.CallCount);
-            Assert.AreSame(_Listener, _ConnectionStateChangedEvent.Sender);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Sets_ConnectionStatus_To_Connected_When_BeginConnect_Calls_Back()
-        {
-            _Provider.ConfigureForConnect();
+            _Connector.ConfigureForConnect();
 
             int connectionChangedCount = 0;
             _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
@@ -635,9 +449,9 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Listener_Connect_Sets_ConnectionTime_In_Statistics_When_BeginConnect_Calls_Back()
+        public void Listener_Connect_Sets_ConnectionTime_In_Statistics_When_Connection_Established()
         {
-            _Provider.ConfigureForConnect();
+            _Connector.ConfigureForConnect();
 
             DateTime now = new DateTime(2012, 11, 10, 9, 8, 7, 6);
             _Clock.UtcNowValue = now;
@@ -657,261 +471,13 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Listener_Connect_Does_Not_Set_Connection_Status_If_EndConnect_Reported_It_Was_For_An_Old_Connection()
+        public void Listener_Connect_Begins_Reading_Content_From_Connection_When_Connection_Established()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Returns(false);
+            _Connector.ConfigureForConnect();
 
             ChangeSourceAndConnect();
 
-            Assert.AreEqual(1, _ConnectionStateChangedEvent.CallCount);
-            Assert.AreEqual(ConnectionStatus.Connecting, _Listener.ConnectionStatus);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Sets_ConnectionStatus_To_CannotConnect_If_EndConnect_Throws_SocketException()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); } );
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(ConnectionStatus.CannotConnect, _Listener.ConnectionStatus);
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Begins_Reading_Content_From_Connection_When_BeginConnect_Works()
-        {
-            _Provider.ConfigureForConnect();
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.BeginRead(It.IsAny<AsyncCallback>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Does_Not_Read_Content_If_EndConnect_Reported_It_Was_For_An_Old_Connection()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Returns(false);
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.BeginRead(It.IsAny<AsyncCallback>()), Times.Never());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Does_Not_Read_Content_If_EndConnect_Throws_Exception()
-        {
-            _Provider.ConfigureForConnect();
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Callback(() => { throw new NotImplementedException(); });
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
-            _Provider.Verify(p => p.BeginRead(It.IsAny<AsyncCallback>()), Times.Never());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Catches_Exceptions_In_EndRead_Calls()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("XYZ\n");
-            RemoveDefaultExceptionCaughtHandler();
-
-            var exception = new NotImplementedException();
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw exception; });
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
-            Assert.AreSame(_Listener, _ExceptionCaughtEvent.Sender);
-            Assert.AreSame(exception, _ExceptionCaughtEvent.Args.Value);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Disconnects_After_Catching_A_General_Exception_In_EndRead()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("XYZ\n");
-            RemoveDefaultExceptionCaughtHandler();
-
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new NotImplementedException(); });
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(ConnectionStatus.Disconnected, _Listener.ConnectionStatus);
-            _Provider.Verify(p => p.Close(), Times.Once());
-            _Statistics.Verify(r => r.ResetConnectionStatistics(), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Does_Not_Start_New_Read_After_Catching_A_General_Exception_In_EndRead()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("XYZ\n");
-            RemoveDefaultExceptionCaughtHandler();
-
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new NotImplementedException(); });
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.BeginRead(It.IsAny<AsyncCallback>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Ignores_ObjectDisposed_Exceptions_In_EndRead()
-        {
-            // These happen a lot, whenever the connection is disposed of on another thread. We need to ignore them.
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("XYZ\n");
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new ObjectDisposedException("x"); });
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(0, _ExceptionCaughtEvent.CallCount);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Does_Not_Start_New_Read_After_Catching_An_Object_Disposed_Exception_In_EndRead()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("XYZ\n");
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new ObjectDisposedException("x"); });
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.BeginRead(It.IsAny<AsyncCallback>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Will_Attempt_A_Reconnect_If_EndRead_Reports_SocketException()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("ABC\nXYZ\n");
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); });
-
-            bool seenReconnectingConnectionStateEvent = false;
-            _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
-                if(_Listener.ConnectionStatus == ConnectionStatus.Reconnecting) {
-                    seenReconnectingConnectionStateEvent = true;
-                }
-            };
-
-            ChangeSourceAndConnect();
-
-            Assert.IsTrue(seenReconnectingConnectionStateEvent);
-            Assert.AreEqual(ConnectionStatus.Reconnecting, _Listener.ConnectionStatus);
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Exactly(2));
-            _Statistics.Verify(r => r.ResetConnectionStatistics(), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Will_Attempt_A_Reconnect_If_EndRead_Returns_Zero()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("ABC\nXYZ\n");
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Returns(0);
-
-            bool seenReconnectingConnectionStateEvent = false;
-            _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
-                if(_Listener.ConnectionStatus == ConnectionStatus.Reconnecting) seenReconnectingConnectionStateEvent = true;
-            };
-
-            ChangeSourceAndConnect();
-
-            Assert.IsTrue(seenReconnectingConnectionStateEvent);
-            Assert.AreEqual(ConnectionStatus.Reconnecting, _Listener.ConnectionStatus);
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Exactly(2));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Will_Not_Attempt_To_Read_Blocks_From_Dropped_Connection()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("ABC\nXYZ\n");
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); });
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.BeginRead(It.IsAny<AsyncCallback>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Will_Wait_At_Least_One_Second_Between_Each_Reconnect_Attempt()
-        {
-            var beginConnectTimes = new List<DateTime>();
-            _Provider.ConfigureForConnect(2, () => { beginConnectTimes.Add(DateTime.UtcNow); });
-            _Provider.ConfigureForReadStream("ABC\nXYZ\n");
-
-            int endConnectCallCount = 0;
-            _Provider.Setup(p => p.EndConnect(It.IsAny<IAsyncResult>())).Returns(true).Callback(() => {
-                switch(endConnectCallCount++) {
-                    case 0:     break;                       // first connect works, triggers read
-                    case 1:     throw new SocketException(); // second connect (1st attempt at reconnect) fails 
-                }
-            });
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); });
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Exactly(3));
-            Assert.AreEqual(ConnectionStatus.Reconnecting, _Listener.ConnectionStatus);
-
-            var milliseconds = (beginConnectTimes[1] - beginConnectTimes[0]).TotalMilliseconds;
-            Assert.IsTrue(milliseconds >= 900, milliseconds.ToString());
-            milliseconds = (beginConnectTimes[2] - beginConnectTimes[1]).TotalMilliseconds;
-            Assert.IsTrue(milliseconds >= 900, milliseconds.ToString());
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Will_Abandon_Reconnect_If_User_Manually_Connects_While_Pausing()
-        {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("ABC\nXYZ\n");
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); });
-            _Provider.Setup(p => p.Sleep(It.IsAny<int>())).Callback(() => { _Listener.Connect(false); });
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Exactly(2));
-            Assert.AreEqual(ConnectionStatus.Connecting, _Listener.ConnectionStatus);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Will_Pass_Exceptions_From_BeginConnect_During_Reconnect_To_ExceptionCaught()
-        {
-            int connectCount = 0;
-            var exception = new InvalidOperationException();
-            _Provider.ConfigureForConnect(2, () => { if(++connectCount == 2) throw exception; });
-            _Provider.ConfigureForReadStream("ABC\nXYZ\n");
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
-            Assert.AreSame(_Listener, _ExceptionCaughtEvent.Sender);
-            Assert.AreSame(exception, _ExceptionCaughtEvent.Args.Value);
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Will_Disconnect_If_Reconnect_Throws_A_General_Exception()
-        {
-            int connectCount = 0;
-            _Provider.ConfigureForConnect(2, () => { if(++connectCount == 2) throw new InvalidOperationException(); });
-            _Provider.ConfigureForReadStream("ABC\nXYZ\n");
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); });
-            RemoveDefaultExceptionCaughtHandler();
-
-            ChangeSourceAndConnect();
-
-            _Provider.Verify(p => p.Close(), Times.Once());
-            Assert.AreEqual(ConnectionStatus.Disconnected, _Listener.ConnectionStatus);
+            _Connector.Connection.Verify(p => p.Read(It.IsAny<byte[]>(), It.IsAny<ConnectionReadDelegate>()), Times.AtLeastOnce());
         }
         #endregion
 
@@ -920,8 +486,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Raises_RawBytesReceived_When_Bytes_Are_Received()
         {
             var bytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 };
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream(bytes, 3);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream(bytes, 3);
 
             var eventRecorder = new EventRecorder<EventArgs<byte[]>>();
             _Listener.RawBytesReceived += eventRecorder.Handler;
@@ -937,8 +503,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Updates_Statistics_When_Bytes_Are_Received()
         {
             var bytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 };
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream(new byte[] { 0x01, 0x02 }, int.MinValue, new List<IEnumerable<byte>>() { { new byte[] { 0x03, 0x04, 0x05 } } });
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream(new byte[] { 0x01, 0x02 }, subsequentReads: new List<IEnumerable<byte>>() { { new byte[] { 0x03, 0x04, 0x05 } } });
             _BytesExtractor.Setup(r => r.BufferSize).Returns(12);
 
             ChangeSourceAndConnect();
@@ -950,8 +516,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Raises_ModeSBytesReceived_When_BytesExtractor_Extracts_ModeS_Message()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             var extractedBytes = _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 }, 1, 7, false, false);
 
             var eventRecorder = new EventRecorder<EventArgs<ExtractedBytes>>();
@@ -968,8 +534,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Does_Not_Raise_ModeSBytesReceived_When_BytesExtractor_Extracts_Bad_Checksum_Message()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             var extractedBytes = _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 }, 1, 7, true, false);
 
             var eventRecorder = new EventRecorder<EventArgs<ExtractedBytes>>();
@@ -983,8 +549,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Does_Not_Raise_ModeSBytesReceived_When_BytesExtractor_Extracts_Port30003_Message()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             var extractedBytes = _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 }, 1, 7, false, false);
 
             var eventRecorder = new EventRecorder<EventArgs<ExtractedBytes>>();
@@ -1003,8 +569,8 @@ namespace Test.VirtualRadar.Library.Listener
                 bytes.Add((byte)i);
             }
 
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream(bytes);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream(bytes);
 
             ChangeSourceAndConnect();
 
@@ -1016,8 +582,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Passes_Count_Of_Bytes_Read_To_Message_Extractor()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream(new byte[] { 0xf0, 0xe8 }, 1);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream(new byte[] { 0xf0, 0xe8 }, 1);
 
             ChangeSourceAndConnect();
 
@@ -1031,8 +597,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             var bytes1 = new byte[] { 0x01, 0xf0 };
             var bytes2 = new byte[] { 0xef, 0x02 };
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream(bytes1, int.MinValue, new List<IEnumerable<byte>>() { bytes2 });
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream(bytes1, subsequentReads: new List<IEnumerable<byte>>() { bytes2 });
 
             ChangeSourceAndConnect();
 
@@ -1046,8 +612,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Passes_Port30003_Messages_To_Port30003_Message_Translator()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "ABC123");
 
             ChangeSourceAndConnect();
@@ -1061,8 +627,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Honours_Offset_And_Length_When_Translating_Extracted_Bytes_To_Port30003_Message_Strings_For_Translation()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "-ABC-", 1, 3, false, false);
 
             ChangeSourceAndConnect();
@@ -1073,8 +639,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Ignores_Extracted_Parity_On_Port30003_Messages()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "ABC123", false, true);
 
             ChangeSourceAndConnect();
@@ -1085,8 +651,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Uses_Extracted_SignalLevel_On_Port30003_Messages()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "ABC123").SignalLevel = 123;
 
             ChangeSourceAndConnect();
@@ -1097,8 +663,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Raises_Port30003MessageReceived_With_Message_From_Translator()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
 
             ChangeSourceAndConnect();
@@ -1114,8 +680,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Copies_ReceiverId_To_Port30003Messages()
         {
             _Listener.ReceiverId = 1234;
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
 
             ChangeSourceAndConnect();
@@ -1126,8 +692,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Does_Not_Raise_Port30003MessageReceived_When_Translator_Returns_Null()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
             _Port30003Translator.Setup(r => r.Translate("A", null)).Returns((BaseStationMessage)null);
 
@@ -1140,8 +706,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Raises_Port30003MessageReceived_For_Every_Extracted_Packet()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "B");
 
@@ -1156,8 +722,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Increments_Total_Messages_When_Port30003_Message_Received()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
 
             ChangeSourceAndConnect();
@@ -1168,8 +734,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Updates_Statistics_When_Port30003_Message_Received()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
 
             ChangeSourceAndConnect();
@@ -1181,8 +747,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Updates_Statistics_When_Bad_Port30003_Message_Received()
         {
             RemoveDefaultExceptionCaughtHandler();
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
 
             var exception = MakeFormatTranslatorThrowException(TranslatorType.Port30003);
@@ -1196,8 +762,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Increments_Total_Messages_For_Every_Message_In_A_Received_Packet_Of_Port30003_Messages()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "B");
 
@@ -1209,8 +775,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Does_Not_Increment_TotalMessages_When_Port30003Translator_Returns_Null()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "B");
             _Port30003Translator.Setup(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>())).Returns((BaseStationMessage)null);
 
@@ -1227,8 +793,8 @@ namespace Test.VirtualRadar.Library.Listener
             var extractedBytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, extractedBytes, 1, 7, false, false).SignalLevel = 123;
 
             byte[] bytesPassedToTranslator = null;
@@ -1262,8 +828,8 @@ namespace Test.VirtualRadar.Library.Listener
                 TestInitialise();
 
                 var extractedBytes = new byte[length];
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("a");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("a");
                 _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, extractedBytes);
 
                 ChangeSourceAndConnect();
@@ -1289,8 +855,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
 
             var bytes = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, bytes, 1, 7, false, true);
 
             ChangeSourceAndConnect();
@@ -1304,8 +870,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
 
             var bytes = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, bytes, 1, 7, false, false);
 
             ChangeSourceAndConnect();
@@ -1323,8 +889,8 @@ namespace Test.VirtualRadar.Library.Listener
                 TestInitialise();
 
                 _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("a");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("a");
                 _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, bytes, 1, 7, false, true);
                 _ModeSMessage.ParityInterrogatorIdentifier = piValue;
 
@@ -1345,8 +911,8 @@ namespace Test.VirtualRadar.Library.Listener
                 TestInitialise();
 
                 _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("a");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("a");
                 _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, bytes, 1, 7, false, true);
                 _ModeSMessage.ParityInterrogatorIdentifier = piValue;
 
@@ -1367,8 +933,8 @@ namespace Test.VirtualRadar.Library.Listener
                 TestInitialise();
 
                 _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("a");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("a");
                 _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, extractedBytes, 1, 7, false, false);
                 if(!hasAdsbPayload) _AdsbTranslator.Setup(r => r.Translate(It.IsAny<ModeSMessage>())).Returns((AdsbMessage)null);
 
@@ -1382,8 +948,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Raises_ModeSMessageReceived_When_ModeS_Message_Received()
         {
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
 
             ChangeSourceAndConnect();
@@ -1400,8 +966,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
 
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
 
             ChangeSourceAndConnect();
@@ -1414,8 +980,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Does_Not_Translate_Null_ModeS_Messages()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
             _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>())).Returns((ModeSMessage)null);
 
@@ -1433,8 +999,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
 
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
             _AdsbTranslator.Setup(r => r.Translate(It.IsAny<ModeSMessage>())).Returns((AdsbMessage)null);
 
@@ -1457,8 +1023,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Will_Not_Raise_Port30003MessageReceived_When_Raw_Translator_Returns_Null()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
             _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Returns((BaseStationMessage)null);
 
@@ -1470,8 +1036,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Increments_Total_Messages_When_ModeS_Message_Received()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
 
             ChangeSourceAndConnect();
@@ -1482,8 +1048,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Increments_Total_Messages_For_Every_Message_In_A_Received_Packet_Of_ModeS_Messages()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
 
@@ -1495,8 +1061,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Does_Not_Increment_TotalMessages_When_ModeSTranslator_Returns_Null()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
             _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>())).Returns((ModeSMessage)null);
 
@@ -1508,8 +1074,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Increments_TotalMessages_When_AdsbTranslator_Returns_Null()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
             _AdsbTranslator.Setup(r => r.Translate(It.IsAny<ModeSMessage>())).Returns((AdsbMessage)null);
 
@@ -1521,8 +1087,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Increments_TotalMessages_When_RawTranslator_Returns_Null()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
             _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Returns((BaseStationMessage)null);
 
@@ -1536,8 +1102,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Passes_Compressed_Messages_Through_BaseStationMesageCompressor()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             var payload = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, payload, 0, 6, false, false);
 
@@ -1555,8 +1121,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             var payload = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
             var expected = new byte[] { 0x02, 0x03, 0x04, 0x05 };
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, payload, 1, 4, false, false);
 
             ChangeSourceAndConnect();
@@ -1567,8 +1133,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Raises_Event_With_BaseStationMessage_Built_From_Compressed_Message()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1584,8 +1150,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Copies_ReceiverId_To_Compressed_Port30003Messages()
         {
             _Listener.ReceiverId = 1234;
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1597,8 +1163,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Does_Not_Raise_Port30003MessageReceived_When_Compressor_Returns_Null()
         {
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns((BaseStationMessage)null);
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1611,8 +1177,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Does_Not_Increment_TotalMessages_When_Compressor_Returns_Null()
         {
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns((BaseStationMessage)null);
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1623,8 +1189,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Increments_Total_Messages_When_Compressed_Message_Received()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1635,8 +1201,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Updates_Statistics_When_Compressed_Message_Received()
         {
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1649,8 +1215,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             RemoveDefaultExceptionCaughtHandler();
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Callback(() => { throw new InvalidCastException(); });
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1664,8 +1230,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             RemoveDefaultExceptionCaughtHandler();
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Callback(() => { throw new InvalidCastException(); });
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a");
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Compressed, 12, false, false);
 
             ChangeSourceAndConnect();
@@ -1682,8 +1248,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormat((format, failMessage) => {
                 RemoveDefaultExceptionCaughtHandler();
 
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("a");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("a");
                 _BytesExtractor.AddExtractedBytes(format);
 
                 ChangeSourceAndConnect();
@@ -1712,8 +1278,8 @@ namespace Test.VirtualRadar.Library.Listener
                 if(format != ExtractedBytesFormat.None) {
                     RemoveDefaultExceptionCaughtHandler();
 
-                    _Provider.ConfigureForConnect();
-                    _Provider.ConfigureForReadStream("a");
+                    _Connector.ConfigureForConnect();
+                    _Connector.ConfigureForReadStream("a");
                     _BytesExtractor.AddExtractedBytes(format, 7, true, false);
 
                     ChangeSourceAndConnect();
@@ -1733,8 +1299,8 @@ namespace Test.VirtualRadar.Library.Listener
 
                     RemoveDefaultExceptionCaughtHandler();
 
-                    _Provider.ConfigureForConnect();
-                    _Provider.ConfigureForReadStream("a");
+                    _Connector.ConfigureForConnect();
+                    _Connector.ConfigureForReadStream("a");
                     _BytesExtractor.AddExtractedBytes(format, 7, true, false);
 
                     ChangeSourceAndConnect();
@@ -1757,8 +1323,8 @@ namespace Test.VirtualRadar.Library.Listener
                         RemoveDefaultExceptionCaughtHandler();
 
                         _Listener.IgnoreBadMessages = ignoreBadMessages;
-                        _Provider.ConfigureForConnect();
-                        _Provider.ConfigureForReadStream("a");
+                        _Connector.ConfigureForConnect();
+                        _Connector.ConfigureForReadStream("a");
                         _BytesExtractor.AddExtractedBytes(format, 7, true, false);
 
                         ChangeSourceAndConnect();
@@ -1782,8 +1348,8 @@ namespace Test.VirtualRadar.Library.Listener
                         RemoveDefaultExceptionCaughtHandler();
 
                         _Listener.IgnoreBadMessages = ignoreBadMessages;
-                        _Provider.ConfigureForConnect();
-                        _Provider.ConfigureForReadStream("a");
+                        _Connector.ConfigureForConnect();
+                        _Connector.ConfigureForReadStream("a");
                         _BytesExtractor.AddExtractedBytes(format, 7, true, false);
 
                         ChangeSourceAndConnect();
@@ -1803,8 +1369,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormatAndTranslator((format, translatorType, failMessage) => {
                 _Listener.IgnoreBadMessages = false;
                 RemoveDefaultExceptionCaughtHandler();
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("A");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("A");
                 _BytesExtractor.AddExtractedBytes(format, 7);
 
                 var exception = MakeFormatTranslatorThrowException(translatorType);
@@ -1824,8 +1390,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormatAndTranslator((format, translatorType, failMessage) => {
                 _Listener.IgnoreBadMessages = true;
                 RemoveDefaultExceptionCaughtHandler();
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("A");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("A");
                 _BytesExtractor.AddExtractedBytes(format, 7);
 
                 var exception = MakeFormatTranslatorThrowException(translatorType);
@@ -1854,8 +1420,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormatAndTranslator((format, translatorType, failMessage) => {
                 _Listener.IgnoreBadMessages = true;
                 RemoveDefaultExceptionCaughtHandler();
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("A");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("A");
                 _BytesExtractor.AddExtractedBytes(format, 7);
 
                 var exception = MakeMessageReceivedHandlerThrowException(translatorType);
@@ -1875,8 +1441,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormatAndTranslator((format, translatorType, failMessage) => {
                 _Listener.IgnoreBadMessages = true;
                 RemoveDefaultExceptionCaughtHandler();
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("A");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("A");
                 _BytesExtractor.AddExtractedBytes(format, 7);
 
                 var exception = MakeFormatTranslatorThrowException(translatorType);
@@ -1894,8 +1460,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormatAndTranslator((format, translatorType, failMessage) => {
                 _Listener.IgnoreBadMessages = true;
                 RemoveDefaultExceptionCaughtHandler();
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("A");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("A");
                 _BytesExtractor.AddExtractedBytes(format, 7);
 
                 var exception = MakeFormatTranslatorThrowException(translatorType);
@@ -1912,8 +1478,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormatAndTranslator((format, translatorType, failMessage) => {
                 _Listener.IgnoreBadMessages = true;
                 RemoveDefaultExceptionCaughtHandler();
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("A");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("A");
                 _BytesExtractor.AddExtractedBytes(format, 7);
 
                 var exception = MakeFormatTranslatorThrowException(translatorType);
@@ -1930,8 +1496,8 @@ namespace Test.VirtualRadar.Library.Listener
             DoForEveryFormatAndTranslator((format, translatorType, failMessage) => {
                 _Listener.IgnoreBadMessages = false;
                 RemoveDefaultExceptionCaughtHandler();
-                _Provider.ConfigureForConnect();
-                _Provider.ConfigureForReadStream("A");
+                _Connector.ConfigureForConnect();
+                _Connector.ConfigureForReadStream("A");
                 _BytesExtractor.AddExtractedBytes(format, 7);
 
                 var exception = MakeFormatTranslatorThrowException(translatorType);
@@ -1943,202 +1509,22 @@ namespace Test.VirtualRadar.Library.Listener
         }
         #endregion
 
-        #region Connect - CoarseListenerTimeout Handling
-        void SetupCoarseListenerTimeout(int timeout)
-        {
-            _ConfigurationStorage.Object.CoarseListenerTimeout = timeout;
-        }
-
-        [TestMethod]
-        public void Listener_CoarseListenerTimeout_Reconnects_If_Timeout_Expires_With_No_Messages()
-        {
-            SetupCoarseListenerTimeout(10);
-            _Provider.ConfigureForConnect();
-            ChangeSourceAndConnect();
-
-            bool seenReconnectingConnectionStateEvent = false;
-            _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
-                if(_Listener.ConnectionStatus == ConnectionStatus.Reconnecting) {
-                    seenReconnectingConnectionStateEvent = true;
-                }
-            };
-
-            _Clock.UtcNowValue = _Clock.UtcNowValue.AddSeconds(10).AddMilliseconds(1);
-            _HeartbeatService.Raise(r => r.FastTick += null, EventArgs.Empty);
-
-            Assert.IsTrue(seenReconnectingConnectionStateEvent);
-            Assert.AreEqual(ConnectionStatus.Reconnecting, _Listener.ConnectionStatus);
-            _Provider.Verify(p => p.Close(), Times.Exactly(1));
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Exactly(2));
-        }
-
-        [TestMethod]
-        public void Listener_CoarseListenerTimeout_Does_Not_Reconnect_If_Not_Connected()
-        {
-            SetupCoarseListenerTimeout(10);
-            _Provider.ConfigureForConnect();
-            ChangeSourceAndConnect();
-
-            bool seenReconnectingConnectionStateEvent = false;
-            _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
-                if(_Listener.ConnectionStatus == ConnectionStatus.Reconnecting) {
-                    seenReconnectingConnectionStateEvent = true;
-                }
-            };
-
-            _Listener.Disconnect();
-            _Clock.UtcNowValue = _Clock.UtcNowValue.AddSeconds(10).AddMilliseconds(1);
-            _HeartbeatService.Raise(r => r.FastTick += null, EventArgs.Empty);
-
-            Assert.IsFalse(seenReconnectingConnectionStateEvent);
-            Assert.AreEqual(ConnectionStatus.Disconnected, _Listener.ConnectionStatus);
-        }
-
-        [TestMethod]
-        public void Listener_CoarseListenerTimeout_Gives_The_Feed_A_Chance_To_Send_Something_Before_Reconnecting()
-        {
-            // See http://tracker.virtualradarserver.co.uk/youtrack/issue/VRS-64 - the problem was that the
-            // if the feed doesn't send anything before the timer ticks and the test is performed against the
-            // last receive time then the code disconnected and reconnected, even though the connection may have
-            // been up for less than 10 seconds. The timeline of events is:
-            //   00.000: Connection established.
-            //   00.001: Timer ticks - is last receive time more than 10 seconds ago? Yes. Disconnect and reconnect.
-            //           Everything freaks out.
-            // Whereas it should be:
-            //   00.000: Connection established.
-            //   00.001: Timer ticks - is last receive time more than 10 seconds ago? No. It's only been up for 1ms.
-            //           Do nothing.
-            //   00.075: Message received - huzzah!
-            //   01.000: Timer ticks - is last receive time more than 10 seconds ago? No.
-            // etc.
-            SetupCoarseListenerTimeout(10);
-            _Provider.ConfigureForConnect();
-            ChangeSourceAndConnect();
-
-            bool seenReconnectingConnectionStateEvent = false;
-            _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
-                if(_Listener.ConnectionStatus == ConnectionStatus.Reconnecting) {
-                    seenReconnectingConnectionStateEvent = true;
-                }
-            };
-
-            _Clock.UtcNowValue = _Clock.UtcNowValue.AddSeconds(10).AddMilliseconds(-1);
-            _HeartbeatService.Raise(r => r.FastTick += null, EventArgs.Empty);
-
-            Assert.IsFalse(seenReconnectingConnectionStateEvent);
-            Assert.AreEqual(ConnectionStatus.Connected, _Listener.ConnectionStatus);
-            _Provider.Verify(p => p.Close(), Times.Never());
-            _Provider.Verify(p => p.BeginConnect(It.IsAny<AsyncCallback>()), Times.Exactly(1));
-        }
-        #endregion
-
-        #region Connect - Logging
-        [TestMethod]
-        public void Listener_Connect_Logs_Connection_Attempt()
-        {
-            ChangeSourceAndConnect();
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Connecting", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Logs_Failure_In_Provider_BeginConnect()
-        {
-            // This is unlikely to happen, but if it should then we want it logged
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.Setup(r => r.BeginConnect(It.IsAny<AsyncCallback>())).Callback((AsyncCallback ac) => { throw new InvalidOperationException(); });
-            ChangeSourceAndConnect();
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Failed to connect", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Logs_Connection_Success()
-        {
-            _Provider.ConfigureForConnect();
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Connected", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Logs_EndConnect_Unknown_Exception()
-        {
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(r => r.EndConnect(It.IsAny<IAsyncResult>())).Callback((IAsyncResult ar) => { throw new OverflowException(); });
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Failed to connect", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Logs_EndConnect_SocketException_When_Connecting()
-        {
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(r => r.EndConnect(It.IsAny<IAsyncResult>())).Callback((IAsyncResult ar) => { throw new SocketException(); });
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Failed to connect", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Does_Not_Log_EndConnect_SocketException_When_Reconnecting()
-        {
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.ConfigureForConnect();
-            _Provider.Setup(r => r.EndConnect(It.IsAny<IAsyncResult>())).Callback((IAsyncResult ar) => { throw new SocketException(); });
-
-            ChangeSourceAndConnect(false, null, null, null, true);
-
-            Assert.AreEqual(0, _LogMessages.Count(r => r.IndexOf("Failed", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Logs_Provider_SocketException_On_EndRead()
-        {
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream("a\n");
-
-            _Provider.Setup(p => p.EndRead(It.IsAny<IAsyncResult>())).Callback(() => { throw new SocketException(); });
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Caught", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-
-        [TestMethod]
-        public void Listener_Connect_Logs_Reconnect_On_EndRead()
-        {
-            RemoveDefaultExceptionCaughtHandler();
-            _Provider.ConfigureForConnect();
-            _Provider.ConfigureForReadStream(new byte[0]);
-
-            ChangeSourceAndConnect();
-
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Reconnecting", StringComparison.OrdinalIgnoreCase) != -1));
-        }
-        #endregion
-
         #region Disconnect
         [TestMethod]
         public void Listener_Disconnect_Closes_Provider()
         {
-            _Provider.ConfigureForConnect();
+            _Connector.ConfigureForConnect();
 
             ChangeSourceAndConnect();
             _Listener.Disconnect();
 
-            _Provider.Verify(p => p.Close(), Times.Once());
+            _Connector.Verify(p => p.CloseConnection(), Times.Once());
         }
 
         [TestMethod]
         public void Listener_Disconnect_Sets_Connection_Status()
         {
-            _Provider.ConfigureForConnect();
+            _Connector.ConfigureForConnect();
             int callCount = 0;
             _ConnectionStateChangedEvent.EventRaised += (object sender, EventArgs args) => {
                 if(++callCount == 3) Assert.AreEqual(ConnectionStatus.Disconnected, _Listener.ConnectionStatus);
@@ -2148,17 +1534,6 @@ namespace Test.VirtualRadar.Library.Listener
             _Listener.Disconnect();
 
             Assert.AreEqual(3, _ConnectionStateChangedEvent.CallCount);
-        }
-
-        [TestMethod]
-        public void Listener_Disconnect_Logs_Disconnection()
-        {
-            _Provider.ConfigureForConnect();
-
-            ChangeSourceAndConnect();
-            _Listener.Disconnect();
-
-            Assert.AreEqual(1, _LogMessages.Count(r => r.IndexOf("Disconnected", StringComparison.OrdinalIgnoreCase) != -1));
         }
         #endregion
     }

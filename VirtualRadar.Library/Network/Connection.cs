@@ -22,11 +22,26 @@ namespace VirtualRadar.Library.Network
     /// </summary>
     abstract class Connection : IConnection
     {
+        #region Static Fields
+        /// <summary>
+        /// The number of connections that have ever been created.
+        /// </summary>
+        private static long _ConnectionCount;
+        #endregion
+
+        #region Fields
         /// <summary>
         /// The spinlock that protects our internals.
         /// </summary>
         private SpinLock _SpinLock = new SpinLock();
 
+        /// <summary>
+        /// The queue of operations to perform on the connection.
+        /// </summary>
+        private BackgroundThreadQueue<ReadWriteOperation> _OperationQueue;
+        #endregion
+
+        #region Properties
         /// <summary>
         /// The connector that owns this connection.
         /// </summary>
@@ -64,7 +79,9 @@ namespace VirtualRadar.Library.Network
                 }
             }
         }
+        #endregion
 
+        #region Events
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -80,7 +97,9 @@ namespace VirtualRadar.Library.Network
                 ConnectionStateChanged(this, args);
             }
         }
+        #endregion
 
+        #region Ctor, finaliser
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -90,6 +109,13 @@ namespace VirtualRadar.Library.Network
         {
             if(connector == null) throw new ArgumentNullException("connector");
             _Connector = connector;
+
+            string operationQueueName;
+            using(_SpinLock.AcquireLock()) {
+                operationQueueName = String.Format("ConnectionOpQueue-{0}-{1}", _Connector.Name ?? "unnamed", ++_ConnectionCount);
+            }
+            _OperationQueue = new BackgroundThreadQueue<ReadWriteOperation>(operationQueueName, surrenderTimeSliceOnEmptyQueue: true);
+            _OperationQueue.StartBackgroundThread(OperationQueue_ProcessOperation, OperationQueue_ProcessException);
 
             ConnectionStatus = initialStatus;
         }
@@ -101,7 +127,9 @@ namespace VirtualRadar.Library.Network
         {
             Dispose(false);
         }
+        #endregion
 
+        #region Dispose
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -117,12 +145,142 @@ namespace VirtualRadar.Library.Network
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            ;
+            if(disposing) {
+                try {
+                    if(_OperationQueue != null) {
+                        _OperationQueue.Stop();
+                        _OperationQueue = null;
+                    }
+                } catch {
+                    ;
+                }
+
+                try {
+                    DoAbandon(raiseExceptionEvent: false);
+                } catch {
+                    ;
+                }
+            }
+        }
+        #endregion
+
+        #region Abandon, AbandonConnection
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public virtual void Abandon()
+        {
+            DoAbandon(true);
+        }
+
+        private bool _InAbandon;
+        private void DoAbandon(bool raiseExceptionEvent)
+        {
+            var inAbandon = false;
+            using(_SpinLock.AcquireLock()) {
+                inAbandon = _InAbandon;
+                if(!inAbandon) _InAbandon = true;
+            }
+            if(!inAbandon) {
+                try {
+                    AbandonConnection();
+                } catch(Exception ex) {
+                    if(_Connector != null && raiseExceptionEvent) {
+                        _Connector.RaiseConnectionException(this, ex);
+                    }
+                } finally {
+                    _InAbandon = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Abandons the connection. Exceptions are allowed to bubble up out of the method.
+        /// Guaranteed not to be called recursively.
+        /// </summary>
+        protected abstract void AbandonConnection();
+        #endregion
+
+        #region Read
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="readDelegate"></param>
+        public void Read(byte[] buffer, ConnectionReadDelegate readDelegate)
+        {
+            Read(buffer, 0, buffer.Length, readDelegate);
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public abstract void Abandon();
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="readDelegate"></param>
+        public virtual void Read(byte[] buffer, int offset, int length, ConnectionReadDelegate readDelegate)
+        {
+            _SpinLock.Lock();
+            try {
+                if(_OperationQueue != null) {
+                    var operation = new ReadWriteOperation(buffer, offset, length, isRead: true, readDelegate: readDelegate);
+                    _OperationQueue.Enqueue(operation);
+                }
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+        #endregion
+
+        #region Operation Queue
+        /// <summary>
+        /// Called when a read or write operation is received.
+        /// </summary>
+        /// <param name="operation"></param>
+        private void OperationQueue_ProcessOperation(ReadWriteOperation operation)
+        {
+            if(operation.IsRead) {
+                DoRead(operation);
+                if(!operation.Abandon && operation.ReadDelegate != null) {
+                    operation.ReadDelegate(this, operation.Buffer, operation.Offset, operation.Length, operation.BytesRead);
+                }
+            } else {
+                DoWrite(operation);
+            }
+
+            if(operation.Abandon) {
+                Abandon();
+            }
+        }
+
+        protected abstract void DoRead(ReadWriteOperation operation);
+        protected abstract void DoWrite(ReadWriteOperation operation);
+
+        /// <summary>
+        /// Called when an exception is thrown while processing an operation.
+        /// </summary>
+        /// <param name="ex"></param>
+        private void OperationQueue_ProcessException(Exception ex)
+        {
+            if(_Connector != null) _Connector.RaiseConnectionException(this, ex);
+        }
+
+        /// <summary>
+        /// Stops the operation queue. Once this has been called no further read or write
+        /// calls will work, they will all silently fail.
+        /// </summary>
+        protected void ShutdownOperationQueue()
+        {
+            _SpinLock.Lock();
+            try {
+                if(_OperationQueue != null) {
+                    _OperationQueue.Stop();
+                }
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+        #endregion
     }
 }

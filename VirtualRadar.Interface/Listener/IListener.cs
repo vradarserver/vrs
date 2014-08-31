@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.ModeS;
+using VirtualRadar.Interface.Network;
 
 namespace VirtualRadar.Interface.Listener
 {
@@ -38,9 +39,16 @@ namespace VirtualRadar.Interface.Listener
         IStatistics Statistics { get; }
 
         /// <summary>
+        /// Gets the connector that is handling the connection for the listener. Do not modify any properties on the provider directly,
+        /// always use <see cref="ChangeSource"/> to perform configuration changes.
+        /// </summary>
+        ISingleConnectionConnector Connector { get; }
+
+        /// <summary>
         /// Gets the object that handles the connection for the listener. Do not modify any properties on the provider directly,
         /// always use <see cref="ChangeSource"/> to perform configuration changes.
         /// </summary>
+        [Obsolete("Use Connector instead")]
         IListenerProvider Provider { get; }
 
         /// <summary>
@@ -122,6 +130,7 @@ namespace VirtualRadar.Interface.Listener
         /// Raised when the listener connects or disconnects. Note that exceptions raised during parsing of
         /// messages will cause the object to automatically disconnect.
         /// </summary>
+        [Obsolete("Use Connector's ConnectionStateChanged instead")]
         event EventHandler ConnectionStateChanged;
 
         /// <summary>
@@ -149,7 +158,16 @@ namespace VirtualRadar.Interface.Listener
         /// <param name="bytesExtractor"></param>
         /// <param name="rawMessageTranslator"></param>
         /// <param name="autoReconnect"></param>
+        [Obsolete("Use the version that takes a Connector instead of a ListenerProvider")]
         void ChangeSource(IListenerProvider provider, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator, bool autoReconnect);
+
+        /// <summary>
+        /// Changes the connector and/or message bytes extractor used by the listener.
+        /// </summary>
+        /// <param name="connector"></param>
+        /// <param name="bytesExtractor"></param>
+        /// <param name="rawMessageTranslator"></param>
+        void ChangeSource(ISingleConnectionConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator);
 
         /// <summary>
         /// Connects to the source of aircraft data. Incoming messages from the source will raise events on the listener.

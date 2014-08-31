@@ -16,33 +16,13 @@ using System.Text;
 namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// An active connector that connects to a single machine over the IP network.
+    /// A connector that establishes a single connection.
     /// </summary>
-    public interface IIPActiveConnector : IActiveConnector, ISingleConnectionConnector
+    public interface ISingleConnectionConnector : IConnector
     {
         /// <summary>
-        /// Gets or sets the address of the machine to connect to.
+        /// Gets the established connection.
         /// </summary>
-        string Address { get; set; }
-
-        /// <summary>
-        /// Gets or sets the port to connect to.
-        /// </summary>
-        int Port { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating that keep-alive packets are to be used instead of the
-        /// connection reset value.
-        /// </summary>
-        /// <remarks>
-        /// Note that Mono does not support the use of keep-alive packets. When running under
-        /// Mono this flag is always set to false.
-        /// </remarks>
-        bool UseKeepAlive { get; set; }
-
-        /// <summary>
-        /// Gets the period of inactivity (in milliseconds) before the connection is reset.
-        /// </summary>
-        int IdleTimeout { get; set; }
+        IConnection Connection { get; }
     }
 }

@@ -12,37 +12,65 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.Network;
 
-namespace VirtualRadar.Interface.Network
+namespace VirtualRadar.Library.Network
 {
     /// <summary>
-    /// An active connector that connects to a single machine over the IP network.
+    /// A class that describes a read or write operation to perform on a connection.
     /// </summary>
-    public interface IIPActiveConnector : IActiveConnector, ISingleConnectionConnector
+    class ReadWriteOperation
     {
         /// <summary>
-        /// Gets or sets the address of the machine to connect to.
+        /// Gets a value indicating whether this is a read or a write operation.
         /// </summary>
-        string Address { get; set; }
+        public bool IsRead { get; private set; }
 
         /// <summary>
-        /// Gets or sets the port to connect to.
+        /// Gets the buffer to use.
         /// </summary>
-        int Port { get; set; }
+        public byte[] Buffer { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating that keep-alive packets are to be used instead of the
-        /// connection reset value.
+        /// Gets the offset from the start of the buffer.
         /// </summary>
-        /// <remarks>
-        /// Note that Mono does not support the use of keep-alive packets. When running under
-        /// Mono this flag is always set to false.
-        /// </remarks>
-        bool UseKeepAlive { get; set; }
+        public int Offset { get; private set; }
 
         /// <summary>
-        /// Gets the period of inactivity (in milliseconds) before the connection is reset.
+        /// Gets the number of bytes from the offset that can be used.
         /// </summary>
-        int IdleTimeout { get; set; }
+        public int Length { get; private set; }
+
+        /// <summary>
+        /// The delegate to call when reading bytes.
+        /// </summary>
+        public ConnectionReadDelegate ReadDelegate { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the number of bytes that were read into the buffer.
+        /// </summary>
+        public int BytesRead { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the connection has gone into the error state and needs to be abandoned.
+        /// </summary>
+        public bool Abandon { get; set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="isRead"></param>
+        /// <param name="readDelegate"></param>
+        public ReadWriteOperation(byte[] buffer, int offset, int length, bool isRead, ConnectionReadDelegate readDelegate = null)
+        {
+            Buffer = buffer;
+            Offset = offset;
+            Length = length;
+            IsRead = isRead;
+            ReadDelegate = readDelegate;
+        }
     }
 }

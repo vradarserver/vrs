@@ -29,7 +29,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// The object used to synchronise access to the queue.
         /// </summary>
-        private readonly object _SyncLock = new Object();
+        private SpinLock _SpinLock = new SpinLock();
 
         /// <summary>
         /// The queue of objects that we'll be maintaining.
@@ -83,6 +83,13 @@ namespace VirtualRadar.Interface
         /// waits on _Signal, which the push methods set.
         /// </summary>
         private bool _SurrenderTimeSlice;
+
+        /// <summary>
+        /// If true then something has called Stop(). Once a background thread queue has been stopped it cannot
+        /// be restarted. While it is stopped calls to enqueue items silently fail, and the background thread
+        /// worker will stop processing items after it has finished processing the current item.
+        /// </summary>
+        private bool _Stopped;
 
         /// <summary>
         /// Creates a new object.
@@ -160,6 +167,16 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
+        /// Stops processing items. Once the queue has stopped it cannot be restarted.
+        /// </summary>
+        public void Stop()
+        {
+            _Stopped = true;
+            Clear();
+            _BackgroundThread = null;
+        }
+
+        /// <summary>
         /// Called on the background thread.
         /// </summary>
         private void BackgroundThreadMethod()
@@ -170,10 +187,15 @@ namespace VirtualRadar.Interface
                 Thread.CurrentThread.CurrentUICulture = applicationInformation.CultureInfo;
             }
 
-            while(true) {
+            while(!_Stopped) {
                 try {
                     T itemFromQueue;
-                    lock(_SyncLock) itemFromQueue = _Queue.Count == 0 ? null : _Queue.Dequeue();
+                    _SpinLock.Lock();
+                    try {
+                        itemFromQueue = _Queue.Count == 0 ? null : _Queue.Dequeue();
+                    } finally {
+                        _SpinLock.Unlock();
+                    }
 
                     if(itemFromQueue != null) _ProcessObject(itemFromQueue);
                     else {
@@ -193,11 +215,18 @@ namespace VirtualRadar.Interface
         /// <param name="item"></param>
         public void Enqueue(T item)
         {
-            if(_ForceOntoSingleThread) ProcessItemInSingleThreadMode(item);
-            else {
-                if(_BackgroundThread != null) {
-                    lock(_SyncLock) _Queue.Enqueue(item);
-                    if(!_SurrenderTimeSlice) _Signal.Set();
+            if(!_Stopped) {
+                if(_ForceOntoSingleThread) ProcessItemInSingleThreadMode(item);
+                else {
+                    if(_BackgroundThread != null) {
+                        _SpinLock.Lock();
+                        try {
+                            _Queue.Enqueue(item);
+                        } finally {
+                            _SpinLock.Unlock();
+                        }
+                        if(!_SurrenderTimeSlice) _Signal.Set();
+                    }
                 }
             }
         }
@@ -208,17 +237,23 @@ namespace VirtualRadar.Interface
         /// <param name="items"></param>
         public void EnqueueRange(IEnumerable<T> items)
         {
-            if(_ForceOntoSingleThread) {
-                foreach(var item in items) {
-                    ProcessItemInSingleThreadMode(item);
-                }
-            } else if(_BackgroundThread != null) {
-                lock(_SyncLock) {
+            if(!_Stopped) {
+                if(_ForceOntoSingleThread) {
                     foreach(var item in items) {
-                        _Queue.Enqueue(item);
+                        ProcessItemInSingleThreadMode(item);
                     }
+                } else if(_BackgroundThread != null) {
+                    _SpinLock.Lock();
+                    try {
+                        foreach(var item in items) {
+                            _Queue.Enqueue(item);
+                        }
+                    } finally {
+                        _SpinLock.Unlock();
+                    }
+
+                    if(!_SurrenderTimeSlice) _Signal.Set();
                 }
-                if(!_SurrenderTimeSlice) _Signal.Set();
             }
         }
 
@@ -228,7 +263,12 @@ namespace VirtualRadar.Interface
         public void Clear()
         {
             if(_BackgroundThread != null) {
-                lock(_SyncLock) _Queue.Clear();
+                _SpinLock.Lock();
+                try {
+                    _Queue.Clear();
+                } finally {
+                    _SpinLock.Unlock();
+                }
             }
         }
 

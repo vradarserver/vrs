@@ -2240,4 +2240,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="menuConfigureFeed" xml:space="preserve">
     <value>Configure Feed</value>
   </data>
+  <data name="Exceptions" xml:space="preserve">
+    <value>Exceptions</value>
+  </data>
+  <data name="LastConnectorException" xml:space="preserve">
+    <value>Last Exception</value>
+  </data>
 </root>

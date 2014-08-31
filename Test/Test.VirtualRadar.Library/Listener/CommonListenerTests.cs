@@ -28,7 +28,7 @@ namespace Test.VirtualRadar.Library.Listener
             TestUtilities.TestProperty(listener, r => r.ReceiverName, null, "Abc");
 
             Assert.AreEqual(null, listener.BytesExtractor);
-            Assert.AreEqual(null, listener.Provider);
+            Assert.AreEqual(null, listener.Connector);
             Assert.AreEqual(null, listener.RawMessageTranslator);
             Assert.AreEqual(0, listener.TotalMessages);
             Assert.AreEqual(0, listener.TotalBadMessages);

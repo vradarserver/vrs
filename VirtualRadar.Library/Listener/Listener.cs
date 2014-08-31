@@ -19,6 +19,7 @@ using VirtualRadar.Interface.Adsb;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.ModeS;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library.Listener
@@ -64,6 +65,11 @@ namespace VirtualRadar.Library.Listener
         /// The object that manages the clock for us.
         /// </summary>
         private IClock _Clock;
+
+        /// <summary>
+        /// The read buffer.
+        /// </summary>
+        private byte[] _Buffer = new byte[2048];
 
         /// <summary>
         /// The object that can translate port 30003 messages for us.
@@ -126,11 +132,6 @@ namespace VirtualRadar.Library.Listener
         /// Set to true if the listener has been, or is in the process of being, disposed.
         /// </summary>
         private bool _Disposed;
-
-        /// <summary>
-        /// The log that connect / disconnect messages will be written to.
-        /// </summary>
-        private ILog _Log;
         #endregion
 
         #region Properties
@@ -143,6 +144,11 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public string ReceiverName { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public ISingleConnectionConnector Connector { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -358,7 +364,10 @@ namespace VirtualRadar.Library.Listener
                         _HookedFastHeartbeat = false;
                         Factory.Singleton.Resolve<IHeartbeatService>().Singleton.FastTick -= HeartbeatService_FastTick;
                     }
-                    if(Provider != null) Provider.Close();
+                    if(Connector != null) {
+                        Connector.CloseConnection();
+                        Connector.Dispose();
+                    }
                     if(_MessageProcessingAndDispatchQueue != null) {
                         _MessageProcessingAndDispatchQueue.Dispose();
                     }
@@ -372,16 +381,15 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="provider"></param>
+        /// <param name="connector"></param>
         /// <param name="bytesExtractor"></param>
         /// <param name="rawMessageTranslator"></param>
-        /// <param name="autoReconnect"></param>
-        public void ChangeSource(IListenerProvider provider, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator, bool autoReconnect)
+        public void ChangeSource(ISingleConnectionConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator)
         {
+            if(!connector.IsSingleConnection) throw new InvalidOperationException("Listeners can only use single-connection connectors");
+
             lock(_SyncLock) {
                 bool changed = false;
-
-                if(_Log == null) _Log = Factory.Singleton.Resolve<ILog>().Singleton;
 
                 if(_CoarseTimeout <= 0) _CoarseTimeout = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.CoarseListenerTimeout;
                 if(_CoarseTimeout > 0 && !_HookedFastHeartbeat) {
@@ -389,11 +397,15 @@ namespace VirtualRadar.Library.Listener
                     Factory.Singleton.Resolve<IHeartbeatService>().Singleton.FastTick += HeartbeatService_FastTick;
                 }
 
-                if(provider != Provider || bytesExtractor != BytesExtractor || rawMessageTranslator != RawMessageTranslator) {
-                    if(Provider != null) Disconnect();
+                var connected = Connector != null && Connector.HasConnection;
+                if(connector != Connector || bytesExtractor != BytesExtractor || rawMessageTranslator != RawMessageTranslator) {
+                    if(Connector != null) Connector.CloseConnection();
                     if(RawMessageTranslator != null && RawMessageTranslator != rawMessageTranslator) RawMessageTranslator.Dispose();
 
-                    Provider = provider;
+                    UnhookConnector();
+                    Connector = connector;
+                    HookConnector();
+
                     BytesExtractor = bytesExtractor;
                     RawMessageTranslator = rawMessageTranslator;
                     if(RawMessageTranslator != null) RawMessageTranslator.Statistics = Statistics;
@@ -406,9 +418,41 @@ namespace VirtualRadar.Library.Listener
 
                 if(changed) {
                     OnSourceChanged(EventArgs.Empty);
-                    if(autoReconnect) Connect(false);
+                    if(connected) Connect(true);
                 }
             }
+        }
+
+        private void HookConnector()
+        {
+            if(Connector != null) {
+                Connector.ConnectionEstablished += Connector_ConnectionEstablished;
+                Connector.ConnectionStateChanged += Connector_ConnectionStateChanged;
+                Connector.ConnectionClosed += Connector_ConnectionClosed;
+                Connector.ExceptionCaught += Connector_ExceptionCaught;
+            }
+        }
+
+        private void UnhookConnector()
+        {
+            if(Connector != null) {
+                Connector.ConnectionEstablished -= Connector_ConnectionEstablished;
+                Connector.ConnectionStateChanged -= Connector_ConnectionStateChanged;
+                Connector.ConnectionClosed -= Connector_ConnectionClosed;
+                Connector.ExceptionCaught -= Connector_ExceptionCaught;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="bytesExtractor"></param>
+        /// <param name="rawMessageTranslator"></param>
+        /// <param name="autoReconnect"></param>
+        public void ChangeSource(IListenerProvider provider, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator, bool autoReconnect)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -417,68 +461,27 @@ namespace VirtualRadar.Library.Listener
         /// <param name="autoReconnect"></param>
         public void Connect(bool autoReconnect)
         {
-            if(Provider == null || BytesExtractor == null || RawMessageTranslator == null) throw new InvalidOperationException("Cannot call Connect before ChangeSource has been used to set Provider, BytesExtractor and RawMessageTranslator");
+            if(Connector == null || BytesExtractor == null || RawMessageTranslator == null) throw new InvalidOperationException("Cannot call Connect before ChangeSource has been used to set Connector, BytesExtractor and RawMessageTranslator");
 
             if(!_Disposed) {
                 try {
                     SetConnectionStatus(autoReconnect ? ConnectionStatus.Reconnecting : ConnectionStatus.Connecting);
-                    if(_Log != null) _Log.WriteLine("Connecting to {0}", ReceiverName);
-                    Provider.BeginConnect(Connected);
+                    Connector.EstablishConnection();
                 } catch(Exception ex) {
                     Disconnect();
-                    if(_Log != null) _Log.WriteLine("Failed to connect to {0}, exception {1}", ReceiverName, ex.Message);
                     OnExceptionCaught(new EventArgs<Exception>(ex));
                 }
             }
         }
 
         /// <summary>
-        /// Called after the provider has connected to the source of data.
+        /// Called after the connector has established a connection to a source of data.
         /// </summary>
-        /// <param name="ar"></param>
-        private void Connected(IAsyncResult ar)
+        private void Connected()
         {
-            try {
-                if(Provider.EndConnect(ar)) {
-                    if(Statistics != null) Statistics.Lock(r => r.ConnectionTimeUtc = _Clock.UtcNow);
-                    SetConnectionStatus(ConnectionStatus.Connected);
-                    if(_Log != null) _Log.WriteLine("Connected to {0}", ReceiverName);
-                    Provider.BeginRead(BytesReceived);
-                }
-            } catch(SocketException ex) {
-                switch(ConnectionStatus) {
-                    case ConnectionStatus.Connecting:
-                        SetConnectionStatus(ConnectionStatus.CannotConnect);
-                        if(_Log != null) _Log.WriteLine("Failed to connect to {0}, socket exception {1}. Cannot connect.", ReceiverName, ex.Message);
-                        break;
-                    case ConnectionStatus.Reconnecting:
-                        Reconnect();
-                        break;
-                    case ConnectionStatus.CannotConnect:
-                        // This can happen if the user tries to manually reconnect while another thread
-                        // is reconnecting. The manual reconnect sets the status to CannotConnect before
-                        // the reconnect finishes. We should just give up at this point, it would be
-                        // confusing to the user to suddenly get exceptions showing or for it to actually
-                        // connect.
-                        if(_Log != null) _Log.WriteLine("Failed to connect to {0}, sockect exception {1}. Status is {2}, stopping.", ReceiverName, ex.Message, ConnectionStatus);
-                        break;
-                    case ConnectionStatus.Connected:
-                        // This can happen in a similar situation to the above, except the receiver has been
-                        // reconfigured and some background thread is still trying to connect the old receiver.
-                        // In this situation we just want to forget about it.
-                        break;
-                    default:
-                        OnExceptionCaught(new EventArgs<Exception>(ex)); break;
-                }
-            } catch(ObjectDisposedException) {
-                // These are just exception spam, we'll get these if the connection is disposed of while the read is running on another thread
-            } catch(InvalidOperationException) {
-                // More exception spam, this happens if the connection is closed but not (yet) disposed of while the read is running
-            } catch(Exception ex) {
-                Disconnect();
-                if(_Log != null) _Log.WriteLine("Failed to connect to {0}, unexpected exception {1}", ReceiverName, ex.Message);
-                OnExceptionCaught(new EventArgs<Exception>(ex));
-            }
+            if(Statistics != null) Statistics.Lock(r => r.ConnectionTimeUtc = _Clock.UtcNow);
+            SetConnectionStatus(ConnectionStatus.Connected);
+            Connector.Connection.Read(_Buffer, BytesReceived);
         }
 
         /// <summary>
@@ -487,9 +490,8 @@ namespace VirtualRadar.Library.Listener
         public void Disconnect()
         {
             Statistics.ResetConnectionStatistics();
-            Provider.Close();
+            Connector.CloseConnection();
             SetConnectionStatus(ConnectionStatus.Disconnected);
-            if(_Log != null) _Log.WriteLine("Disconnected from {0}", ReceiverName);
         }
 
         /// <summary>
@@ -498,17 +500,8 @@ namespace VirtualRadar.Library.Listener
         private void Reconnect()
         {
             if(!_Disposed) {
-                try {
-                    Statistics.ResetConnectionStatistics();
-                    SetConnectionStatus(ConnectionStatus.Reconnecting);
-                    Provider.Sleep(1000);
-                    if(ConnectionStatus == ConnectionStatus.Reconnecting) {
-                        Provider.BeginConnect(Connected);
-                    }
-                } catch(Exception ex) {
-                    Disconnect();
-                    OnExceptionCaught(new EventArgs<Exception>(ex));
-                }
+                Statistics.ResetConnectionStatistics();
+                Connector.RestartConnection();
             }
         }
 
@@ -526,33 +519,19 @@ namespace VirtualRadar.Library.Listener
 
         #region BytesReceived, ProcessPort30003MessageBytes, ProcessModeSMessageBytes
         /// <summary>
-        /// Called every time the provider sends some bytes to us.
+        /// Called every time the connection sends some bytes to us.
         /// </summary>
-        /// <param name="ar"></param>
-        private void BytesReceived(IAsyncResult ar)
+        /// <param name="connection"></param>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="bytesRead"></param>
+        private void BytesReceived(IConnection connection, byte[] buffer, int offset, int length, int bytesRead)
         {
             try {
                 var now = _Clock.UtcNow;
 
-                int bytesRead = -1;
-                bool fetchNext = true;
-                try {
-                    bytesRead = Provider.EndRead(ar);
-                } catch(ObjectDisposedException) {
-                    fetchNext = false;
-                } catch(SocketException ex) {
-                    fetchNext = false;
-                    if(_Log != null) _Log.WriteLine("Caught exception ({0}) reading from {1}, bytes read {2}", ex.Message, ReceiverName, bytesRead);
-                    Reconnect();
-                }
-
-                if(bytesRead == 0 || _Disposed) {
-                    fetchNext = false;
-                    if(!_Disposed) {
-                        if(_Log != null) _Log.WriteLine("Reconnecting {0}", ReceiverName);
-                        Reconnect();
-                    }
-                } else if(bytesRead > 0) {
+                if(bytesRead > 0) {
                     if(Statistics != null) Statistics.Lock(r => r.BytesReceived += bytesRead);
                     _LastMessageUtc = now;
 
@@ -560,11 +539,11 @@ namespace VirtualRadar.Library.Listener
                     // listening to RawBytesReceived, so I take a peek at the event handler before creating the event args...
                     if(RawBytesReceived != null) {
                         var copyRawBytes = new byte[bytesRead];
-                        Array.Copy(Provider.ReadBuffer, 0, copyRawBytes, 0, bytesRead);
+                        Array.Copy(buffer, offset, copyRawBytes, 0, bytesRead);
                         _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { RawBytesEventArgs = new EventArgs<byte[]>(copyRawBytes) });
                     }
 
-                    foreach(var extractedBytes in BytesExtractor.ExtractMessageBytes(Provider.ReadBuffer, 0, bytesRead)) {
+                    foreach(var extractedBytes in BytesExtractor.ExtractMessageBytes(buffer, offset, bytesRead)) {
                         if(extractedBytes.ChecksumFailed) {
                             ++TotalBadMessages;
                             if(Statistics != null) Statistics.Lock(r => ++r.FailedChecksumMessages);
@@ -572,7 +551,9 @@ namespace VirtualRadar.Library.Listener
                             // Another cheat and for the same reason as explained for the RawBytesReceived message - we don't want to
                             // incur the overhead of copying the extracted bytes if there is nothing listening to the event.
                             if(ModeSBytesReceived != null && extractedBytes.Format == ExtractedBytesFormat.ModeS) {
-                                _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { ModeSBytesEventArgs = new EventArgs<ExtractedBytes>((ExtractedBytes)extractedBytes.Clone()) });
+                                _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() {
+                                    ModeSBytesEventArgs = new EventArgs<ExtractedBytes>((ExtractedBytes)extractedBytes.Clone())
+                                });
                             }
 
                             switch(extractedBytes.Format) {
@@ -583,17 +564,11 @@ namespace VirtualRadar.Library.Listener
                             }
                         }
                     }
+
                     if(Statistics != null) Statistics.Lock(r => r.CurrentBufferSize = BytesExtractor.BufferSize);
                 }
 
-                if(fetchNext) {
-                    try {
-                        Provider.BeginRead(BytesReceived);
-                    } catch(SocketException ex) {
-                        if(_Log != null) _Log.WriteLine("Caught exception ({0}) starting next read from {1}", ex.Message, ReceiverName);
-                        Reconnect();
-                    }
-                }
+                Connector.Connection.Read(_Buffer, BytesReceived);
             } catch(Exception ex) {
                 Disconnect();
                 OnExceptionCaught(new EventArgs<Exception>(ex));
@@ -729,7 +704,6 @@ namespace VirtualRadar.Library.Listener
             if(_CoarseTimeout > 0 && ConnectionStatus == ConnectionStatus.Connected) {
                 var threshold = _Clock.UtcNow.AddSeconds(-_CoarseTimeout);
                 if(_LastMessageUtc < threshold) {
-                    if(_Log != null) _Log.WriteLine("Receiver {0} has had no messages for {1} seconds", ReceiverName, _CoarseTimeout);
                     Disconnect();
                     Reconnect();
                 }
@@ -738,6 +712,51 @@ namespace VirtualRadar.Library.Listener
         #endregion
 
         #region Other subscribed events
+        /// <summary>
+        /// Called when the connection is established.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Connector_ConnectionEstablished(object sender, ConnectionEventArgs e)
+        {
+            Connected();
+        }
+
+        /// <summary>
+        /// Called when the connection is closed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Connector_ConnectionClosed(object sender, ConnectionEventArgs e)
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Called when the connection status changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Connector_ConnectionStateChanged(object sender, EventArgs e)
+        {
+            if(Connector != null) ConnectionStatus = Connector.ConnectionStatus;
+        }
+
+        /// <summary>
+        /// Called when an exception is raised on the connector.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Connector_ExceptionCaught(object sender, EventArgs<Exception> args)
+        {
+            if(Statistics != null) {
+                Statistics.Lock((stat) => {
+                    ++stat.ConnectorExceptionCount;
+                    stat.ConnectorLastException = args.Value;
+                });
+            }
+        }
+
         /// <summary>
         /// Called when the fast tick occurs on the heartbeat service. This is called on a background thread.
         /// </summary>

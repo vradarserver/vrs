@@ -18,6 +18,7 @@ using VirtualRadar.Interface.Adsb;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 
@@ -196,13 +197,13 @@ namespace VirtualRadar.Library
         /// <param name="receiverLocation"></param>
         private void ApplyReceiverListenerSettings(bool reconnect, Receiver receiver, Configuration configuration, ReceiverLocation receiverLocation)
         {
-            var listenerProvider = DetermineListenerProvider(receiver);
+            var connector = DetermineConnector(receiver);
             var bytesExtractor = DetermineBytesExtractor(receiver);
-            bool feedSourceHasChanged = listenerProvider != Listener.Provider || bytesExtractor != Listener.BytesExtractor;
+            bool feedSourceHasChanged = connector != Listener.Connector || bytesExtractor != Listener.BytesExtractor;
             var rawMessageTranslator = DetermineRawMessageTranslator(receiver, receiverLocation, configuration, feedSourceHasChanged);
 
             if(feedSourceHasChanged) {
-                Listener.ChangeSource(listenerProvider, bytesExtractor, rawMessageTranslator, reconnect);
+                Listener.ChangeSource(connector, bytesExtractor, rawMessageTranslator);
                 if(Listener.Statistics != null) Listener.Statistics.ResetMessageCounters();
             }
         }
@@ -272,42 +273,46 @@ namespace VirtualRadar.Library
         }
         #endregion
 
-        #region DetermineListenerProvider, DetermineBytesExtractor, DetermineRawMessageTranslator
+        #region DetermineConnector, DetermineBytesExtractor, DetermineRawMessageTranslator
         /// <summary>
         /// Creates and configures the provider to use to connect to the data feed.
         /// </summary>
         /// <param name="receiver"></param>
         /// <returns></returns>
-        private IListenerProvider DetermineListenerProvider(Receiver receiver)
+        private ISingleConnectionConnector DetermineConnector(Receiver receiver)
         {
-            IListenerProvider result = Listener.Provider;
+            ISingleConnectionConnector result = Listener.Connector;
 
             switch(receiver.ConnectionType) {
                 case ConnectionType.COM:
-                    var existingSerialProvider = result as ISerialListenerProvider;
+                    var existingSerialProvider = result as ISerialActiveConnector;
                     if(existingSerialProvider == null || existingSerialProvider.BaudRate != receiver.BaudRate || existingSerialProvider.ComPort != receiver.ComPort ||
                        existingSerialProvider.DataBits != receiver.DataBits || existingSerialProvider.Handshake != receiver.Handshake || 
                        existingSerialProvider.Parity != receiver.Parity || existingSerialProvider.ShutdownText != receiver.ShutdownText ||
                        existingSerialProvider.StartupText != receiver.StartupText || existingSerialProvider.StopBits != receiver.StopBits) {
-                        var serialProvider = Factory.Singleton.Resolve<ISerialListenerProvider>();
-                        serialProvider.BaudRate = receiver.BaudRate;
-                        serialProvider.ComPort = receiver.ComPort;
-                        serialProvider.DataBits = receiver.DataBits;
-                        serialProvider.Handshake = receiver.Handshake;
-                        serialProvider.Parity = receiver.Parity;
-                        serialProvider.ShutdownText = receiver.ShutdownText;
-                        serialProvider.StartupText = receiver.StartupText;
-                        serialProvider.StopBits = receiver.StopBits;
-                        result = serialProvider;
+                        var serialConnector = Factory.Singleton.Resolve<ISerialActiveConnector>();
+                        serialConnector.Name =          receiver.Name;
+                        serialConnector.BaudRate =      receiver.BaudRate;
+                        serialConnector.ComPort =       receiver.ComPort;
+                        serialConnector.DataBits =      receiver.DataBits;
+                        serialConnector.Handshake =     receiver.Handshake;
+                        serialConnector.Parity =        receiver.Parity;
+                        serialConnector.ShutdownText =  receiver.ShutdownText;
+                        serialConnector.StartupText =   receiver.StartupText;
+                        serialConnector.StopBits =      receiver.StopBits;
+                        result = serialConnector;
                     }
                     break;
                 case ConnectionType.TCP:
-                    var existingTcpProvider = result as ITcpListenerProvider;
+                    var existingTcpProvider = result as IIPActiveConnector;
                     if(existingTcpProvider == null || existingTcpProvider.Address != receiver.Address || existingTcpProvider.Port != receiver.Port) {
-                        var tcpProvider = Factory.Singleton.Resolve<ITcpListenerProvider>();
-                        tcpProvider.Address = receiver.Address;
-                        tcpProvider.Port = receiver.Port;
-                        result = tcpProvider;
+                        var ipActiveConnector = Factory.Singleton.Resolve<IIPActiveConnector>();
+                        ipActiveConnector.Name =            receiver.Name;
+                        ipActiveConnector.Address =         receiver.Address;
+                        ipActiveConnector.Port =            receiver.Port;
+                        ipActiveConnector.UseKeepAlive =    true;
+                        ipActiveConnector.IdleTimeout =     60000;
+                        result = ipActiveConnector;
                     }
                     break;
                 default:
