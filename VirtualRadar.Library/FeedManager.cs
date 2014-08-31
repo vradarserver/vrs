@@ -186,7 +186,7 @@ namespace VirtualRadar.Library
             var feed = Factory.Singleton.Resolve<IFeed>();
             feed.Initialise(receiver, configuration);
             AttachFeed(feed, feeds);
-            feed.Listener.Connect(receiver.AutoReconnectAtStartup);
+            feed.Listener.Connect();
         }
 
         private void CreateFeedForMergedFeed(MergedFeed mergedFeed, IEnumerable<IFeed> allReceiverPathways, List<IFeed> feeds)
@@ -283,11 +283,10 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="autoReconnect"></param>
-        public void Connect(bool autoReconnect)
+        public void Connect()
         {
             foreach(var feed in Feeds) {
-                feed.Listener.Connect(autoReconnect);
+                feed.Listener.Connect();
             }
         }
 

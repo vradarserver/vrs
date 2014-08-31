@@ -141,7 +141,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Listener.ChangeSource(connector == null ? _Connector.Object : connector.Object,
                                    bytesExtractor == null ? _BytesExtractor.Object : bytesExtractor.Object,
                                    translator == null ? _RawMessageTranslator.Object : translator.Object);
-            _Listener.Connect(false);
+            _Listener.Connect();
         }
         #endregion
 
@@ -398,7 +398,7 @@ namespace Test.VirtualRadar.Library.Listener
         [ExpectedException(typeof(InvalidOperationException))]
         public void Listener_Connect_Throws_If_ChangeSource_Never_Called()
         {
-            _Listener.Connect(false);
+            _Listener.Connect();
         }
 
         [TestMethod]

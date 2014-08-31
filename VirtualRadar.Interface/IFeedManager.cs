@@ -47,8 +47,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Causes every feed to establish a connection.
         /// </summary>
-        /// <param name="autoReconnect">True if the feed should keep trying to connect if at first it fails.</param>
-        void Connect(bool autoReconnect);
+        void Connect();
 
         /// <summary>
         /// Causes every feed to disconnect from the data source.

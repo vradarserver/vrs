@@ -40,8 +40,6 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Listener.IMergedFeedListener, Listener.MergedFeedListener>();
             factory.Register<VirtualRadar.Interface.Listener.IPort30003MessageBytesExtractor, Listener.Port30003MessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.ISbs3MessageBytesExtractor, Listener.Sbs3MessageBytesExtractor>();
-            factory.Register<VirtualRadar.Interface.Listener.ISerialListenerProvider, Listener.SerialListenerProvider>();
-            factory.Register<VirtualRadar.Interface.Listener.ITcpListenerProvider, Listener.TcpListenerProvider>();
             factory.Register<VirtualRadar.Interface.Listener.IPolarPlotter, Listener.PolarPlotter>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSParity, ModeS.ModeSParity>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSTranslator, ModeS.ModeSTranslator>();

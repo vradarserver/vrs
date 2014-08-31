@@ -45,13 +45,6 @@ namespace VirtualRadar.Interface.Listener
         ISingleConnectionConnector Connector { get; }
 
         /// <summary>
-        /// Gets the object that handles the connection for the listener. Do not modify any properties on the provider directly,
-        /// always use <see cref="ChangeSource"/> to perform configuration changes.
-        /// </summary>
-        [Obsolete("Use Connector instead")]
-        IListenerProvider Provider { get; }
-
-        /// <summary>
         /// Gets the object that can extract the important bytes from the stream. Do not modify any properties on the extractor directly,
         /// always use <see cref="ChangeSource"/> to perform configuration changes.
         /// </summary>
@@ -130,7 +123,6 @@ namespace VirtualRadar.Interface.Listener
         /// Raised when the listener connects or disconnects. Note that exceptions raised during parsing of
         /// messages will cause the object to automatically disconnect.
         /// </summary>
-        [Obsolete("Use Connector's ConnectionStateChanged instead")]
         event EventHandler ConnectionStateChanged;
 
         /// <summary>
@@ -151,17 +143,6 @@ namespace VirtualRadar.Interface.Listener
         event EventHandler<EventArgs<string>> PositionReset;
 
         /// <summary>
-        /// Changes the provider and/or message bytes extractor used by the listener, optionally reconnecting if the
-        /// a connection was already established.
-        /// </summary>
-        /// <param name="provider"></param>
-        /// <param name="bytesExtractor"></param>
-        /// <param name="rawMessageTranslator"></param>
-        /// <param name="autoReconnect"></param>
-        [Obsolete("Use the version that takes a Connector instead of a ListenerProvider")]
-        void ChangeSource(IListenerProvider provider, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator, bool autoReconnect);
-
-        /// <summary>
         /// Changes the connector and/or message bytes extractor used by the listener.
         /// </summary>
         /// <param name="connector"></param>
@@ -172,13 +153,12 @@ namespace VirtualRadar.Interface.Listener
         /// <summary>
         /// Connects to the source of aircraft data. Incoming messages from the source will raise events on the listener.
         /// </summary>
-        /// <param name="autoReconnect">True to automatically attempt a reconnect if the connection attempt fails, false to only try to connect once.</param>
         /// <remarks>
         /// The method begins the connection procedure on a background thread and returns almost immediately. It may not have connected by the time the
         /// connection returns. It may raise an exception if <see cref="ChangeSource"/> has not been called but otherwise any exceptions raised during the
         /// connection procedure are passed through ExceptionCaught.
         /// </remarks>
-        void Connect(bool autoReconnect);
+        void Connect();
 
         /// <summary>
         /// Called implicitly by Dispose, disconnects from the source of aircraft message data.

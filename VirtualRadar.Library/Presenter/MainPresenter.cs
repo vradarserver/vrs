@@ -291,7 +291,7 @@ namespace VirtualRadar.Library.Presenter
                 try {
                     var feed = args.Value;
                     feed.Listener.Disconnect();
-                    feed.Listener.Connect(false);
+                    feed.Listener.Connect();
                 } catch(Exception ex) {
                     View.BubbleExceptionToGui(ex);
                 }

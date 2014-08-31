@@ -178,9 +178,7 @@
     <Compile Include="Listener\ExtractedBytesFormat.cs" />
     <Compile Include="Listener\IBeastMessageBytesExtractor.cs" />
     <Compile Include="Listener\IListener.cs" />
-    <Compile Include="Listener\IListenerProvider.cs" />
     <Compile Include="Listener\IMessageBytesExtractor.cs" />
-    <Compile Include="Listener\ITcpListenerProvider.cs" />
     <Compile Include="BaseStation\NamespaceDoc.cs" />
     <Compile Include="Crc16.cs" />
     <Compile Include="Crc16Ccitt.cs" />
@@ -215,7 +213,6 @@
     <Compile Include="JsonSerialiser.cs" />
     <Compile Include="Listener\IPort30003MessageBytesExtractor.cs" />
     <Compile Include="Listener\ISbs3MessageBytesExtractor.cs" />
-    <Compile Include="Listener\ISerialListenerProvider.cs" />
     <Compile Include="Listener\NamespaceDoc.cs" />
     <Compile Include="ModeS\IModeSParity.cs" />
     <Compile Include="ModeS\NamespaceDoc.cs" />

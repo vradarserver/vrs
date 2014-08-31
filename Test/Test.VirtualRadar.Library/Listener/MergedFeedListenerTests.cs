@@ -345,11 +345,9 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_Connect_Is_Inert()
         {
-            foreach(var reconnect in new bool[] { true, false }) {
-                var status = _MergedFeed.ConnectionStatus;
-                _MergedFeed.Connect(reconnect);
-                Assert.AreEqual(status, _MergedFeed.ConnectionStatus);
-            }
+            var status = _MergedFeed.ConnectionStatus;
+            _MergedFeed.Connect();
+            Assert.AreEqual(status, _MergedFeed.ConnectionStatus);
         }
         #endregion
 

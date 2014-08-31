@@ -255,12 +255,12 @@ namespace Test.VirtualRadar.Library
 
             _Manager.Initialise();
 
-            _CreatedListeners[0].Verify(r => r.Connect(true), Times.Once());
-            _CreatedListeners[1].Verify(r => r.Connect(false), Times.Once());
+            _CreatedListeners[0].Verify(r => r.Connect(), Times.Once());
+            _CreatedListeners[1].Verify(r => r.Connect(), Times.Once());
 
             // Merged feeds are not connected - they don't have any connection state, they always report connected
-            _CreatedListeners[4].Verify(r => r.Connect(It.IsAny<bool>()), Times.Never());
-            _CreatedListeners[5].Verify(r => r.Connect(It.IsAny<bool>()), Times.Never());
+            _CreatedListeners[4].Verify(r => r.Connect(), Times.Never());
+            _CreatedListeners[5].Verify(r => r.Connect(), Times.Never());
         }
         #endregion
 
@@ -405,7 +405,7 @@ namespace Test.VirtualRadar.Library
 
                 _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-                _CreatedListeners[1].Verify(r => r.Connect(reconnect), Times.Once());
+                _CreatedListeners[1].Verify(r => r.Connect(), Times.Once());
             }
         }
 
@@ -705,19 +705,15 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void FeedManager_Connect_Passes_The_Call_Through_To_Listeners()
         {
-            foreach(var autoReconnect in new bool[] { true, false }) {
-                TestCleanup();
-                TestInitialise();
-                _Manager.Initialise();
+            _Manager.Initialise();
 
-                // Can't use Verify as that will count the connect from Initialise as well and it gets a bit messy
-                bool seenConnectCall = false;
-                _CreatedListeners[0].Setup(r => r.Connect(autoReconnect)).Callback((bool x) => seenConnectCall = true);
+            // Can't use Verify as that will count the connect from Initialise as well and it gets a bit messy
+            bool seenConnectCall = false;
+            _CreatedListeners[0].Setup(r => r.Connect()).Callback(() => seenConnectCall = true);
 
-                _Manager.Connect(autoReconnect);
+            _Manager.Connect();
 
-                Assert.IsTrue(seenConnectCall);
-            }
+            Assert.IsTrue(seenConnectCall);
         }
         #endregion
 
