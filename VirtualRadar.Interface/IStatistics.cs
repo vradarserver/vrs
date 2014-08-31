@@ -137,6 +137,16 @@ namespace VirtualRadar.Interface
         long[] AdsbMessageFormatCount { get; }
 
         /// <summary>
+        /// Gets or sets the number of exceptions raised by the connector.
+        /// </summary>
+        long ConnectorExceptionCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the exception last raised by the connector.
+        /// </summary>
+        Exception ConnectorLastException { get; set; }
+
+        /// <summary>
         /// Prepares the statistics for first use.
         /// </summary>
         void Initialise();

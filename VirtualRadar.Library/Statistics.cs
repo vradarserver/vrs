@@ -143,6 +143,16 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public long ConnectorExceptionCount { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public Exception ConnectorLastException { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Initialise()
         {
             if(!_Initialised) {

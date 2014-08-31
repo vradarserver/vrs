@@ -19,6 +19,7 @@ using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 
 namespace Test.VirtualRadar.Library.Listener
 {
@@ -334,10 +335,9 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedListener_ChangeSource_Throws_Exception()
         {
             _MergedFeed.ChangeSource(
-                TestUtilities.CreateMockInstance<IListenerProvider>().Object,
+                TestUtilities.CreateMockInstance<ISingleConnectionConnector>().Object,
                 TestUtilities.CreateMockInstance<IMessageBytesExtractor>().Object,
-                TestUtilities.CreateMockInstance<IRawMessageTranslator>().Object,
-                false);
+                TestUtilities.CreateMockInstance<IRawMessageTranslator>().Object);
         }
         #endregion
 

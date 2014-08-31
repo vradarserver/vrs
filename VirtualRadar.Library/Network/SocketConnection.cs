@@ -46,54 +46,78 @@ namespace VirtualRadar.Library.Network
         }
 
         /// <summary>
-        /// Disposes of the connection.
+        /// Gets a reference to the socket that cannot be changed from other threads.
         /// </summary>
-        /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
+        /// <returns></returns>
+        private Socket GetSocket()
         {
-            base.Dispose(disposing);
-
+            _SpinLock.Lock();
             try {
-                AbandonConnection();
-            } catch {
-                ;
+                return Socket;
+            } finally {
+                _SpinLock.Unlock();
             }
         }
 
         /// <summary>
-        /// Abandons the connection.
+        /// See the base docs.
         /// </summary>
-        public override void Abandon()
-        {
-            try {
-                AbandonConnection();
-            } catch(Exception ex) {
-                if(_Connector != null) _Connector.RaiseConnectionException(this, ex);
-            }
-        }
-
-        /// <summary>
-        /// Abandons the connection.
-        /// </summary>
-        private void AbandonConnection()
+        protected override void AbandonConnection()
         {
             var closedSocket = false;
 
             using(_SpinLock.AcquireLock()) {
                 if(Socket != null) {
                     closedSocket = true;
+                    var socket = Socket;
+                    Socket = null;
+
                     try {
-                        Socket.Close();
-                        ((IDisposable)Socket).Dispose();
+                        socket.Close();
+                        ((IDisposable)socket).Dispose();
                     } catch {
                     }
                 }
             }
 
             if(closedSocket) {
-                Socket = null;
                 ConnectionStatus = ConnectionStatus.Disconnected;
                 if(_Connector != null) _Connector.ConnectionAbandoned(this);
+            }
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="op"></param>
+        protected override void DoRead(ReadWriteOperation op)
+        {
+            var socket = GetSocket();
+            if(socket != null) {
+                try {
+                    op.BytesRead = socket.Receive(op.Buffer, op.Offset, op.Length, SocketFlags.None);
+                    op.Abandon = op.BytesRead == 0;     // Other side has forcibly closed the connection
+                } catch(Exception ex) {
+                    if(_Connector != null) _Connector.RaiseConnectionException(this, ex);
+                    op.Abandon = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="op"></param>
+        protected override void DoWrite(ReadWriteOperation op)
+        {
+            var socket = GetSocket();
+            if(socket != null) {
+                try {
+                    socket.Send(op.Buffer, op.Offset, op.Length, SocketFlags.None);
+                } catch(Exception ex) {
+                    if(_Connector != null) _Connector.RaiseConnectionException(this, ex);
+                    op.Abandon = true;
+                }
             }
         }
     }

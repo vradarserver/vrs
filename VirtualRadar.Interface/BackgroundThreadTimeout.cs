@@ -77,8 +77,16 @@ namespace VirtualRadar.Interface
             try {
                 result = thread.Join(Timeout);
                 TimedOut = !result;
-                if(TimedOut && TreatTimeoutAsException) {
-                    throw new TimeoutException(String.Format("Action timed out after {0:N0}ms", Timeout));
+                if(TimedOut) {
+                    try {
+                        thread.Abort();
+                    } catch {
+                        ;
+                    }
+
+                    if(TreatTimeoutAsException) {
+                        throw new TimeoutException(String.Format("Action timed out after {0:N0}ms", Timeout));
+                    }
                 }
                 if(Exception != null && ThrowExceptions) {
                     throw Exception;

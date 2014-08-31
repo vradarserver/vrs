@@ -74,10 +74,10 @@
     <Compile Include="Listener\ListenerTests.cs" />
     <Compile Include="Listener\MergedFeedListenerTests.cs" />
     <Compile Include="Listener\MockMessageBytesExtractor.cs" />
+    <Compile Include="Listener\MockSingleConnectionConnector.cs" />
     <Compile Include="Listener\PolarPlotterTests.cs" />
     <Compile Include="Listener\Port30003MessageBytesExtractorTests.cs" />
     <Compile Include="Listener\Sbs3MessageBytesExtractorTests.cs" />
-    <Compile Include="Listener\MockListenerProvider.cs" />
     <Compile Include="ModeS\ModeSParityTests.cs" />
     <Compile Include="PluginManagerTests.cs" />
     <Compile Include="Presenter\ConnectionClientLogPresenterTests.cs" />

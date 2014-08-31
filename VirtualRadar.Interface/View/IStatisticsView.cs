@@ -52,6 +52,16 @@ namespace VirtualRadar.Interface.View
         long CurrentBufferSize { get; set; }
 
         /// <summary>
+        /// Gets or sets the count of exceptions thrown by the connector.
+        /// </summary>
+        long ConnectorExceptionCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last exception thrown by the connector.
+        /// </summary>
+        Exception ConnectorLastException { get; set; }
+
+        /// <summary>
         /// Gets or sets the count of BaseStation messages received.
         /// </summary>
         long BaseStationMessages { get; set; }

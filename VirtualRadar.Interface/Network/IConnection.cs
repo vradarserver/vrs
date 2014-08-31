@@ -48,5 +48,24 @@ namespace VirtualRadar.Interface.Network
         /// any further calls on it.
         /// </remarks>
         void Abandon();
+
+        /// <summary>
+        /// Reads the next chunk from the connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="readDelegate"></param>
+        /// <remarks>
+        /// The call is non-blocking.
+        /// </remarks>
+        void Read(byte[] buffer, ConnectionReadDelegate readDelegate);
+
+        /// <summary>
+        /// Reads the next chunk from the connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="readDelegate"></param>
+        void Read(byte[] buffer, int offset, int length, ConnectionReadDelegate readDelegate);
     }
 }

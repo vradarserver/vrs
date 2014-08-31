@@ -1340,6 +1340,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exceptions.
+        /// </summary>
+        public static string Exceptions {
+            get {
+                return ResourceManager.GetString("Exceptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not check filename: {0}.
         /// </summary>
         public static string ExceptionWhenCheckingFile {
@@ -1930,6 +1939,15 @@ namespace VirtualRadar.Localisation {
         public static string Knots {
             get {
                 return ResourceManager.GetString("Knots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Exception.
+        /// </summary>
+        public static string LastConnectorException {
+            get {
+                return ResourceManager.GetString("LastConnectorException", resourceCulture);
             }
         }
         

@@ -1139,6 +1139,7 @@ namespace VirtualRadar.Library.Presenter
                             }, new Validation(ValidationField.BaseStationAddress, defaults) {
                                 Format = Strings.CannotResolveAddress,
                                 Args = new object[] { receiver.Address },
+                                IsWarning = true,
                             });
                         }
 

@@ -30,12 +30,17 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// The number of milliseconds the connector waits before abandoning an attempt to connect.
         /// </summary>
-        public static readonly int ConnectTimeout = 10000;
+        public static readonly int ConnectTimeout = 30000;
 
         /// <summary>
         /// The number of milliseconds the connector waits before retrying the attempt to connect.
         /// </summary>
-        public static readonly int RetryConnectTimeout = 5000;
+        public static readonly int RetryConnectTimeout = 10000;
+
+        /// <summary>
+        /// The number of milliseconds of inactivity before the connection times out.
+        /// </summary>
+        public static readonly int DefaultIdleTimeout = 60000;
         #endregion
 
         #region Fields
@@ -48,29 +53,14 @@ namespace VirtualRadar.Library.Network
         /// The connection that the connector establishes.
         /// </summary>
         private SocketConnection _Connection;
+
+        /// <summary>
+        /// True if the connector should automatically reconnect if the connection goes down.
+        /// </summary>
+        private bool _ReconnectAfterAbandon;
         #endregion
 
         #region Properties
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string Address { get; private set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public int Port { get; private set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool UseKeepAlive { get; private set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public int ResetConnectionTimeout { get; private set; }
-
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -78,55 +68,61 @@ namespace VirtualRadar.Library.Network
         {
             get { return false; }
         }
-        #endregion
 
-        #region SetConnectionProperties
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="port"></param>
-        /// <param name="useKeepAlive"></param>
-        /// <param name="resetConnectionTimeout"></param>
-        public void SetConnectionProperties(string address, int port, bool useKeepAlive, int resetConnectionTimeout)
+        public override bool IsSingleConnection
         {
-            using(_SpinLock.AcquireLock()) {
-                Address = address;
-                Port = port;
-                UseKeepAlive = _IsMono ? false : useKeepAlive;
-                ResetConnectionTimeout = resetConnectionTimeout;
-            }
+            get { return true; }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IConnection Connection
+        {
+            get { return GetConnection(); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string Address { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int Port { get; set; }
+
+        private bool _UseKeepAlive;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool UseKeepAlive
+        {
+            get { return _UseKeepAlive; }
+            set { _UseKeepAlive = _IsMono ? false : value; }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int IdleTimeout { get; set; }
+        #endregion
+
+        #region Ctor
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public IPActiveConnector() : base()
+        {
+            UseKeepAlive = true;
+            IdleTimeout = DefaultIdleTimeout;
         }
         #endregion
 
-        #region DoEstablishConnection, GetConnection, CloseConnection
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void DoEstablishConnection()
-        {
-            Reconnect(ConnectionStatus.Connecting);
-        }
-
-        /// <summary>
-        /// Keeps attempting to connect until a connection is established.
-        /// </summary>
-        private void Reconnect(ConnectionStatus status)
-        {
-            while(ConnectionStatus != ConnectionStatus.Connected) {
-                try {
-                    ConnectionStatus = status;
-                    Connect();
-                } catch(Exception ex) {
-                    OnExceptionCaught(new EventArgs<Exception>(ex));
-                }
-
-                if(ConnectionStatus != ConnectionStatus.Connected) {
-                    Thread.Sleep(RetryConnectTimeout);
-                }
-            }
-        }
-
+        #region GetConnection
         /// <summary>
         /// Returns the connection that was current as-at the time the call is made.
         /// </summary>
@@ -140,13 +136,61 @@ namespace VirtualRadar.Library.Network
                 _SpinLock.Unlock();
             }
         }
+        #endregion
+
+        #region DoEstablishConnection, CloseConnection
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        protected override void DoEstablishConnection()
+        {
+            _ReconnectAfterAbandon = true;
+            Reconnect(ConnectionStatus.Connecting, pauseBeforeConnect: false);
+        }
+
+        private static bool _InReconnect;
+        /// <summary>
+        /// Keeps attempting to connect until a connection is established.
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="pauseBeforeConnect"></param>
+        private void Reconnect(ConnectionStatus status, bool pauseBeforeConnect)
+        {
+            if(!_InReconnect) {
+                _InReconnect = true;
+                try {
+                    while(ConnectionStatus != ConnectionStatus.Connected && _ReconnectAfterAbandon) {
+                        if(pauseBeforeConnect) {
+                            var countSleeps = Math.Max(1, RetryConnectTimeout / 100);
+                            for(var i = 0;i < countSleeps && _ReconnectAfterAbandon;++i) {
+                                Thread.Sleep(100);
+                            }
+                        }
+                        pauseBeforeConnect = true;
+
+                        try {
+                            ConnectionStatus = status;
+                            Connect();
+                        } catch(Exception ex) {
+                            OnExceptionCaught(new EventArgs<Exception>(ex));
+                        }
+                    }
+                } finally {
+                    _InReconnect = false;
+                }
+            }
+        }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public override void CloseConnection()
         {
-            throw new NotImplementedException();
+            _ReconnectAfterAbandon = false;
+            var connection = GetConnection();
+            if(connection != null) {
+                connection.Abandon();
+            }
         }
         #endregion
 
@@ -156,19 +200,13 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         private void Connect()
         {
-            Disconnect();
-
-            string address = null;
-            int port = 0;
-            using(_SpinLock.AcquireLock()) {
-                address = Address;
-                port = Port;
-            }
-
-            var ipAddress = IPNetworkHelper.ResolveAddress(address);
-            var endPoint = new IPEndPoint(ipAddress, port);
+            var ipAddress = IPNetworkHelper.ResolveAddress(Address);
+            var endPoint = new IPEndPoint(ipAddress, Port);
             var socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            if(UseKeepAlive) {
+            if(!UseKeepAlive) {
+                socket.ReceiveTimeout = IdleTimeout;
+                socket.SendTimeout =    IdleTimeout;
+            } else {
                 socket.IOControl(IOControlCode.KeepAliveValues, new TcpKeepAlive() {
                     OnOff = 1,
                     KeepAliveTime = 10 * 1000,
@@ -221,6 +259,10 @@ namespace VirtualRadar.Library.Network
 
             if(deregisterConnection) {
                 DeregisterConnection(connection, raiseConnectionClosed: true, stopMirroringConnectionState: true);
+            }
+
+            if(_ReconnectAfterAbandon) {
+                Reconnect(ConnectionStatus.Reconnecting, pauseBeforeConnect: true);
             }
         }
         #endregion

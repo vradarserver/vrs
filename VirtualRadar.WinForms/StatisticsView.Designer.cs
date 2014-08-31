@@ -29,6 +29,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatisticsView));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.labelCurrentBufferSize = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.labelThroughput = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.labelBytesReceived = new System.Windows.Forms.Label();
@@ -81,8 +84,7 @@
             this.buttonClose = new System.Windows.Forms.Button();
             this.buttonResetCounters = new System.Windows.Forms.Button();
             this.splitContainerEverythingVsAdsb = new System.Windows.Forms.SplitContainer();
-            this.label5 = new System.Windows.Forms.Label();
-            this.labelCurrentBufferSize = new System.Windows.Forms.Label();
+            this.linkLabelConnectorExceptions = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -99,6 +101,8 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.linkLabelConnectorExceptions);
+            this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.labelCurrentBufferSize);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.labelThroughput);
@@ -115,6 +119,36 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::Connection::";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(339, 58);
+            this.label20.Margin = new System.Windows.Forms.Padding(3);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(74, 13);
+            this.label20.TabIndex = 16;
+            this.label20.Text = "::Exceptions:::";
+            // 
+            // labelCurrentBufferSize
+            // 
+            this.labelCurrentBufferSize.AutoSize = true;
+            this.labelCurrentBufferSize.Location = new System.Drawing.Point(186, 58);
+            this.labelCurrentBufferSize.Margin = new System.Windows.Forms.Padding(3);
+            this.labelCurrentBufferSize.Name = "labelCurrentBufferSize";
+            this.labelCurrentBufferSize.Size = new System.Drawing.Size(111, 13);
+            this.labelCurrentBufferSize.TabIndex = 15;
+            this.labelCurrentBufferSize.Text = "labelCurrentBufferSize";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 58);
+            this.label5.Margin = new System.Windows.Forms.Padding(3);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(96, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "::ReadBufferSize:::";
             // 
             // labelThroughput
             // 
@@ -464,7 +498,7 @@
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(683, 246);
-            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "::ADSB::";
             // 
@@ -648,7 +682,7 @@
             this.buttonClose.Location = new System.Drawing.Point(622, 568);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
-            this.buttonClose.TabIndex = 5;
+            this.buttonClose.TabIndex = 1;
             this.buttonClose.Text = "::Close::";
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
@@ -659,7 +693,7 @@
             this.buttonResetCounters.Location = new System.Drawing.Point(12, 568);
             this.buttonResetCounters.Name = "buttonResetCounters";
             this.buttonResetCounters.Size = new System.Drawing.Size(153, 23);
-            this.buttonResetCounters.TabIndex = 4;
+            this.buttonResetCounters.TabIndex = 0;
             this.buttonResetCounters.Text = "::ResetCounters::";
             this.buttonResetCounters.UseVisualStyleBackColor = true;
             this.buttonResetCounters.Click += new System.EventHandler(this.buttonResetCounters_Click);
@@ -687,25 +721,16 @@
             this.splitContainerEverythingVsAdsb.SplitterDistance = 300;
             this.splitContainerEverythingVsAdsb.TabIndex = 6;
             // 
-            // label5
+            // linkLabelConnectorExceptions
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 58);
-            this.label5.Margin = new System.Windows.Forms.Padding(3);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(96, 13);
-            this.label5.TabIndex = 14;
-            this.label5.Text = "::ReadBufferSize:::";
-            // 
-            // labelCurrentBufferSize
-            // 
-            this.labelCurrentBufferSize.AutoSize = true;
-            this.labelCurrentBufferSize.Location = new System.Drawing.Point(186, 58);
-            this.labelCurrentBufferSize.Margin = new System.Windows.Forms.Padding(3);
-            this.labelCurrentBufferSize.Name = "labelCurrentBufferSize";
-            this.labelCurrentBufferSize.Size = new System.Drawing.Size(111, 13);
-            this.labelCurrentBufferSize.TabIndex = 15;
-            this.labelCurrentBufferSize.Text = "labelCurrentBufferSize";
+            this.linkLabelConnectorExceptions.AutoSize = true;
+            this.linkLabelConnectorExceptions.Location = new System.Drawing.Point(522, 58);
+            this.linkLabelConnectorExceptions.Name = "linkLabelConnectorExceptions";
+            this.linkLabelConnectorExceptions.Size = new System.Drawing.Size(150, 13);
+            this.linkLabelConnectorExceptions.TabIndex = 18;
+            this.linkLabelConnectorExceptions.TabStop = true;
+            this.linkLabelConnectorExceptions.Text = "linkLabelConnectorExceptions";
+            this.linkLabelConnectorExceptions.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelConnectorExceptions_LinkClicked);
             // 
             // StatisticsView
             // 
@@ -796,5 +821,7 @@
         private System.Windows.Forms.SplitContainer splitContainerEverythingVsAdsb;
         private System.Windows.Forms.Label labelCurrentBufferSize;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.LinkLabel linkLabelConnectorExceptions;
     }
 }

@@ -31,6 +31,15 @@ namespace VirtualRadar.Interface.Network
     public interface IConnector : IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>
+        /// Gets or sets the name of the connector.
+        /// </summary>
+        /// <remarks>
+        /// This is for diagnostic purposes only, the code doesn't rely on anything about
+        /// the name.
+        /// </remarks>
+        string Name { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether the connector waits for other things to connect
         /// to it or actively connects to other things.
         /// </summary>
@@ -43,6 +52,12 @@ namespace VirtualRadar.Interface.Network
         /// connection. They only create one connection.
         /// </para></remarks>
         bool IsPassive { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the connector supports multiple connections or
+        /// a single connection.
+        /// </summary>
+        bool IsSingleConnection { get; }
 
         /// <summary>
         /// Gets a value indicating that the connector has established a connection with at
@@ -95,6 +110,11 @@ namespace VirtualRadar.Interface.Network
         /// this call returns.
         /// </remarks>
         void CloseConnection();
+
+        /// <summary>
+        /// Closes the connection and then establishes the connection.
+        /// </summary>
+        void RestartConnection();
 
         /// <summary>
         /// Returns an array of established connections made by the connector.

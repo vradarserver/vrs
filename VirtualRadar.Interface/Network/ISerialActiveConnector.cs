@@ -10,39 +10,57 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 
 namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// An active connector that connects to a single machine over the IP network.
+    /// An active connector that connects to a device over a serial COM port.
     /// </summary>
-    public interface IIPActiveConnector : IActiveConnector, ISingleConnectionConnector
+    public interface ISerialActiveConnector : IActiveConnector, ISingleConnectionConnector
     {
         /// <summary>
-        /// Gets or sets the address of the machine to connect to.
+        /// Gets or sets the COM port to listen to.
         /// </summary>
-        string Address { get; set; }
+        string ComPort { get; set; }
 
         /// <summary>
-        /// Gets or sets the port to connect to.
+        /// Gets or sets the baud rate to use.
         /// </summary>
-        int Port { get; set; }
+        int BaudRate { get; set; }
 
         /// <summary>
-        /// Gets a value indicating that keep-alive packets are to be used instead of the
-        /// connection reset value.
+        /// Gets or sets the data bits to use.
         /// </summary>
-        /// <remarks>
-        /// Note that Mono does not support the use of keep-alive packets. When running under
-        /// Mono this flag is always set to false.
-        /// </remarks>
-        bool UseKeepAlive { get; set; }
+        int DataBits { get; set; }
 
         /// <summary>
-        /// Gets the period of inactivity (in milliseconds) before the connection is reset.
+        /// Gets or sets the stop bits to use.
         /// </summary>
-        int IdleTimeout { get; set; }
+        StopBits StopBits { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parity to use.
+        /// </summary>
+        Parity Parity { get; set; }
+
+        /// <summary>
+        /// Gets or sets the handshake protocol to use.
+        /// </summary>
+        Handshake Handshake { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text to send across the COM port on startup - a null or empty string will disable the
+        /// feature. Can contain \r and \n.
+        /// </summary>
+        string StartupText { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text to send across the COM port on shutdown - a null or empty string will disable the
+        /// feature. Can contain \r and \n.
+        /// </summary>
+        string ShutdownText { get; set; }
     }
 }
