@@ -94,14 +94,12 @@
     <Compile Include="Listener\Listener.cs" />
     <Compile Include="Listener\MergedFeedListener.cs" />
     <Compile Include="Listener\PolarPlotter.cs" />
-    <Compile Include="Listener\SerialListenerProvider.cs" />
     <Compile Include="Listener\Port30003MessageBytesExtractor.cs" />
     <Compile Include="Listener\Sbs3MessageBytesExtractor.cs" />
     <Compile Include="ModeS\ModeATranslator.cs" />
     <Compile Include="ModeS\ModeSCharacterTranslator.cs" />
     <Compile Include="ModeS\ModeSParity.cs" />
     <Compile Include="MonoSpeechSynthesizerWrapper.cs" />
-    <Compile Include="Listener\TcpListenerProvider.cs" />
     <Compile Include="ModeS\ModeSAltitudeConversion.cs" />
     <Compile Include="ModeS\ModeSTranslator.cs" />
     <Compile Include="FeedManager.cs" />

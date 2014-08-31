@@ -167,11 +167,6 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IListenerProvider Provider { get; private set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public IStatistics Statistics { get; private set; }
 
         /// <summary>
@@ -366,20 +361,7 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="provider"></param>
-        /// <param name="bytesExtractor"></param>
-        /// <param name="rawMessageTranslator"></param>
-        /// <param name="autoReconnect"></param>
-        public void ChangeSource(IListenerProvider provider, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator, bool autoReconnect)
-        {
-            throw new InvalidOperationException("You cannot call ChangeSource on a merged feed listener");
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="autoReconnect"></param>
-        public void Connect(bool autoReconnect)
+        public void Connect()
         {
             ;
         }

@@ -481,7 +481,7 @@ namespace Test.VirtualRadar.Library
             _Feed.Initialise(_Receiver, _Configuration);
 
             _Listener.Verify(r => r.ChangeSource(It.IsAny<ISingleConnectionConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
-            _Listener.Verify(r => r.Connect(It.IsAny<bool>()), Times.Never());
+            _Listener.Verify(r => r.Connect(), Times.Never());
         }
 
         [TestMethod]

@@ -153,11 +153,6 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IListenerProvider Provider { get; private set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public IStatistics Statistics { get; private set; }
 
         /// <summary>
@@ -418,7 +413,7 @@ namespace VirtualRadar.Library.Listener
 
                 if(changed) {
                     OnSourceChanged(EventArgs.Empty);
-                    if(connected) Connect(true);
+                    if(connected) Connect();
                 }
             }
         }
@@ -446,26 +441,13 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="provider"></param>
-        /// <param name="bytesExtractor"></param>
-        /// <param name="rawMessageTranslator"></param>
-        /// <param name="autoReconnect"></param>
-        public void ChangeSource(IListenerProvider provider, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator, bool autoReconnect)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="autoReconnect"></param>
-        public void Connect(bool autoReconnect)
+        public void Connect()
         {
             if(Connector == null || BytesExtractor == null || RawMessageTranslator == null) throw new InvalidOperationException("Cannot call Connect before ChangeSource has been used to set Connector, BytesExtractor and RawMessageTranslator");
 
             if(!_Disposed) {
                 try {
-                    SetConnectionStatus(autoReconnect ? ConnectionStatus.Reconnecting : ConnectionStatus.Connecting);
+                    SetConnectionStatus(ConnectionStatus.Connecting);
                     Connector.EstablishConnection();
                 } catch(Exception ex) {
                     Disconnect();

@@ -25,6 +25,7 @@ using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Library;
 using System.Net;
+using System.Threading;
 
 namespace Test.VirtualRadar.Library.Presenter
 {
@@ -694,8 +695,10 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _View.Raise(v => v.ReconnectFeed += null, new EventArgs<IFeed>(feed.Object));
 
+            // The event is processed in a background thread, so this might not always pass...
+            Thread.Sleep(200);
             listener.Verify(v => v.Disconnect(), Times.Once());
-            listener.Verify(v => v.Connect(false), Times.Once());
+            listener.Verify(v => v.Connect(), Times.Once());
         }
         #endregion
     }
