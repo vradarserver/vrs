@@ -53,30 +53,6 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public override bool IsPassive
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public override bool IsSingleConnection
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public override IConnection Connection
-        {
-            get { return GetConnection(); }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public string ComPort { get; set; }
 
         /// <summary>
@@ -131,7 +107,7 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
-        #region DoEstablishConnection, CloseConnection, ConnectionAbandoned
+        #region DoEstablishConnection, DoCloseConnection, ConnectionAbandoned
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -164,9 +140,9 @@ namespace VirtualRadar.Library.Network
         }
 
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
-        public override void CloseConnection()
+        protected override void DoCloseConnection()
         {
             var connection = GetConnection();
             if(connection != null) {
