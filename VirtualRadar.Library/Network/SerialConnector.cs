@@ -91,6 +91,17 @@ namespace VirtualRadar.Library.Network
         public string ShutdownText { get; set; }
         #endregion
 
+        #region Ctor
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public SerialConnector() : base()
+        {
+            IsPassive = false;
+            IsSingleConnection = true;
+        }
+        #endregion
+
         #region GetConnection
         /// <summary>
         /// Returns the connection that was current as-at the time the call is made.
