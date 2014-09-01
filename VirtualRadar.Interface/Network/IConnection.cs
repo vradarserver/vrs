@@ -36,6 +36,26 @@ namespace VirtualRadar.Interface.Network
         IConnector Connector { get; }
 
         /// <summary>
+        /// Gets the total number of bytes read on the connection.
+        /// </summary>
+        long BytesRead { get; }
+
+        /// <summary>
+        /// Gets the total number of bytes queued for sending.
+        /// </summary>
+        long WriteQueueBytes { get; }
+
+        /// <summary>
+        /// Gets the total number of bytes sent.
+        /// </summary>
+        long BytesWritten { get; }
+
+        /// <summary>
+        /// Gets the total number of bytes that have been discarded because they were stale.
+        /// </summary>
+        long StaleBytesDiscarded { get; }
+
+        /// <summary>
         /// Raised when <see cref="ConnectionStatus"/> changes.
         /// </summary>
         event EventHandler ConnectionStateChanged;
@@ -67,5 +87,21 @@ namespace VirtualRadar.Interface.Network
         /// <param name="length"></param>
         /// <param name="readDelegate"></param>
         void Read(byte[] buffer, int offset, int length, ConnectionReadDelegate readDelegate);
+
+        /// <summary>
+        /// Sends the content of the buffer over the connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        void Write(byte[] buffer, int staleMessageTimeoutOverride = -1);
+
+        /// <summary>
+        /// Sends the content of the buffer over the connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        void Write(byte[] buffer, int offset, int length, int staleMessageTimeoutOverride = -1);
     }
 }

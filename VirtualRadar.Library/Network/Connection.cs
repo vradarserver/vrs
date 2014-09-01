@@ -79,6 +79,70 @@ namespace VirtualRadar.Library.Network
                 }
             }
         }
+
+        private long _BytesRead;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long BytesRead
+        {
+            get {
+                _SpinLock.Lock();
+                try {
+                    return _BytesRead;
+                } finally {
+                    _SpinLock.Unlock();
+                }
+            }
+        }
+
+        private long _WriteQueueBytes;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long WriteQueueBytes
+        {
+            get {
+                _SpinLock.Lock();
+                try {
+                    return _WriteQueueBytes;
+                } finally {
+                    _SpinLock.Unlock();
+                }
+            }
+        }
+
+        private long _BytesWritten;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long BytesWritten
+        {
+            get {
+                _SpinLock.Lock();
+                try {
+                    return _BytesWritten;
+                } finally {
+                    _SpinLock.Unlock();
+                }
+            }
+        }
+
+        private long _StaleBytesDiscarded;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long StaleBytesDiscarded
+        {
+            get {
+                _SpinLock.Lock();
+                try {
+                    return _StaleBytesDiscarded;
+                } finally {
+                    _SpinLock.Unlock();
+                }
+            }
+        }
         #endregion
 
         #region Events
@@ -164,6 +228,94 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
+        #region IncrementBytesRead, IncrementBytesWritten, IncrementWriteQueueBytes, IncrementStaleBytesDiscarded
+        /// <summary>
+        /// Adds a number of bytes to <see cref="BytesRead"/>.
+        /// </summary>
+        /// <param name="bytes"></param>
+        protected void IncrementBytesRead(int bytes)
+        {
+            _SpinLock.Lock();
+            try {
+                _BytesRead += bytes;
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+
+        /// <summary>
+        /// Adds a number of bytes to <see cref="BytesWritten"/>.
+        /// </summary>
+        /// <param name="bytes"></param>
+        protected void IncrementBytesWritten(int bytes)
+        {
+            _SpinLock.Lock();
+            try {
+                _BytesWritten += bytes;
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+
+        /// <summary>
+        /// Adds a number of bytes to <see cref="WriteQueueBytes"/>.
+        /// </summary>
+        /// <param name="bytes"></param>
+        protected void IncrementWriteQueueBytes(int bytes)
+        {
+            _SpinLock.Lock();
+            try {
+                _WriteQueueBytes += bytes;
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+
+        /// <summary>
+        /// Adds a number of bytes to <see cref="StaleBytesDiscarded"/>.
+        /// </summary>
+        /// <param name="bytes"></param>
+        protected void IncrementStaleBytesDiscarded(int bytes)
+        {
+            _SpinLock.Lock();
+            try {
+                _StaleBytesDiscarded += bytes;
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+        #endregion
+
+        #region GetOperationQueue, GetConnector
+        /// <summary>
+        /// Returns the operation queue that is currently in force.
+        /// </summary>
+        /// <returns></returns>
+        private BackgroundThreadQueue<ReadWriteOperation> GetOperationQueue()
+        {
+            _SpinLock.Lock();
+            try {
+                return _OperationQueue;
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+
+        /// <summary>
+        /// Returns the connector that currently owns this connection.
+        /// </summary>
+        /// <returns></returns>
+        private IConnector GetConnector()
+        {
+            _SpinLock.Lock();
+            try {
+                return _Connector;
+            } finally {
+                _SpinLock.Unlock();
+            }
+        }
+        #endregion
+
         #region Abandon, AbandonConnection
         /// <summary>
         /// See interface docs.
@@ -221,14 +373,43 @@ namespace VirtualRadar.Library.Network
         /// <param name="readDelegate"></param>
         public virtual void Read(byte[] buffer, int offset, int length, ConnectionReadDelegate readDelegate)
         {
-            _SpinLock.Lock();
-            try {
-                if(_OperationQueue != null) {
-                    var operation = new ReadWriteOperation(buffer, offset, length, isRead: true, readDelegate: readDelegate);
-                    _OperationQueue.Enqueue(operation);
-                }
-            } finally {
-                _SpinLock.Unlock();
+            var operationQueue = GetOperationQueue();
+            if(operationQueue != null) {
+                var operation = new ReadWriteOperation(buffer, offset, length, isRead: true, readDelegate: readDelegate);
+                operationQueue.Enqueue(operation);
+            }
+        }
+        #endregion
+
+        #region Write
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        public virtual void Write(byte[] buffer, int staleMessageTimeoutOverride = -1)
+        {
+            Write(buffer, 0, buffer.Length, staleMessageTimeoutOverride);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        public virtual void Write(byte[] buffer, int offset, int length, int staleMessageTimeoutOverride = -1)
+        {
+            var operationQueue = GetOperationQueue();
+            var connector = GetConnector();
+            if(operationQueue != null && connector != null) {
+                var staleTimeout = staleMessageTimeoutOverride != -1 ? staleMessageTimeoutOverride : connector.StaleMessageTimeout;
+                var staleThreshold = staleTimeout > 0 ? DateTime.UtcNow.AddMilliseconds(staleTimeout) : default(DateTime);
+
+                IncrementWriteQueueBytes(length);
+                var operation = new ReadWriteOperation(buffer, offset, length, isRead: false, staleThreshold: staleThreshold);
+                operationQueue.Enqueue(operation);
             }
         }
         #endregion
@@ -242,11 +423,22 @@ namespace VirtualRadar.Library.Network
         {
             if(operation.IsRead) {
                 DoRead(operation);
-                if(!operation.Abandon && operation.ReadDelegate != null) {
-                    operation.ReadDelegate(this, operation.Buffer, operation.Offset, operation.Length, operation.BytesRead);
+                if(!operation.Abandon) {
+                    IncrementBytesRead(operation.BytesRead);
+                    if(operation.ReadDelegate != null) {
+                        operation.ReadDelegate(this, operation.Buffer, operation.Offset, operation.Length, operation.BytesRead);
+                    }
                 }
             } else {
-                DoWrite(operation);
+                IncrementWriteQueueBytes(-operation.Length);
+                if(DateTime.UtcNow >= operation.StaleThreshold) {
+                    IncrementStaleBytesDiscarded(operation.Length);
+                } else {
+                    DoWrite(operation);
+                    if(!operation.Abandon) {
+                        IncrementBytesWritten(operation.Length);
+                    }
+                }
             }
 
             if(operation.Abandon) {

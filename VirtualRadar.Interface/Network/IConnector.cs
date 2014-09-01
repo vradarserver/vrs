@@ -173,5 +173,21 @@ namespace VirtualRadar.Interface.Network
         /// <param name="length"></param>
         /// <param name="readDelegate"></param>
         void Read(byte[] buffer, int offset, int length, ConnectionReadDelegate readDelegate);
+
+        /// <summary>
+        /// Writes the content of the buffer to every connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        void Write(byte[] buffer, int staleMessageTimeoutOverride = -1);
+
+        /// <summary>
+        /// Writes the content of the buffer to every connection.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        void Write(byte[] buffer, int offset, int length, int staleMessageTimeoutOverride = -1);
     }
 }

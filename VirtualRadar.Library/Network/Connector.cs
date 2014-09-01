@@ -523,6 +523,32 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
+        #region Write
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        public virtual void Write(byte[] buffer, int staleMessageTimeoutOverride = -1)
+        {
+            Write(buffer, 0, buffer.Length, staleMessageTimeoutOverride);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="staleMessageTimeoutOverride"></param>
+        public virtual void Write(byte[] buffer, int offset, int length, int staleMessageTimeoutOverride = -1)
+        {
+            foreach(var connection in GetConnections()) {
+                connection.Write(buffer, offset, length, staleMessageTimeoutOverride);
+            }
+        }
+        #endregion
+
         #region Events subscribed
         /// <summary>
         /// Called when a connection whose connection state is being mirrored raises

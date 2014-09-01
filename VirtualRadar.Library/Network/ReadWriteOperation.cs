@@ -42,9 +42,14 @@ namespace VirtualRadar.Library.Network
         public int Length { get; private set; }
 
         /// <summary>
-        /// The delegate to call when reading bytes.
+        /// Gets the delegate to call when reading bytes.
         /// </summary>
         public ConnectionReadDelegate ReadDelegate { get; private set; }
+
+        /// <summary>
+        /// Gets the date and time at UTC when the messsage becomes too old to send.
+        /// </summary>
+        public DateTime StaleThreshold { get; private set; }
 
         /// <summary>
         /// Gets or sets the number of bytes that were read into the buffer.
@@ -64,13 +69,15 @@ namespace VirtualRadar.Library.Network
         /// <param name="length"></param>
         /// <param name="isRead"></param>
         /// <param name="readDelegate"></param>
-        public ReadWriteOperation(byte[] buffer, int offset, int length, bool isRead, ConnectionReadDelegate readDelegate = null)
+        /// <param name="staleThreshold"></param>
+        public ReadWriteOperation(byte[] buffer, int offset, int length, bool isRead, ConnectionReadDelegate readDelegate = null, DateTime staleThreshold = default(DateTime))
         {
             Buffer = buffer;
             Offset = offset;
             Length = length;
             IsRead = isRead;
             ReadDelegate = readDelegate;
+            StaleThreshold = staleThreshold == default(DateTime) ? DateTime.MaxValue : staleThreshold;
         }
     }
 }
