@@ -49,12 +49,6 @@ namespace VirtualRadar.Interface
         INetworkConnector Connector { get; set; }
 
         /// <summary>
-        /// Gets or sets the object that will do the actual network handling for us.
-        /// </summary>
-        [Obsolete("Delete this")]
-        IBroadcastProvider BroadcastProvider { get; set; }
-
-        /// <summary>
         /// Gets or sets a flag indicating that the server is online.
         /// </summary>
         /// <remarks>

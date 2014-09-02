@@ -125,34 +125,6 @@ namespace VirtualRadar.Library
         {
             if(ClientDisconnected != null) ClientDisconnected(this, args);
         }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event EventHandler<BroadcastEventArgs> BroadcastSending;
-
-        /// <summary>
-        /// Raises <see cref="BroadcastSending"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        private void OnBroadcastSending(BroadcastEventArgs args)
-        {
-            if(BroadcastSending != null) BroadcastSending(this, args);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event EventHandler<BroadcastEventArgs> BroadcastSent;
-
-        /// <summary>
-        /// Raises <see cref="BroadcastSent"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        private void OnBroadcastSent(BroadcastEventArgs args)
-        {
-            if(BroadcastSent != null) BroadcastSent(this, args);
-        }
         #endregion
 
         #region Constructors and finaliser

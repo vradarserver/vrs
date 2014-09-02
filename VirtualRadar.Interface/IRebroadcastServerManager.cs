@@ -53,18 +53,6 @@ namespace VirtualRadar.Interface
         event EventHandler<ConnectionEventArgs> ClientDisconnected;
 
         /// <summary>
-        /// Raised before some bytes are sent to a client.
-        /// </summary>
-        [Obsolete("Dropping support for this in IConnector - poll the connections instead")]
-        event EventHandler<BroadcastEventArgs> BroadcastSending;
-
-        /// <summary>
-        /// Raised after some bytes have been sent to a client.
-        /// </summary>
-        [Obsolete("Dropping support for this in IConnector - poll the connections instead")]
-        event EventHandler<BroadcastEventArgs> BroadcastSent;
-
-        /// <summary>
         /// Creates the initial collection of rebroadcast servers from the configuration settings.
         /// </summary>
         void Initialise();

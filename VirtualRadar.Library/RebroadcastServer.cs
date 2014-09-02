@@ -74,11 +74,6 @@ namespace VirtualRadar.Library
         /// </summary>
         public INetworkConnector Connector { get; set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IBroadcastProvider BroadcastProvider { get; set; }
-
         private bool _Online;
         /// <summary>
         /// See interface docs.
