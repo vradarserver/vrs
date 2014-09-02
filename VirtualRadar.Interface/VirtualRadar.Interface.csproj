@@ -169,7 +169,6 @@
     <Compile Include="SQLite\ISQLiteConnectionProvider.cs" />
     <Compile Include="SQLite\ISQLiteConnectionStringBuilder.cs" />
     <Compile Include="IRebroadcastServer.cs" />
-    <Compile Include="IBroadcastProvider.cs" />
     <Compile Include="IRebroadcastServerManager.cs" />
     <Compile Include="IStatistics.cs" />
     <Compile Include="Listener\ExtractedBytes.cs" />
@@ -248,7 +247,6 @@
     <Compile Include="ModeS\ModeSMessageEventArgs.cs" />
     <Compile Include="ModeS\ModeSMessage.cs" />
     <Compile Include="ModeS\VerticalStatus.cs" />
-    <Compile Include="BroadcastEventArgs.cs" />
     <Compile Include="Round.cs" />
     <Compile Include="Settings\ConnectionType.cs" />
     <Compile Include="Settings\IConfigurationStorageProvider.cs" />

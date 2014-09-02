@@ -74,7 +74,6 @@ namespace VirtualRadar.Library
             factory.Register<IAutoConfigPictureFolderCache, AutoConfigPictureFolderCache>();
             factory.Register<IBackgroundWorker, BackgroundWorker>();
             factory.Register<IBitStream, BitStream>();
-            factory.Register<IBroadcastProvider, BroadcastProvider>();
             factory.Register<ICallsignParser, CallsignParser>();
             factory.Register<IClock, Clock>();
             factory.Register<IConnectionLogger, ConnectionLogger>();

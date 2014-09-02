@@ -106,7 +106,6 @@
     <Compile Include="PluginEventArgsTests.cs" />
     <Compile Include="PluginStartupParametersTests.cs" />
     <Compile Include="ModeS\ModeSMessageEventArgsTests.cs" />
-    <Compile Include="BroadcastEventArgsTests.cs" />
     <Compile Include="RoundTests.cs" />
     <Compile Include="Settings\AccessTests.cs" />
     <Compile Include="Settings\BaseStationSettingsTests.cs" />
