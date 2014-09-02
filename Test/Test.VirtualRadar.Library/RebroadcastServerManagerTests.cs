@@ -9,17 +9,19 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VirtualRadar.Interface;
-using Moq;
-using VirtualRadar.Interface.Listener;
-using VirtualRadar.Interface.Settings;
-using InterfaceFactory;
-using Test.Framework;
 using System.Net;
+using System.Text;
+using InterfaceFactory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Test.Framework;
+using Test.VirtualRadar.Library.Network;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Library
 {
@@ -36,7 +38,7 @@ namespace Test.VirtualRadar.Library
         private List<Mock<IFeed>> _Feeds;
         private List<Mock<IListener>> _Listeners;
         private Mock<IFeedManager> _FeedManager;
-        private Mock<IBroadcastProvider> _BroadcastProvider;
+        private MockConnector<INetworkConnector, INetworkConnection> _Connector;
         private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Configuration _Configuration;
         private RebroadcastSettings _RebroadcastSettings;
@@ -47,7 +49,9 @@ namespace Test.VirtualRadar.Library
             _OriginalClassFactory = Factory.TakeSnapshot();
 
             _Server = TestUtilities.CreateMockImplementation<IRebroadcastServer>();
-            _BroadcastProvider = TestUtilities.CreateMockImplementation<IBroadcastProvider>();
+
+            _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
+            Factory.Singleton.RegisterInstance<INetworkConnector>(_Connector.Object);
 
             _Feeds = new List<Mock<IFeed>>();
             _Listeners = new List<Mock<IListener>>();
@@ -122,8 +126,8 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(22, _Server.Object.UniqueId);
             Assert.AreEqual("A", _Server.Object.Name);
             Assert.AreSame(_Listeners[0].Object, _Server.Object.Listener);
-            Assert.AreSame(_BroadcastProvider.Object, _Server.Object.BroadcastProvider);
-            Assert.AreEqual(1000, _BroadcastProvider.Object.Port);
+            Assert.AreSame(_Connector.Object, _Server.Object.Connector);
+            Assert.AreEqual(1000, _Connector.Object.Port);
             Assert.AreEqual(RebroadcastFormat.Passthrough, _Server.Object.Format);
         }
 
@@ -169,12 +173,12 @@ namespace Test.VirtualRadar.Library
             Assert.AreSame(_Server.Object, _Manager.RebroadcastServers[0]);
 
             Assert.AreSame(_Listeners[0].Object, _Server.Object.Listener);
-            Assert.AreSame(_BroadcastProvider.Object, _Server.Object.BroadcastProvider);
-            Assert.AreEqual(1000, _BroadcastProvider.Object.Port);
+            Assert.AreSame(_Connector.Object, _Server.Object.Connector);
+            Assert.AreEqual(1000, _Connector.Object.Port);
             Assert.AreEqual(RebroadcastFormat.Passthrough, _Server.Object.Format);
             Assert.AreEqual(false, _Server.Object.Online);
-            Assert.AreEqual(3, _BroadcastProvider.Object.StaleSeconds);
-            Assert.AreSame(_RebroadcastSettings.Access, _BroadcastProvider.Object.Access);
+            Assert.AreEqual(3000, _Connector.Object.StaleMessageTimeout);
+            Assert.AreSame(_RebroadcastSettings.Access, _Connector.Object.Access);
         }
 
         [TestMethod]
@@ -237,7 +241,7 @@ namespace Test.VirtualRadar.Library
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             _Server.Verify(r => r.Dispose(), Times.Never());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Never());
+            _Connector.Verify(r => r.Dispose(), Times.Never());
         }
 
         [TestMethod]
@@ -263,7 +267,7 @@ namespace Test.VirtualRadar.Library
 
             Assert.AreEqual(0, _Manager.RebroadcastServers.Count);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -277,7 +281,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreEqual(99, _Server.Object.UniqueId);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -291,7 +295,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreEqual(RebroadcastFormat.Port30003, _Server.Object.Format);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -320,7 +324,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreSame(_Listeners[1].Object, _Manager.RebroadcastServers[0].Listener);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -332,9 +336,9 @@ namespace Test.VirtualRadar.Library
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
-            Assert.AreEqual(8080, _BroadcastProvider.Object.Port);
+            Assert.AreEqual(8080, _Connector.Object.Port);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -346,9 +350,9 @@ namespace Test.VirtualRadar.Library
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
-            Assert.AreSame(_RebroadcastSettings.Access, _BroadcastProvider.Object.Access);
+            Assert.AreSame(_RebroadcastSettings.Access, _Connector.Object.Access);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -361,7 +365,7 @@ namespace Test.VirtualRadar.Library
 
             Assert.AreEqual(0, _Manager.RebroadcastServers.Count);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -373,9 +377,9 @@ namespace Test.VirtualRadar.Library
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
-            Assert.AreEqual(10, _BroadcastProvider.Object.StaleSeconds);
+            Assert.AreEqual(10000, _Connector.Object.StaleMessageTimeout);
             _Server.Verify(r => r.Dispose(), Times.Never());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Never());
+            _Connector.Verify(r => r.Dispose(), Times.Never());
         }
         #endregion
 
@@ -393,8 +397,9 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreSame(_Server.Object, _Manager.RebroadcastServers[0]);
             Assert.AreSame(_Listeners[2].Object, _Server.Object.Listener);
-            Assert.AreSame(_BroadcastProvider.Object, _Server.Object.BroadcastProvider);
-            Assert.AreEqual(1000, _BroadcastProvider.Object.Port);
+            Assert.AreSame(_Connector.Object, _Server.Object.Connector);
+            Assert.AreEqual(1000, _Connector.Object.Port);
+            Assert.AreEqual(true, _Connector.Object.IsPassive);
             Assert.AreEqual(RebroadcastFormat.Passthrough, _Server.Object.Format);
             Assert.AreEqual(false, _Server.Object.Online);
         }
@@ -420,7 +425,7 @@ namespace Test.VirtualRadar.Library
 
             Assert.AreEqual(0, _Manager.RebroadcastServers.Count);
             _Server.Verify(r => r.Dispose(), Times.Once());
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
             _Feeds[0].Verify(r => r.Dispose(), Times.Never());
             _Listeners[0].Verify(r => r.Dispose(), Times.Never());
         }
@@ -542,140 +547,46 @@ namespace Test.VirtualRadar.Library
 
         #region ClientConnected
         [TestMethod]
-        public void RebroadcastServerManager_ClientConnected_Passed_Through_From_Broadcast_Providers()
+        public void RebroadcastServerManager_ClientConnected_Passed_Through_From_Connector()
         {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
+            var eventRecorder = new EventRecorder<ConnectionEventArgs>();
             _Manager.ClientConnected += eventRecorder.Handler;
             var endPoint = new IPEndPoint(new IPAddress(0x2414188d), 900);
 
             _Manager.Initialise();
-            _BroadcastProvider.Raise(r => r.ClientConnected += null, new BroadcastEventArgs(12, endPoint, 100, 8080));
+            var connection = TestUtilities.CreateMockInstance<INetworkConnection>();
+            _Connector.Raise(r => r.ConnectionEstablished += null, new ConnectionEventArgs(connection.Object));
 
             Assert.AreEqual(1, eventRecorder.CallCount);
-            Assert.AreEqual(12, eventRecorder.Args.RebroadcastServerId);
-            Assert.AreSame(endPoint, eventRecorder.Args.EndPoint);
-            Assert.AreEqual(100, eventRecorder.Args.BytesSent);
-            Assert.AreEqual(8080, eventRecorder.Args.Port);
+            Assert.AreSame(connection.Object, eventRecorder.Args.Connection);
             Assert.AreSame(_Manager, eventRecorder.Sender);
         }
 
         [TestMethod]
-        public void RebroadcastServerManager_ClientConnected_Not_Raised_For_Disposed_BroadcastProviders()
+        public void RebroadcastServerManager_ClientConnected_Not_Raised_For_Disposed_Connectors()
         {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
+            var eventRecorder = new EventRecorder<ConnectionEventArgs>();
             _Manager.ClientConnected += eventRecorder.Handler;
 
             _Manager.Initialise();
             _Manager.Dispose();
-            _BroadcastProvider.Raise(r => r.ClientConnected += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
+            var connection = TestUtilities.CreateMockInstance<INetworkConnection>();
+            _Connector.Raise(r => r.ConnectionEstablished += null, new ConnectionEventArgs(connection.Object));
 
             Assert.AreEqual(0, eventRecorder.CallCount);
         }
 
         [TestMethod]
-        public void RebroadcastServerManager_ClientConnected_Not_Raised_For_BroadcastProviders_Removed_Due_To_Configuration_Change()
+        public void RebroadcastServerManager_ClientConnected_Not_Raised_For_Connectors_Removed_Due_To_Configuration_Change()
         {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
+            var eventRecorder = new EventRecorder<ConnectionEventArgs>();
             _Manager.ClientConnected += eventRecorder.Handler;
 
             _Manager.Initialise();
             _RebroadcastSettings.Enabled = false;
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-            _BroadcastProvider.Raise(r => r.ClientConnected += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
-
-            Assert.AreEqual(0, eventRecorder.CallCount);
-        }
-        #endregion
-
-        #region BroadcastSending
-        [TestMethod]
-        public void RebroadcastServerManager_BroadcastSending_Passed_Through_From_Broadcast_Providers()
-        {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
-            _Manager.BroadcastSending += eventRecorder.Handler;
-            var endPoint = new IPEndPoint(new IPAddress(0x2414188d), 900);
-
-            _Manager.Initialise();
-            _BroadcastProvider.Raise(r => r.BroadcastSending += null, new BroadcastEventArgs(12, endPoint, 100, 8080));
-
-            Assert.AreEqual(1, eventRecorder.CallCount);
-            Assert.AreEqual(12, eventRecorder.Args.RebroadcastServerId);
-            Assert.AreSame(endPoint, eventRecorder.Args.EndPoint);
-            Assert.AreEqual(100, eventRecorder.Args.BytesSent);
-            Assert.AreEqual(8080, eventRecorder.Args.Port);
-            Assert.AreSame(_Manager, eventRecorder.Sender);
-        }
-
-        [TestMethod]
-        public void RebroadcastServerManager_BroadcastSending_Not_Raised_For_Disposed_BroadcastProviders()
-        {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
-            _Manager.BroadcastSending += eventRecorder.Handler;
-
-            _Manager.Initialise();
-            _Manager.Dispose();
-            _BroadcastProvider.Raise(r => r.BroadcastSending += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
-
-            Assert.AreEqual(0, eventRecorder.CallCount);
-        }
-
-        [TestMethod]
-        public void RebroadcastServerManager_BroadcastSending_Not_Raised_For_BroadcastProviders_Removed_Due_To_Configuration_Change()
-        {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
-            _Manager.BroadcastSending += eventRecorder.Handler;
-
-            _Manager.Initialise();
-            _RebroadcastSettings.Enabled = false;
-            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-            _BroadcastProvider.Raise(r => r.BroadcastSending += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
-
-            Assert.AreEqual(0, eventRecorder.CallCount);
-        }
-        #endregion
-
-        #region BroadcastSent
-        [TestMethod]
-        public void RebroadcastServerManager_BroadcastSent_Passed_Through_From_Broadcast_Providers()
-        {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
-            _Manager.BroadcastSent += eventRecorder.Handler;
-            var endPoint = new IPEndPoint(new IPAddress(0x2414188d), 900);
-
-            _Manager.Initialise();
-            _BroadcastProvider.Raise(r => r.BroadcastSent += null, new BroadcastEventArgs(12, endPoint, 100, 8080));
-
-            Assert.AreEqual(1, eventRecorder.CallCount);
-            Assert.AreEqual(12, eventRecorder.Args.RebroadcastServerId);
-            Assert.AreSame(endPoint, eventRecorder.Args.EndPoint);
-            Assert.AreEqual(100, eventRecorder.Args.BytesSent);
-            Assert.AreEqual(8080, eventRecorder.Args.Port);
-            Assert.AreSame(_Manager, eventRecorder.Sender);
-        }
-
-        [TestMethod]
-        public void RebroadcastServerManager_BroadcastSent_Not_Raised_For_Disposed_BroadcastProviders()
-        {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
-            _Manager.BroadcastSent += eventRecorder.Handler;
-
-            _Manager.Initialise();
-            _Manager.Dispose();
-            _BroadcastProvider.Raise(r => r.BroadcastSent += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
-
-            Assert.AreEqual(0, eventRecorder.CallCount);
-        }
-
-        [TestMethod]
-        public void RebroadcastServerManager_BroadcastSent_Not_Raised_For_BroadcastProviders_Removed_Due_To_Configuration_Change()
-        {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
-            _Manager.BroadcastSent += eventRecorder.Handler;
-
-            _Manager.Initialise();
-            _RebroadcastSettings.Enabled = false;
-            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-            _BroadcastProvider.Raise(r => r.BroadcastSent += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
+            var connection = TestUtilities.CreateMockInstance<INetworkConnection>();
+            _Connector.Raise(r => r.ConnectionEstablished += null, new ConnectionEventArgs(connection.Object));
 
             Assert.AreEqual(0, eventRecorder.CallCount);
         }
@@ -685,30 +596,28 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void RebroadcastServerManager_ClientDisconnected_Passed_Through_From_Broadcast_Providers()
         {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
+            var eventRecorder = new EventRecorder<ConnectionEventArgs>();
             _Manager.ClientDisconnected += eventRecorder.Handler;
-            var endPoint = new IPEndPoint(new IPAddress(0x2414188d), 900);
 
             _Manager.Initialise();
-            _BroadcastProvider.Raise(r => r.ClientDisconnected += null, new BroadcastEventArgs(12, endPoint, 100, 8080));
+            var connection = TestUtilities.CreateMockInstance<INetworkConnection>();
+            _Connector.Raise(r => r.ConnectionClosed += null, new ConnectionEventArgs(connection.Object));
 
             Assert.AreEqual(1, eventRecorder.CallCount);
-            Assert.AreEqual(12, eventRecorder.Args.RebroadcastServerId);
-            Assert.AreSame(endPoint, eventRecorder.Args.EndPoint);
-            Assert.AreEqual(100, eventRecorder.Args.BytesSent);
-            Assert.AreEqual(8080, eventRecorder.Args.Port);
+            Assert.AreSame(connection.Object, eventRecorder.Args.Connection);
             Assert.AreSame(_Manager, eventRecorder.Sender);
         }
 
         [TestMethod]
         public void RebroadcastServerManager_ClientDisconnected_Not_Raised_For_Disposed_BroadcastProviders()
         {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
+            var eventRecorder = new EventRecorder<ConnectionEventArgs>();
             _Manager.ClientDisconnected += eventRecorder.Handler;
 
             _Manager.Initialise();
             _Manager.Dispose();
-            _BroadcastProvider.Raise(r => r.ClientDisconnected += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
+            var connection = TestUtilities.CreateMockInstance<INetworkConnection>();
+            _Connector.Raise(r => r.ConnectionClosed += null, new ConnectionEventArgs(connection.Object));
 
             Assert.AreEqual(0, eventRecorder.CallCount);
         }
@@ -716,57 +625,14 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void RebroadcastServerManager_ClientDisconnected_Not_Raised_For_BroadcastProviders_Removed_Due_To_Configuration_Change()
         {
-            var eventRecorder = new EventRecorder<BroadcastEventArgs>();
+            var eventRecorder = new EventRecorder<ConnectionEventArgs>();
             _Manager.ClientDisconnected += eventRecorder.Handler;
 
             _Manager.Initialise();
             _RebroadcastSettings.Enabled = false;
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-            _BroadcastProvider.Raise(r => r.ClientDisconnected += null, new BroadcastEventArgs(12, new IPEndPoint(new IPAddress(0x24252627), 8080), 100, 8080));
-
-            Assert.AreEqual(0, eventRecorder.CallCount);
-        }
-        #endregion
-
-        #region ExceptionCaught
-        [TestMethod]
-        public void RebroadcastServerManager_ExceptionCaught_Passed_Through_From_Broadcast_Providers()
-        {
-            var eventRecorder = new EventRecorder<EventArgs<Exception>>();
-            _Manager.ExceptionCaught += eventRecorder.Handler;
-            var exception = new InvalidOperationException();
-
-            _Manager.Initialise();
-            _BroadcastProvider.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
-
-            Assert.AreEqual(1, eventRecorder.CallCount);
-            Assert.AreSame(exception, eventRecorder.Args.Value);
-            Assert.AreSame(_Manager, eventRecorder.Sender);
-        }
-
-        [TestMethod]
-        public void RebroadcastServerManager_ExceptionCaught_Not_Raised_For_Disposed_BroadcastProviders()
-        {
-            var eventRecorder = new EventRecorder<EventArgs<Exception>>();
-            _Manager.ExceptionCaught += eventRecorder.Handler;
-
-            _Manager.Initialise();
-            _Manager.Dispose();
-            _BroadcastProvider.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(new InvalidOperationException()));
-
-            Assert.AreEqual(0, eventRecorder.CallCount);
-        }
-
-        [TestMethod]
-        public void RebroadcastServerManager_ExceptionCaught_Not_Raised_For_BroadcastProviders_Removed_Due_To_Configuration_Change()
-        {
-            var eventRecorder = new EventRecorder<EventArgs<Exception>>();
-            _Manager.ExceptionCaught += eventRecorder.Handler;
-
-            _Manager.Initialise();
-            _RebroadcastSettings.Enabled = false;
-            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-            _BroadcastProvider.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(new InvalidOperationException()));
+            var connection = TestUtilities.CreateMockInstance<INetworkConnection>();
+            _Connector.Raise(r => r.ConnectionClosed += null, new ConnectionEventArgs(connection.Object));
 
             Assert.AreEqual(0, eventRecorder.CallCount);
         }

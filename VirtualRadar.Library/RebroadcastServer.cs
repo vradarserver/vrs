@@ -16,6 +16,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library
@@ -67,6 +68,11 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public IListener Listener { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public INetworkConnector Connector { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -165,13 +171,12 @@ namespace VirtualRadar.Library
         {
             if(UniqueId == 0) throw new InvalidOperationException("UniqueId must be set before calling Initialise");
             if(Listener == null) throw new InvalidOperationException("Listener must be set before calling Initialise");
-            if(BroadcastProvider == null) throw new InvalidOperationException("BroadcastProvider must be set before calling Initialise");
+            if(Connector == null) throw new InvalidOperationException("Connector must be set before calling Initialise");
             if(Format == RebroadcastFormat.None) throw new InvalidOperationException("Format must be specified before calling Initialise");
             if(_Hooked_Port30003_Messages || _Hooked_Raw_Bytes || _Hooked_ModeS_Bytes) throw new InvalidOperationException("Initialise has already been called");
 
-            BroadcastProvider.ExceptionCaught += BroadcastProvider_ExceptionCaught;
-            BroadcastProvider.RebroadcastServerId = UniqueId;
-            BroadcastProvider.BeginListening();
+            Connector.Name = Name;
+            Connector.EstablishConnection();
 
             switch(Format) {
                 case RebroadcastFormat.Passthrough:
@@ -213,11 +218,23 @@ namespace VirtualRadar.Library
         public List<RebroadcastServerConnection> GetConnections()
         {
             var result = new List<RebroadcastServerConnection>();
-            if(BroadcastProvider != null) {
-                BroadcastProvider.PopulateConnections(result);
-                foreach(var connection in result) {
-                    connection.RebroadcastServerId = UniqueId;
-                    connection.Name = Name;
+            if(Connector != null) {
+                foreach(var connection in Connector.GetConnections().OfType<INetworkConnection>()) {
+                    var localEndPoint = connection.LocalEndPoint;
+                    var remoteEndPoint = connection.RemoteEndPoint;
+                    if(localEndPoint != null && remoteEndPoint != null) {
+                        var cookedConnection = new RebroadcastServerConnection() {
+                            BytesBuffered =         connection.WriteQueueBytes,
+                            BytesWritten =          connection.BytesWritten,
+                            EndpointIPAddress =     remoteEndPoint == null ? null : remoteEndPoint.Address,
+                            EndpointPort =          remoteEndPoint == null ? 0 : remoteEndPoint.Port,
+                            LocalPort =             localEndPoint == null ? 0 : localEndPoint.Port,
+                            Name =                  Name,
+                            RebroadcastServerId =   UniqueId,
+                            StaleBytesDiscarded =   connection.StaleBytesDiscarded,
+                        };
+                        result.Add(cookedConnection);
+                    }
                 }
             }
 
@@ -240,7 +257,7 @@ namespace VirtualRadar.Library
                     case RebroadcastFormat.Port30003:       bytes = Encoding.ASCII.GetBytes(String.Concat(args.Message.ToBaseStationString(), "\r\n")); break;
                     default:                                throw new NotImplementedException();
                 }
-                if(bytes != null && bytes.Length > 0) BroadcastProvider.Send(bytes);
+                if(bytes != null && bytes.Length > 0) Connector.Write(bytes);
             }
         }
 
@@ -251,7 +268,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void Listener_RawBytesReceived(object sender, EventArgs<byte[]> args)
         {
-            if(Online) BroadcastProvider.Send(args.Value);
+            if(Online) Connector.Write(args.Value);
         }
 
         /// <summary>
@@ -279,18 +296,8 @@ namespace VirtualRadar.Library
                 bytes[di++] = (byte)0x0d;
                 bytes[di] = (byte)0x0a;
 
-                BroadcastProvider.Send(bytes);
+                Connector.Write(bytes);
             }
-        }
-
-        /// <summary>
-        /// Raised when the broadcast listener catches an exception on a background thread.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void BroadcastProvider_ExceptionCaught(object sender, EventArgs<Exception> args)
-        {
-            OnExceptionCaught(args);
         }
         #endregion
     }

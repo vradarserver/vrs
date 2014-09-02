@@ -16,6 +16,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.Network;
 
 namespace VirtualRadar.Library
 {
@@ -100,13 +101,13 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public event EventHandler<BroadcastEventArgs> ClientConnected;
+        public event EventHandler<ConnectionEventArgs> ClientConnected;
 
         /// <summary>
         /// Raises <see cref="ClientConnected"/>.
         /// </summary>
         /// <param name="args"></param>
-        private void OnClientConnected(BroadcastEventArgs args)
+        private void OnClientConnected(ConnectionEventArgs args)
         {
             if(ClientConnected != null) ClientConnected(this, args);
         }
@@ -114,13 +115,13 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public event EventHandler<BroadcastEventArgs> ClientDisconnected;
+        public event EventHandler<ConnectionEventArgs> ClientDisconnected;
 
         /// <summary>
         /// Raises <see cref="ClientDisconnected"/>.
         /// </summary>
         /// <param name="args"></param>
-        private void OnClientDisconnected(BroadcastEventArgs args)
+        private void OnClientDisconnected(ConnectionEventArgs args)
         {
             if(ClientDisconnected != null) ClientDisconnected(this, args);
         }
@@ -241,16 +242,16 @@ namespace VirtualRadar.Library
                 var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId);
                 if(feed != null && rebroadcastSettings.Enabled) {
                     var server = RebroadcastServers.FirstOrDefault(r => r.UniqueId == rebroadcastSettings.UniqueId);
-                    if(server != null && server.BroadcastProvider != null && server.BroadcastProvider.StaleSeconds != rebroadcastSettings.StaleSeconds) {
-                        server.BroadcastProvider.StaleSeconds = rebroadcastSettings.StaleSeconds;
+                    if(server != null && server.Connector != null && server.Connector.StaleMessageTimeout != rebroadcastSettings.StaleSeconds * 1000) {
+                        server.Connector.StaleMessageTimeout = rebroadcastSettings.StaleSeconds * 1000;
                     }
 
                     int indexExistingServer = unusedServers.FindIndex(r =>
                         r.Format == rebroadcastSettings.Format &&
-                        r.BroadcastProvider.Port == rebroadcastSettings.Port &&
+                        r.Connector.Port == rebroadcastSettings.Port &&
                         r.UniqueId == rebroadcastSettings.UniqueId &&
                         r.Listener.ReceiverId == feed.UniqueId &&
-                        Object.Equals(r.BroadcastProvider.Access, rebroadcastSettings.Access)
+                        Object.Equals(r.Connector.Access, rebroadcastSettings.Access)
                     );
                     if(indexExistingServer == -1) {
                         newServers.Add(rebroadcastSettings);
@@ -272,15 +273,13 @@ namespace VirtualRadar.Library
                 server.UniqueId = rebroadcastSettings.UniqueId;
                 server.Name = rebroadcastSettings.Name;
                 server.Listener = feed.Listener;
-                server.BroadcastProvider = Factory.Singleton.Resolve<IBroadcastProvider>();
-                server.BroadcastProvider.Port = rebroadcastSettings.Port;
-                server.BroadcastProvider.StaleSeconds = rebroadcastSettings.StaleSeconds;
-                server.BroadcastProvider.Access = rebroadcastSettings.Access;
-                server.BroadcastProvider.BroadcastSending += BroadcastProvider_BroadcastSending;
-                server.BroadcastProvider.BroadcastSent += BroadcastProvider_BroadcastSent;
-                server.BroadcastProvider.ClientConnected += BroadcastProvider_ClientConnected;
-                server.BroadcastProvider.ClientDisconnected += BroadcastProvider_ClientDisconnected;
-                server.BroadcastProvider.ExceptionCaught += BroadcastProvider_ExceptionCaught;
+                server.Connector = Factory.Singleton.Resolve<INetworkConnector>();
+                server.Connector.IsPassive = true;
+                server.Connector.Port = rebroadcastSettings.Port;
+                server.Connector.StaleMessageTimeout = rebroadcastSettings.StaleSeconds * 1000;
+                server.Connector.Access = rebroadcastSettings.Access;
+                server.Connector.ConnectionEstablished += Connector_ClientConnected;
+                server.Connector.ConnectionClosed += Connector_ClientDisconnected;
                 server.Format = rebroadcastSettings.Format;
 
                 RebroadcastServers.Add(server);
@@ -300,14 +299,11 @@ namespace VirtualRadar.Library
         /// <param name="server"></param>
         private void ReleaseServer(IRebroadcastServer server)
         {
-            var broadcastProvider = server.BroadcastProvider;
+            var connector = server.Connector;
             server.Dispose();
-            broadcastProvider.BroadcastSending -= BroadcastProvider_BroadcastSending;
-            broadcastProvider.BroadcastSent -= BroadcastProvider_BroadcastSent;
-            broadcastProvider.ClientConnected -= BroadcastProvider_ClientConnected;
-            broadcastProvider.ClientDisconnected -= BroadcastProvider_ClientDisconnected;
-            broadcastProvider.ExceptionCaught -= BroadcastProvider_ExceptionCaught;
-            broadcastProvider.Dispose();
+            connector.ConnectionEstablished -= Connector_ClientConnected;
+            connector.ConnectionClosed -= Connector_ClientDisconnected;
+            connector.Dispose();
         }
         #endregion
 
@@ -350,31 +346,11 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
-        /// Raised when a broadcast provider is about to send some bytes to a client.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void BroadcastProvider_BroadcastSending(object sender, BroadcastEventArgs args)
-        {
-            OnBroadcastSending(args);
-        }
-
-        /// <summary>
-        /// Raised when a broadcast provider sends some bytes to a client.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void BroadcastProvider_BroadcastSent(object sender, BroadcastEventArgs args)
-        {
-            OnBroadcastSent(args);
-        }
-
-        /// <summary>
         /// Raised when a client connects to a broadcast provider.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void BroadcastProvider_ClientConnected(object sender, BroadcastEventArgs args)
+        private void Connector_ClientConnected(object sender, ConnectionEventArgs args)
         {
             OnClientConnected(args);
         }
@@ -384,19 +360,9 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void BroadcastProvider_ClientDisconnected(object sender, BroadcastEventArgs args)
+        private void Connector_ClientDisconnected(object sender, ConnectionEventArgs args)
         {
             OnClientDisconnected(args);
-        }
-
-        /// <summary>
-        /// Raised when a broadcast provider catches an exception that needs to be reported.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void BroadcastProvider_ExceptionCaught(object sender, EventArgs<Exception> args)
-        {
-            OnExceptionCaught(args);
         }
         #endregion
     }

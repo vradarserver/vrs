@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 
 namespace VirtualRadar.Interface
 {
@@ -44,21 +45,23 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Raised when a client connects to one of the servers.
         /// </summary>
-        event EventHandler<BroadcastEventArgs> ClientConnected;
+        event EventHandler<ConnectionEventArgs> ClientConnected;
 
         /// <summary>
         /// Raised when a client disconnects from one of the servers.
         /// </summary>
-        event EventHandler<BroadcastEventArgs> ClientDisconnected;
+        event EventHandler<ConnectionEventArgs> ClientDisconnected;
 
         /// <summary>
         /// Raised before some bytes are sent to a client.
         /// </summary>
+        [Obsolete("Dropping support for this in IConnector - poll the connections instead")]
         event EventHandler<BroadcastEventArgs> BroadcastSending;
 
         /// <summary>
         /// Raised after some bytes have been sent to a client.
         /// </summary>
+        [Obsolete("Dropping support for this in IConnector - poll the connections instead")]
         event EventHandler<BroadcastEventArgs> BroadcastSent;
 
         /// <summary>
