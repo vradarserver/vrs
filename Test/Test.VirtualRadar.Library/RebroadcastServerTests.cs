@@ -9,17 +9,19 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VirtualRadar.Interface;
+using System.Text;
 using InterfaceFactory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using VirtualRadar.Interface.Listener;
 using Test.Framework;
-using VirtualRadar.Interface.Settings;
+using Test.VirtualRadar.Library.Network;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
+using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Library
 {
@@ -32,9 +34,8 @@ namespace Test.VirtualRadar.Library
         private IClassFactory _OriginalFactory;
         private IRebroadcastServer _Server;
         private Mock<IListener> _Listener;
-        private Mock<IBroadcastProvider> _BroadcastProvider;
+        private MockConnector<INetworkConnector, INetworkConnection> _Connector;
         private BaseStationMessage _Port30003Message;
-        private List<byte[]> _SentBytes;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtEvent;
         private EventRecorder<EventArgs> _OnlineChangedEvent;
         private Mock<IBaseStationMessageCompressor> _Compressor;
@@ -52,14 +53,13 @@ namespace Test.VirtualRadar.Library
             _Server = Factory.Singleton.Resolve<IRebroadcastServer>();
             _Listener = new Mock<IListener>(MockBehavior.Default) { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
 
-            _BroadcastProvider = new Mock<IBroadcastProvider>(MockBehavior.Default) { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _SentBytes = new List<byte[]>();
-            _BroadcastProvider.Setup(r => r.Send(It.IsAny<byte[]>())).Callback((byte[] bytes) => _SentBytes.Add(bytes));
+            _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
 
             _Server.UniqueId = 1;
+            _Server.Name = "Word Up!";
             _Server.Format = RebroadcastFormat.Port30003;
             _Server.Listener = _Listener.Object;
-            _Server.BroadcastProvider = _BroadcastProvider.Object;
+            _Server.Connector = _Connector.Object;
 
             _ExceptionCaughtEvent = new EventRecorder<EventArgs<Exception>>();
             _ExceptionCaughtEvent.EventRaised += DefaultExceptionCaughtHandler;
@@ -115,7 +115,7 @@ namespace Test.VirtualRadar.Library
         public void RebroadcastServer_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             var server = Factory.Singleton.Resolve<IRebroadcastServer>();
-            TestUtilities.TestProperty(server, r => r.BroadcastProvider, null, _BroadcastProvider.Object);
+            TestUtilities.TestProperty(server, r => r.Connector, null, _Connector.Object);
             TestUtilities.TestProperty(server, r => r.Format, RebroadcastFormat.None, RebroadcastFormat.Port30003);
             TestUtilities.TestProperty(server, r => r.Listener, null, _Listener.Object);
             TestUtilities.TestProperty(server, r => r.Name, null, "Abc");
@@ -143,9 +143,9 @@ namespace Test.VirtualRadar.Library
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void RebroadcastServer_Initialise_Throws_If_BroadcastProvider_Is_Null()
+        public void RebroadcastServer_Initialise_Throws_If_Connector_Is_Null()
         {
-            _Server.BroadcastProvider = null;
+            _Server.Connector = null;
             _Server.Initialise();
         }
 
@@ -178,45 +178,19 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void RebroadcastServer_Initialise_Sets_RebroadcastServerId_On_Broadcast_Provider()
+        public void RebroadcastServer_Initialise_Sets_Name_On_Connector()
         {
             _Server.Initialise();
 
-            Assert.AreEqual(1, _BroadcastProvider.Object.RebroadcastServerId);
+            Assert.AreEqual("Word Up!", _Connector.Object.Name);
         }
 
         [TestMethod]
-        public void RebroadcastServer_Initialise_Begins_Listening_On_Broadcast_Provider()
+        public void RebroadcastServer_Initialise_Begins_Listening_On_Connector()
         {
             _Server.Initialise();
 
-            _BroadcastProvider.Verify(r => r.BeginListening(), Times.Once());
-        }
-
-        [TestMethod]
-        public void RebroadcastServer_Initialise_Hooks_BroadcastProvider_ExceptionCaught_Event()
-        {
-            RemoveDefaultExceptionCaughtHandler();
-            _Server.Initialise();
-
-            var exception = new InvalidOperationException();
-            _BroadcastProvider.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
-
-            Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
-            Assert.AreSame(_Server, _ExceptionCaughtEvent.Sender);
-            Assert.AreSame(exception, _ExceptionCaughtEvent.Args.Value);
-        }
-
-        [TestMethod]
-        public void RebroadcastServer_Initialise_Does_Not_Hook_Listener_ExceptionCaught_Event()
-        {
-            RemoveDefaultExceptionCaughtHandler();
-            _Server.Initialise();
-
-            var exception = new InvalidOperationException();
-            _Listener.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
-
-            Assert.AreEqual(0, _ExceptionCaughtEvent.CallCount);
+            _Connector.Verify(r => r.EstablishConnection(), Times.Once());
         }
         #endregion
 
@@ -274,8 +248,8 @@ namespace Test.VirtualRadar.Library
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
             var expectedBytes = ExpectedBytes(_Port30003Message);
-            Assert.AreEqual(1, _SentBytes.Count);
-            Assert.IsTrue(expectedBytes.SequenceEqual(_SentBytes[0]));
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.IsTrue(expectedBytes.SequenceEqual(_Connector.Written[0]));
         }
 
         [TestMethod]
@@ -289,8 +263,8 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
-            Assert.AreEqual(1, _SentBytes.Count);
-            Assert.IsTrue(bytes.SequenceEqual(_SentBytes[0]));
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.IsTrue(bytes.SequenceEqual(_Connector.Written[0]));
         }
 
         [TestMethod]
@@ -307,7 +281,7 @@ namespace Test.VirtualRadar.Library
 
                 _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
-                Assert.AreEqual(0, _SentBytes.Count);
+                Assert.AreEqual(0, _Connector.Written.Count);
             }
         }
 
@@ -321,8 +295,8 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(bytes));
 
-            Assert.AreEqual(1, _SentBytes.Count);
-            Assert.IsTrue(bytes.SequenceEqual(_SentBytes[0]));
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.IsTrue(bytes.SequenceEqual(_Connector.Written[0]));
         }
 
         [TestMethod]
@@ -335,8 +309,8 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = false }));
 
-            Assert.AreEqual(1, _SentBytes.Count);
-            Assert.AreEqual(":0123456789ABCDEFFEDCBA987654;\r\n", Encoding.ASCII.GetString(_SentBytes[0]));
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.AreEqual(":0123456789ABCDEFFEDCBA987654;\r\n", Encoding.ASCII.GetString(_Connector.Written[0]));
         }
 
         [TestMethod]
@@ -349,8 +323,8 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = true }));
 
-            Assert.AreEqual(1, _SentBytes.Count);
-            Assert.AreEqual("*0123456789ABCDEFFEDCBA987654;\r\n", Encoding.ASCII.GetString(_SentBytes[0]));
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.AreEqual("*0123456789ABCDEFFEDCBA987654;\r\n", Encoding.ASCII.GetString(_Connector.Written[0]));
         }
 
         [TestMethod]
@@ -363,8 +337,8 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Offset = 1, Length = bytes.Length - 1, Format = ExtractedBytesFormat.ModeS, HasParity = true }));
 
-            Assert.AreEqual(1, _SentBytes.Count);
-            Assert.AreEqual("*020304;\r\n", Encoding.ASCII.GetString(_SentBytes[0]));
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.AreEqual("*020304;\r\n", Encoding.ASCII.GetString(_Connector.Written[0]));
         }
 
         [TestMethod]
@@ -376,7 +350,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(new byte[] { 0x01, 0x02 }));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -388,7 +362,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(new byte[] { 0x01, 0x02 }));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -401,7 +375,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -413,7 +387,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -427,7 +401,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -440,7 +414,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(bytes));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -453,7 +427,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = false }));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
         #endregion
 
@@ -469,7 +443,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -484,7 +458,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(bytes));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -499,7 +473,7 @@ namespace Test.VirtualRadar.Library
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = false }));
 
-            Assert.AreEqual(0, _SentBytes.Count);
+            Assert.AreEqual(0, _Connector.Written.Count);
         }
 
         [TestMethod]
@@ -510,9 +484,9 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void RebroadcastServer_Dispose_Does_Not_Care_If_BroadcastProvider_Is_Null()
+        public void RebroadcastServer_Dispose_Does_Not_Care_If_Connector_Is_Null()
         {
-            _Server.BroadcastProvider = null;
+            _Server.Connector = null;
             _Server.Dispose();
         }
 
@@ -531,7 +505,7 @@ namespace Test.VirtualRadar.Library
             _Server.Initialise();
             _Server.Dispose();
 
-            _BroadcastProvider.Verify(r => r.Dispose(), Times.Never());
+            _Connector.Verify(r => r.Dispose(), Times.Never());
         }
         #endregion
     }

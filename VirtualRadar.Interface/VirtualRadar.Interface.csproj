@@ -111,6 +111,7 @@
     <Compile Include="Network\ConnectionEventArgs.cs" />
     <Compile Include="Network\ConnectionReadDelegate.cs" />
     <Compile Include="Network\IConnection.cs" />
+    <Compile Include="Network\INetworkConnection.cs" />
     <Compile Include="Network\INetworkConnector.cs" />
     <Compile Include="IAccessFilter.cs" />
     <Compile Include="IAircraftSanityChecker.cs" />

@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -22,7 +23,7 @@ namespace VirtualRadar.Library.Network
     /// <summary>
     /// The default implementation of a connection that uses a plain socket.
     /// </summary>
-    class SocketConnection : Connection
+    class SocketConnection : Connection, INetworkConnection
     {
         /// <summary>
         /// The spinlock that protects us from multi-threaded access.
@@ -33,6 +34,28 @@ namespace VirtualRadar.Library.Network
         /// Gets the socket that the connection is using.
         /// </summary>
         public Socket Socket { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IPEndPoint LocalEndPoint
+        {
+            get {
+                var socket = GetSocket();
+                return socket == null ? null : socket.LocalEndPoint as IPEndPoint;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IPEndPoint RemoteEndPoint
+        {
+            get {
+                var socket = GetSocket();
+                return socket == null ? null : socket.RemoteEndPoint as IPEndPoint;
+            }
+        }
 
         /// <summary>
         /// Creates a new object.

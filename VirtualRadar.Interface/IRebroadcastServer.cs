@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface
@@ -43,8 +44,14 @@ namespace VirtualRadar.Interface
         IListener Listener { get; set; }
 
         /// <summary>
+        /// Gets or sets the object that establishes the connection for us.
+        /// </summary>
+        INetworkConnector Connector { get; set; }
+
+        /// <summary>
         /// Gets or sets the object that will do the actual network handling for us.
         /// </summary>
+        [Obsolete("Delete this")]
         IBroadcastProvider BroadcastProvider { get; set; }
 
         /// <summary>
