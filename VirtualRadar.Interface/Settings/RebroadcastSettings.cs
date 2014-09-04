@@ -73,14 +73,58 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _Format, value, () => Format); }
         }
 
+        private bool _IsTransmitter;
+        /// <summary>
+        /// Gets or sets a value that indicates whether the rebroadcast server is active (it
+        /// transmits the feed to another machine) or passive (it accepts multiple connections
+        /// from other machines).
+        /// </summary>
+        public bool IsTransmitter
+        {
+            get { return _IsTransmitter; }
+            set { SetField(ref _IsTransmitter, value, () => IsTransmitter); }
+        }
+
+        private string _TransmitAddress;
+        /// <summary>
+        /// Gets or sets the address of the machine to send the feed to in Transmitter mode.
+        /// </summary>
+        public string TransmitAddress
+        {
+            get { return _TransmitAddress; }
+            set { SetField(ref _TransmitAddress, value, () => TransmitAddress); }
+        }
+
         private int _Port;
         /// <summary>
-        /// Gets or sets the port number to rebroadcast the receiver's messages on.
+        /// Gets or sets the port number to rebroadcast the receiver's messages on or the
+        /// port to transmit the feed to.
         /// </summary>
         public int Port
         {
             get { return _Port; }
             set { SetField(ref _Port, value, () => Port); }
+        }
+
+        private bool _UseKeepAlive;
+        /// <summary>
+        /// Gets or sets a value indicating that the network connection should use KeepAlive packets.
+        /// </summary>
+        public bool UseKeepAlive
+        {
+            get { return _UseKeepAlive; }
+            set { SetField(ref _UseKeepAlive, value, () => UseKeepAlive); }
+        }
+
+        private int _IdleTimeoutMilliseconds;
+        /// <summary>
+        /// Gets or sets the period of time that the receiving side has to accept a message within before
+        /// the connection is dropped.
+        /// </summary>
+        public int IdleTimeoutMilliseconds
+        {
+            get { return _IdleTimeoutMilliseconds; }
+            set { SetField(ref _IdleTimeoutMilliseconds, value, () => IdleTimeoutMilliseconds); }
         }
 
         private int _StaleSeconds;
@@ -145,6 +189,7 @@ namespace VirtualRadar.Interface.Settings
         {
             Access = new Access();
             StaleSeconds = 3;
+            IdleTimeoutMilliseconds = 30000;
         }
     }
 }

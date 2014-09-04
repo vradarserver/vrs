@@ -3235,6 +3235,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of seconds to wait for the receiving side to acknowledge receipt of a packet before the connection is closed. Only used if not using keep-alive packets..
+        /// </summary>
+        public static string OptionsDescribeRebroadcastIdleTimeout {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRebroadcastIdleTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to transmit the feed to a single computer, no to wait for other computers to connect to the server and pull the feed from it..
+        /// </summary>
+        public static string OptionsDescribeRebroadcastIsTransmitter {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRebroadcastIsTransmitter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The receiver that you want to rebroadcast messages from..
         /// </summary>
         public static string OptionsDescribeRebroadcastReceiver {
@@ -3285,6 +3303,24 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeRebroadcastStaleSeconds {
             get {
                 return ResourceManager.GetString("OptionsDescribeRebroadcastStaleSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The address of the computer to transmit the feed to..
+        /// </summary>
+        public static string OptionsDescribeRebroadcastTransmitAddress {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRebroadcastTransmitAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to use keep-alive packets to detect a feed that has gone down, no to reset the connection if no data is received after a given number of seconds..
+        /// </summary>
+        public static string OptionsDescribeRebroadcastUseKeepAlive {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRebroadcastUseKeepAlive", resourceCulture);
             }
         }
         
@@ -4158,6 +4194,15 @@ namespace VirtualRadar.Localisation {
         public static string RebroadcastServer {
             get {
                 return ResourceManager.GetString("RebroadcastServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The idle timeout must be at least 5 seconds..
+        /// </summary>
+        public static string RebroadcastServerIdleTimeoutOutOfBounds {
+            get {
+                return ResourceManager.GetString("RebroadcastServerIdleTimeoutOutOfBounds", resourceCulture);
             }
         }
         
@@ -5395,7 +5440,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum message age (seconds).
+        ///   Looks up a localized string similar to Max. message age.
         /// </summary>
         public static string StaleSeconds {
             get {
@@ -5645,6 +5690,15 @@ namespace VirtualRadar.Localisation {
         public static string TransmissionType {
             get {
                 return ResourceManager.GetString("TransmissionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmit feed.
+        /// </summary>
+        public static string TransmitFeed {
+            get {
+                return ResourceManager.GetString("TransmitFeed", resourceCulture);
             }
         }
         

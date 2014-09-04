@@ -276,8 +276,18 @@ namespace VirtualRadar.Interface.View
         Password,
 
         /// <summary>
-        /// The idle timeout for a receiver.
+        /// The idle timeout.
         /// </summary>
-        ReceiverIdleTimeout,
+        IdleTimeout,
+
+        /// <summary>
+        /// Whether to use keep-alive packets on a connection.
+        /// </summary>
+        UseKeepAlive,
+
+        /// <summary>
+        /// Indicates whether a rebroadcast server is in transmit mode.
+        /// </summary>
+        IsTransmitter,
     }
 }

@@ -152,7 +152,8 @@ namespace VirtualRadar.WinForms.SettingPage
 
                 { ValidationField.BaseStationAddress,   textBoxAddress },
                 { ValidationField.BaseStationPort,      numericPort },
-                { ValidationField.ReceiverIdleTimeout,  numericIdleTimeout },
+                { ValidationField.UseKeepAlive,         checkBoxUseKeepAlive },
+                { ValidationField.IdleTimeout,          numericIdleTimeout },
 
                 { ValidationField.ComPort,              comboBoxSerialComPort },
                 { ValidationField.BaudRate,             comboBoxSerialBaudRate },

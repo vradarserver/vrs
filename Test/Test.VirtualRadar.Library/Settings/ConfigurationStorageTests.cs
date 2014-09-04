@@ -301,7 +301,11 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(true, readBack.RebroadcastSettings[0].Enabled);
                         Assert.AreEqual(RebroadcastFormat.Passthrough, readBack.RebroadcastSettings[0].Format);
                         Assert.AreEqual("Server 1", readBack.RebroadcastSettings[0].Name);
+                        Assert.AreEqual(false, readBack.RebroadcastSettings[0].IsTransmitter);
+                        Assert.AreEqual("unused", readBack.RebroadcastSettings[0].TransmitAddress);
                         Assert.AreEqual(10000, readBack.RebroadcastSettings[0].Port);
+                        Assert.AreEqual(true, readBack.RebroadcastSettings[0].UseKeepAlive);
+                        Assert.AreEqual(15000, readBack.RebroadcastSettings[0].IdleTimeoutMilliseconds);
                         Assert.AreEqual(-1, readBack.RebroadcastSettings[0].ReceiverId);
                         Assert.AreEqual(7, readBack.RebroadcastSettings[0].StaleSeconds);
 
@@ -309,7 +313,11 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, readBack.RebroadcastSettings[1].Enabled);
                         Assert.AreEqual(RebroadcastFormat.Port30003, readBack.RebroadcastSettings[1].Format);
                         Assert.AreEqual("Server 2", readBack.RebroadcastSettings[1].Name);
+                        Assert.AreEqual(true, readBack.RebroadcastSettings[1].IsTransmitter);
+                        Assert.AreEqual("remote.address.com", readBack.RebroadcastSettings[1].TransmitAddress);
                         Assert.AreEqual(10001, readBack.RebroadcastSettings[1].Port);
+                        Assert.AreEqual(false, readBack.RebroadcastSettings[1].UseKeepAlive);
+                        Assert.AreEqual(20000, readBack.RebroadcastSettings[1].IdleTimeoutMilliseconds);
                         Assert.AreEqual(1, readBack.RebroadcastSettings[1].ReceiverId);
                         Assert.AreEqual(10, readBack.RebroadcastSettings[1].StaleSeconds);
 
@@ -526,7 +534,11 @@ namespace Test.VirtualRadar.Library.Settings
                                                             Enabled = true,
                                                             Format = RebroadcastFormat.Passthrough,
                                                             Name = "Server 1",
+                                                            IsTransmitter = false,
+                                                            TransmitAddress = "unused",
                                                             Port = 10000,
+                                                            UseKeepAlive = true,
+                                                            IdleTimeoutMilliseconds = 15000,
                                                             ReceiverId = -1,
                                                             StaleSeconds = 7,
                                                             Access = {
@@ -542,7 +554,11 @@ namespace Test.VirtualRadar.Library.Settings
                                                             Enabled = false,
                                                             Format = RebroadcastFormat.Port30003,
                                                             Name = "Server 2",
+                                                            IsTransmitter = true,
+                                                            TransmitAddress = "remote.address.com",
                                                             Port = 10001,
+                                                            UseKeepAlive = false,
+                                                            IdleTimeoutMilliseconds = 20000,
                                                             ReceiverId = 1,
                                                             StaleSeconds = 10,
                                                             Access = {
