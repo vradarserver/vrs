@@ -32,6 +32,10 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.Enabled, false);
             TestUtilities.TestProperty(settings, r => r.Format, RebroadcastFormat.None, RebroadcastFormat.Passthrough);
             TestUtilities.TestProperty(settings, r => r.Name, null, "ABC");
+            TestUtilities.TestProperty(settings, r => r.IsTransmitter, false);
+            TestUtilities.TestProperty(settings, r => r.TransmitAddress, null, "www.word.up");
+            TestUtilities.TestProperty(settings, r => r.UseKeepAlive, false);
+            TestUtilities.TestProperty(settings, r => r.IdleTimeoutMilliseconds, 30000, 15000);
             TestUtilities.TestProperty(settings, r => r.Port, 0, 19000);
             TestUtilities.TestProperty(settings, r => r.ReceiverId, 0, 1234);
             TestUtilities.TestProperty(settings, r => r.UniqueId, 0, 456);

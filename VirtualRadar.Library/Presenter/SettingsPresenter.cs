@@ -699,6 +699,20 @@ namespace VirtualRadar.Library.Presenter
             return receiverNames.Concat(mergedFeedNames).ToArray();
         }
 
+        /// <summary>
+        /// Returns an array of all ports on which the server is listening.
+        /// </summary>
+        /// <param name="exceptCurrent"></param>
+        /// <returns></returns>
+        private int[] ListeningPorts(object exceptCurrent)
+        {
+            var result = _View.Configuration.RebroadcastSettings
+                                            .Where(r => r != exceptCurrent && !r.IsTransmitter)
+                                            .Select(r => r.Port);
+
+            return result.ToArray();
+        }
+
         #region Audio
         /// <summary>
         /// Validates the audio settings.
@@ -980,24 +994,44 @@ namespace VirtualRadar.Library.Presenter
                     });
                 }
 
+                // Either transmit must be switched off or the transmit address should be a valid DNS address
+                ConditionIsTrue(server, r => !r.IsTransmitter || DomainAddressIsValid(r.TransmitAddress),
+                    new Validation(ValidationField.BaseStationAddress, defaults) {
+                        Format = Strings.CannotResolveAddress,
+                        Args = new object[] { server.TransmitAddress },
+                        IsWarning = !String.IsNullOrEmpty((server.TransmitAddress ?? "").Trim()),
+                        RelatedFields = { ValidationField.IsTransmitter },
+                    }
+                );
+
                 // Port must be within range
                 ValueIsInRange(server.Port, 1, 65535, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortOutOfBounds,
                 });
 
-                // Port is unique
-                var ports = _View.Configuration.RebroadcastSettings.Where(r => r != server).Select(r => r.Port).ToArray();
-                ValueIsNotInList(server.Port, ports, new Validation(ValidationField.RebroadcastServerPort, defaults) {
+                // Either we're transmitting or the port must be unique
+                var otherPorts = ListeningPorts(server);
+                ConditionIsTrue(server, r => r.IsTransmitter || !otherPorts.Contains(r.Port), new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortMustBeUnique,
+                    RelatedFields = { ValidationField.IsTransmitter },
                 });
 
                 // Port cannot clash with the web server port
-                ConditionIsTrue(server.Port, (port) => {
+                ConditionIsTrue(server, r => {
                     var autoConfigWebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton;
-                    return port != autoConfigWebServer.WebServer.Port;
+                    return r.IsTransmitter || r.Port != autoConfigWebServer.WebServer.Port;
                 }, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Format = Strings.PortIsUsedByWebServer,
                     Args = new object[] { server.Port },
+                    RelatedFields = { ValidationField.IsTransmitter },
+                });
+
+                // The idle timeout must be between 5 seconds and int.MaxValue, but only if KeepAlive is switched off
+                ConditionIsTrue(server, r => r.UseKeepAlive || r.IdleTimeoutMilliseconds >= 5000, new Validation(ValidationField.IdleTimeout, defaults) {
+                    Message = Strings.RebroadcastServerIdleTimeoutOutOfBounds,
+                    RelatedFields = {
+                        ValidationField.UseKeepAlive,
+                    },
                 });
 
                 // Format is present
@@ -1125,23 +1159,11 @@ namespace VirtualRadar.Library.Presenter
                 switch(receiver.ConnectionType) {
                     case ConnectionType.TCP:
                         // The address must be supplied
-                        if(StringIsNotEmpty(receiver.Address, new Validation(ValidationField.BaseStationAddress, defaults) {
-                            Message = Strings.DataSourceNetworkAddressMissing,
-                        })) {
-                            // The address must resolve to a machine on the network
-                            ConditionIsTrue(receiver.Address, (r) => {
-                                try {
-                                    Dns.GetHostAddresses(r);
-                                    return true;
-                                } catch {
-                                    return false;
-                                }
-                            }, new Validation(ValidationField.BaseStationAddress, defaults) {
-                                Format = Strings.CannotResolveAddress,
-                                Args = new object[] { receiver.Address },
-                                IsWarning = true,
-                            });
-                        }
+                        DomainAddressIsValid(receiver.Address, new Validation(ValidationField.BaseStationAddress, defaults) {
+                            Format = Strings.CannotResolveAddress,
+                            Args = new object[] { receiver.Address },
+                            IsWarning = !String.IsNullOrEmpty((receiver.Address ?? "").Trim()),
+                        });
 
                         // The port must be within range
                         ValueIsInRange(receiver.Port, 1, 65535, new Validation(ValidationField.BaseStationPort, defaults) {
@@ -1149,11 +1171,12 @@ namespace VirtualRadar.Library.Presenter
                         });
 
                         // The idle timeout must be between 5 seconds and int.MaxValue, but only if KeepAlive is switched off
-                        if(!receiver.UseKeepAlive) {
-                            ValueIsInRange(receiver.IdleTimeoutMilliseconds, 5000, int.MaxValue, new Validation(ValidationField.ReceiverIdleTimeout, defaults) {
-                                Message = Strings.ReceiverIdleTimeoutOutOfBounds,
-                            });
-                        }
+                        ConditionIsTrue(receiver, r => r.UseKeepAlive || r.IdleTimeoutMilliseconds >= 5000, new Validation(ValidationField.IdleTimeout, defaults) {
+                            Message = Strings.ReceiverIdleTimeoutOutOfBounds,
+                            RelatedFields = {
+                                ValidationField.UseKeepAlive,
+                            },
+                        });
                         break;
                     case ConnectionType.COM:
                         // The COM port must be supplied
@@ -1477,7 +1500,11 @@ namespace VirtualRadar.Library.Presenter
         {
             var result = ValidationFieldForPropertyName<RebroadcastSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<RebroadcastSettings,object>>>() {
                 { ValidationField.Name,                     r => r.Name },
+                { ValidationField.IsTransmitter,            r => r.IsTransmitter },
+                { ValidationField.BaseStationAddress,       r => r.TransmitAddress },
                 { ValidationField.RebroadcastServerPort,    r => r.Port },
+                { ValidationField.UseKeepAlive,             r => r.UseKeepAlive },
+                { ValidationField.IdleTimeout,              r => r.IdleTimeoutMilliseconds },
                 { ValidationField.Format,                   r => r.Format },
                 { ValidationField.RebroadcastReceiver,      r => r.ReceiverId },
                 { ValidationField.StaleSeconds,             r => r.StaleSeconds },
@@ -1494,6 +1521,8 @@ namespace VirtualRadar.Library.Presenter
                 { ValidationField.Location,             r => r.ReceiverLocationId },
                 { ValidationField.BaseStationAddress,   r => r.Address },
                 { ValidationField.BaseStationPort,      r => r.Port },
+                { ValidationField.UseKeepAlive,         r => r.UseKeepAlive },
+                { ValidationField.IdleTimeout,          r => r.IdleTimeoutMilliseconds },
                 { ValidationField.ComPort,              r => r.ComPort },
                 { ValidationField.BaudRate,             r => r.BaudRate },
                 { ValidationField.DataBits,             r => r.DataBits },

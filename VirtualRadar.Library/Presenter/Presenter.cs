@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
@@ -184,10 +185,6 @@ namespace VirtualRadar.Library.Presenter
 
                 var valid = !FieldMatches;
                 if(!valid) {
-                    if(Results.IsPartialValidation) {
-                        AddPartialValidationField();
-                    }
-
                     try {
                         valid = condition();
                     } catch(Exception ex) {
@@ -199,6 +196,10 @@ namespace VirtualRadar.Library.Presenter
                     }
                 }
                 if(!valid) AddResult();
+
+                if(Results.IsPartialValidation) {
+                    AddPartialValidationField();
+                }
 
                 return valid;
             }
@@ -261,19 +262,27 @@ namespace VirtualRadar.Library.Presenter
         protected bool FileExists(string fileName, Validation valParams)
         {
             valParams.DefaultMessage(Strings.SomethingDoesNotExist, fileName);
-            return valParams.IsValid(() => {
-                var result = true;
-                if(!String.IsNullOrEmpty(fileName)) {
-                    result = File.Exists(fileName);
-                    if(result) {
-                        // If we can't read the file then this should throw an exception
-                        using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                            ;
-                        }
+            return valParams.IsValid(() => FileExists(fileName));
+        }
+
+        /// <summary>
+        /// Returns true if the file exists, false if it does not.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        protected bool FileExists(string fileName)
+        {
+            var result = true;
+            if(!String.IsNullOrEmpty(fileName)) {
+                result = File.Exists(fileName);
+                if(result) {
+                    // If we can't read the file then this should throw an exception
+                    using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                        ;
                     }
                 }
-                return result;
-            });
+            }
+            return result;
         }
 
         /// <summary>
@@ -285,17 +294,57 @@ namespace VirtualRadar.Library.Presenter
         protected bool FolderExists(string folder, Validation valParams)
         {
             valParams.DefaultMessage(Strings.SomethingDoesNotExist, folder);
-            return valParams.IsValid(() => {
-                var result = true;
-                if(!String.IsNullOrEmpty(folder)) {
-                    result = Directory.Exists(folder);
-                    if(result) {
-                        // If we can't read the content of the folder then this should throw an exception
-                        Directory.GetFileSystemEntries(folder);
-                    }
+            return valParams.IsValid(() => FolderExists(folder));
+        }
+
+        /// <summary>
+        /// Returns true if the folder exists, false if it does not.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        protected bool FolderExists(string folder)
+        {
+            var result = true;
+            if(!String.IsNullOrEmpty(folder)) {
+                result = Directory.Exists(folder);
+                if(result) {
+                    // If we can't read the content of the folder then this should throw an exception
+                    Directory.GetFileSystemEntries(folder);
                 }
-                return result;
-            });
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Returns true if the domain address is valid.
+        /// </summary>
+        /// <param name="domainAddress"></param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool DomainAddressIsValid(string domainAddress, Validation valParams)
+        {
+            return valParams.IsValid(() => DomainAddressIsValid(domainAddress));
+        }
+
+        /// <summary>
+        /// Returns true if the domain address is valid.
+        /// </summary>
+        /// <param name="domainAddress"></param>
+        /// <returns></returns>
+        protected bool DomainAddressIsValid(string domainAddress)
+        {
+            domainAddress = (domainAddress ?? "").Trim();
+            var result = !String.IsNullOrEmpty(domainAddress);
+            if(result) {
+                try {
+                    var addresses = Dns.GetHostAddresses(domainAddress);
+                    result = addresses != null && addresses.Length != 0;
+                } catch {
+                    result = false;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>

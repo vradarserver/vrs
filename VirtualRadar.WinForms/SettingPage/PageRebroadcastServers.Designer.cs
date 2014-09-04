@@ -31,8 +31,7 @@
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderReceiver = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderFormat = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderPort = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderStale = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderUNC = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDefaultAccess = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
@@ -43,8 +42,7 @@
             this.columnHeaderName,
             this.columnHeaderReceiver,
             this.columnHeaderFormat,
-            this.columnHeaderPort,
-            this.columnHeaderStale,
+            this.columnHeaderUNC,
             this.columnHeaderDefaultAccess});
             this.listRebroadcastServers.DataSource = null;
             this.listRebroadcastServers.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -61,27 +59,22 @@
             // columnHeaderName
             // 
             this.columnHeaderName.Text = "::Name::";
-            this.columnHeaderName.Width = 150;
+            this.columnHeaderName.Width = 140;
             // 
             // columnHeaderReceiver
             // 
             this.columnHeaderReceiver.Text = "::Receiver::";
-            this.columnHeaderReceiver.Width = 150;
+            this.columnHeaderReceiver.Width = 140;
             // 
             // columnHeaderFormat
             // 
             this.columnHeaderFormat.Text = "::Format::";
             this.columnHeaderFormat.Width = 100;
             // 
-            // columnHeaderPort
+            // columnHeaderUNC
             // 
-            this.columnHeaderPort.Text = "::Port::";
-            this.columnHeaderPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // columnHeaderStale
-            // 
-            this.columnHeaderStale.Text = "::Stale::";
-            this.columnHeaderStale.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.columnHeaderUNC.Text = "::UNC::";
+            this.columnHeaderUNC.Width = 140;
             // 
             // columnHeaderDefaultAccess
             // 
@@ -104,8 +97,7 @@
         private System.Windows.Forms.ColumnHeader columnHeaderName;
         private System.Windows.Forms.ColumnHeader columnHeaderReceiver;
         private System.Windows.Forms.ColumnHeader columnHeaderFormat;
-        private System.Windows.Forms.ColumnHeader columnHeaderPort;
-        private System.Windows.Forms.ColumnHeader columnHeaderStale;
+        private System.Windows.Forms.ColumnHeader columnHeaderUNC;
         private System.Windows.Forms.ColumnHeader columnHeaderDefaultAccess;
     }
 }

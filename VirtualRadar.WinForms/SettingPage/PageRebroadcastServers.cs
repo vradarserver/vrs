@@ -97,13 +97,13 @@ namespace VirtualRadar.WinForms.SettingPage
 
             if(record != null) {
                 var receiver = SettingsView.CombinedFeed.FirstOrDefault(r => r.UniqueId == record.ReceiverId);
+                var portDescription = !record.IsTransmitter ? String.Format("::{0}", record.Port) : String.Format("{0}:{1}", record.TransmitAddress, record.Port);
 
                 e.Checked = record.Enabled;
                 e.ColumnTexts.Add(record.Name);
                 e.ColumnTexts.Add(receiver == null ? "" : receiver.Name ?? "");
                 e.ColumnTexts.Add(Describe.RebroadcastFormat(record.Format));
-                e.ColumnTexts.Add(record.Port.ToString());
-                e.ColumnTexts.Add(record.StaleSeconds.ToString());
+                e.ColumnTexts.Add(portDescription);
                 e.ColumnTexts.Add(Describe.DefaultAccess(record.Access.DefaultAccess));
             }
         }
@@ -114,8 +114,10 @@ namespace VirtualRadar.WinForms.SettingPage
 
             var rebroadcastServer = record as RebroadcastSettings;
             if(rebroadcastServer != null) {
-                if(header == columnHeaderPort)          result = rebroadcastServer.Port;
-                else if(header == columnHeaderStale)    result = rebroadcastServer.StaleSeconds;
+                if(header == columnHeaderUNC) {
+                    if(!rebroadcastServer.IsTransmitter) result = String.Format("_{0:00000}", rebroadcastServer.Port);
+                    else                                 result = String.Format("{0}:{1:00000}", rebroadcastServer.TransmitAddress, rebroadcastServer.Port);
+                }
             }
 
             return result;
