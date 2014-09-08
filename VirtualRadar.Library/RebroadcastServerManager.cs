@@ -223,7 +223,11 @@ namespace VirtualRadar.Library
                         r.Connector.Port == rebroadcastSettings.Port &&
                         r.UniqueId == rebroadcastSettings.UniqueId &&
                         r.Listener.ReceiverId == feed.UniqueId &&
-                        Object.Equals(r.Connector.Access, rebroadcastSettings.Access)
+                        r.Connector.IsPassive == !rebroadcastSettings.IsTransmitter &&
+                        (!rebroadcastSettings.IsTransmitter || r.Connector.Address == rebroadcastSettings.TransmitAddress) &&
+                        (rebroadcastSettings.IsTransmitter || Object.Equals(r.Connector.Access, rebroadcastSettings.Access)) &&
+                        r.Connector.UseKeepAlive == rebroadcastSettings.UseKeepAlive &&
+                        (r.Connector.UseKeepAlive || r.Connector.IdleTimeout == rebroadcastSettings.IdleTimeoutMilliseconds)
                     );
                     if(indexExistingServer == -1) {
                         newServers.Add(rebroadcastSettings);
@@ -246,13 +250,26 @@ namespace VirtualRadar.Library
                 server.Name = rebroadcastSettings.Name;
                 server.Listener = feed.Listener;
                 server.Connector = Factory.Singleton.Resolve<INetworkConnector>();
-                server.Connector.IsPassive = true;
                 server.Connector.Port = rebroadcastSettings.Port;
                 server.Connector.StaleMessageTimeout = rebroadcastSettings.StaleSeconds * 1000;
                 server.Connector.Access = rebroadcastSettings.Access;
                 server.Connector.ConnectionEstablished += Connector_ClientConnected;
                 server.Connector.ConnectionClosed += Connector_ClientDisconnected;
+                server.Connector.UseKeepAlive = rebroadcastSettings.UseKeepAlive;
                 server.Format = rebroadcastSettings.Format;
+
+                if(!rebroadcastSettings.UseKeepAlive) {
+                    server.Connector.IdleTimeout = rebroadcastSettings.IdleTimeoutMilliseconds;
+                }
+
+                if(!rebroadcastSettings.IsTransmitter) {
+                    server.Connector.IsPassive = true;
+                    server.Connector.IsSingleConnection = false;
+                } else {
+                    server.Connector.IsPassive = false;
+                    server.Connector.IsSingleConnection = true;
+                    server.Connector.Address = rebroadcastSettings.TransmitAddress;
+                }
 
                 RebroadcastServers.Add(server);
                 server.Initialise();
