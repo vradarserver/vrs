@@ -70,7 +70,8 @@ namespace Test.VirtualRadar.Library
                 StaleSeconds = 3,
                 Access = {
                     DefaultAccess = DefaultAccess.Allow,
-                }
+                },
+                IsTransmitter = false,
             };
             _Configuration.RebroadcastSettings.Add(_RebroadcastSettings);
 
@@ -128,6 +129,8 @@ namespace Test.VirtualRadar.Library
             Assert.AreSame(_Listeners[0].Object, _Server.Object.Listener);
             Assert.AreSame(_Connector.Object, _Server.Object.Connector);
             Assert.AreEqual(1000, _Connector.Object.Port);
+            Assert.AreEqual(true, _Connector.Object.IsPassive);
+            Assert.AreEqual(false, _Connector.Object.IsSingleConnection);
             Assert.AreEqual(RebroadcastFormat.Passthrough, _Server.Object.Format);
         }
 
@@ -156,6 +159,71 @@ namespace Test.VirtualRadar.Library
 
             Assert.AreEqual(false, _Manager.RebroadcastServers[0].Online);
             Assert.IsFalse(_Manager.Online);
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Sets_Connector_Correctly_For_Passive_Server()
+        {
+            _RebroadcastSettings.IsTransmitter = false;
+            _RebroadcastSettings.TransmitAddress = "address";
+            _RebroadcastSettings.Port = 12345;
+
+            _Manager.Initialise();
+
+            Assert.AreEqual(true, _Connector.Object.IsPassive);
+            Assert.AreEqual(false, _Connector.Object.IsSingleConnection);
+            Assert.AreEqual(null, _Connector.Object.Address);
+            Assert.AreEqual(12345, _Connector.Object.Port);
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Sets_Connector_Correctly_For_Rebroadcast_Server()
+        {
+            _RebroadcastSettings.IsTransmitter = true;
+            _RebroadcastSettings.TransmitAddress = "address";
+            _RebroadcastSettings.Port = 12345;
+
+            _Manager.Initialise();
+
+            Assert.AreEqual(false, _Connector.Object.IsPassive);
+            Assert.AreEqual(true, _Connector.Object.IsSingleConnection);
+            Assert.AreEqual("address", _Connector.Object.Address);
+            Assert.AreEqual(12345, _Connector.Object.Port);
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Sets_KeepAlive_Setting_Correctly()
+        {
+            foreach(var useKeepAlive in new bool[] { true, false }) {
+                TestCleanup();
+                TestInitialise();
+
+                _RebroadcastSettings.UseKeepAlive = useKeepAlive;
+
+                _Manager.Initialise();
+
+                Assert.AreEqual(useKeepAlive, _Connector.Object.UseKeepAlive, useKeepAlive.ToString());
+            }
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Sets_Timeout_Setting_Correctly()
+        {
+            foreach(var useKeepAlive in new bool[] { true, false }) {
+                TestCleanup();
+                TestInitialise();
+
+                _RebroadcastSettings.UseKeepAlive = useKeepAlive;
+                _RebroadcastSettings.IdleTimeoutMilliseconds = 12000;
+
+                _Manager.Initialise();
+
+                if(useKeepAlive) {
+                    _Connector.VerifySet(r => r.IdleTimeout = It.IsAny<int>(), Times.Never());
+                } else {
+                    Assert.AreEqual(12000, _Connector.Object.IdleTimeout);
+                }
+            }
         }
         #endregion
 
@@ -356,6 +424,19 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Does_Not_Dispose_Of_Old_If_Access_Changes_In_Push_Mode()
+        {
+            _RebroadcastSettings.IsTransmitter = true;
+            _Manager.Initialise();
+
+            _RebroadcastSettings.Access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            _Server.Verify(r => r.Dispose(), Times.Never());
+            _Connector.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
         public void RebroadcastServerManager_ConfigurationChanged_Disposes_Of_Old_If_Enabled_Changes()
         {
             _Manager.Initialise();
@@ -378,6 +459,94 @@ namespace Test.VirtualRadar.Library
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreEqual(10000, _Connector.Object.StaleMessageTimeout);
+            _Server.Verify(r => r.Dispose(), Times.Never());
+            _Connector.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Disposes_Of_Old_If_IsTransmitter_Changes()
+        {
+            _Manager.Initialise();
+
+            _RebroadcastSettings.IsTransmitter = true;
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            _Server.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Disposes_Of_Old_If_IsTransmit_Address_Changes()
+        {
+            _RebroadcastSettings.IsTransmitter = true;
+            _RebroadcastSettings.TransmitAddress = "original";
+
+            _Manager.Initialise();
+
+            _RebroadcastSettings.TransmitAddress = "new";
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            _Server.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Does_Not_Dispose_Of_Old_If_IsTransmit_Address_Changes_When_Not_Transmitting()
+        {
+            _RebroadcastSettings.IsTransmitter = false;
+            _RebroadcastSettings.TransmitAddress = "original";
+
+            _Manager.Initialise();
+
+            _RebroadcastSettings.TransmitAddress = "new";
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            _Server.Verify(r => r.Dispose(), Times.Never());
+            _Connector.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Disposes_Of_Old_If_KeepAlive_Changes()
+        {
+            foreach(var useKeepAlive in new bool[] { true, false }) {
+                TestCleanup();
+                TestInitialise();
+
+                _RebroadcastSettings.UseKeepAlive = !useKeepAlive;
+                _Manager.Initialise();
+
+                _RebroadcastSettings.UseKeepAlive = useKeepAlive;
+                _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+                _Server.Verify(r => r.Dispose(), Times.Once());
+                _Connector.Verify(r => r.Dispose(), Times.Once());
+            }
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Disposes_Of_Old_If_Idle_Timeout_Changes()
+        {
+            _RebroadcastSettings.UseKeepAlive = false;
+            _RebroadcastSettings.IdleTimeoutMilliseconds = 12000;
+            _Manager.Initialise();
+
+            _RebroadcastSettings.IdleTimeoutMilliseconds = 13000;
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            _Server.Verify(r => r.Dispose(), Times.Once());
+            _Connector.Verify(r => r.Dispose(), Times.Once());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Does_Not_Dispose_Of_Old_If_Idle_Timeout_Changes_When_KeepAlive_Is_In_Force()
+        {
+            _RebroadcastSettings.UseKeepAlive = true;
+            _RebroadcastSettings.IdleTimeoutMilliseconds = 12000;
+            _Manager.Initialise();
+
+            _RebroadcastSettings.IdleTimeoutMilliseconds = 13000;
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
             _Server.Verify(r => r.Dispose(), Times.Never());
             _Connector.Verify(r => r.Dispose(), Times.Never());
         }
