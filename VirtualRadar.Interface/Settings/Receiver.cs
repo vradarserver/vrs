@@ -83,6 +83,32 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _AutoReconnectAtStartup, value, () => AutoReconnectAtStartup); }
         }
 
+        private bool _IsPassive;
+        /// <summary>
+        /// Gets or sets a value indicating that the receiver will not connect to the source but will instead
+        /// wait for the source to connect to it.
+        /// </summary>
+        /// <remarks>
+        /// Only used when the <see cref="ConnectionType"/> is TCP. When a receiver is in passive mode the 
+        /// <see cref="Address"/> is ignored. Only one source can connect to a passive receiver at a time,
+        /// once a connection is established the receiver stops listening.
+        /// </remarks>
+        public bool IsPassive
+        {
+            get { return _IsPassive; }
+            set { SetField(ref _IsPassive, value, () => IsPassive); }
+        }
+
+        private Access _Access;
+        /// <summary>
+        /// Gets or sets the access settings to use when the receiver is in passive mode.
+        /// </summary>
+        public Access Access
+        {
+            get { return _Access; }
+            set { SetField(ref _Access, value, () => Access); }
+        }
+
         private string _Address;
         /// <summary>
         /// Gets or sets the address of the source of data to listen to.
@@ -260,6 +286,7 @@ namespace VirtualRadar.Interface.Settings
             AutoReconnectAtStartup = true;
             DataSource = DataSource.Port30003;
             ConnectionType = ConnectionType.TCP;
+            Access = new Access();
             Address = "127.0.0.1";
             Port = 30003;
             UseKeepAlive = true;

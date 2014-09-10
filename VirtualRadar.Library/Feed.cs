@@ -306,13 +306,22 @@ namespace VirtualRadar.Library
                 case ConnectionType.TCP:
                     var existingTcpProvider = result as INetworkConnector;
                     if(existingTcpProvider == null || existingTcpProvider.Address != receiver.Address || existingTcpProvider.Port != receiver.Port ||
-                       existingTcpProvider.UseKeepAlive != receiver.UseKeepAlive || existingTcpProvider.IdleTimeout != receiver.IdleTimeoutMilliseconds) {
+                       existingTcpProvider.UseKeepAlive != receiver.UseKeepAlive || existingTcpProvider.IdleTimeout != receiver.IdleTimeoutMilliseconds ||
+                       existingTcpProvider.IsPassive != receiver.IsPassive ||
+                       (receiver.IsPassive && !Object.Equals(existingTcpProvider.Access, receiver.Access))) {
                         var ipActiveConnector = Factory.Singleton.Resolve<INetworkConnector>();
                         ipActiveConnector.Name =            receiver.Name;
-                        ipActiveConnector.Address =         receiver.Address;
+                        ipActiveConnector.IsPassive =       receiver.IsPassive;
                         ipActiveConnector.Port =            receiver.Port;
                         ipActiveConnector.UseKeepAlive =    receiver.UseKeepAlive;
                         ipActiveConnector.IdleTimeout =     receiver.IdleTimeoutMilliseconds;
+
+                        if(!receiver.IsPassive) {
+                            ipActiveConnector.Address =     receiver.Address;
+                        } else {
+                            ipActiveConnector.Access =      receiver.Access;
+                        }
+
                         result = ipActiveConnector;
                     }
                     break;
