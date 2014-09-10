@@ -341,6 +341,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(DataSource.Port30003, receiver.DataSource);
                         Assert.AreEqual(ConnectionType.TCP, receiver.ConnectionType);
                         Assert.AreEqual(false, receiver.AutoReconnectAtStartup);
+                        Assert.AreEqual(true, receiver.IsPassive);
                         Assert.AreEqual("192.168.0.1", receiver.Address);
                         Assert.AreEqual(30004, receiver.Port);
                         Assert.AreEqual(true, receiver.UseKeepAlive);
@@ -362,6 +363,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(DataSource.Beast, receiver.DataSource);
                         Assert.AreEqual(ConnectionType.COM, receiver.ConnectionType);
                         Assert.AreEqual(true, receiver.AutoReconnectAtStartup);
+                        Assert.AreEqual(false, receiver.IsPassive);
                         Assert.AreEqual("127.0.0.1", receiver.Address);
                         Assert.AreEqual(30003, receiver.Port);
                         Assert.AreEqual(false, receiver.UseKeepAlive);
@@ -375,6 +377,15 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("", receiver.StartupText);
                         Assert.AreEqual("Stop", receiver.ShutdownText);
                         Assert.AreEqual(2, receiver.ReceiverLocationId);
+
+                        Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
+                        Assert.AreEqual(2, readBack.Receivers[0].Access.Addresses.Count);
+                        Assert.AreEqual("1.2.3.4/10", readBack.Receivers[0].Access.Addresses[0]);
+                        Assert.AreEqual("virtualradarserver.co.uk", readBack.Receivers[0].Access.Addresses[1]);
+
+                        Assert.AreEqual(DefaultAccess.Allow, readBack.Receivers[1].Access.DefaultAccess);
+                        Assert.AreEqual(1, readBack.Receivers[1].Access.Addresses.Count);
+                        Assert.AreEqual("192.168.0.7", readBack.Receivers[1].Access.Addresses[0]);
 
                         break;
                     case "MergedFeeds":
@@ -579,6 +590,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             DataSource = DataSource.Port30003,
                                                             ConnectionType = ConnectionType.TCP,
                                                             AutoReconnectAtStartup = false,
+                                                            IsPassive = true,
                                                             Address = "192.168.0.1",
                                                             Port = 30004,
                                                             UseKeepAlive = true,
@@ -592,6 +604,13 @@ namespace Test.VirtualRadar.Library.Settings
                                                             StartupText = "Start",
                                                             ShutdownText = "",
                                                             ReceiverLocationId = 1,
+                                                            Access = {
+                                                                DefaultAccess = DefaultAccess.Deny,
+                                                                Addresses = {
+                                                                    "1.2.3.4/10",
+                                                                    "virtualradarserver.co.uk",
+                                                                }
+                                                            },
                                                         },
                                                         new Receiver() {
                                                             Enabled = false,
@@ -600,6 +619,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             DataSource = DataSource.Beast,
                                                             ConnectionType = ConnectionType.COM,
                                                             AutoReconnectAtStartup = true,
+                                                            IsPassive = false,
                                                             Address = "127.0.0.1",
                                                             Port = 30003,
                                                             UseKeepAlive = false,
@@ -613,6 +633,12 @@ namespace Test.VirtualRadar.Library.Settings
                                                             StartupText = "",
                                                             ShutdownText = "Stop",
                                                             ReceiverLocationId = 2,
+                                                            Access = {
+                                                                DefaultAccess = DefaultAccess.Allow,
+                                                                Addresses = {
+                                                                    "192.168.0.7",
+                                                                },
+                                                            },
                                                         },
                                                     });
                                                     break;

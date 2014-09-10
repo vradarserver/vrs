@@ -429,6 +429,46 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
+        public void Feed_Initialise_Applies_Correct_Network_Settings_To_Connector()
+        {
+            Do_Check_Correct_Network_Settings_Applied_To_Connector(false, () => { _Feed.Initialise(_Receiver, _Configuration); });
+        }
+
+        private void Do_Check_Correct_Network_Settings_Applied_To_Connector(bool initialiseFirst, Action action)
+        {
+            foreach(var isPassive in new bool[] { true, false }) {
+                TestCleanup();
+                TestInitialise();
+
+                if(initialiseFirst) _Feed.Initialise(_Receiver, _Configuration);
+
+                _Receiver.ConnectionType = ConnectionType.TCP;
+                _Receiver.IsPassive = isPassive;
+                _Receiver.Address = "Address";
+                _Receiver.Port = 12345;
+                _Receiver.UseKeepAlive = false;
+                _Receiver.IdleTimeoutMilliseconds = 10000;
+
+                CreateNewListenerChildObjectInstances();
+                action();
+
+                Assert.AreEqual(12345, _IPActiveConnector.Object.Port);
+                Assert.AreEqual(false, _IPActiveConnector.Object.UseKeepAlive);
+                Assert.AreEqual(10000, _IPActiveConnector.Object.IdleTimeout);
+
+                if(isPassive) {
+                    Assert.AreEqual(true, _IPActiveConnector.Object.IsPassive);
+                    _IPActiveConnector.VerifySet(r => r.Address = It.IsAny<string>(), Times.Never());
+                    Assert.AreSame(_Receiver.Access, _IPActiveConnector.Object.Access);
+                } else {
+                    Assert.AreEqual(false, _IPActiveConnector.Object.IsPassive);
+                    Assert.AreEqual("Address", _IPActiveConnector.Object.Address);
+                    _IPActiveConnector.VerifySet(r => r.Access = It.IsAny<Access>(), Times.Never());
+                }
+            }
+        }
+
+        [TestMethod]
         public void Feed_Initialise_Copies_Configuration_To_RawTranslator()
         {
             Do_Check_Configuration_Changes_Copied_To_RawTranslator(false, () => _Feed.Initialise(_Receiver, _Configuration));
@@ -784,6 +824,12 @@ namespace Test.VirtualRadar.Library
         public void Feed_ApplyConfiguration_Copies_Changes_To_RawTranslator()
         {
             Do_Check_Configuration_Changes_Copied_To_RawTranslator(true, () => _Feed.ApplyConfiguration(_Receiver, _Configuration) );
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Applies_Correct_Settings_To_Network_Connector()
+        {
+            Do_Check_Correct_Network_Settings_Applied_To_Connector(true, () => _Feed.ApplyConfiguration(_Receiver, _Configuration) );
         }
 
         [TestMethod]

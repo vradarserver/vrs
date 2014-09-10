@@ -36,6 +36,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.DataSource, DataSource.Port30003, DataSource.Sbs3);
             TestUtilities.TestProperty(settings, r => r.ConnectionType, ConnectionType.TCP, ConnectionType.COM);
             TestUtilities.TestProperty(settings, r => r.AutoReconnectAtStartup, true);
+            TestUtilities.TestProperty(settings, r => r.IsPassive, false);
             TestUtilities.TestProperty(settings, r => r.Address, "127.0.0.1", "VirtualRadar");
             TestUtilities.TestProperty(settings, r => r.Port, 30003, 19000);
             TestUtilities.TestProperty(settings, r => r.UseKeepAlive, true);
@@ -49,6 +50,8 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.StartupText, "#43-02\\r", "anything");
             TestUtilities.TestProperty(settings, r => r.ShutdownText, "#43-00\\r", "anything");
             TestUtilities.TestProperty(settings, r => r.ReceiverLocationId, 0, 1);
+
+            Assert.IsNotNull(settings.Access);
         }
     }
 }
