@@ -59,6 +59,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.comboBoxSerialComPort = new System.Windows.Forms.ComboBox();
             this.groupBoxNetwork = new System.Windows.Forms.GroupBox();
+            this.checkBoxIsPassive = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.numericIdleTimeout = new System.Windows.Forms.NumericUpDown();
@@ -67,11 +68,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxDataSource = new System.Windows.Forms.ComboBox();
             this.panelConnectionTypeSettings = new System.Windows.Forms.Panel();
+            this.groupBoxAccessControl = new System.Windows.Forms.GroupBox();
+            this.labelCidrList = new System.Windows.Forms.Label();
+            this.bindingCidrList = new VirtualRadar.WinForms.Controls.BindingCidrList();
+            this.comboBoxDefaultAccess = new System.Windows.Forms.ComboBox();
+            this.label17 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).BeginInit();
             this.panelConnectionTypeSettings.SuspendLayout();
+            this.groupBoxAccessControl.SuspendLayout();
             this.SuspendLayout();
             // 
             // label14
@@ -134,10 +141,10 @@
             // 
             // textBoxAddress
             // 
-            this.textBoxAddress.Location = new System.Drawing.Point(197, 20);
+            this.textBoxAddress.Location = new System.Drawing.Point(197, 42);
             this.textBoxAddress.Name = "textBoxAddress";
             this.textBoxAddress.Size = new System.Drawing.Size(150, 20);
-            this.textBoxAddress.TabIndex = 1;
+            this.textBoxAddress.TabIndex = 2;
             // 
             // textBoxSerialStartupText
             // 
@@ -150,7 +157,7 @@
             // 
             // numericPort
             // 
-            this.numericPort.Location = new System.Drawing.Point(197, 47);
+            this.numericPort.Location = new System.Drawing.Point(197, 69);
             this.numericPort.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -158,21 +165,20 @@
             0});
             this.numericPort.Name = "numericPort";
             this.numericPort.Size = new System.Drawing.Size(77, 20);
-            this.numericPort.TabIndex = 3;
+            this.numericPort.TabIndex = 4;
             this.numericPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 23);
+            this.label5.Location = new System.Drawing.Point(6, 45);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(45, 13);
-            this.label5.TabIndex = 0;
+            this.label5.TabIndex = 1;
             this.label5.Text = "::UNC:::";
             // 
             // label12
             // 
-            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(6, 157);
             this.label12.Name = "label12";
@@ -251,7 +257,6 @@
             // 
             // label10
             // 
-            this.label10.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(6, 103);
             this.label10.Name = "label10";
@@ -262,10 +267,10 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 49);
+            this.label6.Location = new System.Drawing.Point(6, 71);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(41, 13);
-            this.label6.TabIndex = 2;
+            this.label6.TabIndex = 3;
             this.label6.Text = "::Port:::";
             // 
             // comboBoxSerialStopBits
@@ -299,7 +304,6 @@
             // 
             // label8
             // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(6, 49);
             this.label8.Name = "label8";
@@ -360,10 +364,10 @@
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialBaudRate);
             this.groupBoxSerial.Controls.Add(this.label7);
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialComPort);
-            this.groupBoxSerial.Location = new System.Drawing.Point(0, 132);
+            this.groupBoxSerial.Location = new System.Drawing.Point(0, 339);
             this.groupBoxSerial.Name = "groupBoxSerial";
-            this.groupBoxSerial.Size = new System.Drawing.Size(633, 234);
-            this.groupBoxSerial.TabIndex = 1;
+            this.groupBoxSerial.Size = new System.Drawing.Size(633, 235);
+            this.groupBoxSerial.TabIndex = 2;
             this.groupBoxSerial.TabStop = false;
             this.groupBoxSerial.Text = "::USBOverCOM::";
             // 
@@ -391,6 +395,7 @@
             // 
             this.groupBoxNetwork.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxNetwork.Controls.Add(this.checkBoxIsPassive);
             this.groupBoxNetwork.Controls.Add(this.label16);
             this.groupBoxNetwork.Controls.Add(this.label15);
             this.groupBoxNetwork.Controls.Add(this.numericIdleTimeout);
@@ -401,32 +406,42 @@
             this.groupBoxNetwork.Controls.Add(this.textBoxAddress);
             this.groupBoxNetwork.Location = new System.Drawing.Point(0, 0);
             this.groupBoxNetwork.Name = "groupBoxNetwork";
-            this.groupBoxNetwork.Size = new System.Drawing.Size(633, 126);
+            this.groupBoxNetwork.Size = new System.Drawing.Size(633, 146);
             this.groupBoxNetwork.TabIndex = 0;
             this.groupBoxNetwork.TabStop = false;
             this.groupBoxNetwork.Text = "::Network::";
             // 
+            // checkBoxIsPassive
+            // 
+            this.checkBoxIsPassive.AutoSize = true;
+            this.checkBoxIsPassive.Location = new System.Drawing.Point(197, 19);
+            this.checkBoxIsPassive.Name = "checkBoxIsPassive";
+            this.checkBoxIsPassive.Size = new System.Drawing.Size(118, 17);
+            this.checkBoxIsPassive.TabIndex = 0;
+            this.checkBoxIsPassive.Text = "::PassiveReceiver::";
+            this.checkBoxIsPassive.UseVisualStyleBackColor = true;
+            // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(280, 98);
+            this.label16.Location = new System.Drawing.Point(280, 120);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(68, 13);
-            this.label16.TabIndex = 34;
+            this.label16.TabIndex = 8;
             this.label16.Text = "::PSeconds::";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(6, 98);
+            this.label15.Location = new System.Drawing.Point(6, 120);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(77, 13);
-            this.label15.TabIndex = 32;
+            this.label15.TabIndex = 6;
             this.label15.Text = "::IdleTimeout:::";
             // 
             // numericIdleTimeout
             // 
-            this.numericIdleTimeout.Location = new System.Drawing.Point(197, 96);
+            this.numericIdleTimeout.Location = new System.Drawing.Point(197, 118);
             this.numericIdleTimeout.Maximum = new decimal(new int[] {
             86400,
             0,
@@ -439,7 +454,7 @@
             0});
             this.numericIdleTimeout.Name = "numericIdleTimeout";
             this.numericIdleTimeout.Size = new System.Drawing.Size(77, 20);
-            this.numericIdleTimeout.TabIndex = 33;
+            this.numericIdleTimeout.TabIndex = 7;
             this.numericIdleTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericIdleTimeout.Value = new decimal(new int[] {
             5,
@@ -450,10 +465,10 @@
             // checkBoxUseKeepAlive
             // 
             this.checkBoxUseKeepAlive.AutoSize = true;
-            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(197, 73);
+            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(197, 95);
             this.checkBoxUseKeepAlive.Name = "checkBoxUseKeepAlive";
             this.checkBoxUseKeepAlive.Size = new System.Drawing.Size(105, 17);
-            this.checkBoxUseKeepAlive.TabIndex = 31;
+            this.checkBoxUseKeepAlive.TabIndex = 5;
             this.checkBoxUseKeepAlive.Text = "::UseKeepAlive::";
             this.checkBoxUseKeepAlive.UseVisualStyleBackColor = true;
             // 
@@ -494,12 +509,68 @@
             this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxAccessControl);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
             this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 136);
             this.panelConnectionTypeSettings.Name = "panelConnectionTypeSettings";
-            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 369);
+            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 578);
             this.panelConnectionTypeSettings.TabIndex = 30;
+            // 
+            // groupBoxAccessControl
+            // 
+            this.groupBoxAccessControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxAccessControl.Controls.Add(this.labelCidrList);
+            this.groupBoxAccessControl.Controls.Add(this.bindingCidrList);
+            this.groupBoxAccessControl.Controls.Add(this.comboBoxDefaultAccess);
+            this.groupBoxAccessControl.Controls.Add(this.label17);
+            this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 152);
+            this.groupBoxAccessControl.Name = "groupBoxAccessControl";
+            this.groupBoxAccessControl.Size = new System.Drawing.Size(633, 178);
+            this.groupBoxAccessControl.TabIndex = 1;
+            this.groupBoxAccessControl.TabStop = false;
+            this.groupBoxAccessControl.Text = "::AccessControl::";
+            // 
+            // labelCidrList
+            // 
+            this.labelCidrList.AutoSize = true;
+            this.labelCidrList.Location = new System.Drawing.Point(6, 81);
+            this.labelCidrList.Name = "labelCidrList";
+            this.labelCidrList.Size = new System.Drawing.Size(126, 13);
+            this.labelCidrList.TabIndex = 2;
+            this.labelCidrList.Text = "::AllowTheseAddresses:::";
+            // 
+            // bindingCidrList
+            // 
+            this.bindingCidrList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.bindingCidrList.DataSource = null;
+            this.bindingCidrList.Location = new System.Drawing.Point(197, 46);
+            this.bindingCidrList.Name = "bindingCidrList";
+            this.bindingCidrList.Size = new System.Drawing.Size(430, 126);
+            this.bindingCidrList.TabIndex = 3;
+            // 
+            // comboBoxDefaultAccess
+            // 
+            this.comboBoxDefaultAccess.DisplayMember = "Name";
+            this.comboBoxDefaultAccess.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDefaultAccess.FormattingEnabled = true;
+            this.comboBoxDefaultAccess.Location = new System.Drawing.Point(197, 19);
+            this.comboBoxDefaultAccess.Name = "comboBoxDefaultAccess";
+            this.comboBoxDefaultAccess.Size = new System.Drawing.Size(150, 21);
+            this.comboBoxDefaultAccess.TabIndex = 1;
+            this.comboBoxDefaultAccess.ValueMember = "Value";
+            this.comboBoxDefaultAccess.SelectedIndexChanged += new System.EventHandler(this.comboBoxDefaultAccess_SelectedIndexChanged);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 22);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(91, 13);
+            this.label17.TabIndex = 0;
+            this.label17.Text = "::DefaultAccess:::";
             // 
             // PageReceiver
             // 
@@ -518,7 +589,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxDataSource);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 505);
+            this.Size = new System.Drawing.Size(636, 717);
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
@@ -526,6 +597,8 @@
             this.groupBoxNetwork.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).EndInit();
             this.panelConnectionTypeSettings.ResumeLayout(false);
+            this.groupBoxAccessControl.ResumeLayout(false);
+            this.groupBoxAccessControl.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -572,5 +645,11 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.NumericUpDown numericIdleTimeout;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox checkBoxIsPassive;
+        private System.Windows.Forms.GroupBox groupBoxAccessControl;
+        private System.Windows.Forms.Label labelCidrList;
+        private Controls.BindingCidrList bindingCidrList;
+        private System.Windows.Forms.ComboBox comboBoxDefaultAccess;
+        private System.Windows.Forms.Label label17;
     }
 }
