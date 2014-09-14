@@ -150,7 +150,7 @@ namespace VirtualRadar.Library.Network
         #endregion
 
         #region ActiveModeReconnect, ActiveModeConnect, ActiveModeDisconnect
-        private static bool _InActiveModeReconnect;
+        private bool _InActiveModeReconnect;
         /// <summary>
         /// Keeps attempting to connect in active mode until a connection is established.
         /// </summary>
