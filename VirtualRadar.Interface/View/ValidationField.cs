@@ -289,5 +289,10 @@ namespace VirtualRadar.Interface.View
         /// Indicates whether a rebroadcast server is in transmit mode.
         /// </summary>
         IsTransmitter,
+
+        /// <summary>
+        /// Indicates whether a receiver is in passive mode,
+        /// </summary>
+        IsPassive,
     }
 }

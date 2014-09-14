@@ -2262,18 +2262,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>The number of seconds to wait for the receiving side to acknowledge receipt of a packet before the connection is closed. Only used if not using keep-alive packets.</value>
   </data>
   <data name="OptionsDescribeRebroadcastIsTransmitter" xml:space="preserve">
-    <value>Yes to transmit the feed to a single computer, no to wait for other computers to connect to the server and pull the feed from it.</value>
+    <value>Yes to connect and push the feed to a single computer, no to wait for other computers to connect to this server and pull the feed from it.</value>
   </data>
   <data name="OptionsDescribeRebroadcastTransmitAddress" xml:space="preserve">
-    <value>The address of the computer to transmit the feed to.</value>
+    <value>The address of the computer to push the feed to.</value>
   </data>
   <data name="OptionsDescribeRebroadcastUseKeepAlive" xml:space="preserve">
     <value>Yes to use keep-alive packets to detect a feed that has gone down, no to reset the connection if no data is received after a given number of seconds.</value>
   </data>
   <data name="TransmitFeed" xml:space="preserve">
-    <value>Transmit feed</value>
+    <value>Push feed</value>
   </data>
   <data name="RebroadcastServerIdleTimeoutOutOfBounds" xml:space="preserve">
     <value>The idle timeout must be at least 5 seconds.</value>
+  </data>
+  <data name="PassiveReceiver" xml:space="preserve">
+    <value>Push receiver</value>
+    <comment>Passive means the receiver waits for a connection to be made to it instead of actively connecting with another computer. A passive receiver has the feed pushed to it, a non-passive receiver pulls the feed from the other computer</comment>
+  </data>
+  <data name="OptionsDescribeDataSourcePassiveReceiver" xml:space="preserve">
+    <value>Yes if the receiver should wait for another computer to connect and push a feed to it; no if it should actively connect to another computer and pull the feed from it.</value>
   </data>
 </root>

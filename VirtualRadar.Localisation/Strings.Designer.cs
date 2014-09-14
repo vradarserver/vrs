@@ -2686,6 +2686,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Yes if the receiver should wait for another computer to connect and push a feed to it; no if it should actively connect to another computer and pull the feed from it..
+        /// </summary>
+        public static string OptionsDescribeDataSourcePassiveReceiver {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDataSourcePassiveReceiver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The network address of the receiver or program that is sending aircraft data. Only used for Network data feeds..
         /// </summary>
         public static string OptionsDescribeDataSourcesAddress {
@@ -3244,7 +3253,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yes to transmit the feed to a single computer, no to wait for other computers to connect to the server and pull the feed from it..
+        ///   Looks up a localized string similar to Yes to connect and push the feed to a single computer, no to wait for other computers to connect to this server and pull the feed from it..
         /// </summary>
         public static string OptionsDescribeRebroadcastIsTransmitter {
             get {
@@ -3307,7 +3316,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The address of the computer to transmit the feed to..
+        ///   Looks up a localized string similar to The address of the computer to push the feed to..
         /// </summary>
         public static string OptionsDescribeRebroadcastTransmitAddress {
             get {
@@ -3726,6 +3735,15 @@ namespace VirtualRadar.Localisation {
         public static string Other {
             get {
                 return ResourceManager.GetString("Other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push receiver.
+        /// </summary>
+        public static string PassiveReceiver {
+            get {
+                return ResourceManager.GetString("PassiveReceiver", resourceCulture);
             }
         }
         
@@ -5694,7 +5712,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transmit feed.
+        ///   Looks up a localized string similar to Push feed.
         /// </summary>
         public static string TransmitFeed {
             get {
