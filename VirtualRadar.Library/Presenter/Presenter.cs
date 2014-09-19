@@ -211,9 +211,20 @@ namespace VirtualRadar.Library.Presenter
             /// combination of field and record.</returns>
             public ValidationResult AddPartialValidationField()
             {
+                return AddPartialValidationField(Field);
+            }
+
+            /// <summary>
+            /// Adds a record to the <see cref="Results"/> indicating that a validation test was carried out on the field.
+            /// </summary>
+            /// <param name="field"></param>
+            /// <returns>The result record describing the validation field or null if there was already an entry for this
+            /// combination of field and record.</returns>
+            public ValidationResult AddPartialValidationField(ValidationField field)
+            {
                 ValidationResult result = null;
-                if(!Results.PartialValidationFields.Any(r => r.Record == Record && r.Field == Field)) {
-                    result = new ValidationResult(Record, Field, null);
+                if(!Results.PartialValidationFields.Any(r => r.Record == Record && r.Field == field)) {
+                    result = new ValidationResult(Record, field, null);
                     Results.PartialValidationFields.Add(result);
                 }
 

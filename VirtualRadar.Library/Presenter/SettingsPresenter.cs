@@ -1275,26 +1275,29 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Validates the list of users and/or an individual user.
         /// </summary>
-        /// <param name="defaults"></param>
-        private void ValidateUsers(Validation defaults)
+        /// <param name="validation"></param>
+        private void ValidateUsers(Validation validation)
         {
-            var user = defaults.Record as IUser;
+            var user = validation.Record as IUser;
 
-            if(defaults.Record == null) {
-                if(defaults.ValueChangedField == ValidationField.None) {
+            if(validation.Record == null) {
+                if(validation.ValueChangedField == ValidationField.None) {
                     foreach(var child in _View.Users) {
-                        var childDefaults = new Validation(defaults) { Record = child };
+                        var childDefaults = new Validation(validation) { Record = child };
                         ValidateUsers(childDefaults);
                     }
                 }
             } else if(user != null) {
                 if(_UserManager.CanEditUsers) {
-                    switch(defaults.ValueChangedField) {
+                    switch(validation.ValueChangedField) {
                         case ValidationField.None:
                         case ValidationField.LoginName:
                         case ValidationField.Password:
                         case ValidationField.Name:
-                            _UserManager.ValidateUser(defaults.Results.Results, user, user, _View.Users);
+                            if(validation.Results.IsPartialValidation) {
+                                validation.AddPartialValidationField(validation.ValueChangedField);
+                            }
+                            _UserManager.ValidateUser(validation.Results.Results, user, user, _View.Users);
                             break;
                     }
                 }
