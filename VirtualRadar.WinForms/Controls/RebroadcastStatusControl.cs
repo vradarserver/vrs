@@ -159,6 +159,7 @@ namespace VirtualRadar.WinForms.Controls
         {
             base.OnLoad(e);
             if(!DesignMode) {
+                Localise.Control(contextMenuStrip);
                 _Sorter.RefreshSortIndicators();
             }
         }
@@ -171,6 +172,26 @@ namespace VirtualRadar.WinForms.Controls
         private void labelDescribeConfiguration_Click(object sender, EventArgs e)
         {
             OnShowRebroadcastServersConfigurationClicked(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Called when the user clicks the ShowExceptions context menu entry.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuShowExceptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var rebroadcastServerConnection = GetSelectedListViewTag<RebroadcastServerConnection>(listView);
+            if(rebroadcastServerConnection != null) {
+                var rebroadcastServer = Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton.RebroadcastServers.FirstOrDefault(r => r.UniqueId == rebroadcastServerConnection.RebroadcastServerId);
+                var connector = rebroadcastServer == null ? null : rebroadcastServer.Connector;
+                var exceptions = connector == null ? null : connector.GetExceptionHistory();
+
+                using(var dialog = new TimestampedExceptionView()) {
+                    dialog.Exceptions.AddRange(exceptions ?? new TimestampedException[0]);
+                    dialog.ShowDialog(this);
+                }
+            }
         }
     }
 }

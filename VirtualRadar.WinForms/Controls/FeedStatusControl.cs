@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
+using InterfaceFactory;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -332,6 +333,7 @@ namespace VirtualRadar.WinForms.Controls
             reconnectDataFeedToolStripMenuItem.Enabled = hasReceiverFeed;
             menuStatisticsToolStripMenuItem.Enabled = hasReceiverFeed;
             menuResetReceiverRangeToolStripMenuItem.Enabled = hasPolarPlotter;
+            menuShowExceptionsToolStripMenuItem.Enabled = hasReceiverFeed;
         }
 
         private void RaiseEventForAllSelectedReceiverFeeds(Action<FeedIdEventArgs> eventCaller)
@@ -398,6 +400,27 @@ namespace VirtualRadar.WinForms.Controls
             var selectedFeeds = SelectedFeeds;
             if(selectedFeeds.Length > 0) {
                 OnConfigureFeed(new FeedIdEventArgs(selectedFeeds[0].UniqueId));
+            }
+        }
+
+        /// <summary>
+        /// Raised when the user clicks the context menu to show exceptions.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuShowExceptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedFeeds = SelectedFeeds.Where(r => !r.IsMergedFeed).ToArray();
+            if(selectedFeeds.Length > 0) {
+                var selectedFeed = selectedFeeds[0];
+                var feed = Factory.Singleton.Resolve<IFeedManager>().Singleton.GetByUniqueId(selectedFeed.UniqueId);
+                var connector = feed == null || feed.Listener == null ? null : feed.Listener.Connector;
+                var exceptions = connector == null ? null : connector.GetExceptionHistory();
+
+                using(var dialog = new TimestampedExceptionView()) {
+                    dialog.Exceptions.AddRange(exceptions ?? new TimestampedException[0]);
+                    dialog.ShowDialog(this);
+                }
             }
         }
         #endregion

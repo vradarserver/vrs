@@ -2283,4 +2283,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeDataSourcePassiveReceiver" xml:space="preserve">
     <value>Yes if the receiver should wait for another computer to connect and push a feed to it; no if it should actively connect to another computer and pull the feed from it.</value>
   </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="menuConfigureRebroadcastServer" xml:space="preserve">
+    <value>Configure Rebroadcast Server</value>
+  </data>
+  <data name="menuShowExceptions" xml:space="preserve">
+    <value>Show Exceptions</value>
+  </data>
 </root>

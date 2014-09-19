@@ -2200,6 +2200,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure Rebroadcast Server.
+        /// </summary>
+        public static string menuConfigureRebroadcastServer {
+            get {
+                return ResourceManager.GetString("menuConfigureRebroadcastServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection &amp;Client Log....
         /// </summary>
         public static string menuConnectionClientLog {
@@ -2326,6 +2335,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Exceptions.
+        /// </summary>
+        public static string menuShowExceptions {
+            get {
+                return ResourceManager.GetString("menuShowExceptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Show Window.
         /// </summary>
         public static string menuShowWindow {
@@ -2376,6 +2394,15 @@ namespace VirtualRadar.Localisation {
         public static string MergedFeeds {
             get {
                 return ResourceManager.GetString("MergedFeeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        public static string Message {
+            get {
+                return ResourceManager.GetString("Message", resourceCulture);
             }
         }
         
@@ -5618,6 +5645,15 @@ namespace VirtualRadar.Localisation {
         public static string Throughput {
             get {
                 return ResourceManager.GetString("Throughput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string Time {
+            get {
+                return ResourceManager.GetString("Time", resourceCulture);
             }
         }
         

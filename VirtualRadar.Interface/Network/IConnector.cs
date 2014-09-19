@@ -83,9 +83,14 @@ namespace VirtualRadar.Interface.Network
         IConnection Connection { get; }
 
         /// <summary>
-        /// Gets the last exception raised during the course of the connector's work.
+        /// Gets the last exception encountered by the connector.
         /// </summary>
         TimestampedException LastException { get; }
+
+        /// <summary>
+        /// Gets the number of exceptions ever encountered by the connector.
+        /// </summary>
+        long CountExceptions { get; }
 
         /// <summary>
         /// Gets the connection status. This only reflects the status of the connector -
@@ -154,6 +159,14 @@ namespace VirtualRadar.Interface.Network
         /// </summary>
         /// <returns></returns>
         IConnection GetFirstConnection();
+
+        /// <summary>
+        /// Returns an array of the last so-many exceptions encountered by the connector. Exactly
+        /// how many is undefined, but it can be more than one and will never exceed <see cref="CountExceptions"/>.
+        /// Always returns the most recent set of exceptions.
+        /// </summary>
+        /// <returns></returns>
+        TimestampedException[] GetExceptionHistory();
 
         /// <summary>
         /// Reads the next chunk from the first (or only) connection.

@@ -109,6 +109,7 @@
     <Compile Include="Presenter\CidrEditPresenter.cs" />
     <Compile Include="Presenter\SettingsPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
+    <Compile Include="Presenter\TimestampedExceptionPresenter.cs" />
     <Compile Include="Settings\ConfigurationListener.cs" />
     <Compile Include="TcpClientWrapper.cs" />
     <Compile Include="Presenter\StatisticsPresenter.cs" />
