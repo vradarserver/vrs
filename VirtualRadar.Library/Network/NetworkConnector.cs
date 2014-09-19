@@ -43,6 +43,11 @@ namespace VirtualRadar.Library.Network
         /// The number of milliseconds of inactivity before the connection times out.
         /// </summary>
         public static readonly int DefaultIdleTimeout = 60000;
+
+        /// <summary>
+        /// The number of milliseconds to wait before forcibly halting the connect thread when disconnecting.
+        /// </summary>
+        public static readonly int DisconnectTimeout = 2000;
         #endregion
 
         #region Fields
@@ -143,7 +148,7 @@ namespace VirtualRadar.Library.Network
         protected override void DoCloseConnection()
         {
             _Closed = true;
-            WaitForEstablishConnectionThreadToFinish(timeoutMilliseconds: 10000);
+            WaitForEstablishConnectionThreadToFinish(DisconnectTimeout);
             AbandonAllConnections();
             ConnectionStatus = ConnectionStatus.Disconnected;
         }
