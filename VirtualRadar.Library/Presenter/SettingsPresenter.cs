@@ -1736,7 +1736,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="args"></param>
         private void Users_ListChanged(object sender, ListChangedEventArgs args)
         {
-            if(args.ListChangedType == ListChangedType.ItemChanged) {
+            if(args.PropertyDescriptor != null && args.ListChangedType == ListChangedType.ItemChanged) {
                 HandleUsersPropertyChanged(_View.Users[args.NewIndex], args.PropertyDescriptor.Name);
             }
         }

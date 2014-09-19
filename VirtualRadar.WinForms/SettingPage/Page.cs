@@ -542,7 +542,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <param name="args"></param>
         internal virtual void UsersChanged(IList<IUser> users, ListChangedEventArgs args)
         {
-            if(args.ListChangedType == ListChangedType.ItemChanged) {
+            if(args.PropertyDescriptor != null && args.ListChangedType == ListChangedType.ItemChanged) {
                 RefreshTreeNodeForRecordProperty(users[args.NewIndex], args.PropertyDescriptor.Name);
             }
         }
