@@ -12,50 +12,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Presenter;
+using VirtualRadar.Interface.View;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Library.Presenter
 {
     /// <summary>
-    /// Records an exception and the time (at UTC) when it was thrown.
+    /// The default implementation of <see cref="ITimestampedExceptionPresenter"/>.
     /// </summary>
-    public class TimestampedException
+    class TimestampedExceptionPresenter : Presenter<ITimestampedExceptionView>, ITimestampedExceptionPresenter
     {
         /// <summary>
-        /// Gets the date and time at UTC when the exception was thrown.
-        /// </summary>
-        public DateTime TimeUtc { get; private set; }
-
-        /// <summary>
-        /// Gets the exception that was thrown.
-        /// </summary>
-        public Exception Exception { get; private set; }
-
-        /// <summary>
-        /// Creates a new object.
+        /// See interface docs.
         /// </summary>
         /// <param name="ex"></param>
-        public TimestampedException(Exception exception) : this(DateTime.UtcNow, exception)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new object
-        /// </summary>
-        /// <param name="timeUtc"></param>
-        /// <param name="exception"></param>
-        public TimestampedException(DateTime timeUtc, Exception exception)
-        {
-            TimeUtc = timeUtc;
-            Exception = exception;
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public string FormatTime(TimestampedException ex)
         {
-            return String.Format("{0:HH:mm:ss.sss} {1}", TimeUtc, Exception == null ? null : Exception.Message);
+            return ex == null || ex.Exception == null ? "" : ex.TimeUtc.ToLocalTime().ToString("G");
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        public string FullExceptionMessage(TimestampedException ex)
+        {
+            var result = "";
+
+            if(ex != null && ex.Exception != null) {
+                var buffer = new StringBuilder();
+                buffer.AppendFormat("{0}\n{1}", ex.Exception.Message, ex.Exception.ToString());
+                for(Exception innerEx = ex.Exception.InnerException;innerEx != null;innerEx = innerEx.InnerException) {
+                    buffer.AppendFormat("\n----- 8< -----\n{0}\n{1}", innerEx.Message, innerEx.ToString());
+                }
+                result = buffer.ToString();
+            }
+
+            return result;
         }
     }
 }

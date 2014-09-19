@@ -403,6 +403,12 @@
     <Compile Include="StatisticsView.Designer.cs">
       <DependentUpon>StatisticsView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimestampedExceptionView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimestampedExceptionView.Designer.cs">
+      <DependentUpon>TimestampedExceptionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ValidationHelper.cs" />
     <Compile Include="ValueChangedHelper.cs" />
     <Compile Include="ValueDescription.cs" />
@@ -596,6 +602,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StatisticsView.resx">
       <DependentUpon>StatisticsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimestampedExceptionView.resx">
+      <DependentUpon>TimestampedExceptionView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\Header.resx">
       <DependentUpon>Header.cs</DependentUpon>

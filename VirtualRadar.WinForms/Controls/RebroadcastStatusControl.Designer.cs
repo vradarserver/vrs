@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox = new System.Windows.Forms.GroupBox();
             this.listView = new VirtualRadar.WinForms.Controls.ListViewPlus();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -37,7 +38,10 @@
             this.columnHeaderBytesStale = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.labelDescribeConfiguration = new System.Windows.Forms.Label();
+            this.menuShowExceptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.groupBox.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox
@@ -65,6 +69,7 @@
             this.columnHeaderBytesBuffered,
             this.columnHeaderBytesSent,
             this.columnHeaderBytesStale});
+            this.listView.ContextMenuStrip = this.contextMenuStrip;
             this.listView.FullRowSelect = true;
             this.listView.GridLines = true;
             this.listView.Location = new System.Drawing.Point(10, 37);
@@ -127,6 +132,20 @@
             this.labelDescribeConfiguration.Text = "None";
             this.labelDescribeConfiguration.Click += new System.EventHandler(this.labelDescribeConfiguration_Click);
             // 
+            // menuShowExceptionsToolStripMenuItem
+            // 
+            this.menuShowExceptionsToolStripMenuItem.Name = "menuShowExceptionsToolStripMenuItem";
+            this.menuShowExceptionsToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.menuShowExceptionsToolStripMenuItem.Text = "::menuShowExceptions::";
+            this.menuShowExceptionsToolStripMenuItem.Click += new System.EventHandler(this.menuShowExceptionsToolStripMenuItem_Click);
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuShowExceptionsToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(203, 48);
+            // 
             // RebroadcastStatusControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -136,6 +155,7 @@
             this.Size = new System.Drawing.Size(708, 218);
             this.groupBox.ResumeLayout(false);
             this.groupBox.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -152,5 +172,7 @@
         private System.Windows.Forms.ColumnHeader columnHeaderName;
         private System.Windows.Forms.ColumnHeader columnHeaderBytesBuffered;
         private System.Windows.Forms.ColumnHeader columnHeaderBytesStale;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem menuShowExceptionsToolStripMenuItem;
     }
 }

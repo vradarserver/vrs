@@ -25,6 +25,13 @@ namespace VirtualRadar.Library.Network
     /// </summary>
     abstract class Connector : IConnector
     {
+        #region Static fields
+        /// <summary>
+        /// The maximum number of exceptions recorded by the connector.
+        /// </summary>
+        public static readonly int MaxExceptions = 20;
+        #endregion
+
         #region Fields
         /// <summary>
         /// The spin lock around the list of connections.
@@ -106,9 +113,39 @@ namespace VirtualRadar.Library.Network
         }
 
         /// <summary>
+        /// The backing field used by <see cref="LastException"/> and <see cref="GetExceptionHistory"/>.
+        /// </summary>
+        private List<TimestampedException> _Exceptions = new List<TimestampedException>();
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
-        public TimestampedException LastException { get; protected set; }
+        public TimestampedException LastException
+        {
+            get {
+                using(_SpinLock.AcquireLock()) {
+                    return _Exceptions.Count == 0 ? null : _Exceptions[_Exceptions.Count - 1];
+                }
+            }
+        }
+
+        /// <summary>
+        /// A count of all exceptions ever recorded by the connector.
+        /// </summary>
+        private long _TotalExceptions;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long CountExceptions
+        {
+            get {
+                using(_SpinLock.AcquireLock()) {
+                    return _TotalExceptions;
+                }
+            }
+        }
+
 
         private ConnectionStatus _ConnectionStatus;
         /// <summary>
@@ -163,7 +200,7 @@ namespace VirtualRadar.Library.Network
         protected virtual void OnExceptionCaught(EventArgs<Exception> args)
         {
             if(!(args.Value is ThreadAbortException)) {
-                LastException = new TimestampedException(args.Value);
+                RecordException(args.Value);
                 if(ExceptionCaught != null) {
                     try {
                         ExceptionCaught(this, args);
@@ -183,7 +220,7 @@ namespace VirtualRadar.Library.Network
         {
             if(ex != null && !(ex is ThreadAbortException)) {
                 try {
-                    LastException = new TimestampedException(ex);
+                    RecordException(ex);
                     if(ExceptionCaught != null) {
                         ExceptionCaught(connection, new EventArgs<Exception>(ex));
                     }
@@ -299,6 +336,36 @@ namespace VirtualRadar.Library.Network
                 } finally {
                     _SpinLock.Unlock();
                 }
+            }
+        }
+        #endregion
+
+        #region RecordException, GetExceptionHistory
+        /// <summary>
+        /// Records an exception in <see cref="Exceptions"/>.
+        /// </summary>
+        /// <param name="ex"></param>
+        private void RecordException(Exception ex)
+        {
+            if(ex != null && !(ex is ThreadAbortException)) {
+                using(_SpinLock.AcquireLock()) {
+                    while(_Exceptions.Count >= MaxExceptions) {
+                        _Exceptions.RemoveAt(0);
+                    }
+                    _Exceptions.Add(new TimestampedException(ex));
+                    ++_TotalExceptions;
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public TimestampedException[] GetExceptionHistory()
+        {
+            using(_SpinLock.AcquireLock()) {
+                return _Exceptions.ToArray();
             }
         }
         #endregion
