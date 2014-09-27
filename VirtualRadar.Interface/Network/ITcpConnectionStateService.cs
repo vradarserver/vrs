@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Network
 {
     /// <summary>
     /// A service that can retrieve the state of TCP connections.

@@ -49,6 +49,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Network.IRebroadcastServer, Network.RebroadcastServer>();
             factory.Register<VirtualRadar.Interface.Network.IRebroadcastServerManager, Network.RebroadcastServerManager>();
             factory.Register<VirtualRadar.Interface.Network.ISerialConnector, Network.SerialConnector>();
+            factory.Register<VirtualRadar.Interface.Network.ITcpConnectionStateService, Network.TcpConnectionStateService>();
             factory.Register<VirtualRadar.Interface.Presenter.IAboutPresenter, Presenter.AboutPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ICidrEditPresenter, Presenter.CidrEditPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionClientLogPresenter, Presenter.ConnectionClientLogPresenter>();
@@ -92,7 +93,6 @@ namespace VirtualRadar.Library
             factory.Register<IRuntimeEnvironment, RuntimeEnvironment>();
             factory.Register<ISimpleAircraftList, SimpleAircraftList>();
             factory.Register<IStatistics, Statistics>();
-            factory.Register<ITcpConnectionStateService, TcpConnectionStateService>();
 
             if(Type.GetType("Mono.Runtime") == null) {
                 factory.Register<ISpeechSynthesizerWrapper, DotNetSpeechSynthesizerWrapper>();

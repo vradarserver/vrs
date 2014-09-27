@@ -148,7 +148,7 @@
     <Compile Include="Settings\PluginSettingsStorage.cs" />
     <Compile Include="SimpleAircraftList.cs" />
     <Compile Include="Statistics.cs" />
-    <Compile Include="TcpConnectionStateService.cs" />
+    <Compile Include="Network\TcpConnectionStateService.cs" />
     <Compile Include="VersionComparer.cs" />
     <Compile Include="Web References\webservice.virtualradarserver.co.uk\Reference.cs">
       <AutoGen>True</AutoGen>

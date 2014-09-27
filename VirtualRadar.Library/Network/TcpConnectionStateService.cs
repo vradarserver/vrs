@@ -11,13 +11,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VirtualRadar.Interface;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Text;
 using InterfaceFactory;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Network;
 
-namespace VirtualRadar.Library
+namespace VirtualRadar.Library.Network
 {
     /// <summary>
     /// The default implementation of <see cref="ITcpConnectionStateService"/>.
