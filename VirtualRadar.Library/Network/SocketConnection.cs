@@ -31,6 +31,21 @@ namespace VirtualRadar.Library.Network
         private SpinLock _SpinLock = new SpinLock();
 
         /// <summary>
+        /// The date and time that the connection was first created.
+        /// </summary>
+        private DateTime _Created;
+
+        /// <summary>
+        /// The date and time of the last successful network activity seen on the connection.
+        /// </summary>
+        private DateTime _LastNetworkActivity = DateTime.MinValue;
+
+        /// <summary>
+        /// Gets the network connector that owns this connection.
+        /// </summary>
+        public INetworkConnector NetworkConnector { get { return (INetworkConnector)Connector; } }
+
+        /// <summary>
         /// Gets the socket that the connection is using.
         /// </summary>
         public Socket Socket { get; private set; }
@@ -66,6 +81,7 @@ namespace VirtualRadar.Library.Network
         public SocketConnection(Connector connector, Socket socket, ConnectionStatus initialStatus) : base(connector, initialStatus)
         {
             Socket = socket;
+            _Created = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -124,6 +140,7 @@ namespace VirtualRadar.Library.Network
                 try {
                     op.BytesRead = socket.Receive(op.Buffer, op.Offset, op.Length, SocketFlags.None);
                     op.Abandon = op.BytesRead == 0;     // Other side has forcibly closed the connection
+                    _LastNetworkActivity = DateTime.UtcNow;
                 } catch(Exception ex) {
                     if(_Connector != null) _Connector.RaiseConnectionException(this, ex);
                     op.Abandon = true;
@@ -141,11 +158,31 @@ namespace VirtualRadar.Library.Network
             if(socket != null) {
                 try {
                     socket.Send(op.Buffer, op.Offset, op.Length, SocketFlags.None);
+                    _LastNetworkActivity = DateTime.UtcNow;
                 } catch(Exception ex) {
                     if(_Connector != null) _Connector.RaiseConnectionException(this, ex);
                     op.Abandon = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns true if the parent connector is not using keep-alive packets and the
+        /// idle timeout has elapsed since the last network activity. If there has never
+        /// been any network activity then 
+        /// </summary>
+        /// <param name="now">The current date and time.</param>
+        /// <returns></returns>
+        public bool IsIdle(DateTime now)
+        {
+            var connector = NetworkConnector;
+            var result = !connector.UseKeepAlive;
+            if(result) {
+                var elapsed = now - (_LastNetworkActivity == DateTime.MinValue ? _Created : _LastNetworkActivity);
+                result = elapsed.Milliseconds >= connector.IdleTimeout;
+            }
+
+            return result;
         }
     }
 }

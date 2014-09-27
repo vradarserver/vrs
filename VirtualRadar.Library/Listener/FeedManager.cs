@@ -12,12 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface;
 using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Library
+namespace VirtualRadar.Library.Listener
 {
     /// <summary>
     /// The default implementation of <see cref="IFeedManager"/>.

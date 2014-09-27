@@ -36,6 +36,8 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.FlightSimulatorX.IFlightSimulatorX, FlightSimulatorX.FlightSimulatorX>();
             factory.Register<VirtualRadar.Interface.Listener.IBeastMessageBytesExtractor, Listener.BeastMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.ICompressedMessageBytesExtractor, Listener.CompressedMessageBytesExtractor>();
+            factory.Register<VirtualRadar.Interface.Listener.IFeed, Listener.Feed>();
+            factory.Register<VirtualRadar.Interface.Listener.IFeedManager, Listener.FeedManager>();
             factory.Register<VirtualRadar.Interface.Listener.IListener, Listener.Listener>();
             factory.Register<VirtualRadar.Interface.Listener.IMergedFeedListener, Listener.MergedFeedListener>();
             factory.Register<VirtualRadar.Interface.Listener.IPort30003MessageBytesExtractor, Listener.Port30003MessageBytesExtractor>();
@@ -44,6 +46,8 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.ModeS.IModeSParity, ModeS.ModeSParity>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSTranslator, ModeS.ModeSTranslator>();
             factory.Register<VirtualRadar.Interface.Network.INetworkConnector, Network.NetworkConnector>();
+            factory.Register<VirtualRadar.Interface.Network.IRebroadcastServer, Network.RebroadcastServer>();
+            factory.Register<VirtualRadar.Interface.Network.IRebroadcastServerManager, Network.RebroadcastServerManager>();
             factory.Register<VirtualRadar.Interface.Network.ISerialConnector, Network.SerialConnector>();
             factory.Register<VirtualRadar.Interface.Presenter.IAboutPresenter, Presenter.AboutPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ICidrEditPresenter, Presenter.CidrEditPresenter>();
@@ -80,15 +84,11 @@ namespace VirtualRadar.Library
             factory.Register<IConnectionLogger, ConnectionLogger>();
             factory.Register<IDirectoryCache, DirectoryCache>();
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();
-            factory.Register<IFeed, Feed>();
-            factory.Register<IFeedManager, FeedManager>();
             factory.Register<IHeartbeatService, HeartbeatService>();
             factory.Register<IImageFileManager, ParallelAccessImageFileManager>();
             factory.Register<ILog, Log>();
             factory.Register<INewVersionChecker, NewVersionChecker>();
             factory.Register<IPluginManager, PluginManager>();
-            factory.Register<IRebroadcastServer, RebroadcastServer>();
-            factory.Register<IRebroadcastServerManager, RebroadcastServerManager>();
             factory.Register<IRuntimeEnvironment, RuntimeEnvironment>();
             factory.Register<ISimpleAircraftList, SimpleAircraftList>();
             factory.Register<IStatistics, Statistics>();

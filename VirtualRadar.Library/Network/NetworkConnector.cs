@@ -37,7 +37,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// The number of milliseconds the connector waits before retrying the attempt to connect.
         /// </summary>
-        public static readonly int RetryConnectTimeout = 10000;
+        public static readonly int RetryConnectTimeout = 5000;
 
         /// <summary>
         /// The number of milliseconds of inactivity before the connection times out.
@@ -65,6 +65,16 @@ namespace VirtualRadar.Library.Network
         /// The object that decides whether incoming connections can be accepted.
         /// </summary>
         private IAccessFilter _AccessFilter;
+
+        /// <summary>
+        /// The heartbeat service that we hooked.
+        /// </summary>
+        private IHeartbeatService _HeartbeatService;
+
+        /// <summary>
+        /// The date and time that the connections were checked for idle.
+        /// </summary>
+        private DateTime _LastIdleCheck;
         #endregion
 
         #region Behavioural properties
@@ -114,6 +124,24 @@ namespace VirtualRadar.Library.Network
         {
             UseKeepAlive = true;
             IdleTimeout = DefaultIdleTimeout;
+
+            _LastIdleCheck = DateTime.UtcNow;
+            _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+            _HeartbeatService.FastTick += HeartbeatService_FastTick ;
+        }
+        #endregion
+
+        #region Dispose
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if(disposing) {
+                if(_HeartbeatService != null) _HeartbeatService.FastTick -= HeartbeatService_FastTick;
+            }
         }
         #endregion
 
@@ -379,6 +407,35 @@ namespace VirtualRadar.Library.Network
                     KeepAliveTime = 10 * 1000,
                     KeepAliveInterval = 1 * 1000
                 }.BuildBuffer(), null);
+            }
+        }
+        #endregion
+
+        #region Event handlers
+        /// <summary>
+        /// Called roughly once a second.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HeartbeatService_FastTick(object sender, EventArgs e)
+        {
+            try {
+                if(!UseKeepAlive && IdleTimeout > 0) {
+                    var threshold = _LastIdleCheck.AddMilliseconds(IdleTimeout);
+                    var now = DateTime.UtcNow;
+                    if(now >= threshold) {
+                        _LastIdleCheck = now;
+
+                        foreach(SocketConnection connection in GetConnections()) {
+                            if(connection.IsIdle(now)) {
+                                connection.Abandon();
+                                System.Windows.Forms.MessageBox.Show("Abandoned connection after timeout");
+                            }
+                        }
+                    }
+                }
+            } catch(Exception ex) {
+                OnExceptionCaught(new EventArgs<Exception>(ex));
             }
         }
         #endregion

@@ -185,6 +185,11 @@ namespace VirtualRadar.Library.Network
                 }
             }
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public virtual bool EstablishingConnections { get; private set; }
         #endregion
 
         #region Events
@@ -377,6 +382,7 @@ namespace VirtualRadar.Library.Network
         public virtual void EstablishConnection()
         {
             _EstablishConnectionCalled = true;
+            EstablishingConnections = true;
 
             if(IsPassive && !PassiveModeSupported) throw new InvalidOperationException(String.Format("Passive mode is not supported on {0} connectors", GetType().Name));
             if(!IsPassive && !ActiveModeSupported) throw new InvalidOperationException(String.Format("Active mode is not supported on {0} connectors", GetType().Name));
@@ -451,6 +457,7 @@ namespace VirtualRadar.Library.Network
         public virtual void CloseConnection()
         {
             try {
+                EstablishingConnections = false;
                 DoCloseConnection();
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));

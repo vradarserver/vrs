@@ -11,16 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Interface.Settings;
-using System.Net;
-using VirtualRadar.Localisation;
-using VirtualRadar.Interface;
 using InterfaceFactory;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WinForms.Controls
 {

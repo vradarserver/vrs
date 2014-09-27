@@ -22,7 +22,7 @@ using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 
-namespace VirtualRadar.Library
+namespace VirtualRadar.Library.Listener
 {
     /// <summary>
     /// The default implementation of <see cref="IFeed"/>.
@@ -277,52 +277,55 @@ namespace VirtualRadar.Library
         /// <summary>
         /// Creates and configures the provider to use to connect to the data feed.
         /// </summary>
-        /// <param name="receiver"></param>
+        /// <param name="settings"></param>
         /// <returns></returns>
-        private IConnector DetermineConnector(Receiver receiver)
+        private IConnector DetermineConnector(Receiver settings)
         {
             IConnector result = Listener.Connector;
 
-            switch(receiver.ConnectionType) {
+            switch(settings.ConnectionType) {
                 case ConnectionType.COM:
                     var existingSerialProvider = result as ISerialConnector;
-                    if(existingSerialProvider == null || existingSerialProvider.BaudRate != receiver.BaudRate || existingSerialProvider.ComPort != receiver.ComPort ||
-                       existingSerialProvider.DataBits != receiver.DataBits || existingSerialProvider.Handshake != receiver.Handshake || 
-                       existingSerialProvider.Parity != receiver.Parity || existingSerialProvider.ShutdownText != receiver.ShutdownText ||
-                       existingSerialProvider.StartupText != receiver.StartupText || existingSerialProvider.StopBits != receiver.StopBits) {
+                    if(existingSerialProvider == null || existingSerialProvider.BaudRate != settings.BaudRate || existingSerialProvider.ComPort != settings.ComPort ||
+                       existingSerialProvider.DataBits != settings.DataBits || existingSerialProvider.Handshake != settings.Handshake || 
+                       existingSerialProvider.Parity != settings.Parity || existingSerialProvider.ShutdownText != settings.ShutdownText ||
+                       existingSerialProvider.StartupText != settings.StartupText || existingSerialProvider.StopBits != settings.StopBits) {
                         var serialConnector = Factory.Singleton.Resolve<ISerialConnector>();
-                        serialConnector.Name =          receiver.Name;
-                        serialConnector.BaudRate =      receiver.BaudRate;
-                        serialConnector.ComPort =       receiver.ComPort;
-                        serialConnector.DataBits =      receiver.DataBits;
-                        serialConnector.Handshake =     receiver.Handshake;
-                        serialConnector.Parity =        receiver.Parity;
-                        serialConnector.ShutdownText =  receiver.ShutdownText;
-                        serialConnector.StartupText =   receiver.StartupText;
-                        serialConnector.StopBits =      receiver.StopBits;
+                        serialConnector.Name =          settings.Name;
+                        serialConnector.BaudRate =      settings.BaudRate;
+                        serialConnector.ComPort =       settings.ComPort;
+                        serialConnector.DataBits =      settings.DataBits;
+                        serialConnector.Handshake =     settings.Handshake;
+                        serialConnector.Parity =        settings.Parity;
+                        serialConnector.ShutdownText =  settings.ShutdownText;
+                        serialConnector.StartupText =   settings.StartupText;
+                        serialConnector.StopBits =      settings.StopBits;
                         result = serialConnector;
                     }
                     break;
                 case ConnectionType.TCP:
-                    var existingTcpProvider = result as INetworkConnector;
-                    if(existingTcpProvider == null || existingTcpProvider.Address != receiver.Address || existingTcpProvider.Port != receiver.Port ||
-                       existingTcpProvider.UseKeepAlive != receiver.UseKeepAlive || existingTcpProvider.IdleTimeout != receiver.IdleTimeoutMilliseconds ||
-                       existingTcpProvider.IsPassive != receiver.IsPassive ||
-                       (receiver.IsPassive && !Object.Equals(existingTcpProvider.Access, receiver.Access))) {
-                        var ipActiveConnector = Factory.Singleton.Resolve<INetworkConnector>();
-                        ipActiveConnector.Name =            receiver.Name;
-                        ipActiveConnector.IsPassive =       receiver.IsPassive;
-                        ipActiveConnector.Port =            receiver.Port;
-                        ipActiveConnector.UseKeepAlive =    receiver.UseKeepAlive;
-                        ipActiveConnector.IdleTimeout =     receiver.IdleTimeoutMilliseconds;
+                    var existingConnector = result as INetworkConnector;
+                    if(existingConnector == null ||
+                       existingConnector.Port != settings.Port ||
+                       existingConnector.UseKeepAlive != settings.UseKeepAlive ||
+                       existingConnector.IdleTimeout != settings.IdleTimeoutMilliseconds ||
+                       existingConnector.IsPassive != settings.IsPassive ||
+                       (!settings.IsPassive && existingConnector.Address != settings.Address) ||
+                       (settings.IsPassive && !Object.Equals(existingConnector.Access, settings.Access))) {
+                        var ipConnector = Factory.Singleton.Resolve<INetworkConnector>();
+                        ipConnector.Name =            settings.Name;
+                        ipConnector.IsPassive =       settings.IsPassive;
+                        ipConnector.Port =            settings.Port;
+                        ipConnector.UseKeepAlive =    settings.UseKeepAlive;
+                        ipConnector.IdleTimeout =     settings.IdleTimeoutMilliseconds;
 
-                        if(!receiver.IsPassive) {
-                            ipActiveConnector.Address =     receiver.Address;
+                        if(!settings.IsPassive) {
+                            ipConnector.Address =     settings.Address;
                         } else {
-                            ipActiveConnector.Access =      receiver.Access;
+                            ipConnector.Access =      settings.Access;
                         }
 
-                        result = ipActiveConnector;
+                        result = ipConnector;
                     }
                     break;
                 default:
