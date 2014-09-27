@@ -371,7 +371,7 @@ namespace VirtualRadar.Library.Listener
             lock(_SyncLock) {
                 bool changed = false;
 
-                var connected = Connector != null && Connector.HasConnection;
+                var connected = Connector != null && Connector.EstablishingConnections;
                 if(connector != Connector || bytesExtractor != BytesExtractor || rawMessageTranslator != RawMessageTranslator) {
                     if(RawMessageTranslator != null && RawMessageTranslator != rawMessageTranslator) RawMessageTranslator.Dispose();
 

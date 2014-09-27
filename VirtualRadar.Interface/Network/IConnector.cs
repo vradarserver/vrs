@@ -78,6 +78,12 @@ namespace VirtualRadar.Interface.Network
         bool HasConnection { get; }
 
         /// <summary>
+        /// Gets a value that <see cref="EstablishConnection"/> has been called without a subsequent
+        /// call to <see cref="CloseConnection"/>.
+        /// </summary>
+        bool EstablishingConnections { get; }
+
+        /// <summary>
         /// Gets the first (or only) connection established by the connector.
         /// </summary>
         IConnection Connection { get; }

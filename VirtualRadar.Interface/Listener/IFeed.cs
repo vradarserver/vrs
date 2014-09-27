@@ -17,7 +17,7 @@ using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
     /// The interface that ties together an aircraft list, which tracks the state of aircraft picked up by a

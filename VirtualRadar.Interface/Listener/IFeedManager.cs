@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Database;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
     /// The interface for objects that can collect together a <see cref="IFeed"/> for each receiver and merged feed configured in settings.

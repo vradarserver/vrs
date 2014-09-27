@@ -19,7 +19,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Library
+namespace VirtualRadar.Library.Network
 {
     /// <summary>
     /// The default implementation of <see cref="IRebroadcastServer"/>.

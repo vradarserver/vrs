@@ -100,8 +100,8 @@
     <Compile Include="MonoSpeechSynthesizerWrapper.cs" />
     <Compile Include="ModeS\ModeSAltitudeConversion.cs" />
     <Compile Include="ModeS\ModeSTranslator.cs" />
-    <Compile Include="FeedManager.cs" />
-    <Compile Include="Feed.cs" />
+    <Compile Include="Listener\FeedManager.cs" />
+    <Compile Include="Listener\Feed.cs" />
     <Compile Include="Network\ReadWriteOperation.cs" />
     <Compile Include="Network\SerialConnector.cs" />
     <Compile Include="Network\SerialConnection.cs" />
@@ -113,8 +113,8 @@
     <Compile Include="Settings\ConfigurationListener.cs" />
     <Compile Include="TcpClientWrapper.cs" />
     <Compile Include="Presenter\StatisticsPresenter.cs" />
-    <Compile Include="RebroadcastServer.cs" />
-    <Compile Include="RebroadcastServerManager.cs" />
+    <Compile Include="Network\RebroadcastServer.cs" />
+    <Compile Include="Network\RebroadcastServerManager.cs" />
     <Compile Include="RuntimeEnvironment.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="PluginManager.cs" />

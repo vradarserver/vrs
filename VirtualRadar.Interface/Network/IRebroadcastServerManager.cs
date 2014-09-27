@@ -14,45 +14,24 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
-using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// The interface for objects that can rebroadcast messages or bytes received by an <see cref="IListener"/>.
+    /// The interface for a singleton object that can configure and control a collection of <see cref="IRebroadcastServer"/>s.
     /// </summary>
-    public interface IRebroadcastServer : IBackgroundThreadExceptionCatcher, IDisposable
+    public interface IRebroadcastServerManager : ISingleton<IRebroadcastServerManager>, IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>
-        /// Gets or sets the unique ID of the rebroadcast server.
+        /// Gets the collection of rebroadcast servers that are being controlled by the manager.
         /// </summary>
-        int UniqueId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the rebroadcast server.
-        /// </summary>
-        string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the format that the server is going to send information in.
-        /// </summary>
-        RebroadcastFormat Format { get; set; }
-
-        /// <summary>
-        /// Gets or sets the listener to take messages and bytes from.
-        /// </summary>
-        IListener Listener { get; set; }
-
-        /// <summary>
-        /// Gets or sets the object that establishes the connection for us.
-        /// </summary>
-        INetworkConnector Connector { get; set; }
+        List<IRebroadcastServer> RebroadcastServers { get; }
 
         /// <summary>
         /// Gets or sets a flag indicating that the server is online.
         /// </summary>
         /// <remarks>
-        /// Setting this to false does not disconnect the clients attached to the <see cref="BroadcastProvider"/>,
+        /// Setting this to false does not disconnect the clients attached to the <see cref="IBroadcastProvider"/>,
         /// it just stops sending bytes to them. To disconnect the clients you need to dispose of the provider
         /// and create a new one after you go offline.
         /// </remarks>
@@ -64,15 +43,23 @@ namespace VirtualRadar.Interface
         event EventHandler OnlineChanged;
 
         /// <summary>
-        /// Initialises the listener and provider. After this has been called no changes should be made to any
-        /// properties other than <see cref="Online"/>.
+        /// Raised when a client connects to one of the servers.
+        /// </summary>
+        event EventHandler<ConnectionEventArgs> ClientConnected;
+
+        /// <summary>
+        /// Raised when a client disconnects from one of the servers.
+        /// </summary>
+        event EventHandler<ConnectionEventArgs> ClientDisconnected;
+
+        /// <summary>
+        /// Creates the initial collection of rebroadcast servers from the configuration settings.
         /// </summary>
         void Initialise();
 
         /// <summary>
-        /// Returns a list of every connection to the rebroadcast server.
+        /// Returns a list of objects describing all of the connections to the rebroadcast servers.
         /// </summary>
-        /// <returns></returns>
         List<RebroadcastServerConnection> GetConnections();
     }
 }

@@ -151,8 +151,8 @@
     <Compile Include="FilterRange.cs" />
     <Compile Include="FilterString.cs" />
     <Compile Include="IClock.cs" />
-    <Compile Include="IFeedManager.cs" />
-    <Compile Include="IFeed.cs" />
+    <Compile Include="Listener\IFeedManager.cs" />
+    <Compile Include="Listener\IFeed.cs" />
     <Compile Include="Listener\ICompressedMessageBytesExtractor.cs" />
     <Compile Include="Listener\IMergedFeedListener.cs" />
     <Compile Include="PictureDetail.cs" />
@@ -169,8 +169,8 @@
     <Compile Include="StandingData\Route.cs" />
     <Compile Include="SQLite\ISQLiteConnectionProvider.cs" />
     <Compile Include="SQLite\ISQLiteConnectionStringBuilder.cs" />
-    <Compile Include="IRebroadcastServer.cs" />
-    <Compile Include="IRebroadcastServerManager.cs" />
+    <Compile Include="Network\IRebroadcastServer.cs" />
+    <Compile Include="Network\IRebroadcastServerManager.cs" />
     <Compile Include="IStatistics.cs" />
     <Compile Include="Listener\ExtractedBytes.cs" />
     <Compile Include="Listener\ExtractedBytesFormat.cs" />
