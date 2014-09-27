@@ -122,7 +122,7 @@
     <Compile Include="Listener\PolarPlotSlice.cs" />
     <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
     <Compile Include="IAirportDataDotCom.cs" />
-    <Compile Include="ITcpConnectionStateService.cs" />
+    <Compile Include="Network\ITcpConnectionStateService.cs" />
     <Compile Include="Network\ISerialConnector.cs" />
     <Compile Include="Presenter\ICidrEditPresenter.cs" />
     <Compile Include="Presenter\ISettingsPresenterProvider.cs" />

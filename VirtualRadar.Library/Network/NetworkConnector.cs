@@ -429,7 +429,6 @@ namespace VirtualRadar.Library.Network
                         foreach(SocketConnection connection in GetConnections()) {
                             if(connection.IsIdle(now)) {
                                 connection.Abandon();
-                                System.Windows.Forms.MessageBox.Show("Abandoned connection after timeout");
                             }
                         }
                     }
