@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Network;
 
@@ -22,27 +23,44 @@ namespace VirtualRadar.Library.Network
     /// </summary>
     public class ConnectorActivityLog : IConnectorActivityLog
     {
+        #region Static fields
         /// <summary>
         /// The largest number of activities recorded by the log.
         /// </summary>
         public static readonly int MaximumActivities = 250;
+        #endregion
 
+        #region Fields
         /// <summary>
         /// The lock that protects the list from multithreaded access.
         /// </summary>
         private SpinLock _SpinLock = new SpinLock();
 
         /// <summary>
+        /// The list of active connectors.
+        /// </summary>
+        private List<IConnector> _Connectors = new List<IConnector>();
+
+        /// <summary>
         /// The list of activities recorded by the log.
         /// </summary>
         private LinkedList<ConnectorActivityEvent> _Activities = new LinkedList<ConnectorActivityEvent>();
 
+        /// <summary>
+        /// True if the system's snapshot logger has been initialised.
+        /// </summary>
+        private bool _InitialisedSnapshotLogger;
+        #endregion
+
+        #region Properties
         private static readonly IConnectorActivityLog _Singleton = new ConnectorActivityLog();
         /// <summary>
         /// See interface docs.
         /// </summary>
         public IConnectorActivityLog Singleton { get { return _Singleton; } }
+        #endregion
 
+        #region Events
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -63,7 +81,17 @@ namespace VirtualRadar.Library.Network
         /// <param name="connector"></param>
         public void RecordConnectorCreated(IConnector connector)
         {
-            connector.ActivityRecorded += Connector_ActivityRecorded;
+            using(_SpinLock.AcquireLock()) {
+                if(!_InitialisedSnapshotLogger) {
+                    _InitialisedSnapshotLogger = true;
+                    Factory.Singleton.Resolve<IConnectorSnapshotLogger>().Singleton.Initialise();
+                }
+
+                if(!_Connectors.Contains(connector)) {
+                    _Connectors.Add(connector);
+                    connector.ActivityRecorded += Connector_ActivityRecorded;
+                }
+            }
         }
 
         /// <summary>
@@ -72,9 +100,16 @@ namespace VirtualRadar.Library.Network
         /// <param name="connector"></param>
         public void RecordConnectorDestroyed(IConnector connector)
         {
-            connector.ActivityRecorded -= Connector_ActivityRecorded;
+            using(_SpinLock.AcquireLock()) {
+                if(_Connectors.Contains(connector)) {
+                    connector.ActivityRecorded -= Connector_ActivityRecorded;
+                    _Connectors.Remove(connector);
+                }
+            }
         }
+        #endregion
 
+        #region GetActivityHistory, GetActiveConnectors
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -86,6 +121,19 @@ namespace VirtualRadar.Library.Network
             }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IConnector[] GetActiveConnectors()
+        {
+            using(_SpinLock.AcquireLock()) {
+                return _Connectors.ToArray();
+            }
+        }
+        #endregion
+
+        #region Subscribed events
         /// <summary>
         /// Called when a connector indicates that an activity has been recorded.
         /// </summary>
@@ -103,5 +151,6 @@ namespace VirtualRadar.Library.Network
                 _SpinLock.Unlock();
             }
         }
+        #endregion
     }
 }

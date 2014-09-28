@@ -46,6 +46,18 @@ namespace VirtualRadar.Interface.Network
         IConnector Connector { get; }
 
         /// <summary>
+        /// Gets how many operations are queued for this connection.
+        /// </summary>
+        /// <remarks>
+        /// The meaning of the term "operation" depends on the implementation of
+        /// the connection. The intent is for this to show how many writes are
+        /// queued on connections that send data to another machine; for other
+        /// types of connection the result may be zero or one. Use for diagnostic
+        /// purposes only.
+        /// </remarks>
+        int OperationQueueEntries { get; }
+
+        /// <summary>
         /// Gets the total number of bytes read on the connection.
         /// </summary>
         long BytesRead { get; }

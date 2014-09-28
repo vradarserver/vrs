@@ -12,35 +12,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.Network;
-using VirtualRadar.Interface.View;
 
-namespace VirtualRadar.Interface.Presenter
+namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// The interface for presenters that control <see cref="IConnectorActivityLogView"/> views.
+    /// The interface that objects that log snapshots of all of the connections must implement.
     /// </summary>
-    public interface IConnectorActivityLogPresenter : IPresenter<IConnectorActivityLogView>
+    public interface IConnectorSnapshotLogger : ISingleton<IConnectorSnapshotLogger>
     {
         /// <summary>
-        /// Returns the formatted value of a UTC time.
+        /// Gets the full path to the snapshot log.
         /// </summary>
-        /// <param name="utcTime"></param>
-        /// <returns></returns>
-        string FormatTime(DateTime utcTime);
+        string FullPath { get; }
 
         /// <summary>
-        /// Returns the title for the display of a single activity.
+        /// Initialises the snapshot logger.
         /// </summary>
-        /// <param name="activity"></param>
-        /// <returns></returns>
-        string FormatDetailTitle(ConnectorActivityEvent activity);
+        void Initialise();
 
         /// <summary>
-        /// Returns the text for the display of a single activity.
+        /// Records a snapshot. Note that snapshots are also periodically recorded automatically.
         /// </summary>
-        /// <param name="activity"></param>
-        /// <returns></returns>
-        string FormatDetailText(ConnectorActivityEvent activity);
+        void RecordSnapshot();
     }
 }

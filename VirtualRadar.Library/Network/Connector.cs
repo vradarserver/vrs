@@ -106,6 +106,11 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public string Intent { get; protected set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public DateTime Created { get; private set; }
 
         private bool _IsPassive;
@@ -550,6 +555,7 @@ namespace VirtualRadar.Library.Network
             _EstablishConnectionCalled = true;
             EstablishingConnections = true;
 
+            DoEstablishIntent();
             RecordMiscellaneousActivity(IsPassive ? "Waiting for connections on background thread" : "Establishing connections on background thread");
 
             if(IsPassive && !PassiveModeSupported) throw new InvalidOperationException(String.Format("Passive mode is not supported on {0} connectors", GetType().Name));
@@ -614,6 +620,11 @@ namespace VirtualRadar.Library.Network
                 }
             }
         }
+
+        /// <summary>
+        /// Sets the <see cref="Intent"/> value.
+        /// </summary>
+        protected abstract void DoEstablishIntent();
 
         /// <summary>
         /// Does the work of establishing a connection.
@@ -718,7 +729,7 @@ namespace VirtualRadar.Library.Network
         protected virtual void DeregisterConnection(IConnection connection, bool raiseConnectionClosed, bool stopMirroringConnectionState)
         {
             if(connection != null) {
-                RecordConnectActivity("{0} disconnected", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description);
+                RecordDisconnectActivity("{0} disconnected", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description);
 
                 using(_SpinLock.AcquireLock()) {
                     var index = _Connections.IndexOf(connection);

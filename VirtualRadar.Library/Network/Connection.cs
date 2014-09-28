@@ -153,6 +153,19 @@ namespace VirtualRadar.Library.Network
                 }
             }
         }
+
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public virtual int OperationQueueEntries
+        {
+            get {
+                using(_SpinLock.AcquireLock()) {
+                    return _OperationQueue.GetQueueLength();
+                }
+            }
+        }
         #endregion
 
         #region Events

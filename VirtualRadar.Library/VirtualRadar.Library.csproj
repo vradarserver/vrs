@@ -86,6 +86,7 @@
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\Connector.cs" />
     <Compile Include="Network\ConnectorActivityLog.cs" />
+    <Compile Include="Network\ConnectorSnapshotLogger.cs" />
     <Compile Include="Network\NetworkConnector.cs" />
     <Compile Include="FlightSimulatorX\MonoSimConnectWrapper.cs" />
     <Compile Include="Listener\BeastMessageBytesExtractor.cs" />

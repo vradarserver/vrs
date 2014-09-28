@@ -168,6 +168,20 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
+        #region DoEstablishIntent
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        protected override void DoEstablishIntent()
+        {
+            if(IsPassive) {
+                Intent = String.Format("Listen to port {0} for {1} connection{2}", Port, IsSingleConnection ? "single" : "many",  IsSingleConnection ? "" : "s");
+            } else {
+                Intent = String.Format("Establish connection with {0}:{1}", Address, Port);
+            }
+        }
+        #endregion
+
         #region GetConnection
         /// <summary>
         /// Returns the connection that was current as-at the time the call is made.

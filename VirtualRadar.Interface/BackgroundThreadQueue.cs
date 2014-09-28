@@ -273,6 +273,25 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
+        /// Returns the number of entries in the queue.
+        /// </summary>
+        /// <returns></returns>
+        public int GetQueueLength()
+        {
+            var result = 0;
+            if(_BackgroundThread != null) {
+                _SpinLock.Lock();
+                try {
+                    result = _Queue.Count;
+                } finally {
+                    _SpinLock.Unlock();
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Processes queued items when running in single-threading mode.
         /// </summary>
         /// <param name="item"></param>

@@ -2322,4 +2322,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="ConnectionSnapshotTakenBody" xml:space="preserve">
+    <value>A snapshot has been taken of the current connections</value>
+  </data>
+  <data name="ConnectionSnapshotTakenTitle" xml:space="preserve">
+    <value>Snapshot Taken</value>
+  </data>
+  <data name="menuForceConnectionSnapshot" xml:space="preserve">
+    <value>Log Current Connections</value>
+  </data>
+  <data name="menuOpenConnectionSnapshotLog" xml:space="preserve">
+    <value>Open Connection Snapshot Log</value>
+  </data>
+  <data name="NoSnapshotBody" xml:space="preserve">
+    <value>No snapshot has yet been taken</value>
+  </data>
+  <data name="NoSnapshotTitle" xml:space="preserve">
+    <value>No Snapshot</value>
+  </data>
 </root>

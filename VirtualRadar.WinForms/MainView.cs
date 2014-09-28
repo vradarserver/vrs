@@ -22,6 +22,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
@@ -678,6 +679,23 @@ namespace VirtualRadar.WinForms
             using(var dialog = new ConnectorActivityLogView()) {
                 dialog.ShowDialog(this);
             }
+        }
+
+        private void menuOpenConnectionSnapshotLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var fileName = Factory.Singleton.Resolve<IConnectorSnapshotLogger>().Singleton.FullPath;
+            if(String.IsNullOrEmpty(fileName)) {
+                MessageBox.Show(Strings.NoSnapshotBody, Strings.NoSnapshotTitle);
+            } else {
+                Process.Start(fileName);
+            }
+        }
+
+        private void menuForceConnectionSnapshotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var snapshotLogger = Factory.Singleton.Resolve<IConnectorSnapshotLogger>().Singleton;
+            snapshotLogger.RecordSnapshot();
+            MessageBox.Show(Strings.ConnectionSnapshotTakenBody, Strings.ConnectionSnapshotTakenTitle);
         }
         #endregion
     }

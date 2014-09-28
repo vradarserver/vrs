@@ -18,6 +18,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -59,6 +60,34 @@ namespace VirtualRadar.Library.Presenter
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <returns></returns>
+        public string FormatDetailTitle(ConnectorActivityEvent activity)
+        {
+            return String.Format("{0} {1:G}", Describe.ConnectorActivityType(activity.Type), activity.Time);
+        }
+
+        /// <summary>
+        /// See interface docs
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <returns></returns>
+        public string FormatDetailText(ConnectorActivityEvent activity)
+        {
+            var result = new StringBuilder();
+
+            if(!String.IsNullOrEmpty(activity.Message)) result.Append(activity.Message);
+            if(activity.Exception != null && activity.Exception.Exception != null) {
+                if(result.Length > 0) result.Append("\r\n");
+                result.Append(Describe.ExceptionMultiLine(activity.Exception.Exception, "\r\n"));
+            }
+
+            return result.ToString();
+        }
+
+        /// <summary>
         /// Called when the user clicks the copy to clipboard button.
         /// </summary>
         /// <param name="sender"></param>
@@ -69,12 +98,15 @@ namespace VirtualRadar.Library.Presenter
             var events = _View.SelectedConnectorActivityEvents;
             if(events.Length == 0) events = _View.ConnectorActivityEvents;
             foreach(var activity in events) {
-                buffer.AppendLine(String.Format("[{0}] [{1}] [{2}] {3}",
+                var line = String.Format("[{0}] [{1}] [{2}] {3}",
                     FormatTime(activity.Time),
                     activity.ConnectorName,
                     Describe.ConnectorActivityType(activity.Type),
-                    activity.Message)
+                    activity.Message
                 );
+                if(activity.Exception != null) line = String.Format("{0} || {1}", Describe.ExceptionSingleLineFull(activity.Exception.Exception));
+
+                buffer.AppendLine(line);
             }
 
             try {

@@ -102,6 +102,22 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
+        #region DoEstablishIntent
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        protected override void DoEstablishIntent()
+        {
+            Intent = String.Format("Connect to serial port {0} at {1:N0} baud, {2} parity, {3} data {4} stop bits, flow control {5}",
+                ComPort,
+                BaudRate,
+                Parity,
+                DataBits,
+                StopBits,
+                Handshake);
+        }
+        #endregion
+
         #region GetConnection
         /// <summary>
         /// Returns the connection that was current as-at the time the call is made.

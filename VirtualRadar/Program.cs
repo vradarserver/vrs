@@ -284,12 +284,7 @@ namespace VirtualRadar
         {
             // Don't translate, I don't want to confuse things if the translation throws exceptions
 
-            var buffer = new StringBuilder();
-            buffer.AppendFormat("An unhandled exception was caught: {0}\r\nFull message:{1}\r\n", ex.Message, ex.ToString());
-            for(Exception innerEx = ex.InnerException;innerEx != null;innerEx = innerEx.InnerException) {
-                buffer.AppendFormat("\r\nINNER EXCEPTION: {0}\r\n{1}\r\n", innerEx.Message, innerEx.ToString());
-            }
-            var message = buffer.ToString();
+            var message = Describe.ExceptionMultiLine(ex, "\r\n");
 
             try {
                 Clipboard.SetText(message);
