@@ -301,6 +301,7 @@ namespace VirtualRadar.Library.Listener
         {
             _Clock = Factory.Singleton.Resolve<IClock>();
             Statistics = Factory.Singleton.Resolve<IStatistics>();
+            Statistics.ConnectorExceptionsRequired += Statistics_ConnectorExceptionsRequired;
             Statistics.Initialise();
 
             _Port30003MessageTranslator = Factory.Singleton.Resolve<IBaseStationMessageTranslator>();
@@ -702,9 +703,18 @@ namespace VirtualRadar.Library.Listener
             if(Statistics != null) {
                 Statistics.Lock((stat) => {
                     ++stat.ConnectorExceptionCount;
-                    stat.ConnectorLastException = args.Value;
                 });
             }
+        }
+
+        /// <summary>
+        /// Called when the statistics wants a list of every exception.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Statistics_ConnectorExceptionsRequired(object sender, EventArgs<List<TimestampedException>> args)
+        {
+            if(Connector != null) args.Value.AddRange(Connector.GetExceptionHistory());
         }
         #endregion
     }

@@ -33,6 +33,11 @@ namespace VirtualRadar.WinForms
     {
         #region Fields
         /// <summary>
+        /// The presenter that is controlling the view.
+        /// </summary>
+        private IStatisticsPresenter _Presenter;
+
+        /// <summary>
         /// The object that's handling online help for us.
         /// </summary>
         private OnlineHelpHelper _OnlineHelp;
@@ -83,11 +88,6 @@ namespace VirtualRadar.WinForms
         /// See interface docs.
         /// </summary>
         public long ConnectorExceptionCount { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public Exception ConnectorLastException { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -362,8 +362,8 @@ namespace VirtualRadar.WinForms
 
             _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsStatisticsDialog);
 
-            var presenter = Factory.Singleton.Resolve<IStatisticsPresenter>();
-            presenter.Initialise(this);
+            _Presenter = Factory.Singleton.Resolve<IStatisticsPresenter>();
+            _Presenter.Initialise(this);
         }
 
         /// <summary>
@@ -403,16 +403,11 @@ namespace VirtualRadar.WinForms
         /// <param name="e"></param>
         private void linkLabelConnectorExceptions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var exception = ConnectorLastException;
-            if(exception != null) {
-                var buffer = new StringBuilder();
-                buffer.AppendFormat("{0}\r\n{1}\r\n", exception.Message, exception.ToString());
-                for(Exception innerEx = exception.InnerException;innerEx != null;innerEx = innerEx.InnerException) {
-                    buffer.AppendFormat("\r\n-----------\r\n{0}\r\n{1}\r\n", innerEx.Message, innerEx.ToString());
+            if(ConnectorExceptionCount != 0) {
+                using(var dialog = new TimestampedExceptionView()) {
+                    dialog.Exceptions.AddRange(Statistics.GetConnectorExceptions());
+                    dialog.ShowDialog(this);
                 }
-                var message = buffer.ToString();
-
-                MessageBox.Show(buffer.ToString(), Strings.LastConnectorException);
             }
         }
         #endregion

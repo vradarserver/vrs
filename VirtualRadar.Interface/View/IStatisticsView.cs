@@ -57,11 +57,6 @@ namespace VirtualRadar.Interface.View
         long ConnectorExceptionCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the last exception thrown by the connector.
-        /// </summary>
-        Exception ConnectorLastException { get; set; }
-
-        /// <summary>
         /// Gets or sets the count of BaseStation messages received.
         /// </summary>
         long BaseStationMessages { get; set; }
