@@ -46,11 +46,6 @@ namespace VirtualRadar.Library.Network
         public INetworkConnector NetworkConnector { get { return (INetworkConnector)Connector; } }
 
         /// <summary>
-        /// Gets the date and time that the connection was first established.
-        /// </summary>
-        public DateTime Created { get { return _Created; } }
-
-        /// <summary>
         /// Gets the socket that the connection is using.
         /// </summary>
         public Socket Socket { get; private set; }
@@ -86,7 +81,10 @@ namespace VirtualRadar.Library.Network
         public SocketConnection(Connector connector, Socket socket, ConnectionStatus initialStatus) : base(connector, initialStatus)
         {
             Socket = socket;
-            _Created = DateTime.UtcNow;
+            Description = String.Format("SOCKET (local={0}, remote={1})",
+                socket.LocalEndPoint == null ? "none" : socket.LocalEndPoint.ToString(),
+                socket.RemoteEndPoint == null ? "none" : socket.RemoteEndPoint.ToString()
+            );
         }
 
         /// <summary>

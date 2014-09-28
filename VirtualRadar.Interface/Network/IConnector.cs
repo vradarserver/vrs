@@ -45,6 +45,11 @@ namespace VirtualRadar.Interface.Network
         string Name { get; set; }
 
         /// <summary>
+        /// Gets the date and time, at UTC, that the connector was first created.
+        /// </summary>
+        DateTime Created { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the connector waits for other things to
         /// connect to it or it actively connects to other things.
         /// </summary>
@@ -134,6 +139,11 @@ namespace VirtualRadar.Interface.Network
         event EventHandler<ConnectionEventArgs> ConnectionClosed;
 
         /// <summary>
+        /// Raised when an activity is recorded by the connector.
+        /// </summary>
+        event EventHandler<EventArgs<ConnectorActivityEvent>> ActivityRecorded;
+
+        /// <summary>
         /// Tells the connector to establish a connection. This is a non-blocking call, the
         /// function will return immediately and establish the connection in the background.
         /// </summary>
@@ -173,6 +183,13 @@ namespace VirtualRadar.Interface.Network
         /// </summary>
         /// <returns></returns>
         TimestampedException[] GetExceptionHistory();
+
+        /// <summary>
+        /// Returns an array of the last so-many activities performed by the connector or any of its
+        /// connections. Exactly how many is undefined. This always returns the most recent set of activities.
+        /// </summary>
+        /// <returns></returns>
+        ConnectorActivityEvent[] GetActivityHistory();
 
         /// <summary>
         /// Reads the next chunk from the first (or only) connection.

@@ -30,6 +30,11 @@ namespace VirtualRadar.Library.Network
         /// The maximum number of exceptions recorded by the connector.
         /// </summary>
         public static readonly int MaxExceptions = 20;
+
+        /// <summary>
+        /// The maximum number of activities recorded by the connector.
+        /// </summary>
+        public static readonly int MaxActivities = 150;
         #endregion
 
         #region Fields
@@ -39,9 +44,24 @@ namespace VirtualRadar.Library.Network
         private SpinLock _SpinLock = new SpinLock();
 
         /// <summary>
+        /// The object that is recording our activity.
+        /// </summary>
+        private IConnectorActivityLog _ActivityLog;
+
+        /// <summary>
         /// The list of established connections.
         /// </summary>
         private List<IConnection> _Connections = new List<IConnection>();
+
+        /// <summary>
+        /// The backing field used by <see cref="LastException"/> and <see cref="GetExceptionHistory"/>.
+        /// </summary>
+        private LinkedList<TimestampedException> _Exceptions = new LinkedList<TimestampedException>();
+
+        /// <summary>
+        /// The list of activities performed by the connector.
+        /// </summary>
+        private LinkedList<ConnectorActivityEvent> _Activities = new LinkedList<ConnectorActivityEvent>();
 
         /// <summary>
         /// True if the application is running under Mono.
@@ -68,10 +88,25 @@ namespace VirtualRadar.Library.Network
         #endregion
 
         #region Properties
+        private string _Name;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _Name; }
+            set {
+                if(_Name != value) {
+                    if(_Name != null) RecordMiscellaneousActivity("Connector being renamed to {0}", value ?? "null");
+                    _Name = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime Created { get; private set; }
 
         private bool _IsPassive;
         /// <summary>
@@ -113,18 +148,13 @@ namespace VirtualRadar.Library.Network
         }
 
         /// <summary>
-        /// The backing field used by <see cref="LastException"/> and <see cref="GetExceptionHistory"/>.
-        /// </summary>
-        private List<TimestampedException> _Exceptions = new List<TimestampedException>();
-
-        /// <summary>
         /// See interface docs.
         /// </summary>
         public TimestampedException LastException
         {
             get {
                 using(_SpinLock.AcquireLock()) {
-                    return _Exceptions.Count == 0 ? null : _Exceptions[_Exceptions.Count - 1];
+                    return _Exceptions.Count == 0 ? null : _Exceptions.Last.Value;
                 }
             }
         }
@@ -205,7 +235,11 @@ namespace VirtualRadar.Library.Network
         protected virtual void OnExceptionCaught(EventArgs<Exception> args)
         {
             if(!(args.Value is ThreadAbortException)) {
-                RecordException(args.Value);
+                var timestampedException = RecordException(args.Value);
+                if(timestampedException != null) {
+                    RecordActivity(new ConnectorActivityEvent(Name, String.Format("Exception caught by connector: {0}", timestampedException.Exception.Message), timestampedException));
+                }
+
                 if(ExceptionCaught != null) {
                     try {
                         ExceptionCaught(this, args);
@@ -225,7 +259,12 @@ namespace VirtualRadar.Library.Network
         {
             if(ex != null && !(ex is ThreadAbortException)) {
                 try {
-                    RecordException(ex);
+                    var timestampedException = RecordException(ex);
+                    if(timestampedException != null) {
+                        var message = String.Format("Exception caught by connection {0}: {1}", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description, ex.Message);
+                        RecordActivity(new ConnectorActivityEvent(Name, message, timestampedException));
+                    }
+
                     if(ExceptionCaught != null) {
                         ExceptionCaught(connection, new EventArgs<Exception>(ex));
                     }
@@ -287,6 +326,20 @@ namespace VirtualRadar.Library.Network
         {
             if(ConnectionClosed != null) ConnectionClosed(this, args);
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler<EventArgs<ConnectorActivityEvent>> ActivityRecorded;
+
+        /// <summary>
+        /// Raises <see cref="ActivityRecorded"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnActivityRecorded(EventArgs<ConnectorActivityEvent> args)
+        {
+            if(ActivityRecorded != null) ActivityRecorded(this, args);
+        }
         #endregion
 
         #region Ctors, Finaliser
@@ -295,7 +348,13 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public Connector()
         {
+            Created = DateTime.UtcNow;
             _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+
+            _ActivityLog = Factory.Singleton.Resolve<IConnectorActivityLog>().Singleton;
+            _ActivityLog.RecordConnectorCreated(this);
+
+            RecordMiscellaneousActivity("Connector created");
         }
 
         /// <summary>
@@ -341,6 +400,10 @@ namespace VirtualRadar.Library.Network
                 } finally {
                     _SpinLock.Unlock();
                 }
+
+                RecordMiscellaneousActivity("Connector disposed");
+                if(_ActivityLog != null) _ActivityLog.RecordConnectorDestroyed(this);
+                _ActivityLog = null;
             }
         }
         #endregion
@@ -350,17 +413,23 @@ namespace VirtualRadar.Library.Network
         /// Records an exception in <see cref="Exceptions"/>.
         /// </summary>
         /// <param name="ex"></param>
-        private void RecordException(Exception ex)
+        private TimestampedException RecordException(Exception ex)
         {
+            TimestampedException result = null;
+
             if(ex != null && !(ex is ThreadAbortException)) {
                 using(_SpinLock.AcquireLock()) {
                     while(_Exceptions.Count >= MaxExceptions) {
-                        _Exceptions.RemoveAt(0);
+                        _Exceptions.RemoveFirst();
                     }
-                    _Exceptions.Add(new TimestampedException(ex));
+
+                    result = new TimestampedException(ex);
+                    _Exceptions.AddLast(result);
                     ++_TotalExceptions;
                 }
             }
+
+            return result;
         }
 
         /// <summary>
@@ -375,6 +444,103 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
+        #region RecordActivity, RecordMiscellaneousActivity, RecordConnectActivity, RecordDisconnectActivity, GetActivityHistory
+        /// <summary>
+        /// Records an activity in <see cref="_Activities"/>.
+        /// </summary>
+        /// <param name="activity"></param>
+        protected void RecordActivity(ConnectorActivityEvent activity)
+        {
+            if(activity != null && (activity.Exception == null || !(activity.Exception.Exception is ThreadAbortException))) {
+                _SpinLock.Lock();
+                try {
+                    while(_Activities.Count >= MaxActivities) {
+                        _Activities.RemoveFirst();
+                    }
+                    _Activities.AddLast(activity);
+                } finally {
+                    _SpinLock.Unlock();
+                }
+
+                OnActivityRecorded(new EventArgs<ConnectorActivityEvent>(activity));
+            }
+        }
+
+        /// <summary>
+        /// Records miscellaneous activity.
+        /// </summary>
+        /// <param name="message"></param>
+        protected void RecordMiscellaneousActivity(string message)
+        {
+            if(!String.IsNullOrEmpty(message)) {
+                RecordActivity(new ConnectorActivityEvent(Name, ConnectorActivityType.Miscellaneous, message));
+            }
+        }
+
+        /// <summary>
+        /// Records miscellaneous activity.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        protected void RecordMiscellaneousActivity(string format, params object[] args)
+        {
+            RecordMiscellaneousActivity(String.Format(format, args));
+        }
+
+        /// <summary>
+        /// Records a connect activity.
+        /// </summary>
+        /// <param name="message"></param>
+        protected void RecordConnectActivity(string message)
+        {
+            if(!String.IsNullOrEmpty(message)) {
+                RecordActivity(new ConnectorActivityEvent(Name, ConnectorActivityType.Connected, message));
+            }
+        }
+
+        /// <summary>
+        /// Records a connect activity.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        protected void RecordConnectActivity(string format, params object[] args)
+        {
+            RecordConnectActivity(String.Format(format, args));
+        }
+
+        /// <summary>
+        /// Records a disconnect activity.
+        /// </summary>
+        /// <param name="message"></param>
+        protected void RecordDisconnectActivity(string message)
+        {
+            if(!String.IsNullOrEmpty(message)) {
+                RecordActivity(new ConnectorActivityEvent(Name, ConnectorActivityType.Disconnected, message));
+            }
+        }
+
+        /// <summary>
+        /// Records a disconnect activity.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        protected void RecordDisconnectActivity(string format, params object[] args)
+        {
+            RecordDisconnectActivity(String.Format(format, args));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public ConnectorActivityEvent[] GetActivityHistory()
+        {
+            using(_SpinLock.AcquireLock()) {
+                return _Activities.ToArray();
+            }
+        }
+        #endregion
+
         #region EstablishConnection, CloseConnection, RestartConnection, GetConnections, GetFirstConnection
         /// <summary>
         /// See interface docs.
@@ -383,6 +549,8 @@ namespace VirtualRadar.Library.Network
         {
             _EstablishConnectionCalled = true;
             EstablishingConnections = true;
+
+            RecordMiscellaneousActivity(IsPassive ? "Waiting for connections on background thread" : "Establishing connections on background thread");
 
             if(IsPassive && !PassiveModeSupported) throw new InvalidOperationException(String.Format("Passive mode is not supported on {0} connectors", GetType().Name));
             if(!IsPassive && !ActiveModeSupported) throw new InvalidOperationException(String.Format("Active mode is not supported on {0} connectors", GetType().Name));
@@ -430,6 +598,7 @@ namespace VirtualRadar.Library.Network
                     finished = _EstablishConnectionThread == null;
                     if(!finished && DateTime.UtcNow >= threshold) {
                         try {
+                            RecordMiscellaneousActivity("Connection thread took too long, forcibly stopping it");
                             _EstablishConnectionThread.Abort();
                         } catch {
                         }
@@ -457,6 +626,7 @@ namespace VirtualRadar.Library.Network
         public virtual void CloseConnection()
         {
             try {
+                RecordMiscellaneousActivity("Closing connections");
                 EstablishingConnections = false;
                 DoCloseConnection();
             } catch(Exception ex) {
@@ -520,6 +690,8 @@ namespace VirtualRadar.Library.Network
         protected virtual void RegisterConnection(IConnection connection, bool raiseConnectionEstablished, bool mirrorConnectionState)
         {
             if(connection != null) {
+                RecordConnectActivity("{0} connected", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description);
+
                 _SpinLock.Lock();
                 try {
                     _Connections.Add(connection);
@@ -546,6 +718,8 @@ namespace VirtualRadar.Library.Network
         protected virtual void DeregisterConnection(IConnection connection, bool raiseConnectionClosed, bool stopMirroringConnectionState)
         {
             if(connection != null) {
+                RecordConnectActivity("{0} disconnected", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description);
+
                 using(_SpinLock.AcquireLock()) {
                     var index = _Connections.IndexOf(connection);
                     if(index != -1) {

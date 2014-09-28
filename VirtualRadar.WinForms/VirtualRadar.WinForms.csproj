@@ -87,6 +87,12 @@
     <Compile Include="ConnectionSessionLogView.Designer.cs">
       <DependentUpon>ConnectionSessionLogView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConnectorActivityLogView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectorActivityLogView.Designer.cs">
+      <DependentUpon>ConnectorActivityLogView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -459,6 +465,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionSessionLogView.resx">
       <DependentUpon>ConnectionSessionLogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectorActivityLogView.resx">
+      <DependentUpon>ConnectorActivityLogView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

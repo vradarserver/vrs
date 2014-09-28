@@ -241,6 +241,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activity.
+        /// </summary>
+        public static string Activity {
+            get {
+                return ResourceManager.GetString("Activity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string Add {
@@ -881,6 +890,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connector.
+        /// </summary>
+        public static string Connector {
+            get {
+                return ResourceManager.GetString("Connector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connector Activity Log.
+        /// </summary>
+        public static string ConnectorActivityLog {
+            get {
+                return ResourceManager.GetString("ConnectorActivityLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect to Flight Simulator X.
         /// </summary>
         public static string ConnectToFlightSimulatorX {
@@ -913,6 +940,15 @@ namespace VirtualRadar.Localisation {
         public static string ConvertedBasicAuthenticationUser {
             get {
                 return ResourceManager.GetString("ConvertedBasicAuthenticationUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
             }
         }
         
@@ -1151,6 +1187,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Desktop Version.
         /// </summary>
         public static string DesktopVersion {
@@ -1336,6 +1381,15 @@ namespace VirtualRadar.Localisation {
         public static string EndDateCannotBeBeforeStartDate {
             get {
                 return ResourceManager.GetString("EndDateCannotBeBeforeStartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception.
+        /// </summary>
+        public static string Exception {
+            get {
+                return ResourceManager.GetString("Exception", resourceCulture);
             }
         }
         
@@ -2290,7 +2344,16 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Open VirtualRadarLog.txt.
+        ///   Looks up a localized string similar to Open &amp;Connection Activity Log.
+        /// </summary>
+        public static string menuOpenConnectionActivityLog {
+            get {
+                return ResourceManager.GetString("menuOpenConnectionActivityLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open &amp;VirtualRadarLog.txt.
         /// </summary>
         public static string menuOpenVirtualRadarLog {
             get {
@@ -2475,6 +2538,15 @@ namespace VirtualRadar.Localisation {
         public static string MinimumRefreshOutOfBounds {
             get {
                 return ResourceManager.GetString("MinimumRefreshOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous.
+        /// </summary>
+        public static string Miscellaneous {
+            get {
+                return ResourceManager.GetString("Miscellaneous", resourceCulture);
             }
         }
         
@@ -4644,6 +4716,15 @@ namespace VirtualRadar.Localisation {
         public static string Reconnecting {
             get {
                 return ResourceManager.GetString("Reconnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
             }
         }
         

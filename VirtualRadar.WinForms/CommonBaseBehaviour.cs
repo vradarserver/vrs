@@ -215,14 +215,19 @@ namespace VirtualRadar.WinForms
         /// <param name="selectRecord"></param>
         public void PopulateListView<T>(ListView listView, IEnumerable<T> records, T selectedRecord, Action<ListViewItem> populateListViewItem, Action<T> selectRecord)
         {
-            listView.Items.Clear();
-            foreach(var record in records) {
-                var item = new ListViewItem() { Tag = record };
-                populateListViewItem(item);
-                listView.Items.Add(item);
-            }
+            listView.SuspendLayout();
+            try {
+                listView.Items.Clear();
+                foreach(var record in records) {
+                    var item = new ListViewItem() { Tag = record };
+                    populateListViewItem(item);
+                    listView.Items.Add(item);
+                }
 
-            if(selectRecord != null && records.Contains(selectedRecord)) selectRecord(selectedRecord);
+                if(selectRecord != null && records.Contains(selectedRecord)) selectRecord(selectedRecord);
+            } finally {
+                listView.ResumeLayout();
+            }
         }
 
         /// <summary>

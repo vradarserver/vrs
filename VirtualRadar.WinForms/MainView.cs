@@ -672,6 +672,13 @@ namespace VirtualRadar.WinForms
         {
             ShowSettingsConfigurationUI(Strings.RebroadcastServersTitle, null);
         }
+
+        private void menuOpenConnectionLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using(var dialog = new ConnectorActivityLogView()) {
+                dialog.ShowDialog(this);
+            }
+        }
         #endregion
     }
 }

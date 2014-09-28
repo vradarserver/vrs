@@ -12,51 +12,51 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Net;
+using VirtualRadar.Interface.Network;
 
-namespace VirtualRadar.Interface.Network
+namespace VirtualRadar.Interface.View
 {
     /// <summary>
-    /// A service that can retrieve the state of TCP connections.
+    /// The interface for views that can display connector activity logs.
     /// </summary>
-    /// <remarks>
-    /// Getting the TCP connection state is fairly straight-forward - however under
-    /// Mono the IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpConnections()
-    /// call is currently bugged, we need to handle it differently when running under
-    /// Mono. This interface wraps the call and copes with the bugged call.
-    /// </remarks>
-    public interface ITcpConnectionStateService
+    public interface IConnectorActivityLogView : IView
     {
         /// <summary>
-        /// Gets the count of connections that the service knows about.
+        /// Gets or sets the connector to show activities for. If no connector is supplied then activities
+        /// across all connectors are shown.
         /// </summary>
-        int CountConnections { get; }
+        IConnector Connector { get; set; }
 
         /// <summary>
-        /// Reloads the cache of connection states that was established when the object
-        /// was created. All other methods work off this cache, they do not perform live
-        /// lookups.
+        /// Gets or sets a value indicating that the connector name column should be hidden from view.
+        /// Only has an effect if set before the control is loaded.
         /// </summary>
-        void RefreshTcpConnectionStates();
+        bool HideConnectorName { get; set; }
 
         /// <summary>
-        /// Returns true if the connection to the remote end-point was in the ESTABLISHED
-        /// state when the object was constructed.
+        /// Gets or sets the selected connector activity events.
         /// </summary>
-        /// <param name="localEndPoint"></param>
-        /// <param name="remoteEndPoint">The remote endpoint to check.</param>
-        /// <returns>
-        /// True if the connection is established, false if it does not exist or is not in the
-        /// established state.
-        /// </returns>
-        bool IsRemoteConnectionEstablished(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint);
+        ConnectorActivityEvent[] SelectedConnectorActivityEvents { get; set; }
 
         /// <summary>
-        /// Returns a description of the state of a remote end-point.
+        /// Gets all of the connector activity events on display.
         /// </summary>
-        /// <param name="localEndPoint"></param>
-        /// <param name="remoteEndPoint"></param>
-        /// <returns></returns>
-        string DescribeRemoteConnectionState(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint);
+        ConnectorActivityEvent[] ConnectorActivityEvents { get; }
+
+        /// <summary>
+        /// Shows the connector activity events passed across to the user.
+        /// </summary>
+        /// <param name="connectorActivityEvents"></param>
+        void Populate(IEnumerable<ConnectorActivityEvent> connectorActivityEvents);
+
+        /// <summary>
+        /// Raised when the refresh button is clicked.
+        /// </summary>
+        event EventHandler RefreshClicked;
+
+        /// <summary>
+        /// Raised when the copy selected items to clipboard button is clicked.
+        /// </summary>
+        event EventHandler CopySelectedItemsToClipboardClicked;
     }
 }

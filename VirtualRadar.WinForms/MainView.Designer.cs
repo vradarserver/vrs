@@ -40,6 +40,7 @@
             this.menuExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOpenVirtualRadarLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenConnectionLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuReconnectToDataFeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuResetReceiverRangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
@@ -149,6 +150,7 @@
             // 
             this.menuToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuOpenVirtualRadarLogToolStripMenuItem,
+            this.menuOpenConnectionLogToolStripMenuItem,
             this.menuReconnectToDataFeedToolStripMenuItem,
             this.menuResetReceiverRangeToolStripMenuItem,
             this.toolStripMenuItem4,
@@ -164,50 +166,57 @@
             // menuOpenVirtualRadarLogToolStripMenuItem
             // 
             this.menuOpenVirtualRadarLogToolStripMenuItem.Name = "menuOpenVirtualRadarLogToolStripMenuItem";
-            this.menuOpenVirtualRadarLogToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.menuOpenVirtualRadarLogToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.menuOpenVirtualRadarLogToolStripMenuItem.Text = "::menuOpenVirtualRadarLog::";
             this.menuOpenVirtualRadarLogToolStripMenuItem.Click += new System.EventHandler(this.menuOpenVirtualRadarLogToolStripMenuItem_Click);
+            // 
+            // menuOpenConnectionLogToolStripMenuItem
+            // 
+            this.menuOpenConnectionLogToolStripMenuItem.Name = "menuOpenConnectionLogToolStripMenuItem";
+            this.menuOpenConnectionLogToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuOpenConnectionLogToolStripMenuItem.Text = "::menuOpenConnectionActivityLog::";
+            this.menuOpenConnectionLogToolStripMenuItem.Click += new System.EventHandler(this.menuOpenConnectionLogToolStripMenuItem_Click);
             // 
             // menuReconnectToDataFeedToolStripMenuItem
             // 
             this.menuReconnectToDataFeedToolStripMenuItem.Name = "menuReconnectToDataFeedToolStripMenuItem";
-            this.menuReconnectToDataFeedToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.menuReconnectToDataFeedToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.menuReconnectToDataFeedToolStripMenuItem.Text = "::menuReconnectToDataFeed::";
             // 
             // menuResetReceiverRangeToolStripMenuItem
             // 
             this.menuResetReceiverRangeToolStripMenuItem.Name = "menuResetReceiverRangeToolStripMenuItem";
-            this.menuResetReceiverRangeToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.menuResetReceiverRangeToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.menuResetReceiverRangeToolStripMenuItem.Text = "::menuResetReceiverRange::";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(233, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(265, 6);
             // 
             // menuDownloadDataToolStripMenuItem
             // 
             this.menuDownloadDataToolStripMenuItem.Name = "menuDownloadDataToolStripMenuItem";
-            this.menuDownloadDataToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.menuDownloadDataToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.menuDownloadDataToolStripMenuItem.Text = "::menuDownloadData::";
             this.menuDownloadDataToolStripMenuItem.Click += new System.EventHandler(this.menuDownloadDataToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(233, 6);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(265, 6);
             // 
             // menuPluginsToolStripMenuItem
             // 
             this.menuPluginsToolStripMenuItem.Name = "menuPluginsToolStripMenuItem";
-            this.menuPluginsToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.menuPluginsToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.menuPluginsToolStripMenuItem.Text = "::menuPlugins::";
             this.menuPluginsToolStripMenuItem.Click += new System.EventHandler(this.menuPluginsToolStripMenuItem_Click);
             // 
             // menuOptionsToolStripMenuItem
             // 
             this.menuOptionsToolStripMenuItem.Name = "menuOptionsToolStripMenuItem";
-            this.menuOptionsToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.menuOptionsToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.menuOptionsToolStripMenuItem.Text = "::menuOptions::";
             this.menuOptionsToolStripMenuItem.Click += new System.EventHandler(this.menuOptionsToolStripMenuItem_Click);
             // 
@@ -453,5 +462,6 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuResetReceiverRangeToolStripMenuItem;
         private System.Windows.Forms.Timer timerRefresh;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenConnectionLogToolStripMenuItem;
     }
 }

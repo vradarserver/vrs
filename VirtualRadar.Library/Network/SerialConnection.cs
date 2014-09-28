@@ -67,6 +67,7 @@ namespace VirtualRadar.Library.Network
         {
             SerialPort = serialPort;
             ShutdownText = shutdownText;
+            Description = String.Format("Serial connection on {0} at {1:N0} baud", serialPort.PortName, serialPort.BaudRate);
         }
         #endregion
 
