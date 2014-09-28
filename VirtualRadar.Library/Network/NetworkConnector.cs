@@ -449,6 +449,7 @@ namespace VirtualRadar.Library.Network
 
                 foreach(SocketConnection connection in GetConnections()) {
                     if(connection.IsIdle(now)) {
+                        RecordMiscellaneousActivity("Background thread check has determined that connection {0} is idle - abandoning it", connection.Description ?? "<ANONYMOUS>");
                         connection.Abandon();
                     }
                 }
@@ -471,7 +472,8 @@ namespace VirtualRadar.Library.Network
                 foreach(SocketConnection connection in GetConnections()) {
                     var connectionThreshold = connection.Created.AddMilliseconds(EstablishedCheckTimeout);
                     if(now >= connectionThreshold) {
-                        if(!_TcpConnectionService.IsRemoteConnectionEstablished(connection.RemoteEndPoint)) {
+                        if(!_TcpConnectionService.IsRemoteConnectionEstablished(connection.LocalEndPoint, connection.RemoteEndPoint)) {
+                            RecordMiscellaneousActivity("Abandoning connection {0} as it is no longer in the ESTABLISHED state", connection.Description ?? "<ANONYMOUS>");
                             connection.Abandon();
                         }
                     }

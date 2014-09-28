@@ -43,6 +43,16 @@ namespace VirtualRadar.Library.Network
 
         #region Properties
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string Description { get; protected set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime Created { get; private set; }
+
+        /// <summary>
         /// The connector that owns this connection.
         /// </summary>
         protected Connector _Connector;
@@ -173,6 +183,8 @@ namespace VirtualRadar.Library.Network
         {
             if(connector == null) throw new ArgumentNullException("connector");
             _Connector = connector;
+
+            Created = DateTime.UtcNow;
 
             string operationQueueName;
             using(_SpinLock.AcquireLock()) {

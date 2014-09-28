@@ -12,51 +12,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Net;
 
 namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// A service that can retrieve the state of TCP connections.
+    /// Describes the types of connector activity that are logged.
     /// </summary>
-    /// <remarks>
-    /// Getting the TCP connection state is fairly straight-forward - however under
-    /// Mono the IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpConnections()
-    /// call is currently bugged, we need to handle it differently when running under
-    /// Mono. This interface wraps the call and copes with the bugged call.
-    /// </remarks>
-    public interface ITcpConnectionStateService
+    public enum ConnectorActivityType
     {
         /// <summary>
-        /// Gets the count of connections that the service knows about.
+        /// Any categories of activity not covered by the other types.
         /// </summary>
-        int CountConnections { get; }
+        Miscellaneous,
 
         /// <summary>
-        /// Reloads the cache of connection states that was established when the object
-        /// was created. All other methods work off this cache, they do not perform live
-        /// lookups.
+        /// A connection was established.
         /// </summary>
-        void RefreshTcpConnectionStates();
+        Connected,
 
         /// <summary>
-        /// Returns true if the connection to the remote end-point was in the ESTABLISHED
-        /// state when the object was constructed.
+        /// A connection was dropped.
         /// </summary>
-        /// <param name="localEndPoint"></param>
-        /// <param name="remoteEndPoint">The remote endpoint to check.</param>
-        /// <returns>
-        /// True if the connection is established, false if it does not exist or is not in the
-        /// established state.
-        /// </returns>
-        bool IsRemoteConnectionEstablished(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint);
+        Disconnected,
 
         /// <summary>
-        /// Returns a description of the state of a remote end-point.
+        /// An exception was caught.
         /// </summary>
-        /// <param name="localEndPoint"></param>
-        /// <param name="remoteEndPoint"></param>
-        /// <returns></returns>
-        string DescribeRemoteConnectionState(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint);
+        Exception,
     }
 }

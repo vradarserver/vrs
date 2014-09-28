@@ -250,6 +250,7 @@ namespace VirtualRadar.Library.Network
                 server.Name = rebroadcastSettings.Name;
                 server.Listener = feed.Listener;
                 server.Connector = Factory.Singleton.Resolve<INetworkConnector>();
+                server.Connector.Name = rebroadcastSettings.Name;
                 server.Connector.Port = rebroadcastSettings.Port;
                 server.Connector.StaleMessageTimeout = rebroadcastSettings.StaleSeconds * 1000;
                 server.Connector.Access = rebroadcastSettings.Access;

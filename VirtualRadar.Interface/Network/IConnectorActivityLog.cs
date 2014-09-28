@@ -12,51 +12,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Net;
 
 namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// A service that can retrieve the state of TCP connections.
+    /// The interface for a singleton object that records activity across every connector
+    /// created by the application.
     /// </summary>
-    /// <remarks>
-    /// Getting the TCP connection state is fairly straight-forward - however under
-    /// Mono the IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpConnections()
-    /// call is currently bugged, we need to handle it differently when running under
-    /// Mono. This interface wraps the call and copes with the bugged call.
-    /// </remarks>
-    public interface ITcpConnectionStateService
+    public interface IConnectorActivityLog : ISingleton<IConnectorActivityLog>
     {
         /// <summary>
-        /// Gets the count of connections that the service knows about.
+        /// Raised when any connector records some activity.
         /// </summary>
-        int CountConnections { get; }
+        event EventHandler<EventArgs<ConnectorActivityEvent>> ActivityRecorded;
 
         /// <summary>
-        /// Reloads the cache of connection states that was established when the object
-        /// was created. All other methods work off this cache, they do not perform live
-        /// lookups.
+        /// Called by every connector to register itself with the logger.
         /// </summary>
-        void RefreshTcpConnectionStates();
+        /// <param name="connector"></param>
+        void RecordConnectorCreated(IConnector connector);
 
         /// <summary>
-        /// Returns true if the connection to the remote end-point was in the ESTABLISHED
-        /// state when the object was constructed.
+        /// Called by every connector to deregister itself from the logger.
         /// </summary>
-        /// <param name="localEndPoint"></param>
-        /// <param name="remoteEndPoint">The remote endpoint to check.</param>
-        /// <returns>
-        /// True if the connection is established, false if it does not exist or is not in the
-        /// established state.
-        /// </returns>
-        bool IsRemoteConnectionEstablished(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint);
+        /// <param name="connector"></param>
+        void RecordConnectorDestroyed(IConnector connector);
 
         /// <summary>
-        /// Returns a description of the state of a remote end-point.
+        /// Returns the last so-many activities recorded by the logger. The exact number is
+        /// undefined, but it always contains the latest set of activities.
         /// </summary>
-        /// <param name="localEndPoint"></param>
-        /// <param name="remoteEndPoint"></param>
         /// <returns></returns>
-        string DescribeRemoteConnectionState(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint);
+        ConnectorActivityEvent[] GetActivityHistory();
     }
 }

@@ -545,7 +545,7 @@ French translation by Francois /F5ANN.</value>
     <comment>Top-level menu</comment>
   </data>
   <data name="menuOpenVirtualRadarLog" xml:space="preserve">
-    <value>&amp;Open VirtualRadarLog.txt</value>
+    <value>Open &amp;VirtualRadarLog.txt</value>
   </data>
   <data name="menuOptions" xml:space="preserve">
     <value>&amp;Options...</value>
@@ -2294,5 +2294,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="menuShowExceptions" xml:space="preserve">
     <value>Show Exceptions</value>
+  </data>
+  <data name="menuOpenConnectionActivityLog" xml:space="preserve">
+    <value>Open &amp;Connection Activity Log</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Exception" xml:space="preserve">
+    <value>Exception</value>
+  </data>
+  <data name="Miscellaneous" xml:space="preserve">
+    <value>Miscellaneous</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Activity</value>
+  </data>
+  <data name="Connector" xml:space="preserve">
+    <value>Connector</value>
+  </data>
+  <data name="ConnectorActivityLog" xml:space="preserve">
+    <value>Connector Activity Log</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
   </data>
 </root>

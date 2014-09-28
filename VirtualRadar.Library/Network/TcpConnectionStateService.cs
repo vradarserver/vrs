@@ -64,22 +64,24 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="localEndPoint"></param>
         /// <param name="remoteEndPoint"></param>
         /// <returns></returns>
-        public bool IsRemoteConnectionEstablished(IPEndPoint remoteEndPoint)
+        public bool IsRemoteConnectionEstablished(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
         {
-            var connection = GetRemoteConnection(remoteEndPoint);
+            var connection = GetRemoteConnection(localEndPoint, remoteEndPoint);
             return connection == null ? false : !_IsMono ? connection.State == TcpState.Established : (int)connection.State == 1;
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="localEndPoint"></param>
         /// <param name="remoteEndPoint"></param>
         /// <returns></returns>
-        public string DescribeRemoteConnectionState(IPEndPoint remoteEndPoint)
+        public string DescribeRemoteConnectionState(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
         {
-            var connection = GetRemoteConnection(remoteEndPoint);
+            var connection = GetRemoteConnection(localEndPoint, remoteEndPoint);
             return connection == null ? "missing" : !_IsMono ? connection.State.ToString() : ((int)connection.State).ToString();
         }
 
@@ -87,15 +89,21 @@ namespace VirtualRadar.Library.Network
         /// Returns the TcpConnectionInformation for a remote endpoint, or null if one
         /// could not be found.
         /// </summary>
+        /// <param name="localEndPoint"></param>
         /// <param name="remoteEndPoint"></param>
         /// <returns></returns>
-        private TcpConnectionInformation GetRemoteConnection(IPEndPoint remoteEndPoint)
+        private TcpConnectionInformation GetRemoteConnection(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
         {
             TcpConnectionInformation result = null;
 
             if(_TcpConnections != null && _TcpConnections.Length > 0) {
-                var endPointText = remoteEndPoint.ToString();
-                result = _TcpConnections.FirstOrDefault(r => r.RemoteEndPoint != null && r.RemoteEndPoint.ToString() == endPointText);
+                var localEndPointText = localEndPoint.ToString();
+                var remoteEndPointText = remoteEndPoint.ToString();
+                result = _TcpConnections.FirstOrDefault(r =>
+                    r.RemoteEndPoint != null && r.LocalEndPoint != null &&
+                    r.RemoteEndPoint.ToString() == remoteEndPointText &&
+                    r.LocalEndPoint.ToString() == localEndPointText
+                );
             }
 
             return result;

@@ -45,6 +45,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Listener.IPolarPlotter, Listener.PolarPlotter>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSParity, ModeS.ModeSParity>();
             factory.Register<VirtualRadar.Interface.ModeS.IModeSTranslator, ModeS.ModeSTranslator>();
+            factory.Register<VirtualRadar.Interface.Network.IConnectorActivityLog, Network.ConnectorActivityLog>();
             factory.Register<VirtualRadar.Interface.Network.INetworkConnector, Network.NetworkConnector>();
             factory.Register<VirtualRadar.Interface.Network.IRebroadcastServer, Network.RebroadcastServer>();
             factory.Register<VirtualRadar.Interface.Network.IRebroadcastServerManager, Network.RebroadcastServerManager>();
@@ -54,6 +55,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Presenter.ICidrEditPresenter, Presenter.CidrEditPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionClientLogPresenter, Presenter.ConnectionClientLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionSessionLogPresenter, Presenter.ConnectionSessionLogPresenter>();
+            factory.Register<VirtualRadar.Interface.Presenter.IConnectorActivityLogPresenter, Presenter.ConnectorActivityLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IDownloadDataPresenter, Presenter.DownloadDataPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IFlightSimulatorXPresenter, Presenter.FlightSimulatorXPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IInvalidPluginsPresenter, Presenter.InvalidPluginsPresenter>();

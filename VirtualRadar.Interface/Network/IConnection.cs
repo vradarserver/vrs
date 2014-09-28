@@ -26,6 +26,16 @@ namespace VirtualRadar.Interface.Network
     public interface IConnection : IDisposable
     {
         /// <summary>
+        /// Gets a description of the connection.
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
+        /// Gets the date and time at UTC when the connection was established.
+        /// </summary>
+        DateTime Created { get; }
+
+        /// <summary>
         /// Gets the current state of the connection.
         /// </summary>
         ConnectionStatus ConnectionStatus { get; }

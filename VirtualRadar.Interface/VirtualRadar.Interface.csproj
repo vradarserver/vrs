@@ -110,7 +110,10 @@
     <Compile Include="CidrComparer.cs" />
     <Compile Include="Network\ConnectionEventArgs.cs" />
     <Compile Include="Network\ConnectionReadDelegate.cs" />
+    <Compile Include="Network\ConnectorActivityEvent.cs" />
+    <Compile Include="Network\ConnectorActivityType.cs" />
     <Compile Include="Network\IConnection.cs" />
+    <Compile Include="Network\IConnectorActivityLog.cs" />
     <Compile Include="Network\INetworkConnection.cs" />
     <Compile Include="Network\INetworkConnector.cs" />
     <Compile Include="IAccessFilter.cs" />
@@ -125,6 +128,7 @@
     <Compile Include="Network\ITcpConnectionStateService.cs" />
     <Compile Include="Network\ISerialConnector.cs" />
     <Compile Include="Presenter\ICidrEditPresenter.cs" />
+    <Compile Include="Presenter\IConnectorActivityLogPresenter.cs" />
     <Compile Include="Presenter\ISettingsPresenterProvider.cs" />
     <Compile Include="Presenter\ISettingsPresenter.cs" />
     <Compile Include="Presenter\ITimestampedExceptionPresenter.cs" />
@@ -346,6 +350,7 @@
     <Compile Include="View\IConfirmView.cs" />
     <Compile Include="View\IConnectionClientLogView.cs" />
     <Compile Include="View\IConnectionSessionLogView.cs" />
+    <Compile Include="View\IConnectorActivityLogView.cs" />
     <Compile Include="View\IDownloadDataView.cs" />
     <Compile Include="View\IFlightSimulatorXView.cs" />
     <Compile Include="View\IInvalidPluginsView.cs" />

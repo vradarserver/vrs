@@ -343,5 +343,21 @@ namespace VirtualRadar.Interface
                 default:                                        throw new NotImplementedException();
             }
         }
+
+        /// <summary>
+        /// Returns a description of a connector activity type.
+        /// </summary>
+        /// <param name="connectorActivityType"></param>
+        /// <returns></returns>
+        public static string ConnectorActivityType(Network.ConnectorActivityType connectorActivityType)
+        {
+            switch(connectorActivityType) {
+                case Network.ConnectorActivityType.Connected:       return Strings.Connected;
+                case Network.ConnectorActivityType.Disconnected:    return Strings.Disconnected;
+                case Network.ConnectorActivityType.Exception:       return Strings.Exception;
+                case Network.ConnectorActivityType.Miscellaneous:   return Strings.Miscellaneous;
+                default:                                        throw new NotImplementedException();
+            }
+        }
     }
 }
