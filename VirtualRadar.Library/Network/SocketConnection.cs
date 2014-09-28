@@ -46,6 +46,11 @@ namespace VirtualRadar.Library.Network
         public INetworkConnector NetworkConnector { get { return (INetworkConnector)Connector; } }
 
         /// <summary>
+        /// Gets the date and time that the connection was first established.
+        /// </summary>
+        public DateTime Created { get { return _Created; } }
+
+        /// <summary>
         /// Gets the socket that the connection is using.
         /// </summary>
         public Socket Socket { get; private set; }
@@ -169,7 +174,8 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// Returns true if the parent connector is not using keep-alive packets and the
         /// idle timeout has elapsed since the last network activity. If there has never
-        /// been any network activity then 
+        /// been any network activity then the idle time is measured from when the connection
+        /// was first established.
         /// </summary>
         /// <param name="now">The current date and time.</param>
         /// <returns></returns>

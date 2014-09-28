@@ -142,9 +142,9 @@ namespace VirtualRadar.Interface
         long ConnectorExceptionCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the exception last raised by the connector.
+        /// An event that is raised when the list of exceptions on the connector in use (if any) is required.
         /// </summary>
-        Exception ConnectorLastException { get; set; }
+        event EventHandler<EventArgs<List<TimestampedException>>> ConnectorExceptionsRequired;
 
         /// <summary>
         /// Prepares the statistics for first use.
@@ -169,5 +169,12 @@ namespace VirtualRadar.Interface
         /// Resets connection statistics.
         /// </summary>
         void ResetConnectionStatistics();
+
+        /// <summary>
+        /// Returns a list of exceptions recorded on the connector. May have more elements than
+        /// <see cref="ConnectorExceptionCount"/> would indicate, but will never have less.
+        /// </summary>
+        /// <returns></returns>
+        List<TimestampedException> GetConnectorExceptions();
     }
 }

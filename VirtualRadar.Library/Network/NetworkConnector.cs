@@ -48,6 +48,12 @@ namespace VirtualRadar.Library.Network
         /// The number of milliseconds to wait before forcibly halting the connect thread when disconnecting.
         /// </summary>
         public static readonly int DisconnectTimeout = 2000;
+
+        /// <summary>
+        /// The number of milliseconds between checks on every connection to ensure that they are still
+        /// in the ESTABLISHED state.
+        /// </summary>
+        public static readonly int EstablishedCheckTimeout = 20000;
         #endregion
 
         #region Fields
@@ -72,9 +78,23 @@ namespace VirtualRadar.Library.Network
         private IHeartbeatService _HeartbeatService;
 
         /// <summary>
-        /// The date and time that the connections were checked for idle.
+        /// The service that reports on the state of TCP connections for us.
+        /// </summary>
+        private ITcpConnectionStateService _TcpConnectionService;
+
+        /// <summary>
+        /// The date and time that the connections were checked for idle. This is a belt and braces check
+        /// that operates independently of the socket timeouts. However, it is only used when keep-alive
+        /// packets are not used.
         /// </summary>
         private DateTime _LastIdleCheck;
+
+        /// <summary>
+        /// The date and time that the connection states were last checked to ensure they were established.
+        /// This is a belt and braces check that operates independently of both keep-alive and idle timeout
+        /// checks. It is not configurable by the user.
+        /// </summary>
+        private DateTime _LastEstablishedCheck;
         #endregion
 
         #region Behavioural properties
@@ -124,8 +144,10 @@ namespace VirtualRadar.Library.Network
         {
             UseKeepAlive = true;
             IdleTimeout = DefaultIdleTimeout;
-
             _LastIdleCheck = DateTime.UtcNow;
+            _LastEstablishedCheck = _LastIdleCheck;
+
+            _TcpConnectionService = Factory.Singleton.Resolve<ITcpConnectionStateService>();
             _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
             _HeartbeatService.FastTick += HeartbeatService_FastTick ;
         }
@@ -141,6 +163,7 @@ namespace VirtualRadar.Library.Network
             base.Dispose(disposing);
             if(disposing) {
                 if(_HeartbeatService != null) _HeartbeatService.FastTick -= HeartbeatService_FastTick;
+                _HeartbeatService = null;
             }
         }
         #endregion
@@ -411,6 +434,52 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
+        #region Broken connection checks
+        /// <summary>
+        /// A belt-and-braces check that runs alongside the Socket library timeouts to
+        /// ensure that idle connections are disconnected if nothing happens on them
+        /// for a given period of time.
+        /// </summary>
+        /// <param name="now"></param>
+        private void TestAndAbandonIdleConnections(DateTime now)
+        {
+            var threshold = _LastIdleCheck.AddMilliseconds(IdleTimeout);
+            if(now >= threshold) {
+                _LastIdleCheck = now;
+
+                foreach(SocketConnection connection in GetConnections()) {
+                    if(connection.IsIdle(now)) {
+                        connection.Abandon();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks that every connection that has been up for a reasonable period
+        /// of time is in the ESTABLISHED state. If any are found that are not
+        /// then they are abandoned.
+        /// </summary>
+        /// <param name="now"></param>
+        private void TestAndAbandonBadStateConnections(DateTime now)
+        {
+            var threshold = _LastEstablishedCheck.AddMilliseconds(EstablishedCheckTimeout);
+            if(now >= threshold) {
+                _LastEstablishedCheck = now;
+                _TcpConnectionService.RefreshTcpConnectionStates();
+
+                foreach(SocketConnection connection in GetConnections()) {
+                    var connectionThreshold = connection.Created.AddMilliseconds(EstablishedCheckTimeout);
+                    if(now >= connectionThreshold) {
+                        if(!_TcpConnectionService.IsRemoteConnectionEstablished(connection.RemoteEndPoint)) {
+                            connection.Abandon();
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Event handlers
         /// <summary>
         /// Called roughly once a second.
@@ -420,19 +489,13 @@ namespace VirtualRadar.Library.Network
         private void HeartbeatService_FastTick(object sender, EventArgs e)
         {
             try {
-                if(!UseKeepAlive && IdleTimeout > 0) {
-                    var threshold = _LastIdleCheck.AddMilliseconds(IdleTimeout);
-                    var now = DateTime.UtcNow;
-                    if(now >= threshold) {
-                        _LastIdleCheck = now;
+                var now = DateTime.UtcNow;
 
-                        foreach(SocketConnection connection in GetConnections()) {
-                            if(connection.IsIdle(now)) {
-                                connection.Abandon();
-                            }
-                        }
-                    }
+                if(!UseKeepAlive && IdleTimeout > 0) {
+                    TestAndAbandonIdleConnections(now);
                 }
+
+                TestAndAbandonBadStateConnections(now);
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }
