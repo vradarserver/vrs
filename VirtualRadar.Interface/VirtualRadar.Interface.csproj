@@ -114,6 +114,7 @@
     <Compile Include="Network\ConnectorActivityType.cs" />
     <Compile Include="Network\IConnection.cs" />
     <Compile Include="Network\IConnectorActivityLog.cs" />
+    <Compile Include="Network\IConnectorSnapshotLogger.cs" />
     <Compile Include="Network\INetworkConnection.cs" />
     <Compile Include="Network\INetworkConnector.cs" />
     <Compile Include="IAccessFilter.cs" />

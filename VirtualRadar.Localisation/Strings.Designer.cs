@@ -863,6 +863,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A snapshot has been taken of the current connections.
+        /// </summary>
+        public static string ConnectionSnapshotTakenBody {
+            get {
+                return ResourceManager.GetString("ConnectionSnapshotTakenBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snapshot Taken.
+        /// </summary>
+        public static string ConnectionSnapshotTakenTitle {
+            get {
+                return ResourceManager.GetString("ConnectionSnapshotTakenTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection status.
         /// </summary>
         public static string ConnectionStatus {
@@ -2335,6 +2353,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log Current Connections.
+        /// </summary>
+        public static string menuForceConnectionSnapshot {
+            get {
+                return ResourceManager.GetString("menuForceConnectionSnapshot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Help.
         /// </summary>
         public static string menuHelp {
@@ -2349,6 +2376,15 @@ namespace VirtualRadar.Localisation {
         public static string menuOpenConnectionActivityLog {
             get {
                 return ResourceManager.GetString("menuOpenConnectionActivityLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Connection Snapshot Log.
+        /// </summary>
+        public static string menuOpenConnectionSnapshotLog {
+            get {
+                return ResourceManager.GetString("menuOpenConnectionSnapshotLog", resourceCulture);
             }
         }
         
@@ -2700,6 +2736,24 @@ namespace VirtualRadar.Localisation {
         public static string None {
             get {
                 return ResourceManager.GetString("None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No snapshot has yet been taken.
+        /// </summary>
+        public static string NoSnapshotBody {
+            get {
+                return ResourceManager.GetString("NoSnapshotBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Snapshot.
+        /// </summary>
+        public static string NoSnapshotTitle {
+            get {
+                return ResourceManager.GetString("NoSnapshotTitle", resourceCulture);
             }
         }
         

@@ -16,6 +16,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Localisation;
 using System.IO.Ports;
+using System.Net.Sockets;
 
 namespace VirtualRadar.Interface
 {
@@ -358,6 +359,49 @@ namespace VirtualRadar.Interface
                 case Network.ConnectorActivityType.Miscellaneous:   return Strings.Miscellaneous;
                 default:                                        throw new NotImplementedException();
             }
+        }
+
+        /// <summary>
+        /// Returns a multi-line description of an exception.
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="newLine"></param>
+        /// <returns></returns>
+        public static string ExceptionMultiLine(Exception exception, string newLine = null)
+        {
+            if(newLine == null) newLine = Environment.NewLine;
+            var result = "";
+
+            if(exception != null) {
+                var buffer = new StringBuilder();
+
+                for(var ex = exception;ex != null;ex = ex.InnerException) {
+                    if(buffer.Length > 0) buffer.AppendFormat("-- INNER EXCEPTION --{0}", newLine);
+                    buffer.AppendFormat("{0}{1}", ex.Message, newLine);
+
+                    var socketException = ex as SocketException;
+                    if(socketException != null) {
+                        buffer.AppendFormat("Socket I/O error, error = {0}, native = {1}, code = {2}", socketException.ErrorCode, socketException.NativeErrorCode, socketException.SocketErrorCode);
+                    }
+
+                    buffer.AppendFormat("{0}{1}", ex.StackTrace == null ? "No stack trace" : ex.StackTrace.ToString(), newLine);
+                }
+
+                result = buffer.ToString();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a full (and probably very long) description of an exception on a single line.
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="newLine"></param>
+        /// <returns></returns>
+        public static string ExceptionSingleLineFull(Exception exception)
+        {
+            return ExceptionMultiLine(exception, "; ");
         }
     }
 }

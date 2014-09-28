@@ -44,5 +44,11 @@ namespace VirtualRadar.Interface.Network
         /// </summary>
         /// <returns></returns>
         ConnectorActivityEvent[] GetActivityHistory();
+
+        /// <summary>
+        /// Returns an array of every connector currently being tracked by the logger.
+        /// </summary>
+        /// <returns></returns>
+        IConnector[] GetActiveConnectors();
     }
 }

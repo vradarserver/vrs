@@ -206,5 +206,15 @@ namespace VirtualRadar.WinForms
                 OnRefreshClicked(e);
             }
         }
+
+        private void listView_DoubleClick(object sender, EventArgs e)
+        {
+            var firstSelectedItem = SelectedConnectorActivityEvents.FirstOrDefault();
+            if(firstSelectedItem != null) {
+                var title = _Presenter.FormatDetailTitle(firstSelectedItem);
+                var text = _Presenter.FormatDetailText(firstSelectedItem);
+                MessageBox.Show(text, title);
+            }
+        }
     }
 }

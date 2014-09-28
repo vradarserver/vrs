@@ -40,7 +40,9 @@
             this.menuExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOpenVirtualRadarLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenConnectionSnapshotLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOpenConnectionLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuReconnectToDataFeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuResetReceiverRangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
@@ -65,6 +67,7 @@
             this.showWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerRefresh = new System.Windows.Forms.Timer(this.components);
+            this.menuForceConnectionSnapshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.splitContainerInner.Panel1.SuspendLayout();
@@ -150,7 +153,10 @@
             // 
             this.menuToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuOpenVirtualRadarLogToolStripMenuItem,
+            this.menuOpenConnectionSnapshotLogToolStripMenuItem,
+            this.menuForceConnectionSnapshotToolStripMenuItem,
             this.menuOpenConnectionLogToolStripMenuItem,
+            this.toolStripMenuItem6,
             this.menuReconnectToDataFeedToolStripMenuItem,
             this.menuResetReceiverRangeToolStripMenuItem,
             this.toolStripMenuItem4,
@@ -166,57 +172,69 @@
             // menuOpenVirtualRadarLogToolStripMenuItem
             // 
             this.menuOpenVirtualRadarLogToolStripMenuItem.Name = "menuOpenVirtualRadarLogToolStripMenuItem";
-            this.menuOpenVirtualRadarLogToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuOpenVirtualRadarLogToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.menuOpenVirtualRadarLogToolStripMenuItem.Text = "::menuOpenVirtualRadarLog::";
             this.menuOpenVirtualRadarLogToolStripMenuItem.Click += new System.EventHandler(this.menuOpenVirtualRadarLogToolStripMenuItem_Click);
+            // 
+            // menuOpenConnectionSnapshotLogToolStripMenuItem
+            // 
+            this.menuOpenConnectionSnapshotLogToolStripMenuItem.Name = "menuOpenConnectionSnapshotLogToolStripMenuItem";
+            this.menuOpenConnectionSnapshotLogToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
+            this.menuOpenConnectionSnapshotLogToolStripMenuItem.Text = "::menuOpenConnectionSnapshotLog::";
+            this.menuOpenConnectionSnapshotLogToolStripMenuItem.Click += new System.EventHandler(this.menuOpenConnectionSnapshotLogToolStripMenuItem_Click);
             // 
             // menuOpenConnectionLogToolStripMenuItem
             // 
             this.menuOpenConnectionLogToolStripMenuItem.Name = "menuOpenConnectionLogToolStripMenuItem";
-            this.menuOpenConnectionLogToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuOpenConnectionLogToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.menuOpenConnectionLogToolStripMenuItem.Text = "::menuOpenConnectionActivityLog::";
             this.menuOpenConnectionLogToolStripMenuItem.Click += new System.EventHandler(this.menuOpenConnectionLogToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(274, 6);
             // 
             // menuReconnectToDataFeedToolStripMenuItem
             // 
             this.menuReconnectToDataFeedToolStripMenuItem.Name = "menuReconnectToDataFeedToolStripMenuItem";
-            this.menuReconnectToDataFeedToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuReconnectToDataFeedToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.menuReconnectToDataFeedToolStripMenuItem.Text = "::menuReconnectToDataFeed::";
             // 
             // menuResetReceiverRangeToolStripMenuItem
             // 
             this.menuResetReceiverRangeToolStripMenuItem.Name = "menuResetReceiverRangeToolStripMenuItem";
-            this.menuResetReceiverRangeToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuResetReceiverRangeToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.menuResetReceiverRangeToolStripMenuItem.Text = "::menuResetReceiverRange::";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(265, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(274, 6);
             // 
             // menuDownloadDataToolStripMenuItem
             // 
             this.menuDownloadDataToolStripMenuItem.Name = "menuDownloadDataToolStripMenuItem";
-            this.menuDownloadDataToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuDownloadDataToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.menuDownloadDataToolStripMenuItem.Text = "::menuDownloadData::";
             this.menuDownloadDataToolStripMenuItem.Click += new System.EventHandler(this.menuDownloadDataToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(265, 6);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(274, 6);
             // 
             // menuPluginsToolStripMenuItem
             // 
             this.menuPluginsToolStripMenuItem.Name = "menuPluginsToolStripMenuItem";
-            this.menuPluginsToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuPluginsToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.menuPluginsToolStripMenuItem.Text = "::menuPlugins::";
             this.menuPluginsToolStripMenuItem.Click += new System.EventHandler(this.menuPluginsToolStripMenuItem_Click);
             // 
             // menuOptionsToolStripMenuItem
             // 
             this.menuOptionsToolStripMenuItem.Name = "menuOptionsToolStripMenuItem";
-            this.menuOptionsToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.menuOptionsToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.menuOptionsToolStripMenuItem.Text = "::menuOptions::";
             this.menuOptionsToolStripMenuItem.Click += new System.EventHandler(this.menuOptionsToolStripMenuItem_Click);
             // 
@@ -396,6 +414,13 @@
             this.timerRefresh.Interval = 1000;
             this.timerRefresh.Tick += new System.EventHandler(this.timerRefresh_Tick);
             // 
+            // menuForceConnectionSnapshotToolStripMenuItem
+            // 
+            this.menuForceConnectionSnapshotToolStripMenuItem.Name = "menuForceConnectionSnapshotToolStripMenuItem";
+            this.menuForceConnectionSnapshotToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
+            this.menuForceConnectionSnapshotToolStripMenuItem.Text = "::menuForceConnectionSnapshot::";
+            this.menuForceConnectionSnapshotToolStripMenuItem.Click += new System.EventHandler(this.menuForceConnectionSnapshotToolStripMenuItem_Click);
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -463,5 +488,8 @@
         private System.Windows.Forms.ToolStripMenuItem menuResetReceiverRangeToolStripMenuItem;
         private System.Windows.Forms.Timer timerRefresh;
         private System.Windows.Forms.ToolStripMenuItem menuOpenConnectionLogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenConnectionSnapshotLogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem menuForceConnectionSnapshotToolStripMenuItem;
     }
 }

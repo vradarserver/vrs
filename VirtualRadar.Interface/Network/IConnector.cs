@@ -45,6 +45,11 @@ namespace VirtualRadar.Interface.Network
         string Name { get; set; }
 
         /// <summary>
+        /// Gets a description of the intended use of the connector. Only used for diagnostics.
+        /// </summary>
+        string Intent { get; }
+
+        /// <summary>
         /// Gets the date and time, at UTC, that the connector was first created.
         /// </summary>
         DateTime Created { get; }
