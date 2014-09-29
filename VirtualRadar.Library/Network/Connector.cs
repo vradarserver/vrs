@@ -34,7 +34,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// The maximum number of activities recorded by the connector.
         /// </summary>
-        public static readonly int MaxActivities = 20;
+        public static readonly int MaxActivities = 25;
         #endregion
 
         #region Fields

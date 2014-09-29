@@ -362,8 +362,11 @@ namespace VirtualRadar.Library.Network
 
                     var abandonConnection = false;
                     if(address == null || address.Address == null)                          abandonConnection = true;
-                    else if(_AccessFilter != null && !_AccessFilter.Allow(address.Address)) abandonConnection = true;
                     else if(IsSingleConnection && GetConnections().Length != 0)             abandonConnection = true;
+                    if(!abandonConnection && _AccessFilter != null && !_AccessFilter.Allow(address.Address)) {
+                        abandonConnection = true;
+                        RecordMiscellaneousActivity("Rejected connection from {0}, did not match access rules", address);
+                    }
 
                     if(!abandonConnection) {
                         try {
