@@ -31,11 +31,6 @@ namespace VirtualRadar.Library.Network
         private SpinLock _SpinLock = new SpinLock();
 
         /// <summary>
-        /// The date and time that the connection was first created.
-        /// </summary>
-        private DateTime _Created;
-
-        /// <summary>
         /// The date and time of the last successful network activity seen on the connection.
         /// </summary>
         private DateTime _LastNetworkActivity = DateTime.MinValue;
@@ -182,7 +177,7 @@ namespace VirtualRadar.Library.Network
             var connector = NetworkConnector;
             var result = !connector.UseKeepAlive;
             if(result) {
-                var elapsed = now - (_LastNetworkActivity == DateTime.MinValue ? _Created : _LastNetworkActivity);
+                var elapsed = now - (_LastNetworkActivity == DateTime.MinValue ? Created : _LastNetworkActivity);
                 result = elapsed.Milliseconds >= connector.IdleTimeout;
             }
 
