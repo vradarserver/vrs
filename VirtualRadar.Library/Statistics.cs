@@ -143,25 +143,6 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public long ConnectorExceptionCount { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event EventHandler<EventArgs<List<TimestampedException>>> ConnectorExceptionsRequired;
-
-        /// <summary>
-        /// Raises <see cref="ConnectorExceptionsRequired"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnConnectorExceptionsRequired(EventArgs<List<TimestampedException>> args)
-        {
-            if(ConnectorExceptionsRequired != null) ConnectorExceptionsRequired(this, args);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public void Initialise()
         {
             if(!_Initialised) {
@@ -230,18 +211,6 @@ namespace VirtualRadar.Library
                     BytesReceived = 0;
                 });
             }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
-        public List<TimestampedException> GetConnectorExceptions()
-        {
-            var result = new List<TimestampedException>();
-            OnConnectorExceptionsRequired(new EventArgs<List<TimestampedException>>(result));
-
-            return result;
         }
     }
 }

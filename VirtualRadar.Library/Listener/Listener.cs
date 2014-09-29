@@ -301,7 +301,6 @@ namespace VirtualRadar.Library.Listener
         {
             _Clock = Factory.Singleton.Resolve<IClock>();
             Statistics = Factory.Singleton.Resolve<IStatistics>();
-            Statistics.ConnectorExceptionsRequired += Statistics_ConnectorExceptionsRequired;
             Statistics.Initialise();
 
             _Port30003MessageTranslator = Factory.Singleton.Resolve<IBaseStationMessageTranslator>();
@@ -409,7 +408,6 @@ namespace VirtualRadar.Library.Listener
                 Connector.ConnectionEstablished += Connector_ConnectionEstablished;
                 Connector.ConnectionStateChanged += Connector_ConnectionStateChanged;
                 Connector.ConnectionClosed += Connector_ConnectionClosed;
-                Connector.ExceptionCaught += Connector_ExceptionCaught;
             }
         }
 
@@ -419,7 +417,6 @@ namespace VirtualRadar.Library.Listener
                 Connector.ConnectionEstablished -= Connector_ConnectionEstablished;
                 Connector.ConnectionStateChanged -= Connector_ConnectionStateChanged;
                 Connector.ConnectionClosed -= Connector_ConnectionClosed;
-                Connector.ExceptionCaught -= Connector_ExceptionCaught;
             }
         }
 
@@ -691,20 +688,6 @@ namespace VirtualRadar.Library.Listener
         private void Connector_ConnectionStateChanged(object sender, EventArgs e)
         {
             if(Connector != null) ConnectionStatus = Connector.ConnectionStatus;
-        }
-
-        /// <summary>
-        /// Called when an exception is raised on the connector.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Connector_ExceptionCaught(object sender, EventArgs<Exception> args)
-        {
-            if(Statistics != null) {
-                Statistics.Lock((stat) => {
-                    ++stat.ConnectorExceptionCount;
-                });
-            }
         }
 
         /// <summary>

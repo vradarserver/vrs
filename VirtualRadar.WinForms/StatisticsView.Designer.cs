@@ -29,7 +29,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StatisticsView));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label20 = new System.Windows.Forms.Label();
             this.labelCurrentBufferSize = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.labelThroughput = new System.Windows.Forms.Label();
@@ -84,7 +83,6 @@
             this.buttonClose = new System.Windows.Forms.Button();
             this.buttonResetCounters = new System.Windows.Forms.Button();
             this.splitContainerEverythingVsAdsb = new System.Windows.Forms.SplitContainer();
-            this.linkLabelConnectorExceptions = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -101,8 +99,6 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.linkLabelConnectorExceptions);
-            this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.labelCurrentBufferSize);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.labelThroughput);
@@ -119,16 +115,6 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::Connection::";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(339, 58);
-            this.label20.Margin = new System.Windows.Forms.Padding(3);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(74, 13);
-            this.label20.TabIndex = 16;
-            this.label20.Text = "::Exceptions:::";
             // 
             // labelCurrentBufferSize
             // 
@@ -721,17 +707,6 @@
             this.splitContainerEverythingVsAdsb.SplitterDistance = 300;
             this.splitContainerEverythingVsAdsb.TabIndex = 6;
             // 
-            // linkLabelConnectorExceptions
-            // 
-            this.linkLabelConnectorExceptions.AutoSize = true;
-            this.linkLabelConnectorExceptions.Location = new System.Drawing.Point(522, 58);
-            this.linkLabelConnectorExceptions.Name = "linkLabelConnectorExceptions";
-            this.linkLabelConnectorExceptions.Size = new System.Drawing.Size(150, 13);
-            this.linkLabelConnectorExceptions.TabIndex = 18;
-            this.linkLabelConnectorExceptions.TabStop = true;
-            this.linkLabelConnectorExceptions.Text = "linkLabelConnectorExceptions";
-            this.linkLabelConnectorExceptions.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelConnectorExceptions_LinkClicked);
-            // 
             // StatisticsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -821,7 +796,5 @@
         private System.Windows.Forms.SplitContainer splitContainerEverythingVsAdsb;
         private System.Windows.Forms.Label labelCurrentBufferSize;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.LinkLabel linkLabelConnectorExceptions;
     }
 }
