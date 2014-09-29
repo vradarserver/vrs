@@ -12,6 +12,7 @@ using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
+using VirtualRadar.WinForms.Controls;
 
 namespace VirtualRadar.WinForms
 {
@@ -20,6 +21,46 @@ namespace VirtualRadar.WinForms
     /// </summary>
     public partial class ConnectorActivityLogView : BaseForm, IConnectorActivityLogView
     {
+        #region Private class - Sorter
+        /// <summary>
+        /// A private class that can be used to sort the list view.
+        /// </summary>
+        class Sorter : AutoListViewSorter
+        {
+            ConnectorActivityLogView _Parent;
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="parent"></param>
+            public Sorter(ConnectorActivityLogView parent) : base(parent.listView)
+            {
+                _Parent = parent;
+            }
+
+            /// <summary>
+            /// Gets the column value to sort on.
+            /// </summary>
+            /// <param name="listViewItem"></param>
+            /// <returns></returns>
+            public override IComparable GetRowValue(ListViewItem listViewItem)
+            {
+                var result = base.GetRowValue(listViewItem);
+                var activity = listViewItem.Tag as ConnectorActivityEvent;
+                if(activity != null) {
+                    var column = SortColumn ?? _Parent.columnHeaderDate;
+                    if(column == _Parent.columnHeaderDate)           result = activity.Time;
+                    else if(column == _Parent.columnHeaderConnector) result = activity.ConnectorName ?? "";
+                    else if(column == _Parent.columnHeaderType)      result = Describe.ConnectorActivityType(activity.Type);
+                    else if(column == _Parent.columnHeaderMessage)   result = activity.Message;
+                }
+
+                return result;
+            }
+        }
+        #endregion
+
+        #region Fields
         /// <summary>
         /// Gets the presenter that is controlling the view.
         /// </summary>
@@ -33,8 +74,15 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// The text that represents the none option in filters.
         /// </summary>
-        private string _NoneText;
+        private string _AllText;
 
+        /// <summary>
+        /// The object that can sort rows in the list view.
+        /// </summary>
+        private Sorter _Sorter;
+        #endregion
+
+        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -70,7 +118,9 @@ namespace VirtualRadar.WinForms
             get { return comboBoxConnectorFilter.SelectedItem as string; }
             set { comboBoxConnectorFilter.SelectedItem = value; }
         }
+        #endregion
 
+        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -98,15 +148,21 @@ namespace VirtualRadar.WinForms
         {
             if(CopySelectedItemsToClipboardClicked != null) CopySelectedItemsToClipboardClicked(this, args);
         }
+        #endregion
 
+        #region Ctors
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public ConnectorActivityLogView()
         {
             InitializeComponent();
+            _Sorter = new Sorter(this);
+            listView.ListViewItemSorter = _Sorter;
         }
+        #endregion
 
+        #region OnLoad, Populate, PopulateConnectorFilter, PopulateListViewItem
         /// <summary>
         /// Called after the control has loaded but before it displays anything to the user.
         /// </summary>
@@ -117,7 +173,7 @@ namespace VirtualRadar.WinForms
 
             if(!DesignMode) {
                 Localise.Form(this);
-                _NoneText = String.Format("<{0}>", Strings.None);
+                _AllText = String.Format("<{0}>", Strings.AllCaps);
 
                 if(HideConnectorName) {
                     listView.Columns.Remove(columnHeaderConnector);
@@ -126,6 +182,7 @@ namespace VirtualRadar.WinForms
 
                 _Presenter = Factory.Singleton.Resolve<IConnectorActivityLogPresenter>();
                 _Presenter.Initialise(this);
+                _Sorter.RefreshSortIndicators();
             }
         }
 
@@ -141,7 +198,7 @@ namespace VirtualRadar.WinForms
                     PopulateConnectorFilter(connectorActivityEvents.Select(r => r.ConnectorName).Where(r => !String.IsNullOrEmpty(r)).Distinct());
 
                     var connectorFilter = SelectedConnectorFilter;
-                    if(connectorFilter == _NoneText) connectorFilter = null;
+                    if(connectorFilter == _AllText) connectorFilter = null;
                     var filteredConnectorActivityEvents = connectorFilter == null ? connectorActivityEvents : connectorActivityEvents.Where(r => r.ConnectorName == connectorFilter);
                     PopulateListView(listView, filteredConnectorActivityEvents, null, PopulateListViewItem, null);
                 } finally {
@@ -158,12 +215,12 @@ namespace VirtualRadar.WinForms
         {
             var selectedItem = SelectedConnectorFilter;
             comboBoxConnectorFilter.Items.Clear();
-            comboBoxConnectorFilter.Items.Add(_NoneText);
+            comboBoxConnectorFilter.Items.Add(_AllText);
             foreach(var name in connectorNames.OrderBy(r => r)) {
                 comboBoxConnectorFilter.Items.Add(name);
             }
 
-            SelectedConnectorFilter = connectorNames.Contains(selectedItem) ? selectedItem : _NoneText;
+            SelectedConnectorFilter = connectorNames.Contains(selectedItem) ? selectedItem : _AllText;
         }
 
         /// <summary>
@@ -189,7 +246,9 @@ namespace VirtualRadar.WinForms
                 };
             });
         }
+        #endregion
 
+        #region Events subscribed
         private void buttonCopySelectedItemsToClipboard_Click(object sender, EventArgs e)
         {
             OnCopySelectedItemsToClipboardClicked(e);
@@ -216,5 +275,6 @@ namespace VirtualRadar.WinForms
                 MessageBox.Show(text, title);
             }
         }
+        #endregion
     }
 }

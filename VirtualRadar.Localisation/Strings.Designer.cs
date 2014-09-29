@@ -322,6 +322,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ALL.
+        /// </summary>
+        public static string AllCaps {
+            get {
+                return ResourceManager.GetString("AllCaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow.
         /// </summary>
         public static string AllowAccess {

@@ -2340,4 +2340,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="NoSnapshotTitle" xml:space="preserve">
     <value>No Snapshot</value>
   </data>
+  <data name="AllCaps" xml:space="preserve">
+    <value>ALL</value>
+    <comment>"All" in capitals - used in combo boxes to select all options</comment>
+  </data>
 </root>
