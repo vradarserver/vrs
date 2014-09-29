@@ -257,7 +257,6 @@ namespace VirtualRadar.WinForms
                 UpdateCounterLabel(labelBadChecksum, ReceiverBadChecksum);
                 UpdateLabel(labelThroughput, String.Format("{0:N2} {1}", ReceiverThroughput, Strings.AcronymKilobytePerSecond));
                 UpdateLabel(labelCurrentBufferSize, String.Format("{0:N0}", CurrentBufferSize));
-                UpdateLabel(linkLabelConnectorExceptions, String.Format("{0:N0}", ConnectorExceptionCount));
 
                 UpdateCounterLabel(labelBaseStationMessages, BaseStationMessages);
                 UpdateRatioLabel(labelBaseStationBadlyFormatted, BadlyFormedBaseStationMessages, BadlyFormedBaseStationMessagesRatio);
@@ -394,21 +393,6 @@ namespace VirtualRadar.WinForms
         private void buttonClose_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        /// <summary>
-        /// Called when the user clicks the connector exception count link label.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void linkLabelConnectorExceptions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if(ConnectorExceptionCount != 0) {
-                using(var dialog = new TimestampedExceptionView()) {
-                    dialog.Exceptions.AddRange(Statistics.GetConnectorExceptions());
-                    dialog.ShowDialog(this);
-                }
-            }
         }
         #endregion
     }
