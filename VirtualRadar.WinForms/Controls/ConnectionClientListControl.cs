@@ -51,7 +51,7 @@ namespace VirtualRadar.WinForms.Controls
         }
         #endregion
 
-        #region Private class and enum
+        #region Private class - Sorter
         /// <summary>
         /// A private class that can be used to sort the list view.
         /// </summary>
