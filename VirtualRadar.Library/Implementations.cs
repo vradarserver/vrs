@@ -66,7 +66,6 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Presenter.IShutdownPresenter, Presenter.ShutdownPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ISplashPresenter, Presenter.SplashPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IStatisticsPresenter, Presenter.StatisticsPresenter>();
-            factory.Register<VirtualRadar.Interface.Presenter.ITimestampedExceptionPresenter, Presenter.TimestampedExceptionPresenter>();
             factory.Register<VirtualRadar.Interface.Settings.IConfigurationListener, Settings.ConfigurationListener>();
             factory.Register<VirtualRadar.Interface.Settings.IConfigurationStorage, Settings.ConfigurationStorage>();
             factory.Register<VirtualRadar.Interface.Settings.IInstallerSettingsStorage, Settings.InstallerSettingsStorage>();

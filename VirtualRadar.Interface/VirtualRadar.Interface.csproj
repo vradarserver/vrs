@@ -132,7 +132,6 @@
     <Compile Include="Presenter\IConnectorActivityLogPresenter.cs" />
     <Compile Include="Presenter\ISettingsPresenterProvider.cs" />
     <Compile Include="Presenter\ISettingsPresenter.cs" />
-    <Compile Include="Presenter\ITimestampedExceptionPresenter.cs" />
     <Compile Include="PropertyHelper.cs" />
     <Compile Include="RebroadcastServerConnection.cs" />
     <Compile Include="Settings\Access.cs" />
@@ -365,7 +364,6 @@
     <Compile Include="View\IShutdownView.cs" />
     <Compile Include="View\ISplashView.cs" />
     <Compile Include="View\IStatisticsView.cs" />
-    <Compile Include="View\ITimestampedExceptionView.cs" />
     <Compile Include="View\IValidateDelegate.cs" />
     <Compile Include="View\IValidateView.cs" />
     <Compile Include="View\IView.cs" />
