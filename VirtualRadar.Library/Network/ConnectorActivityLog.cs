@@ -42,11 +42,6 @@ namespace VirtualRadar.Library.Network
         private List<IConnector> _Connectors = new List<IConnector>();
 
         /// <summary>
-        /// The list of activities recorded by the log.
-        /// </summary>
-        private LinkedList<ConnectorActivityEvent> _Activities = new LinkedList<ConnectorActivityEvent>();
-
-        /// <summary>
         /// True if the system's snapshot logger has been initialised.
         /// </summary>
         private bool _InitialisedSnapshotLogger;
@@ -74,7 +69,9 @@ namespace VirtualRadar.Library.Network
         {
             if(ActivityRecorded != null) ActivityRecorded(this, args);
         }
+        #endregion
 
+        #region RecordConnectorCreated
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -116,9 +113,16 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         public ConnectorActivityEvent[] GetActivityHistory()
         {
+            var result = new List<ConnectorActivityEvent>();
+
             using(_SpinLock.AcquireLock()) {
-                return _Activities.ToArray();
+                foreach(var connector in _Connectors) {
+                    result.AddRange(connector.GetActivityHistory());
+                }
             }
+            result.Sort((lhs, rhs) => lhs.Time.CompareTo(rhs.Time));
+
+            return result.ToArray();
         }
 
         /// <summary>
@@ -141,15 +145,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void Connector_ActivityRecorded(object sender, EventArgs<ConnectorActivityEvent> args)
         {
-            _SpinLock.Lock();
-            try {
-                while(_Activities.Count >= MaximumActivities) {
-                    _Activities.RemoveFirst();
-                }
-                _Activities.AddLast(args.Value);
-            } finally {
-                _SpinLock.Unlock();
-            }
+            OnActivityRecorded(args);
         }
         #endregion
     }
