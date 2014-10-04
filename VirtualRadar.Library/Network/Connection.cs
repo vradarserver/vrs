@@ -238,7 +238,6 @@ namespace VirtualRadar.Library.Network
                 try {
                     if(_OperationQueue != null) {
                         _OperationQueue.Stop();
-                        _OperationQueue = null;
                     }
                 } catch {
                     ;
@@ -354,16 +353,30 @@ namespace VirtualRadar.Library.Network
         private void DoAbandon(bool raiseExceptionEvent)
         {
             var inAbandon = false;
+            BackgroundThreadQueue<ReadWriteOperation> operationQueue = null;
+
             using(_SpinLock.AcquireLock()) {
                 inAbandon = _InAbandon;
-                if(!inAbandon) _InAbandon = true;
+                if(!inAbandon) {
+                    _InAbandon = true;
+                    operationQueue = _OperationQueue;
+                    _OperationQueue = null;
+                }
             }
             if(!inAbandon) {
                 try {
-                    AbandonConnection();
-                } catch(Exception ex) {
-                    if(_Connector != null && raiseExceptionEvent) {
-                        _Connector.RaiseConnectionException(this, ex);
+                    try {
+                        AbandonConnection();
+                    } catch(Exception ex) {
+                        if(_Connector != null && raiseExceptionEvent) {
+                            _Connector.RaiseConnectionException(this, ex);
+                        }
+                    }
+
+                    if(operationQueue != null) {
+                        // This will throw a ThreadAborted exception - any code outside of a catch or finally
+                        // after this point will not run.
+                        operationQueue.Dispose();
                     }
                 } finally {
                     _InAbandon = false;
@@ -467,6 +480,8 @@ namespace VirtualRadar.Library.Network
             }
 
             if(operation.Abandon) {
+                // The Abandon call will shut down this thread - do not put any code after this point,
+                // it will never run.
                 Abandon();
             }
         }
