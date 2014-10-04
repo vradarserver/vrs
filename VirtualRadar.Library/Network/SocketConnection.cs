@@ -117,7 +117,7 @@ namespace VirtualRadar.Library.Network
                     } catch {}
                     try {
                         ((IDisposable)socket).Dispose();
-                    } catch {}
+                    } catch { }
                 }
             }
 
