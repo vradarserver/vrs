@@ -111,8 +111,11 @@ namespace VirtualRadar.WinForms.Controls
             foreach(var listItem in listItems) {
                 var existingConnection = listItem.Tag as RebroadcastServerConnection;
                 var connection = existingConnection == null ? null : connections.FirstOrDefault(r => r.RebroadcastServerId == existingConnection.RebroadcastServerId);
-                if(connection == null) listView.Items.Remove(listItem);
-                else                   UpdateListViewItem(listItem, connection);
+                if(connection != null) UpdateListViewItem(listItem, connection);
+                else {
+                    listView.Items.Remove(listItem);
+                    listItem.Tag = null;
+                }                   
             }
 
             // Add new items

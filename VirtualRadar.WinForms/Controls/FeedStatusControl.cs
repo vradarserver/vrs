@@ -242,6 +242,7 @@ namespace VirtualRadar.WinForms.Controls
         {
             foreach(var feedDetail in feedDetails) {
                 listView.Items.Remove(feedDetail.ListViewItem);
+                feedDetail.ListViewItem.Tag = null;
             }
         }
         #endregion
