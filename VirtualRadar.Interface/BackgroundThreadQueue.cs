@@ -29,7 +29,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// The object used to synchronise access to the queue.
         /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// The queue of objects that we'll be maintaining.
@@ -190,11 +190,8 @@ namespace VirtualRadar.Interface
             while(!_Stopped) {
                 try {
                     T itemFromQueue;
-                    _SpinLock.Lock();
-                    try {
+                    lock(_SyncLock) {
                         itemFromQueue = _Queue.Count == 0 ? null : _Queue.Dequeue();
-                    } finally {
-                        _SpinLock.Unlock();
                     }
 
                     if(itemFromQueue != null) _ProcessObject(itemFromQueue);
@@ -219,11 +216,8 @@ namespace VirtualRadar.Interface
                 if(_ForceOntoSingleThread) ProcessItemInSingleThreadMode(item);
                 else {
                     if(_BackgroundThread != null) {
-                        _SpinLock.Lock();
-                        try {
+                        lock(_SyncLock) {
                             _Queue.Enqueue(item);
-                        } finally {
-                            _SpinLock.Unlock();
                         }
                         if(!_SurrenderTimeSlice) _Signal.Set();
                     }
@@ -243,13 +237,10 @@ namespace VirtualRadar.Interface
                         ProcessItemInSingleThreadMode(item);
                     }
                 } else if(_BackgroundThread != null) {
-                    _SpinLock.Lock();
-                    try {
+                    lock(_SyncLock) {
                         foreach(var item in items) {
                             _Queue.Enqueue(item);
                         }
-                    } finally {
-                        _SpinLock.Unlock();
                     }
 
                     if(!_SurrenderTimeSlice) _Signal.Set();
@@ -263,11 +254,8 @@ namespace VirtualRadar.Interface
         public void Clear()
         {
             if(_BackgroundThread != null) {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     _Queue.Clear();
-                } finally {
-                    _SpinLock.Unlock();
                 }
             }
         }
@@ -280,11 +268,8 @@ namespace VirtualRadar.Interface
         {
             var result = 0;
             if(_BackgroundThread != null) {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     result = _Queue.Count;
-                } finally {
-                    _SpinLock.Unlock();
                 }
             }
 

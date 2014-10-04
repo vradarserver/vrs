@@ -26,11 +26,6 @@ namespace VirtualRadar.Library.Network
     class SocketConnection : Connection, INetworkConnection
     {
         /// <summary>
-        /// The spinlock that protects us from multi-threaded access.
-        /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
-
-        /// <summary>
         /// The date and time of the last successful network activity seen on the connection.
         /// </summary>
         private DateTime _LastNetworkActivity = DateTime.MinValue;
@@ -88,11 +83,8 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         private Socket GetSocket()
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 return Socket;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
 
@@ -103,7 +95,7 @@ namespace VirtualRadar.Library.Network
         {
             var closedSocket = false;
 
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(Socket != null) {
                     closedSocket = true;
                     var socket = Socket;

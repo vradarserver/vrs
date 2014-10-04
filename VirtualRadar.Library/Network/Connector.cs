@@ -39,9 +39,9 @@ namespace VirtualRadar.Library.Network
 
         #region Fields
         /// <summary>
-        /// The spin lock around the list of connections.
+        /// The lock around the list of connections.
         /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
+        protected object _SyncLock = new object();
 
         /// <summary>
         /// The object that is recording our activity.
@@ -158,7 +158,7 @@ namespace VirtualRadar.Library.Network
         public TimestampedException LastException
         {
             get {
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     return _Exceptions.Count == 0 ? null : _Exceptions.Last.Value;
                 }
             }
@@ -175,7 +175,7 @@ namespace VirtualRadar.Library.Network
         public long CountExceptions
         {
             get {
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     return _TotalExceptions;
                 }
             }
@@ -190,14 +190,14 @@ namespace VirtualRadar.Library.Network
         {
             get {
                 ConnectionStatus result;
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     result = _ConnectionStatus;
                 }
                 return result;
             }
             protected set {
                 var raiseEvent = false;
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     if(_ConnectionStatus != value) {
                         _ConnectionStatus = value;
                         raiseEvent = true;
@@ -215,7 +215,7 @@ namespace VirtualRadar.Library.Network
         public virtual bool HasConnection
         {
             get {
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     return _Connections.Count > 0;
                 }
             }
@@ -392,18 +392,17 @@ namespace VirtualRadar.Library.Network
 
                 // The CloseConnection call should stop the derivee from accepting or attempting to make
                 // any more connections. It should also close all existing connections. This block just
-                // cleans up anything that is left lying around. The SpinLock is for the benefit of
-                // other threads that might still be in an event handler or something when this kicks off.
-                _SpinLock.Lock();
-                try {
-                    foreach(var connection in _Connections) {
-                        connection.Dispose();
+                // cleans up anything that is left lying around. The lock is for the benefit of other
+                // threads that might still be in an event handler or something when this kicks off.
+                lock(_SyncLock) {
+                    try {
+                        foreach(var connection in _Connections) {
+                            connection.Dispose();
+                        }
+                        _Connections.Clear();
+                    } catch(Exception ex) {
+                        OnExceptionCaught(new EventArgs<Exception>(ex));
                     }
-                    _Connections.Clear();
-                } catch(Exception ex) {
-                    OnExceptionCaught(new EventArgs<Exception>(ex));
-                } finally {
-                    _SpinLock.Unlock();
                 }
 
                 RecordMiscellaneousActivity("Connector disposed");
@@ -423,7 +422,7 @@ namespace VirtualRadar.Library.Network
             TimestampedException result = null;
 
             if(ex != null && !(ex is ThreadAbortException)) {
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     while(_Exceptions.Count >= MaxExceptions) {
                         _Exceptions.RemoveFirst();
                     }
@@ -443,7 +442,7 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         public TimestampedException[] GetExceptionHistory()
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 return _Exceptions.ToArray();
             }
         }
@@ -457,14 +456,11 @@ namespace VirtualRadar.Library.Network
         protected void RecordActivity(ConnectorActivityEvent activity)
         {
             if(activity != null && (activity.Exception == null || !(activity.Exception.Exception is ThreadAbortException))) {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     while(_Activities.Count >= MaxActivities) {
                         _Activities.RemoveFirst();
                     }
                     _Activities.AddLast(activity);
-                } finally {
-                    _SpinLock.Unlock();
                 }
 
                 OnActivityRecorded(new EventArgs<ConnectorActivityEvent>(activity));
@@ -540,7 +536,7 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         public ConnectorActivityEvent[] GetActivityHistory()
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 return _Activities.ToArray();
             }
         }
@@ -563,7 +559,7 @@ namespace VirtualRadar.Library.Network
             if(IsSingleConnection && !SingleConnectionSupported) throw new InvalidOperationException(String.Format("Single connection mode is not supported on {0} connectors", GetType().Name));
             if(!IsSingleConnection && !MultiConnectionSupported) throw new InvalidOperationException(String.Format("Multi-connection mode is not supported on {0} connectors", GetType().Name));
 
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(_EstablishConnectionThread == null) {
                     _EstablishConnectionThread = new Thread(BackgroundEstablishConnection);
                     _EstablishConnectionThread.Start();
@@ -583,7 +579,7 @@ namespace VirtualRadar.Library.Network
                 _EstablishConnectionThread = null;
             }
 
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 _EstablishConnectionThread = null;
             }
         }
@@ -599,8 +595,7 @@ namespace VirtualRadar.Library.Network
             var threshold = timeoutMilliseconds > 0 ? DateTime.UtcNow.AddMilliseconds(timeoutMilliseconds) : DateTime.MaxValue;
 
             while(!finished) {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     finished = _EstablishConnectionThread == null;
                     if(!finished && DateTime.UtcNow >= threshold) {
                         try {
@@ -611,8 +606,6 @@ namespace VirtualRadar.Library.Network
                         _EstablishConnectionThread = null;
                         finished = true;
                     }
-                } finally {
-                    _SpinLock.Unlock();
                 }
 
                 if(!finished) {
@@ -665,11 +658,8 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         public virtual IConnection[] GetConnections()
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 return _Connections.ToArray();
-            } finally {
-                _SpinLock.Unlock();
             }
         }
 
@@ -680,11 +670,8 @@ namespace VirtualRadar.Library.Network
         public virtual IConnection GetFirstConnection()
         {
             IConnection result;
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 result = _Connections.Count > 0 ? _Connections[0] : null;
-            } finally {
-                _SpinLock.Unlock();
             }
 
             return result;
@@ -703,11 +690,8 @@ namespace VirtualRadar.Library.Network
             if(connection != null) {
                 RecordConnectActivity("{0} connected", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description);
 
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     _Connections.Add(connection);
-                } finally {
-                    _SpinLock.Unlock();
                 }
 
                 if(raiseConnectionEstablished) {
@@ -731,7 +715,7 @@ namespace VirtualRadar.Library.Network
             if(connection != null) {
                 RecordDisconnectActivity("{0} disconnected", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description);
 
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     var index = _Connections.IndexOf(connection);
                     if(index != -1) {
                         _Connections.RemoveAt(index);

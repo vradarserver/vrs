@@ -29,7 +29,7 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// The spin lock that protects <see cref="_Slices"/> from multi-threaded access.
         /// </summary>
-        private SpinLock _SlicesLock = new SpinLock();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// The slices created by Initialise, filled in by <see cref="AddCoordinate"/> and
@@ -78,7 +78,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="longitude"></param>
         public void Initialise(double latitude, double longitude)
         {
-            using(_SlicesLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(latitude > 90.0 || latitude < -90.0) throw new ArgumentException("latitude");
                 if(longitude > 180.0 || longitude < -180.0) throw new ArgumentException("longitude");
 
@@ -127,7 +127,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="roundToDegrees"></param>
         public void Initialise(double latitude, double longitude, int lowSliceAltitude, int highSliceAltitude, int sliceHeight, int roundToDegrees)
         {
-            using(_SlicesLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(latitude > 90.0 || latitude < -90.0) throw new ArgumentException("latitude");
                 if(longitude > 180.0 || longitude < -180.0) throw new ArgumentException("longitude");
                 if(lowSliceAltitude > highSliceAltitude) throw new ArgumentException("lowSliceAltitude");
@@ -217,8 +217,7 @@ namespace VirtualRadar.Library.Listener
                 if(distance != null && fullBearing != null && distance <= _ReceiverRange) {
                     var roundedBearing = RoundBearing(fullBearing.Value);
 
-                    _SlicesLock.Lock();
-                    try {
+                    lock(_SyncLock) {
                         foreach(var slice in _Slices) {
                             if(slice.AltitudeLower <= altitude && slice.AltitudeHigher >= altitude) {
                                 PolarPlot plot;
@@ -235,8 +234,6 @@ namespace VirtualRadar.Library.Listener
                                 }
                             }
                         }
-                    } finally {
-                        _SlicesLock.Unlock();
                     }
                 }
             }
@@ -250,7 +247,7 @@ namespace VirtualRadar.Library.Listener
         /// <returns></returns>
         public List<PolarPlotSlice> TakeSnapshot()
         {
-            using(var spinLock = _SlicesLock.AcquireLock()) {
+            lock(_SyncLock) {
                 var result = new List<PolarPlotSlice>();
                 foreach(var slice in _Slices) {
                     result.Add((PolarPlotSlice)slice.Clone());
@@ -267,7 +264,7 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public void ClearPolarPlots()
         {
-            using(_SlicesLock.AcquireLock()) {
+            lock(_SyncLock) {
                 foreach(var slice in _Slices) {
                     slice.PolarPlots.Clear();
                 }
@@ -284,7 +281,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
         {
-            using(_SlicesLock.AcquireLock()) {
+            lock(_SyncLock) {
                 LoadConfiguration();
             }
         }

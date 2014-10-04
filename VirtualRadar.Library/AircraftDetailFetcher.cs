@@ -68,9 +68,9 @@ namespace VirtualRadar.Library
         private bool _ForceRefreshOfStandingData;
 
         /// <summary>
-        /// A lightweight lock that prevents multiple threads from changing <see cref="_ForceRefreshOfStandingData"/>.
+        /// A lock that prevents multiple threads from changing <see cref="_ForceRefreshOfStandingData"/>.
         /// </summary>
-        private SpinLock _ForceRefreshOfStandingDataLock = new SpinLock();
+        private object _ForceRefreshOfStandingDataSyncLock = new object();
 
         /// <summary>
         /// The thread that picture lookups are made on. We need a separate thread because if picture lookups are slow
@@ -87,7 +87,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// The lock on the <see cref="_PictureLookupResults"/> list.
         /// </summary>
-        private SpinLock _PictureLookupResultsLock = new SpinLock();
+        private object _PictureLookupResultsSyncLock = new object();
 
         /// <summary>
         /// True if a picture lookup exception has been logged. We only log the first ever exception to avoid saturating the log.
@@ -339,14 +339,11 @@ namespace VirtualRadar.Library
         protected override void DoExtraFastTimerTickWork()
         {
             List<LookupPictureDetail> lookupPictureResults = null;
-            _PictureLookupResultsLock.Lock();
-            try {
+            lock(_PictureLookupResultsSyncLock) {
                 if(_PictureLookupResults.Count > 0) {
                     lookupPictureResults = new List<LookupPictureDetail>(_PictureLookupResults);
                     _PictureLookupResults.Clear();
                 }
-            } finally {
-                _PictureLookupResultsLock.Unlock();
             }
 
             if(lookupPictureResults != null) {
@@ -443,14 +440,14 @@ namespace VirtualRadar.Library
         private void StandingDataManager_LoadCompleted(object sender, EventArgs args)
         {
             try {
-                _ForceRefreshOfStandingDataLock.Lock();
-                var existingForceFlag = _ForceRefreshOfStandingData;
-                try {
-                    _ForceRefreshOfStandingData = true;
-                    RefetchWithoutDatabaseSearch();
-                } finally {
-                    _ForceRefreshOfStandingData = existingForceFlag;
-                    _ForceRefreshOfStandingDataLock.Unlock();
+                lock(_ForceRefreshOfStandingDataSyncLock) {
+                    var existingForceFlag = _ForceRefreshOfStandingData;
+                    try {
+                        _ForceRefreshOfStandingData = true;
+                        RefetchWithoutDatabaseSearch();
+                    } finally {
+                        _ForceRefreshOfStandingData = existingForceFlag;
+                    }
                 }
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
@@ -467,11 +464,8 @@ namespace VirtualRadar.Library
         private void PictureLookupThread_ProcessLookup(LookupPictureDetail lookupPictureDetail)
         {
             lookupPictureDetail.Result = _PictureManager.FindPicture(_PictureFolderCache, lookupPictureDetail.Icao, lookupPictureDetail.Registration, lookupPictureDetail.PictureDetail);
-            _PictureLookupResultsLock.Lock();
-            try {
+            lock(_PictureLookupResultsSyncLock) {
                 _PictureLookupResults.Add(lookupPictureDetail);
-            } finally {
-                _PictureLookupResultsLock.Unlock();
             }
         }
 

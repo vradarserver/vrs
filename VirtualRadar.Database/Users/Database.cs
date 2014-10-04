@@ -30,7 +30,7 @@ namespace VirtualRadar.Database.Users
         /// <summary>
         /// The lock that forces single-threaded access to the database.
         /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// The connection to the database
@@ -127,7 +127,7 @@ namespace VirtualRadar.Database.Users
         /// <param name="user"></param>
         public void UserInsert(User user)
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 OpenConnection();
                 _UserTable.Insert(_Connection, _TransactionHelper.Transaction, Log, user);
             }
@@ -139,7 +139,7 @@ namespace VirtualRadar.Database.Users
         /// <param name="user"></param>
         public void UserUpdate(User user)
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 OpenConnection();
                 _UserTable.Update(_Connection, _TransactionHelper.Transaction, Log, user);
             }
@@ -151,7 +151,7 @@ namespace VirtualRadar.Database.Users
         /// <param name="user"></param>
         public void UserDelete(User user)
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 OpenConnection();
                 _UserTable.Delete(_Connection, _TransactionHelper.Transaction, Log, user);
             }
@@ -164,7 +164,7 @@ namespace VirtualRadar.Database.Users
         /// <returns></returns>
         public User UserGetByLoginName(string loginName)
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 OpenConnection();
                 return _UserTable.GetByLoginName(_Connection, _TransactionHelper.Transaction, Log, loginName);
             }
@@ -176,7 +176,7 @@ namespace VirtualRadar.Database.Users
         /// <returns></returns>
         public List<IUser> UserGetAll()
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 OpenConnection();
                 return _UserTable.GetAll(_Connection, _TransactionHelper.Transaction, Log);
             }
@@ -189,7 +189,7 @@ namespace VirtualRadar.Database.Users
         /// <returns></returns>
         public List<IUser> UserGetManyByUniqueId(List<long> uniqueIdentifiers)
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 OpenConnection();
                 return _UserTable.GetManyById(_Connection, _TransactionHelper.Transaction, Log, uniqueIdentifiers);
             }

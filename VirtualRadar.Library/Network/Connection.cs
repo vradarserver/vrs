@@ -31,9 +31,9 @@ namespace VirtualRadar.Library.Network
 
         #region Fields
         /// <summary>
-        /// The spinlock that protects our internals.
+        /// The lock object that protects our internals.
         /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
+        protected object _SyncLock = new object();
 
         /// <summary>
         /// The queue of operations to perform on the connection.
@@ -70,14 +70,14 @@ namespace VirtualRadar.Library.Network
         {
             get {
                 ConnectionStatus result;
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     result = _ConnectionStatus;
                 }
                 return result;
             }
             internal set {
                 var raiseEvent = false;
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     if(_ConnectionStatus != value) {
                         _ConnectionStatus = value;
                         raiseEvent = true;
@@ -97,11 +97,8 @@ namespace VirtualRadar.Library.Network
         public long BytesRead
         {
             get {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     return _BytesRead;
-                } finally {
-                    _SpinLock.Unlock();
                 }
             }
         }
@@ -113,11 +110,8 @@ namespace VirtualRadar.Library.Network
         public long WriteQueueBytes
         {
             get {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     return _WriteQueueBytes;
-                } finally {
-                    _SpinLock.Unlock();
                 }
             }
         }
@@ -129,11 +123,8 @@ namespace VirtualRadar.Library.Network
         public long BytesWritten
         {
             get {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     return _BytesWritten;
-                } finally {
-                    _SpinLock.Unlock();
                 }
             }
         }
@@ -145,11 +136,8 @@ namespace VirtualRadar.Library.Network
         public long StaleBytesDiscarded
         {
             get {
-                _SpinLock.Lock();
-                try {
+                lock(_SyncLock) {
                     return _StaleBytesDiscarded;
-                } finally {
-                    _SpinLock.Unlock();
                 }
             }
         }
@@ -161,7 +149,7 @@ namespace VirtualRadar.Library.Network
         public virtual int OperationQueueEntries
         {
             get {
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     return _OperationQueue.GetQueueLength();
                 }
             }
@@ -200,7 +188,7 @@ namespace VirtualRadar.Library.Network
             Created = DateTime.UtcNow;
 
             string operationQueueName;
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 operationQueueName = String.Format("ConnectionOpQueue-{0}-{1}", _Connector.Name ?? "unnamed", ++_ConnectionCount);
             }
             _OperationQueue = new BackgroundThreadQueue<ReadWriteOperation>(operationQueueName, surrenderTimeSliceOnEmptyQueue: true);
@@ -259,11 +247,8 @@ namespace VirtualRadar.Library.Network
         /// <param name="bytes"></param>
         protected void IncrementBytesRead(int bytes)
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 _BytesRead += bytes;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
 
@@ -273,11 +258,8 @@ namespace VirtualRadar.Library.Network
         /// <param name="bytes"></param>
         protected void IncrementBytesWritten(int bytes)
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 _BytesWritten += bytes;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
 
@@ -287,11 +269,8 @@ namespace VirtualRadar.Library.Network
         /// <param name="bytes"></param>
         protected void IncrementWriteQueueBytes(int bytes)
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 _WriteQueueBytes += bytes;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
 
@@ -301,11 +280,8 @@ namespace VirtualRadar.Library.Network
         /// <param name="bytes"></param>
         protected void IncrementStaleBytesDiscarded(int bytes)
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 _StaleBytesDiscarded += bytes;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
         #endregion
@@ -317,11 +293,8 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         private BackgroundThreadQueue<ReadWriteOperation> GetOperationQueue()
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 return _OperationQueue;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
 
@@ -331,11 +304,8 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         private IConnector GetConnector()
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 return _Connector;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
         #endregion
@@ -355,7 +325,7 @@ namespace VirtualRadar.Library.Network
             var inAbandon = false;
             BackgroundThreadQueue<ReadWriteOperation> operationQueue = null;
 
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 inAbandon = _InAbandon;
                 if(!inAbandon) {
                     _InAbandon = true;
@@ -504,13 +474,10 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         protected void ShutdownOperationQueue()
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 if(_OperationQueue != null) {
                     _OperationQueue.Stop();
                 }
-            } finally {
-                _SpinLock.Unlock();
             }
         }
         #endregion

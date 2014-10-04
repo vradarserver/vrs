@@ -111,9 +111,9 @@ namespace VirtualRadar.Library
         private Dictionary<int, ValueHistory<int, int?>> _AltitudeHistoryMap = new Dictionary<int,ValueHistory<int, int?>>();
 
         /// <summary>
-        /// A spinlock on the altitude history map.
+        /// A lock on the altitude history map.
         /// </summary>
-        private SpinLock _AltitudeHistoryMapLock = new SpinLock();
+        private object _AltitudeHistoryMapSyncLock = new object();
 
         /// <summary>
         /// A map of aircraft identifiers to the history of positions seen for the aircraft.
@@ -121,9 +121,9 @@ namespace VirtualRadar.Library
         private Dictionary<int, ValueHistory<GlobalCoordinate, GlobalCoordinate>> _PositionHistoryMap = new Dictionary<int,ValueHistory<GlobalCoordinate, GlobalCoordinate>>();
 
         /// <summary>
-        /// A spinlock on the position history map.
+        /// A lock on the position history map.
         /// </summary>
-        private SpinLock _PositionHistoryMapLock = new SpinLock();
+        private object _PositionHistoryMapSyncLock = new object();
         #endregion
 
         #region CheckAltitude
@@ -137,7 +137,7 @@ namespace VirtualRadar.Library
         public Certainty CheckAltitude(int aircraftId, DateTime messageReceived, int altitude)
         {
             var timedValue = new TimedValue<int>(messageReceived, altitude);
-            return CheckValue(aircraftId, timedValue, _AltitudeHistoryMap, _AltitudeHistoryMapLock, CalculateAltitudeCertainty, FindFirstGoodAltitude);
+            return CheckValue(aircraftId, timedValue, _AltitudeHistoryMap, _AltitudeHistoryMapSyncLock, CalculateAltitudeCertainty, FindFirstGoodAltitude);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public int? FirstGoodAltitude(int aircraftId)
         {
-            return FirstGoodValue(aircraftId, _AltitudeHistoryMap, _AltitudeHistoryMapLock);
+            return FirstGoodValue(aircraftId, _AltitudeHistoryMap, _AltitudeHistoryMapSyncLock);
         }
         #endregion
 
@@ -207,7 +207,7 @@ namespace VirtualRadar.Library
         public Certainty CheckPosition(int aircraftId, DateTime messageReceived, double latitude, double longitude)
         {
             var timedValue = new TimedValue<GlobalCoordinate>(messageReceived, new GlobalCoordinate(latitude, longitude));
-            return CheckValue(aircraftId, timedValue, _PositionHistoryMap, _PositionHistoryMapLock, CalculatePositionCertainty, FindFirstGoodPosition);
+            return CheckValue(aircraftId, timedValue, _PositionHistoryMap, _PositionHistoryMapSyncLock, CalculatePositionCertainty, FindFirstGoodPosition);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public GlobalCoordinate FirstGoodPosition(int aircraftId)
         {
-            return FirstGoodValue(aircraftId, _PositionHistoryMap, _PositionHistoryMapLock);
+            return FirstGoodValue(aircraftId, _PositionHistoryMap, _PositionHistoryMapSyncLock);
         }
         #endregion
 
@@ -275,10 +275,10 @@ namespace VirtualRadar.Library
         /// <param name="aircraftId"></param>
         public void ResetAircraft(int aircraftId)
         {
-            using(_AltitudeHistoryMapLock.AcquireLock()) {
+            lock(_AltitudeHistoryMapSyncLock) {
                 if(_AltitudeHistoryMap.ContainsKey(aircraftId)) _AltitudeHistoryMap.Remove(aircraftId);
             }
-            using(_PositionHistoryMapLock.AcquireLock()) {
+            lock(_PositionHistoryMapSyncLock) {
                 if(_PositionHistoryMap.ContainsKey(aircraftId)) _PositionHistoryMap.Remove(aircraftId);
             }
         }
@@ -301,15 +301,14 @@ namespace VirtualRadar.Library
             int                                                             aircraftId,
             TimedValue<TValue>                                              timedValue,
             Dictionary<int, ValueHistory<TValue, TNullable>>                map,
-            SpinLock                                                        mapLock,
+            object                                                          mapLock,
             Func<bool, TimedValue<TValue>, TimedValue<TValue>, Certainty>   calculateCertainty,
             Func<List<TimedValue<TValue>>, TNullable>                       findFirstValue
         )
         {
             FlushOldEntries();
 
-            mapLock.Lock();
-            try {
+            lock(mapLock) {
                 ValueHistory<TValue, TNullable> valueHistory;
                 if(!map.TryGetValue(aircraftId, out valueHistory)) {
                     valueHistory = new ValueHistory<TValue, TNullable>() {
@@ -341,8 +340,6 @@ namespace VirtualRadar.Library
                 }
 
                 return result;
-            } finally {
-                mapLock.Unlock();
             }
         }
         #endregion
@@ -357,18 +354,15 @@ namespace VirtualRadar.Library
         /// <param name="map"></param>
         /// <param name="mapLock"></param>
         /// <returns></returns>
-        private TNullable FirstGoodValue<TValue, TNullable>(int aircraftId, Dictionary<int, ValueHistory<TValue, TNullable>> map, SpinLock mapLock)
+        private TNullable FirstGoodValue<TValue, TNullable>(int aircraftId, Dictionary<int, ValueHistory<TValue, TNullable>> map, object mapLock)
         {
             TNullable result = default(TNullable);
 
-            mapLock.Lock();
-            try {
+            lock(mapLock) {
                 ValueHistory<TValue, TNullable> valueHistory;
                 if(map.TryGetValue(aircraftId, out valueHistory)) {
                     result = valueHistory.FirstGoodValue;
                 }
-            } finally {
-                mapLock.Unlock();
             }
 
             return result;
@@ -385,15 +379,15 @@ namespace VirtualRadar.Library
             if(DateTime.UtcNow >= flushDue) {
                 _LastFlushTime = DateTime.UtcNow;
 
-                FlushMap(_AltitudeHistoryMap, _AltitudeHistoryMapLock);
-                FlushMap(_PositionHistoryMap, _PositionHistoryMapLock);
+                FlushMap(_AltitudeHistoryMap, _AltitudeHistoryMapSyncLock);
+                FlushMap(_PositionHistoryMap, _PositionHistoryMapSyncLock);
             }
         }
 
-        private void FlushMap<TValue, TNullable>(Dictionary<int, ValueHistory<TValue, TNullable>> map, SpinLock mapLock)
+        private void FlushMap<TValue, TNullable>(Dictionary<int, ValueHistory<TValue, TNullable>> map, object mapLock)
         {
             var deleteThreshold = DateTime.UtcNow.AddMinutes(-FlushHistoryMinutes);
-            using(mapLock.AcquireLock()) {
+            lock(mapLock) {
                 var deleteKeys = map.Where(r => r.Value.PreviousValue != null && r.Value.PreviousValue.Time <= deleteThreshold)
                                     .Select(r => r.Key)
                                     .ToList();

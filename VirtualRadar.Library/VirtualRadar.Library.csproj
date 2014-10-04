@@ -113,7 +113,6 @@
     <Compile Include="Presenter\SettingsPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
     <Compile Include="Settings\ConfigurationListener.cs" />
-    <Compile Include="TcpClientWrapper.cs" />
     <Compile Include="Presenter\StatisticsPresenter.cs" />
     <Compile Include="Network\RebroadcastServer.cs" />
     <Compile Include="Network\RebroadcastServerManager.cs" />
