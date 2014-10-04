@@ -98,9 +98,9 @@ namespace VirtualRadar.Library
         private static DateTime _ThumbnailCacheLastCleanTime;
 
         /// <summary>
-        /// The spin lock that controls multi-threaded access to the thumbnail cache. Use carefully!
+        /// The lock that controls multi-threaded access to the thumbnail cache.
         /// </summary>
-        private static SpinLock _ThumbnailCacheSpinLock = new SpinLock();
+        private static object _ThumbnailCacheSyncLock = new object();
         #endregion
 
         #region GetThumbnails
@@ -115,7 +115,7 @@ namespace VirtualRadar.Library
         {
             var thumbnailKey = new ThumbnailKey(icao, maxThumbnails);
             CachedThumbnail cachedThumbnail;
-            using(var spinLock = _ThumbnailCacheSpinLock.AcquireLock()) {
+            lock(_ThumbnailCacheSyncLock) {
                 _ThumbnailCache.TryGetValue(thumbnailKey, out cachedThumbnail);
             }
 
@@ -126,7 +126,7 @@ namespace VirtualRadar.Library
                     LastAccessTimeUtc = DateTime.UtcNow,
                     Thumbnail = RequestThumbnails(icao, registration, maxThumbnails),
                 };
-                using(var spinLock = _ThumbnailCacheSpinLock.AcquireLock()) {
+                lock(_ThumbnailCacheSyncLock) {
                     if(_ThumbnailCache.ContainsKey(thumbnailKey)) _ThumbnailCache[thumbnailKey] = cachedThumbnail;
                     else                                          _ThumbnailCache.Add(thumbnailKey, cachedThumbnail);
                 }
@@ -169,7 +169,7 @@ namespace VirtualRadar.Library
         private void CleanOldThumbnailCacheEntries()
         {
             var threshold = DateTime.UtcNow.AddMinutes(-ThumbnailCacheMaxMinutes);
-            using(var spinLock = _ThumbnailCacheSpinLock.AcquireLock()) {
+            lock(_ThumbnailCacheSyncLock) {
                 if(_ThumbnailCacheLastCleanTime <= DateTime.UtcNow.AddMinutes(-1)) {
                     foreach(var kvp in _ThumbnailCache.Where(r => r.Value.LastAccessTimeUtc <= threshold).ToList()) {
                         _ThumbnailCache.Remove(kvp.Key);

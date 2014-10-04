@@ -32,11 +32,6 @@ namespace VirtualRadar.Library.Network
 
         #region Fields
         /// <summary>
-        /// The spin lock that gives us consistent access to the properties.
-        /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
-
-        /// <summary>
         /// The connection that the connector establishes.
         /// </summary>
         private SerialConnection _Connection;
@@ -125,11 +120,8 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         private SerialConnection GetConnection()
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 return _Connection;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
         #endregion
@@ -156,7 +148,7 @@ namespace VirtualRadar.Library.Network
                 timeoutAction.PerformAction();
 
                 SerialConnection connection;
-                using(_SpinLock.AcquireLock()) {
+                lock(_SyncLock) {
                     _Connection = connection = new SerialConnection(this, ConnectionStatus.Disconnected, serialPort, ShutdownText);
                 }
                 connection.SendText(StartupText);
@@ -184,7 +176,7 @@ namespace VirtualRadar.Library.Network
         internal override void ConnectionAbandoned(IConnection connection)
         {
             var deregisterConnection = false;
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(connection != null && connection == _Connection) {
                     deregisterConnection = true;
                     _Connection = null;

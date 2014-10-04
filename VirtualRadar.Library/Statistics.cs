@@ -26,9 +26,9 @@ namespace VirtualRadar.Library
         private bool _Initialised;
 
         /// <summary>
-        /// The spin lock that controls updates of the values.
+        /// The lock that controls updates of the values.
         /// </summary>
-        private SpinLock _Lock = new SpinLock();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// See interface docs.
@@ -160,11 +160,8 @@ namespace VirtualRadar.Library
         public void Lock(Action<IStatistics> lockedDelegate)
         {
             if(_Initialised) {
-                _Lock.Lock();
-                try {
+                lock(_SyncLock) {
                     lockedDelegate(this);
-                } finally {
-                    _Lock.Unlock();
                 }
             }
         }

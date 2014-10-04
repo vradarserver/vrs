@@ -58,11 +58,6 @@ namespace VirtualRadar.Library.Network
 
         #region Fields
         /// <summary>
-        /// The spin lock that gives us consistent access to the properties.
-        /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
-
-        /// <summary>
         /// True if the connector is in the closed state, false if it is in the open state.
         /// </summary>
         private bool _Closed = true;
@@ -229,7 +224,7 @@ namespace VirtualRadar.Library.Network
         private void ActiveModeReconnect(ConnectionStatus status, bool pauseBeforeConnect)
         {
             var inActiveModeReconnect = false;
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 inActiveModeReconnect = _InActiveModeReconnect;
                 if(!inActiveModeReconnect) _InActiveModeReconnect = true;
             }
@@ -286,7 +281,7 @@ namespace VirtualRadar.Library.Network
         private void PassiveModeStartListening()
         {
             var inPassiveModeStartListening = false;
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 inPassiveModeStartListening = _InPassiveModeStartListening;
                 if(!inPassiveModeStartListening) _InPassiveModeStartListening = true;
             }

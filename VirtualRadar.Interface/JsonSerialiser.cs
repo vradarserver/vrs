@@ -70,7 +70,7 @@ namespace VirtualRadar.Interface
         /// multi-threaded calls to WriteObject for the same type to crash with multiple adds to this field, which I think most
         /// people would find surprising, so I'm making an exception and adding a lock around the manipulation of the field.
         /// </summary>
-        private SpinLock _GenericTypeArgumentsMapLock = new SpinLock();
+        private object _GenericTypeArgumentsMapSyncLock = new object();
 
         /// <summary>
         /// Initialises the serialiser.
@@ -138,14 +138,11 @@ namespace VirtualRadar.Interface
         {
             Type[] result = null;
 
-            _GenericTypeArgumentsMapLock.Lock();
-            try {
+            lock(_GenericTypeArgumentsMapSyncLock) {
                 if(!_GenericTypeArgumentsMap.TryGetValue(type, out result) && type.IsGenericType) {
                     result = type.GetGenericArguments();
                     _GenericTypeArgumentsMap.Add(type, result);
                 }
-            } finally {
-                _GenericTypeArgumentsMapLock.Unlock();
             }
 
             return result;

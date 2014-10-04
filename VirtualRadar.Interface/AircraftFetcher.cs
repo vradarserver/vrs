@@ -75,16 +75,14 @@ namespace VirtualRadar.Interface
         private IHeartbeatService _PrivateHeartbeat;
 
         /// <summary>
-        /// The spin lock that locks the queues and maps. Care must be taken that a function does
-        /// not call another function protected by the same spin lock, otherwise it will deadlock.
+        /// The lock that locks the queues and maps.
         /// </summary>
-        private SpinLock _QueueLock = new SpinLock();
+        private object _QueueLock = new object();
 
         /// <summary>
-        /// The spin lock that protects <see cref="FetchAircraft"/> from simultaneous calls. Care
-        /// must be taken not to call FetchAircraft recursively otherwise it will deadlock.
+        /// The lock that protects <see cref="FetchAircraft"/> from simultaneous calls.
         /// </summary>
-        private SpinLock _FetchLock = new SpinLock();
+        private object _FetchLock = new object();
 
         /// <summary>
         /// True once the object has been initialised.
@@ -184,14 +182,11 @@ namespace VirtualRadar.Interface
         protected void Initialise()
         {
             if(!_Initialised) {
-                _QueueLock.Lock();
-                try {
+                lock(_QueueLock) {
                     if(!_Initialised) {
                         DoInitialise();
                         _Initialised = true;
                     }
-                } finally {
-                    _QueueLock.Unlock();
                 }
             }
         }
@@ -222,8 +217,7 @@ namespace VirtualRadar.Interface
             TDetail result = null;
             Initialise();
 
-            _QueueLock.Lock();
-            try {
+            lock(_QueueLock) {
                 FetchedDetail fetchedDetail;
                 if(!_FetchedDetailMap.TryGetValue(key, out fetchedDetail)) {
                     if(!_LookupQueue.TryGetValue(key, out fetchedDetail)) {
@@ -236,8 +230,6 @@ namespace VirtualRadar.Interface
                 }
                 fetchedDetail.LastRegisteredUtc = _Clock.UtcNow;
                 result = fetchedDetail.Detail;
-            } finally {
-                _QueueLock.Unlock();
             }
 
             return result;
@@ -252,8 +244,7 @@ namespace VirtualRadar.Interface
         /// <returns></returns>
         private bool FetchAllAircraft(IEnumerable<FetchedDetail> fetchedDetails)
         {
-            _FetchLock.Lock();
-            try {
+            lock(_FetchLock) {
                 var result = DoFetchManyAircraft(fetchedDetails);
                 if(result) {
                     var now = _Clock.UtcNow;
@@ -263,8 +254,6 @@ namespace VirtualRadar.Interface
                 }
 
                 return result;
-            } finally {
-                _FetchLock.Unlock();
             }
         }
 
@@ -274,29 +263,23 @@ namespace VirtualRadar.Interface
         /// <param name="fetchedDetail"></param>
         private void FetchAircraft(FetchedDetail fetchedDetail)
         {
-            _FetchLock.Lock();
-            try {
+            lock(_FetchLock) {
                 var isFirstFetch = fetchedDetail.LastCheckedUtc == default(DateTime);
                 fetchedDetail.LastCheckedUtc = _Clock.UtcNow;
                 fetchedDetail.Detail = DoFetchAircraft(fetchedDetail);
-            } finally {
-                _FetchLock.Unlock();
             }
         }
 
         /// <summary>
-        /// Returns the fetched detail for a key. The lock is acquired and released while fetching the detail.
+        /// Returns the fetched detail for a key.
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         protected FetchedDetail GetFetchedDetailUnderLock(TKey key)
         {
             FetchedDetail result;
-            _QueueLock.Lock();
-            try {
+            lock(_QueueLock) {
                 _FetchedDetailMap.TryGetValue(key, out result);
-            } finally {
-                _QueueLock.Unlock();
             }
 
             return result;
@@ -305,28 +288,21 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Fakes an aircraft fetch. Some derivees may hook events that pre-fetch the interesting data and they don't want to fetch
         /// it again with a call to FetchAircraft, so this applies the same lock as FetchAircraft and calls the action passed across.
-        /// Do not call <see cref="FetchAircraft"/> from within this, it will deadlock.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="fakeFetchAircraft"></param>
         protected void FauxFetchAircraft(TKey key, Func<TKey, TDetail, bool, IAircraft, TDetail> fakeFetchAircraft)
         {
             FetchedDetail fetchedDetail;
-            _QueueLock.Lock();
-            try {
+            lock(_QueueLock) {
                 _FetchedDetailMap.TryGetValue(key, out fetchedDetail);
-            } finally {
-                _QueueLock.Unlock();
             }
 
             if(fetchedDetail != null) {
-                _FetchLock.Lock();
-                try {
+                lock(_FetchLock) {
                     var isFirstFetch = fetchedDetail.LastCheckedUtc == default(DateTime);
                     fetchedDetail.LastCheckedUtc = _Clock.UtcNow;
                     fetchedDetail.Detail = fakeFetchAircraft(fetchedDetail.Key, fetchedDetail.Detail, isFirstFetch, fetchedDetail.Aircraft);
-                } finally {
-                    _FetchLock.Unlock();
                 }
             }
         }
@@ -342,11 +318,8 @@ namespace VirtualRadar.Interface
             var recheckMilliseconds = AutomaticRecheckIntervalMilliseconds;
 
             var lookupList = new List<FetchedDetail>();
-            _QueueLock.Lock();
-            try {
+            lock(_QueueLock) {
                 lookupList.AddRange(_FetchedDetailMap.Values.Where(r => forceRefetch || (r.LastCheckedUtc.Year > 1 && r.LastCheckedUtc.AddMilliseconds(recheckMilliseconds) <= now)));
-            } finally {
-                _QueueLock.Unlock();
             }
 
             if(!FetchAllAircraft(lookupList)) {
@@ -385,8 +358,7 @@ namespace VirtualRadar.Interface
             var now = _Clock.UtcNow;
             var interval = AutomaticDeregisterIntervalMilliseconds;
 
-            _QueueLock.Lock();
-            try {
+            lock(_QueueLock) {
                 var oldKeys = new List<TKey>();
                 foreach(var kvp in _FetchedDetailMap) {
                     var key = kvp.Key;
@@ -397,8 +369,6 @@ namespace VirtualRadar.Interface
                 foreach(var oldKey in oldKeys) {
                     _FetchedDetailMap.Remove(oldKey);
                 }
-            } finally {
-                _QueueLock.Unlock();
             }
         }
         #endregion
@@ -413,13 +383,10 @@ namespace VirtualRadar.Interface
         {
             var result = new Dictionary<TKey,TDetail>();
 
-            _QueueLock.Lock();
-            try {
+            lock(_QueueLock) {
                 foreach(var kvp in _FetchedDetailMap) {
                     result.Add(kvp.Key, kvp.Value.Detail);
                 }
-            } finally {
-                _QueueLock.Unlock();
             }
 
             return result;
@@ -441,15 +408,12 @@ namespace VirtualRadar.Interface
             }
 
             var lookupList = new List<FetchedDetail>();
-            _QueueLock.Lock();
-            try {
+            lock(_QueueLock) {
                 foreach(var newFetchedDetail in _LookupQueue.Values) {
                     lookupList.Add(newFetchedDetail);
                     _FetchedDetailMap.Add(newFetchedDetail.Key, newFetchedDetail);
                 }
                 _LookupQueue.Clear();
-            } finally {
-                _QueueLock.Unlock();
             }
 
             if(!FetchAllAircraft(lookupList)) {

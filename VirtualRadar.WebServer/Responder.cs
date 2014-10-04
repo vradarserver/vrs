@@ -31,7 +31,7 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// The object that locks access to the responder's fields, to allow multithreaded use.
         /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// A map of types that the JSON serialiser knows about.
@@ -78,15 +78,12 @@ namespace VirtualRadar.WebServer
 
             var type = json.GetType();
             JsonSerialiser serialiser;
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 if(!_JsonSerialiserMap.TryGetValue(type, out serialiser)) {
                     serialiser = new JsonSerialiser();
                     serialiser.Initialise(type);
                     _JsonSerialiserMap.Add(type, serialiser);
                 }
-            } finally {
-                _SpinLock.Unlock();
             }
 
             string text;

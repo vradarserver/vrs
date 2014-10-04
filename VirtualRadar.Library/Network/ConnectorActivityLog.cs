@@ -34,7 +34,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// The lock that protects the list from multithreaded access.
         /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// The list of active connectors.
@@ -78,7 +78,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="connector"></param>
         public void RecordConnectorCreated(IConnector connector)
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(!_InitialisedSnapshotLogger) {
                     _InitialisedSnapshotLogger = true;
                     Factory.Singleton.Resolve<IConnectorSnapshotLogger>().Singleton.Initialise();
@@ -97,7 +97,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="connector"></param>
         public void RecordConnectorDestroyed(IConnector connector)
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(_Connectors.Contains(connector)) {
                     connector.ActivityRecorded -= Connector_ActivityRecorded;
                     _Connectors.Remove(connector);
@@ -115,7 +115,7 @@ namespace VirtualRadar.Library.Network
         {
             var result = new List<ConnectorActivityEvent>();
 
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 foreach(var connector in _Connectors) {
                     result.AddRange(connector.GetActivityHistory());
                 }
@@ -131,7 +131,7 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         public IConnector[] GetActiveConnectors()
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 return _Connectors.ToArray();
             }
         }

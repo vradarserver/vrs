@@ -42,9 +42,9 @@ namespace VirtualRadar.Library.Network
         public static readonly int MaxFileSize = 100 * 1024;
 
         /// <summary>
-        /// The spin lock that prevents two snapshots from being recorded simultaneously.
+        /// The lock that prevents two snapshots from being recorded simultaneously.
         /// </summary>
-        private SpinLock _SpinLock;
+        private object _SyncLock = new object();
 
         /// <summary>
         /// The heartbeat service that we are synchronised with.
@@ -72,13 +72,14 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public void Initialise()
         {
-            if(_HeartbeatService == null) {
-                _SpinLock = new SpinLock();
-                _NextSnapshot = DateTime.UtcNow.AddSeconds(SnapshotInterval);
-                FullPath = Path.Combine(Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder, FileName);
+            lock(_SyncLock) {
+                if(_HeartbeatService == null) {
+                    _NextSnapshot = DateTime.UtcNow.AddSeconds(SnapshotInterval);
+                    FullPath = Path.Combine(Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder, FileName);
 
-                _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
-                _HeartbeatService.SlowTick += HeartbeatService_SlowTick;
+                    _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                    _HeartbeatService.SlowTick += HeartbeatService_SlowTick;
+                }
             }
         }
 
@@ -87,7 +88,7 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public void RecordSnapshot()
         {
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 _NextSnapshot = DateTime.UtcNow.AddSeconds(SnapshotInterval);
                 var snapshotBytes = Encoding.UTF8.GetBytes(BuildSnapshot());
                 var existingLines = File.Exists(FullPath) ? File.ReadAllLines(FullPath) : new string[0];

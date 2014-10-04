@@ -27,7 +27,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// The object that we use to restrict access to the fields to a single thread.
         /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// True if the object has been initialised.
@@ -66,8 +66,7 @@ namespace VirtualRadar.Library
         {
             if(access == null) throw new ArgumentNullException("access");
 
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 _Initialised = true;
                 _DefaultAccess = access.DefaultAccess;
 
@@ -75,8 +74,6 @@ namespace VirtualRadar.Library
                 foreach(var address in access.Addresses) {
                     _Cidrs.Add(Cidr.Parse(address));
                 }
-            } finally {
-                _SpinLock.Unlock();
             }
         }
 
@@ -90,13 +87,10 @@ namespace VirtualRadar.Library
             var defaultAccess = default(DefaultAccess);
             List<Cidr> cidrs = null;
 
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 if(!_Initialised) throw new InvalidOperationException("Initialise must be called before calling Allow");
                 defaultAccess = _DefaultAccess;
                 cidrs = _Cidrs;
-            } finally {
-                _SpinLock.Unlock();
             }
 
             bool result;

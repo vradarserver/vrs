@@ -121,9 +121,9 @@ namespace VirtualRadar.Library.Listener
         private long _BytesBuffered;
 
         /// <summary>
-        /// A spin lock that protects access to <see cref="_BytesBuffered"/>.
+        /// A lock that protects access to <see cref="_BytesBuffered"/>.
         /// </summary>
-        private SpinLock _BytesBufferedSpinLock = new SpinLock();
+        private object _BytesBufferedSyncLock = new object();
 
         /// <summary>
         /// The number of listeners that have been created. We want to ensure that we can have as many listeners as we like
@@ -443,11 +443,8 @@ namespace VirtualRadar.Library.Listener
                 var listener = (IListener)sender;
                 
                 var argsSize = args.Message.CalculateRoughSize();
-                _BytesBufferedSpinLock.Lock();
-                try {
+                lock(_BytesBufferedSyncLock) {
                     _BytesBuffered += argsSize;
-                } finally {
-                    _BytesBufferedSpinLock.Unlock();
                 }
 
                 _MessageProcessingQueue.Enqueue(new MessageReceived(_Clock.UtcNow, listener, args, argsSize));
@@ -463,11 +460,8 @@ namespace VirtualRadar.Library.Listener
         /// <param name="messageReceived"></param>
         private void ProcessReceivedMessage(MessageReceived messageReceived)
         {
-            _BytesBufferedSpinLock.Lock();
-            try {
+            lock(_BytesBufferedSyncLock) {
                 _BytesBuffered -= messageReceived.MessageArgsSize;
-            } finally {
-                _BytesBufferedSpinLock.Unlock();
             }
 
             var message = messageReceived.MessageArgs.Message;

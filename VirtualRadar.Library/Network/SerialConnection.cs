@@ -26,11 +26,6 @@ namespace VirtualRadar.Library.Network
     {
         #region Fields
         /// <summary>
-        /// The lock that protects the serial port.
-        /// </summary>
-        private SpinLock _SpinLock = new SpinLock();
-
-        /// <summary>
         /// Set to true when the code is trying to close the serial port.
         /// </summary>
         private bool _Closing;
@@ -78,11 +73,8 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         private SerialPort GetSerialPort()
         {
-            _SpinLock.Lock();
-            try {
+            lock(_SyncLock) {
                 return SerialPort;
-            } finally {
-                _SpinLock.Unlock();
             }
         }
         #endregion
@@ -95,7 +87,7 @@ namespace VirtualRadar.Library.Network
         {
             var closedPort = false;
 
-            using(_SpinLock.AcquireLock()) {
+            lock(_SyncLock) {
                 if(SerialPort != null) {
                     closedPort = true;
                     var serialPort = SerialPort;

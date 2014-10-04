@@ -164,7 +164,6 @@
     <Compile Include="Settings\ProxyType.cs" />
     <Compile Include="Settings\Receiver.cs" />
     <Compile Include="SimpleStringBuffer.cs" />
-    <Compile Include="SpinLock.cs" />
     <Compile Include="StandingData\AircraftType.cs" />
     <Compile Include="StandingData\Airline.cs" />
     <Compile Include="StandingData\Airport.cs" />
