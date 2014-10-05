@@ -266,6 +266,9 @@ namespace VirtualRadar.Library.Network
             var ipAddress = ResolveAddress(Address);
             var endPoint = new IPEndPoint(ipAddress, Port);
             var socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
+
             SetSocketKeepAliveAndTimeouts(socket);
 
             var timeoutAction = new BackgroundThreadTimeout(ConnectTimeout, () => {
@@ -274,6 +277,8 @@ namespace VirtualRadar.Library.Network
             timeoutAction.PerformAction();
 
             SocketConnection connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
+            RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: true);
+            connection.ConnectionStatus = ConnectionStatus.Connected;
 
             var authentication = Authentication;
             if(authentication != null) {
@@ -288,13 +293,7 @@ namespace VirtualRadar.Library.Network
                 authenticationAction.PerformAction();
                 if(abandonConnection) {
                     connection.Abandon();
-                    connection = null;
                 }
-            }
-
-            if(connection != null) {
-                RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: true);
-                connection.ConnectionStatus = ConnectionStatus.Connected;
             }
         }
         #endregion

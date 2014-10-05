@@ -464,6 +464,8 @@ namespace VirtualRadar.Library.Network
                     while(_Activities.Count >= MaxActivities) {
                         _Activities.RemoveFirst();
                     }
+                    var last = _Activities.Last;
+                    if(last != null && last.Value.Time == activity.Time) activity.ShiftTimeForwardOneMillisecond();
                     _Activities.AddLast(activity);
                 }
 
