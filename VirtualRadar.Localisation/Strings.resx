@@ -1826,8 +1826,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="NameCannotContainComma" xml:space="preserve">
     <value>The name cannot contain a comma</value>
   </data>
-  <data name="ReceiversAndMergedFeedNamesMustBeUnique" xml:space="preserve">
-    <value>Receivers and merged feeds cannot share names</value>
+  <data name="FeedAndServerNamesMustBeUnique" xml:space="preserve">
+    <value>Receivers, merged feeds and rebroadcast servers must have unique names</value>
   </data>
   <data name="IgnoreAircraftWithNoPosition" xml:space="preserve">
     <value>Ignore aircraft with no position</value>

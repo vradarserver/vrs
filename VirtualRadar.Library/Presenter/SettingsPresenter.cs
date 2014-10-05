@@ -687,14 +687,15 @@ namespace VirtualRadar.Library.Presenter
         }
 
         /// <summary>
-        /// Returns an array of the combined names from receivers and merged feeds.
+        /// Returns an array of the combined names from receivers, merged feeds and rebroadcast servers. All names are in upper-case.
         /// </summary>
         /// <param name="exceptCurrent"></param>
         /// <returns></returns>
-        private string[] CombinedFeedNamesUpperCase(object exceptCurrent)
+        private string[] CombinedFeedAndServerNamesUpperCase(object exceptCurrent)
         {
             var receiverNames = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
             var mergedFeedNames = _View.Configuration.MergedFeeds.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
+            var rebroadcastServerNames = _View.Configuration.RebroadcastSettings.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
 
             return receiverNames.Concat(mergedFeedNames).ToArray();
         }
@@ -709,6 +710,9 @@ namespace VirtualRadar.Library.Presenter
             var result = _View.Configuration.RebroadcastSettings
                                             .Where(r => r != exceptCurrent && !r.IsTransmitter)
                                             .Select(r => r.Port);
+            result = result.Concat(_View.Configuration.Receivers
+                                                      .Where(r => r != exceptCurrent && r.IsPassive)
+                                                      .Select(r => r.Port));
 
             return result.ToArray();
         }
@@ -884,10 +888,10 @@ namespace VirtualRadar.Library.Presenter
                 if(StringIsNotEmpty(mergedFeed.Name, new Validation(ValidationField.Name, defaults) {
                     Message = Strings.NameRequired,
                 })) {
-                    // The name cannot be the same as any other receiver or merged feed name
-                    var receiverAndMergedFeedNames = CombinedFeedNamesUpperCase(mergedFeed);
-                    ValueIsNotInList(mergedFeed.Name.ToUpper(), receiverAndMergedFeedNames, new Validation(ValidationField.Name, defaults) {
-                        Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
+                    // The name must be unique
+                    var names = CombinedFeedAndServerNamesUpperCase(mergedFeed);
+                    ValueIsNotInList(mergedFeed.Name.ToUpper(), names, new Validation(ValidationField.Name, defaults) {
+                        Message = Strings.FeedAndServerNamesMustBeUnique,
                     });
 
                     // The name cannot contain a comma
@@ -988,9 +992,9 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.NameRequired,
                 })) {
                     // Name must be unique
-                    var names = _View.Configuration.RebroadcastSettings.Where(r => r != server).Select(r => (r.Name ?? "").ToUpper()).ToArray();
+                    var names = CombinedFeedAndServerNamesUpperCase(server);
                     ValueIsNotInList(server.Name, names, new Validation(ValidationField.Name, defaults) {
-                        Message = Strings.NameMustBeUnique,
+                        Message = Strings.FeedAndServerNamesMustBeUnique,
                     });
                 }
 
@@ -1137,9 +1141,9 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.NameRequired,
                 })) {
                     // The name cannot be the same as any other receiver or merged feed name
-                    var allNames = CombinedFeedNamesUpperCase(receiver);
-                    ValueIsNotInList(receiver.Name.ToUpper(), allNames, new Validation(ValidationField.Name, defaults) {
-                        Message = Strings.ReceiversAndMergedFeedNamesMustBeUnique,
+                    var names = CombinedFeedAndServerNamesUpperCase(receiver);
+                    ValueIsNotInList(receiver.Name.ToUpper(), names, new Validation(ValidationField.Name, defaults) {
+                        Message = Strings.FeedAndServerNamesMustBeUnique,
                     });
 
                     // The name cannot contain a comma (can't remember exactly why - easier parsing of the names at the browser?)
@@ -1152,6 +1156,26 @@ namespace VirtualRadar.Library.Presenter
                 if(receiver.ReceiverLocationId != 0) {
                     ValueIsInList(receiver.ReceiverLocationId, _View.Configuration.ReceiverLocations.Select(r => r.UniqueId), new Validation(ValidationField.Location, defaults) {
                         Message = Strings.LocationDoesNotExist,
+                    });
+                }
+
+                // If the receiver is passive then its port must be unique
+                if(receiver.IsPassive) {
+                    // Port can't be in use on any rebroadcast server or receiver in listen mode
+                    var otherPorts = ListeningPorts(receiver);
+                    ConditionIsTrue(receiver, r => !otherPorts.Contains(r.Port), new Validation(ValidationField.BaseStationPort, defaults) {
+                        Message = Strings.PortMustBeUnique,
+                        RelatedFields = { ValidationField.IsPassive },
+                    });
+
+                    // Port cannot clash with the web server port
+                    ConditionIsTrue(receiver, r => {
+                        var autoConfigWebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton;
+                        return r.Port != autoConfigWebServer.WebServer.Port;
+                    }, new Validation(ValidationField.BaseStationPort, defaults) {
+                        Format = Strings.PortIsUsedByWebServer,
+                        Args = new object[] { receiver.Port },
+                        RelatedFields = { ValidationField.IsPassive },
                     });
                 }
 
