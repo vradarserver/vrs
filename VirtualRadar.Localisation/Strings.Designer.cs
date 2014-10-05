@@ -1484,6 +1484,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Receivers, merged feeds and rebroadcast servers must have unique names.
+        /// </summary>
+        public static string FeedAndServerNamesMustBeUnique {
+            get {
+                return ResourceManager.GetString("FeedAndServerNamesMustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feed status.
         /// </summary>
         public static string FeedStatus {
@@ -4779,15 +4788,6 @@ namespace VirtualRadar.Localisation {
         public static string Receivers {
             get {
                 return ResourceManager.GetString("Receivers", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Receivers and merged feeds cannot share names.
-        /// </summary>
-        public static string ReceiversAndMergedFeedNamesMustBeUnique {
-            get {
-                return ResourceManager.GetString("ReceiversAndMergedFeedNamesMustBeUnique", resourceCulture);
             }
         }
         
