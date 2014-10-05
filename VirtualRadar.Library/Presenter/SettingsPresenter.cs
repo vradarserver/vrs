@@ -1570,6 +1570,11 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void Save()
         {
+            Trim(_View.Configuration, recursive: true);
+            foreach(var user in _View.Users) {
+                Trim(user, recursive: true);
+            }
+
             var validationResults = Validate();
             _View.ShowValidationResults(validationResults);
 
