@@ -613,6 +613,22 @@ namespace VirtualRadar.Database.BaseStation
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <returns></returns>
+        public List<BaseStationAircraft> GetAllAircraft()
+        {
+            var result = new List<BaseStationAircraft>();
+
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) _AircraftTable.GetAll(_Connection, _TransactionHelper.Transaction, _DatabaseLog, result);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="icao24s"></param>
         /// <returns></returns>
         public Dictionary<string, BaseStationAircraft> GetManyAircraftByCode(IEnumerable<string> icao24s)

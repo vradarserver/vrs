@@ -25,6 +25,7 @@ namespace VirtualRadar.Database.BaseStation
     sealed class AircraftTable : Table
     {
         #region Fields
+        private string _GetAllCommandText;
         private string _GetByRegistrationCommandText;
         private string _GetByIcaoCommandText;
         private string _GetManyByIcaoCommandText;
@@ -48,6 +49,7 @@ namespace VirtualRadar.Database.BaseStation
         /// </summary>
         public AircraftTable()
         {
+            _GetAllCommandText = String.Format("SELECT {0} FROM [Aircraft] AS a", FieldList());
             _GetByRegistrationCommandText = String.Format("SELECT {0} FROM [Aircraft] AS a WHERE a.[Registration] = ?", FieldList());
             _GetByIcaoCommandText = String.Format("SELECT {0} FROM [Aircraft] AS a WHERE a.[ModeS] = ?", FieldList());
             _GetManyByIcaoCommandText = String.Format("SELECT {0} FROM [Aircraft] AS a ", FieldList());
@@ -333,6 +335,26 @@ namespace VirtualRadar.Database.BaseStation
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Fetches every aircraft in the database.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="log"></param>
+        /// <param name="aircraftList"></param>
+        public void GetAll(IDbConnection connection, IDbTransaction transaction, TextWriter log, List<BaseStationAircraft> aircraftList)
+        {
+            var preparedCommand = PrepareCommand(connection, transaction, "GetAll", _GetAllCommandText, 0);
+            Sql.LogCommand(log, preparedCommand.Command);
+            using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
+                while(reader.Read()) {
+                    int ordinal = 0;
+                    var aircraft = DecodeFullAircraft(reader, ref ordinal);
+                    aircraftList.Add(aircraft);
+                }
+            }
         }
         #endregion
 
