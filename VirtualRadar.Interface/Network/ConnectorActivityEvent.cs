@@ -71,5 +71,14 @@ namespace VirtualRadar.Interface.Network
             Message = message;
             Exception = exception;
         }
+
+        /// <summary>
+        /// Moves the activity's time forward one millisecond so that it sorts into the true order
+        /// when two activities with the exact same time are recorded.
+        /// </summary>
+        public void ShiftTimeForwardOneMillisecond()
+        {
+            Time = Time.AddMilliseconds(1);
+        }
     }
 }
