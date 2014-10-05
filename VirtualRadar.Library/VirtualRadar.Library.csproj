@@ -104,6 +104,7 @@
     <Compile Include="ModeS\ModeSTranslator.cs" />
     <Compile Include="Listener\FeedManager.cs" />
     <Compile Include="Listener\Feed.cs" />
+    <Compile Include="Network\PassphraseAuthentication.cs" />
     <Compile Include="Network\ReadWriteOperation.cs" />
     <Compile Include="Network\SerialConnector.cs" />
     <Compile Include="Network\SerialConnection.cs" />

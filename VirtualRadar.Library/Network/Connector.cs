@@ -113,6 +113,11 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public DateTime Created { get; private set; }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IConnectorAuthentication Authentication { get; set; }
+
         private bool _IsPassive;
         /// <summary>
         /// See interface docs.
@@ -180,7 +185,6 @@ namespace VirtualRadar.Library.Network
                 }
             }
         }
-
 
         private ConnectionStatus _ConnectionStatus;
         /// <summary>

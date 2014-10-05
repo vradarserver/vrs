@@ -92,6 +92,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(RebroadcastSettings, checkBoxIsTransmitter,  r => r.IsTransmitter,           r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(RebroadcastSettings, textBoxTransmitAddress, r => r.TransmitAddress,         r => r.Text);
             AddBinding(RebroadcastSettings, numericPort,            r => r.Port,                    r => r.Value);
+            AddBinding(RebroadcastSettings, textBoxPassphrase,      r => r.Passphrase,              r => r.Text);
             AddBinding(RebroadcastSettings, checkBoxUseKeepAlive,   r => r.UseKeepAlive,            r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(RebroadcastSettings, numericIdleTimeout,     r => r.IdleTimeoutMilliseconds, r => r.Value, format: MillisecondsToSeconds_Format, parse: MillisecondsToSeconds_Parse);
             AddBinding(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,            r => r.Value);
@@ -132,6 +133,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxIsTransmitter,    Strings.TransmitFeed,   Strings.OptionsDescribeRebroadcastIsTransmitter);
             SetInlineHelp(textBoxTransmitAddress,   Strings.UNC,            Strings.OptionsDescribeRebroadcastTransmitAddress);
             SetInlineHelp(numericPort,              Strings.Port,           Strings.OptionsDescribeRebroadcastServerPort);
+            SetInlineHelp(textBoxPassphrase,        Strings.Passphrase,     Strings.OptionsDescribePassphrase);
             SetInlineHelp(checkBoxUseKeepAlive,     Strings.UseKeepAlive,   Strings.OptionsDescribeRebroadcastUseKeepAlive);
             SetInlineHelp(numericIdleTimeout,       Strings.IdleTimeout,    Strings.OptionsDescribeRebroadcastIdleTimeout);
             SetInlineHelp(numericStaleSeconds,      Strings.StaleSeconds,   Strings.OptionsDescribeRebroadcastStaleSeconds);

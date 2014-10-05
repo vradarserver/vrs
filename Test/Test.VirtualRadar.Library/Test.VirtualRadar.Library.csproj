@@ -90,10 +90,10 @@
     <Compile Include="Presenter\SplashPresenterTests.cs" />
     <Compile Include="ModeS\ModeSTranslatorTests.cs" />
     <Compile Include="Presenter\StatisticsPresenterTests.cs" />
-    <Compile Include="RebroadcastServerManagerTests.cs" />
-    <Compile Include="RebroadcastServerTests.cs" />
-    <Compile Include="FeedManagerTests.cs" />
-    <Compile Include="FeedTests.cs" />
+    <Compile Include="Network\RebroadcastServerManagerTests.cs" />
+    <Compile Include="Network\RebroadcastServerTests.cs" />
+    <Compile Include="Listener\FeedManagerTests.cs" />
+    <Compile Include="Listener\FeedTests.cs" />
     <Compile Include="RuntimeEnvironmentTests.cs" />
     <Compile Include="Settings\ConfigurationListenerTests.cs" />
     <Compile Include="Settings\ConfigurationStorageTests.cs" />

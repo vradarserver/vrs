@@ -150,6 +150,19 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _IdleTimeoutMilliseconds, value, () => IdleTimeoutMilliseconds); }
         }
 
+        private string _Passphrase;
+        /// <summary>
+        /// Gets or sets the passphrase that the other side is expecting us to send in order to authenticate.
+        /// </summary>
+        /// <remarks>
+        /// If this is null or empty then no passphrase is sent.
+        /// </remarks>
+        public string Passphrase
+        {
+            get { return _Passphrase; }
+            set { SetField(ref _Passphrase, value, () => Passphrase); }
+        }
+
         private string _ComPort;
         /// <summary>
         /// Gets or sets the COM port to listen to.

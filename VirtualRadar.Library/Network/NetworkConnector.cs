@@ -54,6 +54,12 @@ namespace VirtualRadar.Library.Network
         /// in the ESTABLISHED state.
         /// </summary>
         public static readonly int EstablishedCheckTimeout = 20000;
+
+        /// <summary>
+        /// The number of milliseconds that the remote side has to send authentication before the connection is
+        /// abandoned.
+        /// </summary>
+        public static readonly int AuthenticationTimeout = 10000;
         #endregion
 
         #region Fields
@@ -268,8 +274,28 @@ namespace VirtualRadar.Library.Network
             timeoutAction.PerformAction();
 
             SocketConnection connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
-            RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: true);
-            connection.ConnectionStatus = ConnectionStatus.Connected;
+
+            var authentication = Authentication;
+            if(authentication != null) {
+                var abandonConnection = true;
+                var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
+                    SendAuthentication(connection, authentication);
+                    RecordMiscellaneousActivity("Sent authentication");
+                    abandonConnection = false;
+                }) {
+                    ThrowExceptions = false,
+                };
+                authenticationAction.PerformAction();
+                if(abandonConnection) {
+                    connection.Abandon();
+                    connection = null;
+                }
+            }
+
+            if(connection != null) {
+                RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: true);
+                connection.ConnectionStatus = ConnectionStatus.Connected;
+            }
         }
         #endregion
 
@@ -372,6 +398,20 @@ namespace VirtualRadar.Library.Network
                         }
                     }
 
+                    var authentication = Authentication;
+                    if(!abandonConnection && authentication != null) {
+                        var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
+                            var authenticationResponse = GetAuthenticationResponse(connection, authentication);
+                            abandonConnection = !authentication.GetResponseIsValid(authenticationResponse);
+                        }) {
+                            ThrowExceptions = false,
+                        };
+                        if(!authenticationAction.PerformAction()) abandonConnection = true;
+                        if(abandonConnection) {
+                            RecordMiscellaneousActivity("Rejecting connection from {0}, authentication failed or was not completed within {1} seconds", address, AuthenticationTimeout / 1000);
+                        }
+                    }
+
                     if(abandonConnection) {
                         connection.Abandon();
                     } else {
@@ -382,6 +422,48 @@ namespace VirtualRadar.Library.Network
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }
+        }
+        #endregion
+
+        #region SendAuthentication, GetAuthenticationResponse
+        /// <summary>
+        /// Send the bytes over the connection.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="authentication"></param>
+        private void SendAuthentication(SocketConnection connection, IConnectorAuthentication authentication)
+        {
+            var bytes = authentication.SendAuthentication();
+            connection.Socket.Send(bytes);
+        }
+
+        /// <summary>
+        /// Reads bytes off the connection until the authentication object says we've got enough.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="authentication"></param>
+        /// <returns></returns>
+        private byte[] GetAuthenticationResponse(SocketConnection connection, IConnectorAuthentication authentication)
+        {
+            var result = new byte[0];
+
+            var readBuffer = new byte[512];
+            var finished = false;
+            while(!finished) {
+                var bytesRead = connection.Socket.Receive(readBuffer);
+                finished = bytesRead == 0;
+                if(!finished) {
+                    var offset = result.Length;
+                    Array.Resize(ref result, result.Length + bytesRead);
+                    finished = result.Length > authentication.MaximumResponseLength;
+                    if(!finished) {
+                        Array.ConstrainedCopy(readBuffer, 0, result, offset, bytesRead);
+                        finished = authentication.GetResponseIsComplete(result);
+                    }
+                }
+            }
+
+            return result;
         }
         #endregion
 

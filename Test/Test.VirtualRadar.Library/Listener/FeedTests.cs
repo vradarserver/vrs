@@ -25,7 +25,7 @@ using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Network;
 
-namespace Test.VirtualRadar.Library
+namespace Test.VirtualRadar.Library.Listener
 {
     [TestClass]
     public class FeedTests
@@ -91,6 +91,7 @@ namespace Test.VirtualRadar.Library
 
         private Mock<INetworkConnector> _IPActiveConnector;
         private Mock<ISerialConnector> _SerialActiveConnector;
+        private Mock<IPassphraseAuthentication> _PassphraseAuthentication;
         private Mock<IPort30003MessageBytesExtractor> _Port30003Extractor;
         private Mock<ISbs3MessageBytesExtractor> _Sbs3MessageBytesExtractor;
         private Mock<IBeastMessageBytesExtractor> _BeastMessageBytesExtractor;
@@ -234,6 +235,8 @@ namespace Test.VirtualRadar.Library
             // and registers them as the default object.
             _IPActiveConnector = TestUtilities.CreateMockImplementation<INetworkConnector>();
             _SerialActiveConnector = TestUtilities.CreateMockImplementation<ISerialConnector>();
+            _IPActiveConnector.Object.Authentication = null;
+            _SerialActiveConnector.Object.Authentication = null;
 
             _Port30003Extractor = TestUtilities.CreateMockImplementation<IPort30003MessageBytesExtractor>();
             _Sbs3MessageBytesExtractor = TestUtilities.CreateMockImplementation<ISbs3MessageBytesExtractor>();
@@ -242,6 +245,8 @@ namespace Test.VirtualRadar.Library
 
             _RawMessageTranslator = TestUtilities.CreateMockImplementation<IRawMessageTranslator>();
             _RawMessageTranslator.Object.ReceiverLocation = null;
+
+            _PassphraseAuthentication = TestUtilities.CreateMockImplementation<IPassphraseAuthentication>();
         }
         #endregion
 
@@ -585,6 +590,27 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
             Assert.AreSame(_Feed, _ExceptionCaughtRecorder.Sender);
             Assert.AreSame(exception, _ExceptionCaughtRecorder.Args.Value);
+        }
+
+        [TestMethod]
+        public void Feed_Initialise_Sets_Authentication_On_Network_Connector_If_Passphrase_Supplied()
+        {
+            _Receiver.Passphrase = "A";
+
+            _Feed.Initialise(_Receiver, _Configuration);
+
+            Assert.AreSame(_PassphraseAuthentication.Object, _Feed.Listener.Connector.Authentication);
+            Assert.AreEqual("A", _PassphraseAuthentication.Object.Passphrase);
+        }
+
+        [TestMethod]
+        public void Feed_Initialise_Does_Not_Set_Authentication_On_Network_Connector_If_Passphrase_Is_Null()
+        {
+            _Receiver.Passphrase = null;
+
+            _Feed.Initialise(_Receiver, _Configuration);
+
+            Assert.IsNull(_Feed.Listener.Connector.Authentication);
         }
         #endregion
 
@@ -1070,6 +1096,31 @@ namespace Test.VirtualRadar.Library
             _Configuration.RawDecodingSettings.ReceiverRange = 700;
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
             _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Exactly(3));
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Applies_Passphrase_If_Supplied()
+        {
+            _Receiver.Passphrase = null;
+            _Feed.Initialise(_Receiver, _Configuration);
+
+            _Receiver.Passphrase = "A";
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            Assert.AreSame(_PassphraseAuthentication.Object, _Feed.Listener.Connector.Authentication);
+            Assert.AreEqual("A", _PassphraseAuthentication.Object.Passphrase);
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Removes_Passphrase_If_Not_Supplied()
+        {
+            _Receiver.Passphrase = "A";
+            _Feed.Initialise(_Receiver, _Configuration);
+
+            _Receiver.Passphrase = null;
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            Assert.IsNull(_Feed.Listener.Connector.Authentication);
         }
         #endregion
 

@@ -51,6 +51,8 @@
             this.numericIdleTimeout = new System.Windows.Forms.NumericUpDown();
             this.checkBoxUseKeepAlive = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBoxPassphrase = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericStaleSeconds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxAccessControl.SuspendLayout();
@@ -60,15 +62,15 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(0, 181);
+            this.label3.Location = new System.Drawing.Point(0, 207);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(88, 13);
-            this.label3.TabIndex = 12;
+            this.label3.TabIndex = 14;
             this.label3.Text = "::StaleSeconds:::";
             // 
             // numericStaleSeconds
             // 
-            this.numericStaleSeconds.Location = new System.Drawing.Point(200, 179);
+            this.numericStaleSeconds.Location = new System.Drawing.Point(200, 205);
             this.numericStaleSeconds.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -81,7 +83,7 @@
             0});
             this.numericStaleSeconds.Name = "numericStaleSeconds";
             this.numericStaleSeconds.Size = new System.Drawing.Size(77, 20);
-            this.numericStaleSeconds.TabIndex = 13;
+            this.numericStaleSeconds.TabIndex = 15;
             this.numericStaleSeconds.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericStaleSeconds.Value = new decimal(new int[] {
             1,
@@ -188,10 +190,10 @@
             this.groupBoxAccessControl.Controls.Add(this.bindingCidrList);
             this.groupBoxAccessControl.Controls.Add(this.comboBoxDefaultAccess);
             this.groupBoxAccessControl.Controls.Add(this.label5);
-            this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 254);
+            this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 280);
             this.groupBoxAccessControl.Name = "groupBoxAccessControl";
-            this.groupBoxAccessControl.Size = new System.Drawing.Size(636, 184);
-            this.groupBoxAccessControl.TabIndex = 18;
+            this.groupBoxAccessControl.Size = new System.Drawing.Size(636, 217);
+            this.groupBoxAccessControl.TabIndex = 21;
             this.groupBoxAccessControl.TabStop = false;
             this.groupBoxAccessControl.Text = "::AccessControl::";
             // 
@@ -212,7 +214,7 @@
             this.bindingCidrList.DataSource = null;
             this.bindingCidrList.Location = new System.Drawing.Point(197, 46);
             this.bindingCidrList.Name = "bindingCidrList";
-            this.bindingCidrList.Size = new System.Drawing.Size(433, 132);
+            this.bindingCidrList.Size = new System.Drawing.Size(433, 165);
             this.bindingCidrList.TabIndex = 3;
             // 
             // comboBoxDefaultAccess
@@ -265,24 +267,24 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(283, 230);
+            this.label16.Location = new System.Drawing.Point(283, 256);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(68, 13);
-            this.label16.TabIndex = 17;
+            this.label16.TabIndex = 20;
             this.label16.Text = "::PSeconds::";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(0, 230);
+            this.label15.Location = new System.Drawing.Point(0, 256);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(77, 13);
-            this.label15.TabIndex = 15;
+            this.label15.TabIndex = 18;
             this.label15.Text = "::IdleTimeout:::";
             // 
             // numericIdleTimeout
             // 
-            this.numericIdleTimeout.Location = new System.Drawing.Point(200, 228);
+            this.numericIdleTimeout.Location = new System.Drawing.Point(200, 254);
             this.numericIdleTimeout.Maximum = new decimal(new int[] {
             86400,
             0,
@@ -295,7 +297,7 @@
             0});
             this.numericIdleTimeout.Name = "numericIdleTimeout";
             this.numericIdleTimeout.Size = new System.Drawing.Size(77, 20);
-            this.numericIdleTimeout.TabIndex = 16;
+            this.numericIdleTimeout.TabIndex = 19;
             this.numericIdleTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericIdleTimeout.Value = new decimal(new int[] {
             5,
@@ -306,25 +308,46 @@
             // checkBoxUseKeepAlive
             // 
             this.checkBoxUseKeepAlive.AutoSize = true;
-            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(200, 205);
+            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(200, 231);
             this.checkBoxUseKeepAlive.Name = "checkBoxUseKeepAlive";
             this.checkBoxUseKeepAlive.Size = new System.Drawing.Size(105, 17);
-            this.checkBoxUseKeepAlive.TabIndex = 14;
+            this.checkBoxUseKeepAlive.TabIndex = 17;
             this.checkBoxUseKeepAlive.Text = "::UseKeepAlive::";
             this.checkBoxUseKeepAlive.UseVisualStyleBackColor = true;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(283, 181);
+            this.label8.Location = new System.Drawing.Point(283, 207);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(68, 13);
-            this.label8.TabIndex = 19;
+            this.label8.TabIndex = 16;
             this.label8.Text = "::PSeconds::";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(0, 182);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(77, 13);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "::Passphrase:::";
+            // 
+            // textBoxPassphrase
+            // 
+            this.textBoxPassphrase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPassphrase.Location = new System.Drawing.Point(200, 179);
+            this.textBoxPassphrase.MaxLength = 512;
+            this.textBoxPassphrase.Name = "textBoxPassphrase";
+            this.textBoxPassphrase.Size = new System.Drawing.Size(436, 20);
+            this.textBoxPassphrase.TabIndex = 13;
             // 
             // PageRebroadcastServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBoxPassphrase);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label15);
@@ -346,7 +369,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxName);
             this.Name = "PageRebroadcastServer";
-            this.Size = new System.Drawing.Size(636, 440);
+            this.Size = new System.Drawing.Size(636, 499);
             ((System.ComponentModel.ISupportInitialize)(this.numericStaleSeconds)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxAccessControl.ResumeLayout(false);
@@ -383,5 +406,7 @@
         private System.Windows.Forms.NumericUpDown numericIdleTimeout;
         private System.Windows.Forms.CheckBox checkBoxUseKeepAlive;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBoxPassphrase;
     }
 }

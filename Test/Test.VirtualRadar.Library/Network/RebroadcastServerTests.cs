@@ -23,7 +23,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 
-namespace Test.VirtualRadar.Library
+namespace Test.VirtualRadar.Library.Network
 {
     [TestClass]
     public class RebroadcastServerTests
@@ -56,7 +56,7 @@ namespace Test.VirtualRadar.Library
             _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
 
             _Server.UniqueId = 1;
-            _Server.Name = "Word Up!";
+            _Server.Name = "It's the code word";
             _Server.Format = RebroadcastFormat.Port30003;
             _Server.Listener = _Listener.Object;
             _Server.Connector = _Connector.Object;
