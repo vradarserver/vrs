@@ -142,6 +142,12 @@ namespace VirtualRadar.Interface.Database
         Dictionary<string, BaseStationAircraft> GetManyAircraftByCode(IEnumerable<string> icao24s);
 
         /// <summary>
+        /// Returns every aircraft record in the database.
+        /// </summary>
+        /// <returns></returns>
+        List<BaseStationAircraft> GetAllAircraft();
+
+        /// <summary>
         /// Returns a list of every flight, or a subset of every flight, that matches the criteria passed across.
         /// </summary>
         /// <param name="aircraft"></param>
