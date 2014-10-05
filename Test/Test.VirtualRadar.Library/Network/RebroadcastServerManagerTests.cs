@@ -23,7 +23,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 
-namespace Test.VirtualRadar.Library
+namespace Test.VirtualRadar.Library.Network
 {
     [TestClass]
     public class RebroadcastServerManagerTests
@@ -39,6 +39,7 @@ namespace Test.VirtualRadar.Library
         private List<Mock<IListener>> _Listeners;
         private Mock<IFeedManager> _FeedManager;
         private MockConnector<INetworkConnector, INetworkConnection> _Connector;
+        private Mock<IPassphraseAuthentication> _PassphraseAuthentication;
         private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Configuration _Configuration;
         private RebroadcastSettings _RebroadcastSettings;
@@ -52,6 +53,9 @@ namespace Test.VirtualRadar.Library
 
             _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
             Factory.Singleton.RegisterInstance<INetworkConnector>(_Connector.Object);
+            _Connector.Object.Authentication = null;
+
+            _PassphraseAuthentication = TestUtilities.CreateMockImplementation<IPassphraseAuthentication>();
 
             _Feeds = new List<Mock<IFeed>>();
             _Listeners = new List<Mock<IListener>>();
@@ -189,6 +193,33 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(true, _Connector.Object.IsSingleConnection);
             Assert.AreEqual("address", _Connector.Object.Address);
             Assert.AreEqual(12345, _Connector.Object.Port);
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Sets_Authenticator_If_Passphrase_Provided()
+        {
+            _RebroadcastSettings.Passphrase = "A";
+
+            _Manager.Initialise();
+
+            Assert.AreSame(_PassphraseAuthentication.Object, _Connector.Object.Authentication);
+            Assert.AreEqual("A", _PassphraseAuthentication.Object.Passphrase);
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Does_Not_Set_Authenticator_If_Passphrase_Is_Null()
+        {
+            _RebroadcastSettings.Passphrase = null;
+            _Manager.Initialise();
+            Assert.IsNull(_Connector.Object.Authentication);
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Does_Not_Set_Authenticator_If_Passphrase_Is_Empty()
+        {
+            _RebroadcastSettings.Passphrase = "";
+            _Manager.Initialise();
+            Assert.IsNull(_Connector.Object.Authentication);
         }
 
         [TestMethod]
@@ -549,6 +580,31 @@ namespace Test.VirtualRadar.Library
 
             _Server.Verify(r => r.Dispose(), Times.Never());
             _Connector.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Adds_Authentication_If_Passphrase_Is_Supplied()
+        {
+            _RebroadcastSettings.Passphrase = null;
+            _Manager.Initialise();
+
+            _RebroadcastSettings.Passphrase = "A";
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.AreSame(_PassphraseAuthentication.Object, _Connector.Object.Authentication);
+            Assert.AreEqual("A", _PassphraseAuthentication.Object.Passphrase);
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Removes_Authentication_If_Passphrase_Is_Not_Supplied()
+        {
+            _RebroadcastSettings.Passphrase = "A";
+            _Manager.Initialise();
+
+            _RebroadcastSettings.Passphrase = "";
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.IsNull(_Connector.Object.Authentication);
         }
         #endregion
 

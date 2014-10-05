@@ -73,6 +73,8 @@
             this.bindingCidrList = new VirtualRadar.WinForms.Controls.BindingCidrList();
             this.comboBoxDefaultAccess = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.textBoxPassphrase = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
@@ -364,7 +366,7 @@
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialBaudRate);
             this.groupBoxSerial.Controls.Add(this.label7);
             this.groupBoxSerial.Controls.Add(this.comboBoxSerialComPort);
-            this.groupBoxSerial.Location = new System.Drawing.Point(0, 339);
+            this.groupBoxSerial.Location = new System.Drawing.Point(0, 363);
             this.groupBoxSerial.Name = "groupBoxSerial";
             this.groupBoxSerial.Size = new System.Drawing.Size(633, 235);
             this.groupBoxSerial.TabIndex = 2;
@@ -395,6 +397,8 @@
             // 
             this.groupBoxNetwork.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxNetwork.Controls.Add(this.label18);
+            this.groupBoxNetwork.Controls.Add(this.textBoxPassphrase);
             this.groupBoxNetwork.Controls.Add(this.checkBoxIsPassive);
             this.groupBoxNetwork.Controls.Add(this.label16);
             this.groupBoxNetwork.Controls.Add(this.label15);
@@ -406,7 +410,7 @@
             this.groupBoxNetwork.Controls.Add(this.textBoxAddress);
             this.groupBoxNetwork.Location = new System.Drawing.Point(0, 0);
             this.groupBoxNetwork.Name = "groupBoxNetwork";
-            this.groupBoxNetwork.Size = new System.Drawing.Size(633, 146);
+            this.groupBoxNetwork.Size = new System.Drawing.Size(633, 173);
             this.groupBoxNetwork.TabIndex = 0;
             this.groupBoxNetwork.TabStop = false;
             this.groupBoxNetwork.Text = "::Network::";
@@ -424,24 +428,24 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(280, 120);
+            this.label16.Location = new System.Drawing.Point(280, 146);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(68, 13);
-            this.label16.TabIndex = 8;
+            this.label16.TabIndex = 10;
             this.label16.Text = "::PSeconds::";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(6, 120);
+            this.label15.Location = new System.Drawing.Point(6, 146);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(77, 13);
-            this.label15.TabIndex = 6;
+            this.label15.TabIndex = 8;
             this.label15.Text = "::IdleTimeout:::";
             // 
             // numericIdleTimeout
             // 
-            this.numericIdleTimeout.Location = new System.Drawing.Point(197, 118);
+            this.numericIdleTimeout.Location = new System.Drawing.Point(197, 144);
             this.numericIdleTimeout.Maximum = new decimal(new int[] {
             86400,
             0,
@@ -454,7 +458,7 @@
             0});
             this.numericIdleTimeout.Name = "numericIdleTimeout";
             this.numericIdleTimeout.Size = new System.Drawing.Size(77, 20);
-            this.numericIdleTimeout.TabIndex = 7;
+            this.numericIdleTimeout.TabIndex = 9;
             this.numericIdleTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericIdleTimeout.Value = new decimal(new int[] {
             5,
@@ -465,10 +469,10 @@
             // checkBoxUseKeepAlive
             // 
             this.checkBoxUseKeepAlive.AutoSize = true;
-            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(197, 95);
+            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(197, 121);
             this.checkBoxUseKeepAlive.Name = "checkBoxUseKeepAlive";
             this.checkBoxUseKeepAlive.Size = new System.Drawing.Size(105, 17);
-            this.checkBoxUseKeepAlive.TabIndex = 5;
+            this.checkBoxUseKeepAlive.TabIndex = 7;
             this.checkBoxUseKeepAlive.Text = "::UseKeepAlive::";
             this.checkBoxUseKeepAlive.UseVisualStyleBackColor = true;
             // 
@@ -509,12 +513,11 @@
             this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxAccessControl);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
             this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 136);
             this.panelConnectionTypeSettings.Name = "panelConnectionTypeSettings";
-            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 578);
+            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 601);
             this.panelConnectionTypeSettings.TabIndex = 30;
             // 
             // groupBoxAccessControl
@@ -525,7 +528,7 @@
             this.groupBoxAccessControl.Controls.Add(this.bindingCidrList);
             this.groupBoxAccessControl.Controls.Add(this.comboBoxDefaultAccess);
             this.groupBoxAccessControl.Controls.Add(this.label17);
-            this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 152);
+            this.groupBoxAccessControl.Location = new System.Drawing.Point(3, 315);
             this.groupBoxAccessControl.Name = "groupBoxAccessControl";
             this.groupBoxAccessControl.Size = new System.Drawing.Size(633, 178);
             this.groupBoxAccessControl.TabIndex = 1;
@@ -572,9 +575,29 @@
             this.label17.TabIndex = 0;
             this.label17.Text = "::DefaultAccess:::";
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 98);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(77, 13);
+            this.label18.TabIndex = 5;
+            this.label18.Text = "::Passphrase:::";
+            // 
+            // textBoxPassphrase
+            // 
+            this.textBoxPassphrase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPassphrase.Location = new System.Drawing.Point(197, 95);
+            this.textBoxPassphrase.MaxLength = 512;
+            this.textBoxPassphrase.Name = "textBoxPassphrase";
+            this.textBoxPassphrase.Size = new System.Drawing.Size(430, 20);
+            this.textBoxPassphrase.TabIndex = 6;
+            // 
             // PageReceiver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.groupBoxAccessControl);
             this.Controls.Add(this.panelConnectionTypeSettings);
             this.Controls.Add(this.buttonTestConnection);
             this.Controls.Add(this.checkBoxEnabled);
@@ -589,7 +612,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxDataSource);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 717);
+            this.Size = new System.Drawing.Size(636, 740);
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
@@ -651,5 +674,7 @@
         private Controls.BindingCidrList bindingCidrList;
         private System.Windows.Forms.ComboBox comboBoxDefaultAccess;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox textBoxPassphrase;
     }
 }

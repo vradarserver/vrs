@@ -147,6 +147,19 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _Access, value, () => Access); }
         }
 
+        private string _Passphrase;
+        /// <summary>
+        /// Gets or sets the passphrase that the connecting side has to send before the connection is accepted.
+        /// </summary>
+        /// <remarks>
+        /// If this is null or empty then no passphrase is required.
+        /// </remarks>
+        public string Passphrase
+        {
+            get { return _Passphrase; }
+            set { SetField(ref _Passphrase, value, () => Passphrase); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

@@ -114,6 +114,7 @@
     <Compile Include="Network\ConnectorActivityType.cs" />
     <Compile Include="Network\IConnection.cs" />
     <Compile Include="Network\IConnectorActivityLog.cs" />
+    <Compile Include="Network\IConnectorAuthentication.cs" />
     <Compile Include="Network\IConnectorSnapshotLogger.cs" />
     <Compile Include="Network\INetworkConnection.cs" />
     <Compile Include="Network\INetworkConnector.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Listener\PolarPlotSlice.cs" />
     <Compile Include="Database\BaseStationAircraftAndFlightsCount.cs" />
     <Compile Include="IAirportDataDotCom.cs" />
+    <Compile Include="Network\IPassphraseAuthentication.cs" />
     <Compile Include="Network\ITcpConnectionStateService.cs" />
     <Compile Include="Network\ISerialConnector.cs" />
     <Compile Include="Presenter\ICidrEditPresenter.cs" />

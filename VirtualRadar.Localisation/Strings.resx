@@ -2344,4 +2344,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>ALL</value>
     <comment>"All" in capitals - used in combo boxes to select all options</comment>
   </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Passphrase</value>
+  </data>
+  <data name="OptionsDescribePassphrase" xml:space="preserve">
+    <value>The passphrase used to protect the connection from unauthorised access. Leave empty if no passphrase is required.</value>
+  </data>
 </root>

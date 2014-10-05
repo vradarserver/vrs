@@ -202,6 +202,20 @@ namespace VirtualRadar.Library.Listener
             bool feedSourceHasChanged = connector != Listener.Connector || bytesExtractor != Listener.BytesExtractor;
             var rawMessageTranslator = DetermineRawMessageTranslator(receiver, receiverLocation, configuration, feedSourceHasChanged);
 
+            var existingAuthentication = (Listener.Connector == null ? null : Listener.Connector.Authentication) as IPassphraseAuthentication;
+            var passphrase = receiver.Passphrase ?? "";
+
+            if((existingAuthentication != null && existingAuthentication.Passphrase != passphrase) ||
+               (existingAuthentication == null && passphrase != "")) {
+                IPassphraseAuthentication authentication = null;
+                if(passphrase != "") {
+                    authentication = Factory.Singleton.Resolve<IPassphraseAuthentication>();
+                    authentication.Passphrase = receiver.Passphrase;
+                }
+                if(!feedSourceHasChanged) Listener.Connector.Authentication = authentication;
+                else                      connector.Authentication = authentication;
+            }
+
             if(feedSourceHasChanged) {
                 Listener.ChangeSource(connector, bytesExtractor, rawMessageTranslator);
                 if(Listener.Statistics != null) Listener.Statistics.ResetMessageCounters();

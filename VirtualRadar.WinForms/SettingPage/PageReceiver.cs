@@ -128,6 +128,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(Receiver, checkBoxIsPassive,     r => r.IsPassive,               r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(Receiver, textBoxAddress,        r => r.Address,                 r => r.Text);
             AddBinding(Receiver, numericPort,           r => r.Port,                    r => r.Value);
+            AddBinding(Receiver, textBoxPassphrase,     r => r.Passphrase,              r => r.Text);
             AddBinding(Receiver, checkBoxUseKeepAlive,  r => r.UseKeepAlive,            r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
             AddBinding(Receiver, numericIdleTimeout,    r => r.IdleTimeoutMilliseconds, r => r.Value,   format: MillisecondsToSeconds_Format, parse: MillisecondsToSeconds_Parse);
 
@@ -181,6 +182,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxIsPassive,                Strings.PassiveReceiver,        Strings.OptionsDescribeDataSourcePassiveReceiver);
             SetInlineHelp(textBoxAddress,                   Strings.UNC,                    Strings.OptionsDescribeDataSourcesAddress);
             SetInlineHelp(numericPort,                      Strings.Port,                   Strings.OptionsDescribeDataSourcesPort);
+            SetInlineHelp(textBoxPassphrase,                Strings.Passphrase,             Strings.OptionsDescribePassphrase);
             SetInlineHelp(checkBoxUseKeepAlive,             Strings.UseKeepAlive,           Strings.OptionsDescribeDataSourcesUseKeepAlive);
             SetInlineHelp(numericIdleTimeout,               Strings.IdleTimeout,            Strings.OptionsDescribeDataSourcesIdleTimeout);
 

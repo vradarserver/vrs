@@ -46,6 +46,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.DataBits, 8, 7);
             TestUtilities.TestProperty(settings, r => r.StopBits, StopBits.One, StopBits.None);
             TestUtilities.TestProperty(settings, r => r.Parity, Parity.None, Parity.Odd);
+            TestUtilities.TestProperty(settings, r => r.Passphrase, null, "Ab");
             TestUtilities.TestProperty(settings, r => r.Handshake, Handshake.None, Handshake.XOnXOff);
             TestUtilities.TestProperty(settings, r => r.StartupText, "#43-02\\r", "anything");
             TestUtilities.TestProperty(settings, r => r.ShutdownText, "#43-00\\r", "anything");

@@ -308,6 +308,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(15000, readBack.RebroadcastSettings[0].IdleTimeoutMilliseconds);
                         Assert.AreEqual(-1, readBack.RebroadcastSettings[0].ReceiverId);
                         Assert.AreEqual(7, readBack.RebroadcastSettings[0].StaleSeconds);
+                        Assert.AreEqual(null, readBack.RebroadcastSettings[0].Passphrase);
 
                         Assert.AreEqual(2, readBack.RebroadcastSettings[1].UniqueId);
                         Assert.AreEqual(false, readBack.RebroadcastSettings[1].Enabled);
@@ -320,6 +321,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(20000, readBack.RebroadcastSettings[1].IdleTimeoutMilliseconds);
                         Assert.AreEqual(1, readBack.RebroadcastSettings[1].ReceiverId);
                         Assert.AreEqual(10, readBack.RebroadcastSettings[1].StaleSeconds);
+                        Assert.AreEqual("Two", readBack.RebroadcastSettings[1].Passphrase);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.RebroadcastSettings[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.RebroadcastSettings[0].Access.Addresses.Count);
@@ -355,6 +357,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("Start", receiver.StartupText);
                         Assert.AreEqual("", receiver.ShutdownText);
                         Assert.AreEqual(1, receiver.ReceiverLocationId);
+                        Assert.AreEqual(null, receiver.Passphrase);
 
                         receiver = readBack.Receivers[1];
                         Assert.AreEqual(false, receiver.Enabled);
@@ -377,6 +380,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("", receiver.StartupText);
                         Assert.AreEqual("Stop", receiver.ShutdownText);
                         Assert.AreEqual(2, receiver.ReceiverLocationId);
+                        Assert.AreEqual("Two", receiver.Passphrase);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.Receivers[0].Access.Addresses.Count);
@@ -559,6 +563,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                     "virtualradarserver.co.uk",
                                                                 }
                                                             },
+                                                            Passphrase = null,
                                                         },
                                                         new RebroadcastSettings() {
                                                             UniqueId = 2,
@@ -578,6 +583,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                     "192.168.0.7",
                                                                 },
                                                             },
+                                                            Passphrase = "Two",
                                                         },
                                                     });
                                                     break;
@@ -611,6 +617,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                     "virtualradarserver.co.uk",
                                                                 }
                                                             },
+                                                            Passphrase = null,
                                                         },
                                                         new Receiver() {
                                                             Enabled = false,
@@ -639,6 +646,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                     "192.168.0.7",
                                                                 },
                                                             },
+                                                            Passphrase = "Two",
                                                         },
                                                     });
                                                     break;

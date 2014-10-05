@@ -36,6 +36,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.TransmitAddress, null, "www.word.up");
             TestUtilities.TestProperty(settings, r => r.UseKeepAlive, false);
             TestUtilities.TestProperty(settings, r => r.IdleTimeoutMilliseconds, 30000, 15000);
+            TestUtilities.TestProperty(settings, r => r.Passphrase, null, "Ab");
             TestUtilities.TestProperty(settings, r => r.Port, 0, 19000);
             TestUtilities.TestProperty(settings, r => r.ReceiverId, 0, 1234);
             TestUtilities.TestProperty(settings, r => r.UniqueId, 0, 456);

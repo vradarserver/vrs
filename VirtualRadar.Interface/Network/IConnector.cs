@@ -55,6 +55,12 @@ namespace VirtualRadar.Interface.Network
         DateTime Created { get; }
 
         /// <summary>
+        /// Gets or sets the authentication to use with the connection. If this is set
+        /// then the other side must implement the same authentication.
+        /// </summary>
+        IConnectorAuthentication Authentication { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the connector waits for other things to
         /// connect to it or it actively connects to other things.
         /// </summary>

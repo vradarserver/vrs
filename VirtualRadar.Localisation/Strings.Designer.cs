@@ -3253,6 +3253,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The passphrase used to protect the connection from unauthorised access. Leave empty if no passphrase is required..
+        /// </summary>
+        public static string OptionsDescribePassphrase {
+            get {
+                return ResourceManager.GetString("OptionsDescribePassphrase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type of proxy that the server is behind. If you aren&apos;t sure whether the server is behind a proxy then leave the setting at &apos;Unknown&apos;..
         /// </summary>
         public static string OptionsDescribeProxyType {
@@ -3906,6 +3915,15 @@ namespace VirtualRadar.Localisation {
         public static string PassiveReceiver {
             get {
                 return ResourceManager.GetString("PassiveReceiver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passphrase.
+        /// </summary>
+        public static string Passphrase {
+            get {
+                return ResourceManager.GetString("Passphrase", resourceCulture);
             }
         }
         

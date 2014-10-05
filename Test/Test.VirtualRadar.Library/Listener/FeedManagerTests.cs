@@ -21,7 +21,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.Listener;
 
-namespace Test.VirtualRadar.Library
+namespace Test.VirtualRadar.Library.Listener
 {
     [TestClass]
     public class FeedManagerTests

@@ -48,6 +48,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Network.IConnectorActivityLog, Network.ConnectorActivityLog>();
             factory.Register<VirtualRadar.Interface.Network.IConnectorSnapshotLogger, Network.ConnectorSnapshotLogger>();
             factory.Register<VirtualRadar.Interface.Network.INetworkConnector, Network.NetworkConnector>();
+            factory.Register<VirtualRadar.Interface.Network.IPassphraseAuthentication, Network.PassphraseAuthentication>();
             factory.Register<VirtualRadar.Interface.Network.IRebroadcastServer, Network.RebroadcastServer>();
             factory.Register<VirtualRadar.Interface.Network.IRebroadcastServerManager, Network.RebroadcastServerManager>();
             factory.Register<VirtualRadar.Interface.Network.ISerialConnector, Network.SerialConnector>();

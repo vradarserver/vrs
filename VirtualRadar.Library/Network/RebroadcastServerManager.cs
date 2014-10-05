@@ -214,8 +214,11 @@ namespace VirtualRadar.Library.Network
                 var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId);
                 if(feed != null && rebroadcastSettings.Enabled) {
                     var server = RebroadcastServers.FirstOrDefault(r => r.UniqueId == rebroadcastSettings.UniqueId);
-                    if(server != null && server.Connector != null && server.Connector.StaleMessageTimeout != rebroadcastSettings.StaleSeconds * 1000) {
-                        server.Connector.StaleMessageTimeout = rebroadcastSettings.StaleSeconds * 1000;
+                    if(server != null && server.Connector != null) {
+                        var milliseconds = rebroadcastSettings.StaleSeconds * 1000;
+                        if(server.Connector.StaleMessageTimeout != milliseconds) {
+                            server.Connector.StaleMessageTimeout = milliseconds;
+                        }
                     }
 
                     int indexExistingServer = unusedServers.FindIndex(r =>
@@ -232,7 +235,10 @@ namespace VirtualRadar.Library.Network
                     if(indexExistingServer == -1) {
                         newServers.Add(rebroadcastSettings);
                     } else {
-                        unusedServers[indexExistingServer].Name = rebroadcastSettings.Name;
+                        var existingServer = unusedServers[indexExistingServer];
+                        existingServer.Name = rebroadcastSettings.Name;
+                        ConfigureAuthentication(rebroadcastSettings, existingServer);
+
                         unusedServers.RemoveAt(indexExistingServer);
                     }
                 }
@@ -259,6 +265,8 @@ namespace VirtualRadar.Library.Network
                 server.Connector.UseKeepAlive = rebroadcastSettings.UseKeepAlive;
                 server.Format = rebroadcastSettings.Format;
 
+                ConfigureAuthentication(rebroadcastSettings, server);
+
                 if(!rebroadcastSettings.UseKeepAlive) {
                     server.Connector.IdleTimeout = rebroadcastSettings.IdleTimeoutMilliseconds;
                 }
@@ -279,6 +287,22 @@ namespace VirtualRadar.Library.Network
             }
 
             return result;
+        }
+
+        private void ConfigureAuthentication(RebroadcastSettings rebroadcastSettings, IRebroadcastServer server)
+        {
+            var existingAuthentication = server.Connector.Authentication as IPassphraseAuthentication;
+            var passphrase = rebroadcastSettings.Passphrase ?? "";
+
+            if((existingAuthentication == null && passphrase != "") ||
+               (existingAuthentication != null && existingAuthentication.Passphrase != passphrase)) {
+                if(passphrase == "") server.Connector.Authentication = null;
+                else {
+                    var authentication = Factory.Singleton.Resolve<IPassphraseAuthentication>();
+                    authentication.Passphrase = rebroadcastSettings.Passphrase;
+                    server.Connector.Authentication = authentication;
+                }
+            }
         }
         #endregion
 
