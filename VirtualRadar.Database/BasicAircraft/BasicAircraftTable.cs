@@ -23,6 +23,7 @@ namespace VirtualRadar.Database.BasicAircraft
     {
         #region Fields
         private string _GetByIcaoCommandText;
+        private string _GetManyByIcaoCommandText;
         private string _UpdateCommandText;
         #endregion
 
@@ -40,6 +41,7 @@ namespace VirtualRadar.Database.BasicAircraft
         public BasicAircraftTable()
         {
             _GetByIcaoCommandText = String.Format("SELECT {0} FROM [Aircraft] AS a WHERE a.[Icao] = ?", FieldList());
+            _GetManyByIcaoCommandText = String.Format("SELECT {0} FROM [Aircraft] AS a ", FieldList());
             _UpdateCommandText = "UPDATE [Aircraft] SET" +
                     "  [Icao] = ?" +
                     ", [Registration] = ?" +
@@ -137,6 +139,44 @@ namespace VirtualRadar.Database.BasicAircraft
             using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
                 int ordinal = 0;
                 if(reader.Read()) result = DecodeFullAircraft(reader, ref ordinal);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets many aircraft simultaneously by their ICAO codes.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="icaos"></param>
+        /// <returns></returns>
+        public List<Interface.StandingData.BasicAircraft> GetManyByIcao(IDbConnection connection, IDbTransaction transaction, string[] icaos)
+        {
+            var result = new List<Interface.StandingData.BasicAircraft>();
+
+            var parameters = icaos.ToArray();
+            var parameterString = new StringBuilder();
+            for(var i = 0;i < parameters.Length;++i) {
+                if(i != 0) parameterString.Append(',');
+                parameterString.Append('?');
+            }
+
+            using(var command = connection.CreateCommand()) {
+                var whereClause = String.Format(" WHERE a.[Icao] IN ({0})", parameterString);
+                var commandText = String.Format("{0} {1}", _GetManyByIcaoCommandText, whereClause);
+                command.Connection = connection;
+                command.Transaction = transaction;
+                command.CommandText = commandText;
+
+                Sql.AddParameters(command, parameters);
+                using(var reader = command.ExecuteReader()) {
+                    while(reader.Read()) {
+                        int ordinal = 0;
+                        var aircraft = DecodeFullAircraft(reader, ref ordinal);
+                        result.Add(aircraft);
+                    }
+                }
             }
 
             return result;

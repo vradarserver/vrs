@@ -34,6 +34,21 @@ namespace VirtualRadar.Interface
         public BaseStationAircraft Aircraft { get; set; }
 
         /// <summary>
+        /// Gets or sets the basic aircraft record. This can be null if no record has yet been fetched.
+        /// </summary>
+        public BasicAircraftAndChildren BasicAircraft { get; set; }
+
+        /// <summary>
+        /// Gets or sets the basic model record. This can be null if no record has yet been fetched.
+        /// </summary>
+        public BasicModel BasicModel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the basic operator record. This can be null if no record has yet been fetched.
+        /// </summary>
+        public BasicOperator BasicOperator { get; set; }
+
+        /// <summary>
         /// Gets or sets information about the picture associated with the aircraft. This can be null if
         /// no picture has been found for the aircraft (yet).
         /// </summary>
@@ -51,6 +66,66 @@ namespace VirtualRadar.Interface
         /// aircraft record is first read. It is never refreshed.
         /// </summary>
         public int FlightsCount { get; set; }
+
+        /// <summary>
+        /// Gets the registration. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// </summary>
+        public string DatabaseRegistration
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.Registration;
+                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.Registration;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets the model ICAO. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// </summary>
+        public string ModelIcao
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.ICAOTypeCode;
+                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.ModelIcao;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets the model name. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// </summary>
+        public string ModelName
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.Type;
+                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.ModelName;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets the operator code. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// </summary>
+        public string OperatorIcao
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.OperatorFlagCode;
+                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.OperatorIcao;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets the operator name. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// </summary>
+        public string OperatorName
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.RegisteredOwners;
+                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.OperatorName;
+                return result;
+            }
+        }
 
         /// <summary>
         /// See base docs.

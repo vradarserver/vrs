@@ -16,9 +16,9 @@ namespace VirtualRadar.Interface.StandingData
 
         public string Registration { get; set; }
 
-        public int? BasicModelID { get; set; }
+        public virtual int? BasicModelID { get; set; }
 
-        public int? BasicOperatorID { get; set; }
+        public virtual int? BasicOperatorID { get; set; }
 
         public DateTime BaseStationUpdated { get; set; }
     }

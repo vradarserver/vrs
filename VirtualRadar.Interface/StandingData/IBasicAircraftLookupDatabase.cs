@@ -9,8 +9,9 @@ namespace VirtualRadar.Interface.StandingData
     /// <summary>
     /// The interface to the basic aircraft lookup database.
     /// </summary>
-    public interface IBasicAircraftLookupDatabase : ITransactionable, IDisposable
+    public interface IBasicAircraftLookupDatabase : ISingleton<IBasicAircraftLookupDatabase>, ITransactionable, IDisposable
     {
+        #region Properties
         /// <summary>
         /// Gets the filename of the database.
         /// </summary>
@@ -31,15 +32,38 @@ namespace VirtualRadar.Interface.StandingData
         bool WriteSupportEnabled { get; set; }
 
         /// <summary>
+        /// Gets a lock object that prevents any operations on the database while it is held in a lock().
+        /// </summary>
+        object Lock { get; }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Raised when a new version of the file has been downloaded.
+        /// </summary>
+        event EventHandler ContentUpdated;
+        #endregion
+
+        #region CreateDatabaseIfMissing, Compact
+        /// <summary>
         /// Creates an empty database. If the database already exists it is left alone.
         /// </summary>
         void CreateDatabaseIfMissing();
 
-        #region Whole-table actions
         /// <summary>
         /// Removes unused space from the file.
         /// </summary>
         void Compact();
+
+        /// <summary>
+        /// Closes any open connections. Only call this within a lock on Lock.
+        /// </summary>
+        void PrepareForUpdate();
+
+        /// <summary>
+        /// Signals any users of the object that it has been updated and that they may want to refresh their content.
+        /// </summary>
+        void FinishedUpdate();
         #endregion
 
         #region Aircraft
@@ -61,6 +85,20 @@ namespace VirtualRadar.Interface.StandingData
         /// <param name="icao"></param>
         /// <returns></returns>
         BasicAircraft GetAircraftByIcao(string icao);
+
+        /// <summary>
+        /// Fetches the full graph of aircraft objects for an aircraft's ICAO code.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        BasicAircraftAndChildren GetAircraftAndChildrenByIcao(string icao);
+
+        /// <summary>
+        /// Fetches the full graph of aircraft objects for many aircraft ICAOs.
+        /// </summary>
+        /// <param name="existingIcaos"></param>
+        /// <returns></returns>
+        Dictionary<string, BasicAircraftAndChildren> GetManyAircraftAndChildrenByCode(string[] existingIcaos);
         #endregion
 
         #region Model

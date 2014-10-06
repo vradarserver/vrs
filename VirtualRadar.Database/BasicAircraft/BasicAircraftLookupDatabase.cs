@@ -24,6 +24,11 @@ namespace VirtualRadar.Database.BasicAircraft
         private BasicOperatorTable _OperatorTable = new BasicOperatorTable();
 
         /// <summary>
+        /// The maximum number of parameters that SQLite allows.
+        /// </summary>
+        private const int MaxParameters = 900;
+
+        /// <summary>
         /// The object that we synchronise threads on.
         /// </summary>
         private object _ConnectionLock = new Object();
@@ -45,6 +50,12 @@ namespace VirtualRadar.Database.BasicAircraft
         #endregion
 
         #region Properties
+        private static BasicAircraftLookupDatabase _Singleton = new BasicAircraftLookupDatabase();
+        /// <summary>
+        /// Returns the singleton instance.
+        /// </summary>
+        public IBasicAircraftLookupDatabase Singleton { get { return _Singleton; } }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -68,6 +79,27 @@ namespace VirtualRadar.Database.BasicAircraft
         {
             get { return _WriteSupportEnabled; }
             set { if(_WriteSupportEnabled != value) { _WriteSupportEnabled = value; CloseConnection(); } }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public object Lock { get { return _ConnectionLock; } }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler ContentUpdated;
+
+        /// <summary>
+        /// Raises <see cref="ContentUpdated"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnContentUpdated(EventArgs args)
+        {
+            if(ContentUpdated != null) ContentUpdated(this, args);
         }
         #endregion
 
@@ -264,7 +296,7 @@ namespace VirtualRadar.Database.BasicAircraft
         }
         #endregion
 
-        #region Compact
+        #region Compact, LockForUpdate
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -279,6 +311,32 @@ namespace VirtualRadar.Database.BasicAircraft
                     Sql.ExecuteNonQuery(_Connection, _TransactionHelper.Transaction, "VACUUM");
                 }
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public void PrepareForUpdate()
+        {
+            // This should already be locked with a lock on Lock. We apply a second lock here
+            // on the understanding that:
+            //   1. If the caller forgot to call lock(Lock) then we would be doing unprotected modifications to
+            //      _Connection, which would be bad.
+            //   2. If the caller called lock(Lock) then they need to do so on the same thread as us, and if they
+            //      have then our lock has no ill-effect. If they called on a separate thread then it'll deadlock
+            //      and they need to fix their code.
+            lock(_ConnectionLock) {
+                CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void FinishedUpdate()
+        {
+            OnContentUpdated(EventArgs.Empty);
         }
         #endregion
 
@@ -323,6 +381,79 @@ namespace VirtualRadar.Database.BasicAircraft
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) result = _AircraftTable.GetByIcao(_Connection, _TransactionHelper.Transaction, icao);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        public BasicAircraftAndChildren GetAircraftAndChildrenByIcao(string icao)
+        {
+            BasicAircraftAndChildren result = null;
+
+            var aircraft = GetAircraftByIcao(icao);
+            if(aircraft != null) {
+                result = ConvertBasicAircraftToBasicAircraftAndChildren(aircraft, autoLoadChildren: true);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Converts from a <see cref="BasicAircraft"/> to a <see cref="BasicAircraftAndChildren"/>.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <param name="autoLoadChildren"></param>
+        /// <returns></returns>
+        private BasicAircraftAndChildren ConvertBasicAircraftToBasicAircraftAndChildren(Interface.StandingData.BasicAircraft aircraft, bool autoLoadChildren = true)
+        {
+            var result = new BasicAircraftAndChildren() {
+                AircraftID = aircraft.AircraftID,
+                BaseStationUpdated = aircraft.BaseStationUpdated,
+                Icao = aircraft.Icao,
+                Registration = aircraft.Registration,
+            };
+            if(autoLoadChildren) {
+                result.Model = GetModelById(aircraft.BasicModelID);
+                result.Operator = GetOperatorById(aircraft.BasicOperatorID);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="existingIcaos"></param>
+        /// <returns></returns>
+        public Dictionary<string, BasicAircraftAndChildren> GetManyAircraftAndChildrenByCode(string[] existingIcaos)
+        {
+            var result = new Dictionary<string, BasicAircraftAndChildren>();
+
+            if(existingIcaos != null && existingIcaos.Any()) {
+                lock(_ConnectionLock) {
+                    OpenConnection();
+                    if(_Connection != null) {
+                        var maxParameters = MaxParameters;
+                        var offset = 0;
+                        var countIcao24s = existingIcaos.Length;
+
+                        do {
+                            var chunk = existingIcaos.Skip(offset).Take(maxParameters).ToArray();
+                            foreach(var aircraft in _AircraftTable.GetManyByIcao(_Connection, _TransactionHelper.Transaction, chunk)) {
+                                if(aircraft.Icao != null && !result.ContainsKey(aircraft.Icao)) {
+                                    var fullRecord = ConvertBasicAircraftToBasicAircraftAndChildren(aircraft, autoLoadChildren: true);
+                                    result.Add(aircraft.Icao, fullRecord);
+                                }
+                            }
+                            offset += maxParameters;
+                        } while(offset < countIcao24s);
+                    }
+                }
             }
 
             return result;
