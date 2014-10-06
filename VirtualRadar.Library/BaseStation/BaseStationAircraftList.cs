@@ -522,7 +522,7 @@ namespace VirtualRadar.Library.BaseStation
             var operatorIcao = aircraft.OperatorIcao;
 
             aircraft.Registration =         aircraftDetail.DatabaseRegistration;
-            aircraft.Type =                 aircraftDetail.ModelName;
+            aircraft.Type =                 aircraftDetail.ModelIcao;
             aircraft.Manufacturer =         baseStationAircraft.Manufacturer;
             aircraft.Model =                aircraftDetail.ModelName;
             aircraft.ConstructionNumber =   baseStationAircraft.SerialNo;
