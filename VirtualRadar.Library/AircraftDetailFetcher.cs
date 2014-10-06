@@ -48,6 +48,11 @@ namespace VirtualRadar.Library
         private IAutoConfigBaseStationDatabase _AutoConfigDatabase;
 
         /// <summary>
+        /// The basic aircraft details database.
+        /// </summary>
+        private IBasicAircraftLookupDatabase _BasicAircraftLookup;
+
+        /// <summary>
         /// The picture folder directory cache that is being used.
         /// </summary>
         private IDirectoryCache _PictureFolderCache;
@@ -167,6 +172,9 @@ namespace VirtualRadar.Library
             _AutoConfigDatabase.Database.AircraftUpdated += BaseStationDatabase_AircraftUpdated;
             _AutoConfigDatabase.Database.FileNameChanged += BaseStationDatabase_FileNameChanged;
 
+            _BasicAircraftLookup = Factory.Singleton.Resolve<IBasicAircraftLookupDatabase>().Singleton;
+            _BasicAircraftLookup.ContentUpdated += BasicAircraftLookup_ContentUpdated;
+
             _PictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
             var autoConfigurationPictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton;
             _PictureFolderCache = autoConfigurationPictureFolderCache.DirectoryCache;
@@ -210,8 +218,9 @@ namespace VirtualRadar.Library
         protected override AircraftDetail DoFetchAircraft(AircraftFetcher<string, AircraftDetail>.FetchedDetail fetchedDetail)
         {
             var databaseAircraft = _AutoConfigDatabase.Database.GetAircraftByCode(fetchedDetail.Aircraft.Icao24);
+            var basicAircraft = _BasicAircraftLookup.GetAircraftAndChildrenByIcao(fetchedDetail.Aircraft.Icao24);
 
-            return ApplyDatabaseRecord(fetchedDetail.Detail, databaseAircraft, fetchedDetail.Aircraft, fetchedDetail.IsFirstFetch);
+            return ApplyDatabaseRecord(fetchedDetail.Detail, databaseAircraft, basicAircraft, fetchedDetail.Aircraft, fetchedDetail.IsFirstFetch);
         }
 
         /// <summary>
@@ -221,23 +230,28 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         protected override bool DoFetchManyAircraft(IEnumerable<AircraftFetcher<string, AircraftDetail>.FetchedDetail> fetchedDetails)
         {
+            var allIcaos = fetchedDetails.Select(r => r.Key).ToArray();
             var newIcaos = fetchedDetails.Where(r => r.Detail == null || r.Detail.Aircraft == null).Select(r => r.Key).ToArray();
             var existingIcaos = fetchedDetails.Where(r => r.Detail != null && r.Detail.Aircraft != null).Select(r => r.Key).ToArray();
 
             var aircraftAndFlightCounts = _AutoConfigDatabase.Database.GetManyAircraftAndFlightsCountByCode(newIcaos);
             var aircraft = _AutoConfigDatabase.Database.GetManyAircraftByCode(existingIcaos);
+            var allBasicAircraft = _BasicAircraftLookup.GetManyAircraftAndChildrenByCode(allIcaos);
 
             foreach(var kvp in fetchedDetails) {
                 var icao24 = kvp.Key;
                 var fetchedDetail = kvp;
                 BaseStationAircraft databaseAircraft = null;
                 BaseStationAircraftAndFlightsCount databaseAircraftAndFlights = null;
+                BasicAircraftAndChildren basicAircraft = null;
                 if(!aircraft.TryGetValue(icao24, out databaseAircraft)) {
                     aircraftAndFlightCounts.TryGetValue(icao24, out databaseAircraftAndFlights);
                 }
+                allBasicAircraft.TryGetValue(icao24, out basicAircraft);
                 kvp.Detail = ApplyDatabaseRecord(
                     fetchedDetail.Detail,
                     databaseAircraftAndFlights ?? databaseAircraft,
+                    basicAircraft,
                     fetchedDetail.Aircraft,
                     fetchedDetail.IsFirstFetch,
                     databaseAircraftAndFlights != null ? databaseAircraftAndFlights.FlightsCount
@@ -254,9 +268,10 @@ namespace VirtualRadar.Library
         /// <param name="detail"></param>
         /// <param name="databaseAircraft"></param>
         /// <param name="aircraft"></param>
+        /// <param name="basicAircraft"></param>
         /// <param name="isFirstFetch"></param>
         /// <param name="flightsCount"></param>
-        private AircraftDetail ApplyDatabaseRecord(AircraftDetail detail, BaseStationAircraft databaseAircraft, IAircraft aircraft, bool isFirstFetch, int flightsCount = -1)
+        private AircraftDetail ApplyDatabaseRecord(AircraftDetail detail, BaseStationAircraft databaseAircraft, BasicAircraftAndChildren basicAircraft, IAircraft aircraft, bool isFirstFetch, int flightsCount = -1)
         {
             var databaseAircraftChanged = detail == null;
             if(!databaseAircraftChanged) {
@@ -267,17 +282,25 @@ namespace VirtualRadar.Library
                 }
             }
 
+            var basicAircraftChanged = detail == null;
+            if(!basicAircraftChanged) {
+                if(detail.BasicAircraft== null) basicAircraftChanged = basicAircraft != null;
+                else                            basicAircraftChanged = !detail.BasicAircraft.Equals(basicAircraft);
+            }
+
             if(_ForceRefreshOfStandingData && detail != null) detail.AircraftType = null;
 
             var icaoTypeCode = databaseAircraft == null ? null : databaseAircraft.ICAOTypeCode;
+            if(String.IsNullOrEmpty(icaoTypeCode) && basicAircraft != null) icaoTypeCode = basicAircraft.ModelIcao;
+
             var aircraftType = detail == null ? null : detail.AircraftType;
             var aircraftTypeChanged = detail == null;
-            if(icaoTypeCode != null && (_ForceRefreshOfStandingData || detail == null || detail.Aircraft == null || detail.Aircraft.ICAOTypeCode != icaoTypeCode)) {
+            if(icaoTypeCode != null && (_ForceRefreshOfStandingData || detail == null || detail.Aircraft == null || detail.ModelIcao != icaoTypeCode)) {
                 aircraftType = _StandingDataManager.FindAircraftType(icaoTypeCode);
                 aircraftTypeChanged = true;
             }
 
-            if(databaseAircraftChanged || aircraftTypeChanged) {
+            if(databaseAircraftChanged || basicAircraftChanged || aircraftTypeChanged) {
                 if(flightsCount == -1) {
                     flightsCount = detail != null ? detail.FlightsCount 
                                           : databaseAircraft == null ? 0
@@ -288,6 +311,7 @@ namespace VirtualRadar.Library
 
                 detail = new AircraftDetail() {
                     Aircraft = databaseAircraft,
+                    BasicAircraft = basicAircraft,
                     AircraftType = aircraftType,
                     FlightsCount = flightsCount,
                     Icao24 = aircraft.Icao24,
@@ -365,7 +389,7 @@ namespace VirtualRadar.Library
                 var currentIcao24 = registered.Key;
                 var currentDetail = registered.Value;
                 FauxFetchAircraft(currentIcao24, (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
-                    if(detail != null) detail = ApplyDatabaseRecord(detail, detail.Aircraft, aircraft, isFirstFetch);
+                    if(detail != null) detail = ApplyDatabaseRecord(detail, detail.Aircraft, detail.BasicAircraft, aircraft, isFirstFetch);
                     return detail;
                 });
             }
@@ -385,7 +409,7 @@ namespace VirtualRadar.Library
 
                 if(databaseAircraft != null && !String.IsNullOrEmpty(databaseAircraft.ModeS)) {
                     FauxFetchAircraft(databaseAircraft.ModeS.ToUpper(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
-                        detail = ApplyDatabaseRecord(detail, databaseAircraft, aircraft, isFirstFetch);
+                        detail = ApplyDatabaseRecord(detail, databaseAircraft, detail.BasicAircraft, aircraft, isFirstFetch);
                         return detail;
                     });
                 }
@@ -403,6 +427,23 @@ namespace VirtualRadar.Library
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void BaseStationDatabase_FileNameChanged(object sender, EventArgs args)
+        {
+            try {
+                ForceRefetchOnFastTick = true;
+            } catch(ThreadAbortException) {
+                // Will automatically get re-thrown - we don't want these logged
+            } catch(Exception ex) {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Called when the basic aircraft details have changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void BasicAircraftLookup_ContentUpdated(object sender, EventArgs args)
         {
             try {
                 ForceRefetchOnFastTick = true;

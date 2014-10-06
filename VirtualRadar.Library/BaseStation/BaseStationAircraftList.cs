@@ -521,16 +521,16 @@ namespace VirtualRadar.Library.BaseStation
             var baseStationAircraft = aircraftDetail.Aircraft ?? _EmptyBaseStationAircraft;
             var operatorIcao = aircraft.OperatorIcao;
 
-            aircraft.Registration = baseStationAircraft.Registration;
-            aircraft.Type = baseStationAircraft.ICAOTypeCode;
-            aircraft.Manufacturer = baseStationAircraft.Manufacturer;
-            aircraft.Model = baseStationAircraft.Type;
-            aircraft.ConstructionNumber = baseStationAircraft.SerialNo;
-            aircraft.Operator = baseStationAircraft.RegisteredOwners;
-            aircraft.OperatorIcao = baseStationAircraft.OperatorFlagCode;
-            aircraft.IsInteresting = baseStationAircraft.Interested;
-            aircraft.UserTag = baseStationAircraft.UserTag;
-            aircraft.FlightsCount = aircraftDetail.FlightsCount;
+            aircraft.Registration =         aircraftDetail.DatabaseRegistration;
+            aircraft.Type =                 aircraftDetail.ModelName;
+            aircraft.Manufacturer =         baseStationAircraft.Manufacturer;
+            aircraft.Model =                aircraftDetail.ModelName;
+            aircraft.ConstructionNumber =   baseStationAircraft.SerialNo;
+            aircraft.Operator =             aircraftDetail.OperatorName;
+            aircraft.OperatorIcao =         aircraftDetail.OperatorIcao;
+            aircraft.IsInteresting =        baseStationAircraft.Interested;
+            aircraft.UserTag =              baseStationAircraft.UserTag;
+            aircraft.FlightsCount =         aircraftDetail.FlightsCount;
 
             if(operatorIcao != aircraft.OperatorIcao) {
                 var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);

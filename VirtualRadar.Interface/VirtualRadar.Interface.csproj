@@ -109,6 +109,7 @@
     <Compile Include="Cidr.cs" />
     <Compile Include="CidrComparer.cs" />
     <Compile Include="StandingData\BasicAircraft.cs" />
+    <Compile Include="StandingData\BasicAircraftAndChildren.cs" />
     <Compile Include="StandingData\BasicModel.cs" />
     <Compile Include="StandingData\BasicOperator.cs" />
     <Compile Include="StandingData\IBasicAircraftLookupDatabase.cs" />

@@ -36,15 +36,21 @@ namespace Test.VirtualRadar.Database
         private const string StateFileName = ConfigurationFolder + "FLIGHTNUMBERCOVERAGE.CSV";
         private const string StateTempFileName = ConfigurationFolder + "FLIGHTNUMBERCOVERAGE.CSV.TMP";
         private const string StateFileUrl = "HTTP://WWW.VIRTUALRADARSERVER.CO.UK/FILES/FLIGHTNUMBERCOVERAGE.CSV";
+        private const string BasicAircraftLookupFileName = ConfigurationFolder + "BASICAIRCRAFTLOOKUP.SQB";
+        private const string BasicAircraftLookupTempFileName = ConfigurationFolder + "BASICAIRCRAFTLOOKUP.SQB.TMP";
+        private const string BasicAircraftLookupFileUrl = "HTTP://WWW.VIRTUALRADARSERVER.CO.UK/FILES/BASICAIRCRAFTLOOKUP.SQB.GZ";
         private readonly string[] AllFileNames = {
             DatabaseFileName,
             DatabaseTempFileName,
             StateFileName,
             StateTempFileName,
+            BasicAircraftLookupFileName,
+            BasicAircraftLookupTempFileName,
         };
         private readonly string[] AllUrls = {
             DatabaseFileUrl,
             StateFileUrl,
+            BasicAircraftLookupFileUrl,
         };
 
         private IClassFactory _OriginalClassFactory;
@@ -52,7 +58,9 @@ namespace Test.VirtualRadar.Database
         private IStandingDataUpdater _Implementation;
         private Mock<IStandingDataUpdaterProvider> _Provider;
         private Mock<IStandingDataManager> _StandingDataManager;
+        private Mock<IBasicAircraftLookupDatabase> _BasicAircraftLookupDatabase;
         private object _StandingDataManagerLock;
+        private object _BasicAircraftLookupDatabaseLock;
         private Dictionary<string, bool> _FileExists;
         private Dictionary<string, List<string>> _ReadLines;
         private Dictionary<string, List<string>> _DownloadLines;
@@ -71,6 +79,10 @@ namespace Test.VirtualRadar.Database
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _StandingDataManagerLock = new object();
             _StandingDataManager.Setup(r => r.Lock).Returns(_StandingDataManagerLock);
+
+            _BasicAircraftLookupDatabase = TestUtilities.CreateMockSingleton<IBasicAircraftLookupDatabase>();
+            _BasicAircraftLookupDatabaseLock = new object();
+            _BasicAircraftLookupDatabase.Setup(r => r.Lock).Returns(_BasicAircraftLookupDatabaseLock);
 
             _Implementation = Factory.Singleton.Resolve<IStandingDataUpdater>();
             _Provider = new Mock<IStandingDataUpdaterProvider>();
@@ -284,6 +296,51 @@ namespace Test.VirtualRadar.Database
             Assert.IsFalse(_DownloadedCompressedFiles.ContainsKey(DatabaseFileUrl));
             Assert.IsFalse(_MovedFiles.ContainsKey(DatabaseTempFileName));
             _StandingDataManager.VerifyGet(r => r.Lock, Times.Never());
+        }
+        #endregion
+
+        #region BasicAircraftLookup file
+        [TestMethod]
+        public void StandingDataUpdater_Update_Downloads_BasicAircraftLookup_File_If_Local_Database_Missing()
+        {
+            SetupValidStateFileDownload();
+            SetupValidLocalStateFile();
+            _FileExists[BasicAircraftLookupFileName] = false;
+
+            _Implementation.Update();
+
+            Assert.AreEqual(BasicAircraftLookupTempFileName, _DownloadedCompressedFiles[BasicAircraftLookupFileUrl]);
+            Assert.AreEqual(BasicAircraftLookupFileName, _MovedFiles[BasicAircraftLookupTempFileName]);
+
+            _BasicAircraftLookupDatabase.VerifyGet(r => r.Lock, Times.Once());
+        }
+
+        [TestMethod]
+        public void StandingDataUpdater_Update_Downloads_BasicAircraftLookup_File_If_Local_Database_Has_Old_Checksum()
+        {
+            SetupStateFileResult(_DownloadLines, StateFileUrl,   "A,B,C,D,E,F,G,H,I");
+            SetupStateFileResult(_ReadLines, StateFileName,      "A,B,C,D,E,F,G,H,*");
+            _FileExists[BasicAircraftLookupFileName] = false;
+
+            _Implementation.Update();
+
+            Assert.AreEqual(BasicAircraftLookupTempFileName, _DownloadedCompressedFiles[BasicAircraftLookupFileUrl]);
+            Assert.AreEqual(BasicAircraftLookupFileName, _MovedFiles[BasicAircraftLookupTempFileName]);
+
+            _BasicAircraftLookupDatabase.VerifyGet(r => r.Lock, Times.Once());
+        }
+
+        [TestMethod]
+        public void StandingDataUpdater_Update_Does_Not_Download_BasicAircraftLookup_File_If_Local_Database_Correct()
+        {
+            SetupValidStateFileDownload();
+            SetupValidLocalStateFile();
+
+            _Implementation.Update();
+
+            Assert.IsFalse(_DownloadedCompressedFiles.ContainsKey(BasicAircraftLookupFileUrl));
+            Assert.IsFalse(_MovedFiles.ContainsKey(BasicAircraftLookupTempFileName));
+            _BasicAircraftLookupDatabase.VerifyGet(r => r.Lock, Times.Never());
         }
         #endregion
         #endregion
