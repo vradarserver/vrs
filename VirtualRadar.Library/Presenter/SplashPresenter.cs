@@ -191,9 +191,7 @@ namespace VirtualRadar.Library.Presenter
             Exception autoFixException = null;
             if(!String.IsNullOrEmpty(baseStationDatabase.FileName)) {
                 try {
-                    if(!baseStationDatabase.TestConnection()) {
-                        _View.ReportProblem(String.Format(Strings.CannotOpenBaseStationDatabaseFull, baseStationDatabase.FileName), Strings.CannotOpenBaseStationDatabaseTitle, false);
-                    }
+                    baseStationDatabase.TestConnection();
                 } catch(Exception ex) {
                     // Ideally I would catch an SQLite exception here - however because I'm using different SQLite implementations
                     // (Mono's under Mono, SQLite's under .NET), and because I want to be database engine agnostic, I'm just
