@@ -182,7 +182,7 @@ namespace Test.VirtualRadar.Library.Network
         {
             _Server.Initialise();
 
-            Assert.AreEqual("Word Up!", _Connector.Object.Name);
+            Assert.AreEqual("It's the code word", _Connector.Object.Name);
         }
 
         [TestMethod]

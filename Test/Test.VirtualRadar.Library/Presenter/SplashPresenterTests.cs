@@ -226,17 +226,7 @@ namespace Test.VirtualRadar.Library.Presenter
         }
 
         [TestMethod]
-        public void SplashPresenter_StartApplication_Reports_Unparseable_CoarseListenerTimeout()
-        {
-            _Presenter.CommandLineArgs = new string[] { "-ListenerTimeout:HELLO" };
-            _Presenter.Initialise(_View.Object);
-            _Presenter.StartApplication();
-
-            _View.Verify(v => v.ReportProblem(String.Format(Strings.CoarseListenerTimeoutUnparseable, "HELLO"), Strings.BadListenerTimeout, true), Times.Once());
-        }
-
-        [TestMethod]
-        public void SplashPresenter_StartApplication_Reports_Invalid_CoarseListenerTimeout()
+        public void SplashPresenter_StartApplication_Does_Not_Report_Invalid_CoarseListenerTimeout()
         {
             foreach(var isValid in new bool[] { false, true }) {
                 TestCleanup();
@@ -246,7 +236,7 @@ namespace Test.VirtualRadar.Library.Presenter
                 _Presenter.Initialise(_View.Object);
                 _Presenter.StartApplication();
 
-                _View.Verify(v => v.ReportProblem(Strings.CoarseListenerTimeoutInvalid, Strings.BadListenerTimeout, true), isValid ? Times.Never() : Times.Once());
+                _View.Verify(v => v.ReportProblem(Strings.CoarseListenerTimeoutInvalid, Strings.BadListenerTimeout, true), Times.Never());
             }
         }
         #endregion
@@ -445,7 +435,7 @@ namespace Test.VirtualRadar.Library.Presenter
         }
 
         [TestMethod]
-        public void SplashPresenter_StartApplication_Reports_Problem_Opening_BaseStation_Database()
+        public void SplashPresenter_StartApplication_Does_Not_Report_Problem_Opening_BaseStation_Database()
         {
             _BaseStationDatabase.Setup(d => d.FileName).Returns("xyz");
             _BaseStationDatabase.Setup(d => d.TestConnection()).Returns(false);
@@ -453,7 +443,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.Initialise(_View.Object);
             _Presenter.StartApplication();
 
-            _View.Verify(v => v.ReportProblem(String.Format(Strings.CannotOpenBaseStationDatabaseFull, "xyz"), Strings.CannotOpenBaseStationDatabaseTitle, false), Times.Once());
+            _View.Verify(v => v.ReportProblem(String.Format(Strings.CannotOpenBaseStationDatabaseFull, "xyz"), Strings.CannotOpenBaseStationDatabaseTitle, false), Times.Never());
         }
 
         [TestMethod]
