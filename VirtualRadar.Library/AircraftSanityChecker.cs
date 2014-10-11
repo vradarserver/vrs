@@ -126,6 +126,23 @@ namespace VirtualRadar.Library
         private object _PositionHistoryMapSyncLock = new object();
         #endregion
 
+        #region IsGoodAircraftIcao
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        public bool IsGoodAircraftIcao(string icao)
+        {
+            var result = !String.IsNullOrEmpty(icao) && icao.Length == 6;
+            if(result) {
+                if(icao == "000000") result = false;
+            }
+
+            return result;
+        }
+        #endregion
+
         #region CheckAltitude
         /// <summary>
         /// See interface docs.

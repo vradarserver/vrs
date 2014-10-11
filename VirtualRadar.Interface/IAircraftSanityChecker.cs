@@ -23,7 +23,14 @@ namespace VirtualRadar.Interface
     public interface IAircraftSanityChecker
     {
         /// <summary>
-        /// Checks the altitude for an ICAO.
+        /// Returns true if the string represents a valid ICAO code.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        bool IsGoodAircraftIcao(string icao);
+
+        /// <summary>
+        /// Checks the altitude for an aircraft.
         /// </summary>
         /// <param name="aircraftId">The unique identifier of the aircraft.</param>
         /// <param name="messageReceived">The UTC date and time that the message was received.</param>
