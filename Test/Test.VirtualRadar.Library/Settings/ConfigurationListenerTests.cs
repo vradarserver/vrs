@@ -359,14 +359,19 @@ namespace Test.VirtualRadar.Library.Settings
 
                 var settings = _Configuration.RebroadcastSettings[0];
                 SetValue(settings, propertyName, new Dictionary<Expression<Func<RebroadcastSettings,object>>,Action<RebroadcastSettings>>() {
-                    { r => r.Access,        r => r.Access = new Access() },
-                    { r => r.Enabled,       r => r.Enabled = !r.Enabled },
-                    { r => r.Format,        r => r.Format = RebroadcastFormat.Avr },
-                    { r => r.Name,          r => r.Name = "TEST" },
-                    { r => r.Port,          r => r.Port += 1 },
-                    { r => r.ReceiverId,    r => r.ReceiverId += 1 },
-                    { r => r.StaleSeconds,  r => r.StaleSeconds += 1 },
-                    { r => r.UniqueId,      r => r.UniqueId += 1 },
+                    { r => r.Access,                    r => r.Access = new Access() { DefaultAccess = DefaultAccess.Deny } },
+                    { r => r.Enabled,                   r => r.Enabled = !r.Enabled },
+                    { r => r.Format,                    r => r.Format = RebroadcastFormat.Avr },
+                    { r => r.IdleTimeoutMilliseconds,   r => r.IdleTimeoutMilliseconds += 1 },
+                    { r => r.IsTransmitter,             r => r.IsTransmitter = !r.IsTransmitter },
+                    { r => r.Name,                      r => r.Name = "TEST" },
+                    { r => r.Passphrase,                r => r.Passphrase = "TEST" },
+                    { r => r.Port,                      r => r.Port += 1 },
+                    { r => r.ReceiverId,                r => r.ReceiverId += 1 },
+                    { r => r.StaleSeconds,              r => r.StaleSeconds += 1 },
+                    { r => r.TransmitAddress,           r => r.TransmitAddress += 1 },
+                    { r => r.UniqueId,                  r => r.UniqueId += 1 },
+                    { r => r.UseKeepAlive,              r => r.UseKeepAlive = !r.UseKeepAlive },
                 });
 
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.RebroadcastSetting, propertyName, settings, isListChild: true), "RebroadcastSettings.{0}", propertyName);
@@ -427,6 +432,7 @@ namespace Test.VirtualRadar.Library.Settings
 
                 var settings = _Configuration.Receivers[0];
                 SetValue(settings, propertyName, new Dictionary<Expression<Func<Receiver,object>>,Action<Receiver>>() {
+                    { r => r.Access,                    r => r.Access = new Access() { DefaultAccess = DefaultAccess.Deny } },
                     { r => r.Address,                   r => r.Address = "TEST" },
                     { r => r.AutoReconnectAtStartup,    r => r.AutoReconnectAtStartup = !r.AutoReconnectAtStartup },
                     { r => r.BaudRate,                  r => r.BaudRate += 1 },
@@ -436,14 +442,18 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.DataSource,                r => r.DataSource = DataSource.Beast },
                     { r => r.Enabled,                   r => r.Enabled = !r.Enabled },
                     { r => r.Handshake,                 r => r.Handshake = System.IO.Ports.Handshake.RequestToSendXOnXOff },
+                    { r => r.IdleTimeoutMilliseconds,   r => r.IdleTimeoutMilliseconds++ },
+                    { r => r.IsPassive,                 r => r.IsPassive = !r.IsPassive },
                     { r => r.Name,                      r => r.Name = "TEST" },
                     { r => r.Parity,                    r => r.Parity = System.IO.Ports.Parity.Mark },
+                    { r => r.Passphrase,                r => r.Passphrase = r.Passphrase + 'A' },
                     { r => r.Port,                      r => r.Port += 1 },
                     { r => r.ReceiverLocationId,        r => r.ReceiverLocationId += 1 },
                     { r => r.ShutdownText,              r => r.ShutdownText = "TEST" },
                     { r => r.StartupText,               r => r.StartupText = "TEST" },
                     { r => r.StopBits,                  r => r.StopBits = System.IO.Ports.StopBits.OnePointFive },
                     { r => r.UniqueId,                  r => r.UniqueId += 1 },
+                    { r => r.UseKeepAlive,              r => r.UseKeepAlive = !r.UseKeepAlive },
                 });
 
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.Receiver, propertyName, settings, isListChild: true), "Receiver.{0}", propertyName);

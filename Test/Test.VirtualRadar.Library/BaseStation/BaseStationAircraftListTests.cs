@@ -133,6 +133,9 @@ namespace Test.VirtualRadar.Library.BaseStation
             _PolarPlotter = TestUtilities.CreateMockInstance<IPolarPlotter>();
 
             _SanityChecker = TestUtilities.CreateMockImplementation<IAircraftSanityChecker>();
+            _SanityChecker.Setup(r => r.IsGoodAircraftIcao(It.IsAny<string>())).Returns((string r) => {
+                return !String.IsNullOrEmpty(r) && r != "000000";
+            });
             _SaneAltitude = Certainty.ProbablyRight;
             _SanePosition = Certainty.ProbablyRight;
             _SanityChecker.Setup(r => r.CheckAltitude(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<int>())).Returns((int id, DateTime date, int alt) => {
