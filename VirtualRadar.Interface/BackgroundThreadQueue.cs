@@ -199,9 +199,10 @@ namespace VirtualRadar.Interface
                         if(_SurrenderTimeSlice) Thread.Sleep(1);
                         else                    _Signal.WaitOne();
                     }
-                } catch(ThreadAbortException) {
                 } catch(Exception ex) {
-                    _ProcessException(ex);
+                    if(!(ex is ThreadAbortException)) {
+                        _ProcessException(ex);
+                    }
                 }
             }
         }
@@ -285,7 +286,9 @@ namespace VirtualRadar.Interface
             try {
                 if(item != null) _ProcessObject(item);
             } catch(Exception ex) {
-                _ProcessException(ex);
+                if(!(ex is ThreadAbortException)) {
+                    _ProcessException(ex);
+                }
             }
         }
     }
