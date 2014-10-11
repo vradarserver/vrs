@@ -663,10 +663,10 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         /// <param name="icao"></param>
         /// <returns></returns>
-        private static int ConvertIcaoToUniqueId(string icao)
+        private int ConvertIcaoToUniqueId(string icao)
         {
             int uniqueId = -1;
-            if(!String.IsNullOrEmpty(icao)) {
+            if(_SanityChecker.IsGoodAircraftIcao(icao)) {
                 try {
                     uniqueId = Convert.ToInt32(icao, 16);
                 } catch(Exception ex) {

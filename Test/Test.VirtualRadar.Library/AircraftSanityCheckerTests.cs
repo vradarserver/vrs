@@ -39,6 +39,21 @@ namespace Test.VirtualRadar.Library
         }
         #endregion
 
+        #region IsGoodAircraftIcao
+        [TestMethod]
+        [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "SaneIcao$")]
+        public void AircraftSanityChecker_IsGoodAircraftIcao_Returns_Correct_Value()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var icao = worksheet.EString("ICAO");
+            var expected = worksheet.Bool("Result");
+
+            var result = _Checker.IsGoodAircraftIcao(icao);
+            Assert.AreEqual(expected, result);
+        }
+        #endregion
+
         #region CheckAltitude
         [TestMethod]
         [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
