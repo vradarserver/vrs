@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.PortableBinding;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.View
@@ -32,7 +33,7 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets the list of configured users.
         /// </summary>
-        BindingList<IUser> Users { get; }
+        NotifyList<IUser> Users { get; }
 
         /// <summary>
         /// Gets or sets the name of the user manager.

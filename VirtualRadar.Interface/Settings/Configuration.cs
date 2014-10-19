@@ -17,6 +17,7 @@ using System.Runtime.Serialization;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Specialized;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -105,29 +106,29 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _RawDecodingSettings, value, () => RawDecodingSettings); }
         }
 
-        private BindingList<Receiver> _Receivers = new BindingList<Receiver>();
+        private NotifyList<Receiver> _Receivers = new NotifyList<Receiver>();
         /// <summary>
         /// Gets a list of every receveiver that the program will listen to.
         /// </summary>
-        public BindingList<Receiver> Receivers { get { return _Receivers; } }
+        public NotifyList<Receiver> Receivers { get { return _Receivers; } }
 
-        private BindingList<MergedFeed> _MergedFeeds = new BindingList<MergedFeed>();
+        private NotifyList<MergedFeed> _MergedFeeds = new NotifyList<MergedFeed>();
         /// <summary>
         /// Gets a list of the merged feeds of receivers that the program will maintain.
         /// </summary>
-        public BindingList<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
+        public NotifyList<MergedFeed> MergedFeeds { get { return _MergedFeeds; } }
 
-        private BindingList<ReceiverLocation> _ReceiverLocations = new BindingList<ReceiverLocation>();
+        private NotifyList<ReceiverLocation> _ReceiverLocations = new NotifyList<ReceiverLocation>();
         /// <summary>
         /// Gets a list of every receiver location recorded by the user.
         /// </summary>
-        public BindingList<ReceiverLocation> ReceiverLocations { get { return _ReceiverLocations; } }
+        public NotifyList<ReceiverLocation> ReceiverLocations { get { return _ReceiverLocations; } }
 
-        private BindingList<RebroadcastSettings> _RebroadcastSettings = new BindingList<RebroadcastSettings>();
+        private NotifyList<RebroadcastSettings> _RebroadcastSettings = new NotifyList<RebroadcastSettings>();
         /// <summary>
         /// Gets a list of all of the rebroadcast server settings recorded by the user.
         /// </summary>
-        public BindingList<RebroadcastSettings> RebroadcastSettings { get { return _RebroadcastSettings; } }
+        public NotifyList<RebroadcastSettings> RebroadcastSettings { get { return _RebroadcastSettings; } }
 
         /// <summary>
         /// See interface docs.

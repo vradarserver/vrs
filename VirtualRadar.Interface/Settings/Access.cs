@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -34,12 +35,12 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _DefaultAccess, value, () => DefaultAccess); }
         }
 
-        private BindingList<string> _Addresses = new BindingList<string>();
+        private NotifyList<string> _Addresses = new NotifyList<string>();
         /// <summary>
         /// Gets a list of domain or IPv4 CIDR notation addresses that are either explicitly
         /// denied or allowed access to the resource.
         /// </summary>
-        public BindingList<string> Addresses
+        public NotifyList<string> Addresses
         {
             get { return _Addresses; }
         }

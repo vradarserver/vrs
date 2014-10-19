@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -67,11 +68,11 @@ namespace VirtualRadar.WinForms.Controls
         /// Gets the list of CIDR addresses that the control is bound to.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BindingList<string> CidrList
+        public NotifyList<string> CidrList
         {
             get {
                 var currencyManager = BindingContext[DataSource] as CurrencyManager;
-                var result = currencyManager == null ? null : currencyManager.List as BindingList<string>;
+                var result = currencyManager == null ? null : currencyManager.List as NotifyList<string>;
                 return result;
             }
         }
@@ -112,7 +113,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="cidrList"></param>
         /// <param name="cidrText"></param>
         /// <param name="index"></param>
-        private void AddOrInsertCidr(BindingList<string> cidrList, string cidrText, int index = -1)
+        private void AddOrInsertCidr(NotifyList<string> cidrList, string cidrText, int index = -1)
         {
             Cidr cidr;
             if(Cidr.TryParse(cidrText, out cidr)) {

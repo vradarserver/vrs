@@ -34,6 +34,7 @@ using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Diagnostics;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace Equin.ApplicationFramework
 {
@@ -49,7 +50,7 @@ namespace Equin.ApplicationFramework
         /// </summary>
         public AggregateBindingListView()
         {
-            _sourceLists = new BindingList<IList>();
+            _sourceLists = new NotifyList<IList>();
             (_sourceLists as IBindingList).ListChanged += new ListChangedEventHandler(SourceListsChanged);
             _savedSourceLists = new List<IList>();
             _sourceIndices = new MultiSourceIndexList<T>();

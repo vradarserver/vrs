@@ -5,6 +5,10 @@ using System.Text;
 
 namespace VirtualRadar.Interface.StandingData
 {
+    // Need to disable 0659, it's telling us that we're overriding Equals but not GetHashCode. This object
+    // is not immutable, it cannot be used as a key. No need to override GetHashCode.
+    #pragma warning disable 0659
+
     /// <summary>
     /// A subclass of <see cref="BasicAircraft"/> that holds references to the child records.
     /// </summary>

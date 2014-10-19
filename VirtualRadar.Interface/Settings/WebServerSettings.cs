@@ -15,6 +15,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.ObjectModel;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -66,11 +67,11 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _ConvertedUser, value, () => ConvertedUser); }
         }
 
-        private BindingList<string> _BasicAuthenticationUserIds = new BindingList<string>();
+        private NotifyList<string> _BasicAuthenticationUserIds = new NotifyList<string>();
         /// <summary>
         /// Gets the list of users that can log onto the site with Basic authentication.
         /// </summary>
-        public BindingList<string> BasicAuthenticationUserIds
+        public NotifyList<string> BasicAuthenticationUserIds
         {
             get { return _BasicAuthenticationUserIds; }
         }

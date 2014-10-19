@@ -16,6 +16,7 @@ using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.StandingData;
 using System.ComponentModel;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.Library
 {
@@ -651,7 +652,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public Aircraft()
         {
-            var stopOvers = new BindingList<string>();
+            var stopOvers = new NotifyList<string>();
             stopOvers.ListChanged += Stopovers_ListChanged;
             Stopovers = stopOvers;
 

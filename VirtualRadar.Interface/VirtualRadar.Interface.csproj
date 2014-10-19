@@ -51,6 +51,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adsb\AdsbMessage.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
     <Compile Include="BaseStation\IRawMessageTranslator.cs" />
     <Compile Include="AircraftDetail.cs" />
+    <Compile Include="PortableBinding\NotifyList.cs" />
     <Compile Include="ByteArrayComparable.cs" />
     <Compile Include="Certainty.cs" />
     <Compile Include="Cidr.cs" />
@@ -461,6 +463,7 @@
     <None Include="WebSite\_VirtualRadarInterfaceWebSite.cd" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PortableBinding\_README.txt" />
     <Content Include="WebServer\MimeTypes.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@ using VirtualRadar.WinForms.Controls;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Drawing;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms
 {
@@ -108,6 +109,18 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region Dispose
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            _CommonBaseBehaviour.DisposeControlBinders();
+            base.Dispose(disposing);
+        }
+        #endregion
+
         #region OnLoad
         /// <summary>
         /// Called after the form has been loaded but before it is shown to the user.
@@ -143,7 +156,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region AddBinding, Create****Binding
+        #region Vanilla .NET data binding - AddBinding, Create****Binding
         /// <summary>
         /// A shorthand method for adding bindings with compiler-checked names.
         /// </summary>
@@ -210,6 +223,34 @@ namespace VirtualRadar.WinForms
         protected BindingSource CreateNameValueSource<T>(IEnumerable<T> list, Func<T, string> describeValue = null, Func<T, bool> filterValue = null, bool sortList = true)
         {
             return _CommonBaseBehaviour.CreateNameValueSource<T>(list, describeValue, filterValue, sortList);
+        }
+        #endregion
+
+        #region Portable binding - AddControlBinder, GetControlBinders, InitialiseControlBinders
+        /// <summary>
+        /// Adds a control binder.
+        /// </summary>
+        /// <param name="binder"></param>
+        protected void AddControlBinder(ControlBinder binder)
+        {
+            _CommonBaseBehaviour.AddControlBinder(binder);
+        }
+
+        /// <summary>
+        /// Returns an array of all control binders.
+        /// </summary>
+        /// <returns></returns>
+        protected ControlBinder[] GetControlBinders()
+        {
+            return _CommonBaseBehaviour.GetControlBinders();
+        }
+
+        /// <summary>
+        /// Initialises the registered control binders.
+        /// </summary>
+        protected void InitialiseControlBinders()
+        {
+            _CommonBaseBehaviour.InitialiseControlBinders();
         }
         #endregion
 

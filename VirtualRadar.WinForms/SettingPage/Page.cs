@@ -26,6 +26,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -155,7 +156,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// Gets a collection of every child page under this page.
         /// </summary>
-        public BindingList<Page> ChildPages { get; private set; }
+        public NotifyList<Page> ChildPages { get; private set; }
 
         /// <summary>
         /// Gets a value indicating that child pages are to be shown in alphabetical order of
@@ -183,7 +184,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public Page()
         {
-            ChildPages = new BindingList<Page>();
+            ChildPages = new NotifyList<Page>();
 
             InitializeComponent();
         }
@@ -204,7 +205,7 @@ namespace VirtualRadar.WinForms.SettingPage
         }
         #endregion
 
-        #region CreateBindings
+        #region DoCreateBindings
         /// <summary>
         /// Calls CreateBindings if the conditions are right.
         /// </summary>
@@ -216,6 +217,7 @@ namespace VirtualRadar.WinForms.SettingPage
                 AssociateChildPages();
                 InitialiseControls();
                 CreateBindings();
+                InitialiseControlBinders();
                 AssociateValidationFields();
                 AssociateInlineHelp();
             }
@@ -452,7 +454,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="createPageForChild"></param>
-        internal void AssociateListWithChildPages<T>(BindingList<T> list, Func<Page> createPageForChild)
+        internal void AssociateListWithChildPages<T>(NotifyList<T> list, Func<Page> createPageForChild)
         {
             _ChildPagesList = list;
             _CreateChildPageDelegate = createPageForChild;

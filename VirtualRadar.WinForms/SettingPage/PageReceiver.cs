@@ -24,6 +24,7 @@ using System.IO.Ports;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using InterfaceFactory;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -119,18 +120,18 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(Receiver, checkBoxEnabled,                   r => r.Enabled,                 r => r.Checked);
-            AddBinding(Receiver, textBoxName,                       r => r.Name,                    r => r.Text,            DataSourceUpdateMode.OnPropertyChanged);
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled, r => r.Enabled, (r,v) => r.Enabled = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxName,     r => r.Name,    (r,v) => r.Name = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddBinding(Receiver, comboBoxDataSource,                r => r.DataSource,              r => r.SelectedValue);
             AddBinding(Receiver, comboBoxLocationId,                r => r.ReceiverLocationId,      r => r.SelectedValue);
             AddBinding(Receiver, comboBoxConnectionType,            r => r.ConnectionType,          r => r.SelectedValue,   DataSourceUpdateMode.OnPropertyChanged);
 
-            AddBinding(Receiver, checkBoxIsPassive,     r => r.IsPassive,               r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(Receiver, textBoxAddress,        r => r.Address,                 r => r.Text);
-            AddBinding(Receiver, numericPort,           r => r.Port,                    r => r.Value);
-            AddBinding(Receiver, textBoxPassphrase,     r => r.Passphrase,              r => r.Text);
-            AddBinding(Receiver, checkBoxUseKeepAlive,  r => r.UseKeepAlive,            r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(Receiver, numericIdleTimeout,    r => r.IdleTimeoutMilliseconds, r => r.Value,   format: MillisecondsToSeconds_Format, parse: MillisecondsToSeconds_Parse);
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxIsPassive,       r => r.IsPassive,                       (r,v) => r.IsPassive = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxAddress,          r => r.Address,                         (r,v) => r.Address = v));
+            AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericPort,             r => r.Port,                            (r,v) => r.Port = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxPassphrase,       r => r.Passphrase,                      (r,v) => r.Passphrase = v));
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxUseKeepAlive,    r => r.UseKeepAlive,                    (r,v) => r.UseKeepAlive = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericIdleTimeout,      r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<Receiver>(r => r.IdleTimeoutMilliseconds) });
 
             AddBinding(Receiver.Access, comboBoxDefaultAccess, r => r.DefaultAccess, r => r.SelectedValue, DataSourceUpdateMode.OnPropertyChanged);
             bindingCidrList.DataSource = Receiver.Access.Addresses;
@@ -141,8 +142,8 @@ namespace VirtualRadar.WinForms.SettingPage
             AddBinding(Receiver, comboBoxSerialStopBits,    r => r.StopBits,        r => r.SelectedValue);
             AddBinding(Receiver, comboBoxSerialParity,      r => r.Parity,          r => r.SelectedValue);
             AddBinding(Receiver, comboBoxSerialHandshake,   r => r.Handshake,       r => r.SelectedValue);
-            AddBinding(Receiver, textBoxSerialStartupText,  r => r.StartupText,     r => r.Text);
-            AddBinding(Receiver, textBoxSerialShutdownText, r => r.ShutdownText,    r => r.Text);
+            AddControlBinder(new TextBoxStringBinder<Receiver>(Receiver, textBoxSerialStartupText, r => r.StartupText, (r,v) => r.StartupText = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>(Receiver, textBoxSerialShutdownText, r => r.ShutdownText, (r,v) => r.ShutdownText = v));
         }
 
         /// <summary>
