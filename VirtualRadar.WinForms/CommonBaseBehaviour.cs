@@ -20,6 +20,7 @@ using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms
 {
@@ -315,7 +316,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region Binding helpers - AddBinding, Create****BindingSource
+        #region Vanilla .NET data binding helpers - AddBinding, Create****BindingSource
         /// <summary>
         /// Adds a binding between a control and a property on a page.
         /// </summary>
@@ -426,6 +427,53 @@ namespace VirtualRadar.WinForms
             result.DataSource = nameValueList;
 
             return result;
+        }
+        #endregion
+
+        #region Portable binding helpers - AddControlBinder, GetControlBinders, InitialiseControlBinders, DisposeControlBinders
+        private List<ControlBinder> _ControlBinders = new List<ControlBinder>();
+
+        /// <summary>
+        /// Records an instance of a control binder.
+        /// </summary>
+        /// <param name="binder"></param>
+        public void AddControlBinder(ControlBinder binder)
+        {
+            _ControlBinders.Add(binder);
+        }
+
+        /// <summary>
+        /// Returns an array of all registered control binders.
+        /// </summary>
+        /// <returns></returns>
+        public ControlBinder[] GetControlBinders()
+        {
+            return _ControlBinders.ToArray();
+        }
+
+        /// <summary>
+        /// Initialises all of the registered control binders.
+        /// </summary>
+        public void InitialiseControlBinders()
+        {
+            foreach(var controlBinder in _ControlBinders) {
+                try {
+                    controlBinder.Initialise();
+                } catch(Exception ex) {
+                    throw new InvalidOperationException(String.Format("Could not initialise {0} control binder. Exception was {1}", controlBinder.GetType().Name, ex.Message), ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Disposes of all registered control binders.
+        /// </summary>
+        public void DisposeControlBinders()
+        {
+            foreach(var binder in _ControlBinders) {
+                binder.Dispose();
+            }
+            _ControlBinders.Clear();
         }
         #endregion
     }

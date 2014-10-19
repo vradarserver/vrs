@@ -6,6 +6,7 @@ using VirtualRadar.Interface.Settings;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Collections.Specialized;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.Library.Settings
 {
@@ -177,7 +178,7 @@ namespace VirtualRadar.Library.Settings
         /// <param name="listEventHandler"></param>
         /// <param name="hookChild"></param>
         /// <param name="unhookChild"></param>
-        private void HookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler, Action<T> hookChild = null, Action<T> unhookChild = null)
+        private void HookList<T>(NotifyList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler, Action<T> hookChild = null, Action<T> unhookChild = null)
             where T: INotifyPropertyChanged
         {
             if(_HookedLists.Contains(list)) UnhookList(list, hookedRecords, recordEventHandler, listEventHandler, unhookChild);
@@ -201,7 +202,7 @@ namespace VirtualRadar.Library.Settings
         /// <param name="recordEventHandler"></param>
         /// <param name="listEventHandler"></param>
         /// <param name="unhookChild"></param>
-        private void UnhookList<T>(BindingList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler, Action<T> unhookChild = null)
+        private void UnhookList<T>(NotifyList<T> list, List<T> hookedRecords, PropertyChangedEventHandler recordEventHandler, ListChangedEventHandler listEventHandler, Action<T> unhookChild = null)
             where T: INotifyPropertyChanged
         {
             if(_HookedLists.Contains(list)) {

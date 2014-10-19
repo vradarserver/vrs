@@ -46,6 +46,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseForm.cs">
@@ -244,6 +245,12 @@
     <Compile Include="Controls\PanelPlus.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PortableBinding\CheckBoxBoolBinder.cs" />
+    <Compile Include="PortableBinding\ControlBinder.cs" />
+    <Compile Include="PortableBinding\ItemDescription.cs" />
+    <Compile Include="PortableBinding\NumericIntBinder.cs" />
+    <Compile Include="PortableBinding\SimpleValueBinder.cs" />
+    <Compile Include="PortableBinding\TextBoxStringBinder.cs" />
     <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>
@@ -646,6 +653,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BindingListView\_README.txt" />
+    <Content Include="PortableBinding\_README.txt" />
     <Content Include="Controls\BindingMapControl.html" />
   </ItemGroup>
   <ItemGroup />

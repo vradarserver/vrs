@@ -50,6 +50,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adsb\AdsbMessageTests.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="BaseStation\BaseStationSupplementaryMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorExceptionTests.cs" />
+    <Compile Include="PortableBinding\NotifyListTests.cs" />
     <Compile Include="CidrTests.cs" />
     <Compile Include="Listener\PolarPlotSliceTests.cs" />
     <Compile Include="Listener\PolarPlotTests.cs" />

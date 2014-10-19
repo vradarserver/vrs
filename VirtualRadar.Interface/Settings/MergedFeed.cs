@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -54,11 +55,11 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _Name, value, () => Name); }
         }
 
-        private BindingList<int> _ReceiverIds = new BindingList<int>();
+        private NotifyList<int> _ReceiverIds = new NotifyList<int>();
         /// <summary>
         /// Gets a list of the IDs for the receivers that are going to be merged into this feed.
         /// </summary>
-        public BindingList<int> ReceiverIds { get { return _ReceiverIds; } }
+        public NotifyList<int> ReceiverIds { get { return _ReceiverIds; } }
 
         private int _IcaoTimeout;
         /// <summary>

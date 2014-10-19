@@ -28,6 +28,7 @@ using VirtualRadar.Resources;
 using System.Collections.Specialized;
 using System.Collections;
 using System.Linq.Expressions;
+using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.WinForms
 {
@@ -199,11 +200,11 @@ namespace VirtualRadar.WinForms
             }
         }
 
-        private BindingList<IUser> _Users = new BindingList<IUser>();
+        private NotifyList<IUser> _Users = new NotifyList<IUser>();
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public BindingList<IUser> Users { get { return _Users; } }
+        public NotifyList<IUser> Users { get { return _Users; } }
 
         /// <summary>
         /// See interface docs.
@@ -220,11 +221,11 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public object OpenOnRecord { get; set; }
 
-        private BindingList<CombinedFeed> _CombinedFeed = new BindingList<CombinedFeed>();
+        private NotifyList<CombinedFeed> _CombinedFeed = new NotifyList<CombinedFeed>();
         /// <summary>
         /// Gets a combined collection of receivers and merged feeds.
         /// </summary>
-        public BindingList<CombinedFeed> CombinedFeed
+        public NotifyList<CombinedFeed> CombinedFeed
         {
             get { return _CombinedFeed; }
         }
@@ -1016,7 +1017,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         private void Page_ChildPages_ListChanged(object sender, ListChangedEventArgs args)
         {
-            var childPages = (BindingList<Page>)sender;
+            var childPages = (NotifyList<Page>)sender;
             var parentPage = GetAllPages().FirstOrDefault(r => r.ChildPages == childPages);
             if(parentPage != null) {
                 SynchroniseTreeViewToChildPages(parentPage);
