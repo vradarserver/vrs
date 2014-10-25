@@ -14,9 +14,8 @@ care of hooking and unhooking the model and the control, and of copying
 values between model and control. It is abstract.
 
 For simple "one model property <-> one control property" cases there are
-a bunch of binders, all based on SimpleValueBinder. SimpleValueBinder
-assumes that the model implements INotifyPropertyChanged. The binders
-are:
+a bunch of binders, all based on ValueBinder. ValueBinder assumes that
+the model implements INotifyPropertyChanged. The binders based on it are:
     CheckBoxBoolBinder
     NumericIntBinder
     TextBoxStringBinder

@@ -59,6 +59,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.comboBoxSerialComPort = new System.Windows.Forms.ComboBox();
             this.groupBoxNetwork = new System.Windows.Forms.GroupBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.textBoxPassphrase = new System.Windows.Forms.TextBox();
             this.checkBoxIsPassive = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -73,8 +75,6 @@
             this.bindingCidrList = new VirtualRadar.WinForms.Controls.BindingCidrList();
             this.comboBoxDefaultAccess = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.textBoxPassphrase = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
@@ -328,14 +328,12 @@
             // 
             // comboBoxLocationId
             // 
-            this.comboBoxLocationId.DisplayMember = "Name";
             this.comboBoxLocationId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLocationId.FormattingEnabled = true;
             this.comboBoxLocationId.Location = new System.Drawing.Point(200, 82);
             this.comboBoxLocationId.Name = "comboBoxLocationId";
             this.comboBoxLocationId.Size = new System.Drawing.Size(150, 21);
             this.comboBoxLocationId.TabIndex = 7;
-            this.comboBoxLocationId.ValueMember = "UniqueId";
             // 
             // comboBoxSerialBaudRate
             // 
@@ -414,6 +412,25 @@
             this.groupBoxNetwork.TabIndex = 0;
             this.groupBoxNetwork.TabStop = false;
             this.groupBoxNetwork.Text = "::Network::";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 98);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(77, 13);
+            this.label18.TabIndex = 5;
+            this.label18.Text = "::Passphrase:::";
+            // 
+            // textBoxPassphrase
+            // 
+            this.textBoxPassphrase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPassphrase.Location = new System.Drawing.Point(197, 95);
+            this.textBoxPassphrase.MaxLength = 512;
+            this.textBoxPassphrase.Name = "textBoxPassphrase";
+            this.textBoxPassphrase.Size = new System.Drawing.Size(430, 20);
+            this.textBoxPassphrase.TabIndex = 6;
             // 
             // checkBoxIsPassive
             // 
@@ -574,25 +591,6 @@
             this.label17.Size = new System.Drawing.Size(91, 13);
             this.label17.TabIndex = 0;
             this.label17.Text = "::DefaultAccess:::";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(6, 98);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(77, 13);
-            this.label18.TabIndex = 5;
-            this.label18.Text = "::Passphrase:::";
-            // 
-            // textBoxPassphrase
-            // 
-            this.textBoxPassphrase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPassphrase.Location = new System.Drawing.Point(197, 95);
-            this.textBoxPassphrase.MaxLength = 512;
-            this.textBoxPassphrase.Name = "textBoxPassphrase";
-            this.textBoxPassphrase.Size = new System.Drawing.Size(430, 20);
-            this.textBoxPassphrase.TabIndex = 6;
             // 
             // PageReceiver
             // 

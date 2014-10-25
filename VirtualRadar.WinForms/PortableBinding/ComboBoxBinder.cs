@@ -19,10 +19,10 @@ using System.Windows.Forms;
 namespace VirtualRadar.WinForms.PortableBinding
 {
     /// <summary>
-    /// Binds a text box to a string property. The text box's content is automatically
-    /// trimmed before being sent to the model.
+    /// A binder that populates a combo box with a list and lets the user select a single
+    /// value from it.
     /// </summary>
-    public class TextBoxStringBinder<TModel> : ValueBinder<TModel, TextBox, string>
+    public class ComboBoxBinder<TModel, TListModel, TValue> : ValueFromListBinder<TModel, ComboBox, TValue, TListModel>
         where TModel: class, INotifyPropertyChanged
     {
         /// <summary>
@@ -30,31 +30,49 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// </summary>
         /// <param name="model"></param>
         /// <param name="control"></param>
+        /// <param name="list"></param>
         /// <param name="getModelValue"></param>
         /// <param name="setModelValue"></param>
-        public TextBoxStringBinder(TModel model, TextBox control, Expression<Func<TModel, string>> getModelValue, Action<TModel, string> setModelValue)
-            : base(model, control, getModelValue, setModelValue,
-                r => (r.Text ?? "").Trim(),
-                (ctrl, val) => ctrl.Text = (val ?? "").Trim())
+        public ComboBoxBinder(TModel model, ComboBox control, IList<TListModel> list, Expression<Func<TModel, TValue>> getModelValue, Action<TModel, TValue> setModelValue)
+            : base(model, control, list,
+                   getModelValue, setModelValue)
         {
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="eventHandler"></param>
+        protected override void DoCopyListToControl(ItemDescriptionList<TListModel> itemDescriptions)
+        {
+            Control.Items.Clear();
+            foreach(var itemDescription in itemDescriptions) {
+                Control.Items.Add(itemDescription);
+            }
+        }
+
+        protected override TValue DoGetSelectedListValue()
+        {
+            var selectedItem = Control.SelectedItem as ItemDescription<TListModel>;
+            var result = selectedItem == null ? default(TValue) : GetListItemValue(selectedItem.Item);
+            return result;
+        }
+
+        protected override void DoSetSelectedListValue(TValue value)
+        {
+            var itemDescription = Control.Items.OfType<ItemDescription<TListModel>>()
+                                         .FirstOrDefault(r => {
+                                            var controlValue = GetListItemValue(r.Item);
+                                            var areEqual = Object.Equals(controlValue, value);
+                                            return areEqual;
+                                         });
+            Control.SelectedItem = itemDescription;
+        }
+
         protected override void DoHookControlPropertyChanged(EventHandler eventHandler)
         {
-            Control.TextChanged += eventHandler;
+            Control.SelectedIndexChanged += eventHandler;
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="eventHandler"></param>
         protected override void DoUnhookControlPropertyChanged(EventHandler eventHandler)
         {
-            Control.TextChanged -= eventHandler;
+            Control.SelectedIndexChanged -= eventHandler;
         }
     }
 }

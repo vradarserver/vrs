@@ -860,18 +860,18 @@ namespace VirtualRadar.WinForms
         /// Returns a collection of serial port names.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetSerialPortNames()
+        public IList<string> GetSerialPortNames()
         {
-            return _Presenter.GetSerialPortNames();
+            return _Presenter.GetSerialPortNames().ToList();
         }
 
         /// <summary>
         /// Returns a collection of voice names. A voice name of null indicates the presence of a default voice.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetVoiceNames()
+        public IList<string> GetVoiceNames()
         {
-            return _Presenter.GetVoiceNames();
+            return _Presenter.GetVoiceNames().ToList();
         }
         #endregion
 

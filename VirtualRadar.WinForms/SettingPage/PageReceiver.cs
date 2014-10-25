@@ -98,17 +98,6 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            comboBoxDataSource.DataSource =         CreateSortingEnumSource<DataSource>(r => Describe.DataSource(r));
-            comboBoxLocationId.DataSource =         CreateSortingBindingSource<ReceiverLocation>(SettingsView.Configuration.ReceiverLocations, r => r.Name);
-            comboBoxConnectionType.DataSource =     CreateSortingEnumSource<ConnectionType>(r => Describe.ConnectionType(r));
-            comboBoxDefaultAccess.DataSource =      CreateSortingEnumSource<DefaultAccess>(r => Describe.DefaultAccess(r));
-
-            comboBoxSerialComPort.DataSource =      CreateNameValueSource<string>(SettingsView.GetSerialPortNames());
-            comboBoxSerialBaudRate.DataSource =     CreateListBindingSource<int>(_SupportedBaudRates);
-            comboBoxSerialDataBits.DataSource =     CreateListBindingSource<int>(_SupportedDataBits);
-            comboBoxSerialStopBits.DataSource =     CreateSortingEnumSource<StopBits>(r => Describe.StopBits(r));
-            comboBoxSerialParity.DataSource =       CreateSortingEnumSource<Parity>(r => Describe.Parity(r));
-            comboBoxSerialHandshake.DataSource =    CreateSortingEnumSource<Handshake>(r => Describe.Handshake(r));
 
             SetPageTitleProperty<Receiver>(r => r.Name, () => Receiver.Name);
             SetPageEnabledProperty<Receiver>(r => r.Enabled, () => Receiver.Enabled);
@@ -120,30 +109,33 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled, r => r.Enabled, (r,v) => r.Enabled = v));
-            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxName,     r => r.Name,    (r,v) => r.Name = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-            AddBinding(Receiver, comboBoxDataSource,                r => r.DataSource,              r => r.SelectedValue);
-            AddBinding(Receiver, comboBoxLocationId,                r => r.ReceiverLocationId,      r => r.SelectedValue);
-            AddBinding(Receiver, comboBoxConnectionType,            r => r.ConnectionType,          r => r.SelectedValue,   DataSourceUpdateMode.OnPropertyChanged);
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled,         r => r.Enabled,         (r,v) => r.Enabled = v));
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxIsPassive,       r => r.IsPassive,       (r,v) => r.IsPassive = v)       { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxUseKeepAlive,    r => r.UseKeepAlive,    (r,v) => r.UseKeepAlive = v)    { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
-            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxIsPassive,       r => r.IsPassive,                       (r,v) => r.IsPassive = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxAddress,          r => r.Address,                         (r,v) => r.Address = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxName,                 r => r.Name,            (r,v) => r.Name = v)        { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxAddress,              r => r.Address,         (r,v) => r.Address = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxPassphrase,           r => r.Passphrase,      (r,v) => r.Passphrase = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxSerialStartupText,    r => r.StartupText,     (r,v) => r.StartupText = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxSerialShutdownText,   r => r.ShutdownText,    (r,v) => r.ShutdownText = v));
+
             AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericPort,             r => r.Port,                            (r,v) => r.Port = v));
-            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxPassphrase,       r => r.Passphrase,                      (r,v) => r.Passphrase = v));
-            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxUseKeepAlive,    r => r.UseKeepAlive,                    (r,v) => r.UseKeepAlive = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericIdleTimeout,      r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<Receiver>(r => r.IdleTimeoutMilliseconds) });
 
-            AddBinding(Receiver.Access, comboBoxDefaultAccess, r => r.DefaultAccess, r => r.SelectedValue, DataSourceUpdateMode.OnPropertyChanged);
-            bindingCidrList.DataSource = Receiver.Access.Addresses;
+            AddControlBinder(new ComboBoxBinder<Receiver, ReceiverLocation, int>(Receiver, comboBoxLocationId, SettingsView.Configuration.ReceiverLocations, r => r.ReceiverLocationId, (r,v) => r.ReceiverLocationId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
 
-            AddBinding(Receiver, comboBoxSerialComPort,     r => r.ComPort,         r => r.SelectedValue);
-            AddBinding(Receiver, comboBoxSerialBaudRate,    r => r.BaudRate,        r => r.SelectedItem);
-            AddBinding(Receiver, comboBoxSerialDataBits,    r => r.DataBits,        r => r.SelectedItem);
-            AddBinding(Receiver, comboBoxSerialStopBits,    r => r.StopBits,        r => r.SelectedValue);
-            AddBinding(Receiver, comboBoxSerialParity,      r => r.Parity,          r => r.SelectedValue);
-            AddBinding(Receiver, comboBoxSerialHandshake,   r => r.Handshake,       r => r.SelectedValue);
-            AddControlBinder(new TextBoxStringBinder<Receiver>(Receiver, textBoxSerialStartupText, r => r.StartupText, (r,v) => r.StartupText = v));
-            AddControlBinder(new TextBoxStringBinder<Receiver>(Receiver, textBoxSerialShutdownText, r => r.ShutdownText, (r,v) => r.ShutdownText = v));
+            AddControlBinder(new ComboBoxEnumBinder<Receiver, DataSource>       (Receiver,          comboBoxDataSource,         r => r.DataSource,      (r,v) => r.DataSource = v,      r => Describe.DataSource(r)));
+            AddControlBinder(new ComboBoxEnumBinder<Receiver, ConnectionType>   (Receiver,          comboBoxConnectionType,     r => r.ConnectionType,  (r,v) => r.ConnectionType = v,  r => Describe.ConnectionType(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new ComboBoxEnumBinder<Access, DefaultAccess>      (Receiver.Access,   comboBoxDefaultAccess,      r => r.DefaultAccess,   (r,v) => r.DefaultAccess = v,   r => Describe.DefaultAccess(r))  { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new ComboBoxEnumBinder<Receiver, StopBits>         (Receiver,          comboBoxSerialStopBits,     r => r.StopBits,        (r,v) => r.StopBits = v,        r => Describe.StopBits(r)));
+            AddControlBinder(new ComboBoxEnumBinder<Receiver, Parity>           (Receiver,          comboBoxSerialParity,       r => r.Parity,          (r,v) => r.Parity = v,          r => Describe.Parity(r)));
+            AddControlBinder(new ComboBoxEnumBinder<Receiver, Handshake>        (Receiver,          comboBoxSerialHandshake,    r => r.Handshake,       (r,v) => r.Handshake = v,       r => Describe.Handshake(r)));
+
+            AddControlBinder(new ComboBoxValueBinder<Receiver, string>  (Receiver, comboBoxSerialComPort,   SettingsView.GetSerialPortNames(),  r => r.ComPort,     (r,v) => r.ComPort = v));
+            AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialBaudRate,  _SupportedBaudRates,                r => r.BaudRate,    (r,v) => r.BaudRate = v));
+            AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialDataBits,  _SupportedDataBits,                 r => r.DataBits,    (r,v) => r.DataBits = v));
+
+            bindingCidrList.DataSource = Receiver.Access.Addresses;
         }
 
         /// <summary>
@@ -277,13 +269,6 @@ namespace VirtualRadar.WinForms.SettingPage
         private void buttonClearLocationId_Click(object sender, EventArgs e)
         {
             Receiver.ReceiverLocationId = 0;
-
-            // Under Mono that line doesn't work - Mono ignores the NotifyPropertyChanged event and continues
-            // to show the old value. The workaround is to rebind the control.
-            if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
-                ClearBindings();
-                CreateBindings();
-            }
         }
 
         private void buttonTestConnection_Click(object sender, EventArgs e)

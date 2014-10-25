@@ -25,7 +25,7 @@ namespace VirtualRadar.WinForms.PortableBinding
     /// chores involved in binding between a single property on a model that
     /// implements INotifyPropertyChanged and a single property on a control.
     /// </summary>
-    public abstract class SimpleValueBinder<TModel, TControl, TValue> : ControlBinder
+    public abstract class ValueBinder<TModel, TControl, TValue> : ControlBinder
         where TModel: class, INotifyPropertyChanged
         where TControl: Control
     {
@@ -58,8 +58,8 @@ namespace VirtualRadar.WinForms.PortableBinding
             protected set   { _SetModelValue(Model, value); }
         }
 
-        private Func<TControl, TValue> _GetControlValue;
-        private Action<TControl, TValue> _SetControlValue;
+        protected Func<TControl, TValue> _GetControlValue;
+        protected Action<TControl, TValue> _SetControlValue;
         /// <summary>
         /// Gets the control's value.
         /// </summary>
@@ -110,9 +110,26 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="control"></param>
         /// <param name="getModelValue"></param>
         /// <param name="setModelValue"></param>
+        public ValueBinder(
+            TModel model, TControl control,
+            Expression<Func<TModel, TValue>> getModelValue, Action<TModel, TValue> setModelValue)
+            : this(model, control, getModelValue, setModelValue, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="control"></param>
+        /// <param name="getModelValue"></param>
+        /// <param name="setModelValue"></param>
         /// <param name="getControlValue"></param>
         /// <param name="setControlValue"></param>
-        public SimpleValueBinder(TModel model, TControl control, Expression<Func<TModel, TValue>> getModelValue, Action<TModel, TValue> setModelValue, Func<TControl, TValue> getControlValue, Action<TControl, TValue> setControlValue, DataSourceUpdateMode updateMode = DataSourceUpdateMode.OnValidation)
+        public ValueBinder(
+            TModel model, TControl control,
+            Expression<Func<TModel, TValue>> getModelValue, Action<TModel, TValue> setModelValue,
+            Func<TControl, TValue> getControlValue, Action<TControl, TValue> setControlValue)
             : base(model, control)
         {
             _GetModelValueExpression = getModelValue;

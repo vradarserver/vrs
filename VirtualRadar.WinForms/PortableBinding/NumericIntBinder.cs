@@ -21,7 +21,7 @@ namespace VirtualRadar.WinForms.PortableBinding
     /// <summary>
     /// Binds an intger property on a model to a numeric up-down control.
     /// </summary>
-    public class NumericIntBinder<TModel> : SimpleValueBinder<TModel, NumericUpDown, int>
+    public class NumericIntBinder<TModel> : ValueBinder<TModel, NumericUpDown, int>
         where TModel: class, INotifyPropertyChanged
     {
         /// <summary>
