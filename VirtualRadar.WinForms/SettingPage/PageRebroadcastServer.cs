@@ -11,16 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Resources;
-using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
+using VirtualRadar.Resources;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -69,9 +70,6 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            comboBoxReceiver.DataSource =       CreateSortingBindingSource<CombinedFeed>(SettingsView.CombinedFeed, r => r.Name);
-            comboBoxFormat.DataSource =         CreateSortingEnumSource<RebroadcastFormat>(r => Describe.RebroadcastFormat(r));
-            comboBoxDefaultAccess.DataSource =  CreateSortingEnumSource<DefaultAccess>(r => Describe.DefaultAccess(r));
 
             SetPageTitleProperty<RebroadcastSettings>(r => r.Name, () => RebroadcastSettings.Name);
             SetPageEnabledProperty<RebroadcastSettings>(r => r.Enabled, () => RebroadcastSettings.Enabled);
@@ -85,19 +83,25 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(RebroadcastSettings, checkBoxEnabled,        r => r.Enabled,                 r => r.Checked);
-            AddBinding(RebroadcastSettings, textBoxName,            r => r.Name,                    r => r.Text,    DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(RebroadcastSettings, comboBoxReceiver,       r => r.ReceiverId,              r => r.SelectedValue);
-            AddBinding(RebroadcastSettings, comboBoxFormat,         r => r.Format,                  r => r.SelectedValue);
-            AddBinding(RebroadcastSettings, checkBoxIsTransmitter,  r => r.IsTransmitter,           r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(RebroadcastSettings, textBoxTransmitAddress, r => r.TransmitAddress,         r => r.Text);
-            AddBinding(RebroadcastSettings, numericPort,            r => r.Port,                    r => r.Value);
-            AddBinding(RebroadcastSettings, textBoxPassphrase,      r => r.Passphrase,              r => r.Text);
-            AddBinding(RebroadcastSettings, checkBoxUseKeepAlive,   r => r.UseKeepAlive,            r => r.Checked, DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(RebroadcastSettings, numericIdleTimeout,     r => r.IdleTimeoutMilliseconds, r => r.Value, format: MillisecondsToSeconds_Format, parse: MillisecondsToSeconds_Parse);
-            AddBinding(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,            r => r.Value);
 
-            AddBinding(RebroadcastSettings.Access, comboBoxDefaultAccess, r => r.DefaultAccess, r => r.SelectedValue, dataSourceUpdateMode: DataSourceUpdateMode.OnPropertyChanged);
+            AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxEnabled,          r => r.Enabled,         (r,v) => r.Enabled = v));
+            AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxIsTransmitter,    r => r.IsTransmitter,   (r,v) => r.IsTransmitter = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxUseKeepAlive,     r => r.UseKeepAlive,    (r,v) => r.UseKeepAlive = v)  { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
+
+            AddControlBinder(new TextBoxStringBinder<RebroadcastSettings>(RebroadcastSettings, textBoxName,            r => r.Name,             (r,v) => r.Name = v)                { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new TextBoxStringBinder<RebroadcastSettings>(RebroadcastSettings, textBoxTransmitAddress, r => r.TransmitAddress,  (r,v) => r.TransmitAddress = v));
+            AddControlBinder(new TextBoxStringBinder<RebroadcastSettings>(RebroadcastSettings, textBoxPassphrase,      r => r.Passphrase,       (r,v) => r.Passphrase = v));
+
+            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericPort,            r => r.Port,                            (r,v) => r.Port = v));
+            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericIdleTimeout,     r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IdleTimeoutMilliseconds) });
+            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,                    (r,v) => r.StaleSeconds = v));
+
+            AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>(RebroadcastSettings, comboBoxReceiver, SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
+
+            AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings,           comboBoxFormat,         r => r.Format,          (r,v) => r.Format = v,          r => Describe.RebroadcastFormat(r)));
+            AddControlBinder(new ComboBoxEnumBinder<Access, DefaultAccess>                  (RebroadcastSettings.Access,    comboBoxDefaultAccess,  r => r.DefaultAccess,   (r,v) => r.DefaultAccess = v,   r => Describe.DefaultAccess(r))         { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
             bindingCidrList.DataSource = RebroadcastSettings.Access.Addresses;
         }
 
@@ -141,18 +145,6 @@ namespace VirtualRadar.WinForms.SettingPage
         }
 
         /// <summary>
-        /// Called when the user changes the default access.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void comboBoxDefaultAccess_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var access = RebroadcastSettings.Access.DefaultAccess;
-            bindingCidrList.Enabled = access != DefaultAccess.Unrestricted;
-            labelCidrList.Text = String.Format("{0}:", access == DefaultAccess.Allow ? Strings.DenyTheseAddresses : Strings.AllowTheseAddresses);
-        }
-
-        /// <summary>
         /// Enables or disables controls.
         /// </summary>
         private void EnableDisableControls()
@@ -160,6 +152,10 @@ namespace VirtualRadar.WinForms.SettingPage
             textBoxTransmitAddress.Enabled = RebroadcastSettings.IsTransmitter;
             groupBoxAccessControl.Enabled = !RebroadcastSettings.IsTransmitter;
             numericIdleTimeout.Enabled = !RebroadcastSettings.UseKeepAlive;
+
+            var access = RebroadcastSettings.Access.DefaultAccess;
+            bindingCidrList.Enabled = access != DefaultAccess.Unrestricted;
+            labelCidrList.Text = String.Format("{0}:", access == DefaultAccess.Allow ? Strings.DenyTheseAddresses : Strings.AllowTheseAddresses);
         }
 
         /// <summary>
@@ -169,10 +165,19 @@ namespace VirtualRadar.WinForms.SettingPage
         internal override void ConfigurationChanged(ConfigurationListenerEventArgs args)
         {
             base.ConfigurationChanged(args);
-            if(args.Record == PageObject && SettingsView != null && this.IsHandleCreated) {
-                if(args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IsTransmitter) ||
-                   args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive)) {
-                    EnableDisableControls();
+
+            if(SettingsView != null && this.IsHandleCreated) {
+                if(args.Record == PageObject) {
+                    if(args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IsTransmitter) ||
+                       args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive)) {
+                        EnableDisableControls();
+                    }
+                }
+
+                if(Object.ReferenceEquals(args.Record, RebroadcastSettings.Access)) {
+                    if(args.PropertyName == PropertyHelper.ExtractName<Access>(r => r.DefaultAccess)) {
+                        EnableDisableControls();
+                    }
                 }
             }
         }

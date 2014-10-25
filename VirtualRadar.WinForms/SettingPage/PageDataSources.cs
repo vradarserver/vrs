@@ -11,15 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.View;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -52,11 +54,15 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, fileDatabaseFileName,              r => r.Configuration.BaseStationSettings.DatabaseFileName,          r => r.FileName);
-            AddBinding(SettingsView, folderFlags,                       r => r.Configuration.BaseStationSettings.OperatorFlagsFolder,       r => r.Folder);
-            AddBinding(SettingsView, folderSilhouettes,                 r => r.Configuration.BaseStationSettings.SilhouettesFolder,         r => r.Folder);
-            AddBinding(SettingsView, folderPictures,                    r => r.Configuration.BaseStationSettings.PicturesFolder,            r => r.Folder);
-            AddBinding(SettingsView, checkBoxSearchPictureSubFolders,   r => r.Configuration.BaseStationSettings.SearchPictureSubFolders,   r => r.Checked);
+            var baseStationSettings = SettingsView.Configuration.BaseStationSettings;
+
+            AddControlBinder(new FileNameStringBinder<BaseStationSettings>(baseStationSettings, fileDatabaseFileName,    r => r.DatabaseFileName,   (r,v) => r.DatabaseFileName = v));
+
+            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderFlags,                       r => r.OperatorFlagsFolder,    (r,v) => r.OperatorFlagsFolder = v));
+            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderSilhouettes,                 r => r.SilhouettesFolder,      (r,v) => r.SilhouettesFolder = v));
+            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderPictures,                    r => r.PicturesFolder,         (r,v) => r.PicturesFolder = v));
+
+            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxSearchPictureSubFolders,   r => r.SearchPictureSubFolders,    (r,v) => r.SearchPictureSubFolders = v));
         }
 
         /// <summary>

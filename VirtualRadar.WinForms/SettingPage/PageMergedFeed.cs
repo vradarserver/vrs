@@ -16,11 +16,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Controls;
-using VirtualRadar.Localisation;
-using VirtualRadar.Interface.View;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -78,10 +80,13 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(MergedFeed, checkBoxEnabled,                         r => r.Enabled,                         r => r.Checked);
-            AddBinding(MergedFeed, textBoxName,                             r => r.Name,                            r => r.Text,    DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(MergedFeed, numericIcaoTimeout,                      r => r.IcaoTimeout,                     r => r.Value,   format: MillisecondsToSeconds_Format, parse: MillisecondsToSeconds_Parse);
-            AddBinding(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,    r => r.IgnoreAircraftWithNoPosition,    r => r.Checked);
+
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxEnabled,                        r => r.Enabled,                         (r,v) => r.Enabled = v));
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,   r => r.IgnoreAircraftWithNoPosition,    (r,v) => r.IgnoreAircraftWithNoPosition = v));
+
+            AddControlBinder(new TextBoxStringBinder<MergedFeed>(MergedFeed,    textBoxName,    r => r.Name,    (r,v) => r.Name = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
+            AddControlBinder(new NumericIntBinder<MergedFeed>(MergedFeed,   numericIcaoTimeout, r => r.IcaoTimeout / 1000, (r,v) => r.IcaoTimeout = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<MergedFeed>(r => r.IcaoTimeout) });
 
             listReceiverIds.DataSource = CreateListBindingSource<Receiver>(SettingsView.Configuration.Receivers);
             listReceiverIds.CheckedSubset = MergedFeed.ReceiverIds;

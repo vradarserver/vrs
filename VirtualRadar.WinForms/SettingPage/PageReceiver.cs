@@ -109,6 +109,7 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
+
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled,         r => r.Enabled,         (r,v) => r.Enabled = v));
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxIsPassive,       r => r.IsPassive,       (r,v) => r.IsPassive = v)       { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxUseKeepAlive,    r => r.UseKeepAlive,    (r,v) => r.UseKeepAlive = v)    { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
@@ -219,6 +220,8 @@ namespace VirtualRadar.WinForms.SettingPage
                 case ConnectionType.TCP: Height = panelConnectionTypeSettings.Top + groupBoxAccessControl.Top + groupBoxAccessControl.Height; break;
                 default:                 throw new NotImplementedException();
             }
+
+            EnableDisableControls();
         }
 
         private void EnableDisableControls()
@@ -226,6 +229,10 @@ namespace VirtualRadar.WinForms.SettingPage
             numericIdleTimeout.Enabled = !Receiver.UseKeepAlive;
             textBoxAddress.Enabled = !Receiver.IsPassive;
             groupBoxAccessControl.Enabled = Receiver.IsPassive;
+
+            var access = Receiver.Access.DefaultAccess;
+            bindingCidrList.Enabled = access != DefaultAccess.Unrestricted;
+            labelCidrList.Text = String.Format("{0}:", access == DefaultAccess.Allow ? Strings.DenyTheseAddresses : Strings.AllowTheseAddresses);
         }
 
         /// <summary>
@@ -242,6 +249,12 @@ namespace VirtualRadar.WinForms.SettingPage
                     } else if(args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive)) {
                         EnableDisableControls();
                     } else if(args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.IsPassive)) {
+                        EnableDisableControls();
+                    }
+                }
+
+                if(Object.ReferenceEquals(args.Record, Receiver.Access)) {
+                    if(args.PropertyName == PropertyHelper.ExtractName<Access>(r => r.DefaultAccess)) {
                         EnableDisableControls();
                     }
                 }
@@ -274,13 +287,6 @@ namespace VirtualRadar.WinForms.SettingPage
         private void buttonTestConnection_Click(object sender, EventArgs e)
         {
             SettingsView.RaiseTestConnectionClicked(new EventArgs<Receiver>(Receiver));
-        }
-
-        private void comboBoxDefaultAccess_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var access = Receiver.Access.DefaultAccess;
-            bindingCidrList.Enabled = access != DefaultAccess.Unrestricted;
-            labelCidrList.Text = String.Format("{0}:", access == DefaultAccess.Allow ? Strings.DenyTheseAddresses : Strings.AllowTheseAddresses);
         }
     }
 }

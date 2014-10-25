@@ -11,14 +11,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
-using VirtualRadar.Interface.View;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -48,30 +50,25 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
-        protected override void InitialiseControls()
-        {
-            base.InitialiseControls();
-            var voiceNames = SettingsView.GetVoiceNames().Where(r => r != null);
-            comboBoxTextToSpeechVoice.DataSource = CreateNameValueSource<string>(voiceNames);
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, checkBoxAutomaticallyDownloadNewRoutes,            r => r.Configuration.FlightRouteSettings.AutoUpdateEnabled,         r => r.Checked);
-            AddBinding(SettingsView, checkBoxCheckForNewVersions,                       r => r.Configuration.VersionCheckSettings.CheckAutomatically,       r => r.Checked);
-            AddBinding(SettingsView, numericDaysBetweenChecks,                          r => r.Configuration.VersionCheckSettings.CheckPeriodDays,          r => r.Value);
-            AddBinding(SettingsView, numericDurationBeforeAircraftRemovedFromMap,       r => r.Configuration.BaseStationSettings.DisplayTimeoutSeconds,     r => r.Value);
-            AddBinding(SettingsView, numericDurationBeforeAircraftRemovedFromTracking,  r => r.Configuration.BaseStationSettings.TrackingTimeoutSeconds,    r => r.Value);
-            AddBinding(SettingsView, numericDurationOfShortTrails,                      r => r.Configuration.GoogleMapSettings.ShortTrailLengthSeconds,     r => r.Value);
-            AddBinding(SettingsView, checkBoxMinimiseToSystemTray,                      r => r.Configuration.BaseStationSettings.MinimiseToSystemTray,      r => r.Checked);
 
-            AddBinding(SettingsView, checkBoxAudioEnabled,                              r => r.Configuration.AudioSettings.Enabled,                         r => r.Checked);
-            AddBinding(SettingsView, comboBoxTextToSpeechVoice,                         r => r.Configuration.AudioSettings.VoiceName,                       r => r.SelectedValue);
-            AddBinding(SettingsView, numericReadingSpeed,                               r => r.Configuration.AudioSettings.VoiceRate,                       r => r.Value);
+            var configuration = SettingsView.Configuration;
+            var voiceNames = SettingsView.GetVoiceNames().Where(r => r != null).ToList();
+
+            AddControlBinder(new CheckBoxBoolBinder<FlightRouteSettings>    (configuration.FlightRouteSettings,     checkBoxAutomaticallyDownloadNewRoutes, r => r.AutoUpdateEnabled,       (r,v) => r.AutoUpdateEnabled = v));
+            AddControlBinder(new CheckBoxBoolBinder<VersionCheckSettings>   (configuration.VersionCheckSettings,    checkBoxCheckForNewVersions,            r => r.CheckAutomatically,      (r,v) => r.CheckAutomatically = v));
+            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>    (configuration.BaseStationSettings,     checkBoxMinimiseToSystemTray,           r => r.MinimiseToSystemTray,    (r,v) => r.MinimiseToSystemTray = v));
+            AddControlBinder(new CheckBoxBoolBinder<AudioSettings>          (configuration.AudioSettings,           checkBoxAudioEnabled,                   r => r.Enabled,                 (r,v) => r.Enabled = v));
+
+            AddControlBinder(new NumericIntBinder<VersionCheckSettings>     (configuration.VersionCheckSettings,    numericDaysBetweenChecks,                           r => r.CheckPeriodDays,         (r,v) => r.CheckPeriodDays = v));
+            AddControlBinder(new NumericIntBinder<BaseStationSettings>      (configuration.BaseStationSettings,     numericDurationBeforeAircraftRemovedFromMap,        r => r.DisplayTimeoutSeconds,   (r,v) => r.DisplayTimeoutSeconds = v));
+            AddControlBinder(new NumericIntBinder<BaseStationSettings>      (configuration.BaseStationSettings,     numericDurationBeforeAircraftRemovedFromTracking,   r => r.TrackingTimeoutSeconds,  (r,v) => r.TrackingTimeoutSeconds = v));
+            AddControlBinder(new NumericIntBinder<GoogleMapSettings>        (configuration.GoogleMapSettings,       numericDurationOfShortTrails,                       r => r.ShortTrailLengthSeconds, (r,v) => r.ShortTrailLengthSeconds = v));
+            AddControlBinder(new NumericIntBinder<AudioSettings>            (configuration.AudioSettings,           numericReadingSpeed,                                r => r.VoiceRate,               (r,v) => r.VoiceRate = v));
+
+            AddControlBinder(new ComboBoxValueBinder<AudioSettings, string> (configuration.AudioSettings,   comboBoxTextToSpeechVoice,  voiceNames, r => r.VoiceName,   (r,v) => r.VoiceName = v));
         }
 
         /// <summary>

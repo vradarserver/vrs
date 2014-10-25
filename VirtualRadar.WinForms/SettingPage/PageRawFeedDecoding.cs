@@ -11,14 +11,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
-using VirtualRadar.Interface.View;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -51,21 +53,25 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, numericReceiverRange,                          r => r.Configuration.RawDecodingSettings.ReceiverRange,                         r => r.Value);
-            AddBinding(SettingsView, checkBoxSuppressReceiverRangeCheck,            r => r.Configuration.RawDecodingSettings.SuppressReceiverRangeCheck,            r => r.Checked);
-            AddBinding(SettingsView, checkBoxIgnoreMilitaryExtendedSquitter,        r => r.Configuration.RawDecodingSettings.IgnoreMilitaryExtendedSquitter,        r => r.Checked);
-            AddBinding(SettingsView, checkBoxUseLocalDecodeForInitialPosition,      r => r.Configuration.RawDecodingSettings.UseLocalDecodeForInitialPosition,      r => r.Checked);
-            AddBinding(SettingsView, numericAirborneGlobalPositionLimit,            r => r.Configuration.RawDecodingSettings.AirborneGlobalPositionLimit,           r => r.Value);
-            AddBinding(SettingsView, numericFastSurfaceGlobalPositionLimit,         r => r.Configuration.RawDecodingSettings.FastSurfaceGlobalPositionLimit,        r => r.Value);
-            AddBinding(SettingsView, numericSlowSurfaceGlobalPositionLimit,         r => r.Configuration.RawDecodingSettings.SlowSurfaceGlobalPositionLimit,        r => r.Value);
-            AddBinding(SettingsView, numericAcceptableAirborneSpeed,                r => r.Configuration.RawDecodingSettings.AcceptableAirborneSpeed,               r => r.Value);
-            AddBinding(SettingsView, numericAcceptableAirSurfaceTransitionSpeed,    r => r.Configuration.RawDecodingSettings.AcceptableAirSurfaceTransitionSpeed,   r => r.Value);
-            AddBinding(SettingsView, numericAcceptableSurfaceSpeed,                 r => r.Configuration.RawDecodingSettings.AcceptableSurfaceSpeed,                r => r.Value);
-            AddBinding(SettingsView, checkBoxIgnoreCallsignsInBds20,                r => r.Configuration.RawDecodingSettings.IgnoreCallsignsInBds20,                r => r.Checked);
-            AddBinding(SettingsView, numericAcceptIcaoInPI0Count,                   r => r.Configuration.RawDecodingSettings.AcceptIcaoInPI0Count,                  r => r.Value);
-            AddBinding(SettingsView, numericAcceptIcaoInPI0Seconds,                 r => r.Configuration.RawDecodingSettings.AcceptIcaoInPI0Seconds,                r => r.Value);
-            AddBinding(SettingsView, numericAcceptIcaoInNonPICount,                 r => r.Configuration.RawDecodingSettings.AcceptIcaoInNonPICount,                r => r.Value);
-            AddBinding(SettingsView, numericAcceptIcaoInNonPISeconds,               r => r.Configuration.RawDecodingSettings.AcceptIcaoInNonPISeconds,              r => r.Value);
+
+            var settings = SettingsView.Configuration.RawDecodingSettings;
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericReceiverRange,                          r => r.ReceiverRange,                         (r,v) => r.ReceiverRange = v));
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericAirborneGlobalPositionLimit,            r => r.AirborneGlobalPositionLimit,           (r,v) => r.AirborneGlobalPositionLimit = v));
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericFastSurfaceGlobalPositionLimit,         r => r.FastSurfaceGlobalPositionLimit,        (r,v) => r.FastSurfaceGlobalPositionLimit = v));
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericSlowSurfaceGlobalPositionLimit,         r => r.SlowSurfaceGlobalPositionLimit,        (r,v) => r.SlowSurfaceGlobalPositionLimit = v));
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericAcceptIcaoInPI0Count,                   r => r.AcceptIcaoInPI0Count,                  (r,v) => r.AcceptIcaoInPI0Count = v));
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericAcceptIcaoInPI0Seconds,                 r => r.AcceptIcaoInPI0Seconds,                (r,v) => r.AcceptIcaoInPI0Seconds = v));
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericAcceptIcaoInNonPICount,                 r => r.AcceptIcaoInNonPICount,                (r,v) => r.AcceptIcaoInNonPICount = v));
+            AddControlBinder(new NumericIntBinder<RawDecodingSettings>(settings, numericAcceptIcaoInNonPISeconds,               r => r.AcceptIcaoInNonPISeconds,              (r,v) => r.AcceptIcaoInNonPISeconds = v));
+
+            AddControlBinder(new NumericDoubleBinder<RawDecodingSettings>(settings, numericAcceptableAirborneSpeed,             r => r.AcceptableAirborneSpeed,               (r,v) => r.AcceptableAirborneSpeed = v));
+            AddControlBinder(new NumericDoubleBinder<RawDecodingSettings>(settings, numericAcceptableAirSurfaceTransitionSpeed, r => r.AcceptableAirSurfaceTransitionSpeed,   (r,v) => r.AcceptableAirSurfaceTransitionSpeed = v));
+            AddControlBinder(new NumericDoubleBinder<RawDecodingSettings>(settings, numericAcceptableSurfaceSpeed,              r => r.AcceptableSurfaceSpeed,                (r,v) => r.AcceptableSurfaceSpeed = v));
+
+            AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxSuppressReceiverRangeCheck,          r => r.SuppressReceiverRangeCheck,            (r,v) => r.SuppressReceiverRangeCheck = v));
+            AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreMilitaryExtendedSquitter,      r => r.IgnoreMilitaryExtendedSquitter,        (r,v) => r.IgnoreMilitaryExtendedSquitter = v));
+            AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxUseLocalDecodeForInitialPosition,    r => r.UseLocalDecodeForInitialPosition,      (r,v) => r.UseLocalDecodeForInitialPosition = v));
+            AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreCallsignsInBds20,              r => r.IgnoreCallsignsInBds20,                (r,v) => r.IgnoreCallsignsInBds20 = v));
         }
 
         /// <summary>

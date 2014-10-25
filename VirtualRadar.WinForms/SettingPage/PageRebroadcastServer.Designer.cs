@@ -124,14 +124,12 @@
             // 
             // comboBoxFormat
             // 
-            this.comboBoxFormat.DisplayMember = "Name";
             this.comboBoxFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFormat.FormattingEnabled = true;
             this.comboBoxFormat.Location = new System.Drawing.Point(200, 76);
             this.comboBoxFormat.Name = "comboBoxFormat";
             this.comboBoxFormat.Size = new System.Drawing.Size(150, 21);
             this.comboBoxFormat.TabIndex = 6;
-            this.comboBoxFormat.ValueMember = "Value";
             // 
             // label4
             // 
@@ -144,14 +142,12 @@
             // 
             // comboBoxReceiver
             // 
-            this.comboBoxReceiver.DisplayMember = "Name";
             this.comboBoxReceiver.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxReceiver.FormattingEnabled = true;
             this.comboBoxReceiver.Location = new System.Drawing.Point(200, 49);
             this.comboBoxReceiver.Name = "comboBoxReceiver";
             this.comboBoxReceiver.Size = new System.Drawing.Size(150, 21);
             this.comboBoxReceiver.TabIndex = 4;
-            this.comboBoxReceiver.ValueMember = "UniqueId";
             // 
             // checkBoxEnabled
             // 
@@ -219,15 +215,12 @@
             // 
             // comboBoxDefaultAccess
             // 
-            this.comboBoxDefaultAccess.DisplayMember = "Name";
             this.comboBoxDefaultAccess.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDefaultAccess.FormattingEnabled = true;
             this.comboBoxDefaultAccess.Location = new System.Drawing.Point(197, 19);
             this.comboBoxDefaultAccess.Name = "comboBoxDefaultAccess";
             this.comboBoxDefaultAccess.Size = new System.Drawing.Size(150, 21);
             this.comboBoxDefaultAccess.TabIndex = 1;
-            this.comboBoxDefaultAccess.ValueMember = "Value";
-            this.comboBoxDefaultAccess.SelectedIndexChanged += new System.EventHandler(this.comboBoxDefaultAccess_SelectedIndexChanged);
             // 
             // label5
             // 
