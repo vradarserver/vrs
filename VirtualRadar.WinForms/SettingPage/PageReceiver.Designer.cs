@@ -190,14 +190,12 @@
             // 
             // comboBoxSerialHandshake
             // 
-            this.comboBoxSerialHandshake.DisplayMember = "Name";
             this.comboBoxSerialHandshake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialHandshake.FormattingEnabled = true;
             this.comboBoxSerialHandshake.Location = new System.Drawing.Point(197, 154);
             this.comboBoxSerialHandshake.Name = "comboBoxSerialHandshake";
             this.comboBoxSerialHandshake.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialHandshake.TabIndex = 11;
-            this.comboBoxSerialHandshake.ValueMember = "Value";
             // 
             // label11
             // 
@@ -237,25 +235,21 @@
             // 
             // comboBoxConnectionType
             // 
-            this.comboBoxConnectionType.DisplayMember = "Name";
             this.comboBoxConnectionType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxConnectionType.FormattingEnabled = true;
             this.comboBoxConnectionType.Location = new System.Drawing.Point(200, 109);
             this.comboBoxConnectionType.Name = "comboBoxConnectionType";
             this.comboBoxConnectionType.Size = new System.Drawing.Size(150, 21);
             this.comboBoxConnectionType.TabIndex = 10;
-            this.comboBoxConnectionType.ValueMember = "Value";
             // 
             // comboBoxSerialParity
             // 
-            this.comboBoxSerialParity.DisplayMember = "Name";
             this.comboBoxSerialParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialParity.FormattingEnabled = true;
             this.comboBoxSerialParity.Location = new System.Drawing.Point(197, 127);
             this.comboBoxSerialParity.Name = "comboBoxSerialParity";
             this.comboBoxSerialParity.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialParity.TabIndex = 9;
-            this.comboBoxSerialParity.ValueMember = "Value";
             // 
             // label10
             // 
@@ -277,14 +271,12 @@
             // 
             // comboBoxSerialStopBits
             // 
-            this.comboBoxSerialStopBits.DisplayMember = "Name";
             this.comboBoxSerialStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialStopBits.FormattingEnabled = true;
             this.comboBoxSerialStopBits.Location = new System.Drawing.Point(197, 100);
             this.comboBoxSerialStopBits.Name = "comboBoxSerialStopBits";
             this.comboBoxSerialStopBits.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialStopBits.TabIndex = 7;
-            this.comboBoxSerialStopBits.ValueMember = "Value";
             // 
             // label9
             // 
@@ -382,14 +374,12 @@
             // 
             // comboBoxSerialComPort
             // 
-            this.comboBoxSerialComPort.DisplayMember = "Name";
             this.comboBoxSerialComPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSerialComPort.FormattingEnabled = true;
             this.comboBoxSerialComPort.Location = new System.Drawing.Point(197, 19);
             this.comboBoxSerialComPort.Name = "comboBoxSerialComPort";
             this.comboBoxSerialComPort.Size = new System.Drawing.Size(150, 21);
             this.comboBoxSerialComPort.TabIndex = 1;
-            this.comboBoxSerialComPort.ValueMember = "Value";
             // 
             // groupBoxNetwork
             // 
@@ -516,14 +506,12 @@
             // 
             // comboBoxDataSource
             // 
-            this.comboBoxDataSource.DisplayMember = "Name";
             this.comboBoxDataSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDataSource.FormattingEnabled = true;
             this.comboBoxDataSource.Location = new System.Drawing.Point(200, 55);
             this.comboBoxDataSource.Name = "comboBoxDataSource";
             this.comboBoxDataSource.Size = new System.Drawing.Size(150, 21);
             this.comboBoxDataSource.TabIndex = 5;
-            this.comboBoxDataSource.ValueMember = "Value";
             // 
             // panelConnectionTypeSettings
             // 
@@ -573,15 +561,12 @@
             // 
             // comboBoxDefaultAccess
             // 
-            this.comboBoxDefaultAccess.DisplayMember = "Name";
             this.comboBoxDefaultAccess.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDefaultAccess.FormattingEnabled = true;
             this.comboBoxDefaultAccess.Location = new System.Drawing.Point(197, 19);
             this.comboBoxDefaultAccess.Name = "comboBoxDefaultAccess";
             this.comboBoxDefaultAccess.Size = new System.Drawing.Size(150, 21);
             this.comboBoxDefaultAccess.TabIndex = 1;
-            this.comboBoxDefaultAccess.ValueMember = "Value";
-            this.comboBoxDefaultAccess.SelectedIndexChanged += new System.EventHandler(this.comboBoxDefaultAccess_SelectedIndexChanged);
             // 
             // label17
             // 

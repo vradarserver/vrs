@@ -17,6 +17,14 @@ For simple "one model property <-> one control property" cases there are
 a bunch of binders, all based on ValueBinder. ValueBinder assumes that
 the model implements INotifyPropertyChanged. The binders based on it are:
     CheckBoxBoolBinder
+    FileNameStringBinder
+    FolderStringBinder
     NumericIntBinder
+    NumericDoubleBinder
     TextBoxStringBinder
 
+For "one model property <-> one value from a list of value" property cases
+there is a ValueFromListBinder, from which a bunch of control binder derive:
+    ComboBoxBinder          <-- list can be anything, defaults to simple value
+    ComboBoxValueBinder     <-- list contains simple values; ints, strings etc.
+    ComboBoxEnumBinder      <-- list built automatically from enum values

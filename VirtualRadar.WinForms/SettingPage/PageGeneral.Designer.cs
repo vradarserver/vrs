@@ -231,13 +231,11 @@
             // 
             // comboBoxTextToSpeechVoice
             // 
-            this.comboBoxTextToSpeechVoice.DisplayMember = "Name";
             this.comboBoxTextToSpeechVoice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTextToSpeechVoice.Location = new System.Drawing.Point(200, 42);
             this.comboBoxTextToSpeechVoice.Name = "comboBoxTextToSpeechVoice";
             this.comboBoxTextToSpeechVoice.Size = new System.Drawing.Size(160, 21);
             this.comboBoxTextToSpeechVoice.TabIndex = 2;
-            this.comboBoxTextToSpeechVoice.ValueMember = "Value";
             // 
             // label1
             // 
