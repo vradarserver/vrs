@@ -19,10 +19,11 @@ using System.Windows.Forms;
 namespace VirtualRadar.WinForms.PortableBinding
 {
     /// <summary>
-    /// Binds a text box to a string property. The text box's content is automatically
-    /// trimmed before being sent to the model.
+    /// Binds a combo box to a set of enum values.
     /// </summary>
-    public class TextBoxStringBinder<TModel> : ValueBinder<TModel, TextBox, string>
+    /// <typeparam name="TModel"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    public class ComboBoxEnumBinder<TModel, TValue> : ComboBoxValueBinder<TModel, TValue>
         where TModel: class, INotifyPropertyChanged
     {
         /// <summary>
@@ -32,29 +33,22 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="control"></param>
         /// <param name="getModelValue"></param>
         /// <param name="setModelValue"></param>
-        public TextBoxStringBinder(TModel model, TextBox control, Expression<Func<TModel, string>> getModelValue, Action<TModel, string> setModelValue)
-            : base(model, control, getModelValue, setModelValue,
-                r => (r.Text ?? "").Trim(),
-                (ctrl, val) => ctrl.Text = (val ?? "").Trim())
+        /// <param name="getEnumDescription"></param>
+        public ComboBoxEnumBinder(TModel model, ComboBox control, Expression<Func<TModel, TValue>> getModelValue, Action<TModel, TValue> setModelValue, Func<TValue, string> getEnumDescription)
+            : base(model, control, null, getModelValue, setModelValue)
         {
+            GetListItemDescription = getEnumDescription;
         }
 
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="eventHandler"></param>
-        protected override void DoHookControlPropertyChanged(EventHandler eventHandler)
+        protected override void DoInitialising()
         {
-            Control.TextChanged += eventHandler;
-        }
+            var list = Enum.GetValues(typeof(TValue)).OfType<TValue>().ToList();
+            List = list;
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="eventHandler"></param>
-        protected override void DoUnhookControlPropertyChanged(EventHandler eventHandler)
-        {
-            Control.TextChanged -= eventHandler;
+            base.DoInitialising();
         }
     }
 }

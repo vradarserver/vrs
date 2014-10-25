@@ -35,9 +35,20 @@ namespace VirtualRadar.WinForms.PortableBinding
             return Description;
         }
 
+        public bool AreItemDescriptionEqual(T item, string description)
+        {
+            return Object.Equals(Item, item) && String.Equals(Description, description);
+        }
+
         public override bool Equals(object obj)
         {
-            return Object.Equals(Item, obj);
+            var result = Object.ReferenceEquals(this, obj);
+            if(!result) {
+                var other = obj as ItemDescription<T>;
+                result = other != null && Object.Equals(Item, other.Item) && String.Equals(Description, other.Description);
+            }
+
+            return result;
         }
 
         public override int GetHashCode()

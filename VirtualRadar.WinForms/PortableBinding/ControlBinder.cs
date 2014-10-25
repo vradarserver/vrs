@@ -52,7 +52,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <summary>
         /// True if changes are not to be copied between the control and the model.
         /// </summary>
-        private bool _UpdatesLocked;
+        protected bool _UpdatesLocked;
         #endregion
 
         #region Properties
@@ -144,14 +144,14 @@ namespace VirtualRadar.WinForms.PortableBinding
         public void Initialise()
         {
             if(!Initialised) {
-                Initialised = true;
-
                 DoInitialising();
 
                 HookModel();
                 HookControl();
 
                 InitialiseControl();
+
+                Initialised = true;
             }
         }
         #endregion

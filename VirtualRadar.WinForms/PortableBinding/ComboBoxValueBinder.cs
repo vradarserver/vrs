@@ -19,10 +19,12 @@ using System.Windows.Forms;
 namespace VirtualRadar.WinForms.PortableBinding
 {
     /// <summary>
-    /// Binds a text box to a string property. The text box's content is automatically
-    /// trimmed before being sent to the model.
+    /// A binder between a combo box and a list of values, where the type of the value is also
+    /// the type that we want to copy to and from the model.
     /// </summary>
-    public class TextBoxStringBinder<TModel> : ValueBinder<TModel, TextBox, string>
+    /// <typeparam name="TModel"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    public class ComboBoxValueBinder<TModel, TValue> : ComboBoxBinder<TModel, TValue, TValue>
         where TModel: class, INotifyPropertyChanged
     {
         /// <summary>
@@ -30,31 +32,12 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// </summary>
         /// <param name="model"></param>
         /// <param name="control"></param>
+        /// <param name="list"></param>
         /// <param name="getModelValue"></param>
         /// <param name="setModelValue"></param>
-        public TextBoxStringBinder(TModel model, TextBox control, Expression<Func<TModel, string>> getModelValue, Action<TModel, string> setModelValue)
-            : base(model, control, getModelValue, setModelValue,
-                r => (r.Text ?? "").Trim(),
-                (ctrl, val) => ctrl.Text = (val ?? "").Trim())
+        public ComboBoxValueBinder(TModel model, ComboBox control, IList<TValue> list, Expression<Func<TModel, TValue>> getModelValue, Action<TModel, TValue> setModelValue)
+            : base(model, control, list, getModelValue, setModelValue)
         {
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="eventHandler"></param>
-        protected override void DoHookControlPropertyChanged(EventHandler eventHandler)
-        {
-            Control.TextChanged += eventHandler;
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="eventHandler"></param>
-        protected override void DoUnhookControlPropertyChanged(EventHandler eventHandler)
-        {
-            Control.TextChanged -= eventHandler;
         }
     }
 }

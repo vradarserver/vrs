@@ -21,7 +21,7 @@ namespace VirtualRadar.WinForms.PortableBinding
     /// <summary>
     /// Binds a boolean property on a model to a checkbox control.
     /// </summary>
-    public class CheckBoxBoolBinder<TModel> : SimpleValueBinder<TModel, CheckBox, bool>
+    public class CheckBoxBoolBinder<TModel> : ValueBinder<TModel, CheckBox, bool>
         where TModel: class, INotifyPropertyChanged
     {
         /// <summary>

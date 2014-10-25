@@ -246,11 +246,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PortableBinding\CheckBoxBoolBinder.cs" />
+    <Compile Include="PortableBinding\ComboBoxEnumBinder.cs" />
+    <Compile Include="PortableBinding\ComboBoxValueBinder.cs" />
+    <Compile Include="PortableBinding\ComboBoxBinder.cs" />
     <Compile Include="PortableBinding\ControlBinder.cs" />
     <Compile Include="PortableBinding\ItemDescription.cs" />
+    <Compile Include="PortableBinding\ItemDescriptionList.cs" />
     <Compile Include="PortableBinding\NumericIntBinder.cs" />
-    <Compile Include="PortableBinding\SimpleValueBinder.cs" />
+    <Compile Include="PortableBinding\ValueBinder.cs" />
     <Compile Include="PortableBinding\TextBoxStringBinder.cs" />
+    <Compile Include="PortableBinding\ValueFromListBinder.cs" />
     <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>
