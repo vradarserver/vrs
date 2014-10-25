@@ -22,6 +22,7 @@ using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -70,9 +71,6 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            comboBoxWebSiteReceiverId.DataSource =          CreateSortingBindingSource(SettingsView.CombinedFeed, r => r.Name);
-            comboBoxClosestAircraftReceiverId.DataSource =  CreateSortingBindingSource(SettingsView.CombinedFeed, r => r.Name);
-            comboBoxFsxReceiverId.DataSource =              CreateSortingBindingSource(SettingsView.CombinedFeed, r => r.Name);
         }
 
         /// <summary>
@@ -81,9 +79,12 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, comboBoxWebSiteReceiverId,         r => r.Configuration.GoogleMapSettings.WebSiteReceiverId,           r => r.SelectedValue);
-            AddBinding(SettingsView, comboBoxClosestAircraftReceiverId, r => r.Configuration.GoogleMapSettings.ClosestAircraftReceiverId,   r => r.SelectedValue);
-            AddBinding(SettingsView, comboBoxFsxReceiverId,             r => r.Configuration.GoogleMapSettings.FlightSimulatorXReceiverId,  r => r.SelectedValue);
+
+            var combinedFeeds = SettingsView.CombinedFeed;
+            var settings = SettingsView.Configuration.GoogleMapSettings;
+            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxWebSiteReceiverId,         combinedFeeds,   r => r.WebSiteReceiverId,           (r,v) => r.WebSiteReceiverId = v)           { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
+            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxClosestAircraftReceiverId, combinedFeeds,   r => r.ClosestAircraftReceiverId,   (r,v) => r.ClosestAircraftReceiverId = v)   { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
+            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxFsxReceiverId,             combinedFeeds,   r => r.FlightSimulatorXReceiverId,  (r,v) => r.FlightSimulatorXReceiverId = v)  { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
 
             _ListHelper = new RecordListHelper<Receiver,PageReceiver>(this, listReceivers, SettingsView.Configuration.Receivers);
         }

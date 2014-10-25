@@ -21,6 +21,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -78,9 +79,10 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(ReceiverLocation, textBoxName,       r => r.Name,        r => r.Text,    DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(ReceiverLocation, numericLatitude,   r => r.Latitude,    r => r.Value,   DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(ReceiverLocation, numericLongitude,  r => r.Longitude,   r => r.Value,   DataSourceUpdateMode.OnPropertyChanged);
+            AddControlBinder(new TextBoxStringBinder<ReceiverLocation>(ReceiverLocation, textBoxName, r => r.Name, (r,v) => r.Name = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
+            AddControlBinder(new NumericDoubleBinder<ReceiverLocation>(ReceiverLocation, numericLatitude,   r => r.Latitude,    (r,v) => r.Latitude = v)    { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new NumericDoubleBinder<ReceiverLocation>(ReceiverLocation, numericLongitude,  r => r.Longitude,   (r,v) => r.Longitude = v)   { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             var mapBindingSource = new BindingSource();
             mapBindingSource.DataSource = ReceiverLocation;

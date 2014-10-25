@@ -11,14 +11,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
-using VirtualRadar.Interface.View;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -60,19 +62,21 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, checkBoxEnableUPnp,                        r => r.Configuration.WebServerSettings.EnableUPnp,                  r => r.Checked);
-            AddBinding(SettingsView, checkBoxResetPortAssignmentsOnStartup,     r => r.Configuration.WebServerSettings.IsOnlyInternetServerOnLan,   r => r.Checked);
-            AddBinding(SettingsView, checkBoxAutoStartUPnP,                     r => r.Configuration.WebServerSettings.AutoStartUPnP,               r => r.Checked);
-            AddBinding(SettingsView, numericUPnpPort,                           r => r.Configuration.WebServerSettings.UPnpPort,                    r => r.Value);
+            var config = SettingsView.Configuration;
 
-            AddBinding(SettingsView, numericInternetUserIdleTimeout,            r => r.Configuration.InternetClientSettings.TimeoutMinutes,                 r => r.Value);
-            AddBinding(SettingsView, checkBoxInternetUsersCanRunReports,        r => r.Configuration.InternetClientSettings.CanRunReports,                  r => r.Checked);
-            AddBinding(SettingsView, checkBoxInternetUsersCanListenToAudio,     r => r.Configuration.InternetClientSettings.CanPlayAudio,                   r => r.Checked);
-            AddBinding(SettingsView, checkBoxInternetUsersCanViewPictures,      r => r.Configuration.InternetClientSettings.CanShowPictures,                r => r.Checked);
-            AddBinding(SettingsView, checkBoxInternetUserCanSeeLabels,          r => r.Configuration.InternetClientSettings.CanShowPinText,                 r => r.Checked);
-            AddBinding(SettingsView, checkBoxInternetClientCanSubmitRoutes,     r => r.Configuration.InternetClientSettings.CanSubmitRoutes,                r => r.Checked);
-            AddBinding(SettingsView, checkBoxInternetClientCanShowPolarPlots,   r => r.Configuration.InternetClientSettings.CanShowPolarPlots,              r => r.Checked);
-            AddBinding(SettingsView, checkBoxAllowInternetProximityGadgets,     r => r.Configuration.InternetClientSettings.AllowInternetProximityGadgets,  r => r.Checked);
+            AddControlBinder(new NumericIntBinder<WebServerSettings>        (config.WebServerSettings,      numericUPnpPort,                r => r.UPnpPort,        (r,v) => r.UPnpPort = v));
+            AddControlBinder(new NumericIntBinder<InternetClientSettings>   (config.InternetClientSettings, numericInternetUserIdleTimeout, r => r.TimeoutMinutes,  (r,v) => r.TimeoutMinutes = v));
+
+            AddControlBinder(new CheckBoxBoolBinder<WebServerSettings>      (config.WebServerSettings,      checkBoxEnableUPnp,                        r => r.EnableUPnp,                       (r,v) => r.EnableUPnp = v));
+            AddControlBinder(new CheckBoxBoolBinder<WebServerSettings>      (config.WebServerSettings,      checkBoxResetPortAssignmentsOnStartup,     r => r.IsOnlyInternetServerOnLan,        (r,v) => r.IsOnlyInternetServerOnLan = v));
+            AddControlBinder(new CheckBoxBoolBinder<WebServerSettings>      (config.WebServerSettings,      checkBoxAutoStartUPnP,                     r => r.AutoStartUPnP,                    (r,v) => r.AutoStartUPnP = v));
+            AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetUsersCanRunReports,        r => r.CanRunReports,                    (r,v) => r.CanRunReports = v));
+            AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetUsersCanListenToAudio,     r => r.CanPlayAudio,                     (r,v) => r.CanPlayAudio = v));
+            AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetUsersCanViewPictures,      r => r.CanShowPictures,                  (r,v) => r.CanShowPictures = v));
+            AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetUserCanSeeLabels,          r => r.CanShowPinText,                   (r,v) => r.CanShowPinText = v));
+            AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetClientCanSubmitRoutes,     r => r.CanSubmitRoutes,                  (r,v) => r.CanSubmitRoutes = v));
+            AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetClientCanShowPolarPlots,   r => r.CanShowPolarPlots,                (r,v) => r.CanShowPolarPlots = v));
+            AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxAllowInternetProximityGadgets,     r => r.AllowInternetProximityGadgets,    (r,v) => r.AllowInternetProximityGadgets = v));
         }
 
         /// <summary>

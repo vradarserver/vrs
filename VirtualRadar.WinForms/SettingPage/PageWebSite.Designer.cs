@@ -87,14 +87,12 @@
             // 
             // comboBoxInitialSpeedUnits
             // 
-            this.comboBoxInitialSpeedUnits.DisplayMember = "Name";
             this.comboBoxInitialSpeedUnits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInitialSpeedUnits.FormattingEnabled = true;
             this.comboBoxInitialSpeedUnits.Location = new System.Drawing.Point(200, 125);
             this.comboBoxInitialSpeedUnits.Name = "comboBoxInitialSpeedUnits";
             this.comboBoxInitialSpeedUnits.Size = new System.Drawing.Size(150, 21);
             this.comboBoxInitialSpeedUnits.TabIndex = 9;
-            this.comboBoxInitialSpeedUnits.ValueMember = "Value";
             // 
             // label2
             // 
@@ -107,14 +105,12 @@
             // 
             // comboBoxInitialHeightUnits
             // 
-            this.comboBoxInitialHeightUnits.DisplayMember = "Name";
             this.comboBoxInitialHeightUnits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInitialHeightUnits.FormattingEnabled = true;
             this.comboBoxInitialHeightUnits.Location = new System.Drawing.Point(200, 98);
             this.comboBoxInitialHeightUnits.Name = "comboBoxInitialHeightUnits";
             this.comboBoxInitialHeightUnits.Size = new System.Drawing.Size(150, 21);
             this.comboBoxInitialHeightUnits.TabIndex = 7;
-            this.comboBoxInitialHeightUnits.ValueMember = "Value";
             // 
             // label9
             // 
@@ -127,14 +123,12 @@
             // 
             // comboBoxInitialDistanceUnits
             // 
-            this.comboBoxInitialDistanceUnits.DisplayMember = "Name";
             this.comboBoxInitialDistanceUnits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInitialDistanceUnits.FormattingEnabled = true;
             this.comboBoxInitialDistanceUnits.Location = new System.Drawing.Point(200, 71);
             this.comboBoxInitialDistanceUnits.Name = "comboBoxInitialDistanceUnits";
             this.comboBoxInitialDistanceUnits.Size = new System.Drawing.Size(150, 21);
             this.comboBoxInitialDistanceUnits.TabIndex = 5;
-            this.comboBoxInitialDistanceUnits.ValueMember = "Value";
             // 
             // label4
             // 
@@ -157,14 +151,12 @@
             // 
             // comboBoxProxyType
             // 
-            this.comboBoxProxyType.DisplayMember = "Name";
             this.comboBoxProxyType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxProxyType.FormattingEnabled = true;
             this.comboBoxProxyType.Location = new System.Drawing.Point(200, 19);
             this.comboBoxProxyType.Name = "comboBoxProxyType";
             this.comboBoxProxyType.Size = new System.Drawing.Size(150, 21);
             this.comboBoxProxyType.TabIndex = 1;
-            this.comboBoxProxyType.ValueMember = "Value";
             // 
             // groupBox2
             // 

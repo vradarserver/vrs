@@ -21,6 +21,8 @@ using VirtualRadar.Resources;
 using VirtualRadar.Interface.Settings;
 using System.Net;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.WinForms.PortableBinding;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -67,11 +69,17 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
+            var settings = SettingsView.Configuration.WebServerSettings;
 
-            AddBinding(SettingsView, checkBoxEnabled, r => r.Configuration.WebServerSettings.AuthenticationScheme, r => r.Checked, format: Enabled_Format, parse: Enabled_Parse);
+            AddControlBinder(new CheckBoxBoolBinder<WebServerSettings>(settings, checkBoxEnabled,
+                r =>     r.AuthenticationScheme == AuthenticationSchemes.Basic,
+                (r,v) => r.AuthenticationScheme = v ? AuthenticationSchemes.Basic : AuthenticationSchemes.Anonymous) {
+                    ModelPropertyName = PropertyHelper.ExtractName<WebServerSettings>(r => r.AuthenticationScheme)
+                }
+            );
 
             listUsers.DataSource = CreateListBindingSource<IUser>(SettingsView.Users);
-            listUsers.CheckedSubset = SettingsView.Configuration.WebServerSettings.BasicAuthenticationUserIds;
+            listUsers.CheckedSubset = settings.BasicAuthenticationUserIds;
             listUsers.ExtractSubsetValue = (r) => ((IUser)r).UniqueId;
         }
 

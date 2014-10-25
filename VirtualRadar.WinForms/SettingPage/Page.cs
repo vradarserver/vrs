@@ -275,28 +275,6 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             ;
         }
-
-        /// <summary>
-        /// Binding formatter that converts integer millisecond fields to decimal seconds.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        protected void MillisecondsToSeconds_Format(object sender, ConvertEventArgs args)
-        {
-            var value = (int)args.Value;
-            args.Value = ((decimal)value) / 1000M;
-        }
-
-        /// <summary>
-        /// Binding parser that converts decimal seconds shown in a control to integer milliseconds.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        protected void MillisecondsToSeconds_Parse(object sender, ConvertEventArgs args)
-        {
-            var value = (decimal)args.Value;
-            args.Value = (int)(value * 1000M);
-        }
         #endregion
 
         #region SetValidationFields, GetControlForValidationField
@@ -517,7 +495,7 @@ namespace VirtualRadar.WinForms.SettingPage
         internal virtual void PageSelected()
         {
             // Mono's data binding is flakey at best and completely borked before ~2.10. Even after 2.10
-            // it's failing to raise events that our BindinngListView control relies upon to keep the
+            // it's failing to raise events that our BindingListView control relies upon to keep the
             // display in sync with the list. This workaround only runs under Mono (it would be redundant
             // under Windows) - it looks for BindingListView controls on the page and refreshes their
             // bindings.

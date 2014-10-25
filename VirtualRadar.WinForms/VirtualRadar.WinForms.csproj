@@ -254,6 +254,7 @@
     <Compile Include="PortableBinding\FolderStringBinder.cs" />
     <Compile Include="PortableBinding\ItemDescription.cs" />
     <Compile Include="PortableBinding\ItemDescriptionList.cs" />
+    <Compile Include="PortableBinding\LabelStringBinder.cs" />
     <Compile Include="PortableBinding\NumericDoubleBinder.cs" />
     <Compile Include="PortableBinding\NumericIntBinder.cs" />
     <Compile Include="PortableBinding\ValueBinder.cs" />

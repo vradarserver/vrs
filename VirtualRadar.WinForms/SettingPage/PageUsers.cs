@@ -20,6 +20,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -68,7 +69,8 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, labelUserManager, r => r.UserManager, r => r.Text);
+
+            AddControlBinder(new LabelStringBinder<SettingsView>(SettingsView, labelUserManager, r => r.UserManager, (r,v) => r.UserManager = v));
             _ListHelper = new RecordListHelper<IUser,PageUser>(this, listUsers, SettingsView.Users);
         }
 

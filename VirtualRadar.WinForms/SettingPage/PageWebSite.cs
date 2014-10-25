@@ -11,16 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Localisation;
-using VirtualRadar.Resources;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
+using VirtualRadar.Resources;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -62,10 +63,6 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            comboBoxInitialDistanceUnits.DataSource =   CreateSortingEnumSource<DistanceUnit>(r => Describe.DistanceUnit(r));
-            comboBoxInitialHeightUnits.DataSource =     CreateSortingEnumSource<HeightUnit>(r => Describe.HeightUnit(r));
-            comboBoxInitialSpeedUnits.DataSource =      CreateSortingEnumSource<SpeedUnit>(r => Describe.SpeedUnit(r));
-            comboBoxProxyType.DataSource =              CreateSortingEnumSource<ProxyType>(r => Describe.ProxyType(r));
         }
 
         /// <summary>
@@ -74,19 +71,22 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, numericInitialRefresh,             r => r.Configuration.GoogleMapSettings.InitialRefreshSeconds,   r => r.Value);
-            AddBinding(SettingsView, numericMinimumRefresh,             r => r.Configuration.GoogleMapSettings.MinimumRefreshSeconds,   r => r.Value);
-            AddBinding(SettingsView, comboBoxInitialDistanceUnits,      r => r.Configuration.GoogleMapSettings.InitialDistanceUnit,     r => r.SelectedValue);
-            AddBinding(SettingsView, comboBoxInitialHeightUnits,        r => r.Configuration.GoogleMapSettings.InitialHeightUnit,       r => r.SelectedValue);
-            AddBinding(SettingsView, comboBoxInitialSpeedUnits,         r => r.Configuration.GoogleMapSettings.InitialSpeedUnit,        r => r.SelectedValue);
-            AddBinding(SettingsView, checkBoxPreferIataAirportCodes,    r => r.Configuration.GoogleMapSettings.PreferIataAirportCodes,  r => r.Checked);
+            var settings = SettingsView.Configuration.GoogleMapSettings;
 
-            AddBinding(SettingsView, comboBoxProxyType,                 r => r.Configuration.GoogleMapSettings.ProxyType,           r => r.SelectedValue);
-            AddBinding(SettingsView, checkBoxEnableBundling,            r => r.Configuration.GoogleMapSettings.EnableBundling,      r => r.Checked);
-            AddBinding(SettingsView, checkBoxEnableMinifying,           r => r.Configuration.GoogleMapSettings.EnableMinifying,     r => r.Checked);
-            AddBinding(SettingsView, checkBoxEnableCompression,         r => r.Configuration.GoogleMapSettings.EnableCompression,   r => r.Checked);
+            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxPreferIataAirportCodes,    r => r.PreferIataAirportCodes,  (r,v) => r.PreferIataAirportCodes = v));
+            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableBundling,            r => r.EnableBundling,          (r,v) => r.EnableBundling = v));
+            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableMinifying,           r => r.EnableMinifying,         (r,v) => r.EnableMinifying = v));
+            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableCompression,         r => r.EnableCompression,       (r,v) => r.EnableCompression = v));
 
-            AddBinding(SettingsView, textBoxDirectoryEntryKey,          r => r.Configuration.GoogleMapSettings.DirectoryEntryKey,   r => r.Text);
+            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxDirectoryEntryKey, r => r.DirectoryEntryKey, (r,v) => r.DirectoryEntryKey = v));
+
+            AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericInitialRefresh,   r => r.InitialRefreshSeconds,   (r,v) => r.InitialRefreshSeconds = v));
+            AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericMinimumRefresh,   r => r.MinimumRefreshSeconds,   (r,v) => r.MinimumRefreshSeconds = v));
+
+            AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, DistanceUnit>(settings, comboBoxInitialDistanceUnits, r => r.InitialDistanceUnit, (r,v) => r.InitialDistanceUnit = v,    r => Describe.DistanceUnit(r)));
+            AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, HeightUnit>  (settings, comboBoxInitialHeightUnits,   r => r.InitialHeightUnit,   (r,v) => r.InitialHeightUnit = v,      r => Describe.HeightUnit(r)));
+            AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, SpeedUnit>   (settings, comboBoxInitialSpeedUnits,    r => r.InitialSpeedUnit,    (r,v) => r.InitialSpeedUnit = v,       r => Describe.SpeedUnit(r)));
+            AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, ProxyType>   (settings, comboBoxProxyType,            r => r.ProxyType,           (r,v) => r.ProxyType = v,              r => Describe.ProxyType(r)));
         }
 
         /// <summary>
