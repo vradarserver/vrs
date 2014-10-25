@@ -43,23 +43,19 @@
             // 
             // comboBoxClosestAircraftReceiverId
             // 
-            this.comboBoxClosestAircraftReceiverId.DisplayMember = "Name";
             this.comboBoxClosestAircraftReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxClosestAircraftReceiverId.Location = new System.Drawing.Point(200, 27);
             this.comboBoxClosestAircraftReceiverId.Name = "comboBoxClosestAircraftReceiverId";
             this.comboBoxClosestAircraftReceiverId.Size = new System.Drawing.Size(150, 21);
             this.comboBoxClosestAircraftReceiverId.TabIndex = 10;
-            this.comboBoxClosestAircraftReceiverId.ValueMember = "UniqueId";
             // 
             // comboBoxWebSiteReceiverId
             // 
-            this.comboBoxWebSiteReceiverId.DisplayMember = "Name";
             this.comboBoxWebSiteReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxWebSiteReceiverId.Location = new System.Drawing.Point(200, 0);
             this.comboBoxWebSiteReceiverId.Name = "comboBoxWebSiteReceiverId";
             this.comboBoxWebSiteReceiverId.Size = new System.Drawing.Size(150, 21);
             this.comboBoxWebSiteReceiverId.TabIndex = 8;
-            this.comboBoxWebSiteReceiverId.ValueMember = "UniqueId";
             // 
             // label1
             // 
@@ -90,13 +86,11 @@
             // 
             // comboBoxFsxReceiverId
             // 
-            this.comboBoxFsxReceiverId.DisplayMember = "Name";
             this.comboBoxFsxReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFsxReceiverId.Location = new System.Drawing.Point(200, 54);
             this.comboBoxFsxReceiverId.Name = "comboBoxFsxReceiverId";
             this.comboBoxFsxReceiverId.Size = new System.Drawing.Size(150, 21);
             this.comboBoxFsxReceiverId.TabIndex = 12;
-            this.comboBoxFsxReceiverId.ValueMember = "UniqueId";
             // 
             // listReceivers
             // 

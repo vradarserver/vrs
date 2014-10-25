@@ -43,14 +43,12 @@
             // 
             // comboBoxInitialMapType
             // 
-            this.comboBoxInitialMapType.DisplayMember = "Name";
             this.comboBoxInitialMapType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInitialMapType.FormattingEnabled = true;
             this.comboBoxInitialMapType.Location = new System.Drawing.Point(200, 0);
             this.comboBoxInitialMapType.Name = "comboBoxInitialMapType";
             this.comboBoxInitialMapType.Size = new System.Drawing.Size(120, 21);
             this.comboBoxInitialMapType.TabIndex = 5;
-            this.comboBoxInitialMapType.ValueMember = "Value";
             // 
             // label2
             // 

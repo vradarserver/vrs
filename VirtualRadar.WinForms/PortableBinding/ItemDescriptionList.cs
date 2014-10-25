@@ -122,7 +122,7 @@ namespace VirtualRadar.WinForms.PortableBinding
                     var listDescription = GetDescription(listItem);
 
                     var existingItemDescription = this.Count > listElement ? this[listElement] : null;
-                    if(existingItemDescription == null || existingItemDescription.AreItemDescriptionEqual(listItem, listDescription)) {
+                    if(existingItemDescription == null || !existingItemDescription.AreItemDescriptionEqual(listItem, listDescription)) {
                         hasChanged = true;
                         var listItemDescription = new ItemDescription<T>(listItem, listDescription);
                         if(existingItemDescription == null) this.Add(listItemDescription);

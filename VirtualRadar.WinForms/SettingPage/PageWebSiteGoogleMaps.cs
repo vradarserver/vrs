@@ -11,16 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Localisation;
-using VirtualRadar.Resources;
-using VirtualRadar.Interface.View;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Localisation;
+using VirtualRadar.Resources;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -29,6 +30,15 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebSiteGoogleMaps : Page
     {
+        // List of allowable map types
+        private static readonly string[] _MapTypes = new string[] {
+            "HYBRID",
+            "ROADMAP",
+            "SATELLITE",
+            "TERRAIN",
+            "HIGHCONTRAST",
+        };
+
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -58,13 +68,6 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            comboBoxInitialMapType.DataSource = CreateNameValueSource<string>(new string[] {
-                "HYBRID",
-                "ROADMAP",
-                "SATELLITE",
-                "TERRAIN",
-                "HIGHCONTRAST",
-            }, sortList: false);
         }
 
         /// <summary>
@@ -73,10 +76,14 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(SettingsView, comboBoxInitialMapType,    r => r.Configuration.GoogleMapSettings.InitialMapType,      r => r.SelectedValue,   DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(SettingsView, numericInitialZoom,        r => r.Configuration.GoogleMapSettings.InitialMapZoom,      r => r.Value,           DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(SettingsView, numericInitialLatitude,    r => r.Configuration.GoogleMapSettings.InitialMapLatitude,  r => r.Value,           DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(SettingsView, numericInitialLongitude,   r => r.Configuration.GoogleMapSettings.InitialMapLongitude, r => r.Value,           DataSourceUpdateMode.OnPropertyChanged);
+            var settings = SettingsView.Configuration.GoogleMapSettings;
+
+            AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericInitialZoom, r => r.InitialMapZoom, (r,v) => r.InitialMapZoom = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
+            AddControlBinder(new NumericDoubleBinder<GoogleMapSettings>(settings, numericInitialLatitude,   r => r.InitialMapLatitude,  (r,v) => r.InitialMapLatitude = v)  { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new NumericDoubleBinder<GoogleMapSettings>(settings, numericInitialLongitude,  r => r.InitialMapLongitude, (r,v) => r.InitialMapLongitude = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
+            AddControlBinder(new ComboBoxValueBinder<GoogleMapSettings, string>(settings, comboBoxInitialMapType, _MapTypes, r => r.InitialMapType, (r,v) => r.InitialMapType = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             var mapBindingSource = new BindingSource();
             mapBindingSource.DataSource = SettingsView.Configuration.GoogleMapSettings;

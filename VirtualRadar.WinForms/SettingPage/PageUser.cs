@@ -11,15 +11,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Resources;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
+using VirtualRadar.Resources;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -73,10 +74,12 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            AddBinding(User, checkBoxEnabled,   r => r.Enabled,     r => r.Checked);
-            AddBinding(User, textBoxLoginName,  r => r.LoginName,   r => r.Text,    DataSourceUpdateMode.OnPropertyChanged);
-            AddBinding(User, textBoxPassword,   r => r.UIPassword,  r => r.Text);
-            AddBinding(User, textBoxUserName,   r => r.Name,        r => r.Text);
+
+            AddControlBinder(new CheckBoxBoolBinder<IUser>(User, checkBoxEnabled, r => r.Enabled, (r,v) => r.Enabled = v));
+
+            AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxLoginName, r => r.LoginName,   (r,v) => r.LoginName = v)   { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxPassword,  r => r.UIPassword,  (r,v) => r.UIPassword = v));
+            AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxUserName,  r => r.Name,        (r,v) => r.Name = v));
         }
 
         /// <summary>

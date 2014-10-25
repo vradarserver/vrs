@@ -19,6 +19,7 @@ the model implements INotifyPropertyChanged. The binders based on it are:
     CheckBoxBoolBinder
     FileNameStringBinder
     FolderStringBinder
+    LabelStringBinder
     NumericIntBinder
     NumericDoubleBinder
     TextBoxStringBinder
