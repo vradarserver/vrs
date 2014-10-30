@@ -31,8 +31,6 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageReceivers : Page
     {
-        private RecordListHelper<Receiver, PageReceiver> _ListHelper;
-
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -86,50 +84,22 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxClosestAircraftReceiverId, combinedFeeds,   r => r.ClosestAircraftReceiverId,   (r,v) => r.ClosestAircraftReceiverId = v)   { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
             AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxFsxReceiverId,             combinedFeeds,   r => r.FlightSimulatorXReceiverId,  (r,v) => r.FlightSimulatorXReceiverId = v)  { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
 
-            _ListHelper = new RecordListHelper<Receiver,PageReceiver>(this, listReceivers, SettingsView.Configuration.Receivers);
-        }
+            AddControlBinder(new MasterListToListBinder<Configuration, Receiver>(SettingsView.Configuration, listReceivers, r => r.Receivers) {
+                FetchColumns = (receiver, e) => {
+                    var location = SettingsView == null ? null : SettingsView.Configuration.ReceiverLocations.FirstOrDefault(r => r.UniqueId == receiver.ReceiverLocationId);
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.WebSiteReceiver,          comboBoxWebSiteReceiverId },
-                { ValidationField.ClosestAircraftReceiver,  comboBoxClosestAircraftReceiverId },
-                { ValidationField.FlightSimulatorXReceiver, comboBoxFsxReceiverId },
-                { ValidationField.ReceiverIds,              listReceivers },
+                    e.Checked = receiver.Enabled;
+                    e.ColumnTexts.Add(receiver.Name);
+                    e.ColumnTexts.Add(Describe.DataSource(receiver.DataSource));
+                    e.ColumnTexts.Add(location == null ? "" : location.Name);
+                    e.ColumnTexts.Add(Describe.ConnectionType(receiver.ConnectionType));
+                    e.ColumnTexts.Add(DescribeConnectionParameters(receiver));
+                },
+                AddHandler =                () => SettingsView.CreateReceiver(),
+                AutoDeleteEnabled =         true,
+                EditHandler =               (receiver) => SettingsView.DisplayPageForPageObject(receiver),
+                CheckedChangedHandler =     (receiver, isChecked) => receiver.Enabled = isChecked,
             });
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateInlineHelp()
-        {
-            base.AssociateInlineHelp();
-            SetInlineHelp(comboBoxWebSiteReceiverId,            Strings.WebSiteReceiverId,          Strings.OptionsDescribeWebSiteReceiverId);
-            SetInlineHelp(comboBoxClosestAircraftReceiverId,    Strings.ClosestAircraftReceiverId,  Strings.OptionsDescribeClosestAircraftReceiverId);
-            SetInlineHelp(comboBoxFsxReceiverId,                Strings.FlightSimulatorXReceiverId, Strings.OptionsDescribeFlightSimulatorXReceiverId);
-            SetInlineHelp(listReceivers,                        "",                                 "");
-        }
-
-        #region Receivers list handling
-        private void listReceivers_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs e)
-        {
-            var receiver = (Receiver)e.Record;
-
-            if(receiver != null) {
-                var location = SettingsView == null ? null : SettingsView.Configuration.ReceiverLocations.FirstOrDefault(r => r.UniqueId == receiver.ReceiverLocationId);
-
-                e.Checked = receiver.Enabled;
-                e.ColumnTexts.Add(receiver.Name);
-                e.ColumnTexts.Add(Describe.DataSource(receiver.DataSource));
-                e.ColumnTexts.Add(location == null ? "" : location.Name);
-                e.ColumnTexts.Add(Describe.ConnectionType(receiver.ConnectionType));
-                e.ColumnTexts.Add(DescribeConnectionParameters(receiver));
-            }
         }
 
         private string DescribeConnectionParameters(Receiver receiver)
@@ -160,27 +130,30 @@ namespace VirtualRadar.WinForms.SettingPage
             return result.ToString();
         }
 
-        private void listReceivers_AddClicked(object sender, EventArgs e)
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        protected override void AssociateValidationFields()
         {
-            if(_ListHelper != null) {
-                _ListHelper.AddClicked(() => SettingsView.CreateReceiver());
-            }
+            base.AssociateValidationFields();
+            SetValidationFields(new Dictionary<ValidationField,Control>() {
+                { ValidationField.WebSiteReceiver,          comboBoxWebSiteReceiverId },
+                { ValidationField.ClosestAircraftReceiver,  comboBoxClosestAircraftReceiverId },
+                { ValidationField.FlightSimulatorXReceiver, comboBoxFsxReceiverId },
+                { ValidationField.ReceiverIds,              listReceivers },
+            });
         }
 
-        private void listReceivers_DeleteClicked(object sender, EventArgs e)
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        protected override void AssociateInlineHelp()
         {
-            _ListHelper.DeleteClicked();
+            base.AssociateInlineHelp();
+            SetInlineHelp(comboBoxWebSiteReceiverId,            Strings.WebSiteReceiverId,          Strings.OptionsDescribeWebSiteReceiverId);
+            SetInlineHelp(comboBoxClosestAircraftReceiverId,    Strings.ClosestAircraftReceiverId,  Strings.OptionsDescribeClosestAircraftReceiverId);
+            SetInlineHelp(comboBoxFsxReceiverId,                Strings.FlightSimulatorXReceiverId, Strings.OptionsDescribeFlightSimulatorXReceiverId);
+            SetInlineHelp(listReceivers,                        "",                                 "");
         }
-
-        private void listReceivers_EditClicked(object sender, EventArgs e)
-        {
-            _ListHelper.EditClicked();
-        }
-
-        private void listReceivers_CheckedChanged(object sender, BindingListView.RecordCheckedEventArgs e)
-        {
-            _ListHelper.CheckedChanged(e, (r, enabled) => r.Enabled = enabled);
-        }
-        #endregion
     }
 }

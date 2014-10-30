@@ -164,8 +164,15 @@
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\AutoListViewSorter.cs" />
+    <Compile Include="Controls\ListCheckedEventArgs.cs" />
     <Compile Include="Controls\ListViewPlus.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\MasterListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MasterListView.Designer.cs">
+      <DependentUpon>MasterListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\NamespaceDoc.cs" />
     <Compile Include="Controls\NameValue.cs" />
@@ -196,6 +203,7 @@
     <Compile Include="Controls\FeedStatusControl.Designer.cs">
       <DependentUpon>FeedStatusControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ListContentEventArgs.cs" />
     <Compile Include="Controls\TreeViewPlus.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -255,11 +263,13 @@
     <Compile Include="PortableBinding\ItemDescription.cs" />
     <Compile Include="PortableBinding\ItemDescriptionList.cs" />
     <Compile Include="PortableBinding\LabelStringBinder.cs" />
+    <Compile Include="PortableBinding\MasterListToListBinder.cs" />
     <Compile Include="PortableBinding\NumericDoubleBinder.cs" />
     <Compile Include="PortableBinding\NumericIntBinder.cs" />
     <Compile Include="PortableBinding\ValueBinder.cs" />
     <Compile Include="PortableBinding\TextBoxStringBinder.cs" />
     <Compile Include="PortableBinding\ValueFromListBinder.cs" />
+    <Compile Include="PortableBinding\ValueSubsetOfListBinder.cs" />
     <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>
@@ -512,6 +522,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InvalidPluginsControl.resx">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MasterListView.resx">
+      <DependentUpon>MasterListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PluginDetailPanel.resx">
       <DependentUpon>PluginDetailPanel.cs</DependentUpon>

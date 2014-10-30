@@ -18,7 +18,7 @@ namespace VirtualRadar.Interface.PortableBinding
     /// This was not written because I had nothing better to do. I needed it because Mono's implementation
     /// of BindingList doesn't work. Only the bits of <see cref="IBindingList"/> that I need have been
     /// implemented. I implemented both ObservableCollection and IBindingList because I was using BindingList
-    /// and I want this to work as a drop-in replacement (albeit one that doesn't work with .NET data binding).
+    /// and I want this to work as a drop-in replacement.
     /// </remarks>
     [Serializable]
     public class NotifyList<T> : ObservableCollection<T>, IBindingList, IList, ICollection, IEnumerable, IEnumerable<T>, IRaiseItemChangedEvents
