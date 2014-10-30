@@ -33,7 +33,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBoxFsxReceiverId = new System.Windows.Forms.ComboBox();
-            this.listReceivers = new VirtualRadar.WinForms.Controls.BindingListView();
+            this.listReceivers = new VirtualRadar.WinForms.Controls.MasterListView();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderFormat = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -104,16 +104,10 @@
             this.columnHeaderLocation,
             this.columnHeaderConnection,
             this.columnHeaderConnectionParameters});
-            this.listReceivers.DataSource = null;
             this.listReceivers.Location = new System.Drawing.Point(0, 81);
             this.listReceivers.Name = "listReceivers";
             this.listReceivers.Size = new System.Drawing.Size(636, 273);
             this.listReceivers.TabIndex = 13;
-            this.listReceivers.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listReceivers_FetchRecordContent);
-            this.listReceivers.AddClicked += new System.EventHandler(this.listReceivers_AddClicked);
-            this.listReceivers.DeleteClicked += new System.EventHandler(this.listReceivers_DeleteClicked);
-            this.listReceivers.EditClicked += new System.EventHandler(this.listReceivers_EditClicked);
-            this.listReceivers.CheckedChanged += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordCheckedEventArgs>(this.listReceivers_CheckedChanged);
             // 
             // columnHeaderName
             // 
@@ -164,7 +158,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private Controls.BindingListView listReceivers;
+        private Controls.MasterListView listReceivers;
         private System.Windows.Forms.ColumnHeader columnHeaderName;
         private System.Windows.Forms.ColumnHeader columnHeaderFormat;
         private System.Windows.Forms.ColumnHeader columnHeaderLocation;

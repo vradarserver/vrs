@@ -105,6 +105,7 @@
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
     <Compile Include="BaseStation\IRawMessageTranslator.cs" />
     <Compile Include="AircraftDetail.cs" />
+    <Compile Include="PortableBinding\GenericListWrapper.cs" />
     <Compile Include="PortableBinding\NotifyList.cs" />
     <Compile Include="ByteArrayComparable.cs" />
     <Compile Include="Certainty.cs" />
