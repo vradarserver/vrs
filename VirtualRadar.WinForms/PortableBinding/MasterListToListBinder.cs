@@ -25,6 +25,19 @@ namespace VirtualRadar.WinForms.PortableBinding
     public class MasterListToListBinder<TModel, TListModel> : ControlBinder
         where TListModel: class
     {
+        #region Private Class - Sorter
+        /// <summary>
+        /// The class that handles the sorting of the list view.
+        /// </summary>
+        class Sorter : AutoListViewSorter
+        {
+            public Sorter(MasterListView control, bool showNativeSortIndicators = true) : base(control.ListView, showNativeSortIndicators)
+            {
+                ;
+            }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// The wrapper around the list.
@@ -45,6 +58,11 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// True if the control has been hooked.
         /// </summary>
         private bool _ControlHooked;
+
+        /// <summary>
+        /// The object that handles the sorting of rows.
+        /// </summary>
+        private Sorter _Sorter;
         #endregion
 
         #region Properties
@@ -156,6 +174,16 @@ namespace VirtualRadar.WinForms.PortableBinding
             get { return _CheckedChangedHandler; }
             set { if(!Initialised) _CheckedChangedHandler = value; }
         }
+
+        private bool _EnableSorting = true;
+        /// <summary>
+        /// Gets or sets a value indicating that the rows are to be sorted on display. Can only be set before initialisation.
+        /// </summary>
+        public bool EnableSorting
+        {
+            get { return _EnableSorting; }
+            set { if(!Initialised) _EnableSorting = value; }
+        }
         #endregion
 
         #region ControlBinder Properties - ModelValueObject, ControlValueObject
@@ -199,18 +227,25 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            if(_ControlHooked) {
-                Control.CheckedChanged -= Control_CheckedChanged;
-                Control.EditClicked -= Control_EditClicked;
-                Control.DeleteClicked -= Control_DeleteClicked;
-                Control.AddClicked -= Control_AddClicked;
-                Control.FetchRecordContent -= Control_FetchRecordContent;
-                _ControlHooked = false;
-            }
+            if(disposing) {
+                if(_Sorter != null) {
+                    _Sorter.Dispose();
+                    Control.ListView.ListViewItemSorter = null;
+                }
 
-            if(_ModelListHooked) {
-                ModelListBindingList.ListChanged -= ModelListBindingList_ListChanged;
-                _ModelListHooked = false;
+                if(_ControlHooked) {
+                    Control.CheckedChanged -= Control_CheckedChanged;
+                    Control.EditClicked -= Control_EditClicked;
+                    Control.DeleteClicked -= Control_DeleteClicked;
+                    Control.AddClicked -= Control_AddClicked;
+                    Control.FetchRecordContent -= Control_FetchRecordContent;
+                    _ControlHooked = false;
+                }
+
+                if(_ModelListHooked) {
+                    ModelListBindingList.ListChanged -= ModelListBindingList_ListChanged;
+                    _ModelListHooked = false;
+                }
             }
 
             base.Dispose(disposing);
@@ -247,6 +282,11 @@ namespace VirtualRadar.WinForms.PortableBinding
             Control.EditClicked += Control_EditClicked;
             Control.CheckedChanged += Control_CheckedChanged;
             _ControlHooked = true;
+
+            if(EnableSorting) {
+                _Sorter = new Sorter(Control);
+                Control.ListView.ListViewItemSorter = _Sorter;
+            }
 
             base.DoInitialising();
         }
