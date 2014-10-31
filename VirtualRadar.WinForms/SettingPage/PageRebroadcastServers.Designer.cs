@@ -27,7 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listRebroadcastServers = new VirtualRadar.WinForms.Controls.BindingListView();
+            this.listRebroadcastServers = new VirtualRadar.WinForms.Controls.MasterListView();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderReceiver = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderFormat = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -44,17 +44,11 @@
             this.columnHeaderFormat,
             this.columnHeaderUNC,
             this.columnHeaderDefaultAccess});
-            this.listRebroadcastServers.DataSource = null;
             this.listRebroadcastServers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listRebroadcastServers.Location = new System.Drawing.Point(0, 0);
             this.listRebroadcastServers.Name = "listRebroadcastServers";
             this.listRebroadcastServers.Size = new System.Drawing.Size(636, 354);
             this.listRebroadcastServers.TabIndex = 8;
-            this.listRebroadcastServers.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listRebroadcastServers_FetchRecordContent);
-            this.listRebroadcastServers.AddClicked += new System.EventHandler(this.listRebroadcastServers_AddClicked);
-            this.listRebroadcastServers.DeleteClicked += new System.EventHandler(this.listRebroadcastServers_DeleteClicked);
-            this.listRebroadcastServers.EditClicked += new System.EventHandler(this.listRebroadcastServers_EditClicked);
-            this.listRebroadcastServers.CheckedChanged += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordCheckedEventArgs>(this.listRebroadcastServers_CheckedChanged);
             // 
             // columnHeaderName
             // 
@@ -93,7 +87,7 @@
 
         #endregion
 
-        private Controls.BindingListView listRebroadcastServers;
+        private Controls.MasterListView listRebroadcastServers;
         private System.Windows.Forms.ColumnHeader columnHeaderName;
         private System.Windows.Forms.ColumnHeader columnHeaderReceiver;
         private System.Windows.Forms.ColumnHeader columnHeaderFormat;

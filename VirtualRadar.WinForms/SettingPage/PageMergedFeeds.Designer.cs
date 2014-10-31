@@ -28,7 +28,7 @@
         private void InitializeComponent()
         {
             this.columnHeaderIcaoTimeout = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listMergedFeeds = new VirtualRadar.WinForms.Controls.BindingListView();
+            this.listMergedFeeds = new VirtualRadar.WinForms.Controls.MasterListView();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderReceivers = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderIgnoreNoPosition = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,23 +42,16 @@
             // 
             // listMergedFeeds
             // 
-            this.listMergedFeeds.CheckBoxes = true;
             this.listMergedFeeds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderName,
             this.columnHeaderReceivers,
             this.columnHeaderIcaoTimeout,
             this.columnHeaderIgnoreNoPosition});
-            this.listMergedFeeds.DataSource = null;
             this.listMergedFeeds.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listMergedFeeds.Location = new System.Drawing.Point(0, 0);
             this.listMergedFeeds.Name = "listMergedFeeds";
             this.listMergedFeeds.Size = new System.Drawing.Size(636, 375);
             this.listMergedFeeds.TabIndex = 1;
-            this.listMergedFeeds.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listMergedFeeds_FetchRecordContent);
-            this.listMergedFeeds.AddClicked += new System.EventHandler(this.listMergedFeeds_AddClicked);
-            this.listMergedFeeds.DeleteClicked += new System.EventHandler(this.listMergedFeeds_DeleteClicked);
-            this.listMergedFeeds.EditClicked += new System.EventHandler(this.listMergedFeeds_EditClicked);
-            this.listMergedFeeds.CheckedChanged += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordCheckedEventArgs>(this.listMergedFeeds_CheckedChanged);
             // 
             // columnHeaderName
             // 
@@ -89,7 +82,7 @@
         #endregion
 
         private System.Windows.Forms.ColumnHeader columnHeaderIcaoTimeout;
-        private Controls.BindingListView listMergedFeeds;
+        private Controls.MasterListView listMergedFeeds;
         private System.Windows.Forms.ColumnHeader columnHeaderName;
         private System.Windows.Forms.ColumnHeader columnHeaderReceivers;
         private System.Windows.Forms.ColumnHeader columnHeaderIgnoreNoPosition;

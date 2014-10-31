@@ -31,7 +31,7 @@
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLatitude = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLongitude = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listReceiverLocations = new VirtualRadar.WinForms.Controls.BindingListView();
+            this.listReceiverLocations = new VirtualRadar.WinForms.Controls.MasterListView();
             this.SuspendLayout();
             // 
             // linkLabelUpdateFromBaseStationDatabase
@@ -72,15 +72,10 @@
             this.columnHeaderName,
             this.columnHeaderLatitude,
             this.columnHeaderLongitude});
-            this.listReceiverLocations.DataSource = null;
             this.listReceiverLocations.Location = new System.Drawing.Point(0, 0);
             this.listReceiverLocations.Name = "listReceiverLocations";
             this.listReceiverLocations.Size = new System.Drawing.Size(784, 405);
             this.listReceiverLocations.TabIndex = 0;
-            this.listReceiverLocations.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listReceiverLocations_FetchRecordContent);
-            this.listReceiverLocations.AddClicked += new System.EventHandler(this.listReceiverLocations_AddClicked);
-            this.listReceiverLocations.DeleteClicked += new System.EventHandler(this.listReceiverLocations_DeleteClicked);
-            this.listReceiverLocations.EditClicked += new System.EventHandler(this.listReceiverLocations_EditClicked);
             // 
             // PageReceiverLocations
             // 
@@ -100,6 +95,6 @@
         private System.Windows.Forms.ColumnHeader columnHeaderName;
         private System.Windows.Forms.ColumnHeader columnHeaderLatitude;
         private System.Windows.Forms.ColumnHeader columnHeaderLongitude;
-        private Controls.BindingListView listReceiverLocations;
+        private Controls.MasterListView listReceiverLocations;
     }
 }

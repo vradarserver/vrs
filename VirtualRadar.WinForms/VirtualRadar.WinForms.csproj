@@ -379,7 +379,6 @@
     <Compile Include="SettingPage\PageWebSiteGoogleMaps.Designer.cs">
       <DependentUpon>PageWebSiteGoogleMaps.cs</DependentUpon>
     </Compile>
-    <Compile Include="SettingPage\RecordListHelper.cs" />
     <Compile Include="SettingsView.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -29,8 +29,6 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageUsers : Page
     {
-        private RecordListHelper<IUser, PageUser> _ListHelper;
-
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -71,42 +69,17 @@ namespace VirtualRadar.WinForms.SettingPage
             base.CreateBindings();
 
             AddControlBinder(new LabelStringBinder<SettingsView>(SettingsView, labelUserManager, r => r.UserManager, (r,v) => r.UserManager = v));
-            _ListHelper = new RecordListHelper<IUser,PageUser>(this, listUsers, SettingsView.Users);
+            AddControlBinder(new MasterListToListBinder<SettingsView, IUser>(SettingsView, listUsers, r => r.Users) {
+                FetchColumns = (user, e) => {
+                    e.Checked = user.Enabled;
+                    e.ColumnTexts.Add(user.LoginName ?? "");
+                    e.ColumnTexts.Add(user.Name ?? "");
+                },
+                AddHandler = () => SettingsView.CreateUser(),
+                AutoDeleteEnabled = true,
+                EditHandler = (user) => SettingsView.DisplayPageForPageObject(user),
+                CheckedChangedHandler = (user, isChecked) => user.Enabled = isChecked,
+            });
         }
-
-        #region User list handling
-        private void listUsers_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs e)
-        {
-            var record = e.Record as IUser;
-
-            if(record != null) {
-                e.Checked = record.Enabled;
-                e.ColumnTexts.Add(record.LoginName ?? "");
-                e.ColumnTexts.Add(record.Name ?? "");
-            }
-        }
-
-        private void listUsers_AddClicked(object sender, EventArgs e)
-        {
-            _ListHelper.AddClicked(() => SettingsView.CreateUser());
-        }
-
-        private void listUsers_DeleteClicked(object sender, EventArgs e)
-        {
-            _ListHelper.DeleteClicked();
-        }
-
-        private void listUsers_EditClicked(object sender, EventArgs e)
-        {
-            _ListHelper.EditClicked();
-        }
-
-        private void listUsers_CheckedChanged(object sender, Controls.BindingListView.RecordCheckedEventArgs e)
-        {
-            if(listUsers.CheckBoxes) {
-                _ListHelper.CheckedChanged(e, (user, enabled) => user.Enabled = enabled);
-            }
-        }
-        #endregion
     }
 }
