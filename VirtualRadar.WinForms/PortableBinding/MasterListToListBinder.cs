@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Windows.Forms;
 using VirtualRadar.Interface.PortableBinding;
 using VirtualRadar.WinForms.Controls;
 
@@ -31,9 +32,38 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// </summary>
         class Sorter : AutoListViewSorter
         {
-            public Sorter(MasterListView control, bool showNativeSortIndicators = true) : base(control.ListView, showNativeSortIndicators)
+            /// <summary>
+            /// The sort method. If this is null then no special sorting is required.
+            /// </summary>
+            private Func<TListModel, ColumnHeader, IComparable, IComparable> _GetSortValue;
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="control"></param>
+            /// <param name="sortDelegate"></param>
+            public Sorter(MasterListView control, Func<TListModel, ColumnHeader, IComparable, IComparable> sortDelegate) : base(control.ListView, showNativeSortIndicators: true)
             {
-                ;
+                _GetSortValue = sortDelegate;
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="listViewItem"></param>
+            /// <returns></returns>
+            public override IComparable GetRowValue(ListViewItem listViewItem)
+            {
+                IComparable result = base.GetRowValue(listViewItem);
+
+                if(_GetSortValue != null) {
+                    var listModel = listViewItem.Tag as TListModel;
+                    if(listModel != null) {
+                        result = _GetSortValue(listModel, SortColumn, result);
+                    }
+                }
+
+                return result;
             }
         }
         #endregion
@@ -184,6 +214,22 @@ namespace VirtualRadar.WinForms.PortableBinding
             get { return _EnableSorting; }
             set { if(!Initialised) _EnableSorting = value; }
         }
+
+        private Func<TListModel, ColumnHeader, IComparable, IComparable> _GetSortValue;
+        /// <summary>
+        /// Gets or sets a delegate that returns a comparable value from the list model for a single column.
+        /// </summary>
+        /// <remarks>
+        /// The parameters are list model, followed by the header for the column that we're sorting on,
+        /// followed by the default value for the list model (usually the result of ToString). The method
+        /// should return a comparable. If it doesn't have any special interest in the column then return
+        /// the comparable that was passed in.
+        /// </remarks>
+        public Func<TListModel, ColumnHeader, IComparable, IComparable> GetSortValue
+        {
+            get { return _GetSortValue; }
+            set { if(!Initialised) _GetSortValue = value; }
+        }
         #endregion
 
         #region ControlBinder Properties - ModelValueObject, ControlValueObject
@@ -284,7 +330,7 @@ namespace VirtualRadar.WinForms.PortableBinding
             _ControlHooked = true;
 
             if(EnableSorting) {
-                _Sorter = new Sorter(Control);
+                _Sorter = new Sorter(Control, _GetSortValue);
                 Control.ListView.ListViewItemSorter = _Sorter;
             }
 

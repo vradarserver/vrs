@@ -20,6 +20,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -28,8 +29,6 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageMergedFeeds : Page
     {
-        private RecordListHelper<MergedFeed, PageMergedFeed> _ListHelper;
-
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -68,7 +67,27 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            _ListHelper = new RecordListHelper<MergedFeed,PageMergedFeed>(this, listMergedFeeds, SettingsView.Configuration.MergedFeeds, listMergedFeeds_GetSortValue);
+
+            AddControlBinder(new MasterListToListBinder<Configuration, MergedFeed>(SettingsView.Configuration, listMergedFeeds, r => r.MergedFeeds) {
+                FetchColumns = (mergedFeed, e) => {
+                    e.Checked = mergedFeed.Enabled;
+                    e.ColumnTexts.Add(mergedFeed.Name);
+                    e.ColumnTexts.Add(mergedFeed.ReceiverIds.Count.ToString());
+                    e.ColumnTexts.Add((((double)mergedFeed.IcaoTimeout) / 1000.0).ToString("N2"));
+                    e.ColumnTexts.Add(mergedFeed.IgnoreAircraftWithNoPosition ? Strings.Yes : Strings.No);
+                },
+                GetSortValue = (mergedFeed, header, defaultValue) => {
+                    IComparable result = defaultValue;
+                    if(header == columnHeaderReceivers)             result = mergedFeed.ReceiverIds.Count;
+                    else if(header == columnHeaderIcaoTimeout)      result = mergedFeed.IcaoTimeout;
+
+                    return result;
+                },
+                AddHandler = () => SettingsView.CreateMergedFeed(),
+                AutoDeleteEnabled = true,
+                EditHandler = (mergedFeed) => SettingsView.DisplayPageForPageObject(mergedFeed),
+                CheckedChangedHandler = (mergedFeed, isChecked) => mergedFeed.Enabled = isChecked,
+            });
         }
 
         /// <summary>
@@ -79,53 +98,5 @@ namespace VirtualRadar.WinForms.SettingPage
             base.AssociateInlineHelp();
             SetInlineHelp(listMergedFeeds, "", "");
         }
-
-        #region Merged feed list handling
-        private void listMergedFeeds_FetchRecordContent(object sender, Controls.BindingListView.RecordContentEventArgs e)
-        {
-            var record = (MergedFeed)e.Record;
-
-            if(record != null) {
-                e.Checked = record.Enabled;
-                e.ColumnTexts.Add(record.Name);
-                e.ColumnTexts.Add(record.ReceiverIds.Count.ToString());
-                e.ColumnTexts.Add((((double)record.IcaoTimeout) / 1000.0).ToString("N2"));
-                e.ColumnTexts.Add(record.IgnoreAircraftWithNoPosition ? Strings.Yes : Strings.No);
-            }
-        }
-
-        private IComparable listMergedFeeds_GetSortValue(object record, ColumnHeader header, IComparable defaultValue)
-        {
-            IComparable result = defaultValue;
-            
-            var mergedFeed = record as MergedFeed;
-            if(mergedFeed != null) {
-                if(header == columnHeaderReceivers)             result = mergedFeed.ReceiverIds.Count;
-                else if(header == columnHeaderIcaoTimeout)      result = mergedFeed.IcaoTimeout;
-            }
-
-            return result;
-        }
-
-        private void listMergedFeeds_AddClicked(object sender, EventArgs e)
-        {
-            _ListHelper.AddClicked(() => SettingsView.CreateMergedFeed());
-        }
-
-        private void listMergedFeeds_DeleteClicked(object sender, EventArgs e)
-        {
-            _ListHelper.DeleteClicked();
-        }
-
-        private void listMergedFeeds_EditClicked(object sender, EventArgs e)
-        {
-            _ListHelper.EditClicked();
-        }
-
-        private void listMergedFeeds_CheckedChanged(object sender, BindingListView.RecordCheckedEventArgs e)
-        {
-            _ListHelper.CheckedChanged(e, (mergedFeed, enabled) => mergedFeed.Enabled = enabled);
-        }
-        #endregion
     }
 }

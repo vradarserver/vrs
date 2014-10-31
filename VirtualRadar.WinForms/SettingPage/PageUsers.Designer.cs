@@ -31,7 +31,7 @@
             this.columnHeaderLoginName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label4 = new System.Windows.Forms.Label();
             this.columnHeaderUserName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listUsers = new VirtualRadar.WinForms.Controls.BindingListView();
+            this.listUsers = new VirtualRadar.WinForms.Controls.MasterListView();
             this.SuspendLayout();
             // 
             // labelUserManager
@@ -71,16 +71,10 @@
             this.listUsers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderLoginName,
             this.columnHeaderUserName});
-            this.listUsers.DataSource = null;
             this.listUsers.Location = new System.Drawing.Point(0, 16);
             this.listUsers.Name = "listUsers";
             this.listUsers.Size = new System.Drawing.Size(636, 297);
             this.listUsers.TabIndex = 7;
-            this.listUsers.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listUsers_FetchRecordContent);
-            this.listUsers.AddClicked += new System.EventHandler(this.listUsers_AddClicked);
-            this.listUsers.DeleteClicked += new System.EventHandler(this.listUsers_DeleteClicked);
-            this.listUsers.EditClicked += new System.EventHandler(this.listUsers_EditClicked);
-            this.listUsers.CheckedChanged += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordCheckedEventArgs>(this.listUsers_CheckedChanged);
             // 
             // PageUsers
             // 
@@ -101,6 +95,6 @@
         private System.Windows.Forms.ColumnHeader columnHeaderLoginName;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ColumnHeader columnHeaderUserName;
-        private Controls.BindingListView listUsers;
+        private Controls.MasterListView listUsers;
     }
 }

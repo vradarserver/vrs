@@ -21,6 +21,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -30,8 +31,6 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageRebroadcastServers : Page
     {
-        private RecordListHelper<RebroadcastSettings, PageRebroadcastServer> _ListHelper;
-
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -70,7 +69,33 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            _ListHelper = new RecordListHelper<RebroadcastSettings,PageRebroadcastServer>(this, listRebroadcastServers, SettingsView.Configuration.RebroadcastSettings, listRebroadcastServers_GetSortValue);
+
+            AddControlBinder(new MasterListToListBinder<Configuration, RebroadcastSettings>(SettingsView.Configuration, listRebroadcastServers, r => r.RebroadcastSettings) {
+                FetchColumns = (rebroadcastServer, e) => {
+                    var receiver = SettingsView.CombinedFeed.FirstOrDefault(r => r.UniqueId == rebroadcastServer.ReceiverId);
+                    var portDescription = !rebroadcastServer.IsTransmitter ? String.Format("::{0}", rebroadcastServer.Port) : String.Format("{0}:{1}", rebroadcastServer.TransmitAddress, rebroadcastServer.Port);
+
+                    e.Checked = rebroadcastServer.Enabled;
+                    e.ColumnTexts.Add(rebroadcastServer.Name);
+                    e.ColumnTexts.Add(receiver == null ? "" : receiver.Name ?? "");
+                    e.ColumnTexts.Add(Describe.RebroadcastFormat(rebroadcastServer.Format));
+                    e.ColumnTexts.Add(portDescription);
+                    e.ColumnTexts.Add(Describe.DefaultAccess(rebroadcastServer.Access.DefaultAccess));
+                },
+                GetSortValue = (rebroadcastServer, header, defaultValue) => {
+                    IComparable result = defaultValue;
+                    if(header == columnHeaderUNC) {
+                        if(!rebroadcastServer.IsTransmitter) result = String.Format("_{0:00000}", rebroadcastServer.Port);
+                        else                                 result = String.Format("{0}:{1:00000}", rebroadcastServer.TransmitAddress, rebroadcastServer.Port);
+                    }
+
+                    return result;
+                },
+                AddHandler = () => SettingsView.CreateRebroadcastServer(),
+                AutoDeleteEnabled = true,
+                EditHandler = (rebroadcastServer) => SettingsView.DisplayPageForPageObject(rebroadcastServer),
+                CheckedChangedHandler = (rebroadcastServer, isChecked) => rebroadcastServer.Enabled = isChecked,
+            });
         }
 
         /// <summary>
@@ -89,59 +114,5 @@ namespace VirtualRadar.WinForms.SettingPage
                 listRebroadcastServers.ResetBindings();
             }
         }
-
-        #region Rebroadcast server list handling
-        private void listRebroadcastServers_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs e)
-        {
-            var record = (RebroadcastSettings)e.Record;
-
-            if(record != null) {
-                var receiver = SettingsView.CombinedFeed.FirstOrDefault(r => r.UniqueId == record.ReceiverId);
-                var portDescription = !record.IsTransmitter ? String.Format("::{0}", record.Port) : String.Format("{0}:{1}", record.TransmitAddress, record.Port);
-
-                e.Checked = record.Enabled;
-                e.ColumnTexts.Add(record.Name);
-                e.ColumnTexts.Add(receiver == null ? "" : receiver.Name ?? "");
-                e.ColumnTexts.Add(Describe.RebroadcastFormat(record.Format));
-                e.ColumnTexts.Add(portDescription);
-                e.ColumnTexts.Add(Describe.DefaultAccess(record.Access.DefaultAccess));
-            }
-        }
-
-        private IComparable listRebroadcastServers_GetSortValue(object record, ColumnHeader header, IComparable defaultValue)
-        {
-            IComparable result = defaultValue;
-
-            var rebroadcastServer = record as RebroadcastSettings;
-            if(rebroadcastServer != null) {
-                if(header == columnHeaderUNC) {
-                    if(!rebroadcastServer.IsTransmitter) result = String.Format("_{0:00000}", rebroadcastServer.Port);
-                    else                                 result = String.Format("{0}:{1:00000}", rebroadcastServer.TransmitAddress, rebroadcastServer.Port);
-                }
-            }
-
-            return result;
-        }
-
-        private void listRebroadcastServers_AddClicked(object sender, EventArgs e)
-        {
-            _ListHelper.AddClicked(() => SettingsView.CreateRebroadcastServer());
-        }
-
-        private void listRebroadcastServers_DeleteClicked(object sender, EventArgs e)
-        {
-            _ListHelper.DeleteClicked();
-        }
-
-        private void listRebroadcastServers_EditClicked(object sender, EventArgs e)
-        {
-            _ListHelper.EditClicked();
-        }
-
-        private void listRebroadcastServers_CheckedChanged(object sender, BindingListView.RecordCheckedEventArgs e)
-        {
-            _ListHelper.CheckedChanged(e, (server, enabled) => server.Enabled = enabled);
-        }
-        #endregion
     }
 }

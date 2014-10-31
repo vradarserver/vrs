@@ -20,6 +20,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.Controls;
+using VirtualRadar.WinForms.PortableBinding;
 
 namespace VirtualRadar.WinForms.SettingPage
 {
@@ -28,8 +29,6 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageReceiverLocations : Page
     {
-        private RecordListHelper<ReceiverLocation, PageReceiverLocation> _ListHelper;
-
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -68,7 +67,24 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void CreateBindings()
         {
             base.CreateBindings();
-            _ListHelper = new RecordListHelper<ReceiverLocation,PageReceiverLocation>(this, listReceiverLocations, SettingsView.Configuration.ReceiverLocations, listReceiverLocations_GetSortValue);
+
+            AddControlBinder(new MasterListToListBinder<Configuration, ReceiverLocation>(SettingsView.Configuration, listReceiverLocations, r => r.ReceiverLocations) {
+                FetchColumns = (receiverLocation, e) => {
+                    e.ColumnTexts.Add(receiverLocation.Name);
+                    e.ColumnTexts.Add(receiverLocation.Latitude.ToString("N6"));
+                    e.ColumnTexts.Add(receiverLocation.Longitude.ToString("N6"));
+                },
+                GetSortValue = (receiverLocation, header, defaultValue) => {
+                    IComparable result = defaultValue;
+                    if(header == columnHeaderLatitude)          result = receiverLocation.Latitude;
+                    else if(header == columnHeaderLongitude)    result = receiverLocation.Longitude;
+
+                    return result;
+                },
+                AddHandler = () => SettingsView.CreateReceiverLocation(),
+                AutoDeleteEnabled = true,
+                EditHandler = (receiverLocation) => SettingsView.DisplayPageForPageObject(receiverLocation),
+            });
         }
 
         /// <summary>
@@ -80,52 +96,14 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(listReceiverLocations, "", "");
         }
 
-        #region ReceiverLocation list handling
-        private void listReceiverLocations_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs e)
-        {
-            var record = (ReceiverLocation)e.Record;
-
-            if(record != null) {
-                e.ColumnTexts.Add(record.Name);
-                e.ColumnTexts.Add(record.Latitude.ToString("N6"));
-                e.ColumnTexts.Add(record.Longitude.ToString("N6"));
-            }
-        }
-
-        private IComparable listReceiverLocations_GetSortValue(object record, ColumnHeader header, IComparable defaultValue)
-        {
-            IComparable result = defaultValue;
-
-            var receiverLocation = record as ReceiverLocation;
-            if(receiverLocation != null) {
-                if(header == columnHeaderLatitude)          result = receiverLocation.Latitude;
-                else if(header == columnHeaderLongitude)    result = receiverLocation.Longitude;
-            }
-
-            return result;
-        }
-
-        private void listReceiverLocations_AddClicked(object sender, EventArgs e)
-        {
-            _ListHelper.AddClicked(() => SettingsView.CreateReceiverLocation());
-        }
-
-        private void listReceiverLocations_DeleteClicked(object sender, EventArgs e)
-        {
-            _ListHelper.DeleteClicked();
-        }
-
-        private void listReceiverLocations_EditClicked(object sender, EventArgs e)
-        {
-            _ListHelper.EditClicked();
-        }
-        #endregion
-
-        #region Event handlers
+        /// <summary>
+        /// Called when the user clicks the link to copy receiver locations from BaseStation.sqb.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void linkLabelUpdateFromBaseStationDatabase_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             SettingsView.RaiseUpdateReceiverLocationsFromBaseStationDatabaseClicked(e);
         }
-        #endregion
     }
 }
