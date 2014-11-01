@@ -156,65 +156,6 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region Vanilla .NET data binding - AddBinding, Create****Binding
-        /// <summary>
-        /// A shorthand method for adding bindings with compiler-checked names.
-        /// </summary>
-        /// <typeparam name="TControl"></typeparam>
-        /// <typeparam name="TModel"></typeparam>
-        /// <param name="model"></param>
-        /// <param name="control"></param>
-        /// <param name="modelProperty"></param>
-        /// <param name="controlProperty"></param>
-        /// <param name="dataSourceUpdateMode"></param>
-        /// <param name="format"></param>
-        /// <param name="parse"></param>
-        protected Binding AddBinding<TControl, TModel>(TModel model, TControl control, Expression<Func<TModel, object>> modelProperty, Expression<Func<TControl, object>> controlProperty, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnValidation, ConvertEventHandler format = null, ConvertEventHandler parse = null)
-            where TControl: Control
-        {
-            return _CommonBaseBehaviour.AddBinding<TControl, TModel>(model, control, modelProperty, controlProperty, dataSourceUpdateMode, format, parse);
-        }
-
-        /// <summary>
-        /// Creates a simple unsorted binding source on a list.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        protected BindingSource CreateListBindingSource<T>(IList<T> list)
-        {
-            return _CommonBaseBehaviour.CreateListBindingSource<T>(list);
-        }
-
-        /// <summary>
-        /// Creates a binding source of enum values sorted by their description.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="describeEnumValue"></param>
-        /// <returns></returns>
-        protected BindingSource CreateSortingEnumSource<T>(Func<T, string> describeEnumValue)
-        {
-            return _CommonBaseBehaviour.CreateSortingEnumSource<T>(describeEnumValue);
-        }
-
-        /// <summary>
-        /// Creates a binding source of NameValue&lt;T&gt; values. These can be bound to Name and Value
-        /// properties in ComboBoxes and are preferrable over CreateListBindingSource when the content
-        /// of the list may change depending on the environment - if the current value is not present
-        /// in the list it shows an empty combo box instead of the first value.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="describeValue"></param>
-        /// <param name="filterValue"></param>
-        /// <param name="sortList"></param>
-        /// <returns></returns>
-        protected BindingSource CreateNameValueSource<T>(IEnumerable<T> list, Func<T, string> describeValue = null, Func<T, bool> filterValue = null, bool sortList = true)
-        {
-            return _CommonBaseBehaviour.CreateNameValueSource<T>(list, describeValue, filterValue, sortList);
-        }
-        #endregion
-
         #region Portable binding - AddControlBinder, GetControlBinders, InitialiseControlBinders
         /// <summary>
         /// Adds a control binder.
