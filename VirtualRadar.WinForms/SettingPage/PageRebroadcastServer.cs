@@ -99,10 +99,9 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>(RebroadcastSettings, comboBoxReceiver, SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
 
-            AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings,           comboBoxFormat,         r => r.Format,          (r,v) => r.Format = v,          r => Describe.RebroadcastFormat(r)));
-            AddControlBinder(new ComboBoxEnumBinder<Access, DefaultAccess>                  (RebroadcastSettings.Access,    comboBoxDefaultAccess,  r => r.DefaultAccess,   (r,v) => r.DefaultAccess = v,   r => Describe.DefaultAccess(r))         { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings, comboBoxFormat, r => r.Format, (r,v) => r.Format = v, r => Describe.RebroadcastFormat(r)));
 
-            bindingCidrList.DataSource = RebroadcastSettings.Access.Addresses;
+            AddControlBinder(new AccessToAccessListBinder<RebroadcastSettings>(RebroadcastSettings, accessControl, r => r.Access));
         }
 
         /// <summary>
@@ -141,7 +140,6 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxUseKeepAlive,     Strings.UseKeepAlive,   Strings.OptionsDescribeRebroadcastUseKeepAlive);
             SetInlineHelp(numericIdleTimeout,       Strings.IdleTimeout,    Strings.OptionsDescribeRebroadcastIdleTimeout);
             SetInlineHelp(numericStaleSeconds,      Strings.StaleSeconds,   Strings.OptionsDescribeRebroadcastStaleSeconds);
-            SetInlineHelp(comboBoxDefaultAccess,    Strings.DefaultAccess,  Strings.OptionsDescribeDefaultAccess);
         }
 
         /// <summary>
@@ -150,12 +148,8 @@ namespace VirtualRadar.WinForms.SettingPage
         private void EnableDisableControls()
         {
             textBoxTransmitAddress.Enabled = RebroadcastSettings.IsTransmitter;
-            groupBoxAccessControl.Enabled = !RebroadcastSettings.IsTransmitter;
+            accessControl.Enabled = !RebroadcastSettings.IsTransmitter;
             numericIdleTimeout.Enabled = !RebroadcastSettings.UseKeepAlive;
-
-            var access = RebroadcastSettings.Access.DefaultAccess;
-            bindingCidrList.Enabled = access != DefaultAccess.Unrestricted;
-            labelCidrList.Text = String.Format("{0}:", access == DefaultAccess.Allow ? Strings.DenyTheseAddresses : Strings.AllowTheseAddresses);
         }
 
         /// <summary>
@@ -170,12 +164,6 @@ namespace VirtualRadar.WinForms.SettingPage
                 if(args.Record == PageObject) {
                     if(args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IsTransmitter) ||
                        args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive)) {
-                        EnableDisableControls();
-                    }
-                }
-
-                if(Object.ReferenceEquals(args.Record, RebroadcastSettings.Access)) {
-                    if(args.PropertyName == PropertyHelper.ExtractName<Access>(r => r.DefaultAccess)) {
                         EnableDisableControls();
                     }
                 }

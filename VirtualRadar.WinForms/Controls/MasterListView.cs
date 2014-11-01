@@ -268,6 +268,10 @@ namespace VirtualRadar.WinForms.Controls
         public MasterListView()
         {
             InitializeComponent();
+
+            AllowAdd = true;
+            AllowUpdate = true;
+            AllowDelete = true;
         }
         #endregion
 

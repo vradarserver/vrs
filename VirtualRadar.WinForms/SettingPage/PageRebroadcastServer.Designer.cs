@@ -39,10 +39,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.groupBoxAccessControl = new System.Windows.Forms.GroupBox();
-            this.labelCidrList = new System.Windows.Forms.Label();
-            this.bindingCidrList = new VirtualRadar.WinForms.Controls.BindingCidrList();
-            this.comboBoxDefaultAccess = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.checkBoxIsTransmitter = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textBoxTransmitAddress = new System.Windows.Forms.TextBox();
@@ -53,6 +49,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.textBoxPassphrase = new System.Windows.Forms.TextBox();
+            this.accessControl = new VirtualRadar.WinForms.Controls.AccessControl();
             ((System.ComponentModel.ISupportInitialize)(this.numericStaleSeconds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxAccessControl.SuspendLayout();
@@ -182,54 +179,13 @@
             this.groupBoxAccessControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxAccessControl.Controls.Add(this.labelCidrList);
-            this.groupBoxAccessControl.Controls.Add(this.bindingCidrList);
-            this.groupBoxAccessControl.Controls.Add(this.comboBoxDefaultAccess);
-            this.groupBoxAccessControl.Controls.Add(this.label5);
+            this.groupBoxAccessControl.Controls.Add(this.accessControl);
             this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 280);
             this.groupBoxAccessControl.Name = "groupBoxAccessControl";
             this.groupBoxAccessControl.Size = new System.Drawing.Size(636, 217);
             this.groupBoxAccessControl.TabIndex = 21;
             this.groupBoxAccessControl.TabStop = false;
             this.groupBoxAccessControl.Text = "::AccessControl::";
-            // 
-            // labelCidrList
-            // 
-            this.labelCidrList.AutoSize = true;
-            this.labelCidrList.Location = new System.Drawing.Point(6, 81);
-            this.labelCidrList.Name = "labelCidrList";
-            this.labelCidrList.Size = new System.Drawing.Size(126, 13);
-            this.labelCidrList.TabIndex = 2;
-            this.labelCidrList.Text = "::AllowTheseAddresses:::";
-            // 
-            // bindingCidrList
-            // 
-            this.bindingCidrList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindingCidrList.DataSource = null;
-            this.bindingCidrList.Location = new System.Drawing.Point(197, 46);
-            this.bindingCidrList.Name = "bindingCidrList";
-            this.bindingCidrList.Size = new System.Drawing.Size(433, 165);
-            this.bindingCidrList.TabIndex = 3;
-            // 
-            // comboBoxDefaultAccess
-            // 
-            this.comboBoxDefaultAccess.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxDefaultAccess.FormattingEnabled = true;
-            this.comboBoxDefaultAccess.Location = new System.Drawing.Point(197, 19);
-            this.comboBoxDefaultAccess.Name = "comboBoxDefaultAccess";
-            this.comboBoxDefaultAccess.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxDefaultAccess.TabIndex = 1;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 22);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(91, 13);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "::DefaultAccess:::";
             // 
             // checkBoxIsTransmitter
             // 
@@ -336,6 +292,16 @@
             this.textBoxPassphrase.Size = new System.Drawing.Size(436, 20);
             this.textBoxPassphrase.TabIndex = 13;
             // 
+            // accessControl
+            // 
+            this.accessControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.accessControl.Location = new System.Drawing.Point(6, 19);
+            this.accessControl.Name = "accessControl";
+            this.accessControl.Size = new System.Drawing.Size(624, 192);
+            this.accessControl.TabIndex = 0;
+            // 
             // PageRebroadcastServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -366,7 +332,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericStaleSeconds)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxAccessControl.ResumeLayout(false);
-            this.groupBoxAccessControl.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -387,10 +352,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.GroupBox groupBoxAccessControl;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox comboBoxDefaultAccess;
-        private Controls.BindingCidrList bindingCidrList;
-        private System.Windows.Forms.Label labelCidrList;
         private System.Windows.Forms.CheckBox checkBoxIsTransmitter;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBoxTransmitAddress;
@@ -401,5 +362,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBoxPassphrase;
+        private Controls.AccessControl accessControl;
     }
 }
