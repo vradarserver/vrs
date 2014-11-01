@@ -99,6 +99,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ControlResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\AccessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AccessControl.Designer.cs">
+      <DependentUpon>AccessControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\BindingCidrList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -253,6 +259,7 @@
     <Compile Include="Controls\PanelPlus.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PortableBinding\AccessToAccessListBinder.cs" />
     <Compile Include="PortableBinding\CheckBoxBoolBinder.cs" />
     <Compile Include="PortableBinding\ComboBoxEnumBinder.cs" />
     <Compile Include="PortableBinding\ComboBoxValueBinder.cs" />
@@ -491,6 +498,9 @@
     <EmbeddedResource Include="ControlResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ControlResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\AccessControl.resx">
+      <DependentUpon>AccessControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\BindingCidrList.resx">
       <DependentUpon>BindingCidrList.cs</DependentUpon>

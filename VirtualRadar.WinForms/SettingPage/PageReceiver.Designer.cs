@@ -71,10 +71,7 @@
             this.comboBoxDataSource = new System.Windows.Forms.ComboBox();
             this.panelConnectionTypeSettings = new System.Windows.Forms.Panel();
             this.groupBoxAccessControl = new System.Windows.Forms.GroupBox();
-            this.labelCidrList = new System.Windows.Forms.Label();
-            this.bindingCidrList = new VirtualRadar.WinForms.Controls.BindingCidrList();
-            this.comboBoxDefaultAccess = new System.Windows.Forms.ComboBox();
-            this.label17 = new System.Windows.Forms.Label();
+            this.accessControl = new VirtualRadar.WinForms.Controls.AccessControl();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
@@ -529,10 +526,7 @@
             // 
             this.groupBoxAccessControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxAccessControl.Controls.Add(this.labelCidrList);
-            this.groupBoxAccessControl.Controls.Add(this.bindingCidrList);
-            this.groupBoxAccessControl.Controls.Add(this.comboBoxDefaultAccess);
-            this.groupBoxAccessControl.Controls.Add(this.label17);
+            this.groupBoxAccessControl.Controls.Add(this.accessControl);
             this.groupBoxAccessControl.Location = new System.Drawing.Point(3, 315);
             this.groupBoxAccessControl.Name = "groupBoxAccessControl";
             this.groupBoxAccessControl.Size = new System.Drawing.Size(633, 178);
@@ -540,42 +534,15 @@
             this.groupBoxAccessControl.TabStop = false;
             this.groupBoxAccessControl.Text = "::AccessControl::";
             // 
-            // labelCidrList
+            // accessControl
             // 
-            this.labelCidrList.AutoSize = true;
-            this.labelCidrList.Location = new System.Drawing.Point(6, 81);
-            this.labelCidrList.Name = "labelCidrList";
-            this.labelCidrList.Size = new System.Drawing.Size(126, 13);
-            this.labelCidrList.TabIndex = 2;
-            this.labelCidrList.Text = "::AllowTheseAddresses:::";
-            // 
-            // bindingCidrList
-            // 
-            this.bindingCidrList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.accessControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindingCidrList.DataSource = null;
-            this.bindingCidrList.Location = new System.Drawing.Point(197, 46);
-            this.bindingCidrList.Name = "bindingCidrList";
-            this.bindingCidrList.Size = new System.Drawing.Size(430, 126);
-            this.bindingCidrList.TabIndex = 3;
-            // 
-            // comboBoxDefaultAccess
-            // 
-            this.comboBoxDefaultAccess.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxDefaultAccess.FormattingEnabled = true;
-            this.comboBoxDefaultAccess.Location = new System.Drawing.Point(197, 19);
-            this.comboBoxDefaultAccess.Name = "comboBoxDefaultAccess";
-            this.comboBoxDefaultAccess.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxDefaultAccess.TabIndex = 1;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 22);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(91, 13);
-            this.label17.TabIndex = 0;
-            this.label17.Text = "::DefaultAccess:::";
+            this.accessControl.Location = new System.Drawing.Point(6, 19);
+            this.accessControl.Name = "accessControl";
+            this.accessControl.Size = new System.Drawing.Size(621, 153);
+            this.accessControl.TabIndex = 0;
             // 
             // PageReceiver
             // 
@@ -604,7 +571,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).EndInit();
             this.panelConnectionTypeSettings.ResumeLayout(false);
             this.groupBoxAccessControl.ResumeLayout(false);
-            this.groupBoxAccessControl.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -653,11 +619,8 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.CheckBox checkBoxIsPassive;
         private System.Windows.Forms.GroupBox groupBoxAccessControl;
-        private System.Windows.Forms.Label labelCidrList;
-        private Controls.BindingCidrList bindingCidrList;
-        private System.Windows.Forms.ComboBox comboBoxDefaultAccess;
-        private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox textBoxPassphrase;
+        private Controls.AccessControl accessControl;
     }
 }

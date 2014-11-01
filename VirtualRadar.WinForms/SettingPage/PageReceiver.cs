@@ -127,7 +127,6 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new ComboBoxEnumBinder<Receiver, DataSource>       (Receiver,          comboBoxDataSource,         r => r.DataSource,      (r,v) => r.DataSource = v,      r => Describe.DataSource(r)));
             AddControlBinder(new ComboBoxEnumBinder<Receiver, ConnectionType>   (Receiver,          comboBoxConnectionType,     r => r.ConnectionType,  (r,v) => r.ConnectionType = v,  r => Describe.ConnectionType(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-            AddControlBinder(new ComboBoxEnumBinder<Access, DefaultAccess>      (Receiver.Access,   comboBoxDefaultAccess,      r => r.DefaultAccess,   (r,v) => r.DefaultAccess = v,   r => Describe.DefaultAccess(r))  { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new ComboBoxEnumBinder<Receiver, StopBits>         (Receiver,          comboBoxSerialStopBits,     r => r.StopBits,        (r,v) => r.StopBits = v,        r => Describe.StopBits(r)));
             AddControlBinder(new ComboBoxEnumBinder<Receiver, Parity>           (Receiver,          comboBoxSerialParity,       r => r.Parity,          (r,v) => r.Parity = v,          r => Describe.Parity(r)));
             AddControlBinder(new ComboBoxEnumBinder<Receiver, Handshake>        (Receiver,          comboBoxSerialHandshake,    r => r.Handshake,       (r,v) => r.Handshake = v,       r => Describe.Handshake(r)));
@@ -136,7 +135,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialBaudRate,  _SupportedBaudRates,                r => r.BaudRate,    (r,v) => r.BaudRate = v));
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialDataBits,  _SupportedDataBits,                 r => r.DataBits,    (r,v) => r.DataBits = v));
 
-            bindingCidrList.DataSource = Receiver.Access.Addresses;
+            AddControlBinder(new AccessToAccessListBinder<Receiver>(Receiver, accessControl, r => r.Access));
         }
 
         /// <summary>
@@ -179,8 +178,6 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(textBoxPassphrase,                Strings.Passphrase,             Strings.OptionsDescribePassphrase);
             SetInlineHelp(checkBoxUseKeepAlive,             Strings.UseKeepAlive,           Strings.OptionsDescribeDataSourcesUseKeepAlive);
             SetInlineHelp(numericIdleTimeout,               Strings.IdleTimeout,            Strings.OptionsDescribeDataSourcesIdleTimeout);
-
-            SetInlineHelp(comboBoxDefaultAccess,            Strings.DefaultAccess,          Strings.OptionsDescribeDefaultAccess);
 
             SetInlineHelp(comboBoxSerialComPort,            Strings.SerialComPort,          Strings.OptionsDescribeDataSourcesComPort);
             SetInlineHelp(comboBoxSerialBaudRate,           Strings.SerialBaudRate,         Strings.OptionsDescribeDataSourcesBaudRate);
@@ -228,11 +225,9 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             numericIdleTimeout.Enabled = !Receiver.UseKeepAlive;
             textBoxAddress.Enabled = !Receiver.IsPassive;
-            groupBoxAccessControl.Enabled = Receiver.IsPassive;
+            accessControl.Enabled = Receiver.IsPassive;
 
             var access = Receiver.Access.DefaultAccess;
-            bindingCidrList.Enabled = access != DefaultAccess.Unrestricted;
-            labelCidrList.Text = String.Format("{0}:", access == DefaultAccess.Allow ? Strings.DenyTheseAddresses : Strings.AllowTheseAddresses);
         }
 
         /// <summary>
@@ -252,12 +247,6 @@ namespace VirtualRadar.WinForms.SettingPage
                         EnableDisableControls();
                     }
                 }
-
-                if(Object.ReferenceEquals(args.Record, Receiver.Access)) {
-                    if(args.PropertyName == PropertyHelper.ExtractName<Access>(r => r.DefaultAccess)) {
-                        EnableDisableControls();
-                    }
-                }
             }
         }
 
@@ -266,15 +255,6 @@ namespace VirtualRadar.WinForms.SettingPage
             using(var dialog = new ReceiverConfigurationWizard()) {
                 if(dialog.ShowDialog() == DialogResult.OK) {
                     SettingsView.ApplyReceiverConfigurationWizard(dialog.Answers, Receiver);
-
-                    // Under Mono the changes made by the presenter to this receiver will not show up,
-                    // it ignores NotifyPropertyChanged events. I'm not changing how this works just
-                    // for Mono so we're just going to rebind if we have the misfortune of running under
-                    // it.
-                    if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
-                        ClearBindings();
-                        CreateBindings();
-                    }
                 }
             }
         }

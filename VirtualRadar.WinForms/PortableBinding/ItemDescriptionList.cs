@@ -19,7 +19,7 @@ namespace VirtualRadar.WinForms.PortableBinding
     /// <summary>
     /// A collection of ItemDescription objects.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of object in the list.</typeparam>
     public class ItemDescriptionList<T> : List<ItemDescription<T>>, IDisposable
     {
         /// <summary>
