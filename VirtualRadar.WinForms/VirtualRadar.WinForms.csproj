@@ -98,12 +98,6 @@
     <Compile Include="Controls\AircraftListControl.Designer.cs">
       <DependentUpon>AircraftListControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\BindingMapControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\BindingMapControl.Designer.cs">
-      <DependentUpon>BindingMapControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ConnectionClientListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -148,6 +142,12 @@
     <Compile Include="Controls\ListCheckedEventArgs.cs" />
     <Compile Include="Controls\ListViewPlus.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\MapControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MapControl.Designer.cs">
+      <DependentUpon>MapControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\MasterListView.cs">
       <SubType>UserControl</SubType>
@@ -234,7 +234,7 @@
     <Compile Include="Controls\PanelPlus.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PortableBinding\AccessToAccessListBinder.cs" />
+    <Compile Include="PortableBinding\AccessControlBinder.cs" />
     <Compile Include="PortableBinding\CheckBoxBoolBinder.cs" />
     <Compile Include="PortableBinding\ComboBoxEnumBinder.cs" />
     <Compile Include="PortableBinding\ComboBoxValueBinder.cs" />
@@ -245,6 +245,7 @@
     <Compile Include="PortableBinding\ItemDescription.cs" />
     <Compile Include="PortableBinding\ItemDescriptionList.cs" />
     <Compile Include="PortableBinding\LabelStringBinder.cs" />
+    <Compile Include="PortableBinding\MapValuesBinder.cs" />
     <Compile Include="PortableBinding\MasterListToListBinder.cs" />
     <Compile Include="PortableBinding\MasterListToSubsetBinder.cs" />
     <Compile Include="PortableBinding\NumericDoubleBinder.cs" />
@@ -480,9 +481,6 @@
     <EmbeddedResource Include="Controls\AircraftListControl.resx">
       <DependentUpon>AircraftListControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\BindingMapControl.resx">
-      <DependentUpon>BindingMapControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConnectionClientListControl.resx">
       <DependentUpon>ConnectionClientListControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -500,6 +498,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InvalidPluginsControl.resx">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MapControl.resx">
+      <DependentUpon>MapControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MasterListView.resx">
       <DependentUpon>MasterListView.cs</DependentUpon>
@@ -652,8 +653,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Controls\MapControl.html" />
     <Content Include="PortableBinding\_README.txt" />
-    <Content Include="Controls\BindingMapControl.html" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

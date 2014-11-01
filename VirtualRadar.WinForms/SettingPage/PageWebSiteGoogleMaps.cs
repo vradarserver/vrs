@@ -85,13 +85,12 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new ComboBoxValueBinder<GoogleMapSettings, string>(settings, comboBoxInitialMapType, _MapTypes, r => r.InitialMapType, (r,v) => r.InitialMapType = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
-            var mapBindingSource = new BindingSource();
-            mapBindingSource.DataSource = SettingsView.Configuration.GoogleMapSettings;
-            bindingMap.DataSource = mapBindingSource;
-            bindingMap.MapTypeMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapType);
-            bindingMap.ZoomLevelMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapZoom);
-            bindingMap.LatitudeMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapLatitude);
-            bindingMap.LongitudeMember = PropertyHelper.ExtractName<GoogleMapSettings>(r => r.InitialMapLongitude);
+            AddControlBinder(new MapValuesBinder<GoogleMapSettings>(settings, mapControl,
+                r => r.InitialMapLatitude,  (r,v) => r.InitialMapLatitude = v,
+                r => r.InitialMapLongitude, (r,v) => r.InitialMapLongitude = v,
+                r => r.InitialMapType,      (r,v) => r.InitialMapType = v,
+                r => r.InitialMapZoom,      (r,v) => r.InitialMapZoom = v
+            ));
         }
 
         /// <summary>
