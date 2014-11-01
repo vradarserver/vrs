@@ -264,12 +264,12 @@
     <Compile Include="PortableBinding\ItemDescriptionList.cs" />
     <Compile Include="PortableBinding\LabelStringBinder.cs" />
     <Compile Include="PortableBinding\MasterListToListBinder.cs" />
+    <Compile Include="PortableBinding\MasterListToSubsetBinder.cs" />
     <Compile Include="PortableBinding\NumericDoubleBinder.cs" />
     <Compile Include="PortableBinding\NumericIntBinder.cs" />
     <Compile Include="PortableBinding\ValueBinder.cs" />
     <Compile Include="PortableBinding\TextBoxStringBinder.cs" />
     <Compile Include="PortableBinding\ValueFromListBinder.cs" />
-    <Compile Include="PortableBinding\ValueSubsetOfListBinder.cs" />
     <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>

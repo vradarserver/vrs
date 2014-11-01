@@ -78,9 +78,13 @@ namespace VirtualRadar.WinForms.SettingPage
                 }
             );
 
-            listUsers.DataSource = CreateListBindingSource<IUser>(SettingsView.Users);
-            listUsers.CheckedSubset = settings.BasicAuthenticationUserIds;
-            listUsers.ExtractSubsetValue = (r) => ((IUser)r).UniqueId;
+            AddControlBinder(new MasterListToSubsetBinder<WebServerSettings, SettingsView, IUser, string>(settings, listUsers, SettingsView, r => r.BasicAuthenticationUserIds, r => r.Users, r => r.UniqueId) {
+                FetchColumns = (user, e) => {
+                    e.ColumnTexts.Add(user.LoginName ?? "");
+                    e.ColumnTexts.Add(user.Enabled ? Strings.Yes : Strings.No);
+                    e.ColumnTexts.Add(user.Name ?? "");
+                }
+            });
         }
 
         private void Enabled_Format(object sender, ConvertEventArgs args)
@@ -93,16 +97,6 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             var enabled = (bool)args.Value;
             args.Value = enabled ? AuthenticationSchemes.Basic : AuthenticationSchemes.Anonymous;
-        }
-
-        private void listUsers_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs e)
-        {
-            var user = e.Record as IUser;
-            if(user != null) {
-                e.ColumnTexts.Add(user.LoginName ?? "");
-                e.ColumnTexts.Add(user.Enabled ? Strings.Yes : Strings.No);
-                e.ColumnTexts.Add(user.Name ?? "");
-            }
         }
     }
 }

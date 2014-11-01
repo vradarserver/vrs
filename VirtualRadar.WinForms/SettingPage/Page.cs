@@ -494,16 +494,6 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         internal virtual void PageSelected()
         {
-            // Mono's data binding is flakey at best and completely borked before ~2.10. Even after 2.10
-            // it's failing to raise events that our BindingListView control relies upon to keep the
-            // display in sync with the list. This workaround only runs under Mono (it would be redundant
-            // under Windows) - it looks for BindingListView controls on the page and refreshes their
-            // bindings.
-            if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
-                foreach(var bindingListView in Controls.OfType<BindingListView>()) {
-                    bindingListView.ResetBindings();
-                }
-            }
         }
 
         /// <summary>

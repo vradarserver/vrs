@@ -34,7 +34,7 @@
             this.checkBoxEnabled = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
-            this.listReceiverIds = new VirtualRadar.WinForms.Controls.BindingListView();
+            this.listReceiverIds = new VirtualRadar.WinForms.Controls.MasterListView();
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEnabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.numericIcaoTimeout)).BeginInit();
@@ -129,13 +129,11 @@
             this.listReceiverIds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colName,
             this.colEnabled});
-            this.listReceiverIds.DataSource = null;
             this.listReceiverIds.HideAllButList = true;
             this.listReceiverIds.Location = new System.Drawing.Point(200, 75);
             this.listReceiverIds.Name = "listReceiverIds";
             this.listReceiverIds.Size = new System.Drawing.Size(436, 300);
             this.listReceiverIds.TabIndex = 19;
-            this.listReceiverIds.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listReceiverIds_FetchRecordContent);
             // 
             // colName
             // 
@@ -175,7 +173,7 @@
         private System.Windows.Forms.CheckBox checkBoxEnabled;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxName;
-        private Controls.BindingListView listReceiverIds;
+        private Controls.MasterListView listReceiverIds;
         private System.Windows.Forms.ColumnHeader colName;
         private System.Windows.Forms.ColumnHeader colEnabled;
     }

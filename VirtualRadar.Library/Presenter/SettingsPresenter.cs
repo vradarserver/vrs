@@ -1003,7 +1003,7 @@ namespace VirtualRadar.Library.Presenter
                     new Validation(ValidationField.BaseStationAddress, defaults) {
                         Format = Strings.CannotResolveAddress,
                         Args = new object[] { server.TransmitAddress },
-                        IsWarning = !String.IsNullOrEmpty((server.TransmitAddress ?? "").Trim()),
+                        IsWarning = !String.IsNullOrEmpty(server.TransmitAddress ?? ""),
                         RelatedFields = { ValidationField.IsTransmitter },
                     }
                 );
@@ -1186,7 +1186,7 @@ namespace VirtualRadar.Library.Presenter
                         DomainAddressIsValid(receiver.Address, new Validation(ValidationField.BaseStationAddress, defaults) {
                             Format = Strings.CannotResolveAddress,
                             Args = new object[] { receiver.Address },
-                            IsWarning = !String.IsNullOrEmpty((receiver.Address ?? "").Trim()),
+                            IsWarning = !String.IsNullOrEmpty(receiver.Address ?? ""),
                         });
 
                         // The port must be within range
@@ -1594,11 +1594,6 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void Save()
         {
-            Trim(_View.Configuration, recursive: true);
-            foreach(var user in _View.Users) {
-                Trim(user, recursive: true);
-            }
-
             var validationResults = Validate();
             _View.ShowValidationResults(validationResults);
 

@@ -88,9 +88,12 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new NumericIntBinder<MergedFeed>(MergedFeed,   numericIcaoTimeout, r => r.IcaoTimeout / 1000, (r,v) => r.IcaoTimeout = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<MergedFeed>(r => r.IcaoTimeout) });
 
-            listReceiverIds.DataSource = CreateListBindingSource<Receiver>(SettingsView.Configuration.Receivers);
-            listReceiverIds.CheckedSubset = MergedFeed.ReceiverIds;
-            listReceiverIds.ExtractSubsetValue = (r) => ((Receiver)r).UniqueId;
+            AddControlBinder(new MasterListToSubsetBinder<MergedFeed, Configuration, Receiver, int>(MergedFeed, listReceiverIds, SettingsView.Configuration, r => r.ReceiverIds, r => r.Receivers, r => r.UniqueId) {
+                FetchColumns = (receiver, e) => {
+                    e.ColumnTexts.Add(receiver.Name);
+                    e.ColumnTexts.Add(receiver.Enabled ? Strings.Yes : Strings.No);
+                },
+            });
 
             SetPageTitleProperty<MergedFeed>(r => r.Name, () => MergedFeed.Name);
             SetPageEnabledProperty<MergedFeed>(r => r.Enabled, () => MergedFeed.Enabled);
@@ -120,15 +123,6 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericIcaoTimeout,                   Strings.IcaoTimeout,                    Strings.OptionsDescribeIcaoTimeout);
             SetInlineHelp(checkBoxIgnoreAircraftWithNoPosition, Strings.IgnoreAircraftWithNoPosition,   Strings.OptionsDescribeIgnoreAircraftWithNoPosition);
             SetInlineHelp(listReceiverIds,                      "",                                     "");
-        }
-
-        private void listReceiverIds_FetchRecordContent(object sender, BindingListView.RecordContentEventArgs args)
-        {
-            var receiver = args.Record as Receiver;
-            if(receiver != null) {
-                args.ColumnTexts.Add(receiver.Name);
-                args.ColumnTexts.Add(receiver.Enabled ? Strings.Yes : Strings.No);
-            }
         }
     }
 }

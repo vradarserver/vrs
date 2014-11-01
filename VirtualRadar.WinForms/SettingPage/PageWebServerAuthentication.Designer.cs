@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listUsers = new VirtualRadar.WinForms.Controls.BindingListView();
+            this.listUsers = new VirtualRadar.WinForms.Controls.MasterListView();
             this.columnHeaderLoginName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderEnabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -49,13 +49,11 @@
             this.columnHeaderLoginName,
             this.columnHeaderEnabled,
             this.columnHeaderName});
-            this.listUsers.DataSource = null;
             this.listUsers.HideAllButList = true;
             this.listUsers.Location = new System.Drawing.Point(200, 23);
             this.listUsers.Name = "listUsers";
             this.listUsers.Size = new System.Drawing.Size(436, 290);
             this.listUsers.TabIndex = 3;
-            this.listUsers.FetchRecordContent += new System.EventHandler<VirtualRadar.WinForms.Controls.BindingListView.RecordContentEventArgs>(this.listUsers_FetchRecordContent);
             // 
             // columnHeaderLoginName
             // 
@@ -106,7 +104,7 @@
 
         #endregion
 
-        private Controls.BindingListView listUsers;
+        private Controls.MasterListView listUsers;
         private System.Windows.Forms.ColumnHeader columnHeaderLoginName;
         private System.Windows.Forms.ColumnHeader columnHeaderEnabled;
         private System.Windows.Forms.ColumnHeader columnHeaderName;
