@@ -263,60 +263,6 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region TrimStrings
-        /// <summary>
-        /// Trims all of the read-write strings on an object.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="recursive"></param>
-        protected void Trim(object model, bool recursive)
-        {
-            var processedObjects = new Dictionary<object, object>();
-
-            TrimRecurse(processedObjects, model, recursive);
-        }
-
-        private void TrimRecurse(Dictionary<object, object> processedObjects, object model, bool recursive)
-        {
-            if(model != null) {
-                if(!processedObjects.ContainsKey(model)) {
-                    processedObjects.Add(model, null);
-                    var properties = model.GetType().GetProperties();
-
-                    foreach(var property in properties.Where(r => r.PropertyType == typeof(String))) {
-                        if(property.GetAccessors(nonPublic: false).Length == 2) {
-                            try {
-                                var text = property.GetValue(model, null) as String;
-                                var trimmedText = text == null ? null : text.Trim();
-                                if(text != trimmedText) {
-                                    property.SetValue(model, trimmedText, null);
-                                }
-                            } catch(Exception ex) {
-                                throw new InvalidOperationException(String.Format("Hit exception trimming {0}.{1}: {2}", model.GetType().Name, property.Name, ex.Message), ex);
-                            }
-                        }
-                    }
-
-                    if(recursive) {
-                        foreach(var property in properties.Where(r => r.PropertyType != typeof(String) && r.PropertyType.IsClass)) {
-                            var collection = property.GetValue(model, null) as ICollection;
-                            if(collection == null) {
-                                var child = property.GetValue(model, null);
-                                if(child != null) TrimRecurse(processedObjects, child, recursive);
-                            } else {
-                                foreach(var element in collection) {
-                                    if(element != null) {
-                                        TrimRecurse(processedObjects, element, recursive);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
-
         #region Validation methods
         /// <summary>
         /// Returns true if the file exists, false if it does not.
