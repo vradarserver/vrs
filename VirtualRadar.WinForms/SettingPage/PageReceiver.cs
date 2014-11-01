@@ -135,7 +135,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialBaudRate,  _SupportedBaudRates,                r => r.BaudRate,    (r,v) => r.BaudRate = v));
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialDataBits,  _SupportedDataBits,                 r => r.DataBits,    (r,v) => r.DataBits = v));
 
-            AddControlBinder(new AccessToAccessListBinder<Receiver>(Receiver, accessControl, r => r.Access));
+            AddControlBinder(new AccessControlBinder<Receiver>(Receiver, accessControl, r => r.Access));
         }
 
         /// <summary>

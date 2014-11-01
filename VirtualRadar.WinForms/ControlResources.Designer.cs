@@ -74,9 +74,9 @@ namespace VirtualRadar.WinForms {
         ///    &lt;/style&gt;
         ///    &lt;script type=&quot;text/ja [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string BindingMapControl_html {
+        internal static string MapControl_html {
             get {
-                return ResourceManager.GetString("BindingMapControl_html", resourceCulture);
+                return ResourceManager.GetString("MapControl_html", resourceCulture);
             }
         }
     }

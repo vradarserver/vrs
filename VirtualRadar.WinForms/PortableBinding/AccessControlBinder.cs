@@ -23,7 +23,7 @@ namespace VirtualRadar.WinForms.PortableBinding
     /// <summary>
     /// A binder between an <see cref="Access"/> object and an <see cref="AccessControl"/> control.
     /// </summary>
-    class AccessToAccessListBinder<TModel> : ControlBinder
+    class AccessControlBinder<TModel> : ControlBinder
     {
         #region Fields
         #endregion
@@ -45,7 +45,6 @@ namespace VirtualRadar.WinForms.PortableBinding
             get { return (TModel)ModelObject; }
         }
 
-        private Expression<Func<TModel, Access>> _GetModelAccessExpression;
         private Func<TModel, Access> _GetModelAccess;
         /// <summary>
         /// Gets the <see cref="Access"/> exposed by the model.
@@ -95,9 +94,9 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="model"></param>
         /// <param name="control"></param>
         /// <param name="getModelAccess"></param>
-        public AccessToAccessListBinder(TModel model, AccessControl control, Expression<Func<TModel, Access>> getModelAccess) : base(model, control)
+        public AccessControlBinder(TModel model, AccessControl control, Func<TModel, Access> getModelAccess) : base(model, control)
         {
-            _GetModelAccessExpression = getModelAccess;
+            _GetModelAccess = getModelAccess;
         }
         #endregion
 
@@ -108,11 +107,6 @@ namespace VirtualRadar.WinForms.PortableBinding
         protected override void DoInitialising()
         {
             base.DoInitialising();
-
-            if(String.IsNullOrEmpty(_ModelPropertyName)) {
-                _ModelPropertyName = PropertyHelper.ExtractName(_GetModelAccessExpression);
-            }
-            _GetModelAccess = _GetModelAccessExpression.Compile();
         }
         #endregion
 

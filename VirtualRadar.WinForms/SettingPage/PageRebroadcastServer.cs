@@ -101,7 +101,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings, comboBoxFormat, r => r.Format, (r,v) => r.Format = v, r => Describe.RebroadcastFormat(r)));
 
-            AddControlBinder(new AccessToAccessListBinder<RebroadcastSettings>(RebroadcastSettings, accessControl, r => r.Access));
+            AddControlBinder(new AccessControlBinder<RebroadcastSettings>(RebroadcastSettings, accessControl, r => r.Access));
         }
 
         /// <summary>

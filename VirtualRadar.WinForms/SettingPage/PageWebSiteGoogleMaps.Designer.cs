@@ -31,7 +31,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.numericInitialZoom = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.bindingMap = new VirtualRadar.WinForms.Controls.BindingMapControl();
+            this.mapControl = new VirtualRadar.WinForms.Controls.MapControl();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.numericInitialLongitude = new System.Windows.Forms.NumericUpDown();
@@ -81,21 +81,19 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "::InitialMapType:::";
             // 
-            // bindingMap
+            // mapControl
             // 
-            this.bindingMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.mapControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindingMap.BindMapType = true;
-            this.bindingMap.BindZoomLevel = true;
-            this.bindingMap.LatitudeMember = null;
-            this.bindingMap.Location = new System.Drawing.Point(0, 105);
-            this.bindingMap.LongitudeMember = null;
-            this.bindingMap.MapTypeMember = null;
-            this.bindingMap.Name = "bindingMap";
-            this.bindingMap.Size = new System.Drawing.Size(636, 342);
-            this.bindingMap.TabIndex = 12;
-            this.bindingMap.ZoomLevelMember = null;
+            this.mapControl.Latitude = 0D;
+            this.mapControl.Location = new System.Drawing.Point(0, 105);
+            this.mapControl.Longitude = 0D;
+            this.mapControl.MapType = null;
+            this.mapControl.Name = "mapControl";
+            this.mapControl.Size = new System.Drawing.Size(636, 342);
+            this.mapControl.TabIndex = 12;
+            this.mapControl.ZoomLevel = 0;
             // 
             // label3
             // 
@@ -156,7 +154,7 @@
             // PageWebSiteGoogleMaps
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.bindingMap);
+            this.Controls.Add(this.mapControl);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.numericInitialLongitude);
@@ -181,7 +179,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown numericInitialZoom;
         private System.Windows.Forms.Label label1;
-        private Controls.BindingMapControl bindingMap;
+        private Controls.MapControl mapControl;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown numericInitialLongitude;
