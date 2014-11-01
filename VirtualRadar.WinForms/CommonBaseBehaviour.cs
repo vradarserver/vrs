@@ -353,33 +353,6 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Creates a binding source that automatically sorts the list that it's attached to.
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="sortColumn"></param>
-        /// <returns></returns>
-        public BindingSource CreateSortingBindingSource<T>(IList<T> list, Expression<Func<T, object>> sortColumn)
-        {
-            if(list == null) throw new ArgumentNullException("list");
-
-            var castList = list as IList;
-            if(castList == null) throw new ArgumentException("The list must be castable to IList");
-
-            var result = new BindingSource();
-
-            // Turns out the BindingListView crashes under Mono...
-            if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
-                result.DataSource = castList;
-            } else {
-                var bindingListView = new Equin.ApplicationFramework.BindingListView<T>(castList);
-                result.DataSource = bindingListView;
-                result.Sort = PropertyHelper.ExtractName<T>(sortColumn);
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Creates a simple unsorted binding source on a list.
         /// </summary>
         /// <typeparam name="T"></typeparam>

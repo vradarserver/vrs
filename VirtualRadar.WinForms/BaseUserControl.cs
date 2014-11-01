@@ -133,17 +133,6 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Creates a binding source that automatically sorts the list that it's attached to.
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="sortColumn"></param>
-        /// <returns></returns>
-        protected BindingSource CreateSortingBindingSource<T>(IList<T> list, Expression<Func<T, object>> sortColumn)
-        {
-            return _CommonBaseBehaviour.CreateSortingBindingSource<T>(list, sortColumn);
-        }
-
-        /// <summary>
         /// Creates a simple unsorted binding source on a list.
         /// </summary>
         /// <typeparam name="T"></typeparam>
