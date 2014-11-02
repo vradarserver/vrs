@@ -1014,9 +1014,7 @@ namespace VirtualRadar.WinForms
         private void ConfigurationListener_PropertyChanged(object sender, ConfigurationListenerEventArgs args)
         {
             foreach(var pageSummary in GetAllPageSummaries()) {
-                if(pageSummary.Page != null) {
-                    pageSummary.Page.ConfigurationChanged(args);
-                }
+                pageSummary.ConfigurationChanged(args);
             }
         }
 

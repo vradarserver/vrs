@@ -268,7 +268,7 @@ namespace VirtualRadar.WinForms.SettingPage
         }
         #endregion
 
-        #region SetPageTitleProperty, SetPageEnabledProperty
+        #region Tree view handling - SetPageTitleProperty, SetPageEnabledProperty
         /// <summary>
         /// Sets up the automatic page title fetcher.
         /// </summary>
