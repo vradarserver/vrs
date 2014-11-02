@@ -54,6 +54,21 @@ namespace VirtualRadar.WinForms.SettingPage
             {
                 return new PageDataSources();
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageDataSources;
+                SetValidationFields(new Dictionary<ValidationField, Control>() {
+                    { ValidationField.BaseStationDatabase,  page == null ? null : page.fileDatabaseFileName },
+                    { ValidationField.FlagsFolder,          page == null ? null : page.folderFlags },
+                    { ValidationField.SilhouettesFolder,    page == null ? null : page.folderSilhouettes },
+                    { ValidationField.PicturesFolder,       page == null ? null : page.folderPictures },
+                });
+            }
         }
         #endregion
 
@@ -80,20 +95,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderPictures,                    r => r.PicturesFolder,         (r,v) => r.PicturesFolder = v));
 
             AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxSearchPictureSubFolders,   r => r.SearchPictureSubFolders,    (r,v) => r.SearchPictureSubFolders = v));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField, Control>() {
-                { ValidationField.BaseStationDatabase,  fileDatabaseFileName },
-                { ValidationField.FlagsFolder,          folderFlags },
-                { ValidationField.SilhouettesFolder,    folderSilhouettes },
-                { ValidationField.PicturesFolder,       folderPictures },
-            });
         }
 
         /// <summary>

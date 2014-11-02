@@ -181,9 +181,9 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// Associates controls with validation fields.
         /// </summary>
-        protected virtual void AssociateValidationFields()
+        private void AssociateValidationFields()
         {
-            ;
+            PageSummary.AssociateValidationFields(this);
         }
 
         /// <summary>

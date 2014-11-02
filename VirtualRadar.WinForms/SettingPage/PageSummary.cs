@@ -191,6 +191,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             if(!_Initialised && SettingsView != null) {
                 _Initialised = true;
+                AssociateValidationFields(Page);
                 AssociateChildPages();
             }
         }
@@ -325,7 +326,15 @@ namespace VirtualRadar.WinForms.SettingPage
         }
         #endregion
 
-        #region SetValidationFields, GetControlForValidationField
+        #region AssociateValidationFields, SetValidationFields, GetControlForValidationField
+        /// <summary>
+        /// Associates controls with validation fields.
+        /// </summary>
+        /// <param name="genericPage"></param>
+        public virtual void AssociateValidationFields(Page genericPage)
+        {
+        }
+
         /// <summary>
         /// Records which controls display which validation fields.
         /// </summary>
@@ -336,7 +345,9 @@ namespace VirtualRadar.WinForms.SettingPage
                 var validationField = field.Key;
                 var control = field.Value;
 
-                SettingsView.SetControlErrorAlignment(control, ErrorIconAlignment.MiddleLeft);
+                if(control != null) {
+                    SettingsView.SetControlErrorAlignment(control, ErrorIconAlignment.MiddleLeft);
+                }
 
                 if(!_ValidationFieldControlMap.ContainsKey(field.Key)) {
                     _ValidationFieldControlMap.Add(validationField, control);
@@ -352,13 +363,20 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         /// <param name="pageObject"></param>
         /// <param name="validationField"></param>
+        /// <param name="isClearMessage"></param>
         /// <returns></returns>
-        public Control GetControlForValidationField(object pageObject, ValidationField validationField)
+        public Control GetControlForValidationField(object pageObject, ValidationField validationField, bool isClearMessage)
         {
             Control result = null;
 
             if(pageObject == PageObject) {
                 _ValidationFieldControlMap.TryGetValue(validationField, out result);
+
+                if(result == null && !isClearMessage && _ValidationFieldControlMap.ContainsKey(validationField)) {
+                    // The page hasn't been created and it has a validation error on it - create the page and try again
+                    SettingsView.CreatePage(this);
+                    _ValidationFieldControlMap.TryGetValue(validationField, out result);
+                }
             }
 
             return result;

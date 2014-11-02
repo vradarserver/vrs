@@ -53,6 +53,28 @@ namespace VirtualRadar.WinForms.SettingPage
             {
                 return new PageRawFeedDecoding();
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageRawFeedDecoding;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.ReceiverRange,                            page == null ? null : page.numericReceiverRange },
+                    { ValidationField.AirborneGlobalPositionLimit,              page == null ? null : page.numericAirborneGlobalPositionLimit },
+                    { ValidationField.FastSurfaceGlobalPositionLimit,           page == null ? null : page.numericFastSurfaceGlobalPositionLimit },
+                    { ValidationField.SlowSurfaceGlobalPositionLimit,           page == null ? null : page.numericSlowSurfaceGlobalPositionLimit },
+                    { ValidationField.AcceptableAirborneLocalPositionSpeed,     page == null ? null : page.numericAcceptableAirborneSpeed },
+                    { ValidationField.AcceptableTransitionLocalPositionSpeed,   page == null ? null : page.numericAcceptableAirSurfaceTransitionSpeed },
+                    { ValidationField.AcceptableSurfaceLocalPositionSpeed,      page == null ? null : page.numericAcceptableSurfaceSpeed },
+                    { ValidationField.AcceptIcaoInPI0Count,                     page == null ? null : page.numericAcceptIcaoInPI0Count },
+                    { ValidationField.AcceptIcaoInPI0Seconds,                   page == null ? null : page.numericAcceptIcaoInPI0Seconds },
+                    { ValidationField.AcceptIcaoInNonPICount,                   page == null ? null : page.numericAcceptIcaoInNonPICount },
+                    { ValidationField.AcceptIcaoInNonPISeconds,                 page == null ? null : page.numericAcceptIcaoInNonPISeconds },
+                });
+            }
         }
         #endregion
 
@@ -89,27 +111,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreMilitaryExtendedSquitter,      r => r.IgnoreMilitaryExtendedSquitter,        (r,v) => r.IgnoreMilitaryExtendedSquitter = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxUseLocalDecodeForInitialPosition,    r => r.UseLocalDecodeForInitialPosition,      (r,v) => r.UseLocalDecodeForInitialPosition = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreCallsignsInBds20,              r => r.IgnoreCallsignsInBds20,                (r,v) => r.IgnoreCallsignsInBds20 = v));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.ReceiverRange,                            numericReceiverRange },
-                { ValidationField.AirborneGlobalPositionLimit,              numericAirborneGlobalPositionLimit },
-                { ValidationField.FastSurfaceGlobalPositionLimit,           numericFastSurfaceGlobalPositionLimit },
-                { ValidationField.SlowSurfaceGlobalPositionLimit,           numericSlowSurfaceGlobalPositionLimit },
-                { ValidationField.AcceptableAirborneLocalPositionSpeed,     numericAcceptableAirborneSpeed },
-                { ValidationField.AcceptableTransitionLocalPositionSpeed,   numericAcceptableAirSurfaceTransitionSpeed },
-                { ValidationField.AcceptableSurfaceLocalPositionSpeed,      numericAcceptableSurfaceSpeed },
-                { ValidationField.AcceptIcaoInPI0Count,                     numericAcceptIcaoInPI0Count },
-                { ValidationField.AcceptIcaoInPI0Seconds,                   numericAcceptIcaoInPI0Seconds },
-                { ValidationField.AcceptIcaoInNonPICount,                   numericAcceptIcaoInNonPICount },
-                { ValidationField.AcceptIcaoInNonPISeconds,                 numericAcceptIcaoInNonPISeconds },
-            });
         }
 
         /// <summary>

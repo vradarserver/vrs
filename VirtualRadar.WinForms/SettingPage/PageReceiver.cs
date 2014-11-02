@@ -77,6 +77,30 @@ namespace VirtualRadar.WinForms.SettingPage
                 var receiver = record as Receiver;
                 return receiver != null && Receiver != null && receiver.UniqueId == Receiver.UniqueId;
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageReceiver;
+                SetValidationFields(new Dictionary<ValidationField, Control>() {
+                    { ValidationField.Enabled,              page == null ? null : page.checkBoxEnabled },
+                    { ValidationField.Name,                 page == null ? null : page.textBoxName },
+                    { ValidationField.Location,             page == null ? null : page.comboBoxLocationId },
+
+                    { ValidationField.IsPassive,            page == null ? null : page.checkBoxIsPassive },
+                    { ValidationField.BaseStationAddress,   page == null ? null : page.textBoxAddress },
+                    { ValidationField.BaseStationPort,      page == null ? null : page.numericPort },
+                    { ValidationField.UseKeepAlive,         page == null ? null : page.checkBoxUseKeepAlive },
+                    { ValidationField.IdleTimeout,          page == null ? null : page.numericIdleTimeout },
+
+                    { ValidationField.ComPort,              page == null ? null : page.comboBoxSerialComPort },
+                    { ValidationField.BaudRate,             page == null ? null : page.comboBoxSerialBaudRate },
+                    { ValidationField.DataBits,             page == null ? null : page.comboBoxSerialDataBits },
+                });
+            }
         }
         #endregion
 
@@ -166,29 +190,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialDataBits,  _SupportedDataBits,                 r => r.DataBits,    (r,v) => r.DataBits = v));
 
             AddControlBinder(new AccessControlBinder<Receiver>(Receiver, accessControl, r => r.Access));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField, Control>() {
-                { ValidationField.Enabled,              checkBoxEnabled },
-                { ValidationField.Name,                 textBoxName },
-                { ValidationField.Location,             comboBoxLocationId },
-
-                { ValidationField.IsPassive,            checkBoxIsPassive },
-                { ValidationField.BaseStationAddress,   textBoxAddress },
-                { ValidationField.BaseStationPort,      numericPort },
-                { ValidationField.UseKeepAlive,         checkBoxUseKeepAlive },
-                { ValidationField.IdleTimeout,          numericIdleTimeout },
-
-                { ValidationField.ComPort,              comboBoxSerialComPort },
-                { ValidationField.BaudRate,             comboBoxSerialBaudRate },
-                { ValidationField.DataBits,             comboBoxSerialDataBits },
-            });
         }
 
         /// <summary>

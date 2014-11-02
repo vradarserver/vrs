@@ -594,6 +594,36 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
+        /// Creates a page for a page summary and adds it to the form. Does nothing if the summary
+        /// already has a page associated with it.
+        /// </summary>
+        /// <param name="pageSummary"></param>
+        internal void CreatePage(PageSummary pageSummary)
+        {
+            if(pageSummary.Page == null) {
+                pageSummary.CreatePage();
+                var page = pageSummary.Page;
+
+                var panelContainsPage = panelPageContent.Controls.Contains(page);
+                if(!panelContainsPage) {
+                    page.Visible = false;
+                    page.Width = panelPageContent.Width - 8;
+                    page.Location = new Point(4, 4);
+                    page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+                    if(page.PageUseFullHeight) {
+                        page.Height = panelPageContent.Height - 8;
+                        page.Anchor |= AnchorStyles.Bottom;
+                    }
+
+                    panelPageContent.Controls.Add(page);
+                }
+
+                page.Initialise();
+            }
+        }
+
+        /// <summary>
         /// Displays the page for the summary passed across, creating the summary if necessary.
         /// </summary>
         /// <param name="pageSummary"></param>
@@ -602,30 +632,11 @@ namespace VirtualRadar.WinForms
             if(pageSummary != null && pageSummary != CurrentPanelPageSummary && GetAllPageSummaries().Contains(pageSummary)) {
                 panelPageContent.SuspendLayout();
                 try {
-                    if(pageSummary.Page == null) {
-                        pageSummary.CreatePage();
-                        var page = pageSummary.Page;
-
-                        var panelContainsPage = panelPageContent.Controls.Contains(page);
-                        if(!panelContainsPage) {
-                            page.Visible = false;
-                            page.Width = panelPageContent.Width - 8;
-                            page.Location = new Point(4, 4);
-                            page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-
-                            if(page.PageUseFullHeight) {
-                                page.Height = panelPageContent.Height - 8;
-                                page.Anchor |= AnchorStyles.Bottom;
-                            }
-
-                            panelPageContent.Controls.Add(page);
-                        }
-                    }
+                    CreatePage(pageSummary);
 
                     var hideSummary = CurrentPanelPageSummary;
                     panelPageContent.Tag = pageSummary;
                     CurrentPanelPageSummary.Page.Visible = true;
-                    CurrentPanelPageSummary.Page.Initialise();
                     if(hideSummary != null) hideSummary.Page.Visible = false;
                 } finally {
                     panelPageContent.ResumeLayout();
@@ -919,7 +930,7 @@ namespace VirtualRadar.WinForms
             } else {
                 foreach(var pageSummary in GetAllPageSummaries()) {
                     foreach(var fieldChecked in results.PartialValidationFields) {
-                        var fieldControl = pageSummary.GetControlForValidationField(fieldChecked.Record, fieldChecked.Field);
+                        var fieldControl = pageSummary.GetControlForValidationField(fieldChecked.Record, fieldChecked.Field, isClearMessage: true);
                         var warningControl = fieldControl;
                         var errorControl = fieldControl;
                         if(fieldControl != null) {
@@ -958,18 +969,17 @@ namespace VirtualRadar.WinForms
             foreach(var validationResult in results.Results) {
                 PageSummary fieldPageSummary = null;
                 Control fieldControl = null;
+                var isEmptyMessage = String.IsNullOrEmpty(validationResult.Message);
 
                 foreach(var pageSummary in allSummaries) {
-                    fieldControl = pageSummary.GetControlForValidationField(validationResult.Record, validationResult.Field);
+                    fieldControl = pageSummary.GetControlForValidationField(validationResult.Record, validationResult.Field, isEmptyMessage);
                     if(fieldControl != null) {
                         fieldPageSummary = pageSummary;
                         break;
                     }
                 }
-                if(fieldPageSummary == null || fieldControl == null) {
-// TODO: put this back :) Need to figure out a better way of doing validation first though...
-
-                  //  throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}. The validation {2} message was {3}", validationResult.Field, validationResult.Record, validationResult.IsWarning ? "warning" : "error", validationResult.Message));
+                if(fieldPageSummary == null) {
+                  throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}. The validation {2} message was {3}", validationResult.Field, validationResult.Record, validationResult.IsWarning ? "warning" : "error", validationResult.Message));
                 }
 
                 var validateDelegate = fieldControl as IValidateDelegate;

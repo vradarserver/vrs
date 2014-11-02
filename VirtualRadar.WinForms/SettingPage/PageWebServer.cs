@@ -62,6 +62,19 @@ namespace VirtualRadar.WinForms.SettingPage
                 base.AssociateChildPages();
                 ChildPages.Add(new PageWebServerAuthentication.Summary());
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageWebServer;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.UPnpPortNumber,           page == null ? null : page.numericUPnpPort },
+                    { ValidationField.InternetUserIdleTimeout,  page == null ? null : page.numericInternetUserIdleTimeout },
+                });
+            }
         }
         #endregion
 
@@ -94,18 +107,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetClientCanSubmitRoutes,     r => r.CanSubmitRoutes,                  (r,v) => r.CanSubmitRoutes = v));
             AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxInternetClientCanShowPolarPlots,   r => r.CanShowPolarPlots,                (r,v) => r.CanShowPolarPlots = v));
             AddControlBinder(new CheckBoxBoolBinder<InternetClientSettings> (config.InternetClientSettings, checkBoxAllowInternetProximityGadgets,     r => r.AllowInternetProximityGadgets,    (r,v) => r.AllowInternetProximityGadgets = v));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.UPnpPortNumber,           numericUPnpPort },
-                { ValidationField.InternetUserIdleTimeout,  numericInternetUserIdleTimeout },
-            });
         }
 
         /// <summary>

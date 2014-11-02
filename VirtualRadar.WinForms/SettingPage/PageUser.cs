@@ -70,6 +70,20 @@ namespace VirtualRadar.WinForms.SettingPage
                 var user = record as IUser;
                 return user != null && User != null && user.UniqueId == User.UniqueId;
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageUser;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.LoginName,    page == null ? null : page.textBoxLoginName },
+                    { ValidationField.Password,     page == null ? null : page.textBoxPassword },
+                    { ValidationField.Name,         page == null ? null : page.textBoxUserName },
+                });
+            }
         }
         #endregion
 
@@ -106,19 +120,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxLoginName, r => r.LoginName,   (r,v) => r.LoginName = v)   { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxPassword,  r => r.UIPassword,  (r,v) => r.UIPassword = v));
             AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxUserName,  r => r.Name,        (r,v) => r.Name = v));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.LoginName,    textBoxLoginName },
-                { ValidationField.Password,     textBoxPassword },
-                { ValidationField.Name,         textBoxUserName },
-            });
         }
 
         /// <summary>

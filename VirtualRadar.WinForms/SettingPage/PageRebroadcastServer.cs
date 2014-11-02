@@ -74,9 +74,28 @@ namespace VirtualRadar.WinForms.SettingPage
                 var rebroadcastSettings = record as RebroadcastSettings;
                 return rebroadcastSettings != null && RebroadcastSettings != null && rebroadcastSettings.UniqueId == RebroadcastSettings.UniqueId;
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageRebroadcastServer;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.Name,                     page == null ? null : page.textBoxName },
+                    { ValidationField.IsTransmitter,            page == null ? null : page.checkBoxIsTransmitter },
+                    { ValidationField.BaseStationAddress,       page == null ? null : page.textBoxTransmitAddress },
+                    { ValidationField.RebroadcastServerPort,    page == null ? null : page.numericPort },
+                    { ValidationField.UseKeepAlive,             page == null ? null : page.checkBoxUseKeepAlive },
+                    { ValidationField.IdleTimeout,              page == null ? null : page.numericIdleTimeout },
+                    { ValidationField.Format,                   page == null ? null : page.comboBoxFormat },
+                    { ValidationField.RebroadcastReceiver,      page == null ? null : page.comboBoxReceiver },
+                    { ValidationField.StaleSeconds,             page == null ? null : page.numericStaleSeconds },
+                });
+            }
         }
         #endregion
-
 
         /// <summary>
         /// See base docs.
@@ -131,25 +150,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings, comboBoxFormat, r => r.Format, (r,v) => r.Format = v, r => Describe.RebroadcastFormat(r)));
 
             AddControlBinder(new AccessControlBinder<RebroadcastSettings>(RebroadcastSettings, accessControl, r => r.Access));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.Name,                     textBoxName },
-                { ValidationField.IsTransmitter,            checkBoxIsTransmitter },
-                { ValidationField.BaseStationAddress,       textBoxTransmitAddress },
-                { ValidationField.RebroadcastServerPort,    numericPort },
-                { ValidationField.UseKeepAlive,             checkBoxUseKeepAlive },
-                { ValidationField.IdleTimeout,              numericIdleTimeout },
-                { ValidationField.Format,                   comboBoxFormat },
-                { ValidationField.RebroadcastReceiver,      comboBoxReceiver },
-                { ValidationField.StaleSeconds,             numericStaleSeconds },
-            });
         }
 
         /// <summary>

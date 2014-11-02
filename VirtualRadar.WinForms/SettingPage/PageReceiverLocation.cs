@@ -73,6 +73,20 @@ namespace VirtualRadar.WinForms.SettingPage
                 var receiverLocation = record as ReceiverLocation;
                 return receiverLocation != null && ReceiverLocation != null && receiverLocation.UniqueId == ReceiverLocation.UniqueId;
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageReceiverLocation;
+                SetValidationFields(new Dictionary<Interface.View.ValidationField,Control>() {
+                    { ValidationField.Location,     page == null ? null : page.textBoxName },
+                    { ValidationField.Latitude,     page == null ? null : page.numericLatitude },
+                    { ValidationField.Longitude,    page == null ? null : page.numericLongitude },
+                });
+            }
         }
         #endregion
 
@@ -117,19 +131,6 @@ namespace VirtualRadar.WinForms.SettingPage
                 r => r.Latitude,    (r,v) => r.Latitude = v,
                 r => r.Longitude,   (r,v) => r.Longitude = v
             ));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<Interface.View.ValidationField,Control>() {
-                { ValidationField.Location,     textBoxName },
-                { ValidationField.Latitude,     numericLatitude },
-                { ValidationField.Longitude,    numericLongitude },
-            });
         }
 
         /// <summary>

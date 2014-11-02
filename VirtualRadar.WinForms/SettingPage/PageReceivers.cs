@@ -64,6 +64,21 @@ namespace VirtualRadar.WinForms.SettingPage
                 base.AssociateChildPages();
                 AssociateListWithChildPages(SettingsView.Configuration.Receivers, () => new PageReceiver.Summary());
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageReceivers;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.WebSiteReceiver,          page == null ? null : page.comboBoxWebSiteReceiverId },
+                    { ValidationField.ClosestAircraftReceiver,  page == null ? null : page.comboBoxClosestAircraftReceiverId },
+                    { ValidationField.FlightSimulatorXReceiver, page == null ? null : page.comboBoxFsxReceiverId },
+                    { ValidationField.ReceiverIds,              page == null ? null : page.listReceivers },
+                });
+            }
         }
         #endregion
 
@@ -145,20 +160,6 @@ namespace VirtualRadar.WinForms.SettingPage
             }
 
             return result.ToString();
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.WebSiteReceiver,          comboBoxWebSiteReceiverId },
-                { ValidationField.ClosestAircraftReceiver,  comboBoxClosestAircraftReceiverId },
-                { ValidationField.FlightSimulatorXReceiver, comboBoxFsxReceiverId },
-                { ValidationField.ReceiverIds,              listReceivers },
-            });
         }
 
         /// <summary>
