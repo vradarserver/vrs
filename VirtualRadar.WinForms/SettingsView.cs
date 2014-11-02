@@ -602,11 +602,11 @@ namespace VirtualRadar.WinForms
         {
             if(pageSummary.Page == null) {
                 pageSummary.CreatePage();
+
                 var page = pageSummary.Page;
 
                 var panelContainsPage = panelPageContent.Controls.Contains(page);
                 if(!panelContainsPage) {
-                    page.Visible = false;
                     page.Width = panelPageContent.Width - 8;
                     page.Location = new Point(4, 4);
                     page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -616,6 +616,7 @@ namespace VirtualRadar.WinForms
                         page.Anchor |= AnchorStyles.Bottom;
                     }
 
+                    page.Visible = false;
                     panelPageContent.Controls.Add(page);
                 }
 

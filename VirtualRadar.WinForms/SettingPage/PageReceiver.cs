@@ -245,7 +245,7 @@ namespace VirtualRadar.WinForms.SettingPage
             groupBoxSerial.Visible = Receiver.ConnectionType == ConnectionType.COM;
             switch(Receiver.ConnectionType) {
                 case ConnectionType.COM: Height = panelConnectionTypeSettings.Top + groupBoxSerial.Height; break;
-                case ConnectionType.TCP: Height = panelConnectionTypeSettings.Top + groupBoxAccessControl.Top + groupBoxAccessControl.Height; break;
+                case ConnectionType.TCP: Height = groupBoxAccessControl.Top + groupBoxAccessControl.Height; break;
                 default:                 throw new NotImplementedException();
             }
 
