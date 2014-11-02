@@ -607,12 +607,12 @@ namespace VirtualRadar.WinForms
 
                 var panelContainsPage = panelPageContent.Controls.Contains(page);
                 if(!panelContainsPage) {
-                    page.Width = panelPageContent.Width - 8;
+                    page.Width = panelPageContent.ClientRectangle.Width - 8;
                     page.Location = new Point(4, 4);
                     page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
                     if(page.PageUseFullHeight) {
-                        page.Height = panelPageContent.Height - 8;
+                        page.Height = panelPageContent.ClientRectangle.Height - 8;
                         page.Anchor |= AnchorStyles.Bottom;
                     }
 
