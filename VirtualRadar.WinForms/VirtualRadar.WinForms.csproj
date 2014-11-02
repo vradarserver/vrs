@@ -326,6 +326,7 @@
     <Compile Include="SettingPage\PageReceivers.Designer.cs">
       <DependentUpon>PageReceivers.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageSummary.cs" />
     <Compile Include="SettingPage\PageUser.cs">
       <SubType>UserControl</SubType>
     </Compile>

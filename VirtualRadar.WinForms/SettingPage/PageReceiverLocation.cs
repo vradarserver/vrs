@@ -30,15 +30,56 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageReceiverLocation : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The summary for receiver location pages.
         /// </summary>
-        public override Image PageIcon { get { return Images.Location16x16; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Location16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public ReceiverLocation ReceiverLocation { get { return PageObject as ReceiverLocation; } }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            public Summary() : base()
+            {
+                SetPageTitleProperty<ReceiverLocation>(r => r.Name, () => ReceiverLocation.Name);
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageReceiverLocation();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="record"></param>
+            /// <returns></returns>
+            internal override bool IsForSameRecord(object record)
+            {
+                var receiverLocation = record as ReceiverLocation;
+                return receiverLocation != null && ReceiverLocation != null && receiverLocation.UniqueId == ReceiverLocation.UniqueId;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// See base docs.
         /// </summary>
-        public ReceiverLocation ReceiverLocation { get { return PageObject as ReceiverLocation; } }
+        public ReceiverLocation ReceiverLocation { get { return ((Summary)PageSummary).ReceiverLocation; } }
 
         /// <summary>
         /// See base docs.
@@ -59,18 +100,6 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            SetPageTitleProperty<ReceiverLocation>(r => r.Name, () => ReceiverLocation.Name);
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        internal override bool IsForSameRecord(object record)
-        {
-            var receiverLocation = record as ReceiverLocation;
-            return receiverLocation != null && ReceiverLocation != null && receiverLocation.UniqueId == ReceiverLocation.UniqueId;
         }
 
         /// <summary>

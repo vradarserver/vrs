@@ -30,15 +30,58 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageRebroadcastServer : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The summary object for rebroadcast server pages.
         /// </summary>
-        public override Image PageIcon { get { return Images.Rebroadcast16x16; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Rebroadcast16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public RebroadcastSettings RebroadcastSettings { get { return PageObject as RebroadcastSettings; } }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            public Summary() : base()
+            {
+                SetPageTitleProperty<RebroadcastSettings>(r => r.Name, () => RebroadcastSettings.Name);
+                SetPageEnabledProperty<RebroadcastSettings>(r => r.Enabled, () => RebroadcastSettings.Enabled);
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageRebroadcastServer();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="record"></param>
+            /// <returns></returns>
+            internal override bool IsForSameRecord(object record)
+            {
+                var rebroadcastSettings = record as RebroadcastSettings;
+                return rebroadcastSettings != null && RebroadcastSettings != null && rebroadcastSettings.UniqueId == RebroadcastSettings.UniqueId;
+            }
+        }
+        #endregion
+
 
         /// <summary>
         /// See base docs.
         /// </summary>
-        public RebroadcastSettings RebroadcastSettings { get { return PageObject as RebroadcastSettings; } }
+        public RebroadcastSettings RebroadcastSettings { get { return ((Summary)PageSummary).RebroadcastSettings; } }
 
         /// <summary>
         /// See base docs.
@@ -56,23 +99,9 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        internal override bool IsForSameRecord(object record)
-        {
-            var rebroadcastSettings = record as RebroadcastSettings;
-            return rebroadcastSettings != null && RebroadcastSettings != null && rebroadcastSettings.UniqueId == RebroadcastSettings.UniqueId;
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-
-            SetPageTitleProperty<RebroadcastSettings>(r => r.Name, () => RebroadcastSettings.Name);
-            SetPageEnabledProperty<RebroadcastSettings>(r => r.Enabled, () => RebroadcastSettings.Enabled);
 
             EnableDisableControls();
         }
@@ -161,7 +190,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.ConfigurationChanged(args);
 
             if(SettingsView != null && this.IsHandleCreated) {
-                if(args.Record == PageObject) {
+                if(Object.ReferenceEquals(args.Record, RebroadcastSettings)) {
                     if(args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IsTransmitter) ||
                        args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive)) {
                         EnableDisableControls();

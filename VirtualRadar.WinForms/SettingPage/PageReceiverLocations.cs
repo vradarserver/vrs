@@ -29,15 +29,41 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageReceiverLocations : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The page summary object.
         /// </summary>
-        public override string PageTitle { get { return Strings.ReceiverLocationsTitle; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override string PageTitle { get { return Strings.ReceiverLocationsTitle; } }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.Location16x16; } }
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Location16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageReceiverLocations();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            protected override void AssociateChildPages()
+            {
+                base.AssociateChildPages();
+                AssociateListWithChildPages(SettingsView.Configuration.ReceiverLocations, () => new PageReceiverLocation.Summary());
+            }
+        }
+        #endregion
 
         /// <summary>
         /// See base docs.
@@ -50,15 +76,6 @@ namespace VirtualRadar.WinForms.SettingPage
         public PageReceiverLocations()
         {
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateChildPages()
-        {
-            base.AssociateChildPages();
-            AssociateListWithChildPages(SettingsView.Configuration.ReceiverLocations, () => new PageReceiverLocation());
         }
 
         /// <summary>

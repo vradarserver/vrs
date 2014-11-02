@@ -31,15 +31,32 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebServerAuthentication : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The summary for web server authentication pages.
         /// </summary>
-        public override string PageTitle { get { return Strings.Users; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override string PageTitle { get { return Strings.Users; } }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.Server16x16; } }
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Server16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageWebServerAuthentication();
+            }
+        }
+        #endregion
 
         /// <summary>
         /// See base docs.
@@ -60,7 +77,6 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            listUsers.ListView.ListViewItemSorter = new AutoListViewSorter(listUsers.ListView);
         }
 
         /// <summary>

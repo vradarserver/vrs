@@ -29,15 +29,41 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebServer : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The page summary object.
         /// </summary>
-        public override string PageTitle { get { return Strings.OptionsWebServerSheetTitle; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override string PageTitle { get { return Strings.OptionsWebServerSheetTitle; } }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.Server16x16; } }
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Server16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageWebServer();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            protected override void AssociateChildPages()
+            {
+                base.AssociateChildPages();
+                ChildPages.Add(new PageWebServerAuthentication.Summary());
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Creates a new object.
@@ -45,15 +71,6 @@ namespace VirtualRadar.WinForms.SettingPage
         public PageWebServer()
         {
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateChildPages()
-        {
-            base.AssociateChildPages();
-            ChildPages.Add(new PageWebServerAuthentication());
         }
 
         /// <summary>

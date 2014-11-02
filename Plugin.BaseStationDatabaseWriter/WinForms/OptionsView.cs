@@ -22,6 +22,8 @@ using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.WinForms;
 using System.Linq.Expressions;
+using VirtualRadar.WinForms.PortableBinding;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
 {
@@ -30,6 +32,18 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
     /// </summary>
     public partial class OptionsView : BaseForm, IOptionsView, INotifyPropertyChanged
     {
+        #region CombinedFeed
+        /// <summary>
+        /// The class that summarises receivers and merged feeds.
+        /// </summary>
+        class CombinedFeed
+        {
+            public int UniqueId { get; set; }
+
+            public string Name { get; set; }
+        }
+        #endregion
+
         private bool _PluginEnabled;
         /// <summary>
         /// See interface docs.
@@ -132,16 +146,16 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
                 
                 var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                 var config = configurationStorage.Load();
-                var combinedFeed = config.Receivers.Select(r =>   new { UniqueId = r.UniqueId, Name = r.Name })
-                           .Concat(config.MergedFeeds.Select(r => new { UniqueId = r.UniqueId, Name = r.Name }))
+                var combinedFeed = config.Receivers.Select(r =>   new CombinedFeed() { UniqueId = r.UniqueId, Name = r.Name })
+                           .Concat(config.MergedFeeds.Select(r => new CombinedFeed() { UniqueId = r.UniqueId, Name = r.Name }))
                            .ToArray();
-                var bindingSource = CreateNameValueSource(combinedFeed.Select(r => r.UniqueId), r => combinedFeed.First(i => i.UniqueId == r).Name);
-                feedSelectControl.DataSource = bindingSource;
 
-                AddBinding(this, checkBoxEnabled,                               r => r.PluginEnabled,               r => r.Checked);
-                AddBinding(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,    r => r.AllowUpdateOfOtherDatabases, r => r.Checked, format: AllowUpdateOfOtherDatabases_Format, parse: AllowUpdateOfOtherDatabases_Parse);
-                AddBinding(this, fileNameDatabase,                              r => r.DatabaseFileName,            r => r.FileName);
-                AddBinding(this, feedSelectControl,                             r => r.ReceiverId,                  r => r.SelectedValue);
+                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxEnabled,                             r => r.PluginEnabled,                   (r,v) => r.PluginEnabled = v));
+                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,  r => !r.AllowUpdateOfOtherDatabases,    (r,v) => r.AllowUpdateOfOtherDatabases = !v) { ModelPropertyName = PropertyHelper.ExtractName<OptionsView>(r => r.AllowUpdateOfOtherDatabases) });
+
+                AddControlBinder(new FileNameStringBinder<OptionsView>(this, fileNameDatabase, r => r.DatabaseFileName, (r,v) => r.DatabaseFileName = v));
+
+                AddControlBinder(new ComboBoxBinder<OptionsView, CombinedFeed, int>(this, feedSelectControl, combinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v));
             }
         }
 
