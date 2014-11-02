@@ -126,7 +126,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericIdleTimeout,     r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IdleTimeoutMilliseconds) });
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,                    (r,v) => r.StaleSeconds = v));
 
-            AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>(RebroadcastSettings, comboBoxReceiver, SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
+            AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>(RebroadcastSettings, comboBoxReceiver, SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
 
             AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings, comboBoxFormat, r => r.Format, (r,v) => r.Format = v, r => Describe.RebroadcastFormat(r)));
 

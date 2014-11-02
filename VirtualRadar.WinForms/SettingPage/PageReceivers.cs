@@ -97,9 +97,9 @@ namespace VirtualRadar.WinForms.SettingPage
 
             var combinedFeeds = SettingsView.CombinedFeed;
             var settings = SettingsView.Configuration.GoogleMapSettings;
-            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxWebSiteReceiverId,         combinedFeeds,   r => r.WebSiteReceiverId,           (r,v) => r.WebSiteReceiverId = v)           { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
-            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxClosestAircraftReceiverId, combinedFeeds,   r => r.ClosestAircraftReceiverId,   (r,v) => r.ClosestAircraftReceiverId = v)   { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
-            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxFsxReceiverId,             combinedFeeds,   r => r.FlightSimulatorXReceiverId,  (r,v) => r.FlightSimulatorXReceiverId = v)  { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
+            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxWebSiteReceiverId,         combinedFeeds,   r => r.WebSiteReceiverId,           (r,v) => r.WebSiteReceiverId = v)           { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
+            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxClosestAircraftReceiverId, combinedFeeds,   r => r.ClosestAircraftReceiverId,   (r,v) => r.ClosestAircraftReceiverId = v)   { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
+            AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxFsxReceiverId,             combinedFeeds,   r => r.FlightSimulatorXReceiverId,  (r,v) => r.FlightSimulatorXReceiverId = v)  { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
 
             AddControlBinder(new MasterListToListBinder<Configuration, Receiver>(SettingsView.Configuration, listReceivers, r => r.Receivers) {
                 FetchColumns = (receiver, e) => {

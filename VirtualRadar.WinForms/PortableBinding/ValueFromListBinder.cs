@@ -79,6 +79,16 @@ namespace VirtualRadar.WinForms.PortableBinding
             get { return _GetListItemValue; }
             set { if(!Initialised) _GetListItemValue = value; }
         }
+
+        private bool _SortList;
+        /// <summary>
+        /// Gets or sets a value indicating that the list should be sorted.
+        /// </summary>
+        public bool SortList
+        {
+            get { return _SortList; }
+            set { if(!Initialised) _SortList = value; }
+        }
         #endregion
 
         #region Ctors
@@ -177,7 +187,8 @@ namespace VirtualRadar.WinForms.PortableBinding
 
                 _ListUpdatesLocked = true;
                 try {
-                    DoCopyListToControl(ItemDescriptions);
+                    var list = SortList ? DoSortList(ItemDescriptions) : ItemDescriptions;
+                    DoCopyListToControl(list);
                 } finally {
                     _ListUpdatesLocked = false;
                 }
@@ -186,11 +197,17 @@ namespace VirtualRadar.WinForms.PortableBinding
             }
         }
 
+        private IEnumerable<ItemDescription<TListModel>> DoSortList(ItemDescriptionList<TListModel> list)
+        {
+            var result = list.OrderBy(r => r.Description).ToArray();
+            return result;
+        }
+
         /// <summary>
         /// Copies the item descriptions to the control.
         /// </summary>
         /// <param name="itemDescriptions"></param>
-        protected abstract void DoCopyListToControl(ItemDescriptionList<TListModel> itemDescriptions);
+        protected abstract void DoCopyListToControl(IEnumerable<ItemDescription<TListModel>> itemDescriptions);
 
         /// <summary>
         /// Gets the value for the selected item from the list.

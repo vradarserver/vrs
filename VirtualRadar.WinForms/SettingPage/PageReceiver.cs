@@ -153,7 +153,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericPort,             r => r.Port,                            (r,v) => r.Port = v));
             AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericIdleTimeout,      r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<Receiver>(r => r.IdleTimeoutMilliseconds) });
 
-            AddControlBinder(new ComboBoxBinder<Receiver, ReceiverLocation, int>(Receiver, comboBoxLocationId, SettingsView.Configuration.ReceiverLocations, r => r.ReceiverLocationId, (r,v) => r.ReceiverLocationId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId });
+            AddControlBinder(new ComboBoxBinder<Receiver, ReceiverLocation, int>(Receiver, comboBoxLocationId, SettingsView.Configuration.ReceiverLocations, r => r.ReceiverLocationId, (r,v) => r.ReceiverLocationId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
 
             AddControlBinder(new ComboBoxEnumBinder<Receiver, DataSource>       (Receiver,          comboBoxDataSource,         r => r.DataSource,      (r,v) => r.DataSource = v,      r => Describe.DataSource(r)));
             AddControlBinder(new ComboBoxEnumBinder<Receiver, ConnectionType>   (Receiver,          comboBoxConnectionType,     r => r.ConnectionType,  (r,v) => r.ConnectionType = v,  r => Describe.ConnectionType(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
