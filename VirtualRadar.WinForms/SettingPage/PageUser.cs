@@ -101,7 +101,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
-            AddControlBinder(new CheckBoxBoolBinder<IUser>(User, checkBoxEnabled, r => r.Enabled, (r,v) => r.Enabled = v));
+            AddControlBinder(new CheckBoxBoolBinder<IUser>(User, checkBoxEnabled, r => r.Enabled, (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxLoginName, r => r.LoginName,   (r,v) => r.LoginName = v)   { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new TextBoxStringBinder<IUser>(User, textBoxPassword,  r => r.UIPassword,  (r,v) => r.UIPassword = v));
