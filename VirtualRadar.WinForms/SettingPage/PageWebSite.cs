@@ -63,6 +63,19 @@ namespace VirtualRadar.WinForms.SettingPage
                 base.AssociateChildPages();
                 ChildPages.Add(new PageWebSiteGoogleMaps.Summary());
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageWebSite;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.InitialGoogleMapRefreshSeconds, page == null ? null : page.numericInitialRefresh },
+                    { ValidationField.MinimumGoogleMapRefreshSeconds, page == null ? null : page.numericMinimumRefresh },
+                });
+            }
         }
         #endregion
 
@@ -104,18 +117,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, HeightUnit>  (settings, comboBoxInitialHeightUnits,   r => r.InitialHeightUnit,   (r,v) => r.InitialHeightUnit = v,      r => Describe.HeightUnit(r)));
             AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, SpeedUnit>   (settings, comboBoxInitialSpeedUnits,    r => r.InitialSpeedUnit,    (r,v) => r.InitialSpeedUnit = v,       r => Describe.SpeedUnit(r)));
             AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, ProxyType>   (settings, comboBoxProxyType,            r => r.ProxyType,           (r,v) => r.ProxyType = v,              r => Describe.ProxyType(r)));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.InitialGoogleMapRefreshSeconds, numericInitialRefresh },
-                { ValidationField.MinimumGoogleMapRefreshSeconds, numericMinimumRefresh },
-            });
         }
 
         /// <summary>

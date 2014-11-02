@@ -75,6 +75,20 @@ namespace VirtualRadar.WinForms.SettingPage
                 var mergedFeed = record as MergedFeed;
                 return mergedFeed != null && MergedFeed != null && mergedFeed.UniqueId == MergedFeed.UniqueId;
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageMergedFeed;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.Name,         page == null ? null : page.textBoxName },
+                    { ValidationField.IcaoTimeout,  page == null ? null : page.numericIcaoTimeout },
+                    { ValidationField.ReceiverIds,  page == null ? null : page.listReceiverIds },
+                });
+            }
         }
         #endregion
 
@@ -123,19 +137,6 @@ namespace VirtualRadar.WinForms.SettingPage
                     e.ColumnTexts.Add(receiver.Name);
                     e.ColumnTexts.Add(receiver.Enabled ? Strings.Yes : Strings.No);
                 },
-            });
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.Name,         textBoxName },
-                { ValidationField.IcaoTimeout,  numericIcaoTimeout },
-                { ValidationField.ReceiverIds,  listReceiverIds },
             });
         }
 

@@ -53,6 +53,22 @@ namespace VirtualRadar.WinForms.SettingPage
             {
                 return new PageGeneral();
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageGeneral;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.CheckForNewVersions,  page == null ? null : page.numericDaysBetweenChecks },
+                    { ValidationField.DisplayTimeout,       page == null ? null : page.numericDurationBeforeAircraftRemovedFromMap },
+                    { ValidationField.TrackingTimeout,      page == null ? null : page.numericDurationBeforeAircraftRemovedFromTracking },
+                    { ValidationField.ShortTrailLength,     page == null ? null : page.numericDurationOfShortTrails },
+                    { ValidationField.TextToSpeechSpeed,    page == null ? null : page.numericReadingSpeed },
+                });
+            }
         }
         #endregion
 
@@ -86,21 +102,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new NumericIntBinder<AudioSettings>            (configuration.AudioSettings,           numericReadingSpeed,                                r => r.VoiceRate,               (r,v) => r.VoiceRate = v));
 
             AddControlBinder(new ComboBoxValueBinder<AudioSettings, string> (configuration.AudioSettings,   comboBoxTextToSpeechVoice,  voiceNames, r => r.VoiceName,   (r,v) => r.VoiceName = v));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.CheckForNewVersions,  numericDaysBetweenChecks },
-                { ValidationField.DisplayTimeout,       numericDurationBeforeAircraftRemovedFromMap },
-                { ValidationField.TrackingTimeout,      numericDurationBeforeAircraftRemovedFromTracking },
-                { ValidationField.ShortTrailLength,     numericDurationOfShortTrails },
-                { ValidationField.TextToSpeechSpeed,    numericReadingSpeed },
-            });
         }
 
         /// <summary>

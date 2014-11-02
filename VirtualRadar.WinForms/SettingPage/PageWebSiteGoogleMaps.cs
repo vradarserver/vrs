@@ -51,6 +51,20 @@ namespace VirtualRadar.WinForms.SettingPage
             {
                 return new PageWebSiteGoogleMaps();
             }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="genericPage"></param>
+            public override void AssociateValidationFields(Page genericPage)
+            {
+                var page = genericPage as PageWebSiteGoogleMaps;
+                SetValidationFields(new Dictionary<ValidationField,Control>() {
+                    { ValidationField.GoogleMapZoomLevel,   page == null ? null : page.numericInitialZoom },
+                    { ValidationField.Latitude,             page == null ? null : page.numericInitialLatitude },
+                    { ValidationField.Longitude,            page == null ? null : page.numericInitialLongitude },
+                });
+            }
         }
         #endregion
 
@@ -105,19 +119,6 @@ namespace VirtualRadar.WinForms.SettingPage
                 r => r.InitialMapType,      (r,v) => r.InitialMapType = v,
                 r => r.InitialMapZoom,      (r,v) => r.InitialMapZoom = v
             ));
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateValidationFields()
-        {
-            base.AssociateValidationFields();
-            SetValidationFields(new Dictionary<ValidationField,Control>() {
-                { ValidationField.GoogleMapZoomLevel,   numericInitialZoom },
-                { ValidationField.Latitude,             numericInitialLatitude },
-                { ValidationField.Longitude,            numericInitialLongitude },
-            });
         }
 
         /// <summary>
