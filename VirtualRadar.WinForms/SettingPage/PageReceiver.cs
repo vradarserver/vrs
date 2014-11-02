@@ -140,7 +140,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
-            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled,         r => r.Enabled,         (r,v) => r.Enabled = v));
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled,         r => r.Enabled,         (r,v) => r.Enabled = v)         { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxIsPassive,       r => r.IsPassive,       (r,v) => r.IsPassive = v)       { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxUseKeepAlive,    r => r.UseKeepAlive,    (r,v) => r.UseKeepAlive = v)    { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 

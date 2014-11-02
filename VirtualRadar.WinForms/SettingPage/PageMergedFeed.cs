@@ -111,7 +111,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
-            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxEnabled,                        r => r.Enabled,                         (r,v) => r.Enabled = v));
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxEnabled,                        r => r.Enabled,                         (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,   r => r.IgnoreAircraftWithNoPosition,    (r,v) => r.IgnoreAircraftWithNoPosition = v));
 
             AddControlBinder(new TextBoxStringBinder<MergedFeed>(MergedFeed,    textBoxName,    r => r.Name,    (r,v) => r.Name = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });

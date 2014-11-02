@@ -87,7 +87,6 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public virtual bool PageUseFullHeight { get { return false; } }
 
-        private SettingsView _SettingsView;
         /// <summary>
         /// Gets the owning settings view.
         /// </summary>

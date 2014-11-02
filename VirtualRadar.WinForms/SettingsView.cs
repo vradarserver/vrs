@@ -408,6 +408,7 @@ namespace VirtualRadar.WinForms
                     AddPageSummary(pageSummary, null);
                 }
                 treeViewPagePicker.ExpandAll();
+                treeViewPagePicker.Sort();
 
                 DisplayInitialPage();
 
@@ -672,7 +673,7 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Recursively adds page summaries to the tree.
+        /// Recursively adds page summaries to the sortedPageSummaries list.
         /// </summary>
         /// <param name="treeNodes"></param>
         /// <param name="allSummaries"></param>
