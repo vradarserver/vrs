@@ -74,16 +74,16 @@ namespace VirtualRadar.WinForms
                 var rhsNode = y as TreeNode;
                 if(lhsNode != null && rhsNode != null && lhsNode.Parent == rhsNode.Parent) {
                     var parentNode = lhsNode.Parent;
-                    var lhsPage = lhsNode.Tag as Page;
-                    var rhsPage = rhsNode.Tag as Page;
-                    var parentPage = parentNode == null ? null : parentNode.Tag as Page;
+                    var lhsPageSummary = lhsNode.Tag as PageSummary;
+                    var rhsPageSummary = rhsNode.Tag as PageSummary;
+                    var parentPageSummary = parentNode == null ? null : parentNode.Tag as PageSummary;
 
-                    if(parentPage != null && parentPage.ShowChildPagesInAlphabeticalOrder) {
-                        result = String.Compare(lhsPage == null ? null : lhsPage.PageTitle, rhsPage == null ? null : rhsPage.PageTitle, StringComparison.CurrentCultureIgnoreCase);
+                    if(parentPageSummary != null && parentPageSummary.ShowChildPagesInAlphabeticalOrder) {
+                        result = String.Compare(lhsPageSummary == null ? null : lhsPageSummary.PageTitle, rhsPageSummary == null ? null : rhsPageSummary.PageTitle, StringComparison.CurrentCultureIgnoreCase);
                     } else {
-                        var pages = parentPage == null ? (IList<Page>)_Parent._TopLevelPages : parentPage.ChildPages;
-                        var lhsIndex = lhsPage == null ? -1 : pages.IndexOf(lhsPage);
-                        var rhsIndex = rhsPage == null ? -1 : pages.IndexOf(rhsPage);
+                        var pages = parentPageSummary == null ? (IList<PageSummary>)_Parent._TopLevelPageSummaries : parentPageSummary.ChildPages;
+                        var lhsIndex = lhsPageSummary == null ? -1 : pages.IndexOf(lhsPageSummary);
+                        var rhsIndex = rhsPageSummary == null ? -1 : pages.IndexOf(rhsPageSummary);
                         if(lhsIndex == -1) lhsIndex = int.MaxValue;
                         if(rhsIndex == -1) rhsIndex = int.MaxValue;
 
@@ -118,9 +118,9 @@ namespace VirtualRadar.WinForms
         private IConfigurationListener _ConfigurationListener;
 
         /// <summary>
-        /// A list of all pages that have had their events hooked.
+        /// A list of all page summaries that have had their events hooked.
         /// </summary>
-        private List<Page> _HookedPages = new List<Page>();
+        private List<PageSummary> _HookedPageSummaries = new List<PageSummary>();
 
         /// <summary>
         /// True if a save event handler is running, false otherwise.
@@ -133,27 +133,27 @@ namespace VirtualRadar.WinForms
         private bool _LastValidationFailed;
 
         // All of the top-level pages in the order in which they are shown to the user.
-        private Page[] _TopLevelPages = new Page[] {
-            new PageDataSources(),
-            new PageReceivers(),
-            new PageReceiverLocations(),
-            new PageMergedFeeds(),
-            new PageRebroadcastServers(),
-            new PageUsers(),
-            new PageRawFeedDecoding(),
-            new PageWebServer(),
-            new PageWebSite(),
-            new PageGeneral(),
+        private PageSummary[] _TopLevelPageSummaries = new PageSummary[] {
+            new PageDataSources.Summary(),
+            new PageReceivers.Summary(),
+            new PageReceiverLocations.Summary(),
+            new PageMergedFeeds.Summary(),
+            new PageRebroadcastServers.Summary(),
+            new PageUsers.Summary(),
+            new PageRawFeedDecoding.Summary(),
+            new PageWebServer.Summary(),
+            new PageWebSite.Summary(),
+            new PageGeneral.Summary(),
         };
         #endregion
 
         #region Properties
         /// <summary>
-        /// Gets or sets the currently selected page in the tree view.
+        /// Gets or sets the currently selected page summary in the tree view.
         /// </summary>
-        public Page CurrentTreePage
+        public PageSummary CurrentTreePageSummary
         {
-            get { return treeViewPagePicker.SelectedNode == null ? null : treeViewPagePicker.SelectedNode.Tag as Page; }
+            get { return treeViewPagePicker.SelectedNode == null ? null : treeViewPagePicker.SelectedNode.Tag as PageSummary; }
             set {
                 if(value == null) treeViewPagePicker.SelectedNode = null;
                 else              treeViewPagePicker.SelectedNode = value.TreeNode;
@@ -161,11 +161,11 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Gets or sets the currently selected page in the panel.
+        /// Gets or sets the summary for the currently selected page in the panel.
         /// </summary>
-        public Page CurrentPanelPage
+        public PageSummary CurrentPanelPageSummary
         {
-            get { return panelPageContent.Tag as Page; }
+            get { return panelPageContent.Tag as PageSummary; }
             set { DisplayPage(value); }
         }
 
@@ -404,8 +404,8 @@ namespace VirtualRadar.WinForms
 
                 InitialiseCombinedFeed();
 
-                foreach(var page in _TopLevelPages) {
-                    AddPage(page, null);
+                foreach(var pageSummary in _TopLevelPageSummaries) {
+                    AddPageSummary(pageSummary, null);
                 }
                 treeViewPagePicker.ExpandAll();
 
@@ -420,29 +420,29 @@ namespace VirtualRadar.WinForms
         /// </summary>
         private void DisplayInitialPage()
         {
-            Page initialPage = null;
+            PageSummary initialPageSummary = null;
 
             if(OpenOnRecord != null) {
-                foreach(var page in GetAllPages()) {
-                    if(page.IsForSameRecord(OpenOnRecord)) {
-                        initialPage = page;
+                foreach(var pageSummary in GetAllPageSummaries()) {
+                    if(pageSummary.IsForSameRecord(OpenOnRecord)) {
+                        initialPageSummary = pageSummary;
                         break;
                     }
                 }
             }
 
-            if(initialPage == null && OpenOnPageTitle != null) {
-                foreach(var page in GetAllPages()) {
-                    if(page.PageTitle == OpenOnPageTitle) {
-                        initialPage = page;
+            if(initialPageSummary == null && OpenOnPageTitle != null) {
+                foreach(var pageSummary in GetAllPageSummaries()) {
+                    if(pageSummary.PageTitle == OpenOnPageTitle) {
+                        initialPageSummary = pageSummary;
                         break;
                     }
                 }
             }
 
-            if(initialPage == null) initialPage = _TopLevelPages.First();
+            if(initialPageSummary == null) initialPageSummary = _TopLevelPageSummaries.First();
 
-            DisplayPage(initialPage);
+            DisplayPage(initialPageSummary);
         }
         #endregion
 
@@ -502,127 +502,139 @@ namespace VirtualRadar.WinForms
 
         #region Page handling
         /// <summary>
-        /// Adds a page to the tree-view and to the owner's ChildPages collection. If the
+        /// Adds a page summary to the tree-view and to the owner's ChildPages collection. If the
         /// owner is null then the page is added to the top-level of the pages display.
         /// </summary>
-        /// <param name="page"></param>
+        /// <param name="pageSummary"></param>
         /// <param name="owner"></param>
-        public void AddPage(Page page, Page owner)
+        public void AddPageSummary(PageSummary pageSummary, PageSummary owner)
         {
             var parentNodes = owner == null ? treeViewPagePicker.Nodes : owner.TreeNode.Nodes;
 
-            if(page.TreeNode == null) {
-                page.TreeNode = CreatePageTreeNode(page);
-                RefreshPageTreeNode(page);
-                parentNodes.Add(page.TreeNode);
+            if(pageSummary.TreeNode == null) {
+                pageSummary.TreeNode = CreatePageSummaryTreeNode(pageSummary);
+                RefreshPageSummaryTreeNode(pageSummary);
+                parentNodes.Add(pageSummary.TreeNode);
             }
 
-            if(!panelPageContent.Controls.Contains(page)) {
-                page.Visible = false;
-                page.Width = panelPageContent.Width - 8;
-                page.Location = new Point(4, 4);
-                page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-
-                if(page.PageUseFullHeight) {
-                    page.Height = panelPageContent.Height - 8;
-                    page.Anchor |= AnchorStyles.Bottom;
-                }
-
-                panelPageContent.Controls.Add(page);
+            if(pageSummary.SettingsView == null) {
+                pageSummary.SettingsView = this;
             }
 
-            if(page.SettingsView == null) {
-                page.SettingsView = this;
+            foreach(var childPageSummary in pageSummary.ChildPages) {
+                AddPageSummary(childPageSummary, pageSummary);
             }
 
-            foreach(var subPage in page.ChildPages) {
-                AddPage(subPage, page);
-            }
-
-            if(!_HookedPages.Contains(page)) {
-                page.ChildPages.ListChanged += Page_ChildPages_ListChanged;
+            if(!_HookedPageSummaries.Contains(pageSummary)) {
+                pageSummary.ChildPages.ListChanged += PageSummary_ChildPages_ListChanged;
             }
         }
 
         /// <summary>
         /// Removes the page from display.
         /// </summary>
-        /// <param name="page"></param>
+        /// <param name="pageSummary"></param>
         /// <param name="makeParentCurrent"></param>
-        public void RemovePage(Page page, bool makeParentCurrent)
+        public void RemovePageSummary(PageSummary pageSummary, bool makeParentCurrent)
         {
-            if(page != null) {
-                page.PageDetaching();
+            if(pageSummary != null) {
+                pageSummary.PageDetaching();
                 
-                if(_HookedPages.Contains(page)) {
-                    page.ChildPages.ListChanged -= Page_ChildPages_ListChanged;
+                if(_HookedPageSummaries.Contains(pageSummary)) {
+                    pageSummary.ChildPages.ListChanged -= PageSummary_ChildPages_ListChanged;
                 }
 
-                foreach(var subPage in page.ChildPages) {
-                    RemovePage(subPage, makeParentCurrent);
+                foreach(var subPage in pageSummary.ChildPages) {
+                    RemovePageSummary(subPage, makeParentCurrent);
                 }
 
-                if(page.SettingsView != null) {
-                    page.SettingsView = null;
+                if(pageSummary.SettingsView != null) {
+                    pageSummary.SettingsView = null;
                 }
 
-                if(page.TreeNode != null) {
-                    page.TreeNode.Parent.Nodes.Remove(page.TreeNode);
-                    page.TreeNode = null;
+                if(pageSummary.TreeNode != null) {
+                    pageSummary.TreeNode.Parent.Nodes.Remove(pageSummary.TreeNode);
+                    pageSummary.TreeNode = null;
                 }
 
-                if(panelPageContent.Controls.Contains(page)) {
-                    panelPageContent.Controls.Remove(page);
+                if(pageSummary.Page != null) {
+                    if(panelPageContent.Controls.Contains(pageSummary.Page)) {
+                        panelPageContent.Controls.Remove(pageSummary.Page);
+                        pageSummary.Page.Dispose();
+                        pageSummary.Page = null;
+                    }
                 }
 
-                var allPages = GetAllPagesInTreeNodeOrder();
-                var pageIndex = allPages.IndexOf(page);
+
+                var allSummaries = GetAllPageSummariesInTreeNodeOrder();
+                var pageIndex = allSummaries.IndexOf(pageSummary);
                 if(pageIndex != -1) {
-                    allPages.RemoveAt(pageIndex);
+                    allSummaries.RemoveAt(pageIndex);
 
-                    var parentPage = FindParentPage(page);
-                    if(CurrentTreePage == page) {
-                        CurrentTreePage = null;
-                        if(makeParentCurrent && parentPage != null) {
-                            DisplayPage(parentPage);
+                    var parentSummary = FindParentPageSummary(pageSummary);
+                    if(CurrentTreePageSummary == pageSummary) {
+                        CurrentTreePageSummary = null;
+                        if(makeParentCurrent && parentSummary != null) {
+                            DisplayPage(parentSummary);
                         } else {
-                            if(pageIndex < allPages.Count) {
-                                DisplayPage(allPages[pageIndex]);
-                            } else if(allPages.Count > 0) {
-                                DisplayPage(allPages[allPages.Count - 1]);
-                            } else if(parentPage != null) {
-                                DisplayPage(parentPage);
+                            if(pageIndex < allSummaries.Count) {
+                                DisplayPage(allSummaries[pageIndex]);
+                            } else if(allSummaries.Count > 0) {
+                                DisplayPage(allSummaries[allSummaries.Count - 1]);
+                            } else if(parentSummary != null) {
+                                DisplayPage(parentSummary);
                             }
                         }
                     }
                 }
 
-                page.PageDetached();
+                pageSummary.PageDetached();
             }
         }
 
         /// <summary>
-        /// Displays the page passed across.
+        /// Displays the page for the summary passed across, creating the summary if necessary.
         /// </summary>
-        /// <param name="page"></param>
-        public void DisplayPage(Page page)
+        /// <param name="pageSummary"></param>
+        public void DisplayPage(PageSummary pageSummary)
         {
-            if(page != null && page != CurrentPanelPage && GetAllPages().Contains(page)) {
+            if(pageSummary != null && pageSummary != CurrentPanelPageSummary && GetAllPageSummaries().Contains(pageSummary)) {
                 panelPageContent.SuspendLayout();
                 try {
-                    var hidePage = CurrentPanelPage;
-                    panelPageContent.Tag = page;
-                    CurrentPanelPage.Visible = true;
-                    if(hidePage != null) hidePage.Visible = false;
+                    if(pageSummary.Page == null) {
+                        pageSummary.CreatePage();
+                        var page = pageSummary.Page;
+
+                        var panelContainsPage = panelPageContent.Controls.Contains(page);
+                        if(!panelContainsPage) {
+                            page.Visible = false;
+                            page.Width = panelPageContent.Width - 8;
+                            page.Location = new Point(4, 4);
+                            page.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+                            if(page.PageUseFullHeight) {
+                                page.Height = panelPageContent.Height - 8;
+                                page.Anchor |= AnchorStyles.Bottom;
+                            }
+
+                            panelPageContent.Controls.Add(page);
+                        }
+                    }
+
+                    var hideSummary = CurrentPanelPageSummary;
+                    panelPageContent.Tag = pageSummary;
+                    CurrentPanelPageSummary.Page.Visible = true;
+                    CurrentPanelPageSummary.Page.Initialise();
+                    if(hideSummary != null) hideSummary.Page.Visible = false;
                 } finally {
                     panelPageContent.ResumeLayout();
                 }
 
-                if(CurrentTreePage != page) {
-                    CurrentTreePage = page;
+                if(CurrentPanelPageSummary != pageSummary) {
+                    CurrentPanelPageSummary = pageSummary;
                 }
 
-                page.PageSelected();
+                pageSummary.Page.PageSelected();
             }
         }
 
@@ -632,71 +644,77 @@ namespace VirtualRadar.WinForms
         /// <param name="pageObject"></param>
         public void DisplayPageForPageObject(object pageObject)
         {
-            var page = FindPageForPageObject(pageObject);
-            if(page != null) DisplayPage(page);
+            var pageSummary = FindPageSummaryForPageObject(pageObject);
+            if(pageSummary != null) DisplayPage(pageSummary);
         }
 
         /// <summary>
-        /// Returns a flattened collection of every page in a random order.
+        /// Returns a flattened collection of every page summary in a random order.
         /// </summary>
         /// <returns></returns>
-        private List<Page> GetAllPages()
+        private List<PageSummary> GetAllPageSummaries()
         {
-            return _TopLevelPages.Concat(_TopLevelPages.SelectMany(r => r.ChildPages)).ToList();
+            return _TopLevelPageSummaries.Concat(_TopLevelPageSummaries.SelectMany(r => r.ChildPages)).ToList();
         }
 
         /// <summary>
-        /// Returns a flattened collection of page in the order of their tree node.
+        /// Returns a flattened collection of page summaries in the order of their tree node.
         /// </summary>
         /// <returns></returns>
-        private List<Page> GetAllPagesInTreeNodeOrder()
+        private List<PageSummary> GetAllPageSummariesInTreeNodeOrder()
         {
-            var result = new List<Page>();
-            var allPages = GetAllPages();
+            var result = new List<PageSummary>();
+            var allSummaries = GetAllPageSummaries();
 
-            AddPages(treeViewPagePicker.Nodes, allPages, result);
+            AddPageSummaries(treeViewPagePicker.Nodes, allSummaries, result);
 
             return result;
         }
 
-        private void AddPages(TreeNodeCollection treeNodes, List<Page> allPages, List<Page> sortedPages)
+        /// <summary>
+        /// Recursively adds page summaries to the tree.
+        /// </summary>
+        /// <param name="treeNodes"></param>
+        /// <param name="allSummaries"></param>
+        /// <param name="sortedPageSummaries"></param>
+        private void AddPageSummaries(TreeNodeCollection treeNodes, List<PageSummary> allSummaries, List<PageSummary> sortedPageSummaries)
         {
             foreach(TreeNode treeNode in treeNodes) {
-                var page = allPages.FirstOrDefault(r => r.TreeNode == treeNode);
-                if(page != null) sortedPages.Add(page);
-                AddPages(treeNode.Nodes, allPages, sortedPages);
+                var pageSummary = allSummaries.FirstOrDefault(r => r.TreeNode == treeNode);
+                if(pageSummary != null) sortedPageSummaries.Add(pageSummary);
+                AddPageSummaries(treeNode.Nodes, allSummaries, sortedPageSummaries);
             }
         }
 
         /// <summary>
-        /// Finds the page that is the parent of the one passed across. Returns null if there is no
-        /// parent page for it.
+        /// Finds the summary that is the parent of the one passed across. Returns null if there is no
+        /// parent summary for it.
         /// </summary>
-        /// <param name="page"></param>
+        /// <param name="pageSummary"></param>
         /// <returns></returns>
-        public Page FindParentPage(Page page)
+        public PageSummary FindParentPageSummary(PageSummary pageSummary)
         {
-            Page result = null;
+            PageSummary result = null;
 
-            if(page != null) {
-                result = GetAllPages().FirstOrDefault(r => r.ChildPages.Contains(page));
+            if(pageSummary != null) {
+                result = GetAllPageSummaries().FirstOrDefault(r => r.ChildPages.Contains(pageSummary));
             }
 
             return result;
         }
 
         /// <summary>
-        /// Finds the page that contains the page object passed across. Returns null if no page could
+        /// Finds the page summary that contains the page object passed across. Returns null if no summary could
         /// be found.
         /// </summary>
         /// <param name="pageObject"></param>
         /// <returns></returns>
-        public Page FindPageForPageObject(object pageObject)
+        public PageSummary FindPageSummaryForPageObject(object pageObject)
         {
-            Page result = null;
+            PageSummary result = null;
 
             if(pageObject != null) {
-                result = GetAllPages().FirstOrDefault(r => r.PageObject == pageObject);
+                result = GetAllPageSummaries().FirstOrDefault(r => r.PageObject == pageObject);
             }
 
             return result;
@@ -705,66 +723,66 @@ namespace VirtualRadar.WinForms
 
         #region TreeView handling
         /// <summary>
-        /// Creates a TreeNode for the page passed across.
+        /// Creates a TreeNode for the page summary passed across.
         /// </summary>
-        /// <param name="page"></param>
+        /// <param name="pageSummary"></param>
         /// <returns></returns>
-        private TreeNode CreatePageTreeNode(Page page)
+        private TreeNode CreatePageSummaryTreeNode(PageSummary pageSummary)
         {
-            if(page.TreeNode == null) {
-                page.TreeNode = new TreeNode();
-                RefreshPageTreeNode(page);
+            if(pageSummary.TreeNode == null) {
+                pageSummary.TreeNode = new TreeNode();
+                RefreshPageSummaryTreeNode(pageSummary);
             }
 
-            return page.TreeNode;
+            return pageSummary.TreeNode;
         }
 
         /// <summary>
-        /// Refreshes the treeview description for a page.
+        /// Refreshes the treeview description for a page summary.
         /// </summary>
-        /// <param name="page"></param>
-        public void RefreshPageTreeNode(Page page)
+        /// <param name="pageSummary"></param>
+        public void RefreshPageSummaryTreeNode(PageSummary pageSummary)
         {
-            if(page.TreeNode != null) {
-                var title = page.PageTitle ?? "";
-                var icon = page.PageIcon ?? Images.Transparent_16x16;
+            if(pageSummary.TreeNode != null) {
+                var title =     pageSummary.PageTitle ?? "";
+                var icon =      pageSummary.PageIcon ?? Images.Transparent_16x16;
                 var iconIndex = _ImageList.AddImage(icon);
-                var colour = page.PageEnabled ? treeViewPagePicker.ForeColor : SystemColors.GrayText;
+                var colour =    pageSummary.PageEnabled ? treeViewPagePicker.ForeColor : SystemColors.GrayText;
 
-                if(page.TreeNode.Tag != page) page.TreeNode.Tag = page;
-                if(page.TreeNode.Text != title) page.TreeNode.Text = title;
-                if(page.TreeNode.ForeColor != colour) page.TreeNode.ForeColor = colour;
-                if(page.TreeNode.ImageIndex != iconIndex) page.TreeNode.ImageIndex = iconIndex;
-                if(page.TreeNode.SelectedImageIndex != iconIndex) page.TreeNode.SelectedImageIndex = iconIndex;
+                if(pageSummary.TreeNode.Tag != pageSummary)                 pageSummary.TreeNode.Tag = pageSummary;
+                if(pageSummary.TreeNode.Text != title)                      pageSummary.TreeNode.Text = title;
+                if(pageSummary.TreeNode.ForeColor != colour)                pageSummary.TreeNode.ForeColor = colour;
+                if(pageSummary.TreeNode.ImageIndex != iconIndex)            pageSummary.TreeNode.ImageIndex = iconIndex;
+                if(pageSummary.TreeNode.SelectedImageIndex != iconIndex)    pageSummary.TreeNode.SelectedImageIndex = iconIndex;
 
-                if(page.TreeNode.TreeView == treeViewPagePicker) {
+                if(pageSummary.TreeNode.TreeView == treeViewPagePicker) {
                     treeViewPagePicker.Sort();
                 }
             }
         }
 
         /// <summary>
-        /// Synchronises the tree view to match the list of child pages for the page.
+        /// Synchronises the tree view to match the list of child pages for the page summary.
         /// </summary>
-        /// <param name="page"></param>
-        public void SynchroniseTreeViewToChildPages(Page page)
+        /// <param name="pageSummary"></param>
+        public void SynchroniseTreeViewToChildPages(PageSummary pageSummary)
         {
-            if(page != null && page.TreeNode != null) {
+            if(pageSummary != null && pageSummary.TreeNode != null) {
                 treeViewPagePicker.BeginUpdate();
                 try {
-                    var treePages = page.TreeNode.Nodes.OfType<TreeNode>().Select(r => r.Tag).OfType<Page>().Where(r => r != null).ToArray();
-                    var realPages = page.ChildPages.ToArray();
+                    var treePageSummaries = pageSummary.TreeNode.Nodes.OfType<TreeNode>().Select(r => r.Tag).OfType<PageSummary>().Where(r => r != null).ToArray();
+                    var realPageSummaries = pageSummary.ChildPages.ToArray();
 
-                    foreach(var deletedPage in treePages.Except(realPages).ToArray()) {
-                        RemovePage(deletedPage, false);
+                    foreach(var deletedSummary in treePageSummaries.Except(realPageSummaries).ToArray()) {
+                        RemovePageSummary(deletedSummary, false);
                     }
 
-                    foreach(var newPage in realPages.Except(treePages).ToArray()) {
-                        AddPage(newPage, page);
+                    foreach(var newSummary in realPageSummaries.Except(treePageSummaries).ToArray()) {
+                        AddPageSummary(newSummary, pageSummary);
                     }
 
-                    if(realPages.Length != page.TreeNode.Nodes.Count) {
-                        throw new InvalidOperationException(String.Format("Assertion failed - there are {0} child pages and {1} tree nodes", realPages.Length, page.TreeNode.Nodes.Count));
+                    if(realPageSummaries.Length != pageSummary.TreeNode.Nodes.Count) {
+                        throw new InvalidOperationException(String.Format("Assertion failed - there are {0} child pages and {1} tree nodes", realPageSummaries.Length, pageSummary.TreeNode.Nodes.Count));
                     }
 
                     treeViewPagePicker.Sort();
@@ -775,13 +793,13 @@ namespace VirtualRadar.WinForms
         }
 
         /// <summary>
-        /// Returns the page associated with the tree node or null if no such page exists.
+        /// Returns the page summary associated with the tree node or null if no such summary exists.
         /// </summary>
         /// <param name="treeNode"></param>
         /// <returns></returns>
-        private Page FindPageForTreeNode(TreeNode treeNode)
+        private PageSummary FindPageSummaryForTreeNode(TreeNode treeNode)
         {
-            Page result = treeNode == null ? null : treeNode.Tag as Page;
+            var result = treeNode == null ? null : treeNode.Tag as PageSummary;
 
             return result;
         }
@@ -898,9 +916,9 @@ namespace VirtualRadar.WinForms
                 errorProvider.ClearErrors();
                 warningProvider.ClearErrors();
             } else {
-                foreach(var page in GetAllPages()) {
+                foreach(var pageSummary in GetAllPageSummaries()) {
                     foreach(var fieldChecked in results.PartialValidationFields) {
-                        var fieldControl = page.GetControlForValidationField(fieldChecked.Record, fieldChecked.Field);
+                        var fieldControl = pageSummary.GetControlForValidationField(fieldChecked.Record, fieldChecked.Field);
                         var warningControl = fieldControl;
                         var errorControl = fieldControl;
                         if(fieldControl != null) {
@@ -921,8 +939,8 @@ namespace VirtualRadar.WinForms
             // that the OK button click handler can use to control whether the form closes or not.
             _LastValidationFailed = results.HasErrors;
 
-            Page showPage = ShowValidationResultsAgainstControls(results);
-            if(showPage != null) DisplayPage(showPage);
+            var showPageSummary = ShowValidationResultsAgainstControls(results);
+            if(showPageSummary != null) DisplayPage(showPageSummary);
         }
 
         /// <summary>
@@ -931,24 +949,26 @@ namespace VirtualRadar.WinForms
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private Page ShowValidationResultsAgainstControls(ValidationResults results)
+        private PageSummary ShowValidationResultsAgainstControls(ValidationResults results)
         {
-            Page result = null;
+            PageSummary result = null;
 
-            var allPages = GetAllPagesInTreeNodeOrder();
+            var allSummaries = GetAllPageSummariesInTreeNodeOrder();
             foreach(var validationResult in results.Results) {
-                Page fieldPage = null;
+                PageSummary fieldPageSummary = null;
                 Control fieldControl = null;
 
-                foreach(var page in allPages) {
-                    fieldControl = page.GetControlForValidationField(validationResult.Record, validationResult.Field);
+                foreach(var pageSummary in allSummaries) {
+                    fieldControl = pageSummary.GetControlForValidationField(validationResult.Record, validationResult.Field);
                     if(fieldControl != null) {
-                        fieldPage = page;
+                        fieldPageSummary = pageSummary;
                         break;
                     }
                 }
-                if(fieldPage == null || fieldControl == null) {
-                    throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}. The validation {2} message was {3}", validationResult.Field, validationResult.Record, validationResult.IsWarning ? "warning" : "error", validationResult.Message));
+                if(fieldPageSummary == null || fieldControl == null) {
+// TODO: put this back :) Need to figure out a better way of doing validation first though...
+
+                  //  throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}. The validation {2} message was {3}", validationResult.Field, validationResult.Record, validationResult.IsWarning ? "warning" : "error", validationResult.Message));
                 }
 
                 var validateDelegate = fieldControl as IValidateDelegate;
@@ -956,13 +976,15 @@ namespace VirtualRadar.WinForms
                     fieldControl = validateDelegate.GetValidationDisplayControl(validationResult.IsWarning ? warningProvider : errorProvider);
                 }
 
-                if(validationResult.IsWarning) {
-                    warningProvider.SetClearableError(fieldControl, validationResult.Message);
-                } else {
-                    errorProvider.SetClearableError(fieldControl, validationResult.Message);
-                    if(_IsSaving) {
-                        if(result == null || allPages.IndexOf(result) > allPages.IndexOf(fieldPage)) {
-                            result = fieldPage;
+                if(fieldControl != null) {
+                    if(validationResult.IsWarning) {
+                        warningProvider.SetClearableError(fieldControl, validationResult.Message);
+                    } else {
+                        errorProvider.SetClearableError(fieldControl, validationResult.Message);
+                        if(_IsSaving) {
+                            if(result == null || allSummaries.IndexOf(result) > allSummaries.IndexOf(fieldPageSummary)) {
+                                result = fieldPageSummary;
+                            }
                         }
                     }
                 }
@@ -991,8 +1013,10 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         private void ConfigurationListener_PropertyChanged(object sender, ConfigurationListenerEventArgs args)
         {
-            foreach(var page in GetAllPages()) {
-                page.ConfigurationChanged(args);
+            foreach(var pageSummary in GetAllPageSummaries()) {
+                if(pageSummary.Page != null) {
+                    pageSummary.Page.ConfigurationChanged(args);
+                }
             }
         }
 
@@ -1003,8 +1027,8 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         private void Users_ListChanged(object sender, ListChangedEventArgs args)
         {
-            foreach(var page in GetAllPages()) {
-                page.UsersChanged(_Users, args);
+            foreach(var pageSummary in GetAllPageSummaries()) {
+                pageSummary.UsersChanged(_Users, args);
             }
         }
         #endregion
@@ -1015,12 +1039,12 @@ namespace VirtualRadar.WinForms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void Page_ChildPages_ListChanged(object sender, ListChangedEventArgs args)
+        private void PageSummary_ChildPages_ListChanged(object sender, ListChangedEventArgs args)
         {
-            var childPages = (NotifyList<Page>)sender;
-            var parentPage = GetAllPages().FirstOrDefault(r => r.ChildPages == childPages);
-            if(parentPage != null) {
-                SynchroniseTreeViewToChildPages(parentPage);
+            var childPageSummaries = (NotifyList<PageSummary>)sender;
+            var parentPageSummary = GetAllPageSummaries().FirstOrDefault(r => r.ChildPages == childPageSummaries);
+            if(parentPageSummary != null) {
+                SynchroniseTreeViewToChildPages(parentPageSummary);
             }
         }
         #endregion
@@ -1028,8 +1052,8 @@ namespace VirtualRadar.WinForms
         #region Events subscribed - TreeView
         private void treeViewPagePicker_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            var page = FindPageForTreeNode(treeViewPagePicker.SelectedNode);
-            DisplayPage(page);
+            var pageSummary = FindPageSummaryForTreeNode(treeViewPagePicker.SelectedNode);
+            DisplayPage(pageSummary);
         }
         #endregion
 
@@ -1053,6 +1077,11 @@ namespace VirtualRadar.WinForms
         #endregion
 
         #region Events subscribed - menu
+        /// <summary>
+        /// Called when the user clicks the menu to configure for FSX without a radio.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void justFlightSimulatorXToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OnFlightSimulatorXOnlyClicked(e);

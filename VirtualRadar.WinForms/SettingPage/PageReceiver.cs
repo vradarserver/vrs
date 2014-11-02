@@ -33,6 +33,54 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageReceiver : Page
     {
+        #region PageSummary
+        /// <summary>
+        /// The summary for receiver pages.
+        /// </summary>
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Radio16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public Receiver Receiver { get { return PageObject as Receiver; } }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            public Summary() : base()
+            {
+                SetPageTitleProperty<Receiver>(r => r.Name, () => Receiver.Name);
+                SetPageEnabledProperty<Receiver>(r => r.Enabled, () => Receiver.Enabled);
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageReceiver();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="record"></param>
+            /// <returns></returns>
+            internal override bool IsForSameRecord(object record)
+            {
+                var receiver = record as Receiver;
+                return receiver != null && Receiver != null && receiver.UniqueId == Receiver.UniqueId;
+            }
+        }
+        #endregion
+
+        #region Fields
         /// <summary>
         /// A list of all of the baud rates that we can show to the user.
         /// </summary>
@@ -62,16 +110,12 @@ namespace VirtualRadar.WinForms.SettingPage
             7,
             8,
         };
+        #endregion
 
         /// <summary>
         /// See base docs.
         /// </summary>
-        public override Image PageIcon { get { return Images.Radio16x16; } }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public Receiver Receiver { get { return PageObject as Receiver; } }
+        public Receiver Receiver { get { return ((Summary)PageSummary).Receiver; } }
 
         /// <summary>
         /// Creates a new object.
@@ -84,23 +128,9 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        internal override bool IsForSameRecord(object record)
-        {
-            var receiver = record as Receiver;
-            return receiver != null && Receiver != null && receiver.UniqueId == Receiver.UniqueId;
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-
-            SetPageTitleProperty<Receiver>(r => r.Name, () => Receiver.Name);
-            SetPageEnabledProperty<Receiver>(r => r.Enabled, () => Receiver.Enabled);
         }
 
         /// <summary>

@@ -30,6 +30,30 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebSiteGoogleMaps : Page
     {
+        #region PageSummary
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override string PageTitle { get { return Strings.GoogleMaps; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Site16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageWebSiteGoogleMaps();
+            }
+        }
+        #endregion
+
         // List of allowable map types
         private static readonly string[] _MapTypes = new string[] {
             "HYBRID",
@@ -38,16 +62,6 @@ namespace VirtualRadar.WinForms.SettingPage
             "TERRAIN",
             "HIGHCONTRAST",
         };
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override string PageTitle { get { return Strings.GoogleMaps; } }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.Site16x16; } }
 
         /// <summary>
         /// See base docs.

@@ -31,15 +31,57 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageMergedFeed : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The page summary object.
         /// </summary>
-        public override Image PageIcon { get { return Images.MergedFeed16x16; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.MergedFeed16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public MergedFeed MergedFeed { get { return PageObject as MergedFeed; } }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            public Summary() : base()
+            {
+                SetPageTitleProperty<MergedFeed>(r => r.Name, () => MergedFeed.Name);
+                SetPageEnabledProperty<MergedFeed>(r => r.Enabled, () => MergedFeed.Enabled);
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageMergedFeed();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="record"></param>
+            /// <returns></returns>
+            internal override bool IsForSameRecord(object record)
+            {
+                var mergedFeed = record as MergedFeed;
+                return mergedFeed != null && MergedFeed != null && mergedFeed.UniqueId == MergedFeed.UniqueId;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// See base docs.
         /// </summary>
-        public MergedFeed MergedFeed { get { return PageObject as MergedFeed; } }
+        public MergedFeed MergedFeed { get { return ((Summary)PageSummary).MergedFeed; } }
 
         /// <summary>
         /// See base docs.
@@ -57,21 +99,9 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        internal override bool IsForSameRecord(object record)
-        {
-            var mergedFeed = record as MergedFeed;
-            return mergedFeed != null && MergedFeed != null && mergedFeed.UniqueId == MergedFeed.UniqueId;
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            listReceiverIds.ListView.ListViewItemSorter = new AutoListViewSorter(listReceiverIds.ListView);
         }
 
         /// <summary>
@@ -94,9 +124,6 @@ namespace VirtualRadar.WinForms.SettingPage
                     e.ColumnTexts.Add(receiver.Enabled ? Strings.Yes : Strings.No);
                 },
             });
-
-            SetPageTitleProperty<MergedFeed>(r => r.Name, () => MergedFeed.Name);
-            SetPageEnabledProperty<MergedFeed>(r => r.Enabled, () => MergedFeed.Enabled);
         }
 
         /// <summary>

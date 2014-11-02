@@ -30,15 +30,41 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageWebSite : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The page summary object.
         /// </summary>
-        public override string PageTitle { get { return Strings.OptionsWebSiteTitle; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override string PageTitle { get { return Strings.OptionsWebSiteTitle; } }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.Site16x16; } }
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.Site16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageWebSite();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            protected override void AssociateChildPages()
+            {
+                base.AssociateChildPages();
+                ChildPages.Add(new PageWebSiteGoogleMaps.Summary());
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Creates a new object.
@@ -46,15 +72,6 @@ namespace VirtualRadar.WinForms.SettingPage
         public PageWebSite()
         {
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateChildPages()
-        {
-            base.AssociateChildPages();
-            ChildPages.Add(new PageWebSiteGoogleMaps());
         }
 
         /// <summary>

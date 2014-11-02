@@ -29,15 +29,54 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageUser : Page
     {
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.User16x16; } }
+        #region PageSummary
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.User16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public IUser User { get { return PageObject as IUser; } }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            public Summary() : base()
+            {
+                SetPageTitleProperty<IUser>(r => r.LoginName, () => User.LoginName);
+                SetPageEnabledProperty<IUser>(r => r.Enabled, () => User.Enabled);
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageUser();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <param name="record"></param>
+            /// <returns></returns>
+            internal override bool IsForSameRecord(object record)
+            {
+                var user = record as IUser;
+                return user != null && User != null && user.UniqueId == User.UniqueId;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// See base docs.
         /// </summary>
-        public IUser User { get { return PageObject as IUser; } }
+        public IUser User { get { return ((Summary)PageSummary).User; } }
 
         /// <summary>
         /// Creates a new object.
@@ -50,22 +89,9 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        internal override bool IsForSameRecord(object record)
-        {
-            var user = record as IUser;
-            return user != null && User != null && user.UniqueId == User.UniqueId;
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
-            SetPageTitleProperty<IUser>(r => r.LoginName, () => User.LoginName);
-            SetPageEnabledProperty<IUser>(r => r.Enabled, () => User.Enabled);
         }
 
         /// <summary>

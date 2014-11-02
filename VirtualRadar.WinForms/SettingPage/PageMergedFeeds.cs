@@ -29,15 +29,41 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageMergedFeeds : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The page summary object.
         /// </summary>
-        public override string PageTitle { get { return Strings.MergedFeeds; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override string PageTitle { get { return Strings.MergedFeeds; } }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.MergedFeed16x16; } }
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.MergedFeed16x16; } }
+
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageMergedFeeds();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            protected override void AssociateChildPages()
+            {
+                base.AssociateChildPages();
+                AssociateListWithChildPages(SettingsView.Configuration.MergedFeeds, () => new PageMergedFeed.Summary());
+            }
+        }
+        #endregion
 
         /// <summary>
         /// See base docs.
@@ -50,15 +76,6 @@ namespace VirtualRadar.WinForms.SettingPage
         public PageMergedFeeds()
         {
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateChildPages()
-        {
-            base.AssociateChildPages();
-            AssociateListWithChildPages(SettingsView.Configuration.MergedFeeds, () => new PageMergedFeed());
         }
 
         /// <summary>

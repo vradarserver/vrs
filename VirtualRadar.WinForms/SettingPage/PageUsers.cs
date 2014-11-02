@@ -29,15 +29,41 @@ namespace VirtualRadar.WinForms.SettingPage
     /// </summary>
     public partial class PageUsers : Page
     {
+        #region PageSummary
         /// <summary>
-        /// See base docs.
+        /// The page summary object.
         /// </summary>
-        public override string PageTitle { get { return Strings.Users; } }
+        public class Summary : PageSummary
+        {
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override string PageTitle { get { return Strings.Users; } }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override Image PageIcon { get { return Images.User16x16; } }
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            public override Image PageIcon { get { return Images.User16x16; } }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            protected override Page DoCreatePage()
+            {
+                return new PageUsers();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            protected override void AssociateChildPages()
+            {
+                base.AssociateChildPages();
+                AssociateListWithChildPages(SettingsView.Users, () => new PageUser.Summary());
+            }
+        }
+        #endregion
 
         /// <summary>
         /// See base docs.
@@ -50,15 +76,6 @@ namespace VirtualRadar.WinForms.SettingPage
         public PageUsers()
         {
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void AssociateChildPages()
-        {
-            base.AssociateChildPages();
-            AssociateListWithChildPages(SettingsView.Users, () => new PageUser());
         }
 
         /// <summary>
