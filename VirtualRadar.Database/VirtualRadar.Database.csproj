@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="BaseStation\AircraftTable.cs" />
     <Compile Include="BaseStation\AutoConfigBaseStationDatabase.cs" />
+    <Compile Include="BaseStation\BaseStationMutex.cs" />
     <Compile Include="BaseStation\CriteriaAndProperties.cs" />
     <Compile Include="BaseStation\DBHistoryTable.cs" />
     <Compile Include="BaseStation\DBInfoTable.cs" />
