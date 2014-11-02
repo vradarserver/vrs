@@ -39,7 +39,11 @@ namespace VirtualRadar.WinForms.PortableBinding
         {
         }
 
-        protected override void DoCopyListToControl(ItemDescriptionList<TListModel> itemDescriptions)
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="itemDescriptions"></param>
+        protected override void DoCopyListToControl(IEnumerable<ItemDescription<TListModel>> itemDescriptions)
         {
             Control.Items.Clear();
             foreach(var itemDescription in itemDescriptions) {
@@ -47,6 +51,10 @@ namespace VirtualRadar.WinForms.PortableBinding
             }
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
         protected override TValue DoGetSelectedListValue()
         {
             var selectedItem = Control.SelectedItem as ItemDescription<TListModel>;
@@ -54,6 +62,10 @@ namespace VirtualRadar.WinForms.PortableBinding
             return result;
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="value"></param>
         protected override void DoSetSelectedListValue(TValue value)
         {
             var itemDescription = Control.Items.OfType<ItemDescription<TListModel>>()
@@ -65,11 +77,19 @@ namespace VirtualRadar.WinForms.PortableBinding
             Control.SelectedItem = itemDescription;
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="eventHandler"></param>
         protected override void DoHookControlPropertyChanged(EventHandler eventHandler)
         {
             Control.SelectedIndexChanged += eventHandler;
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="eventHandler"></param>
         protected override void DoUnhookControlPropertyChanged(EventHandler eventHandler)
         {
             Control.SelectedIndexChanged -= eventHandler;
