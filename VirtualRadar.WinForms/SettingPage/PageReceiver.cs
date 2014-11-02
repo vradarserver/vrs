@@ -226,16 +226,18 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
-            base.OnLoad(e);
-
             if(!DesignMode) {
                 buttonWizard.Image = Images.Wizard16x16;
                 buttonTestConnection.Image = Images.Test16x16;
+
+                accessControl.AlignmentFieldLeftPosition = textBoxAddress.Left - 5;
 
                 groupBoxSerial.Location = Point.Empty;
                 ShowHideConnectionTypePanels();
                 EnableDisableControls();
             }
+
+            base.OnLoad(e);
         }
 
         private void ShowHideConnectionTypePanels()
@@ -244,7 +246,7 @@ namespace VirtualRadar.WinForms.SettingPage
             groupBoxAccessControl.Visible = Receiver.ConnectionType == ConnectionType.TCP;
             groupBoxSerial.Visible = Receiver.ConnectionType == ConnectionType.COM;
             switch(Receiver.ConnectionType) {
-                case ConnectionType.COM: Height = panelConnectionTypeSettings.Top + groupBoxSerial.Height; break;
+                case ConnectionType.COM: Height = panelConnectionTypeSettings.Top + groupBoxSerial.Height + 5; break;
                 case ConnectionType.TCP: Height = groupBoxAccessControl.Top + groupBoxAccessControl.Height; break;
                 default:                 throw new NotImplementedException();
             }

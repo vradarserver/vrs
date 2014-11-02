@@ -44,6 +44,16 @@ namespace VirtualRadar.WinForms.Controls
         /// Converts from the generic addresses list to a non-generic IList.
         /// </summary>
         private GenericListWrapper<string> _AddressesWrapper;
+
+        /// <summary>
+        /// The starting left position for the fields.
+        /// </summary>
+        private int _InitialFieldLeft;
+
+        /// <summary>
+        /// The gap between the list view and the right-hand side of the control.
+        /// </summary>
+        private int _ListViewRightGap;
         #endregion
 
         #region Properties
@@ -72,6 +82,35 @@ namespace VirtualRadar.WinForms.Controls
         public IList<string> Addresses
         {
             get { return _Addresses; }
+        }
+
+        private int _AlignmentFieldLeftPosition;
+        /// <summary>
+        /// Gets or sets the X position of the fields. Set to 0 to leave at default.
+        /// </summary>
+        [DefaultValue(0)]
+        public int AlignmentFieldLeftPosition
+        {
+            get { return _AlignmentFieldLeftPosition; }
+            set {
+                if(_AlignmentFieldLeftPosition != value) {
+                    _AlignmentFieldLeftPosition = value;
+                    SetAlignmentFieldXPosition();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the left position of the input fields.
+        /// </summary>
+        private void SetAlignmentFieldXPosition()
+        {
+            if(!DesignMode) {
+                var left = AlignmentFieldLeftPosition == 0 ? _InitialFieldLeft : AlignmentFieldLeftPosition;
+                comboBoxDefaultAccess.Left = left;
+                listView.Left = left;
+                listView.Width = (Width - _ListViewRightGap) - listView.Left;
+            }
         }
         #endregion
 
@@ -112,6 +151,8 @@ namespace VirtualRadar.WinForms.Controls
         public AccessControl()
         {
             InitializeComponent();
+            _InitialFieldLeft = comboBoxDefaultAccess.Left;
+            _ListViewRightGap = Width - listView.Right;
         }
         #endregion
 
@@ -171,7 +212,7 @@ namespace VirtualRadar.WinForms.Controls
                 default:                            throw new NotImplementedException();
             }
 
-            if(text != currentText) labelCidrList.Text = text;
+            if(text != currentText) labelCidrList.Text = String.Format("{0}:", text);
         }
 
         /// <summary>

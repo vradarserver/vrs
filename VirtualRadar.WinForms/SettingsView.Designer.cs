@@ -144,7 +144,7 @@
             // 
             this.splitContainerPageContent.Panel2.Controls.Add(this.panelInlineHelpBorder);
             this.splitContainerPageContent.Size = new System.Drawing.Size(646, 584);
-            this.splitContainerPageContent.SplitterDistance = 485;
+            this.splitContainerPageContent.SplitterDistance = 505;
             this.splitContainerPageContent.TabIndex = 0;
             // 
             // panelPageContentBorder
@@ -154,7 +154,7 @@
             this.panelPageContentBorder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPageContentBorder.Location = new System.Drawing.Point(0, 0);
             this.panelPageContentBorder.Name = "panelPageContentBorder";
-            this.panelPageContentBorder.Size = new System.Drawing.Size(646, 485);
+            this.panelPageContentBorder.Size = new System.Drawing.Size(646, 505);
             this.panelPageContentBorder.TabIndex = 0;
             // 
             // panelPageContent
@@ -166,7 +166,7 @@
             this.panelPageContent.BackColor = System.Drawing.SystemColors.Control;
             this.panelPageContent.Location = new System.Drawing.Point(1, 1);
             this.panelPageContent.Name = "panelPageContent";
-            this.panelPageContent.Size = new System.Drawing.Size(644, 483);
+            this.panelPageContent.Size = new System.Drawing.Size(644, 503);
             this.panelPageContent.TabIndex = 0;
             // 
             // panelInlineHelpBorder
@@ -176,7 +176,7 @@
             this.panelInlineHelpBorder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelInlineHelpBorder.Location = new System.Drawing.Point(0, 0);
             this.panelInlineHelpBorder.Name = "panelInlineHelpBorder";
-            this.panelInlineHelpBorder.Size = new System.Drawing.Size(646, 95);
+            this.panelInlineHelpBorder.Size = new System.Drawing.Size(646, 75);
             this.panelInlineHelpBorder.TabIndex = 0;
             // 
             // panelInlineHelp
@@ -190,7 +190,7 @@
             this.panelInlineHelp.Controls.Add(this.labelInlineHelpTitle);
             this.panelInlineHelp.Location = new System.Drawing.Point(1, 1);
             this.panelInlineHelp.Name = "panelInlineHelp";
-            this.panelInlineHelp.Size = new System.Drawing.Size(644, 93);
+            this.panelInlineHelp.Size = new System.Drawing.Size(644, 73);
             this.panelInlineHelp.TabIndex = 0;
             // 
             // labelInlineHelp
@@ -200,7 +200,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelInlineHelp.Location = new System.Drawing.Point(3, 22);
             this.labelInlineHelp.Name = "labelInlineHelp";
-            this.labelInlineHelp.Size = new System.Drawing.Size(634, 65);
+            this.labelInlineHelp.Size = new System.Drawing.Size(634, 45);
             this.labelInlineHelp.TabIndex = 1;
             this.labelInlineHelp.Text = "<Inline Help Goes Here>";
             // 

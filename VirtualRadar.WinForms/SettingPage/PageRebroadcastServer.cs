@@ -128,6 +128,18 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
+        /// <param name="e"></param>
+        protected override void OnLoad(EventArgs e)
+        {
+            if(!DesignMode) {
+                accessControl.AlignmentFieldLeftPosition = textBoxName.Left - 5;
+            }
+            base.OnLoad(e);
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
