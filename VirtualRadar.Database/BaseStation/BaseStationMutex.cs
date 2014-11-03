@@ -82,7 +82,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <summary>
         /// The number of milliseconds the code will wait before it gives up trying to acquire the lock.
         /// </summary>
-        public static readonly int WriteMutexTimeoutMs = 3000;
+        public static readonly int WriteMutexTimeoutMs = 60000;
 
         /// <summary>
         /// The mutex that we use to lock writes.
