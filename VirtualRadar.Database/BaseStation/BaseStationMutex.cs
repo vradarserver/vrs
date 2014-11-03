@@ -179,7 +179,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <returns></returns>
         private static bool CreateMutex()
         {
-            if(_WriteMutex == null && !_AbandonedSynchronisedWrites) {
+            if(_WriteMutex == null && !_AbandonedSynchronisedWrites && !_IsMono) {
                 // Create the named mutex without trying to own it
                 _WriteMutex = new Mutex(false, WriteMutexName);
     
