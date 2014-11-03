@@ -36,7 +36,7 @@
             this.checkBoxOnlyUpdateDatabasesCreatedByPlugin = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.fileNameDatabase = new VirtualRadar.WinForms.Controls.FileNameControl();
-            this.feedSelectControl = new System.Windows.Forms.ComboBox();
+            this.comboBoxReceiverId = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -135,15 +135,15 @@
             this.fileNameDatabase.Size = new System.Drawing.Size(385, 20);
             this.fileNameDatabase.TabIndex = 5;
             // 
-            // feedSelectControl
+            // comboBoxReceiverId
             // 
-            this.feedSelectControl.DisplayMember = "Name";
-            this.feedSelectControl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.feedSelectControl.Location = new System.Drawing.Point(148, 60);
-            this.feedSelectControl.Name = "feedSelectControl";
-            this.feedSelectControl.Size = new System.Drawing.Size(150, 21);
-            this.feedSelectControl.TabIndex = 3;
-            this.feedSelectControl.ValueMember = "Value";
+            this.comboBoxReceiverId.DisplayMember = "Name";
+            this.comboBoxReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxReceiverId.Location = new System.Drawing.Point(148, 60);
+            this.comboBoxReceiverId.Name = "comboBoxReceiverId";
+            this.comboBoxReceiverId.Size = new System.Drawing.Size(150, 21);
+            this.comboBoxReceiverId.TabIndex = 3;
+            this.comboBoxReceiverId.ValueMember = "Value";
             // 
             // OptionsView
             // 
@@ -161,7 +161,7 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.checkBoxEnabled);
-            this.Controls.Add(this.feedSelectControl);
+            this.Controls.Add(this.comboBoxReceiverId);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OptionsView";
@@ -185,6 +185,6 @@
         private System.Windows.Forms.CheckBox checkBoxOnlyUpdateDatabasesCreatedByPlugin;
         private VirtualRadar.WinForms.Controls.FileNameControl fileNameDatabase;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox feedSelectControl;
+        private System.Windows.Forms.ComboBox comboBoxReceiverId;
     }
 }
