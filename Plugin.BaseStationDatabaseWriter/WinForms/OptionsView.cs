@@ -155,7 +155,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
 
                 AddControlBinder(new FileNameStringBinder<OptionsView>(this, fileNameDatabase, r => r.DatabaseFileName, (r,v) => r.DatabaseFileName = v));
 
-                AddControlBinder(new ComboBoxBinder<OptionsView, CombinedFeed, int>(this, feedSelectControl, combinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v));
+                AddControlBinder(new ComboBoxBinder<OptionsView, CombinedFeed, int>(this, comboBoxReceiverId, combinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) {
+                    GetListItemDescription = r => r.Name,
+                    GetListItemValue = r => r.UniqueId,
+                });
+
+                InitialiseControlBinders();
             }
         }
 
