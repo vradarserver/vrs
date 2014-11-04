@@ -12,8 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Adsb;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library
 {
@@ -124,6 +126,21 @@ namespace VirtualRadar.Library
         /// A lock on the position history map.
         /// </summary>
         private object _PositionHistoryMapSyncLock = new object();
+
+        /// <summary>
+        /// The object that tracks configuration changes for us.
+        /// </summary>
+        private ISharedConfiguration _SharedConfiguration;
+        #endregion
+
+        #region Configuration
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public AircraftSanityChecker()
+        {
+            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+        }
         #endregion
 
         #region IsGoodAircraftIcao
@@ -136,7 +153,7 @@ namespace VirtualRadar.Library
         {
             var result = !String.IsNullOrEmpty(icao) && icao.Length == 6;
             if(result) {
-                if(icao == "000000") result = false;
+                if(icao == "000000" && _SharedConfiguration.Get().RawDecodingSettings.SuppressIcao0) result = false;
             }
 
             return result;

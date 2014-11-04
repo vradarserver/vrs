@@ -16,6 +16,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface;
 using InterfaceFactory;
 using Test.Framework;
+using VirtualRadar.Interface.Settings;
+using Moq;
 
 namespace Test.VirtualRadar.Library
 {
@@ -25,17 +27,27 @@ namespace Test.VirtualRadar.Library
         #region TestContext, Fields, TestInitialise, TestCleanup
         public TestContext TestContext { get; set; }
 
+        private IClassFactory _OriginalFactory;
+        private Mock<ISharedConfiguration> _SharedConfiguration;
+        private Configuration _Configuration;
         private IAircraftSanityChecker _Checker;
 
         [TestInitialize]
         public void TestInitialise()
         {
+            _OriginalFactory = Factory.TakeSnapshot();
+
+            _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
+            _Configuration = new Configuration();
+            _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
+
             _Checker = Factory.Singleton.Resolve<IAircraftSanityChecker>();
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
+            Factory.RestoreSnapshot(_OriginalFactory);
         }
         #endregion
 
@@ -48,6 +60,8 @@ namespace Test.VirtualRadar.Library
             var worksheet = new ExcelWorksheetData(TestContext);
             var icao = worksheet.EString("ICAO");
             var expected = worksheet.Bool("Result");
+
+            _Configuration.RawDecodingSettings.SuppressIcao0 = worksheet.Bool("SuppressIcao0");
 
             var result = _Checker.IsGoodAircraftIcao(icao);
             Assert.AreEqual(expected, result);

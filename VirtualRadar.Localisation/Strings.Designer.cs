@@ -3406,6 +3406,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Yes to ignore aircraft that transmit the invalid 000000 Mode-S identifier, no to show them..
+        /// </summary>
+        public static string OptionsDescribeRawFeedSuppressIcao0 {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRawFeedSuppressIcao0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set to &apos;Yes&apos; if the receiver location or range are not accurate. A setting of &apos;No&apos; will discard any positions that are outside the range of the receiver..
         /// </summary>
         public static string OptionsDescribeRawFeedSuppressReceiverRangeCheck {
@@ -5726,6 +5735,15 @@ namespace VirtualRadar.Localisation {
         public static string SuggestUseDifferentPortTitle {
             get {
                 return ResourceManager.GetString("SuggestUseDifferentPortTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suppress ICAO 000000.
+        /// </summary>
+        public static string SuppressICAO0 {
+            get {
+                return ResourceManager.GetString("SuppressICAO0", resourceCulture);
             }
         }
         

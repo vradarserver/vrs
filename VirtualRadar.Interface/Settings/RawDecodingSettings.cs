@@ -189,6 +189,17 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _AcceptIcaoInNonPISeconds, value, () => AcceptIcaoInNonPISeconds); }
         }
 
+        private bool _SuppressIcao0;
+        /// <summary>
+        /// Gets or sets a value indicating that ICAOs of 000000 are to be suppressed.
+        /// </summary>
+        public bool SuppressIcao0
+        {
+            get { return _SuppressIcao0; }
+            set { SetField(ref _SuppressIcao0, value, () => SuppressIcao0); }
+        }
+
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -241,6 +252,7 @@ namespace VirtualRadar.Interface.Settings
             AcceptIcaoInNonPISeconds = 5;
             AcceptIcaoInPI0Count = 1;
             AcceptIcaoInPI0Seconds = 1;
+            SuppressIcao0 = true;
         }
     }
 }
