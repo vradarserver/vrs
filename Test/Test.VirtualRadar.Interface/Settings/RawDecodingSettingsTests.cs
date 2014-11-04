@@ -45,6 +45,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.AcceptIcaoInPI0Seconds, 1, 199);
             TestUtilities.TestProperty(settings, r => r.AcceptIcaoInNonPICount, 0, 20);
             TestUtilities.TestProperty(settings, r => r.AcceptIcaoInNonPISeconds, 5, 42);
+            TestUtilities.TestProperty(settings, r => r.SuppressIcao0, true);
         }
     }
 }

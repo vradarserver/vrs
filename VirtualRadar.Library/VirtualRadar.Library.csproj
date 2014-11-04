@@ -149,6 +149,7 @@
     </Compile>
     <Compile Include="Settings\PluginManifestStorage.cs" />
     <Compile Include="Settings\PluginSettingsStorage.cs" />
+    <Compile Include="Settings\SharedConfiguration.cs" />
     <Compile Include="SimpleAircraftList.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Network\TcpConnectionStateService.cs" />

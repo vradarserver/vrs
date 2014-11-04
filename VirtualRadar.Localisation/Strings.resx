@@ -2350,4 +2350,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribePassphrase" xml:space="preserve">
     <value>The passphrase used to protect the connection from unauthorised access. Leave empty if no passphrase is required.</value>
   </data>
+  <data name="OptionsDescribeRawFeedSuppressIcao0" xml:space="preserve">
+    <value>Yes to ignore aircraft that transmit the invalid 000000 Mode-S identifier, no to show them.</value>
+  </data>
+  <data name="SuppressICAO0" xml:space="preserve">
+    <value>Suppress ICAO 000000</value>
+  </data>
 </root>
