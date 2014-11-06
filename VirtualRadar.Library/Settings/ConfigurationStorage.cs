@@ -17,8 +17,10 @@ using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Xml.Serialization;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 
@@ -90,7 +92,17 @@ namespace VirtualRadar.Library.Settings
         /// <param name="args"></param>
         private void OnConfigurationChanged(EventArgs args)
         {
-            if(ConfigurationChanged != null) ConfigurationChanged(this, args);
+            if(ConfigurationChanged != null) {
+                foreach(EventHandler eventHandler in ConfigurationChanged.GetInvocationList()) {
+                    try {
+                        eventHandler(this, args);
+                    } catch(ThreadAbortException) {
+                    } catch(Exception ex) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception in ConfigurationChanged event handler: {0}", ex.ToString());
+                    }
+                }
+            }
         }
 
         /// <summary>

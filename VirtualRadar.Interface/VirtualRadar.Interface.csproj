@@ -111,7 +111,7 @@
     <Compile Include="Certainty.cs" />
     <Compile Include="Cidr.cs" />
     <Compile Include="CidrComparer.cs" />
-    <Compile Include="Settings\SharedConfiguration.cs" />
+    <Compile Include="Settings\ISharedConfiguration.cs" />
     <Compile Include="StandingData\BasicAircraft.cs" />
     <Compile Include="StandingData\BasicAircraftAndChildren.cs" />
     <Compile Include="StandingData\BasicModel.cs" />

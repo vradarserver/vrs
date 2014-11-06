@@ -23,7 +23,9 @@ namespace VirtualRadar.Interface.Settings
     /// <para>
     /// The application's configuration information is stored in <see cref="Configuration"/>, which is read and written by
     /// the singleton object <see cref="IConfigurationStorage"/>. This object raises an event when a new configuration is
-    /// saved which the application can hook to automatically pick up changes to the configuration.
+    /// saved which the application can hook to automatically pick up changes to the configuration. To avoid repeatedly
+    /// loading the configuration you can also use <see cref="ISharedConfiguration"/>, which caches the most recent
+    /// configuration.
     /// </para><para>
     /// The program's installer writes a configuration file that contains settings that cannot be changed without stopping
     /// the program and re-running the installer. The settings are in <see cref="InstallerSettings"/> and are loaded by
