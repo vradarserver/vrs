@@ -52,6 +52,16 @@ namespace VirtualRadar.Interface.Settings
     public interface ISharedConfiguration : ISingleton<ISharedConfiguration>
     {
         /// <summary>
+        /// Raised when the configuration returned by <see cref="Get"/> has changed.
+        /// </summary>
+        /// <remarks>
+        /// Basically the same as IConfigurationStorage.ConfigurationChanged except
+        /// that calling <see cref="Get"/> to get the new configuration doesn't involve
+        /// a fresh load from disk.
+        /// </remarks>
+        event EventHandler ConfigurationChanged;
+
+        /// <summary>
         /// Gets the current configuration.
         /// </summary>
         /// <returns></returns>

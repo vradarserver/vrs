@@ -56,9 +56,47 @@ namespace VirtualRadar.Library
         public event EventHandler SlowTick;
 
         /// <summary>
+        /// Raises <see cref="SlowTick"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        private void OnSlowTick(EventArgs args)
+        {
+            if(SlowTick != null) {
+                foreach(EventHandler eventHandler in SlowTick.GetInvocationList()) {
+                    try {
+                        eventHandler(this, EventArgs.Empty);
+                    } catch(ThreadAbortException) {
+                    } catch(Exception ex) {
+                        ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught an exception on a slow tick heartbeat event: {0}", ex.ToString());
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public event EventHandler FastTick;
+
+        /// <summary>
+        /// Raises <see cref="FastTick"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        private void OnFastTick(EventArgs args)
+        {
+            if(FastTick != null) {
+                foreach(EventHandler eventHandler in FastTick.GetInvocationList()) {
+                    try {
+                        eventHandler(this, EventArgs.Empty);
+                    } catch(ThreadAbortException) {
+                    } catch(Exception ex) {
+                        ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught an exception on a fast tick heartbeat event: {0}", ex.ToString());
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Finalises the object.
@@ -147,17 +185,7 @@ namespace VirtualRadar.Library
         /// <param name="e"></param>
         private void SlowTickTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach(EventHandler eventHandler in SlowTick.GetInvocationList()) {
-                try {
-                    eventHandler(this, EventArgs.Empty);
-                } catch(ThreadAbortException) {
-                } catch(Exception ex) {
-                    Debug.WriteLine(String.Format("HeartbeatService.SlowTickTimerElapsed caught exception: {0}", ex.ToString()));
-                    ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
-                    log.WriteLine("Caught an exception on a slow tick heartbeat event: {0}", ex.ToString());
-                }
-            }
-
+            OnSlowTick(EventArgs.Empty);
             _SlowTickTimer.Start();
         }
 
@@ -168,17 +196,7 @@ namespace VirtualRadar.Library
         /// <param name="e"></param>
         private void FastTickTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach(EventHandler eventHandler in FastTick.GetInvocationList()) {
-                try {
-                    eventHandler(this, EventArgs.Empty);
-                } catch(ThreadAbortException) {
-                } catch(Exception ex) {
-                    Debug.WriteLine(String.Format("HeartbeatService.FastTickTimerElapsed caught exception: {0}", ex.ToString()));
-                    ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
-                    log.WriteLine("Caught an exception on a fast tick heartbeat event: {0}", ex.ToString());
-                }
-            }
-
+            OnFastTick(EventArgs.Empty);
             _FastTickTimer.Start();
         }
     }

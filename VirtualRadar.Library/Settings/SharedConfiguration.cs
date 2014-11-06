@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library.Settings
@@ -53,6 +54,33 @@ namespace VirtualRadar.Library.Settings
         public ISharedConfiguration Singleton
         {
             get { return _Singleton; }
+        }
+        #endregion
+
+        #region Events exposed
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler ConfigurationChanged;
+
+        /// <summary>
+        /// Raises <see cref="ConfigurationChanged"/>. Exceptions in the event handlers are logged
+        /// but they are not allowed to prevent any other handlers from running.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnConfigurationChanged(EventArgs args)
+        {
+            if(ConfigurationChanged != null) {
+                foreach(EventHandler handler in ConfigurationChanged.GetInvocationList()) {
+                    try {
+                        handler(this, args);
+                    } catch(ThreadAbortException) {
+                    } catch(Exception ex) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
+                    }
+                }
+            }
         }
         #endregion
 
@@ -103,6 +131,7 @@ namespace VirtualRadar.Library.Settings
         private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs e)
         {
             LoadConfiguration(forceLoad: true);
+            OnConfigurationChanged(EventArgs.Empty);
         }
 
         /// <summary>

@@ -34,7 +34,6 @@ namespace VirtualRadar.Interface
     /// periodic work before the requisite period of real time has elapsed.
     /// </para><para>
     /// Exceptions raised on the event handlers are currently logged but not pushed up to the GUI.
-    /// This might change in the future as the use of the service expands.
     /// </para><para>
     /// The Singleton version of the heartbeat service is started by the splash screen and is available
     /// to plugins in their Startup method. However if plugins want to maintain use their own instance
