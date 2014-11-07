@@ -798,7 +798,7 @@
         headingKey:             'ListRoute',
         labelKey:               'Route',
         optionsLabelKey:        'RouteShort',
-        hasChangedCallback:     function(aircraft) { return aircraft.hasRouteChanged(); },
+        hasChangedCallback:     function(aircraft) { return aircraft.callsign.chg || aircraft.hasRouteChanged(); },
         useHtmlRendering:       function(aircraft, options, surface) { return surface === VRS.RenderSurface.DetailBody; },
         contentCallback:        function(aircraft, options, surface) {
             switch(surface) {
@@ -824,7 +824,7 @@
         labelKey:               'Route',
         optionsLabelKey:        'RouteFull',
         isMultiLine:            true,
-        hasChangedCallback:     function(aircraft) { return aircraft.hasRouteChanged(); },
+        hasChangedCallback:     function(aircraft) { return aircraft.callsign.chg || aircraft.hasRouteChanged(); },
         renderCallback:         function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) { return aircraft.formatRouteMultiLine(); }
     });
 
