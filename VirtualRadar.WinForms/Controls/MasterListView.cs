@@ -66,16 +66,6 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
-        /// Returns a collection of every item currently displayed within the control. This may not
-        /// correspond to <see cref="List"/> if the list has been modified since <see cref="RefreshList"/>
-        /// was last called.
-        /// </summary>
-        public IEnumerable<object> AllRecords
-        {
-            get { return listView.Items.OfType<ListViewItem>().Select(r => r.Tag).ToArray(); }
-        }
-
-        /// <summary>
         /// Gets or sets the selected records.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -93,6 +83,16 @@ namespace VirtualRadar.WinForms.Controls
         {
             get { return GetAllCheckedListViewTag<object>(listView); }
             set { CheckListViewItemsByTags<object>(listView, value); }
+        }
+
+        /// <summary>
+        /// Returns a collection of every item currently displayed within the control. This may not
+        /// correspond to <see cref="List"/> if the list has been modified since <see cref="RefreshList"/>
+        /// was last called.
+        /// </summary>
+        public IEnumerable<object> AllRecords
+        {
+            get { return listView.Items.OfType<ListViewItem>().Select(r => r.Tag).ToArray(); }
         }
         #endregion
 

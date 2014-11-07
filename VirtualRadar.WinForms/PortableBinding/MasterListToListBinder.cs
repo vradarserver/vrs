@@ -162,11 +162,11 @@ namespace VirtualRadar.WinForms.PortableBinding
             set { if(!Initialised) _AutoAddEnabled = value; }
         }
 
-        private Action<TListModel> _DeleteHandler;
+        private Action<IList<TListModel>> _DeleteHandler;
         /// <summary>
         /// Gets or sets the method that handles the removal of existing items. Can only be set before initialisation.
         /// </summary>
-        public Action<TListModel> DeleteHandler
+        public Action<IList<TListModel>> DeleteHandler
         {
             get { return _DeleteHandler; }
             set { if(!Initialised) _DeleteHandler = value; }
@@ -316,7 +316,11 @@ namespace VirtualRadar.WinForms.PortableBinding
             if(AutoAddEnabled && AddHandler == null) AddHandler = () => Activator.CreateInstance<TListModel>();
             if(AddHandler != null) Control.AllowAdd = true;
 
-            if(AutoDeleteEnabled && DeleteHandler == null) DeleteHandler = (model) => ModelList.Remove(model);
+            if(AutoDeleteEnabled && DeleteHandler == null) DeleteHandler = (selectedModels) => {
+                foreach(var selectedModel in selectedModels) {
+                    ModelList.Remove(selectedModel);
+                }
+            };
             if(DeleteHandler != null) Control.AllowDelete = true;
 
             if(EditHandler != null) Control.AllowUpdate = true;
@@ -411,11 +415,11 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <summary>
         /// Calls the delete handler with the list model passed across.
         /// </summary>
-        /// <param name="listModel"></param>
-        protected void DeleteListModel(TListModel listModel)
+        /// <param name="listModels"></param>
+        protected void DeleteListModel(IList<TListModel> listModels)
         {
-            if(DeleteHandler != null && listModel != null) {
-                DeleteHandler(listModel);
+            if(DeleteHandler != null && listModels != null && listModels.Count > 0) {
+                DeleteHandler(listModels);
             }
         }
 
@@ -486,7 +490,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="e"></param>
         private void Control_DeleteClicked(object sender, EventArgs e)
         {
-            DeleteListModel(Control.SelectedRecord as TListModel);
+            DeleteListModel(Control.SelectedRecords.OfType<TListModel>().ToList());
         }
 
         /// <summary>
