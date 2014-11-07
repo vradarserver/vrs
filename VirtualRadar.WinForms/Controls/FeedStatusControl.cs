@@ -218,6 +218,7 @@ namespace VirtualRadar.WinForms.Controls
                 } else {
                     var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.UniqueId);
                     if(feedDetail != null) {
+                        feedDetail.HasPolarPlotter = aircraftList.PolarPlotter != null;
                         feedDetails.Remove(feedDetail);
                         UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
                     } else {
