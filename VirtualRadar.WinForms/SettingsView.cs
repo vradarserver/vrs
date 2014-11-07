@@ -646,6 +646,9 @@ namespace VirtualRadar.WinForms
                 if(CurrentPanelPageSummary != pageSummary) {
                     CurrentPanelPageSummary = pageSummary;
                 }
+                if(CurrentTreePageSummary != pageSummary) {
+                    CurrentTreePageSummary = pageSummary;
+                }
 
                 pageSummary.Page.PageSelected();
             }
