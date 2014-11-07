@@ -93,7 +93,7 @@ namespace VirtualRadar.Library.Settings
         private void OnConfigurationChanged(EventArgs args)
         {
             if(ConfigurationChanged != null) {
-                foreach(EventHandler eventHandler in ConfigurationChanged.GetInvocationList()) {
+                foreach(EventHandler<EventArgs> eventHandler in ConfigurationChanged.GetInvocationList()) {
                     try {
                         eventHandler(this, args);
                     } catch(ThreadAbortException) {
