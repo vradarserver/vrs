@@ -1182,6 +1182,27 @@
         };
 
         /**
+         * Returns a description of the squawk code.
+         * @param {string|number} squawk    The squawk to describe.
+         * @returns {string}
+         */
+        this.squawkDescription = function(squawk)
+        {
+            var result = '';
+            squawk = that.squawk(squawk);
+            if(squawk) {
+                switch(squawk) {
+                    case '7000':    result = VRS.$$.Squawk7000; break;
+                    case '7500':    result = VRS.$$.Squawk7500; break;
+                    case '7600':    result = VRS.$$.Squawk7600; break;
+                    case '7700':    result = VRS.$$.Squawk7700; break;
+                }
+            }
+
+            return result;
+        };
+
+        /**
          * Returns the pair of squawks formatted as a string.
          * @param {Number|String} fromSquawk
          * @param {Number|String} toSquawk

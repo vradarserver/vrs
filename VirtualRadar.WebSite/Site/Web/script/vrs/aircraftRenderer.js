@@ -929,7 +929,8 @@
         sortableField:          VRS.AircraftListSortableField.Squawk,
         alignment:              VRS.Alignment.Right,
         hasChangedCallback:     function(aircraft) { return aircraft.squawk.chg; },
-        contentCallback:        function(aircraft) { return aircraft.formatSquawk(); }
+        contentCallback:        function(aircraft) { return aircraft.formatSquawk(); },
+        tooltipCallback:        function(aircraft, options, surface) { return aircraft.formatSquawkDescription(); }
     });
 
     VRS.renderPropertyHandlers[VRS.RenderProperty.TargetAltitude] = new VRS.RenderPropertyHandler({

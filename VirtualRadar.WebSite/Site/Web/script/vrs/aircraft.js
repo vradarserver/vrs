@@ -1270,6 +1270,15 @@
         };
 
         /**
+         * Returns a description of the aircraft's squawk.
+         * @returns {string}
+         */
+        this.formatSquawkDescription = function()
+        {
+            return VRS.format.squawkDescription(this.squawk.val);
+        };
+
+        /**
          * Formats the target altitude as a string.
          * @param {VRS.Height}  heightUnit          The VRS.Height unit to use.
          * @param {bool}        showUnits           True if units are to be shown.

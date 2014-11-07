@@ -446,6 +446,10 @@
     VRS.$$.Speeds =                                     'Speeds';
     VRS.$$.SpeedType =                                  'Speed Type';
     VRS.$$.Squawk =                                     'Squawk';
+    VRS.$$.Squawk7000 =                                 'No squawk assigned';
+    VRS.$$.Squawk7500 =                                 'Aircraft hijacking';
+    VRS.$$.Squawk7600 =                                 'Radio failure';
+    VRS.$$.Squawk7700 =                                 'General emergency';
     VRS.$$.Start =                                      'Start';
     VRS.$$.StartsWith =                                 'Starts With';
     VRS.$$.StartTime =                                  'Start Time';
