@@ -2371,15 +2371,6 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log Current Connections.
-        /// </summary>
-        public static string menuForceConnectionSnapshot {
-            get {
-                return ResourceManager.GetString("menuForceConnectionSnapshot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &amp;Help.
         /// </summary>
         public static string menuHelp {
@@ -2394,15 +2385,6 @@ namespace VirtualRadar.Localisation {
         public static string menuOpenConnectionActivityLog {
             get {
                 return ResourceManager.GetString("menuOpenConnectionActivityLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Connection Snapshot Log.
-        /// </summary>
-        public static string menuOpenConnectionSnapshotLog {
-            get {
-                return ResourceManager.GetString("menuOpenConnectionSnapshotLog", resourceCulture);
             }
         }
         

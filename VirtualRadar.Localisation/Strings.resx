@@ -2328,12 +2328,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ConnectionSnapshotTakenTitle" xml:space="preserve">
     <value>Snapshot Taken</value>
   </data>
-  <data name="menuForceConnectionSnapshot" xml:space="preserve">
-    <value>Log Current Connections</value>
-  </data>
-  <data name="menuOpenConnectionSnapshotLog" xml:space="preserve">
-    <value>Open Connection Snapshot Log</value>
-  </data>
   <data name="NoSnapshotBody" xml:space="preserve">
     <value>No snapshot has yet been taken</value>
   </data>
