@@ -182,6 +182,13 @@ namespace VirtualRadar.Database.BasicAircraft
         {
             lock(_ConnectionLock) {
                 if(_Connection != null) {
+                    _TransactionHelper.Abandon();
+
+                    if(_AircraftTable != null)  _AircraftTable.CloseCommands();
+                    if(_ModelTable != null)     _ModelTable.CloseCommands();
+                    if(_OperatorTable != null)  _OperatorTable.CloseCommands();
+
+                    _Connection.Close();
                     _Connection.Dispose();
                     _Connection = null;
                 }
@@ -306,7 +313,7 @@ namespace VirtualRadar.Database.BasicAircraft
         }
         #endregion
 
-        #region Compact, LockForUpdate
+        #region Compact, PrepareForUpdate, FinishedUpdate
         /// <summary>
         /// See interface docs.
         /// </summary>

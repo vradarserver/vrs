@@ -56,11 +56,19 @@ namespace VirtualRadar.Database
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                foreach(SqlPreparedCommand command in _Commands.Values) {
-                    command.Dispose();
-                }
-                _Commands.Clear();
+                CloseCommands();
             }
+        }
+
+        /// <summary>
+        /// Disposes of all prepared commands.
+        /// </summary>
+        public void CloseCommands()
+        {
+            foreach(var command in _Commands.Values) {
+                command.Dispose();
+            }
+            _Commands.Clear();
         }
 
         /// <summary>

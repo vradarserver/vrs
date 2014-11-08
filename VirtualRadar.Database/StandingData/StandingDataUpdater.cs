@@ -235,7 +235,8 @@ namespace VirtualRadar.Database.StandingData
 
                         string remoteBasicLookupChecksum = remoteStateChunks.Length > 8 ? remoteStateChunks[8] : "MISSING-REMOTE";
                         string localBasicLookupChecksum = localStateChunks.Length > 8 ? localStateChunks[8] : "MISSING-LOCAL";
-                        if(remoteDatabaseChecksum != localDatabaseChecksum || !Provider.FileExists(basicLookupFileName)) {
+                       // if(remoteBasicLookupChecksum != localBasicLookupChecksum || !Provider.FileExists(basicLookupFileName)) {
+                       if(true) {
                             updateState = true;
                             Provider.DownloadAndDecompressFile(BasicAircraftLookupUrl, basicLookupTempName);
 
