@@ -61,5 +61,23 @@ namespace VirtualRadar.Interface
         /// too long to send.
         /// </summary>
         public long StaleBytesDiscarded { get; set; }
+
+        /// <summary>
+        /// Returns true if this connection is the same as the other connection.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool IsSameConnection(RebroadcastServerConnection other)
+        {
+            var result = Object.ReferenceEquals(this, other);
+            if(!result && other != null) {
+                result = RebroadcastServerId == other.RebroadcastServerId &&
+                         LocalPort == other.LocalPort &&
+                         EndpointPort == other.EndpointPort &&
+                         IPAddressComparer.Singleton.Compare(EndpointIPAddress, other.EndpointIPAddress) == 0;
+            }
+
+            return result;
+        }
     }
 }

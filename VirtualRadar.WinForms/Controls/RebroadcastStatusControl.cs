@@ -110,7 +110,7 @@ namespace VirtualRadar.WinForms.Controls
             var listItems = listView.Items.OfType<ListViewItem>().ToList();
             foreach(var listItem in listItems) {
                 var existingConnection = listItem.Tag as RebroadcastServerConnection;
-                var connection = existingConnection == null ? null : connections.FirstOrDefault(r => r.RebroadcastServerId == existingConnection.RebroadcastServerId);
+                var connection = existingConnection == null ? null : connections.FirstOrDefault(r => r.IsSameConnection(existingConnection));
                 if(connection != null) UpdateListViewItem(listItem, connection);
                 else {
                     listView.Items.Remove(listItem);
@@ -120,7 +120,7 @@ namespace VirtualRadar.WinForms.Controls
 
             // Add new items
             foreach(var connection in connections) {
-                if(!listItems.Any(r => { var existingConnection = r.Tag as RebroadcastServerConnection; return existingConnection != null && existingConnection.RebroadcastServerId == connection.RebroadcastServerId; })) {
+                if(!listItems.Any(r => { var existingConnection = r.Tag as RebroadcastServerConnection; return existingConnection != null && existingConnection.IsSameConnection(connection); })) {
                     var listItem = new ListViewItem();
                     UpdateListViewItem(listItem, connection);
                     listView.Items.Add(listItem);

@@ -21,6 +21,12 @@ namespace VirtualRadar.Interface
     /// </summary>
     public class IPAddressComparer : IComparer<IPAddress>
     {
+        private static IPAddressComparer _Singleton = new IPAddressComparer();
+        /// <summary>
+        /// Gets a singleton instance of <see cref="IPAddressComparer"/>.
+        /// </summary>
+        public static IPAddressComparer Singleton { get { return _Singleton; } }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
