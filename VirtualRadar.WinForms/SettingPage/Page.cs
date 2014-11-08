@@ -142,10 +142,10 @@ namespace VirtualRadar.WinForms.SettingPage
             if(!_Initialised) {
                 _Initialised = true;
 
+                AssociateValidationFields();
                 InitialiseControls();
                 CreateBindings();
                 InitialiseControlBinders();
-                AssociateValidationFields();
                 AssociateInlineHelp();
             }
         }
