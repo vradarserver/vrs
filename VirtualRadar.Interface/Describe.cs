@@ -192,14 +192,15 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="connectionStatus"></param>
         /// <returns></returns>
-        public static string ConnectionStatus(ConnectionStatus connectionStatus)
+        public static string ConnectionStatus(Network.ConnectionStatus connectionStatus)
         {
             switch(connectionStatus) {
-                case Interface.ConnectionStatus.CannotConnect:  return Strings.CannotConnect;
-                case Interface.ConnectionStatus.Connecting:     return Strings.Connecting;
-                case Interface.ConnectionStatus.Connected:      return Strings.Connected;
-                case Interface.ConnectionStatus.Disconnected:   return Strings.Disconnected;
-                case Interface.ConnectionStatus.Reconnecting:   return Strings.Reconnecting;
+                case Network.ConnectionStatus.CannotConnect:    return Strings.CannotConnect;
+                case Network.ConnectionStatus.Connecting:       return Strings.Connecting;
+                case Network.ConnectionStatus.Connected:        return Strings.Connected;
+                case Network.ConnectionStatus.Disconnected:     return Strings.Disconnected;
+                case Network.ConnectionStatus.Reconnecting:     return Strings.Reconnecting;
+                case Network.ConnectionStatus.Waiting:          return Strings.Waiting;
                 default:                                        throw new NotImplementedException();
             }
         }

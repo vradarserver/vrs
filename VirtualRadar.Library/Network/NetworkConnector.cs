@@ -342,7 +342,7 @@ namespace VirtualRadar.Library.Network
                     while(socket == null && !_Closed) {
                         try {
                             socket = CreatePassiveModeListeningSocket();
-                            ConnectionStatus = ConnectionStatus.Connected;
+                            ConnectionStatus = ConnectionStatus.Waiting;
                             RecordMiscellaneousActivity("Listening for incoming connections on port {0}", Port);
 
                             while(!_Closed) {
@@ -405,7 +405,7 @@ namespace VirtualRadar.Library.Network
                 timeoutAction.PerformAction();
 
                 if(socket != null) {
-                    var connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
+                    var connection = new SocketConnection(this, socket, ConnectionStatus.Waiting);
                     var address = socket.RemoteEndPoint as IPEndPoint;
 
                     var abandonConnection = false;
@@ -444,6 +444,7 @@ namespace VirtualRadar.Library.Network
                     } else {
                         RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: false);
                         connection.ConnectionStatus = ConnectionStatus.Connected;
+                        ConnectionStatus = ConnectionStatus.Connected;
                     }
                 }
             } catch(Exception ex) {
@@ -515,8 +516,9 @@ namespace VirtualRadar.Library.Network
         {
             DeregisterConnection(connection, raiseConnectionClosed: true, stopMirroringConnectionState: !IsPassive);
 
-            if(!_Closed && !IsPassive) {
-                ActiveModeReconnect(ConnectionStatus.Reconnecting, pauseBeforeConnect: true);
+            if(!_Closed) {
+                if(!IsPassive) ActiveModeReconnect(ConnectionStatus.Reconnecting, pauseBeforeConnect: true);
+                else           ConnectionStatus = ConnectionStatus.Waiting;
             }
         }
         #endregion
