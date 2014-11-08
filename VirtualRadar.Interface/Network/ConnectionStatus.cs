@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Listener;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Network
 {
     /// <summary>
     /// The various states that an <see cref="IListener"/> can be in.
@@ -46,5 +46,10 @@ namespace VirtualRadar.Interface
         /// is trying to automatically reconnect.
         /// </summary>
         Reconnecting,
+
+        /// <summary>
+        /// The listener is waiting for a connection to be made to it.
+        /// </summary>
+        Waiting,
     }
 }

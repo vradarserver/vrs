@@ -280,7 +280,7 @@
     <Compile Include="BaseStation\BaseStationMessageType.cs" />
     <Compile Include="BaseStation\BaseStationStatusCode.cs" />
     <Compile Include="BaseStation\BaseStationTransmissionType.cs" />
-    <Compile Include="ConnectionStatus.cs" />
+    <Compile Include="Network\ConnectionStatus.cs" />
     <Compile Include="BaseStation\BaseStationMessage.cs" />
     <Compile Include="BaseStation\IBaseStationMessageCompressor.cs" />
     <Compile Include="Settings\AudioSettings.cs" />
