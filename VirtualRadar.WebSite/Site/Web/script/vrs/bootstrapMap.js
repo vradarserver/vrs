@@ -667,7 +667,7 @@
                     labelKey:       function() { return selectedAircraft && selectedAircraft.registration.val ? VRS.stringUtility.format(VRS.$$.ReportRegistrationValid, selectedAircraft.formatRegistration()) : VRS.$$.ReportRegistrationInvalid; },
                     disabled:       function() { return !selectedAircraft || !selectedAircraft.registration.val; },
                     clickCallback:  function() { window.open(VRS.browserHelper.formVrsPageUrl(objSettings.reportUrl, {
-                        'reg-Q':    selectedAircraft.registration.val,
+                        'reg-Q':    selectedAircraft.registration.val,  // this needs to be the first parameter
                         'sort1':    VRS.ReportSortColumn.Date,
                         'sortAsc1': 0,
                         'sort2':    'none'

@@ -415,10 +415,14 @@
          */
         this.formVrsPageUrl = function(url, params, recursive)
         {
-            params = $.extend({
+            // We need to ensure that anything in params comes first so that the caller can control which parameter
+            // is first. Internet Explorer has a hard time if some parameters have a & before them (e.g. &reg= gets
+            // turned into <registered symbol>= - so for those we need to get them to the start of the query string
+            // so they start with a ? instead of a &.
+            params = $.extend(params || {}, {
                 notOnline: that.notOnline() ? '1' : '0',
                 forceFrame: that.getForceFrame()
-            }, params);
+            });
             return that.formUrl(url, params, recursive);
         };
         //endregion
