@@ -44,34 +44,6 @@ namespace VirtualRadar.Library.Presenter
             public ValidationField Field { get; private set; }
 
             /// <summary>
-            /// Gets or sets the single field that has changed on the GUI. Set to <see cref="ValidationField.None"/> if
-            /// we are validating all fields. If this is not None then the validation is not performed unless <see cref="Field"/>
-            /// matches this value - it is assumed to always pass.
-            /// </summary>
-            public ValidationField ValueChangedField { get; set; }
-
-            /// <summary>
-            /// Gets a collection of fields that this validation relies upon. The validation will run if any field in
-            /// this list matches <see cref="ValueChangedField"/>.
-            /// </summary>
-            public List<ValidationField> RelatedFields { get; private set; }
-
-            /// <summary>
-            /// Gets or sets a value indicating whether the contents of <see cref="Field"/>, <see cref="ValueChangedField"/>
-            /// and <see cref="RelatedFields"/> indicate that we are to actually perform the validation.
-            /// </summary>
-            public bool FieldMatches
-            {
-                get {
-                    var result = ValueChangedField == ValidationField.None || Field == ValueChangedField;
-                    if(!result) {
-                        result = RelatedFields.Contains(ValueChangedField);
-                    }
-                    return result;
-                }
-            }
-
-            /// <summary>
             /// Gets or sets the child record that is being validated. Set to null if not validating a child record.
             /// </summary>
             public object Record { get; set; }
@@ -106,7 +78,7 @@ namespace VirtualRadar.Library.Presenter
             /// Creates a new object.
             /// </summary>
             /// <param name="defaults"></param>
-            public Validation(Validation defaults) : this(ValidationField.None, defaults.Results, defaults.Record, defaults.ValueChangedField)
+            public Validation(Validation defaults) : this(ValidationField.None, defaults.Results, defaults.Record)
             {
             }
 
@@ -115,7 +87,7 @@ namespace VirtualRadar.Library.Presenter
             /// </summary>
             /// <param name="field"></param>
             /// <param name="defaults"></param>
-            public Validation(ValidationField field, Validation defaults) : this(field, defaults.Results, defaults.Record, defaults.ValueChangedField)
+            public Validation(ValidationField field, Validation defaults) : this(field, defaults.Results, defaults.Record)
             {
             }
 
@@ -124,17 +96,7 @@ namespace VirtualRadar.Library.Presenter
             /// </summary>
             /// <param name="field"></param>
             /// <param name="results"></param>
-            public Validation(ValidationField field, ValidationResults results) : this(field, results, null, ValidationField.None)
-            {
-            }
-
-            /// <summary>
-            /// Creates a new object.
-            /// </summary>
-            /// <param name="field"></param>
-            /// <param name="results"></param>
-            /// <param name="record"></param>
-            public Validation(ValidationField field, ValidationResults results, object record) : this(field, results, record, ValidationField.None)
+            public Validation(ValidationField field, ValidationResults results) : this(field, results, null)
             {
             }
 
@@ -144,14 +106,11 @@ namespace VirtualRadar.Library.Presenter
             /// <param name="field"></param>
             /// <param name="results"></param>
             /// <param name="record"></param>
-            /// <param name="valueChangedField"></param>
-            public Validation(ValidationField field, ValidationResults results, object record, ValidationField valueChangedField)
+            public Validation(ValidationField field, ValidationResults results, object record)
             {
-                RelatedFields = new List<ValidationField>();
                 Results = results;
                 Field = field;
                 Record = record;
-                ValueChangedField = valueChangedField;
             }
 
             /// <summary>
@@ -183,17 +142,15 @@ namespace VirtualRadar.Library.Presenter
             {
                 if(Field == ValidationField.None) throw new InvalidOperationException("Cannot test the validity of a None field");
 
-                var valid = !FieldMatches;
-                if(!valid) {
-                    try {
-                        valid = condition();
-                    } catch(Exception ex) {
-                        valid = false;
-                        Message = null;
-                        Format = Strings.ExceptionWhenCheckingValue;
-                        Args = new object[] { ex.Message ?? "" };
-                        IsWarning = false;
-                    }
+                var valid = false;
+                try {
+                    valid = condition();
+                } catch(Exception ex) {
+                    valid = false;
+                    Message = null;
+                    Format = Strings.ExceptionWhenCheckingValue;
+                    Args = new object[] { ex.Message ?? "" };
+                    IsWarning = false;
                 }
                 if(!valid) AddResult();
 
