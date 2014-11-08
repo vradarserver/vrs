@@ -362,8 +362,6 @@ namespace VirtualRadar.Library.Network
 
             _ActivityLog = Factory.Singleton.Resolve<IConnectorActivityLog>().Singleton;
             _ActivityLog.RecordConnectorCreated(this);
-
-            RecordMiscellaneousActivity("Connector created");
         }
 
         /// <summary>
