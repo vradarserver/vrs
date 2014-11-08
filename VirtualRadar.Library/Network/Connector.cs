@@ -556,13 +556,13 @@ namespace VirtualRadar.Library.Network
             EstablishingConnections = true;
 
             DoEstablishIntent();
-            RecordMiscellaneousActivity(IsPassive ? "Waiting for connections on background thread" : "Establishing connections on background thread");
 
             if(IsPassive && !PassiveModeSupported) throw new InvalidOperationException(String.Format("Passive mode is not supported on {0} connectors", GetType().Name));
             if(!IsPassive && !ActiveModeSupported) throw new InvalidOperationException(String.Format("Active mode is not supported on {0} connectors", GetType().Name));
             if(IsSingleConnection && !SingleConnectionSupported) throw new InvalidOperationException(String.Format("Single connection mode is not supported on {0} connectors", GetType().Name));
             if(!IsSingleConnection && !MultiConnectionSupported) throw new InvalidOperationException(String.Format("Multi-connection mode is not supported on {0} connectors", GetType().Name));
 
+            RecordMiscellaneousActivity(IsPassive ? "Waiting for connections on background thread" : "Establishing connections on background thread");
             lock(_SyncLock) {
                 if(_EstablishConnectionThread == null) {
                     _EstablishConnectionThread = new Thread(BackgroundEstablishConnection);

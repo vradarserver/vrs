@@ -727,10 +727,10 @@ namespace VirtualRadar.Library.Presenter
         private int[] ListeningPorts(object exceptCurrent)
         {
             var result = _View.Configuration.RebroadcastSettings
-                                            .Where(r => r != exceptCurrent && !r.IsTransmitter)
+                                            .Where(r => r != exceptCurrent && !r.IsTransmitter && r.Enabled)
                                             .Select(r => r.Port);
             result = result.Concat(_View.Configuration.Receivers
-                                                      .Where(r => r != exceptCurrent && r.IsPassive)
+                                                      .Where(r => r != exceptCurrent && r.IsPassive && r.Enabled)
                                                       .Select(r => r.Port));
 
             return result.ToArray();
@@ -1049,19 +1049,21 @@ namespace VirtualRadar.Library.Presenter
                     new Validation(ValidationField.BaseStationAddress, defaults) {
                         Format = Strings.CannotResolveAddress,
                         Args = new object[] { server.TransmitAddress },
-                        IsWarning = !String.IsNullOrEmpty(server.TransmitAddress ?? ""),
+                        IsWarning = !String.IsNullOrEmpty(server.TransmitAddress ?? "") || !server.Enabled,
                     }
                 );
 
                 // Port must be within range
                 ValueIsInRange(server.Port, 1, 65535, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortOutOfBounds,
+                    IsWarning = !server.Enabled,
                 });
 
                 // Either we're transmitting or the port must be unique
                 var otherPorts = ListeningPorts(server);
                 ConditionIsTrue(server, r => r.IsTransmitter || !otherPorts.Contains(r.Port), new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortMustBeUnique,
+                    IsWarning = !server.Enabled,
                 });
 
                 // Port cannot clash with the web server port
@@ -1071,11 +1073,13 @@ namespace VirtualRadar.Library.Presenter
                 }, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Format = Strings.PortIsUsedByWebServer,
                     Args = new object[] { server.Port },
+                    IsWarning = !server.Enabled,
                 });
 
                 // The idle timeout must be between 5 seconds and int.MaxValue, but only if KeepAlive is switched off
                 ConditionIsTrue(server, r => r.UseKeepAlive || r.IdleTimeoutMilliseconds >= 5000, new Validation(ValidationField.IdleTimeout, defaults) {
                     Message = Strings.RebroadcastServerIdleTimeoutOutOfBounds,
+                    IsWarning = !server.Enabled,
                 });
 
                 // Format is present
@@ -1121,6 +1125,7 @@ namespace VirtualRadar.Library.Presenter
                     return formatIsOK;
                 }, new Validation(ValidationField.Format, defaults) {
                     Message = Strings.FormatNotSupportedForReceiverType,
+                    IsWarning = !server.Enabled,
                 });
 
                 // Receiver has been supplied
@@ -1208,6 +1213,7 @@ namespace VirtualRadar.Library.Presenter
                     var otherPorts = ListeningPorts(receiver);
                     ConditionIsTrue(receiver, r => !otherPorts.Contains(r.Port), new Validation(ValidationField.BaseStationPort, defaults) {
                         Message = Strings.PortMustBeUnique,
+                        IsWarning = !receiver.Enabled,
                     });
 
                     // Port cannot clash with the web server port
@@ -1217,6 +1223,7 @@ namespace VirtualRadar.Library.Presenter
                     }, new Validation(ValidationField.BaseStationPort, defaults) {
                         Format = Strings.PortIsUsedByWebServer,
                         Args = new object[] { receiver.Port },
+                        IsWarning = !receiver.Enabled,
                     });
                 }
 
@@ -1227,7 +1234,7 @@ namespace VirtualRadar.Library.Presenter
                         DomainAddressIsValid(receiver.Address, new Validation(ValidationField.BaseStationAddress, defaults) {
                             Format = Strings.CannotResolveAddress,
                             Args = new object[] { receiver.Address },
-                            IsWarning = !String.IsNullOrEmpty(receiver.Address ?? ""),
+                            IsWarning = !String.IsNullOrEmpty(receiver.Address ?? "") || !receiver.Enabled,
                         });
 
                         // The port must be within range
@@ -1243,11 +1250,13 @@ namespace VirtualRadar.Library.Presenter
                     case ConnectionType.COM:
                         // The COM port must be supplied
                         if(StringIsNotEmpty(receiver.ComPort, new Validation(ValidationField.ComPort, defaults) {
-                            Message = Strings.SerialComPortMissing
+                            Message = Strings.SerialComPortMissing,
+                            IsWarning = !receiver.Enabled,
                         })) {
                             // The COM port must be known to the system
                             ValueIsInList(receiver.ComPort, Provider.GetSerialPortNames(), new Validation(ValidationField.ComPort, defaults) {
                                 Message = Strings.SerialComPortUnknown,
+                                IsWarning = !receiver.Enabled,
                             });
                         }
 
