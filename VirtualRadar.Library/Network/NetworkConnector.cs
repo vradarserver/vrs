@@ -238,10 +238,7 @@ namespace VirtualRadar.Library.Network
                 try {
                     while(ConnectionStatus != ConnectionStatus.Connected && !_Closed) {
                         if(pauseBeforeConnect) {
-                            var countSleeps = Math.Max(1, RetryConnectTimeout / 100);
-                            for(var i = 0;i < countSleeps && !_Closed;++i) {
-                                Thread.Sleep(100);
-                            }
+                            PauseWhileTestingClosed(RetryConnectTimeout);
                         }
                         pauseBeforeConnect = true;
 
@@ -255,6 +252,20 @@ namespace VirtualRadar.Library.Network
                 } finally {
                     _InActiveModeReconnect = false;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Waits for the number of milliseconds passed across, but can return early if _Closed is set.
+        /// </summary>
+        /// <param name="pauseMilliseconds"></param>
+        private void PauseWhileTestingClosed(int pauseMilliseconds)
+        {
+            const int microSleepMilliseconds = 100;
+
+            var countSleeps = Math.Max(1, pauseMilliseconds / microSleepMilliseconds);
+            for(var i = 0;i < countSleeps && !_Closed;++i) {
+                Thread.Sleep(microSleepMilliseconds);
             }
         }
 
@@ -328,14 +339,25 @@ namespace VirtualRadar.Library.Network
 
                 Socket socket = null;
                 try {
-                    socket = CreatePassiveModeListeningSocket();
-                    ConnectionStatus = ConnectionStatus.Connected;
+                    while(socket == null && !_Closed) {
+                        try {
+                            socket = CreatePassiveModeListeningSocket();
+                            ConnectionStatus = ConnectionStatus.Connected;
+                            RecordMiscellaneousActivity("Listening for incoming connections on port {0}", Port);
 
-                    while(!_Closed) {
-                        if(!socket.Poll(100, SelectMode.SelectRead)) {
-                            Thread.Sleep(0);
-                        } else {
-                            CreateNewPassiveConnection(socket);
+                            while(!_Closed) {
+                                if(!socket.Poll(100, SelectMode.SelectRead)) {
+                                    Thread.Sleep(0);
+                                } else {
+                                    CreateNewPassiveConnection(socket);
+                                }
+                            }
+                        } catch(Exception ex) {
+                            OnExceptionCaught(new EventArgs<Exception>(ex));
+                        }
+
+                        if(socket == null && !_Closed) {
+                            PauseWhileTestingClosed(RetryConnectTimeout);
                         }
                     }
                 } finally {
