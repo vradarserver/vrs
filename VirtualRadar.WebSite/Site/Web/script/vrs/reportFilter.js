@@ -550,29 +550,27 @@
 
             var name = getFilterName(propertyHandler, nameSuffix, reverseCondition);
             var text = pageUrl.param(name);
-            if(text) {
-                var value = typeHandler.parseString(text);
-                if(value !== undefined ) {
-                    if(!result) {
-                        result = VRS.reportFilterHelper.createFilter(propertyHandler.property);
-                        _Filters.push(result);
-                        _Dispatcher.raise(_Events.criteriaChanged);
-                    }
-                    var valueCondition = result.getValueCondition();
-                    valueCondition.setCondition(condition);
-                    valueCondition.setReverseCondition(reverseCondition);
-                    switch(condition) {
-                        case VRS.FilterCondition.Between:
-                            switch(nameSuffix) {
-                                case 'L':   valueCondition.setValue1(value); break;
-                                case 'U':   valueCondition.setValue2(value); break;
-                                default:    throw 'Not implemented ' + nameSuffix;
-                            }
-                            break;
-                        default:
-                            valueCondition.setValue(value);
-                            break;
-                    }
+            var value = typeHandler.parseString(text);
+            if(value !== undefined ) {
+                if(!result) {
+                    result = VRS.reportFilterHelper.createFilter(propertyHandler.property);
+                    _Filters.push(result);
+                    _Dispatcher.raise(_Events.criteriaChanged);
+                }
+                var valueCondition = result.getValueCondition();
+                valueCondition.setCondition(condition);
+                valueCondition.setReverseCondition(reverseCondition);
+                switch(condition) {
+                    case VRS.FilterCondition.Between:
+                        switch(nameSuffix) {
+                            case 'L':   valueCondition.setValue1(value); break;
+                            case 'U':   valueCondition.setValue2(value); break;
+                            default:    throw 'Not implemented ' + nameSuffix;
+                        }
+                        break;
+                    default:
+                        valueCondition.setValue(value);
+                        break;
                 }
             }
 
