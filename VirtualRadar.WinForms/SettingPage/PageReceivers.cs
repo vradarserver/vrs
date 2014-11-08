@@ -128,7 +128,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     e.ColumnTexts.Add(DescribeConnectionParameters(receiver));
                 },
                 AddHandler =                () => SettingsView.CreateReceiver(),
-                AutoDeleteEnabled =         true,
+                DeleteHandler =             (r) => SettingsView.RemoveReceivers(r),
                 EditHandler =               (receiver) => SettingsView.DisplayPageForPageObject(receiver),
                 CheckedChangedHandler =     (receiver, isChecked) => receiver.Enabled = isChecked,
             });

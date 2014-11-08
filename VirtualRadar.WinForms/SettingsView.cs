@@ -889,7 +889,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region Source helpers - GetSerialPortNames, GetVoiceNames
+        #region Source helpers - GetSerialPortNames, GetVoiceNames, RemoveReceiver, RemoveMergedFeed, RemoveUser
         /// <summary>
         /// Returns a collection of serial port names.
         /// </summary>
@@ -906,6 +906,86 @@ namespace VirtualRadar.WinForms
         public IList<string> GetVoiceNames()
         {
             return _Presenter.GetVoiceNames().ToList();
+        }
+
+        /// <summary>
+        /// Removes the receiver from the configuration.
+        /// </summary>
+        /// <param name="receiver"></param>
+        public void RemoveReceiver(Receiver receiver)
+        {
+            if(Configuration.Receivers.Contains(receiver)) Configuration.Receivers.Remove(receiver);
+            RemoveFeedReferences(receiver.UniqueId);
+        }
+
+        /// <summary>
+        /// Removes many receivers.
+        /// </summary>
+        /// <param name="receivers"></param>
+        public void RemoveReceivers(IEnumerable<Receiver> receivers)
+        {
+            foreach(var receiver in receivers) {
+                RemoveReceiver(receiver);
+            }
+        }
+
+        /// <summary>
+        /// Removes the merged feed from the configuration.
+        /// </summary>
+        /// <param name="mergedFeed"></param>
+        public void RemoveMergedFeed(MergedFeed mergedFeed)
+        {
+            if(Configuration.MergedFeeds.Contains(mergedFeed)) Configuration.MergedFeeds.Remove(mergedFeed);
+            RemoveFeedReferences(mergedFeed.UniqueId);
+        }
+
+        /// <summary>
+        /// Removes many merged feeds.
+        /// </summary>
+        /// <param name="mergedFeeds"></param>
+        public void RemoveMergedFeeds(IEnumerable<MergedFeed> mergedFeeds)
+        {
+            foreach(var mergedFeed in mergedFeeds.ToArray()) {
+                RemoveMergedFeed(mergedFeed);
+            }
+        }
+
+        /// <summary>
+        /// Removes the user from the configuration.
+        /// </summary>
+        /// <param name="user"></param>
+        public void RemoveUser(IUser user)
+        {
+            if(Users.Contains(user)) Users.Remove(user);
+            if(Configuration.WebServerSettings.BasicAuthenticationUserIds.Contains(user.UniqueId)) {
+                Configuration.WebServerSettings.BasicAuthenticationUserIds.Remove(user.UniqueId);
+            }
+        }
+
+        /// <summary>
+        /// Removes many users.
+        /// </summary>
+        /// <param name="users"></param>
+        public void RemoveUsers(IEnumerable<IUser> users)
+        {
+            foreach(var user in users) {
+                RemoveUser(user);
+            }
+        }
+
+        private void RemoveFeedReferences(int uniqueId)
+        {
+            foreach(var mergedFeed in Configuration.MergedFeeds) {
+                if(mergedFeed.ReceiverIds.Contains(uniqueId)) mergedFeed.ReceiverIds.Remove(uniqueId);
+            }
+
+            foreach(var rebroadcastServer in Configuration.RebroadcastSettings) {
+                if(rebroadcastServer.ReceiverId == uniqueId) rebroadcastServer.ReceiverId = 0;
+            }
+
+            if(Configuration.GoogleMapSettings.ClosestAircraftReceiverId == uniqueId)   Configuration.GoogleMapSettings.ClosestAircraftReceiverId = 0;
+            if(Configuration.GoogleMapSettings.FlightSimulatorXReceiverId == uniqueId)  Configuration.GoogleMapSettings.FlightSimulatorXReceiverId = 0;
+            if(Configuration.GoogleMapSettings.WebSiteReceiverId == uniqueId)           Configuration.GoogleMapSettings.WebSiteReceiverId = 0;
         }
         #endregion
 

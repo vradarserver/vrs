@@ -1871,6 +1871,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Internal error: feed identifier is not unique.
+        /// </summary>
+        public static string InternalErrorFeedIdIsNotUnique {
+            get {
+                return ResourceManager.GetString("InternalErrorFeedIdIsNotUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal error: feed identifier is zero.
+        /// </summary>
+        public static string InternalErrorFeedIdIsZero {
+            get {
+                return ResourceManager.GetString("InternalErrorFeedIdIsZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internet.
         /// </summary>
         public static string Internet {
@@ -4738,7 +4756,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no receiver or merged feed with this identifier.
+        ///   Looks up a localized string similar to This receiver or merged feed has not been enabled.
         /// </summary>
         public static string ReceiverOrMergedFeedDoesNotExist {
             get {

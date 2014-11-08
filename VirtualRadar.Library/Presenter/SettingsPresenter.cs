@@ -634,15 +634,14 @@ namespace VirtualRadar.Library.Presenter
         }
 
         /// <summary>
-        /// Validates the form and returns the results, optionally constraining validation to a single record and field.
+        /// Validates the form and returns the results, optionally constraining validation to a single record.
         /// </summary>
         /// <param name="record"></param>
-        /// <param name="valueChangedField"></param>
         /// <returns></returns>
-        private ValidationResults Validate(object record = null, ValidationField valueChangedField = ValidationField.None)
+        private ValidationResults Validate(object record = null)
         {
-            var result = new ValidationResults(isPartialValidation: valueChangedField != ValidationField.None);
-            var defaults = new Validation(ValidationField.None, result, record, valueChangedField);
+            var result = new ValidationResults(isPartialValidation: record != null);
+            var defaults = new Validation(ValidationField.None, result, record);
 
             ValidateAudioSettings(defaults);
             ValidateBaseStationSettings(defaults);
@@ -664,15 +663,13 @@ namespace VirtualRadar.Library.Presenter
         /// Validates a single field and reports the results to the view.
         /// </summary>
         /// <param name="record"></param>
-        /// <param name="field"></param>
-        private void ValidateAndReportSingleField(object record, ValidationField field)
+        private void ValidateAndReportSingleField(object record)
         {
-            if(field != ValidationField.None) {
-                var results = Validate(record, field);
-                _View.ShowValidationResults(results);
-            }
+            var results = Validate(record);
+            _View.ShowValidationResults(results);
         }
 
+        #region Validation helpers
         /// <summary>
         /// Returns an array of the combined unique IDs from receivers and merged feeds.
         /// </summary>
@@ -684,6 +681,28 @@ namespace VirtualRadar.Library.Presenter
             var mergedFeedIds = _View.Configuration.MergedFeeds.Where(r => r != exceptCurrent).Select(r => r.UniqueId);
 
             return receiverIds.Concat(mergedFeedIds).ToArray();
+        }
+
+        /// <summary>
+        /// Returns an array of unique receiver identifiers.
+        /// </summary>
+        /// <param name="exceptCurrent"></param>
+        /// <returns></returns>
+        private int[] ReceiverUniqueIds(object exceptCurrent)
+        {
+            var result = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => r.UniqueId).ToArray();
+            return result;
+        }
+
+        /// <summary>
+        /// Returns an array of unique rebroadcast server identifiers.
+        /// </summary>
+        /// <param name="exceptCurrent"></param>
+        /// <returns></returns>
+        private int[] RebroadcastServerUniqueIds(RebroadcastSettings exceptCurrent)
+        {
+            var result = _View.Configuration.RebroadcastSettings.Where(r => r != exceptCurrent).Select(r => r.UniqueId).ToArray();
+            return result;
         }
 
         /// <summary>
@@ -716,6 +735,7 @@ namespace VirtualRadar.Library.Presenter
 
             return result.ToArray();
         }
+        #endregion
 
         #region Audio
         /// <summary>
@@ -724,8 +744,9 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="defaults"></param>
         private void ValidateAudioSettings(Validation defaults)
         {
-            if(defaults.Record == null) {
-                var settings = _View.Configuration.AudioSettings;
+            var settings = _View.Configuration.AudioSettings;
+            if(defaults.Record == null || defaults.Record == settings) {
+                defaults = new Validation(defaults) { Record = null };
 
                 // Playback speed is within range
                 ValueIsInRange(settings.VoiceRate, -10, 10, new Validation(ValidationField.TextToSpeechSpeed, defaults) {
@@ -742,8 +763,9 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="defaults"></param>
         private void ValidateBaseStationSettings(Validation defaults)
         {
-            if(defaults.Record == null) {
-                var settings = _View.Configuration.BaseStationSettings;
+            var settings = _View.Configuration.BaseStationSettings;
+            if(defaults.Record == null || defaults.Record == settings) {
+                defaults = new Validation(defaults) { Record = null };
 
                 // Files and folders
                 FileExists(settings.DatabaseFileName, new Validation(ValidationField.BaseStationDatabase, defaults) {
@@ -770,7 +792,6 @@ namespace VirtualRadar.Library.Presenter
                 // Display timeout is within range
                 ValueIsInRange(settings.DisplayTimeoutSeconds, 1, settings.TrackingTimeoutSeconds, new Validation(ValidationField.DisplayTimeout, defaults) {
                     Message = Strings.TrackingTimeoutLessThanDisplayTimeout,
-                    RelatedFields = { ValidationField.TrackingTimeout },
                 });
             }
         }
@@ -783,9 +804,12 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="defaults"></param>
         private void ValidateGoogleMapSettings(Validation defaults)
         {
-            if(defaults.Record == null) {
-                var settings = _View.Configuration.GoogleMapSettings;
-                var allReceiverIds = _View.Configuration.Receivers.Select(r => r.UniqueId).Concat(_View.Configuration.MergedFeeds.Select(r => r.UniqueId)).ToArray();
+            var settings = _View.Configuration.GoogleMapSettings;
+            if(defaults.Record == null || defaults.Record == settings) {
+                defaults = new Validation(defaults) { Record = null };
+
+                var allReceiverIds = _View.Configuration.Receivers.Where(r => r.Enabled).Select(r => r.UniqueId)
+                                                        .Concat(_View.Configuration.MergedFeeds.Where(r => r.Enabled).Select(r => r.UniqueId)).ToArray();
 
                 // Closest aircraft widget receiver has been filled in and is a valid ID
                 if(ValueNotEqual(settings.ClosestAircraftReceiverId, 0, new Validation(ValidationField.ClosestAircraftReceiver, defaults) {
@@ -822,7 +846,6 @@ namespace VirtualRadar.Library.Presenter
                 // Initial aircraft list refresh period is within range
                 ValueIsInRange(settings.InitialRefreshSeconds, settings.MinimumRefreshSeconds, 3600, new Validation(ValidationField.InitialGoogleMapRefreshSeconds, defaults) {
                     Message = Strings.InitialRefreshLessThanMinimumRefresh,
-                    RelatedFields = { ValidationField.MinimumGoogleMapRefreshSeconds },
                 });
 
                 // Initial zoom level is within range
@@ -855,8 +878,9 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="defaults"></param>
         private void ValidateInternetClient(Validation defaults)
         {
-            if(defaults.Record == null) {
-                var settings = _View.Configuration.InternetClientSettings;
+            var settings = _View.Configuration.InternetClientSettings;
+            if(defaults.Record == null || defaults.Record == settings) {
+                defaults = new Validation(defaults) { Record = null };
 
                 // Internet client timeout is within range
                 ValueIsInRange(settings.TimeoutMinutes, 0, 1440, new Validation(ValidationField.InternetUserIdleTimeout, defaults) {
@@ -876,14 +900,21 @@ namespace VirtualRadar.Library.Presenter
             var mergedFeed = defaults.Record as MergedFeed;
 
             if(defaults.Record == null) {
-                // List of merged feeds. There's no validation on here, just on the child records
-                if(defaults.ValueChangedField == ValidationField.None) {
-                    foreach(var child in _View.Configuration.MergedFeeds) {
-                        var childDefaults = new Validation(defaults) { Record = child, };
-                        ValidateMergedFeeds(childDefaults);
-                    }
+                foreach(var child in _View.Configuration.MergedFeeds) {
+                    var childDefaults = new Validation(defaults) { Record = child, };
+                    ValidateMergedFeeds(childDefaults);
                 }
             } else if(mergedFeed != null) {
+                // The unique ID cannot be zero
+                ValueNotEqual(mergedFeed.UniqueId, 0, new Validation(ValidationField.Name, defaults) {
+                    Message = Strings.InternalErrorFeedIdIsZero,
+                });
+
+                // The unique ID has to be unique
+                ConditionIsFalse(mergedFeed.UniqueId, r => CombinedFeedUniqueIds(mergedFeed).Contains(r), new Validation(ValidationField.Name, defaults) {
+                    Message = Strings.InternalErrorFeedIdIsNotUnique,
+                });
+
                 // There has to be a name
                 if(StringIsNotEmpty(mergedFeed.Name, new Validation(ValidationField.Name, defaults) {
                     Message = Strings.NameRequired,
@@ -900,6 +931,11 @@ namespace VirtualRadar.Library.Presenter
                     });
                 }
 
+                // All of the referenced receivers must exist
+                ConditionIsFalse(mergedFeed.ReceiverIds, r => r.Except(ReceiverUniqueIds(null)).Any(), new Validation(ValidationField.ReceiverIds, defaults) {
+                    Message = Strings.ReceiverOrMergedFeedDoesNotExist,
+                });
+
                 // The ICAO timeout has to be between 1000ms and 30000ms
                 ValueIsInRange(mergedFeed.IcaoTimeout, 1000, 30000, new Validation(ValidationField.IcaoTimeout, defaults) {
                     Message = Strings.IcaoTimeoutOutOfBounds,
@@ -908,6 +944,7 @@ namespace VirtualRadar.Library.Presenter
                 // There has to be at least two receivers in the merged feed (although we don't care if they're not enabled)
                 ConditionIsFalse(mergedFeed.ReceiverIds, r => r.Count < 2, new Validation(ValidationField.ReceiverIds, defaults) {
                     Message = Strings.MergedFeedNeedsAtLeastTwoReceivers,
+                    IsWarning = !mergedFeed.Enabled,
                 });
             }
         }
@@ -920,8 +957,9 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="defaults"></param>
         private void ValidateRawFeedDecoding(Validation defaults)
         {
-            if(defaults.Record == null) {
-                var settings = _View.Configuration.RawDecodingSettings;
+            var settings = _View.Configuration.RawDecodingSettings;
+            if(defaults.Record == null || defaults.Record == settings) {
+                defaults = new Validation(defaults) { Record = null };
 
                 ValueIsInRange(settings.ReceiverRange, 0, 99999, new Validation(ValidationField.ReceiverRange, defaults) {
                     Message = Strings.ReceiverRangeOutOfBounds,
@@ -980,13 +1018,21 @@ namespace VirtualRadar.Library.Presenter
             var server = defaults.Record as RebroadcastSettings;
 
             if(defaults.Record == null) {
-                if(defaults.ValueChangedField == ValidationField.None) {
-                    foreach(var child in _View.Configuration.RebroadcastSettings) {
-                        var childDefaults = new Validation(defaults) { Record = child };
-                        ValidateRebroadcastServers(childDefaults);
-                    }
+                foreach(var child in _View.Configuration.RebroadcastSettings) {
+                    var childDefaults = new Validation(defaults) { Record = child };
+                    ValidateRebroadcastServers(childDefaults);
                 }
             } else if(server != null) {
+                // The unique ID cannot be zero
+                ValueNotEqual(server.UniqueId, 0, new Validation(ValidationField.Name, defaults) {
+                    Message = Strings.InternalErrorFeedIdIsZero,
+                });
+
+                // The unique ID has to be unique
+                ConditionIsFalse(server.UniqueId, r => RebroadcastServerUniqueIds(server).Contains(r), new Validation(ValidationField.Name, defaults) {
+                    Message = Strings.InternalErrorFeedIdIsNotUnique,
+                });
+
                 // The name must be supplied
                 if(StringIsNotEmpty(server.Name, new Validation(ValidationField.Name, defaults) {
                     Message = Strings.NameRequired,
@@ -1004,7 +1050,6 @@ namespace VirtualRadar.Library.Presenter
                         Format = Strings.CannotResolveAddress,
                         Args = new object[] { server.TransmitAddress },
                         IsWarning = !String.IsNullOrEmpty(server.TransmitAddress ?? ""),
-                        RelatedFields = { ValidationField.IsTransmitter },
                     }
                 );
 
@@ -1017,7 +1062,6 @@ namespace VirtualRadar.Library.Presenter
                 var otherPorts = ListeningPorts(server);
                 ConditionIsTrue(server, r => r.IsTransmitter || !otherPorts.Contains(r.Port), new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Message = Strings.PortMustBeUnique,
-                    RelatedFields = { ValidationField.IsTransmitter },
                 });
 
                 // Port cannot clash with the web server port
@@ -1027,15 +1071,11 @@ namespace VirtualRadar.Library.Presenter
                 }, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Format = Strings.PortIsUsedByWebServer,
                     Args = new object[] { server.Port },
-                    RelatedFields = { ValidationField.IsTransmitter },
                 });
 
                 // The idle timeout must be between 5 seconds and int.MaxValue, but only if KeepAlive is switched off
                 ConditionIsTrue(server, r => r.UseKeepAlive || r.IdleTimeoutMilliseconds >= 5000, new Validation(ValidationField.IdleTimeout, defaults) {
                     Message = Strings.RebroadcastServerIdleTimeoutOutOfBounds,
-                    RelatedFields = {
-                        ValidationField.UseKeepAlive,
-                    },
                 });
 
                 // Format is present
@@ -1081,9 +1121,6 @@ namespace VirtualRadar.Library.Presenter
                     return formatIsOK;
                 }, new Validation(ValidationField.Format, defaults) {
                     Message = Strings.FormatNotSupportedForReceiverType,
-                    RelatedFields = {
-                        ValidationField.RebroadcastReceiver,
-                    }
                 });
 
                 // Receiver has been supplied
@@ -1122,20 +1159,26 @@ namespace VirtualRadar.Library.Presenter
                     ConditionIsTrue(settings.Receivers, r => r.Count(i => i.Enabled) != 0, new Validation(ValidationField.ReceiverIds, defaults) {
                         Message = Strings.PleaseEnableAtLeastOneReceiver,
                         Record = null,
-                        RelatedFields = { ValidationField.Enabled },    // This only works because the record = null set of ValidationFields doesn't contain an Enabled...
                     });
                 }
             }
 
             if(defaults.Record == null) {
-                // Check all of the child records
-                if(defaults.ValueChangedField == ValidationField.None) {
-                    foreach(var child in _View.Configuration.Receivers) {
-                        var childDefaults = new Validation(defaults) { Record = child };
-                        ValidateReceivers(childDefaults);
-                    }
+                foreach(var child in _View.Configuration.Receivers) {
+                    var childDefaults = new Validation(defaults) { Record = child };
+                    ValidateReceivers(childDefaults);
                 }
             } else if(receiver != null) {
+                // The unique ID cannot be zero
+                ValueNotEqual(receiver.UniqueId, 0, new Validation(ValidationField.Name, defaults) {
+                    Message = Strings.InternalErrorFeedIdIsZero,
+                });
+
+                // The unique ID has to be unique
+                ConditionIsFalse(receiver.UniqueId, r => CombinedFeedUniqueIds(receiver).Contains(r), new Validation(ValidationField.Name, defaults) {
+                    Message = Strings.InternalErrorFeedIdIsNotUnique,
+                });
+
                 // The receiver must have a name
                 if(StringIsNotEmpty(receiver.Name, new Validation(ValidationField.Name, defaults) {
                     Message = Strings.NameRequired,
@@ -1165,7 +1208,6 @@ namespace VirtualRadar.Library.Presenter
                     var otherPorts = ListeningPorts(receiver);
                     ConditionIsTrue(receiver, r => !otherPorts.Contains(r.Port), new Validation(ValidationField.BaseStationPort, defaults) {
                         Message = Strings.PortMustBeUnique,
-                        RelatedFields = { ValidationField.IsPassive },
                     });
 
                     // Port cannot clash with the web server port
@@ -1175,7 +1217,6 @@ namespace VirtualRadar.Library.Presenter
                     }, new Validation(ValidationField.BaseStationPort, defaults) {
                         Format = Strings.PortIsUsedByWebServer,
                         Args = new object[] { receiver.Port },
-                        RelatedFields = { ValidationField.IsPassive },
                     });
                 }
 
@@ -1197,9 +1238,6 @@ namespace VirtualRadar.Library.Presenter
                         // The idle timeout must be between 5 seconds and int.MaxValue, but only if KeepAlive is switched off
                         ConditionIsTrue(receiver, r => r.UseKeepAlive || r.IdleTimeoutMilliseconds >= 5000, new Validation(ValidationField.IdleTimeout, defaults) {
                             Message = Strings.ReceiverIdleTimeoutOutOfBounds,
-                            RelatedFields = {
-                                ValidationField.UseKeepAlive,
-                            },
                         });
                         break;
                     case ConnectionType.COM:
@@ -1260,11 +1298,9 @@ namespace VirtualRadar.Library.Presenter
             var receiverLocation = defaults.Record as ReceiverLocation;
 
             if(defaults.Record == null) {
-                if(defaults.ValueChangedField == ValidationField.None) {
-                    foreach(var child in _View.Configuration.ReceiverLocations) {
-                        var childDefaults = new Validation(defaults) { Record = child };
-                        ValidateReceiverLocations(childDefaults);
-                    }
+                foreach(var child in _View.Configuration.ReceiverLocations) {
+                    var childDefaults = new Validation(defaults) { Record = child };
+                    ValidateReceiverLocations(childDefaults);
                 }
             } else if(receiverLocation != null) {
                 // Name must not be empty and must be unique
@@ -1305,25 +1341,13 @@ namespace VirtualRadar.Library.Presenter
             var user = validation.Record as IUser;
 
             if(validation.Record == null) {
-                if(validation.ValueChangedField == ValidationField.None) {
-                    foreach(var child in _View.Users) {
-                        var childDefaults = new Validation(validation) { Record = child };
-                        ValidateUsers(childDefaults);
-                    }
+                foreach(var child in _View.Users) {
+                    var childDefaults = new Validation(validation) { Record = child };
+                    ValidateUsers(childDefaults);
                 }
             } else if(user != null) {
                 if(_UserManager.CanEditUsers) {
-                    switch(validation.ValueChangedField) {
-                        case ValidationField.None:
-                        case ValidationField.LoginName:
-                        case ValidationField.Password:
-                        case ValidationField.Name:
-                            if(validation.Results.IsPartialValidation) {
-                                validation.AddPartialValidationField(validation.ValueChangedField);
-                            }
-                            _UserManager.ValidateUser(validation.Results.Results, user, user, _View.Users);
-                            break;
-                    }
+                    _UserManager.ValidateUser(validation.Results.Results, user, user, _View.Users);
                 }
             }
         }
@@ -1336,8 +1360,9 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="defaults"></param>
         private void ValidateVersionCheckSettings(Validation defaults)
         {
-            if(defaults.Record == null) {
-                var settings = _View.Configuration.VersionCheckSettings;
+            var settings = _View.Configuration.VersionCheckSettings;
+            if(defaults.Record == null || defaults.Record == settings) {
+                defaults = new Validation(defaults) { Record = null };
 
                 // Version check period is within range
                 ValueIsInRange(settings.CheckPeriodDays, 1, 365, new Validation(ValidationField.CheckForNewVersions, defaults) {
@@ -1354,8 +1379,9 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="defaults"></param>
         private void ValidateWebServer(Validation defaults)
         {
-            if(defaults.Record == null) {
-                var settings = _View.Configuration.WebServerSettings;
+            var settings = _View.Configuration.WebServerSettings;
+            if(defaults.Record == null || defaults.Record == settings) {
+                defaults = new Validation(defaults) { Record = null };
 
                 // UPnP port has to be within range
                 ValueIsInRange(settings.UPnpPort, 1, 65535, new Validation(ValidationField.UPnpPortNumber, defaults) {
@@ -1374,26 +1400,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="args"></param>
         private void HandleConfigurationPropertyChanged(ConfigurationListenerEventArgs args)
         {
-            var record = args.IsListChild ? args.Record : null;
-
-            var field = ValidationField.None;
-            switch(args.Group) {
-                case ConfigurationListenerGroup.Audio:                  field = ConvertAudioPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.BaseStation:            field = ConvertBaseStationPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.Configuration:          field = ConvertConfigurationPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.GoogleMapSettings:      field = ConvertGoogleMapPropertyToValidationFields(args); break;
-                case ConfigurationListenerGroup.InternetClientSettings: field = ConvertInternetClientPropertyToValidationFields(args); break;
-                case ConfigurationListenerGroup.MergedFeed:             field = ConvertMergedFeedPropertyToValidationFields(args); break;
-                case ConfigurationListenerGroup.RawDecodingSettings:    field = ConvertRawFeedDecodingToValidationFields(args); break;
-                case ConfigurationListenerGroup.RebroadcastSetting:     field = ConvertRebroadcastServerToValidationFields(args); break;
-                case ConfigurationListenerGroup.Receiver:               field = ConvertReceiverPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.ReceiverLocation:       field = ConvertReceiverLocationPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.VersionCheckSettings:   field = ConvertVersionPropertyToValidationField(args); break;
-                case ConfigurationListenerGroup.WebServerSettings:      field = ConvertWebServerPropertyToValidationField(args); break;
-                default:                                            break;
-            }
-
-            ValidateAndReportSingleField(record, field);
+            ValidateAndReportSingleField(args.Record);
         }
 
         /// <summary>
@@ -1404,187 +1411,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="propertyName"></param>
         private void HandleUsersPropertyChanged(IUser user, string propertyName)
         {
-            if(user != null) {
-                var field = ValidationFieldForPropertyName<IUser>(propertyName, new Dictionary<ValidationField,Expression<Func<IUser,object>>>() {
-                    { ValidationField.LoginName,    r => r.LoginName },
-                    { ValidationField.Password,     r => r.UIPassword },
-                    { ValidationField.Name,         r => r.Name },
-                });
-
-                ValidateAndReportSingleField(user, field);
-            }
-        }
-
-
-        private ValidationField ValidationFieldForPropertyName<TModel>(string propertyName, Dictionary<ValidationField, Expression<Func<TModel, object>>> map)
-        {
-            var result = ValidationField.None;
-
-            foreach(var kvp in map) {
-                var fieldPropertyName = PropertyHelper.ExtractName<TModel>(kvp.Value);
-                if(propertyName == fieldPropertyName) {
-                    result = kvp.Key;
-                    break;
-                }
-            }
-
-            return result;
-        }
-
-        private ValidationField ConvertAudioPropertyToValidationField(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<AudioSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<AudioSettings,object>>>() {
-                { ValidationField.TextToSpeechSpeed, r => r.VoiceRate },
-            });
-            
-            return result;
-        }
-
-        private ValidationField ConvertBaseStationPropertyToValidationField(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<BaseStationSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<BaseStationSettings,object>>>() {
-                { ValidationField.BaseStationDatabase,  r => r.DatabaseFileName },
-                { ValidationField.FlagsFolder,          r => r.OperatorFlagsFolder },
-                { ValidationField.SilhouettesFolder,    r => r.SilhouettesFolder },
-                { ValidationField.PicturesFolder,       r => r.PicturesFolder },
-
-                { ValidationField.DisplayTimeout,       r => r.DisplayTimeoutSeconds },
-                { ValidationField.TrackingTimeout,      r => r.TrackingTimeoutSeconds },
-            });
-            
-            return result;
-        }
-
-        private ValidationField ConvertConfigurationPropertyToValidationField(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<Configuration>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<Configuration,object>>>() {
-                { ValidationField.ReceiverIds,  r => r.Receivers },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertGoogleMapPropertyToValidationFields(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<GoogleMapSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<GoogleMapSettings,object>>>() {
-                { ValidationField.ClosestAircraftReceiver,          r => r.ClosestAircraftReceiverId },
-                { ValidationField.FlightSimulatorXReceiver,         r => r.FlightSimulatorXReceiverId },
-                { ValidationField.WebSiteReceiver,                  r => r.WebSiteReceiverId },
-
-                { ValidationField.InitialGoogleMapRefreshSeconds,   r => r.InitialRefreshSeconds },
-                { ValidationField.MinimumGoogleMapRefreshSeconds,   r => r.MinimumRefreshSeconds },
-
-                { ValidationField.GoogleMapZoomLevel,               r => r.InitialMapZoom },
-                { ValidationField.Latitude,                         r => r.InitialMapLatitude },
-                { ValidationField.Longitude,                        r => r.InitialMapLongitude },
-
-                { ValidationField.ShortTrailLength,                 r => r.ShortTrailLengthSeconds },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertInternetClientPropertyToValidationFields(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<InternetClientSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<InternetClientSettings,object>>>() {
-                { ValidationField.InternetUserIdleTimeout, r => r.TimeoutMinutes },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertMergedFeedPropertyToValidationFields(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<MergedFeed>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<MergedFeed,object>>>() {
-                { ValidationField.Name,         r => r.Name },
-                { ValidationField.IcaoTimeout,  r => r.IcaoTimeout },
-                { ValidationField.ReceiverIds,  r => r.ReceiverIds },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertRawFeedDecodingToValidationFields(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<RawDecodingSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<RawDecodingSettings,object>>>() {
-                { ValidationField.ReceiverRange,                            r => r.ReceiverRange },
-                { ValidationField.AirborneGlobalPositionLimit,              r => r.AirborneGlobalPositionLimit },
-                { ValidationField.FastSurfaceGlobalPositionLimit,           r => r.FastSurfaceGlobalPositionLimit },
-                { ValidationField.SlowSurfaceGlobalPositionLimit,           r => r.SlowSurfaceGlobalPositionLimit },
-                { ValidationField.AcceptableAirborneLocalPositionSpeed,     r => r.AcceptableAirborneSpeed },
-                { ValidationField.AcceptableTransitionLocalPositionSpeed,   r => r.AcceptableAirSurfaceTransitionSpeed },
-                { ValidationField.AcceptableSurfaceLocalPositionSpeed,      r => r.AcceptableSurfaceSpeed },
-                { ValidationField.AcceptIcaoInPI0Count,                     r => r.AcceptIcaoInPI0Count },
-                { ValidationField.AcceptIcaoInPI0Seconds,                   r => r.AcceptIcaoInPI0Seconds },
-                { ValidationField.AcceptIcaoInNonPICount,                   r => r.AcceptIcaoInNonPICount },
-                { ValidationField.AcceptIcaoInNonPISeconds,                 r => r.AcceptIcaoInNonPISeconds },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertRebroadcastServerToValidationFields(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<RebroadcastSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<RebroadcastSettings,object>>>() {
-                { ValidationField.Name,                     r => r.Name },
-                { ValidationField.IsTransmitter,            r => r.IsTransmitter },
-                { ValidationField.BaseStationAddress,       r => r.TransmitAddress },
-                { ValidationField.RebroadcastServerPort,    r => r.Port },
-                { ValidationField.UseKeepAlive,             r => r.UseKeepAlive },
-                { ValidationField.IdleTimeout,              r => r.IdleTimeoutMilliseconds },
-                { ValidationField.Format,                   r => r.Format },
-                { ValidationField.RebroadcastReceiver,      r => r.ReceiverId },
-                { ValidationField.StaleSeconds,             r => r.StaleSeconds },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertReceiverPropertyToValidationField(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<Receiver>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<Receiver,object>>>() {
-                { ValidationField.Enabled,              r => r.Enabled },
-                { ValidationField.Name,                 r => r.Name },
-                { ValidationField.Location,             r => r.ReceiverLocationId },
-                { ValidationField.BaseStationAddress,   r => r.Address },
-                { ValidationField.BaseStationPort,      r => r.Port },
-                { ValidationField.UseKeepAlive,         r => r.UseKeepAlive },
-                { ValidationField.IdleTimeout,          r => r.IdleTimeoutMilliseconds },
-                { ValidationField.ComPort,              r => r.ComPort },
-                { ValidationField.BaudRate,             r => r.BaudRate },
-                { ValidationField.DataBits,             r => r.DataBits },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertReceiverLocationPropertyToValidationField(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<ReceiverLocation>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<ReceiverLocation,object>>>() {
-                { ValidationField.Location,     r => r.Name },
-                { ValidationField.Latitude,     r => r.Latitude },
-                { ValidationField.Longitude,    r => r.Longitude },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertVersionPropertyToValidationField(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<VersionCheckSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<VersionCheckSettings,object>>>() {
-                { ValidationField.CheckForNewVersions,  r => r.CheckPeriodDays },
-            });
-
-            return result;
-        }
-
-        private ValidationField ConvertWebServerPropertyToValidationField(ConfigurationListenerEventArgs args)
-        {
-            var result = ValidationFieldForPropertyName<WebServerSettings>(args.PropertyName, new Dictionary<ValidationField,Expression<Func<WebServerSettings,object>>>() {
-                { ValidationField.UPnpPortNumber, r => r.UPnpPort },
-            });
-
-            return result;
+            ValidateAndReportSingleField(user);
         }
         #endregion
 

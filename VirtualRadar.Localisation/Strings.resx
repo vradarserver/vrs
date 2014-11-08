@@ -2120,7 +2120,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>This location does not exist</value>
   </data>
   <data name="ReceiverOrMergedFeedDoesNotExist" xml:space="preserve">
-    <value>There is no receiver or merged feed with this identifier</value>
+    <value>This receiver or merged feed has not been enabled</value>
   </data>
   <data name="SerialComPortUnknown" xml:space="preserve">
     <value>The COM port does not exist</value>
@@ -2349,5 +2349,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="SuppressICAO0" xml:space="preserve">
     <value>Suppress ICAO 000000</value>
+  </data>
+  <data name="InternalErrorFeedIdIsNotUnique" xml:space="preserve">
+    <value>Internal error: feed identifier is not unique</value>
+  </data>
+  <data name="InternalErrorFeedIdIsZero" xml:space="preserve">
+    <value>Internal error: feed identifier is zero</value>
   </data>
 </root>

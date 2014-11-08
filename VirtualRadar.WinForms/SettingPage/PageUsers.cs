@@ -93,7 +93,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     e.ColumnTexts.Add(user.Name ?? "");
                 },
                 AddHandler = () => SettingsView.CreateUser(),
-                AutoDeleteEnabled = true,
+                DeleteHandler = (r) => SettingsView.RemoveUsers(r),
                 EditHandler = (user) => SettingsView.DisplayPageForPageObject(user),
                 CheckedChangedHandler = (user, isChecked) => user.Enabled = isChecked,
             });

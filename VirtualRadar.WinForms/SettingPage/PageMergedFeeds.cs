@@ -101,7 +101,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     return result;
                 },
                 AddHandler = () => SettingsView.CreateMergedFeed(),
-                AutoDeleteEnabled = true,
+                DeleteHandler = (r) => SettingsView.RemoveMergedFeeds(r),
                 EditHandler = (mergedFeed) => SettingsView.DisplayPageForPageObject(mergedFeed),
                 CheckedChangedHandler = (mergedFeed, isChecked) => mergedFeed.Enabled = isChecked,
             });
