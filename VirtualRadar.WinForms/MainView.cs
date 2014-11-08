@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -679,23 +680,6 @@ namespace VirtualRadar.WinForms
             using(var dialog = new ConnectorActivityLogView()) {
                 dialog.ShowDialog(this);
             }
-        }
-
-        private void menuOpenConnectionSnapshotLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var fileName = Factory.Singleton.Resolve<IConnectorSnapshotLogger>().Singleton.FullPath;
-            if(String.IsNullOrEmpty(fileName)) {
-                MessageBox.Show(Strings.NoSnapshotBody, Strings.NoSnapshotTitle);
-            } else {
-                Process.Start(fileName);
-            }
-        }
-
-        private void menuForceConnectionSnapshotToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var snapshotLogger = Factory.Singleton.Resolve<IConnectorSnapshotLogger>().Singleton;
-            snapshotLogger.RecordSnapshot();
-            MessageBox.Show(Strings.ConnectionSnapshotTakenBody, Strings.ConnectionSnapshotTakenTitle);
         }
         #endregion
     }
