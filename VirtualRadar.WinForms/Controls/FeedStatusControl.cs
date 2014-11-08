@@ -227,10 +227,12 @@ namespace VirtualRadar.WinForms.Controls
                             UniqueId = feed.UniqueId,
                             IsMergedFeed = listener is IMergedFeedListener,
                             HasPolarPlotter = aircraftList.PolarPlotter != null,
-                            ListViewItem = listView.Items.Add(new ListViewItem(new string[] { "", "", "", "", "" })),
+                            ListViewItem = new ListViewItem(new string[] { "", "", "", "", "" }),
                         };
                         feedDetail.ListViewItem.Tag = feedDetail;
                         UpdateFeedDisplay(feed, feedDetail, forceRefresh: true);
+
+                        listView.Items.Add(feedDetail.ListViewItem);
                     }
                 }
             }
