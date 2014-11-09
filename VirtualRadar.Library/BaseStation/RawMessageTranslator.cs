@@ -290,6 +290,16 @@ namespace VirtualRadar.Library.BaseStation
         /// See interface docs.
         /// </summary>
         public int AcceptIcaoInPI0Milliseconds { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IgnoreInvalidCodeBlockInParityMessages { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IgnoreInvalidCodeBlockInOtherMessages { get; set; }
         #endregion
 
         #region Events exposed
@@ -327,6 +337,7 @@ namespace VirtualRadar.Library.BaseStation
             TrackingTimeoutSeconds = 600;
             AcceptIcaoInPI0Count = 1;
             AcceptIcaoInPI0Milliseconds = 1000;
+            IgnoreInvalidCodeBlockInOtherMessages = true;
 
             _CompactPositionReporting = Factory.Singleton.Resolve<ICompactPositionReporting>();
 
@@ -516,13 +527,18 @@ namespace VirtualRadar.Library.BaseStation
         {
             bool result = false;
 
-            lock(_AcceptIcaoLock) {
-                bool ignoreIcao = false;
-                if(modeSMessage.ParityInterrogatorIdentifier == null && _StandingDataManager.CodeBlocksLoaded) {
+            bool ignoreIcao = false;
+            if(_StandingDataManager.CodeBlocksLoaded) {
+                var testCodeBlockValidity = (modeSMessage.ParityInterrogatorIdentifier == null && IgnoreInvalidCodeBlockInOtherMessages) ||
+                                            (modeSMessage.ParityInterrogatorIdentifier != null && IgnoreInvalidCodeBlockInParityMessages);
+                if(testCodeBlockValidity) {
                     var codeBlock = _StandingDataManager.FindCodeBlock(modeSMessage.FormattedIcao24);
                     ignoreIcao = codeBlock == null || String.IsNullOrEmpty(codeBlock.Country);
                 }
-                if(!ignoreIcao) {
+            }
+
+            if(!ignoreIcao) {
+                lock(_AcceptIcaoLock) {
                     List<DateTime> messageTimes;
                     if(acceptList.TryGetValue(modeSMessage.Icao24, out messageTimes)) {
                         PruneAcceptMessageTimes(messageTimes, millisecondsThreshold);

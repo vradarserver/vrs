@@ -199,6 +199,27 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _SuppressIcao0, value, () => SuppressIcao0); }
         }
 
+        private bool _IgnoreInvalidCodeBlockInParityMessages;
+        /// <summary>
+        /// Gets or sets a value indicating that ICAOs that are not in a recognised code block
+        /// are to be ignored for messages that have parity.
+        /// </summary>
+        public bool IgnoreInvalidCodeBlockInParityMessages
+        {
+            get { return _IgnoreInvalidCodeBlockInParityMessages; }
+            set { SetField(ref _IgnoreInvalidCodeBlockInParityMessages, value, () => IgnoreInvalidCodeBlockInParityMessages); }
+        }
+
+        private bool _IgnoreInvalidCodeBlockInOtherMessages;
+        /// <summary>
+        /// Gets or sets a value indicating that ICAOs that are not in a recognised code block
+        /// are to be ignored for messages that do not have parity.
+        /// </summary>
+        public bool IgnoreInvalidCodeBlockInOtherMessages
+        {
+            get { return _IgnoreInvalidCodeBlockInOtherMessages; }
+            set { SetField(ref _IgnoreInvalidCodeBlockInOtherMessages, value, () => IgnoreInvalidCodeBlockInOtherMessages); }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -253,6 +274,8 @@ namespace VirtualRadar.Interface.Settings
             AcceptIcaoInPI0Count = 1;
             AcceptIcaoInPI0Seconds = 1;
             SuppressIcao0 = true;
+            IgnoreInvalidCodeBlockInParityMessages = false;
+            IgnoreInvalidCodeBlockInOtherMessages = true;
         }
     }
 }

@@ -403,6 +403,8 @@ namespace VirtualRadar.Library.Listener
             result.SuppressReceiverRangeCheck                   = config.RawDecodingSettings.SuppressReceiverRangeCheck;
             result.TrackingTimeoutSeconds                       = config.BaseStationSettings.TrackingTimeoutSeconds;
             result.UseLocalDecodeForInitialPosition             = config.RawDecodingSettings.UseLocalDecodeForInitialPosition;
+            result.IgnoreInvalidCodeBlockInOtherMessages        = config.RawDecodingSettings.IgnoreInvalidCodeBlockInOtherMessages;
+            result.IgnoreInvalidCodeBlockInParityMessages       = config.RawDecodingSettings.IgnoreInvalidCodeBlockInParityMessages;
 
             return result;
         }

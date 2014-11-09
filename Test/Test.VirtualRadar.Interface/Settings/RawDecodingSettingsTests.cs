@@ -36,6 +36,8 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.FastSurfaceGlobalPositionLimit, 25, 30);
             TestUtilities.TestProperty(settings, r => r.IgnoreCallsignsInBds20, false);
             TestUtilities.TestProperty(settings, r => r.IgnoreMilitaryExtendedSquitter, false);
+            TestUtilities.TestProperty(settings, r => r.IgnoreInvalidCodeBlockInParityMessages, false);
+            TestUtilities.TestProperty(settings, r => r.IgnoreInvalidCodeBlockInOtherMessages, true);
             TestUtilities.TestProperty(settings, r => r.ReceiverLocationId, 0, 1);
             TestUtilities.TestProperty(settings, r => r.ReceiverRange, 650, 400);
             TestUtilities.TestProperty(settings, r => r.SlowSurfaceGlobalPositionLimit, 50, 60);

@@ -1772,6 +1772,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore unassigned ICAO.
+        /// </summary>
+        public static string IgnoreUnassignedIcao {
+            get {
+                return ResourceManager.GetString("IgnoreUnassignedIcao", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Images.
         /// </summary>
         public static string Images {
@@ -1867,6 +1876,24 @@ namespace VirtualRadar.Localisation {
         public static string InitialZoom {
             get {
                 return ResourceManager.GetString("InitialZoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In other messages.
+        /// </summary>
+        public static string InNonPI0Messages {
+            get {
+                return ResourceManager.GetString("InNonPI0Messages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In parity messages.
+        /// </summary>
+        public static string InPI0Messages {
+            get {
+                return ResourceManager.GetString("InPI0Messages", resourceCulture);
             }
         }
         
@@ -3339,6 +3366,24 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeRawFeedAcceptIcaoInPI0Seconds {
             get {
                 return ResourceManager.GetString("OptionsDescribeRawFeedAcceptIcaoInPI0Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to ignore ICAOs that are not assigned to a country when deciding if a message that does not contain parity holds a valid ICAO..
+        /// </summary>
+        public static string OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0 {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to ignore ICAOs that are not assigned to a country when deciding if a message containing parity holds a valid ICAO..
+        /// </summary>
+        public static string OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0 {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0", resourceCulture);
             }
         }
         

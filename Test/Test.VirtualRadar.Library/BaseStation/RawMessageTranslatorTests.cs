@@ -22,6 +22,7 @@ using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.ModeS;
 using System.Globalization;
 using VirtualRadar.Interface.StandingData;
+using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Library.BaseStation
 {
@@ -253,6 +254,8 @@ namespace Test.VirtualRadar.Library.BaseStation
             TestUtilities.TestProperty(_Translator, r => r.ReceiverRangeKilometres, 650, 1000);
             TestUtilities.TestProperty(_Translator, r => r.SuppressReceiverRangeCheck, false);
             TestUtilities.TestProperty(_Translator, r => r.TrackingTimeoutSeconds, 600, 3600);
+            TestUtilities.TestProperty(_Translator, r => r.IgnoreInvalidCodeBlockInOtherMessages, true);
+            TestUtilities.TestProperty(_Translator, r => r.IgnoreInvalidCodeBlockInParityMessages, false);
         }
         #endregion
 
@@ -473,6 +476,8 @@ namespace Test.VirtualRadar.Library.BaseStation
         [TestMethod]
         public void RawMessageTranslator_Translate_Does_Not_Count_NonParity_Messages_With_An_Unassigned_CodeBlock()
         {
+            _Translator.IgnoreInvalidCodeBlockInOtherMessages = true;
+            
             _Translator.AcceptIcaoInNonPICount = 2;
             _Translator.AcceptIcaoInNonPIMilliseconds = 10000;
 
@@ -481,6 +486,21 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             Assert.IsNull(_Translator.Translate(_NowUtc, message, null));
             Assert.IsNull(_Translator.Translate(_NowUtc.AddMilliseconds(1), message, null));
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Can_Be_Forced_To_Use_NonParity_Messages_With_An_Unassigned_CodeBlock()
+        {
+            _Translator.IgnoreInvalidCodeBlockInOtherMessages = false;
+
+            _Translator.AcceptIcaoInNonPICount = 2;
+            _Translator.AcceptIcaoInNonPIMilliseconds = 10000;
+
+            var message = new ModeSMessage() { DownlinkFormat = DownlinkFormat.ShortAirToAirSurveillance, Icao24 = CreateRandomIcao24() };
+            _StandingDataManager.Setup(r => r.FindCodeBlock(message.Icao24.ToString("X6"))).Returns((CodeBlock)null);
+
+            Assert.IsNull(_Translator.Translate(_NowUtc, message, null));
+            Assert.IsNotNull(_Translator.Translate(_NowUtc.AddMilliseconds(1), message, null));
         }
 
         [TestMethod]
@@ -513,6 +533,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         [TestMethod]
         public void RawMessageTranslator_Translate_Does_Count_Parity_Messages_With_An_Unassigned_CodeBlock()
         {
+            _Translator.IgnoreInvalidCodeBlockInParityMessages = false;
             _Translator.AcceptIcaoInPI0Count = 2;
             _Translator.AcceptIcaoInPI0Milliseconds = 10000;
 
@@ -521,6 +542,20 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             Assert.IsNull(_Translator.Translate(_NowUtc, message, null));
             Assert.IsNotNull(_Translator.Translate(_NowUtc.AddMilliseconds(1), message, null));
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Can_Be_Forced_Not_To_Count_Parity_Messages_With_An_Unassigned_CodeBlock()
+        {
+            _Translator.IgnoreInvalidCodeBlockInParityMessages = true;
+            _Translator.AcceptIcaoInPI0Count = 2;
+            _Translator.AcceptIcaoInPI0Milliseconds = 10000;
+
+            var message = new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitter, ParityInterrogatorIdentifier = 0, Icao24 = CreateRandomIcao24() };
+            _StandingDataManager.Setup(r => r.FindCodeBlock(message.Icao24.ToString("X6"))).Returns((CodeBlock)null);
+
+            Assert.IsNull(_Translator.Translate(_NowUtc, message, null));
+            Assert.IsNull(_Translator.Translate(_NowUtc.AddMilliseconds(1), message, null));
         }
 
         [TestMethod]

@@ -2359,4 +2359,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="Waiting" xml:space="preserve">
     <value>Waiting</value>
   </data>
+  <data name="IgnoreUnassignedIcao" xml:space="preserve">
+    <value>Ignore unassigned ICAO</value>
+  </data>
+  <data name="InNonPI0Messages" xml:space="preserve">
+    <value>In other messages</value>
+  </data>
+  <data name="InPI0Messages" xml:space="preserve">
+    <value>In parity messages</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0" xml:space="preserve">
+    <value>Yes to ignore ICAOs that are not assigned to a country when deciding if a message that does not contain parity holds a valid ICAO.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0" xml:space="preserve">
+    <value>Yes to ignore ICAOs that are not assigned to a country when deciding if a message containing parity holds a valid ICAO.</value>
+  </data>
 </root>

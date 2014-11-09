@@ -271,6 +271,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(17, readBack.RawDecodingSettings.FastSurfaceGlobalPositionLimit);
                         Assert.AreEqual(12, readBack.RawDecodingSettings.SlowSurfaceGlobalPositionLimit);
                         Assert.AreEqual(true, readBack.RawDecodingSettings.IgnoreMilitaryExtendedSquitter);
+                        Assert.AreEqual(true, readBack.RawDecodingSettings.IgnoreInvalidCodeBlockInParityMessages);
+                        Assert.AreEqual(false, readBack.RawDecodingSettings.IgnoreInvalidCodeBlockInOtherMessages);
                         Assert.AreEqual(7, readBack.RawDecodingSettings.ReceiverLocationId);
                         Assert.AreEqual(400, readBack.RawDecodingSettings.ReceiverRange);
                         Assert.AreEqual(false, readBack.RawDecodingSettings.SuppressReceiverRangeCheck);
@@ -518,6 +520,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                         SlowSurfaceGlobalPositionLimit = 12,
                                                         IgnoreCallsignsInBds20 = true,
                                                         IgnoreMilitaryExtendedSquitter = true,
+                                                        IgnoreInvalidCodeBlockInParityMessages = true,
+                                                        IgnoreInvalidCodeBlockInOtherMessages = false,
                                                         ReceiverLocationId = 7,
                                                         ReceiverRange = 400,
                                                         SuppressReceiverRangeCheck = false,

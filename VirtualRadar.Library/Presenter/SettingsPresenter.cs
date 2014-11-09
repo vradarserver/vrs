@@ -508,6 +508,8 @@ namespace VirtualRadar.Library.Presenter
             settings.SlowSurfaceGlobalPositionLimit = defaults.SlowSurfaceGlobalPositionLimit;
             settings.SuppressReceiverRangeCheck = true;
             settings.UseLocalDecodeForInitialPosition = false;
+            settings.IgnoreInvalidCodeBlockInOtherMessages = defaults.IgnoreInvalidCodeBlockInOtherMessages;
+            settings.IgnoreInvalidCodeBlockInParityMessages = defaults.IgnoreInvalidCodeBlockInParityMessages;
         }
 
         /// <summary>
