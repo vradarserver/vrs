@@ -115,5 +115,15 @@ namespace VirtualRadar.Interface.Listener
         /// Removes all existing polar plots.
         /// </summary>
         void ClearPolarPlots();
+
+        /// <summary>
+        /// Overwrites the <see cref="RoundToDegrees"/> and slices with the values from the saved polar plot passed across.
+        /// </summary>
+        /// <param name="savedPolarPlot"></param>
+        /// <remarks>
+        /// The savedPolarPlot is not checked to make sure that the latitude and longitude are correct. It is assumed that the
+        /// caller has already checked that they are valid, or at least close enough for jazz.
+        /// </remarks>
+        void LoadFrom(SavedPolarPlot savedPolarPlot);
     }
 }

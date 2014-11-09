@@ -48,6 +48,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IRebroadcastServerManager> _RebroadcastServerManager;
         private Mock<IFeedManager> _FeedManager;
         private Mock<IUserManager> _UserManager;
+        private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
 
         [TestInitialize]
         public void TestInitialise()
@@ -65,6 +66,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _RebroadcastServerManager = TestUtilities.CreateMockSingleton<IRebroadcastServerManager>();
             _FeedManager = TestUtilities.CreateMockSingleton<IFeedManager>();
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
+            _SavedPolarPlotStorage = TestUtilities.CreateMockSingleton<ISavedPolarPlotStorage>();
 
             // This version of ILog should cause code that catches & logs exceptions to throw on the log write. Without this
             // the Asserts can go unnoticed.
@@ -229,6 +231,15 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.ShutdownApplication();
 
             _RebroadcastServerManager.Verify(m => m.Dispose(), Times.Once());
+        }
+
+        [TestMethod]
+        public void ShutdownPresenter_ShutdownApplication_Saves_All_PolarPlots()
+        {
+            _Presenter.Initialise(_View.Object);
+            _Presenter.ShutdownApplication();
+
+            _SavedPolarPlotStorage.Verify(r => r.Save(), Times.Once());
         }
 
         [TestMethod]

@@ -133,7 +133,7 @@ namespace VirtualRadar.Library.Listener
             ApplyReceiverListenerSettings(false, receiver, configuration, receiverLocation);
 
             DoCommonInitialise(receiver.UniqueId, receiver.Name);
-            ConfigurePolarPlotter(receiverLocation);
+            ConfigurePolarPlotter(receiverLocation, nameChanged: false);
         }
 
         /// <summary>
@@ -240,17 +240,53 @@ namespace VirtualRadar.Library.Listener
             var initialisedWithReceiver = (Listener as IMergedFeedListener) == null;
             if(!initialisedWithReceiver) throw new InvalidOperationException(String.Format("Feed {0} was initialised with a merged feed but updated with a receiver", UniqueId));
 
+            var nameChanged = !String.IsNullOrEmpty(Name) && Name != receiver.Name;
+            if(nameChanged) SaveCurrentPolarPlot();
+
             Name = receiver.Name;
             ApplyReceiverListenerSettings(true, receiver, configuration, receiverLocation);
 
-            ConfigurePolarPlotter(receiverLocation);
+            ConfigurePolarPlotter(receiverLocation, nameChanged);
+        }
+
+        /// <summary>
+        /// Saves the polar plot for the feed.
+        /// </summary>
+        private void SaveCurrentPolarPlot()
+        {
+            try {
+                var storage = Factory.Singleton.Resolve<ISavedPolarPlotStorage>().Singleton;
+                storage.Save(this);
+            } catch(Exception ex) {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught exception while saving polar plot from feed initialisation: {0}", ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Loads the polar plot for the feed.
+        /// </summary>
+        private void LoadCurrentPolarPlot()
+        {
+            try {
+                var storage = Factory.Singleton.Resolve<ISavedPolarPlotStorage>().Singleton;
+                var savedPolarPlot = storage.Load(this);
+
+                if(savedPolarPlot != null && savedPolarPlot.IsForSameFeed(this)) {
+                    AircraftList.PolarPlotter.LoadFrom(savedPolarPlot);
+                }
+            } catch(Exception ex) {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught exception while loading polar plot from feed initialisation: {0}", ex.ToString());
+            }
         }
 
         /// <summary>
         /// Configures the polar plotter.
         /// </summary>
         /// <param name="receiverLocation"></param>
-        private void ConfigurePolarPlotter(ReceiverLocation receiverLocation)
+        /// <param name="nameChanged"></param>
+        private void ConfigurePolarPlotter(ReceiverLocation receiverLocation, bool nameChanged)
         {
             if(receiverLocation == null) AircraftList.PolarPlotter = null;
             else {
@@ -258,7 +294,14 @@ namespace VirtualRadar.Library.Listener
                 if(existingPlotter == null || existingPlotter.Latitude != receiverLocation.Latitude || existingPlotter.Longitude != receiverLocation.Longitude) {
                     var polarPlotter = existingPlotter ?? Factory.Singleton.Resolve<IPolarPlotter>();
                     polarPlotter.Initialise(receiverLocation.Latitude, receiverLocation.Longitude);
-                    if(existingPlotter == null) AircraftList.PolarPlotter = polarPlotter;
+                    if(existingPlotter == null) {
+                        AircraftList.PolarPlotter = polarPlotter;
+                        LoadCurrentPolarPlot();
+                    }
+                }
+
+                if(nameChanged && existingPlotter != null) {
+                    LoadCurrentPolarPlot();
                 }
             }
         }

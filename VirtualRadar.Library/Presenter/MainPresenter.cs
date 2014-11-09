@@ -43,6 +43,11 @@ namespace VirtualRadar.Library.Presenter
         private DateTime _LastVersionCheck;
 
         /// <summary>
+        /// The UTC time that the last save of polar plots was performed.
+        /// </summary>
+        private DateTime _LastAutoSavePolarPlots;
+
+        /// <summary>
         /// A copy of a reference to the singleton feed manager - saves having to fetch it on every fast tick.
         /// </summary>
         private IFeedManager _FeedManager;
@@ -58,9 +63,9 @@ namespace VirtualRadar.Library.Presenter
         private IRebroadcastServerManager _RebroadcastServerManager;
 
         /// <summary>
-        /// The last configuration object loaded.
+        /// The object that looks after fetching the configuration for us.
         /// </summary>
-        private Configuration _Configuration;
+        private ISharedConfiguration _SharedConfiguration;
         #endregion
 
         #region Properties
@@ -98,6 +103,8 @@ namespace VirtualRadar.Library.Presenter
         public MainPresenter()
         {
             _Clock = Factory.Singleton.Resolve<IClock>();
+            _LastAutoSavePolarPlots = _Clock.UtcNow;
+            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
         }
         #endregion
 
@@ -142,8 +149,9 @@ namespace VirtualRadar.Library.Presenter
             _RebroadcastServerManager = Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton;
             DoDisplayRebroadcastServerConnections();
 
-            var configurationStorage = DisplayConfigurationSettings();
-            configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
+
+            DisplayConfigurationSettings();
 
             View.CheckForNewVersion += View_CheckForNewVersion;
             View.ReconnectFeed += View_ReconnectFeed;
@@ -155,15 +163,10 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Updates the display of any configuration settings we're showing on the view.
         /// </summary>
-        /// <returns></returns>
-        private IConfigurationStorage DisplayConfigurationSettings()
+        private void DisplayConfigurationSettings()
         {
-            var result = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
-
-            _Configuration = result.Load();
-            View.RebroadcastServersConfiguration = Describe.RebroadcastSettingsCollection(_Configuration.RebroadcastSettings);
-
-            return result;
+            var configuration = _SharedConfiguration.Get();
+            View.RebroadcastServersConfiguration = Describe.RebroadcastSettingsCollection(configuration.RebroadcastSettings);
         }
         #endregion
 
@@ -186,10 +189,9 @@ namespace VirtualRadar.Library.Presenter
         {
             object result = null;
 
-            if(_Configuration != null) {
-                result = _Configuration.Receivers.FirstOrDefault(r => r.UniqueId == feedId);
-                if(result == null) result = _Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == feedId);
-            }
+            var configuration = _SharedConfiguration.Get();
+            result = configuration.Receivers.FirstOrDefault(r => r.UniqueId == feedId);
+            if(result == null) result = configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == feedId);
 
             return result;
         }
@@ -201,21 +203,43 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void PerformPeriodicChecks()
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
-
+            var configuration = _SharedConfiguration.Get();
             var now = _Clock.UtcNow;
+            var log = Factory.Singleton.Resolve<ILog>().Singleton;
 
+            try {
+                PerformVersionCheck(configuration, now);
+            } catch(Exception ex) {
+                log.WriteLine("Caught exception while checking for new version: {0}", ex.ToString());
+            }
+
+            try {
+                PerformAutoSavePolarPlots(configuration, now);
+            } catch(Exception ex) {
+                log.WriteLine("Caught exception while auto-saving polar plots: {0}", ex.ToString());
+            }
+        }
+
+        private void PerformVersionCheck(Configuration configuration, DateTime now)
+        {
             if(configuration.VersionCheckSettings.CheckAutomatically && configuration.VersionCheckSettings.CheckPeriodDays > 0) {
                 if((now - _LastVersionCheck).TotalDays >= configuration.VersionCheckSettings.CheckPeriodDays) {
-                    try {
-                        var newVersionChecker = Factory.Singleton.Resolve<INewVersionChecker>().Singleton;
-                        newVersionChecker.CheckForNewVersion();
-                    } catch(Exception ex) {
-                        Debug.WriteLine(String.Format("MainPresenter.PerformPeriodicChecks caught exception: {0}", ex.ToString()));
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                        log.WriteLine("Caught exception while automatically checking for new version: {0}", ex.ToString());
-                    }
                     _LastVersionCheck = now;
+
+                    var newVersionChecker = Factory.Singleton.Resolve<INewVersionChecker>().Singleton;
+                    newVersionChecker.CheckForNewVersion();
+                }
+            }
+        }
+
+        private void PerformAutoSavePolarPlots(Configuration configuration, DateTime now)
+        {
+            if(configuration.BaseStationSettings.AutoSavePolarPlotsMinutes > 0) {
+                if((now - _LastAutoSavePolarPlots).TotalMinutes >= configuration.BaseStationSettings.AutoSavePolarPlotsMinutes) {
+                    _LastAutoSavePolarPlots = now;
+
+                    var storage = Factory.Singleton.Resolve<ISavedPolarPlotStorage>().Singleton;
+                    storage.Save();
                 }
             }
         }
@@ -248,7 +272,7 @@ namespace VirtualRadar.Library.Presenter
         #endregion
 
         #region Events consumed
-        private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
+        private void SharedConfiguration_ConfigurationChanged(object sender, EventArgs args)
         {
             DisplayConfigurationSettings();
         }

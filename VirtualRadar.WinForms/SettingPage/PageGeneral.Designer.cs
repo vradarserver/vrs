@@ -51,6 +51,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.numericAutoSavePolarPlots = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationOfShortTrails)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromTracking)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromMap)).BeginInit();
@@ -58,6 +61,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericDaysBetweenChecks)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericAutoSavePolarPlots)).BeginInit();
             this.SuspendLayout();
             // 
             // label5
@@ -72,10 +76,10 @@
             // checkBoxMinimiseToSystemTray
             // 
             this.checkBoxMinimiseToSystemTray.AutoSize = true;
-            this.checkBoxMinimiseToSystemTray.Location = new System.Drawing.Point(200, 169);
+            this.checkBoxMinimiseToSystemTray.Location = new System.Drawing.Point(200, 195);
             this.checkBoxMinimiseToSystemTray.Name = "checkBoxMinimiseToSystemTray";
             this.checkBoxMinimiseToSystemTray.Size = new System.Drawing.Size(146, 17);
-            this.checkBoxMinimiseToSystemTray.TabIndex = 13;
+            this.checkBoxMinimiseToSystemTray.TabIndex = 16;
             this.checkBoxMinimiseToSystemTray.Text = "::MinimiseToSystemTray::";
             this.checkBoxMinimiseToSystemTray.UseVisualStyleBackColor = true;
             // 
@@ -290,7 +294,7 @@
             this.groupBox2.Controls.Add(this.comboBoxTextToSpeechVoice);
             this.groupBox2.Controls.Add(this.checkBoxAudioEnabled);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(0, 201);
+            this.groupBox2.Location = new System.Drawing.Point(0, 227);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(636, 99);
             this.groupBox2.TabIndex = 1;
@@ -312,6 +316,9 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.numericAutoSavePolarPlots);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.label7);
@@ -328,7 +335,7 @@
             this.groupBox1.Controls.Add(this.checkBoxCheckForNewVersions);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(636, 195);
+            this.groupBox1.Size = new System.Drawing.Size(636, 221);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::OptionsGeneralCategory::";
@@ -360,13 +367,49 @@
             this.label7.TabIndex = 6;
             this.label7.Text = "::PSeconds::";
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(276, 171);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(63, 13);
+            this.label10.TabIndex = 15;
+            this.label10.Text = "::PMinutes::";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 171);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(116, 13);
+            this.label11.TabIndex = 13;
+            this.label11.Text = "::AutoSavePolarPlots:::";
+            // 
+            // numericAutoSavePolarPlots
+            // 
+            this.numericAutoSavePolarPlots.Location = new System.Drawing.Point(200, 169);
+            this.numericAutoSavePolarPlots.Maximum = new decimal(new int[] {
+            43200,
+            0,
+            0,
+            0});
+            this.numericAutoSavePolarPlots.Name = "numericAutoSavePolarPlots";
+            this.numericAutoSavePolarPlots.Size = new System.Drawing.Size(70, 20);
+            this.numericAutoSavePolarPlots.TabIndex = 14;
+            this.numericAutoSavePolarPlots.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericAutoSavePolarPlots.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
             // PageGeneral
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "PageGeneral";
-            this.Size = new System.Drawing.Size(636, 307);
+            this.Size = new System.Drawing.Size(636, 328);
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationOfShortTrails)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromTracking)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromMap)).EndInit();
@@ -376,6 +419,7 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericAutoSavePolarPlots)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -405,5 +449,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.LinkLabel linkLabelDefaultVoice;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown numericAutoSavePolarPlots;
     }
 }

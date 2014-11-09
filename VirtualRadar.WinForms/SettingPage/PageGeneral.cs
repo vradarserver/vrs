@@ -67,6 +67,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     { ValidationField.TrackingTimeout,      page == null ? null : page.numericDurationBeforeAircraftRemovedFromTracking },
                     { ValidationField.ShortTrailLength,     page == null ? null : page.numericDurationOfShortTrails },
                     { ValidationField.TextToSpeechSpeed,    page == null ? null : page.numericReadingSpeed },
+                    { ValidationField.AutoSavePolarPlots,   page == null ? null : page.numericAutoSavePolarPlots },
                 });
             }
         }
@@ -95,11 +96,12 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>    (configuration.BaseStationSettings,     checkBoxMinimiseToSystemTray,           r => r.MinimiseToSystemTray,    (r,v) => r.MinimiseToSystemTray = v));
             AddControlBinder(new CheckBoxBoolBinder<AudioSettings>          (configuration.AudioSettings,           checkBoxAudioEnabled,                   r => r.Enabled,                 (r,v) => r.Enabled = v));
 
-            AddControlBinder(new NumericIntBinder<VersionCheckSettings>     (configuration.VersionCheckSettings,    numericDaysBetweenChecks,                           r => r.CheckPeriodDays,         (r,v) => r.CheckPeriodDays = v));
-            AddControlBinder(new NumericIntBinder<BaseStationSettings>      (configuration.BaseStationSettings,     numericDurationBeforeAircraftRemovedFromMap,        r => r.DisplayTimeoutSeconds,   (r,v) => r.DisplayTimeoutSeconds = v));
-            AddControlBinder(new NumericIntBinder<BaseStationSettings>      (configuration.BaseStationSettings,     numericDurationBeforeAircraftRemovedFromTracking,   r => r.TrackingTimeoutSeconds,  (r,v) => r.TrackingTimeoutSeconds = v));
-            AddControlBinder(new NumericIntBinder<GoogleMapSettings>        (configuration.GoogleMapSettings,       numericDurationOfShortTrails,                       r => r.ShortTrailLengthSeconds, (r,v) => r.ShortTrailLengthSeconds = v));
-            AddControlBinder(new NumericIntBinder<AudioSettings>            (configuration.AudioSettings,           numericReadingSpeed,                                r => r.VoiceRate,               (r,v) => r.VoiceRate = v));
+            AddControlBinder(new NumericIntBinder<VersionCheckSettings>     (configuration.VersionCheckSettings,    numericDaysBetweenChecks,                           r => r.CheckPeriodDays,             (r,v) => r.CheckPeriodDays = v));
+            AddControlBinder(new NumericIntBinder<BaseStationSettings>      (configuration.BaseStationSettings,     numericDurationBeforeAircraftRemovedFromMap,        r => r.DisplayTimeoutSeconds,       (r,v) => r.DisplayTimeoutSeconds = v));
+            AddControlBinder(new NumericIntBinder<BaseStationSettings>      (configuration.BaseStationSettings,     numericDurationBeforeAircraftRemovedFromTracking,   r => r.TrackingTimeoutSeconds,      (r,v) => r.TrackingTimeoutSeconds = v));
+            AddControlBinder(new NumericIntBinder<GoogleMapSettings>        (configuration.GoogleMapSettings,       numericDurationOfShortTrails,                       r => r.ShortTrailLengthSeconds,     (r,v) => r.ShortTrailLengthSeconds = v));
+            AddControlBinder(new NumericIntBinder<AudioSettings>            (configuration.AudioSettings,           numericReadingSpeed,                                r => r.VoiceRate,                   (r,v) => r.VoiceRate = v));
+            AddControlBinder(new NumericIntBinder<BaseStationSettings>      (configuration.BaseStationSettings,     numericAutoSavePolarPlots,                          r => r.AutoSavePolarPlotsMinutes,   (r,v) => r.AutoSavePolarPlotsMinutes = v));
 
             AddControlBinder(new ComboBoxValueBinder<AudioSettings, string> (configuration.AudioSettings,   comboBoxTextToSpeechVoice,  voiceNames, r => r.VoiceName,   (r,v) => r.VoiceName = v));
         }
@@ -116,6 +118,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericDurationBeforeAircraftRemovedFromMap,      Strings.RemoveFromDisplay,              Strings.OptionsDescribeGeneralDisplayTimeoutSeconds);
             SetInlineHelp(numericDurationBeforeAircraftRemovedFromTracking, Strings.RemoveFromTracking,             Strings.OptionsDescribeGeneralTrackingTimeoutSeconds);
             SetInlineHelp(numericDurationOfShortTrails,                     Strings.ShortTrailDuration,             Strings.OptionsDescribeGeneralShortTrailLengthSeconds);
+            SetInlineHelp(numericAutoSavePolarPlots,                        Strings.AutoSavePolarPlots,             Strings.OptionsDescribeGeneralAutoSavePolarPlotsMinutes);
             SetInlineHelp(checkBoxMinimiseToSystemTray,                     Strings.MinimiseToSystemTray,           Strings.OptionsDescribeMinimiseToSystemTray);
 
             SetInlineHelp(checkBoxAudioEnabled,                             Strings.Enabled,                        Strings.OptionsDescribeGeneralAudioEnabled);

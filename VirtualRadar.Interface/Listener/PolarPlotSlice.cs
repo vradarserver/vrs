@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.Listener
 {
@@ -30,17 +32,26 @@ namespace VirtualRadar.Interface.Listener
         /// </summary>
         public int AltitudeHigher { get; set; }
 
+        private Dictionary<int, PolarPlot> _PolarPlots = new Dictionary<int,PolarPlot>();
         /// <summary>
         /// Gets a dictionary of angles clockwise from 0° north to the last-seen plot.
         /// </summary>
-        public Dictionary<int, PolarPlot> PolarPlots { get; private set; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public PolarPlotSlice()
+        [XmlIgnore]
+        public Dictionary<int, PolarPlot> PolarPlots
         {
-            PolarPlots = new Dictionary<int,PolarPlot>();
+            get { return _PolarPlots; }
+        }
+
+        private List<SavedPolarPlotAngle> _Angles = new List<SavedPolarPlotAngle>();
+        /// <summary>
+        /// Gets or sets a serialisable version of <see cref="PolarPlots"/>.
+        /// </summary>
+        /// <remarks>
+        /// This is used to support serialisation and is not intended for use by the application.
+        /// </remarks>
+        public List<SavedPolarPlotAngle> Angles
+        {
+            get { return _Angles; }
         }
 
         /// <summary>
@@ -58,6 +69,36 @@ namespace VirtualRadar.Interface.Listener
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Copies the <see cref="PolarPlots"/> dictionary into <see cref="Angles"/>.
+        /// </summary>
+        /// <remarks>
+        /// Not great, but it will work and I don't need anything fancier at the moment.
+        /// Necessary because XmlSerializer doesn't support dictionaries.
+        /// </remarks>
+        public void PrepareForSerialisation()
+        {
+            Angles.Clear();
+            Angles.AddRange(PolarPlots.Select(r => new SavedPolarPlotAngle(r.Key, r.Value)));
+        }
+
+        /// <summary>
+        /// Copies the <see cref="Angles"/> into <see cref="PolarPlots"/>.
+        /// </summary>
+        /// <remarks>
+        /// Not great, but it will work and I don't need anything fancier at the moment.
+        /// Necessary because XmlSerializer doesn't support dictionaries.
+        /// </remarks>
+        public void FinishDeserialisation()
+        {
+            PolarPlots.Clear();
+            foreach(var savedPolarPlotAngle in Angles) {
+                PolarPlots.Add(savedPolarPlotAngle.Angle, savedPolarPlotAngle.PolarPlot);
+            }
+
+            Angles.Clear();
         }
     }
 }

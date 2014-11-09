@@ -795,6 +795,11 @@ namespace VirtualRadar.Library.Presenter
                 ValueIsInRange(settings.DisplayTimeoutSeconds, 1, settings.TrackingTimeoutSeconds, new Validation(ValidationField.DisplayTimeout, defaults) {
                     Message = Strings.TrackingTimeoutLessThanDisplayTimeout,
                 });
+
+                // Autosave polar plots is within range
+                ConditionIsTrue(settings.AutoSavePolarPlotsMinutes, r => r >= 0, new Validation(ValidationField.AutoSavePolarPlots, defaults) {
+                    Message = Strings.AutoSavePolarPlotsOutOfBounds,
+                });
             }
         }
         #endregion
