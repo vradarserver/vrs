@@ -72,6 +72,25 @@
         this.unhook = function(hookResult)                                          { _Dispatcher.unhook(hookResult); };
         //endregion
 
+        //region Script helpers - addMapLibrary
+        /**
+         * Call this from an Initialising event handler. Adds the library to pageSettings.mapSettings.libraries.
+         * @param {*}       pageSettings
+         * @param {string}  library
+         */
+        this.addMapLibrary = function(pageSettings, library)
+        {
+            if(pageSettings) {
+                if(!pageSettings.mapSettings)           pageSettings.mapSettings = {};
+                if(!pageSettings.mapSettings.libraries) pageSettings.mapSettings.libraries = [];
+
+                if(VRS.arrayHelper.indexOf(pageSettings.mapSettings.libraries, library) === -1) {
+                    pageSettings.mapSettings.libraries.push(library);
+                }
+            }
+        };
+        //endregion
+
         //region getBase
         /**
          * Gets the "protected" base methods. For internal use only.
