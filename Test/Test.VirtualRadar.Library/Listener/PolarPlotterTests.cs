@@ -38,6 +38,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Configuration _Configuration;
+        private SavedPolarPlot _SavedPolarPlot;
 
         [TestInitialize]
         public void TestInitialise()
@@ -66,6 +67,8 @@ namespace Test.VirtualRadar.Library.Listener
             _SanityChecker.Setup(r => r.FirstGoodPosition(It.IsAny<int>())).Returns(() => {
                 throw new InvalidOperationException();
             });
+
+            _SavedPolarPlot = new SavedPolarPlot();
         }
 
         [TestCleanup]
@@ -555,6 +558,69 @@ namespace Test.VirtualRadar.Library.Listener
             _Plotter.ClearPolarPlots();
 
             Assert.AreEqual(5, _Plotter.RoundToDegrees);
+        }
+        #endregion
+
+        #region LoadFrom
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void PolarPlotter_LoadFrom_Throws_If_Passed_Null()
+        {
+            _Plotter.Initialise(1, 2);
+            _Plotter.LoadFrom(null);
+        }
+
+        [TestMethod]
+        public void PolarPlotter_LoadFrom_Overwrites_RoundToDegrees()
+        {
+            _Plotter.Initialise(1, 2);
+            var roundToDegrees = _Plotter.RoundToDegrees + 1;
+            _SavedPolarPlot.RoundToDegrees = roundToDegrees;
+
+            _Plotter.LoadFrom(_SavedPolarPlot);
+
+            Assert.AreEqual(roundToDegrees, _Plotter.RoundToDegrees);
+        }
+
+        [TestMethod]
+        public void PolarPlotter_LoadFrom_Does_Not_Overwrite_Coordinates()
+        {
+            _Plotter.Initialise(1, 2);
+            _SavedPolarPlot.Latitude = 5.1;
+            _SavedPolarPlot.Longitude = 5.2;
+
+            _Plotter.LoadFrom(_SavedPolarPlot);
+
+            Assert.AreEqual(1.0, _Plotter.Latitude);
+            Assert.AreEqual(2.0, _Plotter.Longitude);
+        }
+
+        [TestMethod]
+        public void PolarPlotter_LoadFrom_Replaces_Slices()
+        {
+            _Plotter.Initialise(1, 2);
+            _SavedPolarPlot.PolarPlotSlices.Add(new PolarPlotSlice() {
+                AltitudeLower = 1000,
+                AltitudeHigher = 2000,
+                PolarPlots = {
+                    { 20, new PolarPlot() { Altitude = 1100, Angle = 100, Distance = 30, Latitude = 5.1, Longitude = 5.2 } },
+                },
+            });
+
+            _Plotter.LoadFrom(_SavedPolarPlot);
+
+            var slices = _Plotter.TakeSnapshot();
+            Assert.AreEqual(1, slices.Count);
+            var slice = slices[0];
+            Assert.AreEqual(1000, slice.AltitudeLower);
+            Assert.AreEqual(2000, slice.AltitudeHigher);
+            Assert.AreEqual(1, slice.PolarPlots.Count);
+            var plot = slice.PolarPlots[20];
+            Assert.AreEqual(1100, plot.Altitude);
+            Assert.AreEqual(100, plot.Angle);
+            Assert.AreEqual(30, plot.Distance);
+            Assert.AreEqual(5.1, plot.Latitude);
+            Assert.AreEqual(5.2, plot.Longitude);
         }
         #endregion
     }

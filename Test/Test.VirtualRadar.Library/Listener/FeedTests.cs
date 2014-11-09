@@ -97,6 +97,8 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IBeastMessageBytesExtractor> _BeastMessageBytesExtractor;
         private Mock<ICompressedMessageBytesExtractor> _CompressedMessageBytesExtractor;
         private Mock<IRawMessageTranslator> _RawMessageTranslator;
+        private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
+        private SavedPolarPlot _SavedPolarPlot;
 
         private Mock<IStatistics> _Statistics;
 
@@ -157,6 +159,10 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.Receivers.Add(_Receiver);
             _Configuration.ReceiverLocations.Clear();
             _Configuration.ReceiverLocations.AddRange(_ReceiverLocations);
+
+            _SavedPolarPlot = new SavedPolarPlot();
+            _SavedPolarPlotStorage = TestUtilities.CreateMockSingleton<ISavedPolarPlotStorage>();
+            _SavedPolarPlotStorage.Setup(r => r.Load(It.IsAny<IFeed>())).Returns(_SavedPolarPlot);
 
             _AircraftList = TestUtilities.CreateMockImplementation<IBaseStationAircraftList>();
             _AircraftList.Object.PolarPlotter = null;
@@ -845,6 +851,32 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
+        public void Feed_ApplyConfiguration_Saves_PolarPlot_Before_Change_Of_Name()
+        {
+            var savedFeedName = "";
+            _SavedPolarPlotStorage.Setup(r => r.Save(It.IsAny<IFeed>())).Callback((IFeed feed) => {
+                savedFeedName = feed.Name;
+            });
+
+            _Receiver.Name = "OldName";
+            _Feed.Initialise(_Receiver, _Configuration);
+            _Receiver.Name = "NewName";
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            Assert.AreEqual("OldName", savedFeedName);
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Does_Not_Save_PolarPlot_If_Name_Does_Not_Change()
+        {
+            _Receiver.Name = "OldName";
+            _Feed.Initialise(_Receiver, _Configuration);
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            _SavedPolarPlotStorage.Verify(r => r.Save(It.IsAny<IFeed>()), Times.Never());
+        }
+
+        [TestMethod]
         public void Feed_ApplyConfiguration_Copies_Changes_To_Listener()
         {
             Do_Check_Configuration_Changes_Are_Applied(true, () => _Feed.ApplyConfiguration(_Receiver, _Configuration) );
@@ -876,6 +908,30 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
+        public void Feed_ApplyConfiguration_Loads_PolarPlotter_If_ReceiverLocation_Is_Added()
+        {
+            _Configuration.ReceiverLocations[0].UniqueId = 1000;
+            _Feed.Initialise(_Receiver, _Configuration);
+
+            _Configuration.ReceiverLocations[0].UniqueId = 1;
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            _SavedPolarPlotStorage.Verify(r => r.Load(_Feed), Times.Once());
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Loads_PolarPlotter_If_Name_Is_Changed()
+        {
+            _Receiver.Name = "OldName";
+            _Feed.Initialise(_Receiver, _Configuration);
+
+            _Receiver.Name = "NewName";
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            _SavedPolarPlotStorage.Verify(r => r.Load(_Feed), Times.Exactly(2));       // Initial load and then reload after name change
+        }
+
+        [TestMethod]
         public void Feed_ApplyConfiguration_Reinitialises_PolarPlotter_If_ReceiverLocation_Latitude_Is_Changed()
         {
             _Feed.Initialise(_Receiver, _Configuration);
@@ -888,6 +944,17 @@ namespace Test.VirtualRadar.Library.Listener
 
             Assert.AreSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
             _PolarPlotter.Verify(r => r.Initialise(9.9, 2.2), Times.Once());
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Does_Not_Load_PolarPlotter_If_ReceiverLocation_Latitude_Is_Changed()
+        {
+            _Feed.Initialise(_Receiver, _Configuration);
+            TestUtilities.CreateMockImplementation<IPolarPlotter>();
+            _Configuration.ReceiverLocations[0].Latitude = 9.9;
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            _SavedPolarPlotStorage.Verify(r => r.Load(_Feed), Times.Once());        // We always get an initial load
         }
 
         [TestMethod]

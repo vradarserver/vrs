@@ -294,5 +294,10 @@ namespace VirtualRadar.Interface.View
         /// Indicates whether a receiver is in passive mode,
         /// </summary>
         IsPassive,
+
+        /// <summary>
+        /// The auto-save polar plots field.
+        /// </summary>
+        AutoSavePolarPlots,
     }
 }

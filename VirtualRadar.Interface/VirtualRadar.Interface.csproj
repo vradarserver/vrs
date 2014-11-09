@@ -111,7 +111,10 @@
     <Compile Include="Certainty.cs" />
     <Compile Include="Cidr.cs" />
     <Compile Include="CidrComparer.cs" />
+    <Compile Include="Settings\ISavedPolarPlotStorage.cs" />
     <Compile Include="Settings\ISharedConfiguration.cs" />
+    <Compile Include="Settings\SavedPolarPlot.cs" />
+    <Compile Include="Settings\SavedPolarPlotAngle.cs" />
     <Compile Include="StandingData\BasicAircraft.cs" />
     <Compile Include="StandingData\BasicAircraftAndChildren.cs" />
     <Compile Include="StandingData\BasicModel.cs" />

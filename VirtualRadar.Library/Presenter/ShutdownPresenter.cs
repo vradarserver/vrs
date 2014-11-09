@@ -56,21 +56,45 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         public void ShutdownApplication()
         {
-            ShutdownPlugins();
-            ShutdownConnectionLogger();
-            ShutdownUPnpManager();
-            ShutdownWebServer();
-            ShutdownRebroadcastServers();
-            ShutdownListeners();
-            ShutdownBaseStationDatabase();
-            ShutdownUserManager();
-            ShutdownLogDatabase();
+            ILog log;
+            try {
+                log = Factory.Singleton.Resolve<ILog>().Singleton;
+            } catch {
+                log = null;
+            }
+
+            Action<string, Action> isolatedShutdown = (functionName, action) => {
+                try {
+                    action();
+                } catch(Exception ex) {
+                    try {
+                        if(log != null) log.WriteLine("Caught exception during shutdown in {0}: {1}", functionName, ex.ToString());
+                    } catch {}
+                }
+            };
+
+            isolatedShutdown("ShutdownPlugins",             ShutdownPlugins);
+            isolatedShutdown("ShutdownConnectionLogger",    ShutdownConnectionLogger);
+            isolatedShutdown("ShutdownUPnpManager",         ShutdownUPnpManager);
+            isolatedShutdown("ShutdownWebServer",           ShutdownWebServer);
+            isolatedShutdown("ShutdownRebroadcastServers",  ShutdownRebroadcastServers);
+            isolatedShutdown("SavePolarPlots",              SavePolarPlots);
+            isolatedShutdown("ShutdownListeners",           ShutdownListeners);
+            isolatedShutdown("ShutdownBaseStationDatabase", ShutdownBaseStationDatabase);
+            isolatedShutdown("ShutdownUserManager",         ShutdownUserManager);
+            isolatedShutdown("ShutdownLogDatabase",         ShutdownLogDatabase);
         }
 
         private void ShutdownRebroadcastServers()
         {
             _View.ReportProgress(Strings.ShuttingDownRebroadcastServer);
             Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton.Dispose();
+        }
+
+        private void SavePolarPlots()
+        {
+            _View.ReportProgress(Strings.SavingPolarPlots);
+            Factory.Singleton.Resolve<ISavedPolarPlotStorage>().Singleton.Save();
         }
 
         private void ShutdownListeners()

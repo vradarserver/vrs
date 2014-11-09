@@ -273,6 +273,24 @@ namespace VirtualRadar.Library.Listener
         }
         #endregion
 
+        #region LoadFrom
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="savedPolarPlot"></param>
+        public void LoadFrom(SavedPolarPlot savedPolarPlot)
+        {
+            if(savedPolarPlot == null) throw new ArgumentNullException("savedPolarPlot");
+
+            RoundToDegrees = savedPolarPlot.RoundToDegrees;
+            lock(_SyncLock) {
+                _Slices.Clear();
+                _Slices.AddRange(savedPolarPlot.PolarPlotSlices);
+                InitialiseSlices();
+            }
+        }
+        #endregion
+
         #region Events subscribed
         /// <summary>
         /// Called when the configuration is changed.

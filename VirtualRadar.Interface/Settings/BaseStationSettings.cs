@@ -209,6 +209,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _MinimiseToSystemTray, value, () => MinimiseToSystemTray); }
         }
 
+        private int _AutoSavePolarPlotsMinutes;
+        /// <summary>
+        /// Gets or sets the number of minutes to wait between automatic saves of polar plots.
+        /// </summary>
+        public int AutoSavePolarPlotsMinutes
+        {
+            get { return _AutoSavePolarPlotsMinutes; }
+            set { SetField(ref _AutoSavePolarPlotsMinutes, value, () => AutoSavePolarPlotsMinutes); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -267,6 +277,7 @@ namespace VirtualRadar.Interface.Settings
             OperatorFlagsFolder = isMono ? null : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Kinetic\BaseStation\OperatorFlags");
             OutlinesFolder = isMono ? null : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Kinetic\BaseStation\Outlines");
 
+            AutoSavePolarPlotsMinutes = 60;
             DisplayTimeoutSeconds = 30;
             TrackingTimeoutSeconds = 600;
         }

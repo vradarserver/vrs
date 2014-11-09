@@ -2374,4 +2374,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0" xml:space="preserve">
     <value>Yes to ignore ICAOs that are not assigned to a country when deciding if a message containing parity holds a valid ICAO.</value>
   </data>
+  <data name="SavingPolarPlots" xml:space="preserve">
+    <value>Saving receiver range plots</value>
+  </data>
+  <data name="AutoSavePolarPlotsOutOfBounds" xml:space="preserve">
+    <value>The auto-save polar plots value must be at least 0.</value>
+  </data>
+  <data name="AutoSavePolarPlots" xml:space="preserve">
+    <value>Auto-save range plots</value>
+  </data>
+  <data name="OptionsDescribeGeneralAutoSavePolarPlotsMinutes" xml:space="preserve">
+    <value>The number of minutes to pause between automatic saves of the receiver range plots. Set this to zero to disable periodic automatic saving and to only save when the program shuts down.</value>
+  </data>
+  <data name="PMinutes" xml:space="preserve">
+    <value>(minutes)</value>
+  </data>
 </root>

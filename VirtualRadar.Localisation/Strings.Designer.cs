@@ -431,6 +431,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-save range plots.
+        /// </summary>
+        public static string AutoSavePolarPlots {
+            get {
+                return ResourceManager.GetString("AutoSavePolarPlots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The auto-save polar plots value must be at least 0..
+        /// </summary>
+        public static string AutoSavePolarPlotsOutOfBounds {
+            get {
+                return ResourceManager.GetString("AutoSavePolarPlotsOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Put server onto Internet at startup.
         /// </summary>
         public static string AutoStartUPnP {
@@ -3145,6 +3163,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of minutes to pause between automatic saves of the receiver range plots. Set this to zero to disable periodic automatic saving and to only save when the program shuts down..
+        /// </summary>
+        public static string OptionsDescribeGeneralAutoSavePolarPlotsMinutes {
+            get {
+                return ResourceManager.GetString("OptionsDescribeGeneralAutoSavePolarPlotsMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes to allow the program to notify you when a new version of the program is available for download, no to disable the check..
         /// </summary>
         public static string OptionsDescribeGeneralCheckForNewVersions {
@@ -4243,6 +4270,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (minutes).
+        /// </summary>
+        public static string PMinutes {
+            get {
+                return ResourceManager.GetString("PMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Port.
         /// </summary>
         public static string Port {
@@ -5004,6 +5040,15 @@ namespace VirtualRadar.Localisation {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving receiver range plots.
+        /// </summary>
+        public static string SavingPolarPlots {
+            get {
+                return ResourceManager.GetString("SavingPolarPlots", resourceCulture);
             }
         }
         

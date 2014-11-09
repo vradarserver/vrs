@@ -184,6 +184,7 @@ namespace Test.VirtualRadar.Library.Settings
                 switch(property.Name) {
                     case "BaseStationSettings":
                         Assert.AreEqual("Aa", readBack.BaseStationSettings.Address);
+                        Assert.AreEqual(100, readBack.BaseStationSettings.AutoSavePolarPlotsMinutes);
                         Assert.AreEqual(65535, readBack.BaseStationSettings.Port);
                         Assert.AreEqual("/dev/com4", readBack.BaseStationSettings.ComPort);
                         Assert.AreEqual(2400, readBack.BaseStationSettings.BaudRate);
@@ -453,6 +454,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                         TrackingTimeoutSeconds = 3600,
                                                         MinimiseToSystemTray = true,
                                                         SearchPictureSubFolders = true,
+                                                        AutoSavePolarPlotsMinutes = 100,
                                                     }; break;
                     case "FlightRouteSettings":     result.FlightRouteSettings = new FlightRouteSettings() {
                                                         AutoUpdateEnabled = true,

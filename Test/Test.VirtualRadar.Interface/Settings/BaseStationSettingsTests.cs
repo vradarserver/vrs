@@ -56,6 +56,7 @@ namespace Test.VirtualRadar.Interface.Settings
 
             TestUtilities.TestProperty(settings, r => r.Address, "127.0.0.1", "Ab");
             TestUtilities.TestProperty(settings, r => r.AutoReconnectAtStartup, false);
+            TestUtilities.TestProperty(settings, r => r.AutoSavePolarPlotsMinutes, 60, 5);
             TestUtilities.TestProperty(settings, r => r.Port, 30003, 65535);
             TestUtilities.TestProperty(settings, r => r.ComPort, null, "ABC");
             TestUtilities.TestProperty(settings, r => r.BaudRate, 115200, 2400);
