@@ -1361,6 +1361,19 @@
 
         //region -- Properties
         /**
+         * Gets the native map object.
+         * @returns {*}
+         */
+        getNative: function() { return this._getState().map; },
+
+        /**
+         * Returns a string indicating what kind of map object is returned by getNative(). The native types are:
+         *   "GoogleMaps" - getNative returns a Google Maps map object.
+         * @returns {string}
+         */
+        getNativeType: function() { return 'GoogleMaps'; },
+
+        /**
          * Gets a value indicating that the map was successfully opened.
          * @returns {boolean}
          */
