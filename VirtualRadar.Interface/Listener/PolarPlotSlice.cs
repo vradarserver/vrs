@@ -81,7 +81,7 @@ namespace VirtualRadar.Interface.Listener
         public void PrepareForSerialisation()
         {
             Angles.Clear();
-            Angles.AddRange(PolarPlots.Select(r => new SavedPolarPlotAngle(r.Key, r.Value)));
+            Angles.AddRange(PolarPlots.Where(r => r.Value.Distance != 0).Select(r => new SavedPolarPlotAngle(r.Key, r.Value)));
         }
 
         /// <summary>
