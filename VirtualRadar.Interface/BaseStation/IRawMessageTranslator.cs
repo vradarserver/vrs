@@ -154,6 +154,18 @@ namespace VirtualRadar.Interface.BaseStation
         int AcceptIcaoInPI0Milliseconds { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that ICAOs that are not in a recognised code block
+        /// are to be ignored for messages that have parity.
+        /// </summary>
+        bool IgnoreInvalidCodeBlockInParityMessages { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that ICAOs that are not in a recognised code block
+        /// are to be ignored for messages that do not have parity.
+        /// </summary>
+        bool IgnoreInvalidCodeBlockInOtherMessages { get; set; }
+
+        /// <summary>
         /// Raised during the processing of <see cref="Translate"/> when it becomes apparent that a previous position
         /// established for an aircraft was wrong and it has been reset.
         /// </summary>

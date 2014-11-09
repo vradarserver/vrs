@@ -504,6 +504,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.RawDecodingSettings.AcceptIcaoInNonPISeconds = 16;
             _Configuration.RawDecodingSettings.AcceptIcaoInPI0Count = 24;
             _Configuration.RawDecodingSettings.AcceptIcaoInPI0Seconds = 32;
+            _Configuration.RawDecodingSettings.IgnoreInvalidCodeBlockInOtherMessages = false;
+            _Configuration.RawDecodingSettings.IgnoreInvalidCodeBlockInParityMessages = true;
             triggerAction();
 
             Assert.AreEqual(1.2345, _RawMessageTranslator.Object.ReceiverLocation.Latitude);
@@ -524,6 +526,8 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.AreEqual(16000, _RawMessageTranslator.Object.AcceptIcaoInNonPIMilliseconds);
             Assert.AreEqual(24, _RawMessageTranslator.Object.AcceptIcaoInPI0Count);
             Assert.AreEqual(32000, _RawMessageTranslator.Object.AcceptIcaoInPI0Milliseconds);
+            Assert.AreEqual(false, _RawMessageTranslator.Object.IgnoreInvalidCodeBlockInOtherMessages);
+            Assert.AreEqual(true, _RawMessageTranslator.Object.IgnoreInvalidCodeBlockInParityMessages);
         }
 
         [TestMethod]
