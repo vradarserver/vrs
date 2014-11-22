@@ -885,6 +885,7 @@ body.wait .modal {
 .vrsStoredSettings button {
     display: inline-block;
     margin: 0 1em 0 0;
+    padding: 0.5em 1em;
 }
 .vrsStoredSettings .keys {
     margin-top: 1em;
@@ -908,6 +909,14 @@ body.wait .modal {
 .vrsStoredSettings .keys li.current {
     color: #2E74B5;
 }
+.vrsStoredSettings .importExport textarea {
+    margin: 1em 0;
+    width: 80%;
+    height: 300px;
+}
+.vrsStoredSettings .importExport button {
+    display: block;
+}
 .vrsStoredSettings .empty {
     font-style: italic;
 }
@@ -929,7 +938,7 @@ body.wait .modal {
 }
 /*endregion */
 
-/**region jQuery UI slider styles */
+/*region jQuery UI slider styles */
 .vrsSlider {
     display: inline-block;
     width: 8em;

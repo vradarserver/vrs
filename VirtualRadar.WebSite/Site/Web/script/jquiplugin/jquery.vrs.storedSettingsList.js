@@ -39,6 +39,18 @@
          * @type {string}
          */
         this.currentKey = null;
+
+        /**
+         * The textarea element that shows the import/export settings.
+         * @type {jQuery=}
+         */
+        this.importExportElement = null;
+
+        /**
+         * The button that can be used to import settings.
+         * @type {jQuery=}
+         */
+        this.importButtonElement = null;
     };
     //endregion
 
@@ -91,12 +103,39 @@
                     self._removeAllKeys();
                 }, this))
                 .appendTo(buttonBlock);
-            $('<button/>')
+            $('<button />')
                 .text(VRS.$$.Refresh)
                 .click($.proxy(function() {
                     self._refreshDisplay();
                 }, this))
                 .appendTo(buttonBlock);
+            $('<button />')
+                .text(VRS.$$.ExportSettings)
+                .click($.proxy(function() {
+                    self._exportSettings();
+                }, this))
+                .appendTo(buttonBlock);
+            $('<button />')
+                .text(VRS.$$.ImportSettings)
+                .click($.proxy(function() {
+                    self._showImportControls();
+                }, this))
+                .appendTo(buttonBlock);
+
+            var importExport =
+                $('<div />')
+                    .attr('class', 'importExport')
+                    .appendTo(this.element);
+            state.importExportElement = $('<textarea />')
+                .hide()
+                .appendTo(importExport);
+            state.importButtonElement = $('<button />')
+                .hide()
+                .text(VRS.$$.Import)
+                .click($.proxy(function() {
+                    self._importSettings();
+                }, this))
+                .appendTo(importExport);
 
             state.keysContainer =
                 $('<div/>')
@@ -261,6 +300,66 @@
             });
             state.keyContentContainer.empty();
             this._buildKeysTable(state);
+        },
+
+        /**
+         * Creates and displays the serialised settings.
+         * @private
+         */
+        _exportSettings: function()
+        {
+            var state = this._getState();
+            state.importButtonElement.hide();
+
+            var element = state.importExportElement;
+            if(element.is(':visible')) {
+                element.hide();
+            } else {
+                element.val('');
+                element.show();
+
+                var settings = VRS.configStorage.exportSettings();
+                element.val(settings);
+            }
+        },
+
+        /**
+         * Displays the import controls.
+         * @private
+         */
+        _showImportControls: function()
+        {
+            var state = this._getState();
+
+            var element = state.importExportElement;
+            if(!element.is(':visible')) {
+                element.show();
+                element.val('');
+                state.importButtonElement.show();
+            } else {
+                element.hide();
+                state.importButtonElement.hide();
+            }
+        },
+
+        /**
+         * Takes the text in the import textarea and attempts to import it.
+         * @private
+         */
+        _importSettings: function()
+        {
+            var state = this._getState();
+
+            var text = state.importExportElement.val();
+            if(text) {
+                state.currentKey = null;
+                try {
+                    VRS.configStorage.importSettings(text);
+                    this._refreshDisplay();
+                } catch(ex) {
+                    VRS.pageHelper.showMessageBox(VRS.$$.ImportFailedTitle, VRS.stringUtility.format(VRS.$$.ImportFailedBody, ex));
+                }
+            }
         },
         //endregion
 

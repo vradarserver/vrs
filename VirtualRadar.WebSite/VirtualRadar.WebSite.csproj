@@ -200,6 +200,7 @@
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.zh.js" />
     <Content Include="Site\Web\script\i18n\strings.fr.js" />
     <Content Include="Site\Web\script\i18n\strings.zh.js" />
+    <Content Include="Site\Web\script\jquery.base64.js" />
     <Content Include="Site\Web\script\jquery.colorPicker.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js" />
