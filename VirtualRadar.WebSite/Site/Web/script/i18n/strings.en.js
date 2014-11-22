@@ -102,6 +102,7 @@
     VRS.$$.Engines =                                    'Engines';
     VRS.$$.EngineType =                                 'Engine Type';
     VRS.$$.Equals =                                     'Is';
+    VRS.$$.ExportSettings =                             'Export Settings';
     VRS.$$.Feet =                                       'Feet';
     VRS.$$.FeetAbbreviation =                           '{0} ft';
     VRS.$$.FeetPerMinuteAbbreviation =                  '{0} ft/m';
@@ -165,12 +166,16 @@
     VRS.$$.HideNoPosition =                             'Has position';
     VRS.$$.HighContrastMap =                            'Contrast';                         // <-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room
     VRS.$$.Icao =                                       'ICAO';
+    VRS.$$.Import =                                     'Import';
+    VRS.$$.ImportFailedTitle =                          'Import Settings Failed';
+    VRS.$$.ImportFailedBody =                           'Could not import your settings. The reported error was: {0}';
+    VRS.$$.ImportSettings =                             'Import Settings';
     VRS.$$.Index =                                      'Index';
-    VRS.$$.IsMilitary =                                 'Military';
     VRS.$$.IndicatedAirSpeed =                          'Indicated';
     VRS.$$.IndicatedAirSpeedShort =                     'IAS';                              // <-- please try to keep this short, an abbreviation if possible
     VRS.$$.Interesting =                                'Interesting';
     VRS.$$.IntervalSeconds =                            'Update interval (secs)';
+    VRS.$$.IsMilitary =                                 'Military';
     VRS.$$.Jet =                                        'Jet';
     VRS.$$.JustPositions =                              'Positions';
     VRS.$$.KilometreAbbreviation =                      '{0} km';

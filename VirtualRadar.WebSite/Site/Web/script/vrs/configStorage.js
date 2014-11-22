@@ -27,6 +27,8 @@
      */
     VRS.ConfigStorage = function()
     {
+        var that = this;
+
         /**
          * The leading text for all VRS key names.
          * @type {string}
@@ -268,6 +270,53 @@
         this.removeContentWithoutPrefix = function(key)
         {
             $.jStorage.deleteKey(_VRSKeyPrefix + key);
+        };
+        //endregion
+
+        //region -- exportSettings, importSettings
+        /**
+         * Serialises the settings into a string and returns that string.
+         * @returns {string}
+         */
+        this.exportSettings = function()
+        {
+            var keys = that.getAllVirtualRadarKeys(false);
+            var settings = { ver: 1, values: {} };
+            $.each(keys, function(/** number */idx, /** string */key) {
+                var obj = $.jStorage.get(key, null);
+                if(obj !== null) settings.values[key] = obj;
+            });
+
+            var json = $.toJSON(settings);
+            return json;
+        };
+
+        /**
+         * Takes a serialised settings string, as created by exportSettings, and deserialises it. Overwrites the
+         * current configuration with the deserialised values.
+         * @param exportString
+         */
+        this.importSettings = function(exportString)
+        {
+            if(exportString) {
+                var settings = $.parseJSON(exportString);
+                if(settings && settings.ver) {
+                    switch(settings.ver) {
+                        case 1:
+                            for(var keyName in settings.values) {
+                                if(settings.values.hasOwnProperty(keyName)) {
+                                    var value = settings.values[keyName];
+                                    if(value) {
+                                        $.jStorage.set(keyName, value);
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            throw 'These settings were produced by a later version of VRS. Cannot interpret them.';
+                    }
+                }
+            }
         };
         //endregion
     };
