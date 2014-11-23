@@ -90,6 +90,10 @@
     VRS.$$.DisableAutoSelect =                          'Disable auto-select';
     VRS.$$.Distance =                                   'Distance';
     VRS.$$.Distances =                                  'Distances';
+    VRS.$$.DoNotImportAutoSelect =                      'Do not import auto-select settings';
+    VRS.$$.DoNotImportCurrentLocation =                 'Do not import current location';
+    VRS.$$.DoNotImportLanguageSettings =                'Do not import language settings';
+    VRS.$$.DoNotImportSplitters =                       'Do not import splitters';
     VRS.$$.DoNotShow =                                  'Do not show';
     VRS.$$.Duration =                                   'Duration';
     VRS.$$.Electric =                                   'Electric';
@@ -102,6 +106,7 @@
     VRS.$$.Engines =                                    'Engines';
     VRS.$$.EngineType =                                 'Engine Type';
     VRS.$$.Equals =                                     'Is';
+    VRS.$$.EraseBeforeImport =                          'Erase all settings before import';
     VRS.$$.ExportSettings =                             'Export Settings';
     VRS.$$.Feet =                                       'Feet';
     VRS.$$.FeetAbbreviation =                           '{0} ft';
@@ -339,6 +344,7 @@
     VRS.$$.OperatorCode =                               'Operator Code';
     VRS.$$.OperatorFlag =                               'Operator Flag';
     VRS.$$.Options =                                    'Options';
+    VRS.$$.OverwriteExistingSettings =                  'Overwrite existing settings';
     VRS.$$.OwnershipStatus =                            'Ownership Status';
     VRS.$$.PageAircraft =                               'Aircraft';
     VRS.$$.AircraftDetailShort =                        'Detail';

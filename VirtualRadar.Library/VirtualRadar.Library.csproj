@@ -46,6 +46,9 @@
     <Reference Include="Microsoft.FlightSimulator.SimConnect">
       <HintPath>..\Dependencies\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -151,6 +154,7 @@
     <Compile Include="Settings\PluginSettingsStorage.cs" />
     <Compile Include="Settings\SavedPolarPlotStorage.cs" />
     <Compile Include="Settings\SharedConfiguration.cs" />
+    <Compile Include="Settings\SiteSettingsParser.cs" />
     <Compile Include="SimpleAircraftList.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Network\TcpConnectionStateService.cs" />

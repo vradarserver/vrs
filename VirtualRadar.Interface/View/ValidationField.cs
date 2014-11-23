@@ -299,5 +299,10 @@ namespace VirtualRadar.Interface.View
         /// The auto-save polar plots field.
         /// </summary>
         AutoSavePolarPlots,
+
+        /// <summary>
+        /// The field that accepts exported settings from the web site.
+        /// </summary>
+        ExportedSettings,
     }
 }

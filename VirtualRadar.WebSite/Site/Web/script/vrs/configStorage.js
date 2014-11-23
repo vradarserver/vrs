@@ -271,6 +271,16 @@
         {
             $.jStorage.deleteKey(_VRSKeyPrefix + key);
         };
+
+        /**
+         * Deletes all stored values.
+         */
+        this.removeAllContent = function()
+        {
+            $.each(that.getAllVirtualRadarKeys(), function() {
+                that.removeContentWithoutPrefix(this);
+            });
+        };
         //endregion
 
         //region -- exportSettings, importSettings
@@ -294,30 +304,70 @@
         /**
          * Takes a serialised settings string, as created by exportSettings, and deserialises it. Overwrites the
          * current configuration with the deserialised values.
-         * @param exportString
+         * @param {string}                      exportString
+         * @param {VRS_SETTINGS_IMPORT_OPTIONS} options
          */
-        this.importSettings = function(exportString)
+        this.importSettings = function(exportString, options)
         {
+            options = $.extend({}, /** VRS_SETTINGS_IMPORT_OPTIONS */ {
+                overwrite:              true,
+                resetBeforeImport:      false,
+                ignoreLanguage:         false,
+                ignoreSplitters:        false,
+                ignoreCurrentLocation:  false,
+                ignoreAutoSelect:       false
+            }, options);
+
             if(exportString) {
                 var settings = $.parseJSON(exportString);
                 if(settings && settings.ver) {
                     switch(settings.ver) {
                         case 1:
+                            if(options.resetBeforeImport) {
+                                that.removeAllContent();
+                            }
+
                             for(var keyName in settings.values) {
                                 if(settings.values.hasOwnProperty(keyName)) {
-                                    var value = settings.values[keyName];
-                                    if(value) {
-                                        $.jStorage.set(keyName, value);
+                                    if(isValidImportKey(keyName, options)) {
+                                        var value = settings.values[keyName];
+                                        if(value) {
+                                            $.jStorage.set(keyName, value);
+                                        }
                                     }
                                 }
                             }
                             break;
                         default:
-                            throw 'These settings were produced by a later version of VRS. Cannot interpret them.';
+                            throw 'These settings were exported from a later version of VRS. They cannot be loaded.';
                     }
                 }
             }
         };
+
+        /**
+         * Returns true if the key name passed across represents a valid import key.
+         * @param {string}                      keyName
+         * @param {VRS_SETTINGS_IMPORT_OPTIONS} options
+         * @returns {boolean}
+         */
+        function isValidImportKey(keyName, options)
+        {
+            var result = false;
+
+            if(keyName && VRS.stringUtility.startsWith(keyName, _VRSKeyPrefix)) {
+                if(options.overwrite || $.jStorage.get(keyName, null) === null) {
+                    result = true;
+
+                    if(result && options.ignoreLanguage && keyName === 'VRadarServer-#global#-Localise') result = false;
+                    if(result && options.ignoreSplitters && VRS.stringUtility.contains(keyName, '#-vrsSplitterPosition-')) result = false;
+                    if(result && options.ignoreCurrentLocation && VRS.stringUtility.contains(keyName, '#-vrsCurrentLocation-')) result = false;
+                    if(result && options.ignoreAutoSelect && VRS.stringUtility.contains(keyName, '#-vrsAircraftAutoSelect-')) result = false;
+                }
+            }
+
+            return result;
+        }
         //endregion
     };
     //endregion

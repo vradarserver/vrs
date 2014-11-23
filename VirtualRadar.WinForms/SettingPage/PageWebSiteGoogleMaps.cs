@@ -12,13 +12,16 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
+using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
 using VirtualRadar.WinForms.PortableBinding;
@@ -60,22 +63,11 @@ namespace VirtualRadar.WinForms.SettingPage
             {
                 var page = genericPage as PageWebSiteGoogleMaps;
                 SetValidationFields(new Dictionary<ValidationField,Control>() {
-                    { ValidationField.GoogleMapZoomLevel,   page == null ? null : page.numericInitialZoom },
-                    { ValidationField.Latitude,             page == null ? null : page.numericInitialLatitude },
-                    { ValidationField.Longitude,            page == null ? null : page.numericInitialLongitude },
+                    { ValidationField.ExportedSettings, page == null ? null : page.textBoxInitialSettings },
                 });
             }
         }
         #endregion
-
-        // List of allowable map types
-        private static readonly string[] _MapTypes = new string[] {
-            "HYBRID",
-            "ROADMAP",
-            "SATELLITE",
-            "TERRAIN",
-            "HIGHCONTRAST",
-        };
 
         /// <summary>
         /// See base docs.
@@ -96,6 +88,22 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
+
+            var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            linkLabelDesktopSite.Text = FormatAddress(webServer.LocalAddress, "desktop.html");
+            linkLabelMobileSite.Text = FormatAddress(webServer.LocalAddress, "mobile.html");
+            linkLabelSettingsPage.Text = FormatAddress(webServer.LocalAddress, "settings.html");
+        }
+
+        /// <summary>
+        /// Returns a formatted URL to a page on the site.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        private string FormatAddress(string address, string page)
+        {
+            return String.Format("{0}{1}{2}", address, address.EndsWith("/") ? "" : "/", page);
         }
 
         /// <summary>
@@ -106,19 +114,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.CreateBindings();
             var settings = SettingsView.Configuration.GoogleMapSettings;
 
-            AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericInitialZoom, r => r.InitialMapZoom, (r,v) => r.InitialMapZoom = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-
-            AddControlBinder(new NumericDoubleBinder<GoogleMapSettings>(settings, numericInitialLatitude,   r => r.InitialMapLatitude,  (r,v) => r.InitialMapLatitude = v)  { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-            AddControlBinder(new NumericDoubleBinder<GoogleMapSettings>(settings, numericInitialLongitude,  r => r.InitialMapLongitude, (r,v) => r.InitialMapLongitude = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-
-            AddControlBinder(new ComboBoxValueBinder<GoogleMapSettings, string>(settings, comboBoxInitialMapType, _MapTypes, r => r.InitialMapType, (r,v) => r.InitialMapType = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-
-            AddControlBinder(new MapValuesBinder<GoogleMapSettings>(settings, mapControl,
-                r => r.InitialMapLatitude,  (r,v) => r.InitialMapLatitude = v,
-                r => r.InitialMapLongitude, (r,v) => r.InitialMapLongitude = v,
-                r => r.InitialMapType,      (r,v) => r.InitialMapType = v,
-                r => r.InitialMapZoom,      (r,v) => r.InitialMapZoom = v
-            ));
+            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxInitialSettings, r => r.InitialSettings, (r,v) => r.InitialSettings = v));
         }
 
         /// <summary>
@@ -127,10 +123,32 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();
-            SetInlineHelp(comboBoxInitialMapType,   Strings.InitialMapType,     Strings.OptionsDescribeWebSiteInitialGoogleMapType);
-            SetInlineHelp(numericInitialZoom,       Strings.InitialZoom,        Strings.OptionsDescribeWebSiteInitialGoogleMapZoom);
-            SetInlineHelp(numericInitialLatitude,   Strings.InitialLatitude,    Strings.OptionsDescribeWebSiteInitialGoogleMapLatitude);
-            SetInlineHelp(numericInitialLongitude,  Strings.InitialLongitude,   Strings.OptionsDescribeWebSiteInitialGoogleMapLongitude);
+            SetInlineHelp(textBoxInitialSettings, Strings.ExportedSettings, Strings.OptionsDescribeWebSiteInitialGoogleMapSettings);
+        }
+
+        /// <summary>
+        /// Called whent the user clicks one of the site links.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void linkLabelSite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var linkLabel = (LinkLabel)sender;
+            Process.Start(linkLabel.Text);
+        }
+
+        /// <summary>
+        /// Called when the user clicks the Copy from Clipboard link.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void linkLabelCopyFromClipboard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try {
+                var text = Clipboard.ContainsText(TextDataFormat.UnicodeText) ? Clipboard.GetText(TextDataFormat.UnicodeText) : "";
+                SettingsView.Configuration.GoogleMapSettings.InitialSettings = text;
+            } catch {
+            }
         }
     }
 }

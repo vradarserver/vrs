@@ -1179,6 +1179,18 @@ VRS_SERVER_CONFIG_RECEIVER;
 VRS_SERVER_CONFIG;
 //endregion
 
+/**
+ * @typedef {{
+ * overwrite:              boolean,
+ * resetBeforeImport:      boolean,
+ * ignoreLanguage:         boolean,
+ * ignoreSplitters:        boolean,
+ * ignoreCurrentLocation:  boolean,
+ * ignoreAutoSelect:       boolean
+ * }} VRS_SETTINGS_IMPORT_OPTIONS
+ */
+VRS_SETTINGS_IMPORT_OPTIONS;
+
 //region VRS_SETTINGS_POLAR_PLOTTER
 /**
  * @typedef {{

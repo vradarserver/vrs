@@ -74,6 +74,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Settings.IPluginSettingsStorage, Settings.PluginSettingsStorage>();
             factory.Register<VirtualRadar.Interface.Settings.ISavedPolarPlotStorage, Settings.SavedPolarPlotStorage>();
             factory.Register<VirtualRadar.Interface.Settings.ISharedConfiguration, Settings.SharedConfiguration>();
+            factory.Register<VirtualRadar.Interface.Settings.ISiteSettingsParser, Settings.SiteSettingsParser>();
             factory.Register<IAccessFilter, AccessFilter>();
             factory.Register<IAircraft, Aircraft>();
             factory.Register<IAircraftComparer, AircraftComparer>();

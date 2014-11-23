@@ -998,6 +998,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy from clipboard.
+        /// </summary>
+        public static string CopyFromClipboard {
+            get {
+                return ResourceManager.GetString("CopyFromClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copyright © 2010 onwards, Andrew Whewell.
         /// </summary>
         public static string Copyright {
@@ -1241,6 +1250,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Desktop site.
+        /// </summary>
+        public static string DesktopSite {
+            get {
+                return ResourceManager.GetString("DesktopSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Desktop Version.
         /// </summary>
         public static string DesktopVersion {
@@ -1471,6 +1489,15 @@ namespace VirtualRadar.Localisation {
         public static string ExceptionWhenCheckingValue {
             get {
                 return ResourceManager.GetString("ExceptionWhenCheckingValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exported settings.
+        /// </summary>
+        public static string ExportedSettings {
+            get {
+                return ResourceManager.GetString("ExportedSettings", resourceCulture);
             }
         }
         
@@ -2668,6 +2695,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mobile site.
+        /// </summary>
+        public static string MobileSite {
+            get {
+                return ResourceManager.GetString("MobileSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mobile Version.
         /// </summary>
         public static string MobileVersion {
@@ -2826,6 +2862,15 @@ namespace VirtualRadar.Localisation {
         public static string NotConnected {
             get {
                 return ResourceManager.GetString("NotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a valid set of exported site settings.
+        /// </summary>
+        public static string NotExportedSiteSettings {
+            get {
+                return ResourceManager.GetString("NotExportedSiteSettings", resourceCulture);
             }
         }
         
@@ -3825,6 +3870,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeWebSiteInitialGoogleMapRefreshSeconds {
             get {
                 return ResourceManager.GetString("OptionsDescribeWebSiteInitialGoogleMapRefreshSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the links to the Desktop and Mobile sites to configure the site as you want it to appear to new users. Then click the link to the Settings site, click Export Settings and copy the exported settings into this field..
+        /// </summary>
+        public static string OptionsDescribeWebSiteInitialGoogleMapSettings {
+            get {
+                return ResourceManager.GetString("OptionsDescribeWebSiteInitialGoogleMapSettings", resourceCulture);
             }
         }
         
@@ -5346,6 +5400,15 @@ namespace VirtualRadar.Localisation {
         public static string SettingsPage {
             get {
                 return ResourceManager.GetString("SettingsPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings site.
+        /// </summary>
+        public static string SettingsSite {
+            get {
+                return ResourceManager.GetString("SettingsSite", resourceCulture);
             }
         }
         
