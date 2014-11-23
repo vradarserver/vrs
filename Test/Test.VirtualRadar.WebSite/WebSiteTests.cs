@@ -2042,7 +2042,7 @@ namespace Test.VirtualRadar.WebSite
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
             var worksheet = new ExcelWorksheetData(TestContext);
-            if(worksheet.String("ConfigProperty") != "CanShowPolarPlots") return;
+            //if(worksheet.String("ConfigProperty") != "CanShowPolarPlots") return;
 
             var isLocalAddress = true;
             using(var cultureSwitcher = new CultureSwitcher(worksheet.String("Culture"))) {
@@ -2056,6 +2056,7 @@ namespace Test.VirtualRadar.WebSite
                     case "InitialMapType":          _Configuration.GoogleMapSettings.InitialMapType = worksheet.EString("Value"); break;
                     case "InitialMapZoom":          _Configuration.GoogleMapSettings.InitialMapZoom = worksheet.Int("Value"); break;
                     case "InitialRefreshSeconds":   _Configuration.GoogleMapSettings.InitialRefreshSeconds = worksheet.Int("Value"); break;
+                    case "InitialSettings":         _Configuration.GoogleMapSettings.InitialSettings = worksheet.EString("Value"); break;
                     case "MinimumRefreshSeconds":   _Configuration.GoogleMapSettings.MinimumRefreshSeconds = worksheet.Int("Value"); break;
                     case "InitialDistanceUnit":     _Configuration.GoogleMapSettings.InitialDistanceUnit = worksheet.ParseEnum<DistanceUnit>("Value"); break;
                     case "InitialHeightUnit":       _Configuration.GoogleMapSettings.InitialHeightUnit = worksheet.ParseEnum<HeightUnit>("Value"); break;
@@ -2088,6 +2089,7 @@ namespace Test.VirtualRadar.WebSite
                 case "InitialMapType":              Assert.AreEqual(worksheet.EString("JsonValue"), json.InitialMapType); break;
                 case "InitialMapZoom":              Assert.AreEqual(worksheet.Int("JsonValue"), json.InitialZoom); break;
                 case "InitialRefreshSeconds":       Assert.AreEqual(worksheet.Int("JsonValue"), json.RefreshSeconds); break;
+                case "InitialSettings":             Assert.AreEqual(worksheet.EString("JsonValue"), json.InitialSettings); break;
                 case "MinimumRefreshSeconds":       Assert.AreEqual(worksheet.Int("JsonValue"), json.MinimumRefreshSeconds); break;
                 case "InitialDistanceUnit":         Assert.AreEqual(worksheet.String("JsonValue"), json.InitialDistanceUnit); break;
                 case "InitialHeightUnit":           Assert.AreEqual(worksheet.String("JsonValue"), json.InitialHeightUnit); break;

@@ -65,6 +65,12 @@ namespace VirtualRadar.Interface.WebSite
         public int RefreshSeconds { get; set; }
 
         /// <summary>
+        /// Gets or sets the initial settings, if any, to apply to new users.
+        /// </summary>
+        [DataMember]
+        public string InitialSettings { get; set; }
+
+        /// <summary>
         /// Gets or sets the initial latitude for maps.
         /// </summary>
         [DataMember]
@@ -169,6 +175,7 @@ namespace VirtualRadar.Interface.WebSite
             result.InitialLatitude = InitialLatitude;
             result.InitialLongitude = InitialLongitude;
             result.InitialMapType = InitialMapType;
+            result.InitialSettings = InitialSettings;
             result.InitialSpeedUnit = InitialSpeedUnit;
             result.InitialZoom = InitialZoom;
             result.InternetClientCanRunReports = InternetClientCanRunReports;

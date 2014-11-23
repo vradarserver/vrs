@@ -34,6 +34,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(json, r => r.InitialLatitude, 0.00, 1.234);
             TestUtilities.TestProperty(json, r => r.InitialLongitude, 0.00, 1.234);
             TestUtilities.TestProperty(json, r => r.InitialMapType, null, "Abc");
+            TestUtilities.TestProperty(json, r => r.InitialSettings, null, "Abc");
             TestUtilities.TestProperty(json, r => r.InitialSpeedUnit, null, "Abc");
             TestUtilities.TestProperty(json, r => r.InitialZoom, 0, 123);
             TestUtilities.TestProperty(json, r => r.InternetClientCanRunReports, false);
