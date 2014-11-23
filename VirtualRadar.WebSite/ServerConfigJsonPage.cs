@@ -80,6 +80,7 @@ namespace VirtualRadar.WebSite
                     InitialLatitude = configuration.GoogleMapSettings.InitialMapLatitude,
                     InitialLongitude = configuration.GoogleMapSettings.InitialMapLongitude,
                     InitialMapType = GetMapType(configuration.GoogleMapSettings.InitialMapType),
+                    InitialSettings = configuration.GoogleMapSettings.InitialSettings,
                     InitialSpeedUnit = GetSpeedUnit(configuration.GoogleMapSettings.InitialSpeedUnit),
                     InitialZoom = configuration.GoogleMapSettings.InitialMapZoom,
                     InternetClientCanRunReports = configuration.InternetClientSettings.CanRunReports,
