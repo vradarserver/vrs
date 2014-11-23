@@ -1160,6 +1160,7 @@ VRS_SERVER_CONFIG_RECEIVER;
  * IsAudioEnabled:                          bool,
  * MinimumRefreshSeconds:                   number,
  * RefreshSeconds:                          number,
+ * InitialSettings:                         string,
  * InitialLatitude:                         number,
  * InitialLongitude:                        number,
  * InitialMapType:                          VRS.MapType,
