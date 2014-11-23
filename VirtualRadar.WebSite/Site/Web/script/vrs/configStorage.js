@@ -73,6 +73,22 @@
         {
             return 'jStorage-' + $.jStorage.currentBackend();
         };
+
+        /**
+         * Gets a value indicating that the user has saved settings. Ignores some settings that are auto-saved without
+         * any user intervention.
+         * @returns {boolean}
+         */
+        this.getHasSettings = function()
+        {
+            var result = false;
+            $.each(that.getAllVirtualRadarKeys(false), function(/** number */idx, /** string */keyName) {
+                if(keyName !== 'VRadarServer-#global#-Localise') result = true;
+                return !result;
+            });
+
+            return result;
+        };
         //endregion
 
         //region -- warnIfMissing

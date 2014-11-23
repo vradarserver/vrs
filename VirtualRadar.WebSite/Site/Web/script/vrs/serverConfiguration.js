@@ -92,6 +92,16 @@
                 timeout:    VRS.globalOptions.serverConfigTimeout,
                 success:    function(data) {
                                 _ServerConfig = data;
+
+                                if(_ServerConfig.InitialSettings && VRS.configStorage && VRS.configStorage.getHasSettings()) {
+                                    VRS.configStorage.importSettings(_ServerConfig.InitialSettings, {
+                                        overwrite:          false,
+                                        resetBeforeImport:  false,
+                                        ignoreSplitters:    true,
+                                        ignoreLanguage:     true
+                                    });
+                                }
+
                                 VRS.globalDispatch.raise(VRS.globalEvent.serverConfigChanged, [ _ServerConfig ]);
                                 successCallback();
                             },
