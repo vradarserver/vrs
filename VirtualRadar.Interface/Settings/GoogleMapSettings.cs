@@ -23,6 +23,16 @@ namespace VirtualRadar.Interface.Settings
     /// </summary>
     public class GoogleMapSettings : INotifyPropertyChanged
     {
+        private string _InitialSettings;
+        /// <summary>
+        /// Gets or sets the initial settings to use for new visitors.
+        /// </summary>
+        public string InitialSettings
+        {
+            get { return _InitialSettings; }
+            set { SetField(ref _InitialSettings, value, () => InitialSettings); }
+        }
+
         private double _InitialMapLatitude;
         /// <summary>
         /// Gets or sets the initial latitude to show. This is overridden by the user's own settings after they have viewed the page the first time.

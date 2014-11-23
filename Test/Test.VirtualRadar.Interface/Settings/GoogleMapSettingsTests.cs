@@ -43,6 +43,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.InitialMapType, "ROADMAP", "TERRAIN");
             TestUtilities.TestProperty(settings, r => r.InitialMapZoom, 11, 2);
             TestUtilities.TestProperty(settings, r => r.InitialRefreshSeconds, 1, 12);
+            TestUtilities.TestProperty(settings, r => r.InitialSettings, null, "Abc123");
             TestUtilities.TestProperty(settings, r => r.MinimumRefreshSeconds, 1, 22);
             TestUtilities.TestProperty(settings, r => r.ShortTrailLengthSeconds, 30, 600);
             TestUtilities.TestProperty(settings, r => r.InitialDistanceUnit, DistanceUnit.NauticalMiles, DistanceUnit.Kilometres);

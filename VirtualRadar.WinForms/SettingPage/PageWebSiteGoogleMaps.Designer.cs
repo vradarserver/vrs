@@ -27,147 +27,127 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBoxInitialMapType = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.numericInitialZoom = new System.Windows.Forms.NumericUpDown();
+            this.linkLabelDesktopSite = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
-            this.mapControl = new VirtualRadar.WinForms.Controls.MapControl();
+            this.label2 = new System.Windows.Forms.Label();
+            this.linkLabelMobileSite = new System.Windows.Forms.LinkLabel();
+            this.linkLabelSettingsPage = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
+            this.textBoxInitialSettings = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.numericInitialLongitude = new System.Windows.Forms.NumericUpDown();
-            this.numericInitialLatitude = new System.Windows.Forms.NumericUpDown();
-            ((System.ComponentModel.ISupportInitialize)(this.numericInitialZoom)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericInitialLongitude)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericInitialLatitude)).BeginInit();
+            this.linkLabelCopyFromClipboard = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
-            // comboBoxInitialMapType
+            // linkLabelDesktopSite
             // 
-            this.comboBoxInitialMapType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxInitialMapType.FormattingEnabled = true;
-            this.comboBoxInitialMapType.Location = new System.Drawing.Point(200, 0);
-            this.comboBoxInitialMapType.Name = "comboBoxInitialMapType";
-            this.comboBoxInitialMapType.Size = new System.Drawing.Size(120, 21);
-            this.comboBoxInitialMapType.TabIndex = 5;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 29);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(73, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "::InitialZoom:::";
-            // 
-            // numericInitialZoom
-            // 
-            this.numericInitialZoom.Location = new System.Drawing.Point(200, 27);
-            this.numericInitialZoom.Maximum = new decimal(new int[] {
-            19,
-            0,
-            0,
-            0});
-            this.numericInitialZoom.Name = "numericInitialZoom";
-            this.numericInitialZoom.Size = new System.Drawing.Size(120, 20);
-            this.numericInitialZoom.TabIndex = 7;
-            this.numericInitialZoom.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.linkLabelDesktopSite.AutoSize = true;
+            this.linkLabelDesktopSite.Location = new System.Drawing.Point(200, 0);
+            this.linkLabelDesktopSite.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.linkLabelDesktopSite.Name = "linkLabelDesktopSite";
+            this.linkLabelDesktopSite.Size = new System.Drawing.Size(122, 13);
+            this.linkLabelDesktopSite.TabIndex = 0;
+            this.linkLabelDesktopSite.TabStop = true;
+            this.linkLabelDesktopSite.Text = "<DESKTOP SITE URL>";
+            this.linkLabelDesktopSite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSite_LinkClicked);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 3);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(91, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "::InitialMapType:::";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "::DesktopSite:::";
             // 
-            // mapControl
+            // label2
             // 
-            this.mapControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.mapControl.Latitude = 0D;
-            this.mapControl.Location = new System.Drawing.Point(0, 105);
-            this.mapControl.Longitude = 0D;
-            this.mapControl.MapType = null;
-            this.mapControl.Name = "mapControl";
-            this.mapControl.Size = new System.Drawing.Size(636, 342);
-            this.mapControl.TabIndex = 12;
-            this.mapControl.ZoomLevel = 0;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(0, 19);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(71, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "::MobileSite:::";
+            // 
+            // linkLabelMobileSite
+            // 
+            this.linkLabelMobileSite.AutoSize = true;
+            this.linkLabelMobileSite.Location = new System.Drawing.Point(200, 19);
+            this.linkLabelMobileSite.Margin = new System.Windows.Forms.Padding(3);
+            this.linkLabelMobileSite.Name = "linkLabelMobileSite";
+            this.linkLabelMobileSite.Size = new System.Drawing.Size(111, 13);
+            this.linkLabelMobileSite.TabIndex = 2;
+            this.linkLabelMobileSite.TabStop = true;
+            this.linkLabelMobileSite.Text = "<MOBILE SITE URL>";
+            this.linkLabelMobileSite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSite_LinkClicked);
+            // 
+            // linkLabelSettingsPage
+            // 
+            this.linkLabelSettingsPage.AutoSize = true;
+            this.linkLabelSettingsPage.Location = new System.Drawing.Point(200, 38);
+            this.linkLabelSettingsPage.Margin = new System.Windows.Forms.Padding(3);
+            this.linkLabelSettingsPage.Name = "linkLabelSettingsPage";
+            this.linkLabelSettingsPage.Size = new System.Drawing.Size(130, 13);
+            this.linkLabelSettingsPage.TabIndex = 4;
+            this.linkLabelSettingsPage.TabStop = true;
+            this.linkLabelSettingsPage.Text = "<SETTINGS PAGE URL>";
+            this.linkLabelSettingsPage.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSite_LinkClicked);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(0, 81);
+            this.label3.Location = new System.Drawing.Point(0, 38);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "::Longitude:::";
+            this.label3.Size = new System.Drawing.Size(78, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "::SettingsSite:::";
+            // 
+            // textBoxInitialSettings
+            // 
+            this.textBoxInitialSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxInitialSettings.Location = new System.Drawing.Point(203, 58);
+            this.textBoxInitialSettings.Multiline = true;
+            this.textBoxInitialSettings.Name = "textBoxInitialSettings";
+            this.textBoxInitialSettings.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxInitialSettings.Size = new System.Drawing.Size(433, 373);
+            this.textBoxInitialSettings.TabIndex = 6;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(0, 55);
+            this.label4.Location = new System.Drawing.Point(0, 61);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "::Latitude:::";
+            this.label4.Size = new System.Drawing.Size(102, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "::ExportedSettings:::";
             // 
-            // numericInitialLongitude
+            // linkLabelCopyFromClipboard
             // 
-            this.numericInitialLongitude.DecimalPlaces = 6;
-            this.numericInitialLongitude.Location = new System.Drawing.Point(200, 79);
-            this.numericInitialLongitude.Maximum = new decimal(new int[] {
-            180,
-            0,
-            0,
-            0});
-            this.numericInitialLongitude.Minimum = new decimal(new int[] {
-            180,
-            0,
-            0,
-            -2147483648});
-            this.numericInitialLongitude.Name = "numericInitialLongitude";
-            this.numericInitialLongitude.Size = new System.Drawing.Size(100, 20);
-            this.numericInitialLongitude.TabIndex = 11;
-            this.numericInitialLongitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // numericInitialLatitude
-            // 
-            this.numericInitialLatitude.DecimalPlaces = 6;
-            this.numericInitialLatitude.Location = new System.Drawing.Point(200, 53);
-            this.numericInitialLatitude.Maximum = new decimal(new int[] {
-            90,
-            0,
-            0,
-            0});
-            this.numericInitialLatitude.Minimum = new decimal(new int[] {
-            90,
-            0,
-            0,
-            -2147483648});
-            this.numericInitialLatitude.Name = "numericInitialLatitude";
-            this.numericInitialLatitude.Size = new System.Drawing.Size(100, 20);
-            this.numericInitialLatitude.TabIndex = 9;
-            this.numericInitialLatitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.linkLabelCopyFromClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkLabelCopyFromClipboard.AutoSize = true;
+            this.linkLabelCopyFromClipboard.Location = new System.Drawing.Point(200, 434);
+            this.linkLabelCopyFromClipboard.Name = "linkLabelCopyFromClipboard";
+            this.linkLabelCopyFromClipboard.Size = new System.Drawing.Size(110, 13);
+            this.linkLabelCopyFromClipboard.TabIndex = 8;
+            this.linkLabelCopyFromClipboard.TabStop = true;
+            this.linkLabelCopyFromClipboard.Text = "::CopyFromClipboard::";
+            this.linkLabelCopyFromClipboard.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelCopyFromClipboard_LinkClicked);
             // 
             // PageWebSiteGoogleMaps
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.mapControl);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.linkLabelCopyFromClipboard);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.numericInitialLongitude);
-            this.Controls.Add(this.numericInitialLatitude);
-            this.Controls.Add(this.comboBoxInitialMapType);
+            this.Controls.Add(this.textBoxInitialSettings);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.linkLabelSettingsPage);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.numericInitialZoom);
+            this.Controls.Add(this.linkLabelMobileSite);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.linkLabelDesktopSite);
             this.Name = "PageWebSiteGoogleMaps";
             this.Size = new System.Drawing.Size(636, 447);
-            ((System.ComponentModel.ISupportInitialize)(this.numericInitialZoom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericInitialLongitude)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericInitialLatitude)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -175,14 +155,16 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBoxInitialMapType;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown numericInitialZoom;
+        private System.Windows.Forms.LinkLabel linkLabelDesktopSite;
         private System.Windows.Forms.Label label1;
-        private Controls.MapControl mapControl;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.LinkLabel linkLabelMobileSite;
+        private System.Windows.Forms.LinkLabel linkLabelSettingsPage;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBoxInitialSettings;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.NumericUpDown numericInitialLongitude;
-        private System.Windows.Forms.NumericUpDown numericInitialLatitude;
+        private System.Windows.Forms.LinkLabel linkLabelCopyFromClipboard;
+
+
     }
 }

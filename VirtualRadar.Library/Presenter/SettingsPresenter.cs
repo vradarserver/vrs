@@ -850,6 +850,23 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.MinimumRefreshOutOfBounds,
                 });
 
+                // Initial settings is valid JSON and looks like something that came out of Export Settings
+                ConditionIsTrue(settings, r => {
+                    var isValid = String.IsNullOrEmpty(r.InitialSettings);
+                    if(!isValid) {
+                        try {
+                            var parser = Factory.Singleton.Resolve<ISiteSettingsParser>();
+                            parser.Load(r.InitialSettings);
+                            isValid = parser.IsValid;
+                        } catch {
+                            isValid = false;
+                        }
+                    }
+                    return isValid;
+                }, new Validation(ValidationField.ExportedSettings, defaults) {
+                    Message = Strings.NotExportedSiteSettings,
+                });
+
                 // Initial aircraft list refresh period is within range
                 ValueIsInRange(settings.InitialRefreshSeconds, settings.MinimumRefreshSeconds, 3600, new Validation(ValidationField.InitialGoogleMapRefreshSeconds, defaults) {
                     Message = Strings.InitialRefreshLessThanMinimumRefresh,

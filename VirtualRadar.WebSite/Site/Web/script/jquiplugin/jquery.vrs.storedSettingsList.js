@@ -47,10 +47,10 @@
         this.importExportElement = null;
 
         /**
-         * The button that can be used to import settings.
+         * The container that holds all of the import controls.
          * @type {jQuery=}
          */
-        this.importButtonElement = null;
+        this.importControlsContainer = null;
     };
     //endregion
 
@@ -126,16 +126,42 @@
                 $('<div />')
                     .attr('class', 'importExport')
                     .appendTo(this.element);
+
             state.importExportElement = $('<textarea />')
                 .hide()
                 .appendTo(importExport);
-            state.importButtonElement = $('<button />')
-                .hide()
-                .text(VRS.$$.Import)
-                .click($.proxy(function() {
-                    self._importSettings();
-                }, this))
-                .appendTo(importExport);
+
+            state.importControlsContainer =
+                $('<div />')
+                    .hide()
+                    .attr('class', 'import')
+                    .appendTo(importExport);
+
+            var checkboxesContainer =
+                $('<ol />')
+                    .appendTo(state.importControlsContainer);
+
+            var importOverwrite =               this._addCheckBox(checkboxesContainer, VRS.$$.OverwriteExistingSettings, true);
+            var importReset =                   this._addCheckBox(checkboxesContainer, VRS.$$.EraseBeforeImport, true);
+            var importIgnoreLanguage =          this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportLanguageSettings, false);
+            var importIgnoreSplitters =         this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportSplitters, false);
+            var importIgnoreCurrentLocation =   this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportCurrentLocation, false);
+            var importIgnoreAutoSelect =        this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportAutoSelect, false);
+
+            var importButton =
+                $('<button />')
+                    .text(VRS.$$.Import)
+                    .click($.proxy(function() {
+                        self._importSettings({
+                            overwrite:              importOverwrite.prop('checked'),
+                            resetBeforeImport:      importReset.prop('checked'),
+                            ignoreLanguage:         importIgnoreLanguage.prop('checked'),
+                            ignoreSplitters:        importIgnoreSplitters.prop('checked'),
+                            ignoreCurrentLocation:  importIgnoreCurrentLocation.prop('checked'),
+                            ignoreAutoSelect:       importIgnoreAutoSelect.prop('checked')
+                        });
+                    }, this))
+                    .appendTo(state.importControlsContainer);
 
             state.keysContainer =
                 $('<div/>')
@@ -147,6 +173,33 @@
                     .appendTo(this.element);
 
             this._buildKeysTable(state);
+        },
+
+        /**
+         * Appends a checkbox to the control.
+         * @param {jQuery}      parentElement
+         * @param {string}      labelText
+         * @param {boolean}     initialCheckedState
+         * @returns {jQuery}
+         * @private
+         */
+        _addCheckBox: function(parentElement, labelText, initialCheckedState)
+        {
+            var listItem = $('<li />')
+                .appendTo(parentElement);
+
+            var result = $('<input />')
+                .uniqueId()
+                .attr('type', 'checkbox')
+                .prop('checked', initialCheckedState)
+                .appendTo(listItem);
+
+            $('<label />')
+                .attr('for', result.attr('id'))
+                .text(labelText)
+                .appendTo(listItem);
+
+            return result;
         },
 
         /**
@@ -295,9 +348,7 @@
         {
             var state = this._getState();
             state.currentKey = null;
-            $.each(VRS.configStorage.getAllVirtualRadarKeys(), function() {
-                VRS.configStorage.removeContentWithoutPrefix(this);
-            });
+            VRS.configStorage.removeAllContent();
             state.keyContentContainer.empty();
             this._buildKeysTable(state);
         },
@@ -309,7 +360,7 @@
         _exportSettings: function()
         {
             var state = this._getState();
-            state.importButtonElement.hide();
+            state.importControlsContainer.hide();
 
             var element = state.importExportElement;
             if(element.is(':visible')) {
@@ -335,18 +386,19 @@
             if(!element.is(':visible')) {
                 element.show();
                 element.val('');
-                state.importButtonElement.show();
+                state.importControlsContainer.show();
             } else {
                 element.hide();
-                state.importButtonElement.hide();
+                state.importControlsContainer.hide();
             }
         },
 
         /**
          * Takes the text in the import textarea and attempts to import it.
+         * @param {VRS_SETTINGS_IMPORT_OPTIONS} options
          * @private
          */
-        _importSettings: function()
+        _importSettings: function(options)
         {
             var state = this._getState();
 
@@ -354,7 +406,7 @@
             if(text) {
                 state.currentKey = null;
                 try {
-                    VRS.configStorage.importSettings(text);
+                    VRS.configStorage.importSettings(text, options);
                     this._refreshDisplay();
                 } catch(ex) {
                     VRS.pageHelper.showMessageBox(VRS.$$.ImportFailedTitle, VRS.stringUtility.format(VRS.$$.ImportFailedBody, ex));

@@ -225,6 +225,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("Second", readBack.WebServerSettings.BasicAuthenticationUserIds[1]);
                         break;
                     case "GoogleMapSettings":
+                        Assert.AreEqual("SomeSettings", readBack.GoogleMapSettings.InitialSettings);
                         Assert.AreEqual(-12.123456, readBack.GoogleMapSettings.InitialMapLatitude);
                         Assert.AreEqual(120.123987, readBack.GoogleMapSettings.InitialMapLongitude);
                         Assert.AreEqual("HYBRID", readBack.GoogleMapSettings.InitialMapType);
@@ -474,6 +475,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                         }
                                                     }; break;
                     case "GoogleMapSettings":       result.GoogleMapSettings = new GoogleMapSettings() {
+                                                        InitialSettings = "SomeSettings",
                                                         InitialMapLatitude = -12.123456,
                                                         InitialMapLongitude = 120.123987,
                                                         InitialMapType = "HYBRID",

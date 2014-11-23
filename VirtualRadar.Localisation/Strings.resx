@@ -2389,4 +2389,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="PMinutes" xml:space="preserve">
     <value>(minutes)</value>
   </data>
+  <data name="CopyFromClipboard" xml:space="preserve">
+    <value>Copy from clipboard</value>
+  </data>
+  <data name="DesktopSite" xml:space="preserve">
+    <value>Desktop site</value>
+  </data>
+  <data name="ExportedSettings" xml:space="preserve">
+    <value>Exported settings</value>
+  </data>
+  <data name="MobileSite" xml:space="preserve">
+    <value>Mobile site</value>
+  </data>
+  <data name="NotExportedSiteSettings" xml:space="preserve">
+    <value>Not a valid set of exported site settings</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapSettings" xml:space="preserve">
+    <value>Use the links to the Desktop and Mobile sites to configure the site as you want it to appear to new users. Then click the link to the Settings site, click Export Settings and copy the exported settings into this field.</value>
+  </data>
+  <data name="SettingsSite" xml:space="preserve">
+    <value>Settings site</value>
+  </data>
 </root>
