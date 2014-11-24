@@ -93,7 +93,7 @@
                 success:    function(data) {
                                 _ServerConfig = data;
 
-                                if(_ServerConfig.InitialSettings && VRS.configStorage && VRS.configStorage.getHasSettings()) {
+                                if(_ServerConfig.InitialSettings && VRS.configStorage && !VRS.configStorage.getHasSettings()) {
                                     VRS.configStorage.importSettings(_ServerConfig.InitialSettings, {
                                         overwrite:          false,
                                         resetBeforeImport:  false,
