@@ -44,7 +44,7 @@ namespace VirtualRadar.WinForms
         /// <remarks>
         /// The top-level pages are always shown in the order in which they were added to
         /// the tree view, they are not sorted. Child pages for parents whose
-        /// <see cref="Page.ShowChildPagesInAlphabeticalOrder"/> is true are shown in
+        /// <see cref="PageSummary.ShowChildPagesInAlphabeticalOrder"/> is true are shown in
         /// alphabetical order of page title, otherwise they are shown in the order in
         /// which they were added.
         /// </remarks>

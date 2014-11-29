@@ -29,47 +29,79 @@ namespace VirtualRadar.Interface.PortableBinding
     {
         private IList<T> _List;
 
+        /// <summary>
+        /// Gets the list that is being wrapped.
+        /// </summary>
         public IList<T> GenericList
         {
             get { return _List; }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public object this[int index]
         {
             get { return _List[index]; }
             set { _List[index] = (T)value; }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public int Count
         {
             get { return _List.Count; }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool IsSynchronized
         {
             get { return false; }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public object SyncRoot
         {
             get { return null; }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool IsFixedSize
         {
             get { return false; }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool IsReadOnly
         {
             get { return _List.IsReadOnly; }
         }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="list"></param>
         public GenericListWrapper(IList<T> list)
         {
             _List = list;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int Add(object value)
         {
             var result = _List.Count;
@@ -77,41 +109,76 @@ namespace VirtualRadar.Interface.PortableBinding
             return result;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Clear()
         {
             _List.Clear();
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public bool Contains(object value)
         {
             return _List.Contains((T)value);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int IndexOf(object value)
         {
             return _List.IndexOf((T)value);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public void Insert(int index, object value)
         {
             _List.Insert(index, (T)value);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="value"></param>
         public void Remove(object value)
         {
             _List.Remove((T)value);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="index"></param>
         public void RemoveAt(int index)
         {
             _List.RemoveAt(index);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         public void CopyTo(Array array, int index)
         {
             _List.CopyTo((T[])array, index);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
             return _List.GetEnumerator();

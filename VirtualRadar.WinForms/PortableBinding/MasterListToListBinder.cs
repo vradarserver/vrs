@@ -124,7 +124,11 @@ namespace VirtualRadar.WinForms.PortableBinding
             get { return ModelList as IBindingList; }
         }
 
+        /// <summary>
+        /// Protected method that fetches the content of the list, split into columns.
+        /// </summary>
         protected Action<TListModel, ListContentEventArgs> _FetchColumns;
+
         /// <summary>
         /// Gets or sets the method that handles the fetching of columns. Can only be set before initialisation.
         /// </summary>
@@ -195,7 +199,11 @@ namespace VirtualRadar.WinForms.PortableBinding
             set { if(!Initialised) _EditHandler = value; }
         }
 
+        /// <summary>
+        /// Protected method that is handles changing the checked state for an item.
+        /// </summary>
         protected Action<TListModel, bool> _CheckedChangedHandler;
+
         /// <summary>
         /// Gets or sets the method that handles the change in checked state for an existing item. Can only be set before initialisation.
         /// </summary>

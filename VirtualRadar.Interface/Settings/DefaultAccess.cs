@@ -21,18 +21,18 @@ namespace VirtualRadar.Interface.Settings
     public enum DefaultAccess
     {
         /// <summary>
-        /// Any user may access the resource. The <see cref="AccessList.Addresses"/> list's
+        /// Any user may access the resource. The <see cref="Access.Addresses"/> list's
         /// contents are ignored.
         /// </summary>
         Unrestricted,
 
         /// <summary>
-        /// Allow access to any address except those that are in <see cref="AccessList.Addresses"/>.
+        /// Allow access to any address except those that are in <see cref="Access.Addresses"/>.
         /// </summary>
         Allow,
 
         /// <summary>
-        /// Deny access to all addresses except those that are in <see cref="AccessList.Addresses"/>.
+        /// Deny access to all addresses except those that are in <see cref="Access.Addresses"/>.
         /// </summary>
         Deny,
     }

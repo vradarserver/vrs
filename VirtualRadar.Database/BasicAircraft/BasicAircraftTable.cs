@@ -57,7 +57,6 @@ namespace VirtualRadar.Database.BasicAircraft
         /// See base class.
         /// </summary>
         /// <param name="connection"></param>
-        /// <param name="log"></param>
         public override void CreateTable(IDbConnection connection)
         {
             Sql.ExecuteNonQuery(connection, null, null, String.Format(

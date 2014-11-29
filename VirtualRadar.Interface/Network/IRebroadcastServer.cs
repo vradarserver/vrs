@@ -52,7 +52,7 @@ namespace VirtualRadar.Interface.Network
         /// Gets or sets a flag indicating that the server is online.
         /// </summary>
         /// <remarks>
-        /// Setting this to false does not disconnect the clients attached to the <see cref="BroadcastProvider"/>,
+        /// Setting this to false does not disconnect the clients attached to the <see cref="Connector"/>,
         /// it just stops sending bytes to them. To disconnect the clients you need to dispose of the provider
         /// and create a new one after you go offline.
         /// </remarks>

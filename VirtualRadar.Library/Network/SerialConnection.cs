@@ -191,7 +191,6 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// Sends text across the COM port, if open.
         /// </summary>
-        /// <param name="serialPort"></param>
         /// <param name="text"></param>
         /// <param name="delayAfterSend"></param>
         public void SendText(string text, int delayAfterSend = 0)

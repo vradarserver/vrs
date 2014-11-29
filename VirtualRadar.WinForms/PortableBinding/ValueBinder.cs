@@ -58,8 +58,16 @@ namespace VirtualRadar.WinForms.PortableBinding
             protected set   { _SetModelValue(Model, value); }
         }
 
+        /// <summary>
+        /// Protected method that reads a control's current value.
+        /// </summary>
         protected Func<TControl, TValue> _GetControlValue;
+
+        /// <summary>
+        /// Protected method that writes a control's current value.
+        /// </summary>
         protected Action<TControl, TValue> _SetControlValue;
+
         /// <summary>
         /// Gets the control's value.
         /// </summary>

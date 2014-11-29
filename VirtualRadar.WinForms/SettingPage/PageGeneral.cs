@@ -126,6 +126,10 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericReadingSpeed,                              Strings.ReadingSpeed,                   Strings.OptionsDescribeGeneralReadingSpeed);
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);

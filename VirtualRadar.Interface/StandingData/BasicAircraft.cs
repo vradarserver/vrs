@@ -20,16 +20,34 @@ namespace VirtualRadar.Interface.StandingData
     /// </summary>
     public class BasicAircraft
     {
+        /// <summary>
+        /// Gets or sets the aircraft's identifier.
+        /// </summary>
         public int AircraftID { get; set; }
 
+        /// <summary>
+        /// Gets or sets the aircraft's ICAO.
+        /// </summary>
         public string Icao { get; set; }
 
+        /// <summary>
+        /// Gets or sets the aircraft's registration.
+        /// </summary>
         public string Registration { get; set; }
 
+        /// <summary>
+        /// Gets or sets the identifier of the aircraft's model record.
+        /// </summary>
         public virtual int? BasicModelID { get; set; }
 
+        /// <summary>
+        /// Gets or sets the identifier of the aircraft's operator record.
+        /// </summary>
         public virtual int? BasicOperatorID { get; set; }
 
+        /// <summary>
+        /// Gets or sets the date and time that the source database record was updated.
+        /// </summary>
         public DateTime BaseStationUpdated { get; set; }
     }
 }

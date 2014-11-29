@@ -62,8 +62,8 @@ namespace VirtualRadar.Library.Settings
                 _ParsedJson = null;
                 if(!String.IsNullOrEmpty(_Json)) {
                     _ParsedJson = JObject.Parse(_Json);
-                    var version = (int)_ParsedJson["ver"];
-                    if(version == 1) {
+                    _Version = (int)_ParsedJson["ver"];
+                    if(_Version == 1) {
                         var values = (object)_ParsedJson["values"];
                         IsValid = values != null;
                     }

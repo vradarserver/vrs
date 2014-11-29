@@ -157,6 +157,10 @@ namespace VirtualRadar.WinForms.Controls
         #endregion
 
         #region OnLoad
+        /// <summary>
+        /// See base class docs.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);

@@ -398,7 +398,6 @@ namespace VirtualRadar.Interface
         /// Returns a full (and probably very long) description of an exception on a single line.
         /// </summary>
         /// <param name="exception"></param>
-        /// <param name="newLine"></param>
         /// <returns></returns>
         public static string ExceptionSingleLineFull(Exception exception)
         {
