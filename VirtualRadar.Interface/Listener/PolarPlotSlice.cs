@@ -42,18 +42,6 @@ namespace VirtualRadar.Interface.Listener
             get { return _PolarPlots; }
         }
 
-        private List<SavedPolarPlotAngle> _Angles = new List<SavedPolarPlotAngle>();
-        /// <summary>
-        /// Gets or sets a serialisable version of <see cref="PolarPlots"/>.
-        /// </summary>
-        /// <remarks>
-        /// This is used to support serialisation and is not intended for use by the application.
-        /// </remarks>
-        public List<SavedPolarPlotAngle> Angles
-        {
-            get { return _Angles; }
-        }
-
         /// <summary>
         /// Creates a deep copy of the object.
         /// </summary>
@@ -69,36 +57,6 @@ namespace VirtualRadar.Interface.Listener
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Copies the <see cref="PolarPlots"/> dictionary into <see cref="Angles"/>.
-        /// </summary>
-        /// <remarks>
-        /// Not great, but it will work and I don't need anything fancier at the moment.
-        /// Necessary because XmlSerializer doesn't support dictionaries.
-        /// </remarks>
-        public void PrepareForSerialisation()
-        {
-            Angles.Clear();
-            Angles.AddRange(PolarPlots.Where(r => r.Value.Distance != 0).Select(r => new SavedPolarPlotAngle(r.Key, r.Value)));
-        }
-
-        /// <summary>
-        /// Copies the <see cref="Angles"/> into <see cref="PolarPlots"/>.
-        /// </summary>
-        /// <remarks>
-        /// Not great, but it will work and I don't need anything fancier at the moment.
-        /// Necessary because XmlSerializer doesn't support dictionaries.
-        /// </remarks>
-        public void FinishDeserialisation()
-        {
-            PolarPlots.Clear();
-            foreach(var savedPolarPlotAngle in Angles) {
-                PolarPlots.Add(savedPolarPlotAngle.Angle, savedPolarPlotAngle.PolarPlot);
-            }
-
-            Angles.Clear();
         }
     }
 }

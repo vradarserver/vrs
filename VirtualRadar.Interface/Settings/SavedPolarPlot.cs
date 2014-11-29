@@ -73,10 +73,6 @@ namespace VirtualRadar.Interface.Settings
                 Longitude = polarPlotter.Longitude;
                 RoundToDegrees = polarPlotter.RoundToDegrees;
                 PolarPlotSlices.AddRange(slices);
-
-                foreach(var slice in PolarPlotSlices) {
-                    slice.PrepareForSerialisation();
-                }
             }
         }
 
@@ -100,16 +96,6 @@ namespace VirtualRadar.Interface.Settings
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Applies the deserialised values to all slices.
-        /// </summary>
-        public void FinishDeserialisation()
-        {
-            foreach(var slice in PolarPlotSlices) {
-                slice.FinishDeserialisation();
-            }
         }
     }
 }

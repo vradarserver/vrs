@@ -13,8 +13,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml.Serialization;
 using InterfaceFactory;
+using Newtonsoft.Json;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
 
@@ -67,13 +67,9 @@ namespace VirtualRadar.Library.Settings
                 var folder = GetFolder();
 
                 var fileName = GetFullPath(feedName);
-                var serialiser = new XmlSerializer(typeof(SavedPolarPlot));
-
+                var content = JsonConvert.SerializeObject(savedPolarPlot, Formatting.Indented);
                 lock(_SyncLock) {
-                    if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-                    using(var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read)) {
-                        serialiser.Serialize(stream, savedPolarPlot);
-                    }
+                    File.WriteAllText(fileName, content);
                 }
             }
         }
@@ -90,17 +86,14 @@ namespace VirtualRadar.Library.Settings
             var feedName = feed == null ? null : feed.Name;
             if(!String.IsNullOrEmpty(feedName)) {
                 var fileName = GetFullPath(feedName);
-                var serialiser = new XmlSerializer(typeof(SavedPolarPlot));
+                string content = null;
 
                 lock(_SyncLock) {
                     if(File.Exists(fileName)) {
-                        using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                            result = serialiser.Deserialize(stream) as SavedPolarPlot;
-                            if(result != null) result.FinishDeserialisation();
-                        }
+                        content = File.ReadAllText(fileName);
                     }
                 }
-
+                if(content != null) result = JsonConvert.DeserializeObject<SavedPolarPlot>(content);
                 if(result != null && !result.IsForSameFeed(feed)) result = null;
             }
 
@@ -127,7 +120,7 @@ namespace VirtualRadar.Library.Settings
         private string GetFullPath(string feedName)
         {
             var fileName = SanitiseFileName(feedName);
-            fileName = String.Format("{0}.xml", fileName);
+            fileName = String.Format("{0}.json", fileName);
 
             return Path.Combine(GetFolder(), fileName);
         }
