@@ -36,6 +36,10 @@ namespace VirtualRadar.Interface.SQLite
         /// </summary>
         Exception Exception { get; }
 
+        /// <summary>
+        /// Populates the object with the details of an exception.
+        /// </summary>
+        /// <param name="ex"></param>
         void Initialise(Exception ex);
     }
 }

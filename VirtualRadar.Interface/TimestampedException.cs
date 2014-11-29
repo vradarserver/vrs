@@ -33,7 +33,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="ex"></param>
+        /// <param name="exception"></param>
         public TimestampedException(Exception exception) : this(DateTime.UtcNow, exception)
         {
         }

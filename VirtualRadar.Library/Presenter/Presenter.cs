@@ -133,8 +133,7 @@ namespace VirtualRadar.Library.Presenter
             }
 
             /// <summary>
-            /// Returns true if the validation passes, i.e. there is no problem with the value being tested. This
-            /// will always return true if <see cref="FieldMatches"/> returns false.
+            /// Returns true if the validation passes, i.e. there is no problem with the value being tested.
             /// </summary>
             /// <param name="condition"></param>
             /// <returns></returns>

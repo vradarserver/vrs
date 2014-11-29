@@ -23,7 +23,7 @@ namespace VirtualRadar.Interface
     /// <remarks><para>
     /// A CIDR is an IP address and a mask, expressed as a number of bits. The bits indicate the number of 1
     /// bits measured from the high bit down to the low bit - a bitmask of /1 is the high bit (bit 32) set,
-    /// 2 would be bits 31 & 32 set and so on. If the number of bits isn't specified then 32 is assumed.
+    /// 2 would be bits 31 &amp; 32 set and so on. If the number of bits isn't specified then 32 is assumed.
     /// </para><para>
     /// The address is masked off to produce a set of high bits from the address. When we want to compare another
     /// address we apply the bitmask to the other address as well. If all of the bits match - i.e. an xor of

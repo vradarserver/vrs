@@ -34,6 +34,9 @@ namespace VirtualRadar.WinForms.SettingPage
     public partial class PageWebSiteGoogleMaps : Page
     {
         #region PageSummary
+        /// <summary>
+        /// Describes the content of the Google Maps page.
+        /// </summary>
         public class Summary : PageSummary
         {
             /// <summary>

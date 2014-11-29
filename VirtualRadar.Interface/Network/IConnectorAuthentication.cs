@@ -37,8 +37,7 @@ namespace VirtualRadar.Interface.Network
         bool GetResponseIsComplete(byte[] response);
 
         /// <summary>
-        /// Passed a complete response (as indicated by <see cref="GetResponseLength"/>, returns
-        /// true if the response is valid and false if it does not.
+        /// Passed a complete response, returns true if the response is valid and false if it does not.
         /// </summary>
         /// <param name="response"></param>
         /// <returns></returns>

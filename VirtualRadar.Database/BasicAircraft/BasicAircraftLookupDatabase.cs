@@ -23,7 +23,7 @@ using VirtualRadar.Interface.StandingData;
 namespace VirtualRadar.Database.BasicAircraft
 {
     /// <summary>
-    /// The default implementation of <see cref="IBaseicAircraftLookupDatabase"/>.
+    /// The default implementation of <see cref="IBasicAircraftLookupDatabase"/>.
     /// </summary>
     class BasicAircraftLookupDatabase : IBasicAircraftLookupDatabase
     {

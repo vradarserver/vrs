@@ -20,26 +20,55 @@ namespace VirtualRadar.WinForms.PortableBinding
     /// </summary>
     public class ItemDescription<T>
     {
+        /// <summary>
+        /// Gets the item that is being described.
+        /// </summary>
         public T Item { get; private set; }
 
+        /// <summary>
+        /// Gets the item's description.
+        /// </summary>
         public string Description { get; private set; }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="description"></param>
         public ItemDescription(T item, string description)
         {
             Item = item;
             Description = description;
         }
 
+        /// <summary>
+        /// See base class docs.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Description;
         }
 
+        /// <summary>
+        /// Returns true if both the item and the description are Object.Equal to the values
+        /// held by this object.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
         public bool AreItemDescriptionEqual(T item, string description)
         {
             return Object.Equals(Item, item) && String.Equals(Description, description);
         }
 
+        /// <summary>
+        /// See base class docs. Objects are equal to this if they are of the correct class
+        /// and both Item and Description are Equal to this object's <see cref="Item"/> and
+        /// <see cref="Description"/>.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             var result = Object.ReferenceEquals(this, obj);
@@ -51,6 +80,10 @@ namespace VirtualRadar.WinForms.PortableBinding
             return result;
         }
 
+        /// <summary>
+        /// See base class docs.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             var result = Object.Equals(Item, default(T)) ? 0 : Item.GetHashCode();

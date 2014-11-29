@@ -416,7 +416,7 @@ namespace VirtualRadar.Library.Network
 
         #region RecordException, GetExceptionHistory
         /// <summary>
-        /// Records an exception in <see cref="Exceptions"/>.
+        /// Records an exception.
         /// </summary>
         /// <param name="ex"></param>
         private TimestampedException RecordException(Exception ex)

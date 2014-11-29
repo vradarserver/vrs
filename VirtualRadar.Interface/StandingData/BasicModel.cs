@@ -20,10 +20,19 @@ namespace VirtualRadar.Interface.StandingData
     /// </summary>
     public class BasicModel
     {
+        /// <summary>
+        /// Gets or sets the model's unique identifier.
+        /// </summary>
         public int ModelID { get; set; }
 
+        /// <summary>
+        /// Gets or sets the model's ICAO.
+        /// </summary>
         public string Icao { get; set; }
 
+        /// <summary>
+        /// Gets or sets the model's name.
+        /// </summary>
         public string Name { get; set; }
     }
 }

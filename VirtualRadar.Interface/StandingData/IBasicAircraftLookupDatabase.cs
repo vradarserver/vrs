@@ -80,7 +80,7 @@ namespace VirtualRadar.Interface.StandingData
         /// <summary>
         /// Inserts a new aircraft record.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="record"></param>
         void InsertAircraft(BasicAircraft record);
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace VirtualRadar.Interface.StandingData
         /// <summary>
         /// Inserts a new operator record.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="record"></param>
         void InsertOperator(BasicOperator record);
 
         /// <summary>

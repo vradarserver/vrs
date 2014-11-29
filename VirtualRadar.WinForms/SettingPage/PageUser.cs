@@ -30,6 +30,9 @@ namespace VirtualRadar.WinForms.SettingPage
     public partial class PageUser : Page
     {
         #region PageSummary
+        /// <summary>
+        /// Describes the content of the user page.
+        /// </summary>
         public class Summary : PageSummary
         {
             /// <summary>

@@ -123,6 +123,10 @@ namespace VirtualRadar.WinForms.PortableBinding
         #endregion
 
         #region Dispose
+        /// <summary>
+        /// See base class docs.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if(disposing) {

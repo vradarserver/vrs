@@ -313,6 +313,10 @@ namespace VirtualRadar.Interface.Settings
             ShutdownText = "#43-00\\r";
         }
 
+        /// <summary>
+        /// See base class docs.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Name ?? "<no name>";

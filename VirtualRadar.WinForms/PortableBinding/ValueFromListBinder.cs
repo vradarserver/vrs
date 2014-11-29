@@ -100,7 +100,6 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="list"></param>
         /// <param name="getModelValue"></param>
         /// <param name="setModelValue"></param>
-        /// <param name="getRowValue"></param>
         public ValueFromListBinder(
             TModel model, TControl control, IList<TListModel> list,
             Expression<Func<TModel, TValue>> getModelValue,
@@ -117,7 +116,8 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="list"></param>
         /// <param name="getModelValue"></param>
         /// <param name="setModelValue"></param>
-        /// <param name="getRowValue"></param>
+        /// <param name="getControlValue"></param>
+        /// <param name="setControlValue"></param>
         public ValueFromListBinder(
             TModel model, TControl control, IList<TListModel> list,
             Expression<Func<TModel, TValue>> getModelValue,

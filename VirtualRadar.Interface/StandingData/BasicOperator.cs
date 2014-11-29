@@ -20,10 +20,19 @@ namespace VirtualRadar.Interface.StandingData
     /// </summary>
     public class BasicOperator
     {
+        /// <summary>
+        /// Gets or sets the operator's unique identifier.
+        /// </summary>
         public int OperatorID { get; set; }
 
+        /// <summary>
+        /// Gets or sets the operator's ICAO.
+        /// </summary>
         public string Icao { get; set; }
 
+        /// <summary>
+        /// Gets or sets the operator's name.
+        /// </summary>
         public string Name { get; set; }
     }
 }
