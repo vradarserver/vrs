@@ -115,7 +115,6 @@
     <Compile Include="Settings\ISharedConfiguration.cs" />
     <Compile Include="Settings\ISiteSettingsParser.cs" />
     <Compile Include="Settings\SavedPolarPlot.cs" />
-    <Compile Include="Settings\SavedPolarPlotAngle.cs" />
     <Compile Include="StandingData\BasicAircraft.cs" />
     <Compile Include="StandingData\BasicAircraftAndChildren.cs" />
     <Compile Include="StandingData\BasicModel.cs" />
