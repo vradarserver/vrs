@@ -50,6 +50,9 @@
             this.numericSlowSurfaceGlobalPositionLimit = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkBoxIgnoreBadCodeblockNonPI0 = new System.Windows.Forms.CheckBox();
+            this.checkBoxIgnoreBadCodeblockPI0 = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
@@ -68,9 +71,6 @@
             this.numericAirborneGlobalPositionLimit = new System.Windows.Forms.NumericUpDown();
             this.checkBoxIgnoreMilitaryExtendedSquitter = new System.Windows.Forms.CheckBox();
             this.linkLabelUseRecommendedSettings = new System.Windows.Forms.LinkLabel();
-            this.label11 = new System.Windows.Forms.Label();
-            this.checkBoxIgnoreBadCodeblockPI0 = new System.Windows.Forms.CheckBox();
-            this.checkBoxIgnoreBadCodeblockNonPI0 = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericReceiverRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericAcceptIcaoInNonPISeconds)).BeginInit();
@@ -429,6 +429,35 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "::OptionsRawFeedAcceptIcaoAsValidCategory::";
             // 
+            // checkBoxIgnoreBadCodeblockNonPI0
+            // 
+            this.checkBoxIgnoreBadCodeblockNonPI0.AutoSize = true;
+            this.checkBoxIgnoreBadCodeblockNonPI0.Location = new System.Drawing.Point(389, 72);
+            this.checkBoxIgnoreBadCodeblockNonPI0.Name = "checkBoxIgnoreBadCodeblockNonPI0";
+            this.checkBoxIgnoreBadCodeblockNonPI0.Size = new System.Drawing.Size(131, 17);
+            this.checkBoxIgnoreBadCodeblockNonPI0.TabIndex = 14;
+            this.checkBoxIgnoreBadCodeblockNonPI0.Text = "::InNonPI0Messages::";
+            this.checkBoxIgnoreBadCodeblockNonPI0.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxIgnoreBadCodeblockPI0
+            // 
+            this.checkBoxIgnoreBadCodeblockPI0.AutoSize = true;
+            this.checkBoxIgnoreBadCodeblockPI0.Location = new System.Drawing.Point(200, 72);
+            this.checkBoxIgnoreBadCodeblockPI0.Name = "checkBoxIgnoreBadCodeblockPI0";
+            this.checkBoxIgnoreBadCodeblockPI0.Size = new System.Drawing.Size(111, 17);
+            this.checkBoxIgnoreBadCodeblockPI0.TabIndex = 13;
+            this.checkBoxIgnoreBadCodeblockPI0.Text = "::InPI0Messages::";
+            this.checkBoxIgnoreBadCodeblockPI0.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 73);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(129, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "::IgnoreUnassignedIcao:::";
+            // 
             // label21
             // 
             this.label21.AutoSize = true;
@@ -647,35 +676,6 @@
             this.linkLabelUseRecommendedSettings.TabStop = true;
             this.linkLabelUseRecommendedSettings.Text = "::UseRecommendedSettings::";
             this.linkLabelUseRecommendedSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelUseRecommendedSettings_LinkClicked);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 76);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(129, 13);
-            this.label11.TabIndex = 12;
-            this.label11.Text = "::IgnoreUnassignedIcao:::";
-            // 
-            // checkBoxIgnoreBadCodeblockPI0
-            // 
-            this.checkBoxIgnoreBadCodeblockPI0.AutoSize = true;
-            this.checkBoxIgnoreBadCodeblockPI0.Location = new System.Drawing.Point(200, 72);
-            this.checkBoxIgnoreBadCodeblockPI0.Name = "checkBoxIgnoreBadCodeblockPI0";
-            this.checkBoxIgnoreBadCodeblockPI0.Size = new System.Drawing.Size(111, 17);
-            this.checkBoxIgnoreBadCodeblockPI0.TabIndex = 13;
-            this.checkBoxIgnoreBadCodeblockPI0.Text = "::InPI0Messages::";
-            this.checkBoxIgnoreBadCodeblockPI0.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxIgnoreBadCodeblockNonPI0
-            // 
-            this.checkBoxIgnoreBadCodeblockNonPI0.AutoSize = true;
-            this.checkBoxIgnoreBadCodeblockNonPI0.Location = new System.Drawing.Point(389, 72);
-            this.checkBoxIgnoreBadCodeblockNonPI0.Name = "checkBoxIgnoreBadCodeblockNonPI0";
-            this.checkBoxIgnoreBadCodeblockNonPI0.Size = new System.Drawing.Size(131, 17);
-            this.checkBoxIgnoreBadCodeblockNonPI0.TabIndex = 14;
-            this.checkBoxIgnoreBadCodeblockNonPI0.Text = "::InNonPI0Messages::";
-            this.checkBoxIgnoreBadCodeblockNonPI0.UseVisualStyleBackColor = true;
             // 
             // PageRawFeedDecoding
             // 

@@ -166,4 +166,7 @@
   <data name="Receiver" xml:space="preserve">
     <value>Приемник</value>
   </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>Получено исключение при обработке сообщения: {0}</value>
+  </data>
 </root>
