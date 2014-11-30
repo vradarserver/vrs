@@ -92,6 +92,7 @@
     VRS.$$.Distances =                                  'Distances';
     VRS.$$.DoNotImportAutoSelect =                      'Do not import auto-select settings';
     VRS.$$.DoNotImportCurrentLocation =                 'Do not import current location';
+    VRS.$$.DoNotImportRequestFeedId =                   'Do not import request feed ID';
     VRS.$$.DoNotImportLanguageSettings =                'Do not import language settings';
     VRS.$$.DoNotImportSplitters =                       'Do not import splitters';
     VRS.$$.DoNotShow =                                  'Do not show';

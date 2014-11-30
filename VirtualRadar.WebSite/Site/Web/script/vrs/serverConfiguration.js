@@ -21,6 +21,11 @@
     VRS.globalOptions.serverConfigDataType = VRS.globalOptions.serverConfigDataType || 'json';          // The type of call to make when fetching the server configuration.
     VRS.globalOptions.serverConfigTimeout = VRS.globalOptions.serverConfigTimeout || 10000;             // The number of milliseconds to wait before timing out a fetch of server configuration.
     VRS.globalOptions.serverConfigRetryInterval = VRS.globalOptions.serverConfigRetryInterval || 5000;  // The number of milliseconds to wait before retrying a fetch of server configuration.
+    VRS.globalOptions.serverConfigOverwrite = VRS.globalOptions.serverConfigOverwrite !== undefined ? VRS.globalOptions.serverConfigOverwrite : false;                              // Whether to overwrite the existing configuration with the configuration stored on the server.
+    VRS.globalOptions.serverConfigResetBeforeImport = VRS.globalOptions.serverConfigResetBeforeImport !== undefined ? VRS.globalOptions.serverConfigResetBeforeImport : false;      // Whether to erase the existing configuration before importing the configuration stored on the server.
+    VRS.globalOptions.serverConfigIgnoreSplitters = VRS.globalOptions.serverConfigIgnoreSplitters !== undefined ? VRS.globalOptions.serverConfigIgnoreSplitters : false;            // Whether to ignore the splitter settings when importing the configuration stored on the server.
+    VRS.globalOptions.serverConfigIgnoreLanguage = VRS.globalOptions.serverConfigIgnoreLanguage !== undefined ? VRS.globalOptions.serverConfigIgnoreLanguage : true;                // Whether to ignore the language settings when importing the configuration stored on the server.
+    VRS.globalOptions.serverConfigIgnoreRequestFeedId = VRS.globalOptions.serverConfigIgnoreRequestFeedId !== undefined ? VRS.globalOptions.serverConfigIgnoreRequestFeedId : true; // Whether to ignore the feed ID to fetch when importing the configuration stored on the server.
     //endregion
 
     //region ServerConfiguration
@@ -95,10 +100,11 @@
 
                                 if(_ServerConfig.InitialSettings && VRS.configStorage && !VRS.configStorage.getHasSettings()) {
                                     VRS.configStorage.importSettings(_ServerConfig.InitialSettings, {
-                                        overwrite:          false,
-                                        resetBeforeImport:  false,
-                                        ignoreSplitters:    true,
-                                        ignoreLanguage:     true
+                                        overwrite:              VRS.globalOptions.serverConfigOverwrite,
+                                        resetBeforeImport:      VRS.globalOptions.serverConfigResetBeforeImport,
+                                        ignoreSplitters:        VRS.globalOptions.serverConfigIgnoreSplitters,
+                                        ignoreLanguage:         VRS.globalOptions.serverConfigIgnoreLanguage,
+                                        ignoreRequestFeedId:    VRS.globalOptions.serverConfigIgnoreRequestFeedId
                                     });
                                 }
 

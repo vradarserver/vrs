@@ -2410,4 +2410,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="SettingsSite" xml:space="preserve">
     <value>Settings site</value>
   </data>
+  <data name="CopyToClipboard" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="InitialSettingsTitle" xml:space="preserve">
+    <value>Initial Settings</value>
+  </data>
 </root>

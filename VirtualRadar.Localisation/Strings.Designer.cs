@@ -1016,6 +1016,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string CopyToClipboard {
+            get {
+                return ResourceManager.GetString("CopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not check for a later version.
         /// </summary>
         public static string CouldNotCheckForUpdate {
@@ -1903,6 +1912,15 @@ namespace VirtualRadar.Localisation {
         public static string InitialRefreshOutOfBounds {
             get {
                 return ResourceManager.GetString("InitialRefreshOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial Settings.
+        /// </summary>
+        public static string InitialSettingsTitle {
+            get {
+                return ResourceManager.GetString("InitialSettingsTitle", resourceCulture);
             }
         }
         
