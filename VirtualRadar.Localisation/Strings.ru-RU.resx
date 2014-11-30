@@ -133,7 +133,7 @@
 iPhone CSS был позаимствован из jQTouch проекта (http://www.jqtouch.com). 
 
 Немецкий перевод Евы Кнапп и Майкла Ли.
-Русский перевод Сергея Серова /sergsero и друзей.
+Русский перевод Сергея Серова /Sergsero и друзей.
 Французский перевод Франсуа /F5ANN.</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
@@ -193,7 +193,7 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <comment>The folder containing images of country or airline flags</comment>
   </data>
   <data name="ICAO" xml:space="preserve">
-    <value>ИКАО</value>
+    <value>ICAO</value>
     <comment>The initials of the United Nations organisation</comment>
   </data>
   <data name="Internet" xml:space="preserve">
@@ -516,7 +516,7 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <value>С</value>
   </data>
   <data name="LatestVersion" xml:space="preserve">
-    <value>Это актуальная версия программы</value>
+    <value>Это - актуальная версия программы</value>
   </data>
   <data name="menuAbout" xml:space="preserve">
     <value>&amp;О программе...</value>
@@ -630,7 +630,7 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <comment>Title for an error message box</comment>
   </data>
   <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>Программе необходим установленный .NET 3.5 Framework. Хотите загрузить .NET 3.5 Framework с сайта Microsoft?</value>
+    <value>Программе необходим установленный .NET 3.5 Framework. Хотите его загрузить с сайта Microsoft?</value>
   </data>
   <data name="DotNetVersionTooLowTitle" xml:space="preserve">
     <value>Неподходящая версия .NET Framework</value>
@@ -688,7 +688,7 @@ iPhone CSS был позаимствован из jQTouch проекта (http:/
     <comment>Where {0} is a filename or a folder name</comment>
   </data>
   <data name="SuggestUseDifferentPortFull" xml:space="preserve">
-    <value>Если веб-сервер не может запуститься, потому что другая программа уже прослушивает этот порт, запустите программу установки Virtual Radar Server вновь и выберите другой порт.
+    <value>Если веб-сервер не может запуститься, потому что другая программа уже использует этот номер порта. Запустите программу установки Virtual Radar Server вновь и выберите другой порт.
 
 Например, когда программа установки запрашивает номер порта, попробуйте 8080, а не 80.</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **
@@ -728,11 +728,11 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <comment>Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
   </data>
   <data name="RouteStateFileContentInvalid" xml:space="preserve">
-    <value>Содержимое файла маршрутных данных испорчено</value>
+    <value>Содержимое файла маршрутных данных повреждено</value>
     <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
   </data>
   <data name="RouteStateFileInvalid" xml:space="preserve">
-    <value>Файл маршрутных данных испорчен</value>
+    <value>Файл маршрутных данных поврежден</value>
     <comment>Route as in flight route</comment>
   </data>
   <data name="SomeRouteFilesMissing" xml:space="preserve">
@@ -933,7 +933,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Причина</value>
   </data>
   <data name="InvalidPlugins" xml:space="preserve">
-    <value>Неверные плагины</value>
+    <value>Поврежденные плагины</value>
   </data>
   <data name="SplashScreenStartingPictureFolderCache" xml:space="preserve">
     <value>Запуск кэширования папки с изображениями</value>
@@ -1055,7 +1055,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Получить из базы данных BaseStation</value>
   </data>
   <data name="BeastModeSFeed" xml:space="preserve">
-    <value>AVR или BIN BEAST RAW</value>
+    <value>AVR или BEAST RAW</value>
     <comment>'Beast' is the name of a product and may not need translating</comment>
   </data>
   <data name="AcceptableAirborneSpeed" xml:space="preserve">
@@ -1088,17 +1088,17 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>RAW декодирование</value>
   </data>
   <data name="ReceiverRange" xml:space="preserve">
-    <value>Ограничение зоны приема, км</value>
+    <value>Ограничение зоны приема</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value>секунды</value>
+    <value>с</value>
     <comment>As in hours, minutes, seconds</comment>
   </data>
   <data name="SlowSurfaceGlobalPositionLimit" xml:space="preserve">
     <value>Интервал сообщений о местоположении на земле для медленных целей, с</value>
   </data>
   <data name="UseIcaoSpecificationSettings" xml:space="preserve">
-    <value>Использовать рекомендованные ИКАО настройки</value>
+    <value>Использовать рекомендованные ICAO настройки</value>
   </data>
   <data name="UseRecommendedSettings" xml:space="preserve">
     <value>Использовать рекомендованные настройки</value>
@@ -1113,7 +1113,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>IP-адрес приемника или программы, от которых получаются данные. Используется только для сетевых источников.</value>
   </data>
   <data name="OptionsDescribeDataSourcesDataSource" xml:space="preserve">
-    <value>Формат данных приемника или программы, которые Virtual Radar Server будет получать на вход. Поддерживаются символы *, @, : в начале AVR сообщений, а также бинарный формат BIN BEAST.</value>
+    <value>Формат данных приемника или программы, которые Virtual Radar Server будет получать на вход. Поддерживаются символы *, @, : в начале AVR сообщений, а также бинарный формат BEAST.</value>
   </data>
   <data name="OptionsDescribeDataSourcesPort" xml:space="preserve">
     <value>Номер порта, через который приемник или программа посылает данные. Используется только для сетевых источников.</value>
@@ -1125,7 +1125,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Загружать обновления маршрутов</value>
   </data>
   <data name="CheckForNewVersions" xml:space="preserve">
-    <value>Проверка обновлений программы</value>
+    <value>Проверять обновления программы</value>
   </data>
   <data name="ConnectionType" xml:space="preserve">
     <value>Тип подключения</value>
@@ -1156,16 +1156,16 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Полный путь и имя файла базы данных BaseStation, которая содержит информацию о самолетах.</value>
   </data>
   <data name="OptionsDescribeDataSourcesFlagsFolder" xml:space="preserve">
-    <value>Папка, содержащая логотипы авиакомпаний, в качестве имен файлов используются ИКАО коды авиакомпаний.</value>
+    <value>Папка, содержащая логотипы авиакомпаний, в качестве имен файлов используются ICAO коды авиакомпаний.</value>
   </data>
   <data name="OptionsDescribeDataSourcesIgnoreBadConnection" xml:space="preserve">
     <value>"Нет" - отключить источник, если поступают сообщения с ошибками, "Да" - игнорировать и продолжать получать.</value>
   </data>
   <data name="OptionsDescribeDataSourcesPicturesFolder" xml:space="preserve">
-    <value>Папка, содержащая фотографии самолетов, в качестве имен файлов используются регистрационные номера самолетов и/или их ИКАО коды типов.</value>
+    <value>Папка, содержащая фотографии самолетов, в качестве имен файлов используются регистрационные номера самолетов и/или их ICAO коды типов.</value>
   </data>
   <data name="OptionsDescribeDataSourcesSilhouettesFolder" xml:space="preserve">
-    <value>Папка, содержащая силуэты самолетов, в качестве имен файлов используются ИКАО коды типов.</value>
+    <value>Папка, содержащая силуэты самолетов, в качестве имен файлов используются ICAO коды типов.</value>
   </data>
   <data name="OptionsDescribeGeneralAudioEnabled" xml:space="preserve">
     <value>"Да" - включить звуковые функции веб-сайта, "Нет" - отключить.</value>
@@ -1186,28 +1186,28 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Регулирует темп речи. Значение 0 соответствует средней скорости, отрицательные значения - медленнее, положительные - быстрее.</value>
   </data>
   <data name="OptionsDescribeGeneralShortTrailLengthSeconds" xml:space="preserve">
-    <value>Какому количеству секунд при перемещений самолета будет соответствовать укороченный след на карте.</value>
+    <value>Какому количеству секунд, при перемещении самолета, будет соответствовать укороченный след на карте.</value>
   </data>
   <data name="OptionsDescribeGeneralTextToSpeechVoice" xml:space="preserve">
     <value>Голос, используемый при преобразовании текста в речь.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptableAirborneSpeed" xml:space="preserve">
-    <value>Допустимое количество километров, на которое самолет может переместиться в горизонтальном полете за 30 с, прежде чем декодирование в местном масштабе местоположения в воздухе считается недействительным. ИКАО рекомендует 11,112 км. Большие значения мешают обнаружению неточностей.</value>
+    <value>Допустимое количество километров, на которое самолет может переместиться в горизонтальном полете за 30 с, прежде чем декодирование в местном масштабе местоположения в воздухе считается недействительным. ICAO рекомендует 11,112 км. Большие значения мешают обнаружению неточностей.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptableAirSurfaceTransitionSpeed" xml:space="preserve">
-    <value>Допустимое количество километров, на которое взлетающий или садящийся самолет может переместиться за 30 с, прежде чем декодирование в местном масштабе местоположения в воздухе считается недействительным. ИКАО рекомендует 4,63 км. Большие значения мешают обнаружению неточностей.</value>
+    <value>Допустимое количество километров, на которое взлетающий или садящийся самолет может переместиться за 30 с, прежде чем декодирование в местном масштабе местоположения в воздухе считается недействительным. ICAO рекомендует 4,63 км. Большие значения мешают обнаружению неточностей.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptableSurfaceSpeed" xml:space="preserve">
-    <value>Допустимое количество километров, на которое самолет или транспортное средство на земле может переместиться за 30 с, прежде чем декодирование в местном масштабе местоположения на земле считается недействительным. ИКАО рекомендует 1,4 км. Большие значения мешают обнаружению неточностей.</value>
+    <value>Допустимое количество километров, на которое самолет или транспортное средство на земле может переместиться за 30 с, прежде чем декодирование в местном масштабе местоположения на земле считается недействительным. ICAO рекомендует 1,4 км. Большие значения мешают обнаружению неточностей.</value>
   </data>
   <data name="OptionsDescribeRawFeedAirborneGlobalPositionLimit" xml:space="preserve">
-    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении в воздухе при декодировании в глобальном масштабе. ИКАО рекомендует 10 секунд. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
+    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении в воздухе при декодировании в глобальном масштабе. ICAO рекомендует 10 с. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
   </data>
   <data name="OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit" xml:space="preserve">
-    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении на земле при декодировании в глобальном масштабе для целей, движущихся быстрее 25 уз. (46,3 км/ч). ИКАО рекомендует 25 с. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
+    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении на земле при декодировании в глобальном масштабе для целей, движущихся быстрее 25 уз. (46,3 км/ч). ICAO рекомендует 25 с. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
   </data>
   <data name="OptionsDescribeRawFeedIgnoreMilitaryExtendedSquitter" xml:space="preserve">
-    <value>"Да" - игнорировать DF19/AF0 сообщения, не декодируя их подобно DF17. В ряде документов ИКАО утверждается, что их можно рассматривать, как DF17 сообщения, в других - это отрицается.</value>
+    <value>"Да" - игнорировать DF19/AF0 сообщения, не декодируя их подобно DF17. В ряде документов ICAO утверждается, что их можно рассматривать, как DF17 сообщения, в других - это отрицается.</value>
   </data>
   <data name="OptionsDescribeRawFeedReceiverLocation" xml:space="preserve">
     <value>Название места приема и его географические координаты. Необходимо для однозначного определения местоположения приемника в одной из восьми зон на Земле, для которой производится декодирование.</value>
@@ -1216,7 +1216,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Радиус рабочей зоны приема. ADS-B сообщения с большей величиной дальности от места приема, чем это значение, отбрасываются.</value>
   </data>
   <data name="OptionsDescribeRawFeedSlowSurfaceGlobalPositionLimit" xml:space="preserve">
-    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении на земле при декодировании в глобальном масштабе для целей, движущихся медленнее 25 уз. (46,3 км/ч). ИКАО рекомендует 50 с. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
+    <value>Допустимое количество секунд между четным и нечетным форматами сообщений о местоположении на земле при декодировании в глобальном масштабе для целей, движущихся медленнее 25 уз. (46,3 км/ч). ICAO рекомендует 50 с. Большие значения могут привести к первоначальному появлению самолетов в нескольких сотнях миль от их истинного местоположения.</value>
   </data>
   <data name="OptionsDescribeWebServerAllowInternetProximityGadgets" xml:space="preserve">
     <value>"Да" - если гаджетам, подключенным из Интернет, разрешено получать данные, "Нет" - если не разрешено. На гаджеты из локальной сети параметр не влияет.</value>
@@ -1240,7 +1240,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>"Да", если Интернет-пользователям разрешено просматривать фотографии самолетов, "Нет", если запрещено. Увеличивает использование полосы пропускания и нагрузку на сервер. Пользователи локальной сети не зависят от этого параметра.</value>
   </data>
   <data name="OptionsDescribeWebServerInternetClientTimeoutMinutes" xml:space="preserve">
-    <value>Количество минут бездействия, после чего сайт перестает отвечать Интернет-пользователям. "0" отключает эту функцию. Пользователи локальной сети не имеют тайм-аута.</value>
+    <value>Количество минут бездействия, после чего сайт перестает отвечать Интернет-пользователям. "0" отключает эту функцию. Пользователи локальной сети не имеют таймаута.</value>
   </data>
   <data name="OptionsDescribeWebServerIsOnlyVirtualRadarServerOnLan" xml:space="preserve">
     <value>"Да", если это единственный компьютер в сети с работающим VRS, которому вы хотите обеспечить доступ в Интернет, "Нет", если это не так.</value>
@@ -1358,7 +1358,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Интервал проверки наличия новой версии должен быть от 1 до 365</value>
   </data>
   <data name="DurationBeforeAircraftRemovedFromMapOutOfBounds" xml:space="preserve">
-    <value>Период бездействия, после которого изображение замораживается, должен быть от 5 до 540</value>
+    <value>Таймаут простоя, после которого изображение замораживается, должен быть от 5 до 540</value>
   </data>
   <data name="DurationOfShortTrailsOutOfBounds" xml:space="preserve">
     <value>Продолжительность укороченных траекторий должна быть между 1 и 1800</value>
@@ -1376,13 +1376,13 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Начальное значение обновления должно быть от 0 до 3600</value>
   </data>
   <data name="InternetUserIdleTimeoutOutOfBounds" xml:space="preserve">
-    <value>Период бездействия для Интернет-пользователей должен быть от 0 до 1440</value>
+    <value>Таймаут простоя для Интернет-пользователей должен быть от 0 до 1440</value>
   </data>
   <data name="LatitudeOutOfBounds" xml:space="preserve">
     <value>Широта должна быть от -90.0 (Южное полушарие) до 90.0 (Северное полушарие)</value>
   </data>
   <data name="LongitudeOutOfBounds" xml:space="preserve">
-    <value>Долгота должна быть от -180.0 (к Западу) до 180.0 (к Востоку)</value>
+    <value>Долгота должна быть от -180.0 (к Западу) до 180.0 (к Востоку) от нулевого меридиана</value>
     <comment>? better is if East + and West -</comment>
   </data>
   <data name="MinimumRefreshOutOfBounds" xml:space="preserve">
@@ -1430,7 +1430,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <comment>As in the baud rate of a serial port</comment>
   </data>
   <data name="SerialComPort" xml:space="preserve">
-    <value>Номер сериального порта</value>
+    <value>Номер последовательного порта</value>
   </data>
   <data name="SerialDataBits" xml:space="preserve">
     <value>Число бит в символе</value>
@@ -1522,7 +1522,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Параметры серверов, ретранслирующих данные в сеть</value>
   </data>
   <data name="RebroadcastFormatPassthrough" xml:space="preserve">
-    <value>Сквозной</value>
+    <value>Pass-through</value>
     <comment>A rebroadcast server that transmits exactly the same bytes that were transmitted by the receiver VRS is listening to</comment>
   </data>
   <data name="RebroadcastFormatPort30003" xml:space="preserve">
@@ -1591,7 +1591,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>"Да", если VRS извлекает позывные только из ADS-B сообщений, "Нет", если дополнительно используются BDS2,0 сообщения.</value>
   </data>
   <data name="OptionsDescribeRawFeedSuppressReceiverRangeCheck" xml:space="preserve">
-    <value>Установите "Да", если координаты места или радиус фактической зоны приема не известны. Отменяет действие предыдущего пункта по ограничению размера зоны приема. Установка 'Нет' вводит запрет на отображение самолетов, которые находятся вне этой зоны.</value>
+    <value>Установите "Да", если координаты места или радиус зоны приема не известны. Отменяет действие предыдущего пункта по ограничению размера зоны приема. Установка 'Нет' вводит запрет на отображение самолетов, которые находятся вне этой зоны.</value>
   </data>
   <data name="OptionsDescribeRawFeedUseLocalDecodeForInitialPosition" xml:space="preserve">
     <value>"Да" - местоположение самолетов определяется быстрее, но первоначальные позиции могут быть неточными. Действует, если было введено местоположение приемника.</value>
@@ -1724,16 +1724,16 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Значение интервала времени приема ADS-B сообщений должно быть от 1 до 60</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInNonPICount" xml:space="preserve">
-    <value>Количество принятых сообщений, у которых нет поля четности PI (Mode-S), прежде чем их ICAO-адрес будет признан достоверным. Если указано 0, то для этого ICAO-адреса будут использоваться только сообщения с полем четности PI (ADS-B), при PI=0. Как только данный ICAO-адрес будет признан достоверным все дальнейшие сообщения с ним так же будут использоваться.</value>
+    <value>Количество принятых сообщений, у которых нет поля четности PI, прежде чем их ICAO-адрес будет признан достоверным. Если установлен 0, то будут использоваться только ICAO-адреса с верной CRC. Как только данный ICAO-адрес будет признан достоверным все дальнейшие сообщения с ним так же будут использоваться.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInNonPISeconds" xml:space="preserve">
-    <value>Количество секунд, в течение которых должны быть приняты сообщения, у которых нет поля четности PI (Mode-S), прежде чем их ICAO-адрес будет признан достоверным.</value>
+    <value>Количество секунд, в течение которых должны быть приняты сообщения, у которых нет поля четности PI, прежде чем их ICAO-адрес будет признан достоверным.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Count" xml:space="preserve">
-    <value>Количество принятых сообщений, у которых есть поле четности PI (ADS-B), при PI=0, прежде чем их ICAO-адрес будет признан достоверным. Как только данный ICAO-адрес будет признан достоверным все дальнейшие сообщения с ним так же будут использоваться.</value>
+    <value>Количество принятых сообщений, у которых есть поле четности PI, и PI=0, прежде чем их ICAO-адрес будет признан достоверным. Как только данный ICAO-адрес будет признан достоверным все дальнейшие сообщения с ним так же будут использоваться.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Seconds" xml:space="preserve">
-    <value>Количество секунд, в течение которых должны быть приняты сообщения, у которых есть поле четности PI (ADS-B), при PI=0, прежде чем их ICAO-адрес будет признан достоверным.</value>
+    <value>Количество секунд, в течение которых должны быть приняты сообщения, содержащие поле четности PI, и PI=0, прежде чем их ICAO-адрес будет признан достоверным.</value>
   </data>
   <data name="OptionsRawFeedAcceptIcaoAsValidCategory" xml:space="preserve">
     <value>Параметры проверки ICAO-адреса</value>
@@ -1745,10 +1745,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>"Да" - отображать Интернет-пользователям ссылку, позволяющую добавлять в базу новые маршруты или корректировать существующие.</value>
   </data>
   <data name="OptionsDescribeWebSitePreferIataAirportCodes" xml:space="preserve">
-    <value>"Да" - отображать коды аэропортов по стандарту ИАТА (Международной ассоциации воздушного транспорта), например, а/п Домодедово - DME, "Нет" - отображать в стандарте ИКАО (Международной организации гражданской авиации), например, а/п Домодедово - UUDD).</value>
+    <value>"Да" - отображать коды аэропортов по стандарту IATA (Международной ассоциации воздушного транспорта), например, а/п Домодедово - DME, "Нет" - отображать в стандарте ICAO (Международной организации гражданской авиации), например, а/п Домодедово - UUDD).</value>
   </data>
   <data name="PreferIataAirportCodes" xml:space="preserve">
-    <value>Отображать ИАТА коды аэропортов</value>
+    <value>Отображать IATA коды аэропортов</value>
   </data>
   <data name="BytesBuffered" xml:space="preserve">
     <value>Буферизировано, Байт</value>
@@ -1795,7 +1795,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Уникальное имя ретранслирующего сервера.</value>
   </data>
   <data name="OptionsDescribeRebroadcastServerPort" xml:space="preserve">
-    <value>Номер порта</value>
+    <value>Номер порта.</value>
   </data>
   <data name="OptionsDescribeReceiverEnabled" xml:space="preserve">
     <value>"Да", чтобы включить приемник, "Нет", для отключения. По крайней мере один приемник должен быть включен.</value>
@@ -1810,7 +1810,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Настройте, по крайней мере, один приемник.</value>
   </data>
   <data name="PleaseEnableAtLeastOneReceiver" xml:space="preserve">
-    <value>Включите, по крайней мере, один приемник.</value>
+    <value>Укажите, по крайней мере, один приемник.</value>
   </data>
   <data name="OptionsDescribeRebroadcastReceiver" xml:space="preserve">
     <value>Приемник, сообщения которого вы хотите ретранслировать.</value>
@@ -1855,13 +1855,13 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Приемник для виджета рабочего стола "Closest Aircraft".</value>
   </data>
   <data name="IcaoTimeout" xml:space="preserve">
-    <value>Тайм-аут ИКАО</value>
+    <value>таймаут ICAO</value>
   </data>
   <data name="MergedFeeds" xml:space="preserve">
     <value>Объединенные потоки</value>
   </data>
   <data name="OptionsDescribeIcaoTimeout" xml:space="preserve">
-    <value>Количество секунд после прекращения поступления сообщений о самолете с конкретным ИКАО-адресом, прежде чем приемник, выдававший эти сообщения, перестанет считаться для него основным. Если это время слишком малое, то самолеты могут прыгать назад. Если слишком большое, то могут быть замирания метки, когда самолет переходит от одного приемника к другому.</value>
+    <value>Количество секунд после прекращения поступления сообщений о самолете с конкретным ICAO-адресом, прежде чем приемник, выдававший эти сообщения, перестанет считаться для него основным. Если это время слишком малое, то самолеты могут прыгать назад. Если слишком большое, то могут быть замирания метки, когда самолет переходит от одного приемника к другому.</value>
   </data>
   <data name="OptionsDescribeMergedFeedEnabled" xml:space="preserve">
     <value>"Да", для включения этого объединенного потока, "Нет" - для выключения.</value>
@@ -1879,7 +1879,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Исключить</value>
   </data>
   <data name="IcaoTimeoutOutOfBounds" xml:space="preserve">
-    <value>Тайм-аут должен быть от 1 до 30 с</value>
+    <value>Таймаут должен быть от 1 до 30 с</value>
   </data>
   <data name="MergedFeedNeedsAtLeastTwoReceivers" xml:space="preserve">
     <value>Подключите, по крайней мере, 2 приемника для объединения их данных в поток</value>
@@ -1936,7 +1936,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Не удается разобрать значение -ListenerTimeout для "{0}"</value>
   </data>
   <data name="EnableCompression" xml:space="preserve">
-    <value>Включить сжатие</value>
+    <value>Включить компрессию</value>
   </data>
   <data name="OptionsDescribeEnableCompression" xml:space="preserve">
     <value>"Да", чтобы сжать отправляемые браузеру ответы, "Нет" - посылать несжатыми</value>
@@ -1969,8 +1969,8 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Настройки</value>
   </data>
   <data name="StaleSeconds" xml:space="preserve">
-    <comment>The maximum age of a message buffered on a rebroadcast server</comment>
-    <value>Макс. буферизация сообщения, с</value>
+    <value>Допустимое устаревание данных, с</value>
+    <comment>Any messages older than this many seconds are discarded instead of being sent</comment>
   </data>
   <data name="StaleSecondsOutOfBounds" xml:space="preserve">
     <value>Максимальное время буферизации сообщения должно быть не менее 1 с</value>
@@ -2018,10 +2018,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Virtual Radar Server</value>
   </data>
   <data name="ConvertedBasicAuthenticationUser" xml:space="preserve">
-    <value>Converted Basic Authentication User</value>
+    <value>Преобразовывающая базовая аутентификация пользователя</value>
   </data>
   <data name="OptionsDescribeWebServerPermittedUsers" xml:space="preserve">
-    <value>Выберите пользователей, которым разрешается подключение к ВЕБ-серверу</value>
+    <value>Выберите пользователей, которым разрешается подключение к веб-серверу</value>
   </data>
   <data name="PermittedUsers" xml:space="preserve">
     <value>Разрешенные пользователи</value>
@@ -2033,7 +2033,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Параметры соединения</value>
   </data>
   <data name="IcaoTimeoutTitle" xml:space="preserve">
-    <value>Тайм-аут ИКАО</value>
+    <value>Таймаут ICAO</value>
   </data>
   <data name="Range" xml:space="preserve">
     <value>Дальность</value>
@@ -2063,7 +2063,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Только для Flight Simulator X</value>
   </data>
   <data name="PresetConfigurations" xml:space="preserve">
-    <value>Предустановленные настройки</value>
+    <value>Действующие настройки</value>
   </data>
   <data name="Back" xml:space="preserve">
     <value>Назад</value>
@@ -2084,7 +2084,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Beast</value>
   </data>
   <data name="RecConWizDedicatedKinetics" xml:space="preserve">
-    <value>Kinetic Avionics серии SBS или Puck</value>
+    <value>Kinetic Avionics SBS серии или Puck</value>
   </data>
   <data name="RecConWizDedicatedMicroAdsb" xml:space="preserve">
     <value>microADSB USB брелок</value>
@@ -2132,7 +2132,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>gr-air-modes</value>
   </data>
   <data name="RecConWizSdrModesdeco" xml:space="preserve">
-    <value>Modesdeco</value>
+    <value>ModeSDeco2</value>
   </data>
   <data name="RecConWizSdrRtl1090" xml:space="preserve">
     <value>RTL1090</value>
@@ -2156,26 +2156,26 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Введите сетевой адрес компьютера, на котором запущен {0}</value>
   </data>
   <data name="Wizard" xml:space="preserve">
-    <comment>As in a software wizard, a set of pages that ask questions to and collect answers from the user. Used in VRS to help with making configuration choices.</comment>
     <value>Мастер</value>
+    <comment>As in a software wizard, a set of pages that ask questions to and collect answers from the user. Used in VRS to help with making configuration choices.</comment>
   </data>
   <data name="ExceptionWhenCheckingValue" xml:space="preserve">
     <value>Обнаружено исключение при проверке значения: {0}</value>
   </data>
   <data name="LocationDoesNotExist" xml:space="preserve">
-    <value>Это место не существует</value>
+    <value>Это местоположение не существует</value>
   </data>
   <data name="ReceiverOrMergedFeedDoesNotExist" xml:space="preserve">
-    <value>Нет приемника или объединенного фида с этим идентификатором</value>
+    <value>Не существует приемника или объединенного потока с этим идентификатором</value>
   </data>
   <data name="SerialComPortUnknown" xml:space="preserve">
     <value>СОМ порт не существует</value>
   </data>
   <data name="IgnoreModeS" xml:space="preserve">
-    <value>Отбрасывать без координат</value>
+    <value>Игнорировать Mode-S</value>
   </data>
   <data name="IdleTimeout" xml:space="preserve">
-    <value>Тайм-аут экрана, мин</value>
+    <value>Таймаут простоя</value>
   </data>
   <data name="PSeconds" xml:space="preserve">
     <value>(с)</value>
@@ -2208,7 +2208,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>(км)</value>
   </data>
   <data name="PKilometresOver30Seconds" xml:space="preserve">
-    <value>(км / 30 с)</value>
+    <value>(км/30 с)</value>
   </data>
   <data name="SlowSurfaceGlobal" xml:space="preserve">
     <value>Медленные, на земле, глобально</value>
@@ -2217,7 +2217,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Контраст</value>
   </data>
   <data name="PortIsUsedByWebServer" xml:space="preserve">
-    <value>Порт {0} используется на ВЕБ-сервере</value>
+    <value>Порт {0} используется на веб-сервере</value>
   </data>
   <data name="FormatNotSupportedForReceiverType" xml:space="preserve">
     <value>Формат не поддерживается для данного типа приемника</value>
@@ -2235,14 +2235,244 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Адрес {0} не может быть определен</value>
   </data>
   <data name="menuResetReceiverRange" xml:space="preserve">
-    <value>Сбросить &amp;Зону покрытия приемника </value>
+    <value>Сбросить &amp;Диаграмму зоны приема </value>
   </data>
   <data name="OptionsDescribeRebroadcastStaleSeconds" xml:space="preserve">
     <value>Время нахождения сообщения в буфере ретрансляционного сервера, после которого оно считается устаревшим и отбрасывается, с.</value>
   </data>
   <data name="CannotOpenDatabaseWantToAutoFix" xml:space="preserve">
-    <comment>\r\n is a newline in the message dialog, keep those intact</comment>
-    <value>Не удалось открыть {0}, ошибка подсистемы хранения данных: {1}\r\n\r\n  	
+    <value>Не удалось открыть {0}, ошибка подсистемы хранения данных: {1}\r\n\r\n	
 Попытаться автоматически устранить проблему и снова открыть файл?</value>
+    <comment>\r\n is a newline in the message dialog, keep those intact</comment>
+  </data>
+  <data name="OptionsDescribeDirectoryEntryKey" xml:space="preserve">
+    <value>Используется, чтобы подтвердить, что сайт, который вы добавили в публичный каталог сайтов Virtual Radar Server, принадлежит вам. Вы можете добавить ваш сайт в каталог, перейдя на сайт маршрутов  (http://sdm.virtualradarserver.co.uk), создать там учетную запись и заполнить сведения о своем сайте в разделе Account. Скопируйте ключ в это поле.\r\n\r\nЕсли Вы не хотите, чтобы ваш сайт был добавлен в публичный каталог, оставьте это поле пустым.</value>
+  </data>
+  <data name="Cidr" xml:space="preserve">
+    <value>CIDR</value>
+    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+  </data>
+  <data name="CidrEdit" xml:space="preserve">
+    <value>CIDR калькулятор</value>
+    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+  </data>
+  <data name="CidrInvalid" xml:space="preserve">
+    <value>Недопустимый адрес</value>
+    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+  </data>
+  <data name="PassiveReceiver" xml:space="preserve">
+    <value>Использовать входящие соединения от внешних источников</value>
+    <comment>Passive means the receiver waits for a connection to be made to it instead of actively connecting with another computer. A passive receiver has the feed pushed to it, a non-passive receiver pulls the feed from the other computer</comment>
+  </data>
+  <data name="AllCaps" xml:space="preserve">
+    <value>ВСЕ</value>
+    <comment>"All" in capitals - used in combo boxes to select all options</comment>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>Доступ</value>
+  </data>
+  <data name="AllowAccess" xml:space="preserve">
+    <value>Разрешен</value>
+  </data>
+  <data name="DenyAccess" xml:space="preserve">
+    <value>Запрещен</value>
+  </data>
+  <data name="UnrestrictedAccess" xml:space="preserve">
+    <value>Неограниченный</value>
+  </data>
+  <data name="AccessControl" xml:space="preserve">
+    <value>Контроль доступа входящих соединений</value>
+  </data>
+  <data name="DefaultAccess" xml:space="preserve">
+    <value>По умолчанию доступ</value>
+  </data>
+  <data name="FromAddress" xml:space="preserve">
+    <value>IP адрес первого хоста</value>
+  </data>
+  <data name="OptionsDescribeCidr" xml:space="preserve">
+    <value>Введите одиночный IP адрес или диапазон адресов в формате CIDR (бесклассовая междоменная маршрутизация, например, 192.168.0.41 или 192.168.0.0/24).</value>
+  </data>
+  <data name="OptionsDescribeDefaultAccess" xml:space="preserve">
+    <value>Разрешать или отклонять соединения с адресов, которые не соответствуют ни одному из CIDR адресов.</value>
+  </data>
+  <data name="ToAddress" xml:space="preserve">
+    <value>IP адрес последнего хоста</value>
+  </data>
+  <data name="AllowTheseAddresses" xml:space="preserve">
+    <value>Разрешить эти адреса</value>
+  </data>
+  <data name="DenyTheseAddresses" xml:space="preserve">
+    <value>Запретить эти адреса</value>
+  </data>
+  <data name="menuConfigureFeed" xml:space="preserve">
+    <value>Настройка канала</value>
+  </data>
+  <data name="Exceptions" xml:space="preserve">
+    <value>Исключения</value>
+  </data>
+  <data name="LastConnectorException" xml:space="preserve">
+    <value>Последнее исключение</value>
+  </data>
+  <data name="ReceiverIdleTimeoutOutOfBounds" xml:space="preserve">
+    <value>Таймаут простоя должен быть не менее 5 сек</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesIdleTimeout" xml:space="preserve">
+    <value>Количество секунд ожидания перед закрытием соединения, если не было получено каких-либо данных и не используются keep-alive пакеты.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesUseKeepAlive" xml:space="preserve">
+    <value>"Да", чтобы использовать keep-alive пакеты для обнаружения разорванного соединения, "Нет", чтобы принудительно закрыть соединение, если данные не поступают в течение заданного количества секунд.</value>
+  </data>
+  <data name="UseKeepAlive" xml:space="preserve">
+    <value>Отправлять keep-alive пакеты</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastIdleTimeout" xml:space="preserve">
+    <value>Количество секунд ожидания на принимающей стороне, чтобы подтвердить получение пакета перед тем, как закрыть соединение. Действительно, когда не используется keep-alive пакеты.</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastIsTransmitter" xml:space="preserve">
+    <value> "Да", чтобы установить соединение и начать отправку данных одиночному компьютеру, "Нет" - ждать, когда удаленные компьютеры сами установят соединения и начнут забирать данные.</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastTransmitAddress" xml:space="preserve">
+    <value>Адрес компьютера, которому будут отправляться данные</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastUseKeepAlive" xml:space="preserve">
+    <value>"Да", чтобы использовать keep-alive пакеты для обнаружения разорванного соединения, "Нет", чтобы принудительно закрыть соединение, если данные не поступают в течение заданного количества секунд.</value>
+  </data>
+  <data name="TransmitFeed" xml:space="preserve">
+    <value>Самостоятельно устанавливать исходящее соединение</value>
+  </data>
+  <data name="RebroadcastServerIdleTimeoutOutOfBounds" xml:space="preserve">
+    <value>Таймаут простоя должен быть не менее 5 сек.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcePassiveReceiver" xml:space="preserve">
+    <value>"Да", если приемник будет ожидать входящие соединения для отправки данных, "Нет", если он должен самостоятельно подключиться к другому компьютеру и начать забирать данные.</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Сообщение</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="menuConfigureRebroadcastServer" xml:space="preserve">
+    <value>Настройка ретранслирующего сервера</value>
+  </data>
+  <data name="menuShowExceptions" xml:space="preserve">
+    <value>Показать исключения</value>
+  </data>
+  <data name="menuOpenConnectionActivityLog" xml:space="preserve">
+    <value>Открыть &amp;журнал активности соединений</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="Exception" xml:space="preserve">
+    <value>Исключение</value>
+  </data>
+  <data name="Miscellaneous" xml:space="preserve">
+    <value>Разное</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Активность</value>
+  </data>
+  <data name="Connector" xml:space="preserve">
+    <value>Подключенный источник</value>
+  </data>
+  <data name="ConnectorActivityLog" xml:space="preserve">
+    <value>Журнал активности подключенных источников</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="ConnectionSnapshotTakenBody" xml:space="preserve">
+    <value>Снимок был взят из текущих подключений</value>
+  </data>
+  <data name="ConnectionSnapshotTakenTitle" xml:space="preserve">
+    <value>Snapshot Taken</value>
+  </data>
+  <data name="NoSnapshotBody" xml:space="preserve">
+    <value>Еще не было принятых снимков</value>
+  </data>
+  <data name="NoSnapshotTitle" xml:space="preserve">
+    <value>Нет снимков</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="OptionsDescribePassphrase" xml:space="preserve">
+    <value>Пароль используется для защиты от несанкционированных входящих соединений внешних источников. Оставьте пустым, если защита не требуется.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSuppressIcao0" xml:space="preserve">
+    <value>"Да", чтобы скрывать самолеты, передающие недействительный 000000 Mode-S идентификатор, "Нет" - показывать их.</value>
+  </data>
+  <data name="SuppressICAO0" xml:space="preserve">
+    <value>Скрывать ICAO 000000</value>
+  </data>
+  <data name="InternalErrorFeedIdIsNotUnique" xml:space="preserve">
+    <value>Внутренняя ошибка: идентификатор источника не является уникальным</value>
+  </data>
+  <data name="InternalErrorFeedIdIsZero" xml:space="preserve">
+    <value>Внутренняя ошибка: идентификатор источника равен нулю</value>
+  </data>
+  <data name="Waiting" xml:space="preserve">
+    <value>Ожидание</value>
+  </data>
+  <data name="IgnoreUnassignedIcao" xml:space="preserve">
+    <value>Игнорировать неприсвоенные ICAO</value>
+  </data>
+  <data name="InNonPI0Messages" xml:space="preserve">
+    <value>В остальных сообщениях</value>
+  </data>
+  <data name="InPI0Messages" xml:space="preserve">
+    <value>В сообщениях с PI=0</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0" xml:space="preserve">
+    <value>"Да", чтобы игнорировать неназначеные странам ICAO адреса в сообщении, которое не содержит поле четности и имеет допустимый ICAO.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0" xml:space="preserve">
+    <value>"Да", чтобы игнорировать неназначеные странам ICAO адреса в сообщении, которое содержит поле четности и имеет допустимый ICAO.</value>
+  </data>
+  <data name="SavingPolarPlots" xml:space="preserve">
+    <value>Сохранить диаграммы зон приема</value>
+  </data>
+  <data name="AutoSavePolarPlotsOutOfBounds" xml:space="preserve">
+    <value>Значение автосохранения диаграммы приема должно быть не менее 0.</value>
+  </data>
+  <data name="AutoSavePolarPlots" xml:space="preserve">
+    <value>Автосохранение зон покрытия</value>
+  </data>
+  <data name="OptionsDescribeGeneralAutoSavePolarPlotsMinutes" xml:space="preserve">
+    <value>Интервал между автоматическим сохранением зон покрытия приемника, в минутах. Установите в ноль, чтобы отключить периодическое автосохранение и сохранять только при завершении программы.</value>
+  </data>
+  <data name="PMinutes" xml:space="preserve">
+    <value>(в минутах)</value>
+  </data>
+  <data name="CopyFromClipboard" xml:space="preserve">
+    <value>Копировать из буфера обмена</value>
+  </data>
+  <data name="DesktopSite" xml:space="preserve">
+    <value>Desktop сайт</value>
+  </data>
+  <data name="ExportedSettings" xml:space="preserve">
+    <value>Экспортированные настройки</value>
+  </data>
+  <data name="MobileSite" xml:space="preserve">
+    <value>Mobile сайт</value>
+  </data>
+  <data name="NotExportedSiteSettings" xml:space="preserve">
+    <value>Недопустимые установки экспортированных настроек сайта</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapSettings" xml:space="preserve">
+    <value>Используйте ссылки Desktop и Mobile для настройки наилучшего облика сайта, когда его увидят новые пользователи. После этого выберите ссылку "Настройки сайта", нажмите "Настройки экспорта" и скопируйте полученные настройки в эту область.</value>
+  </data>
+  <data name="SettingsSite" xml:space="preserve">
+    <value>Настройки сайта</value>
+  </data>
+  <data name="FeedAndServerNamesMustBeUnique" xml:space="preserve">
+    <value>Приемники, объединенные потоки и ретранслирующие серверы должны иметь уникальные имена</value>
+  </data>
+  <data name="DirectoryEntryKey" xml:space="preserve">
+    <value>Ключ публичного каталога</value>
   </data>
 </root>

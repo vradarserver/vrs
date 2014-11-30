@@ -177,7 +177,7 @@ namespace VirtualRadar.WinForms
 
             if(page == wizardPageNetworkAddress) {
                 Answers.NetworkAddress = (Answers.NetworkAddress ?? "").Trim();
-                if(Answers.NetworkAddress == "") message = "Please enter a network address";
+                if(Answers.NetworkAddress == "") message = Strings.DataSourceNetworkAddressMissing;
                 else {
                     var currentCursor = Cursor.Current;
                     Cursor = Cursors.WaitCursor;
@@ -185,10 +185,10 @@ namespace VirtualRadar.WinForms
                         try {
                             var dnsLookup = Dns.GetHostEntry(Answers.NetworkAddress);
                             if(dnsLookup == null || dnsLookup.AddressList == null || dnsLookup.AddressList.Length == 0) {
-                                message = "This address cannot be resolved";
+                                message = String.Format(Strings.CannotResolveAddress, Answers.NetworkAddress);
                             }
                         } catch {
-                            message = "Please enter a valid network address";
+                            message = Strings.CidrInvalid;
                         }
                     } finally {
                         Cursor = currentCursor;

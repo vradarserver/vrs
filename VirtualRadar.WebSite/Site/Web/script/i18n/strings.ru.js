@@ -31,7 +31,7 @@
     */
 
     // [[ MARKER START SIMPLE STRINGS ]]
-
+ 
     VRS.$$.Add =                                        'Добавить';
     VRS.$$.AddCondition =                               'Добавить условие';
     VRS.$$.AddCriteria =                                'Добавить критерий';
@@ -90,10 +90,10 @@
     VRS.$$.DisableAutoSelect =                          'Отключить автоматический выбор';
     VRS.$$.Distance =                                   'Расстояние';
     VRS.$$.Distances =                                  'Расстояние';
-    VRS.$$.DoNotImportAutoSelect =                      'Do not import auto-select settings';  /** THIS IS NEW! **/
-    VRS.$$.DoNotImportCurrentLocation =                 'Do not import current location';  /** THIS IS NEW! **/
-    VRS.$$.DoNotImportLanguageSettings =                'Do not import language settings';  /** THIS IS NEW! **/
-    VRS.$$.DoNotImportSplitters =                       'Do not import splitters';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportAutoSelect =                      'Не импортировать настройки автоматического выбора';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportCurrentLocation =                 'Не импортировать текущее местоположение';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportLanguageSettings =                'Не импортировать настройки языка';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportSplitters =                       'Не импортировать сплиттеры';  /** THIS IS NEW! **/
     VRS.$$.DoNotShow =                                  'Не показывать';
     VRS.$$.Duration =                                   'Длительность';
     VRS.$$.Electric =                                   'Электрический';
@@ -106,14 +106,14 @@
     VRS.$$.Engines =                                    'Количество и тип двигателей';
     VRS.$$.EngineType =                                 'Тип двигателя';
     VRS.$$.Equals =                                     'совпадает с';
-    VRS.$$.EraseBeforeImport =                          'Erase all settings before import';  /** THIS IS NEW! **/
-    VRS.$$.ExportSettings =                             'Export Settings';  /** THIS IS NEW! **/
+    VRS.$$.EraseBeforeImport =                          'Удалить все настройки перед импортом';  /** THIS IS NEW! **/
+    VRS.$$.ExportSettings =                             'Экспортировать настройки';  /** THIS IS NEW! **/
     VRS.$$.Feet =                                       'Футы';
     VRS.$$.FeetAbbreviation =                           '{0} фт';
     VRS.$$.FeetPerMinuteAbbreviation =                  '{0} фт/мин';
     VRS.$$.FeetPerSecondAbbreviation =                  '{0} фт/с';
     VRS.$$.FetchPage =                                  'Обновить';
-    VRS.$$.FillOpacity =                                'Прозрачность заливки';
+    VRS.$$.FillOpacity =                                'Непрозрачность заливки';
     VRS.$$.Filters =                                    'Фильтры';
     VRS.$$.FindAllPermutationsOfCallsign =              'Найти все изменения позывного';
     VRS.$$.FirstAltitude =                              'Начальная высота';
@@ -134,12 +134,12 @@
     VRS.$$.FlightLevelTransitionAltitude =              'Высота эшелона перехода';
     VRS.$$.FlightsCount =                               'Количество наблюдений';
     VRS.$$.FlightsListShort =                           'Полеты';
-    VRS.$$.FlightSimPage =                              'Flight Sim Page';
+    VRS.$$.FlightSimPage =                              'Flight Sim Страница';
     VRS.$$.FlightSimTitle =                             'Virtual Radar - FSX';
-    VRS.$$.ForcePhoneOff =                              'Не смартфон';  // As in "force the page to ignore the fact that this is a smart phone"
-    VRS.$$.ForcePhoneOn =                               'Смартфон';  // As in "force the page to pretend that this is a smart phone"
-    VRS.$$.ForceTabletOff =                             'Не таблет';  // As in "force the page to ignore the fact that this is a tablet PC"
-    VRS.$$.ForceTabletOn =                              'Таблет';  // As in "force the page to use the settings for a tablet PC"
+    VRS.$$.ForcePhoneOff =                              'Не учитывать смартфон';  // As in "force the page to ignore the fact that this is a smart phone"
+    VRS.$$.ForcePhoneOn =                               'Учитывать смартфон';  // As in "force the page to pretend that this is a smart phone"
+    VRS.$$.ForceTabletOff =                             'Не учитывать планшет';  // As in "force the page to ignore the fact that this is a tablet PC"
+    VRS.$$.ForceTabletOn =                              'Учитывать планшет';  // As in "force the page to use the settings for a tablet PC"
     VRS.$$.FromAltitude =                               'От {0}';
     VRS.$$.FromToAltitude =                             '{0} до {1}';
     VRS.$$.FromToDate =                                 '{0} до {1}';
@@ -171,10 +171,10 @@
     VRS.$$.HideNoPosition =                             'Скрыть самолеты, не передающие позицию';
     VRS.$$.HighContrastMap =                            'Контраст';  // <-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room
     VRS.$$.Icao =                                       'ICAO адрес';
-    VRS.$$.Import =                                     'Import';  /** THIS IS NEW! **/
-    VRS.$$.ImportFailedTitle =                          'Import Settings Failed';  /** THIS IS NEW! **/
-    VRS.$$.ImportFailedBody =                           'Could not import your settings. The reported error was: {0}';  /** THIS IS NEW! **/
-    VRS.$$.ImportSettings =                             'Import Settings';  /** THIS IS NEW! **/
+    VRS.$$.Import =                                     'Импорт';  /** THIS IS NEW! **/
+    VRS.$$.ImportFailedTitle =                          'Ошибка импортирования настроек';  /** THIS IS NEW! **/
+    VRS.$$.ImportFailedBody =                           'Не удалось импортировать настройки. Ошибка: {0}'; /** THIS IS NEW! **/
+    VRS.$$.ImportSettings =                             'Импорт настроек';  /** THIS IS NEW! **/
     VRS.$$.Index =                                      'Индекс';
     VRS.$$.IndicatedAirSpeed =                          'Приборная';
     VRS.$$.IndicatedAirSpeedShort =                     'IAS';  /** THIS IS NEW! **/  // <-- please try to keep this short, an abbreviation if possible
@@ -269,7 +269,7 @@
     VRS.$$.ListModeSCountry =                           'Страна';
     VRS.$$.ListModelSilhouette =                        'Силуэт';
     VRS.$$.ListModelSilhouetteAndOpFlag =               'Силуэт/Лого';
-    VRS.$$.ListOperator =                               'Авиакомпания';
+    VRS.$$.ListOperator =                               'Оператор';
     VRS.$$.ListOperatorFlag =                           'Логотип';
     VRS.$$.ListOperatorIcao =                           'Код а/к';
     VRS.$$.ListOwnershipStatus =                        'Стат.влад.';
@@ -324,7 +324,7 @@
     VRS.$$.NauticalMileAbbreviation =                   '{0} м.миль';
     VRS.$$.NauticalMiles =                              'Морские мили';
     VRS.$$.No =                                         'Нет';
-    VRS.$$.NoLocalStorage =                             'Ваш браузер не поддерживает локальное хранилище. Параметры конфигурации не будут сохранены.\n\nЕсли вы просматриваете в "Private Mode", то попробуйте переключиться. "Private Mode" отключает локальное хранилище в некоторых браузерах';
+    VRS.$$.NoLocalStorage =                             'Ваш браузер не поддерживает локальное сохранение. Параметры конфигурации не будут сохранены.\n\nЕсли вы просматриваете в "Private Mode", то попробуйте переключиться. "Private Mode" отключает локальное сохранение в некоторых браузерах';
     VRS.$$.None =                                       'Нет';
     VRS.$$.Notes =                                      'Прим.';
     VRS.$$.NoSettingsFound =                            'Параметр не найден';
@@ -340,11 +340,11 @@
     VRS.$$.OfPages =                                    'по {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          'Только в окне карты';
     VRS.$$.OnlyAutoSelected =                           'Только для авто выбранных самолетов';
-    VRS.$$.Operator =                                   'Авиакомпания';
+    VRS.$$.Operator =                                   'Оператор';
     VRS.$$.OperatorCode =                               'Код авиакомпании';
     VRS.$$.OperatorFlag =                               'Логотип авиакомпании';
     VRS.$$.Options =                                    'Настройки';
-    VRS.$$.OverwriteExistingSettings =                  'Overwrite existing settings';  /** THIS IS NEW! **/
+    VRS.$$.OverwriteExistingSettings =                  'Заменить существующие настройки';  /** THIS IS NEW! **/
     VRS.$$.OwnershipStatus =                            'Статус владельца';
     VRS.$$.PageAircraft =                               'Самолет';
     VRS.$$.AircraftDetailShort =                        'Формуляр';
@@ -368,7 +368,7 @@
     VRS.$$.PaneManyAircraft =                           'Общий отчет по самолетам';
     VRS.$$.PanePermanentLink =                          'Постоянная ссылка';
     VRS.$$.PaneRangeCircles =                           'Круговая шкала дальности';
-    VRS.$$.PaneReceiverRange =                          'Дальность приема';
+    VRS.$$.PaneReceiverRange =                          'Диаграмма зоны приема';
     VRS.$$.PaneSingleAircraft =                         'Отчет по конкретному самолету';
     VRS.$$.PaneSortAircraftList =                       'Сортировка самолетов';
     VRS.$$.PaneSortReport =                             'Сортировка отчетов';
@@ -391,9 +391,9 @@
     VRS.$$.RangeCircleOddColour =                       'Цвет и толщина нечетных';
     VRS.$$.RangeCircles =                               'Круговая шкала дальности';
     VRS.$$.Receiver =                                   'Приемник';
-    VRS.$$.ReceiverRange =                              'Дальность приема';
+    VRS.$$.ReceiverRange =                              'Диаграмма зоны приема';
     VRS.$$.Refresh =                                    'Обновить';
-    VRS.$$.Registration =                               'Регистрационный номер';
+    VRS.$$.Registration =                               'Регистр. номер';
     VRS.$$.RegistrationAndIcao =                        'Рег./ICAO';
     VRS.$$.Remove =                                     'Удалить';
     VRS.$$.RemoveAll =                                  'Удалить все';
@@ -410,7 +410,7 @@
     VRS.$$.Reports =                                    'Отчеты';
     VRS.$$.ReportsAreDisabled =                         'Настройки сервера запрещают создание отчетов';
     VRS.$$.Resume =                                     'Возобновить';
-    VRS.$$.Reversing =                                  'Reversing';  /** THIS IS NEW! **/
+    VRS.$$.Reversing =                                  'Реверсивный';  /** THIS IS NEW! **/
     VRS.$$.ReversingShort =                             'REV';  /** THIS IS NEW! **/
     VRS.$$.Route =                                      'Маршрут';
     VRS.$$.RouteShort =                                 'Маршрут (кратко)';
@@ -431,7 +431,7 @@
     VRS.$$.SetCurrentLocation =                         'Установить текущую позицию на карте';
     VRS.$$.Settings =                                   'Настройки';
     VRS.$$.SettingsPage =                               'Настройки';
-    VRS.$$.Shortcuts =                                  'Ярлыки';
+    VRS.$$.Shortcuts =                                  'Ярлыки выбора';
     VRS.$$.ShowAltitudeStalk =                          'Показывать линию высоты';
     VRS.$$.ShowAltitudeType =                           'Показывать вид высоты';
     VRS.$$.ShowCurrentLocation =                        'Показывать текущее местоположение';
@@ -457,10 +457,10 @@
     VRS.$$.Speeds =                                     'Скорость';
     VRS.$$.SpeedType =                                  'Тип скорости';
     VRS.$$.Squawk =                                     'Сквок';
-    VRS.$$.Squawk7000 =                                 'No squawk assigned';  /** THIS IS NEW! **/
-    VRS.$$.Squawk7500 =                                 'Aircraft hijacking';  /** THIS IS NEW! **/
-    VRS.$$.Squawk7600 =                                 'Radio failure';  /** THIS IS NEW! **/
-    VRS.$$.Squawk7700 =                                 'General emergency';  /** THIS IS NEW! **/
+    VRS.$$.Squawk7000 =                                 'Полет по ПВП в неконтролируемом ВП';  /** THIS IS NEW! **/
+    VRS.$$.Squawk7500 =                                 'Захват самолета';  /** THIS IS NEW! **/
+    VRS.$$.Squawk7600 =                                 'Потеря связи';  /** THIS IS NEW! **/
+    VRS.$$.Squawk7700 =                                 'Авария или нештатная ситуация';  /** THIS IS NEW! **/
     VRS.$$.Start =                                      'Старт';
     VRS.$$.StartsWith =                                 'начинается с';
     VRS.$$.StartTime =                                  'Время старта';
@@ -469,7 +469,7 @@
     VRS.$$.StatuteMiles =                               'Сухопутные мили';
     VRS.$$.StorageEngine =                              'Подсистема хранилища';
     VRS.$$.StorageSize =                                'Размер хранилища';
-    VRS.$$.StrokeOpacity =                              'Прозрачность контура';
+    VRS.$$.StrokeOpacity =                              'Непрозрачность контура';
     VRS.$$.SubmitRoute =                                'Добавить маршрут данного рейса в базу';
     VRS.$$.SubmitRouteCorrection =                      'Внести изменения в маршрут данного рейса';
     VRS.$$.SuppressAltitudeStalkWhenZoomedOut =         'Убирать линию высоты при мелком масштабе';
@@ -507,7 +507,7 @@
     VRS.$$.Volume100 =                                  'Громкость 100%';
     VRS.$$.VrsVersion =                                 'Версия {0}';
     VRS.$$.WakeTurbulenceCategory =                     'Категория турбулентности в следе';
-    VRS.$$.Warning =                                    'Warning';
+    VRS.$$.Warning =                                    'Предупреждающий сигнал';
     VRS.$$.WorkingInOfflineMode =                       'Работать в автономном режиме';
     VRS.$$.WtcLight =                                   'Легкий';
     VRS.$$.WtcMedium =                                  'Средний';
