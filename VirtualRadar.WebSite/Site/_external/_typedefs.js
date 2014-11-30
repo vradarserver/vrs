@@ -1187,7 +1187,8 @@ VRS_SERVER_CONFIG;
  * ignoreLanguage:         boolean,
  * ignoreSplitters:        boolean,
  * ignoreCurrentLocation:  boolean,
- * ignoreAutoSelect:       boolean
+ * ignoreAutoSelect:       boolean,
+ * ignoreRequestFeedId:    boolean
  * }} VRS_SETTINGS_IMPORT_OPTIONS
  */
 VRS_SETTINGS_IMPORT_OPTIONS;

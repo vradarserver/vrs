@@ -331,7 +331,8 @@
                 ignoreLanguage:         false,
                 ignoreSplitters:        false,
                 ignoreCurrentLocation:  false,
-                ignoreAutoSelect:       false
+                ignoreAutoSelect:       false,
+                ignoreRequestFeedId:    false
             }, options);
 
             if(exportString) {
@@ -347,6 +348,7 @@
                                 if(settings.values.hasOwnProperty(keyName)) {
                                     if(isValidImportKey(keyName, options)) {
                                         var value = settings.values[keyName];
+                                        adjustImportValues(keyName, value, options);
                                         if(value) {
                                             $.jStorage.set(keyName, value);
                                         }
@@ -383,6 +385,22 @@
             }
 
             return result;
+        }
+
+        /**
+         * Modifies an imported value to comply with the options passed across.
+         * @param {string}                      keyName
+         * @param {object}                      value
+         * @param {VRS_SETTINGS_IMPORT_OPTIONS} options
+         */
+        function adjustImportValues(keyName, value, options)
+        {
+            if(options.ignoreRequestFeedId) {
+                var isVrsAircraftListFetcherValue = VRS.stringUtility.contains(keyName, '#-vrsAircraftListFetcher-');
+                if(isVrsAircraftListFetcherValue) {
+                    if(value['requestFeedId'] !== undefined) delete value['requestFeedId'];
+                }
+            }
         }
         //endregion
     };

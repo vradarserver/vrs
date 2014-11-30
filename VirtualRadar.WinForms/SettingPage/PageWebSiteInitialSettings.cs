@@ -29,20 +29,20 @@ using VirtualRadar.WinForms.PortableBinding;
 namespace VirtualRadar.WinForms.SettingPage
 {
     /// <summary>
-    /// Displays the site's initial location to the user and lets them change it.
+    /// Displays the initial settings for the web site to the user and lets them change them.
     /// </summary>
-    public partial class PageWebSiteGoogleMaps : Page
+    public partial class PageWebSiteInitialSettings : Page
     {
         #region PageSummary
         /// <summary>
-        /// Describes the content of the Google Maps page.
+        /// Describes the content of the initial site settings page.
         /// </summary>
         public class Summary : PageSummary
         {
             /// <summary>
             /// See base docs.
             /// </summary>
-            public override string PageTitle { get { return Strings.GoogleMaps; } }
+            public override string PageTitle { get { return Strings.InitialSettingsTitle; } }
 
             /// <summary>
             /// See base docs.
@@ -55,7 +55,7 @@ namespace VirtualRadar.WinForms.SettingPage
             /// <returns></returns>
             protected override Page DoCreatePage()
             {
-                return new PageWebSiteGoogleMaps();
+                return new PageWebSiteInitialSettings();
             }
 
             /// <summary>
@@ -64,7 +64,7 @@ namespace VirtualRadar.WinForms.SettingPage
             /// <param name="genericPage"></param>
             public override void AssociateValidationFields(Page genericPage)
             {
-                var page = genericPage as PageWebSiteGoogleMaps;
+                var page = genericPage as PageWebSiteInitialSettings;
                 SetValidationFields(new Dictionary<ValidationField,Control>() {
                     { ValidationField.ExportedSettings, page == null ? null : page.textBoxInitialSettings },
                 });
@@ -80,7 +80,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public PageWebSiteGoogleMaps()
+        public PageWebSiteInitialSettings()
         {
             InitializeComponent();
         }
@@ -150,6 +150,19 @@ namespace VirtualRadar.WinForms.SettingPage
             try {
                 var text = Clipboard.ContainsText(TextDataFormat.UnicodeText) ? Clipboard.GetText(TextDataFormat.UnicodeText) : "";
                 SettingsView.Configuration.GoogleMapSettings.InitialSettings = text;
+            } catch {
+            }
+        }
+
+        /// <summary>
+        /// Called when the user clicks the Copy to Clipboard link.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void linkLabelCopyToClipboard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try {
+                Clipboard.SetText(SettingsView.Configuration.GoogleMapSettings.InitialSettings);
             } catch {
             }
         }

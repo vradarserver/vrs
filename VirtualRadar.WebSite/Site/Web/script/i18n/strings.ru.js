@@ -31,7 +31,7 @@
     */
 
     // [[ MARKER START SIMPLE STRINGS ]]
- 
+
     VRS.$$.Add =                                        'Добавить';
     VRS.$$.AddCondition =                               'Добавить условие';
     VRS.$$.AddCriteria =                                'Добавить критерий';
@@ -90,10 +90,11 @@
     VRS.$$.DisableAutoSelect =                          'Отключить автоматический выбор';
     VRS.$$.Distance =                                   'Расстояние';
     VRS.$$.Distances =                                  'Расстояние';
-    VRS.$$.DoNotImportAutoSelect =                      'Не импортировать настройки автоматического выбора';  /** THIS IS NEW! **/
-    VRS.$$.DoNotImportCurrentLocation =                 'Не импортировать текущее местоположение';  /** THIS IS NEW! **/
-    VRS.$$.DoNotImportLanguageSettings =                'Не импортировать настройки языка';  /** THIS IS NEW! **/
-    VRS.$$.DoNotImportSplitters =                       'Не импортировать сплиттеры';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportAutoSelect =                      'Не импортировать настройки автоматического выбора';
+    VRS.$$.DoNotImportCurrentLocation =                 'Не импортировать текущее местоположение';
+    VRS.$$.DoNotImportRequestFeedId =                   'Do not import request feed ID';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportLanguageSettings =                'Не импортировать настройки языка';
+    VRS.$$.DoNotImportSplitters =                       'Не импортировать сплиттеры';
     VRS.$$.DoNotShow =                                  'Не показывать';
     VRS.$$.Duration =                                   'Длительность';
     VRS.$$.Electric =                                   'Электрический';
@@ -106,8 +107,8 @@
     VRS.$$.Engines =                                    'Количество и тип двигателей';
     VRS.$$.EngineType =                                 'Тип двигателя';
     VRS.$$.Equals =                                     'совпадает с';
-    VRS.$$.EraseBeforeImport =                          'Удалить все настройки перед импортом';  /** THIS IS NEW! **/
-    VRS.$$.ExportSettings =                             'Экспортировать настройки';  /** THIS IS NEW! **/
+    VRS.$$.EraseBeforeImport =                          'Удалить все настройки перед импортом';
+    VRS.$$.ExportSettings =                             'Экспортировать настройки';
     VRS.$$.Feet =                                       'Футы';
     VRS.$$.FeetAbbreviation =                           '{0} фт';
     VRS.$$.FeetPerMinuteAbbreviation =                  '{0} фт/мин';
@@ -171,10 +172,10 @@
     VRS.$$.HideNoPosition =                             'Скрыть самолеты, не передающие позицию';
     VRS.$$.HighContrastMap =                            'Контраст';  // <-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room
     VRS.$$.Icao =                                       'ICAO адрес';
-    VRS.$$.Import =                                     'Импорт';  /** THIS IS NEW! **/
-    VRS.$$.ImportFailedTitle =                          'Ошибка импортирования настроек';  /** THIS IS NEW! **/
-    VRS.$$.ImportFailedBody =                           'Не удалось импортировать настройки. Ошибка: {0}'; /** THIS IS NEW! **/
-    VRS.$$.ImportSettings =                             'Импорт настроек';  /** THIS IS NEW! **/
+    VRS.$$.Import =                                     'Импорт';
+    VRS.$$.ImportFailedTitle =                          'Ошибка импортирования настроек';
+    VRS.$$.ImportFailedBody =                           'Не удалось импортировать настройки. Ошибка: {0}';
+    VRS.$$.ImportSettings =                             'Импорт настроек';
     VRS.$$.Index =                                      'Индекс';
     VRS.$$.IndicatedAirSpeed =                          'Приборная';
     VRS.$$.IndicatedAirSpeedShort =                     'IAS';  /** THIS IS NEW! **/  // <-- please try to keep this short, an abbreviation if possible
@@ -344,7 +345,7 @@
     VRS.$$.OperatorCode =                               'Код авиакомпании';
     VRS.$$.OperatorFlag =                               'Логотип авиакомпании';
     VRS.$$.Options =                                    'Настройки';
-    VRS.$$.OverwriteExistingSettings =                  'Заменить существующие настройки';  /** THIS IS NEW! **/
+    VRS.$$.OverwriteExistingSettings =                  'Заменить существующие настройки';
     VRS.$$.OwnershipStatus =                            'Статус владельца';
     VRS.$$.PageAircraft =                               'Самолет';
     VRS.$$.AircraftDetailShort =                        'Формуляр';
@@ -410,7 +411,7 @@
     VRS.$$.Reports =                                    'Отчеты';
     VRS.$$.ReportsAreDisabled =                         'Настройки сервера запрещают создание отчетов';
     VRS.$$.Resume =                                     'Возобновить';
-    VRS.$$.Reversing =                                  'Реверсивный';  /** THIS IS NEW! **/
+    VRS.$$.Reversing =                                  'Реверсивный';
     VRS.$$.ReversingShort =                             'REV';  /** THIS IS NEW! **/
     VRS.$$.Route =                                      'Маршрут';
     VRS.$$.RouteShort =                                 'Маршрут (кратко)';
@@ -457,10 +458,10 @@
     VRS.$$.Speeds =                                     'Скорость';
     VRS.$$.SpeedType =                                  'Тип скорости';
     VRS.$$.Squawk =                                     'Сквок';
-    VRS.$$.Squawk7000 =                                 'Полет по ПВП в неконтролируемом ВП';  /** THIS IS NEW! **/
-    VRS.$$.Squawk7500 =                                 'Захват самолета';  /** THIS IS NEW! **/
-    VRS.$$.Squawk7600 =                                 'Потеря связи';  /** THIS IS NEW! **/
-    VRS.$$.Squawk7700 =                                 'Авария или нештатная ситуация';  /** THIS IS NEW! **/
+    VRS.$$.Squawk7000 =                                 'Полет по ПВП в неконтролируемом ВП';
+    VRS.$$.Squawk7500 =                                 'Захват самолета';
+    VRS.$$.Squawk7600 =                                 'Потеря связи';
+    VRS.$$.Squawk7700 =                                 'Авария или нештатная ситуация';
     VRS.$$.Start =                                      'Старт';
     VRS.$$.StartsWith =                                 'начинается с';
     VRS.$$.StartTime =                                  'Время старта';

@@ -61,7 +61,7 @@ namespace VirtualRadar.WinForms.SettingPage
             protected override void AssociateChildPages()
             {
                 base.AssociateChildPages();
-                ChildPages.Add(new PageWebSiteGoogleMaps.Summary());
+                ChildPages.Add(new PageWebSiteInitialSettings.Summary());
             }
 
             /// <summary>

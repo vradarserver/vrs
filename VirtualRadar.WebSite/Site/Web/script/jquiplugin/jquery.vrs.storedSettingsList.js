@@ -143,6 +143,7 @@
 
             var importOverwrite =               this._addCheckBox(checkboxesContainer, VRS.$$.OverwriteExistingSettings, true);
             var importReset =                   this._addCheckBox(checkboxesContainer, VRS.$$.EraseBeforeImport, true);
+            var importIgnoreRequestFeedId =     this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportRequestFeedId, true);
             var importIgnoreLanguage =          this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportLanguageSettings, false);
             var importIgnoreSplitters =         this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportSplitters, false);
             var importIgnoreCurrentLocation =   this._addCheckBox(checkboxesContainer, VRS.$$.DoNotImportCurrentLocation, false);
@@ -158,7 +159,8 @@
                             ignoreLanguage:         importIgnoreLanguage.prop('checked'),
                             ignoreSplitters:        importIgnoreSplitters.prop('checked'),
                             ignoreCurrentLocation:  importIgnoreCurrentLocation.prop('checked'),
-                            ignoreAutoSelect:       importIgnoreAutoSelect.prop('checked')
+                            ignoreAutoSelect:       importIgnoreAutoSelect.prop('checked'),
+                            ignoreRequestFeedId:    importIgnoreRequestFeedId.prop('checked')
                         });
                     }, this))
                     .appendTo(state.importControlsContainer);
