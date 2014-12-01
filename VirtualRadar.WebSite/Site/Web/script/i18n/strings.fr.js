@@ -92,7 +92,7 @@
     VRS.$$.Distances =                                  'Distances';
     VRS.$$.DoNotImportAutoSelect =                      'Ne pas importer les paramètres auto-select';
     VRS.$$.DoNotImportCurrentLocation =                 'Ne pas importer la position courante';
-    VRS.$$.DoNotImportRequestFeedId =                   'Do not import request feed ID';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportRequestFeedId =                   'Ne pas importer la demande d''ID de flux de données';  /** THIS IS NEW! **/
     VRS.$$.DoNotImportLanguageSettings =                'Ne pas importer les paramètres de langue';
     VRS.$$.DoNotImportSplitters =                       'Ne pas importer les splitters';
     VRS.$$.DoNotShow =                                  'Ne pas montrer';
@@ -424,9 +424,9 @@
     VRS.$$.Select =                                     'Select';
     VRS.$$.SeparateTwoValues =                          ' et ';
     VRS.$$.SerialNumber =                               'Serie';
-    VRS.$$.ServerFetchFailedTitle =                     'Fetch Failed';
-    VRS.$$.ServerFetchFailedBody =                      'Could not fetch from the server. The error is "{0}" and the status is "{1}".';
-    VRS.$$.ServerFetchTimedOut =                        'The request has timed out.';
+    VRS.$$.ServerFetchFailedTitle =                     'Echec de récupération';
+    VRS.$$.ServerFetchFailedBody =                      'Récupération impossible depuis le serveur. le code erreur est "{0}" et le statut est "{1}".';
+    VRS.$$.ServerFetchTimedOut =                        'Temps dépassé.';
     VRS.$$.ServerReportExceptionBody =                  'Le serveur a rencontré une exception en générant le rapport "{0}"';
     VRS.$$.ServerReportExceptionTitle =                 'Server Exception';
     VRS.$$.SetCurrentLocation =                         'Fixe position courante';
