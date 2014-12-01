@@ -69,6 +69,7 @@ namespace VirtualRadar.Library.Settings
                 var fileName = GetFullPath(feedName);
                 var content = JsonConvert.SerializeObject(savedPolarPlot, Formatting.Indented);
                 lock(_SyncLock) {
+                    if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
                     File.WriteAllText(fileName, content);
                 }
             }
