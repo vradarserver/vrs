@@ -613,7 +613,7 @@ namespace VirtualRadar.Library.Network
                 }
 
                 if(!finished) {
-                    Thread.Sleep(0);
+                    Thread.Sleep(1);
                 }
             }
         }

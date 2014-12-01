@@ -347,7 +347,7 @@ namespace VirtualRadar.Library.Network
 
                             while(!_Closed) {
                                 if(!socket.Poll(100, SelectMode.SelectRead)) {
-                                    Thread.Sleep(0);
+                                    Thread.Sleep(1);
                                 } else {
                                     CreateNewPassiveConnection(socket);
                                 }
