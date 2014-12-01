@@ -58,8 +58,8 @@ namespace VirtualRadar.Database.BaseStation
 
             var preparedCommand = PrepareCommand(connection, transaction, "GetAll", _GetAllRecordsCommand, 0);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(var reader = preparedCommand.Command.ExecuteReader()) {
-                while(reader.Read()) {
+            using(var reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
+                while(Sql.Exec.Read(reader)) {
                     result.Add(new BaseStationDBHistory() {
                         DBHistoryID = Sql.GetInt32(reader, 0),
                         TimeStamp = Sql.GetDateTime(reader, 1),

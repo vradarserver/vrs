@@ -21,6 +21,23 @@ namespace VirtualRadar.Database
     /// </summary>
     static class Sql
     {
+        #region Properties
+        /// <summary>
+        /// Gets the static instance of <see cref="SQLiteExecute"/> used by the class.
+        /// </summary>
+        public static SQLiteExecute Exec { get; private set; }
+        #endregion
+
+        #region Static ctor
+        /// <summary>
+        /// Initialises the static class.
+        /// </summary>
+        static Sql()
+        {
+            Exec = new SQLiteExecute();
+        }
+        #endregion
+
         #region PrepareCommand, SetParameters, AddParameters
         /// <summary>
         /// Prepares a command for future use.
@@ -165,7 +182,7 @@ namespace VirtualRadar.Database
 
                 LogCommand(log, command);
 
-                command.ExecuteNonQuery();
+                Exec.ExecuteNonQuery(command);
             }
         }
 
@@ -190,7 +207,7 @@ namespace VirtualRadar.Database
                 }
 
                 command.Transaction = transaction;
-                result = command.ExecuteScalar();
+                result = Exec.ExecuteScalar(command);
             }
 
             return result;
@@ -230,11 +247,11 @@ namespace VirtualRadar.Database
                 if(log != null) LogCommand(log, command);
 
                 if(readerFunc == null) {
-                    if(isScalar) result = command.ExecuteScalar();
-                    else         command.ExecuteNonQuery();
+                    if(isScalar) result = Exec.ExecuteScalar(command);
+                    else         Exec.ExecuteNonQuery(command);
                 } else {
-                    using(var reader = command.ExecuteReader()) {
-                        while(reader.Read()) {
+                    using(var reader = Exec.ExecuteReader(command)) {
+                        while(Exec.Read(reader)) {
                             if(!readerFunc(reader)) break;
                         }
                     }
@@ -320,7 +337,7 @@ namespace VirtualRadar.Database
             SetParameters(preparedCommand.Command, parameters);
             LogCommand(log, preparedCommand.Command);
 
-            var result = preparedCommand.Command.ExecuteScalar();
+            var result = Exec.ExecuteScalar(preparedCommand.Command);
             return result == null ? 0L : (long)result;
         }
         #endregion

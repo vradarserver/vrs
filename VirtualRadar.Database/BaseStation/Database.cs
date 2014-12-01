@@ -460,28 +460,26 @@ namespace VirtualRadar.Database.BaseStation
         {
             bool result = false;
 
-            using(new BaseStationMutex.WriteLock()) {
-                var sqliteException = Factory.Singleton.Resolve<ISQLiteException>();
-                sqliteException.Initialise(errorException);
-                if(sqliteException.IsSQLiteException) {
-                    switch(sqliteException.ErrorCode) {
-                        case SQLiteErrorCode.IoErr:
-                            // One of two things. Either the file is trashed, in which case we need to extract everything
-                            // and rebuild the index, or they've had something writing to the file and the journal is
-                            // hanging around after a crash. We're going to try to fix the journal problem as that's the
-                            // most common for now.
+            var sqliteException = Factory.Singleton.Resolve<ISQLiteException>();
+            sqliteException.Initialise(errorException);
+            if(sqliteException.IsSQLiteException) {
+                switch(sqliteException.ErrorCode) {
+                    case SQLiteErrorCode.IoErr:
+                        // One of two things. Either the file is trashed, in which case we need to extract everything
+                        // and rebuild the index, or they've had something writing to the file and the journal is
+                        // hanging around after a crash. We're going to try to fix the journal problem as that's the
+                        // most common for now.
 
-                            var journalFileName = String.Format("{0}-journal", FileName);
-                            if(File.Exists(journalFileName)) {
-                                // The easiest way to fix this is to open the file in read-write mode. If that fails then
-                                // we should get rid of the journal file.
-                                result = FixByOpeningInReadWriteMode();
-                                if(!result || File.Exists(journalFileName)) {
-                                    result = FixByRenamingJournal(journalFileName);
-                                }
+                        var journalFileName = String.Format("{0}-journal", FileName);
+                        if(File.Exists(journalFileName)) {
+                            // The easiest way to fix this is to open the file in read-write mode. If that fails then
+                            // we should get rid of the journal file.
+                            result = FixByOpeningInReadWriteMode();
+                            if(!result || File.Exists(journalFileName)) {
+                                result = FixByRenamingJournal(journalFileName);
                             }
-                            break;
-                    }
+                        }
+                        break;
                 }
             }
 
@@ -551,7 +549,6 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    BaseStationMutex.AcquireWriteLock();
                     _TransactionHelper.StartTransaction(_Connection);
                 }
             }
@@ -566,7 +563,6 @@ namespace VirtualRadar.Database.BaseStation
                 OpenConnection();
                 if(_Connection != null) {
                     _TransactionHelper.EndTransaction();
-                    BaseStationMutex.ReleaseWriteLock();
                 }
             }
         }
@@ -580,7 +576,6 @@ namespace VirtualRadar.Database.BaseStation
                 OpenConnection();
                 if(_Connection != null) {
                     _TransactionHelper.RollbackTransaction();
-                    BaseStationMutex.ReleaseWriteLock();
                 }
             }
         }
@@ -730,9 +725,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        aircraft.AircraftID = _AircraftTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
-                    }
+                    aircraft.AircraftID = _AircraftTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
                 }
             }
         }
@@ -751,9 +744,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _AircraftTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
-                    }
+                    _AircraftTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
                 }
             }
 
@@ -772,9 +763,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _AircraftTable.UpdateModeSCountry(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraftId, modeSCountry);
-                    }
+                    _AircraftTable.UpdateModeSCountry(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraftId, modeSCountry);
                 }
             }
         }
@@ -790,9 +779,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _AircraftTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
-                    }
+                    _AircraftTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
                 }
             }
         }
@@ -928,9 +915,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        flight.FlightID = _FlightTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
-                    }
+                    flight.FlightID = _FlightTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
                 }
             }
         }
@@ -949,9 +934,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _FlightTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
-                    }
+                    _FlightTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
                 }
             }
         }
@@ -967,9 +950,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _FlightTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
-                    }
+                    _FlightTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
                 }
             }
         }
@@ -1043,9 +1024,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        systemEvent.SystemEventsID = _SystemEventsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
-                    }
+                    systemEvent.SystemEventsID = _SystemEventsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
                 }
             }
         }
@@ -1063,9 +1042,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _SystemEventsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
-                    }
+                    _SystemEventsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
                 }
             }
         }
@@ -1081,9 +1058,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _SystemEventsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
-                    }
+                    _SystemEventsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
                 }
             }
         }
@@ -1118,9 +1093,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        location.LocationID = _LocationsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
-                    }
+                    location.LocationID = _LocationsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
                 }
             }
         }
@@ -1136,9 +1109,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _LocationsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
-                    }
+                    _LocationsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
                 }
             }
         }
@@ -1154,9 +1125,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _LocationsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
-                    }
+                    _LocationsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
                 }
             }
         }
@@ -1194,9 +1163,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        session.SessionID = _SessionsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
-                    }
+                    session.SessionID = _SessionsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
                 }
             }
         }
@@ -1215,9 +1182,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _SessionsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
-                    }
+                    _SessionsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
                 }
             }
         }
@@ -1233,9 +1198,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    using(new BaseStationMutex.WriteLock()) {
-                        _SessionsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
-                    }
+                    _SessionsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
                 }
             }
         }

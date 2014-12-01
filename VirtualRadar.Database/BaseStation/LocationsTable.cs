@@ -64,8 +64,8 @@ namespace VirtualRadar.Database.BaseStation
 
             var preparedCommand = PrepareCommand(connection, transaction, "GetAll", _GetAllRecordsCommandText, 0);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(var reader = preparedCommand.Command.ExecuteReader()) {
-                while(reader.Read()) {
+            using(var reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
+                while(Sql.Exec.Read(reader)) {
                     result.Add(new BaseStationLocation() {
                         LocationID = Sql.GetInt32(reader, 0),
                         LocationName = Sql.GetString(reader, 1),
@@ -105,7 +105,7 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "Update", _UpdateCommandText, 5);
             Sql.SetParameters(preparedCommand, location.LocationName, location.Latitude, location.Longitude, location.Altitude, location.LocationID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "Delete", _DeleteCommandText, 1);
             Sql.SetParameters(preparedCommand, location.LocationID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
     }
 }

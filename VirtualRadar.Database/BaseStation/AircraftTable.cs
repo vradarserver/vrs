@@ -205,9 +205,9 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "GetByRegistration", _GetByRegistrationCommandText, 1);
             Sql.SetParameters(preparedCommand, registration);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
+            using(IDataReader reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
                 int ordinal = 0;
-                if(reader.Read()) result = DecodeFullAircraft(reader, ref ordinal);
+                if(Sql.Exec.Read(reader)) result = DecodeFullAircraft(reader, ref ordinal);
             }
 
             return result;
@@ -228,9 +228,9 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "GetByIcao", _GetByIcaoCommandText, 1);
             Sql.SetParameters(preparedCommand, icao);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
+            using(IDataReader reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
                 int ordinal = 0;
-                if(reader.Read()) result = DecodeFullAircraft(reader, ref ordinal);
+                if(Sql.Exec.Read(reader)) result = DecodeFullAircraft(reader, ref ordinal);
             }
 
             return result;
@@ -263,8 +263,8 @@ namespace VirtualRadar.Database.BaseStation
 
                 Sql.AddParameters(command, parameters);
                 Sql.LogCommand(log, command);
-                using(var reader = command.ExecuteReader()) {
-                    while(reader.Read()) {
+                using(var reader = Sql.Exec.ExecuteReader(command)) {
+                    while(Sql.Exec.Read(reader)) {
                         int ordinal = 0;
                         var aircraft = DecodeFullAircraft(reader, ref ordinal);
                         result.Add(aircraft);
@@ -302,8 +302,8 @@ namespace VirtualRadar.Database.BaseStation
 
                 Sql.AddParameters(command, parameters);
                 Sql.LogCommand(log, command);
-                using(var reader = command.ExecuteReader()) {
-                    while(reader.Read()) {
+                using(var reader = Sql.Exec.ExecuteReader(command)) {
+                    while(Sql.Exec.Read(reader)) {
                         int ordinal = 0;
                         var aircraft = (BaseStationAircraftAndFlightsCount)DecodeFullAircraft(reader, ref ordinal, createBaseStationAircraftAndFlightsCount: true);
                         result.Add(aircraft);
@@ -329,9 +329,9 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "GetById", _GetByIdCommandText, 1);
             Sql.SetParameters(preparedCommand, id);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
+            using(IDataReader reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
                 int ordinal = 0;
-                if(reader.Read()) result = DecodeFullAircraft(reader, ref ordinal);
+                if(Sql.Exec.Read(reader)) result = DecodeFullAircraft(reader, ref ordinal);
             }
 
             return result;
@@ -348,8 +348,8 @@ namespace VirtualRadar.Database.BaseStation
         {
             var preparedCommand = PrepareCommand(connection, transaction, "GetAll", _GetAllCommandText, 0);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
-                while(reader.Read()) {
+            using(IDataReader reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
+                while(Sql.Exec.Read(reader)) {
                     int ordinal = 0;
                     var aircraft = DecodeFullAircraft(reader, ref ordinal);
                     aircraftList.Add(aircraft);
@@ -489,7 +489,7 @@ namespace VirtualRadar.Database.BaseStation
                     aircraft.YearBuilt,
                     aircraft.AircraftID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
 
         /// <summary>
@@ -507,7 +507,7 @@ namespace VirtualRadar.Database.BaseStation
                     modeSCountry,
                     aircraftId);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "Delete", _DeleteCommandText, 1);
             Sql.SetParameters(preparedCommand, aircraft.AircraftID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
         #endregion
 

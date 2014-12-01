@@ -257,9 +257,9 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "GetById", _GetByIdCommandText, 1);
             Sql.SetParameters(preparedCommand, id);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
+            using(IDataReader reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
                 int ordinal = 0;
-                if(reader.Read()) result = DecodeFullFlight(reader, ref ordinal);
+                if(Sql.Exec.Read(reader)) result = DecodeFullFlight(reader, ref ordinal);
             }
 
             return result;
@@ -291,7 +291,7 @@ namespace VirtualRadar.Database.BaseStation
                 }
 
                 Sql.LogCommand(log, command);
-                result = (int)(long)command.ExecuteScalar();
+                result = (int)(long)Sql.Exec.ExecuteScalar(command);
             }
 
             return result;
@@ -346,9 +346,9 @@ namespace VirtualRadar.Database.BaseStation
                 Sql.AddParameter(command, offset);
 
                 Sql.LogCommand(log, command);
-                using(IDataReader reader = command.ExecuteReader()) {
+                using(IDataReader reader = Sql.Exec.ExecuteReader(command)) {
                     Dictionary<int, BaseStationAircraft> aircraftMap = new Dictionary<int,BaseStationAircraft>();
-                    while(reader.Read()) {
+                    while(Sql.Exec.Read(reader)) {
                         int ordinal = 0;
 
                         BaseStationFlight flight = DecodeFullFlight(reader, ref ordinal);
@@ -881,7 +881,7 @@ namespace VirtualRadar.Database.BaseStation
                 flight.StartTime,
                 flight.FlightID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
 
         /// <summary>
@@ -896,7 +896,7 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "Delete", _DeleteCommandText, 1);
             Sql.SetParameters(preparedCommand, flight.FlightID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
         #endregion
     }
