@@ -147,7 +147,7 @@ namespace VirtualRadar.Database
                     if(firstFailureTime == DateTime.MinValue) firstFailureTime = DateTime.UtcNow;
                     else if(firstFailureTime.AddMilliseconds(RetryIfLockedTimeout) >= DateTime.UtcNow) throw;
 
-                    Thread.Sleep(1);
+                    Thread.Sleep(100);
                 }
             } while(!executed);
         }
