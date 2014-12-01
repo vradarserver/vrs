@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -283,8 +284,10 @@ namespace VirtualRadar.WinForms
         /// <param name="ex"></param>
         public void BubbleExceptionToGui(Exception ex)
         {
-            if(!InvokeRequired) throw new ApplicationException("Exception thrown on background thread", ex);
-            else                BeginInvoke(new MethodInvoker(() => BubbleExceptionToGui(ex)));
+            if(!(ex is ThreadAbortException)) {
+                if(!InvokeRequired) throw new ApplicationException("Exception thrown on background thread", ex);
+                else                BeginInvoke(new MethodInvoker(() => BubbleExceptionToGui(ex)));
+            }
         }
         #endregion
 
