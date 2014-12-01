@@ -76,8 +76,8 @@ namespace VirtualRadar.Database.BaseStation
 
             var preparedCommand = PrepareCommand(connection, transaction, "GetAll", _GetAllRecordsCommandText, 0);
             Sql.LogCommand(log, preparedCommand.Command);
-            using(var reader = preparedCommand.Command.ExecuteReader()) {
-                while(reader.Read()) {
+            using(var reader = Sql.Exec.ExecuteReader(preparedCommand.Command)) {
+                while(Sql.Exec.Read(reader)) {
                     result.Add(new BaseStationSession() {
                         SessionID = Sql.GetInt32(reader, 0),
                         LocationID = Sql.GetInt32(reader, 1),
@@ -116,7 +116,7 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "Update", _UpdateCommandText, 4);
             Sql.SetParameters(preparedCommand, session.LocationID, session.StartTime, session.EndTime, session.SessionID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VirtualRadar.Database.BaseStation
             var preparedCommand = PrepareCommand(connection, transaction, "Delete", _DeleteCommandText, 1);
             Sql.SetParameters(preparedCommand, session.SessionID);
             Sql.LogCommand(log, preparedCommand.Command);
-            preparedCommand.Command.ExecuteNonQuery();
+            Sql.Exec.ExecuteNonQuery(preparedCommand.Command);
         }
     }
 }
