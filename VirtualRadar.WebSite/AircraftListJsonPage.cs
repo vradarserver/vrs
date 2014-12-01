@@ -101,6 +101,11 @@ namespace VirtualRadar.WebSite
                     feed = _DefaultReceiverId;
                 }
                 var receiver = _ReceiverManager.GetByUniqueId(feed);
+                if(receiver == null && feed != _DefaultReceiverId) {
+                    feed = _DefaultReceiverId;
+                    receiver = _ReceiverManager.GetByUniqueId(feed);
+                }
+
                 var aircraftList = receiver == null ? _EmptyAircraftList : receiver.AircraftList;
                 result = HandleAircraftListJson(args, feed, aircraftList, false);
             } else if(args.PathAndFile.Equals("/FlightSimList.json", StringComparison.OrdinalIgnoreCase)) {
