@@ -213,7 +213,7 @@
     VRS.$$.ListAltitude =                               'Altitude';
     VRS.$$.ListAltitudeType =                           'Alt. Type';
     VRS.$$.ListAltitudeAndVerticalSpeed =               'Alt & VSI';
-    VRS.$$.ListAverageSignalLevel =                     'Avg. Signal';
+    VRS.$$.ListAverageSignalLevel =                     'Avg. Sig';
     VRS.$$.ListBearing =                                'Brng.';
     VRS.$$.ListCallsign =                               'Callsign';
     VRS.$$.ListCivOrMil =                               'Civ/Mil';
@@ -282,7 +282,7 @@
     VRS.$$.ListRowNumber =                              'Row';
     VRS.$$.ListRoute =                                  'Route';
     VRS.$$.ListSerialNumber =                           'Serial';
-    VRS.$$.ListSignalLevel =                            'Signal';
+    VRS.$$.ListSignalLevel =                            'Sig';
     VRS.$$.ListSpecies =                                'Species';
     VRS.$$.ListSpeed =                                  'Speed';
     VRS.$$.ListSpeedType =                              'Speed Type';
