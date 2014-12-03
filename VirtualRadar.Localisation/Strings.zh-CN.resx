@@ -124,7 +124,7 @@
   <data name="ApplicationDescription" xml:space="preserve">
     <value>此应用程序免费。
 
-这是一个简单的 Web 服务器用于显示ADS-B接收器收集到的航空器。
+这是一个用于显示ADS-B接收器收集到的航空器的便捷 Web 服务器。
 
 应用程序图标来自 aha-soft (http://www.aha-soft.com)。
 
@@ -147,13 +147,13 @@ iPhone CSS 来自 jQTouch 项目 (http://www.jqtouch.com)。
     <value>已发送字节</value>
   </data>
   <data name="CanConnectWithSettings" xml:space="preserve">
-    <value>使用这些设置可以创建连接</value>
+    <value>可以使用这些设置创建连接</value>
   </data>
   <data name="CannotConnect" xml:space="preserve">
     <value>无法连接</value>
   </data>
   <data name="CannotConnectWithSettings" xml:space="preserve">
-    <value>使用这些设置不能创建连接</value>
+    <value>不能使用这些设置创建连接</value>
   </data>
   <data name="CaughtExceptionInReverseDNS" xml:space="preserve">
     <value>解析DNS期间发生异常</value>
@@ -1827,9 +1827,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="NameCannotContainComma" xml:space="preserve">
     <value>名称不能包含逗号</value>
   </data>
-  <data name="ReceiversAndMergedFeedNamesMustBeUnique" xml:space="preserve">
-    <value>接收器和合并源不能共享名称</value>
-  </data>
   <data name="IgnoreAircraftWithNoPosition" xml:space="preserve">
     <value>忽略无位置航空器</value>
   </data>
@@ -2177,6 +2174,240 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="ReadBufferSize" xml:space="preserve">
     <value>读缓冲区大小</value>
+  </data>
+  <data name="CannotOpenDatabaseWantToAutoFix" xml:space="preserve">
+    <value>不能打开{0},数据库引擎报告的错误:{1}\r\n\r\n是否要尝试自动修复问题并再次重新打开文件?</value>
+  </data>
+  <data name="DirectoryEntryKey" xml:space="preserve">
+    <value>公共目录密钥</value>
+  </data>
+  <data name="OptionsDescribeDirectoryEntryKey" xml:space="preserve">
+    <value>这是用于确认已经添加到属于你的Virtual Radar Server站点公共目录的站点。你可以通过访问路径站点(http://sdm.virtualradarserver.co.uk)，创建一个帐号并在帐号部分输入你的站点的详情来添加你的站点到目录中。复制详情中的密钥到本字段。\r\n\r\n如果你不想把你的站点添加到公共目录只需将该项保留为空。</value>
+  </data>
+  <data name="Access" xml:space="preserve">
+    <value>访问</value>
+  </data>
+  <data name="AllowAccess" xml:space="preserve">
+    <value>允许</value>
+  </data>
+  <data name="DenyAccess" xml:space="preserve">
+    <value>拒绝</value>
+  </data>
+  <data name="UnrestrictedAccess" xml:space="preserve">
+    <value>无限制</value>
+  </data>
+  <data name="AccessControl" xml:space="preserve">
+    <value>访问控制</value>
+  </data>
+  <data name="Cidr" xml:space="preserve">
+    <value>CIDR</value>
+  </data>
+  <data name="CidrEdit" xml:space="preserve">
+    <value>CIDR编辑器</value>
+  </data>
+  <data name="CidrInvalid" xml:space="preserve">
+    <value>无效地址</value>
+  </data>
+  <data name="DefaultAccess" xml:space="preserve">
+    <value>默认访问</value>
+  </data>
+  <data name="FromAddress" xml:space="preserve">
+    <value>来源地址</value>
+  </data>
+  <data name="OptionsDescribeCidr" xml:space="preserve">
+    <value>输入一个单独IP地址或者CIDR格式的地址范围(例如：192.168.0.41 or 192.168.0.0/24)</value>
+  </data>
+  <data name="OptionsDescribeDefaultAccess" xml:space="preserve">
+    <value>是否允许或者拒绝一个不满足CIDR地址格式的连接。</value>
+  </data>
+  <data name="ToAddress" xml:space="preserve">
+    <value>到地址</value>
+  </data>
+  <data name="AllowTheseAddresses" xml:space="preserve">
+    <value>允许这些地址</value>
+  </data>
+  <data name="DenyTheseAddresses" xml:space="preserve">
+    <value>拒绝这些地址</value>
+  </data>
+  <data name="menuConfigureFeed" xml:space="preserve">
+    <value>配置源</value>
+  </data>
+  <data name="Exceptions" xml:space="preserve">
+    <value>异常</value>
+  </data>
+  <data name="LastConnectorException" xml:space="preserve">
+    <value>最后异常</value>
+  </data>
+  <data name="ReceiverIdleTimeoutOutOfBounds" xml:space="preserve">
+    <value>idle超时时间必须至少5秒</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesIdleTimeout" xml:space="preserve">
+    <value>断开源的连接之前没有数据接收并且keep-alive包未使用时等待的秒数.</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesUseKeepAlive" xml:space="preserve">
+    <value>是 使用 keep-alive 包来检测一个源失效，否 如果在给定的秒数之后没有数据被接收重置连接。</value>
+  </data>
+  <data name="UseKeepAlive" xml:space="preserve">
+    <value>发送 keep-alive 包</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastIdleTimeout" xml:space="preserve">
+    <value>在连接关闭之前等待接收端承认包凭据的等待秒数。仅用于未使用keep-alive包</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastIsTransmitter" xml:space="preserve">
+    <value>是 连接并且推送源到单独计算机，否 等待其他计算机连接到本服务器并且从中将源拉出</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastTransmitAddress" xml:space="preserve">
+    <value>推送源的计算机地址</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastUseKeepAlive" xml:space="preserve">
+    <value>是 使用 keep-alive 包来检测一个源失效，否 如果在给定的秒数之后没有数据被接收重置连接。</value>
+  </data>
+  <data name="TransmitFeed" xml:space="preserve">
+    <value>推送源</value>
+  </data>
+  <data name="RebroadcastServerIdleTimeoutOutOfBounds" xml:space="preserve">
+    <value>idle 超时必须至少5秒</value>
+  </data>
+  <data name="PassiveReceiver" xml:space="preserve">
+    <value>推送接收器</value>
+  </data>
+  <data name="OptionsDescribeDataSourcePassiveReceiver" xml:space="preserve">
+    <value>是 接收器等待其他计算机推送源到计算机;否 主动连接到其他计算机拉取源</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>消息</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="menuConfigureRebroadcastServer" xml:space="preserve">
+    <value>配置转发服务器</value>
+  </data>
+  <data name="menuShowExceptions" xml:space="preserve">
+    <value>显示异常</value>
+  </data>
+  <data name="menuOpenConnectionActivityLog" xml:space="preserve">
+    <value>打开 &amp;C连接活动日志</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="Exception" xml:space="preserve">
+    <value>异常</value>
+  </data>
+  <data name="Miscellaneous" xml:space="preserve">
+    <value>杂项</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>活动</value>
+  </data>
+  <data name="Connector" xml:space="preserve">
+    <value>连接</value>
+  </data>
+  <data name="ConnectorActivityLog" xml:space="preserve">
+    <value>连接活动日志</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="ConnectionSnapshotTakenBody" xml:space="preserve">
+    <value>当前连接快照已经被截取</value>
+  </data>
+  <data name="ConnectionSnapshotTakenTitle" xml:space="preserve">
+    <value>快照被截取</value>
+  </data>
+  <data name="NoSnapshotBody" xml:space="preserve">
+    <value>无快照已被截取</value>
+  </data>
+  <data name="NoSnapshotTitle" xml:space="preserve">
+    <value>无快照</value>
+  </data>
+  <data name="AllCaps" xml:space="preserve">
+    <value>所有</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="OptionsDescribePassphrase" xml:space="preserve">
+    <value>用于防止未授权访问的密码.如果不需要密码保留为空</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSuppressIcao0" xml:space="preserve">
+    <value>是 忽略传输Mode-S识别号为无效 000000 的航空器，不显示它们</value>
+  </data>
+  <data name="SuppressICAO0" xml:space="preserve">
+    <value>限制ICAO 000000</value>
+  </data>
+  <data name="InternalErrorFeedIdIsNotUnique" xml:space="preserve">
+    <value>内部错误:源标识不唯一</value>
+  </data>
+  <data name="InternalErrorFeedIdIsZero" xml:space="preserve">
+    <value>内部错误:源标识为0</value>
+  </data>
+  <data name="Waiting" xml:space="preserve">
+    <value>等待中</value>
+  </data>
+  <data name="IgnoreUnassignedIcao" xml:space="preserve">
+    <value>忽略未分配ICAO</value>
+  </data>
+  <data name="InNonPI0Messages" xml:space="preserve">
+    <value>在其他消息中</value>
+  </data>
+  <data name="InPI0Messages" xml:space="preserve">
+    <value>在校验消息中</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0" xml:space="preserve">
+    <value>是 检测到不包含有效校验的ICAO消息时忽略未分配国家ICAO号</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0" xml:space="preserve">
+    <value>是 检测到包含有效校验的ICAO消息时忽略未分配国家ICAO号</value>
+  </data>
+  <data name="SavingPolarPlots" xml:space="preserve">
+    <value>保存接收器极限图</value>
+  </data>
+  <data name="AutoSavePolarPlotsOutOfBounds" xml:space="preserve">
+    <value>自动保存极限图的值至少0秒</value>
+  </data>
+  <data name="AutoSavePolarPlots" xml:space="preserve">
+    <value>自动保存范围图</value>
+  </data>
+  <data name="OptionsDescribeGeneralAutoSavePolarPlotsMinutes" xml:space="preserve">
+    <value>自动保存接收器范围图暂停间隔分钟数。设置为0禁止周期自动保存仅在程序关闭时保存。</value>
+  </data>
+  <data name="PMinutes" xml:space="preserve">
+    <value>(分钟)</value>
+  </data>
+  <data name="CopyFromClipboard" xml:space="preserve">
+    <value>从剪切板复制</value>
+  </data>
+  <data name="DesktopSite" xml:space="preserve">
+    <value>桌面站点</value>
+  </data>
+  <data name="ExportedSettings" xml:space="preserve">
+    <value>导出的设置</value>
+  </data>
+  <data name="MobileSite" xml:space="preserve">
+    <value>移动版站点</value>
+  </data>
+  <data name="NotExportedSiteSettings" xml:space="preserve">
+    <value>非有效导出站点设置的集合</value>
+  </data>
+  <data name="OptionsDescribeWebSiteInitialGoogleMapSettings" xml:space="preserve">
+    <value>让其作为显示给新用户的站点的桌面和移动站点链接。单击链接设置站点，单击导出设置并且复制导出的设置到这个字段</value>
+  </data>
+  <data name="SettingsSite" xml:space="preserve">
+    <value>设置站点</value>
+  </data>
+  <data name="CopyToClipboard" xml:space="preserve">
+    <value>复制到剪切板</value>
+  </data>
+  <data name="InitialSettingsTitle" xml:space="preserve">
+    <value>初始化设置</value>
+  </data>
+  <data name="ReceiversAndMergedFeedNamesMustBeUnique" xml:space="preserve">
+    <value>接收器和合并源不能共享名称</value>
   </data>
   <data name="InternetUserIdleTimeout" xml:space="preserve">
     <value>Internet 用户空闲超时 (分钟)</value>

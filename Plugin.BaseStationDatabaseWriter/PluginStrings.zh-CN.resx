@@ -186,4 +186,7 @@
   <data name="Receiver" xml:space="preserve">
     <value>接收器</value>
   </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>消息处理过程中发生异常：{0}</value>
+  </data>
 </root>
