@@ -23,6 +23,11 @@ namespace VirtualRadar.Interface.WebSite
     public class ChecksumFileEntry
     {
         /// <summary>
+        /// The object that calculates checksums for us.
+        /// </summary>
+        private static Crc64 _ChecksumCalculator = new Crc64();
+
+        /// <summary>
         /// Gets or sets the checksum for the file.
         /// </summary>
         public string Checksum { get; set; }
@@ -60,10 +65,8 @@ namespace VirtualRadar.Interface.WebSite
             if(fileName == null) throw new ArgumentNullException("fileName");
             if(!File.Exists(fileName)) throw new InvalidOperationException(String.Format("{0} does not exist", fileName));
 
-            using(var md5 = MD5.Create()) {
-                var hash = md5.ComputeHash(File.ReadAllBytes(fileName));
-                return String.Join("", hash.Select(r => r.ToString("X2")).ToArray());
-            }
+            var bytes = File.ReadAllBytes(fileName);
+            return _ChecksumCalculator.ComputeChecksumString(bytes, 0, bytes.Length);
         }
 
         /// <summary>
