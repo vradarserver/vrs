@@ -25,6 +25,13 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// The object that calculates checksums for us.
         /// </summary>
+        /// <remarks>
+        /// Originally the code used MD5 to calculate checksums, which was actually
+        /// pretty fast... on modern chips it's quicker than calculating the CRC.
+        /// However MD5 isn't FIPS approved, so users with the FIPS switch turned
+        /// on in Windows couldn't run VRS. It would give them an exception whenever
+        /// they tried to view the website. Hence the move to CRC64s.
+        /// </remarks>
         private static Crc64 _ChecksumCalculator = new Crc64();
 
         /// <summary>
