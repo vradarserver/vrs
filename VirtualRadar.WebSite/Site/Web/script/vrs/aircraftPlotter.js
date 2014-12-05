@@ -1113,6 +1113,8 @@
                             var icon = createIcon(details, mapZoomLevel, isSelectedAircraft);
                             if(icon) {
                                 marker.setIcon(icon);
+                                var zIndex = isSelectedAircraft ? 101 : 100;
+                                if(zIndex !== marker.getZIndex()) marker.setZIndex(zIndex);
                                 if(marker.isMarkerWithLabel) {
                                     if(icon.labelAnchor && (!details.mapIcon || (details.mapIcon.labelAnchor.x !== icon.x || details.mapIcon.labelAnchor.y !== icon.y))) {
                                         marker.setLabelAnchor(icon.labelAnchor);
@@ -1140,7 +1142,7 @@
                         visible: true,
                         position: position,
                         tooltip: getTooltip(details),
-                        zIndex: 100
+                        zIndex: isSelectedAircraft ? 101 : 100
                     };
                     if(_SuppressTextOnImages) {
                         markerOptions.useMarkerWithLabel = true;
