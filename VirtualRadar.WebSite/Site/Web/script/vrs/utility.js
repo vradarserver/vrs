@@ -904,10 +904,11 @@
                     lng = lng >= 0 ? lng : lng + 360;
                     var left = bounds.tlLng >= 0 ? bounds.tlLng : bounds.tlLng + 360;
                     var right = bounds.brLng >= 0 ? bounds.brLng : bounds.brLng + 360;
-
-                    if(left == right)     result = lng == left;
-                    else if(left > right) result = (lng >= left && lng <= 360.0) || (lng >= 0.0 && lng <= right);
-                    else                  result = lng >= left && lng <= right;
+                    if(left !== 180 || right !== 180 ) {
+                        if(left == right)     result = lng == left;
+                        else if(left > right) result = (lng >= left && lng <= 360.0) || (lng >= 0.0 && lng <= right);
+                        else                  result = lng >= left && lng <= right;
+                    }
                 }
             }
 

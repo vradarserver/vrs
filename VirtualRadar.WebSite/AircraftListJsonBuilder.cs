@@ -432,13 +432,19 @@ namespace VirtualRadar.WebSite
                     // If the left degree is larger than the right degree then the bounds straddle the meridian, in which case we need to allow
                     // all longitudes from the left to 0/360 and all longitudes from 0/360 to the right. If left < right then it's easier, we
                     // just have to have a longitude between left and right.
+                    //
+                    // One final twist - if you zoom out enough so that you can see the entire span of the globe in one go then Google will give
+                    // up and report a boundary of -180 on the left and 180 on the right... in other words, the same longitude. Still, there's
+                    // not much else they can do.
                     longitude = ConvertLongitudeToLinear(longitude.Value);
+
                     var left = ConvertLongitudeToLinear(bounds.First.Longitude);
                     var right = ConvertLongitudeToLinear(bounds.Second.Longitude);
-
-                    if(left == right)     result = longitude == left;
-                    else if(left > right) result = (longitude >= left && longitude <= 360.0) || (longitude >= 0.0 && longitude <= right);
-                    else                  result = longitude >= left && longitude <= right;
+                    if(left != 180.0 || right != 180.0) {
+                        if(left == right)     result = longitude == left;
+                        else if(left > right) result = (longitude >= left && longitude <= 360.0) || (longitude >= 0.0 && longitude <= right);
+                        else                  result = longitude >= left && longitude <= right;
+                    }
                 }
             }
 
