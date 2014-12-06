@@ -301,8 +301,13 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         private void ShowCorrectAddress()
         {
-            if(InvokeRequired) BeginInvoke(new MethodInvoker(() => { ShowCorrectAddress(); }));
-            else {
+            if(InvokeRequired) {
+                try {
+                    BeginInvoke(new MethodInvoker(() => { ShowCorrectAddress(); }));
+                } catch(InvalidOperationException) {
+                    ; // required for mono
+                }
+            } else {
                 Address = ShowLocalAddress ? LocalAddress : 
                           ShowNetworkAddress ? NetworkAddress :
                           InternetAddress;
