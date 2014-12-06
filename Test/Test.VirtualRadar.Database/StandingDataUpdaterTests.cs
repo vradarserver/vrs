@@ -146,14 +146,14 @@ namespace Test.VirtualRadar.Database
 
         private void SetupValidStateFileDownload()
         {
-            _DownloadLines[StateFileUrl].Add("A,B,C,D,E,F,G,H");
-            _DownloadLines[StateFileUrl].Add("1,2,3,4,5,6,7,8");
+            _DownloadLines[StateFileUrl].Add("A,B,C,D,E,F,G,H,I");
+            _DownloadLines[StateFileUrl].Add("1,2,3,4,5,6,7,8,9");
         }
 
         private void SetupValidLocalStateFile()
         {
-            _ReadLines[StateFileName].Add("a,b,c,d,e,f,g,h");
-            _ReadLines[StateFileName].Add("1,2,3,4,5,6,7,8");
+            _ReadLines[StateFileName].Add("a,b,c,d,e,f,g,h,i");
+            _ReadLines[StateFileName].Add("1,2,3,4,5,6,7,8,9");
         }
 
         private void AssertLinesDownloaded(string url, string tempFileName, string finalFileName)
@@ -241,12 +241,12 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void StandingDataUpdater_Update_Does_Not_Write_Local_State_File_If_Nothing_Has_Changed_On_Data_Line()
         {
-            _DownloadLines[StateFileUrl].Add("A,B,C,D,E,F,G,H");
-            _DownloadLines[StateFileUrl].Add("1,2,3,4,5,6,7,8");
+            _DownloadLines[StateFileUrl].Add("A,B,C,D,E,F,G,H,I");
+            _DownloadLines[StateFileUrl].Add("1,2,3,4,5,6,7,8,9");
             _DownloadLines[StateFileUrl].Add("IGNORED");
 
             _ReadLines[StateFileName].Add("Ignored");
-            _ReadLines[StateFileName].Add("1,2,3,4,5,6,7,8");
+            _ReadLines[StateFileName].Add("1,2,3,4,5,6,7,8,9");
 
             _Implementation.Update();
 

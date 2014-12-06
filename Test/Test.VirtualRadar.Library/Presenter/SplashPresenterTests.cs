@@ -569,19 +569,6 @@ namespace Test.VirtualRadar.Library.Presenter
         }
 
         [TestMethod]
-        public void SplashPresenter_StartApplication_Reports_Exceptions_Raised_During_Load_Of_Standing_Data()
-        {
-            var exception = new InvalidOperationException("oops");
-            _StandingDataManager.Setup(m => m.Load()).Callback(() => { throw exception; });
-
-            _Presenter.Initialise(_View.Object);
-            _Presenter.StartApplication();
-
-            _Log.Verify(g => g.WriteLine("Exception caught during load of standing data: {0}", exception.ToString()), Times.Once());
-            _View.Verify(v => v.ReportProblem(String.Format(Strings.CannotLoadFlightRouteDataFull, exception.Message), Strings.CannotLoadFlightRouteDataTitle, false), Times.Once());
-        }
-
-        [TestMethod]
         public void SplashPresenter_StartApplication_Starts_Background_Downloader()
         {
             _Presenter.Initialise(_View.Object);

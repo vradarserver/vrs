@@ -614,7 +614,7 @@ namespace Test.VirtualRadar.Library.Listener
             var slice = slices[0];
             Assert.AreEqual(1000, slice.AltitudeLower);
             Assert.AreEqual(2000, slice.AltitudeHigher);
-            Assert.AreEqual(1, slice.PolarPlots.Count);
+            Assert.AreEqual(360, slice.PolarPlots.Count);
             var plot = slice.PolarPlots[20];
             Assert.AreEqual(1100, plot.Altitude);
             Assert.AreEqual(100, plot.Angle);

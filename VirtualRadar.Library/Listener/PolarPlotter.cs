@@ -282,7 +282,7 @@ namespace VirtualRadar.Library.Listener
         {
             if(savedPolarPlot == null) throw new ArgumentNullException("savedPolarPlot");
 
-            RoundToDegrees = savedPolarPlot.RoundToDegrees;
+            RoundToDegrees = savedPolarPlot.RoundToDegrees == 0 ? 1 : savedPolarPlot.RoundToDegrees;
             lock(_SyncLock) {
                 _Slices.Clear();
                 _Slices.AddRange(savedPolarPlot.PolarPlotSlices);
