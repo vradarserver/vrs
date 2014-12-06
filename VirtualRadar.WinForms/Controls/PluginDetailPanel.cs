@@ -101,8 +101,13 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="e"></param>
         private void Plugin_StatusChanged(object sender, EventArgs e)
         {
-            if(InvokeRequired) BeginInvoke(new MethodInvoker(() => { Plugin_StatusChanged(sender, e); }));
-            else {
+            if(InvokeRequired) {
+                try {
+                    BeginInvoke(new MethodInvoker(() => { Plugin_StatusChanged(sender, e); }));
+                } catch(InvalidOperationException) {
+                    ; // Required for mono
+                }
+            } else {
                 labelStatus.Text = Plugin.Status;
                 labelStatusDescription.Text = Plugin.StatusDescription;
             }

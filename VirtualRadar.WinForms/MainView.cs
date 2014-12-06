@@ -94,8 +94,13 @@ namespace VirtualRadar.WinForms
             get { return _NewVersionAvailable; }
             set
             {
-                if(InvokeRequired) BeginInvoke(new MethodInvoker(() => { NewVersionAvailable = value; }));
-                else {
+                if(InvokeRequired) {
+                    try {
+                        BeginInvoke(new MethodInvoker(() => { NewVersionAvailable = value; }));
+                    } catch(InvalidOperationException) {
+                        ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
+                    }
+                } else {
                     _NewVersionAvailable = value;
                     toolStripDropDownButtonLaterVersionAvailable.Visible = value;
                 }
@@ -285,8 +290,15 @@ namespace VirtualRadar.WinForms
         public void BubbleExceptionToGui(Exception ex)
         {
             if(!(ex is ThreadAbortException)) {
-                if(!InvokeRequired) throw new ApplicationException("Exception thrown on background thread", ex);
-                else                BeginInvoke(new MethodInvoker(() => BubbleExceptionToGui(ex)));
+                if(!InvokeRequired) {
+                    throw new ApplicationException("Exception thrown on background thread", ex);
+                } else {
+                    try {
+                        BeginInvoke(new MethodInvoker(() => BubbleExceptionToGui(ex)));
+                    } catch(InvalidOperationException) {
+                        ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
+                    }
+                }
             }
         }
         #endregion

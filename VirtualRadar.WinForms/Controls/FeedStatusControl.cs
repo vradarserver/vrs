@@ -176,8 +176,13 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="feeds"></param>
         public void ShowFeeds(IFeed[] feeds)
         {
-            if(InvokeRequired) BeginInvoke(new MethodInvoker(() => { ShowFeeds(feeds); }));
-            else {
+            if(InvokeRequired) {
+                try {
+                    BeginInvoke(new MethodInvoker(() => { ShowFeeds(feeds); }));
+                } catch(InvalidOperationException) {
+                    ; // Required for mono
+                }
+            } else {
                 var feedDetails = GetFeedDetails();
                 AddOrUpdateExistingFeeds(feeds, feedDetails);
                 RemoveOldFeeds(feedDetails);
@@ -191,8 +196,13 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="feed"></param>
         public void ShowFeed(IFeed feed)
         {
-            if(InvokeRequired) BeginInvoke(new MethodInvoker(() => { ShowFeed(feed); }));
-            else {
+            if(InvokeRequired) {
+                try {
+                    BeginInvoke(new MethodInvoker(() => { ShowFeed(feed); }));
+                } catch(InvalidOperationException) {
+                    ; // Required for mono
+                }
+            } else {
                 var feedDetails = GetFeedDetails();
                 var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.UniqueId);
                 if(feedDetail != null) {
