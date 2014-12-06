@@ -45,7 +45,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IUniversalPlugAndPlayManager> _UPnpManager;
         private Mock<IHeartbeatService> _HeartbeatService;
         private Configuration _Configuration;
-        private Mock<IConfigurationStorage> _ConfigurationStorage;
+        private Mock<ISharedConfiguration> _SharedConfiguration;
         private Mock<INewVersionChecker> _NewVersionChecker;
         private EventRecorder<EventArgs> _HeartbeatTick;
         private Mock<ILog> _Log;
@@ -62,9 +62,9 @@ namespace Test.VirtualRadar.Library.Presenter
         {
             _OriginalFactory = Factory.TakeSnapshot();
 
-            _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
+            _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Configuration = new Configuration();
-            _ConfigurationStorage.Setup(cs => cs.Load()).Returns(_Configuration);
+            _SharedConfiguration.Setup(cs => cs.Get()).Returns(_Configuration);
 
             _Log = TestUtilities.CreateMockSingleton<ILog>();
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
@@ -378,7 +378,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.Initialise(_View.Object);
 
             _Configuration.RebroadcastSettings.Add(new RebroadcastSettings() { Enabled = true });
-            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+            _SharedConfiguration.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(Describe.RebroadcastSettingsCollection(_Configuration.RebroadcastSettings), _View.Object.RebroadcastServersConfiguration);
         }
@@ -565,7 +565,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _NewVersionChecker.Verify(c => c.CheckForNewVersion(), Times.Once());
 
             _Configuration.VersionCheckSettings.CheckAutomatically = false;
-            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+            _SharedConfiguration.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
 
             _Clock.UtcNowValue = _Clock.UtcNowValue.AddDays(10);
             _HeartbeatService.Raise(h => h.SlowTick += null, EventArgs.Empty);
@@ -586,7 +586,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _NewVersionChecker.Verify(c => c.CheckForNewVersion(), Times.Never());
 
             _Configuration.VersionCheckSettings.CheckAutomatically = true;
-            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+            _SharedConfiguration.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
 
             _Clock.UtcNowValue = _Clock.UtcNowValue.AddDays(10);
             _HeartbeatService.Raise(h => h.SlowTick += null, EventArgs.Empty);

@@ -168,6 +168,7 @@ namespace Test.VirtualRadar.Library.Settings
 
                 var settings = _Configuration.BaseStationSettings;
                 var testRaised = SetValue(settings, propertyName, new Dictionary<Expression<Func<BaseStationSettings,object>>,Action<BaseStationSettings>>() {
+                    { r => r.AutoSavePolarPlotsMinutes, r => r.AutoSavePolarPlotsMinutes += 1 },
                     { r => r.DatabaseFileName,          r => r.DatabaseFileName = "TEST" },
                     { r => r.DisplayTimeoutSeconds,     r => r.DisplayTimeoutSeconds += 1 },
                     { r => r.MinimiseToSystemTray,      r => r.MinimiseToSystemTray = !r.MinimiseToSystemTray },
@@ -244,6 +245,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.InitialMapType,                r => r.InitialMapType = "TEST" },
                     { r => r.InitialMapZoom,                r => r.InitialMapZoom += 1 },
                     { r => r.InitialRefreshSeconds,         r => r.InitialRefreshSeconds += 1 },
+                    { r => r.InitialSettings,               r => r.InitialSettings = "TEST" },
                     { r => r.InitialSpeedUnit,              r => r.InitialSpeedUnit = SpeedUnit.MilesPerHour },
                     { r => r.MinimumRefreshSeconds,         r => r.MinimumRefreshSeconds += 1 },
                     { r => r.PreferIataAirportCodes,        r => r.PreferIataAirportCodes = !r.PreferIataAirportCodes },
@@ -312,21 +314,24 @@ namespace Test.VirtualRadar.Library.Settings
 
                 var settings = _Configuration.RawDecodingSettings;
                 var testRaised = SetValue(settings, propertyName, new Dictionary<Expression<Func<RawDecodingSettings,object>>,Action<RawDecodingSettings>>() {
-                    { r => r.AcceptableAirborneSpeed,               r => r.AcceptableAirborneSpeed += 1 },
-                    { r => r.AcceptableAirSurfaceTransitionSpeed,   r => r.AcceptableAirSurfaceTransitionSpeed += 1 },
-                    { r => r.AcceptableSurfaceSpeed,                r => r.AcceptableSurfaceSpeed += 1 },
-                    { r => r.AcceptIcaoInNonPICount,                r => r.AcceptIcaoInNonPICount += 1 },
-                    { r => r.AcceptIcaoInNonPISeconds,              r => r.AcceptIcaoInNonPISeconds += 1 },
-                    { r => r.AcceptIcaoInPI0Count,                  r => r.AcceptIcaoInPI0Count += 1 },
-                    { r => r.AcceptIcaoInPI0Seconds,                r => r.AcceptIcaoInPI0Seconds += 1 },
-                    { r => r.AirborneGlobalPositionLimit,           r => r.AirborneGlobalPositionLimit += 1 },
-                    { r => r.FastSurfaceGlobalPositionLimit,        r => r.FastSurfaceGlobalPositionLimit += 1 },
-                    { r => r.IgnoreCallsignsInBds20,                r => r.IgnoreCallsignsInBds20 = !r.IgnoreCallsignsInBds20 },
-                    { r => r.IgnoreMilitaryExtendedSquitter,        r => r.IgnoreMilitaryExtendedSquitter = !r.IgnoreMilitaryExtendedSquitter },
-                    { r => r.ReceiverRange,                         r => r.ReceiverRange += 1 },
-                    { r => r.SlowSurfaceGlobalPositionLimit,        r => r.SlowSurfaceGlobalPositionLimit += 1 },
-                    { r => r.SuppressReceiverRangeCheck,            r => r.SuppressReceiverRangeCheck = !r.SuppressReceiverRangeCheck },
-                    { r => r.UseLocalDecodeForInitialPosition,      r => r.UseLocalDecodeForInitialPosition = !r.UseLocalDecodeForInitialPosition },
+                    { r => r.AcceptableAirborneSpeed,                   r => r.AcceptableAirborneSpeed += 1 },
+                    { r => r.AcceptableAirSurfaceTransitionSpeed,       r => r.AcceptableAirSurfaceTransitionSpeed += 1 },
+                    { r => r.AcceptableSurfaceSpeed,                    r => r.AcceptableSurfaceSpeed += 1 },
+                    { r => r.AcceptIcaoInNonPICount,                    r => r.AcceptIcaoInNonPICount += 1 },
+                    { r => r.AcceptIcaoInNonPISeconds,                  r => r.AcceptIcaoInNonPISeconds += 1 },
+                    { r => r.AcceptIcaoInPI0Count,                      r => r.AcceptIcaoInPI0Count += 1 },
+                    { r => r.AcceptIcaoInPI0Seconds,                    r => r.AcceptIcaoInPI0Seconds += 1 },
+                    { r => r.AirborneGlobalPositionLimit,               r => r.AirborneGlobalPositionLimit += 1 },
+                    { r => r.FastSurfaceGlobalPositionLimit,            r => r.FastSurfaceGlobalPositionLimit += 1 },
+                    { r => r.IgnoreCallsignsInBds20,                    r => r.IgnoreCallsignsInBds20 = !r.IgnoreCallsignsInBds20 },
+                    { r => r.IgnoreInvalidCodeBlockInOtherMessages,     r => r.IgnoreInvalidCodeBlockInOtherMessages = !r.IgnoreInvalidCodeBlockInOtherMessages },
+                    { r => r.IgnoreInvalidCodeBlockInParityMessages,    r => r.IgnoreInvalidCodeBlockInParityMessages = !r.IgnoreInvalidCodeBlockInParityMessages },
+                    { r => r.IgnoreMilitaryExtendedSquitter,            r => r.IgnoreMilitaryExtendedSquitter = !r.IgnoreMilitaryExtendedSquitter },
+                    { r => r.ReceiverRange,                             r => r.ReceiverRange += 1 },
+                    { r => r.SlowSurfaceGlobalPositionLimit,            r => r.SlowSurfaceGlobalPositionLimit += 1 },
+                    { r => r.SuppressIcao0,                             r => r.SuppressIcao0 = !r.SuppressIcao0 },
+                    { r => r.SuppressReceiverRangeCheck,                r => r.SuppressReceiverRangeCheck = !r.SuppressReceiverRangeCheck },
+                    { r => r.UseLocalDecodeForInitialPosition,          r => r.UseLocalDecodeForInitialPosition = !r.UseLocalDecodeForInitialPosition },
                 }, silentPropertyMap: new Dictionary<Expression<Func<RawDecodingSettings,object>>,Action<RawDecodingSettings>>() {
                     { r => r.ReceiverLocationId,                    r => r.ReceiverLocationId += 1 },
                 });

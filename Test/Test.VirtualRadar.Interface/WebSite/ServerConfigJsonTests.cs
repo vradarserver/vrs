@@ -66,6 +66,7 @@ namespace Test.VirtualRadar.Interface.WebSite
                         case "InitialLatitude":                         expected = json.InitialLatitude = pass == 0 ? 1.234 : 5.678; break;
                         case "InitialLongitude":                        expected = json.InitialLongitude = pass == 0 ? 1.234 : 5.678; break;
                         case "InitialMapType":                          expected = json.InitialMapType = pass == 0 ? "A" : "B"; break;
+                        case "InitialSettings":                         expected = json.InitialSettings = pass == 0 ? "A" : "B"; break;
                         case "InitialSpeedUnit":                        expected = json.InitialSpeedUnit = pass == 0 ? "A" : "B"; break;
                         case "InitialZoom":                             expected = json.InitialZoom = pass == 0 ? 1 : 2; break;
                         case "InternetClientCanRunReports":             expected = json.InternetClientCanRunReports = pass == 0; break;

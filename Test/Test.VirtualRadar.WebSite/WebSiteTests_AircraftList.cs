@@ -438,15 +438,15 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_BaseStationAircraftList_Returns_Empty_AircraftListJson_When_Requested_Feed_Does_Not_Exist()
+        public void WebSite_BaseStationAircraftList_Returns_Default_AircraftListJson_When_Requested_Feed_Does_Not_Exist()
         {
             AddBlankAircraft(1, listIndex: 0);
             _AircraftListAddress.ReceiverId = 99;
 
             var json = SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address);
-            Assert.AreEqual(0, json.Aircraft.Count);
-            Assert.AreEqual(0, json.AvailableAircraft);
-            Assert.AreEqual(99, json.SourceFeedId);
+            Assert.AreEqual(1, json.Aircraft.Count);
+            Assert.AreEqual(1, json.AvailableAircraft);
+            Assert.AreEqual(1, json.SourceFeedId);
 
             Assert.AreEqual(MimeType.Json, _Response.Object.MimeType);
         }

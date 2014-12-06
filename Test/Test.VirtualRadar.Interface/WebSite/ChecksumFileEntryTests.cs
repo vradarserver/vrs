@@ -65,7 +65,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             File.WriteAllText(fileName, "Don't change this");
             try {
                 var checksum = ChecksumFileEntry.GenerateChecksum(fileName);
-                Assert.AreEqual("9F40014E6EBC6FB4E4A6E244B27454DC", checksum);
+                Assert.AreEqual("4A71A99D584C95CD", checksum);
             } finally {
                 File.Delete(fileName);
             }
