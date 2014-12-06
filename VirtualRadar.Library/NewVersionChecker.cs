@@ -41,8 +41,8 @@ namespace VirtualRadar.Library
                 string result = null;
 
                 var webRequest = WebRequest.Create(url);
-                using(var webResponse = webRequest.GetResponse()) {
-                    using(var streamReader = new StreamReader(webResponse.GetResponseStream())) {
+                using(var webResponse = WebRequestHelper.GetResponse(webRequest)) {
+                    using(var streamReader = new StreamReader(WebRequestHelper.GetResponseStream(webResponse))) {
                         result = streamReader.ReadToEnd();
                     }
                 }

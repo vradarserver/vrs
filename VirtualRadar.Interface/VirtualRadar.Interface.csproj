@@ -388,6 +388,7 @@
     <Compile Include="View\ValidationResult.cs" />
     <Compile Include="View\ValidationResults.cs" />
     <Compile Include="WeakEventHandler.cs" />
+    <Compile Include="WebRequestHelper.cs" />
     <Compile Include="WebRequestResult.cs" />
     <Compile Include="WebServer\IAutoConfigWebServer.cs" />
     <Compile Include="WebServer\IPortMapping.cs" />

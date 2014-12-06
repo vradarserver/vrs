@@ -15,6 +15,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Text;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 
@@ -69,8 +70,8 @@ namespace VirtualRadar.Database.StandingData
                 byte[] buffer = new byte[1024];
                 try {
                     WebRequest webRequest = WebRequest.Create(url);
-                    using(WebResponse webResponse = webRequest.GetResponse()) {
-                        using(Stream remoteStream = webResponse.GetResponseStream()) {
+                    using(WebResponse webResponse = WebRequestHelper.GetResponse(webRequest)) {
+                        using(Stream remoteStream = WebRequestHelper.GetResponseStream(webResponse)) {
                             var readStream = !urlIsGzipFile ? remoteStream : new GZipStream(remoteStream, CompressionMode.Decompress);
                             try {
                                 int bytesRead = 0;
@@ -235,8 +236,7 @@ namespace VirtualRadar.Database.StandingData
 
                         string remoteBasicLookupChecksum = remoteStateChunks.Length > 8 ? remoteStateChunks[8] : "MISSING-REMOTE";
                         string localBasicLookupChecksum = localStateChunks.Length > 8 ? localStateChunks[8] : "MISSING-LOCAL";
-                       // if(remoteBasicLookupChecksum != localBasicLookupChecksum || !Provider.FileExists(basicLookupFileName)) {
-                       if(true) {
+                        if(remoteBasicLookupChecksum != localBasicLookupChecksum || !Provider.FileExists(basicLookupFileName)) {
                             updateState = true;
                             Provider.DownloadAndDecompressFile(BasicAircraftLookupUrl, basicLookupTempName);
 
