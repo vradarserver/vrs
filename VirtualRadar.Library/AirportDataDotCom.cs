@@ -145,10 +145,10 @@ namespace VirtualRadar.Library
 
             var result = new WebRequestResult<AirportDataThumbnailsJson>();
             try {
-                using(var response = (HttpWebResponse)request.GetResponse()) {
+                using(var response = (HttpWebResponse)WebRequestHelper.GetResponse(request)) {
                     result.HttpStatusCode = response.StatusCode;
                     if(result.HttpStatusCode == HttpStatusCode.OK) {
-                        using(var responseStream = response.GetResponseStream()) {
+                        using(var responseStream = WebRequestHelper.GetResponseStream(response)) {
                             var deserialiser = new DataContractJsonSerializer(typeof(AirportDataThumbnailsJson));
                             result.Result = (AirportDataThumbnailsJson)deserialiser.ReadObject(responseStream);
                         }

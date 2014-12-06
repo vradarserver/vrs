@@ -224,7 +224,6 @@ namespace VirtualRadar.Library.Presenter
             } catch(Exception ex) {
                 var log = Factory.Singleton.Resolve<ILog>().Singleton;
                 log.WriteLine("Exception caught during load of standing data: {0}", ex.ToString());
-                _View.ReportProblem(String.Format(Strings.CannotLoadFlightRouteDataFull, ex.Message), Strings.CannotLoadFlightRouteDataTitle, false);
             }
 
             Factory.Singleton.Resolve<IBackgroundDataDownloader>().Singleton.Start();
