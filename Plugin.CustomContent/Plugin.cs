@@ -100,7 +100,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Version { get { return "2.0.0"; } }
+        public string Version { get { return "2.1.0"; } }
 
         /// <summary>
         /// See interface docs.

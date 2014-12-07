@@ -1254,12 +1254,14 @@ namespace VirtualRadar.Library.Presenter
                 // Test values that rely on the connection type
                 switch(receiver.ConnectionType) {
                     case ConnectionType.TCP:
-                        // The address must be supplied
-                        DomainAddressIsValid(receiver.Address, new Validation(ValidationField.BaseStationAddress, defaults) {
-                            Format = Strings.CannotResolveAddress,
-                            Args = new object[] { receiver.Address },
-                            IsWarning = !String.IsNullOrEmpty(receiver.Address ?? "") || !receiver.Enabled,
-                        });
+                        // The address must be supplied unless the receiver is passive
+                        ConditionIsTrue(receiver, r => r.IsPassive || DomainAddressIsValid(r.Address),
+                            new Validation(ValidationField.BaseStationAddress, defaults) {
+                                Format = Strings.CannotResolveAddress,
+                                Args = new object[] { receiver.Address },
+                                IsWarning = !String.IsNullOrEmpty(receiver.Address ?? "") || !receiver.Enabled,
+                            }
+                        );
 
                         // The port must be within range
                         ValueIsInRange(receiver.Port, 1, 65535, new Validation(ValidationField.BaseStationPort, defaults) {
