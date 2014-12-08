@@ -34,6 +34,7 @@ namespace VirtualRadar
         private static string _ProductName;
         private static string _Description;
         private static string _Copyright;
+        private static bool _Headless;
 
         /// <summary>
         /// See interface docs.
@@ -76,6 +77,11 @@ namespace VirtualRadar
         public CultureInfo CultureInfo { get { return Program.ForcedCultureInfo; } }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool Headless { get { return _Headless; } }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ApplicationInformation()
@@ -93,6 +99,15 @@ namespace VirtualRadar
                 _Description = String.Format("{0}{1}{1}{2}:{1}{1}{3}", Strings.ApplicationDescription, Environment.NewLine, Strings.License, Strings.LicenseContent);
                 _Copyright = Strings.Copyright;
             }
+        }
+
+        /// <summary>
+        /// Sets the <see cref="Headless"/> property.
+        /// </summary>
+        /// <param name="headless"></param>
+        public static void SetHeadless(bool headless)
+        {
+            _Headless = headless;
         }
     }
 }

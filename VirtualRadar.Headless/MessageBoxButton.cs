@@ -14,17 +14,48 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace VirtualRadar.Interface.View
+namespace VirtualRadar.Headless
 {
     /// <summary>
-    /// The interface that all views must implement.
+    /// Collects together information about a single button in a <see cref="MessageBox"/> prompt.
     /// </summary>
-    public interface IView : IDisposable
+    class MessageBoxButton
     {
         /// <summary>
-        /// Displays the view to the user.
+        /// Gets the result associated with the button.
+        /// </summary>
+        public DialogResult DialogResult { get; private set; }
+
+        /// <summary>
+        /// Gets the shortcut associated with the button.
+        /// </summary>
+        public char Shortcut { get; private set; }
+
+        /// <summary>
+        /// Gets the text of the button.
+        /// </summary>
+        public string Text { get; private set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="dialogResult"></param>
+        /// <param name="shortcut"></param>
+        /// <param name="text"></param>
+        public MessageBoxButton(DialogResult dialogResult, char shortcut, string text)
+        {
+            DialogResult = dialogResult;
+            Shortcut = shortcut;
+            Text = text;
+        }
+
+        /// <summary>
+        /// See base docs.
         /// </summary>
         /// <returns></returns>
-        DialogResult ShowView();
+        public override string ToString()
+        {
+            return String.Format("{0}-{1}", Shortcut, Text);
+        }
     }
 }

@@ -13,18 +13,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 
-namespace VirtualRadar.Interface.View
+namespace VirtualRadar.WinForms
 {
     /// <summary>
-    /// The interface that all views must implement.
+    /// The WinForms implementation of <see cref="IMessageBox"/>.
     /// </summary>
-    public interface IView : IDisposable
+    class MessageBoxWrapper : IMessageBox
     {
         /// <summary>
-        /// Displays the view to the user.
+        /// See interface docs.
         /// </summary>
+        /// <param name="message"></param>
+        public void Show(string message)
+        {
+            MessageBox.Show(message);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        public void Show(string message, string title)
+        {
+            MessageBox.Show(message, title);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        /// <param name="buttons"></param>
+        /// <param name="icon"></param>
+        /// <param name="defaultButton"></param>
         /// <returns></returns>
-        DialogResult ShowView();
+        public DialogResult Show(string message, string title, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)
+        {
+            return MessageBox.Show(message, title, buttons, icon, defaultButton);
+        }
     }
 }

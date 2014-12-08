@@ -12,19 +12,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using InterfaceFactory;
 
-namespace VirtualRadar.Interface.View
+namespace VirtualRadar.WinForms
 {
     /// <summary>
-    /// The interface that all views must implement.
+    /// Initialises the class factory with all of the implementations exposed by the library.
     /// </summary>
-    public interface IView : IDisposable
+    public static class Implementations
     {
         /// <summary>
-        /// Displays the view to the user.
+        /// Registers implementations against the class factory passed in.
         /// </summary>
-        /// <returns></returns>
-        DialogResult ShowView();
+        /// <param name="factory"></param>
+        public static void Register(IClassFactory factory)
+        {
+            factory.Register<VirtualRadar.Interface.IMessageBox, MessageBoxWrapper>();
+            factory.Register<VirtualRadar.Interface.View.IMainView, MainView>();
+            factory.Register<VirtualRadar.Interface.View.IShutdownView, ShutdownView>();
+            factory.Register<VirtualRadar.Interface.View.ISplashView, SplashView>();
+        }
     }
 }

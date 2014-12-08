@@ -282,6 +282,19 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region ShowView
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public override DialogResult ShowView()
+        {
+            Application.Run(this);
+
+            return DialogResult.OK;
+        }
+        #endregion
+
         #region BubbleExceptionToGui
         /// <summary>
         /// See interface docs.
