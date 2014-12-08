@@ -12,19 +12,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using InterfaceFactory;
 
-namespace VirtualRadar.Interface.View
+namespace VirtualRadar.Headless
 {
     /// <summary>
-    /// The interface that all views must implement.
+    /// Registers the implementations of interfaces that the library provides.
     /// </summary>
-    public interface IView : IDisposable
+    public static class Implementations
     {
         /// <summary>
-        /// Displays the view to the user.
+        /// Registers implementations against the class factory passed in.
         /// </summary>
-        /// <returns></returns>
-        DialogResult ShowView();
+        /// <param name="factory"></param>
+        public static void Register(IClassFactory factory)
+        {
+            factory.Register<VirtualRadar.Interface.IMessageBox, MessageBox>();
+            factory.Register<VirtualRadar.Interface.View.IMainView, View.MainView>();
+            factory.Register<VirtualRadar.Interface.View.IShutdownView, View.ShutdownView>();
+            factory.Register<VirtualRadar.Interface.View.ISplashView, View.SplashView>();
+        }
     }
 }

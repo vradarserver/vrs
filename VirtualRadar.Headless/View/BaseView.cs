@@ -13,18 +13,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface.View;
 
-namespace VirtualRadar.Interface.View
+namespace VirtualRadar.Headless.View
 {
     /// <summary>
-    /// The interface that all views must implement.
+    /// Implements base behaviour for views.
     /// </summary>
-    public interface IView : IDisposable
+    class BaseView
     {
         /// <summary>
-        /// Displays the view to the user.
+        /// Finalises the object.
         /// </summary>
-        /// <returns></returns>
-        DialogResult ShowView();
+        ~BaseView()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the view.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+        }
     }
 }

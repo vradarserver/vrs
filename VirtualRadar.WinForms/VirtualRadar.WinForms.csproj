@@ -214,6 +214,7 @@
       <DependentUpon>FlightSimulatorXView.cs</DependentUpon>
     </Compile>
     <Compile Include="FontFactory.cs" />
+    <Compile Include="Implementations.cs" />
     <Compile Include="InvalidPluginsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -228,6 +229,7 @@
     <Compile Include="MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageBoxWrapper.cs" />
     <Compile Include="MonoAutoScaleMode.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="OnlineHelpHelper.cs" />

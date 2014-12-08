@@ -14,17 +14,39 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace VirtualRadar.Interface.View
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// The interface that all views must implement.
+    /// The interface for an object that can show a modal message to the user.
     /// </summary>
-    public interface IView : IDisposable
+    /// <remarks>
+    /// Wraps the WinForms MessageBox static class so that it can be abstracted away in environments
+    /// that do not have WinForms available to them.
+    /// </remarks>
+    public interface IMessageBox
     {
         /// <summary>
-        /// Displays the view to the user.
+        /// Shows a message to the user.
         /// </summary>
+        /// <param name="message"></param>
+        void Show(string message);
+
+        /// <summary>
+        /// Shows a message with a title to the user.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        void Show(string message, string title);
+
+        /// <summary>
+        /// Shows a message with a title and a set of choices to the user. Returns the choice selected by the user.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        /// <param name="buttons"></param>
+        /// <param name="icon"></param>
+        /// <param name="defaultButton"></param>
         /// <returns></returns>
-        DialogResult ShowView();
+        DialogResult Show(string message, string title, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
     }
 }

@@ -101,9 +101,17 @@
       <Project>{049A9A56-990E-4F99-99F7-CC09767508D9}</Project>
       <Name>VirtualRadar.Database</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Headless\VirtualRadar.Headless.csproj">
+      <Project>{573ddcfe-821e-4f58-8e6f-89fa0c0cc879}</Project>
+      <Name>VirtualRadar.Headless</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
       <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interop\VirtualRadar.Interop.csproj">
+      <Project>{801d6f1c-21a1-4336-9f32-16d5c16b3c81}</Project>
+      <Name>VirtualRadar.Interop</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Library\VirtualRadar.Library.csproj">
       <Project>{4BC834F4-005B-4EF9-BDA4-078C3F1745D3}</Project>

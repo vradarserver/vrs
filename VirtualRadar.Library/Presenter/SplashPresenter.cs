@@ -124,6 +124,7 @@ namespace VirtualRadar.Library.Presenter
                     if(caselessArg.StartsWith("-CULTURE:"))     continue;
                     else if(caselessArg == "-SHOWCONFIGFOLDER") continue;
                     else if(caselessArg == "-DEFAULTFONTS")     continue;
+                    else if(caselessArg == "-NOGUI")            continue;
                     else if(caselessArg.StartsWith("-WORKINGFOLDER:")) {
                         var folder = arg.Substring(15);
                         if(!Provider.FolderExists(folder)) _View.ReportProblem(String.Format(Strings.FolderDoesNotExistFull, folder), Strings.FolderDoesNotExistTitle, true);

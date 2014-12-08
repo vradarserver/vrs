@@ -60,5 +60,10 @@ namespace VirtualRadar.Interface
         /// Gets the culture info that was forced by a command switch on startup or null if the default culture info is to be used.
         /// </summary>
         CultureInfo CultureInfo { get; }
+
+        /// <summary>
+        /// Gets a value indicating that the program is running without a GUI.
+        /// </summary>
+        bool Headless { get; }
     }
 }

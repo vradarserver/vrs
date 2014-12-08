@@ -121,6 +121,17 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region ShowView
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public virtual DialogResult ShowView()
+        {
+            return ShowDialog();
+        }
+        #endregion
+
         #region OnLoad
         /// <summary>
         /// Called after the form has been loaded but before it is shown to the user.

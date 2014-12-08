@@ -65,9 +65,7 @@ namespace VirtualRadar
         {
             InitialiseUnhandledExceptionHandling();
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
+            var headless = false;
             foreach(string arg in args) {
                 if(arg.ToUpper().StartsWith("-CULTURE:")) {
                     ForcedCultureInfo = new CultureInfo(arg.Substring(9));
@@ -77,6 +75,15 @@ namespace VirtualRadar
                 if(arg.ToUpper() == "-DEFAULTFONTS") {
                     VirtualRadar.WinForms.FontFactory.DisableFontReplacement = true;
                 }
+                if(arg.ToUpper() == "-NOGUI") {
+                    headless = true;
+                }
+            }
+            ApplicationInformation.SetHeadless(headless);
+
+            if(!headless) {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
             }
 
             Factory.Singleton.Register<IApplicationInformation, ApplicationInformation>();
@@ -85,12 +92,18 @@ namespace VirtualRadar
             VirtualRadar.Database.Implementations.Register(Factory.Singleton);
             VirtualRadar.WebServer.Implementations.Register(Factory.Singleton);
             VirtualRadar.WebSite.Implementations.Register(Factory.Singleton);
+            if(!headless) {
+                VirtualRadar.WinForms.Implementations.Register(Factory.Singleton);
+            } else {
+                VirtualRadar.Headless.Implementations.Register(Factory.Singleton);
+                VirtualRadar.Interop.Console.ShowConsole();
+            }
 
             if(args.Contains("-showConfigFolder")) {
                 var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                 var folderMessage = String.Format("Configuration folder: {0}", configurationStorage.Folder);
                 Console.WriteLine(folderMessage);
-                MessageBox.Show(folderMessage, "Configuration Folder");
+                Factory.Singleton.Resolve<IMessageBox>().Show("Configuration Folder");
             }
 
             var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
@@ -143,7 +156,7 @@ namespace VirtualRadar
                     try {
                         mutexAcquired = result.WaitOne(1000, false);
                         if(!mutexAcquired) {
-                            MessageBox.Show(Strings.AnotherInstanceRunningFull, Strings.AnotherInstanceRunningTitle);
+                            Factory.Singleton.Resolve<IMessageBox>().Show(Strings.AnotherInstanceRunningFull, Strings.AnotherInstanceRunningTitle);
                             Environment.Exit(1);
                         }
                     } catch(AbandonedMutexException) { }
@@ -159,7 +172,7 @@ namespace VirtualRadar
         private static void CheckForHttpListenerSupport()
         {
             if(!HttpListener.IsSupported) {
-                MessageBox.Show(Strings.WindowsVersionTooLowFull, Strings.WindowsVersionTooLowTitle);
+                Factory.Singleton.Resolve<IMessageBox>().Show(Strings.WindowsVersionTooLowFull, Strings.WindowsVersionTooLowTitle);
                 Environment.Exit(1);
             }
         }
@@ -174,7 +187,7 @@ namespace VirtualRadar
                 try {
                     TestCanLoadThreePointFiveObject();
                 } catch(FileNotFoundException) {
-                    if(MessageBox.Show(Strings.DotNetVersionTooLowFull, Strings.DotNetVersionTooLowTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes) {
+                    if(Factory.Singleton.Resolve<IMessageBox>().Show(Strings.DotNetVersionTooLowFull, Strings.DotNetVersionTooLowTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes) {
                         Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyID=ab99342f-5d1a-413d-8319-81da479ab0d7&displaylang=en");
                     }
                     Environment.Exit(1);
@@ -209,9 +222,9 @@ namespace VirtualRadar
             ISimpleAircraftList flightSimulatorXAircraftList = null;
             bool loadSucceded = false;
 
-            using(var splashScreen = new SplashView()) {
+            using(var splashScreen = Factory.Singleton.Resolve<ISplashView>()) {
                 splashScreen.Initialise(args, BackgroundThread_ExceptionCaught);
-                splashScreen.ShowDialog();
+                splashScreen.ShowView();
 
                 loadSucceded = splashScreen.LoadSucceeded;
                 uPnpManager = splashScreen.UPnpManager;
@@ -221,16 +234,16 @@ namespace VirtualRadar
 
             try {
                 if(loadSucceded) {
-                    using(var mainWindow = new MainView()) {
+                    using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
                         _MainView = mainWindow;
                         mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);
-                        Application.Run(mainWindow);
+                        mainWindow.ShowView();
                     }
                 }
             } finally {
-                using(var shutdownWindow = new ShutdownView()) {
+                using(var shutdownWindow = Factory.Singleton.Resolve<IShutdownView>()) {
                     shutdownWindow.Initialise(uPnpManager, baseStationAircraftList);
-                    shutdownWindow.ShowDialog();
+                    shutdownWindow.ShowView();
                     Thread.Sleep(1000);
                 }
             }
@@ -248,7 +261,7 @@ namespace VirtualRadar
             // Don't translate, I don't want to hide errors if the translation throws exceptions
             Exception ex = e.ExceptionObject as Exception;
             if(ex != null) ShowException(ex);
-            else MessageBox.Show(String.Format("An exception that was not of type Exception was caught.\r\n{0}", e.ExceptionObject), "Unknown Exception Caught");
+            else Factory.Singleton.Resolve<IMessageBox>().Show(String.Format("An exception that was not of type Exception was caught.\r\n{0}", e.ExceptionObject), "Unknown Exception Caught");
         }
 
         /// <summary>
@@ -297,7 +310,7 @@ namespace VirtualRadar
             } catch { }
 
             try {
-                MessageBox.Show(message, "Unhandled Exception Caught");
+                Factory.Singleton.Resolve<IMessageBox>().Show(message, "Unhandled Exception Caught");
             } catch(Exception doubleEx) {
                 Debug.WriteLine(String.Format("Program.ShowException caught double-exception: {0} when trying to display / log {1}", doubleEx.ToString(), ex.ToString()));
                 try {

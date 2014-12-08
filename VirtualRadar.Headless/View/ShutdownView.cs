@@ -13,18 +13,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
+using VirtualRadar.Interface.BaseStation;
+using VirtualRadar.Interface.Presenter;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Interface.WebServer;
 
-namespace VirtualRadar.Interface.View
+namespace VirtualRadar.Headless.View
 {
     /// <summary>
-    /// The interface that all views must implement.
+    /// The headless implementation of the shutdown view.
     /// </summary>
-    public interface IView : IDisposable
+    class ShutdownView : BaseView, IShutdownView
     {
+        // Objects passed to Initialise that will then be passed on to the presenter once the view is fully formed.
+        private IUniversalPlugAndPlayManager _UPnpManager;
+
         /// <summary>
-        /// Displays the view to the user.
+        /// See interface docs.
+        /// </summary>
+        /// <param name="uPnpManager"></param>
+        /// <param name="baseStationAircraftList"></param>
+        public void Initialise(IUniversalPlugAndPlayManager uPnpManager, IBaseStationAircraftList baseStationAircraftList)
+        {
+            _UPnpManager = uPnpManager;
+        }
+
+        /// <summary>
+        /// See interface docs.
         /// </summary>
         /// <returns></returns>
-        DialogResult ShowView();
+        public DialogResult ShowView()
+        {
+            var presenter = Factory.Singleton.Resolve<IShutdownPresenter>();
+            presenter.UPnpManager = _UPnpManager;
+            presenter.Initialise(this);
+            presenter.ShutdownApplication();
+
+            return DialogResult.OK;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="text"></param>
+        public void ReportProgress(string text)
+        {
+            Console.WriteLine(text);
+        }
     }
 }
