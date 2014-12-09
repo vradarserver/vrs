@@ -27,9 +27,19 @@ namespace VirtualRadar.WebServer
     {
         #region Fields
         /// <summary>
+        /// The number of minutes to wait between successive attempts to fetch the external IP address.
+        /// </summary>
+        private static readonly int MinutesBetweenExternalAddressAttempts = 5;
+
+        /// <summary>
         /// Set to true once the external IP address has been fetched.
         /// </summary>
         private bool _FetchedExternalIPAddress;
+
+        /// <summary>
+        /// The date and time of the last attempt to fetch the external IP address.
+        /// </summary>
+        private DateTime _LastFetchAttempt;
         #endregion
 
         #region Properties
@@ -149,8 +159,13 @@ namespace VirtualRadar.WebServer
         {
             if(!_FetchedExternalIPAddress) {
                 try {
-                    Factory.Singleton.Resolve<IExternalIPAddressService>().Singleton.GetExternalIPAddress();
-                    _FetchedExternalIPAddress = true;
+                    var clock = Factory.Singleton.Resolve<IClock>();
+                    var threshold = _LastFetchAttempt.AddMinutes(MinutesBetweenExternalAddressAttempts);
+                    if(clock.UtcNow >= threshold) {
+                        _LastFetchAttempt = clock.UtcNow;
+                        Factory.Singleton.Resolve<IExternalIPAddressService>().Singleton.GetExternalIPAddress();
+                        _FetchedExternalIPAddress = true;
+                    }
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("AutoConfigWebServer.Heartbeat_SlowTick caught exception {0}", ex.ToString()));
                     var log = Factory.Singleton.Resolve<ILog>().Singleton;
