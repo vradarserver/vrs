@@ -2416,4 +2416,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="InitialSettingsTitle" xml:space="preserve">
     <value>Initial Settings</value>
   </data>
+  <data name="InvalidPluginsCount" xml:space="preserve">
+    <value>Invalid plugins: {0}</value>
+  </data>
+  <data name="LocalAddress" xml:space="preserve">
+    <value>Local address: {0}</value>
+  </data>
+  <data name="NetworkAddress" xml:space="preserve">
+    <value>Network address: {0}</value>
+  </data>
+  <data name="PressQToQuit" xml:space="preserve">
+    <value>Press Q to quit</value>
+    <comment>You can have any key you like here, as long as it's Q</comment>
+  </data>
 </root>

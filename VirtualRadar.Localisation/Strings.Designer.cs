@@ -2087,6 +2087,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid plugins: {0}.
+        /// </summary>
+        public static string InvalidPluginsCount {
+            get {
+                return ResourceManager.GetString("InvalidPluginsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IP Address.
         /// </summary>
         public static string IPAddress {
@@ -2250,6 +2259,15 @@ namespace VirtualRadar.Localisation {
         public static string Local {
             get {
                 return ResourceManager.GetString("Local", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local address: {0}.
+        /// </summary>
+        public static string LocalAddress {
+            get {
+                return ResourceManager.GetString("LocalAddress", resourceCulture);
             }
         }
         
@@ -2808,6 +2826,15 @@ namespace VirtualRadar.Localisation {
         public static string Network {
             get {
                 return ResourceManager.GetString("Network", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network address: {0}.
+        /// </summary>
+        public static string NetworkAddress {
+            get {
+                return ResourceManager.GetString("NetworkAddress", resourceCulture);
             }
         }
         
@@ -4428,6 +4455,15 @@ namespace VirtualRadar.Localisation {
         public static string PresetConfigurations {
             get {
                 return ResourceManager.GetString("PresetConfigurations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press Q to quit.
+        /// </summary>
+        public static string PressQToQuit {
+            get {
+                return ResourceManager.GetString("PressQToQuit", resourceCulture);
             }
         }
         
