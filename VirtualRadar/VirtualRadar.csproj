@@ -74,6 +74,7 @@
   <ItemGroup>
     <Content Include="application.ico" />
     <Compile Include="ApplicationInformation.cs" />
+    <Compile Include="ExceptionReporter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
