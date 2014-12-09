@@ -20,6 +20,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Headless.View
 {
@@ -47,7 +48,7 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_InvalidPluginCount != value) {
                     _InvalidPluginCount = value;
-                    if(_InvalidPluginCount != 0) Console.WriteLine("Invalid plugins: {0}", _InvalidPluginCount);
+                    if(_InvalidPluginCount != 0) Console.WriteLine(Strings.InvalidPluginsCount, _InvalidPluginCount);
                 }
             }
         }
@@ -67,7 +68,7 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_NewVersionAvailable != value) {
                     _NewVersionAvailable = value;
-                    if(_NewVersionAvailable) Console.WriteLine("A NEW VERSION OF THIS PROGRAM IS AVAILABLE");
+                    if(_NewVersionAvailable) Console.WriteLine(Strings.LaterVersionAvailable);
                 }
             }
         }
@@ -112,7 +113,7 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_WebServerLocalAddress != value) {
                     _WebServerLocalAddress = value;
-                    if(!String.IsNullOrEmpty(_WebServerLocalAddress)) Console.WriteLine("Local address:   {0}", _WebServerLocalAddress);
+                    if(!String.IsNullOrEmpty(_WebServerLocalAddress)) Console.WriteLine(Strings.LocalAddress, _WebServerLocalAddress);
                 }
             }
         }
@@ -127,7 +128,7 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_WebServerNetworkAddress != value) {
                     _WebServerNetworkAddress = value;
-                    if(!String.IsNullOrEmpty(_WebServerNetworkAddress)) Console.WriteLine("Network address: {0}", _WebServerNetworkAddress);
+                    if(!String.IsNullOrEmpty(_WebServerNetworkAddress)) Console.WriteLine(Strings.NetworkAddress, _WebServerNetworkAddress);
                 }
             }
         }
@@ -176,9 +177,9 @@ namespace VirtualRadar.Headless.View
             presenter.UPnpManager = _UPnpManager;
             presenter.Initialise(this);
 
-            Console.WriteLine("Press Q to quit");
+            Console.WriteLine(Strings.PressQToQuit);
             for(var quit = false;!quit;) {
-                var key = Console.ReadKey();
+                var key = Console.ReadKey(intercept: true);
                 if(key != null && key.Key == ConsoleKey.Q) quit = true;
             }
 
