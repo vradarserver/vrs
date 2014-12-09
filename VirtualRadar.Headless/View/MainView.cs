@@ -163,7 +163,8 @@ namespace VirtualRadar.Headless.View
         /// <param name="ex"></param>
         public void BubbleExceptionToGui(Exception ex)
         {
-            throw ex;
+            var exceptionReporter = Factory.Singleton.Resolve<IExceptionReporter>();
+            exceptionReporter.ShowUnhandledException(ex);
         }
 
         /// <summary>

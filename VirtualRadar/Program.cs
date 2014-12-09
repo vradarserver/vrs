@@ -87,6 +87,7 @@ namespace VirtualRadar
             }
 
             Factory.Singleton.Register<IApplicationInformation, ApplicationInformation>();
+            Factory.Singleton.Register<IExceptionReporter, ExceptionReporter>();
             SQLiteWrapper.Implementations.Register(Factory.Singleton);
             VirtualRadar.Library.Implementations.Register(Factory.Singleton);
             VirtualRadar.Database.Implementations.Register(Factory.Singleton);
@@ -293,14 +294,17 @@ namespace VirtualRadar
         /// Shows the details of an exception to the user and logs it.
         /// </summary>
         /// <param name="ex"></param>
-        static void ShowException(Exception ex)
+        public static void ShowException(Exception ex)
         {
             // Don't translate, I don't want to confuse things if the translation throws exceptions
 
             var message = Describe.ExceptionMultiLine(ex, "\r\n");
 
             try {
-                Clipboard.SetText(message);
+                var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
+                if(!applicationInformation.Headless) {
+                    Clipboard.SetText(message);
+                }
             } catch { }
 
             ILog log = null;
