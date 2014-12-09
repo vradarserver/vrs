@@ -37,20 +37,40 @@ namespace VirtualRadar.Headless.View
         #endregion
 
         #region Properties
+        private int _InvalidPluginCount;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int InvalidPluginCount { get; set; }
+        public int InvalidPluginCount
+        {
+            get { return _InvalidPluginCount; }
+            set {
+                if(_InvalidPluginCount != value) {
+                    _InvalidPluginCount = value;
+                    if(_InvalidPluginCount != 0) Console.WriteLine("Invalid plugins: {0}", _InvalidPluginCount);
+                }
+            }
+        }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public string LogFileName { get; set; }
 
+        private bool _NewVersionAvailable;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool NewVersionAvailable { get; set; }
+        public bool NewVersionAvailable
+        {
+            get { return _NewVersionAvailable; }
+            set {
+                if(_NewVersionAvailable != value) {
+                    _NewVersionAvailable = value;
+                    if(_NewVersionAvailable) Console.WriteLine("A NEW VERSION OF THIS PROGRAM IS AVAILABLE");
+                }
+            }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -82,15 +102,35 @@ namespace VirtualRadar.Headless.View
         /// </summary>
         public bool WebServerIsOnline { get; set; }
 
+        private string _WebServerLocalAddress;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string WebServerLocalAddress { get; set; }
+        public string WebServerLocalAddress
+        {
+            get { return _WebServerLocalAddress; }
+            set {
+                if(_WebServerLocalAddress != value) {
+                    _WebServerLocalAddress = value;
+                    if(!String.IsNullOrEmpty(_WebServerLocalAddress)) Console.WriteLine("Local address:   {0}", _WebServerLocalAddress);
+                }
+            }
+        }
 
+        private string _WebServerNetworkAddress;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string WebServerNetworkAddress { get; set; }
+        public string WebServerNetworkAddress
+        {
+            get { return _WebServerNetworkAddress; }
+            set {
+                if(_WebServerNetworkAddress != value) {
+                    _WebServerNetworkAddress = value;
+                    if(!String.IsNullOrEmpty(_WebServerNetworkAddress)) Console.WriteLine("Network address: {0}", _WebServerNetworkAddress);
+                }
+            }
+        }
 
         /// <summary>
         /// See interface docs.
