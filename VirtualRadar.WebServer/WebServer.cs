@@ -105,7 +105,37 @@ namespace VirtualRadar.WebServer
 
             public IPAddress[] GetHostAddresses()
             {
-                if(_LocalIpAddresses == null) _LocalIpAddresses = Dns.GetHostAddresses("");
+                if(_LocalIpAddresses == null) {
+                    if(!Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                        _LocalIpAddresses = Dns.GetHostAddresses("");
+                    } else {
+                        // Ugh...
+                        try {
+                            _LocalIpAddresses = Dns.GetHostAddresses("");
+                        } catch {
+                            try {
+                                // Copied from here:
+                                // http://forums.xamarin.com/discussion/348/acquire-device-ip-addresses-monotouch-since-ios6-0
+                                // Except this doesn't work on Mono under OSX because of a bug in GetAllNetworkinterfaces...
+                                var addresses = new List<IPAddress>();
+                                foreach (var netInterface in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()) {
+                                    if (netInterface.NetworkInterfaceType == System.Net.NetworkInformation.NetworkInterfaceType.Wireless80211 ||
+                                        netInterface.NetworkInterfaceType == System.Net.NetworkInformation.NetworkInterfaceType.Ethernet) {
+                                        foreach (var addrInfo in netInterface.GetIPProperties().UnicastAddresses) {
+                                            if (addrInfo.Address.AddressFamily == AddressFamily.InterNetwork) {
+                                                var ipAddress = addrInfo.Address;
+                                                addresses.Add(ipAddress);
+                                            }
+                                        }
+                                    }  
+                                }
+                                _LocalIpAddresses = addresses.ToArray();
+                            } catch {
+                                _LocalIpAddresses = new IPAddress[0];
+                            }
+                        }
+                    }
+                }
                 return _LocalIpAddresses;
             }
         }

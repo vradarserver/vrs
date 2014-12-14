@@ -36,6 +36,11 @@ namespace VirtualRadar.Library.Network
         private bool _IsMono;
 
         /// <summary>
+        /// True if the current version of Mono doesn't implement the required API.
+        /// </summary>
+        private bool _NotSupported;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public int CountConnections
@@ -57,8 +62,16 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public void RefreshTcpConnectionStates()
         {
-            var properties = IPGlobalProperties.GetIPGlobalProperties();
-            _TcpConnections = properties == null ? null : properties.GetActiveTcpConnections();
+            // On some flavours of mono this actually throws a not-implemented exception. Some flavours work.
+            // but don't report connection states consistently with the .NET version.
+            try {
+                if(!_NotSupported) {
+                    var properties = IPGlobalProperties.GetIPGlobalProperties();
+                    _TcpConnections = properties == null ? null : properties.GetActiveTcpConnections();
+                }
+            } catch {
+                _NotSupported = true;
+            }
         }
 
         /// <summary>
@@ -70,7 +83,7 @@ namespace VirtualRadar.Library.Network
         public bool IsRemoteConnectionEstablished(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
         {
             var connection = GetRemoteConnection(localEndPoint, remoteEndPoint);
-            return connection == null ? false : !_IsMono ? connection.State == TcpState.Established : (int)connection.State == 1;
+            return connection == null ? true : !_IsMono ? connection.State == TcpState.Established : (int)connection.State == 1;
         }
 
         /// <summary>
