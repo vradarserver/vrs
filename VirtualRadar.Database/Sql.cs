@@ -21,6 +21,61 @@ namespace VirtualRadar.Database
     /// </summary>
     static class Sql
     {
+        #region ColumnSchema
+        /// <summary>
+        /// Carries information about a column.
+        /// </summary>
+        public class ColumnSchema
+        {
+            /// <summary>
+            /// Gets or sets the column identifier.
+            /// </summary>
+            public long Id { get; set; }
+
+            /// <summary>
+            /// Gets or sets the name of the column.
+            /// </summary>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// Gets or sets the type of the column.
+            /// </summary>
+            public string Type { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether the column can be null.
+            /// </summary>
+            public bool Nullable { get; set; }
+
+            /// <summary>
+            /// Gets or sets the default value for the column.
+            /// </summary>
+            public object DefaultValue { get; set; }
+
+            /// <summary>
+            /// Gets or sets the index of the column in the primary key for the table, or 0
+            /// if it is not a part of the primary key.
+            /// </summary>
+            public int PrimaryKeyIndex { get; set; }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            /// <returns></returns>
+            public override string ToString()
+            {
+                return String.Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                    Id,
+                    Name,
+                    Type,
+                    Nullable,
+                    DefaultValue,
+                    PrimaryKeyIndex
+                );
+            }
+        }
+        #endregion
+
         #region Properties
         /// <summary>
         /// Gets the static instance of <see cref="SQLiteExecute"/> used by the class.
@@ -339,6 +394,45 @@ namespace VirtualRadar.Database
 
             var result = Exec.ExecuteScalar(preparedCommand.Command);
             return result == null ? 0L : (long)result;
+        }
+        #endregion
+
+        #region GetTableColumns
+        /// <summary>
+        /// Retrieves the schema for the columns in an SQLite table.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="tableName">Do NOT pass user input here! THIS IS NOT PARAMETERISED.</param>
+        /// <returns></returns>
+        public static ColumnSchema[] GetTableColumns(IDbConnection connection, IDbTransaction transaction, string tableName)
+        {
+            if(tableName == null) throw new ArgumentNullException("tableName");
+            if(tableName.Contains(";")) throw new InvalidOperationException("Invalid tablename, contains semi-colon");
+
+            List<ColumnSchema> result = new List<ColumnSchema>();
+
+            using(var command = connection.CreateCommand()) {
+                command.Connection = connection;
+                command.Transaction = transaction;
+                command.CommandText = String.Format("PRAGMA table_info({0})", tableName);       // PRAGMA doesn't accept parameters...
+
+                using(var reader = command.ExecuteReader()) {
+                    while(reader.Read()) {
+                        var columnSchema = new ColumnSchema();
+                        columnSchema.Id =               GetInt64(reader, 0);
+                        columnSchema.Name =             GetString(reader, 1);
+                        columnSchema.Type =             GetString(reader, 2);
+                        columnSchema.Nullable =         !GetBool(reader, 3);
+                        columnSchema.DefaultValue =     GetObject(reader, 4);
+                        columnSchema.PrimaryKeyIndex =  GetInt32(reader, 5);
+
+                        result.Add(columnSchema);
+                    }
+                }
+            }
+
+            return result.ToArray();
         }
         #endregion
 
@@ -707,6 +801,30 @@ namespace VirtualRadar.Database
         {
             object result = reader[ordinal];
             return result is DBNull ? new byte[] { } : (byte[])result;
+        }
+
+        /// <summary>
+        /// Returns the column content as an object.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="ordinal"></param>
+        /// <returns></returns>
+        public static object GetObject(IDataReader reader, int ordinal)
+        {
+            object result = reader[ordinal];
+            return result is DBNull ? null : result;
+        }
+
+        /// <summary>
+        /// Returns the column content as an object.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public static object GetObject(IDataReader reader, string columnName)
+        {
+            object result = reader[columnName];
+            return result is DBNull ? null : result;
         }
         #endregion
     }
