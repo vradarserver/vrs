@@ -259,6 +259,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Administrators.
+        /// </summary>
+        public static string Administrators {
+            get {
+                return ResourceManager.GetString("Administrators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ADS-B.
         /// </summary>
         public static string ADSB {

@@ -347,11 +347,17 @@
     <Compile Include="SettingPage\PageWebServer.Designer.cs">
       <DependentUpon>PageWebServer.cs</DependentUpon>
     </Compile>
-    <Compile Include="SettingPage\PageWebServerAuthentication.cs">
+    <Compile Include="SettingPage\PageWebServerAdministrators.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SettingPage\PageWebServerAuthentication.Designer.cs">
-      <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
+    <Compile Include="SettingPage\PageWebServerAdministrators.Designer.cs">
+      <DependentUpon>PageWebServerAdministrators.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingPage\PageWebServerUsers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageWebServerUsers.Designer.cs">
+      <DependentUpon>PageWebServerUsers.cs</DependentUpon>
     </Compile>
     <Compile Include="SettingPage\PageWebSite.cs">
       <SubType>UserControl</SubType>
@@ -596,8 +602,11 @@
     <EmbeddedResource Include="SettingPage\PageWebServer.resx">
       <DependentUpon>PageWebServer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingPage\PageWebServerAuthentication.resx">
-      <DependentUpon>PageWebServerAuthentication.cs</DependentUpon>
+    <EmbeddedResource Include="SettingPage\PageWebServerAdministrators.resx">
+      <DependentUpon>PageWebServerAdministrators.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageWebServerUsers.resx">
+      <DependentUpon>PageWebServerUsers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageWebSite.resx">
       <DependentUpon>PageWebSite.cs</DependentUpon>

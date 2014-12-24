@@ -1767,6 +1767,7 @@ namespace Test.VirtualRadar.WebSite
 
             Assert.IsTrue(args.IsAuthenticated);
             Assert.IsTrue(args.IsHandled);
+            Assert.IsFalse(args.IsAdministrator);
         }
 
         [TestMethod]
@@ -1783,6 +1784,55 @@ namespace Test.VirtualRadar.WebSite
 
             Assert.IsFalse(args.IsAuthenticated);
             Assert.IsTrue(args.IsHandled);
+        }
+
+        [TestMethod]
+        public void WebSite_Authentication_Accepts_Administrator_Credentials_From_Configuration()
+        {
+            _PasswordForUser = "B26354";
+            _Configuration.WebServerSettings.AdministratorUserIds.Add("1");
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
+
+            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
+
+            Assert.IsTrue(args.IsAuthenticated);
+            Assert.IsTrue(args.IsHandled);
+            Assert.IsTrue(args.IsAdministrator);
+        }
+
+        [TestMethod]
+        public void WebSite_Authentication_Rejects_Basic_Authentication_Credentials_For_Disabled_Administrators()
+        {
+            _User1.Object.Enabled = false;
+            _PasswordForUser = "B26354";
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
+            _Configuration.WebServerSettings.AdministratorUserIds.Add("1");
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
+
+            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
+
+            Assert.IsFalse(args.IsAuthenticated);
+            Assert.IsTrue(args.IsHandled);
+            Assert.IsFalse(args.IsAdministrator);
+        }
+
+        [TestMethod]
+        public void WebSite_Authentication_Reports_Users_In_Both_Administrators_And_Users_As_Administrators()
+        {
+            _PasswordForUser = "B26354";
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
+            _Configuration.WebServerSettings.AdministratorUserIds.Add("1");
+            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
+
+            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
+
+            Assert.IsTrue(args.IsAuthenticated);
+            Assert.IsTrue(args.IsHandled);
+            Assert.IsTrue(args.IsAdministrator);
         }
 
         [TestMethod]

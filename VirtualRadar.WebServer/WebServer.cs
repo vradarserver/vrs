@@ -10,16 +10,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VirtualRadar.Interface.WebServer;
-using System.Net;
-using VirtualRadar.Interface;
-using System.Web;
-using System.Net.Sockets;
-using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
 using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Web;
+using InterfaceFactory;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.WebServer
 {
@@ -47,6 +47,8 @@ namespace VirtualRadar.WebServer
             }
 
             public AuthenticationSchemes AuthenticationSchemes { get; set; }
+
+            public AuthenticationSchemes AdministratorAuthenticationScheme { get; set; }
 
             public string ListenerRealm
             {
@@ -80,7 +82,7 @@ namespace VirtualRadar.WebServer
 
             public void StartListener()
             {
-                _HttpListener.AuthenticationSchemes = AuthenticationSchemes;
+                _HttpListener.AuthenticationSchemes = AuthenticationSchemes.Anonymous | AuthenticationSchemes.Basic;
                 _HttpListener.IgnoreWriteExceptions = true;
                 _HttpListener.Start();
             }
@@ -141,11 +143,39 @@ namespace VirtualRadar.WebServer
         }
         #endregion
 
+        #region Priavte class - CachedCredential
+        /// <summary>
+        /// Collects together information about a cached credential.
+        /// </summary>
+        class CachedCredential
+        {
+            /// <summary>
+            /// Gets or sets the password for the cached user.
+            /// </summary>
+            public string Password { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating that the user is an administrator.
+            /// </summary>
+            public bool IsAdministrator { get; set; }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
-        /// The cache of authenticated user credentials.
+        /// A map of cached user names to their credentials.
         /// </summary>
-        private Dictionary<string, string> _AuthenticatedUserCache = new Dictionary<string,string>();
+        private Dictionary<string, CachedCredential> _AuthenticatedUserCache = new Dictionary<string, CachedCredential>();
+
+        /// <summary>
+        /// Protects the administrator paths from multi-threaded access.
+        /// </summary>
+        private SpinLock _AdministratorPathSpinLock = new SpinLock();
+
+        /// <summary>
+        /// The list of paths that require administrator permissions.
+        /// </summary>
+        private List<string> _AdministratorPaths = new List<string>();
         #endregion
 
         #region Properties
@@ -526,7 +556,7 @@ namespace VirtualRadar.WebServer
                     if(context != null) {
                         try {
                             var requestArgs = new RequestReceivedEventArgs(context.Request, context.Response, Root);
-                            if(Authenticated(context)) {
+                            if(Authenticated(context, requestArgs)) {
                                 var startTime = Provider.UtcNow;
                                 OnBeforeRequestReceived(requestArgs);
                                 OnRequestReceived(requestArgs);
@@ -570,29 +600,44 @@ namespace VirtualRadar.WebServer
         /// Authenticates the request from the browser.
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="requestArgs"></param>
         /// <returns></returns>
-        private bool Authenticated(IContext context)
+        private bool Authenticated(IContext context, RequestReceivedEventArgs requestArgs)
         {
             bool result = false;
 
-            switch(AuthenticationScheme) {
+            var authenticationScheme = AuthenticationScheme;
+            var isAdministratorPath = IsAdministratorPath(requestArgs);
+            if(isAdministratorPath) authenticationScheme = AuthenticationSchemes.Basic;
+
+            switch(authenticationScheme) {
                 case AuthenticationSchemes.None:
                 case AuthenticationSchemes.Anonymous:
+                    if(isAdministratorPath) throw new InvalidOperationException("Anonymous access to administrator paths is not supported");
                     result = true;
                     break;
                 case AuthenticationSchemes.Basic:
                     bool useCache = CacheCredentials;
                     if(useCache && context.BasicUserName != null) {
-                        string password;
-                        result = _AuthenticatedUserCache.TryGetValue(context.BasicUserName, out password) && context.BasicPassword == password;
+                        CachedCredential cachedCredential;
+                        if(_AuthenticatedUserCache.TryGetValue(context.BasicUserName, out cachedCredential)) {
+                            result = context.BasicPassword == cachedCredential.Password;
+                            if(result) result = !isAdministratorPath || cachedCredential.IsAdministrator;
+                        }
                     }
 
                     if(!result) {
                         var args = new AuthenticationRequiredEventArgs(context.BasicUserName, context.BasicPassword);
                         OnAuthenticationRequired(args);
-                        result = args.IsAuthenticated;
+                        result = args.IsAuthenticated && (!isAdministratorPath || args.IsAdministrator);
                         if(result) {
-                            if(useCache && args.User != null) _AuthenticatedUserCache.Add(args.User, args.Password);
+                            if(useCache && args.User != null) {
+                                var cachedCredential = new CachedCredential() {
+                                    IsAdministrator = args.IsAdministrator,
+                                    Password = context.BasicPassword,
+                                };
+                                _AuthenticatedUserCache.Add(context.BasicUserName, cachedCredential);
+                            }
                         } else {
                             context.Response.StatusCode = HttpStatusCode.Unauthorized;
                             context.Response.AddHeader("WWW-Authenticate", String.Format(@"Basic Realm=""{0}""", Provider.ListenerRealm));
@@ -614,6 +659,59 @@ namespace VirtualRadar.WebServer
         public void ResetCredentialCache()
         {
             _AuthenticatedUserCache.Clear();
+        }
+        #endregion
+
+        #region GetAdministratorPaths, AddAdministratorPath, IsAdministratorPath
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetAdministratorPaths()
+        {
+            using(_AdministratorPathSpinLock.AcquireLock()) {
+                return _AdministratorPaths.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        public void AddAdministratorPath(string pathFromRoot)
+        {
+            pathFromRoot = (pathFromRoot ?? "").Trim().ToLower();
+            if(!pathFromRoot.StartsWith("/")) pathFromRoot = String.Format("/{0}", pathFromRoot);
+            if(!pathFromRoot.EndsWith("/")) pathFromRoot = String.Format("{0}/", pathFromRoot);
+
+            using(_AdministratorPathSpinLock.AcquireLock()) {
+                if(!_AdministratorPaths.Contains(pathFromRoot)) _AdministratorPaths.Add(pathFromRoot);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the context represents a path that is marked as for administrators only.
+        /// </summary>
+        /// <param name="requestArgs"></param>
+        /// <returns></returns>
+        private bool IsAdministratorPath(RequestReceivedEventArgs requestArgs)
+        {
+            var result = false;
+
+            var path = requestArgs.PathAndFile.ToLower();
+            _AdministratorPathSpinLock.Lock();
+            try {
+                for(var i = 0;i < _AdministratorPaths.Count;++i) {
+                    if(path.StartsWith(_AdministratorPaths[i])) {
+                        result = true;
+                        break;
+                    }
+                }
+            } finally {
+                _AdministratorPathSpinLock.Unlock();
+            }
+
+            return result;
         }
         #endregion
     }

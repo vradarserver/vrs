@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Collections.ObjectModel;
 
 namespace VirtualRadar.Interface.WebServer
 {
@@ -198,6 +199,21 @@ namespace VirtualRadar.Interface.WebServer
         /// Clears the cache of credentials held by the server - see <see cref="CacheCredentials"/>.
         /// </summary>
         void ResetCredentialCache();
+        #endregion
+
+        #region GetAdministratorPaths, AddAdministratorPath
+        /// <summary>
+        /// Returns the paths that have been marked as requiring authentication.
+        /// </summary>
+        /// <returns></returns>
+        string[] GetAdministratorPaths();
+
+        /// <summary>
+        /// Tells the server that all access to this path must be authenticated and that the user must be configured as
+        /// an administrator.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        void AddAdministratorPath(string pathFromRoot);
         #endregion
     }
 }

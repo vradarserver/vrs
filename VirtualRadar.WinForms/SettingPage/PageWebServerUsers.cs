@@ -29,7 +29,7 @@ namespace VirtualRadar.WinForms.SettingPage
     /// <summary>
     /// Allows configuration of the valid user list for the web site.
     /// </summary>
-    public partial class PageWebServerAuthentication : Page
+    public partial class PageWebServerUsers : Page
     {
         #region PageSummary
         /// <summary>
@@ -53,7 +53,7 @@ namespace VirtualRadar.WinForms.SettingPage
             /// <returns></returns>
             protected override Page DoCreatePage()
             {
-                return new PageWebServerAuthentication();
+                return new PageWebServerUsers();
             }
         }
         #endregion
@@ -66,17 +66,9 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public PageWebServerAuthentication()
+        public PageWebServerUsers()
         {
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        protected override void InitialiseControls()
-        {
-            base.InitialiseControls();
         }
 
         /// <summary>
@@ -101,18 +93,6 @@ namespace VirtualRadar.WinForms.SettingPage
                     e.ColumnTexts.Add(user.Name ?? "");
                 }
             });
-        }
-
-        private void Enabled_Format(object sender, ConvertEventArgs args)
-        {
-            var scheme = (AuthenticationSchemes)args.Value;
-            args.Value = scheme == AuthenticationSchemes.Basic;
-        }
-
-        private void Enabled_Parse(object sender, ConvertEventArgs args)
-        {
-            var enabled = (bool)args.Value;
-            args.Value = enabled ? AuthenticationSchemes.Basic : AuthenticationSchemes.Anonymous;
         }
     }
 }

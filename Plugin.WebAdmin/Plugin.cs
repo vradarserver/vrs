@@ -128,6 +128,8 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebSiteExtender.WebRootSubFolder = "Web";
             _WebSiteExtender.Initialise(parameters);
 
+            _WebSiteExtender.ProtectFolder("WebAdmin");
+
             ApplyOptions();
         }
         #endregion

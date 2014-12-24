@@ -1,6 +1,6 @@
 ﻿namespace VirtualRadar.WinForms.SettingPage
 {
-    partial class PageWebServerAuthentication
+    partial class PageWebServerUsers
     {
         /// <summary> 
         /// Required designer variable.

@@ -109,5 +109,20 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         /// <returns>The web site extender object that was called.</returns>
         IWebSiteExtender InjectReportPages();
+
+        /// <summary>
+        /// Marks a URL folder as protected. Only administrators may access protected folders.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <remarks><para>
+        /// For example, if you were to protect the folder &quot;MyPlugin/Admin&quot; then access to
+        /// http://127.0.0.1/VirtualRadar/MyPlugin/index.html would not be protected, but access to
+        /// http://127.0.0.1/VirtualRadar/MyPlugin/Admin/index.html would only be allowed once the user had supplied credentials,
+        /// and only if the credentials could be authenticated against the list of administrator users.
+        /// </para><para>
+        /// Once a folder is marked as protected you cannot unprotect it, it remains protected for the
+        /// remainder of the session.
+        /// </para></remarks>
+        void ProtectFolder(string folder);
     }
 }

@@ -69,11 +69,29 @@ namespace VirtualRadar.Interface.Settings
 
         private NotifyList<string> _BasicAuthenticationUserIds = new NotifyList<string>();
         /// <summary>
-        /// Gets the list of users that can log onto the site with Basic authentication.
+        /// Gets the list of users that can log onto the site when Basic Authentication is
+        /// switched on.
         /// </summary>
+        /// <remarks>
+        /// The site will also allow any users listed in <see cref="AdministratorUserIds"/>
+        /// to log in, even if they are not present in this list.
+        /// </remarks>
         public NotifyList<string> BasicAuthenticationUserIds
         {
             get { return _BasicAuthenticationUserIds; }
+        }
+
+        private NotifyList<string> _AdministratorUserIds = new NotifyList<string>();
+        /// <summary>
+        /// Gets the list of users that are considered to be administrators of the site.
+        /// </summary>
+        /// <remarks>
+        /// Administrators can automatically do anything a user can do, they do not need to be listed
+        /// both here and <see cref="BasicAuthenticationUserIds"/>.
+        /// </remarks>
+        public NotifyList<string> AdministratorUserIds
+        {
+            get { return _AdministratorUserIds; }
         }
 
         private bool _EnableUPnp;
@@ -162,12 +180,20 @@ namespace VirtualRadar.Interface.Settings
             IsOnlyInternetServerOnLan = true;
 
             BasicAuthenticationUserIds.ListChanged += BasicAuthenticationUserIds_ListChanged;
+            AdministratorUserIds.ListChanged += AdministratorUserIds_ListChanged;
         }
 
         private void BasicAuthenticationUserIds_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
                 OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.BasicAuthenticationUserIds)));
+            }
+        }
+
+        void AdministratorUserIds_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.AdministratorUserIds)));
             }
         }
     }

@@ -36,6 +36,7 @@ namespace Test.VirtualRadar.Interface.WebServer
             Assert.AreEqual("Def", args.Password);
             TestUtilities.TestProperty(args, r => r.IsAuthenticated, false);
             TestUtilities.TestProperty(args, r => r.IsHandled, false);
+            TestUtilities.TestProperty(args, r => r.IsAdministrator, false);
         }
     }
 }

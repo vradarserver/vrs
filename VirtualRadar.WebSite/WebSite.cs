@@ -178,6 +178,11 @@ namespace VirtualRadar.WebSite
         Dictionary<string, CachedUser> _BasicAuthenticationUsers = new Dictionary<string,CachedUser>();
 
         /// <summary>
+        /// A map of all administrator users indexed by login name.
+        /// </summary>
+        Dictionary<string, CachedUser> _AdministratorUsers = new Dictionary<string,CachedUser>();
+
+        /// <summary>
         /// A reference to the singleton user manager - saves us having to keep reloading it.
         /// </summary>
         private IUserManager _UserManager;
@@ -358,16 +363,12 @@ namespace VirtualRadar.WebSite
 
             bool result = false;
             lock(_AuthenticationSyncLock) {
+                _AdministratorUsers.Clear();
                 _BasicAuthenticationUsers.Clear();
 
-                foreach(var user in _UserManager.GetUsersByUniqueId(configuration.WebServerSettings.BasicAuthenticationUserIds)) {
-                    if(user.Enabled && !_BasicAuthenticationUsers.ContainsKey(user.LoginName)) {
-                        var key = _UserManager.LoginNameIsCaseSensitive ? user.LoginName : user.LoginName.ToUpperInvariant();
-                        _BasicAuthenticationUsers.Add(key, new CachedUser() {
-                            User = user,
-                        });
-                    }
-                }
+                CacheUsers(_BasicAuthenticationUsers, configuration.WebServerSettings.BasicAuthenticationUserIds);
+                CacheUsers(_AdministratorUsers, configuration.WebServerSettings.AdministratorUserIds);
+
                 if(WebServer.AuthenticationScheme != configuration.WebServerSettings.AuthenticationScheme) {
                     result = true;
                     WebServer.AuthenticationScheme = configuration.WebServerSettings.AuthenticationScheme;
@@ -381,6 +382,18 @@ namespace VirtualRadar.WebSite
             }
 
             return result;
+        }
+
+        private void CacheUsers(Dictionary<string, CachedUser> cacheDictionary, IEnumerable<string> userIds)
+        {
+            foreach(var user in _UserManager.GetUsersByUniqueId(userIds)) {
+                if(user.Enabled && !cacheDictionary.ContainsKey(user.LoginName)) {
+                    var key = _UserManager.LoginNameIsCaseSensitive ? user.LoginName : user.LoginName.ToUpperInvariant();
+                    cacheDictionary.Add(key, new CachedUser() {
+                        User = user,
+                    });
+                }
+            }
         }
         #endregion
 
@@ -641,12 +654,18 @@ namespace VirtualRadar.WebSite
         private void Server_AuthenticationRequired(object sender, AuthenticationRequiredEventArgs args)
         {
             lock(_AuthenticationSyncLock) {
-                if(!args.IsHandled && WebServer.AuthenticationScheme == AuthenticationSchemes.Basic) {
+                if(!args.IsHandled) {
                     args.IsAuthenticated = args.User != null;
                     if(args.IsAuthenticated) {
                         CachedUser cachedUser;
+                        var isAdministrator = false;
                         var key = _UserManager.LoginNameIsCaseSensitive ? args.User : args.User.ToUpperInvariant();
-                        _BasicAuthenticationUsers.TryGetValue(key, out cachedUser);
+
+                        if(_AdministratorUsers.TryGetValue(key, out cachedUser)) {
+                            isAdministrator = true;
+                        } else {
+                            _BasicAuthenticationUsers.TryGetValue(key, out cachedUser);
+                        }
 
                         if(cachedUser == null) args.IsAuthenticated = false;
                         else if(cachedUser.KnownGoodPassword != null && cachedUser.KnownGoodPassword == args.Password) args.IsAuthenticated = true;
@@ -654,6 +673,8 @@ namespace VirtualRadar.WebSite
                             args.IsAuthenticated = _UserManager.PasswordMatches(cachedUser.User, args.Password);
                             if(args.IsAuthenticated) cachedUser.KnownGoodPassword = args.Password;
                         }
+
+                        if(args.IsAuthenticated) args.IsAdministrator = isAdministrator;
                     }
                     args.IsHandled = true;
                 }
