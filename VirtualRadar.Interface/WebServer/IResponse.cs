@@ -28,6 +28,11 @@ namespace VirtualRadar.Interface.WebServer
         long ContentLength { get; set; }
 
         /// <summary>
+        /// Gets the cookies to set on the response.
+        /// </summary>
+        CookieCollection Cookies { get; set; }
+
+        /// <summary>
         /// Gets or sets the mime type to associate with the content.
         /// </summary>
         string MimeType { get; set; }
@@ -80,5 +85,11 @@ namespace VirtualRadar.Interface.WebServer
         /// </summary>
         /// <param name="url"></param>
         void Redirect(string url);
+
+        /// <summary>
+        /// Sets or updates a cookie in the collection of cookies to return to the caller.
+        /// </summary>
+        /// <param name="cookie"></param>
+        void SetCookie(Cookie cookie);
     }
 }

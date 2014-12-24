@@ -52,6 +52,24 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public CookieCollection Cookies
+        {
+            get { return _Response.Cookies; }
+            set { _Response.Cookies = value; }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="cookie"></param>
+        public void SetCookie(Cookie cookie)
+        {
+            _Response.SetCookie(cookie);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public string MimeType
         {
             get { return _Response.ContentType; }
