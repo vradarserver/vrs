@@ -50,35 +50,55 @@ namespace VirtualRadar.WebSite
         /// </summary>
         class SimpleRequest : IRequest, IDisposable
         {
-            public long ContentLength64 { get; private set; }
+            private static readonly IPEndPoint DummyRemoteEndPoint = new IPEndPoint(IPAddress.Loopback, 10000);
 
-            public NameValueCollection Headers { get; private set; }
+            private static readonly IPEndPoint DummyLocalEndPoint = new IPEndPoint(IPAddress.Loopback, 10001);
 
-            public Stream InputStream { get; private set; }
+            private static readonly NameValueCollection DummyFormValues = new NameValueCollection();
+
+            private static readonly NameValueCollection DummyHeaders = new NameValueCollection();
+
+            private static readonly CookieCollection DummyCookies = new CookieCollection();
+
+            public CookieCollection Cookies { get { return DummyCookies; } }
+
+            public long ContentLength64 { get { return 0L; } }
+
+            public NameValueCollection FormValues { get { return DummyFormValues; } }
+
+            public NameValueCollection Headers { get { return DummyHeaders; } }
+
+            public string HttpMethod { get { return "GET"; } }
+
+            private Stream _InputStream;
+            public Stream InputStream
+            {
+                get {
+                    if(_InputStream == null) _InputStream = new MemoryStream(new byte[0]);
+                    return _InputStream;
+                }
+            }
+
+            public bool IsLocal { get { return true; } }
+
+            public int MaximumPostBodySize { get; set; }
 
             public string RawUrl { get; private set; }
 
-            public IPEndPoint RemoteEndPoint { get; private set; }
+            public IPEndPoint RemoteEndPoint { get { return DummyRemoteEndPoint; } }
 
-            public IPEndPoint LocalEndPoint { get; private set; }
+            public IPEndPoint LocalEndPoint { get { return DummyLocalEndPoint; } }
 
             public Uri Url { get; private set; }
 
-            public string UserAgent { get; private set; }
+            public string UserAgent { get { return "FAKE REQUEST"; } }
 
-            public string UserHostName { get; private set; }
+            public string UserHostName { get { return "FAKE.HOST.NAME"; } }
 
             public SimpleRequest(string root, string pathAndFile)
             {
-                ContentLength64 = 0;
-                Headers = new NameValueCollection();
-                InputStream = new MemoryStream(new byte[] {});
                 RawUrl = String.Format("{0}{1}", root, pathAndFile);
-                RemoteEndPoint = new IPEndPoint(IPAddress.Loopback, 10000);
-                LocalEndPoint = new IPEndPoint(IPAddress.Loopback, 10001);
                 Url = new Uri(String.Format("http://{0}{1}", RemoteEndPoint.Address, RawUrl));
-                UserAgent = "FAKE REQUEST";
-                UserHostName = "FAKE.HOST.NAME";
             }
 
             ~SimpleRequest()
@@ -95,9 +115,9 @@ namespace VirtualRadar.WebSite
             protected virtual void Dispose(bool disposing)
             {
                 if(disposing) {
-                    if(InputStream != null) {
-                        InputStream.Dispose();
-                        InputStream = null;
+                    if(_InputStream != null) {
+                        _InputStream.Dispose();
+                        _InputStream = null;
                     }
                 }
             }
@@ -110,6 +130,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         class SimpleResponse : IResponse
         {
+            public CookieCollection Cookies { get; set; }
             public long ContentLength { get; set; }
             public string MimeType { get; set; }
             public Stream OutputStream { get; private set; }
@@ -118,6 +139,7 @@ namespace VirtualRadar.WebSite
 
             public SimpleResponse(Stream outputStream)
             {
+                Cookies = new CookieCollection();
                 OutputStream = outputStream;
                 StatusCode = HttpStatusCode.NotFound;
             }
@@ -128,6 +150,7 @@ namespace VirtualRadar.WebSite
             public void Dispose()                               { ; }
             public void EnableCompression(IRequest request)     { ; }
             public void Redirect(string url)                    { ; }
+            public void SetCookie(Cookie cookie)                { ; }
         }
         #endregion
 
