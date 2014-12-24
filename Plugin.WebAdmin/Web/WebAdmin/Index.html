@@ -1,9 +1,52 @@
-﻿<DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
-        <title>Hello</title>
+        <meta charset="utf-8" />
+
+        <!-- Virtual Radar Server Web Admin Plugin Page -->
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>VRS Web Admin</title>
+
+        <!-- Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic,greek,vietnamese' rel='stylesheet' type='text/css'>
+
+        <!-- CSS -->
+        <link rel="shortcut icon" href="../favicon.ico">
+        <link rel="stylesheet" href="../css/jquery-mobile/jquery.mobile.css" />
+        <link rel="stylesheet" href="../css/webadmin.css" />
+
+        <!-- [[ JS BUNDLE START ]] -->
+        <!-- 3rd party javascript libraries and plugins -->
+        <script src="../script/jquery.js" type="text/javascript"></script>
+        <script src="../script/jquery.mobile.js" type="text/javascript"></script>
+
+        <!-- [[ BUNDLE END ]] -->
     </head>
     <body>
-        Hello
+        <div data-role="page">
+            <div data-role="header">
+                <a href="#main-menu" class="webadmin-mainmenu-button" data-role="button" data-mini="true" data-icon="bullets" data-iconpos="notext">Menu</a>
+                <h2>
+                    VRS Admin Home
+                </h2>
+            </div>
+
+            <div role="main" class="ui-content">
+                
+            </div>
+
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+                Virtual Radar Server
+                Copyright &copy; 2010 onwards Andrew Whewell</p>
+            </div>
+
+            <div id="main-menu" data-role="panel" class="jqm-navmenu-panel" data-position="left">
+                <div data-role="controlgroup">
+                    <a href="Index.html" data-role="button" data-icon="home" data-iconpos="left">Home</a>
+                    <a href="View-About.html" data-role="button">About</a>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

@@ -21,6 +21,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface;
 using System.ComponentModel;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
