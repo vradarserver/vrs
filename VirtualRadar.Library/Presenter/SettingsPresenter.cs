@@ -1495,19 +1495,19 @@ namespace VirtualRadar.Library.Presenter
                 }
             }
 
+            // Delete missing records
+            if(_UserManager.CanDeleteUsers) {
+                foreach(var missing in existing.Where(r => !_View.Users.Any(i => i.IsPersisted && i.UniqueId == r.UniqueId))) {
+                    _UserManager.DeleteUser(missing);
+                }
+            }
+
             // Insert new records
             if(_UserManager.CanCreateUsers) {
                 foreach(var record in _View.Users.Where(r => !r.IsPersisted)) {
                     if(record.UIPassword == _DefaultPassword) record.UIPassword = null;
                     _UserManager.CreateUser(record);
                     record.UIPassword = _DefaultPassword;
-                }
-            }
-
-            // Delete missing records
-            if(_UserManager.CanDeleteUsers) {
-                foreach(var missing in existing.Where(r => !_View.Users.Any(i => i.IsPersisted && i.UniqueId == r.UniqueId))) {
-                    _UserManager.DeleteUser(missing);
                 }
             }
         }

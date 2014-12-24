@@ -1046,6 +1046,45 @@ namespace Test.VirtualRadar.WebServer
             _Response.VerifySet(m => m.StatusCode = HttpStatusCode.NotFound);
             _Response.Verify(m => m.AddHeader("WWW-Authenticate", It.IsAny<string>()), Times.Never());
         }
+
+        [TestMethod]
+        public void WebServer_AuthenticationRequired_Raised_If_Path_Is_Administrator_Path_Even_If_Authentication_Disabled()
+        {
+            ConfigureProviderForGetContext();
+            _WebServer.AddAdministratorPath("/Private/");
+            _WebServer.AuthenticationScheme = AuthenticationSchemes.Anonymous;
+            _WebServer.AuthenticationRequired += _AuthenticationRequiredEvent.Handler;
+            _WebServer.Root = "/Root";
+            _Request.Setup(r => r.RawUrl).Returns("/Root/Private/Page.html");
+            _Request.Setup(r => r.Url).Returns(new Uri("http://Root/Private/Page.html"));
+            _Request.Setup(r => r.RemoteEndPoint).Returns(new IPEndPoint(IPAddress.Parse("192.168.0.100"), 54321));
+
+            _WebServer.Online = true;
+
+            Assert.AreEqual(1, _AuthenticationRequiredEvent.CallCount);
+        }
+
+        [TestMethod]
+        public void WebServer_AuthenticationRequired_Does_Not_Serve_Content_For_Administrator_Path_If_Authenticated_User_Is_Not_Administrator()
+        {
+            ConfigureProviderForGetContext();
+            _WebServer.AddAdministratorPath("/Private/");
+            _WebServer.AuthenticationRequired += _AuthenticationRequiredEvent.Handler;
+            _AuthenticationRequiredEvent.EventRaised += (object sender, AuthenticationRequiredEventArgs args) => {
+                args.IsAuthenticated = true;
+                args.IsAdministrator = false;
+            };
+            _WebServer.Root = "/Root";
+            _Request.Setup(r => r.RawUrl).Returns("/Root/Private/Page.html");
+            _Request.Setup(r => r.Url).Returns(new Uri("http://Root/Private/Page.html"));
+            _Request.Setup(r => r.RemoteEndPoint).Returns(new IPEndPoint(IPAddress.Parse("192.168.0.100"), 54321));
+            _Provider.Setup(m => m.ListenerRealm).Returns("TestRealm");
+
+            _WebServer.Online = true;
+
+            _Response.VerifySet(m => m.StatusCode = HttpStatusCode.Unauthorized);
+            _Response.Verify(m => m.AddHeader("WWW-Authenticate", @"Basic Realm=""TestRealm"""), Times.Once());
+        }
         #endregion
 
         #region ExternalAddressChanged Event
@@ -1159,6 +1198,53 @@ namespace Test.VirtualRadar.WebServer
             _WebServer.Online = true;
 
             Assert.AreEqual(2, _AuthenticationRequiredEvent.CallCount);
+        }
+        #endregion
+
+        #region AddAdministratorPath
+        [TestMethod]
+        public void WebServer_AddAdministratorPath_Adds_Path()
+        {
+            _WebServer.AddAdministratorPath("/MyPlugin/");
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(1, paths.Length);
+            Assert.AreEqual("/MyPlugin/", paths[0], ignoreCase: true);
+        }
+
+        [TestMethod]
+        public void WebServer_AddAdministratorPath_Adds_Leading_Slash()
+        {
+            _WebServer.AddAdministratorPath("MyPlugin/");
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(1, paths.Length);
+            Assert.AreEqual("/MyPlugin/", paths[0], ignoreCase: true);
+        }
+
+        [TestMethod]
+        public void WebServer_AddAdministratorPath_Adds_Trailing_Slash()
+        {
+            _WebServer.AddAdministratorPath("/MyPlugin");
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(1, paths.Length);
+            Assert.AreEqual("/MyPlugin/", paths[0], ignoreCase: true);
+        }
+
+        [TestMethod]
+        public void WebServer_AddAdministratorPath_Handles_Root_Request_Correctly()
+        {
+            _WebServer.AddAdministratorPath("/");
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(1, paths.Length);
+            Assert.AreEqual("/", paths[0], ignoreCase: true);
+        }
+
+        [TestMethod]
+        public void WebServer_AddAdministratorPath_Handles_Null_Correctly()
+        {
+            _WebServer.AddAdministratorPath(null);
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(1, paths.Length);
+            Assert.AreEqual("/", paths[0], ignoreCase: true);
         }
         #endregion
     }

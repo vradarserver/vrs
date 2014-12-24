@@ -36,6 +36,11 @@ namespace VirtualRadar.Interface.WebServer
         public bool IsAuthenticated { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the user is an administrator.
+        /// </summary>
+        public bool IsAdministrator { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating that the authentication request has been handled.
         /// </summary>
         public bool IsHandled { get; set; }

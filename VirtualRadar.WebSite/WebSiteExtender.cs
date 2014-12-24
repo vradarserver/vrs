@@ -214,7 +214,7 @@ namespace VirtualRadar.WebSite
         }
         #endregion
 
-        #region EnableDisableContent
+        #region EnableDisableContent, ProtectFolder
         /// <summary>
         /// Adds or removes content to the web site.
         /// </summary>
@@ -233,6 +233,18 @@ namespace VirtualRadar.WebSite
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="folder"></param>
+        public void ProtectFolder(string folder)
+        {
+            folder = (folder ?? "").Replace('\\', '/');
+
+            var webServer = _WebServer ?? Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            webServer.AddAdministratorPath(folder);
         }
         #endregion
 

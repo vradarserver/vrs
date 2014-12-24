@@ -2429,4 +2429,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Press Q to quit</value>
     <comment>You can have any key you like here, as long as it's Q</comment>
   </data>
+  <data name="Administrators" xml:space="preserve">
+    <value>Administrators</value>
+  </data>
 </root>

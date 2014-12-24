@@ -60,7 +60,8 @@ namespace VirtualRadar.WinForms.SettingPage
             protected override void AssociateChildPages()
             {
                 base.AssociateChildPages();
-                ChildPages.Add(new PageWebServerAuthentication.Summary());
+                ChildPages.Add(new PageWebServerUsers.Summary());
+                ChildPages.Add(new PageWebServerAdministrators.Summary());
             }
 
             /// <summary>
