@@ -41,6 +41,15 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="response"></param>
+        public void Forbidden(IResponse response)
+        {
+            response.StatusCode = HttpStatusCode.Forbidden;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="request"></param>
         /// <param name="response"></param>
         /// <param name="text"></param>

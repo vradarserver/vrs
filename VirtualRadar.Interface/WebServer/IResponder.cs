@@ -24,6 +24,12 @@ namespace VirtualRadar.Interface.WebServer
     public interface IResponder
     {
         /// <summary>
+        /// Returns a response indicating that the request is not authorised.
+        /// </summary>
+        /// <param name="response"></param>
+        void Forbidden(IResponse response);
+
+        /// <summary>
         /// Sends the audio back to the browser. The format of the audio is inferred from the MIME type.
         /// </summary>
         /// <param name="request"></param>

@@ -29,14 +29,39 @@ namespace VirtualRadar.Interface.WebServer
         long ContentLength64 { get; }
 
         /// <summary>
+        /// Gets the cookies on the request.
+        /// </summary>
+        CookieCollection Cookies { get; }
+
+        /// <summary>
+        /// Gets the values sent in the body of a POST request.
+        /// </summary>
+        NameValueCollection FormValues { get; }
+
+        /// <summary>
         /// Gets a collection of the headers that were sent with the request.
         /// </summary>
         NameValueCollection Headers { get; }
 
         /// <summary>
+        /// Gets the HTTP method used in the request.
+        /// </summary>
+        string HttpMethod { get; }
+
+        /// <summary>
         /// Gets a stream that exposes the body of post requests.
         /// </summary>
         Stream InputStream { get; }
+
+        /// <summary>
+        /// Gets a value indicating that the request came from the local computer.
+        /// </summary>
+        bool IsLocal { get; }
+
+        /// <summary>
+        /// Gets or sets the maximum post body size.
+        /// </summary>
+        int MaximumPostBodySize { get; set; }
 
         /// <summary>
         /// Gets the URL from the root of the site.

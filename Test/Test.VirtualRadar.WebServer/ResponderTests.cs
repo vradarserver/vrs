@@ -79,6 +79,16 @@ namespace Test.VirtualRadar.WebServer
         }
         #endregion
 
+        #region Forbidden
+        [TestMethod]
+        public void Responder_Forbidden_Sets_Correct_Response()
+        {
+            _Responder.Forbidden(_Response.Object);
+
+            Assert.AreEqual(HttpStatusCode.Forbidden, _Response.Object.StatusCode);
+        }
+        #endregion
+
         #region SendText
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
