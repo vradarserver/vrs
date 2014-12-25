@@ -235,6 +235,16 @@ namespace VirtualRadar
 
             try {
                 if(loadSucceded) {
+                    var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
+                    foreach(var plugin in pluginManager.LoadedPlugins) {
+                        try {
+                            plugin.GuiThreadStartup();
+                        } catch(Exception ex) {
+                            var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                            log.WriteLine("Caught exception in {0} plugin while calling GuiThreadStartup: {1}", plugin.Name, ex);
+                        }
+                    }
+
                     using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
                         _MainView = mainWindow;
                         mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);

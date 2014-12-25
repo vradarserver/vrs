@@ -24,14 +24,24 @@ namespace VirtualRadar.Plugin.WebAdmin
     class ViewMap
     {
         /// <summary>
-        /// Gets the filename of the web page.
+        /// Gets the filename of the view's page.
         /// </summary>
-        public string WebPage { get; private set; }
+        public string ViewPage { get; private set; }
 
         /// <summary>
-        /// Gets the path and file of the web page.
+        /// Gets the path and file of the view page.
         /// </summary>
-        public string PathAndFile { get; private set; }
+        public string ViewPathAndFile { get; private set; }
+
+        /// <summary>
+        /// Gets the filename of the JSON that carries the view's data to the site.
+        /// </summary>
+        public string ViewDataPage { get; private set; }
+
+        /// <summary>
+        /// Gets the path and file of the view data page.
+        /// </summary>
+        public string ViewDataPathAndFile { get; private set; }
 
         /// <summary>
         /// Gets the view that is mapped onto the web page.
@@ -46,8 +56,12 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <param name="view"></param>
         public ViewMap(string folder, string htmlFileName, BaseView view)
         {
-            WebPage = htmlFileName;
-            PathAndFile = String.Format("{0}/{1}", folder, htmlFileName);
+            ViewPage = htmlFileName;
+            ViewPathAndFile = String.Format("{0}/{1}", folder, ViewPage);
+
+            ViewDataPage = Path.ChangeExtension(ViewPage, ".json");
+            ViewDataPathAndFile = String.Format("{0}/{1}", folder, ViewDataPage);
+
             View = view;
         }
     }

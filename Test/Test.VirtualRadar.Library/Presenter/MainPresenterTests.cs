@@ -140,17 +140,6 @@ namespace Test.VirtualRadar.Library.Presenter
 
             Assert.AreEqual(2, _View.Object.InvalidPluginCount);
         }
-
-        [TestMethod]
-        public void MainPresenter_Initialise_Calls_GuiThreadStartup_On_All_Plugins()
-        {
-            var plugin = new Mock<IPlugin>();
-            _PluginManager.Setup(p => p.LoadedPlugins).Returns(new List<IPlugin>() { plugin.Object });
-
-            _Presenter.Initialise(_View.Object);
-
-            plugin.Verify(p => p.GuiThreadStartup(), Times.Once());
-        }
         #endregion
 
         #region Feeds

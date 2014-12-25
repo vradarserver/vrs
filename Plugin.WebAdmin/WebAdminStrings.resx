@@ -123,7 +123,22 @@
   <data name="WA_Home" xml:space="preserve">
     <value>Home</value>
   </data>
-  <data name="WA_Title_Home" xml:space="preserve">
-    <value>Web Admin</value>
+  <data name="WA_Label_Credits" xml:space="preserve">
+    <value>Credits</value>
+  </data>
+  <data name="WA_Label_Environment" xml:space="preserve">
+    <value>Environment</value>
+  </data>
+  <data name="WA_Title_About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="WA_Title_Main" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="WA_Value_DotNet" xml:space="preserve">
+    <value>.NET</value>
+  </data>
+  <data name="WA_Value_Mono" xml:space="preserve">
+    <value>Mono</value>
   </data>
 </root>

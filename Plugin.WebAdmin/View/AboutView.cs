@@ -12,61 +12,56 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using InterfaceFactory;
-using Newtonsoft.Json;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
-using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Plugin.WebAdmin.View
 {
     /// <summary>
-    /// The base class for all views.
+    /// The class that carries the About view's data to the site.
     /// </summary>
-    class BaseView : IView
+    class AboutView : BaseView, IAboutView
     {
-        private IResponder _Responder;
+        IAboutPresenter _Presenter;
 
-        /// <summary>
-        /// Gets a value indicating that <see cref="ShowView"/> has been called.
-        /// </summary>
-        public bool IsRunning { get; private set; }
+        public string Caption { get; set; }
 
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public BaseView()
+        public string ProductName { get; set; }
+
+        public string Version { get; set; }
+
+        public string Copyright { get; set; }
+
+        public string Description { get; set; }
+
+        public string ConfigurationFolder
         {
-            _Responder = Factory.Singleton.Resolve<IResponder>();
+            get { return ""; }
+            set { ; }
         }
 
-        public virtual DialogResult ShowView()
+        public bool IsMono { get; set; }
+
+        public event EventHandler OpenConfigurationFolderClicked;
+        public void OnOpenConfigurationFolderClicked(EventArgs args)
         {
-            IsRunning = true;
-            return DialogResult.OK;
+            if(OpenConfigurationFolderClicked != null) OpenConfigurationFolderClicked(this, args);
         }
 
-        public virtual void Dispose()
+        public void ShowConfigurationFolderContents()
         {
             ;
         }
 
-        public object ShowBusy(bool isBusy, object previousState)
+        public override System.Windows.Forms.DialogResult ShowView()
         {
-            return new object();
-        }
+            if(!IsRunning) {
+                _Presenter = Factory.Singleton.Resolve<IAboutPresenter>();
+                _Presenter.Initialise(this);
+            }
 
-        public void BubbleExceptionToGui(Exception ex)
-        {
-            ;
-        }
-
-        public virtual void SendData(RequestReceivedEventArgs args)
-        {
-            var json = JsonConvert.SerializeObject(this);
-            _Responder.SendText(args.Request, args.Response, json, Encoding.UTF8, MimeType.Json);
-            args.Handled = true;
+            return base.ShowView();
         }
     }
 }

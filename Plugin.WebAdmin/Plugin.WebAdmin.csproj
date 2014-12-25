@@ -35,6 +35,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -49,6 +53,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewMap.cs" />
+    <Compile Include="View\AboutView.cs" />
     <Compile Include="View\MainView.cs" />
     <Compile Include="View\BaseView.cs" />
     <Compile Include="WebAdminStrings.Designer.cs">
@@ -285,10 +290,12 @@
     <Content Include="Web\css\webadmin\jquery-mobile\jquery.mobile.structure.css" />
     <Content Include="Web\css\webadmin\jquery-mobile\jquery.mobile.theme.css" />
     <Content Include="Web\css\webadmin\webadmin.css" />
+    <Content Include="Web\script\webadmin\view.js" />
     <Content Include="Web\script\webadmin\jquery.mobile.js" />
+    <Content Include="Web\WebAdmin\About.html" />
     <Content Include="Web\WebAdmin\Index.html" />
     <Content Include="Web\WebAdmin\templates\head.html" />
-    <Content Include="Web\WebAdmin\View-About.html" />
+    <Content Include="Web\_external\_typedefs.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="WebAdminStrings.resx">

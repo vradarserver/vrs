@@ -24,12 +24,14 @@ using VirtualRadar.Interface.WebServer;
 namespace VirtualRadar.Plugin.WebAdmin.View
 {
     /// <summary>
-    /// A stub that represents the main view.
+    /// The class that carries the main view's data to the site.
     /// </summary>
     class MainView : BaseView, IMainView
     {
         #region Fields
         private IMainPresenter _Presenter;
+        private IUniversalPlugAndPlayManager _UPnpManager;
+        private ISimpleAircraftList _FlightSimulatorXAircraftList;
         #endregion
 
         #region Properties
@@ -90,11 +92,19 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         }
         #endregion
 
+        #region Ctors
+        public MainView(IUniversalPlugAndPlayManager uPnpManager, ISimpleAircraftList flightSimulatorXAircraftList)
+        {
+            _UPnpManager = uPnpManager;
+            _FlightSimulatorXAircraftList = flightSimulatorXAircraftList;
+        }
+        #endregion
+
         #region Form methods
-        public void Initialise(IUniversalPlugAndPlayManager uPnpManager, ISimpleAircraftList flightSimulatorXAircraftList)
+        public void Initialise(IUniversalPlugAndPlayManager unused1, ISimpleAircraftList unused2)
         {
             _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
-            _Presenter.UPnpManager = uPnpManager;
+            _Presenter.UPnpManager = _UPnpManager;
         }
 
         public void ShowManualVersionCheckResult(bool newVersionAvailable)
@@ -134,7 +144,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public override DialogResult ShowView()
         {
-            _Presenter.Initialise(this);
+            if(!IsRunning) {
+                Initialise(null, null);
+                _Presenter.Initialise(this);
+            }
+
             return base.ShowView();
         }
         #endregion
