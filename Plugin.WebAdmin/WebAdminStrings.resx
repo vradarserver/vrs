@@ -120,4 +120,10 @@
   <data name="Disabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
+  <data name="WA_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="WA_Title_Home" xml:space="preserve">
+    <value>Web Admin</value>
+  </data>
 </root>

@@ -52,6 +52,14 @@ namespace VirtualRadar.Interface.WebSite
         IWebServer WebServer { get; }
         #endregion
 
+        #region Events
+        /// <summary>
+        /// Raised when an HTML file is loaded from a disk-bound file. Listeners can modify the HTML before
+        /// it is sent to the browser.
+        /// </summary>
+        event EventHandler<TextContentEventArgs> HtmlLoadedFromFile;
+        #endregion
+
         #region AttachSiteToServer
         /// <summary>
         /// Attaches the website to a server.

@@ -44,6 +44,15 @@ namespace VirtualRadar.Localisation
         }
 
         /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="localisedStringsMap">The localised strings map to use when looking up strings.</param>
+        public Localiser(LocalisedStringsMap localisedStringsMap)
+        {
+            _LocalisedStrings = localisedStringsMap;
+        }
+
+        /// <summary>
         /// Returns the localised version of the string identifier passed across.
         /// </summary>
         /// <param name="name"></param>

@@ -57,5 +57,20 @@ namespace VirtualRadar.Localisation
 
             return (string)property.GetValue(null, null);
         }
+
+        /// <summary>
+        /// Returns the localised string for the name passed across. If there is no such localised string then null is returned.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public string TryGetLocalisedString(string name)
+        {
+            if(name == null) throw new ArgumentNullException("name");
+
+            PropertyInfo property;
+            _LocalisedStrings.TryGetValue(name, out property);
+
+            return property == null ? null : (string)property.GetValue(null, null);
+        }
     }
 }

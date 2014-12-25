@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,30 +10,45 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
+using VirtualRadar.Plugin.WebAdmin.View;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Plugin.WebAdmin
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// Holds all of the information necessary to map between a view interface and the web page that
+    /// represents that view.
     /// </summary>
-    public static class Implementations
+    class ViewMap
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Gets the filename of the web page.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
+        public string WebPage { get; private set; }
+
+        /// <summary>
+        /// Gets the path and file of the web page.
+        /// </summary>
+        public string PathAndFile { get; private set; }
+
+        /// <summary>
+        /// Gets the view that is mapped onto the web page.
+        /// </summary>
+        public BaseView View { get; private set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="htmlFileName"></param>
+        /// <param name="view"></param>
+        public ViewMap(string folder, string htmlFileName, BaseView view)
         {
-            factory.Register<IBundler, Bundler>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
+            WebPage = htmlFileName;
+            PathAndFile = String.Format("{0}/{1}", folder, htmlFileName);
+            View = view;
         }
     }
 }

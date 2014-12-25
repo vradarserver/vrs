@@ -22,6 +22,9 @@ using VirtualRadar.Interface;
 using System.ComponentModel;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Localisation;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Plugin.WebAdmin.View;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
@@ -40,6 +43,26 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// The object that we use to extend the website.
         /// </summary>
         private IWebSiteExtender _WebSiteExtender;
+
+        /// <summary>
+        /// A localiser that can substitute the VRS application strings into HTML.
+        /// </summary>
+        private IHtmlLocaliser _StandardStringsLocaliser;
+
+        /// <summary>
+        /// A localiser that can substitute the plugin's strings into HTML.
+        /// </summary>
+        private IHtmlLocaliser _PluginStringsLocaliser;
+
+        /// <summary>
+        /// A map from a server path and file (in lower-case) to the <see cref="ViewMap"/> representing a view.
+        /// </summary>
+        private Dictionary<string, ViewMap> _PathAndFileViewMap = new Dictionary<string,ViewMap>();
+
+        /// <summary>
+        /// The full path to the head template file.
+        /// </summary>
+        private string _HeadTemplateFileName;
         #endregion
 
         #region Properties
@@ -124,14 +147,33 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             _Options = OptionsStorage.Load(this);
 
+            _StandardStringsLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            _PluginStringsLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            _StandardStringsLocaliser.Initialise();
+            _PluginStringsLocaliser.Initialise(new LocalisedStringsMap(typeof(WebAdminStrings)));
+
+            _HeadTemplateFileName = Path.Combine(parameters.PluginFolder, "Web");
+            _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "WebAdmin");
+            _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "templates");
+            _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "head.html");
+
+            AddView("Index.html", new View.MainView());
+
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = _Options.Enabled;
             _WebSiteExtender.WebRootSubFolder = "Web";
             _WebSiteExtender.Initialise(parameters);
-
             _WebSiteExtender.ProtectFolder("WebAdmin");
 
+            parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
+
             ApplyOptions();
+        }
+
+        private void AddView(string htmlFileName, BaseView view)
+        {
+            var viewMap = new ViewMap("/WebAdmin", htmlFileName, view);
+            _PathAndFileViewMap.Add(viewMap.PathAndFile.ToLower(), viewMap);
         }
         #endregion
 
@@ -168,7 +210,43 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// </summary>
         private void ApplyOptions()
         {
+            _WebSiteExtender.Enabled = _Options.Enabled;
             OnStatusChanged(EventArgs.Empty);
+        }
+        #endregion
+
+        #region ExpandTemplateMarkerFromFile
+        private string ExpandTemplateMarkerFromFile(string html, string templateMarker, string contentFileName)
+        {
+            if(html.IndexOf(templateMarker) != -1) {
+                var templateContent = File.ReadAllText(contentFileName);
+                html = html.Replace(templateMarker, templateContent);
+            }
+
+            return html;
+        }
+        #endregion
+
+        #region Events subscribed
+        /// <summary>
+        /// Called whenever the web site fetches an HTML file from disk.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void WebSite_HtmlLoadedFromFile(object sender, TextContentEventArgs e)
+        {
+            var key = e.PathAndFile.ToLower();
+            if(key.StartsWith("/webadmin/")) {
+                ViewMap viewMap;
+                if(_PathAndFileViewMap.TryGetValue(key, out viewMap)) {
+                    // Subtitute simple strings
+                    e.Content = _PluginStringsLocaliser.Html(e.Content, e.Encoding);
+                    e.Content = _StandardStringsLocaliser.Html(e.Content, e.Encoding);
+
+                    // Substitute in the content of the head template file
+                    e.Content = ExpandTemplateMarkerFromFile(e.Content, "@head.html@", _HeadTemplateFileName);
+                }
+            }
         }
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,28 +12,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
+using System.Windows.Forms;
+using VirtualRadar.Interface.Presenter;
+using VirtualRadar.Interface.View;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Plugin.WebAdmin.View
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// The base class for all views.
     /// </summary>
-    public static class Implementations
+    class BaseView : IView
     {
-        /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
-        /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
+        public virtual DialogResult ShowView()
         {
-            factory.Register<IBundler, Bundler>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
+            return DialogResult.OK;
+        }
+
+        public virtual void Dispose()
+        {
+            ;
+        }
+
+        public object ShowBusy(bool isBusy, object previousState)
+        {
+            return new object();
+        }
+
+        public void BubbleExceptionToGui(Exception ex)
+        {
+            ;
         }
     }
 }
