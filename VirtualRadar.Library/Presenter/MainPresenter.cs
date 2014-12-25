@@ -141,11 +141,6 @@ namespace VirtualRadar.Library.Presenter
             View.WebServerNetworkAddress = _WebServer.NetworkAddress;
             View.WebServerExternalAddress = _WebServer.ExternalAddress;
 
-            var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
-            foreach(var plugin in pluginManager.LoadedPlugins) {
-                plugin.GuiThreadStartup();
-            }
-
             _RebroadcastServerManager = Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton;
             DoDisplayRebroadcastServerConnections();
 

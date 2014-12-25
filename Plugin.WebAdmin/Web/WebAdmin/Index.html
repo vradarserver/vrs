@@ -2,20 +2,40 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>::WA_Title_Home::</title>
+        <title>::WA_Title_Main::</title>
         @head.html@
     </head>
     <body>
-        <div data-role="page">
+        <div id='main-page' data-role="page">
             <div data-role="header">
                 <a href="#main-menu" class="webadmin-mainmenu-button" data-role="button" data-mini="true" data-icon="bullets" data-iconpos="notext">Menu</a>
                 <h2>
-                    ::WA_Title_Home::
+                    ::WA_Title_Main::
                 </h2>
             </div>
 
             <div role="main" class="ui-content">
-                
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <legend>::UNC:::</legend>
+                        <select id="main-address-perspective" class="ui-inline">
+                            <option value="local">::ShowLocalAddress::</option>
+                            <option value="network">::ShowNetworkAddress::</option>
+                            <option value="public">::ShowInternetAddress::</option>
+                        </select>
+                        <select id="main-address-page">
+                            <option value="default">::DefaultVersion::</option>
+                            <option value="desktop">::DesktopVersion::</option>
+                            <option value="mobile">::MobileVersion::</option>
+                            <option value="fsx">::FlightSimVersion::</option>
+                            <option value="oldDesktop">::DesktopVersionOld::</option>
+                            <option value="oldMobile">::MobileVersionOld::</option>
+                            <option value="oldFsx">::FlightSimVersionOld::</option>
+                            <option value="settings">::SettingsPage::</option>
+                        </select>
+                        <a id="main-site-link" href="#" target="livesite"></a>
+                    </fieldset>
+                </div>
             </div>
 
             <div data-role="footer" data-position="fixed" data-tap-toggle="false">
@@ -25,9 +45,50 @@
             <div id="main-menu" data-role="panel" class="jqm-navmenu-panel" data-position="left">
                 <div data-role="controlgroup">
                     <a href="Index.html" data-role="button" data-icon="home" data-iconpos="left">::WA_Home::</a>
-                    <a href="View-About.html" data-role="button">::About::</a>
+                    <a href="About.html" data-role="button">::About::</a>
                 </div>
             </div>
+
+            <script type="text/javascript">
+                (function(VRS, $, undefined)
+                {
+                    //region MainView
+                    VRS.WebAdmin.MainView = function(settings)
+                    {
+                        VRS.WebAdmin.View.call(this, settings);
+
+                        /**
+                         * Shows the content sent from the server.
+                         * @param {VRS_WEBADMIN_VIEWDATA_MAIN} data
+                         */
+                        this.showContent = function(data)
+                        {
+                            refreshAddresses(data);
+                        };
+
+                        /**
+                         * Refreshes the server addresses.
+                         * @param data
+                         */
+                        function refreshAddresses(data)
+                        {
+                            var siteLink = $('#main-site-link');
+                            if(siteLink.text() !== data.WebServerLocalAddress) {
+                                siteLink.text(data.WebServerLocalAddress);
+                                siteLink.attr('href', data.WebServerLocalAddress);
+                            }
+                        }
+                    };
+                    VRS.WebAdmin.MainView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
+                    //endregion
+
+                    var mainView = new VRS.WebAdmin.MainView({
+                        pageId: 'main-page',
+                        jsonUrl: 'Index.json'
+                    });
+                    mainView.initialise();
+                }(window.VRS = window.VRS || {}, jQuery));
+            </script>
         </div>
     </body>
 </html>

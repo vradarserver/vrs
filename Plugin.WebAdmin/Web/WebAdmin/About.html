@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>::WA_Title_About::</title>
+    @head.html@
+</head>
+<body>
+    <div id='about-page' data-role="page">
+        <div data-role="header">
+            <a href="#main-menu" class="webadmin-mainmenu-button" data-role="button" data-mini="true" data-icon="bullets" data-iconpos="notext">Menu</a>
+            <h2>
+                ::WA_Title_About::
+            </h2>
+        </div>
+
+        <div role="main" class="ui-content">
+            <div data-role="fieldcontain">
+                <fieldset data-role="controlgroup">
+                    <p>::Version:::</p>
+                    <p id="about-version"></p>
+                    <p>::WA_Label_Environment:::</p>
+                    <p id="about-environment"></p>
+                    <p>::WA_Label_Credits:::</p>
+                    <p id="about-credits"></p>
+                </fieldset>
+            </div>
+        </div>
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            ::VirtualRadarServer:: ::Copyright::
+        </div>
+
+        <div id="main-menu" data-role="panel" class="jqm-navmenu-panel" data-position="left">
+            <div data-role="controlgroup">
+                <a href="Index.html" data-role="button" data-icon="home" data-iconpos="left">::WA_Home::</a>
+                <a href="About.html" data-role="button">::About::</a>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            (function(VRS, $, undefined)
+            {
+                //region AboutView
+                VRS.WebAdmin.AboutView = function(settings)
+                {
+                    VRS.WebAdmin.View.call(this, settings);
+
+                    /**
+                     * Shows the content sent from the server.
+                     * @param {VRS_WEBADMIN_VIEWDATA_ABOUT} data
+                     */
+                    this.showContent = function(data)
+                    {
+                        $('#about-version').text(data.Version);
+                        $('#about-environment').text(data.IsMono ? '::WA_Value_Mono::' : '::WA_Value_DotNet::');
+                        $('#about-credits').html(data.Description.replace(/(?:\r\n|\r|\n)/g, '<br />'));
+                    };
+                };
+                VRS.WebAdmin.AboutView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
+                //endregion
+
+                var aboutView = new VRS.WebAdmin.AboutView({
+                    pageId: 'about-page',
+                    jsonUrl: 'About.json'
+                });
+                aboutView.initialise();
+            }(window.VRS = window.VRS || {}, jQuery));
+        </script>
+    </div>
+</body>
+</html>

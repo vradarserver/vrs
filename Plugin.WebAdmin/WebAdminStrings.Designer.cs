@@ -79,11 +79,56 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web Admin.
+        ///   Looks up a localized string similar to Credits.
         /// </summary>
-        public static string WA_Title_Home {
+        public static string WA_Label_Credits {
             get {
-                return ResourceManager.GetString("WA_Title_Home", resourceCulture);
+                return ResourceManager.GetString("WA_Label_Credits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environment.
+        /// </summary>
+        public static string WA_Label_Environment {
+            get {
+                return ResourceManager.GetString("WA_Label_Environment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string WA_Title_About {
+            get {
+                return ResourceManager.GetString("WA_Title_About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Main.
+        /// </summary>
+        public static string WA_Title_Main {
+            get {
+                return ResourceManager.GetString("WA_Title_Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .NET.
+        /// </summary>
+        public static string WA_Value_DotNet {
+            get {
+                return ResourceManager.GetString("WA_Value_DotNet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mono.
+        /// </summary>
+        public static string WA_Value_Mono {
+            get {
+                return ResourceManager.GetString("WA_Value_Mono", resourceCulture);
             }
         }
     }

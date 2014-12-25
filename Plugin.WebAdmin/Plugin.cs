@@ -157,11 +157,13 @@ namespace VirtualRadar.Plugin.WebAdmin
             _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "templates");
             _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "head.html");
 
-            AddView("Index.html", new View.MainView());
+            AddView("Index.html", new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList));
+            AddView("About.html", new View.AboutView());
 
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = _Options.Enabled;
             _WebSiteExtender.WebRootSubFolder = "Web";
+            AddJsonHandlers();
             _WebSiteExtender.Initialise(parameters);
             _WebSiteExtender.ProtectFolder("WebAdmin");
 
@@ -173,7 +175,14 @@ namespace VirtualRadar.Plugin.WebAdmin
         private void AddView(string htmlFileName, BaseView view)
         {
             var viewMap = new ViewMap("/WebAdmin", htmlFileName, view);
-            _PathAndFileViewMap.Add(viewMap.PathAndFile.ToLower(), viewMap);
+            _PathAndFileViewMap.Add(viewMap.ViewPathAndFile.ToLower(), viewMap);
+        }
+
+        private void AddJsonHandlers()
+        {
+            foreach(var viewMap in _PathAndFileViewMap.Values) {
+                _WebSiteExtender.PageHandlers.Add(viewMap.ViewDataPathAndFile, viewMap.View.SendData);
+            }
         }
         #endregion
 
@@ -245,6 +254,9 @@ namespace VirtualRadar.Plugin.WebAdmin
 
                     // Substitute in the content of the head template file
                     e.Content = ExpandTemplateMarkerFromFile(e.Content, "@head.html@", _HeadTemplateFileName);
+
+                    // Ensure that there is a presenter up and running for the page
+                    viewMap.View.ShowView();
                 }
             }
         }
