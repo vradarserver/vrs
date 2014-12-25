@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,41 +10,55 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.WebServer;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// The interface for singleton objects that can tell the program about the environment it's running under.
+    /// The event args that are raised by the web site for text content events.
     /// </summary>
-    public interface IRuntimeEnvironment : ISingleton<IRuntimeEnvironment>
+    public class TextContentEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets a value indicating that the program is running under Mono.
+        /// Gets the request that generated this content.
         /// </summary>
-        bool IsMono { get; }
+        public IRequest Request { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that the application is running under the unit test environment.
+        /// Gets the path and file of the request from root.
         /// </summary>
         /// <remarks>
-        /// The default implementation of this property always returns false. Some tests may provide mock implementations
-        /// that always return true. The intention here is to allow multithreading code to detect when it's running under
-        /// unit tests and turn itself off, forcing all actions onto a single thread thereby making classes that use
-        /// multi-threading internally a lot more testable.
+        /// If the server root is /Root then for the RawUrl of '/Root' this would return '/', for the RawUrl of
+        /// '/Root/' it would also return '/', for '/Root/Page.htm' it would return '/Page.htm', '/Root/Folder/' it
+        /// would return '/Folder/' and so on. Query strings are stripped off and escaped characters are unescaped.
         /// </remarks>
-        bool IsTest { get; set; }
+        public string PathAndFile { get; private set; }
 
         /// <summary>
-        /// Gets the path to the application.
+        /// Gets or sets the text content.
         /// </summary>
-        string ExecutablePath { get; }
+        public string Content { get; set; }
 
         /// <summary>
-        /// Gets the main thread's culture info.
+        /// Gets or sets the encoding of the content.
         /// </summary>
-        CultureInfo MainThreadCultureInfo { get; }
+        public Encoding Encoding { get; set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="pathAndFile"></param>
+        /// <param name="content"></param>
+        /// <param name="encoding"></param>
+        public TextContentEventArgs(IRequest request, string pathAndFile, string content, Encoding encoding)
+        {
+            Request = request;
+            PathAndFile = pathAndFile;
+            Content = content;
+            Encoding = encoding;
+        }
     }
 }

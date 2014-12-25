@@ -417,6 +417,7 @@
     <Compile Include="WebSite\HtmlContentInjector.cs" />
     <Compile Include="WebSite\FlightReportJson.cs" />
     <Compile Include="WebSite\IBundler.cs" />
+    <Compile Include="WebSite\IHtmlLocaliser.cs" />
     <Compile Include="WebSite\IMinifier.cs" />
     <Compile Include="WebSite\IWebSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -448,6 +449,7 @@
     <Compile Include="WebSite\ServerReceiverJson.cs" />
     <Compile Include="WebSite\SimpleContent.cs" />
     <Compile Include="WebSite\SiteRoot.cs" />
+    <Compile Include="WebSite\TextContentEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">

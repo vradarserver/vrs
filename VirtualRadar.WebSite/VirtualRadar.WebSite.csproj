@@ -73,6 +73,7 @@
     <Compile Include="FaviconPage.cs" />
     <Compile Include="FileSystemPage.cs" />
     <Compile Include="FontCache.cs" />
+    <Compile Include="HtmlLocaliser.cs" />
     <Compile Include="ImagePage.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="Minifier.cs" />
@@ -107,6 +108,10 @@
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
       <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
+      <Name>VirtualRadar.Localisation</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
       <Project>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</Project>

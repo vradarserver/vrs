@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,28 +12,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
+using VirtualRadar.Localisation;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// The interface for objects that can localise HTML using string resources.
     /// </summary>
-    public static class Implementations
+    public interface IHtmlLocaliser
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Gets the localised strings that the localiser is using.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<IBundler, Bundler>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
-        }
+        LocalisedStringsMap LocalisedStringsMap { get; }
+
+        /// <summary>
+        /// Initialises the localiser with the Virtual Radar Server application strings.
+        /// </summary>
+        void Initialise();
+
+        /// <summary>
+        /// Initialises the localiser with the strings passed across.
+        /// </summary>
+        void Initialise(LocalisedStringsMap localisedStringsMap);
+
+        /// <summary>
+        /// Replaces all instances of ::STRING:: with the localised text.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        string Html(string html, Encoding encoding);
     }
 }

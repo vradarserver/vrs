@@ -24,9 +24,14 @@ namespace VirtualRadar.Localisation
     public static class Localise
     {
         /// <summary>
+        /// The localised strings map for the application's strings.
+        /// </summary>
+        public static readonly LocalisedStringsMap VirtualRadarStrings = new LocalisedStringsMap(typeof(Strings));
+
+        /// <summary>
         /// The object that's doing all of the work for us.
         /// </summary>
-        static Localiser _Localiser = new Localiser(typeof(Strings));
+        static Localiser _Localiser = new Localiser(VirtualRadarStrings);
 
         /// <summary>
         /// See <see cref="Localiser.Lookup"/>.

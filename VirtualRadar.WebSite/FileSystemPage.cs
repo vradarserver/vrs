@@ -317,6 +317,10 @@ namespace VirtualRadar.WebSite
                     } else {
                         if(isHtml) {
                             ModifyAndSendContent(args, requestFile.FileName, extension, r => {
+                                var textContentArgs = new TextContentEventArgs(args.Request, args.PathAndFile, r.Content, r.Encoding);
+                                _WebSite.OnHtmlLoadedFromFile(textContentArgs);
+                                r.Content = textContentArgs.Content;
+
                                 _WebSite.InjectHtmlContent(args.PathAndFile, r);
                                 _WebSite.BundleHtml(args.PathAndFile, r);
                             });

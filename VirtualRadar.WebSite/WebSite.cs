@@ -283,6 +283,22 @@ namespace VirtualRadar.WebSite
         public IWebServer WebServer { get; private set; }
         #endregion
 
+        #region Events exposed
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler<TextContentEventArgs> HtmlLoadedFromFile;
+
+        /// <summary>
+        /// Raises <see cref="HtmlLoadedFromFile"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        internal void OnHtmlLoadedFromFile(TextContentEventArgs args)
+        {
+            if(HtmlLoadedFromFile != null) HtmlLoadedFromFile(this, args);
+        }
+        #endregion
+
         #region Constructor
         /// <summary>
         /// Creates a new object.

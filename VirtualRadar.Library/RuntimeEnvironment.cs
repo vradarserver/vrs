@@ -10,10 +10,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface;
+using System.Threading;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library
 {
@@ -46,5 +48,18 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public string ExecutablePath { get { return Application.StartupPath; } }
+
+        public static CultureInfo _MainThreadCultureInfo;
+        public CultureInfo MainThreadCultureInfo { get { return _MainThreadCultureInfo; } }
+
+        /// <summary>
+        /// The static initialiser.
+        /// </summary>
+        static RuntimeEnvironment()
+        {
+            // The assumption here is that the very first time this is called will be on the main thread,
+            // so we just copy the current thread's culture info.
+            _MainThreadCultureInfo = Thread.CurrentThread.CurrentCulture;
+        }
     }
 }
