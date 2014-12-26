@@ -43,6 +43,15 @@ namespace VirtualRadar.Localisation
         }
 
         /// <summary>
+        /// Returns a collection of all of the known string names.
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetStringNames()
+        {
+            return _LocalisedStrings.Keys.ToArray();
+        }
+
+        /// <summary>
         /// Returns the localised string for the name passed across. If there is no such localised string then an exception
         /// is thrown.
         /// </summary>

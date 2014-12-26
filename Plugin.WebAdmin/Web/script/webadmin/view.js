@@ -26,15 +26,17 @@
     {
         //region Default settings
         settings = $.extend({
-            refreshPeriod: 1000
+            refreshPeriod: 1000,
+            siteNavId: 'main-menu'
         }, settings);
         //endregion
 
         //region Fields
         var that = this;
-        /** @type {number|object} */    var _RefreshTimer = undefined;
-        /** @type {jqXHR} */            var _RefreshXHR = undefined;
-        /** @type {boolean} */          var _IsHidden = false;
+        /** @type {number|object} */                var _RefreshTimer = undefined;
+        /** @type {jqXHR} */                        var _RefreshXHR = undefined;
+        /** @type {boolean} */                      var _IsHidden = false;
+        /** @type {VRS.WebAdmin.SiteNavigation} */  var _SiteNavigation = undefined;
         //endregion
 
         //region initialise
@@ -43,6 +45,10 @@
          */
         this.initialise = function()
         {
+            $(document).on('pagebeforecreate', '#' + settings.pageId, function() {
+                addStandardElements();
+                that.addElements();
+            });
             $(document).onPage('beforeshow', '#' + settings.pageId, function() {
                 _IsHidden = false;
                 that.refreshContent();
@@ -52,6 +58,27 @@
                 that.cancelRefreshContent();
                 that.cancelRefreshTimer();
             });
+        };
+        //endregion
+
+        //region addStandardElements, addElements
+        /**
+         * Adds elements that are common across all views.
+         */
+        function addStandardElements()
+        {
+            if(settings.siteNavId) {
+                _SiteNavigation = new VRS.WebAdmin.SiteNavigation();
+                _SiteNavigation.injectIntoPage($('#' + settings.siteNavId), settings.pageUrl);
+            }
+        }
+
+        /**
+         * The derivee can override this to add their own dynamic elements to the page on first load.
+         */
+        that.addElements = function()
+        {
+
         };
         //endregion
 
