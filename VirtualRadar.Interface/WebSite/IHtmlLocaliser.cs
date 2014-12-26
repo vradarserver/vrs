@@ -43,5 +43,12 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="encoding"></param>
         /// <returns></returns>
         string Html(string html, Encoding encoding);
+
+        /// <summary>
+        /// Escapes HTML in the string, converts linebreaks to break tags and so on.
+        /// </summary>
+        /// <param name="resourceString"></param>
+        /// <returns></returns>
+        string ConvertResourceStringToHtmlString(string resourceString);
     }
 }
