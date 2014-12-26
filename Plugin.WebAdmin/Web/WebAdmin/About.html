@@ -62,7 +62,8 @@
 
                 var aboutView = new VRS.WebAdmin.AboutView({
                     pageId: 'about-page',
-                    jsonUrl: 'About.json'
+                    jsonUrl: 'About.json',
+                    refreshPeriod: 0
                 });
                 aboutView.initialise();
             }(window.VRS = window.VRS || {}, jQuery));

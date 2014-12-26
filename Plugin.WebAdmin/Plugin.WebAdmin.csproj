@@ -290,6 +290,7 @@
     <Content Include="Web\css\webadmin\jquery-mobile\jquery.mobile.structure.css" />
     <Content Include="Web\css\webadmin\jquery-mobile\jquery.mobile.theme.css" />
     <Content Include="Web\css\webadmin\webadmin.css" />
+    <Content Include="Web\script\webadmin\jquery.mobile.onpage.js" />
     <Content Include="Web\script\webadmin\view.js" />
     <Content Include="Web\script\webadmin\jquery.mobile.js" />
     <Content Include="Web\WebAdmin\About.html" />
