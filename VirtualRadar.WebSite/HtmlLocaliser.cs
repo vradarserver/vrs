@@ -113,11 +113,11 @@ namespace VirtualRadar.WebSite
             var result = false;
 
             if(htmlNode.NodeType == HtmlAgilityPack.HtmlNodeType.Text) {
-                var text = HttpUtility.HtmlDecode(htmlNode.InnerHtml);
+                var text = htmlNode.InnerHtml;
                 var newText = GetLocalisedText(text);
                 if(text != newText) {
                     result = true;
-                    htmlNode.InnerHtml = HttpUtility.HtmlEncode(newText);
+                    htmlNode.InnerHtml = newText;
                 }
             }
 
@@ -145,7 +145,7 @@ namespace VirtualRadar.WebSite
                     var endIndex = result.IndexOf("::", index + 2);
                     if(endIndex == -1) break;
                     var originalText = result.Substring(index + 2, endIndex - (index + 2));
-                    var replaceWith = LocalisedStringsMap.TryGetLocalisedString(originalText);
+                    var replaceWith = ConvertResourceStringToHtmlString(LocalisedStringsMap.TryGetLocalisedString(originalText));
                     if(replaceWith != null) {
                         result = String.Format("{0}{1}{2}", result.Substring(0, index), replaceWith, result.Substring(endIndex + 2));
                         endIndex -= originalText.Length + 2;        // Length of "::STRING" portion of original "::STRING::", end index is on 3rd colon
@@ -153,6 +153,22 @@ namespace VirtualRadar.WebSite
                     }
                     index = result.IndexOf("::", endIndex);
                 }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="resourceString"></param>
+        /// <returns></returns>
+        public string ConvertResourceStringToHtmlString(string resourceString)
+        {
+            var result = resourceString;
+            if(result != null) {
+                result = HttpUtility.HtmlEncode(resourceString);
+                result = result.Replace("\r\n", "<br />");
             }
 
             return result;
