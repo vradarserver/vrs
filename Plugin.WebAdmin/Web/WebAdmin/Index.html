@@ -42,12 +42,7 @@
                 ::VirtualRadarServer:: ::Copyright::
             </div>
 
-            <div id="main-menu" data-role="panel" class="jqm-navmenu-panel" data-position="left">
-                <div data-role="controlgroup">
-                    <a href="Index.html" data-role="button" data-icon="home" data-iconpos="left">::WA_Home::</a>
-                    <a href="About.html" data-role="button">::About::</a>
-                </div>
-            </div>
+            <div id="main-menu"></div>
 
             <script type="text/javascript">
                 (function(VRS, $, undefined)
@@ -83,6 +78,7 @@
                     //endregion
 
                     var mainView = new VRS.WebAdmin.MainView({
+                        pageUrl: 'Index.html',
                         pageId: 'main-page',
                         jsonUrl: 'Index.json'
                     });

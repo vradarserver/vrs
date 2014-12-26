@@ -2,9 +2,19 @@
 
 /**
  * @typedef {{
+ * pageUrl:         string,
+ * menuTitle:       string
+ * }} VRS_WEBADMIN_SITENAVIGATION_PAGE
+ */
+VRS_WEBADMIN_SITENAVIGATION_PAGE;
+
+/**
+ * @typedef {{
+ * pageUrl:         string,
  * pageId:          string,
  * jsonUrl:         string,
- * refreshPeriod:   number
+ * refreshPeriod:   number,
+ * siteNavId:       string
  * }} VRS_WEBADMIN_VIEW_SETTINGS
  */
 VRS_WEBADMIN_VIEW_SETTINGS;

@@ -56,6 +56,7 @@
     <Compile Include="View\AboutView.cs" />
     <Compile Include="View\MainView.cs" />
     <Compile Include="View\BaseView.cs" />
+    <Compile Include="WebAdminStringsJavaScript.cs" />
     <Compile Include="WebAdminStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -291,6 +292,7 @@
     <Content Include="Web\css\webadmin\jquery-mobile\jquery.mobile.theme.css" />
     <Content Include="Web\css\webadmin\webadmin.css" />
     <Content Include="Web\script\webadmin\jquery.mobile.onpage.js" />
+    <Content Include="Web\script\webadmin\siteNavigation.js" />
     <Content Include="Web\script\webadmin\view.js" />
     <Content Include="Web\script\webadmin\jquery.mobile.js" />
     <Content Include="Web\WebAdmin\About.html" />

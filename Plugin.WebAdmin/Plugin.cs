@@ -150,7 +150,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             _StandardStringsLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
             _PluginStringsLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
             _StandardStringsLocaliser.Initialise();
-            _PluginStringsLocaliser.Initialise(new LocalisedStringsMap(typeof(WebAdminStrings)));
+            _PluginStringsLocaliser.Initialise(WebAdminStringsJavaScript.LocalisedWebAdminStrings);
 
             _HeadTemplateFileName = Path.Combine(parameters.PluginFolder, "Web");
             _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "WebAdmin");
@@ -163,6 +163,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = _Options.Enabled;
             _WebSiteExtender.WebRootSubFolder = "Web";
+            _WebSiteExtender.PageHandlers.Add("/WebAdmin/webAdminStrings.js", WebAdminStringsJavaScript.SendJavaScript);
             AddJsonHandlers();
             _WebSiteExtender.Initialise(parameters);
             _WebSiteExtender.ProtectFolder("WebAdmin");
