@@ -32,7 +32,9 @@
 
         //region Fields
         var that = this;
-        /** @type {number|object} */ var _RefreshTimer = undefined;
+        /** @type {number|object} */    var _RefreshTimer = undefined;
+        /** @type {jqXHR} */            var _RefreshXHR = undefined;
+        /** @type {boolean} */          var _IsHidden = false;
         //endregion
 
         //region initialise
@@ -41,8 +43,14 @@
          */
         this.initialise = function()
         {
-            $(document).on('pageinit', '#' + settings.pageId, function() {
+            $(document).onPage('beforeshow', '#' + settings.pageId, function() {
+                _IsHidden = false;
                 that.refreshContent();
+            });
+            $(document).onPage('beforehide', '#' + settings.pageId, function() {
+                _IsHidden = true;
+                that.cancelRefreshContent();
+                that.cancelRefreshTimer();
             });
         };
         //endregion
@@ -53,12 +61,26 @@
          */
         this.refreshContent = function()
         {
-            $.ajax({
-                url: settings.jsonUrl,
-                timeout: 10000,
-                success: contentFetched,
-                error: that.startRefreshTimer(10000)
-            });
+            if(!_IsHidden) {
+                that.cancelRefreshContent();
+                _RefreshXHR = $.ajax({
+                    url: settings.jsonUrl,
+                    timeout: 10000,
+                    success: contentFetched,
+                    error: function() { that.startRefreshTimer(10000); }
+                });
+            }
+        };
+
+        /**
+         * Cancels any running AJAX call to fetch content.
+         */
+        this.cancelRefreshContent = function()
+        {
+            if(_RefreshXHR) {
+                _RefreshXHR.abort();
+                _RefreshXHR = undefined;
+            }
         };
 
         /**
@@ -68,14 +90,17 @@
         function contentFetched(data)
         {
             _RefreshTimer = undefined;
+            _RefreshXHR = undefined;
             var refreshPeriod = 10000;
 
-            if(data && data.IsRunning) {
+            if(!_IsHidden && data && data.IsRunning) {
                 refreshPeriod = settings.refreshPeriod;
                 that.showContent(data);
             }
 
-            that.startRefreshTimer(refreshPeriod);
+            if(!_IsHidden) {
+                that.startRefreshTimer(refreshPeriod);
+            }
         }
 
         /**
@@ -88,15 +113,18 @@
 
         /**
          * Pauses for the period passed in (defaults to settings.refreshPeriod) and then fetches
-         * new content from the server.
+         * new content from the server. A refreshPeriod of less than 1 disables the refresh timer.
          * @param {number} refreshPeriod
          */
         this.startRefreshTimer = function(refreshPeriod)
         {
-            if(!refreshPeriod) refreshPeriod = settings.refreshPeriod;
+            if(isNaN(refreshPeriod)) refreshPeriod = settings.refreshPeriod;
 
             that.cancelRefreshTimer();
-            _RefreshTimer = setTimeout(that.refreshContent, refreshPeriod);
+            that.cancelRefreshContent();
+            if(refreshPeriod > 0) {
+                _RefreshTimer = setTimeout(that.refreshContent, refreshPeriod);
+            }
         };
 
         /**
