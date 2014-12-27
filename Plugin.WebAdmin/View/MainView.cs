@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -120,8 +121,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #region Form methods
         public void Initialise(IUniversalPlugAndPlayManager unused1, ISimpleAircraftList unused2)
         {
-            _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
-            _Presenter.UPnpManager = _UPnpManager;
+            ;
         }
 
         public void ShowManualVersionCheckResult(bool newVersionAvailable)
@@ -164,11 +164,23 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public override DialogResult ShowView()
         {
             if(!IsRunning) {
-                Initialise(null, null);
+                _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
                 _Presenter.Initialise(this);
+                _Presenter.UPnpManager = _UPnpManager;
             }
 
             return base.ShowView();
+        }
+        #endregion
+
+        #region Actions and Events
+        protected override void RaiseEvent(string eventName, NameValueCollection queryString)
+        {
+            switch(eventName) {
+                case "toggle-upnp-status":
+                    OnToggleUPnpStatus(EventArgs.Empty);
+                    break;
+            }
         }
         #endregion
     }

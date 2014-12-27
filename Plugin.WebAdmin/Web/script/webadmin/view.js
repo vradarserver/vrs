@@ -48,27 +48,14 @@
 
             $(document).on('ready', function() {
                 FastClick.attach(document.body);
+                that.hookEvents();
+                that.initialiseContent();
                 that.refreshContent();
             });
         };
-
-        this.hookPageEvent = function(eventName, handler)
-        {
-            eventName = 'page' + eventName;
-            var selector = '#' + settings.pageId;
-            $(document).off(eventName, selector);
-            $(document).on(eventName, selector, handler);
-        };
-
-        this.hookPageContainerEvent = function(eventName, handler)
-        {
-            var selector = '#' + settings.pageId;
-            $(document).offPage(eventName, selector);
-            $(document).onPage(eventName, selector, handler);
-        };
         //endregion
 
-        //region addStandardElements, addElements
+        //region addStandardElements, addElements, hookEvents
         /**
          * Adds elements that are common across all views.
          */
@@ -83,22 +70,77 @@
          */
         that.addElements = function()
         {
+        };
 
+        /**
+         * The derivee can override this to hook events after the page has loaded.
+         */
+        that.hookEvents = function()
+        {
         };
         //endregion
 
-        //region refreshContent, showContent, startRefreshTimer, cancelRefreshTimer
+        //region initialiseContent, refreshContent, performAction, showContent, startRefreshTimer, cancelRefreshTimer
+        /**
+         * The derivee can override this to perform first-run initialisation of the view.
+         */
+        this.initialiseContent = function()
+        {
+        };
+
         /**
          * Fetches new content from the server.
          */
         this.refreshContent = function()
         {
+            that.fetchViewState();
+        };
+
+        /**
+         * Calls the refresh content JSON entry point but passes an extra parameter, an action. The server should
+         * pick this up and perform the action before returning the view state to us.
+         * @param {string} action
+         * @param {object} [params]
+         *
+         */
+        this.performAction = function(action, params)
+        {
+            params = $.extend({
+                action: action
+            }, params || {});
+            that.fetchViewState(params);
+        };
+
+        this.fetchViewState = function(params)
+        {
+            that.cancelRefreshTimer();
             that.cancelRefreshContent();
-            _RefreshXHR = $.ajax({
+            var ajax = {
                 url: settings.jsonUrl,
                 timeout: 10000,
                 success: contentFetched,
-                error: function() { that.startRefreshTimer(10000); }
+                error: function() { that.startRefreshTimer(10000); },
+                data: params
+            };
+            _RefreshXHR = $.ajax(ajax);
+        };
+
+        /**
+         * Calls the raiseEvent entry point and asks the view to raise the event named here. The server should return
+         * immediately without waiting for the event handlers to finish.
+         * @param {string} eventName
+         * @param {object} [params]
+         */
+        this.raiseViewEventInBackground = function(eventName, params)
+        {
+            params = $.extend({
+                eventName: eventName
+            }, params || {});
+
+            $.ajax({
+                url: settings.jsonUrl,
+                timeout: 10000,
+                data: params
             });
         };
 

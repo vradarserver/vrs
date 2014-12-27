@@ -151,6 +151,9 @@
     <value>Tracking</value>
     <comment>As in "tracking 20 aircraft"</comment>
   </data>
+  <data name="WA_Title_Upnp" xml:space="preserve">
+    <value>UPnP</value>
+  </data>
   <data name="WA_Title_VirtualRadarServer" xml:space="preserve">
     <value>Virtual Radar Server</value>
   </data>

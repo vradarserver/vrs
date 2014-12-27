@@ -46,15 +46,33 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default" id="panel-address" role="tablist">
-                            <div class="panel-heading" role="tab" id="address-heading" aria-expanded="false" aria-controls="address-collapse">
+                        <div class="panel panel-default" id="panel-upnp" role="tablist">
+                            <div class="panel-heading" role="tab" id="upnp-heading" aria-expanded="true" aria-controls="upnp-collapse">
                                 <h4>
-                                    <a class="collapsed" data-toggle="collapse" data-target="#address-collapse" href="#address-collapse">
+                                    <a class="" data-toggle="collapse" data-target="#upnp-collapse" href="#upnp-collapse">
+                                        ::WA_Title_Upnp::
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="upnp-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="panel-heading">
+                                <div class="panel-body">
+                                    <p id="upnp-status"></p>
+                                    <div>
+                                        <button id="upnp-toggle" type="button" class="btn btn-primary"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default" id="panel-address" role="tablist">
+                            <div class="panel-heading" role="tab" id="address-heading" aria-expanded="true" aria-controls="address-collapse">
+                                <h4>
+                                    <a class="" data-toggle="collapse" data-target="#address-collapse" href="#address-collapse">
                                         ::UNC::
                                     </a>
                                 </h4>
                             </div>
-                            <div id="address-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="address-heading">
+                            <div id="address-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="address-heading">
                                 <div class="panel-body">
                                     <p>
                                         <select id="main-address-perspective" class="ui-inline">
@@ -93,6 +111,33 @@
                 VRS.WebAdmin.MainView = function(settings)
                 {
                     VRS.WebAdmin.View.call(this, settings);
+                    var that = this;
+
+                    // Feed fields
+                    var _FeedTableBody = $('tbody', '#feeds-table');
+
+                    // UPnP fields
+                    var _UPnpEnabled = false;
+                    var _UPnpRouterPresent = false;
+                    var _UPnpActive = false;
+                    var _UpnpStatus = $('#upnp-status');
+                    var _UpnpToggle = $('#upnp-toggle');
+
+                    /**
+                     * Hooks events
+                     */
+                    this.hookEvents = function()
+                    {
+                        _UpnpToggle.on('click', function() { upnpToggle_Click(); });
+                    };
+
+                    /**
+                     * Performs first-time initialisation of the view.
+                     */
+                    this.initialiseContent = function()
+                    {
+                        showUpnpState();
+                    };
 
                     /**
                      * Shows the content sent from the server.
@@ -101,14 +146,14 @@
                     this.showContent = function(data)
                     {
                         refreshFeeds(data);
+                        refreshUpnp(data);
                         refreshAddresses(data);
                         refreshVersionCheck(data);
                     };
 
                     function refreshFeeds(data)
                     {
-                        var feedTable = $('tbody', '#feeds-table');
-                        feedTable.empty();
+                        _FeedTableBody.empty();
                         $.each(data.Feeds, function(/** number */ idx, /** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ feed) {
                             var row = $('<tr />')
                                 .append($('<td />').text(feed.Name))
@@ -116,8 +161,36 @@
                                 .append($('<td />').text(VRS.stringUtility.formatNumber(feed.Msgs, '0,000')).addClass('text-right'))
                                 .append($('<td />').text(feed.BadMsgs).addClass('text-right'))
                                 .append($('<td />').text(feed.Tracked).addClass('text-right'));
-                            feedTable.append(row);
+                            _FeedTableBody.append(row);
                         });
+                    }
+
+                    function refreshUpnp(data)
+                    {
+                        if(_UPnpEnabled !== data.Upnp || _UPnpRouterPresent !== data.UpnpRouter || _UPnpActive !== data.UpnpOn) {
+                            _UPnpEnabled = data.Upnp;
+                            _UPnpRouterPresent = data.UpnpRouter;
+                            _UPnpActive = data.UpnpOn;
+                            showUpnpState();
+                        }
+                    }
+
+                    function showUpnpState()
+                    {
+                        var status = !_UPnpEnabled && _UPnpActive ? '::UPnpActiveWhileDisabled::' :
+                                     !_UPnpEnabled ? '::UPnpDisabled::' :
+                                     !_UPnpRouterPresent ? '::UPnPNotPresent::' :
+                                     !_UPnpActive ? '::UPnpInactive::' :
+                                     '::UPnpActive::';
+
+                        _UpnpStatus.text(status);
+                        _UpnpToggle.text(_UPnpActive ? '::TakeOffInternet::' : '::PutOnInternet::');
+                        _UpnpToggle.prop('disabled', !(_UPnpEnabled && _UPnpRouterPresent));
+                    }
+
+                    function upnpToggle_Click()
+                    {
+                        that.raiseViewEventInBackground('toggle-upnp-status');
                     }
 
                     /**
