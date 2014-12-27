@@ -10,11 +10,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using InterfaceFactory;
 using Newtonsoft.Json;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
@@ -65,9 +68,55 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public virtual void SendData(RequestReceivedEventArgs args)
         {
-            var json = JsonConvert.SerializeObject(this);
-            _Responder.SendText(args.Request, args.Response, json, Encoding.UTF8, MimeType.Json);
+            var eventName = (args.QueryString["eventName"] ?? "").Trim().ToLower();
+            if(eventName != "") {
+                var response = String.Format("{{\"EventName\":\"{0}\",\"Outcome\":\"{1}\"}}", eventName, IsRunning ? "RAISED" : "NOT RUNNING");
+                if(IsRunning) {
+                    RaiseEventOnBackgroundThread(eventName, args.QueryString);
+                }
+                _Responder.SendText(args.Request, args.Response, response, Encoding.UTF8, MimeType.Json);
+            } else {
+                var action = (args.QueryString["action"] ?? "").Trim().ToLower();
+                if(action != "" && IsRunning) {
+                    try {
+                        PerformAction(action, args.QueryString);
+                    } catch(Exception ex) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception while processing action {0} for WebAdmin {1}: {2}", action, GetType().Name, ex);
+                    }
+                }
+
+                var json = JsonConvert.SerializeObject(this);
+                _Responder.SendText(args.Request, args.Response, json, Encoding.UTF8, MimeType.Json);
+            }
+
             args.Handled = true;
+        }
+
+        private void RaiseEventOnBackgroundThread(string eventName, NameValueCollection queryString)
+        {
+            ThreadPool.QueueUserWorkItem((state) => {
+                try {
+                    try {
+                        RaiseEvent(eventName, queryString);
+                    } catch(Exception ex) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception while raising event {0} for WebAdmin {1}: {2}", eventName, GetType().Name, ex);
+                    }
+                } catch {
+                    ;   // Never let an exception bubble up out of this
+                }
+            });
+        }
+
+        protected virtual void RaiseEvent(string eventName, NameValueCollection queryString)
+        {
+            ;
+        }
+
+        protected virtual void PerformAction(string action, NameValueCollection queryString)
+        {
+            ;
         }
     }
 }

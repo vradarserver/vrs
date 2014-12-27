@@ -160,6 +160,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UPnP.
+        /// </summary>
+        public static string WA_Title_Upnp {
+            get {
+                return ResourceManager.GetString("WA_Title_Upnp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Virtual Radar Server.
         /// </summary>
         public static string WA_Title_VirtualRadarServer {
