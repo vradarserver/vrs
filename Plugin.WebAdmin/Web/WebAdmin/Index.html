@@ -14,25 +14,37 @@
                             ::WA_Title_Main::
                         </h1>
 
-                        <h3>::UNC::</h3>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <select id="main-address-perspective" class="ui-inline">
-                                    <option value="local">::ShowLocalAddress::</option>
-                                    <option value="network">::ShowNetworkAddress::</option>
-                                    <option value="public">::ShowInternetAddress::</option>
-                                </select>
-                                <select id="main-address-page">
-                                    <option value="default">::DefaultVersion::</option>
-                                    <option value="desktop">::DesktopVersion::</option>
-                                    <option value="mobile">::MobileVersion::</option>
-                                    <option value="fsx">::FlightSimVersion::</option>
-                                    <option value="oldDesktop">::DesktopVersionOld::</option>
-                                    <option value="oldMobile">::MobileVersionOld::</option>
-                                    <option value="oldFsx">::FlightSimVersionOld::</option>
-                                    <option value="settings">::SettingsPage::</option>
-                                </select>
-                                <a id="main-site-link" href="#" target="livesite"></a>
+                        <div class="panel panel-default" id="panel-address" role="tablist">
+                            <div class="panel-heading" role="tab" id="address-heading" aria-expanded="false" aria-controls="address-collapse">
+                                <h4>
+                                    <a class="collapsed" data-toggle="collapse" data-target="#address-collapse" href="#address-collapse">::UNC::</a>
+                                </h4>
+                            </div>
+                            <div id="address-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="address-heading">
+                                <div class="panel-body">
+                                    <p>
+                                        <select id="main-address-perspective" class="ui-inline">
+                                            <option value="local">::ShowLocalAddress::</option>
+                                            <option value="network">::ShowNetworkAddress::</option>
+                                            <option value="public">::ShowInternetAddress::</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <select id="main-address-page">
+                                            <option value="default">::DefaultVersion::</option>
+                                            <option value="desktop">::DesktopVersion::</option>
+                                            <option value="mobile">::MobileVersion::</option>
+                                            <option value="fsx">::FlightSimVersion::</option>
+                                            <option value="oldDesktop">::DesktopVersionOld::</option>
+                                            <option value="oldMobile">::MobileVersionOld::</option>
+                                            <option value="oldFsx">::FlightSimVersionOld::</option>
+                                            <option value="settings">::SettingsPage::</option>
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <a id="main-site-link" href="#" target="livesite"></a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

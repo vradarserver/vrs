@@ -58,3 +58,18 @@
   }
 }
 /*endregion */
+
+/*region Collapsable panels */
+.panel-heading a {
+    text-decoration: none;
+}
+.panel-heading a:before {
+    font-family: 'Glyphicons Halflings';
+    content: '\e114';
+    color: #808080;
+    padding-right: 1em;
+}
+.panel-heading a.collapsed:before {
+    content: '\e080';
+}
+/*endregion */

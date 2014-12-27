@@ -47,6 +47,7 @@
             that.addElements();
 
             $(document).on('ready', function() {
+                FastClick.attach(document.body);
                 that.refreshContent();
             });
         };
