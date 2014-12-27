@@ -97,6 +97,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string WA_Logout {
+            get {
+                return ResourceManager.GetString("WA_Logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
         public static string WA_Title_About {
@@ -111,6 +120,24 @@ namespace VirtualRadar.Plugin.WebAdmin {
         public static string WA_Title_Main {
             get {
                 return ResourceManager.GetString("WA_Title_Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual Radar Server.
+        /// </summary>
+        public static string WA_Title_VirtualRadarServer {
+            get {
+                return ResourceManager.GetString("WA_Title_VirtualRadarServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Admin.
+        /// </summary>
+        public static string WA_Title_WebAdmin {
+            get {
+                return ResourceManager.GetString("WA_Title_WebAdmin", resourceCulture);
             }
         }
         

@@ -27,7 +27,6 @@
         //region Default settings
         settings = $.extend({
             refreshPeriod: 1000,
-            siteNavId: 'main-menu'
         }, settings);
         //endregion
 
@@ -35,7 +34,6 @@
         var that = this;
         /** @type {number|object} */                var _RefreshTimer = undefined;
         /** @type {jqXHR} */                        var _RefreshXHR = undefined;
-        /** @type {boolean} */                      var _IsHidden = false;
         /** @type {VRS.WebAdmin.SiteNavigation} */  var _SiteNavigation = undefined;
         //endregion
 
@@ -45,18 +43,11 @@
          */
         this.initialise = function()
         {
-            that.hookPageEvent('beforecreate', function() {
-                addStandardElements();
-                that.addElements();
-            });
-            that.hookPageContainerEvent('beforeshow', function() {
-                _IsHidden = false;
+            addStandardElements();
+            that.addElements();
+
+            $(document).on('ready', function() {
                 that.refreshContent();
-            });
-            that.hookPageContainerEvent('beforehide', function() {
-                _IsHidden = true;
-                that.cancelRefreshContent();
-                that.cancelRefreshTimer();
             });
         };
 
@@ -82,12 +73,8 @@
          */
         function addStandardElements()
         {
-            if(settings.siteNavId) {
-                var pageElement = $('#' + settings.pageId);
-                var menuElement = $('#' + settings.siteNavId, pageElement);
-                _SiteNavigation = new VRS.WebAdmin.SiteNavigation();
-                _SiteNavigation.injectIntoPage(menuElement, settings.pageUrl);
-            }
+            _SiteNavigation = new VRS.WebAdmin.SiteNavigation();
+            _SiteNavigation.injectIntoPage(settings.pageUrl);
         }
 
         /**
@@ -105,15 +92,13 @@
          */
         this.refreshContent = function()
         {
-            if(!_IsHidden) {
-                that.cancelRefreshContent();
-                _RefreshXHR = $.ajax({
-                    url: settings.jsonUrl,
-                    timeout: 10000,
-                    success: contentFetched,
-                    error: function() { that.startRefreshTimer(10000); }
-                });
-            }
+            that.cancelRefreshContent();
+            _RefreshXHR = $.ajax({
+                url: settings.jsonUrl,
+                timeout: 10000,
+                success: contentFetched,
+                error: function() { that.startRefreshTimer(10000); }
+            });
         };
 
         /**
@@ -137,14 +122,12 @@
             _RefreshXHR = undefined;
             var refreshPeriod = 10000;
 
-            if(!_IsHidden && data && data.IsRunning) {
+            if(data && data.IsRunning) {
                 refreshPeriod = settings.refreshPeriod;
                 that.showContent(data);
             }
 
-            if(!_IsHidden) {
-                that.startRefreshTimer(refreshPeriod);
-            }
+            that.startRefreshTimer(refreshPeriod);
         }
 
         /**

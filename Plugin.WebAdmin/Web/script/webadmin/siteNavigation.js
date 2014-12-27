@@ -37,26 +37,77 @@
         ];
 
         /**
-         * Adds the HTML for the site to the current page's DOM at the element specified.
-         * @param {jQuery}  menuElement
+         * Adds the HTML for the site's navigation elements to the page.
          * @param {string}  currentPageUrl
          */
-        this.injectIntoPage = function(menuElement, currentPageUrl)
+        this.injectIntoPage = function(currentPageUrl)
         {
-            menuElement.attr('data-role', 'panel');
-            menuElement.attr('data-position', 'left');
+            addTopNavbar(currentPageUrl);
+            addNavSidebar(currentPageUrl);
 
-            var controlGroup = $('<div />')
-                .attr('data-role', 'controlgroup')
-                .appendTo(menuElement);
+            $(document).ready(function() {
+                $('[data-toggle=offcanvas]').click(function() {
+                    $('.row-offcanvas').toggleClass('active');
+                });
+            });
+        };
+
+        /**
+         * Adds the HTML for the top navigation bar.
+         * @param {string} currentPageUrl
+         */
+        function addTopNavbar(currentPageUrl)
+        {
+            var html =
+                $('<div />')
+                    .attr('class', 'navbar navbar-default navbar-fixed-top" role="navigation')
+                    .append($('<div />').attr('class', 'container-fluid')
+                        .append($('<div />').attr('class', 'navbar-header')
+                            .append($('<button />')
+                                .attr('type', 'button')
+                                .attr('class', 'navbar-toggle')
+                                .attr('data-toggle', 'offcanvas')
+                                .attr('data-target', '.sidebar-nav')
+                                .attr('aria-label', 'Menu')
+                                .append($('<span />').addClass('glyphicon glyphicon-list'))
+//                                .append($('<span />').addClass('icon-bar'))
+//                                .append($('<span />').addClass('icon-bar'))
+                            )
+                            .append($('<a />')
+                                .attr('class', 'navbar-brand')
+                                .attr('href', '#')
+                                .text(VRS.$$.WA_Title_WebAdmin)
+                            )
+                        )
+                    );
+
+            $('#page-container').prepend(html);
+        }
+
+        /**
+         * Adds the HTML for the sidebar.
+         * @param {string} currentPageUrl
+         */
+        function addNavSidebar(currentPageUrl)
+        {
+            var sidebar = $('<nav />')
+                .attr('id', 'sidebar')
+                .attr('role', 'navigation')
+                .addClass('col-xs-6 col-sm-3 sidebar-offcanvas');
+            var list = $('<ul />').addClass('nav').appendTo(sidebar);
 
             $.each(_Pages, function(/** number */idx, /** VRS_WEBADMIN_SITENAVIGATION_PAGE */ page) {
-                var pageElement = $('<a />')
-                    .attr('href', page.pageUrl)
-                    .attr('data-role', 'button')
-                    .text(page.menuTitle)
-                    .appendTo(controlGroup);
+                var isCurrentPage = currentPageUrl === page.pageUrl;
+                var pageElement = $('<li />');
+                if(isCurrentPage) {
+                    pageElement.text(page.menuTitle).addClass('active');
+                } else {
+                    pageElement.append($('<a />').attr('href', page.pageUrl).text(page.menuTitle));
+                }
+                list.append(pageElement);
             });
+
+            $('#content > .row').prepend(sidebar);
         }
     };
 }(window.VRS = window.VRS || {}, jQuery));

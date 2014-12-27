@@ -129,11 +129,20 @@
   <data name="WA_Label_Environment" xml:space="preserve">
     <value>Environment</value>
   </data>
+  <data name="WA_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
   <data name="WA_Title_About" xml:space="preserve">
     <value>About</value>
   </data>
   <data name="WA_Title_Main" xml:space="preserve">
     <value>Main</value>
+  </data>
+  <data name="WA_Title_VirtualRadarServer" xml:space="preserve">
+    <value>Virtual Radar Server</value>
+  </data>
+  <data name="WA_Title_WebAdmin" xml:space="preserve">
+    <value>Web Admin</value>
   </data>
   <data name="WA_Value_DotNet" xml:space="preserve">
     <value>.NET</value>
