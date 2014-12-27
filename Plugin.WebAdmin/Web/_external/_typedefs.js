@@ -13,8 +13,7 @@ VRS_WEBADMIN_SITENAVIGATION_PAGE;
  * pageUrl:         string,
  * pageId:          string,
  * jsonUrl:         string,
- * refreshPeriod:   number,
- * siteNavId:       string
+ * refreshPeriod:   number
  * }} VRS_WEBADMIN_VIEW_SETTINGS
  */
 VRS_WEBADMIN_VIEW_SETTINGS;

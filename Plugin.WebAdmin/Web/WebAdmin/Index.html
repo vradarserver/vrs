@@ -4,105 +4,82 @@
         <meta charset="utf-8" />
         <title>::WA_Title_Main::</title>
         @head.html@
-        <!-- jQuery Mobile Debugging -->
-        <script src="../script/webadmin/jquery.mobile.event.debugger.js" type="text/javascript"></script>
-        <script type="text/javascript">
-            $(document).on('mobileinit', function() {
-                $.mobile.eventLogger({
-                    showAlert: false,
-                    deprecated: false,
-                    events: {
-                        page: true,
-                        touch: false,
-                        vmouse: false,
-                        layout: false,
-                        navigation: true
-                    },
-                    //widgets: { 'widget-name-here': true, 'another-widget-here': true }
-                });
-            });
-        </script>
     </head>
     <body>
-        <div id='main-page' data-role="page">
-            <div data-role="header">
-                <a href="#main-menu" class="webadmin-mainmenu-button" data-role="button" data-mini="true" data-icon="bullets" data-iconpos="notext">Menu</a>
-                <h2>
-                    ::WA_Title_Main::
-                </h2>
-            </div>
+        <div id="page-container">
+            <div id="content" class="container-fluid">
+                <div class="row row-offcanvas row-offcanvas-left">
+                    <div class="col-xs-12 col-sm-9">
+                        <h1 class="page-header">
+                            ::WA_Title_Main::
+                        </h1>
 
-            <div role="main" class="ui-content">
-                <div data-role="fieldcontain">
-                    <fieldset data-role="controlgroup">
-                        <legend>::UNC:::</legend>
-                        <select id="main-address-perspective" class="ui-inline">
-                            <option value="local">::ShowLocalAddress::</option>
-                            <option value="network">::ShowNetworkAddress::</option>
-                            <option value="public">::ShowInternetAddress::</option>
-                        </select>
-                        <select id="main-address-page">
-                            <option value="default">::DefaultVersion::</option>
-                            <option value="desktop">::DesktopVersion::</option>
-                            <option value="mobile">::MobileVersion::</option>
-                            <option value="fsx">::FlightSimVersion::</option>
-                            <option value="oldDesktop">::DesktopVersionOld::</option>
-                            <option value="oldMobile">::MobileVersionOld::</option>
-                            <option value="oldFsx">::FlightSimVersionOld::</option>
-                            <option value="settings">::SettingsPage::</option>
-                        </select>
-                        <a id="main-site-link" href="#" target="livesite"></a>
-                    </fieldset>
+                        <h3>::UNC::</h3>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <select id="main-address-perspective" class="ui-inline">
+                                    <option value="local">::ShowLocalAddress::</option>
+                                    <option value="network">::ShowNetworkAddress::</option>
+                                    <option value="public">::ShowInternetAddress::</option>
+                                </select>
+                                <select id="main-address-page">
+                                    <option value="default">::DefaultVersion::</option>
+                                    <option value="desktop">::DesktopVersion::</option>
+                                    <option value="mobile">::MobileVersion::</option>
+                                    <option value="fsx">::FlightSimVersion::</option>
+                                    <option value="oldDesktop">::DesktopVersionOld::</option>
+                                    <option value="oldMobile">::MobileVersionOld::</option>
+                                    <option value="oldFsx">::FlightSimVersionOld::</option>
+                                    <option value="settings">::SettingsPage::</option>
+                                </select>
+                                <a id="main-site-link" href="#" target="livesite"></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-                ::VirtualRadarServer:: ::Copyright::
-            </div>
-
-            <div id="main-menu"></div>
-
-            <script type="text/javascript">
-                (function(VRS, $, undefined)
-                {
-                    //region MainView
-                    VRS.WebAdmin.MainView = function(settings)
-                    {
-                        VRS.WebAdmin.View.call(this, settings);
-
-                        /**
-                         * Shows the content sent from the server.
-                         * @param {VRS_WEBADMIN_VIEWDATA_MAIN} data
-                         */
-                        this.showContent = function(data)
-                        {
-                            refreshAddresses(data);
-                        };
-
-                        /**
-                         * Refreshes the server addresses.
-                         * @param data
-                         */
-                        function refreshAddresses(data)
-                        {
-                            var siteLink = $('#main-site-link');
-                            if(siteLink.text() !== data.WebServerLocalAddress) {
-                                siteLink.text(data.WebServerLocalAddress);
-                                siteLink.attr('href', data.WebServerLocalAddress);
-                            }
-                        }
-                    };
-                    VRS.WebAdmin.MainView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
-                    //endregion
-
-                    var mainView = new VRS.WebAdmin.MainView({
-                        pageUrl: 'Index.html',
-                        pageId: 'main-page',
-                        jsonUrl: 'Index.json'
-                    });
-                    mainView.initialise();
-                }(window.VRS = window.VRS || {}, jQuery));
-            </script>
         </div>
+
+        <script type="text/javascript">
+            (function(VRS, $, undefined)
+            {
+                //region MainView
+                VRS.WebAdmin.MainView = function(settings)
+                {
+                    VRS.WebAdmin.View.call(this, settings);
+
+                    /**
+                     * Shows the content sent from the server.
+                     * @param {VRS_WEBADMIN_VIEWDATA_MAIN} data
+                     */
+                    this.showContent = function(data)
+                    {
+                        refreshAddresses(data);
+                    };
+
+                    /**
+                     * Refreshes the server addresses.
+                     * @param data
+                     */
+                    function refreshAddresses(data)
+                    {
+                        var siteLink = $('#main-site-link');
+                        if(siteLink.text() !== data.WebServerLocalAddress) {
+                            siteLink.text(data.WebServerLocalAddress);
+                            siteLink.attr('href', data.WebServerLocalAddress);
+                        }
+                    }
+                };
+                VRS.WebAdmin.MainView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
+                //endregion
+
+                var mainView = new VRS.WebAdmin.MainView({
+                    pageUrl: 'Index.html',
+                    pageId: 'main-page',
+                    jsonUrl: 'Index.json'
+                });
+                mainView.initialise();
+            }(window.VRS = window.VRS || {}, jQuery));
+        </script>
     </body>
 </html>
