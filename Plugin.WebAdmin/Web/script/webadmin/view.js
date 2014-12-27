@@ -39,25 +39,40 @@
         /** @type {VRS.WebAdmin.SiteNavigation} */  var _SiteNavigation = undefined;
         //endregion
 
-        //region initialise
+        //region initialise, hookPageEvent, hookPageContainerEvent
         /**
          * Initialises the page.
          */
         this.initialise = function()
         {
-            $(document).on('pagebeforecreate', '#' + settings.pageId, function() {
+            that.hookPageEvent('beforecreate', function() {
                 addStandardElements();
                 that.addElements();
             });
-            $(document).onPage('beforeshow', '#' + settings.pageId, function() {
+            that.hookPageContainerEvent('beforeshow', function() {
                 _IsHidden = false;
                 that.refreshContent();
             });
-            $(document).onPage('beforehide', '#' + settings.pageId, function() {
+            that.hookPageContainerEvent('beforehide', function() {
                 _IsHidden = true;
                 that.cancelRefreshContent();
                 that.cancelRefreshTimer();
             });
+        };
+
+        this.hookPageEvent = function(eventName, handler)
+        {
+            eventName = 'page' + eventName;
+            var selector = '#' + settings.pageId;
+            $(document).off(eventName, selector);
+            $(document).on(eventName, selector, handler);
+        };
+
+        this.hookPageContainerEvent = function(eventName, handler)
+        {
+            var selector = '#' + settings.pageId;
+            $(document).offPage(eventName, selector);
+            $(document).onPage(eventName, selector, handler);
         };
         //endregion
 
@@ -68,8 +83,10 @@
         function addStandardElements()
         {
             if(settings.siteNavId) {
+                var pageElement = $('#' + settings.pageId);
+                var menuElement = $('#' + settings.siteNavId, pageElement);
                 _SiteNavigation = new VRS.WebAdmin.SiteNavigation();
-                _SiteNavigation.injectIntoPage($('#' + settings.siteNavId), settings.pageUrl);
+                _SiteNavigation.injectIntoPage(menuElement, settings.pageUrl);
             }
         }
 
