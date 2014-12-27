@@ -93,7 +93,7 @@
             var sidebar = $('<nav />')
                 .attr('id', 'sidebar')
                 .attr('role', 'navigation')
-                .addClass('col-xs-6 col-sm-3 sidebar-offcanvas');
+                .addClass('col-xs-6 col-sm-3 sidebar-offcanvas hidden-print');
             var list = $('<ul />').addClass('nav').appendTo(sidebar);
 
             $.each(_Pages, function(/** number */idx, /** VRS_WEBADMIN_SITENAVIGATION_PAGE */ page) {

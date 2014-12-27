@@ -87,6 +87,7 @@
     <Content Include="Web\css\webadmin\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Web\css\webadmin\webadmin.css" />
     <Content Include="Web\script\webadmin\bootstrap.js" />
+    <Content Include="Web\script\webadmin\fastclick.js" />
     <Content Include="Web\script\webadmin\siteNavigation.js" />
     <Content Include="Web\script\webadmin\view.js" />
     <Content Include="Web\WebAdmin\About.html" />
