@@ -14,38 +14,32 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Globalization;
+using InterfaceFactory;
 
-namespace Test.Framework
+namespace VirtualRadar.Interface
 {
     /// <summary>
     /// A class that switches the current thread to a particular culture when it is created and then
     /// restores the original culture when it's disposed.
     /// </summary>
-    /// <remarks>
-    /// Virtual Radar Server has an audience in several countries. Some tests need to make sure that
-    /// the things work correctly regardless of the regional settings. This class can help with
-    /// that, you use it in a using() block to switch the culture to a known region and then automatically
-    /// switch it back at the end of the test, even if the test threw an
-    /// exception.
-    /// </remarks>
-    /// <example>
-    /// <code>
-    /// [TestMethod]
-    /// public void My_Object_Parses_Strings_Correctly()
-    /// {
-    ///     var regions = new string[] { "en-GB", "de-DE", "fr-FR" };
-    ///     foreach(var region in regions) {
-    ///       using(var cultureSwitcher = new CultureSwitcher(region)) {
-    ///           // Do some work here and assert that the result is as expected
-    ///       }
-    ///     }
-    /// }
-    /// </code>
-    /// </example>
     public class CultureSwitcher : IDisposable
     {
         private CultureInfo _CurrentCulture;
         private CultureInfo _CurrentUICulture;
+
+        private static CultureInfo _MainThreadCulture;
+        /// <summary>
+        /// Gets the main thread's CultureInfo.
+        /// </summary>
+        public static CultureInfo MainThreadCulture
+        {
+            get {
+                if(_MainThreadCulture == null) {
+                    _MainThreadCulture = Factory.Singleton.Resolve<IRuntimeEnvironment>().MainThreadCultureInfo;
+                }
+                return _MainThreadCulture;
+            }
+        }
 
         /// <summary>
         /// Gets the name of the culture currently in force.
@@ -55,16 +49,24 @@ namespace Test.Framework
         /// <summary>
         /// Creates a new object.
         /// </summary>
+        public CultureSwitcher() : this(null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         /// <param name="culture">The name of the culture (e.g. 'en-GB' or 'de-DE') that the current thread
         /// will be set to.</param>
         public CultureSwitcher(string culture)
         {
-            CultureName = culture;
+            var cultureInfo = culture == null ? MainThreadCulture : new CultureInfo(culture);
+            CultureName = cultureInfo.Name;
 
             _CurrentCulture = Thread.CurrentThread.CurrentCulture;
             _CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
 
-            Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+            Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = cultureInfo;
         }
 
         /// <summary>

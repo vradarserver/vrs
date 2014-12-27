@@ -90,14 +90,10 @@ namespace VirtualRadar.WebSite
         {
             var result = false;
 
-            var currentCulture = Thread.CurrentThread.CurrentUICulture;
-            try {
-                Thread.CurrentThread.CurrentUICulture = _MainThreadCultureInfo;
+            using(new CultureSwitcher()) {
                 foreach(var element in htmlDocument.DocumentNode.ChildNodes) {
                     if(HtmlNode(element)) result = true;
                 }
-            } finally {
-                Thread.CurrentThread.CurrentUICulture = currentCulture;
             }
 
             return result;

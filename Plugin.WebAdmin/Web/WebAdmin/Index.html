@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>::WA_Title_Main::</title>
+        <title>::WA_Title_Main:: - ::WA_Title_WebAdmin::</title>
         @head.html@
     </head>
     <body>
@@ -13,6 +13,10 @@
                         <h1 class="page-header">
                             ::WA_Title_Main::
                         </h1>
+
+                        <div id="newVersion" class="alert alert-info" role="alert" style="display: none">
+                            <a href="#" target="external">::LaterVersionAvailable::</a>
+                        </div>
 
                         <div class="panel panel-default" id="panel-feeds" role="tablist">
                             <div class="panel-heading" role="tab" id="feeds-heading" aria-expanded="true" aria-controls="feeds-collapse">
@@ -29,10 +33,10 @@
                                             <thead>
                                                 <tr>
                                                     <th>::NameTitle::</th>
-                                                    <th>::ConnectionStatusTitle::</th>
-                                                    <th class="text-right">::TotalMessagesTitle::</th>
-                                                    <th class="text-right">::TotalBadMessagesTitle::</th>
-                                                    <th class="text-right">::AircraftCountTitle::</th>
+                                                    <th>::WA_Title_Status::</th>
+                                                    <th class="text-right">::WA_Title_Messages::</th>
+                                                    <th class="text-right">::WA_Title_Bad::</th>
+                                                    <th class="text-right">::WA_Title_Tracking::</th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
@@ -98,6 +102,7 @@
                     {
                         refreshFeeds(data);
                         refreshAddresses(data);
+                        refreshVersionCheck(data);
                     };
 
                     function refreshFeeds(data)
@@ -122,9 +127,24 @@
                     function refreshAddresses(data)
                     {
                         var siteLink = $('#main-site-link');
-                        if(siteLink.text() !== data.WebServerLocalAddress) {
-                            siteLink.text(data.WebServerLocalAddress);
-                            siteLink.attr('href', data.WebServerLocalAddress);
+                        if(siteLink.text() !== data.LocalRoot) {
+                            siteLink.text(data.LocalRoot);
+                            siteLink.attr('href', data.LocalRoot);
+                        }
+                    }
+
+                    /**
+                     * Refreshes the display of the version check result.
+                     * @param data
+                     */
+                    function refreshVersionCheck(data)
+                    {
+                        var alert = $('#newVersion');
+                        var currentState = alert.is(':visible');
+                        if(currentState !== data.NewVer) {
+                            var link = $('a', alert);
+                            link.attr('href', data.NewVer ? data.NewVerUrl : '#');
+                            alert.toggle(data.NewVer);
                         }
                     }
                 };

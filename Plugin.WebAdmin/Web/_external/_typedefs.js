@@ -20,7 +20,7 @@ VRS_WEBADMIN_VIEW_SETTINGS;
 
 /**
  * @typedef {{
- * IsRunning:       bool
+ * Running:         bool
  * }} VRS_WEBADMIN_VIEWDATA_BASEVIEW
  */
 VRS_WEBADMIN_VIEWDATA_BASEVIEW;
@@ -56,18 +56,15 @@ VRS_WEBADMIN_VIEWDATA_FEEDSTATUS;
 /**
  * @extends VRS_WEBADMIN_VIEWDATA_BASEVIEW
  * @typedef {{
- * InvalidPluginCount:              number,
- * LogFileName:                     string,
- * NewVersionAvailable:             boolean,
- * NewVersionDownloadUrl:           string,
- * RebroadcastServersConfiguration: string,
- * UPnpEnabled:                     boolean,
- * UPnpRouterPresent:               boolean,
- * UPnpPortForwardingActive:        boolean,
- * WebServerIsOnline:               boolean,
- * WebServerLocalAddress:           string,
- * WebServerNetworkAddress:         string,
- * WebServerExternalAddress:        string,
+ * BadPlugins:                      number,
+ * NewVer:                          boolean,
+ * NewVerUrl:                       string,
+ * Upnp:                            boolean,
+ * UpnpRouter:                      boolean,
+ * UpnpOn:                          boolean,
+ * LocalRoot:                       string,
+ * LanRoot:                         string,
+ * PublicRoot:                      string,
  * Feeds:                           VRS_WEBADMIN_VIEWDATA_FEEDSTATUS[]
  * }} VRS_WEBADMIN_VIEWDATA_MAIN
  */

@@ -106,6 +106,7 @@
     <Compile Include="BaseStation\IRawMessageTranslator.cs" />
     <Compile Include="AircraftDetail.cs" />
     <Compile Include="Crc64.cs" />
+    <Compile Include="CultureSwitcher.cs" />
     <Compile Include="IExceptionReporter.cs" />
     <Compile Include="IMessageBox.cs" />
     <Compile Include="PortableBinding\GenericListWrapper.cs" />
