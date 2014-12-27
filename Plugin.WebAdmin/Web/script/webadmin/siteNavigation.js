@@ -38,17 +38,17 @@
 
         /**
          * Adds the HTML for the site to the current page's DOM at the element specified.
-         * @param {jQuery}  element
+         * @param {jQuery}  menuElement
          * @param {string}  currentPageUrl
          */
-        this.injectIntoPage = function(element, currentPageUrl)
+        this.injectIntoPage = function(menuElement, currentPageUrl)
         {
-            element.attr('data-role', 'panel');
-            element.attr('data-position', 'left');
+            menuElement.attr('data-role', 'panel');
+            menuElement.attr('data-position', 'left');
 
             var controlGroup = $('<div />')
                 .attr('data-role', 'controlgroup')
-                .appendTo(element);
+                .appendTo(menuElement);
 
             $.each(_Pages, function(/** number */idx, /** VRS_WEBADMIN_SITENAVIGATION_PAGE */ page) {
                 var pageElement = $('<a />')

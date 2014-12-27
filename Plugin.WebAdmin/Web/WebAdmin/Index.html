@@ -4,6 +4,24 @@
         <meta charset="utf-8" />
         <title>::WA_Title_Main::</title>
         @head.html@
+        <!-- jQuery Mobile Debugging -->
+        <script src="../script/webadmin/jquery.mobile.event.debugger.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(document).on('mobileinit', function() {
+                $.mobile.eventLogger({
+                    showAlert: false,
+                    deprecated: false,
+                    events: {
+                        page: true,
+                        touch: false,
+                        vmouse: false,
+                        layout: false,
+                        navigation: true
+                    },
+                    //widgets: { 'widget-name-here': true, 'another-widget-here': true }
+                });
+            });
+        </script>
     </head>
     <body>
         <div id='main-page' data-role="page">
