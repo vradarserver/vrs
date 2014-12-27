@@ -14,10 +14,40 @@
                             ::WA_Title_Main::
                         </h1>
 
+                        <div class="panel panel-default" id="panel-feeds" role="tablist">
+                            <div class="panel-heading" role="tab" id="feeds-heading" aria-expanded="true" aria-controls="feeds-collapse">
+                                <h4>
+                                    <a class="" data-toggle="collapse" data-target="#feeds-collapse" href="#feeds-collapse">
+                                        ::FeedStatus::
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="feeds-collapse" class="pabel-collapse collapse in" role="tabpanel" aria-labelledby="feeds-heading">
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table id="feeds-table" class="table table-striped table-condensed">
+                                            <thead>
+                                                <tr>
+                                                    <th>::NameTitle::</th>
+                                                    <th>::ConnectionStatusTitle::</th>
+                                                    <th class="text-right">::TotalMessagesTitle::</th>
+                                                    <th class="text-right">::TotalBadMessagesTitle::</th>
+                                                    <th class="text-right">::AircraftCountTitle::</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="panel panel-default" id="panel-address" role="tablist">
                             <div class="panel-heading" role="tab" id="address-heading" aria-expanded="false" aria-controls="address-collapse">
                                 <h4>
-                                    <a class="collapsed" data-toggle="collapse" data-target="#address-collapse" href="#address-collapse">::UNC::</a>
+                                    <a class="collapsed" data-toggle="collapse" data-target="#address-collapse" href="#address-collapse">
+                                        ::UNC::
+                                    </a>
                                 </h4>
                             </div>
                             <div id="address-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="address-heading">
@@ -66,8 +96,24 @@
                      */
                     this.showContent = function(data)
                     {
+                        refreshFeeds(data);
                         refreshAddresses(data);
                     };
+
+                    function refreshFeeds(data)
+                    {
+                        var feedTable = $('tbody', '#feeds-table');
+                        feedTable.empty();
+                        $.each(data.Feeds, function(/** number */ idx, /** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ feed) {
+                            var row = $('<tr />')
+                                .append($('<td />').text(feed.Name))
+                                .append($('<td />').text(feed.ConnDesc))
+                                .append($('<td />').text(VRS.stringUtility.formatNumber(feed.Msgs, '0,000')).addClass('text-right'))
+                                .append($('<td />').text(feed.BadMsgs).addClass('text-right'))
+                                .append($('<td />').text(feed.Tracked).addClass('text-right'));
+                            feedTable.append(row);
+                        });
+                    }
 
                     /**
                      * Refreshes the server addresses.

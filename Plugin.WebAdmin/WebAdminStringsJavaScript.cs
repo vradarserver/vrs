@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -71,7 +72,8 @@ namespace VirtualRadar.Plugin.WebAdmin
 
                     var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
                     var currentCultureInfo = Thread.CurrentThread.CurrentUICulture;
-                    Thread.CurrentThread.CurrentUICulture = runtimeEnvironment.MainThreadCultureInfo;
+                    var cultureInfo = runtimeEnvironment.MainThreadCultureInfo;
+                    Thread.CurrentThread.CurrentUICulture = cultureInfo;
                     try {
                         builder.AppendLine(@"(function(VRS, undefined)");      // Note that this gets loaded before jQuery, so the usual parameter set is inappropriate
                         builder.AppendLine(@"{");
@@ -83,6 +85,21 @@ namespace VirtualRadar.Plugin.WebAdmin
                             builder.AppendLine(String.Format("    VRS.$$.{0} = '{1}';", name, value));
                         }
                         builder.AppendLine();
+
+                        // Add a bare-bones Globalise object to support the string utility's number formatting
+                        builder.AppendLine(@"    Globalize = {");
+                        builder.AppendLine(@"        culture: function() {");
+                        builder.AppendLine(@"            return {");
+                        builder.AppendLine(@"                numberFormat: {");
+                        builder.AppendLine(String.Format(@"                    name: '{0}',", cultureInfo.Name));
+                        builder.AppendLine(String.Format(@"                    groupSizes: [{0}],", String.Join(", ", cultureInfo.NumberFormat.NumberGroupSizes.Select(r => r.ToString(CultureInfo.InvariantCulture)).ToArray())));
+                        builder.AppendLine(String.Format(@"                    ',': '{0}',", cultureInfo.NumberFormat.CurrencyGroupSeparator));
+                        builder.AppendLine(String.Format(@"                    '.': '{0}',", cultureInfo.NumberFormat.CurrencyDecimalSeparator));
+                        builder.AppendLine(String.Format(@"                    pattern: ['{0}']", NegativePattern(cultureInfo.NumberFormat.NumberNegativePattern)));
+                        builder.AppendLine(@"                }");
+                        builder.AppendLine(@"            };");
+                        builder.AppendLine(@"        }");
+                        builder.AppendLine(@"    };");
                         builder.AppendLine(@"}(window.VRS = window.VRS || {}));");
 
                         _JavaScriptContent = builder.ToString();
@@ -91,6 +108,12 @@ namespace VirtualRadar.Plugin.WebAdmin
                     }
                 }
             }
+        }
+
+        private static string NegativePattern(int patternIndex)
+        {
+            var patterns = new string[] { "(n)", "-n", "- n", "n-", "n -" };
+            return patterns[patternIndex];
         }
     }
 }

@@ -221,7 +221,7 @@ namespace VirtualRadar.Headless.View
         /// See interface docs.
         /// </summary>
         /// <param name="feeds"></param>
-        public void ShowFeeds(IFeed[] feeds)
+        public void ShowFeeds(FeedStatus[] feeds)
         {
             ;
         }
@@ -230,7 +230,7 @@ namespace VirtualRadar.Headless.View
         /// See interface docs.
         /// </summary>
         /// <param name="feeds"></param>
-        public void UpdateFeedCounters(IFeed[] feeds)
+        public void UpdateFeedCounters(FeedStatus[] feeds)
         {
             ;
         }
@@ -239,7 +239,7 @@ namespace VirtualRadar.Headless.View
         /// See interface docs.
         /// </summary>
         /// <param name="feed"></param>
-        public void ShowFeedConnectionStatus(IFeed feed)
+        public void ShowFeedConnectionStatus(FeedStatus feed)
         {
             ;
         }

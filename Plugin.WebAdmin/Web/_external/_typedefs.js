@@ -39,6 +39,21 @@ VRS_WEBADMIN_VIEWDATA_BASEVIEW;
 VRS_WEBADMIN_VIEWDATA_ABOUT;
 
 /**
+ * @typedef {{
+ * Id:                              number,
+ * Name:                            string,
+ * Merged:                          boolean,
+ * Polar:                           boolean,
+ * Connection:                      number,
+ * ConnDesc:                        string,
+ * Msgs:                            number,
+ * BadMsgs:                         number,
+ * Tracked:                         number
+ * }} VRS_WEBADMIN_VIEWDATA_FEEDSTATUS
+ */
+VRS_WEBADMIN_VIEWDATA_FEEDSTATUS;
+
+/**
  * @extends VRS_WEBADMIN_VIEWDATA_BASEVIEW
  * @typedef {{
  * InvalidPluginCount:              number,
@@ -52,7 +67,8 @@ VRS_WEBADMIN_VIEWDATA_ABOUT;
  * WebServerIsOnline:               boolean,
  * WebServerLocalAddress:           string,
  * WebServerNetworkAddress:         string,
- * WebServerExternalAddress:        string
+ * WebServerExternalAddress:        string,
+ * Feeds:                           VRS_WEBADMIN_VIEWDATA_FEEDSTATUS[]
  * }} VRS_WEBADMIN_VIEWDATA_MAIN
  */
 VRS_WEBADMIN_VIEWDATA_MAIN;
