@@ -19,6 +19,7 @@ using VirtualRadar.Interface.Settings;
 using Moq;
 using System.IO;
 using Test.Framework;
+using VirtualRadar.Interface;
 
 namespace Test.VirtualRadar.Database
 {

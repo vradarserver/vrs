@@ -123,7 +123,7 @@
             _RefreshXHR = undefined;
             var refreshPeriod = 10000;
 
-            if(data && data.IsRunning) {
+            if(data && data.Running) {
                 refreshPeriod = settings.refreshPeriod;
                 that.showContent(data);
             }

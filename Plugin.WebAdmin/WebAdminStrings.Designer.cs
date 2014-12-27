@@ -115,11 +115,47 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bad.
+        /// </summary>
+        public static string WA_Title_Bad {
+            get {
+                return ResourceManager.GetString("WA_Title_Bad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Main.
         /// </summary>
         public static string WA_Title_Main {
             get {
                 return ResourceManager.GetString("WA_Title_Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Messages.
+        /// </summary>
+        public static string WA_Title_Messages {
+            get {
+                return ResourceManager.GetString("WA_Title_Messages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string WA_Title_Status {
+            get {
+                return ResourceManager.GetString("WA_Title_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracking.
+        /// </summary>
+        public static string WA_Title_Tracking {
+            get {
+                return ResourceManager.GetString("WA_Title_Tracking", resourceCulture);
             }
         }
         
@@ -133,7 +169,7 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web Admin.
+        ///   Looks up a localized string similar to VRS Web Admin.
         /// </summary>
         public static string WA_Title_WebAdmin {
             get {

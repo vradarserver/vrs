@@ -70,11 +70,9 @@ namespace VirtualRadar.Plugin.WebAdmin
                     var htmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
                     var builder = new StringBuilder();
 
-                    var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
-                    var currentCultureInfo = Thread.CurrentThread.CurrentUICulture;
-                    var cultureInfo = runtimeEnvironment.MainThreadCultureInfo;
-                    Thread.CurrentThread.CurrentUICulture = cultureInfo;
-                    try {
+                    using(var cultureSwitcher = new CultureSwitcher()) {
+                        var cultureInfo = Thread.CurrentThread.CurrentCulture;
+
                         builder.AppendLine(@"(function(VRS, undefined)");      // Note that this gets loaded before jQuery, so the usual parameter set is inappropriate
                         builder.AppendLine(@"{");
                         builder.AppendLine(@"    VRS.$$ = VRS.$$ || {};");
@@ -103,8 +101,6 @@ namespace VirtualRadar.Plugin.WebAdmin
                         builder.AppendLine(@"}(window.VRS = window.VRS || {}));");
 
                         _JavaScriptContent = builder.ToString();
-                    } finally {
-                        Thread.CurrentThread.CurrentUICulture = currentCultureInfo;
                     }
                 }
             }

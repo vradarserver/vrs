@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -334,8 +335,10 @@ namespace VirtualRadar.Library.Presenter
                 _FeedCounterMapSpinLock.Unlock();
             }
 
-            foreach(var feed in feeds) {
-                UpdateFeedCounter(feed);
+            using(new CultureSwitcher()) {
+                foreach(var feed in feeds) {
+                    UpdateFeedCounter(feed, suppressCultureSwitch: true);
+                }
             }
         }
 
@@ -343,43 +346,50 @@ namespace VirtualRadar.Library.Presenter
         /// Adds or updates a feed counter in <see cref="_FeedCounterMap"/>.
         /// </summary>
         /// <param name="feed"></param>
-        private FeedStatus UpdateFeedCounter(IFeed feed)
+        /// <param name="suppressCultureSwitch"></param>
+        private FeedStatus UpdateFeedCounter(IFeed feed, bool suppressCultureSwitch = false)
         {
-            FeedStatus feedStatus;
-            _FeedCounterMapSpinLock.Lock();
+            var cultureSwitcher = suppressCultureSwitch ? null : new CultureSwitcher();
+
             try {
-                if(!_FeedCounterMap.TryGetValue(feed.UniqueId, out feedStatus)) {
-                    feedStatus = new FeedStatus() {
-                        FeedId = feed.UniqueId,
-                    };
-                    _FeedCounterMap.Add(feedStatus.FeedId, feedStatus);
+                FeedStatus feedStatus;
+                _FeedCounterMapSpinLock.Lock();
+                try {
+                    if(!_FeedCounterMap.TryGetValue(feed.UniqueId, out feedStatus)) {
+                        feedStatus = new FeedStatus() {
+                            FeedId = feed.UniqueId,
+                        };
+                        _FeedCounterMap.Add(feedStatus.FeedId, feedStatus);
+                    }
+                } finally {
+                    _FeedCounterMapSpinLock.Unlock();
                 }
+
+                var listener = feed.Listener;
+                var aircraftList = feed.AircraftList;
+                var noValue = listener == null || aircraftList == null;
+
+                var isMerged = noValue ? false : listener is IMergedFeedListener;
+                var hasPolarPlot = noValue ? false : aircraftList.PolarPlotter != null;
+                var connectionStatus = noValue ? ConnectionStatus.Disconnected : feed.Listener.ConnectionStatus;
+                var connectionStatusDescription = Describe.ConnectionStatus(connectionStatus);
+                var totalAircraft = noValue ? 0 : aircraftList.Count;
+                var totalBadMessages = noValue ? 0 : listener.TotalBadMessages;
+                var totalMessages = noValue ? 0 : listener.TotalMessages;
+
+                _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatus,               connectionStatus,               (r,v) => r.ConnectionStatus = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatusDescription,    connectionStatusDescription,    (r,v) => r.ConnectionStatusDescription = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.HasPolarPlot,                   hasPolarPlot,                   (r,v) => r.HasPolarPlot = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.IsMergedFeed,                   isMerged,                       (r,v) => r.IsMergedFeed = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.Name,                           feed.Name,                      (r,v) => r.Name = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.TotalAircraft,                  totalAircraft,                  (r,v) => r.TotalAircraft = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.TotalBadMessages,               totalBadMessages,               (r,v) => r.TotalBadMessages = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.TotalMessages,                  totalMessages,                  (r,v) => r.TotalMessages = v);
+
+                return feedStatus;
             } finally {
-                _FeedCounterMapSpinLock.Unlock();
+                if(cultureSwitcher != null) cultureSwitcher.Dispose();
             }
-
-            var listener = feed.Listener;
-            var aircraftList = feed.AircraftList;
-            var noValue = listener == null || aircraftList == null;
-
-            var isMerged = noValue ? false : listener is IMergedFeedListener;
-            var hasPolarPlot = noValue ? false : aircraftList.PolarPlotter != null;
-            var connectionStatus = noValue ? ConnectionStatus.Disconnected : feed.Listener.ConnectionStatus;
-            var connectionStatusDescription = Describe.ConnectionStatus(connectionStatus);
-            var totalAircraft = noValue ? 0 : aircraftList.Count;
-            var totalBadMessages = noValue ? 0 : listener.TotalBadMessages;
-            var totalMessages = noValue ? 0 : listener.TotalMessages;
-
-            _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatus,               connectionStatus,               (r,v) => r.ConnectionStatus = v);
-            _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatusDescription,    connectionStatusDescription,    (r,v) => r.ConnectionStatusDescription = v);
-            _FeedStatusHelper.Update(feedStatus, feedStatus.HasPolarPlot,                   hasPolarPlot,                   (r,v) => r.HasPolarPlot = v);
-            _FeedStatusHelper.Update(feedStatus, feedStatus.IsMergedFeed,                   isMerged,                       (r,v) => r.IsMergedFeed = v);
-            _FeedStatusHelper.Update(feedStatus, feedStatus.Name,                           feed.Name,                      (r,v) => r.Name = v);
-            _FeedStatusHelper.Update(feedStatus, feedStatus.TotalAircraft,                  totalAircraft,                  (r,v) => r.TotalAircraft = v);
-            _FeedStatusHelper.Update(feedStatus, feedStatus.TotalBadMessages,               totalBadMessages,               (r,v) => r.TotalBadMessages = v);
-            _FeedStatusHelper.Update(feedStatus, feedStatus.TotalMessages,                  totalMessages,                  (r,v) => r.TotalMessages = v);
-
-            return feedStatus;
         }
         #endregion
 

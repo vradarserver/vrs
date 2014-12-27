@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="AircraftTestHelper.cs" />
     <Compile Include="ClockMock.cs" />
-    <Compile Include="CultureSwitcher.cs" />
     <Compile Include="EventRecorder.cs" />
     <Compile Include="ExcelWorksheetData.cs" />
     <Compile Include="NamespaceDoc.cs" />

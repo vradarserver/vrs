@@ -96,10 +96,13 @@
     <Content Include="Web\_external\_typedefs.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="WebAdminStrings.fr-FR.resx" />
     <EmbeddedResource Include="WebAdminStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebAdminStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="WebAdminStrings.ru-RU.resx" />
+    <EmbeddedResource Include="WebAdminStrings.zh-CN.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Web\css\webadmin\bootstrap\css\bootstrap-theme.css.map" />

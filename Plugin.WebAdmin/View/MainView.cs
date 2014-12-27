@@ -15,6 +15,7 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using InterfaceFactory;
+using Newtonsoft.Json;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Presenter;
@@ -35,28 +36,40 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #endregion
 
         #region Properties
+        [JsonProperty("BadPlugins")]
         public int InvalidPluginCount { get; set; }
 
+        [JsonIgnore]
         public string LogFileName { get; set; }
 
+        [JsonProperty("NewVer")]
         public bool NewVersionAvailable { get; set; }
 
+        [JsonProperty("NewVerUrl")]
         public string NewVersionDownloadUrl { get; set; }
 
+        [JsonIgnore]
         public string RebroadcastServersConfiguration { get; set; }
 
+        [JsonProperty("Upnp")]
         public bool UPnpEnabled { get; set; }
 
+        [JsonProperty("UpnpRouter")]
         public bool UPnpRouterPresent { get; set; }
 
+        [JsonProperty("UpnpOn")]
         public bool UPnpPortForwardingActive { get; set; }
 
+        [JsonIgnore]
         public bool WebServerIsOnline { get; set; }
 
+        [JsonProperty("LocalRoot")]
         public string WebServerLocalAddress { get; set; }
 
+        [JsonProperty("LanRoot")]
         public string WebServerNetworkAddress { get; set; }
 
+        [JsonProperty("PublicRoot")]
         public string WebServerExternalAddress { get; set; }
         #endregion
 
