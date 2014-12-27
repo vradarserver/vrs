@@ -20,6 +20,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WinForms.Controls
@@ -174,7 +175,7 @@ namespace VirtualRadar.WinForms.Controls
         /// Updates the list of feeds.
         /// </summary>
         /// <param name="feeds"></param>
-        public void ShowFeeds(IFeed[] feeds)
+        public void ShowFeeds(FeedStatus[] feeds)
         {
             if(InvokeRequired) {
                 try {
@@ -194,7 +195,7 @@ namespace VirtualRadar.WinForms.Controls
         /// Updates the display for a single feed.
         /// </summary>
         /// <param name="feed"></param>
-        public void ShowFeed(IFeed feed)
+        public void ShowFeed(FeedStatus feed)
         {
             if(InvokeRequired) {
                 try {
@@ -204,7 +205,7 @@ namespace VirtualRadar.WinForms.Controls
                 }
             } else {
                 var feedDetails = GetFeedDetails();
-                var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.UniqueId);
+                var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.FeedId);
                 if(feedDetail != null) {
                     UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
                     listView.Sort();
@@ -217,33 +218,25 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         /// <param name="feeds"></param>
         /// <param name="feedDetails"></param>
-        private void AddOrUpdateExistingFeeds(IFeed[] feeds, List<FeedDetail> feedDetails)
+        private void AddOrUpdateExistingFeeds(FeedStatus[] feeds, List<FeedDetail> feedDetails)
         {
             foreach(var feed in feeds) {
-                var aircraftList = feed.AircraftList;
-                var listener = feed.Listener;
-
-                if(aircraftList == null || listener == null) {
-                    // They can be null if the feed is in the process of being disposed on another thread.
-                    // These need to be left in feedDetails so that the caller knows they no longer exist.
+                var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.FeedId);
+                if(feedDetail != null) {
+                    feedDetail.HasPolarPlotter = feed.HasPolarPlot;
+                    feedDetails.Remove(feedDetail);
+                    UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
                 } else {
-                    var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.UniqueId);
-                    if(feedDetail != null) {
-                        feedDetail.HasPolarPlotter = aircraftList.PolarPlotter != null;
-                        feedDetails.Remove(feedDetail);
-                        UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
-                    } else {
-                        feedDetail = new FeedDetail() {
-                            UniqueId = feed.UniqueId,
-                            IsMergedFeed = listener is IMergedFeedListener,
-                            HasPolarPlotter = aircraftList.PolarPlotter != null,
-                            ListViewItem = new ListViewItem(new string[] { "", "", "", "", "" }),
-                        };
-                        feedDetail.ListViewItem.Tag = feedDetail;
-                        UpdateFeedDisplay(feed, feedDetail, forceRefresh: true);
+                    feedDetail = new FeedDetail() {
+                        UniqueId = feed.FeedId,
+                        IsMergedFeed = feed.IsMergedFeed,
+                        HasPolarPlotter = feed.HasPolarPlot,
+                        ListViewItem = new ListViewItem(new string[] { "", "", "", "", "" }),
+                    };
+                    feedDetail.ListViewItem.Tag = feedDetail;
+                    UpdateFeedDisplay(feed, feedDetail, forceRefresh: true);
 
-                        listView.Items.Add(feedDetail.ListViewItem);
-                    }
+                    listView.Items.Add(feedDetail.ListViewItem);
                 }
             }
         }
@@ -277,43 +270,33 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="feed"></param>
         /// <param name="feedDetail"></param>
         /// <param name="forceRefresh"></param>
-        private void UpdateFeedDisplay(IFeed feed, FeedDetail feedDetail, bool forceRefresh)
+        private void UpdateFeedDisplay(FeedStatus feed, FeedDetail feedDetail, bool forceRefresh)
         {
             var item = feedDetail.ListViewItem;
-
-            // We can potentially get into a situation whereby the feed is disposed of while we're using it. If
-            // that happens then the AircraftList and Listener properties are nulled out - so we need to take
-            // separate copies of those.
-            var feedAircraftList = feed.AircraftList;
-            var feedListener = feed.Listener;
 
             if(forceRefresh || feed.Name != feedDetail.Name) {
                 item.SubItems[0].Text = feed.Name;
                 feedDetail.Name = feed.Name;
             }
 
-            if(feedListener != null) {
-                if(forceRefresh || feedListener.ConnectionStatus != feedDetail.ConnectionStatus) {
-                    item.SubItems[1].Text = Describe.ConnectionStatus(feedListener.ConnectionStatus);
-                    feedDetail.ConnectionStatus = feedListener.ConnectionStatus;
-                }
-
-                if(forceRefresh || feedListener.TotalMessages != feedDetail.TotalMessages) {
-                    item.SubItems[2].Text = feedListener.TotalMessages.ToString("N0");
-                    feedDetail.TotalMessages = feedListener.TotalMessages;
-                }
-
-                if(forceRefresh || feedListener.TotalBadMessages != feedDetail.TotalBadMessages) {
-                    item.SubItems[3].Text = feedListener.TotalBadMessages.ToString("N0");
-                    feedDetail.TotalBadMessages = feedListener.TotalBadMessages;
-                }
+            if(forceRefresh || feed.ConnectionStatus != feedDetail.ConnectionStatus) {
+                item.SubItems[1].Text = feed.ConnectionStatusDescription;
+                feedDetail.ConnectionStatus = feed.ConnectionStatus;
             }
 
-            if(feedAircraftList != null) {
-                if(forceRefresh || feedAircraftList.Count != feedDetail.AircraftCount) {
-                    item.SubItems[4].Text = feedAircraftList.Count.ToString("N0");
-                    feedDetail.AircraftCount = feedAircraftList.Count;
-                }
+            if(forceRefresh || feed.TotalMessages != feedDetail.TotalMessages) {
+                item.SubItems[2].Text = feed.TotalMessages.ToString("N0");
+                feedDetail.TotalMessages = feed.TotalMessages;
+            }
+
+            if(forceRefresh || feed.TotalBadMessages != feedDetail.TotalBadMessages) {
+                item.SubItems[3].Text = feed.TotalBadMessages.ToString("N0");
+                feedDetail.TotalBadMessages = feed.TotalBadMessages;
+            }
+
+            if(forceRefresh || feed.TotalAircraft != feedDetail.AircraftCount) {
+                item.SubItems[4].Text = feed.TotalAircraft.ToString("N0");
+                feedDetail.AircraftCount = feed.TotalAircraft;
             }
         }
         #endregion

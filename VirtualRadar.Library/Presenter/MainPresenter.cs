@@ -66,6 +66,21 @@ namespace VirtualRadar.Library.Presenter
         /// The object that looks after fetching the configuration for us.
         /// </summary>
         private ISharedConfiguration _SharedConfiguration;
+
+        /// <summary>
+        /// A map between the feed counter identifiers and their cooked values.
+        /// </summary>
+        private Dictionary<int, FeedStatus> _FeedCounterMap = new Dictionary<int,FeedStatus>();
+
+        /// <summary>
+        /// A spin lock that protects access to the <see cref="_FeedCounterMap"/> add / remove / lookup operations.
+        /// </summary>
+        private SpinLock _FeedCounterMapSpinLock = new SpinLock();
+
+        /// <summary>
+        /// The object that helps assigning values to <see cref="FeedStatus"/> objects.
+        /// </summary>
+        private ViewDtoHelper<FeedStatus> _FeedStatusHelper = new ViewDtoHelper<FeedStatus>((r,v) => r.DataVersion = v);
         #endregion
 
         #region Properties
@@ -130,7 +145,8 @@ namespace VirtualRadar.Library.Presenter
             _FeedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
             _FeedManager.ConnectionStateChanged += FeedManager_ConnectionStateChanged;
             _FeedManager.FeedsChanged += FeedManager_FeedsChanged;
-            View.ShowFeeds(_FeedManager.Feeds);
+            UpdateFeedCounters();
+            View.ShowFeeds(GetFeedCounters());
 
             _WebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
             _WebServer.ExternalAddressChanged += WebServer_ExternalAddressChanged;
@@ -266,6 +282,107 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region UpdateFeedCounters
+        /// <summary>
+        /// Returns an array of feed counters.
+        /// </summary>
+        /// <returns></returns>
+        private FeedStatus[] GetFeedCounters()
+        {
+            _FeedCounterMapSpinLock.Lock();
+            try {
+                return _FeedCounterMap.Values.Select(r => r.Clone()).OfType<FeedStatus>().ToArray();
+            } finally {
+                _FeedCounterMapSpinLock.Unlock();
+            }
+        }
+
+        /// <summary>
+        /// Returns the feed counter for a feed.
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        private FeedStatus GetFeedCounter(int uniqueId)
+        {
+            FeedStatus result = null;
+
+            _FeedCounterMapSpinLock.Lock();
+            try {
+                _FeedCounterMap.TryGetValue(uniqueId, out result);
+            } finally {
+                _FeedCounterMapSpinLock.Unlock();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Updates the feed counters and sends the resulting list of cooked counters to the view.
+        /// </summary>
+        private void UpdateFeedCounters()
+        {
+            var feeds = _FeedManager.Feeds.ToArray();
+            ++_FeedStatusHelper.DataVersion;
+
+            _FeedCounterMapSpinLock.Lock();
+            try {
+                var deletedFeeds = _FeedCounterMap.Where(r => !feeds.Any(i => i.UniqueId == r.Key)).ToArray();
+                foreach(var deletedFeed in deletedFeeds) {
+                    _FeedCounterMap.Remove(deletedFeed.Key);
+                }
+            } finally {
+                _FeedCounterMapSpinLock.Unlock();
+            }
+
+            foreach(var feed in feeds) {
+                UpdateFeedCounter(feed);
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates a feed counter in <see cref="_FeedCounterMap"/>.
+        /// </summary>
+        /// <param name="feed"></param>
+        private FeedStatus UpdateFeedCounter(IFeed feed)
+        {
+            FeedStatus feedStatus;
+            _FeedCounterMapSpinLock.Lock();
+            try {
+                if(!_FeedCounterMap.TryGetValue(feed.UniqueId, out feedStatus)) {
+                    feedStatus = new FeedStatus() {
+                        FeedId = feed.UniqueId,
+                    };
+                    _FeedCounterMap.Add(feedStatus.FeedId, feedStatus);
+                }
+            } finally {
+                _FeedCounterMapSpinLock.Unlock();
+            }
+
+            var listener = feed.Listener;
+            var aircraftList = feed.AircraftList;
+            var noValue = listener == null || aircraftList == null;
+
+            var isMerged = noValue ? false : listener is IMergedFeedListener;
+            var hasPolarPlot = noValue ? false : aircraftList.PolarPlotter != null;
+            var connectionStatus = noValue ? ConnectionStatus.Disconnected : feed.Listener.ConnectionStatus;
+            var connectionStatusDescription = Describe.ConnectionStatus(connectionStatus);
+            var totalAircraft = noValue ? 0 : aircraftList.Count;
+            var totalBadMessages = noValue ? 0 : listener.TotalBadMessages;
+            var totalMessages = noValue ? 0 : listener.TotalMessages;
+
+            _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatus,               connectionStatus,               (r,v) => r.ConnectionStatus = v);
+            _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatusDescription,    connectionStatusDescription,    (r,v) => r.ConnectionStatusDescription = v);
+            _FeedStatusHelper.Update(feedStatus, feedStatus.HasPolarPlot,                   hasPolarPlot,                   (r,v) => r.HasPolarPlot = v);
+            _FeedStatusHelper.Update(feedStatus, feedStatus.IsMergedFeed,                   isMerged,                       (r,v) => r.IsMergedFeed = v);
+            _FeedStatusHelper.Update(feedStatus, feedStatus.Name,                           feed.Name,                      (r,v) => r.Name = v);
+            _FeedStatusHelper.Update(feedStatus, feedStatus.TotalAircraft,                  totalAircraft,                  (r,v) => r.TotalAircraft = v);
+            _FeedStatusHelper.Update(feedStatus, feedStatus.TotalBadMessages,               totalBadMessages,               (r,v) => r.TotalBadMessages = v);
+            _FeedStatusHelper.Update(feedStatus, feedStatus.TotalMessages,                  totalMessages,                  (r,v) => r.TotalMessages = v);
+
+            return feedStatus;
+        }
+        #endregion
+
         #region Events consumed
         private void SharedConfiguration_ConfigurationChanged(object sender, EventArgs args)
         {
@@ -279,7 +396,8 @@ namespace VirtualRadar.Library.Presenter
 
         private void HeartbeatService_FastTick(object sender, EventArgs args)
         {
-            View.UpdateFeedCounters(_FeedManager.Feeds);
+            UpdateFeedCounters();
+            View.UpdateFeedCounters(GetFeedCounters());
         }
 
         private void NewVersionChecker_NewVersionAvailable(object sender, EventArgs args)
@@ -291,13 +409,16 @@ namespace VirtualRadar.Library.Presenter
 
         private void FeedManager_ConnectionStateChanged(object sender, EventArgs<IFeed> args)
         {
-            View.ShowFeedConnectionStatus(args.Value);
+            if(args.Value != null) {
+                var feedStatus = UpdateFeedCounter(args.Value);
+                View.ShowFeedConnectionStatus(feedStatus);
+            }
         }
 
         private void FeedManager_FeedsChanged(object sender, EventArgs args)
         {
-            var feedManager = (IFeedManager)sender;
-            View.ShowFeeds(feedManager.Feeds);
+            UpdateFeedCounters();
+            View.ShowFeeds(GetFeedCounters());
         }
 
         private void View_CheckForNewVersion(object sender, EventArgs args)

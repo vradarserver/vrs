@@ -321,37 +321,37 @@ namespace VirtualRadar.WinForms
         /// See interface docs.
         /// </summary>
         /// <param name="receivers"></param>
-        public void ShowFeeds(IFeed[] receivers)
+        public void ShowFeeds(FeedStatus[] receivers)
         {
             feedStatusControl.ShowFeeds(receivers);
 
             var openStatisticFeedIds = _StatisticsViews.Keys.ToArray();
-            var closeStatisticFeedIds = openStatisticFeedIds.Except(receivers.Select(r => r.UniqueId)).ToArray();
+            var closeStatisticFeedIds = openStatisticFeedIds.Except(receivers.Select(r => r.FeedId)).ToArray();
             foreach(var feedId in closeStatisticFeedIds) {
                 CloseStatisticsView(feedId, _StatisticsViews[feedId]);
             }
 
             foreach(var kvp in _StatisticsViews) {
-                kvp.Value.FeedName = receivers.Single(r => r.UniqueId == kvp.Key).Name;
+                kvp.Value.FeedName = receivers.Single(r => r.FeedId == kvp.Key).Name;
             }
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="receivers"></param>
-        public void UpdateFeedCounters(IFeed[] receivers)
+        /// <param name="feeds"></param>
+        public void UpdateFeedCounters(FeedStatus[] feeds)
         {
-            feedStatusControl.ShowFeeds(receivers);
+            feedStatusControl.ShowFeeds(feeds);
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="receiver"></param>
-        public void ShowFeedConnectionStatus(IFeed receiver)
+        public void ShowFeedConnectionStatus(FeedStatus feed)
         {
-            feedStatusControl.ShowFeed(receiver);
+            feedStatusControl.ShowFeed(feed);
         }
         #endregion
 

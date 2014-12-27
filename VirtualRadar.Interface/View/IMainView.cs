@@ -142,19 +142,19 @@ namespace VirtualRadar.Interface.View
         /// Updates the list of feeds shown to the user. Old feeds are removed, new ones added.
         /// </summary>
         /// <param name="feeds"></param>
-        void ShowFeeds(IFeed[] feeds);
+        void ShowFeeds(FeedStatus[] feeds);
 
         /// <summary>
         /// Updates the list of feeds with fresh counts.
         /// </summary>
         /// <param name="feeds"></param>
-        void UpdateFeedCounters(IFeed[] feeds);
+        void UpdateFeedCounters(FeedStatus[] feeds);
 
         /// <summary>
         /// Updates the display for a feed with a fresh connection status.
         /// </summary>
         /// <param name="feed"></param>
-        void ShowFeedConnectionStatus(IFeed feed);
+        void ShowFeedConnectionStatus(FeedStatus feed);
 
         /// <summary>
         /// Updates the display with the current set of connections to the rebroadcast servers.

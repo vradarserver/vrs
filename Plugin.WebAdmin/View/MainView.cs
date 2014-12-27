@@ -60,6 +60,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public string WebServerExternalAddress { get; set; }
         #endregion
 
+        #region Extra properties
+        public FeedStatus[] Feeds { get; set; }
+        #endregion
+
         #region Events exposed
         public event EventHandler CheckForNewVersion;
         public void OnCheckForNewVersion(EventArgs args)
@@ -112,19 +116,21 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             ;
         }
 
-        public void ShowFeeds(IFeed[] feeds)
+        public void ShowFeeds(FeedStatus[] feeds)
         {
+            Feeds = feeds.Select(r => r.Clone() as FeedStatus).OrderBy(r => r.Name).ToArray();
+        }
+
+        public void ShowFeedConnectionStatus(FeedStatus feed)
+        {
+            // No need to have code for this - the next update of feed counters will include the new connection
+            // status. We're not showing this stuff in real time.
             ;
         }
 
-        public void UpdateFeedCounters(IFeed[] feeds)
+        public void UpdateFeedCounters(FeedStatus[] feeds)
         {
-            ;
-        }
-
-        public void ShowFeedConnectionStatus(IFeed feed)
-        {
-            ;
+            ShowFeeds(feeds);
         }
 
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)

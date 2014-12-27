@@ -362,6 +362,7 @@
     <Compile Include="TimestampedException.cs" />
     <Compile Include="TransponderType.cs" />
     <Compile Include="View\DedicatedReceiver.cs" />
+    <Compile Include="View\FeedStatus.cs" />
     <Compile Include="View\IBusyView.cs" />
     <Compile Include="View\ICidrEditView.cs" />
     <Compile Include="View\IConfirmView.cs" />
