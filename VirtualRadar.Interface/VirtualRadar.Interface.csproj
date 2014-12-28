@@ -115,6 +115,7 @@
     <Compile Include="Certainty.cs" />
     <Compile Include="Cidr.cs" />
     <Compile Include="CidrComparer.cs" />
+    <Compile Include="Settings\ConflictingUpdateException.cs" />
     <Compile Include="Settings\ISavedPolarPlotStorage.cs" />
     <Compile Include="Settings\ISharedConfiguration.cs" />
     <Compile Include="Settings\ISiteSettingsParser.cs" />

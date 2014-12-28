@@ -32,6 +32,11 @@ namespace VirtualRadar.Library.Settings
     sealed class ConfigurationStorage : IConfigurationStorage
     {
         /// <summary>
+        /// A spin lock that protects against multithreaded reads and writes of the configuration file.
+        /// </summary>
+        private static SpinLock _FileProtectionSpinLock = new SpinLock();
+
+        /// <summary>
         /// A private class that supplies the default implementation of <see cref="IConfigurationStorageProvider"/>.
         /// </summary>
         class DefaultProvider : IConfigurationStorageProvider
@@ -118,8 +123,16 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public void Erase()
         {
-            if(File.Exists(FileName)) {
-                File.Delete(FileName);
+            var raiseEvent = false;
+
+            using(_FileProtectionSpinLock.AcquireLock()) {
+                if(File.Exists(FileName)) {
+                    File.Delete(FileName);
+                    raiseEvent = true;
+                }
+            }
+
+            if(raiseEvent) {
                 OnConfigurationChanged(EventArgs.Empty);
             }
         }
@@ -130,17 +143,12 @@ namespace VirtualRadar.Library.Settings
         /// <returns></returns>
         public Configuration Load()
         {
-            Configuration result = null;
-
-            if(File.Exists(FileName)) {
+            var result = LoadIfExists(acquireLock: true);
+            if(result != null) {
                 bool needResave = false;
-                using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
-                    XmlSerializer serialiser = new XmlSerializer(typeof(Configuration));
-                    result = (Configuration)serialiser.Deserialize(stream);
-                    if(GenerateRebroadcastServerUniqueIds(result)) needResave = true;
-                    if(ConvertBasicAuthenticationUser(result))     needResave = true;
-                    if(result.Receivers.Count == 0) CreateInitialReceiverLocations(result);
-                }
+                if(GenerateRebroadcastServerUniqueIds(result)) needResave = true;
+                if(ConvertBasicAuthenticationUser(result))     needResave = true;
+                if(result.Receivers.Count == 0) CreateInitialReceiverLocations(result);
 
                 if(needResave) Save(result);
             }
@@ -165,6 +173,31 @@ namespace VirtualRadar.Library.Settings
 
             // Force retired settings to their expected values
             result.BaseStationSettings.IgnoreBadMessages = true;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Loads the configuration or returns null if the configuration does not exist. Does not
+        /// attempt to massage old versions of the configuration into the correct form.
+        /// </summary>
+        /// <param name="acquireLock"></param>
+        /// <returns></returns>
+        private Configuration LoadIfExists(bool acquireLock)
+        {
+            Configuration result = null;
+
+            if(acquireLock) _FileProtectionSpinLock.Lock();
+            try {
+                if(File.Exists(FileName)) {
+                    using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
+                        XmlSerializer serialiser = new XmlSerializer(typeof(Configuration));
+                        result = (Configuration)serialiser.Deserialize(stream);
+                    }
+                }
+            } finally {
+                if(acquireLock) _FileProtectionSpinLock.Unlock();
+            }
 
             return result;
         }
@@ -282,11 +315,23 @@ namespace VirtualRadar.Library.Settings
         /// <param name="configuration"></param>
         public void Save(Configuration configuration)
         {
-            if(!Directory.Exists(Provider.Folder)) Directory.CreateDirectory(Provider.Folder);
+            using(_FileProtectionSpinLock.AcquireLock()) {
+                if(!Directory.Exists(Provider.Folder)) Directory.CreateDirectory(Provider.Folder);
 
-            using(StreamWriter stream = new StreamWriter(FileName, false, Encoding.UTF8)) {
-                XmlSerializer serialiser = new XmlSerializer(typeof(Configuration));
-                serialiser.Serialize(stream, configuration);
+                var currentConfiguration = LoadIfExists(acquireLock: false);
+                if(currentConfiguration != null && currentConfiguration.DataVersion != configuration.DataVersion) {
+                    throw new ConflictingUpdateException(String.Format("Cannot save the configuration - it has been saved elsewhere since you last loaded it. Current data version is {0}, you are attempting to save version {1}",
+                        currentConfiguration.DataVersion,
+                        configuration.DataVersion)
+                    );
+                }
+
+                ++configuration.DataVersion;
+
+                using(StreamWriter stream = new StreamWriter(FileName, false, Encoding.UTF8)) {
+                    XmlSerializer serialiser = new XmlSerializer(typeof(Configuration));
+                    serialiser.Serialize(stream, configuration);
+                }
             }
 
             OnConfigurationChanged(EventArgs.Empty);
