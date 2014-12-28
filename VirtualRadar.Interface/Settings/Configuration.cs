@@ -26,6 +26,19 @@ namespace VirtualRadar.Interface.Settings
     /// </summary>
     public class Configuration : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets or sets a counter that is incremented every time the configuration is saved. Unlike all other
+        /// properties this will not raise NotifyPropertyChanged when modified.
+        /// </summary>
+        /// <remarks>
+        /// This was introduced when the web admin plugin was introduced. <see cref="IConfigurationStorage"/>
+        /// implementations are expected to check that the value of this property is the same as the value
+        /// of the property stored on disk, and to throw an exception if they are not. In this way if a user
+        /// edits the configuration in the WinForms and web GUIs simultaneously only one edit will &quot;win&quot;,
+        /// the others will fail because they are attempting to save an out-of-date version of the configuration.
+        /// </remarks>
+        public int DataVersion { get; set; }
+
         private BaseStationSettings _BaseStationSettings;
         /// <summary>
         /// Gets or sets the object holding settings that describe the source of data that we are listening to.
