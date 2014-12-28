@@ -70,6 +70,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entire file.
+        /// </summary>
+        public static string WA_EntireFile {
+            get {
+                return ResourceManager.GetString("WA_EntireFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string WA_Home {
@@ -97,11 +106,47 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lines.
+        /// </summary>
+        public static string WA_Label_Lines {
+            get {
+                return ResourceManager.GetString("WA_Label_Lines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Web server.
         /// </summary>
         public static string WA_Label_WebServer {
             get {
                 return ResourceManager.GetString("WA_Label_WebServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 100 lines.
+        /// </summary>
+        public static string WA_Last100Lines {
+            get {
+                return ResourceManager.GetString("WA_Last100Lines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 200 lines.
+        /// </summary>
+        public static string WA_Last200Lines {
+            get {
+                return ResourceManager.GetString("WA_Last200Lines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 50 lines.
+        /// </summary>
+        public static string WA_Last50Lines {
+            get {
+                return ResourceManager.GetString("WA_Last50Lines", resourceCulture);
             }
         }
         
@@ -147,6 +192,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         public static string WA_Title_Discarded {
             get {
                 return ResourceManager.GetString("WA_Title_Discarded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log.
+        /// </summary>
+        public static string WA_Title_Log {
+            get {
+                return ResourceManager.GetString("WA_Title_Log", resourceCulture);
             }
         }
         

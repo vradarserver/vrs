@@ -49,6 +49,17 @@ namespace VirtualRadar.Library
                     }
                 }
             }
+
+            public string[] GetTail(string fullPath, int lines)
+            {
+                var result = File.ReadAllLines(fullPath);
+                if(lines > 0) {
+                    var skipLines = Math.Max(0, result.Length - lines);
+                    result = result.Skip(skipLines).Take(lines).ToArray();
+                }
+
+                return result;
+            }
         }
 
         /// <summary>
@@ -150,6 +161,22 @@ namespace VirtualRadar.Library
             lock(_SyncLock) {
                 if(Provider.FileExists(FileName)) Provider.TruncateTo(FileName, length);
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        public string[] GetContent(int lines)
+        {
+            string[] result = null;
+
+            lock(_SyncLock) {
+                if(Provider.FileExists(FileName)) result = Provider.GetTail(FileName, lines);
+            }
+
+            return result ?? new string[0];
         }
     }
 }
