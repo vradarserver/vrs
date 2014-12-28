@@ -65,7 +65,6 @@
             this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.timerRefresh = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.splitContainerInner.Panel1.SuspendLayout();
@@ -397,12 +396,6 @@
             this.exitToolStripMenuItem.Text = "::menuExit::";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // timerRefresh
-            // 
-            this.timerRefresh.Enabled = true;
-            this.timerRefresh.Interval = 1000;
-            this.timerRefresh.Tick += new System.EventHandler(this.timerRefresh_Tick);
-            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -468,7 +461,6 @@
         private System.Windows.Forms.ToolStripMenuItem showWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuResetReceiverRangeToolStripMenuItem;
-        private System.Windows.Forms.Timer timerRefresh;
         private System.Windows.Forms.ToolStripMenuItem menuOpenConnectionLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
     }

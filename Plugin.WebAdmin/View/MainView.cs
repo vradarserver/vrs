@@ -76,6 +76,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         #region Extra properties
         public FeedStatus[] Feeds { get; set; }
+
+        public RebroadcastServerConnection[] Rebroadcasters { get; set; }
         #endregion
 
         #region Events exposed
@@ -101,12 +103,6 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public void OnToggleUPnpStatus(EventArgs args)
         {
             if(ToggleUPnpStatus != null) ToggleUPnpStatus(this, args);
-        }
-
-        public event EventHandler RefreshTimerTicked;
-        public void OnRefreshTimerTicked(EventArgs args)
-        {
-            if(RefreshTimerTicked != null) RefreshTimerTicked(this, args);
         }
         #endregion
 
@@ -148,7 +144,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)
         {
-            ;
+            Rebroadcasters = connections.OrderBy(r => r.Name).ToArray();
         }
 
         public void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent)

@@ -292,8 +292,9 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _Presenter.Initialise(_View.Object);
 
-            _View.Raise(r => r.RefreshTimerTicked += null, EventArgs.Empty);
+            _HeartbeatService.Raise(r => r.FastTick += null, EventArgs.Empty);
 
+            _View.Verify(r => r.UpdateFeedCounters(It.IsAny<FeedStatus[]>()), Times.Once());
             _View.Verify(r => r.ShowRebroadcastServerStatus(connections), Times.Exactly(2));
         }
 

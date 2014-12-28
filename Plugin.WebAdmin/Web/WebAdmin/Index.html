@@ -19,7 +19,7 @@
                         </div>
 
                         <div id="panel-feeds" class="panel panel-default" role="tablist">
-                            <div class="panel-heading" role="tab" id="feeds-heading" aria-expanded="true" aria-controls="feeds-collapse">
+                            <div id="feeds-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="feeds-collapse">
                                 <h4>
                                     <a class="" data-toggle="collapse" data-target="#feeds-collapse" href="#feeds-collapse">
                                         ::FeedStatus::
@@ -38,6 +38,35 @@
                                                     <th class="text-right">::WA_Title_Bad::</th>
                                                     <th class="text-right">::WA_Title_Tracking::</th>
                                                 </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="panel-rebroadcasters" class="panel panel-default" role="tablist">
+                            <div id="rebroadcasters-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="feeds-collapse">
+                                <h4>
+                                    <a class="" data-toggle="collapse" data-target="#rebroadcasters-collapse" href="#rebroadcasters-collapse">
+                                        ::RebroadcastServersLabel::
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="rebroadcasters-collapse" class="pabel-collapse collapse in" role="tabpanel" aria-labelledby="rebroadcasters-heading">
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table id="rebroadcasters-table" class="table table-striped table-condensed">
+                                            <thead>
+                                            <tr>
+                                                <th>::NameTitle::</th>
+                                                <th>::IPAddress::</th>
+                                                <th>::Port::</th>
+                                                <th class="text-right">::WA_Title_Buffered::</th>
+                                                <th class="text-right">::WA_Title_Sent::</th>
+                                                <th class="text-right">::WA_Title_Discarded::</th>
+                                            </tr>
                                             </thead>
                                             <tbody></tbody>
                                         </table>
@@ -116,6 +145,9 @@
                     // Feed fields
                     var _FeedTableBody = $('tbody', '#feeds-table');
 
+                    // Rebroadcast server fields
+                    var _RebroadcastersBody = $('tbody', '#rebroadcasters-table');
+
                     // UPnP fields
                     var _UPnpEnabled = false;
                     var _UPnpRouterPresent = false;
@@ -156,6 +188,7 @@
                     this.showContent = function(data)
                     {
                         refreshFeeds(data);
+                        refreshRebroadcasters(data);
                         refreshUpnp(data);
                         refreshAddresses(data);
                         refreshVersionCheck(data);
@@ -172,6 +205,21 @@
                                 .append($('<td />').text(feed.BadMsgs).addClass('text-right'))
                                 .append($('<td />').text(feed.Tracked).addClass('text-right'));
                             _FeedTableBody.append(row);
+                        });
+                    }
+
+                    function refreshRebroadcasters(data)
+                    {
+                        _RebroadcastersBody.empty();
+                        $.each(data.Rebroadcasters, function(/** number */ idx, /** VRS_WEBADMIN_VIEWDATA_REBROADCAST_SERVER_CONNECTION */ rebroadcaster) {
+                            var row = $('<tr />')
+                                    .append($('<td />').text(rebroadcaster.Name))
+                                    .append($('<td />').text(rebroadcaster.RemoteAddr + ':' + rebroadcaster.RemotePort))
+                                    .append($('<td />').text(rebroadcaster.LocalPort))
+                                    .append($('<td />').text(VRS.stringUtility.formatNumber(rebroadcaster.Buffered, '0,000')).addClass('text-right'))
+                                    .append($('<td />').text(VRS.stringUtility.formatNumber(rebroadcaster.Written, '0,000')).addClass('text-right'))
+                                    .append($('<td />').text(VRS.stringUtility.formatNumber(rebroadcaster.Discarded, '0,000')).addClass('text-right'));
+                            _RebroadcastersBody.append(row);
                         });
                     }
 

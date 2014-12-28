@@ -693,11 +693,6 @@ namespace VirtualRadar.WinForms
             Close();
         }
 
-        private void timerRefresh_Tick(object sender, EventArgs e)
-        {
-            OnRefreshTimerTicked(EventArgs.Empty);
-        }
-
         private void rebroadcastStatusControl_ShowRebroadcastServersConfigurationClicked(object sender, EventArgs e)
         {
             ShowSettingsConfigurationUI(Strings.RebroadcastServersTitle, null);
