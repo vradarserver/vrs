@@ -389,6 +389,7 @@
     <Compile Include="View\NamespaceDoc.cs" />
     <Compile Include="View\ReceiverClass.cs" />
     <Compile Include="View\SdrDecoder.cs" />
+    <Compile Include="View\ServerRequest.cs" />
     <Compile Include="View\ValidationField.cs" />
     <Compile Include="View\ValidationResult.cs" />
     <Compile Include="View\ValidationResults.cs" />

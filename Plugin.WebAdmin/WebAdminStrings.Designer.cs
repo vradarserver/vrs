@@ -97,6 +97,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Web server.
+        /// </summary>
+        public static string WA_Label_WebServer {
+            get {
+                return ResourceManager.GetString("WA_Label_WebServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logout.
         /// </summary>
         public static string WA_Logout {

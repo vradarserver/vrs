@@ -233,6 +233,15 @@ namespace VirtualRadar.Headless.View
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="serverRequests"></param>
+        public void ShowServerRequests(ServerRequest[] serverRequests)
+        {
+            ;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="feed"></param>
         public void ShowFeedConnectionStatus(FeedStatus feed)
         {
@@ -244,17 +253,6 @@ namespace VirtualRadar.Headless.View
         /// </summary>
         /// <param name="connections"></param>
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)
-        {
-            ;
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="remoteEndPoint"></param>
-        /// <param name="url"></param>
-        /// <param name="bytesSent"></param>
-        public void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent)
         {
             ;
         }

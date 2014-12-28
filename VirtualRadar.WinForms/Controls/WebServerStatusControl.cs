@@ -17,6 +17,7 @@ using System.Net;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
 using VirtualRadar.Localisation;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -357,14 +358,12 @@ namespace VirtualRadar.WinForms.Controls
 
         #region ShowWebRequestHasBeenServiced
         /// <summary>
-        /// Reports to the user that a web request has been serviced. This is thread safe.
+        /// Shows the current server requests to the user.
         /// </summary>
-        /// <param name="remoteEndPoint"></param>
-        /// <param name="url"></param>
-        /// <param name="bytesSent"></param>
-        public void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent)
+        /// <param name="serverRequests"></param>
+        public void ShowServerRequests(ServerRequest[] serverRequests)
         {
-            webServerUserList.UpdateEntry(remoteEndPoint, DateTime.Now, url, bytesSent);
+            webServerUserList.ShowServerRequests(serverRequests);
         }
         #endregion
 

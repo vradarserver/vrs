@@ -316,6 +316,25 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
+        #region ShowServerRequests
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="serverRequests"></param>
+        public void ShowServerRequests(ServerRequest[] serverRequests)
+        {
+            if(InvokeRequired) {
+                try {
+                    BeginInvoke(new MethodInvoker(() => { ShowServerRequests(serverRequests); }));
+                } catch(InvalidOperationException) {
+                    ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
+                }
+            } else {
+                webServerStatusControl.ShowServerRequests(serverRequests);
+            }
+        }
+        #endregion
+
         #region ShowFeeds, UpdateFeedCounters, ShowFeedConnectionStatus
         /// <summary>
         /// See interface docs.
@@ -392,17 +411,6 @@ namespace VirtualRadar.WinForms
         public void ShowManualVersionCheckResult(bool newVersionAvailable)
         {
             MessageBox.Show(newVersionAvailable ? Strings.LaterVersionAvailable : Strings.LatestVersion, Strings.VersionCheckResult);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="remoteEndPoint"></param>
-        /// <param name="url"></param>
-        /// <param name="bytesSent"></param>
-        public void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent)
-        {
-            webServerStatusControl.ShowWebRequestHasBeenServiced(remoteEndPoint, url, bytesSent);
         }
 
         /// <summary>

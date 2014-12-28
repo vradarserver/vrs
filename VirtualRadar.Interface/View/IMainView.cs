@@ -134,6 +134,12 @@ namespace VirtualRadar.Interface.View
         void ShowManualVersionCheckResult(bool newVersionAvailable);
 
         /// <summary>
+        /// Show a list of current requests to the user.
+        /// </summary>
+        /// <param name="serverRequests"></param>
+        void ShowServerRequests(ServerRequest[] serverRequests);
+
+        /// <summary>
         /// Updates the list of feeds shown to the user. Old feeds are removed, new ones added.
         /// </summary>
         /// <param name="feeds"></param>
@@ -156,14 +162,6 @@ namespace VirtualRadar.Interface.View
         /// </summary>
         /// <param name="connections"></param>
         void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections);
-
-        /// <summary>
-        /// Updates a display that shows the requests that the web server is responding to. 
-        /// </summary>
-        /// <param name="remoteEndPoint"></param>
-        /// <param name="url"></param>
-        /// <param name="bytesSent"></param>
-        void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent);
 
         /// <summary>
         /// Opens the configuration GUI, optionally jumping to a specific page / tab etc. or to the
