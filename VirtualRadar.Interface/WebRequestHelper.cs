@@ -58,7 +58,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TResponse"></typeparam>
-        /// <param name="request"></param>
+        /// <param name="obj"></param>
         /// <param name="action"></param>
         /// <param name="suppressRepeat"></param>
         /// <returns></returns>

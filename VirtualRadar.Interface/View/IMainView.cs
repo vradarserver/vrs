@@ -111,11 +111,6 @@ namespace VirtualRadar.Interface.View
         /// Raised when the user has indicated that they want to put the server onto or take the server off the Internet.
         /// </summary>
         event EventHandler ToggleUPnpStatus;
-
-        /// <summary>
-        /// Raised on the GUI thread when it's time to refresh the display.
-        /// </summary>
-        event EventHandler RefreshTimerTicked;
         #endregion
 
         #region Methods

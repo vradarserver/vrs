@@ -65,7 +65,22 @@ VRS_WEBADMIN_VIEWDATA_FEEDSTATUS;
  * LocalRoot:                       string,
  * LanRoot:                         string,
  * PublicRoot:                      string,
- * Feeds:                           VRS_WEBADMIN_VIEWDATA_FEEDSTATUS[]
+ * Feeds:                           VRS_WEBADMIN_VIEWDATA_FEEDSTATUS[],
+ * Rebroadcasters:                  VRS_WEBADMIN_VIEWDATA_REBROADCAST_SERVER_CONNECTION[]
  * }} VRS_WEBADMIN_VIEWDATA_MAIN
  */
 VRS_WEBADMIN_VIEWDATA_MAIN;
+
+/**
+ * @typedef {{
+ * Id:                              number,
+ * Name:                            string,
+ * LocalPort:                       number,
+ * RemoteAddr:                      string,
+ * RemotePort:                      number,
+ * Buffered:                        number,
+ * Written:                         number,
+ * Discarded:                       number
+ * }} VRS_WEBADMIN_VIEWDATA_REBROADCAST_SERVER_CONNECTION
+ */
+VRS_WEBADMIN_VIEWDATA_REBROADCAST_SERVER_CONNECTION;

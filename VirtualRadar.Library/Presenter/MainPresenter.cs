@@ -169,7 +169,6 @@ namespace VirtualRadar.Library.Presenter
             View.ReconnectFeed += View_ReconnectFeed;
             View.ToggleServerStatus += View_ToggleServerStatus;
             View.ToggleUPnpStatus += View_ToggleUPnpStatus;
-            View.RefreshTimerTicked += View_RefreshTimerTicked;
         }
 
         /// <summary>
@@ -408,6 +407,8 @@ namespace VirtualRadar.Library.Presenter
         {
             UpdateFeedCounters();
             View.UpdateFeedCounters(GetFeedCounters());
+
+            DoDisplayRebroadcastServerConnections();
         }
 
         private void NewVersionChecker_NewVersionAvailable(object sender, EventArgs args)
@@ -458,11 +459,6 @@ namespace VirtualRadar.Library.Presenter
         {
             if(UPnpManager.PortForwardingPresent) UPnpManager.TakeServerOffInternet();
             else                                  UPnpManager.PutServerOntoInternet();
-        }
-
-        private void View_RefreshTimerTicked(object sender, EventArgs args)
-        {
-            DoDisplayRebroadcastServerConnections();
         }
 
         private void UPnpManager_StateChanged(object sender, EventArgs args)

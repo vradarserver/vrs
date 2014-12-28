@@ -138,11 +138,20 @@
   <data name="WA_Title_Bad" xml:space="preserve">
     <value>Bad</value>
   </data>
+  <data name="WA_Title_Buffered" xml:space="preserve">
+    <value>Buffered</value>
+  </data>
+  <data name="WA_Title_Discarded" xml:space="preserve">
+    <value>Discarded</value>
+  </data>
   <data name="WA_Title_Main" xml:space="preserve">
     <value>Main</value>
   </data>
   <data name="WA_Title_Messages" xml:space="preserve">
     <value>Messages</value>
+  </data>
+  <data name="WA_Title_Sent" xml:space="preserve">
+    <value>Sent</value>
   </data>
   <data name="WA_Title_Status" xml:space="preserve">
     <value>Status</value>

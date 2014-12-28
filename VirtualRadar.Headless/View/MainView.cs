@@ -159,11 +159,6 @@ namespace VirtualRadar.Headless.View
         /// See interface docs.
         /// </summary>
         public event EventHandler ToggleUPnpStatus;
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event EventHandler RefreshTimerTicked;
         #endregion
 
         #region ShowView
