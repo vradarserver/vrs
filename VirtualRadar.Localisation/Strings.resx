@@ -2432,4 +2432,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="Administrators" xml:space="preserve">
     <value>Administrators</value>
   </data>
+  <data name="NotYetKnown" xml:space="preserve">
+    <value>Not yet known</value>
+  </data>
 </root>

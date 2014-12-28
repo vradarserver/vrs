@@ -312,7 +312,7 @@ namespace VirtualRadar.WinForms.Controls
                           ShowNetworkAddress ? NetworkAddress :
                           InternetAddress;
 
-                if(String.IsNullOrEmpty(Address)) Address = "Not yet known";
+                if(String.IsNullOrEmpty(Address)) Address = Strings.NotYetKnown;
                 else {
                     string page = null;
                     if(ShowDesktopSite) page = "desktop.html";

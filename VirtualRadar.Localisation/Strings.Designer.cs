@@ -2938,6 +2938,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not yet known.
+        /// </summary>
+        public static string NotYetKnown {
+            get {
+                return ResourceManager.GetString("NotYetKnown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK {
