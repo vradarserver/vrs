@@ -167,9 +167,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.webServerUserList.Location = new System.Drawing.Point(7, 73);
-            this.webServerUserList.MillisecondsBeforeDelete = 60000;
             this.webServerUserList.Name = "webServerUserList";
-            this.webServerUserList.ShowPortNumber = false;
             this.webServerUserList.Size = new System.Drawing.Size(644, 279);
             this.webServerUserList.TabIndex = 2;
             // 

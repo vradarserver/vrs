@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using InterfaceFactory;
@@ -33,6 +34,11 @@ namespace VirtualRadar.Library.Presenter
     class MainPresenter : IMainPresenter
     {
         #region Fields
+        /// <summary>
+        /// The number of milliseconds to show a remote endpoint for before removing it.
+        /// </summary>
+        private const int ServerRequestMillisecondsBeforeDelete = 60000;
+
         /// <summary>
         /// The object that manages the clock for us.
         /// </summary>
@@ -82,6 +88,16 @@ namespace VirtualRadar.Library.Presenter
         /// The object that helps assigning values to <see cref="FeedStatus"/> objects.
         /// </summary>
         private ViewDtoHelper<FeedStatus> _FeedStatusHelper = new ViewDtoHelper<FeedStatus>((r,v) => r.DataVersion = v);
+
+        /// <summary>
+        /// A list of current connections to the web server.
+        /// </summary>
+        private List<ServerRequest> _ServerRequests = new List<ServerRequest>();
+
+        /// <summary>
+        /// A spin lock that protects access to the <see cref="_ServerRequests"/> add / remove / find operations.
+        /// </summary>
+        private SpinLock _ServerRequestsSpinLock = new SpinLock();
         #endregion
 
         #region Properties
@@ -229,6 +245,12 @@ namespace VirtualRadar.Library.Presenter
             } catch(Exception ex) {
                 log.WriteLine("Caught exception while auto-saving polar plots: {0}", ex.ToString());
             }
+
+            try {
+                RemoveOldServerRequestEntries();
+            } catch(Exception ex) {
+                log.WriteLine("Caught exception while cleaning up server requests: {0}", ex);
+            }
         }
 
         private void PerformVersionCheck(Configuration configuration, DateTime now)
@@ -279,6 +301,69 @@ namespace VirtualRadar.Library.Presenter
         {
             var connections = _RebroadcastServerManager == null ? null : _RebroadcastServerManager.GetConnections();
             if(connections != null) View.ShowRebroadcastServerStatus(connections);
+        }
+        #endregion
+
+        #region ServerRequest - UpdateServerRequestEntry
+        /// <summary>
+        /// Called every time the web server sends a response to a request. Uses this information to update
+        /// the <see cref="_ServerRequests"/> list.
+        /// </summary>
+        /// <param name="remoteEndPoint"></param>
+        /// <param name="url"></param>
+        /// <param name="bytesSent"></param>
+        private void UpdateServerRequestEntry(IPEndPoint remoteEndPoint, string url, long bytesSent)
+        {
+            if(bytesSent > 0) {
+                ServerRequest serverRequest = null;
+                _ServerRequestsSpinLock.Lock();
+                try {
+                    serverRequest = _ServerRequests.FirstOrDefault(r => {
+                        return /* showPortNumber ? r.RemoteEndPoint.Equals(remoteEndPoint) :*/ r.RemoteEndPoint.Address.Equals(remoteEndPoint.Address);
+                    });
+                    if(serverRequest == null) {
+                        serverRequest = new ServerRequest() {
+                            RemoteEndPoint = remoteEndPoint,
+                        };
+                        _ServerRequests.Add(serverRequest);
+                    }
+                } finally {
+                    _ServerRequestsSpinLock.Unlock();
+                }
+
+                ++serverRequest.DataVersion;
+                serverRequest.LastRequest = _Clock.UtcNow;
+                serverRequest.BytesSent += bytesSent;
+                serverRequest.LastUrl = url;
+            }
+        }
+
+        /// <summary>
+        /// Deletes server request entries that have not been updated within so-many milliseconds.
+        /// </summary>
+        private void RemoveOldServerRequestEntries()
+        {
+            _ServerRequestsSpinLock.Lock();
+            try {
+                var threshold = _Clock.UtcNow.AddMilliseconds(-ServerRequestMillisecondsBeforeDelete);
+                _ServerRequests.RemoveAll(r => r.LastRequest <= threshold);
+            } finally {
+                _ServerRequestsSpinLock.Unlock();
+            }
+        }
+
+        /// <summary>
+        /// Returns an array of all server request objects being held by the presenter.
+        /// </summary>
+        /// <returns></returns>
+        private ServerRequest[] GetServerRequests()
+        {
+            _ServerRequestsSpinLock.Lock();
+            try {
+                return _ServerRequests.ToArray();
+            } finally {
+                _ServerRequestsSpinLock.Unlock();
+            }
         }
         #endregion
 
@@ -405,6 +490,8 @@ namespace VirtualRadar.Library.Presenter
 
         private void HeartbeatService_FastTick(object sender, EventArgs args)
         {
+            View.ShowServerRequests(GetServerRequests());
+
             UpdateFeedCounters();
             View.UpdateFeedCounters(GetFeedCounters());
 
@@ -480,7 +567,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void WebServer_ResponseSent(object sender, ResponseSentEventArgs args)
         {
-            View.ShowWebRequestHasBeenServiced(args.Request.RemoteEndPoint, args.UrlRequested, args.BytesSent);
+            UpdateServerRequestEntry(args.Request.RemoteEndPoint, args.UrlRequested, args.BytesSent);
         }
         #endregion
     }

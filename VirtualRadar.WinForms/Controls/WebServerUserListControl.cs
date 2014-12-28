@@ -13,10 +13,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WinForms.Controls
@@ -26,21 +28,6 @@ namespace VirtualRadar.WinForms.Controls
     /// </summary>
     public partial class WebServerUserListControl : BaseUserControl
     {
-        #region Private class - Details
-        /// <summary>
-        /// The information held against an entry on display
-        /// </summary>
-        class Details
-        {
-            public ListViewItem ListViewItem;
-            public IPEndPoint RemoteEndPoint;
-            public DateTime LastRequest;
-            public long BytesSent;
-            public string LastUrl;
-            public bool Changed;
-        }
-        #endregion
-
         #region Private class - Sorter
         /// <summary>
         /// Sorts the list view for us.
@@ -57,12 +44,11 @@ namespace VirtualRadar.WinForms.Controls
             public override IComparable GetRowValue(ListViewItem listViewItem)
             {
                 var result = base.GetRowValue(listViewItem);
-                var details = listViewItem.Tag as Details;
+                var details = listViewItem.Tag as ServerRequest;
                 if(details != null) {
                     var column = SortColumn ?? _Parent.columnHeaderAddress;
                     if(column == _Parent.columnHeaderAddress) {
-                        if(!_Parent.ShowPortNumber) result = new ByteArrayComparable(details.RemoteEndPoint.Address);
-                        else                        result = new ByteArrayComparable(details.RemoteEndPoint);
+                        result = new ByteArrayComparable(details.RemoteEndPoint.Address);
                     }
                     else if(column == _Parent.columnHeaderBytesSent)    result = details.BytesSent;
                     else if(column == _Parent.columnHeaderLastRequest)  result = details.LastRequest;
@@ -75,28 +61,9 @@ namespace VirtualRadar.WinForms.Controls
 
         #region Fields
         /// <summary>
-        /// A list of every entry on display.
-        /// </summary>
-        private List<Details> _Entries = new List<Details>();
-
-        /// <summary>
         /// The object that's sorting the list view for us.
         /// </summary>
         private Sorter _Sorter;
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Gets and sets a value indicating that the port number should be shown.
-        /// </summary>
-        [DefaultValue(true)]
-        public bool ShowPortNumber { get; set; }
-
-        /// <summary>
-        /// Gets and sets the number of milliseconds an entry can be shown for before it is removed (0 indicates
-        /// that no automatic deletion of entries is to be performed).
-        /// </summary>
-        public int MillisecondsBeforeDelete { get; set; }
         #endregion
 
         #region Constructor
@@ -106,106 +73,12 @@ namespace VirtualRadar.WinForms.Controls
         public WebServerUserListControl() : base()
         {
             InitializeComponent();
-            ShowPortNumber = true;
             _Sorter = new Sorter(this);
             listView.ListViewItemSorter = _Sorter;
         }
         #endregion
 
-        #region UpdateEntry
-        /// <summary>
-        /// Tells the control about a web request that needs to be displayed / updated.
-        /// </summary>
-        /// <param name="remoteEndPoint"></param>
-        /// <param name="requestTime"></param>
-        /// <param name="url"></param>
-        /// <param name="bytesSent"></param>
-        /// <remarks>
-        /// This does not update the GUI, it just records information about the request. The GUI is updated on a timer.
-        /// </remarks>
-        public void UpdateEntry(IPEndPoint remoteEndPoint, DateTime requestTime, string url, long bytesSent)
-        {
-            if(bytesSent > 0) {
-                lock(_Entries) {
-                    Details details = _Entries.Find(delegate(Details listDetails) {
-                        var otherEndPoint = listDetails.RemoteEndPoint;
-                        return ShowPortNumber ? remoteEndPoint.Equals(otherEndPoint) : remoteEndPoint.Address.Equals(otherEndPoint.Address);
-                    });
-                    if(details == null) {
-                        details = new Details() { RemoteEndPoint = remoteEndPoint };
-                        _Entries.Add(details);
-                    }
-                    details.LastRequest = requestTime;
-                    details.BytesSent += bytesSent;
-                    details.LastUrl = url;
-                    details.Changed = true;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Deletes entries that have not been updated within so-many milliseconds.
-        /// </summary>
-        /// <param name="milliseconds"></param>
-        private void RemoveOldEntries(int milliseconds)
-        {
-            lock(_Entries) {
-                List<int> removeList = null;
-                DateTime threshold = DateTime.Now.AddMilliseconds(-milliseconds);
-
-                for(int c = _Entries.Count - 1;c >= 0;c--) {
-                    if(_Entries[c].LastRequest <= threshold) {
-                        if(removeList == null) removeList = new List<int>();
-                        removeList.Add(c);
-                    }
-                }
-
-                if(removeList != null) {
-                    foreach(int index in removeList) {
-                        Details details = _Entries[index];
-                        if(details.ListViewItem != null) listView.Items.Remove(details.ListViewItem);
-                        _Entries.RemoveAt(index);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region Events consumed
-        /// <summary>
-        /// Raised when the timer has elapsed. Updates the display.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void timerRefresh_Tick(object sender, EventArgs e)
-        {
-            timerRefresh.Stop();
-
-            if(MillisecondsBeforeDelete != 0) RemoveOldEntries(MillisecondsBeforeDelete);
-
-            lock(_Entries) {
-                foreach(Details details in _Entries) {
-                    if(details.ListViewItem == null) {
-                        var address = ShowPortNumber ? details.RemoteEndPoint.ToString() : details.RemoteEndPoint.Address.ToString();
-                        details.ListViewItem = new ListViewItem(new string[] { address, "", "", "" });
-                        if(listView.Items.Count > 0) listView.Items.Insert(0, details.ListViewItem);
-                        else                         listView.Items.Add(details.ListViewItem);
-                    }
-
-                    if(details.Changed) {
-                        details.ListViewItem.SubItems[1].Text = details.LastRequest.ToString("G");
-                        details.ListViewItem.SubItems[2].Text = details.BytesSent.ToString("N0");
-                        details.ListViewItem.SubItems[3].Text = details.LastUrl;
-                        details.Changed = false;
-                    }
-                }
-
-                listView.Sort();
-            }
-
-            timerRefresh.Start();
-        }
-
+        #region OnLoad
         /// <summary>
         /// Called after the control has loaded but before it's displayed.
         /// </summary>
@@ -217,6 +90,68 @@ namespace VirtualRadar.WinForms.Controls
                 Localise.Control(this);
                 _Sorter.RefreshSortIndicators();
             }
+        }
+        #endregion
+
+        #region ShowServerRequests
+        /// <summary>
+        /// Shows the server requests to the user.
+        /// </summary>
+        /// <param name="serverRequests"></param>
+        public void ShowServerRequests(ServerRequest[] serverRequests)
+        {
+            var unhandledRequests = new LinkedList<ServerRequest>(serverRequests.Select(r => r.Clone() as ServerRequest));
+            Func<ServerRequest, LinkedListNode<ServerRequest>> findUnhandledRequestNode = r => {
+                LinkedListNode<ServerRequest> findResult = null;
+                for(var node = unhandledRequests.First;node != null;node = node.Next) {
+                    if(node.Value.RemoteAddress == r.RemoteAddress) {
+                        findResult = node;
+                        break;
+                    }
+                }
+
+                return findResult;
+            };
+
+            foreach(var listViewItem in listView.Items.OfType<ListViewItem>().ToArray()) {
+                var listRequest = listViewItem.Tag as ServerRequest;
+                if(listRequest != null) {
+                    var unhandledNode = findUnhandledRequestNode(listRequest);
+                    if(unhandledNode == null) {
+                        listView.Items.Remove(listViewItem);
+                    } else {
+                        var request = unhandledNode.Value;
+                        unhandledRequests.Remove(unhandledNode);
+                        if(request.DataVersion != listRequest.DataVersion) {
+                            listViewItem.Tag = request;
+                            RefreshListViewItem(listViewItem);
+                        }
+                    }
+                }
+            }
+
+            for(var newNode = unhandledRequests.First;newNode != null;newNode = newNode.Next) {
+                var request = newNode.Value;
+                var listViewItem = new ListViewItem() {
+                    Tag = request,
+                };
+                RefreshListViewItem(listViewItem);
+
+                listView.Items.Add(listViewItem);
+            }
+
+            listView.Sort();
+        }
+
+        private void RefreshListViewItem(ListViewItem listViewItem)
+        {
+            var request = listViewItem.Tag as ServerRequest;
+
+            while(listViewItem.SubItems.Count < 4) listViewItem.SubItems.Add("");
+            listViewItem.SubItems[0].Text = request.RemoteAddress;
+            listViewItem.SubItems[1].Text = request.LastRequest.ToString("G");
+            listViewItem.SubItems[2].Text = request.BytesSent.ToString("N0");
+            listViewItem.SubItems[3].Text = request.LastUrl;
         }
         #endregion
     }

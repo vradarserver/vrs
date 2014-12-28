@@ -75,6 +75,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #endregion
 
         #region Extra properties
+        public ServerRequest[] Requests { get; set; }
+
         public FeedStatus[] Feeds { get; set; }
 
         public RebroadcastServerConnection[] Rebroadcasters { get; set; }
@@ -125,6 +127,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             ;
         }
 
+        public void ShowServerRequests(ServerRequest[] serverRequests)
+        {
+            Requests = serverRequests.Select(r => r.Clone() as ServerRequest).OrderBy(r => r.RemoteAddress).ToArray();
+        }
+
         public void ShowFeeds(FeedStatus[] feeds)
         {
             Feeds = feeds.Select(r => r.Clone() as FeedStatus).OrderBy(r => r.Name).ToArray();
@@ -145,11 +152,6 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)
         {
             Rebroadcasters = connections.OrderBy(r => r.Name).ToArray();
-        }
-
-        public void ShowWebRequestHasBeenServiced(IPEndPoint remoteEndPoint, string url, long bytesSent)
-        {
-            ;
         }
 
         public void ShowSettingsConfigurationUI(string openOnPageTitle, object openOnConfigurationObject)
