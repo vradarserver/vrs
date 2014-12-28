@@ -58,5 +58,12 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="kbLength">The number of kilobytes to preserve at the end of the file.</param>
         void Truncate(int kbLength);
+
+        /// <summary>
+        /// Returns the content of the log as an array of lines, optionally truncated to the last so-many lines.
+        /// </summary>
+        /// <param name="lines">The number of tail lines to return or 0 to return all of them.</param>
+        /// <returns></returns>
+        string[] GetContent(int lines);
     }
 }

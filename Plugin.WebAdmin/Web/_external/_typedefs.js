@@ -11,7 +11,6 @@ VRS_WEBADMIN_SITENAVIGATION_PAGE;
 /**
  * @typedef {{
  * pageUrl:         string,
- * pageId:          string,
  * jsonUrl:         string,
  * refreshPeriod:   number
  * }} VRS_WEBADMIN_VIEW_SETTINGS
@@ -52,6 +51,14 @@ VRS_WEBADMIN_VIEWDATA_ABOUT;
  * }} VRS_WEBADMIN_VIEWDATA_FEEDSTATUS
  */
 VRS_WEBADMIN_VIEWDATA_FEEDSTATUS;
+
+/**
+ * @extends VRS_WEBADMIN_VIEWDATA_BASEVIEW
+ * @typedef {{
+ * LogLines:                        string[]
+ * }} VRS_WEBADMIN_VIEWDATA_ABOUT
+ */
+VRS_WEBADMIN_VIEWDATA_LOG;
 
 /**
  * @extends VRS_WEBADMIN_VIEWDATA_BASEVIEW

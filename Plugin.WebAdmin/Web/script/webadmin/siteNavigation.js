@@ -33,6 +33,7 @@
          */
         var _Pages = [
             { pageUrl: 'Index.html', menuTitle: VRS.$$.WA_Title_Main },
+            { pageUrl: 'Log.html',   menuTitle: VRS.$$.WA_Title_Log },
             { pageUrl: 'About.html', menuTitle: VRS.$$.WA_Title_About }
         ];
 

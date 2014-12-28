@@ -68,28 +68,31 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public virtual void SendData(RequestReceivedEventArgs args)
         {
+            string response = null;
+
             var eventName = (args.QueryString["eventName"] ?? "").Trim().ToLower();
+            var action = (args.QueryString["action"] ?? "").Trim().ToLower();
             if(eventName != "") {
-                var response = String.Format("{{\"EventName\":\"{0}\",\"Outcome\":\"{1}\"}}", eventName, IsRunning ? "RAISED" : "NOT RUNNING");
+                response = String.Format("{{\"EventName\":\"{0}\",\"Outcome\":\"{1}\"}}", eventName, IsRunning ? "RAISED" : "NOT RUNNING");
                 if(IsRunning) {
                     RaiseEventOnBackgroundThread(eventName, args.QueryString);
                 }
-                _Responder.SendText(args.Request, args.Response, response, Encoding.UTF8, MimeType.Json);
-            } else {
-                var action = (args.QueryString["action"] ?? "").Trim().ToLower();
+            } else if(action != "") {
                 if(action != "" && IsRunning) {
                     try {
-                        PerformAction(action, args.QueryString);
+                        var result = PerformAction(action, args.QueryString);
+                        if(result == null) response = String.Format("{{\"Action\":\"{0}\"}}", action);
+                        else               response = JsonConvert.SerializeObject(response);
                     } catch(Exception ex) {
                         var log = Factory.Singleton.Resolve<ILog>().Singleton;
                         log.WriteLine("Caught exception while processing action {0} for WebAdmin {1}: {2}", action, GetType().Name, ex);
                     }
                 }
-
-                var json = JsonConvert.SerializeObject(this);
-                _Responder.SendText(args.Request, args.Response, json, Encoding.UTF8, MimeType.Json);
+            } else {
+                response = JsonConvert.SerializeObject(this);
             }
 
+            _Responder.SendText(args.Request, args.Response, response, Encoding.UTF8, MimeType.Json);
             args.Handled = true;
         }
 
@@ -114,9 +117,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             ;
         }
 
-        protected virtual void PerformAction(string action, NameValueCollection queryString)
+        protected virtual object PerformAction(string action, NameValueCollection queryString)
         {
-            ;
+            return null;
         }
     }
 }

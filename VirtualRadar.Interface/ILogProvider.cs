@@ -58,5 +58,13 @@ namespace VirtualRadar.Interface
         /// <param name="fullPath"></param>
         /// <param name="bytes"></param>
         void TruncateTo(string fullPath, int bytes);
+
+        /// <summary>
+        /// Returns the last so-many lines of log, or all of them if &lt; 1 lines are requested.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        string[] GetTail(string fullPath, int lines);
     }
 }
