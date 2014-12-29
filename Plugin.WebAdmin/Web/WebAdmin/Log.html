@@ -14,7 +14,13 @@
                         ::WA_Title_Log::
                     </h1>
 
+                    <p>
+                        <a id="scrollToEnd" href="#">::WA_ScrollToEnd::</a>
+                    </p>
                     <pre id="logLines"></pre>
+                    <p>
+                        <a id="scrollToTop" href="#">::WA_ScrollToTop::</a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -28,7 +34,29 @@
                 {
                     VRS.WebAdmin.View.call(this, settings);
 
+                    var _ScrollToEnd = $('#scrollToEnd');
+                    var _ScrollToTop = $('#scrollToTop');
                     var _LogLines = $('#logLines');
+
+                    /**
+                     * Hooks form elements.
+                     */
+                    this.hookEvents = function()
+                    {
+                        _ScrollToEnd.on('click', function() {
+                            $('html, body').animate({
+                                scrollTop: $(document).height()
+                            }, 'fast');
+                            return false;
+                        });
+
+                        _ScrollToTop.on('click', function() {
+                            $('html, body').animate({
+                                scrollTop: 0
+                            }, 'fast');
+                            return false;
+                        });
+                    };
 
                     /**
                      * Shows the content sent from the server.
