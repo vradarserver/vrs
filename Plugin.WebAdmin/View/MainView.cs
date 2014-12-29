@@ -111,6 +111,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #region Ctors
         public MainView(IUniversalPlugAndPlayManager uPnpManager, ISimpleAircraftList flightSimulatorXAircraftList)
         {
+            Requests = new ServerRequest[0];
+            Feeds = new FeedStatus[0];
+            Rebroadcasters = new RebroadcastServerConnection[0];
+
             _UPnpManager = uPnpManager;
             _FlightSimulatorXAircraftList = flightSimulatorXAircraftList;
         }

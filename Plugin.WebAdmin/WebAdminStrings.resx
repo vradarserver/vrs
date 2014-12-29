@@ -150,6 +150,12 @@
   <data name="WA_Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="WA_ScrollToEnd" xml:space="preserve">
+    <value>Scroll to end</value>
+  </data>
+  <data name="WA_ScrollToTop" xml:space="preserve">
+    <value>Scroll to top</value>
+  </data>
   <data name="WA_Title_About" xml:space="preserve">
     <value>About</value>
   </data>

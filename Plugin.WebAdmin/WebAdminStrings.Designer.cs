@@ -160,6 +160,24 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scroll to end.
+        /// </summary>
+        public static string WA_ScrollToEnd {
+            get {
+                return ResourceManager.GetString("WA_ScrollToEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll to top.
+        /// </summary>
+        public static string WA_ScrollToTop {
+            get {
+                return ResourceManager.GetString("WA_ScrollToTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
         public static string WA_Title_About {
