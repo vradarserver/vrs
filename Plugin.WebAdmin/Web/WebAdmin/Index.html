@@ -36,7 +36,7 @@
                                             <thead>
                                             <tr>
                                                 <th class="hide">ID</th>
-                                                <th class="thin-column"></th>   <!-- cog icon -->
+                                                <th class="thin-column"></th>   <!-- button column -->
                                                 <th>::NameTitle::</th>
                                                 <th>::WA_Title_Status::</th>
                                                 <th class="text-right">::WA_Title_Messages::</th>
@@ -291,8 +291,9 @@
                                 { addJQuery: function(/** jQuery */ cell, /** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ feed)
                                     {
                                         $('<button />')
+                                            .append($('<span />').attr('class', 'glyphicon glyphicon-cog'))
                                             .attr('type', 'button')
-                                            .attr('class', 'btn btn-primary')
+                                            .attr('class', 'btn btn-primary btn-xs')
                                             .attr('data-toggle', 'modal')
                                             .attr('data-target', '#' + _FeedsModal.attr('id'))
                                             .attr('data-vrswa-feedid', feed.Id)
@@ -303,7 +304,7 @@
                                 { getText: function(r) { return VRS.stringUtility.formatNumber(r.Msgs, '0,000'); }, hasChanged: function(c,p) { return c.Msgs !== p.Msgs; }, getClasses: function() { return 'text-right'; } },
                                 { getText: function(r) { return VRS.stringUtility.formatNumber(r.BadMsgs, '0,000'); }, hasChanged: function(c,p) { return c.BadMsgs !== p.BadMsgs; }, getClasses: function() { return 'text-right'; } },
                                 { getText: function(r) { return VRS.stringUtility.formatNumber(r.Tracked, '0,000'); }, hasChanged: function(c,p) { return c.Tracked !== p.Tracked; }, getClasses: function() { return 'text-right'; } }
-                            ],
+                            ]
                         });
                     }
 
