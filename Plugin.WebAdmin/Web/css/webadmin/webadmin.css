@@ -6,6 +6,10 @@
 .thin-column {
     width: 1px;
 }
+
+.clickable {
+    cursor: pointer;
+}
 /*endregion */
 
 /*region Sidebar */

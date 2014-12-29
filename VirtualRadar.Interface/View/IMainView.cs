@@ -103,6 +103,11 @@ namespace VirtualRadar.Interface.View
         event EventHandler<EventArgs<IFeed>> ReconnectFeed;
 
         /// <summary>
+        /// Raised when the user wants to reset the polar plot for a feed.
+        /// </summary>
+        event EventHandler<EventArgs<IFeed>> ResetPolarPlot;
+
+        /// <summary>
         /// Raised when the user has indicated that they want to toggle the server's online status.
         /// </summary>
         event EventHandler ToggleServerStatus;

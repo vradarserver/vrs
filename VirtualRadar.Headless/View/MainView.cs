@@ -153,6 +153,11 @@ namespace VirtualRadar.Headless.View
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public event EventHandler<EventArgs<IFeed>> ResetPolarPlot;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler ToggleServerStatus;
 
         /// <summary>

@@ -183,6 +183,7 @@ namespace VirtualRadar.Library.Presenter
 
             View.CheckForNewVersion += View_CheckForNewVersion;
             View.ReconnectFeed += View_ReconnectFeed;
+            View.ResetPolarPlot += View_ResetPolarPlot;
             View.ToggleServerStatus += View_ToggleServerStatus;
             View.ToggleUPnpStatus += View_ToggleUPnpStatus;
         }
@@ -535,6 +536,18 @@ namespace VirtualRadar.Library.Presenter
                     View.BubbleExceptionToGui(ex);
                 }
             });
+        }
+
+        void View_ResetPolarPlot(object sender, EventArgs<IFeed> args)
+        {
+            var feed = args.Value;
+            if(feed != null) {
+                var aircraftList = feed.AircraftList;
+                var polarPlotter = aircraftList == null ? null : aircraftList.PolarPlotter;
+                if(polarPlotter != null) {
+                    polarPlotter.ClearPolarPlots();
+                }
+            }
         }
 
         private void View_ToggleServerStatus(object sender, EventArgs args)

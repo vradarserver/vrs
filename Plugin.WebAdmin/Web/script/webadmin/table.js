@@ -36,9 +36,11 @@
             var records = recordCollection.getCurrentRecords();
             var cellDefs = params.cellDefs || [];
             var idCellIndex = params.idCellIndex === undefined ? 0 : params.idCellIndex;
+            var hookNewRow = params.hookNewRow || function() {;};
+            var unhookOldRow = params.unhookOldRow || function() {;};
 
-            addOrOverwriteRowsForRecords(records, cellDefs, tableBody, recordCollection, idCellIndex);
-            removeUnusedRowsForRecords(records, cellDefs, tableBody);
+            addOrOverwriteRowsForRecords(records, cellDefs, tableBody, recordCollection, idCellIndex, hookNewRow, unhookOldRow);
+            removeUnusedRowsForRecords(records, cellDefs, tableBody, unhookOldRow);
         };
 
         /**
@@ -46,16 +48,18 @@
          * @param {object[]}                                records
          * @param {VRS_WEBADMIN_TABLE_CELL_PROPERTIES[]}    cellDefs
          * @param {jQuery}                                  tableBody
+         * @param {function(jQuery)}                        unhookOldRow
          */
-        function removeUnusedRowsForRecords(records, cellDefs, tableBody)
+        function removeUnusedRowsForRecords(records, cellDefs, tableBody, unhookOldRow)
         {
             var tableRows = tableBody[0].rows;
             var recordCount = records.length;
 
             for(var rowCount = tableRows.length;rowCount > recordCount;--rowCount) {
-                var rowElement = tableRows[rowCount - 1];
-                unhookRowEventHandlers(rowElement);
-                $(rowElement).remove();
+                var row = $(tableRows[rowCount - 1]);
+
+                unhookOldRow(row);
+                row.remove();
             }
         }
 
@@ -66,8 +70,10 @@
          * @param {jQuery}                                  tableBody
          * @param {VRS.WebAdmin.RecordCollection}           recordCollection
          * @param {number}                                  idCellIndex
+         * @param {function(jQuery, object)}                hookNewRow
+         * @param {function(jQuery)}                        unhookOldRow
          */
-        function addOrOverwriteRowsForRecords(records, cellDefs, tableBody, recordCollection, idCellIndex)
+        function addOrOverwriteRowsForRecords(records, cellDefs, tableBody, recordCollection, idCellIndex, hookNewRow, unhookOldRow)
         {
             var tableRows = tableBody[0].rows;
             var length = records.length;
@@ -81,6 +87,7 @@
                     tableRowElement = appendRow(tableBody, countCells);
                     firstApplicationOfRecordToRow = true;
                 }
+                var tableRowJQ = $(tableRowElement);
 
                 var previousRecord = null;
                 if(!firstApplicationOfRecordToRow) {
@@ -89,7 +96,7 @@
 
                     var idCell = $(tableRowElement.cells[idCellIndex]);
                     if(idCell.text() !== String(recordID)) {
-                        unhookRowEventHandlers(tableRowElement);
+                        unhookOldRow(tableRowJQ);
                         firstApplicationOfRecordToRow = true;
                     }
                 }
@@ -107,9 +114,13 @@
                         if(cellDef.getText) {
                             var text = cellDef.getText(record);
                             cell.text(text);
-                        } else {
+                        } else if(cellDef.getHtml) {
                             var html = cellDef.getHtml(record);
                             cell.html(html);
+                        } else if(cellDef.addJQuery) {
+                            cellDef.addJQuery(cell, record);
+                        } else {
+                            throw 'You must supply a method to fill the content of a cell';
                         }
 
                         if(cellDef.getClasses) {
@@ -120,11 +131,11 @@
                         if(j === idCellIndex) {
                             cell.removeClass('show').addClass('hide');
                         }
-
-                        if(firstApplicationOfRecordToRow && cellDef.hookCell) {
-                            cellDef.hookCell(cell);
-                        }
                     }
+                }
+
+                if(firstApplicationOfRecordToRow) {
+                    hookNewRow(tableRowJQ, record);
                 }
             }
         }
@@ -144,21 +155,6 @@
             tableBody.append(rowJQ);
 
             return rowJQ[0];
-        }
-
-        /**
-         * Unhooks all event handlers on the row.
-         * @param {HTMLTableRowElement} tableRowElement
-         */
-        function unhookRowEventHandlers(tableRowElement)
-        {
-            var length = tableRowElement.cells.length;
-            for(var i = 0;i < length;++i) {
-                var cell = $(tableRowElement.cells[i]);
-                cell.off();
-            }
-
-            $(tableRowElement).off();
         }
     };
     VRS.WebAdmin.tableUtility = new VRS.WebAdmin.TableUtility();

@@ -62,6 +62,7 @@
                                             <thead>
                                                 <tr>
                                                     <th class="hide">ID</th>
+                                                    <th class="thin-column"></th>   <!-- cog icon -->
                                                     <th>::NameTitle::</th>
                                                     <th>::WA_Title_Status::</th>
                                                     <th class="text-right">::WA_Title_Messages::</th>
@@ -161,6 +162,28 @@
                     </div>
                 </div>
             </div>
+
+            <div id="feeds-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feeds-modal-label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 id="feeds-modal-label" class="modal-title">Title goes here</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                <button id="feed-reset-polarplot" type="button" class="btn btn-danger">::WA_Label_ResetPolarPlot::</button>
+                            </p>
+                            <p>
+                                <button id="feed-reconnect" type="button" class="btn btn-danger">::WA_Label_Reconnect::</button>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script type="text/javascript">
@@ -182,9 +205,12 @@
 
                     // Feed fields
                     var _FeedTableBody = $('tbody', '#feeds-table');
+                    var _FeedsModal = $('#feeds-modal');
                     var _Feeds = new VRS.WebAdmin.RecordCollection({
                         getId: function(/** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ record) { return record.Id; }
                     });
+                    var _FeedReconnect = $('#feed-reconnect');
+                    var _FeedResetPolarPlot = $('#feed-reset-polarplot');
 
                     // Rebroadcast server fields
                     var _RebroadcastersBody = $('tbody', '#rebroadcasters-table');
@@ -212,6 +238,9 @@
                         _UpnpToggle.on('click', function() { that.raiseViewEventInBackground('toggle-upnp-status'); });
                         _AddressPerspective.on('change', function() { showAddress(); });
                         _AddressPage.on('change', function() { showAddress(); });
+                        _FeedsModal.on('show.bs.modal', function(event) { feedsModal_showClicked(event); });
+                        _FeedReconnect.on('click', function() { reconnectFeed(_FeedsModal); });
+                        _FeedResetPolarPlot.on('click', function() { resetFeedPolarPlot(_FeedsModal); });
                     };
 
                     /**
@@ -259,13 +288,69 @@
                             idCellIndex: 0,
                             cellDefs: [
                                 { getText: function(r) { return r.Id; }, hasChanged: function(c,p) { return c.Id !== p.Id; } },
+                                { addJQuery: function(/** jQuery */ cell, /** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ feed)
+                                    {
+                                        $('<button />')
+                                            .attr('type', 'button')
+                                            .attr('class', 'btn btn-primary')
+                                            .attr('data-toggle', 'modal')
+                                            .attr('data-target', '#' + _FeedsModal.attr('id'))
+                                            .attr('data-vrswa-feedid', feed.Id)
+                                            .appendTo(cell);
+                                    }, hasChanged: function() { return false; }, getClasses: function() { return 'thin-column'; } },
                                 { getText: function(r) { return r.Name; }, hasChanged: function(c,p) { return c.Name !== p.Name; } },
                                 { getText: function(r) { return r.ConnDesc; }, hasChanged: function (c,p) { return c.ConnDesc !== p.ConnDesc; } },
                                 { getText: function(r) { return VRS.stringUtility.formatNumber(r.Msgs, '0,000'); }, hasChanged: function(c,p) { return c.Msgs !== p.Msgs; }, getClasses: function() { return 'text-right'; } },
                                 { getText: function(r) { return VRS.stringUtility.formatNumber(r.BadMsgs, '0,000'); }, hasChanged: function(c,p) { return c.BadMsgs !== p.BadMsgs; }, getClasses: function() { return 'text-right'; } },
                                 { getText: function(r) { return VRS.stringUtility.formatNumber(r.Tracked, '0,000'); }, hasChanged: function(c,p) { return c.Tracked !== p.Tracked; }, getClasses: function() { return 'text-right'; } }
-                            ]
+                            ],
                         });
+                    }
+
+                    function feedsModal_showClicked(/** Event */ event)
+                    {
+                        var title = '';
+                        var feedId = '';
+                        var isMerged = true;
+                        var hasPolarPlot = false;
+
+                        var triggerTarget = $(event.relatedTarget);
+                        if(triggerTarget.length !== 0) {
+                            var feedId = triggerTarget.data('vrswa-feedid');
+                            var feed = _Feeds.getCurrentRecordById(feedId);
+                            if(feed) {
+                                feedId = String(feed.Id);
+                                title = feed.Name;
+                                isMerged = feed.Merged;
+                                hasPolarPlot = feed.Polar;
+                            }
+                        }
+
+                        $('h4', _FeedsModal).text(title);
+                        _FeedReconnect
+                            .data('vrswa-feedid', feedId)
+                            .prop('disabled', isMerged);
+                        _FeedResetPolarPlot
+                            .data('vrswa-feedid', feedId)
+                            .prop('disabled', !hasPolarPlot);
+                    }
+
+                    function reconnectFeed(modal)
+                    {
+                        var feedId = _FeedReconnect.data('vrswa-feedid');
+                        if(feedId) {
+                            that.raiseViewEventInBackground('reconnect-feed', { feedId: feedId });
+                            if(modal) modal.modal('hide');
+                        }
+                    }
+
+                    function resetFeedPolarPlot(modal)
+                    {
+                        var feedId = _FeedResetPolarPlot.data('vrswa-feedid');
+                        if(feedId) {
+                            that.raiseViewEventInBackground('reset-polar-plot', { feedId: feedId });
+                            if(modal) modal.modal('hide');
+                        }
                     }
 
                     function refreshRebroadcasters(data)
