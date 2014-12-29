@@ -18,6 +18,9 @@
                             <a href="#" target="external">::LaterVersionAvailable::</a>
                         </div>
 
+                        <div id="failedPlugins" class="alert alert-info" role="alert" style="display:none">
+                        </div>
+
                         <div id="panel-requests" class="panel panel-default" role="tablist">
                             <div id="requests-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="requests-collapse">
                                 <h4>
@@ -32,8 +35,8 @@
                                         <table id="requests-table" class="table table-striped table-condensed">
                                             <thead>
                                                 <tr>
-                                                    <th>::IPAddress::</th>
-                                                    <th class="text-right">::BytesSent::</th>
+                                                    <th class="thin-column">::IPAddress::</th>
+                                                    <th class="thin-column text-right">::BytesSent::</th>
                                                     <th>::LastURL::</th>
                                                 </tr>
                                             </thead>
@@ -168,6 +171,11 @@
                     VRS.WebAdmin.View.call(this, settings);
                     var that = this;
 
+                    // Alert fields
+                    var _NewVersion = $('#newVersion');
+                    var _InvalidPlugins = $('#failedPlugins');
+                    var _InvalidPluginsCount = 0;
+
                     // Server request fields
                     var _RequestsTableBody = $('tbody', '#requests-table');
 
@@ -222,6 +230,7 @@
                         refreshUpnp(data);
                         refreshAddresses(data);
                         refreshVersionCheck(data);
+                        refreshInvalidPluginsCount(data);
                     };
 
                     function refreshRequests(data)
@@ -229,8 +238,8 @@
                         _RequestsTableBody.empty();
                         $.each(data.Requests, function(/** number */ idx, /** VRS_WEBADMIN_VIEWDATA_SERVER_REQUEST */ request) {
                             var row = $('<tr />')
-                                .append($('<td />').text(request.RemoteAddr))
-                                .append($('<td />').text(VRS.stringUtility.formatNumber(request.Bytes, '0,000')).addClass('text-right'))
+                                .append($('<td />').text(request.RemoteAddr).addClass('thin-column'))
+                                .append($('<td />').text(VRS.stringUtility.formatNumber(request.Bytes, '0,000')).addClass('thin-column text-right'))
                                 .append($('<td />').text(request.LastUrl));
                             _RequestsTableBody.append(row);
                         });
@@ -283,15 +292,11 @@
                                      !_UPnpActive ? '::UPnpInactive::' :
                                      '::UPnpActive::';
 
-                        _UpnpStatus.text(status);
-                        _UpnpToggle.text(_UPnpActive ? '::TakeOffInternet::' : '::PutOnInternet::');
+                        _UpnpStatus.html(status);
+                        _UpnpToggle.html(_UPnpActive ? '::TakeOffInternet::' : '::PutOnInternet::');
                         _UpnpToggle.prop('disabled', !(_UPnpEnabled && _UPnpRouterPresent));
                     }
 
-                    /**
-                     * Refreshes the server addresses.
-                     * @param data
-                     */
                     function refreshAddresses(data)
                     {
                         if(data.LocalRoot !== _AddressLocalRoot || data.LanRoot !== _AddressLanRoot || data.PublicRoot !== _AddressPublicRoot) {
@@ -302,9 +307,6 @@
                         }
                     }
 
-                    /**
-                     * Fills the address link.
-                     */
                     function showAddress()
                     {
                         var root;
@@ -317,28 +319,37 @@
                         var page = _AddressPage.val();
 
                         var url = '#';
-                        var text = '::NotYetKnown::';
+                        var html = '::NotYetKnown::';
                         if(root && page) {
                             url = root + page;
-                            text = url;
+                            html = url;
                         }
 
                         _AddressLink.attr('href', url);
-                        _AddressLink.text(text);
+                        _AddressLink.html(html);
                     }
 
-                    /**
-                     * Refreshes the display of the version check result.
-                     * @param data
-                     */
                     function refreshVersionCheck(data)
                     {
-                        var alert = $('#newVersion');
-                        var currentState = alert.is(':visible');
+                        var currentState = _NewVersion.is(':visible');
                         if(currentState !== data.NewVer) {
-                            var link = $('a', alert);
+                            var link = $('a', _NewVersion);
                             link.attr('href', data.NewVer ? data.NewVerUrl : '#');
-                            alert.toggle(data.NewVer);
+                            _NewVersion.toggle(data.NewVer);
+                        }
+                    }
+
+                    function refreshInvalidPluginsCount(data)
+                    {
+                        if(data.BadPlugins !== _InvalidPluginsCount) {
+                            _InvalidPluginsCount = data.BadPlugins;
+                            if(_InvalidPluginsCount === 0) _InvalidPlugins.hide();
+                            else {
+                                var html = VRS.stringUtility.format('::InvalidPluginsCount::', _InvalidPluginsCount);
+                                _InvalidPlugins.empty();
+                                $('<p />').html(text).appendTo(_InvalidPlugins);
+                                _InvalidPlugins.show();
+                            }
                         }
                     }
                 };

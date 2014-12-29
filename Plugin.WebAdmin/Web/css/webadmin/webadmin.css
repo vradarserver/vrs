@@ -2,6 +2,10 @@
 .page-header {
     margin-top: 0;
 }
+
+.thin-column {
+    width: 1px;
+}
 /*endregion */
 
 /*region Sidebar */
