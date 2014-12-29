@@ -27,62 +27,62 @@
     </div>
 
     <script type="text/javascript">
-            (function(VRS, $, undefined)
+        (function(VRS, $, undefined)
+        {
+            //region LogView
+            VRS.WebAdmin.LogView = function(settings)
             {
-                //region LogView
-                VRS.WebAdmin.LogView = function(settings)
+                VRS.WebAdmin.View.call(this, settings);
+
+                var _ScrollToEnd = $('#scrollToEnd');
+                var _ScrollToTop = $('#scrollToTop');
+                var _LogLines = $('#logLines');
+
+                /**
+                    * Hooks form elements.
+                    */
+                this.hookEvents = function()
                 {
-                    VRS.WebAdmin.View.call(this, settings);
+                    _ScrollToEnd.on('click', function() {
+                        $('html, body').animate({
+                            scrollTop: $(document).height()
+                        }, 'fast');
+                        return false;
+                    });
 
-                    var _ScrollToEnd = $('#scrollToEnd');
-                    var _ScrollToTop = $('#scrollToTop');
-                    var _LogLines = $('#logLines');
-
-                    /**
-                     * Hooks form elements.
-                     */
-                    this.hookEvents = function()
-                    {
-                        _ScrollToEnd.on('click', function() {
-                            $('html, body').animate({
-                                scrollTop: $(document).height()
-                            }, 'fast');
-                            return false;
-                        });
-
-                        _ScrollToTop.on('click', function() {
-                            $('html, body').animate({
-                                scrollTop: 0
-                            }, 'fast');
-                            return false;
-                        });
-                    };
-
-                    /**
-                     * Shows the content sent from the server.
-                     * @param {VRS_WEBADMIN_VIEWDATA_LOG} data
-                     */
-                    this.showContent = function(data)
-                    {
-                        _LogLines.empty();
-                        var length = data.LogLines.length;
-                        for(var i = 0;i < length;++i) {
-                            if(i) $('<br />').appendTo(_LogLines);
-                            $(document.createTextNode(data.LogLines[i]))
-                                .appendTo(_LogLines);
-                        }
-                    };
+                    _ScrollToTop.on('click', function() {
+                        $('html, body').animate({
+                            scrollTop: 0
+                        }, 'fast');
+                        return false;
+                    });
                 };
-                VRS.WebAdmin.LogView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
-                //endregion
 
-                var logView = new VRS.WebAdmin.LogView({
-                    pageUrl: 'Log.html',
-                    jsonUrl: 'Log.json',
-                    refreshPeriod: 0
-                });
-                logView.initialise();
-            }(window.VRS = window.VRS || {}, jQuery));
+                /**
+                    * Shows the content sent from the server.
+                    * @param {VRS_WEBADMIN_VIEWDATA_LOG} data
+                    */
+                this.showContent = function(data)
+                {
+                    _LogLines.empty();
+                    var length = data.LogLines.length;
+                    for(var i = 0;i < length;++i) {
+                        if(i) $('<br />').appendTo(_LogLines);
+                        $(document.createTextNode(data.LogLines[i]))
+                            .appendTo(_LogLines);
+                    }
+                };
+            };
+            VRS.WebAdmin.LogView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
+            //endregion
+
+            var logView = new VRS.WebAdmin.LogView({
+                pageUrl: 'Log.html',
+                jsonUrl: 'Log.json',
+                refreshPeriod: 0
+            });
+            logView.initialise();
+        }(window.VRS = window.VRS || {}, jQuery));
     </script>
 </body>
 </html>
