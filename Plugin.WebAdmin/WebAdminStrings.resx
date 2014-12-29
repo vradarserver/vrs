@@ -120,9 +120,6 @@
   <data name="Disabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
-  <data name="WA_EntireFile" xml:space="preserve">
-    <value>Entire file</value>
-  </data>
   <data name="WA_Home" xml:space="preserve">
     <value>Home</value>
   </data>
@@ -143,15 +140,6 @@
   </data>
   <data name="WA_Label_WebServer" xml:space="preserve">
     <value>Web server</value>
-  </data>
-  <data name="WA_Last100Lines" xml:space="preserve">
-    <value>Last 100 lines</value>
-  </data>
-  <data name="WA_Last200Lines" xml:space="preserve">
-    <value>Last 200 lines</value>
-  </data>
-  <data name="WA_Last50Lines" xml:space="preserve">
-    <value>Last 50 lines</value>
   </data>
   <data name="WA_Logout" xml:space="preserve">
     <value>Logout</value>
