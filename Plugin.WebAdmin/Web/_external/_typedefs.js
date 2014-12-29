@@ -2,11 +2,39 @@
 
 /**
  * @typedef {{
+ * getId:           function(object):*
+ * }} VRS_WEBADMIN_RECORDCOLLECTION_SETTINGS
+ */
+VRS_WEBADMIN_RECORDCOLLECTION_SETTINGS;
+
+/**
+ * @typedef {{
  * pageUrl:         string,
  * menuTitle:       string
  * }} VRS_WEBADMIN_SITENAVIGATION_PAGE
  */
 VRS_WEBADMIN_SITENAVIGATION_PAGE;
+
+/**
+ * @typedef {{
+ * getText:        [function(object):string]
+ * getHtml:        [function(object):string]
+ * getClasses:     [function(object):string]
+ * hasChanged:      function(object,object):boolean
+ * hookCell:       [function(jQuery)]
+ * }} VRS_WEBADMIN_TABLE_CELL_PROPERTIES
+ */
+VRS_WEBADMIN_TABLE_CELL_PROPERTIES;
+
+/**
+ * @typedef {{
+ * tableBody:       jQuery,
+ * records:         VRS.WebAdmin.RecordCollection,
+ * cellDefs:        VRS_WEBADMIN_TABLE_CELL_PROPERTIES[],
+ * idCellIndex:    [number]
+ * }} VRS_WEBADMIN_TABLE_COPYRECORDSTOTABLE_PARAMS
+ */
+VRS_WEBADMIN_TABLE_COPYRECORDSTOTABLE_PARAMS;
 
 /**
  * @typedef {{
