@@ -164,6 +164,7 @@ namespace VirtualRadar.WebSite
             var result = resourceString;
             if(result != null) {
                 result = HttpUtility.HtmlEncode(resourceString);
+                result = result.Replace("'", "&#39;");      // <-- not required for .NET 4, is required for .NET 3.5
                 result = result.Replace("\r\n", "<br />");
             }
 
