@@ -21,6 +21,36 @@
                         <div id="failedPlugins" class="alert alert-info" role="alert" style="display:none">
                         </div>
 
+                        <div id="panel-feeds" class="panel panel-default" role="tablist">
+                            <div id="feeds-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="feeds-collapse">
+                                <h4>
+                                    <a class="" data-toggle="collapse" data-target="#feeds-collapse" href="#feeds-collapse">
+                                        ::FeedStatus::
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="feeds-collapse" class="pabel-collapse collapse in" role="tabpanel" aria-labelledby="feeds-heading">
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table id="feeds-table" class="table table-striped table-condensed">
+                                            <thead>
+                                            <tr>
+                                                <th class="hide">ID</th>
+                                                <th class="thin-column"></th>   <!-- cog icon -->
+                                                <th>::NameTitle::</th>
+                                                <th>::WA_Title_Status::</th>
+                                                <th class="text-right">::WA_Title_Messages::</th>
+                                                <th class="text-right">::WA_Title_Bad::</th>
+                                                <th class="text-right">::WA_Title_Tracking::</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="panel-requests" class="panel panel-default" role="tablist">
                             <div id="requests-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="requests-collapse">
                                 <h4>
@@ -38,36 +68,6 @@
                                                     <th class="thin-column">::IPAddress::</th>
                                                     <th class="thin-column text-right">::BytesSent::</th>
                                                     <th>::LastURL::</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="panel-feeds" class="panel panel-default" role="tablist">
-                            <div id="feeds-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="feeds-collapse">
-                                <h4>
-                                    <a class="" data-toggle="collapse" data-target="#feeds-collapse" href="#feeds-collapse">
-                                        ::FeedStatus::
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="feeds-collapse" class="pabel-collapse collapse in" role="tabpanel" aria-labelledby="feeds-heading">
-                                <div class="panel-body">
-                                    <div class="table-responsive">
-                                        <table id="feeds-table" class="table table-striped table-condensed">
-                                            <thead>
-                                                <tr>
-                                                    <th class="hide">ID</th>
-                                                    <th class="thin-column"></th>   <!-- cog icon -->
-                                                    <th>::NameTitle::</th>
-                                                    <th>::WA_Title_Status::</th>
-                                                    <th class="text-right">::WA_Title_Messages::</th>
-                                                    <th class="text-right">::WA_Title_Bad::</th>
-                                                    <th class="text-right">::WA_Title_Tracking::</th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
