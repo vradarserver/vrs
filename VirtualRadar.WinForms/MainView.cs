@@ -217,6 +217,20 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public event EventHandler<EventArgs<IFeed>> ResetPolarPlot;
+
+        /// <summary>
+        /// Raises <see cref="ResetPolarPlot"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnResetPolarPlot(EventArgs<IFeed> args)
+        {
+            if(ResetPolarPlot != null) ResetPolarPlot(this, args);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler ToggleServerStatus;
 
         /// <summary>
@@ -659,7 +673,7 @@ namespace VirtualRadar.WinForms
         {
             var menuItem = (ToolStripItem)sender;
             var feed = GetFeedItemFeed(menuItem);
-            if(feed != null && feed.AircraftList != null && feed.AircraftList.PolarPlotter != null) feed.AircraftList.PolarPlotter.ClearPolarPlots();
+            if(feed != null) OnResetPolarPlot(new EventArgs<IFeed>(feed));
         }
 
         private void feedStatusControl_ReconnectFeedId(object sender, Controls.FeedIdEventArgs e)
@@ -677,7 +691,7 @@ namespace VirtualRadar.WinForms
         private void feedStatusControl_ResetPolarPlotter(object sender, Controls.FeedIdEventArgs e)
         {
             var feed = _Presenter.GetReceiverFeeds().FirstOrDefault(r => r.UniqueId == e.FeedId);
-            if(feed != null && feed.AircraftList != null && feed.AircraftList.PolarPlotter != null) feed.AircraftList.PolarPlotter.ClearPolarPlots();
+            if(feed != null) OnResetPolarPlot(new EventArgs<IFeed>(feed));
         }
 
         private void feedStatusControl_ConfigureFeed(object sender, Controls.FeedIdEventArgs e)

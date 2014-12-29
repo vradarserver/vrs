@@ -84,25 +84,31 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         #region Events exposed
         public event EventHandler CheckForNewVersion;
-        public void OnCheckForNewVersion(EventArgs args)
+        protected virtual void OnCheckForNewVersion(EventArgs args)
         {
             if(CheckForNewVersion != null) CheckForNewVersion(this, args);
         }
 
         public event EventHandler<EventArgs<IFeed>> ReconnectFeed;
-        public void OnReconnectFeed(EventArgs<IFeed> args)
+        protected virtual void OnReconnectFeed(EventArgs<IFeed> args)
         {
             if(ReconnectFeed != null) ReconnectFeed(this, args);
         }
 
+        public event EventHandler<EventArgs<IFeed>> ResetPolarPlot;
+        protected virtual void OnResetPolarPlot(EventArgs<IFeed> args)
+        {
+            if(ResetPolarPlot != null) ResetPolarPlot(this, args);
+        }
+
         public event EventHandler ToggleServerStatus;
-        public void OnToggleServerStatus(EventArgs args)
+        protected virtual void OnToggleServerStatus(EventArgs args)
         {
             if(ToggleServerStatus != null) ToggleServerStatus(this, args);
         }
 
         public event EventHandler ToggleUPnpStatus;
-        public void OnToggleUPnpStatus(EventArgs args)
+        protected virtual void OnToggleUPnpStatus(EventArgs args)
         {
             if(ToggleUPnpStatus != null) ToggleUPnpStatus(this, args);
         }
@@ -178,11 +184,34 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #region Actions and Events
         protected override void RaiseEvent(string eventName, NameValueCollection queryString)
         {
+            IFeed receiverFeed = null;
+
             switch(eventName) {
                 case "toggle-upnp-status":
                     OnToggleUPnpStatus(EventArgs.Empty);
                     break;
+                case "reconnect-feed":
+                    receiverFeed = ExtractReceiverFeedFromQueryString(queryString);
+                    if(receiverFeed != null) OnReconnectFeed(new EventArgs<IFeed>(receiverFeed));
+                    break;
+                case "reset-polar-plot":
+                    receiverFeed = ExtractReceiverFeedFromQueryString(queryString);
+                    if(receiverFeed != null) OnResetPolarPlot(new EventArgs<IFeed>(receiverFeed));
+                    break;
             }
+        }
+
+        protected IFeed ExtractReceiverFeedFromQueryString(NameValueCollection queryString)
+        {
+            IFeed result = null;
+
+            int feedId;
+            if(int.TryParse(queryString["feedid"], out feedId)) {
+                var feeds = _Presenter.GetReceiverFeeds();
+                result = feeds.FirstOrDefault(r => r.UniqueId == feedId);
+            }
+
+            return result;
         }
         #endregion
     }

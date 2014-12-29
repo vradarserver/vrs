@@ -100,7 +100,7 @@
             for(var i = 0;i < length;++i) {
                 var record = records[i];
                 var recordId = settings.getId(record);
-                if(recordId === id) {
+                if(recordId == id) {        // This needs to convert type, the ID could be an integer and it could be compared to a string
                     result = record;
                     break;
                 }

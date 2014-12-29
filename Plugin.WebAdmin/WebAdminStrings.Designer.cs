@@ -115,6 +115,24 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reconnect.
+        /// </summary>
+        public static string WA_Label_Reconnect {
+            get {
+                return ResourceManager.GetString("WA_Label_Reconnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset receiver range plot.
+        /// </summary>
+        public static string WA_Label_ResetPolarPlot {
+            get {
+                return ResourceManager.GetString("WA_Label_ResetPolarPlot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Web server.
         /// </summary>
         public static string WA_Label_WebServer {
