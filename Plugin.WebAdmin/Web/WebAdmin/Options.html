@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>::WA_Title_Options:: - ::WA_Title_WebAdmin::</title>
+    @head.html@
+</head>
+<body>
+    <div id="page-container">
+        <div id="content" class="container-fluid">
+            <div class="row row-offcanvas row-offcanvas-left">
+                <div class="col-xs-12 col-sm-9">
+                    <h1 class="page-header">
+                        ::WA_Title_Options::
+                    </h1>
+
+                    <form>
+                        <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
+
+                            <div id="panel-data-sources" class="panel panel-default">
+                                <div id="data-sources-heading" class="panel-heading" role="tab">
+                                    <h4 class="panel-title">
+                                        <a class="" data-toggle="collapse" data-parent="#accordion" href="#data-sources-collapse" aria-expanded="true" aria-controls="data-sources-collapse">
+                                            ::OptionsDataSourcesSheetTitle::
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="data-sources-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="data-sources-heading">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label for="data-source-database-filename">::DatabaseFileName::</label>
+                                            <input id="data-source-database-filename" type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="data-source-flags-folder">::FlagsFolder::</label>
+                                            <input id="data-source-flags-folder" type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="data-source-silhouettes-folder">::SilhouettesFolder::</label>
+                                            <input id="data-source-silhouettes-folder" type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="data-source-pictures-folder">::PicturesFolder::</label>
+                                            <input id="data-source-pictures-folder" type="text" class="form-control" />
+                                        </div>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input id="data-source-picture-subfolders" type="checkbox" />
+                                                ::SearchPictureSubFolders::
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="panel-general" class="panel panel-default">
+                                <div id="general-heading" class="panel-heading" role="tab">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#general-collapse" aria-expanded="false" aria-controls="general-collapse">
+                                            ::OptionsGeneralCategory::
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="general-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="general-heading">
+                                    <div class="panel-body">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input id="general-route-updates" type="checkbox" />
+                                                ::AutomaticallyDownloadNewRoutes::
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+            (function(VRS, $, undefined)
+            {
+                //region SettingsView
+                VRS.WebAdmin.SettingsView = function(settings)
+                {
+                    VRS.WebAdmin.View.call(this, settings);
+
+                    /**
+                     * Shows the content sent from the server.
+                     * @param {VRS_WEBADMIN_VIEWDATA_SETTINGS} data
+                     */
+                    this.showContent = function(data)
+                    {
+                    };
+                };
+                VRS.WebAdmin.SettingsView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
+                //endregion
+
+                var settingsView = new VRS.WebAdmin.SettingsView({
+                    pageUrl: 'Options.html',
+                    jsonUrl: 'Options.json',
+                    refreshPeriod: 0
+                });
+                settingsView.initialise();
+            }(window.VRS = window.VRS || {}, jQuery));
+    </script>
+</body>
+</html>
