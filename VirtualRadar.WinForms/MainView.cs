@@ -433,7 +433,15 @@ namespace VirtualRadar.WinForms
         /// <param name="connections"></param>
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)
         {
-            rebroadcastStatusControl.DisplayRebroadcastServerConnections(connections);
+            if(InvokeRequired) {
+                try {
+                    BeginInvoke(new MethodInvoker(() => { ShowRebroadcastServerStatus(connections); }));
+                } catch(InvalidOperationException) {
+                    ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
+                }
+            } else {
+                rebroadcastStatusControl.DisplayRebroadcastServerConnections(connections);
+            }
         }
         #endregion
 

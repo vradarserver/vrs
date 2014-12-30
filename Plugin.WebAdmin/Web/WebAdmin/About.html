@@ -48,7 +48,7 @@
                     this.showContent = function(data)
                     {
                         $('#about-version').text(data.Version);
-                        $('#about-environment').text(data.IsMono ? '::WA_Value_Mono::' : '::WA_Value_DotNet::');
+                        $('#about-environment').html(data.IsMono ? '::WA_Value_Mono::' : '::WA_Value_DotNet::');
                         $('#about-credits').html(data.Description.replace(/(?:\r\n|\r|\n)/g, '<br />'));
                     };
                 };

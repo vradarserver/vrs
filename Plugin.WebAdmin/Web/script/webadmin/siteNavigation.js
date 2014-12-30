@@ -32,9 +32,10 @@
          * @private
          */
         var _Pages = [
-            { pageUrl: 'Index.html', menuTitle: VRS.$$.WA_Title_Main },
-            { pageUrl: 'Log.html',   menuTitle: VRS.$$.WA_Title_Log },
-            { pageUrl: 'About.html', menuTitle: VRS.$$.WA_Title_About }
+            { pageUrl: 'Index.html',    menuTitle: VRS.$$.WA_Title_Main },
+            { pageUrl: 'Options.html',  menuTitle: VRS.$$.WA_Title_Options },
+            { pageUrl: 'Log.html',      menuTitle: VRS.$$.WA_Title_Log },
+            { pageUrl: 'About.html',    menuTitle: VRS.$$.WA_Title_About }
         ];
 
         /**
@@ -70,9 +71,9 @@
                                 .attr('data-toggle', 'offcanvas')
                                 .attr('data-target', '.sidebar-nav')
                                 .attr('aria-label', 'Menu')
-                                .append($('<span />').addClass('glyphicon glyphicon-list'))
-//                                .append($('<span />').addClass('icon-bar'))
-//                                .append($('<span />').addClass('icon-bar'))
+                                .append($('<span />').addClass('icon-bar'))
+                                .append($('<span />').addClass('icon-bar'))
+                                .append($('<span />').addClass('icon-bar'))
                             )
                             .append($('<a />')
                                 .attr('class', 'navbar-brand')

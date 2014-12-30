@@ -158,6 +158,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "head.html");
 
             AddView("Index.html", new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList));
+            AddView("Options.html", new View.SettingsView());
             AddView("Log.html", new View.LogView());
             AddView("About.html", new View.AboutView());
 
