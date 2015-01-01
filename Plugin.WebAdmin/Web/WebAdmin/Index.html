@@ -4,6 +4,11 @@
         <meta charset="utf-8" />
         <title>::WA_Title_Main:: - ::WA_Title_WebAdmin::</title>
         @head.html@
+        <script src="../script/webadmin/jquery-ui.js" type="text/javascript"></script>
+        <script src="../script/webadmin/jquiplugin/bootstrap-collapsible-panel.js" type="text/javascript"></script>
+        <script src="../script/webadmin/jquiplugin/bootstrap-modal.js" type="text/javascript"></script>
+        <script src="../script/webadmin/jquiplugin/bootstrap-responsive-table.js" type="text/javascript"></script>
+        <!-- [[ BUNDLE END ]] -->
     </head>
     <body>
         <div id="page-container">
@@ -21,167 +26,123 @@
                         <div id="failedPlugins" class="alert alert-info" role="alert" style="display:none">
                         </div>
 
-                        <div id="panel-feeds" class="panel panel-default" role="tablist">
-                            <div id="feeds-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="feeds-collapse">
-                                <h4>
-                                    <a class="" data-toggle="collapse" data-target="#feeds-collapse" href="#feeds-collapse">
-                                        ::FeedStatus::
-                                    </a>
-                                </h4>
+                        <div id="panel-feeds">
+                            <div id="feeds-heading">
+                                ::FeedStatus::
                             </div>
-                            <div id="feeds-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="feeds-heading">
-                                <div class="panel-body">
-                                    <div class="table-responsive">
-                                        <table id="feeds-table" class="table table-striped table-condensed">
-                                            <thead>
-                                            <tr>
-                                                <th class="hide">ID</th>
-                                                <th class="thin-column"></th>   <!-- button column -->
-                                                <th>::NameTitle::</th>
-                                                <th>::WA_Title_Status::</th>
-                                                <th class="text-right">::WA_Title_Messages::</th>
-                                                <th class="text-right">::WA_Title_Bad::</th>
-                                                <th class="text-right">::WA_Title_Tracking::</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
+                            <div id="feeds-collapse">
+                                <table id="feeds-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="hide">ID</th>
+                                            <th class="thin-column"></th>
+                                            <th>::NameTitle::</th>
+                                            <th>::WA_Title_Status::</th>
+                                            <th class="text-right">::WA_Title_Messages::</th>
+                                            <th class="text-right">::WA_Title_Bad::</th>
+                                            <th class="text-right">::WA_Title_Tracking::</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="panel-requests">
+                            <div id="requests-heading">
+                                ::WA_Label_WebServer::
+                            </div>
+                            <div id="requests-collapse">
+                                <table id="requests-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="thin-column">::IPAddress::</th>
+                                            <th class="thin-column text-right">::BytesSent::</th>
+                                            <th>::LastURL::</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="panel-rebroadcasters">
+                            <div id="rebroadcasters-heading">
+                                ::RebroadcastServersLabel::
+                            </div>
+                            <div id="rebroadcasters-collapse">
+                                <table id="rebroadcasters-table">
+                                    <thead>
+                                    <tr>
+                                        <th>::NameTitle::</th>
+                                        <th>::IPAddress::</th>
+                                        <th>::Port::</th>
+                                        <th class="text-right">::WA_Title_Buffered::</th>
+                                        <th class="text-right">::WA_Title_Sent::</th>
+                                        <th class="text-right">::WA_Title_Discarded::</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="panel-upnp">
+                            <div id="upnp-heading">
+                                ::WA_Title_Upnp::
+                            </div>
+                            <div id="upnp-collapse">
+                                <p id="upnp-status"></p>
+                                <div>
+                                    <button id="upnp-toggle" type="button" class="btn btn-primary"></button>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="panel-requests" class="panel panel-default" role="tablist">
-                            <div id="requests-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="requests-collapse">
-                                <h4>
-                                    <a class="" data-toggle="collapse" data-target="#requests-collapse" href="#requests-collapse">
-                                        ::WA_Label_WebServer::
-                                    </a>
-                                </h4>
+                        <div id="panel-address">
+                            <div id="address-heading">
+                                ::UNC::
                             </div>
-                            <div id="requests-collapse" class="pabel-collapse collapse in" role="tabpanel" aria-labelledby="requests-heading">
-                                <div class="panel-body">
-                                    <div class="table-responsive">
-                                        <table id="requests-table" class="table table-striped table-condensed">
-                                            <thead>
-                                                <tr>
-                                                    <th class="thin-column">::IPAddress::</th>
-                                                    <th class="thin-column text-right">::BytesSent::</th>
-                                                    <th>::LastURL::</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="panel-rebroadcasters" class="panel panel-default" role="tablist">
-                            <div id="rebroadcasters-heading" class="panel-heading" role="tab" aria-expanded="true" aria-controls="feeds-collapse">
-                                <h4>
-                                    <a class="" data-toggle="collapse" data-target="#rebroadcasters-collapse" href="#rebroadcasters-collapse">
-                                        ::RebroadcastServersLabel::
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="rebroadcasters-collapse" class="pabel-collapse collapse in" role="tabpanel" aria-labelledby="rebroadcasters-heading">
-                                <div class="panel-body">
-                                    <div class="table-responsive">
-                                        <table id="rebroadcasters-table" class="table table-striped table-condensed">
-                                            <thead>
-                                            <tr>
-                                                <th>::NameTitle::</th>
-                                                <th>::IPAddress::</th>
-                                                <th>::Port::</th>
-                                                <th class="text-right">::WA_Title_Buffered::</th>
-                                                <th class="text-right">::WA_Title_Sent::</th>
-                                                <th class="text-right">::WA_Title_Discarded::</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="panel-upnp" class="panel panel-default" role="tablist">
-                            <div class="panel-heading" role="tab" id="upnp-heading" aria-expanded="true" aria-controls="upnp-collapse">
-                                <h4>
-                                    <a class="" data-toggle="collapse" data-target="#upnp-collapse" href="#upnp-collapse">
-                                        ::WA_Title_Upnp::
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="upnp-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="panel-heading">
-                                <div class="panel-body">
-                                    <p id="upnp-status"></p>
-                                    <div>
-                                        <button id="upnp-toggle" type="button" class="btn btn-primary"></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="panel-address" class="panel panel-default" role="tablist">
-                            <div class="panel-heading" role="tab" id="address-heading" aria-expanded="true" aria-controls="address-collapse">
-                                <h4>
-                                    <a class="" data-toggle="collapse" data-target="#address-collapse" href="#address-collapse">
-                                        ::UNC::
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="address-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="address-heading">
-                                <div class="panel-body">
-                                    <p>
-                                        <select id="address-perspective" class="ui-inline">
-                                            <option value="local">::ShowLocalAddress::</option>
-                                            <option value="network">::ShowNetworkAddress::</option>
-                                            <option value="public">::ShowInternetAddress::</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <select id="address-page">
-                                            <option value="/">::DefaultVersion::</option>
-                                            <option value="/desktop.html">::DesktopVersion::</option>
-                                            <option value="/mobile.html">::MobileVersion::</option>
-                                            <option value="/fsx.html">::FlightSimVersion::</option>
-                                            <option value="/GoogleMap.htm">::DesktopVersionOld::</option>
-                                            <option value="/iPhoneMap.htm">::MobileVersionOld::</option>
-                                            <option value="/FlightSim.htm">::FlightSimVersionOld::</option>
-                                            <option value="/settings.html">::SettingsPage::</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <a id="address-link" href="#" target="livesite"></a>
-                                    </p>
-                                </div>
+                            <div id="address-collapse">
+                                <p>
+                                    <select id="address-perspective" class="ui-inline">
+                                        <option value="local">::ShowLocalAddress::</option>
+                                        <option value="network">::ShowNetworkAddress::</option>
+                                        <option value="public">::ShowInternetAddress::</option>
+                                    </select>
+                                </p>
+                                <p>
+                                    <select id="address-page">
+                                        <option value="/">::DefaultVersion::</option>
+                                        <option value="/desktop.html">::DesktopVersion::</option>
+                                        <option value="/mobile.html">::MobileVersion::</option>
+                                        <option value="/fsx.html">::FlightSimVersion::</option>
+                                        <option value="/GoogleMap.htm">::DesktopVersionOld::</option>
+                                        <option value="/iPhoneMap.htm">::MobileVersionOld::</option>
+                                        <option value="/FlightSim.htm">::FlightSimVersionOld::</option>
+                                        <option value="/settings.html">::SettingsPage::</option>
+                                    </select>
+                                </p>
+                                <p>
+                                    <a id="address-link" href="#" target="livesite"></a>
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="feeds-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feeds-modal-label" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 id="feeds-modal-label" class="modal-title">Title goes here</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                <button id="feed-reset-polarplot" type="button" class="btn btn-danger">::WA_Label_ResetPolarPlot::</button>
-                            </p>
-                            <p>
-                                <button id="feed-reconnect" type="button" class="btn btn-danger">::WA_Label_Reconnect::</button>
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">::Close::</button>
-                        </div>
-                    </div>
+            <div id="feeds-modal">
+                <div>
+                    Title goes here
+                </div>
+                <div>
+                    <p>
+                        <button id="feed-reset-polarplot" type="button" class="btn btn-danger">::WA_Label_ResetPolarPlot::</button>
+                    </p>
+                    <p>
+                        <button id="feed-reconnect" type="button" class="btn btn-danger">::WA_Label_Reconnect::</button>
+                    </p>
                 </div>
             </div>
         </div>
@@ -229,6 +190,24 @@
                     var _AddressPerspective = $('#address-perspective');
                     var _AddressPage = $('#address-page');
                     var _AddressLink = $('#address-link');
+
+                    /**
+                     * Adds elements to the page.
+                     */
+                    this.addElements = function()
+                    {
+                        $('#panel-feeds').bootstrapCollapsiblePanel();
+                        $('#panel-requests').bootstrapCollapsiblePanel();
+                        $('#panel-rebroadcasters').bootstrapCollapsiblePanel();
+                        $('#panel-upnp').bootstrapCollapsiblePanel();
+                        $('#panel-address').bootstrapCollapsiblePanel();
+
+                        $('#feeds-table').bootstrapResponsiveTable();
+                        $('#requests-table').bootstrapResponsiveTable();
+                        $('#rebroadcasters-table').bootstrapResponsiveTable();
+
+                        _FeedsModal.bootstrapModal({ footerCloseText: '::Close::' });
+                    };
 
                     /**
                      * Hooks events
@@ -327,7 +306,7 @@
                             }
                         }
 
-                        $('h4', _FeedsModal).text(title);
+                        $('.modal-title', _FeedsModal).text(title);
                         _FeedReconnect
                             .data('vrswa-feedid', feedId)
                             .prop('disabled', isMerged);
