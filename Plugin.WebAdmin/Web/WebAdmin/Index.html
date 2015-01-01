@@ -165,7 +165,7 @@
                     var _RequestsTableBody = $('tbody', '#requests-table');
 
                     // Feed fields
-                    var _FeedTableBody = $('tbody', '#feeds-table');
+                    var _FeedTable = $('#feeds-table');
                     var _FeedsModal = $('#feeds-modal');
                     var _Feeds = new VRS.WebAdmin.RecordCollection({
                         getId: function(/** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ record) { return record.Id; }
@@ -202,7 +202,7 @@
                         $('#panel-upnp').bootstrapCollapsiblePanel();
                         $('#panel-address').bootstrapCollapsiblePanel();
 
-                        $('#feeds-table').bootstrapResponsiveTable({
+                        _FeedTable.bootstrapResponsiveTable({
                             idCellIndex: 0,
                             cellDefs: [
                                 { getText: function (r) { return r.Id; }, hasChanged: function (c, p) { return c.Id !== p.Id; } },
@@ -283,7 +283,7 @@
 
                     function refreshFeeds(data)
                     {
-                        $('#feeds-table').bootstrapResponsiveTable('createRowsForRecords', _Feeds);
+                        _FeedTable.bootstrapResponsiveTable('createRowsForRecords', _Feeds);
                     }
 
                     function feedsModal_showClicked(/** Event */ event)
