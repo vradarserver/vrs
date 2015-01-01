@@ -202,7 +202,29 @@
                         $('#panel-upnp').bootstrapCollapsiblePanel();
                         $('#panel-address').bootstrapCollapsiblePanel();
 
-                        $('#feeds-table').bootstrapResponsiveTable();
+                        $('#feeds-table').bootstrapResponsiveTable({
+                            idCellIndex: 0,
+                            cellDefs: [
+                                { getText: function (r) { return r.Id; }, hasChanged: function (c, p) { return c.Id !== p.Id; } },
+                                {
+                                    addJQuery: function (/** jQuery */ cell, /** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ feed) {
+                                        $('<button />')
+                                            .append($('<span />').attr('class', 'glyphicon glyphicon-cog'))
+                                            .attr('type', 'button')
+                                            .attr('class', 'btn btn-primary btn-xs')
+                                            .attr('data-toggle', 'modal')
+                                            .attr('data-target', '#' + _FeedsModal.attr('id'))
+                                            .attr('data-vrswa-feedid', feed.Id)
+                                            .appendTo(cell);
+                                    }, hasChanged: function () { return false; }, getClasses: function () { return 'thin-column'; }
+                                },
+                                { getText: function (r) { return r.Name; }, hasChanged: function (c, p) { return c.Name !== p.Name; } },
+                                { getText: function (r) { return r.ConnDesc; }, hasChanged: function (c, p) { return c.ConnDesc !== p.ConnDesc; } },
+                                { getText: function (r) { return VRS.stringUtility.formatNumber(r.Msgs, '0,000'); }, hasChanged: function (c, p) { return c.Msgs !== p.Msgs; }, getClasses: function () { return 'text-right'; } },
+                                { getText: function (r) { return VRS.stringUtility.formatNumber(r.BadMsgs, '0,000'); }, hasChanged: function (c, p) { return c.BadMsgs !== p.BadMsgs; }, getClasses: function () { return 'text-right'; } },
+                                { getText: function (r) { return VRS.stringUtility.formatNumber(r.Tracked, '0,000'); }, hasChanged: function (c, p) { return c.Tracked !== p.Tracked; }, getClasses: function () { return 'text-right'; } }
+                            ]
+                        });
                         $('#requests-table').bootstrapResponsiveTable();
                         $('#rebroadcasters-table').bootstrapResponsiveTable();
 
@@ -261,30 +283,7 @@
 
                     function refreshFeeds(data)
                     {
-                        VRS.WebAdmin.tableUtility.copyRecordsToTable({
-                            tableBody: _FeedTableBody,
-                            records: _Feeds,
-                            idCellIndex: 0,
-                            cellDefs: [
-                                { getText: function(r) { return r.Id; }, hasChanged: function(c,p) { return c.Id !== p.Id; } },
-                                { addJQuery: function(/** jQuery */ cell, /** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ feed)
-                                    {
-                                        $('<button />')
-                                            .append($('<span />').attr('class', 'glyphicon glyphicon-cog'))
-                                            .attr('type', 'button')
-                                            .attr('class', 'btn btn-primary btn-xs')
-                                            .attr('data-toggle', 'modal')
-                                            .attr('data-target', '#' + _FeedsModal.attr('id'))
-                                            .attr('data-vrswa-feedid', feed.Id)
-                                            .appendTo(cell);
-                                    }, hasChanged: function() { return false; }, getClasses: function() { return 'thin-column'; } },
-                                { getText: function(r) { return r.Name; }, hasChanged: function(c,p) { return c.Name !== p.Name; } },
-                                { getText: function(r) { return r.ConnDesc; }, hasChanged: function (c,p) { return c.ConnDesc !== p.ConnDesc; } },
-                                { getText: function(r) { return VRS.stringUtility.formatNumber(r.Msgs, '0,000'); }, hasChanged: function(c,p) { return c.Msgs !== p.Msgs; }, getClasses: function() { return 'text-right'; } },
-                                { getText: function(r) { return VRS.stringUtility.formatNumber(r.BadMsgs, '0,000'); }, hasChanged: function(c,p) { return c.BadMsgs !== p.BadMsgs; }, getClasses: function() { return 'text-right'; } },
-                                { getText: function(r) { return VRS.stringUtility.formatNumber(r.Tracked, '0,000'); }, hasChanged: function(c,p) { return c.Tracked !== p.Tracked; }, getClasses: function() { return 'text-right'; } }
-                            ]
-                        });
+                        $('#feeds-table').bootstrapResponsiveTable('createRowsForRecords', _Feeds);
                     }
 
                     function feedsModal_showClicked(/** Event */ event)
