@@ -28,6 +28,43 @@ namespace VirtualRadar.Library.Network
     /// </summary>
     class NetworkConnector : Connector, INetworkConnector
     {
+        #region Private class - ConnectState
+        /// <summary>
+        /// The class that carries state in the BeginConnect call for active connections.
+        /// </summary>
+        class ActiveConnectState : IDisposable
+        {
+            public Socket Socket { get; set; }
+
+            public ManualResetEvent WaitHandle { get; private set; }
+
+            ~ActiveConnectState()
+            {
+                Dispose(false);
+            }
+
+            public ActiveConnectState(Socket socket)
+            {
+                Socket = socket;
+                WaitHandle = new ManualResetEvent(false);
+            }
+
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if(disposing) {
+                    WaitHandle.Close();
+                    WaitHandle = null;
+                }
+            }
+        }
+        #endregion
+
         #region Public fields
         /// <summary>
         /// The number of milliseconds the connector waits before abandoning an attempt to connect.
@@ -288,29 +325,62 @@ namespace VirtualRadar.Library.Network
 
             SetSocketKeepAliveAndTimeouts(socket);
 
-            var timeoutAction = new BackgroundThreadTimeout(ConnectTimeout, () => {
-                socket.Connect(endPoint);
-            });
-            timeoutAction.PerformAction();
-
-            SocketConnection connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
-            RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: true);
-            connection.ConnectionStatus = ConnectionStatus.Connected;
-
-            var authentication = Authentication;
-            if(authentication != null) {
-                var abandonConnection = true;
-                var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
-                    SendAuthentication(connection, authentication);
-                    RecordMiscellaneousActivity("Sent authentication");
-                    abandonConnection = false;
-                }) {
-                    ThrowExceptions = false,
-                };
-                authenticationAction.PerformAction();
-                if(abandonConnection) {
-                    connection.Abandon();
+            using(var state = new ActiveConnectState(socket)) {
+                socket.BeginConnect(endPoint, ActiveModeCompleteConnect, state);
+                if(!state.WaitHandle.WaitOne(ConnectTimeout)) {
+                    try {
+                        socket.Close(1000);
+                    } catch { ; }
+                    try {
+                        ((IDisposable)socket).Dispose();
+                    } catch { ; }
                 }
+            }
+        }
+
+        private void ActiveModeCompleteConnect(IAsyncResult asyncResult)
+        {
+            try {
+                var state = (ActiveConnectState)asyncResult.AsyncState;
+                var socket = state.Socket;
+                var waitHandle = state.WaitHandle;
+
+                try {
+                    socket.EndConnect(asyncResult);
+
+                    SocketConnection connection = new SocketConnection(this, socket, ConnectionStatus.Disconnected);
+                    RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: true);
+                    connection.ConnectionStatus = ConnectionStatus.Connected;
+
+                    var authentication = Authentication;
+                    if(authentication != null) {
+                        var abandonConnection = true;
+                        var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
+                            SendAuthentication(connection, authentication);
+                            RecordMiscellaneousActivity("Sent authentication");
+                            abandonConnection = false;
+                        }) {
+                            ThrowExceptions = false,
+                        };
+                        authenticationAction.PerformAction();
+                        if(abandonConnection) {
+                            connection.Abandon();
+                        }
+                    }
+                } catch(ThreadAbortException) {
+                    ;
+                } catch(Exception ex) {
+                    OnExceptionCaught(new EventArgs<Exception>(ex));
+                }
+
+                if(waitHandle != null) {
+                    waitHandle.Set();
+                }
+            } catch(ThreadAbortException) {
+                ;
+            } catch {
+                // Don't let exceptions bubble out of this
+                ;
             }
         }
         #endregion
