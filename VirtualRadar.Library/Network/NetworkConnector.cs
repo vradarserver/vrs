@@ -525,13 +525,8 @@ namespace VirtualRadar.Library.Network
 
                 var authentication = Authentication;
                 if(!abandonConnection && authentication != null) {
-                    var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
-                        var authenticationResponse = GetAuthenticationResponse(connection, authentication);
-                        abandonConnection = !authentication.GetResponseIsValid(authenticationResponse);
-                    }) {
-                        ThrowExceptions = false,
-                    };
-                    if(!authenticationAction.PerformAction()) abandonConnection = true;
+                    var authenticationResponse = GetAuthenticationResponse(connection, authentication);
+                    abandonConnection = !authentication.GetResponseIsValid(authenticationResponse);
                     if(abandonConnection) {
                         RecordMiscellaneousActivity("Rejecting connection from {0}, authentication failed or was not completed within {1} seconds", address, AuthenticationTimeout / 1000);
                     }
