@@ -100,7 +100,6 @@
     <Compile Include="AirportDataThumbnailsJson.cs" />
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
-    <Compile Include="BackgroundThreadTimeout.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
     <Compile Include="BaseStation\IRawMessageTranslator.cs" />
