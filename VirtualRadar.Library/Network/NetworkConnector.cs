@@ -327,7 +327,11 @@ namespace VirtualRadar.Library.Network
 
             using(var state = new ActiveConnectState(socket)) {
                 socket.BeginConnect(endPoint, ActiveModeCompleteConnect, state);
-                if(!state.WaitHandle.WaitOne(ConnectTimeout)) {
+
+                var timeout = ConnectTimeout;
+                if(Authentication != null) timeout += AuthenticationTimeout;
+
+                if(!state.WaitHandle.WaitOne(timeout)) {
                     try {
                         socket.Close(1000);
                     } catch { ; }
@@ -338,6 +342,11 @@ namespace VirtualRadar.Library.Network
             }
         }
 
+        /// <summary>
+        /// Called on a background thread when the socket established by <see cref="ActiveModeConnect"/>
+        /// connects, or when something has gone wrong.
+        /// </summary>
+        /// <param name="asyncResult"></param>
         private void ActiveModeCompleteConnect(IAsyncResult asyncResult)
         {
             try {
@@ -355,14 +364,14 @@ namespace VirtualRadar.Library.Network
                     var authentication = Authentication;
                     if(authentication != null) {
                         var abandonConnection = true;
-                        var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
+                        try {
                             SendAuthentication(connection, authentication);
                             RecordMiscellaneousActivity("Sent authentication");
                             abandonConnection = false;
-                        }) {
-                            ThrowExceptions = false,
-                        };
-                        authenticationAction.PerformAction();
+                        } catch {
+                            abandonConnection = true;
+                        }
+
                         if(abandonConnection) {
                             connection.Abandon();
                         }
