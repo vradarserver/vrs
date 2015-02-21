@@ -30,20 +30,21 @@ namespace VirtualRadar.Library.Network
     {
         #region Private class - ConnectState
         /// <summary>
-        /// The class that carries state in the BeginConnect call for active connections.
+        /// The class that carries state in the BeginConnect call for active connections
+        /// and the BeginAccept call for passive connections.
         /// </summary>
-        class ActiveConnectState : IDisposable
+        class SocketState : IDisposable
         {
             public Socket Socket { get; set; }
 
             public ManualResetEvent WaitHandle { get; private set; }
 
-            ~ActiveConnectState()
+            ~SocketState()
             {
                 Dispose(false);
             }
 
-            public ActiveConnectState(Socket socket)
+            public SocketState(Socket socket)
             {
                 Socket = socket;
                 WaitHandle = new ManualResetEvent(false);
@@ -325,7 +326,7 @@ namespace VirtualRadar.Library.Network
 
             SetSocketKeepAliveAndTimeouts(socket);
 
-            using(var state = new ActiveConnectState(socket)) {
+            using(var state = new SocketState(socket)) {
                 socket.BeginConnect(endPoint, ActiveModeCompleteConnect, state);
 
                 var timeout = ConnectTimeout;
@@ -350,7 +351,7 @@ namespace VirtualRadar.Library.Network
         private void ActiveModeCompleteConnect(IAsyncResult asyncResult)
         {
             try {
-                var state = (ActiveConnectState)asyncResult.AsyncState;
+                var state = (SocketState)asyncResult.AsyncState;
                 var socket = state.Socket;
                 var waitHandle = state.WaitHandle;
 
@@ -380,10 +381,10 @@ namespace VirtualRadar.Library.Network
                     ;
                 } catch(Exception ex) {
                     OnExceptionCaught(new EventArgs<Exception>(ex));
-                }
-
-                if(waitHandle != null) {
-                    waitHandle.Set();
+                } finally {
+                    if(waitHandle != null) {
+                        waitHandle.Set();
+                    }
                 }
             } catch(ThreadAbortException) {
                 ;
@@ -425,10 +426,11 @@ namespace VirtualRadar.Library.Network
                             RecordMiscellaneousActivity("Listening for incoming connections on port {0}", Port);
 
                             while(!_Closed) {
-                                if(!socket.Poll(100, SelectMode.SelectRead)) {
-                                    Thread.Sleep(1);
-                                } else {
-                                    CreateNewPassiveConnection(socket);
+                                using(var state = new SocketState(socket)) {
+                                    socket.BeginAccept(PassiveModeAccept, state);
+                                    while(!state.WaitHandle.WaitOne(250)) {
+                                        if(_Closed) break;
+                                    }
                                 }
                             }
                         } catch(Exception ex) {
@@ -456,6 +458,30 @@ namespace VirtualRadar.Library.Network
             }
         }
 
+        private void PassiveModeAccept(IAsyncResult asyncResult)
+        {
+            try {
+                var state = (SocketState)asyncResult.AsyncState;
+                var listeningSocket = state.Socket;
+                var waitHandle = state.WaitHandle;
+
+                try {
+                    var socket = listeningSocket.EndAccept(asyncResult);
+                    CreateNewPassiveConnection(socket);
+                } catch(ThreadAbortException) {
+                    ;
+                } catch(Exception ex) {
+                    OnExceptionCaught(new EventArgs<Exception>(ex));
+                } finally {
+                    if(waitHandle != null) {
+                        waitHandle.Set();
+                    }
+                }
+            } catch {
+                ; // Do not allow exceptions to bubble out of this
+            }
+        }
+
         /// <summary>
         /// Creates a listening socket.
         /// </summary>
@@ -473,61 +499,51 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// Creates a socket for an incoming connection.
         /// </summary>
-        /// <param name="listeningSocket"></param>
-        private void CreateNewPassiveConnection(Socket listeningSocket)
+        /// <param name="socket"></param>
+        private void CreateNewPassiveConnection(Socket socket)
         {
-            try {
-                Socket socket = null;
-                var timeoutAction = new BackgroundThreadTimeout(1000, () => {
-                    socket = listeningSocket.Accept();
-                });
-                timeoutAction.PerformAction();
+            if(socket != null) {
+                var connection = new SocketConnection(this, socket, ConnectionStatus.Waiting);
+                var address = socket.RemoteEndPoint as IPEndPoint;
 
-                if(socket != null) {
-                    var connection = new SocketConnection(this, socket, ConnectionStatus.Waiting);
-                    var address = socket.RemoteEndPoint as IPEndPoint;
+                var abandonConnection = false;
+                if(address == null || address.Address == null)                          abandonConnection = true;
+                else if(IsSingleConnection && GetConnections().Length != 0)             abandonConnection = true;
+                if(!abandonConnection && _AccessFilter != null && !_AccessFilter.Allow(address.Address)) {
+                    abandonConnection = true;
+                    RecordMiscellaneousActivity("Rejected connection from {0}, did not match access rules", address);
+                }
 
-                    var abandonConnection = false;
-                    if(address == null || address.Address == null)                          abandonConnection = true;
-                    else if(IsSingleConnection && GetConnections().Length != 0)             abandonConnection = true;
-                    if(!abandonConnection && _AccessFilter != null && !_AccessFilter.Allow(address.Address)) {
+                if(!abandonConnection) {
+                    try {
+                        SetSocketKeepAliveAndTimeouts(socket);
+                    } catch(Exception ex) {
                         abandonConnection = true;
-                        RecordMiscellaneousActivity("Rejected connection from {0}, did not match access rules", address);
-                    }
-
-                    if(!abandonConnection) {
-                        try {
-                            SetSocketKeepAliveAndTimeouts(socket);
-                        } catch(Exception ex) {
-                            abandonConnection = true;
-                            OnExceptionCaught(new EventArgs<Exception>(ex));
-                        }
-                    }
-
-                    var authentication = Authentication;
-                    if(!abandonConnection && authentication != null) {
-                        var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
-                            var authenticationResponse = GetAuthenticationResponse(connection, authentication);
-                            abandonConnection = !authentication.GetResponseIsValid(authenticationResponse);
-                        }) {
-                            ThrowExceptions = false,
-                        };
-                        if(!authenticationAction.PerformAction()) abandonConnection = true;
-                        if(abandonConnection) {
-                            RecordMiscellaneousActivity("Rejecting connection from {0}, authentication failed or was not completed within {1} seconds", address, AuthenticationTimeout / 1000);
-                        }
-                    }
-
-                    if(abandonConnection) {
-                        connection.Abandon();
-                    } else {
-                        RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: false);
-                        connection.ConnectionStatus = ConnectionStatus.Connected;
-                        ConnectionStatus = ConnectionStatus.Connected;
+                        OnExceptionCaught(new EventArgs<Exception>(ex));
                     }
                 }
-            } catch(Exception ex) {
-                OnExceptionCaught(new EventArgs<Exception>(ex));
+
+                var authentication = Authentication;
+                if(!abandonConnection && authentication != null) {
+                    var authenticationAction = new BackgroundThreadTimeout(AuthenticationTimeout, () => {
+                        var authenticationResponse = GetAuthenticationResponse(connection, authentication);
+                        abandonConnection = !authentication.GetResponseIsValid(authenticationResponse);
+                    }) {
+                        ThrowExceptions = false,
+                    };
+                    if(!authenticationAction.PerformAction()) abandonConnection = true;
+                    if(abandonConnection) {
+                        RecordMiscellaneousActivity("Rejecting connection from {0}, authentication failed or was not completed within {1} seconds", address, AuthenticationTimeout / 1000);
+                    }
+                }
+
+                if(abandonConnection) {
+                    connection.Abandon();
+                } else {
+                    RegisterConnection(connection, raiseConnectionEstablished: true, mirrorConnectionState: false);
+                    connection.ConnectionStatus = ConnectionStatus.Connected;
+                    ConnectionStatus = ConnectionStatus.Connected;
+                }
             }
         }
         #endregion
