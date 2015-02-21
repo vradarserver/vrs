@@ -135,17 +135,13 @@ namespace VirtualRadar.Library.Network
             if(GetConnection() == null) {
                 ConnectionStatus = ConnectionStatus.Connecting;
 
-                SerialPort serialPort = null;
-                var timeoutAction = new BackgroundThreadTimeout(ConnectTimeout, () => {
-                    serialPort = new SerialPort(ComPort, BaudRate, Parity, DataBits, StopBits) {
-                        ReadTimeout = 1000,
-                        WriteTimeout = 1000,
-                        Handshake = Handshake,
-                        ReadBufferSize = 8192,
-                    };
-                    serialPort.Open();
-                });
-                timeoutAction.PerformAction();
+                SerialPort serialPort = new SerialPort(ComPort, BaudRate, Parity, DataBits, StopBits) {
+                    ReadTimeout = 1000,
+                    WriteTimeout = 1000,
+                    Handshake = Handshake,
+                    ReadBufferSize = 8192,
+                };
+                serialPort.Open();
 
                 SerialConnection connection;
                 lock(_SyncLock) {

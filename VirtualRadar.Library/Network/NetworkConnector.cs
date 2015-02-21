@@ -28,40 +28,18 @@ namespace VirtualRadar.Library.Network
     /// </summary>
     class NetworkConnector : Connector, INetworkConnector
     {
-        #region Private class - ConnectState
+        #region Private class - SocketState
         /// <summary>
         /// The class that carries state in the BeginConnect call for active connections
         /// and the BeginAccept call for passive connections.
         /// </summary>
-        class SocketState : IDisposable
+        class SocketState : WaitState
         {
             public Socket Socket { get; set; }
 
-            public ManualResetEvent WaitHandle { get; private set; }
-
-            ~SocketState()
-            {
-                Dispose(false);
-            }
-
-            public SocketState(Socket socket)
+            public SocketState(Socket socket) : base()
             {
                 Socket = socket;
-                WaitHandle = new ManualResetEvent(false);
-            }
-
-            public void Dispose()
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if(disposing) {
-                    WaitHandle.Close();
-                    WaitHandle = null;
-                }
             }
         }
         #endregion
