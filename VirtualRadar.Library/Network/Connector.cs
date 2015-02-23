@@ -75,6 +75,11 @@ namespace VirtualRadar.Library.Network
         private Thread _EstablishConnectionThread;
 
         /// <summary>
+        /// A counter used to ensure that establish connection thread names are unique.
+        /// </summary>
+        private static long _ThreadNumber;
+
+        /// <summary>
         /// True once <see cref="EstablishConnection"/> has been called.
         /// </summary>
         protected bool _EstablishConnectionCalled;
@@ -396,15 +401,18 @@ namespace VirtualRadar.Library.Network
                 // any more connections. It should also close all existing connections. This block just
                 // cleans up anything that is left lying around. The lock is for the benefit of other
                 // threads that might still be in an event handler or something when this kicks off.
+                IConnection[] connections;
                 lock(_SyncLock) {
-                    try {
-                        foreach(var connection in _Connections) {
-                            connection.Dispose();
-                        }
-                        _Connections.Clear();
-                    } catch(Exception ex) {
-                        OnExceptionCaught(new EventArgs<Exception>(ex));
+                    connections = _Connections.ToArray();
+                    _Connections.Clear();
+                }
+
+                try {
+                    foreach(var connection in connections) {
+                        connection.Dispose();
                     }
+                } catch(Exception ex) {
+                    OnExceptionCaught(new EventArgs<Exception>(ex));
                 }
 
                 RecordMiscellaneousActivity("Connector disposed");
@@ -566,6 +574,7 @@ namespace VirtualRadar.Library.Network
             lock(_SyncLock) {
                 if(_EstablishConnectionThread == null) {
                     _EstablishConnectionThread = new Thread(BackgroundEstablishConnection);
+                    _EstablishConnectionThread.Name = String.Format("EstablishConnection-{0}-{1}", ++_ThreadNumber, Name);
                     _EstablishConnectionThread.Start();
                 }
             }
@@ -579,8 +588,9 @@ namespace VirtualRadar.Library.Network
             try {
                 DoEstablishConnection();
             } catch(Exception ex) {
-                OnExceptionCaught(new EventArgs<Exception>(ex));
-                _EstablishConnectionThread = null;
+                try {
+                    OnExceptionCaught(new EventArgs<Exception>(ex));
+                } catch { ; }
             }
 
             lock(_SyncLock) {
@@ -601,15 +611,19 @@ namespace VirtualRadar.Library.Network
             while(!finished) {
                 lock(_SyncLock) {
                     finished = _EstablishConnectionThread == null;
-                    if(!finished && DateTime.UtcNow >= threshold) {
-                        try {
-                            RecordMiscellaneousActivity("Connection thread took too long, forcibly stopping it");
-                            _EstablishConnectionThread.Abort();
-                        } catch {
-                        }
-                        _EstablishConnectionThread = null;
-                        finished = true;
+                }
+
+                if(!finished && DateTime.UtcNow >= threshold) {
+                    try {
+                        RecordMiscellaneousActivity("Connection thread took too long, forcibly stopping it");
+                        _EstablishConnectionThread.Abort();
+                    } catch {
                     }
+
+                    lock(_SyncLock) {
+                        _EstablishConnectionThread = null;
+                    }
+                    finished = true;
                 }
 
                 if(!finished) {

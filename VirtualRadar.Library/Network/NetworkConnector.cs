@@ -295,12 +295,14 @@ namespace VirtualRadar.Library.Network
             var socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             // Some operating systems may not support all options
+            /*
             try {
                 socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
             } catch {}
             try {
                 socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
             } catch {}
+             */
 
             SetSocketKeepAliveAndTimeouts(socket);
 
