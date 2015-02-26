@@ -47,7 +47,16 @@ namespace VirtualRadar.Library.Network
         {
             get {
                 var socket = GetSocket();
-                return socket == null ? null : socket.LocalEndPoint as IPEndPoint;
+                IPEndPoint result = null;
+
+                try {
+                    result = socket == null ? null : socket.LocalEndPoint as IPEndPoint;
+                } catch(SocketException) {
+                    // These can happen if the socket has disconnected and hasn't yet been cleaned up
+                    result = null;
+                }
+
+                return result;
             }
         }
 
@@ -58,7 +67,16 @@ namespace VirtualRadar.Library.Network
         {
             get {
                 var socket = GetSocket();
-                return socket == null ? null : socket.RemoteEndPoint as IPEndPoint;
+                IPEndPoint result = null;
+
+                try {
+                    result = socket == null ? null : socket.RemoteEndPoint as IPEndPoint;
+                } catch(SocketException) {
+                    // These can happen if the socket has disconnected and hasn't yet been cleaned up
+                    result = null;
+                }
+
+                return result;
             }
         }
 
@@ -71,9 +89,12 @@ namespace VirtualRadar.Library.Network
         public SocketConnection(Connector connector, Socket socket, ConnectionStatus initialStatus) : base(connector, initialStatus)
         {
             Socket = socket;
+
+            var localEndPoint = LocalEndPoint;
+            var remoteEndPoint = RemoteEndPoint;
             Description = String.Format("SOCKET (local={0}, remote={1})",
-                socket.LocalEndPoint == null ? "none" : socket.LocalEndPoint.ToString(),
-                socket.RemoteEndPoint == null ? "none" : socket.RemoteEndPoint.ToString()
+                localEndPoint == null ? "none" : localEndPoint.ToString(),
+                remoteEndPoint == null ? "none" : remoteEndPoint.ToString()
             );
         }
 
