@@ -82,6 +82,15 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #region Base overrides
         public override System.Windows.Forms.DialogResult ShowView()
         {
+            if(IsRunning) {
+                var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+                if(configuration.DataVersion != Configuration.DataVersion) {
+                    _Presenter.Dispose();
+                    _Presenter = null;
+                    IsRunning = false;
+                }
+            }
+
             if(!IsRunning) {
                 _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
                 _Presenter.Initialise(this);

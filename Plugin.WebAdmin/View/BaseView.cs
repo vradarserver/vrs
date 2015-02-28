@@ -35,7 +35,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         /// Gets a value indicating that <see cref="ShowView"/> has been called.
         /// </summary>
         [JsonProperty("Running")]
-        public bool IsRunning { get; private set; }
+        public bool IsRunning { get; protected set; }
 
         /// <summary>
         /// Creates a new object.

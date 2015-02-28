@@ -2,6 +2,63 @@
 
 /**
  * @typedef {{
+ * pages:               VRS_WEBADMIN_FORM_PAGE[]
+ * }} VRS_WEBADMIN_FORM
+ */
+VRS_WEBADMIN_FORM;
+
+/**
+ * @typedef {{
+ * label:               string,
+ * validationFieldID:   string,
+ * property:            string,
+ * type:                string
+ * }} VRS_WEBADMIN_FORM_FIELD
+ */
+VRS_WEBADMIN_FORM_FIELD;
+
+/**
+ * @typedef {{
+ * field:           jQuery,
+ * plugin:          VRS_WEBADMIN_FORM_FIELD_PLUGIN,
+ * propertyName:    string
+ * }} VRS_WEBADMIN_FORM_FIELD_INSTANCE
+ */
+VRS_WEBADMIN_FORM_FIELD_INSTANCE;
+
+/**
+ * @typedef {{
+ * getValue:            function():object,
+ * setValue:            function(object)
+ * }} VRS_WEBADMIN_FORM_FIELD_PLUGIN
+ */
+VRS_WEBADMIN_FORM_FIELD_PLUGIN;
+
+/**
+ * @typedef {{
+ * title:           string,
+ * fields:          VRS_WEBADMIN_FORM_FIELD[]
+ * }} VRS_WEBADMIN_FORM_PAGE
+ */
+VRS_WEBADMIN_FORM_PAGE;
+
+/**
+ * @typedef {{
+ * formUI:              {jQuery}
+ * }} VRS_WEBADMIN_FORM_PRESENTER
+ */
+VRS_WEBADMIN_FORM_PRESENTER;
+
+/**
+ * @typedef {{
+ * name:                string,
+ * value:               object
+ * }} VRS_WEBADMIN_NAMEVALUE;
+ */
+VRS_WEBADMIN_NAMEVALUE;
+
+/**
+ * @typedef {{
  * getId:           function(object):*
  * }} VRS_WEBADMIN_RECORDCOLLECTION_SETTINGS
  */
