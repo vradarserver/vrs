@@ -45,6 +45,10 @@
             /** @type {VRS.WebAdmin.Field} */   fieldSpec: null
         },
 
+        /**
+         * @returns {VRS.WebAdmin.FormStringFieldState}
+         * @private
+         */
         _getState: function()
         {
             var result = this.element.data('vrs-webadmin-form-field-string-state');
@@ -69,7 +73,7 @@
                 .uniqueId()
                 .attr('type', 'text')
                 .addClass('form-control');
-            state.label.attr('for', '#' + state.inputId);
+            state.label.attr('for', '#' + state.input.attr('id'));
 
             this.element.append(state.label);
             this.element.append(state.input);
@@ -85,6 +89,80 @@
         {
             var state = this._getState();
             state.input.val(value);
+        }
+    });
+    //endregion
+
+    //region FormFieldCheckbox
+    VRS.WebAdmin.FormCheckboxFieldState = function()
+    {
+        /**
+         * @type {jQuery}
+         */
+        this.input = undefined;
+
+        /**
+         * @type {jQuery}
+         */
+        this.label = undefined;
+    };
+
+    /**
+     * @param {jQuery} jQueryElement
+     * @returns {VRS.formFieldCheckbox}
+     */
+    VRS.jQueryUIHelper.getWebAdminFormFieldCheckboxPlugin = function(jQueryElement) { return jQueryElement.data('vrsFormFieldCheckbox'); };
+
+    /**
+     * @namespace VRS.formFieldString
+     */
+    $.widget('vrs.formFieldCheckbox', {
+        options: {
+            /** @type {VRS.WebAdmin.Field} */   fieldSpec: null
+        },
+
+        /**
+         * @returns {VRS.WebAdmin.FormCheckboxFieldState}
+         * @private
+         */
+        _getState: function()
+        {
+            var result = this.element.data('vrs-webadmin-form-field-checkbox-state');
+            if(result === undefined) {
+                result = new VRS.WebAdmin.FormCheckboxFieldState();
+                this.element.data('vrs-webadmin-form-field-checkbox-state', result);
+            }
+
+            return result;
+        },
+
+        _create: function()
+        {
+            var options = this.options;
+            var state = this._getState();
+            var spec = options.fieldSpec;
+
+            this.element.addClass('checkbox');
+            state.label = $('<label />')
+                .text(spec.getLabel());
+            state.input = $('<input />')
+                .uniqueId()
+                .attr('type', 'checkbox');
+
+            this.element.append(state.label);
+            state.label.prepend(state.input);
+        },
+
+        getValue: function()
+        {
+            var state = this._getState();
+            return state.input.prop('checked');
+        },
+
+        setValue: function(value)
+        {
+            var state = this._getState();
+            state.input.prop('checked', !!value);
         }
     });
     //endregion
