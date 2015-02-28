@@ -15,6 +15,17 @@
 
 (function(VRS, $, undefined)
 {
+    VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
+
+    /**
+     * @param {jQuery} jQueryElement
+     * @returns {VRS.bootstrapModal}
+     */
+    VRS.jQueryUIHelper.getBootstrapResponsiveTablePlugin = function(jQueryElement) { return jQueryElement.data('vrsBootstrapResponsiveTable'); };
+
+    /**
+     * @namespace VRS.bootstrapModal
+     */
     $.widget('vrs.bootstrapResponsiveTable', {
         options: {
             // Create options

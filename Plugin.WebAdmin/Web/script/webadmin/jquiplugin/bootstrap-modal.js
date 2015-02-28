@@ -15,6 +15,17 @@
 
 (function(VRS, $, undefined)
 {
+    VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
+
+    /**
+     * @param {jQuery} jQueryElement
+     * @returns {VRS.bootstrapModal}
+     */
+    VRS.jQueryUIHelper.getBootstrapModalPlugin = function(jQueryElement) { return jQueryElement.data('vrsBootstrapModal'); };
+
+    /**
+     * @namespace VRS.bootstrapModal
+     */
     $.widget('vrs.bootstrapModal', {
         options: {
             headerCloseButton: true,
