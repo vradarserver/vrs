@@ -116,6 +116,10 @@
                 var propertyName = fieldSpec.getPropertyName();
                 var fieldPlugin = null;
                 switch(fieldSpec.getType()) {
+                    case "checkbox":
+                        fieldElement.formFieldCheckbox({ fieldSpec: fieldSpec });
+                        fieldPlugin = VRS.jQueryUIHelper.getWebAdminFormFieldCheckboxPlugin(fieldElement);
+                        break;
                     case 'string':
                         fieldElement.formFieldString({ fieldSpec: fieldSpec });
                         fieldPlugin = VRS.jQueryUIHelper.getWebAdminFormFieldStringPlugin(fieldElement);
