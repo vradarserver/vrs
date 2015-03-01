@@ -92,7 +92,7 @@
     VRS.$$.Distances =                                  'Distances';
     VRS.$$.DoNotImportAutoSelect =                      'Ne pas importer les paramètres auto-select';
     VRS.$$.DoNotImportCurrentLocation =                 'Ne pas importer la position courante';
-    VRS.$$.DoNotImportRequestFeedId =                   'Ne pas importer la demande d''ID de flux de données';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportRequestFeedId =                   'Ne pas importer la demande d''ID de flux de données';
     VRS.$$.DoNotImportLanguageSettings =                'Ne pas importer les paramètres de langue';
     VRS.$$.DoNotImportSplitters =                       'Ne pas importer les splitters';
     VRS.$$.DoNotShow =                                  'Ne pas montrer';
