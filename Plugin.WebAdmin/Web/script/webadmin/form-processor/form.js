@@ -94,8 +94,12 @@
      */
     VRS.WebAdmin.FormPresenter = function(settings)
     {
+        var that = this;
+
         var _FormPlugin = VRS.jQueryUIHelper.getWebAdminFormProcessorPlugin(settings.formUI);
         var _Data = undefined;
+
+        settings.formUI.on('formprocessorsaveclicked', $.proxy(function(event) { form_saveClicked(event); }, this));
 
         this.refreshContent = function(data)
         {
@@ -125,6 +129,28 @@
                         return candidate.FieldId === fieldInstance.propertyName;
                     });
                     fieldInstance.plugin.showValidationResult(validationResult);
+                }
+            }
+        };
+
+        /**
+         * Collects together the values entered by the user and sends them back to the server
+         * for saving. The server performs the validation.
+         */
+        this.saveData = function()
+        {
+            if(_Data && _Data.DataVersion) {
+                var data = {
+                    DataVersion: _Data.DataVersion
+                };
+
+                var fieldInstances = _FormPlugin.getAllFieldInstances();
+                for(var propertyName in fieldInstances) {
+                    if(fieldInstances.hasOwnProperty(propertyName)) {
+                        var fieldInstance = fieldInstances[propertyName];
+                        var value = fieldInstance.plugin.getValue();
+                        data[propertyName] = value;
+                    }
                 }
             }
         };
@@ -166,6 +192,15 @@
                     }
                 }
             }
+        }
+
+        /**
+         * Called when the user clicks the save button on the form.
+         * @param {Event} event
+         */
+        function form_saveClicked(event)
+        {
+            that.saveData();
         }
     };
     //endregion

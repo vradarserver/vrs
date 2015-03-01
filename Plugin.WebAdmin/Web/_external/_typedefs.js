@@ -53,7 +53,8 @@ VRS_WEBADMIN_FORM_PAGE_INSTANCE;
 
 /**
  * @typedef {{
- * formUI:              {jQuery}
+ * formUI:              {jQuery},
+ * saveURL:             {string}
  * }} VRS_WEBADMIN_FORM_PRESENTER
  */
 VRS_WEBADMIN_FORM_PRESENTER;

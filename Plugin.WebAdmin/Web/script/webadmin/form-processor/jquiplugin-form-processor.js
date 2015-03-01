@@ -118,6 +118,11 @@
                 );
             if(additionalClasses) result.addClass(additionalClasses);
 
+            var that = this;
+            result.on('click', function(event) {
+                that._trigger('saveclicked', event);
+            });
+
             return result;
         },
 
