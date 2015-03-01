@@ -29,6 +29,16 @@
          * @type {jQuery}
          */
         this.label = undefined;
+
+        /**
+         * @type {jQuery}
+         */
+        this.validationGlyph = undefined;
+
+        /**
+         * @type {jQuery}
+         */
+        this.validationText = undefined;
     };
 
     /**
@@ -66,7 +76,7 @@
             var state = this._getState();
             var spec = options.fieldSpec;
 
-            this.element.addClass('form-group');
+            this.element.addClass('form-group vrs-input-text');
             state.label = $('<label />')
                 .text(spec.getLabel());
             state.input = $('<input />')
@@ -74,9 +84,21 @@
                 .attr('type', 'text')
                 .addClass('form-control');
             state.label.attr('for', '#' + state.input.attr('id'));
+            state.validationGlyph = $('<span />')
+                .attr('aria-hidden', 'true')
+                .addClass('glyphicon form-control-feedback')
+                .hide();
+            state.validationText = $('<span />')
+                .uniqueId()
+                .addClass('validation-message')
+                .hide();
+            state.input.attr('aria-describedby', state.validationText.attr('id'));
 
-            this.element.append(state.label);
-            this.element.append(state.input);
+            this.element
+                .append(state.label)
+                .append(state.input)
+                .append(state.validationGlyph)
+                .append(state.validationText);
         },
 
         getValue: function()
@@ -89,6 +111,32 @@
         {
             var state = this._getState();
             state.input.val(value);
+        },
+
+        showValidationResult: function(validationResult)
+        {
+            var state = this._getState();
+            var message = validationResult ? validationResult.Message : '';
+            var isWarning = validationResult ? validationResult.IsWarning : '';
+
+            if(!message) {
+                this.element.removeClass('has-feedback has-warning has-error');
+                state.validationGlyph.hide();
+                state.validationText.hide();
+                state.input.attr('aria-invalid', '');
+            } else {
+                this.element.addClass('has-feedback');
+                if(isWarning) this.element.addClass('has-warning').removeClass('has-error');
+                else          this.element.addClass('has-error').removeClass('has-warning');
+                state.validationGlyph.show();
+                state.validationText.show();
+                if(isWarning) state.validationGlyph.addClass('glyphicon-warning-sign').removeClass('glyphicon-remove');
+                else          state.validationGlyph.addClass('glyphicon-remove').removeClass('glyphicon-warning-sign');
+                if(isWarning) state.validationText.addClass('is-warning').removeClass('is-error');
+                else          state.validationText.addClass('is-error').removeClass('is-warning');
+                state.validationText.text(message);
+                state.input.attr('aria-invalid', 'true');
+            }
         }
     });
     //endregion
@@ -163,6 +211,10 @@
         {
             var state = this._getState();
             state.input.prop('checked', !!value);
+        },
+
+        showValidationResult: function(validationResult)
+        {
         }
     });
     //endregion

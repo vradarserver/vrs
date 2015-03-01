@@ -56,7 +56,8 @@
                     this.addElements = function()
                     {
                         _Form.formProcessor({
-                            formSpec: _FormSettings
+                            formSpec:           _FormSettings,
+                            saveButtonLabel:    '::Save::'
                         });
                         _Presenter = new VRS.WebAdmin.FormPresenter({
                             formUI: _Form
@@ -70,6 +71,7 @@
                     this.showContent = function(data)
                     {
                         _Presenter.refreshContent(data);
+                        _Presenter.refreshValidation(data.ValidationResults);
                     };
                 };
                 VRS.WebAdmin.SettingsView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);

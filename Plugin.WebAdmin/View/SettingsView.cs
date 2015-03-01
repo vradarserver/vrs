@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
@@ -37,6 +38,13 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public string OpenOnPageTitle { get; set; }
 
         public object OpenOnRecord { get; set; }
+        #endregion
+
+        #region Other properties
+        /// <summary>
+        /// Gets or sets the most recent set of validation results.
+        /// </summary>
+        public WebValidationResults ValidationResults { get; set; }
         #endregion
 
         #region Interface events
@@ -75,7 +83,46 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowValidationResults(ValidationResults results)
         {
-            ;
+            ValidationResults = TranslateValidationResults(results);
+        }
+
+        protected override void TranslateValidationResultRecord(WebValidationResult result, ValidationResult originalResult)
+        {
+            if(originalResult.Record != null) {
+                var receiver = originalResult.Record as Receiver;
+                if(receiver != null) {
+                    result.RecordType = "Receiver";
+                    result.RecordId = receiver.UniqueId.ToString();
+                }
+            }
+        }
+
+        const string _FieldRoot = "Configuration";
+        static readonly string _FieldBaseStation = String.Format("{0}.{1}", _FieldRoot, PropertyHelper.ExtractName<Configuration>(r => r.BaseStationSettings));
+
+        protected override void TranslateValidationResultField(WebValidationResult result, ValidationResult originalResult)
+        {
+            string path = null;
+            string property = null;
+
+            switch(result.RecordType ?? "") {
+                case "":
+                    switch(originalResult.Field) {
+                        case ValidationField.BaseStationDatabase:   path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.DatabaseFileName); break;
+                        case ValidationField.FlagsFolder:           path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.OperatorFlagsFolder); break;
+                        case ValidationField.PicturesFolder:        path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.PicturesFolder); break;
+                        case ValidationField.SilhouettesFolder:     path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.SilhouettesFolder); break;
+                        default:
+                            break;
+                    }
+                    break;
+                case "Receiver":
+                    break;
+            }
+
+            if(!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(property)) {
+                result.FieldId = String.Format("{0}.{1}", path, property);
+            }
         }
         #endregion
 
@@ -94,6 +141,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             if(!IsRunning) {
                 _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
                 _Presenter.Initialise(this);
+                _Presenter.ValidateView();
             }
 
             return base.ShowView();

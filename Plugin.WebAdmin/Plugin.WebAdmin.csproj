@@ -65,6 +65,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WebAdminStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="WebValidationResult.cs" />
+    <Compile Include="WebValidationResults.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -28,8 +28,9 @@ VRS_WEBADMIN_FORM_FIELD_INSTANCE;
 
 /**
  * @typedef {{
- * getValue:            function():object,
- * setValue:            function(object)
+ * getValue:                function():object,
+ * setValue:                function(object),
+ * showValidationResult:    function(VRS_WEBADMIN_VALIDATIONRESULT)
  * }} VRS_WEBADMIN_FORM_FIELD_PLUGIN
  */
 VRS_WEBADMIN_FORM_FIELD_PLUGIN;
@@ -41,6 +42,14 @@ VRS_WEBADMIN_FORM_FIELD_PLUGIN;
  * }} VRS_WEBADMIN_FORM_PAGE
  */
 VRS_WEBADMIN_FORM_PAGE;
+
+/**
+ * @typedef {{
+ * page:            jQuery,
+ * plugin:          VRS.formPage
+ * }} VRS_WEBADMIN_FORM_PAGE_INSTANCE
+ */
+VRS_WEBADMIN_FORM_PAGE_INSTANCE;
 
 /**
  * @typedef {{
@@ -94,6 +103,28 @@ VRS_WEBADMIN_TABLE_CELL_PROPERTIES;
  * }} VRS_WEBADMIN_TABLE_COPYRECORDSTOTABLE_PARAMS
  */
 VRS_WEBADMIN_TABLE_COPYRECORDSTOTABLE_PARAMS;
+
+/**
+ * @typedef {{
+ * RecordType:      string,
+ * RecordId:        string,
+ * FieldId:         string,
+ * Message:         string,
+ * IsWarning:       boolean
+ * }} VRS_WEBADMIN_VALIDATIONRESULT
+ */
+VRS_WEBADMIN_VALIDATIONRESULT;
+
+/**
+ * @typedef {{
+ * Results:                 VRS_WEBADMIN_VALIDATIONRESULT[],
+ * IsPartialValidation:     boolean,
+ * PartialValidationFields: VRS_WEBADMIN_VALIDATIONRESULT[],
+ * HasErrors:               boolean,
+ * HasWarnings:             boolean
+ * }} VRS_WEBADMIN_VALIDATIONRESULTS
+ */
+VRS_WEBADMIN_VALIDATIONRESULTS;
 
 /**
  * @typedef {{
