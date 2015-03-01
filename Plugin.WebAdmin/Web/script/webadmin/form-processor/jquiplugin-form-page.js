@@ -143,7 +143,7 @@
         getAllFieldInstances: function()
         {
             var state = this._getState();
-            return state.fieldInstances.splice(0);
+            return state.fieldInstances.slice(0);
         }
     });
 }(window.VRS = window.VRS || {}, jQuery));

@@ -121,5 +121,46 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         {
             return null;
         }
+
+        protected WebValidationResults TranslateValidationResults(ValidationResults validationResults)
+        {
+            var result = validationResults == null ? null : new WebValidationResults(validationResults.IsPartialValidation);
+
+            if(result != null) {
+                foreach(var validationResult in validationResults.Results) {
+                    result.Results.Add(TranslateValidationResult(validationResult));
+                }
+
+                foreach(var validationResult in validationResults.PartialValidationFields) {
+                    result.PartialValidationFields.Add(TranslateValidationResult(validationResult));
+                }
+            }
+
+            return result;
+        }
+
+        private WebValidationResult TranslateValidationResult(ValidationResult validationResult)
+        {
+            var result = validationResult == null ? null : new WebValidationResult() {
+                Message = validationResult.Message,
+                IsWarning = validationResult.IsWarning,
+            };
+            if(validationResult.Record != null) {
+                TranslateValidationResultRecord(result, validationResult);
+            }
+            TranslateValidationResultField(result, validationResult);
+
+            return result;
+        }
+
+        protected virtual void TranslateValidationResultRecord(WebValidationResult result, ValidationResult originalResult)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual void TranslateValidationResultField(WebValidationResult result, ValidationResult originalResult)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

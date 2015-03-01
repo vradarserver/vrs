@@ -26,14 +26,19 @@
         this.container = undefined;
 
         /**
+         * @type {jQuery[]}
+         */
+        this.submitButtons = [];
+
+        /**
          * @type {string}
          */
         this.containerId = undefined;
 
         /**
-         * @type {jQuery[]}
+         * @type {VRS_WEBADMIN_FORM_PAGE_INSTANCE[]}
          */
-        this.pages = [];
+        this.pageInstances = [];
     };
     //endregion
 
@@ -48,7 +53,8 @@
      */
     $.widget('vrs.formProcessor', {
         options: {
-            /** @type {VRS.WebAdmin.Form} */    formSpec: null
+            /** @type {VRS.WebAdmin.Form} */    formSpec: null,
+            /** @type {string} */               saveButtonLabel: null
         },
 
         _getState: function()
@@ -67,6 +73,13 @@
             var options = this.options;
             var state = this._getState();
 
+            var topSubmitButton = this._createSubmitButton('save-top');
+            var bottomSubmitButton = this._createSubmitButton('save-bottom');
+            state.submitButtons.push(topSubmitButton);
+            state.submitButtons.push(bottomSubmitButton);
+
+            this.element.append(topSubmitButton);
+
             state.container =
                 $('<div />')
                     .uniqueId()
@@ -84,22 +97,43 @@
                     parentId:   state.containerId
                 });
                 state.container.append(pageElement);
-                state.pages.push(pageElement);
+                state.pageInstances.push({
+                    page: pageElement,
+                    plugin: VRS.jQueryUIHelper.getWebAdminFormPagePlugin(pageElement)
+                });
             });
+
+            this.element.append(bottomSubmitButton);
+        },
+
+        _createSubmitButton: function(additionalClasses)
+        {
+            var result = $('<button />')
+                .text(this.options.saveButtonLabel)
+                .addClass('btn btn-default btn-lg')
+                .attr('type', 'button')
+                .prepend($('<span />')
+                    .addClass('glyphicon glyphicon-save')
+                    .attr('aria-hidden', 'true')
+                );
+            if(additionalClasses) result.addClass(additionalClasses);
+
+            return result;
         },
 
         /**
          * Returns an associative array of every field in the form indexed by property name.
          * @returns {Object.<string, VRS_WEBADMIN_FORM_FIELD_INSTANCE>}
          */
-        getAllFields: function()
+        getAllFieldInstances: function()
         {
             var result = {};
             var state = this._getState();
 
-            $.each(state.pages, function(/** Number */ idx, /** jQuery */ page) {
-                var fields = page.formPage('getAllFieldInstances');
-                $.each(fields, function(/** Number */ innerIdx, /** VRS_WEBADMIN_FORM_FIELD_INSTANCE */ fieldInstance) {
+            $.each(state.pageInstances, function(/** Number */ idx, /** VRS_WEBADMIN_FORM_PAGE_INSTANCE */ pageInstance) {
+                var fieldInstances = pageInstance.plugin.getAllFieldInstances();
+
+                $.each(fieldInstances, function(/** Number */ innerIdx, /** VRS_WEBADMIN_FORM_FIELD_INSTANCE */ fieldInstance) {
                     result[fieldInstance.propertyName] = fieldInstance;
                 });
             });

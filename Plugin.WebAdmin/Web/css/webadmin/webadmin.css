@@ -81,3 +81,23 @@
     content: '\e080';
 }
 /*endregion */
+
+/*region Forms */
+form button.save-top {
+    margin-bottom: 1em;
+}
+.validation-message {
+    display: block;
+    background: #ff0000;
+    color: #fff;
+    padding: 0.4em 1em;
+    margin-top: -3px;
+    border-left: 1px solid #8a6d3b;
+    border-right: 1px solid #8a6d3b;
+    border-bottom: 1px solid #8a6d3b;
+}
+.validation-message.is-warning {
+    background: #c0c0c0;
+    border-top: 1px solid #b0b0b0;
+}
+/*endregion*/

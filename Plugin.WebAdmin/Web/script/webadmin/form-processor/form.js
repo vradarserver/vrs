@@ -51,7 +51,7 @@
         });
 
         /** @returns {string} */                    this.getTitle = function() { return settings.title; };
-        /** @returns {VRS.WebAdmin.FormField[]} */  this.getFields = function() { return _Fields.splice(0); };
+        /** @returns {VRS.WebAdmin.FormField[]} */  this.getFields = function() { return _Fields.slice(0); };
     };
     //endregion
 
@@ -102,13 +102,31 @@
             _Data = data;
 
             var flattenedData = flattenData(_Data);
-            var fieldGuis = _FormPlugin.getAllFields();
+            var fieldInstances = _FormPlugin.getAllFieldInstances();
             $.each(flattenedData, function(/** Number */ idx, /** VRS_WEBADMIN_NAMEVALUE */ formData) {
-                var fieldInstance = fieldGuis.hasOwnProperty(formData.name) ? fieldGuis[formData.name] : null;
+                var fieldInstance = fieldInstances.hasOwnProperty(formData.name) ? fieldInstances[formData.name] : null;
                 if(fieldInstance !== null) {
                     fieldInstance.plugin.setValue(formData.value);
                 }
             });
+        };
+
+        /**
+         * Flattens the object passed across into an array of properties and values.
+         * @param {VRS_WEBADMIN_VALIDATIONRESULTS} validationResults
+         */
+        this.refreshValidation = function(validationResults)
+        {
+            var fieldInstances = _FormPlugin.getAllFieldInstances();
+            for(var propertyName in fieldInstances) {
+                if(fieldInstances.hasOwnProperty(propertyName)) {
+                    var fieldInstance = fieldInstances[propertyName];
+                    var validationResult = validationResults == null ? null : VRS.arrayHelper.findFirst(validationResults.Results, function(/** VRS_WEBADMIN_VALIDATIONRESULT */ candidate) {
+                        return candidate.FieldId === fieldInstance.propertyName;
+                    });
+                    fieldInstance.plugin.showValidationResult(validationResult);
+                }
+            }
         };
 
         /**
