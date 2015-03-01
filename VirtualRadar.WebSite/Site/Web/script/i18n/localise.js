@@ -509,5 +509,13 @@
     VRS.globalisation.addCultureInfo('zh',    { language: 'zh', englishName: 'Chinese',                 nativeName: '中文' });
     VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)',         nativeName: '中文 (中国)' });
 
+    // Croatian
+    VRS.globalisation.addCultureInfo('hr',    { language: 'hr', englishName: 'Croatian',                nativeName: 'Hrvatski' });
+    VRS.globalisation.addCultureInfo('hr-HR', { language: 'hr', englishName: 'Croatian (Croatia)',      nativeName: 'Hrvatski (Hrvatska)' });
+
+    // Serbian
+    VRS.globalisation.addCultureInfo('sr-Latn',     { language: 'sr-Latn', englishName: 'Serbian',          nativeName: 'Srpski',           countryFlag: 'sr' });
+    VRS.globalisation.addCultureInfo('sr-Latn-RS',  { language: 'sr-Latn', englishName: 'Serbian (Serbia)', nativeName: 'Srpski (Srbija)',  countryFlag: 'sr' });
+
     //endregion
 }(window.VRS = window.VRS || {}, jQuery));

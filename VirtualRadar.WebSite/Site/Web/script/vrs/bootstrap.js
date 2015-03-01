@@ -325,7 +325,7 @@
 
                     $.each(VRS.globalisation.getCultureInfosGroupedByLanguage(true), function(/** Number */ idx, /** Array.<VRS.CultureInfo> */ languageCultures) {
                         /** @type {VRS.CultureInfo} */
-                        var languageCultureInfo = VRS.arrayHelper.findFirst(languageCultures, function(r) { return r.locale.indexOf('-') === -1; });
+                        var languageCultureInfo = VRS.arrayHelper.findFirst(languageCultures, function(r) { return r.englishName.indexOf('(') === -1; });
                         if(languageCultureInfo) {
                             var languageSubMenuItem = new VRS.MenuItem({
                                 name:               'locale-' + languageCultureInfo.locale,
