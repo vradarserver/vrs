@@ -26,7 +26,7 @@
     {
         //region Default settings
         settings = $.extend({
-            refreshPeriod: 1000,
+            refreshPeriod: 1000
         }, settings);
         //endregion
 

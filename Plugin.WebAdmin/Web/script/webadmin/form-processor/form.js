@@ -140,20 +140,46 @@
         this.saveData = function()
         {
             if(_Data && _Data.DataVersion) {
-                var data = {
-                    DataVersion: _Data.DataVersion
-                };
-
                 var fieldInstances = _FormPlugin.getAllFieldInstances();
                 for(var propertyName in fieldInstances) {
                     if(fieldInstances.hasOwnProperty(propertyName)) {
                         var fieldInstance = fieldInstances[propertyName];
                         var value = fieldInstance.plugin.getValue();
-                        data[propertyName] = value;
                     }
                 }
+
+                $.ajax({
+                    url:        settings.saveURL,
+                    type:       'POST',
+                    cache:      false,
+                    data:       _Data,
+                    dataType:   'json',
+                    error:      saveFailed,
+                    success:    saveAcknowledged
+                });
             }
         };
+
+        /**
+         * Called when the call to saveData fails.
+         * @param {jqXHR}   jqXHR
+         * @param {String}  textStatus
+         * @param {String}  errorThrown
+         */
+        function saveFailed(jqXHR, textStatus, errorThrown)
+        {
+            alert('Could not save the form: ' + textStatus + ', error thrown: ' + errorThrown);
+        }
+
+        /**
+         * Called when the call to save data returns a JSON object. The save may not have worked, we
+         * can't tell until we look at the data that's come back.
+         * @param data
+         */
+        function saveAcknowledged(data)
+        {
+            ;
+        }
 
         /**
          * Flattens the object passed across into an array of properties and values.
