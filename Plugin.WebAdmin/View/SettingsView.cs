@@ -146,6 +146,15 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
             return base.ShowView();
         }
+
+        protected override object PerformAction(string action, NameValueCollection queryString)
+        {
+            var result = base.PerformAction(action, queryString);
+
+            // Save code goes here later
+
+            return result;
+        }
         #endregion
     }
 }
