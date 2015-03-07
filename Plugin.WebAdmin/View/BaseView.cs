@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -161,6 +162,17 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         protected virtual void TranslateValidationResultField(WebValidationResult result, ValidationResult originalResult)
         {
             throw new NotImplementedException();
+        }
+
+        protected Dictionary<int, string> CreateEnumDescriptionDictionary<T>(Func<T, string> describeEnumValue)
+        {
+            var result = new Dictionary<int, string>();
+            foreach(T value in Enum.GetValues(typeof(T))) {
+                var description = describeEnumValue(value);
+                result.Add((int)Convert.ChangeType(value, typeof(int)), description);
+            }
+
+            return result;
         }
     }
 }

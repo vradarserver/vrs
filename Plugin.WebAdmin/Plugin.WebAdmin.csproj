@@ -93,7 +93,6 @@
     <Content Include="Web\css\webadmin\webadmin.css" />
     <Content Include="Web\script\webadmin\jquiplugin\bootstrap-form.js" />
     <Content Include="Web\script\webadmin\knockout.mapping.js" />
-    <Content Include="Web\script\webadmin\options.viewmodel.js" />
     <Content Include="Web\script\webadmin\bootstrap.js" />
     <Content Include="Web\script\webadmin\fastclick.js" />
     <Content Include="Web\script\webadmin\jquery-ui.js" />
