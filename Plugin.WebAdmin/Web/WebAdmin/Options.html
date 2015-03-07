@@ -5,10 +5,9 @@
         <title>::WA_Title_Options:: - ::WA_Title_WebAdmin::</title>
         @head.html@
         <script src="../script/webadmin/jquery-ui.js" type="text/javascript"></script>
-        <script src="../script/webadmin/form-processor/form.js" type="text/javascript"></script>
-        <script src="../script/webadmin/form-processor/jquiplugin-form-fields.js" type="text/javascript"></script>
-        <script src="../script/webadmin/form-processor/jquiplugin-form-page.js" type="text/javascript"></script>
-        <script src="../script/webadmin/form-processor/jquiplugin-form-processor.js" type="text/javascript"></script>
+        <script src="../script/webadmin/knockout.js" type="text/javascript"></script>
+        <script src="../script/webadmin/knockout.mapping.js" type="text/javascript"></script>
+        <script src="../script/webadmin/jquiplugin/bootstrap-form.js" type="text/javascript"></script>
         <!-- [[ BUNDLE END ]] -->
     </head>
     <body>
@@ -20,7 +19,17 @@
                             ::WA_Title_Options::
                         </h1>
 
-                        <form></form>
+                        <form>
+                            <div id="form-container">
+                                <div id="page-data-sources" data-vrs-plugin="form-page" data-vrs-title="::OptionsDataSourcesSheetTitle::">
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.DatabaseFileName"         data-vrs-title="::DatabaseFileName::"           data-vrs-plugin="field-text"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.OperatorFlagsFolder"      data-vrs-title="::FlagsFolder::"                data-vrs-plugin="field-text"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.SilhouettesFolder"        data-vrs-title="::SilhouettesFolder::"          data-vrs-plugin="field-text"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.PicturesFolder"           data-vrs-title="::PicturesFolder::"             data-vrs-plugin="field-text"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.SearchPictureSubFolders"  data-vrs-title="::SearchPictureSubFolders::"    data-vrs-plugin="field-checkbox"></div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -29,23 +38,9 @@
         <script type="text/javascript">
             (function(VRS, $, undefined)
             {
-                //region Form declaration
-                var _Form = $('form');
-                var _Presenter = null;
-                var _Root = 'Configuration';
-                var _BaseStationSettings = _Root + '.BaseStationSettings';
-
-                var _FormSettings = new VRS.WebAdmin.Form({
-                    pages: [
-                        { title: '::OptionsDataSourcesSheetTitle::', fields: [
-                            { property: _BaseStationSettings + '.DatabaseFileName',         label: '::DatabaseFileName::',          type: 'string' },
-                            { property: _BaseStationSettings + '.OperatorFlagsFolder',      label: '::FlagsFolder::',               type: 'string' },
-                            { property: _BaseStationSettings + '.SilhouettesFolder',        label: '::SilhouettesFolder::',         type: 'string' },
-                            { property: _BaseStationSettings + '.PicturesFolder',           label: '::PicturesFolder::',            type: 'string' },
-                            { property: _BaseStationSettings + '.SearchPictureSubFolders',  label: '::SearchPictureSubFolders::',   type: 'checkbox' }
-                        ]}
-                    ]
-                });
+                //region ViewModel mapping options
+                var _ViewModel = {};
+                var _OptionsViewMapping;
                 //endregion
 
                 //region SettingsView
@@ -55,14 +50,7 @@
 
                     this.addElements = function()
                     {
-                        _Form.formProcessor({
-                            formSpec:           _FormSettings,
-                            saveButtonLabel:    '::Save::'
-                        });
-                        _Presenter = new VRS.WebAdmin.FormPresenter({
-                            formUI:     _Form,
-                            saveURL:    'Options.html?action=save'
-                        });
+                        $('#form-container').bootstrapForm();
                     };
 
                     /**
@@ -71,8 +59,8 @@
                         */
                     this.showContent = function(data)
                     {
-                        _Presenter.refreshContent(data);
-                        _Presenter.refreshValidation(data.ValidationResults);
+                        _ViewModel = ko.mapping.fromJS(data);
+                        ko.applyBindings(_ViewModel);
                     };
                 };
                 VRS.WebAdmin.SettingsView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);

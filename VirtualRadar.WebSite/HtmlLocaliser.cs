@@ -117,6 +117,15 @@ namespace VirtualRadar.WebSite
                 }
             }
 
+            foreach(var attribute in htmlNode.Attributes) {
+                var text = attribute.Value;
+                var newText = GetLocalisedText(text);
+                if(text != newText) {
+                    result = true;
+                    attribute.Value = newText;
+                }
+            }
+
             foreach(var childNode in htmlNode.ChildNodes) {
                 if(HtmlNode(childNode)) result = true;
             }
