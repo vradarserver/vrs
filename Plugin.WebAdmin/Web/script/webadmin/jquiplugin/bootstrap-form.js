@@ -28,6 +28,7 @@
             $('[data-vrs-plugin="form-page"]', this.element).bootstrapFormPage();
             $('[data-vrs-plugin="field-text"]', this.element).bootstrapFieldText();
             $('[data-vrs-plugin="field-checkbox"]', this.element).bootstrapFieldCheckbox();
+            $('[data-vrs-plugin="field-list"]', this.element).bootstrapFieldList();
         }
     });
     //endregion
@@ -69,7 +70,7 @@
             var parentId = parent.attr('id');
             var title = this.element.attr('data-vrs-title');
             var id = this.element.attr('id');
-            var collapsed = $('[data-vrs-plugin="form-page"]').first().attr('id') !== id;
+            var collapsed = $('[data-vrs-plugin="form-page"]', parent).first().attr('id') != id;
 
             this.element
                 .addClass('panel panel-default');
@@ -222,6 +223,83 @@
 
             this.element.append(state.label);
             state.label.prepend(state.input);
+        }
+    });
+    //endregion
+
+    //region bootstrapFieldList
+    $.widget('vrs.bootstrapFieldList', {
+        /**
+         * @typedef {{
+         * dataField:       string,
+         * title:           string
+         * }} VRS_BOOTSTRAP_FIELD_LIST_COLUMN
+         *
+         * @typedef {{
+         * table:           jQuery
+         * }} VRS_BOOTSTRAP_FIELD_LIST_STATE
+         */
+
+        /**
+         * @returns {VRS_BOOTSTRAP_FIELD_LIST_STATE}
+         * @private
+         */
+        _getState: function()
+        {
+            var key = 'vrs-bootstrap-field-list-state';
+            var result = this.element.data(key);
+            if(result === undefined) {
+                result = {
+                    table:  undefined
+                };
+                this.element.data(key, result);
+            }
+
+            return result;
+        },
+
+        _create: function()
+        {
+            var state = this._getState();
+            var title = this.element.attr('data-vrs-title');
+            var dataField = this.element.attr('data-vrs-bind');
+            var columnsElement = $('[data-vrs-plugin="list-columns"]', this.element);
+
+            /** @type {VRS_BOOTSTRAP_FIELD_LIST_COLUMN[]} */
+            var columns = [];
+            $.each(columnsElement.children(), function(/** Number */ idx, /** jQuery */ columnElement) {
+                var columnJQuery = $(columnElement);
+                columns.push({
+                    dataField:  columnJQuery.attr('data-vrs-bind'),
+                    title:      columnJQuery.attr('data-vrs-title')
+                });
+            });
+            columnsElement.remove();
+
+            this.element
+                .attr('table-responsive');
+            state.table = $('<table />')
+                .addClass('table-striped table-condensed')
+                .appendTo(this.element);
+
+            var head = $('<thead />').appendTo(state.table);
+            var headRow = $('<tr />').appendTo(head);
+            $.each(columns, function(/** Number */ idx, /** VRS_BOOTSTRAP_FIELD_LIST_COLUMN} */ column) {
+                var cell = $('<th />')
+                    .text(column.title)
+                    .appendTo(headRow);
+            });
+
+            var body = $('<tbody />')
+                .appendTo(state.table)
+                .attr('data-bind', 'foreach: ' + dataField);
+            var bodyRow = $('<tr />')
+                .appendTo(body);
+            $.each(columns, function(/** Number */ idx, /** VRS_BOOTSTRAP_FIELD_LIST_COLUMN */ column) {
+                var cell = $('<td />')
+                    .attr('data-bind', 'text: ' + column.dataField)
+                    .appendTo(bodyRow);
+            });
         }
     });
     //endregion

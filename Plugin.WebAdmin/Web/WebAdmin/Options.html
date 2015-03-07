@@ -21,6 +21,10 @@
 
                         <form>
                             <div id="form-container">
+                                <div id="page-general" data-vrs-plugin="form-page" data-vrs-title="::OptionsGeneralCategory::">
+                                    <div data-vrs-bind="Configuration.FlightRouteSettings.AutoUpdateEnabled"        data-vrs-title="::AutomaticallyDownloadNewRoutes::" data-vrs-plugin="field-checkbox"></div>
+                                    <div data-vrs-bind="Configuration.VersionCheckSettings.CheckAutomatically"      data-vrs-title="::CheckForNewVersions::"            data-vrs-plugin="field-checkbox"></div>
+                                </div>
                                 <div id="page-data-sources" data-vrs-plugin="form-page" data-vrs-title="::OptionsDataSourcesSheetTitle::">
                                     <div data-vrs-bind="Configuration.BaseStationSettings.DatabaseFileName"         data-vrs-title="::DatabaseFileName::"           data-vrs-plugin="field-text"></div>
                                     <div data-vrs-bind="Configuration.BaseStationSettings.OperatorFlagsFolder"      data-vrs-title="::FlagsFolder::"                data-vrs-plugin="field-text"></div>
@@ -28,6 +32,18 @@
                                     <div data-vrs-bind="Configuration.BaseStationSettings.PicturesFolder"           data-vrs-title="::PicturesFolder::"             data-vrs-plugin="field-text"></div>
                                     <div data-vrs-bind="Configuration.BaseStationSettings.SearchPictureSubFolders"  data-vrs-title="::SearchPictureSubFolders::"    data-vrs-plugin="field-checkbox"></div>
                                 </div>
+                                <div id="page-receivers" data-vrs-plugin="form-page" data-vrs-title="::Receivers::">
+                                    <div data-vrs-bind="Configuration.Receivers" data-vrs-plugin="field-list">
+                                        <div data-vrs-plugin="list-columns">
+                                            <div data-vrs-bind="enabledYesNo"           data-vrs-title="::Enabled::"></div>
+                                            <div data-vrs-bind="Name"                   data-vrs-title="::Name::"></div>
+                                            <div data-vrs-bind="dataSourceText"         data-vrs-title="::Format::"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                Revision: <span data-bind="text: Configuration.DataVersion"></span>
                             </div>
                         </form>
                     </div>
@@ -40,7 +56,24 @@
             {
                 //region ViewModel mapping options
                 var _ViewModel = {};
-                var _OptionsViewMapping;
+                var _ViewMapping = {
+                    create: function(options)
+                    {
+                        var model = ko.mapping.fromJS(options.data);
+
+                        $.each(model.Configuration.Receivers(), function(idx, receiver) {
+                            receiver.enabledYesNo = ko.computed(function() {
+                                return this.Enabled() ? '::Yes::' : '::No::'
+                            }, receiver);
+                            receiver.dataSourceText = ko.computed(function () {
+                                var dataSource = this.DataSource();
+                                return $.isNumeric(dataSource) ? options.data.DataSources[dataSource] : '';
+                            }, receiver);
+                        });
+
+                        return model;
+                    }
+                };
                 //endregion
 
                 //region SettingsView
@@ -59,7 +92,7 @@
                         */
                     this.showContent = function(data)
                     {
-                        _ViewModel = ko.mapping.fromJS(data);
+                        _ViewModel = ko.mapping.fromJS(data, _ViewMapping);
                         ko.applyBindings(_ViewModel);
                     };
                 };

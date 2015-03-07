@@ -45,6 +45,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         /// Gets or sets the most recent set of validation results.
         /// </summary>
         public WebValidationResults ValidationResults { get; set; }
+
+        public Dictionary<int, string> DataSources { get; private set; }
         #endregion
 
         #region Interface events
@@ -67,6 +69,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public SettingsView()
         {
             Users = new NotifyList<IUser>();
+
+            DataSources = CreateEnumDescriptionDictionary<DataSource>(r => Describe.DataSource(r));
         }
         #endregion
 
