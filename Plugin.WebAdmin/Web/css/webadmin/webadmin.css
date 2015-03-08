@@ -105,8 +105,11 @@ form h5:first-of-type {
     border-right: 1px solid #8a6d3b;
     border-bottom: 1px solid #8a6d3b;
 }
-.validation-message.is-warning {
+.has-warning .validation-message {
     background: #c0c0c0;
     border-top: 1px solid #b0b0b0;
+}
+.validation-message .glyphicon {
+    margin-right: 0.5em;
 }
 /*endregion*/

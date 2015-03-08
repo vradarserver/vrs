@@ -161,7 +161,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         protected virtual void TranslateValidationResultField(WebValidationResult result, ValidationResult originalResult)
         {
-            throw new NotImplementedException();
+            result.FieldId = originalResult.Field.ToString();
         }
 
         protected Dictionary<int, string> CreateEnumDescriptionDictionary<T>(Func<T, string> describeEnumValue)
