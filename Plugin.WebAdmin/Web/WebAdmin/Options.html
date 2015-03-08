@@ -8,7 +8,9 @@
         <script src="../script/webadmin/knockout.js" type="text/javascript"></script>
         <script src="../script/webadmin/knockout.mapping.js" type="text/javascript"></script>
         <script src="../script/webadmin/jquiplugin/bootstrap-form.js" type="text/javascript"></script>
+        <script src="../script/webadmin/jquery.bootstrap-touchspin.js" type="text/javascript"></script>
         <!-- [[ BUNDLE END ]] -->
+        <link rel="stylesheet" href="../css/webadmin/jquery.bootstrap-touchspin.css" />
     </head>
     <body>
         <div id="page-container">
@@ -21,10 +23,7 @@
 
                         <form>
                             <div id="form-container">
-                                <div id="page-general" data-vrs-plugin="form-page" data-vrs-title="::OptionsGeneralCategory::">
-                                    <div data-vrs-bind="Configuration.FlightRouteSettings.AutoUpdateEnabled"        data-vrs-title="::AutomaticallyDownloadNewRoutes::" data-vrs-plugin="field-checkbox"></div>
-                                    <div data-vrs-bind="Configuration.VersionCheckSettings.CheckAutomatically"      data-vrs-title="::CheckForNewVersions::"            data-vrs-plugin="field-checkbox"></div>
-                                </div>
+
                                 <div id="page-data-sources" data-vrs-plugin="form-page" data-vrs-title="::OptionsDataSourcesSheetTitle::">
                                     <div data-vrs-bind="Configuration.BaseStationSettings.DatabaseFileName"         data-vrs-title="::DatabaseFileName::"           data-vrs-plugin="field-text"></div>
                                     <div data-vrs-bind="Configuration.BaseStationSettings.OperatorFlagsFolder"      data-vrs-title="::FlagsFolder::"                data-vrs-plugin="field-text"></div>
@@ -32,15 +31,37 @@
                                     <div data-vrs-bind="Configuration.BaseStationSettings.PicturesFolder"           data-vrs-title="::PicturesFolder::"             data-vrs-plugin="field-text"></div>
                                     <div data-vrs-bind="Configuration.BaseStationSettings.SearchPictureSubFolders"  data-vrs-title="::SearchPictureSubFolders::"    data-vrs-plugin="field-checkbox"></div>
                                 </div>
+
                                 <div id="page-receivers" data-vrs-plugin="form-page" data-vrs-title="::Receivers::">
                                     <div data-vrs-bind="Configuration.Receivers" data-vrs-plugin="field-list">
                                         <div data-vrs-plugin="list-columns">
-                                            <div data-vrs-bind="enabledYesNo"           data-vrs-title="::Enabled::"></div>
+                                            <div data-vrs-bind="EnabledYesNo"           data-vrs-title="::Enabled::"></div>
                                             <div data-vrs-bind="Name"                   data-vrs-title="::Name::"></div>
-                                            <div data-vrs-bind="dataSourceText"         data-vrs-title="::Format::"></div>
+                                            <div data-vrs-bind="DataSourceText"         data-vrs-title="::Format::"></div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div id="page-general" data-vrs-plugin="form-page" data-vrs-title="::General::">
+                                    <h5>::OptionsGeneralCategory::</h5>
+                                    <div data-vrs-bind="Configuration.FlightRouteSettings.AutoUpdateEnabled"            data-vrs-title="::AutomaticallyDownloadNewRoutes::" data-vrs-plugin="field-checkbox"></div>
+                                    <div data-vrs-bind="Configuration.VersionCheckSettings.CheckAutomatically"          data-vrs-title="::CheckForNewVersions::"            data-vrs-plugin="field-checkbox"></div>
+                                    <div data-vrs-bind="Configuration.VersionCheckSettings.CheckPeriodDays"             data-vrs-title="::DaysBetweenChecks::"              data-vrs-plugin="field-numeric" data-vrs-min="0" data-vrs-max="365"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.DisplayTimeoutSeconds"        data-vrs-title="::RemoveFromDisplay::"              data-vrs-plugin="field-numeric" data-vrs-min="5" data-vrs-max="540" data-vrs-suffix="::PSeconds::"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.TrackingTimeoutSeconds"       data-vrs-title="::RemoveFromTracking::"             data-vrs-plugin="field-numeric" data-vrs-min="5" data-vrs-max="3600" data-vrs-suffix="::PSeconds::"></div>
+                                    <div data-vrs-bind="Configuration.GoogleMapSettings.ShortTrailLengthSeconds"        data-vrs-title="::ShortTrailDuration::"             data-vrs-plugin="field-numeric" data-vrs-min="1" data-vrs-max="1800" data-vrs-suffix="::PSeconds::"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.AutoSavePolarPlotsMinutes"    data-vrs-title="::AutoSavePolarPlots::"             data-vrs-plugin="field-numeric" data-vrs-min="1" data-vrs-max="43200" data-vrs-suffix="::PMinutes::"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.MinimiseToSystemTray"         data-vrs-title="::MinimiseToSystemTray::"           data-vrs-plugin="field-checkbox"></div>
+
+                                    <h5 data-bind="visible: RunningDotNet">::Audio::</h5>
+                                    <div id="audio-options" data-bind="visible: RunningDotNet">
+                                        <div data-vrs-bind="Configuration.AudioSettings.Enabled"    data-vrs-title="::Enabled::"            data-vrs-plugin="field-checkbox"></div>
+                                        <div data-vrs-bind="Configuration.AudioSettings.VoiceName"  data-vrs-title="::TextToSpeechVoice::"  data-vrs-plugin="field-select" data-vrs-bind-options="VoiceNames"></div>
+                                        <div data-vrs-bind="Configuration.AudioSettings.VoiceRate"  data-vrs-title="::ReadingSpeed::"       data-vrs-plugin="field-numeric" data-vrs-min="-10" data-vrs-max="10"></div>
+
+                                    </div>
+                                </div>
+
                             </div>
                             <div>
                                 Revision: <span data-bind="text: Configuration.DataVersion"></span>
@@ -61,11 +82,13 @@
                     {
                         var model = ko.mapping.fromJS(options.data);
 
+                        model.RunningDotNet = ko.computed(function() { return !this.RunningMono(); }, model);
+
                         $.each(model.Configuration.Receivers(), function(idx, receiver) {
-                            receiver.enabledYesNo = ko.computed(function() {
+                            receiver.EnabledYesNo = ko.computed(function() {
                                 return this.Enabled() ? '::Yes::' : '::No::'
                             }, receiver);
-                            receiver.dataSourceText = ko.computed(function () {
+                            receiver.DataSourceText = ko.computed(function () {
                                 var dataSource = this.DataSource();
                                 return $.isNumeric(dataSource) ? options.data.DataSources[dataSource] : '';
                             }, receiver);

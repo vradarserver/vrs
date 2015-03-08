@@ -46,6 +46,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         /// </summary>
         public WebValidationResults ValidationResults { get; set; }
 
+        public String[] VoiceNames { get; set; }
+
+        public bool RunningMono { get; set; }
+
         public Dictionary<int, string> DataSources { get; private set; }
         #endregion
 
@@ -70,6 +74,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         {
             Users = new NotifyList<IUser>();
 
+            VoiceNames = new string[0];
+            RunningMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
             DataSources = CreateEnumDescriptionDictionary<DataSource>(r => Describe.DataSource(r));
         }
         #endregion
@@ -77,7 +83,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #region Interface methods
         public void PopulateTextToSpeechVoices(IEnumerable<string> voiceNames)
         {
-            ;
+            VoiceNames = voiceNames == null ? new string[0] : voiceNames.ToArray();
         }
 
         public void ShowTestConnectionResults(string message, string title)
@@ -145,6 +151,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             if(!IsRunning) {
                 _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
                 _Presenter.Initialise(this);
+                PopulateTextToSpeechVoices(_Presenter.GetVoiceNames());
                 _Presenter.ValidateView();
             }
 
