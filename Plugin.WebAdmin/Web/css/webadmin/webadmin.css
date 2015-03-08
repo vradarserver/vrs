@@ -86,6 +86,15 @@
 form button.save-top {
     margin-bottom: 1em;
 }
+form h5 {
+    font-size: 1.5em;
+    border-bottom: 2px solid #999;
+    margin-top: 2em;
+}
+form h5:first-of-type {
+    margin-top: 0;
+}
+
 .validation-message {
     display: block;
     background: #ff0000;

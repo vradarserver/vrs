@@ -90,6 +90,8 @@
     <Content Include="Web\css\webadmin\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Web\css\webadmin\bootstrap\css\bootstrap.css" />
     <Content Include="Web\css\webadmin\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Web\css\webadmin\jquery.bootstrap-touchspin.css" />
+    <Content Include="Web\script\webadmin\jquery.bootstrap-touchspin.js" />
     <Content Include="Web\css\webadmin\webadmin.css" />
     <Content Include="Web\script\webadmin\jquiplugin\bootstrap-form.js" />
     <Content Include="Web\script\webadmin\knockout.mapping.js" />
