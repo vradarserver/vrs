@@ -106,34 +106,6 @@ namespace VirtualRadar.Plugin.WebAdmin.View
                 }
             }
         }
-
-        const string _FieldRoot = "Configuration";
-        static readonly string _FieldBaseStation = String.Format("{0}.{1}", _FieldRoot, PropertyHelper.ExtractName<Configuration>(r => r.BaseStationSettings));
-
-        protected override void TranslateValidationResultField(WebValidationResult result, ValidationResult originalResult)
-        {
-            string path = null;
-            string property = null;
-
-            switch(result.RecordType ?? "") {
-                case "":
-                    switch(originalResult.Field) {
-                        case ValidationField.BaseStationDatabase:   path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.DatabaseFileName); break;
-                        case ValidationField.FlagsFolder:           path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.OperatorFlagsFolder); break;
-                        case ValidationField.PicturesFolder:        path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.PicturesFolder); break;
-                        case ValidationField.SilhouettesFolder:     path = _FieldBaseStation; property = PropertyHelper.ExtractName<BaseStationSettings>(r => r.SilhouettesFolder); break;
-                        default:
-                            break;
-                    }
-                    break;
-                case "Receiver":
-                    break;
-            }
-
-            if(!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(property)) {
-                result.FieldId = String.Format("{0}.{1}", path, property);
-            }
-        }
         #endregion
 
         #region Base overrides

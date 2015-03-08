@@ -25,10 +25,10 @@
                             <div id="form-container">
 
                                 <div id="page-data-sources" data-vrs-plugin="form-page" data-vrs-title="::OptionsDataSourcesSheetTitle::">
-                                    <div data-vrs-bind="Configuration.BaseStationSettings.DatabaseFileName"         data-vrs-title="::DatabaseFileName::"           data-vrs-plugin="field-text"></div>
-                                    <div data-vrs-bind="Configuration.BaseStationSettings.OperatorFlagsFolder"      data-vrs-title="::FlagsFolder::"                data-vrs-plugin="field-text"></div>
-                                    <div data-vrs-bind="Configuration.BaseStationSettings.SilhouettesFolder"        data-vrs-title="::SilhouettesFolder::"          data-vrs-plugin="field-text"></div>
-                                    <div data-vrs-bind="Configuration.BaseStationSettings.PicturesFolder"           data-vrs-title="::PicturesFolder::"             data-vrs-plugin="field-text"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.DatabaseFileName"         data-vrs-title="::DatabaseFileName::"           data-vrs-plugin="field-text" data-vrs-validation-field="BaseStationDatabase"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.OperatorFlagsFolder"      data-vrs-title="::FlagsFolder::"                data-vrs-plugin="field-text" data-vrs-validation-field="FlagsFolder"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.SilhouettesFolder"        data-vrs-title="::SilhouettesFolder::"          data-vrs-plugin="field-text" data-vrs-validation-field="SilhouettesFolder"></div>
+                                    <div data-vrs-bind="Configuration.BaseStationSettings.PicturesFolder"           data-vrs-title="::PicturesFolder::"             data-vrs-plugin="field-text" data-vrs-validation-field="PicturesFolder"></div>
                                     <div data-vrs-bind="Configuration.BaseStationSettings.SearchPictureSubFolders"  data-vrs-title="::SearchPictureSubFolders::"    data-vrs-plugin="field-checkbox"></div>
                                 </div>
 
@@ -58,7 +58,6 @@
                                         <div data-vrs-bind="Configuration.AudioSettings.Enabled"    data-vrs-title="::Enabled::"            data-vrs-plugin="field-checkbox"></div>
                                         <div data-vrs-bind="Configuration.AudioSettings.VoiceName"  data-vrs-title="::TextToSpeechVoice::"  data-vrs-plugin="field-select" data-vrs-bind-options="VoiceNames"></div>
                                         <div data-vrs-bind="Configuration.AudioSettings.VoiceRate"  data-vrs-title="::ReadingSpeed::"       data-vrs-plugin="field-numeric" data-vrs-min="-10" data-vrs-max="10"></div>
-
                                     </div>
                                 </div>
 
@@ -75,6 +74,10 @@
         <script type="text/javascript">
             (function(VRS, $, undefined)
             {
+                //region Fields that aren't related to viewmodel mapping
+                var _FormPlugin;
+                //endregion
+
                 //region ViewModel mapping options
                 var _ViewModel = {};
                 var _ViewMapping = {
@@ -106,17 +109,20 @@
 
                     this.addElements = function()
                     {
-                        $('#form-container').bootstrapForm();
+                        var form = $('#form-container');
+                        form.bootstrapForm();
+                        _FormPlugin = VRS.jQueryUIHelper.getBootstrapFormPlugin(form);
                     };
 
                     /**
-                        * Shows the content sent from the server.
-                        * @param {VRS_WEBADMIN_VIEWDATA_SETTINGS} data
-                        */
+                     * Shows the content sent from the server.
+                     * @param {VRS_WEBADMIN_VIEWDATA_SETTINGS} data
+                     */
                     this.showContent = function(data)
                     {
                         _ViewModel = ko.mapping.fromJS(data, _ViewMapping);
                         ko.applyBindings(_ViewModel);
+                        _FormPlugin.showValidationResults(data.ValidationResults);
                     };
                 };
                 VRS.WebAdmin.SettingsView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);

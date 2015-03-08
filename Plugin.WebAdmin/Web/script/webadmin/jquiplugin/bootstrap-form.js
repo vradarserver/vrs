@@ -21,6 +21,18 @@
     {
         var that = this;
 
+        var _FieldDataNames = [];
+
+        /**
+         * For internal use - called for each field plugin to register its data name. Used when trying to fish
+         * the plugin object from an abstract jQuery element.
+         * @param fieldDataName
+         */
+        this.addFieldDataName = function(fieldDataName)
+        {
+            _FieldDataNames.push(fieldDataName);
+        };
+
         /**
          * Extracts the value of the data-vrs-bind attribute on the element passed across.
          * @param {jQuery}      elementJQ
@@ -52,7 +64,7 @@
         this.getDataVrsSuffixAttr = function(elementJQ, trimParenthesis)
         {
             var result = that.getAttributeValue(elementJQ, 'data-vrs-suffix', false, false);
-            if(result !== undefined && result.length >= 2) {
+            if(result !== undefined && trimParenthesis && result.length >= 2) {
                 if(result[0] == '(') result = result.substring(1);
                 if(result[result.length - 1] == ')') result = result.substring(0, result.length - 1);
             }
@@ -100,11 +112,78 @@
 
             return result;
         };
+
+        /**
+         * Appends '-built' to the value in data-vrs-plugin so that the element is not rebuilt in
+         * subsequent refreshes.
+         * @param {jQuery} elementJQ
+         */
+        this.markPluginAsBuilt = function(elementJQ)
+        {
+            var attribute = elementJQ.attr('data-vrs-plugin');
+            if(attribute === undefined) throw 'The element passed to markPluginAsBuilt is not a VRS field element';
+            if(attribute.indexOf('-built') === -1) {
+                attribute += '-built';
+                elementJQ.attr('data-vrs-plugin', attribute);
+            }
+        };
+
+        /**
+         * Returns the field plugin object attached to the element passed across, or undefined if one could not be found.
+         * @param elementJQ
+         * @returns {object|undefined}
+         */
+        this.getFieldPlugin = function(elementJQ)
+        {
+            var result = undefined;
+
+            var length = _FieldDataNames.length;
+            for(var i = 0;result === undefined && i < length;++i) {
+                result = elementJQ.data(_FieldDataNames[i]);
+                if(result === null) result = undefined;
+            }
+
+            return result;
+        };
+
+        /**
+         * Sets the appropriate Bootstrap validation state class on a jQuery element.
+         * @param {jQuery}                          elementJQ
+         * @param {VRS_WEBADMIN_VALIDATIONRESULT}   validationResult
+         */
+        this.setBootstrapValidationState = function(elementJQ, validationResult)
+        {
+            if(!validationResult)               elementJQ.removeClass('has-warning has-error');
+            else if(validationResult.IsWarning) elementJQ.removeClass('has-error').addClass('has-warning');
+            else                                elementJQ.removeClass('has-warning').addClass('has-error');
+        };
+
+        /**
+         * Sets the appropriate Bootstrap glyphicon class on a jQuery element for the validation result passed across.
+         * @param {jQuery}                          elementJQ
+         * @param {VRS_WEBADMIN_VALIDATIONRESULT}   validationResult
+         */
+        this.setBootstrapValidationGlyphIcon = function(elementJQ, validationResult)
+        {
+            if(!validationResult)               elementJQ.hide();
+            else if(validationResult.IsWarning) elementJQ.removeClass('glyphicon-minus-sign').addClass('glyphicon-exclamation-sign');
+            else                                elementJQ.removeClass('glyphicon-exclamation-sign').addClass('glyphicon-minus-sign');
+        };
     };
     VRS.bootstrapFormHelper = new VRS.BootstrapFormHelper();
     //endregion
 
     //region bootstrapForm
+    /**
+     * @param {jQuery} jQueryElement
+     * @returns {VRS.bootstrapModal}
+     */
+    VRS.jQueryUIHelper.getBootstrapFormPlugin = function(jQueryElement) { return jQueryElement.data('vrsBootstrapForm'); };
+
+    /**
+     * The main form plugin.
+     * @namespace VRS.bootstrapForm
+     */
     $.widget('vrs.bootstrapForm', {
         _create: function()
         {
@@ -113,12 +192,39 @@
                 .attr('role', 'tablist')
                 .attr('aria-multiselectable', 'true');
 
+            this.refresh();
+        },
+
+        refresh: function()
+        {
             $('[data-vrs-plugin="form-page"]', this.element).bootstrapFormPage();
             $('[data-vrs-plugin="field-text"]', this.element).bootstrapFieldText();
             $('[data-vrs-plugin="field-numeric"]', this.element).bootstrapFieldNumeric();
             $('[data-vrs-plugin="field-checkbox"]', this.element).bootstrapFieldCheckbox();
             $('[data-vrs-plugin="field-select"]', this.element).bootstrapFieldSelect();
             $('[data-vrs-plugin="field-list"]', this.element).bootstrapFieldList();
+        },
+
+        showValidationResults: function(validationResults)
+        {
+            $('[data-vrs-validation-field]').each(function() {
+                var element = $(this);
+                var fieldPlugin = VRS.bootstrapFormHelper.getFieldPlugin(element);
+                if(fieldPlugin) {
+                    var fieldId = element.attr('data-vrs-validation-field');
+                    var recordOwner = element.closest('[data-vrs-validation-record]');
+                    var recordType = recordOwner.attr('data-vrs-validation-record');
+                    var recordId = recordOwner.attr('data-vrs-validation-record-id');
+                    if(recordType === undefined) recordType = null;
+                    if(recordId === undefined) recordId = null;
+                    var validationResult = VRS.arrayHelper.findFirst(validationResults.Results, function(/** VRS_WEBADMIN_VALIDATIONRESULT */ candidate) {
+                        return candidate.FieldId === fieldId &&
+                               candidate.RecordType === recordType &&
+                               candidate.RecordId === recordId;
+                    });
+                    fieldPlugin.showValidationResult(validationResult);
+                }
+            });
         }
     });
     //endregion
@@ -155,12 +261,14 @@
 
         _create: function()
         {
+            VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
+
             var state = this._getState();
             var parent = this.element.closest('.panel-group');
             var parentId = parent.attr('id');
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var id = this.element.attr('id');
-            var collapsed = $('[data-vrs-plugin="form-page"]', parent).first().attr('id') != id;
+            var collapsed = $('[data-vrs-plugin|="form-page"]', parent).first().attr('id') != id;
 
             this.element
                 .addClass('panel panel-default');
@@ -172,7 +280,7 @@
                 .uniqueId()
                 .addClass('panel-collapse collapse')
                 .addClass(collapsed ? '' : 'in')
-                .attr('role', 'tabpanel')
+                .attr('role', 'tabpanel');
             var bodyOuterId = state.bodyOuter.attr('id');
             state.body = $('<div />')
                 .addClass('panel-body')
@@ -204,12 +312,12 @@
     //endregion
 
     //region bootstrapFieldText
+    VRS.bootstrapFormHelper.addFieldDataName('vrsBootstrapFieldText');
     $.widget('vrs.bootstrapFieldText', {
         /**
          * @typedef {{
          * label:           jQuery,
          * input:           jQuery,
-         * validationGlyph: jQuery,
          * validationText:  jQuery
          * }} VRS_BOOTSTRAP_FIELD_TEXT_STATE
          * @private
@@ -226,7 +334,6 @@
                 result = {
                     label:              undefined,
                     input:              undefined,
-                    validationGlyph:    undefined,
                     validationText:     undefined
                 };
                 this.element.data(key, result);
@@ -237,6 +344,8 @@
 
         _create: function()
         {
+            VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
+
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
@@ -250,21 +359,38 @@
                 .attr('data-bind', 'textInput: ' + dataField)
                 .addClass('form-control');
             state.label.attr('for', '#' + state.input.attr('id'));
-            state.validationGlyph = $('<span />')
-                .attr('aria-hidden', 'true')
-                .addClass('glyphicon form-control-feedback')
-                .hide();
-            state.validationText = $('<span />')
-                .uniqueId()
-                .addClass('validation-message')
-                .hide();
-            state.input.attr('aria-describedby', state.validationText.attr('id'));
 
             this.element
                 .append(state.label)
-                .append(state.input)
-                .append(state.validationGlyph)
-                .append(state.validationText);
+                .append(state.input);
+        },
+
+        showValidationResult: function(/** VRS_WEBADMIN_VALIDATIONRESULT */ validationResult)
+        {
+            var state = this._getState();
+
+            VRS.bootstrapFormHelper.setBootstrapValidationState(this.element, validationResult);
+
+            if(validationResult === undefined) {
+                if(state.validationText) {
+                    state.validationText.remove();
+                    state.input.attr('aria-describedby', null);
+                    state.validationText = null;
+                }
+            } else {
+                if(!state.validationText) {
+                    state.validationText = $('<span />')
+                        .uniqueId()     // for screen readers
+                        .addClass('validation-message')
+                        .appendTo(this.element);
+                }
+                state.validationText.text(validationResult.Message);
+                var glyphIcon = $('<span />')
+                    .addClass('glyphicon')
+                    .prependTo(state.validationText);
+                VRS.bootstrapFormHelper.setBootstrapValidationGlyphIcon(glyphIcon, validationResult);
+                state.input.attr('aria-describedby', state.validationText.attr('id'));
+            }
         }
     });
     //endregion
@@ -274,6 +400,7 @@
     //      http://www.virtuosoft.eu/code/bootstrap-touchspin/
     // and here:
     //      https://github.com/istvan-ujjmeszaros/bootstrap-touchspin
+    VRS.bootstrapFormHelper.addFieldDataName('vrsBootstrapFieldNumeric');
     $.widget('vrs.bootstrapFieldNumeric', {
         /**
          * @typedef {{
@@ -304,6 +431,8 @@
 
         _create: function()
         {
+            VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
+
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
@@ -340,6 +469,7 @@
     //endregion
 
     //region bootstrapFieldCheckbox
+    VRS.bootstrapFormHelper.addFieldDataName('vrsBootstrapFieldCheckbox');
     $.widget('vrs.bootstrapFieldCheckbox', {
         /**
          * @typedef {{
@@ -369,6 +499,8 @@
 
         _create: function()
         {
+            VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
+
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element, true);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
@@ -387,7 +519,8 @@
     });
     //endregion
 
-    //region bootstrapFieldCombobox
+    //region bootstrapFieldSelect
+    VRS.bootstrapFormHelper.addFieldDataName('vrsBootstrapFieldSelect');
     $.widget('vrs.bootstrapFieldSelect', {
         /**
          * @typedef {{
@@ -417,6 +550,8 @@
 
         _create: function()
         {
+            VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
+
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
@@ -454,6 +589,7 @@
     //endregion
 
     //region bootstrapFieldList
+    VRS.bootstrapFormHelper.addFieldDataName('vrsBootstrapFieldList');
     $.widget('vrs.bootstrapFieldList', {
         /**
          * @typedef {{
@@ -486,6 +622,8 @@
 
         _create: function()
         {
+            VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
+
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
@@ -511,7 +649,7 @@
             var head = $('<thead />').appendTo(state.table);
             var headRow = $('<tr />').appendTo(head);
             $.each(columns, function(/** Number */ idx, /** VRS_BOOTSTRAP_FIELD_LIST_COLUMN} */ column) {
-                var cell = $('<th />')
+                $('<th />')
                     .text(column.title)
                     .appendTo(headRow);
             });
@@ -522,7 +660,7 @@
             var bodyRow = $('<tr />')
                 .appendTo(body);
             $.each(columns, function(/** Number */ idx, /** VRS_BOOTSTRAP_FIELD_LIST_COLUMN */ column) {
-                var cell = $('<td />')
+                $('<td />')
                     .attr('data-bind', 'text: ' + column.dataField)
                     .appendTo(bodyRow);
             });
