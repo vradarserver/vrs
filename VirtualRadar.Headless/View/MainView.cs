@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -181,6 +182,9 @@ namespace VirtualRadar.Headless.View
             for(var quit = false;!quit;) {
                 var key = Console.ReadKey(intercept: true);
                 if(key != null && key.Key == ConsoleKey.Q) quit = true;
+                else {
+                    Thread.Sleep(1);
+                }
             }
 
             return DialogResult.OK;
