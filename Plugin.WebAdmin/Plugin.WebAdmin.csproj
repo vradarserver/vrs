@@ -106,6 +106,9 @@
     <Content Include="Web\script\webadmin\siteNavigation.js" />
     <Content Include="Web\script\webadmin\view.js" />
     <Content Include="Web\WebAdmin\About.html" />
+    <Content Include="Web\WebAdmin\images\gear-32x32.png" />
+    <Content Include="Web\WebAdmin\images\notebook-32x32.png" />
+    <Content Include="Web\WebAdmin\images\receiver-32x32.png" />
     <Content Include="Web\WebAdmin\Index.html" />
     <Content Include="Web\WebAdmin\Log.html" />
     <Content Include="Web\WebAdmin\Options.html" />
