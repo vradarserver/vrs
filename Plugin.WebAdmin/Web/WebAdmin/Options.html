@@ -24,7 +24,17 @@
                         <form>
                             <div id="form-container">
 
-                                <div id="page-data-sources" data-vrs-plugin="form-page" data-vrs-title="::OptionsDataSourcesSheetTitle::">
+                                <div id="page-receivers" data-vrs-plugin="form-page" data-vrs-title="::Receivers::" data-vrs-icon="images/receiver-32x32.png">
+                                    <div data-vrs-bind="Configuration.Receivers" data-vrs-plugin="field-list">
+                                        <div data-vrs-plugin="list-columns">
+                                            <div data-vrs-bind="EnabledYesNo"   data-vrs-title="::Enabled::" data-vrs-class="thin-column"></div>
+                                            <div data-vrs-bind="Name"           data-vrs-title="::Name::"></div>
+                                            <div data-vrs-bind="DataSourceText" data-vrs-title="::Format::"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="page-data-sources" data-vrs-plugin="form-page" data-vrs-title="::OptionsDataSourcesSheetTitle::" data-vrs-icon="images/notebook-32x32.png">
                                     <div data-vrs-bind="Configuration.BaseStationSettings.DatabaseFileName"         data-vrs-title="::DatabaseFileName::"           data-vrs-plugin="field-text" data-vrs-validation-field="BaseStationDatabase"></div>
                                     <div data-vrs-bind="Configuration.BaseStationSettings.OperatorFlagsFolder"      data-vrs-title="::FlagsFolder::"                data-vrs-plugin="field-text" data-vrs-validation-field="FlagsFolder"></div>
                                     <div data-vrs-bind="Configuration.BaseStationSettings.SilhouettesFolder"        data-vrs-title="::SilhouettesFolder::"          data-vrs-plugin="field-text" data-vrs-validation-field="SilhouettesFolder"></div>
@@ -32,17 +42,7 @@
                                     <div data-vrs-bind="Configuration.BaseStationSettings.SearchPictureSubFolders"  data-vrs-title="::SearchPictureSubFolders::"    data-vrs-plugin="field-checkbox"></div>
                                 </div>
 
-                                <div id="page-receivers" data-vrs-plugin="form-page" data-vrs-title="::Receivers::">
-                                    <div data-vrs-bind="Configuration.Receivers" data-vrs-plugin="field-list">
-                                        <div data-vrs-plugin="list-columns">
-                                            <div data-vrs-bind="EnabledYesNo"           data-vrs-title="::Enabled::"></div>
-                                            <div data-vrs-bind="Name"                   data-vrs-title="::Name::"></div>
-                                            <div data-vrs-bind="DataSourceText"         data-vrs-title="::Format::"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="page-general" data-vrs-plugin="form-page" data-vrs-title="::General::">
+                                <div id="page-general" data-vrs-plugin="form-page" data-vrs-title="::General::" data-vrs-icon="images/gear-32x32.png">
                                     <h5>::OptionsGeneralCategory::</h5>
                                     <div data-vrs-bind="Configuration.FlightRouteSettings.AutoUpdateEnabled"            data-vrs-title="::AutomaticallyDownloadNewRoutes::" data-vrs-plugin="field-checkbox"></div>
                                     <div data-vrs-bind="Configuration.VersionCheckSettings.CheckAutomatically"          data-vrs-title="::CheckForNewVersions::"            data-vrs-plugin="field-checkbox"></div>

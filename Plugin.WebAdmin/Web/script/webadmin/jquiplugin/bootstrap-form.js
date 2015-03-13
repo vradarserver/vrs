@@ -45,6 +45,28 @@
         };
 
         /**
+         * Extracts the value of the data-vrs-class attribute on the element passed across.
+         * @param {jQuery}      elementJQ
+         * @param {Boolean}    [isMandatory]    Defaults to false
+         * @returns {string}
+         */
+        this.getDataVrsClassAttr = function(elementJQ, isMandatory)
+        {
+            return that.getAttributeValue(elementJQ, 'data-vrs-class', isMandatory, false);
+        };
+
+        /**
+         * Extracts the value of the data-vrs-icon attribute on the element passed across.
+         * @param {jQuery}      elementJQ
+         * @param {Boolean}    [isMandatory]    Defaults to false
+         * @returns {string}
+         */
+        this.getDataVrsIconAttr = function(elementJQ, isMandatory)
+        {
+            return that.getAttributeValue(elementJQ, 'data-vrs-icon', isMandatory, false);
+        };
+
+        /**
          * Extracts the value of the data-vrs-title attribute on the element passed across.
          * @param {jQuery}      elementJQ
          * @param {Boolean}    [isMandatory]    Defaults to false
@@ -267,6 +289,7 @@
             var parent = this.element.closest('.panel-group');
             var parentId = parent.attr('id');
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
+            var icon = VRS.bootstrapFormHelper.getDataVrsIconAttr(this.element);
             var id = this.element.attr('id');
             var collapsed = $('[data-vrs-plugin|="form-page"]', parent).first().attr('id') != id;
 
@@ -303,6 +326,17 @@
             );
             var headingId = state.heading.attr('id');
             state.bodyOuter.attr('aria-labelledby', headingId);
+
+            if(icon) {
+                var iconElement = $('<img />')
+                    .attr('src', icon)
+                    .attr('alt', 'Logo')
+                    .attr('title', 'Logo')
+                    .attr('width', 20)
+                    .attr('height', 20);
+                var iconParent = $('a', state.heading);
+                iconParent.prepend(iconElement);
+            }
 
             this.element.append(state.heading);
             this.element.append(state.bodyOuter);
@@ -594,7 +628,8 @@
         /**
          * @typedef {{
          * dataField:       string,
-         * title:           string
+         * title:           string,
+         * class:           string
          * }} VRS_BOOTSTRAP_FIELD_LIST_COLUMN
          *
          * @typedef {{
@@ -634,16 +669,17 @@
             $.each(columnsElement.children(), function(/** Number */ idx, /** jQuery */ columnElement) {
                 var columnJQuery = $(columnElement);
                 columns.push({
-                    dataField:  columnJQuery.attr('data-vrs-bind'),
-                    title:      columnJQuery.attr('data-vrs-title')
+                    dataField:  VRS.bootstrapFormHelper.getDataVrsBindAttr(columnJQuery),
+                    title:      VRS.bootstrapFormHelper.getDataVrsTitleAttr(columnJQuery),
+                    class:      VRS.bootstrapFormHelper.getDataVrsClassAttr(columnJQuery)
                 });
             });
             columnsElement.remove();
 
             this.element
-                .attr('table-responsive');
+                .addClass('table-responsive');
             state.table = $('<table />')
-                .addClass('table-striped table-condensed')
+                .addClass('table table-striped table-condensed')
                 .appendTo(this.element);
 
             var head = $('<thead />').appendTo(state.table);
@@ -651,6 +687,7 @@
             $.each(columns, function(/** Number */ idx, /** VRS_BOOTSTRAP_FIELD_LIST_COLUMN} */ column) {
                 $('<th />')
                     .text(column.title)
+                    .addClass(column.class)
                     .appendTo(headRow);
             });
 
@@ -662,6 +699,7 @@
             $.each(columns, function(/** Number */ idx, /** VRS_BOOTSTRAP_FIELD_LIST_COLUMN */ column) {
                 $('<td />')
                     .attr('data-bind', 'text: ' + column.dataField)
+                    .addClass(column.class)
                     .appendTo(bodyRow);
             });
         }
