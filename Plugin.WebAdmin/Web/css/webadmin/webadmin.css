@@ -112,4 +112,17 @@ form h5:first-of-type {
 .validation-message .glyphicon {
     margin-right: 0.5em;
 }
+
+.table .vrsr-list-master:nth-child(even),
+.table.has-detail .vrs-list-master:nth-child(4n-1) {
+    background: #eee;
+}
+.table .vrs-list-detail .vrs-panel {
+    padding: 1em;
+    padding-top: .2em;
+    border: 1px solid #bbb;
+    border-top: 0;
+    background: #f8f8f8;
+    margin-top: -0.4em;
+}
 /*endregion*/

@@ -663,6 +663,12 @@
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
             var columnsElement = $('[data-vrs-plugin="list-columns"]', this.element);
+            var detailElement = $('[data-vrs-plugin="list-detail"]', this.element);
+
+            var hasDetailElement = detailElement.length > 0;
+            detailElement.remove();
+            detailElement.attr('data-vrs-plugin', null);
+            detailElement.addClass('vrs-panel');
 
             /** @type {VRS_BOOTSTRAP_FIELD_LIST_COLUMN[]} */
             var columns = [];
@@ -679,8 +685,11 @@
             this.element
                 .addClass('table-responsive');
             state.table = $('<table />')
-                .addClass('table table-striped table-condensed')
+                .addClass('table table-condensed')
                 .appendTo(this.element);
+            if(hasDetailElement) {
+                state.table.addClass('has-detail');
+            }
 
             var head = $('<thead />').appendTo(state.table);
             var headRow = $('<tr />').appendTo(head);
@@ -695,6 +704,7 @@
                 .appendTo(state.table)
                 .attr('data-bind', 'foreach: ' + dataField);
             var bodyRow = $('<tr />')
+                .addClass('vrs-list-master')
                 .appendTo(body);
             $.each(columns, function(/** Number */ idx, /** VRS_BOOTSTRAP_FIELD_LIST_COLUMN */ column) {
                 $('<td />')
@@ -702,6 +712,39 @@
                     .addClass(column.class)
                     .appendTo(bodyRow);
             });
+
+            if(hasDetailElement) {
+                var detailRow = $('<tr />')
+                    .uniqueId()
+                    .addClass('vrs-list-detail')
+                    .hide()
+                    .appendTo(body);
+                $('<td />')
+                    .attr('colspan', columns.length)
+                    .html(detailElement.clone())
+                    .appendTo(detailRow);
+
+                bodyRow.addClass('clickable');
+                bodyRow.attr('data-bind',
+                    'event: { click: function(data, event) { ' +
+                        '$(event.currentTarget)' +
+                            '.closest(\'[data-vrs-plugin=\"field-list-built\"]\')' +
+                            '.bootstrapFieldList(\'rowClicked\', event.currentTarget);' +
+                    '}, clickBubble: false }');
+            }
+        },
+
+        rowClicked: function(targetRow)
+        {
+            var row = $(targetRow);
+            var otherRows = $('.vrs-list-master').not(row);
+            var detailRow = row.next();
+            var otherDetailRows = $('.vrs-list-detail', this.element).not(detailRow);
+
+            otherRows.removeClass('info');
+            otherDetailRows.hide();
+            detailRow.toggle();
+            row.toggleClass('info');
         }
     });
     //endregion
