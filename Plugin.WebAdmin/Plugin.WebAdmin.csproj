@@ -58,6 +58,7 @@
     <Compile Include="View\LogView.cs" />
     <Compile Include="View\MainView.cs" />
     <Compile Include="View\BaseView.cs" />
+    <Compile Include="View\NameValue.cs" />
     <Compile Include="View\SettingsView.cs" />
     <Compile Include="WebAdminStringsJavaScript.cs" />
     <Compile Include="WebAdminStrings.Designer.cs">

@@ -32,8 +32,10 @@
                                             <div data-vrs-bind="DataSourceText" data-vrs-title="::Format::"></div>
                                         </div>
                                         <div data-vrs-plugin="list-detail">
-                                            <div data-vrs-bind="Enabled"    data-vrs-title="::Enabled::"    data-vrs-plugin="field-checkbox"></div>
-                                            <div data-vrs-bind="Name"       data-vrs-title="::Name::"       data-vrs-plugin="field-text"></div>
+                                            <div data-vrs-bind="Enabled"            data-vrs-title="::Enabled::"    data-vrs-plugin="field-checkbox"></div>
+                                            <div data-vrs-bind="Name"               data-vrs-title="::Name::"       data-vrs-plugin="field-text"></div>
+                                            <div data-vrs-bind="DataSource"         data-vrs-title="::Format::"     data-vrs-plugin="field-select" data-vrs-bind-options="$root.DataSources" data-vrs-options-text="item.Name" data-vrs-options-value="item.Value"></div>
+                                            <div data-vrs-bind="ReceiverLocationId" data-vrs-title="::Location::"   data-vrs-plugin="field-select" data-vrs-bind-options="$root.Configuration.ReceiverLocations" data-vrs-options-text="item.Name" data-vrs-options-value="item.UniqueId" data-vrs-field-flags="allowUnset"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -91,13 +93,25 @@
 
                         model.RunningDotNet = ko.computed(function() { return !this.RunningMono(); }, model);
 
+                        var lookupNameFromValue = function(value, nameValues) {
+                            var result = null;
+                            $.each(nameValues, function(idx, nameValue) {
+                                if(nameValue.Value === value) {
+                                    result = nameValue.Name;
+                                }
+                                return result === null;
+                            });
+
+                            return result === null ? '' : result;
+                        };
+
                         $.each(model.Configuration.Receivers(), function(idx, receiver) {
                             receiver.EnabledYesNo = ko.computed(function() {
                                 return this.Enabled() ? '::Yes::' : '::No::'
                             }, receiver);
                             receiver.DataSourceText = ko.computed(function () {
                                 var dataSource = this.DataSource();
-                                return $.isNumeric(dataSource) ? options.data.DataSources[dataSource] : '';
+                                return lookupNameFromValue(dataSource, options.data.DataSources);
                             }, receiver);
                         });
 
