@@ -164,12 +164,14 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             result.FieldId = originalResult.Field.ToString();
         }
 
-        protected Dictionary<int, string> CreateEnumDescriptionDictionary<T>(Func<T, string> describeEnumValue)
+        protected List<NameValue> CreateEnumNameValue<T>(Func<T, string> describeEnumValue)
         {
-            var result = new Dictionary<int, string>();
+            var result = new List<NameValue>();
+
             foreach(T value in Enum.GetValues(typeof(T))) {
                 var description = describeEnumValue(value);
-                result.Add((int)Convert.ChangeType(value, typeof(int)), description);
+                var nameValue = new NameValue((int)Convert.ChangeType(value, typeof(int)), description);
+                result.Add(nameValue);
             }
 
             return result;

@@ -10,7 +10,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @fileoverview A jQuery UI plugin that displays bootstrap form elements.
+ * @fileoverview A jQuery UI plugin that displays bootstrap form elements. Assumes the use on knockout.
  */
 (function(VRS, $, undefined)
 {
@@ -53,6 +53,26 @@
         this.getDataVrsClassAttr = function(elementJQ, isMandatory)
         {
             return that.getAttributeValue(elementJQ, 'data-vrs-class', isMandatory, false);
+        };
+
+        /**
+         * Reads the data-vrs-field-flags attribute of semi-colon separated flags and assigns the
+         * value true to each flag in the flags object passed across.
+         * @param {jQuery}  elementJQ
+         * @param {object}  flags
+         * @returns {object}
+         */
+        this.getDataVrsFlags = function(elementJQ, flags)
+        {
+            var concatentatedFlagsText = that.getAttributeValue(elementJQ, 'data-vrs-field-flags', false, false);
+            if(concatentatedFlagsText !== undefined) {
+                var flagTextArray = concatentatedFlagsText.split(';');
+                $.each(flagTextArray, function(/** Number */ idx, /** String */ flagText) {
+                    flags[flagText] = true;
+                });
+            }
+
+            return flags;
         };
 
         /**
@@ -559,7 +579,8 @@
         /**
          * @typedef {{
          * label:           jQuery,
-         * select:          jQuery
+         * select:          jQuery,
+         * unset:           jQuery
          * }} VRS_BOOTSTRAP_FIELD_SELECT_STATE
          * @private
          */
@@ -574,7 +595,8 @@
             if(result === undefined) {
                 result = {
                     label:      undefined,
-                    select:     undefined
+                    select:     undefined,
+                    unset:      undefined
                 };
                 this.element.data(key, result);
             }
@@ -587,6 +609,9 @@
             VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
 
             var state = this._getState();
+            var flags = VRS.bootstrapFormHelper.getDataVrsFlags(this.element, {
+                allowUnset: false
+            });
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
             var optionsBinding = VRS.bootstrapFormHelper.getAttributeValue(this.element, 'data-vrs-bind-options', true, true);
@@ -606,7 +631,8 @@
                 options: optionsBinding,
                 optionsCaption: optionsCaption,
                 optionsText: optionsText,
-                optionsValue: optionsValue
+                optionsValue: optionsValue,
+                valueAllowUnset: flags.allowUnset
             });
 
             state.label = $('<label />')
@@ -633,7 +659,8 @@
          * }} VRS_BOOTSTRAP_FIELD_LIST_COLUMN
          *
          * @typedef {{
-         * table:           jQuery
+         * table:           jQuery,
+         * detailElement:   jQuery
          * }} VRS_BOOTSTRAP_FIELD_LIST_STATE
          */
 
@@ -666,9 +693,13 @@
             var detailElement = $('[data-vrs-plugin="list-detail"]', this.element);
 
             var hasDetailElement = detailElement.length > 0;
-            detailElement.remove();
-            detailElement.attr('data-vrs-plugin', null);
-            detailElement.addClass('vrs-panel');
+            if(hasDetailElement) {
+                detailElement.remove();
+                detailElement.attr('data-vrs-plugin', null);
+                detailElement.addClass('vrs-panel');
+
+                state.detailElement = detailElement;
+            }
 
             /** @type {VRS_BOOTSTRAP_FIELD_LIST_COLUMN[]} */
             var columns = [];
@@ -715,27 +746,27 @@
 
             if(hasDetailElement) {
                 var detailRow = $('<tr />')
-                    .uniqueId()
                     .addClass('vrs-list-detail')
                     .hide()
+                    .append($('<td />')
+                        .attr('colspan', columns.length)
+                        .html(state.detailElement.clone())
+                    )
                     .appendTo(body);
-                $('<td />')
-                    .attr('colspan', columns.length)
-                    .html(detailElement.clone())
-                    .appendTo(detailRow);
 
                 bodyRow.addClass('clickable');
                 bodyRow.attr('data-bind',
                     'event: { click: function(data, event) { ' +
                         '$(event.currentTarget)' +
                             '.closest(\'[data-vrs-plugin=\"field-list-built\"]\')' +
-                            '.bootstrapFieldList(\'rowClicked\', event.currentTarget);' +
+                            '.bootstrapFieldList(\'rowClicked\', data, event.currentTarget);' +
                     '}, clickBubble: false }');
             }
         },
 
-        rowClicked: function(targetRow)
+        rowClicked: function(data, targetRow)
         {
+            var state = this._getState();
             var row = $(targetRow);
             var otherRows = $('.vrs-list-master').not(row);
             var detailRow = row.next();

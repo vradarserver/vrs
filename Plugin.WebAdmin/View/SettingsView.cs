@@ -50,7 +50,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public bool RunningMono { get; set; }
 
-        public Dictionary<int, string> DataSources { get; private set; }
+        public List<NameValue> DataSources { get; private set; }
         #endregion
 
         #region Interface events
@@ -76,7 +76,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
             VoiceNames = new string[0];
             RunningMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
-            DataSources = CreateEnumDescriptionDictionary<DataSource>(r => Describe.DataSource(r));
+            DataSources = CreateEnumNameValue<DataSource>(r => Describe.DataSource(r));
         }
         #endregion
 
