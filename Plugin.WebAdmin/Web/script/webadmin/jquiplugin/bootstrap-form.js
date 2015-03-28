@@ -218,7 +218,7 @@
     //region bootstrapForm
     /**
      * @param {jQuery} jQueryElement
-     * @returns {VRS.bootstrapModal}
+     * @returns {VRS.bootstrapForm}
      */
     VRS.jQueryUIHelper.getBootstrapFormPlugin = function(jQueryElement) { return jQueryElement.data('vrsBootstrapForm'); };
 
@@ -231,20 +231,26 @@
         {
             this.element
                 .addClass('panel-group')
+                .addClass('vrs-form')                       // used for identification - do not remove
                 .attr('role', 'tablist')
                 .attr('aria-multiselectable', 'true');
 
-            this.refresh();
+            this.refreshPartial(this.element);
         },
 
         refresh: function()
         {
-            $('[data-vrs-plugin="form-page"]', this.element).bootstrapFormPage();
-            $('[data-vrs-plugin="field-text"]', this.element).bootstrapFieldText();
-            $('[data-vrs-plugin="field-numeric"]', this.element).bootstrapFieldNumeric();
-            $('[data-vrs-plugin="field-checkbox"]', this.element).bootstrapFieldCheckbox();
-            $('[data-vrs-plugin="field-select"]', this.element).bootstrapFieldSelect();
-            $('[data-vrs-plugin="field-list"]', this.element).bootstrapFieldList();
+            this.refreshPartial(this.element);
+        },
+
+        refreshPartial: function(element)
+        {
+            $('[data-vrs-plugin="form-page"]', element).bootstrapFormPage();
+            $('[data-vrs-plugin="field-text"]', element).bootstrapFieldText();
+            $('[data-vrs-plugin="field-numeric"]', element).bootstrapFieldNumeric();
+            $('[data-vrs-plugin="field-checkbox"]', element).bootstrapFieldCheckbox();
+            $('[data-vrs-plugin="field-select"]', element).bootstrapFieldSelect();
+            $('[data-vrs-plugin="field-list"]', element).bootstrapFieldList();
         },
 
         showValidationResults: function(validationResults)
@@ -649,7 +655,41 @@
     //endregion
 
     //region bootstrapFieldList
+    /**
+     * The custom knockout binding applied to the detail panel for every list detail row. This
+     * adds the detail panel template and then applies the jQuery elements to it. The detail
+     * panel should use data-vrs-late-plugin to mark plugins instead of data-vrs-plugin, thus
+     * ensuring that the plugins are not applied until after the row has been expanded. This
+     * ensures that each plugin for each row is a separate instance with a separate ID and
+     * state.
+     */
+    ko.bindingHandlers.vrsFieldListDetail = {
+        init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            var jqElement = $(element);
+            var parentListElement = jqElement.closest('.vrs-field-list');
+            var parentListPlugin = VRS.jQueryUIHelper.getBootstrapFieldListPlugin(parentListElement);
+            var formElement = parentListElement.closest('.vrs-form');
+            var formPlugin = VRS.jQueryUIHelper.getBootstrapFormPlugin(formElement);
+
+            var detail = parentListPlugin.getDetailClone();
+            jqElement.html(detail);
+            formPlugin.refreshPartial(jqElement);
+        }/*,
+        update: function(element, valueAccessor, allBindings, deprecated, bindingContext) {
+        }
+        */
+    };
+
+    /**
+     * @param {jQuery} jQueryElement
+     * @returns {VRS.bootstrapFieldList}
+     */
+    VRS.jQueryUIHelper.getBootstrapFieldListPlugin = function(jQueryElement) { return jQueryElement.data('vrsBootstrapFieldList'); };
+
     VRS.bootstrapFormHelper.addFieldDataName('vrsBootstrapFieldList');
+    /**
+     * @namespace VRS.bootstrapFieldList
+     */
     $.widget('vrs.bootstrapFieldList', {
         /**
          * @typedef {{
@@ -698,6 +738,15 @@
                 detailElement.attr('data-vrs-plugin', null);
                 detailElement.addClass('vrs-panel');
 
+                if(detailElement.children('[data-vrs-plugin]').length > 0) throw 'The list detail panel must not contain vrs-data-plugin elements';
+
+                $.each(detailElement.children('[data-vrs-late-plugin]'), function() {
+                    var element = $(this);
+                    var pluginValue = element.attr('data-vrs-late-plugin');
+                    element.attr('data-vrs-plugin', pluginValue);
+                    element.attr('data-vrs-late-plugin', null);
+                });
+
                 state.detailElement = detailElement;
             }
 
@@ -714,7 +763,8 @@
             columnsElement.remove();
 
             this.element
-                .addClass('table-responsive');
+                .addClass('table-responsive')
+                .addClass('vrs-field-list');            // This is used to identify the parent list when expanding detail rows, do not remove
             state.table = $('<table />')
                 .addClass('table table-condensed')
                 .appendTo(this.element);
@@ -750,7 +800,7 @@
                     .hide()
                     .append($('<td />')
                         .attr('colspan', columns.length)
-                        .html(state.detailElement.clone())
+                        .attr('data-bind', 'vrsFieldListDetail: $data')
                     )
                     .appendTo(body);
 
@@ -762,6 +812,12 @@
                             '.bootstrapFieldList(\'rowClicked\', data, event.currentTarget);' +
                     '}, clickBubble: false }');
             }
+        },
+
+        getDetailClone: function()
+        {
+            var state = this._getState();
+            return state.detailElement.clone();
         },
 
         rowClicked: function(data, targetRow)
