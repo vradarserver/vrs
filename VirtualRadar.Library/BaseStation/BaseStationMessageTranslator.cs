@@ -45,7 +45,7 @@ namespace VirtualRadar.Library.BaseStation
                                 case 1:     result.TransmissionType = result.MessageType == BaseStationMessageType.Transmission ? BaseStationMessageHelper.ConvertToBaseStationTransmissionType(chunk) : BaseStationTransmissionType.None; break;
                                 case 2:     result.SessionId = ParseInt(chunk); break;
                                 case 3:     result.AircraftId = ParseInt(chunk); break;
-                                case 4:     result.Icao24 = chunk; break;
+                                case 4:     result.Icao24 = chunk == null ? null : chunk.ToUpperInvariant(); break;
                                 case 5:     result.FlightId = ParseInt(chunk); break;
                                 case 6:     result.MessageGenerated = ParseDate(chunk); break;
                                 case 7:     result.MessageGenerated = ParseTime(result.MessageGenerated, chunk); break;
