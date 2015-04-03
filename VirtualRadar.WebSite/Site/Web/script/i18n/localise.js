@@ -28,6 +28,8 @@
      * @param {VRS_SIZE=}   [settings.flagSize]             The dimensions of the flag image.
      * @param {string}       settings.englishName           The English name of the culture.
      * @param {string}      [settings.nativeName]           The native language name of the culture.
+     * @param {boolean}     [settings.topLevel]             True if this is a top-level language description.
+     * @param {string}      [settings.groupLanguage]        The language to use when grouping localisations together.
      * @constructor
      */
     {
@@ -40,6 +42,8 @@
         this.flagSize = settings.flagSize || { width: 20, height: 16 };
         this.englishName = settings.englishName;
         this.nativeName = settings.nativeName || this.englishName;
+        this.topLevel = settings.topLevel !== undefined ? settings.topLevel : false;
+        this.groupLanguage = settings.groupLanguage || settings.language;
 
         this.getFlagImageHtml = function()
         {
@@ -312,8 +316,8 @@
             var result = [];
 
             $.each(that.getCultureInfos(), function(/** Number */ idx, /** VRS.CultureInfo */ cultureInfo) {
-                var language = cultureInfo.language;
-                var innerArray = VRS.arrayHelper.findFirst(result, function(r) { return r[0].language === language; }, null);
+                var language = cultureInfo.groupLanguage;
+                var innerArray = VRS.arrayHelper.findFirst(result, function(r) { return r[0].groupLanguage === language; }, null);
                 if(!innerArray) {
                     innerArray = [];
                     result.push(innerArray);
@@ -476,7 +480,7 @@
     VRS.globalisation = new VRS.Localise();
 
     // English
-    VRS.globalisation.addCultureInfo('en',      { language: 'en',                    englishName: 'English', forceCultureName: 'en-GB' });  // Globalize uses American settings for the default 'en' language. This is a British program :P
+    VRS.globalisation.addCultureInfo('en',      { language: 'en',                    englishName: 'English', forceCultureName: 'en-GB', topLevel: true });  // Globalize uses American settings for the default 'en' language. This is a British program :P
     VRS.globalisation.addCultureInfo('en-029',  { language: 'en',                    englishName: 'English (Caribbean)' });
     VRS.globalisation.addCultureInfo('en-AU',   { language: 'en', countryFlag: 'au', englishName: 'English (Australia)' });
     VRS.globalisation.addCultureInfo('en-BZ',   { language: 'en', countryFlag: 'bz', englishName: 'English (Belize)' });
@@ -493,7 +497,7 @@
     VRS.globalisation.addCultureInfo('en-ZA',   { language: 'en', countryFlag: 'za', englishName: 'English (South Africa)' });
 
     // French
-    VRS.globalisation.addCultureInfo('fr',    { language: 'fr',                    englishName: 'French',                  nativeName: 'Français' });
+    VRS.globalisation.addCultureInfo('fr',    { language: 'fr',                    englishName: 'French',                  nativeName: 'Français', topLevel: true });
     VRS.globalisation.addCultureInfo('fr-BE', { language: 'fr', countryFlag: 'be', englishName: 'French (Belgium)',        nativeName: 'Français (Belgique)' });
     VRS.globalisation.addCultureInfo('fr-CA', { language: 'fr', countryFlag: 'ca', englishName: 'French (Canada)',         nativeName: 'Français (Canada)' });
     VRS.globalisation.addCultureInfo('fr-CH', { language: 'fr', countryFlag: 'ch', englishName: 'French (Switzerland)',    nativeName: 'Français (Suisse)' });
@@ -502,20 +506,23 @@
     VRS.globalisation.addCultureInfo('fr-MC', { language: 'fr', countryFlag: 'mc', englishName: 'French (Monaco)',         nativeName: 'Français (Principauté de Monaco)' });
 
     // Russian
-    VRS.globalisation.addCultureInfo('ru',    { language: 'ru', englishName: 'Russian',                 nativeName: 'Русский' });
+    VRS.globalisation.addCultureInfo('ru',    { language: 'ru', englishName: 'Russian',                 nativeName: 'Русский', topLevel: true });
     VRS.globalisation.addCultureInfo('ru-RU', { language: 'ru', englishName: 'Russian (Russia)',        nativeName: 'Русский (Россия)' });
 
     // Chinese
-    VRS.globalisation.addCultureInfo('zh',    { language: 'zh', englishName: 'Chinese',                 nativeName: '中文' });
+    VRS.globalisation.addCultureInfo('zh',    { language: 'zh', englishName: 'Chinese',                 nativeName: '中文', topLevel: true });
     VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)',         nativeName: '中文 (中国)' });
 
     // Croatian
-    VRS.globalisation.addCultureInfo('hr',    { language: 'hr', englishName: 'Croatian',                nativeName: 'Hrvatski' });
+    VRS.globalisation.addCultureInfo('hr',    { language: 'hr', englishName: 'Croatian',                nativeName: 'Hrvatski', topLevel: true });
     VRS.globalisation.addCultureInfo('hr-HR', { language: 'hr', englishName: 'Croatian (Croatia)',      nativeName: 'Hrvatski (Hrvatska)' });
 
     // Serbian
-    VRS.globalisation.addCultureInfo('sr-Latn',     { language: 'sr-Latn', englishName: 'Serbian',          nativeName: 'Srpski',           countryFlag: 'sr' });
+    VRS.globalisation.addCultureInfo('sr-Latn',     { language: 'sr-Latn', englishName: 'Serbian',          nativeName: 'Srpski',           countryFlag: 'sr', topLevel: true });
     VRS.globalisation.addCultureInfo('sr-Latn-RS',  { language: 'sr-Latn', englishName: 'Serbian (Serbia)', nativeName: 'Srpski (Srbija)',  countryFlag: 'sr' });
+
+    // Portuguese
+    VRS.globalisation.addCultureInfo('pt-BR',   { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)',  countryFlag: 'br', topLevel: true });
 
     //endregion
 }(window.VRS = window.VRS || {}, jQuery));
