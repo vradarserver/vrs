@@ -75,6 +75,7 @@
     <EmbeddedResource Include="Strings.fr-FR.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Strings.pt-BR.resx" />
     <EmbeddedResource Include="Strings.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Strings.hr-HR.resx" />
     <EmbeddedResource Include="Strings.pl-PL.resx">

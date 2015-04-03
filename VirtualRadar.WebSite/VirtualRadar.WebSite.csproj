@@ -183,6 +183,7 @@
     <Content Include="Site\Web\images\location.png" />
     <Content Include="Site\Web\images\Mode-S%402x.png" />
     <Content Include="Site\Web\images\Mode-S.png" />
+    <Content Include="Site\Web\images\regions\br.bmp" />
     <Content Include="Site\Web\images\regions\fi.bmp" />
     <Content Include="Site\Web\images\regions\hr.bmp" />
     <Content Include="Site\Web\images\regions\no.bmp" />
@@ -190,6 +191,7 @@
     <Content Include="Site\Web\images\regions\sr.bmp" />
     <Content Include="Site\Web\images\regions\zh.bmp" />
     <Content Include="Site\Web\mobileReport.html" />
+    <Content Include="Site\Web\script\i18n\strings.pt-br.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi-FI.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-BE.js" />
@@ -199,6 +201,7 @@
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-LU.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr-MC.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fr.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.pt-BR.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.sr-Latn.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.sr-Latn-RS.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.hr.js" />
