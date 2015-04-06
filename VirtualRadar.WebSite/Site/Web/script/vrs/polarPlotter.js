@@ -122,6 +122,23 @@
         };
 
         /**
+         * Returns an array of feeds that have polar plots in order of feed name.
+         * @returns {VRS_RECEIVER[]}
+         */
+        this.getSortedPolarPlotterFeeds = function()
+        {
+            var result = that.getPolarPlotterFeeds();
+            result.sort(function(/** VRS_RECEIVER */ lhs, /** VRS_RECEIVER */ rhs) {
+                if(lhs.id !== undefined && rhs.id !== undefined)        return lhs.name.localeCompare(rhs.name);
+                else if(lhs.id === undefined && rhs.id === undefined)   return 0;
+                else if(lhs.id === undefined)                           return -1;
+                else                                                    return 1;
+            });
+
+            return result;
+        };
+
+        /**
          * Returns an array of plots on display.
          * @returns {VRS_POLAR_PLOT_SLICE_ABSTRACT[]}
          */
