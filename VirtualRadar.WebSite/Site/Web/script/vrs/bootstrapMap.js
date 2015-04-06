@@ -413,7 +413,7 @@
                 labelKey: 'ReceiverRange'
             });
 
-            var feeds = pageSettings.polarPlotter.getPolarPlotterFeeds();
+            var feeds = pageSettings.polarPlotter.getSortedPolarPlotterFeeds();
             var countFeeds = feeds.length;
             $.each(feeds, function(/** number */ idx, /** VRS_RECEIVER */ feed) {
                 var subMenu = null;
