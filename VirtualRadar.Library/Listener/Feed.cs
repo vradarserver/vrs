@@ -221,8 +221,7 @@ namespace VirtualRadar.Library.Listener
                 if(Listener.Statistics != null) Listener.Statistics.ResetMessageCounters();
             }
 
-            Listener.AlwaysUsePositionsInMerge = receiver.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly;
-            Listener.HasPriorityInMerge = receiver.MultilaterationFeedType == MultilaterationFeedType.PositionsInjected;
+            Listener.MultilaterationFeedType = receiver.MultilaterationFeedType;
         }
         #endregion
 

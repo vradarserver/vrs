@@ -418,23 +418,7 @@ namespace Test.VirtualRadar.Library.Listener
                     action();
 
                     Assert.AreEqual(true, _Listener.Object.IgnoreBadMessages);
-
-                    switch(feedType) {
-                        case MultilaterationFeedType.None:
-                            Assert.IsFalse(_Listener.Object.AlwaysUsePositionsInMerge);
-                            Assert.IsFalse(_Listener.Object.HasPriorityInMerge);
-                            break;
-                        case MultilaterationFeedType.PositionsInjected:
-                            Assert.IsFalse(_Listener.Object.AlwaysUsePositionsInMerge);
-                            Assert.IsTrue(_Listener.Object.HasPriorityInMerge);
-                            break;
-                        case MultilaterationFeedType.PositionsOnly:
-                            Assert.IsTrue(_Listener.Object.AlwaysUsePositionsInMerge);
-                            Assert.IsFalse(_Listener.Object.HasPriorityInMerge);
-                            break;
-                        default:
-                            throw new NotImplementedException();
-                    }
+                    Assert.AreEqual(feedType, _Listener.Object.MultilaterationFeedType);
 
                     switch(connectionType) {
                         case ConnectionType.COM:

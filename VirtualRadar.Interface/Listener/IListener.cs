@@ -15,6 +15,7 @@ using System.Text;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.ModeS;
 using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.Listener
 {
@@ -81,26 +82,9 @@ namespace VirtualRadar.Interface.Listener
         bool IgnoreBadMessages { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that if a position message appears on this feed for an aircraft then the
-        /// message is always used, even if this listener is not the current source of messages for the aircraft.
+        /// Gets or sets the type of MLAT feed that the listener is listening to.
         /// </summary>
-        /// <remarks>
-        /// This is intended for use on feeds from MLAT sources that only supply position messages for aircraft, they
-        /// do not pass through any other source of aircraft data.
-        /// </remarks>
-        bool AlwaysUsePositionsInMerge { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that if an aircraft appears on this feed then this feed is always used as
-        /// the source for the aircraft.
-        /// </summary>
-        /// <remarks>
-        /// This is intended for use on feeds from MLAT sources that inject position messages for aircraft. In this case
-        /// we cannot distinguish positions from other aircraft, so we have to accept everything coming in from this
-        /// feed. Note that this bypasses the ICAO timeout check, which could cause jumping when transitioning from other
-        /// feeds to this feed.
-        /// </remarks>
-        bool HasPriorityInMerge { get; set; }
+        MultilaterationFeedType MultilaterationFeedType { get; set; }
 
         /// <summary>
         /// Raised when bytes have been received from the data source. This may not be on the same thread that started
