@@ -20,6 +20,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Library.Listener
 {
@@ -183,11 +184,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
-            _Listener1.Object.AlwaysUsePositionsInMerge = worksheet.Bool("L1UsePosn");
-            _Listener2.Object.AlwaysUsePositionsInMerge = worksheet.Bool("L2UsePosn");
-
-            _Listener1.Object.HasPriorityInMerge = worksheet.Bool("L1HasPriority");
-            _Listener2.Object.HasPriorityInMerge = worksheet.Bool("L2HasPriority");
+            _Listener1.Object.MultilaterationFeedType = worksheet.ParseEnum<MultilaterationFeedType>("L1MLAT");
+            _Listener2.Object.MultilaterationFeedType = worksheet.ParseEnum<MultilaterationFeedType>("L2MLAT");
 
             _MergedFeed.SetListeners(_Listeners);
             _MergedFeed.IcaoTimeout = worksheet.Int("IcaoTimeout");

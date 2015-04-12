@@ -19,6 +19,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.ModeS;
 using InterfaceFactory;
 using VirtualRadar.Interface.Network;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library.Listener
 {
@@ -200,14 +201,9 @@ namespace VirtualRadar.Library.Listener
         public bool IgnoreBadMessages { get; set; }
 
         /// <summary>
-        /// See interface docs. Ignored for MergedFeedListeners.
+        /// See interface docs.
         /// </summary>
-        public bool AlwaysUsePositionsInMerge { get; set; }
-
-        /// <summary>
-        /// See interface docs. Ignored for MergedFeedListeners.
-        /// </summary>
-        public bool HasPriorityInMerge { get; set; }
+        public MultilaterationFeedType MultilaterationFeedType { get; set; }
         #endregion
 
         #region Events exposed
@@ -400,18 +396,24 @@ namespace VirtualRadar.Library.Listener
             Source source;
             lock(_SyncLock) {
                 if(!_IcaoSourceMap.TryGetValue(icao, out source)) {
-                    source = new Source() {
-                        LastMessageUtc = receivedUtc,
-                        Listener = listener,
-                        SeenPositionMessage = hasPosition,
-                    };
-                    _IcaoSourceMap.Add(icao, source);
+                    if(listener.MultilaterationFeedType != MultilaterationFeedType.PositionsOnly) {
+                        source = new Source() {
+                            LastMessageUtc = receivedUtc,
+                            Listener = listener,
+                            SeenPositionMessage = hasPosition,
+                        };
+                        _IcaoSourceMap.Add(icao, source);
+                    }
                 } else {
                     if(source.Listener != listener) {
                         var threshold = receivedUtc.AddMilliseconds(-IcaoTimeout);
-                        if(source.LastMessageUtc < threshold)                                       source.Listener = listener;
-                        else if(!source.Listener.HasPriorityInMerge && listener.HasPriorityInMerge) source.Listener = listener;
-                        else                                                                        source = null;
+                        if(source.LastMessageUtc < threshold) {
+                            source.Listener = listener;
+                        } else if(listener.MultilaterationFeedType == MultilaterationFeedType.PositionsInjected && source.Listener.MultilaterationFeedType != MultilaterationFeedType.PositionsInjected) {
+                            source.Listener = listener;
+                        } else {
+                            source = null;
+                        }
                     }
 
                     if(source != null) {
@@ -424,7 +426,7 @@ namespace VirtualRadar.Library.Listener
             }
 
             var result = source != null;
-            if(!result && hasPosition && listener.AlwaysUsePositionsInMerge) {
+            if(!result && hasPosition && listener.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly) {
                 result = true;
             }
 

@@ -178,12 +178,7 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool AlwaysUsePositionsInMerge { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool HasPriorityInMerge { get; set; }
+        public MultilaterationFeedType MultilaterationFeedType { get; set; }
         #endregion
 
         #region Events
