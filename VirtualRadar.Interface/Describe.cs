@@ -403,5 +403,20 @@ namespace VirtualRadar.Interface
         {
             return ExceptionMultiLine(exception, "; ");
         }
+
+        /// <summary>
+        /// Returns a translated description of a multilateration feed type.
+        /// </summary>
+        /// <param name="feedType"></param>
+        /// <returns></returns>
+        public static string MultilaterationFeedType(MultilaterationFeedType feedType)
+        {
+            switch(feedType) {
+                case Settings.MultilaterationFeedType.None:                 return Strings.None;
+                case Settings.MultilaterationFeedType.PositionsInjected:    return Strings.MLATPositionsInjected;
+                case Settings.MultilaterationFeedType.PositionsOnly:        return Strings.MLATPositionsOnly;
+                default:                                                    throw new NotImplementedException();
+            }
+        }
     }
 }

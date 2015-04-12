@@ -2435,4 +2435,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="NotYetKnown" xml:space="preserve">
     <value>Not yet known</value>
   </data>
+  <data name="MLATPositionsInjected" xml:space="preserve">
+    <value>Positions injected</value>
+  </data>
+  <data name="MLATPositionsOnly" xml:space="preserve">
+    <value>Positions only</value>
+  </data>
+  <data name="MultilaterationType" xml:space="preserve">
+    <value>MLAT feed type</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesMultilaterationType" xml:space="preserve">
+    <value>Leave at NONE if the receiver is not a source of multilateration data, set to POSITIONS ONLY if the source only sends calculated positions, use POSITIONS INJECTED if it adds calculated positions to a feed.</value>
+  </data>
 </root>

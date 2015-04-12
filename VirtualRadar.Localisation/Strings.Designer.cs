@@ -2740,6 +2740,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Positions injected.
+        /// </summary>
+        public static string MLATPositionsInjected {
+            get {
+                return ResourceManager.GetString("MLATPositionsInjected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Positions only.
+        /// </summary>
+        public static string MLATPositionsOnly {
+            get {
+                return ResourceManager.GetString("MLATPositionsOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mobile site.
         /// </summary>
         public static string MobileSite {
@@ -2772,6 +2790,15 @@ namespace VirtualRadar.Localisation {
         public static string ModeS {
             get {
                 return ResourceManager.GetString("ModeS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MLAT feed type.
+        /// </summary>
+        public static string MultilaterationType {
+            get {
+                return ResourceManager.GetString("MultilaterationType", resourceCulture);
             }
         }
         
@@ -3123,6 +3150,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeDataSourcesIgnoreBadConnection {
             get {
                 return ResourceManager.GetString("OptionsDescribeDataSourcesIgnoreBadConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave at NONE if the receiver is not a source of multilateration data, set to POSITIONS ONLY if the source only sends calculated positions, use POSITIONS INJECTED if it adds calculated positions to a feed..
+        /// </summary>
+        public static string OptionsDescribeDataSourcesMultilaterationType {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDataSourcesMultilaterationType", resourceCulture);
             }
         }
         

@@ -198,6 +198,16 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public bool IgnoreBadMessages { get; set; }
+
+        /// <summary>
+        /// See interface docs. Ignored for MergedFeedListeners.
+        /// </summary>
+        public bool AlwaysUsePositionsInMerge { get; set; }
+
+        /// <summary>
+        /// See interface docs. Ignored for MergedFeedListeners.
+        /// </summary>
+        public bool HasPriorityInMerge { get; set; }
         #endregion
 
         #region Events exposed
@@ -399,8 +409,9 @@ namespace VirtualRadar.Library.Listener
                 } else {
                     if(source.Listener != listener) {
                         var threshold = receivedUtc.AddMilliseconds(-IcaoTimeout);
-                        if(source.LastMessageUtc < threshold) source.Listener = listener;
-                        else                                  source = null;
+                        if(source.LastMessageUtc < threshold)                                       source.Listener = listener;
+                        else if(!source.Listener.HasPriorityInMerge && listener.HasPriorityInMerge) source.Listener = listener;
+                        else                                                                        source = null;
                     }
 
                     if(source != null) {
@@ -412,7 +423,12 @@ namespace VirtualRadar.Library.Listener
                 if(source != null && IgnoreAircraftWithNoPosition && !source.SeenPositionMessage) source = null;
             }
 
-            return source != null;
+            var result = source != null;
+            if(!result && hasPosition && listener.AlwaysUsePositionsInMerge) {
+                result = true;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -455,7 +471,7 @@ namespace VirtualRadar.Library.Listener
 
         /// <summary>
         /// Processes messages from the receiver on a background thread. Using a background thread prevents
-        /// our processing from interupting the processing of messages by our receivers.
+        /// our processing from interrupting the processing of messages by our receivers.
         /// </summary>
         /// <param name="messageReceived"></param>
         private void ProcessReceivedMessage(MessageReceived messageReceived)

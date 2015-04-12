@@ -392,49 +392,70 @@ namespace Test.VirtualRadar.Library.Listener
         private void Do_Check_Configuration_Changes_Are_Applied(bool initialiseFirst, Action action)
         {
             foreach(ConnectionType connectionType in Enum.GetValues(typeof(ConnectionType))) {
-                TestCleanup();
-                TestInitialise();
+                foreach(MultilaterationFeedType feedType in Enum.GetValues(typeof(MultilaterationFeedType))) {
+                    TestCleanup();
+                    TestInitialise();
 
-                if(initialiseFirst) _Feed.Initialise(_Receiver, _Configuration);
+                    if(initialiseFirst) _Feed.Initialise(_Receiver, _Configuration);
 
-                _Receiver.ConnectionType = connectionType;
+                    _Receiver.ConnectionType = connectionType;
 
-                _Receiver.Address = "TCP Address";
-                _Receiver.Port = 12345;
-                _Receiver.UseKeepAlive = true;
-                _Receiver.IdleTimeoutMilliseconds = 30000;
+                    _Receiver.Address = "TCP Address";
+                    _Receiver.Port = 12345;
+                    _Receiver.UseKeepAlive = true;
+                    _Receiver.IdleTimeoutMilliseconds = 30000;
 
-                _Receiver.ComPort = "Serial COM Port";
-                _Receiver.BaudRate = 10;
-                _Receiver.DataBits = 9;
-                _Receiver.StopBits = StopBits.Two;
-                _Receiver.Parity = Parity.Mark;
-                _Receiver.Handshake = Handshake.XOnXOff;
-                _Receiver.StartupText = "Up";
-                _Receiver.ShutdownText = "Down";
+                    _Receiver.ComPort = "Serial COM Port";
+                    _Receiver.BaudRate = 10;
+                    _Receiver.DataBits = 9;
+                    _Receiver.StopBits = StopBits.Two;
+                    _Receiver.Parity = Parity.Mark;
+                    _Receiver.Handshake = Handshake.XOnXOff;
+                    _Receiver.StartupText = "Up";
+                    _Receiver.ShutdownText = "Down";
+                    _Receiver.MultilaterationFeedType = feedType;
 
-                action();
+                    action();
 
-                Assert.AreEqual(true, _Listener.Object.IgnoreBadMessages);
-                switch(connectionType) {
-                    case ConnectionType.COM:
-                        Assert.AreEqual("Serial COM Port", _SerialActiveConnector.Object.ComPort);
-                        Assert.AreEqual(10, _SerialActiveConnector.Object.BaudRate);
-                        Assert.AreEqual(9, _SerialActiveConnector.Object.DataBits);
-                        Assert.AreEqual(StopBits.Two, _SerialActiveConnector.Object.StopBits);
-                        Assert.AreEqual(Parity.Mark, _SerialActiveConnector.Object.Parity);
-                        Assert.AreEqual(Handshake.XOnXOff, _SerialActiveConnector.Object.Handshake);
-                        Assert.AreEqual("Up", _SerialActiveConnector.Object.StartupText);
-                        Assert.AreEqual("Down", _SerialActiveConnector.Object.ShutdownText);
-                        break;
-                    case ConnectionType.TCP:
-                        Assert.AreEqual("TCP Address", _IPActiveConnector.Object.Address);
-                        Assert.AreEqual(12345, _IPActiveConnector.Object.Port);
-                        Assert.AreEqual(true, _IPActiveConnector.Object.UseKeepAlive);
-                        Assert.AreEqual(30000, _IPActiveConnector.Object.IdleTimeout);
-                        break;
-                    default:
-                        throw new NotImplementedException();
+                    Assert.AreEqual(true, _Listener.Object.IgnoreBadMessages);
+
+                    switch(feedType) {
+                        case MultilaterationFeedType.None:
+                            Assert.IsFalse(_Listener.Object.AlwaysUsePositionsInMerge);
+                            Assert.IsFalse(_Listener.Object.HasPriorityInMerge);
+                            break;
+                        case MultilaterationFeedType.PositionsInjected:
+                            Assert.IsFalse(_Listener.Object.AlwaysUsePositionsInMerge);
+                            Assert.IsTrue(_Listener.Object.HasPriorityInMerge);
+                            break;
+                        case MultilaterationFeedType.PositionsOnly:
+                            Assert.IsTrue(_Listener.Object.AlwaysUsePositionsInMerge);
+                            Assert.IsFalse(_Listener.Object.HasPriorityInMerge);
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+
+                    switch(connectionType) {
+                        case ConnectionType.COM:
+                            Assert.AreEqual("Serial COM Port", _SerialActiveConnector.Object.ComPort);
+                            Assert.AreEqual(10, _SerialActiveConnector.Object.BaudRate);
+                            Assert.AreEqual(9, _SerialActiveConnector.Object.DataBits);
+                            Assert.AreEqual(StopBits.Two, _SerialActiveConnector.Object.StopBits);
+                            Assert.AreEqual(Parity.Mark, _SerialActiveConnector.Object.Parity);
+                            Assert.AreEqual(Handshake.XOnXOff, _SerialActiveConnector.Object.Handshake);
+                            Assert.AreEqual("Up", _SerialActiveConnector.Object.StartupText);
+                            Assert.AreEqual("Down", _SerialActiveConnector.Object.ShutdownText);
+                            break;
+                        case ConnectionType.TCP:
+                            Assert.AreEqual("TCP Address", _IPActiveConnector.Object.Address);
+                            Assert.AreEqual(12345, _IPActiveConnector.Object.Port);
+                            Assert.AreEqual(true, _IPActiveConnector.Object.UseKeepAlive);
+                            Assert.AreEqual(30000, _IPActiveConnector.Object.IdleTimeout);
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
                 }
             }
         }
