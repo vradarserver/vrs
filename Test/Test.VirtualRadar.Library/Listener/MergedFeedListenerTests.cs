@@ -183,6 +183,12 @@ namespace Test.VirtualRadar.Library.Listener
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
+            _Listener1.Object.AlwaysUsePositionsInMerge = worksheet.Bool("L1UsePosn");
+            _Listener2.Object.AlwaysUsePositionsInMerge = worksheet.Bool("L2UsePosn");
+
+            _Listener1.Object.HasPriorityInMerge = worksheet.Bool("L1HasPriority");
+            _Listener2.Object.HasPriorityInMerge = worksheet.Bool("L2HasPriority");
+
             _MergedFeed.SetListeners(_Listeners);
             _MergedFeed.IcaoTimeout = worksheet.Int("IcaoTimeout");
             _MergedFeed.IgnoreAircraftWithNoPosition = worksheet.Bool("IgnoreNoPos");
@@ -201,7 +207,8 @@ namespace Test.VirtualRadar.Library.Listener
                     var msOffset = worksheet.Int(msOffsetName);
                     var hasZeroPosn = worksheet.String(hasPosnName) == "0";
                     var hasPosn = hasZeroPosn ? true : worksheet.Bool(hasPosnName);
-                    var expected = worksheet.Bool(passesName);
+                    var resetExpected = worksheet.String(passesName) == "True";
+                    var messageExpected = resetExpected || worksheet.String(passesName) == "NoReset";
 
                     Mock<IListener> listener;
                     switch(listenerNumber) {
@@ -226,7 +233,7 @@ namespace Test.VirtualRadar.Library.Listener
                     listener.Raise(r => r.PositionReset += null, positionResetEventArgs);
 
                     var failDetails = String.Format("Failed on message {0} {{0}}", i);
-                    if(!expected) {
+                    if(!messageExpected) {
                         Assert.AreEqual(0, baseStationMessageEventRecorder.CallCount, failDetails, "BaseStationMessage");
                         Assert.AreEqual(0, positionResetEventRecorder.CallCount, failDetails, "PostionReset");
                     } else {
@@ -234,9 +241,13 @@ namespace Test.VirtualRadar.Library.Listener
                         Assert.AreSame(_MergedFeed, baseStationMessageEventRecorder.Sender);
                         Assert.AreSame(baseStationMessageEventArgs, baseStationMessageEventRecorder.Args);
 
-                        Assert.AreEqual(1, positionResetEventRecorder.CallCount, failDetails, "PositionReset");
-                        Assert.AreSame(_MergedFeed, positionResetEventRecorder.Sender);
-                        Assert.AreSame(positionResetEventArgs, positionResetEventRecorder.Args);
+                        if(!resetExpected) {
+                            Assert.AreEqual(0, positionResetEventRecorder.CallCount, failDetails, "PostionReset");
+                        } else {
+                            Assert.AreEqual(1, positionResetEventRecorder.CallCount, failDetails, "PositionReset");
+                            Assert.AreSame(_MergedFeed, positionResetEventRecorder.Sender);
+                            Assert.AreSame(positionResetEventArgs, positionResetEventRecorder.Args);
+                        }
                     }
                 }
             }

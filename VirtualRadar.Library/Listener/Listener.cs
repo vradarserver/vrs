@@ -174,6 +174,16 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public bool IgnoreBadMessages { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool AlwaysUsePositionsInMerge { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool HasPriorityInMerge { get; set; }
         #endregion
 
         #region Events

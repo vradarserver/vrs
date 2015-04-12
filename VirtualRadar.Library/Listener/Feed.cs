@@ -199,7 +199,7 @@ namespace VirtualRadar.Library.Listener
         {
             var connector = DetermineConnector(receiver);
             var bytesExtractor = DetermineBytesExtractor(receiver);
-            bool feedSourceHasChanged = connector != Listener.Connector || bytesExtractor != Listener.BytesExtractor;
+            var feedSourceHasChanged = connector != Listener.Connector || bytesExtractor != Listener.BytesExtractor;
             var rawMessageTranslator = DetermineRawMessageTranslator(receiver, receiverLocation, configuration, feedSourceHasChanged);
 
             var existingAuthentication = (Listener.Connector == null ? null : Listener.Connector.Authentication) as IPassphraseAuthentication;
@@ -220,6 +220,9 @@ namespace VirtualRadar.Library.Listener
                 Listener.ChangeSource(connector, bytesExtractor, rawMessageTranslator);
                 if(Listener.Statistics != null) Listener.Statistics.ResetMessageCounters();
             }
+
+            Listener.AlwaysUsePositionsInMerge = receiver.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly;
+            Listener.HasPriorityInMerge = receiver.MultilaterationFeedType == MultilaterationFeedType.PositionsInjected;
         }
         #endregion
 

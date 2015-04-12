@@ -363,6 +363,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("", receiver.ShutdownText);
                         Assert.AreEqual(1, receiver.ReceiverLocationId);
                         Assert.AreEqual(null, receiver.Passphrase);
+                        Assert.AreEqual(MultilaterationFeedType.None, receiver.MultilaterationFeedType);
 
                         receiver = readBack.Receivers[1];
                         Assert.AreEqual(false, receiver.Enabled);
@@ -386,6 +387,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("Stop", receiver.ShutdownText);
                         Assert.AreEqual(2, receiver.ReceiverLocationId);
                         Assert.AreEqual("Two", receiver.Passphrase);
+                        Assert.AreEqual(MultilaterationFeedType.PositionsInjected, receiver.MultilaterationFeedType);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.Receivers[0].Access.Addresses.Count);
@@ -419,6 +421,9 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(2, mergedFeed.ReceiverIds.Count);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds[0]);
                         Assert.AreEqual(1, mergedFeed.ReceiverIds[1]);
+                        break;
+                    case "DataVersion":
+                        Assert.AreEqual(102, readBack.DataVersion);     // Save adds one to the saved DataVersion of 101
                         break;
                     default:
                         throw new NotImplementedException();
@@ -628,6 +633,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                 }
                                                             },
                                                             Passphrase = null,
+                                                            MultilaterationFeedType = MultilaterationFeedType.None,
                                                         },
                                                         new Receiver() {
                                                             Enabled = false,
@@ -657,6 +663,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                 },
                                                             },
                                                             Passphrase = "Two",
+                                                            MultilaterationFeedType = MultilaterationFeedType.PositionsInjected,
                                                         },
                                                     });
                                                     break;
@@ -680,7 +687,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                         },
                                                     });
                                                     break;
-                    default:                        throw new NotImplementedException();
+                    case "DataVersion":             result.DataVersion = 101; break;
+                    default:                        throw new NotImplementedException(String.Format("Unknown property {0}", property.Name));
                 }
             }
 

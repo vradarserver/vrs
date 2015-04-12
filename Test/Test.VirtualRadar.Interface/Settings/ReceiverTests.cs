@@ -41,6 +41,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.Port, 30003, 19000);
             TestUtilities.TestProperty(settings, r => r.UseKeepAlive, true);
             TestUtilities.TestProperty(settings, r => r.IdleTimeoutMilliseconds, 60000, 45000);
+            TestUtilities.TestProperty(settings, r => r.MultilaterationFeedType, MultilaterationFeedType.None, MultilaterationFeedType.PositionsOnly);
             TestUtilities.TestProperty(settings, r => r.ComPort, null, "ABC");
             TestUtilities.TestProperty(settings, r => r.BaudRate, 115200, 2400);
             TestUtilities.TestProperty(settings, r => r.DataBits, 8, 7);

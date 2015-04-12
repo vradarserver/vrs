@@ -72,6 +72,8 @@
             this.panelConnectionTypeSettings = new System.Windows.Forms.Panel();
             this.groupBoxAccessControl = new System.Windows.Forms.GroupBox();
             this.accessControl = new VirtualRadar.WinForms.Controls.AccessControl();
+            this.label17 = new System.Windows.Forms.Label();
+            this.comboBoxMultilaterationType = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
@@ -512,14 +514,14 @@
             // 
             // panelConnectionTypeSettings
             // 
-            this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
-            this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 136);
+            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxAccessControl);
+            this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 166);
             this.panelConnectionTypeSettings.Name = "panelConnectionTypeSettings";
-            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 601);
+            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 604);
             this.panelConnectionTypeSettings.TabIndex = 30;
             // 
             // groupBoxAccessControl
@@ -527,7 +529,7 @@
             this.groupBoxAccessControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxAccessControl.Controls.Add(this.accessControl);
-            this.groupBoxAccessControl.Location = new System.Drawing.Point(3, 315);
+            this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 179);
             this.groupBoxAccessControl.Name = "groupBoxAccessControl";
             this.groupBoxAccessControl.Size = new System.Drawing.Size(633, 178);
             this.groupBoxAccessControl.TabIndex = 1;
@@ -544,10 +546,29 @@
             this.accessControl.Size = new System.Drawing.Size(621, 153);
             this.accessControl.TabIndex = 0;
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(0, 139);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(111, 13);
+            this.label17.TabIndex = 12;
+            this.label17.Text = "::MultilaterationType:::";
+            // 
+            // comboBoxMultilaterationType
+            // 
+            this.comboBoxMultilaterationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMultilaterationType.FormattingEnabled = true;
+            this.comboBoxMultilaterationType.Location = new System.Drawing.Point(200, 136);
+            this.comboBoxMultilaterationType.Name = "comboBoxMultilaterationType";
+            this.comboBoxMultilaterationType.Size = new System.Drawing.Size(150, 21);
+            this.comboBoxMultilaterationType.TabIndex = 13;
+            // 
             // PageReceiver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.groupBoxAccessControl);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.comboBoxMultilaterationType);
             this.Controls.Add(this.panelConnectionTypeSettings);
             this.Controls.Add(this.buttonTestConnection);
             this.Controls.Add(this.checkBoxEnabled);
@@ -562,7 +583,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxDataSource);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 740);
+            this.Size = new System.Drawing.Size(636, 770);
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
@@ -622,5 +643,7 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox textBoxPassphrase;
         private Controls.AccessControl accessControl;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.ComboBox comboBoxMultilaterationType;
     }
 }
