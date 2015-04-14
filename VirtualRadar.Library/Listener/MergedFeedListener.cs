@@ -81,6 +81,24 @@ namespace VirtualRadar.Library.Listener
         }
         #endregion
 
+        #region Private struct - FilterMessageOutcome
+        /// <summary>
+        /// The return value from <see cref="FilterMessageFromListener"/>.
+        /// </summary>
+        struct FilterMessageOutcome
+        {
+            /// <summary>
+            /// True if the message can be passed through the merge.
+            /// </summary>
+            public bool PassedFilter;
+
+            /// <summary>
+            /// True if the listener is a Positions-Only listener.
+            /// </summary>
+            public bool IsPositionsOnlyListener;
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// The object used to protect fields from multithreaded access.
@@ -383,13 +401,14 @@ namespace VirtualRadar.Library.Listener
 
         #region FilterMessageFromListener, CleanupOldIcaos, MessageCarriesPosition
         /// <summary>
-        /// Returns true if the message from a receiver can be used.
+        /// Determines whether the message from a receiver can be used.
         /// </summary>
         /// <param name="receivedUtc"></param>
         /// <param name="listener"></param>
         /// <param name="icao"></param>
         /// <param name="hasPosition"></param>
-        private bool FilterMessageFromListener(DateTime receivedUtc, IListener listener, string icao, bool hasPosition)
+        /// <returns></returns>
+        private FilterMessageOutcome FilterMessageFromListener(DateTime receivedUtc, IListener listener, string icao, bool hasPosition)
         {
             icao = icao ?? "";
 
@@ -425,9 +444,11 @@ namespace VirtualRadar.Library.Listener
                 if(source != null && IgnoreAircraftWithNoPosition && !source.SeenPositionMessage) source = null;
             }
 
-            var result = source != null;
-            if(!result && hasPosition && listener.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly) {
-                result = true;
+            var result = new FilterMessageOutcome();
+            result.PassedFilter = source != null;
+            if(!result.PassedFilter && hasPosition && listener.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly) {
+                result.PassedFilter = true;
+                result.IsPositionsOnlyListener = true;
             }
 
             return result;
@@ -484,10 +505,35 @@ namespace VirtualRadar.Library.Listener
 
             var message = messageReceived.MessageArgs.Message;
             var hasNoPosition = message.Latitude.GetValueOrDefault() == 0.0 && message.Longitude.GetValueOrDefault() == 0.0;
-            if(FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition)) {
-                OnPort30003MessageReceived(messageReceived.MessageArgs);
+            var filterOutcome = FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition);
+            if(filterOutcome.PassedFilter) {
+                var messageArgs = !filterOutcome.IsPositionsOnlyListener ? messageReceived.MessageArgs : CreatePositionsOnlyArgs(messageReceived.MessageArgs);
+                OnPort30003MessageReceived(messageArgs);
                 ++TotalMessages;
             }
+        }
+
+        /// <summary>
+        /// Clones the args passed in and strips off everything but the essential information and the position.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private BaseStationMessageEventArgs CreatePositionsOnlyArgs(BaseStationMessageEventArgs args)
+        {
+            var original = args.Message;
+            var clone = new BaseStationMessage() {
+                Icao24 = original.Icao24,
+                Latitude = original.Latitude,
+                Longitude = original.Longitude,
+                AircraftId = original.AircraftId,
+                FlightId = original.FlightId,
+                ReceiverId = original.ReceiverId,
+                SessionId = original.SessionId,
+                StatusCode = original.StatusCode,
+                TransmissionType = original.TransmissionType,
+            };
+
+            return new BaseStationMessageEventArgs(clone);
         }
 
         /// <summary>
@@ -509,7 +555,7 @@ namespace VirtualRadar.Library.Listener
         {
             try {
                 var listener = (IListener)sender;
-                if(FilterMessageFromListener(_Clock.UtcNow, listener, args.Value, false)) OnPositionReset(args);
+                if(FilterMessageFromListener(_Clock.UtcNow, listener, args.Value, false).PassedFilter) OnPositionReset(args);
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }
