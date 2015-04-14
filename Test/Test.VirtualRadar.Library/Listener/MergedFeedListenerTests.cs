@@ -237,7 +237,10 @@ namespace Test.VirtualRadar.Library.Listener
                     } else {
                         Assert.AreEqual(1, baseStationMessageEventRecorder.CallCount, failDetails, "BaseStationMessage");
                         Assert.AreSame(_MergedFeed, baseStationMessageEventRecorder.Sender);
-                        Assert.AreSame(baseStationMessageEventArgs, baseStationMessageEventRecorder.Args);
+
+                        // The args passed across is no longer the same, PositionsOnly feeds will raise an event with a
+                        // filtered clone of the original.
+                        // Assert.AreSame(baseStationMessageEventArgs, baseStationMessageEventRecorder.Args);
 
                         if(!resetExpected) {
                             Assert.AreEqual(0, positionResetEventRecorder.CallCount, failDetails, "PostionReset");
@@ -316,6 +319,56 @@ namespace Test.VirtualRadar.Library.Listener
             _Listener1.Raise(r => r.PositionReset += null, resetArgs);
             Assert.AreEqual(1, _BaseStationMessageEventRecorder.CallCount);
             Assert.AreEqual(1, _PositionResetRecorder.CallCount);
+        }
+
+        [TestMethod]
+        public void MergedFeedListener_SetListener_Strips_Extraneous_Portions_Of_PositionsOnly_Messages()
+        {
+            _Listener1.Object.MultilaterationFeedType = MultilaterationFeedType.PositionsOnly;
+            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
+
+            var original = new BaseStationMessage() {
+                Altitude = 1,
+                Callsign = "1",
+                Emergency = true,
+                GroundSpeed = 1,
+                Icao24 = "123456",
+                IdentActive = true,
+                Latitude = 50,
+                Longitude = 40,
+                OnGround = true,
+                SignalLevel = 1,
+                Squawk = 1234,
+                SquawkHasChanged = true,
+                Supplementary = new BaseStationSupplementaryMessage(),
+                Track = 1,
+                VerticalRate = 1,
+            };
+            var originalMessage = new BaseStationMessageEventArgs(original);
+
+            _Listener1.Raise(r => r.Port30003MessageReceived += null, originalMessage);
+
+            Assert.AreEqual(1, _BaseStationMessageEventRecorder.CallCount);
+            var filtered = _BaseStationMessageEventRecorder.Args.Message;
+
+            Assert.AreNotSame(original, filtered);  // Need to preserve the original message when filtering position-only
+
+            Assert.IsNull(filtered.Altitude);
+            Assert.IsNull(filtered.Callsign);
+            Assert.IsNull(filtered.Emergency);
+            Assert.IsNull(filtered.GroundSpeed);
+            Assert.AreEqual("123456", filtered.Icao24);
+            Assert.IsNull(filtered.IdentActive);
+            Assert.AreEqual(50.0, filtered.Latitude);
+            Assert.AreEqual(40.0, filtered.Longitude);
+            Assert.IsNull(filtered.OnGround);
+            Assert.IsNull(filtered.SignalLevel);
+            Assert.IsNull(filtered.Squawk);
+            Assert.IsNull(filtered.SquawkHasChanged);
+            Assert.IsNull(filtered.Supplementary);
+            Assert.IsNull(filtered.Track);
+            Assert.IsNull(filtered.VerticalRate);
         }
         #endregion
 
