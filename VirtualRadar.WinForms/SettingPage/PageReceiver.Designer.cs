@@ -514,7 +514,8 @@
             // 
             // panelConnectionTypeSettings
             // 
-            this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
