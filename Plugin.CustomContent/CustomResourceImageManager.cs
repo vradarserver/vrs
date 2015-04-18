@@ -206,19 +206,10 @@ namespace VirtualRadar.Plugin.CustomContent
         #endregion
 
         #region Properties
-        private string _ResourceImagesFolder;
         /// <summary>
         /// Gets or sets the folder that holds the custom images.
         /// </summary>
-        public string ResourceImagesFolder
-        {
-            get { return _ResourceImagesFolder; }
-            set {
-                _ResourceImagesFolder = value;
-                if(String.IsNullOrEmpty(_ResourceImagesFolder)) UnloadCustomImages();
-                else                                            LoadCustomImages();
-            }
-        }
+        public string ResourceImagesFolder { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the object is enabled.
@@ -264,10 +255,12 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <summary>
         /// Synchronises the image files in <see cref="ResourceImagesFolder"/> with the custom images in <see cref="Images"/>.
         /// </summary>
-        public void LoadCustomImages()
+        /// <param name="blockThread"></param>
+        public void LoadCustomImages(bool blockThread)
         {
             LastLoadCustomImagesUtc = DateTime.Now;
-            ThreadPool.QueueUserWorkItem(DoLoadCustomImagesOnBackgroundThread);
+            if(blockThread) DoLoadCustomImagesOnBackgroundThread(null);
+            else            ThreadPool.QueueUserWorkItem(DoLoadCustomImagesOnBackgroundThread);
         }
 
         /// <summary>

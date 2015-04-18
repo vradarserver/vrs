@@ -239,14 +239,18 @@ namespace VirtualRadar.Plugin.CustomContent
             if(_WebSite != null) {
                 if(!_Options.Enabled) {
                     DisableSiteRoot();
+                } else {
+                    EnableSiteRoot(_Options.SiteRootFolder);
+                }
+
+                if(!_Options.Enabled || String.IsNullOrEmpty(_Options.ResourceImagesFolder)) {
                     _CustomResourceImageManager.Enabled = false;
                     _CustomResourceImageManager.ResourceImagesFolder = null;
                     _CustomResourceImageManager.UnloadCustomImages();
                 } else {
-                    EnableSiteRoot(_Options.SiteRootFolder);
                     _CustomResourceImageManager.ResourceImagesFolder = _Options.ResourceImagesFolder;
                     _CustomResourceImageManager.Enabled = true;
-                    _CustomResourceImageManager.LoadCustomImages();
+                    _CustomResourceImageManager.LoadCustomImages(blockThread: true);
                 }
 
                 foreach(var existingInjector in _ContentInjectors) {
@@ -325,7 +329,7 @@ namespace VirtualRadar.Plugin.CustomContent
             if(_CustomResourceImageManager.Enabled) {
                 var threshold = DateTime.UtcNow.AddSeconds(-SecondsBetweenCustomResourceImageManagerRefreshes);
                 if(_CustomResourceImageManager.LastLoadCustomImagesUtc <= threshold) {
-                    _CustomResourceImageManager.LoadCustomImages();
+                    _CustomResourceImageManager.LoadCustomImages(blockThread: false);
                 }
             }
         }
