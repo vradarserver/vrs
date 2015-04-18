@@ -76,6 +76,11 @@ namespace VirtualRadar.Plugin.CustomContent
         string SiteRootFolder { get; set; }
 
         /// <summary>
+        /// See <see cref="Options.ResourceImagesFolder"/>.
+        /// </summary>
+        string ResourceImagesFolder { get; set; }
+
+        /// <summary>
         /// See <see cref="Options.DefaultInjectionFilesFolder"/>.
         /// </summary>
         string DefaultInjectionFilesFolder { get; set; }

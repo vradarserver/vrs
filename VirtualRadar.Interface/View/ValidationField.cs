@@ -226,6 +226,11 @@ namespace VirtualRadar.Interface.View
         SiteRootFolder,
 
         /// <summary>
+        /// The folder that contains copies or alternate versions of the resource images.
+        /// </summary>
+        ResourceImagesFolder,
+
+        /// <summary>
         /// A path and file to a page.
         /// </summary>
         PathAndFile,

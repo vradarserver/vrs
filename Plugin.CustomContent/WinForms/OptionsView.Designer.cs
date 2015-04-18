@@ -38,6 +38,7 @@
             this.fileNameControlInjectFile = new VirtualRadar.WinForms.Controls.FileNameControl();
             this.textBoxInjectPathAndFile = new System.Windows.Forms.TextBox();
             this.comboBoxInjectOf = new System.Windows.Forms.ComboBox();
+            this.folderControlResourceImagesFolder = new VirtualRadar.WinForms.Controls.FolderControl();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBoxInjectEnabled = new System.Windows.Forms.CheckBox();
             this.buttonReset = new System.Windows.Forms.Button();
@@ -46,6 +47,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.listViewInjectSettings = new System.Windows.Forms.ListView();
             this.columnHeaderEnabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -74,9 +76,9 @@
             this.folderControlSiteRootFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.errorProvider.SetIconAlignment(this.folderControlSiteRootFolder, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-            this.folderControlSiteRootFolder.Location = new System.Drawing.Point(122, 19);
+            this.folderControlSiteRootFolder.Location = new System.Drawing.Point(180, 19);
             this.folderControlSiteRootFolder.Name = "folderControlSiteRootFolder";
-            this.folderControlSiteRootFolder.Size = new System.Drawing.Size(524, 20);
+            this.folderControlSiteRootFolder.Size = new System.Drawing.Size(466, 20);
             this.folderControlSiteRootFolder.TabIndex = 1;
             // 
             // label1
@@ -92,7 +94,7 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(508, 417);
+            this.buttonOK.Location = new System.Drawing.Point(508, 466);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 6;
@@ -104,7 +106,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(589, 417);
+            this.buttonCancel.Location = new System.Drawing.Point(589, 466);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 7;
@@ -121,7 +123,7 @@
             this.comboBoxInjectAt.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInjectAt.FormattingEnabled = true;
             this.errorProvider.SetIconAlignment(this.comboBoxInjectAt, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-            this.comboBoxInjectAt.Location = new System.Drawing.Point(122, 45);
+            this.comboBoxInjectAt.Location = new System.Drawing.Point(180, 45);
             this.comboBoxInjectAt.Name = "comboBoxInjectAt";
             this.comboBoxInjectAt.Size = new System.Drawing.Size(121, 21);
             this.comboBoxInjectAt.TabIndex = 3;
@@ -134,9 +136,9 @@
             this.fileNameControlInjectFile.BrowserCheckFileExists = true;
             this.fileNameControlInjectFile.BrowserFilter = "All files (*.*)|*.*|JavaScript files (*.js)|*.js|HTML files (*.html)|*.html";
             this.errorProvider.SetIconAlignment(this.fileNameControlInjectFile, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-            this.fileNameControlInjectFile.Location = new System.Drawing.Point(122, 19);
+            this.fileNameControlInjectFile.Location = new System.Drawing.Point(180, 19);
             this.fileNameControlInjectFile.Name = "fileNameControlInjectFile";
-            this.fileNameControlInjectFile.Size = new System.Drawing.Size(524, 20);
+            this.fileNameControlInjectFile.Size = new System.Drawing.Size(466, 20);
             this.fileNameControlInjectFile.TabIndex = 1;
             // 
             // textBoxInjectPathAndFile
@@ -144,9 +146,9 @@
             this.textBoxInjectPathAndFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.errorProvider.SetIconAlignment(this.textBoxInjectPathAndFile, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-            this.textBoxInjectPathAndFile.Location = new System.Drawing.Point(122, 72);
+            this.textBoxInjectPathAndFile.Location = new System.Drawing.Point(180, 72);
             this.textBoxInjectPathAndFile.Name = "textBoxInjectPathAndFile";
-            this.textBoxInjectPathAndFile.Size = new System.Drawing.Size(524, 20);
+            this.textBoxInjectPathAndFile.Size = new System.Drawing.Size(466, 20);
             this.textBoxInjectPathAndFile.TabIndex = 7;
             // 
             // comboBoxInjectOf
@@ -154,10 +156,20 @@
             this.comboBoxInjectOf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxInjectOf.FormattingEnabled = true;
             this.errorProvider.SetIconAlignment(this.comboBoxInjectOf, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-            this.comboBoxInjectOf.Location = new System.Drawing.Point(350, 45);
+            this.comboBoxInjectOf.Location = new System.Drawing.Point(408, 45);
             this.comboBoxInjectOf.Name = "comboBoxInjectOf";
             this.comboBoxInjectOf.Size = new System.Drawing.Size(121, 21);
             this.comboBoxInjectOf.TabIndex = 5;
+            // 
+            // folderControlResourceImagesFolder
+            // 
+            this.folderControlResourceImagesFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.errorProvider.SetIconAlignment(this.folderControlResourceImagesFolder, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+            this.folderControlResourceImagesFolder.Location = new System.Drawing.Point(180, 45);
+            this.folderControlResourceImagesFolder.Name = "folderControlResourceImagesFolder";
+            this.folderControlResourceImagesFolder.Size = new System.Drawing.Size(466, 20);
+            this.folderControlResourceImagesFolder.TabIndex = 3;
             // 
             // groupBox1
             // 
@@ -173,7 +185,7 @@
             this.groupBox1.Controls.Add(this.fileNameControlInjectFile);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBoxInjectPathAndFile);
-            this.groupBox1.Location = new System.Drawing.Point(12, 214);
+            this.groupBox1.Location = new System.Drawing.Point(12, 241);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(652, 129);
             this.groupBox1.TabIndex = 4;
@@ -183,7 +195,7 @@
             // checkBoxInjectEnabled
             // 
             this.checkBoxInjectEnabled.AutoSize = true;
-            this.checkBoxInjectEnabled.Location = new System.Drawing.Point(122, 102);
+            this.checkBoxInjectEnabled.Location = new System.Drawing.Point(180, 102);
             this.checkBoxInjectEnabled.Name = "checkBoxInjectEnabled";
             this.checkBoxInjectEnabled.Size = new System.Drawing.Size(77, 17);
             this.checkBoxInjectEnabled.TabIndex = 9;
@@ -204,7 +216,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(269, 48);
+            this.label5.Location = new System.Drawing.Point(327, 48);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(33, 13);
             this.label5.TabIndex = 4;
@@ -241,14 +253,25 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.folderControlResourceImagesFolder);
+            this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.folderControlSiteRootFolder);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(12, 349);
+            this.groupBox2.Location = new System.Drawing.Point(12, 376);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(652, 53);
+            this.groupBox2.Size = new System.Drawing.Size(652, 75);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "::ReplaceAndAddSiteContent::";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 50);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(131, 13);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "::ResourceImagesFolder:::";
             // 
             // listViewInjectSettings
             // 
@@ -266,7 +289,7 @@
             this.listViewInjectSettings.HideSelection = false;
             this.listViewInjectSettings.Location = new System.Drawing.Point(12, 35);
             this.listViewInjectSettings.Name = "listViewInjectSettings";
-            this.listViewInjectSettings.Size = new System.Drawing.Size(652, 144);
+            this.listViewInjectSettings.Size = new System.Drawing.Size(652, 171);
             this.listViewInjectSettings.TabIndex = 1;
             this.listViewInjectSettings.UseCompatibleStateImageBehavior = false;
             this.listViewInjectSettings.View = System.Windows.Forms.View.Details;
@@ -300,7 +323,7 @@
             // buttonDelete
             // 
             this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDelete.Location = new System.Drawing.Point(93, 185);
+            this.buttonDelete.Location = new System.Drawing.Point(93, 212);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(75, 23);
             this.buttonDelete.TabIndex = 3;
@@ -311,7 +334,7 @@
             // buttonNew
             // 
             this.buttonNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonNew.Location = new System.Drawing.Point(12, 185);
+            this.buttonNew.Location = new System.Drawing.Point(12, 212);
             this.buttonNew.Name = "buttonNew";
             this.buttonNew.Size = new System.Drawing.Size(75, 23);
             this.buttonNew.TabIndex = 2;
@@ -323,7 +346,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(676, 452);
+            this.ClientSize = new System.Drawing.Size(676, 501);
             this.Controls.Add(this.listViewInjectSettings);
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.buttonNew);
@@ -377,5 +400,7 @@
         private System.Windows.Forms.ColumnHeader columnHeaderAt;
         private System.Windows.Forms.ColumnHeader columnHeaderOf;
         private System.Windows.Forms.ColumnHeader columnHeaderPathAndFile;
+        private VirtualRadar.WinForms.Controls.FolderControl folderControlResourceImagesFolder;
+        private System.Windows.Forms.Label label6;
     }
 }

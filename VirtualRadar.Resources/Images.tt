@@ -78,6 +78,14 @@ foreach(Project project in dte.Solution.Projects) {
             get { return <#=fieldName#> ?? InternalResources.<#=propertyName#>; }
             set { <#=fieldName#> = value; }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="<#=propertyName#>"/> image has been customised or not.
+        /// </summary>
+        public static bool <#=propertyName#>_IsCustom
+        {
+            get { return <#=fieldName#> != null; }
+        }
 <#
             first = false;
         }

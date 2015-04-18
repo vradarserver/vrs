@@ -313,6 +313,15 @@ namespace VirtualRadar.Plugin.CustomContent {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resource images folder.
+        /// </summary>
+        public static string ResourceImagesFolder {
+            get {
+                return ResourceManager.GetString("ResourceImagesFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Site root folder.
         /// </summary>
         public static string SiteRootLabel {

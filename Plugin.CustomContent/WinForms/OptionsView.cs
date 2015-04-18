@@ -97,6 +97,12 @@ namespace VirtualRadar.Plugin.CustomContent.WinForms
             set { folderControlSiteRootFolder.Folder = value; }
         }
 
+        public string ResourceImagesFolder
+        {
+            get { return folderControlResourceImagesFolder.Folder.Trim(); }
+            set { folderControlResourceImagesFolder.Folder = value; }
+        }
+
         public string DefaultInjectionFilesFolder
         {
             get { return fileNameControlInjectFile.BrowserDefaultFolder; }
@@ -277,6 +283,5 @@ namespace VirtualRadar.Plugin.CustomContent.WinForms
             if(!_SuppressItemSelectedEventHandler) OnSelectedInjectSettingsChanged(EventArgs.Empty);
         }
         #endregion
-
     }
 }

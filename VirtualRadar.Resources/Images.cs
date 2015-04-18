@@ -49,6 +49,14 @@ namespace VirtualRadar.Resources
             set { _Add16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Add16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Add16x16_IsCustom
+        {
+            get { return _Add16x16 != null; }
+        }
+
         private static Icon _ApplicationIcon;
         /// <summary>
         /// Gets or sets the ApplicationIcon image.
@@ -60,6 +68,14 @@ namespace VirtualRadar.Resources
         {
             get { return _ApplicationIcon ?? InternalResources.ApplicationIcon; }
             set { _ApplicationIcon = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="ApplicationIcon"/> image has been customised or not.
+        /// </summary>
+        public static bool ApplicationIcon_IsCustom
+        {
+            get { return _ApplicationIcon != null; }
         }
 
         private static Bitmap _ArrowBack16x16;
@@ -75,6 +91,14 @@ namespace VirtualRadar.Resources
             set { _ArrowBack16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="ArrowBack16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool ArrowBack16x16_IsCustom
+        {
+            get { return _ArrowBack16x16 != null; }
+        }
+
         private static Bitmap _ArrowForward16x16;
         /// <summary>
         /// Gets or sets the ArrowForward16x16 image.
@@ -86,6 +110,14 @@ namespace VirtualRadar.Resources
         {
             get { return _ArrowForward16x16 ?? InternalResources.ArrowForward16x16; }
             set { _ArrowForward16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="ArrowForward16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool ArrowForward16x16_IsCustom
+        {
+            get { return _ArrowForward16x16 != null; }
         }
 
         private static Bitmap _BlueBall;
@@ -101,6 +133,14 @@ namespace VirtualRadar.Resources
             set { _BlueBall = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="BlueBall"/> image has been customised or not.
+        /// </summary>
+        public static bool BlueBall_IsCustom
+        {
+            get { return _BlueBall != null; }
+        }
+
         private static Bitmap _Cancel16x16;
         /// <summary>
         /// Gets or sets the Cancel16x16 image.
@@ -112,6 +152,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Cancel16x16 ?? InternalResources.Cancel16x16; }
             set { _Cancel16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Cancel16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Cancel16x16_IsCustom
+        {
+            get { return _Cancel16x16 != null; }
         }
 
         private static Bitmap _CancelSmall16x16;
@@ -127,6 +175,14 @@ namespace VirtualRadar.Resources
             set { _CancelSmall16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="CancelSmall16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool CancelSmall16x16_IsCustom
+        {
+            get { return _CancelSmall16x16 != null; }
+        }
+
         private static Bitmap _ChevronBlueCircle;
         /// <summary>
         /// Gets or sets the ChevronBlueCircle image.
@@ -138,6 +194,14 @@ namespace VirtualRadar.Resources
         {
             get { return _ChevronBlueCircle ?? InternalResources.ChevronBlueCircle; }
             set { _ChevronBlueCircle = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="ChevronBlueCircle"/> image has been customised or not.
+        /// </summary>
+        public static bool ChevronBlueCircle_IsCustom
+        {
+            get { return _ChevronBlueCircle != null; }
         }
 
         private static Bitmap _ChevronGreenCircle;
@@ -153,6 +217,14 @@ namespace VirtualRadar.Resources
             set { _ChevronGreenCircle = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="ChevronGreenCircle"/> image has been customised or not.
+        /// </summary>
+        public static bool ChevronGreenCircle_IsCustom
+        {
+            get { return _ChevronGreenCircle != null; }
+        }
+
         private static Bitmap _ChevronRedCircle;
         /// <summary>
         /// Gets or sets the ChevronRedCircle image.
@@ -164,6 +236,14 @@ namespace VirtualRadar.Resources
         {
             get { return _ChevronRedCircle ?? InternalResources.ChevronRedCircle; }
             set { _ChevronRedCircle = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="ChevronRedCircle"/> image has been customised or not.
+        /// </summary>
+        public static bool ChevronRedCircle_IsCustom
+        {
+            get { return _ChevronRedCircle != null; }
         }
 
         private static Bitmap _CloseSlider;
@@ -179,6 +259,14 @@ namespace VirtualRadar.Resources
             set { _CloseSlider = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="CloseSlider"/> image has been customised or not.
+        /// </summary>
+        public static bool CloseSlider_IsCustom
+        {
+            get { return _CloseSlider != null; }
+        }
+
         private static Bitmap _Collapse;
         /// <summary>
         /// Gets or sets the Collapse image.
@@ -190,6 +278,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Collapse ?? InternalResources.Collapse; }
             set { _Collapse = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Collapse"/> image has been customised or not.
+        /// </summary>
+        public static bool Collapse_IsCustom
+        {
+            get { return _Collapse != null; }
         }
 
         private static Bitmap _Compass;
@@ -205,6 +301,14 @@ namespace VirtualRadar.Resources
             set { _Compass = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Compass"/> image has been customised or not.
+        /// </summary>
+        public static bool Compass_IsCustom
+        {
+            get { return _Compass != null; }
+        }
+
         private static Bitmap _Corner_BottomLeft;
         /// <summary>
         /// Gets or sets the Corner_BottomLeft image.
@@ -216,6 +320,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Corner_BottomLeft ?? InternalResources.Corner_BottomLeft; }
             set { _Corner_BottomLeft = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Corner_BottomLeft"/> image has been customised or not.
+        /// </summary>
+        public static bool Corner_BottomLeft_IsCustom
+        {
+            get { return _Corner_BottomLeft != null; }
         }
 
         private static Bitmap _Corner_BottomRight;
@@ -231,6 +343,14 @@ namespace VirtualRadar.Resources
             set { _Corner_BottomRight = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Corner_BottomRight"/> image has been customised or not.
+        /// </summary>
+        public static bool Corner_BottomRight_IsCustom
+        {
+            get { return _Corner_BottomRight != null; }
+        }
+
         private static Bitmap _Corner_TopLeft;
         /// <summary>
         /// Gets or sets the Corner_TopLeft image.
@@ -242,6 +362,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Corner_TopLeft ?? InternalResources.Corner_TopLeft; }
             set { _Corner_TopLeft = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Corner_TopLeft"/> image has been customised or not.
+        /// </summary>
+        public static bool Corner_TopLeft_IsCustom
+        {
+            get { return _Corner_TopLeft != null; }
         }
 
         private static Bitmap _Corner_TopRight;
@@ -257,6 +385,14 @@ namespace VirtualRadar.Resources
             set { _Corner_TopRight = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Corner_TopRight"/> image has been customised or not.
+        /// </summary>
+        public static bool Corner_TopRight_IsCustom
+        {
+            get { return _Corner_TopRight != null; }
+        }
+
         private static Bitmap _Crosshair;
         /// <summary>
         /// Gets or sets the Crosshair image.
@@ -268,6 +404,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Crosshair ?? InternalResources.Crosshair; }
             set { _Crosshair = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Crosshair"/> image has been customised or not.
+        /// </summary>
+        public static bool Crosshair_IsCustom
+        {
+            get { return _Crosshair != null; }
         }
 
         private static Bitmap _Decoding16x16;
@@ -283,6 +427,14 @@ namespace VirtualRadar.Resources
             set { _Decoding16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Decoding16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Decoding16x16_IsCustom
+        {
+            get { return _Decoding16x16 != null; }
+        }
+
         private static Bitmap _Edit16x16;
         /// <summary>
         /// Gets or sets the Edit16x16 image.
@@ -294,6 +446,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Edit16x16 ?? InternalResources.Edit16x16; }
             set { _Edit16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Edit16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Edit16x16_IsCustom
+        {
+            get { return _Edit16x16 != null; }
         }
 
         private static Bitmap _Expand;
@@ -309,6 +469,14 @@ namespace VirtualRadar.Resources
             set { _Expand = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Expand"/> image has been customised or not.
+        /// </summary>
+        public static bool Expand_IsCustom
+        {
+            get { return _Expand != null; }
+        }
+
         private static Icon _Favicon;
         /// <summary>
         /// Gets or sets the Favicon image.
@@ -320,6 +488,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Favicon ?? InternalResources.Favicon; }
             set { _Favicon = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Favicon"/> image has been customised or not.
+        /// </summary>
+        public static bool Favicon_IsCustom
+        {
+            get { return _Favicon != null; }
         }
 
         private static Bitmap _FollowMe;
@@ -335,6 +511,14 @@ namespace VirtualRadar.Resources
             set { _FollowMe = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="FollowMe"/> image has been customised or not.
+        /// </summary>
+        public static bool FollowMe_IsCustom
+        {
+            get { return _FollowMe != null; }
+        }
+
         private static Bitmap _Gear16x16;
         /// <summary>
         /// Gets or sets the Gear16x16 image.
@@ -346,6 +530,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Gear16x16 ?? InternalResources.Gear16x16; }
             set { _Gear16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Gear16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Gear16x16_IsCustom
+        {
+            get { return _Gear16x16 != null; }
         }
 
         private static Bitmap _GotoCurrentLocation;
@@ -361,6 +553,14 @@ namespace VirtualRadar.Resources
             set { _GotoCurrentLocation = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="GotoCurrentLocation"/> image has been customised or not.
+        /// </summary>
+        public static bool GotoCurrentLocation_IsCustom
+        {
+            get { return _GotoCurrentLocation != null; }
+        }
+
         private static Bitmap _HelpAbout;
         /// <summary>
         /// Gets or sets the HelpAbout image.
@@ -372,6 +572,14 @@ namespace VirtualRadar.Resources
         {
             get { return _HelpAbout ?? InternalResources.HelpAbout; }
             set { _HelpAbout = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="HelpAbout"/> image has been customised or not.
+        /// </summary>
+        public static bool HelpAbout_IsCustom
+        {
+            get { return _HelpAbout != null; }
         }
 
         private static Bitmap _HideList;
@@ -387,6 +595,14 @@ namespace VirtualRadar.Resources
             set { _HideList = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="HideList"/> image has been customised or not.
+        /// </summary>
+        public static bool HideList_IsCustom
+        {
+            get { return _HideList != null; }
+        }
+
         private static Bitmap _IPadSplash;
         /// <summary>
         /// Gets or sets the IPadSplash image.
@@ -398,6 +614,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPadSplash ?? InternalResources.IPadSplash; }
             set { _IPadSplash = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPadSplash"/> image has been customised or not.
+        /// </summary>
+        public static bool IPadSplash_IsCustom
+        {
+            get { return _IPadSplash != null; }
         }
 
         private static Bitmap _IPhoneBackButton;
@@ -413,6 +637,14 @@ namespace VirtualRadar.Resources
             set { _IPhoneBackButton = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneBackButton"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneBackButton_IsCustom
+        {
+            get { return _IPhoneBackButton != null; }
+        }
+
         private static Bitmap _IPhoneBlueButton;
         /// <summary>
         /// Gets or sets the IPhoneBlueButton image.
@@ -424,6 +656,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPhoneBlueButton ?? InternalResources.IPhoneBlueButton; }
             set { _IPhoneBlueButton = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneBlueButton"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneBlueButton_IsCustom
+        {
+            get { return _IPhoneBlueButton != null; }
         }
 
         private static Bitmap _IPhoneChevron;
@@ -439,6 +679,14 @@ namespace VirtualRadar.Resources
             set { _IPhoneChevron = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneChevron"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneChevron_IsCustom
+        {
+            get { return _IPhoneChevron != null; }
+        }
+
         private static Bitmap _IPhoneGrayButton;
         /// <summary>
         /// Gets or sets the IPhoneGrayButton image.
@@ -450,6 +698,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPhoneGrayButton ?? InternalResources.IPhoneGrayButton; }
             set { _IPhoneGrayButton = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneGrayButton"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneGrayButton_IsCustom
+        {
+            get { return _IPhoneGrayButton != null; }
         }
 
         private static Bitmap _IPhoneIcon;
@@ -465,6 +721,14 @@ namespace VirtualRadar.Resources
             set { _IPhoneIcon = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneIcon"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneIcon_IsCustom
+        {
+            get { return _IPhoneIcon != null; }
+        }
+
         private static Bitmap _IPhoneListGroup;
         /// <summary>
         /// Gets or sets the IPhoneListGroup image.
@@ -476,6 +740,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPhoneListGroup ?? InternalResources.IPhoneListGroup; }
             set { _IPhoneListGroup = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneListGroup"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneListGroup_IsCustom
+        {
+            get { return _IPhoneListGroup != null; }
         }
 
         private static Bitmap _IPhoneOnOff;
@@ -491,6 +763,14 @@ namespace VirtualRadar.Resources
             set { _IPhoneOnOff = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneOnOff"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneOnOff_IsCustom
+        {
+            get { return _IPhoneOnOff != null; }
+        }
+
         private static Bitmap _IPhonePinstripes;
         /// <summary>
         /// Gets or sets the IPhonePinstripes image.
@@ -502,6 +782,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPhonePinstripes ?? InternalResources.IPhonePinstripes; }
             set { _IPhonePinstripes = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhonePinstripes"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhonePinstripes_IsCustom
+        {
+            get { return _IPhonePinstripes != null; }
         }
 
         private static Bitmap _IPhoneSelectedTick;
@@ -517,6 +805,14 @@ namespace VirtualRadar.Resources
             set { _IPhoneSelectedTick = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneSelectedTick"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneSelectedTick_IsCustom
+        {
+            get { return _IPhoneSelectedTick != null; }
+        }
+
         private static Bitmap _IPhoneSelection;
         /// <summary>
         /// Gets or sets the IPhoneSelection image.
@@ -528,6 +824,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPhoneSelection ?? InternalResources.IPhoneSelection; }
             set { _IPhoneSelection = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneSelection"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneSelection_IsCustom
+        {
+            get { return _IPhoneSelection != null; }
         }
 
         private static Bitmap _IPhoneSplash;
@@ -543,6 +847,14 @@ namespace VirtualRadar.Resources
             set { _IPhoneSplash = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneSplash"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneSplash_IsCustom
+        {
+            get { return _IPhoneSplash != null; }
+        }
+
         private static Bitmap _IPhoneToolbar;
         /// <summary>
         /// Gets or sets the IPhoneToolbar image.
@@ -554,6 +866,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPhoneToolbar ?? InternalResources.IPhoneToolbar; }
             set { _IPhoneToolbar = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneToolbar"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneToolbar_IsCustom
+        {
+            get { return _IPhoneToolbar != null; }
         }
 
         private static Bitmap _IPhoneToolButton;
@@ -569,6 +889,14 @@ namespace VirtualRadar.Resources
             set { _IPhoneToolButton = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneToolButton"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneToolButton_IsCustom
+        {
+            get { return _IPhoneToolButton != null; }
+        }
+
         private static Bitmap _IPhoneWhiteButton;
         /// <summary>
         /// Gets or sets the IPhoneWhiteButton image.
@@ -580,6 +908,14 @@ namespace VirtualRadar.Resources
         {
             get { return _IPhoneWhiteButton ?? InternalResources.IPhoneWhiteButton; }
             set { _IPhoneWhiteButton = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="IPhoneWhiteButton"/> image has been customised or not.
+        /// </summary>
+        public static bool IPhoneWhiteButton_IsCustom
+        {
+            get { return _IPhoneWhiteButton != null; }
         }
 
         private static Bitmap _Location16x16;
@@ -595,6 +931,14 @@ namespace VirtualRadar.Resources
             set { _Location16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Location16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Location16x16_IsCustom
+        {
+            get { return _Location16x16 != null; }
+        }
+
         private static Bitmap _Logo128x128;
         /// <summary>
         /// Gets or sets the Logo128x128 image.
@@ -606,6 +950,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Logo128x128 ?? InternalResources.Logo128x128; }
             set { _Logo128x128 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Logo128x128"/> image has been customised or not.
+        /// </summary>
+        public static bool Logo128x128_IsCustom
+        {
+            get { return _Logo128x128 != null; }
         }
 
         private static Bitmap _Marker_Airplane;
@@ -621,6 +973,14 @@ namespace VirtualRadar.Resources
             set { _Marker_Airplane = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Marker_Airplane"/> image has been customised or not.
+        /// </summary>
+        public static bool Marker_Airplane_IsCustom
+        {
+            get { return _Marker_Airplane != null; }
+        }
+
         private static Bitmap _Marker_AirplaneSelected;
         /// <summary>
         /// Gets or sets the Marker_AirplaneSelected image.
@@ -632,6 +992,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Marker_AirplaneSelected ?? InternalResources.Marker_AirplaneSelected; }
             set { _Marker_AirplaneSelected = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Marker_AirplaneSelected"/> image has been customised or not.
+        /// </summary>
+        public static bool Marker_AirplaneSelected_IsCustom
+        {
+            get { return _Marker_AirplaneSelected != null; }
         }
 
         private static Bitmap _MergedFeed16x16;
@@ -647,6 +1015,14 @@ namespace VirtualRadar.Resources
             set { _MergedFeed16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="MergedFeed16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool MergedFeed16x16_IsCustom
+        {
+            get { return _MergedFeed16x16 != null; }
+        }
+
         private static Bitmap _MovingMapChecked;
         /// <summary>
         /// Gets or sets the MovingMapChecked image.
@@ -658,6 +1034,14 @@ namespace VirtualRadar.Resources
         {
             get { return _MovingMapChecked ?? InternalResources.MovingMapChecked; }
             set { _MovingMapChecked = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="MovingMapChecked"/> image has been customised or not.
+        /// </summary>
+        public static bool MovingMapChecked_IsCustom
+        {
+            get { return _MovingMapChecked != null; }
         }
 
         private static Bitmap _MovingMapUnchecked;
@@ -673,6 +1057,14 @@ namespace VirtualRadar.Resources
             set { _MovingMapUnchecked = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="MovingMapUnchecked"/> image has been customised or not.
+        /// </summary>
+        public static bool MovingMapUnchecked_IsCustom
+        {
+            get { return _MovingMapUnchecked != null; }
+        }
+
         private static Bitmap _Notebook16x16;
         /// <summary>
         /// Gets or sets the Notebook16x16 image.
@@ -684,6 +1076,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Notebook16x16 ?? InternalResources.Notebook16x16; }
             set { _Notebook16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Notebook16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Notebook16x16_IsCustom
+        {
+            get { return _Notebook16x16 != null; }
         }
 
         private static Bitmap _OpenSlider;
@@ -699,6 +1099,14 @@ namespace VirtualRadar.Resources
             set { _OpenSlider = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="OpenSlider"/> image has been customised or not.
+        /// </summary>
+        public static bool OpenSlider_IsCustom
+        {
+            get { return _OpenSlider != null; }
+        }
+
         private static Bitmap _Radio16x16;
         /// <summary>
         /// Gets or sets the Radio16x16 image.
@@ -710,6 +1118,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Radio16x16 ?? InternalResources.Radio16x16; }
             set { _Radio16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Radio16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Radio16x16_IsCustom
+        {
+            get { return _Radio16x16 != null; }
         }
 
         private static Bitmap _Radio48x48;
@@ -725,6 +1141,14 @@ namespace VirtualRadar.Resources
             set { _Radio48x48 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Radio48x48"/> image has been customised or not.
+        /// </summary>
+        public static bool Radio48x48_IsCustom
+        {
+            get { return _Radio48x48 != null; }
+        }
+
         private static Bitmap _Rebroadcast16x16;
         /// <summary>
         /// Gets or sets the Rebroadcast16x16 image.
@@ -736,6 +1160,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Rebroadcast16x16 ?? InternalResources.Rebroadcast16x16; }
             set { _Rebroadcast16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Rebroadcast16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Rebroadcast16x16_IsCustom
+        {
+            get { return _Rebroadcast16x16 != null; }
         }
 
         private static Bitmap _RowHeader;
@@ -751,6 +1183,14 @@ namespace VirtualRadar.Resources
             set { _RowHeader = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="RowHeader"/> image has been customised or not.
+        /// </summary>
+        public static bool RowHeader_IsCustom
+        {
+            get { return _RowHeader != null; }
+        }
+
         private static Bitmap _RowHeaderSelected;
         /// <summary>
         /// Gets or sets the RowHeaderSelected image.
@@ -762,6 +1202,14 @@ namespace VirtualRadar.Resources
         {
             get { return _RowHeaderSelected ?? InternalResources.RowHeaderSelected; }
             set { _RowHeaderSelected = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="RowHeaderSelected"/> image has been customised or not.
+        /// </summary>
+        public static bool RowHeaderSelected_IsCustom
+        {
+            get { return _RowHeaderSelected != null; }
         }
 
         private static Bitmap _Server16x16;
@@ -777,6 +1225,14 @@ namespace VirtualRadar.Resources
             set { _Server16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Server16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Server16x16_IsCustom
+        {
+            get { return _Server16x16 != null; }
+        }
+
         private static Bitmap _ShowList;
         /// <summary>
         /// Gets or sets the ShowList image.
@@ -788,6 +1244,14 @@ namespace VirtualRadar.Resources
         {
             get { return _ShowList ?? InternalResources.ShowList; }
             set { _ShowList = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="ShowList"/> image has been customised or not.
+        /// </summary>
+        public static bool ShowList_IsCustom
+        {
+            get { return _ShowList != null; }
         }
 
         private static Bitmap _Site16x16;
@@ -803,6 +1267,14 @@ namespace VirtualRadar.Resources
             set { _Site16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Site16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Site16x16_IsCustom
+        {
+            get { return _Site16x16 != null; }
+        }
+
         private static Bitmap _SmallPlaneNorth;
         /// <summary>
         /// Gets or sets the SmallPlaneNorth image.
@@ -814,6 +1286,14 @@ namespace VirtualRadar.Resources
         {
             get { return _SmallPlaneNorth ?? InternalResources.SmallPlaneNorth; }
             set { _SmallPlaneNorth = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="SmallPlaneNorth"/> image has been customised or not.
+        /// </summary>
+        public static bool SmallPlaneNorth_IsCustom
+        {
+            get { return _SmallPlaneNorth != null; }
         }
 
         private static Bitmap _Test16x16;
@@ -829,6 +1309,14 @@ namespace VirtualRadar.Resources
             set { _Test16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Test16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Test16x16_IsCustom
+        {
+            get { return _Test16x16 != null; }
+        }
+
         private static Bitmap _TestSquare;
         /// <summary>
         /// Gets or sets the TestSquare image.
@@ -840,6 +1328,14 @@ namespace VirtualRadar.Resources
         {
             get { return _TestSquare ?? InternalResources.TestSquare; }
             set { _TestSquare = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="TestSquare"/> image has been customised or not.
+        /// </summary>
+        public static bool TestSquare_IsCustom
+        {
+            get { return _TestSquare != null; }
         }
 
         private static Bitmap _Tower;
@@ -855,6 +1351,14 @@ namespace VirtualRadar.Resources
             set { _Tower = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Tower"/> image has been customised or not.
+        /// </summary>
+        public static bool Tower_IsCustom
+        {
+            get { return _Tower != null; }
+        }
+
         private static Bitmap _Transparent_25;
         /// <summary>
         /// Gets or sets the Transparent_25 image.
@@ -866,6 +1370,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Transparent_25 ?? InternalResources.Transparent_25; }
             set { _Transparent_25 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Transparent_25"/> image has been customised or not.
+        /// </summary>
+        public static bool Transparent_25_IsCustom
+        {
+            get { return _Transparent_25 != null; }
         }
 
         private static Bitmap _Transparent_50;
@@ -881,6 +1393,14 @@ namespace VirtualRadar.Resources
             set { _Transparent_50 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Transparent_50"/> image has been customised or not.
+        /// </summary>
+        public static bool Transparent_50_IsCustom
+        {
+            get { return _Transparent_50 != null; }
+        }
+
         private static Bitmap _Transparent_16x16;
         /// <summary>
         /// Gets or sets the Transparent_16x16 image.
@@ -892,6 +1412,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Transparent_16x16 ?? InternalResources.Transparent_16x16; }
             set { _Transparent_16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Transparent_16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Transparent_16x16_IsCustom
+        {
+            get { return _Transparent_16x16 != null; }
         }
 
         private static Bitmap _User16x16;
@@ -907,6 +1435,14 @@ namespace VirtualRadar.Resources
             set { _User16x16 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="User16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool User16x16_IsCustom
+        {
+            get { return _User16x16 != null; }
+        }
+
         private static Bitmap _Volume0;
         /// <summary>
         /// Gets or sets the Volume0 image.
@@ -918,6 +1454,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Volume0 ?? InternalResources.Volume0; }
             set { _Volume0 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Volume0"/> image has been customised or not.
+        /// </summary>
+        public static bool Volume0_IsCustom
+        {
+            get { return _Volume0 != null; }
         }
 
         private static Bitmap _Volume100;
@@ -933,6 +1477,14 @@ namespace VirtualRadar.Resources
             set { _Volume100 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Volume100"/> image has been customised or not.
+        /// </summary>
+        public static bool Volume100_IsCustom
+        {
+            get { return _Volume100 != null; }
+        }
+
         private static Bitmap _Volume25;
         /// <summary>
         /// Gets or sets the Volume25 image.
@@ -944,6 +1496,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Volume25 ?? InternalResources.Volume25; }
             set { _Volume25 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Volume25"/> image has been customised or not.
+        /// </summary>
+        public static bool Volume25_IsCustom
+        {
+            get { return _Volume25 != null; }
         }
 
         private static Bitmap _Volume50;
@@ -959,6 +1519,14 @@ namespace VirtualRadar.Resources
             set { _Volume50 = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Volume50"/> image has been customised or not.
+        /// </summary>
+        public static bool Volume50_IsCustom
+        {
+            get { return _Volume50 != null; }
+        }
+
         private static Bitmap _Volume75;
         /// <summary>
         /// Gets or sets the Volume75 image.
@@ -970,6 +1538,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Volume75 ?? InternalResources.Volume75; }
             set { _Volume75 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Volume75"/> image has been customised or not.
+        /// </summary>
+        public static bool Volume75_IsCustom
+        {
+            get { return _Volume75 != null; }
         }
 
         private static Bitmap _VolumeDown;
@@ -985,6 +1561,14 @@ namespace VirtualRadar.Resources
             set { _VolumeDown = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="VolumeDown"/> image has been customised or not.
+        /// </summary>
+        public static bool VolumeDown_IsCustom
+        {
+            get { return _VolumeDown != null; }
+        }
+
         private static Bitmap _VolumeMute;
         /// <summary>
         /// Gets or sets the VolumeMute image.
@@ -996,6 +1580,14 @@ namespace VirtualRadar.Resources
         {
             get { return _VolumeMute ?? InternalResources.VolumeMute; }
             set { _VolumeMute = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="VolumeMute"/> image has been customised or not.
+        /// </summary>
+        public static bool VolumeMute_IsCustom
+        {
+            get { return _VolumeMute != null; }
         }
 
         private static Bitmap _VolumeUp;
@@ -1011,6 +1603,14 @@ namespace VirtualRadar.Resources
             set { _VolumeUp = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="VolumeUp"/> image has been customised or not.
+        /// </summary>
+        public static bool VolumeUp_IsCustom
+        {
+            get { return _VolumeUp != null; }
+        }
+
         private static Bitmap _WarningBitmap;
         /// <summary>
         /// Gets or sets the WarningBitmap image.
@@ -1022,6 +1622,14 @@ namespace VirtualRadar.Resources
         {
             get { return _WarningBitmap ?? InternalResources.WarningBitmap; }
             set { _WarningBitmap = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="WarningBitmap"/> image has been customised or not.
+        /// </summary>
+        public static bool WarningBitmap_IsCustom
+        {
+            get { return _WarningBitmap != null; }
         }
 
         private static Icon _WarningIcon;
@@ -1037,6 +1645,14 @@ namespace VirtualRadar.Resources
             set { _WarningIcon = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="WarningIcon"/> image has been customised or not.
+        /// </summary>
+        public static bool WarningIcon_IsCustom
+        {
+            get { return _WarningIcon != null; }
+        }
+
         private static Bitmap _Wizard16x16;
         /// <summary>
         /// Gets or sets the Wizard16x16 image.
@@ -1048,6 +1664,14 @@ namespace VirtualRadar.Resources
         {
             get { return _Wizard16x16 ?? InternalResources.Wizard16x16; }
             set { _Wizard16x16 = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Wizard16x16"/> image has been customised or not.
+        /// </summary>
+        public static bool Wizard16x16_IsCustom
+        {
+            get { return _Wizard16x16 != null; }
         }
     }
 }
