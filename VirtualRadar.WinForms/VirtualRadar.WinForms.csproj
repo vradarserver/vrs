@@ -286,6 +286,12 @@
     <Compile Include="SettingPage\PageMergedFeeds.Designer.cs">
       <DependentUpon>PageMergedFeeds.cs</DependentUpon>
     </Compile>
+    <Compile Include="SettingPage\PageMono.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingPage\PageMono.Designer.cs">
+      <DependentUpon>PageMono.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingPage\PageRawFeedDecoding.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -571,6 +577,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageMergedFeeds.resx">
       <DependentUpon>PageMergedFeeds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingPage\PageMono.resx">
+      <DependentUpon>PageMono.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingPage\PageRawFeedDecoding.resx">
       <DependentUpon>PageRawFeedDecoding.cs</DependentUpon>

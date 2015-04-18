@@ -53,6 +53,7 @@ namespace Test.VirtualRadar.Interface.Settings
             Assert.IsNotNull(_Implementation.VersionCheckSettings);
             Assert.IsNotNull(_Implementation.InternetClientSettings);
             Assert.IsNotNull(_Implementation.RawDecodingSettings);
+            Assert.IsNotNull(_Implementation.MonoSettings);
 
             Assert.AreEqual(0, _Implementation.ReceiverLocations.Count);
             Assert.AreEqual(0, _Implementation.RebroadcastSettings.Count);

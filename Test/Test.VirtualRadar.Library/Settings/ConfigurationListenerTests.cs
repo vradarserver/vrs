@@ -304,6 +304,24 @@ namespace Test.VirtualRadar.Library.Settings
         }
         #endregion
 
+        #region Mono
+        [TestMethod]
+        public void ConfigurationListener_Raises_Events_When_Mono_Settings_Change()
+        {
+            foreach(var propertyName in typeof(MonoSettings).GetProperties().Select(r => r.Name)) {
+                TestCleanup();
+                TestInitialise();
+
+                var settings = _Configuration.MonoSettings;
+                SetValue(settings, propertyName, new Dictionary<Expression<Func<MonoSettings,object>>,Action<MonoSettings>>() {
+                    { r => r.UseMarkerLabels,   r => r.UseMarkerLabels = !r.UseMarkerLabels },
+                });
+
+                Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.MonoSettings, propertyName, settings), "Mono.{0}", propertyName);
+            }
+        }
+        #endregion
+
         #region RawDecodingSettings
         [TestMethod]
         public void ConfigurationListener_Raises_Events_When_RawDecodingSettings_Changes()
@@ -449,6 +467,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.Handshake,                 r => r.Handshake = System.IO.Ports.Handshake.RequestToSendXOnXOff },
                     { r => r.IdleTimeoutMilliseconds,   r => r.IdleTimeoutMilliseconds++ },
                     { r => r.IsPassive,                 r => r.IsPassive = !r.IsPassive },
+                    { r => r.MultilaterationFeedType,   r => r.MultilaterationFeedType = MultilaterationFeedType.PositionsInjected },
                     { r => r.Name,                      r => r.Name = "TEST" },
                     { r => r.Parity,                    r => r.Parity = System.IO.Ports.Parity.Mark },
                     { r => r.Passphrase,                r => r.Passphrase = r.Passphrase + 'A' },
@@ -552,6 +571,7 @@ namespace Test.VirtualRadar.Library.Settings
 
                 var settings = _Configuration.WebServerSettings;
                 var testRaised = SetValue(settings, propertyName, new Dictionary<Expression<Func<WebServerSettings,object>>,Action<WebServerSettings>>() {
+                    { r => r.AdministratorUserIds,              r => r.AdministratorUserIds.Add("1") },
                     { r => r.AuthenticationScheme,              r => r.AuthenticationScheme = System.Net.AuthenticationSchemes.IntegratedWindowsAuthentication },
                     { r => r.AutoStartUPnP,                     r => r.AutoStartUPnP = !r.AutoStartUPnP },
                     { r => r.BasicAuthenticationUserIds,        r => r.BasicAuthenticationUserIds.Add("Hello") },

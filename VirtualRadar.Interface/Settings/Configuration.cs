@@ -119,6 +119,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _RawDecodingSettings, value, () => RawDecodingSettings); }
         }
 
+        private MonoSettings _MonoSettings;
+        /// <summary>
+        /// Gets or sets the object that carries Mono-only settings.
+        /// </summary>
+        public MonoSettings MonoSettings
+        {
+            get { return _MonoSettings; }
+            set { SetField(ref _MonoSettings, value, () => MonoSettings); }
+        }
+
         private NotifyList<Receiver> _Receivers = new NotifyList<Receiver>();
         /// <summary>
         /// Gets a list of every receveiver that the program will listen to.
@@ -191,6 +201,7 @@ namespace VirtualRadar.Interface.Settings
             InternetClientSettings = new InternetClientSettings();
             AudioSettings = new AudioSettings();
             RawDecodingSettings = new RawDecodingSettings();
+            MonoSettings = new MonoSettings();
 
             _MergedFeeds.ListChanged +=           MergedFeeds_ListChanged;
             _RebroadcastSettings.ListChanged +=   RebroadcastSettings_ListChanged;

@@ -2097,10 +2097,13 @@ namespace Test.VirtualRadar.WebSite
             var isLocalAddress = true;
             using(var cultureSwitcher = new CultureSwitcher(worksheet.String("Culture"))) {
                 var configProperty = worksheet.String("ConfigProperty");
+                var isMono = worksheet.Bool("IsMono");
+                _RuntimeEnvironment.Setup(r => r.IsMono).Returns(isMono);
+
                 switch(configProperty) {
                     case "VrsVersion":              _ApplicationInformation.Setup(r => r.ShortVersion).Returns(worksheet.String("Value")); break;
                     case "IsLocalAddress":          isLocalAddress = worksheet.Bool("Value"); break;
-                    case "IsMono":                  _RuntimeEnvironment.Setup(r => r.IsMono).Returns(worksheet.Bool("Value")); break;
+                    case "IsMono":                  break;
                     case "InitialMapLatitude":      _Configuration.GoogleMapSettings.InitialMapLatitude = worksheet.Double("Value"); break;
                     case "InitialMapLongitude":     _Configuration.GoogleMapSettings.InitialMapLongitude = worksheet.Double("Value"); break;
                     case "InitialMapType":          _Configuration.GoogleMapSettings.InitialMapType = worksheet.EString("Value"); break;
@@ -2119,6 +2122,7 @@ namespace Test.VirtualRadar.WebSite
                     case "CanShowPictures":         _Configuration.InternetClientSettings.CanShowPictures = worksheet.Bool("Value"); break;
                     case "AudioEnabled":            _Configuration.AudioSettings.Enabled = worksheet.Bool("Value"); break;
                     case "CanShowPolarPlots":       _Configuration.InternetClientSettings.CanShowPolarPlots = worksheet.Bool("Value"); break;
+                    case "UseMarkerLabels":         _Configuration.MonoSettings.UseMarkerLabels = worksheet.Bool("Value"); break;
                     default:                        throw new NotImplementedException();
                 }
             }
@@ -2152,6 +2156,7 @@ namespace Test.VirtualRadar.WebSite
                 case "CanShowPictures":             Assert.AreEqual(worksheet.Bool("JsonValue"), json.InternetClientsCanSeeAircraftPictures); break;
                 case "AudioEnabled":                Assert.AreEqual(worksheet.Bool("JsonValue"), json.IsAudioEnabled); break;
                 case "CanShowPolarPlots":           Assert.AreEqual(worksheet.Bool("JsonValue"), json.InternetClientsCanSeePolarPlots); break;
+                case "UseMarkerLabels":             Assert.AreEqual(worksheet.Bool("JsonValue"), json.UseMarkerLabels); break;
                 default:                            throw new NotImplementedException();
             }
         }

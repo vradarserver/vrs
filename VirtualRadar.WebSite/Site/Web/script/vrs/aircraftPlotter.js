@@ -52,7 +52,7 @@
     VRS.globalOptions.aircraftMarkerTrailType = VRS.globalOptions.aircraftMarkerTrailType || VRS.TrailType.Full;                    // The type of trail to show by default.
     VRS.globalOptions.aircraftMarkerShowTooltip = VRS.globalOptions.aircraftMarkerShowTooltip !== undefined ? VRS.globalOptions.aircraftMarkerShowTooltip : true;   // True to show tooltips on aircraft markers, false otherwise.
     VRS.globalOptions.aircraftMarkerMovingMapOn = VRS.globalOptions.aircraftMarkerMovingMapOn !== undefined ? VRS.globalOptions.aircraftMarkerMovingMapOn : false;    // True if the moving map is switched on by default, false if it is not.
-    VRS.globalOptions.aircraftMarkerSuppressTextOnImages = VRS.globalOptions.aircraftMarkerSuppressTextOnImages !== undefined ? VRS.globalOptions.aircraftMarkerSuppressTextOnImages : false;   // Always switched on if the server is running under Mono, forces the use of labels to draw pin text instead of adding text to the graphics. Can reduce server load but doesn't look as nice as text on images.
+    VRS.globalOptions.aircraftMarkerSuppressTextOnImages = VRS.globalOptions.aircraftMarkerSuppressTextOnImages !== undefined ? VRS.globalOptions.aircraftMarkerSuppressTextOnImages : undefined;   // Forces the use of labels to draw pin text instead of adding text to the graphics. Can reduce server load but doesn't look as nice as text on images.
     VRS.globalOptions.aircraftMarkerAllowRangeCircles = VRS.globalOptions.aircraftMarkerAllowRangeCircles !== undefined ? VRS.globalOptions.aircraftMarkerAllowRangeCircles : true; // True if range circles are to be allowed, false if they are to be suppressed.
     VRS.globalOptions.aircraftMarkerShowRangeCircles = VRS.globalOptions.aircraftMarkerShowRangeCircles !== undefined ? VRS.globalOptions.aircraftMarkerShowRangeCircles : false;   // True if range circles are to be shown by default, false if they are not.
     VRS.globalOptions.aircraftMarkerRangeCircleInterval = VRS.globalOptions.aircraftMarkerRangeCircleInterval || 20;    // The number of distance units between each successive range circle.
@@ -898,10 +898,7 @@
         var _SuppressTextOnImages = _Settings.suppressTextOnImages;
         var _Suspended = false;
 
-        if(VRS.serverConfig) {
-            var config = VRS.serverConfig.get();
-            if(config && config.IsMono) _SuppressTextOnImages = true;
-        }
+        configureSuppressTextOnImages();
 
         /**
          * An associative array of all of the currently plotted aircraft indexed by aircraft ID.
@@ -986,6 +983,7 @@
         var _MapIdleHook = _Map.hookIdle(function() { refreshMarkers(null, null); });
         var _MapMarkerClickedHook = _Map.hookMarkerClicked(function(event, data) { selectAircraftById(data.id); });
         var _CurrentLocationChangedHook = VRS.currentLocation ? VRS.currentLocation.hookCurrentLocationChanged(currentLocationChanged, this) : null;
+        var _ConfigurationChangedHook = VRS.globalDispatch.hook(VRS.globalEvent.serverConfigChanged, configurationChanged, this);
         //endregion
 
         //region -- dispose
@@ -1010,7 +1008,31 @@
             if(_MapIdleHook)                                    _Map.unhook(_MapIdleHook);
             if(_MapMarkerClickedHook)                           _Map.unhook(_MapMarkerClickedHook);
             if(_CurrentLocationChangedHook)                     VRS.currentLocation.unhook(_CurrentLocationChangedHook);
+            if(_ConfigurationChangedHook)                       VRS.globalDispatch.unhook(_ConfigurationChangedHook);
         };
+        //endregion
+
+        //region -- configureSuppressTextOnImages
+        /***
+         * Configures the _SuppressTextOnImages field from global options and the server configuration.
+         */
+        function configureSuppressTextOnImages()
+        {
+            var originalValue = _SuppressTextOnImages;
+
+            _SuppressTextOnImages = _Settings.suppressTextOnImages;
+            if(VRS.serverConfig) {
+                var config = VRS.serverConfig.get();
+                if(config) {
+                    if(_SuppressTextOnImages === undefined) {
+                        _SuppressTextOnImages = config.UseMarkerLabels;
+                    }
+                }
+            }
+            if(_SuppressTextOnImages === undefined) _SuppressTextOnImages = false;
+
+            return originalValue != _SuppressTextOnImages;
+        }
         //endregion
 
         //region -- suspend
@@ -1042,6 +1064,20 @@
         this.plot = function(refreshAllMarkers, ignoreBounds)
         {
             refreshMarkers(null, null, !!refreshAllMarkers, !!ignoreBounds);
+        };
+
+        /**
+         * Returns an array of plotted aircraft identifiers.
+         **/
+        this.getPlottedAircraftIds = function()
+        {
+            var result = [];
+            for(var aircraftId in _PlottedDetail) {
+                //noinspection JSUnfilteredForInLoop
+                result.push(aircraftId);
+            }
+
+            return result;
         };
 
         //noinspection JSUnusedLocalSymbols
@@ -1167,6 +1203,20 @@
                 var details = _PlottedDetail[aircraft.id];
                 if(details) removeDetails(details);
             });
+        }
+
+        /**
+         * Removes every marker from the map.
+         */
+        function removeAllMarkers()
+        {
+            var allPlottedAircraftIds = that.getPlottedAircraftIds();
+            var length = allPlottedAircraftIds.length;
+            for(var i = 0;i < length;++i) {
+                var aircraftId = allPlottedAircraftIds[i];
+                var details = _PlottedDetail[aircraftId];
+                removeDetails(details);
+            }
         }
 
         /**
@@ -2113,6 +2163,21 @@
         function currentLocationChanged()
         {
             if(!_Suspended) that.refreshRangeCircles();
+        }
+
+        /**
+         * Called when the configuration has changed.
+         */
+        function configurationChanged()
+        {
+            var destroyAndRepaintMarkers = configureSuppressTextOnImages();
+
+            if(!_Suspended) {
+                if(destroyAndRepaintMarkers) {
+                    removeAllMarkers();
+                    refreshMarkers(null, null, true);
+                }
+            }
         }
         //endregion
     };

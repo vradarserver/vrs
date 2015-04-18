@@ -1155,6 +1155,7 @@ VRS_SERVER_CONFIG_RECEIVER;
  * @typedef {{
  * VrsVersion:                              string,
  * IsMono:                                  bool,
+ * UseMarkerLabels:                         bool,
  * Receivers:                               Array.<VRS_SERVER_CONFIG_RECEIVER>,
  * IsLocalAddress:                          bool,
  * IsAudioEnabled:                          bool,
