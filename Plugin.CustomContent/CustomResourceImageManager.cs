@@ -306,7 +306,7 @@ namespace VirtualRadar.Plugin.CustomContent
                         FileInfo existingFileInfo;
                         _FileInfos.TryGetValue(normalisedFileName, out existingFileInfo);
                         if(!CompareFileInfos(fileInfo, existingFileInfo)) {
-                            if(existingFileInfo == null) _FileInfos[normalisedFileName] = fileInfo;
+                            if(existingFileInfo != null) _FileInfos[normalisedFileName] = fileInfo;
                             else                         _FileInfos.Add(normalisedFileName, fileInfo);
 
                             switch(imageProperty.FileImageType) {
