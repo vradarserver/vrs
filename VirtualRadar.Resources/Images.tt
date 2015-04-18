@@ -86,6 +86,31 @@ foreach(Project project in dte.Solution.Projects) {
         {
             get { return <#=fieldName#> != null; }
         }
+
+        private static object _<#=propertyName#>_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="<#=propertyName#>"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object <#=propertyName#>_SyncLock
+        {
+            get { return _<#=propertyName#>_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="<#=propertyName#>"/>.
+        /// </summary>
+        public static <#=type#> Clone_<#=propertyName#>()
+        {
+            lock(<#=propertyName#>_SyncLock) {
+                return (<#=type#>)<#=propertyName#>.Clone();
+            }
+        }
 <#
             first = false;
         }
