@@ -212,4 +212,7 @@
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
+  <data name="ResourceImagesFolder" xml:space="preserve">
+    <value>Resource images folder</value>
+  </data>
 </root>

@@ -100,6 +100,17 @@ namespace VirtualRadar.Plugin.CustomContent
                     }
                     if(!String.IsNullOrEmpty(message)) results.Results.Add(new ValidationResult(ValidationField.SiteRootFolder, message));
                 }
+
+                if(!String.IsNullOrEmpty(_View.ResourceImagesFolder)) {
+                    string message = null;
+                    try {
+                        if(!Directory.Exists(_View.ResourceImagesFolder)) message = String.Format(CustomContentStrings.DirectoryDoesNotExist, _View.ResourceImagesFolder);
+                    } catch(Exception ex) {
+                        Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking custom content resource images folder: {0}", ex.ToString());
+                        message = String.Format(CustomContentStrings.ErrorCheckingFolder, ex.Message);
+                    }
+                    if(!String.IsNullOrEmpty(message)) results.Results.Add(new ValidationResult(ValidationField.ResourceImagesFolder, message));
+                }
             }
 
             _View.ShowValidationResults(results);

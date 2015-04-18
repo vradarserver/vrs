@@ -54,6 +54,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CustomContentStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="CustomResourceImageManager.cs" />
     <Compile Include="InjectionLocation.cs" />
     <Compile Include="InjectSettings.cs" />
     <Compile Include="IOptionsPresenter.cs" />
@@ -82,6 +83,10 @@
     <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
       <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
       <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{b74413ac-8898-45da-b4bd-82e4f9f58d72}</Project>
+      <Name>VirtualRadar.Resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
       <Project>{3A1330D8-1E7D-4C70-BA9A-39851389CFFF}</Project>

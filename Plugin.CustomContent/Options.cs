@@ -44,5 +44,11 @@ namespace VirtualRadar.Plugin.CustomContent
         /// site content is to be served.
         /// </summary>
         public string SiteRootFolder { get; set; }
+
+        /// <summary>
+        /// Gets or sets the folder that holds copies of (or alternate versions of) the images that are
+        /// normally stored in VirtualRadar.Resources.
+        /// </summary>
+        public string ResourceImagesFolder { get; set; }
     }
 }

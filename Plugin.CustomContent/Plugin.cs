@@ -54,6 +54,13 @@ namespace VirtualRadar.Plugin.CustomContent
         }
         #endregion
 
+        #region Public static fields
+        /// <summary>
+        /// The number of seconds that need to elapse before a new check for modified images will be made.
+        /// </summary>
+        public static readonly int SecondsBetweenCustomResourceImageManagerRefreshes = 60;
+        #endregion
+
         #region Fields
         /// <summary>
         /// The options that govern the plugin's behaviour.
@@ -74,6 +81,11 @@ namespace VirtualRadar.Plugin.CustomContent
         /// The site root that will be added to the web site.
         /// </summary>
         private SiteRoot _SiteRoot = new SiteRoot() { Priority = -2000000000 };
+
+        /// <summary>
+        /// The object that manages the switching in and out of custom resources for us.
+        /// </summary>
+        private CustomResourceImageManager _CustomResourceImageManager = new CustomResourceImageManager();
         #endregion
 
         #region Properties
@@ -162,6 +174,9 @@ namespace VirtualRadar.Plugin.CustomContent
 
             _Options = OptionsStorage.Load(this);
             ApplyOptions();
+
+            var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+            heartbeat.SlowTick += Heartbeat_SlowTick;
         }
         #endregion
 
@@ -180,6 +195,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// </summary>
         public void Shutdown()
         {
+            _CustomResourceImageManager.Enabled = false;
         }
         #endregion
 
@@ -195,6 +211,7 @@ namespace VirtualRadar.Plugin.CustomContent
                 view.InjectSettings.AddRange(_Options.InjectSettings.Select(r => (InjectSettings)r.Clone()));
                 view.PluginEnabled = _Options.Enabled;
                 view.SiteRootFolder = _Options.SiteRootFolder;
+                view.ResourceImagesFolder = _Options.ResourceImagesFolder;
                 view.DefaultInjectionFilesFolder = _Options.DefaultInjectionFilesFolder;
 
                 if(view.DisplayView()) {
@@ -202,6 +219,7 @@ namespace VirtualRadar.Plugin.CustomContent
                     _Options.InjectSettings.AddRange(view.InjectSettings);
                     _Options.Enabled = view.PluginEnabled;
                     _Options.SiteRootFolder = view.SiteRootFolder;
+                    _Options.ResourceImagesFolder = view.ResourceImagesFolder;
                     _Options.DefaultInjectionFilesFolder = view.DefaultInjectionFilesFolder;
 
                     OptionsStorage.Save(this, _Options);
@@ -219,8 +237,17 @@ namespace VirtualRadar.Plugin.CustomContent
         private void ApplyOptions()
         {
             if(_WebSite != null) {
-                if(!_Options.Enabled) DisableSiteRoot();
-                else EnableSiteRoot(_Options.SiteRootFolder);
+                if(!_Options.Enabled) {
+                    DisableSiteRoot();
+                    _CustomResourceImageManager.Enabled = false;
+                    _CustomResourceImageManager.ResourceImagesFolder = null;
+                    _CustomResourceImageManager.UnloadCustomImages();
+                } else {
+                    EnableSiteRoot(_Options.SiteRootFolder);
+                    _CustomResourceImageManager.ResourceImagesFolder = _Options.ResourceImagesFolder;
+                    _CustomResourceImageManager.Enabled = true;
+                    _CustomResourceImageManager.LoadCustomImages();
+                }
 
                 foreach(var existingInjector in _ContentInjectors) {
                     _WebSite.RemoveHtmlContentInjector(existingInjector);
@@ -286,6 +313,22 @@ namespace VirtualRadar.Plugin.CustomContent
         #endregion
 
         #region Events subscribed
+        /// <summary>
+        /// Raised every 10 seconds or so.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Heartbeat_SlowTick(object sender, EventArgs args)
+        {
+            _CustomResourceImageManager.DisposeOfUnusedImages();
+
+            if(_CustomResourceImageManager.Enabled) {
+                var threshold = DateTime.UtcNow.AddSeconds(-SecondsBetweenCustomResourceImageManagerRefreshes);
+                if(_CustomResourceImageManager.LastLoadCustomImagesUtc <= threshold) {
+                    _CustomResourceImageManager.LoadCustomImages();
+                }
+            }
+        }
         #endregion
     }
 }
