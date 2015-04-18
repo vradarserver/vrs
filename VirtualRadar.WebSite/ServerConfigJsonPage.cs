@@ -72,8 +72,10 @@ namespace VirtualRadar.WebSite
 
             var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
             var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var isMono = runtimeEnvironment.IsMono;
 
             lock(_SyncLock) {
+
                 _ServerConfigJson = new ServerConfigJson() {
                     InitialDistanceUnit = GetDistanceUnit(configuration.GoogleMapSettings.InitialDistanceUnit),
                     InitialHeightUnit = GetHeightUnit(configuration.GoogleMapSettings.InitialHeightUnit),
@@ -91,7 +93,8 @@ namespace VirtualRadar.WebSite
                     InternetClientsCanSeePolarPlots = configuration.InternetClientSettings.CanShowPolarPlots,
                     InternetClientTimeoutMinutes = configuration.InternetClientSettings.TimeoutMinutes,
                     IsAudioEnabled = configuration.AudioSettings.Enabled,
-                    IsMono = runtimeEnvironment.IsMono,
+                    IsMono = isMono,
+                    UseMarkerLabels = isMono ? configuration.MonoSettings.UseMarkerLabels : false,
                     MinimumRefreshSeconds = configuration.GoogleMapSettings.MinimumRefreshSeconds,
                     RefreshSeconds = configuration.GoogleMapSettings.InitialRefreshSeconds,
                     VrsVersion = applicationInformation.ShortVersion,

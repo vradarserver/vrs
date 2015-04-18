@@ -38,6 +38,7 @@
         //region -- Properties
         /** @type {VRS_SERVER_CONFIG} @private */
         var _ServerConfig = null;
+
         /**
          * Gets the current configuration on the server.
          * @returns {VRS_SERVER_CONFIG}

@@ -16,6 +16,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
@@ -52,6 +54,19 @@ namespace VirtualRadar.WinForms.SettingPage
             protected override Page DoCreatePage()
             {
                 return new PageGeneral();
+            }
+
+            /// <summary>
+            /// See base docs.
+            /// </summary>
+            protected override void AssociateChildPages()
+            {
+                base.AssociateChildPages();
+
+                var isMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+                if(isMono) {
+                    ChildPages.Add(new PageMono.Summary());
+                }
             }
 
             /// <summary>

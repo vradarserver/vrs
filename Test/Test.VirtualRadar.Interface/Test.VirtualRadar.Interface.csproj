@@ -116,6 +116,7 @@
     <Compile Include="Settings\InternetClientSettingsTests.cs" />
     <Compile Include="Settings\InstallerSettingsTests.cs" />
     <Compile Include="Settings\MergedFeedTests.cs" />
+    <Compile Include="Settings\MonoSettingsTests.cs" />
     <Compile Include="Settings\PluginManifestTests.cs" />
     <Compile Include="Settings\PluginSettingsTests.cs" />
     <Compile Include="Settings\RawDecodingSettingsTests.cs" />

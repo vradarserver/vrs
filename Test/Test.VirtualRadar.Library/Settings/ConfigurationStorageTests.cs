@@ -137,6 +137,8 @@ namespace Test.VirtualRadar.Library.Settings
                         ReceiverTests.CheckProperties(configuration.Receivers[0], assumeInitialConfig: true);
                         break;
                     case "MergedFeeds":             Assert.AreEqual(0, configuration.MergedFeeds.Count); break;
+                    case "DataVersion":             Assert.AreEqual(0, configuration.DataVersion); break;
+                    case "MonoSettings":            MonoSettingsTests.CheckProperties(configuration.MonoSettings); break;
                     default:                        Assert.Fail("Missing {0} property test", property.Name); break;
                 }
             }
@@ -425,6 +427,10 @@ namespace Test.VirtualRadar.Library.Settings
                     case "DataVersion":
                         Assert.AreEqual(102, readBack.DataVersion);     // Save adds one to the saved DataVersion of 101
                         break;
+                    case "MonoSettings":
+                        var monoSettings = readBack.MonoSettings;
+                        Assert.AreEqual(false, monoSettings.UseMarkerLabels);
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -688,6 +694,10 @@ namespace Test.VirtualRadar.Library.Settings
                                                     });
                                                     break;
                     case "DataVersion":             result.DataVersion = 101; break;
+                    case "MonoSettings":            result.MonoSettings = new MonoSettings() {
+                                                        UseMarkerLabels = false,
+                                                    };
+                                                    break;
                     default:                        throw new NotImplementedException(String.Format("Unknown property {0}", property.Name));
                 }
             }

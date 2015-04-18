@@ -62,6 +62,11 @@ namespace VirtualRadar.Interface.Settings
         MergedFeed,
 
         /// <summary>
+        /// The property belongs to the <see cref="MonoSettings"/> object.
+        /// </summary>
+        MonoSettings,
+
+        /// <summary>
         /// The property belongs to the <see cref="RawDecodingSettings"/> object.
         /// </summary>
         RawDecodingSettings,

@@ -2794,6 +2794,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mono Settings.
+        /// </summary>
+        public static string MonoSettings {
+            get {
+                return ResourceManager.GetString("MonoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MLAT feed type.
         /// </summary>
         public static string MultilaterationType {
@@ -3456,6 +3465,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeMinimiseToSystemTray {
             get {
                 return ResourceManager.GetString("OptionsDescribeMinimiseToSystemTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to show aircraft label text using the Google marker labels library, no to draw the text onto the image as it does when running under Microsoft .NET. Some native graphics libraries may throw exceptions if this is set to no..
+        /// </summary>
+        public static string OptionsDescribeMonoUseMarkerLabels {
+            get {
+                return ResourceManager.GetString("OptionsDescribeMonoUseMarkerLabels", resourceCulture);
             }
         }
         
@@ -6392,6 +6410,15 @@ namespace VirtualRadar.Localisation {
         public static string UseLocalDecodeForInitialPosition {
             get {
                 return ResourceManager.GetString("UseLocalDecodeForInitialPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use marker labels.
+        /// </summary>
+        public static string UseMarkerLabels {
+            get {
+                return ResourceManager.GetString("UseMarkerLabels", resourceCulture);
             }
         }
         

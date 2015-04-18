@@ -118,6 +118,7 @@
     <Compile Include="Settings\ISavedPolarPlotStorage.cs" />
     <Compile Include="Settings\ISharedConfiguration.cs" />
     <Compile Include="Settings\ISiteSettingsParser.cs" />
+    <Compile Include="Settings\MonoSettings.cs" />
     <Compile Include="Settings\MultilaterationFeedType.cs" />
     <Compile Include="Settings\SavedPolarPlot.cs" />
     <Compile Include="SpinLock.cs" />

@@ -35,6 +35,17 @@ namespace VirtualRadar.Interface.WebSite
         public bool IsMono { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that text should be drawn onto the markers using marker labels
+        /// instead of asking the server to draw it directly onto the marker image.
+        /// </summary>
+        /// <remarks>
+        /// This is always false when running under .NET. It defaults to true when running under Mono but
+        /// can be modified via Tools | Options | General | Mono.
+        /// </remarks>
+        [DataMember]
+        public bool UseMarkerLabels { get; set; }
+
+        /// <summary>
         /// Gets a collection of receiver names.
         /// </summary>
         [DataMember]
@@ -191,6 +202,7 @@ namespace VirtualRadar.Interface.WebSite
             result.MinimumRefreshSeconds = MinimumRefreshSeconds;
             result.RefreshSeconds = RefreshSeconds;
             result.Receivers.AddRange(Receivers.Select(r => (ServerReceiverJson)r.Clone()));
+            result.UseMarkerLabels = UseMarkerLabels;
             result.VrsVersion = VrsVersion;
 
             return result;

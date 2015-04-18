@@ -142,6 +142,7 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.FlightRouteSettings.PropertyChanged +=       FlightRouteSettings_PropertyChanged;
                 _Configuration.GoogleMapSettings.PropertyChanged +=         GoogleMapSettings_PropertyChanged;
                 _Configuration.InternetClientSettings.PropertyChanged +=    InternetClientSettings_PropertyChanged;
+                _Configuration.MonoSettings.PropertyChanged +=              MonoSettings_PropertyChanged;
                 _Configuration.RawDecodingSettings.PropertyChanged +=       RawDecodingSettings_PropertyChanged;
                 _Configuration.VersionCheckSettings.PropertyChanged +=      VersionCheckSettings_PropertyChanged;
                 _Configuration.WebServerSettings.PropertyChanged +=         WebServerSettings_PropertyChanged;
@@ -165,6 +166,7 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.FlightRouteSettings.PropertyChanged -=       FlightRouteSettings_PropertyChanged;
                 _Configuration.GoogleMapSettings.PropertyChanged -=         GoogleMapSettings_PropertyChanged;
                 _Configuration.InternetClientSettings.PropertyChanged -=    InternetClientSettings_PropertyChanged;
+                _Configuration.MonoSettings.PropertyChanged -=              MonoSettings_PropertyChanged;
                 _Configuration.RawDecodingSettings.PropertyChanged -=       RawDecodingSettings_PropertyChanged;
                 _Configuration.VersionCheckSettings.PropertyChanged -=      VersionCheckSettings_PropertyChanged;
                 _Configuration.WebServerSettings.PropertyChanged -=         WebServerSettings_PropertyChanged;
@@ -348,6 +350,11 @@ namespace VirtualRadar.Library.Settings
         private void MergedFeed_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             RaisePropertyChanged(sender, ConfigurationListenerGroup.MergedFeed, args, isListChild: true);
+        }
+
+        private void MonoSettings_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            RaisePropertyChanged(sender, ConfigurationListenerGroup.MonoSettings, args);
         }
 
         private void RawDecodingSettings_PropertyChanged(object sender, PropertyChangedEventArgs args)

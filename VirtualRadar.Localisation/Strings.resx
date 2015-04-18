@@ -2447,4 +2447,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeDataSourcesMultilaterationType" xml:space="preserve">
     <value>Leave at NONE if the receiver is not a source of multilateration data, set to POSITIONS ONLY if the source only sends calculated positions, use POSITIONS INJECTED if it adds calculated positions to a feed.</value>
   </data>
+  <data name="MonoSettings" xml:space="preserve">
+    <value>Mono Settings</value>
+  </data>
+  <data name="OptionsDescribeMonoUseMarkerLabels" xml:space="preserve">
+    <value>Yes to show aircraft label text using the Google marker labels library, no to draw the text onto the image as it does when running under Microsoft .NET. Some native graphics libraries may throw exceptions if this is set to no.</value>
+  </data>
+  <data name="UseMarkerLabels" xml:space="preserve">
+    <value>Use marker labels</value>
+  </data>
 </root>
