@@ -336,6 +336,7 @@ namespace VirtualRadar.WebSite
                             args.Classification = ContentClassification.Image;
                         }
                     } finally {
+                        if(stockImage != null) stockImage.Dispose();        // clones are now made of all stock images
                         if(tempImage != null) tempImage.Dispose();
                         if(_ForceSingleThreadAccess) Monitor.Exit(_ForceSingleThreadAccessLock);
                     }
@@ -647,12 +648,12 @@ namespace VirtualRadar.WebSite
             Image result;
             float titleSize, addressSize, lineHeight;
             if(!isIPad) {
-                result = (Image)Images.IPhoneSplash.Clone();
+                result = Images.Clone_IPhoneSplash();
                 titleSize = 24f;
                 addressSize = 12f;
                 lineHeight = 40f;
             } else {
-                result = (Image)Images.IPadSplash.Clone();
+                result = Images.Clone_IPadSplash();
                 titleSize = 36f;
                 addressSize = 14f;
                 lineHeight = 50f;
