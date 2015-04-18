@@ -57,6 +57,31 @@ namespace VirtualRadar.Resources
             get { return _Add16x16 != null; }
         }
 
+        private static object _Add16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Add16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Add16x16_SyncLock
+        {
+            get { return _Add16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Add16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Add16x16()
+        {
+            lock(Add16x16_SyncLock) {
+                return (Bitmap)Add16x16.Clone();
+            }
+        }
+
         private static Icon _ApplicationIcon;
         /// <summary>
         /// Gets or sets the ApplicationIcon image.
@@ -76,6 +101,31 @@ namespace VirtualRadar.Resources
         public static bool ApplicationIcon_IsCustom
         {
             get { return _ApplicationIcon != null; }
+        }
+
+        private static object _ApplicationIcon_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="ApplicationIcon"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object ApplicationIcon_SyncLock
+        {
+            get { return _ApplicationIcon_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="ApplicationIcon"/>.
+        /// </summary>
+        public static Icon Clone_ApplicationIcon()
+        {
+            lock(ApplicationIcon_SyncLock) {
+                return (Icon)ApplicationIcon.Clone();
+            }
         }
 
         private static Bitmap _ArrowBack16x16;
@@ -99,6 +149,31 @@ namespace VirtualRadar.Resources
             get { return _ArrowBack16x16 != null; }
         }
 
+        private static object _ArrowBack16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="ArrowBack16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object ArrowBack16x16_SyncLock
+        {
+            get { return _ArrowBack16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="ArrowBack16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_ArrowBack16x16()
+        {
+            lock(ArrowBack16x16_SyncLock) {
+                return (Bitmap)ArrowBack16x16.Clone();
+            }
+        }
+
         private static Bitmap _ArrowForward16x16;
         /// <summary>
         /// Gets or sets the ArrowForward16x16 image.
@@ -118,6 +193,31 @@ namespace VirtualRadar.Resources
         public static bool ArrowForward16x16_IsCustom
         {
             get { return _ArrowForward16x16 != null; }
+        }
+
+        private static object _ArrowForward16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="ArrowForward16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object ArrowForward16x16_SyncLock
+        {
+            get { return _ArrowForward16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="ArrowForward16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_ArrowForward16x16()
+        {
+            lock(ArrowForward16x16_SyncLock) {
+                return (Bitmap)ArrowForward16x16.Clone();
+            }
         }
 
         private static Bitmap _BlueBall;
@@ -141,6 +241,31 @@ namespace VirtualRadar.Resources
             get { return _BlueBall != null; }
         }
 
+        private static object _BlueBall_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="BlueBall"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object BlueBall_SyncLock
+        {
+            get { return _BlueBall_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="BlueBall"/>.
+        /// </summary>
+        public static Bitmap Clone_BlueBall()
+        {
+            lock(BlueBall_SyncLock) {
+                return (Bitmap)BlueBall.Clone();
+            }
+        }
+
         private static Bitmap _Cancel16x16;
         /// <summary>
         /// Gets or sets the Cancel16x16 image.
@@ -160,6 +285,31 @@ namespace VirtualRadar.Resources
         public static bool Cancel16x16_IsCustom
         {
             get { return _Cancel16x16 != null; }
+        }
+
+        private static object _Cancel16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Cancel16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Cancel16x16_SyncLock
+        {
+            get { return _Cancel16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Cancel16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Cancel16x16()
+        {
+            lock(Cancel16x16_SyncLock) {
+                return (Bitmap)Cancel16x16.Clone();
+            }
         }
 
         private static Bitmap _CancelSmall16x16;
@@ -183,6 +333,31 @@ namespace VirtualRadar.Resources
             get { return _CancelSmall16x16 != null; }
         }
 
+        private static object _CancelSmall16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="CancelSmall16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object CancelSmall16x16_SyncLock
+        {
+            get { return _CancelSmall16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="CancelSmall16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_CancelSmall16x16()
+        {
+            lock(CancelSmall16x16_SyncLock) {
+                return (Bitmap)CancelSmall16x16.Clone();
+            }
+        }
+
         private static Bitmap _ChevronBlueCircle;
         /// <summary>
         /// Gets or sets the ChevronBlueCircle image.
@@ -202,6 +377,31 @@ namespace VirtualRadar.Resources
         public static bool ChevronBlueCircle_IsCustom
         {
             get { return _ChevronBlueCircle != null; }
+        }
+
+        private static object _ChevronBlueCircle_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="ChevronBlueCircle"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object ChevronBlueCircle_SyncLock
+        {
+            get { return _ChevronBlueCircle_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="ChevronBlueCircle"/>.
+        /// </summary>
+        public static Bitmap Clone_ChevronBlueCircle()
+        {
+            lock(ChevronBlueCircle_SyncLock) {
+                return (Bitmap)ChevronBlueCircle.Clone();
+            }
         }
 
         private static Bitmap _ChevronGreenCircle;
@@ -225,6 +425,31 @@ namespace VirtualRadar.Resources
             get { return _ChevronGreenCircle != null; }
         }
 
+        private static object _ChevronGreenCircle_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="ChevronGreenCircle"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object ChevronGreenCircle_SyncLock
+        {
+            get { return _ChevronGreenCircle_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="ChevronGreenCircle"/>.
+        /// </summary>
+        public static Bitmap Clone_ChevronGreenCircle()
+        {
+            lock(ChevronGreenCircle_SyncLock) {
+                return (Bitmap)ChevronGreenCircle.Clone();
+            }
+        }
+
         private static Bitmap _ChevronRedCircle;
         /// <summary>
         /// Gets or sets the ChevronRedCircle image.
@@ -244,6 +469,31 @@ namespace VirtualRadar.Resources
         public static bool ChevronRedCircle_IsCustom
         {
             get { return _ChevronRedCircle != null; }
+        }
+
+        private static object _ChevronRedCircle_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="ChevronRedCircle"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object ChevronRedCircle_SyncLock
+        {
+            get { return _ChevronRedCircle_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="ChevronRedCircle"/>.
+        /// </summary>
+        public static Bitmap Clone_ChevronRedCircle()
+        {
+            lock(ChevronRedCircle_SyncLock) {
+                return (Bitmap)ChevronRedCircle.Clone();
+            }
         }
 
         private static Bitmap _CloseSlider;
@@ -267,6 +517,31 @@ namespace VirtualRadar.Resources
             get { return _CloseSlider != null; }
         }
 
+        private static object _CloseSlider_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="CloseSlider"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object CloseSlider_SyncLock
+        {
+            get { return _CloseSlider_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="CloseSlider"/>.
+        /// </summary>
+        public static Bitmap Clone_CloseSlider()
+        {
+            lock(CloseSlider_SyncLock) {
+                return (Bitmap)CloseSlider.Clone();
+            }
+        }
+
         private static Bitmap _Collapse;
         /// <summary>
         /// Gets or sets the Collapse image.
@@ -286,6 +561,31 @@ namespace VirtualRadar.Resources
         public static bool Collapse_IsCustom
         {
             get { return _Collapse != null; }
+        }
+
+        private static object _Collapse_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Collapse"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Collapse_SyncLock
+        {
+            get { return _Collapse_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Collapse"/>.
+        /// </summary>
+        public static Bitmap Clone_Collapse()
+        {
+            lock(Collapse_SyncLock) {
+                return (Bitmap)Collapse.Clone();
+            }
         }
 
         private static Bitmap _Compass;
@@ -309,6 +609,31 @@ namespace VirtualRadar.Resources
             get { return _Compass != null; }
         }
 
+        private static object _Compass_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Compass"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Compass_SyncLock
+        {
+            get { return _Compass_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Compass"/>.
+        /// </summary>
+        public static Bitmap Clone_Compass()
+        {
+            lock(Compass_SyncLock) {
+                return (Bitmap)Compass.Clone();
+            }
+        }
+
         private static Bitmap _Corner_BottomLeft;
         /// <summary>
         /// Gets or sets the Corner_BottomLeft image.
@@ -328,6 +653,31 @@ namespace VirtualRadar.Resources
         public static bool Corner_BottomLeft_IsCustom
         {
             get { return _Corner_BottomLeft != null; }
+        }
+
+        private static object _Corner_BottomLeft_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Corner_BottomLeft"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Corner_BottomLeft_SyncLock
+        {
+            get { return _Corner_BottomLeft_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Corner_BottomLeft"/>.
+        /// </summary>
+        public static Bitmap Clone_Corner_BottomLeft()
+        {
+            lock(Corner_BottomLeft_SyncLock) {
+                return (Bitmap)Corner_BottomLeft.Clone();
+            }
         }
 
         private static Bitmap _Corner_BottomRight;
@@ -351,6 +701,31 @@ namespace VirtualRadar.Resources
             get { return _Corner_BottomRight != null; }
         }
 
+        private static object _Corner_BottomRight_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Corner_BottomRight"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Corner_BottomRight_SyncLock
+        {
+            get { return _Corner_BottomRight_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Corner_BottomRight"/>.
+        /// </summary>
+        public static Bitmap Clone_Corner_BottomRight()
+        {
+            lock(Corner_BottomRight_SyncLock) {
+                return (Bitmap)Corner_BottomRight.Clone();
+            }
+        }
+
         private static Bitmap _Corner_TopLeft;
         /// <summary>
         /// Gets or sets the Corner_TopLeft image.
@@ -370,6 +745,31 @@ namespace VirtualRadar.Resources
         public static bool Corner_TopLeft_IsCustom
         {
             get { return _Corner_TopLeft != null; }
+        }
+
+        private static object _Corner_TopLeft_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Corner_TopLeft"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Corner_TopLeft_SyncLock
+        {
+            get { return _Corner_TopLeft_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Corner_TopLeft"/>.
+        /// </summary>
+        public static Bitmap Clone_Corner_TopLeft()
+        {
+            lock(Corner_TopLeft_SyncLock) {
+                return (Bitmap)Corner_TopLeft.Clone();
+            }
         }
 
         private static Bitmap _Corner_TopRight;
@@ -393,6 +793,31 @@ namespace VirtualRadar.Resources
             get { return _Corner_TopRight != null; }
         }
 
+        private static object _Corner_TopRight_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Corner_TopRight"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Corner_TopRight_SyncLock
+        {
+            get { return _Corner_TopRight_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Corner_TopRight"/>.
+        /// </summary>
+        public static Bitmap Clone_Corner_TopRight()
+        {
+            lock(Corner_TopRight_SyncLock) {
+                return (Bitmap)Corner_TopRight.Clone();
+            }
+        }
+
         private static Bitmap _Crosshair;
         /// <summary>
         /// Gets or sets the Crosshair image.
@@ -412,6 +837,31 @@ namespace VirtualRadar.Resources
         public static bool Crosshair_IsCustom
         {
             get { return _Crosshair != null; }
+        }
+
+        private static object _Crosshair_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Crosshair"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Crosshair_SyncLock
+        {
+            get { return _Crosshair_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Crosshair"/>.
+        /// </summary>
+        public static Bitmap Clone_Crosshair()
+        {
+            lock(Crosshair_SyncLock) {
+                return (Bitmap)Crosshair.Clone();
+            }
         }
 
         private static Bitmap _Decoding16x16;
@@ -435,6 +885,31 @@ namespace VirtualRadar.Resources
             get { return _Decoding16x16 != null; }
         }
 
+        private static object _Decoding16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Decoding16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Decoding16x16_SyncLock
+        {
+            get { return _Decoding16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Decoding16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Decoding16x16()
+        {
+            lock(Decoding16x16_SyncLock) {
+                return (Bitmap)Decoding16x16.Clone();
+            }
+        }
+
         private static Bitmap _Edit16x16;
         /// <summary>
         /// Gets or sets the Edit16x16 image.
@@ -454,6 +929,31 @@ namespace VirtualRadar.Resources
         public static bool Edit16x16_IsCustom
         {
             get { return _Edit16x16 != null; }
+        }
+
+        private static object _Edit16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Edit16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Edit16x16_SyncLock
+        {
+            get { return _Edit16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Edit16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Edit16x16()
+        {
+            lock(Edit16x16_SyncLock) {
+                return (Bitmap)Edit16x16.Clone();
+            }
         }
 
         private static Bitmap _Expand;
@@ -477,6 +977,31 @@ namespace VirtualRadar.Resources
             get { return _Expand != null; }
         }
 
+        private static object _Expand_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Expand"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Expand_SyncLock
+        {
+            get { return _Expand_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Expand"/>.
+        /// </summary>
+        public static Bitmap Clone_Expand()
+        {
+            lock(Expand_SyncLock) {
+                return (Bitmap)Expand.Clone();
+            }
+        }
+
         private static Icon _Favicon;
         /// <summary>
         /// Gets or sets the Favicon image.
@@ -496,6 +1021,31 @@ namespace VirtualRadar.Resources
         public static bool Favicon_IsCustom
         {
             get { return _Favicon != null; }
+        }
+
+        private static object _Favicon_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Favicon"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Favicon_SyncLock
+        {
+            get { return _Favicon_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Favicon"/>.
+        /// </summary>
+        public static Icon Clone_Favicon()
+        {
+            lock(Favicon_SyncLock) {
+                return (Icon)Favicon.Clone();
+            }
         }
 
         private static Bitmap _FollowMe;
@@ -519,6 +1069,31 @@ namespace VirtualRadar.Resources
             get { return _FollowMe != null; }
         }
 
+        private static object _FollowMe_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="FollowMe"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object FollowMe_SyncLock
+        {
+            get { return _FollowMe_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="FollowMe"/>.
+        /// </summary>
+        public static Bitmap Clone_FollowMe()
+        {
+            lock(FollowMe_SyncLock) {
+                return (Bitmap)FollowMe.Clone();
+            }
+        }
+
         private static Bitmap _Gear16x16;
         /// <summary>
         /// Gets or sets the Gear16x16 image.
@@ -538,6 +1113,31 @@ namespace VirtualRadar.Resources
         public static bool Gear16x16_IsCustom
         {
             get { return _Gear16x16 != null; }
+        }
+
+        private static object _Gear16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Gear16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Gear16x16_SyncLock
+        {
+            get { return _Gear16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Gear16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Gear16x16()
+        {
+            lock(Gear16x16_SyncLock) {
+                return (Bitmap)Gear16x16.Clone();
+            }
         }
 
         private static Bitmap _GotoCurrentLocation;
@@ -561,6 +1161,31 @@ namespace VirtualRadar.Resources
             get { return _GotoCurrentLocation != null; }
         }
 
+        private static object _GotoCurrentLocation_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="GotoCurrentLocation"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object GotoCurrentLocation_SyncLock
+        {
+            get { return _GotoCurrentLocation_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="GotoCurrentLocation"/>.
+        /// </summary>
+        public static Bitmap Clone_GotoCurrentLocation()
+        {
+            lock(GotoCurrentLocation_SyncLock) {
+                return (Bitmap)GotoCurrentLocation.Clone();
+            }
+        }
+
         private static Bitmap _HelpAbout;
         /// <summary>
         /// Gets or sets the HelpAbout image.
@@ -580,6 +1205,31 @@ namespace VirtualRadar.Resources
         public static bool HelpAbout_IsCustom
         {
             get { return _HelpAbout != null; }
+        }
+
+        private static object _HelpAbout_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="HelpAbout"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object HelpAbout_SyncLock
+        {
+            get { return _HelpAbout_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="HelpAbout"/>.
+        /// </summary>
+        public static Bitmap Clone_HelpAbout()
+        {
+            lock(HelpAbout_SyncLock) {
+                return (Bitmap)HelpAbout.Clone();
+            }
         }
 
         private static Bitmap _HideList;
@@ -603,6 +1253,31 @@ namespace VirtualRadar.Resources
             get { return _HideList != null; }
         }
 
+        private static object _HideList_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="HideList"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object HideList_SyncLock
+        {
+            get { return _HideList_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="HideList"/>.
+        /// </summary>
+        public static Bitmap Clone_HideList()
+        {
+            lock(HideList_SyncLock) {
+                return (Bitmap)HideList.Clone();
+            }
+        }
+
         private static Bitmap _IPadSplash;
         /// <summary>
         /// Gets or sets the IPadSplash image.
@@ -622,6 +1297,31 @@ namespace VirtualRadar.Resources
         public static bool IPadSplash_IsCustom
         {
             get { return _IPadSplash != null; }
+        }
+
+        private static object _IPadSplash_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPadSplash"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPadSplash_SyncLock
+        {
+            get { return _IPadSplash_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPadSplash"/>.
+        /// </summary>
+        public static Bitmap Clone_IPadSplash()
+        {
+            lock(IPadSplash_SyncLock) {
+                return (Bitmap)IPadSplash.Clone();
+            }
         }
 
         private static Bitmap _IPhoneBackButton;
@@ -645,6 +1345,31 @@ namespace VirtualRadar.Resources
             get { return _IPhoneBackButton != null; }
         }
 
+        private static object _IPhoneBackButton_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneBackButton"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneBackButton_SyncLock
+        {
+            get { return _IPhoneBackButton_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneBackButton"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneBackButton()
+        {
+            lock(IPhoneBackButton_SyncLock) {
+                return (Bitmap)IPhoneBackButton.Clone();
+            }
+        }
+
         private static Bitmap _IPhoneBlueButton;
         /// <summary>
         /// Gets or sets the IPhoneBlueButton image.
@@ -664,6 +1389,31 @@ namespace VirtualRadar.Resources
         public static bool IPhoneBlueButton_IsCustom
         {
             get { return _IPhoneBlueButton != null; }
+        }
+
+        private static object _IPhoneBlueButton_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneBlueButton"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneBlueButton_SyncLock
+        {
+            get { return _IPhoneBlueButton_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneBlueButton"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneBlueButton()
+        {
+            lock(IPhoneBlueButton_SyncLock) {
+                return (Bitmap)IPhoneBlueButton.Clone();
+            }
         }
 
         private static Bitmap _IPhoneChevron;
@@ -687,6 +1437,31 @@ namespace VirtualRadar.Resources
             get { return _IPhoneChevron != null; }
         }
 
+        private static object _IPhoneChevron_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneChevron"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneChevron_SyncLock
+        {
+            get { return _IPhoneChevron_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneChevron"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneChevron()
+        {
+            lock(IPhoneChevron_SyncLock) {
+                return (Bitmap)IPhoneChevron.Clone();
+            }
+        }
+
         private static Bitmap _IPhoneGrayButton;
         /// <summary>
         /// Gets or sets the IPhoneGrayButton image.
@@ -706,6 +1481,31 @@ namespace VirtualRadar.Resources
         public static bool IPhoneGrayButton_IsCustom
         {
             get { return _IPhoneGrayButton != null; }
+        }
+
+        private static object _IPhoneGrayButton_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneGrayButton"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneGrayButton_SyncLock
+        {
+            get { return _IPhoneGrayButton_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneGrayButton"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneGrayButton()
+        {
+            lock(IPhoneGrayButton_SyncLock) {
+                return (Bitmap)IPhoneGrayButton.Clone();
+            }
         }
 
         private static Bitmap _IPhoneIcon;
@@ -729,6 +1529,31 @@ namespace VirtualRadar.Resources
             get { return _IPhoneIcon != null; }
         }
 
+        private static object _IPhoneIcon_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneIcon"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneIcon_SyncLock
+        {
+            get { return _IPhoneIcon_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneIcon"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneIcon()
+        {
+            lock(IPhoneIcon_SyncLock) {
+                return (Bitmap)IPhoneIcon.Clone();
+            }
+        }
+
         private static Bitmap _IPhoneListGroup;
         /// <summary>
         /// Gets or sets the IPhoneListGroup image.
@@ -748,6 +1573,31 @@ namespace VirtualRadar.Resources
         public static bool IPhoneListGroup_IsCustom
         {
             get { return _IPhoneListGroup != null; }
+        }
+
+        private static object _IPhoneListGroup_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneListGroup"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneListGroup_SyncLock
+        {
+            get { return _IPhoneListGroup_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneListGroup"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneListGroup()
+        {
+            lock(IPhoneListGroup_SyncLock) {
+                return (Bitmap)IPhoneListGroup.Clone();
+            }
         }
 
         private static Bitmap _IPhoneOnOff;
@@ -771,6 +1621,31 @@ namespace VirtualRadar.Resources
             get { return _IPhoneOnOff != null; }
         }
 
+        private static object _IPhoneOnOff_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneOnOff"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneOnOff_SyncLock
+        {
+            get { return _IPhoneOnOff_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneOnOff"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneOnOff()
+        {
+            lock(IPhoneOnOff_SyncLock) {
+                return (Bitmap)IPhoneOnOff.Clone();
+            }
+        }
+
         private static Bitmap _IPhonePinstripes;
         /// <summary>
         /// Gets or sets the IPhonePinstripes image.
@@ -790,6 +1665,31 @@ namespace VirtualRadar.Resources
         public static bool IPhonePinstripes_IsCustom
         {
             get { return _IPhonePinstripes != null; }
+        }
+
+        private static object _IPhonePinstripes_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhonePinstripes"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhonePinstripes_SyncLock
+        {
+            get { return _IPhonePinstripes_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhonePinstripes"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhonePinstripes()
+        {
+            lock(IPhonePinstripes_SyncLock) {
+                return (Bitmap)IPhonePinstripes.Clone();
+            }
         }
 
         private static Bitmap _IPhoneSelectedTick;
@@ -813,6 +1713,31 @@ namespace VirtualRadar.Resources
             get { return _IPhoneSelectedTick != null; }
         }
 
+        private static object _IPhoneSelectedTick_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneSelectedTick"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneSelectedTick_SyncLock
+        {
+            get { return _IPhoneSelectedTick_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneSelectedTick"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneSelectedTick()
+        {
+            lock(IPhoneSelectedTick_SyncLock) {
+                return (Bitmap)IPhoneSelectedTick.Clone();
+            }
+        }
+
         private static Bitmap _IPhoneSelection;
         /// <summary>
         /// Gets or sets the IPhoneSelection image.
@@ -832,6 +1757,31 @@ namespace VirtualRadar.Resources
         public static bool IPhoneSelection_IsCustom
         {
             get { return _IPhoneSelection != null; }
+        }
+
+        private static object _IPhoneSelection_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneSelection"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneSelection_SyncLock
+        {
+            get { return _IPhoneSelection_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneSelection"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneSelection()
+        {
+            lock(IPhoneSelection_SyncLock) {
+                return (Bitmap)IPhoneSelection.Clone();
+            }
         }
 
         private static Bitmap _IPhoneSplash;
@@ -855,6 +1805,31 @@ namespace VirtualRadar.Resources
             get { return _IPhoneSplash != null; }
         }
 
+        private static object _IPhoneSplash_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneSplash"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneSplash_SyncLock
+        {
+            get { return _IPhoneSplash_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneSplash"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneSplash()
+        {
+            lock(IPhoneSplash_SyncLock) {
+                return (Bitmap)IPhoneSplash.Clone();
+            }
+        }
+
         private static Bitmap _IPhoneToolbar;
         /// <summary>
         /// Gets or sets the IPhoneToolbar image.
@@ -874,6 +1849,31 @@ namespace VirtualRadar.Resources
         public static bool IPhoneToolbar_IsCustom
         {
             get { return _IPhoneToolbar != null; }
+        }
+
+        private static object _IPhoneToolbar_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneToolbar"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneToolbar_SyncLock
+        {
+            get { return _IPhoneToolbar_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneToolbar"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneToolbar()
+        {
+            lock(IPhoneToolbar_SyncLock) {
+                return (Bitmap)IPhoneToolbar.Clone();
+            }
         }
 
         private static Bitmap _IPhoneToolButton;
@@ -897,6 +1897,31 @@ namespace VirtualRadar.Resources
             get { return _IPhoneToolButton != null; }
         }
 
+        private static object _IPhoneToolButton_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneToolButton"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneToolButton_SyncLock
+        {
+            get { return _IPhoneToolButton_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneToolButton"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneToolButton()
+        {
+            lock(IPhoneToolButton_SyncLock) {
+                return (Bitmap)IPhoneToolButton.Clone();
+            }
+        }
+
         private static Bitmap _IPhoneWhiteButton;
         /// <summary>
         /// Gets or sets the IPhoneWhiteButton image.
@@ -916,6 +1941,31 @@ namespace VirtualRadar.Resources
         public static bool IPhoneWhiteButton_IsCustom
         {
             get { return _IPhoneWhiteButton != null; }
+        }
+
+        private static object _IPhoneWhiteButton_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="IPhoneWhiteButton"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object IPhoneWhiteButton_SyncLock
+        {
+            get { return _IPhoneWhiteButton_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="IPhoneWhiteButton"/>.
+        /// </summary>
+        public static Bitmap Clone_IPhoneWhiteButton()
+        {
+            lock(IPhoneWhiteButton_SyncLock) {
+                return (Bitmap)IPhoneWhiteButton.Clone();
+            }
         }
 
         private static Bitmap _Location16x16;
@@ -939,6 +1989,31 @@ namespace VirtualRadar.Resources
             get { return _Location16x16 != null; }
         }
 
+        private static object _Location16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Location16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Location16x16_SyncLock
+        {
+            get { return _Location16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Location16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Location16x16()
+        {
+            lock(Location16x16_SyncLock) {
+                return (Bitmap)Location16x16.Clone();
+            }
+        }
+
         private static Bitmap _Logo128x128;
         /// <summary>
         /// Gets or sets the Logo128x128 image.
@@ -958,6 +2033,31 @@ namespace VirtualRadar.Resources
         public static bool Logo128x128_IsCustom
         {
             get { return _Logo128x128 != null; }
+        }
+
+        private static object _Logo128x128_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Logo128x128"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Logo128x128_SyncLock
+        {
+            get { return _Logo128x128_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Logo128x128"/>.
+        /// </summary>
+        public static Bitmap Clone_Logo128x128()
+        {
+            lock(Logo128x128_SyncLock) {
+                return (Bitmap)Logo128x128.Clone();
+            }
         }
 
         private static Bitmap _Marker_Airplane;
@@ -981,6 +2081,31 @@ namespace VirtualRadar.Resources
             get { return _Marker_Airplane != null; }
         }
 
+        private static object _Marker_Airplane_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Marker_Airplane"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Marker_Airplane_SyncLock
+        {
+            get { return _Marker_Airplane_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Marker_Airplane"/>.
+        /// </summary>
+        public static Bitmap Clone_Marker_Airplane()
+        {
+            lock(Marker_Airplane_SyncLock) {
+                return (Bitmap)Marker_Airplane.Clone();
+            }
+        }
+
         private static Bitmap _Marker_AirplaneSelected;
         /// <summary>
         /// Gets or sets the Marker_AirplaneSelected image.
@@ -1000,6 +2125,31 @@ namespace VirtualRadar.Resources
         public static bool Marker_AirplaneSelected_IsCustom
         {
             get { return _Marker_AirplaneSelected != null; }
+        }
+
+        private static object _Marker_AirplaneSelected_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Marker_AirplaneSelected"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Marker_AirplaneSelected_SyncLock
+        {
+            get { return _Marker_AirplaneSelected_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Marker_AirplaneSelected"/>.
+        /// </summary>
+        public static Bitmap Clone_Marker_AirplaneSelected()
+        {
+            lock(Marker_AirplaneSelected_SyncLock) {
+                return (Bitmap)Marker_AirplaneSelected.Clone();
+            }
         }
 
         private static Bitmap _MergedFeed16x16;
@@ -1023,6 +2173,31 @@ namespace VirtualRadar.Resources
             get { return _MergedFeed16x16 != null; }
         }
 
+        private static object _MergedFeed16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="MergedFeed16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object MergedFeed16x16_SyncLock
+        {
+            get { return _MergedFeed16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="MergedFeed16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_MergedFeed16x16()
+        {
+            lock(MergedFeed16x16_SyncLock) {
+                return (Bitmap)MergedFeed16x16.Clone();
+            }
+        }
+
         private static Bitmap _MovingMapChecked;
         /// <summary>
         /// Gets or sets the MovingMapChecked image.
@@ -1042,6 +2217,31 @@ namespace VirtualRadar.Resources
         public static bool MovingMapChecked_IsCustom
         {
             get { return _MovingMapChecked != null; }
+        }
+
+        private static object _MovingMapChecked_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="MovingMapChecked"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object MovingMapChecked_SyncLock
+        {
+            get { return _MovingMapChecked_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="MovingMapChecked"/>.
+        /// </summary>
+        public static Bitmap Clone_MovingMapChecked()
+        {
+            lock(MovingMapChecked_SyncLock) {
+                return (Bitmap)MovingMapChecked.Clone();
+            }
         }
 
         private static Bitmap _MovingMapUnchecked;
@@ -1065,6 +2265,31 @@ namespace VirtualRadar.Resources
             get { return _MovingMapUnchecked != null; }
         }
 
+        private static object _MovingMapUnchecked_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="MovingMapUnchecked"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object MovingMapUnchecked_SyncLock
+        {
+            get { return _MovingMapUnchecked_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="MovingMapUnchecked"/>.
+        /// </summary>
+        public static Bitmap Clone_MovingMapUnchecked()
+        {
+            lock(MovingMapUnchecked_SyncLock) {
+                return (Bitmap)MovingMapUnchecked.Clone();
+            }
+        }
+
         private static Bitmap _Notebook16x16;
         /// <summary>
         /// Gets or sets the Notebook16x16 image.
@@ -1084,6 +2309,31 @@ namespace VirtualRadar.Resources
         public static bool Notebook16x16_IsCustom
         {
             get { return _Notebook16x16 != null; }
+        }
+
+        private static object _Notebook16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Notebook16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Notebook16x16_SyncLock
+        {
+            get { return _Notebook16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Notebook16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Notebook16x16()
+        {
+            lock(Notebook16x16_SyncLock) {
+                return (Bitmap)Notebook16x16.Clone();
+            }
         }
 
         private static Bitmap _OpenSlider;
@@ -1107,6 +2357,31 @@ namespace VirtualRadar.Resources
             get { return _OpenSlider != null; }
         }
 
+        private static object _OpenSlider_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="OpenSlider"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object OpenSlider_SyncLock
+        {
+            get { return _OpenSlider_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="OpenSlider"/>.
+        /// </summary>
+        public static Bitmap Clone_OpenSlider()
+        {
+            lock(OpenSlider_SyncLock) {
+                return (Bitmap)OpenSlider.Clone();
+            }
+        }
+
         private static Bitmap _Radio16x16;
         /// <summary>
         /// Gets or sets the Radio16x16 image.
@@ -1126,6 +2401,31 @@ namespace VirtualRadar.Resources
         public static bool Radio16x16_IsCustom
         {
             get { return _Radio16x16 != null; }
+        }
+
+        private static object _Radio16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Radio16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Radio16x16_SyncLock
+        {
+            get { return _Radio16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Radio16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Radio16x16()
+        {
+            lock(Radio16x16_SyncLock) {
+                return (Bitmap)Radio16x16.Clone();
+            }
         }
 
         private static Bitmap _Radio48x48;
@@ -1149,6 +2449,31 @@ namespace VirtualRadar.Resources
             get { return _Radio48x48 != null; }
         }
 
+        private static object _Radio48x48_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Radio48x48"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Radio48x48_SyncLock
+        {
+            get { return _Radio48x48_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Radio48x48"/>.
+        /// </summary>
+        public static Bitmap Clone_Radio48x48()
+        {
+            lock(Radio48x48_SyncLock) {
+                return (Bitmap)Radio48x48.Clone();
+            }
+        }
+
         private static Bitmap _Rebroadcast16x16;
         /// <summary>
         /// Gets or sets the Rebroadcast16x16 image.
@@ -1168,6 +2493,31 @@ namespace VirtualRadar.Resources
         public static bool Rebroadcast16x16_IsCustom
         {
             get { return _Rebroadcast16x16 != null; }
+        }
+
+        private static object _Rebroadcast16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Rebroadcast16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Rebroadcast16x16_SyncLock
+        {
+            get { return _Rebroadcast16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Rebroadcast16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Rebroadcast16x16()
+        {
+            lock(Rebroadcast16x16_SyncLock) {
+                return (Bitmap)Rebroadcast16x16.Clone();
+            }
         }
 
         private static Bitmap _RowHeader;
@@ -1191,6 +2541,31 @@ namespace VirtualRadar.Resources
             get { return _RowHeader != null; }
         }
 
+        private static object _RowHeader_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="RowHeader"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object RowHeader_SyncLock
+        {
+            get { return _RowHeader_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="RowHeader"/>.
+        /// </summary>
+        public static Bitmap Clone_RowHeader()
+        {
+            lock(RowHeader_SyncLock) {
+                return (Bitmap)RowHeader.Clone();
+            }
+        }
+
         private static Bitmap _RowHeaderSelected;
         /// <summary>
         /// Gets or sets the RowHeaderSelected image.
@@ -1210,6 +2585,31 @@ namespace VirtualRadar.Resources
         public static bool RowHeaderSelected_IsCustom
         {
             get { return _RowHeaderSelected != null; }
+        }
+
+        private static object _RowHeaderSelected_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="RowHeaderSelected"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object RowHeaderSelected_SyncLock
+        {
+            get { return _RowHeaderSelected_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="RowHeaderSelected"/>.
+        /// </summary>
+        public static Bitmap Clone_RowHeaderSelected()
+        {
+            lock(RowHeaderSelected_SyncLock) {
+                return (Bitmap)RowHeaderSelected.Clone();
+            }
         }
 
         private static Bitmap _Server16x16;
@@ -1233,6 +2633,31 @@ namespace VirtualRadar.Resources
             get { return _Server16x16 != null; }
         }
 
+        private static object _Server16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Server16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Server16x16_SyncLock
+        {
+            get { return _Server16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Server16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Server16x16()
+        {
+            lock(Server16x16_SyncLock) {
+                return (Bitmap)Server16x16.Clone();
+            }
+        }
+
         private static Bitmap _ShowList;
         /// <summary>
         /// Gets or sets the ShowList image.
@@ -1252,6 +2677,31 @@ namespace VirtualRadar.Resources
         public static bool ShowList_IsCustom
         {
             get { return _ShowList != null; }
+        }
+
+        private static object _ShowList_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="ShowList"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object ShowList_SyncLock
+        {
+            get { return _ShowList_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="ShowList"/>.
+        /// </summary>
+        public static Bitmap Clone_ShowList()
+        {
+            lock(ShowList_SyncLock) {
+                return (Bitmap)ShowList.Clone();
+            }
         }
 
         private static Bitmap _Site16x16;
@@ -1275,6 +2725,31 @@ namespace VirtualRadar.Resources
             get { return _Site16x16 != null; }
         }
 
+        private static object _Site16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Site16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Site16x16_SyncLock
+        {
+            get { return _Site16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Site16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Site16x16()
+        {
+            lock(Site16x16_SyncLock) {
+                return (Bitmap)Site16x16.Clone();
+            }
+        }
+
         private static Bitmap _SmallPlaneNorth;
         /// <summary>
         /// Gets or sets the SmallPlaneNorth image.
@@ -1294,6 +2769,31 @@ namespace VirtualRadar.Resources
         public static bool SmallPlaneNorth_IsCustom
         {
             get { return _SmallPlaneNorth != null; }
+        }
+
+        private static object _SmallPlaneNorth_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="SmallPlaneNorth"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object SmallPlaneNorth_SyncLock
+        {
+            get { return _SmallPlaneNorth_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="SmallPlaneNorth"/>.
+        /// </summary>
+        public static Bitmap Clone_SmallPlaneNorth()
+        {
+            lock(SmallPlaneNorth_SyncLock) {
+                return (Bitmap)SmallPlaneNorth.Clone();
+            }
         }
 
         private static Bitmap _Test16x16;
@@ -1317,6 +2817,31 @@ namespace VirtualRadar.Resources
             get { return _Test16x16 != null; }
         }
 
+        private static object _Test16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Test16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Test16x16_SyncLock
+        {
+            get { return _Test16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Test16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Test16x16()
+        {
+            lock(Test16x16_SyncLock) {
+                return (Bitmap)Test16x16.Clone();
+            }
+        }
+
         private static Bitmap _TestSquare;
         /// <summary>
         /// Gets or sets the TestSquare image.
@@ -1336,6 +2861,31 @@ namespace VirtualRadar.Resources
         public static bool TestSquare_IsCustom
         {
             get { return _TestSquare != null; }
+        }
+
+        private static object _TestSquare_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="TestSquare"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object TestSquare_SyncLock
+        {
+            get { return _TestSquare_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="TestSquare"/>.
+        /// </summary>
+        public static Bitmap Clone_TestSquare()
+        {
+            lock(TestSquare_SyncLock) {
+                return (Bitmap)TestSquare.Clone();
+            }
         }
 
         private static Bitmap _Tower;
@@ -1359,6 +2909,31 @@ namespace VirtualRadar.Resources
             get { return _Tower != null; }
         }
 
+        private static object _Tower_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Tower"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Tower_SyncLock
+        {
+            get { return _Tower_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Tower"/>.
+        /// </summary>
+        public static Bitmap Clone_Tower()
+        {
+            lock(Tower_SyncLock) {
+                return (Bitmap)Tower.Clone();
+            }
+        }
+
         private static Bitmap _Transparent_25;
         /// <summary>
         /// Gets or sets the Transparent_25 image.
@@ -1378,6 +2953,31 @@ namespace VirtualRadar.Resources
         public static bool Transparent_25_IsCustom
         {
             get { return _Transparent_25 != null; }
+        }
+
+        private static object _Transparent_25_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Transparent_25"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Transparent_25_SyncLock
+        {
+            get { return _Transparent_25_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Transparent_25"/>.
+        /// </summary>
+        public static Bitmap Clone_Transparent_25()
+        {
+            lock(Transparent_25_SyncLock) {
+                return (Bitmap)Transparent_25.Clone();
+            }
         }
 
         private static Bitmap _Transparent_50;
@@ -1401,6 +3001,31 @@ namespace VirtualRadar.Resources
             get { return _Transparent_50 != null; }
         }
 
+        private static object _Transparent_50_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Transparent_50"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Transparent_50_SyncLock
+        {
+            get { return _Transparent_50_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Transparent_50"/>.
+        /// </summary>
+        public static Bitmap Clone_Transparent_50()
+        {
+            lock(Transparent_50_SyncLock) {
+                return (Bitmap)Transparent_50.Clone();
+            }
+        }
+
         private static Bitmap _Transparent_16x16;
         /// <summary>
         /// Gets or sets the Transparent_16x16 image.
@@ -1420,6 +3045,31 @@ namespace VirtualRadar.Resources
         public static bool Transparent_16x16_IsCustom
         {
             get { return _Transparent_16x16 != null; }
+        }
+
+        private static object _Transparent_16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Transparent_16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Transparent_16x16_SyncLock
+        {
+            get { return _Transparent_16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Transparent_16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Transparent_16x16()
+        {
+            lock(Transparent_16x16_SyncLock) {
+                return (Bitmap)Transparent_16x16.Clone();
+            }
         }
 
         private static Bitmap _User16x16;
@@ -1443,6 +3093,31 @@ namespace VirtualRadar.Resources
             get { return _User16x16 != null; }
         }
 
+        private static object _User16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="User16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object User16x16_SyncLock
+        {
+            get { return _User16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="User16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_User16x16()
+        {
+            lock(User16x16_SyncLock) {
+                return (Bitmap)User16x16.Clone();
+            }
+        }
+
         private static Bitmap _Volume0;
         /// <summary>
         /// Gets or sets the Volume0 image.
@@ -1462,6 +3137,31 @@ namespace VirtualRadar.Resources
         public static bool Volume0_IsCustom
         {
             get { return _Volume0 != null; }
+        }
+
+        private static object _Volume0_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Volume0"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Volume0_SyncLock
+        {
+            get { return _Volume0_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Volume0"/>.
+        /// </summary>
+        public static Bitmap Clone_Volume0()
+        {
+            lock(Volume0_SyncLock) {
+                return (Bitmap)Volume0.Clone();
+            }
         }
 
         private static Bitmap _Volume100;
@@ -1485,6 +3185,31 @@ namespace VirtualRadar.Resources
             get { return _Volume100 != null; }
         }
 
+        private static object _Volume100_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Volume100"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Volume100_SyncLock
+        {
+            get { return _Volume100_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Volume100"/>.
+        /// </summary>
+        public static Bitmap Clone_Volume100()
+        {
+            lock(Volume100_SyncLock) {
+                return (Bitmap)Volume100.Clone();
+            }
+        }
+
         private static Bitmap _Volume25;
         /// <summary>
         /// Gets or sets the Volume25 image.
@@ -1504,6 +3229,31 @@ namespace VirtualRadar.Resources
         public static bool Volume25_IsCustom
         {
             get { return _Volume25 != null; }
+        }
+
+        private static object _Volume25_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Volume25"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Volume25_SyncLock
+        {
+            get { return _Volume25_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Volume25"/>.
+        /// </summary>
+        public static Bitmap Clone_Volume25()
+        {
+            lock(Volume25_SyncLock) {
+                return (Bitmap)Volume25.Clone();
+            }
         }
 
         private static Bitmap _Volume50;
@@ -1527,6 +3277,31 @@ namespace VirtualRadar.Resources
             get { return _Volume50 != null; }
         }
 
+        private static object _Volume50_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Volume50"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Volume50_SyncLock
+        {
+            get { return _Volume50_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Volume50"/>.
+        /// </summary>
+        public static Bitmap Clone_Volume50()
+        {
+            lock(Volume50_SyncLock) {
+                return (Bitmap)Volume50.Clone();
+            }
+        }
+
         private static Bitmap _Volume75;
         /// <summary>
         /// Gets or sets the Volume75 image.
@@ -1546,6 +3321,31 @@ namespace VirtualRadar.Resources
         public static bool Volume75_IsCustom
         {
             get { return _Volume75 != null; }
+        }
+
+        private static object _Volume75_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Volume75"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Volume75_SyncLock
+        {
+            get { return _Volume75_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Volume75"/>.
+        /// </summary>
+        public static Bitmap Clone_Volume75()
+        {
+            lock(Volume75_SyncLock) {
+                return (Bitmap)Volume75.Clone();
+            }
         }
 
         private static Bitmap _VolumeDown;
@@ -1569,6 +3369,31 @@ namespace VirtualRadar.Resources
             get { return _VolumeDown != null; }
         }
 
+        private static object _VolumeDown_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="VolumeDown"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object VolumeDown_SyncLock
+        {
+            get { return _VolumeDown_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="VolumeDown"/>.
+        /// </summary>
+        public static Bitmap Clone_VolumeDown()
+        {
+            lock(VolumeDown_SyncLock) {
+                return (Bitmap)VolumeDown.Clone();
+            }
+        }
+
         private static Bitmap _VolumeMute;
         /// <summary>
         /// Gets or sets the VolumeMute image.
@@ -1588,6 +3413,31 @@ namespace VirtualRadar.Resources
         public static bool VolumeMute_IsCustom
         {
             get { return _VolumeMute != null; }
+        }
+
+        private static object _VolumeMute_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="VolumeMute"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object VolumeMute_SyncLock
+        {
+            get { return _VolumeMute_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="VolumeMute"/>.
+        /// </summary>
+        public static Bitmap Clone_VolumeMute()
+        {
+            lock(VolumeMute_SyncLock) {
+                return (Bitmap)VolumeMute.Clone();
+            }
         }
 
         private static Bitmap _VolumeUp;
@@ -1611,6 +3461,31 @@ namespace VirtualRadar.Resources
             get { return _VolumeUp != null; }
         }
 
+        private static object _VolumeUp_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="VolumeUp"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object VolumeUp_SyncLock
+        {
+            get { return _VolumeUp_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="VolumeUp"/>.
+        /// </summary>
+        public static Bitmap Clone_VolumeUp()
+        {
+            lock(VolumeUp_SyncLock) {
+                return (Bitmap)VolumeUp.Clone();
+            }
+        }
+
         private static Bitmap _WarningBitmap;
         /// <summary>
         /// Gets or sets the WarningBitmap image.
@@ -1630,6 +3505,31 @@ namespace VirtualRadar.Resources
         public static bool WarningBitmap_IsCustom
         {
             get { return _WarningBitmap != null; }
+        }
+
+        private static object _WarningBitmap_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="WarningBitmap"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object WarningBitmap_SyncLock
+        {
+            get { return _WarningBitmap_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="WarningBitmap"/>.
+        /// </summary>
+        public static Bitmap Clone_WarningBitmap()
+        {
+            lock(WarningBitmap_SyncLock) {
+                return (Bitmap)WarningBitmap.Clone();
+            }
         }
 
         private static Icon _WarningIcon;
@@ -1653,6 +3553,31 @@ namespace VirtualRadar.Resources
             get { return _WarningIcon != null; }
         }
 
+        private static object _WarningIcon_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="WarningIcon"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object WarningIcon_SyncLock
+        {
+            get { return _WarningIcon_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="WarningIcon"/>.
+        /// </summary>
+        public static Icon Clone_WarningIcon()
+        {
+            lock(WarningIcon_SyncLock) {
+                return (Icon)WarningIcon.Clone();
+            }
+        }
+
         private static Bitmap _Wizard16x16;
         /// <summary>
         /// Gets or sets the Wizard16x16 image.
@@ -1672,6 +3597,31 @@ namespace VirtualRadar.Resources
         public static bool Wizard16x16_IsCustom
         {
             get { return _Wizard16x16 != null; }
+        }
+
+        private static object _Wizard16x16_SyncLock = new Object();
+        /// <summary>
+        /// Gets an object that can be used in a lock() statement on the image to force single-thread access to it while
+        /// performing some operation on it.
+        /// </summary>
+        /// <remarks>
+        /// This is a recipe for deadlocking, be careful when using this lock that you do not call anything that
+        /// will acquire another lock elsewhere. If in doubt then call <see cref="Wizard16x16"/> to make a thread-clone of the
+        /// image and use that in your image manipulations.
+        /// </remarks>
+        public static object Wizard16x16_SyncLock
+        {
+            get { return _Wizard16x16_SyncLock; }
+        }
+
+        /// <summary>
+        /// Creates a clone of <see cref="Wizard16x16"/>.
+        /// </summary>
+        public static Bitmap Clone_Wizard16x16()
+        {
+            lock(Wizard16x16_SyncLock) {
+                return (Bitmap)Wizard16x16.Clone();
+            }
         }
     }
 }
