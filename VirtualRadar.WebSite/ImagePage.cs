@@ -249,6 +249,11 @@ namespace VirtualRadar.WebSite
         /// The object on which <see cref="_ForceSingleThreadAccess"/> environments will lock.
         /// </summary>
         private static object _ForceSingleThreadAccessLock = new object();
+
+        /// <summary>
+        /// True if the web site is running under Mono.
+        /// </summary>
+        private bool _IsMono;
         #endregion
 
         #region Properties
@@ -275,7 +280,8 @@ namespace VirtualRadar.WebSite
         {
             _PictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
             _PictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton.DirectoryCache;
-            _ForceSingleThreadAccess = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            _ForceSingleThreadAccess = false; //_IsMono;
         }
         #endregion
 
@@ -870,6 +876,7 @@ namespace VirtualRadar.WebSite
             Image result = (Image)image.Clone();
 
             using(Graphics graphics = Graphics.FromImage(result)) {
+                // Note that this gets completely ignored by Mono...
                 StringFormat stringFormat = new StringFormat() {
                     Alignment = centreText ? StringAlignment.Center : StringAlignment.Near,
                     LineAlignment = StringAlignment.Center,
@@ -881,7 +888,8 @@ namespace VirtualRadar.WebSite
                 using(GraphicsPath path = new GraphicsPath()) {
                     float lineTop = top;
                     foreach(string line in lines) {
-                        Font font = GetFontForRectangle("MS Sans Serif", FontStyle.Regular, startPointSize, graphics, (float)result.Width - left, lineHeight * 2f, line);
+                        var fontName = _IsMono ? "Droid Sans" : "MS Sans Serif";
+                        Font font = GetFontForRectangle(fontName, FontStyle.Regular, startPointSize, graphics, (float)result.Width - left, lineHeight * 2f, line);
                         path.AddString(line, font.FontFamily, (int)font.Style, font.Size, new RectangleF(0, lineTop, result.Width, lineHeight), stringFormat);
                         lineTop += lineHeight;
                     }
