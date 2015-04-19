@@ -135,7 +135,8 @@
 
             var view = $(window);
             var menuWidth = this.$el.outerWidth();
-            var menuHeight = this.$el.outerHeight();
+//            var menuHeight = this.$el.outerHeight();  // <-- doesn't work in Firefox, previous reset of height does nothing - tried '', null and 'auto', always returns previous menu's height by the time it gets to here and not current menu's height
+            var menuHeight = this.$el[0].scrollHeight;  // <-- this does work in Firefox :)
             var availWidth = view.width() - offset.left;
             var availHeight = view.height() - offset.top;
             if(menuWidth > availWidth) this.$el.css('overflow-x', 'auto');
