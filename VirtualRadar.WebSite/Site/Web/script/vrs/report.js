@@ -502,7 +502,8 @@
                     dataType:   'text',     // It's always text - it contains Microsoft formatted dates, they need munging before we can use them
                     data:       parameters,
                     success:    $.proxy(pageFetched, this),
-                    error:      $.proxy(fetchFailed, this)
+                    error:      $.proxy(fetchFailed, this),
+                    cache:      false
                 });
             }
         };
