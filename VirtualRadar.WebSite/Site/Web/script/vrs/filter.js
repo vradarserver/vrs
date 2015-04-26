@@ -939,6 +939,7 @@
     VRS.FilterHelper = function(subclassSettings)
     {
         if(!subclassSettings) throw 'You must supply the subclass settings';
+        var that = this;
 
         //region -- createFilter
         /**
@@ -1093,7 +1094,7 @@
         };
         //endregion
 
-        //region -- isFilterInUse
+        //region -- isFilterInUse, getIndexForFilterProperty, getFilterForFilterProperty
         /**
          * Returns true if any of the filters in the array passed across have the property passed across, otherwise returns false.
          * @param {Array.<VRS.Filter>} filters
@@ -1102,12 +1103,35 @@
          */
         this.isFilterInUse = function(filters, property)
         {
-            var result = false;
+            return that.getIndexForFilterProperty(filters, property) !== -1;
+        };
+
+        /**
+         * Returns the filter with the filter property passed across or null if no such filter exists.
+         * @param {Array.<VRS.Filter>} filters
+         * @param {*} property
+         * @returns {VRS.Filter}
+         */
+        this.getFilterForFilterProperty = function(filters, property)
+        {
+            var index = that.getIndexForFilterProperty(filters, property);
+            return index === -1 ? null : filters[index];
+        };
+
+        /**
+         * Returns the index of the filter with the filter property passed across or -1 if no such filter exists.
+         * @param {Array.<VRS.Filter>} filters
+         * @param {*} property
+         * @returns {number}
+         */
+        this.getIndexForFilterProperty = function(filters, property)
+        {
+            var result = -1;
 
             var length = filters.length;
             for(var i = 0;i < length;++i) {
                 if(filters[i].getProperty() === property) {
-                    result = true;
+                    result = i;
                     break;
                 }
             }

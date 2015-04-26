@@ -39,11 +39,18 @@ namespace VirtualRadar.SQLiteWrapper
         /// </summary>
         public VirtualRadar.Interface.SQLite.SQLiteErrorCode ErrorCode
         {
-            get
-            { 
+            get { 
                 return _Exception == null ? VirtualRadar.Interface.SQLite.SQLiteErrorCode.Ok
                                           : (VirtualRadar.Interface.SQLite.SQLiteErrorCode)((int)_Exception.ErrorCode);
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsLocked
+        {
+            get { return ErrorCode == Interface.SQLite.SQLiteErrorCode.Busy || ErrorCode == Interface.SQLite.SQLiteErrorCode.Locked; }
         }
 
         #if DOTNET_BUILD

@@ -32,6 +32,11 @@ namespace VirtualRadar.Interface.SQLite
         SQLiteErrorCode ErrorCode { get; }
 
         /// <summary>
+        /// Gets a value, derived from <see cref="ErrorCode"/>, indicating that the database is locked.
+        /// </summary>
+        bool IsLocked { get; }
+
+        /// <summary>
         /// Gets the exception that was passed to <see cref="Initialise"/>.
         /// </summary>
         Exception Exception { get; }

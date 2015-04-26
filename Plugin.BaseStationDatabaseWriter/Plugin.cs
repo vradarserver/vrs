@@ -23,6 +23,7 @@ using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.SQLite;
 using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
@@ -132,15 +133,35 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         public string Version { get { return "2.1.0"; } }
 
+        private string _Status;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Status { get; private set; }
+        public string Status
+        {
+            get { return _Status; }
+            set {
+                if(_Status != value) {
+                    _Status = value ?? "";
+                    OnStatusChanged(EventArgs.Empty);
+                }
+            }
+        }
 
+        private string _StatusDescription;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string StatusDescription { get; private set; }
+        public string StatusDescription
+        {
+            get { return _StatusDescription; }
+            set {
+                if(_StatusDescription != value) {
+                    _StatusDescription = value ?? "";
+                    OnStatusChanged(EventArgs.Empty);
+                }
+            }
+        }
         #endregion
 
         #region Events
@@ -365,7 +386,6 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                             Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on starting session: {0}", ex.ToString());
                         }
                     }
-                    OnStatusChanged(EventArgs.Empty);
                 }
             }
         }
@@ -393,9 +413,24 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     } finally {
                         _Session = null;
                     }
-                    OnStatusChanged(EventArgs.Empty);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns true if the exception passed across represents an SQLite lock exception.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsSQLiteLockException(Exception ex)
+        {
+            var result = false;
+
+            var sqliteExceptionWrapper = Factory.Singleton.Resolve<ISQLiteException>();
+            sqliteExceptionWrapper.Initialise(ex);
+            result = sqliteExceptionWrapper.IsLocked;
+
+            return result;
         }
 
         /// <summary>
@@ -409,7 +444,6 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Session = null;
             Status = status ?? PluginStrings.EnabledNotUpdating;
             StatusDescription = String.Format(format, ex == null ? "null" : ex.Message);
-            OnStatusChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -425,6 +459,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// Creates database records and updates internal objects to track an aircraft that is currently transmitting messages.
         /// </summary>
         /// <param name="message"></param>
+        /// <remarks>
+        /// This defers the recording of the flight for as long as possible so that if the database is locked then we don't
+        /// have a record of the flight, and the next message will try again to record the flight.
+        /// </remarks>
         private void TrackFlight(BaseStationMessage message)
         {
             if(IsTransmissionMessage(message)) {
@@ -435,25 +473,19 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         FlightRecords flightRecords;
                         if(!_FlightMap.TryGetValue(message.Icao24, out flightRecords)) {
                             flightRecords = new FlightRecords();
+
                             _Database.StartTransaction();
                             try {
                                 flightRecords.Aircraft = FetchOrCreateAircraft(localNow, message.Icao24);
                                 flightRecords.Flight = CreateFlight(localNow, flightRecords.Aircraft.AircraftID, message.Callsign);
                                 flightRecords.EndTimeUtc = Provider.UtcNow;
                                 _Database.EndTransaction();
-                            } catch(ThreadAbortException) {
-                            } catch(Exception ex) {
-                                Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.TrackFlight caught exception {0}", ex.ToString()));
+                            } catch {
                                 _Database.RollbackTransaction();
                                 throw;
                             }
+
                             _FlightMap.Add(message.Icao24, flightRecords);
-                        } else {
-                            if(flightRecords.Flight.Callsign.Length == 0 && !String.IsNullOrEmpty(message.Callsign)) {
-                                var databaseVersion = _Database.GetFlightById(flightRecords.Flight.FlightID);
-                                flightRecords.Flight.Callsign = databaseVersion.Callsign = message.Callsign;
-                                _Database.UpdateFlight(databaseVersion);
-                            }
                         }
 
                         var flight = flightRecords.Flight;
@@ -464,6 +496,13 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         if(message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700) flight.HadEmergency = true;
                         UpdateFirstLastValues(message, flight, flightRecords);
                         UpdateMessageCounters(message, flight);
+
+                        if(flightRecords.Flight.Callsign.Length == 0 && !String.IsNullOrEmpty(message.Callsign)) {
+                            var databaseVersion = _Database.GetFlightById(flightRecords.Flight.FlightID);
+                            databaseVersion.Callsign = message.Callsign;
+                            _Database.UpdateFlight(databaseVersion);
+                            flightRecords.Flight.Callsign = message.Callsign;   // Do after the database write so that if the write throws we'll try again on the next message
+                        }
                     }
                 }
             }
@@ -539,7 +578,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 FlightID = 0,
                 AircraftID = aircraftId,
                 SessionID = _Session.SessionID,
-                Callsign = String.IsNullOrEmpty(callsign) ? "" : callsign,
+                Callsign = callsign ?? "",
                 StartTime = localNow,
             };
             _Database.InsertFlight(result);
@@ -640,8 +679,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var flushEntries = (flushAll ? _FlightMap : _FlightMap.Where(kvp => kvp.Value.EndTimeUtc.AddMinutes(25) <= utcNow)).ToArray();
 
                 foreach(var kvp in flushEntries) {
-                    _FlightMap.Remove(kvp.Key);
                     _Database.UpdateFlight(kvp.Value.Flight);
+                    _FlightMap.Remove(kvp.Key);     // Do this last so that if a write fails then the flight remains in the queue of flights to flush
                 }
             }
         }
@@ -698,11 +737,19 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             try {
                 TrackFlight(args.Message);
+                if(StatusDescription == PluginStrings.DatabaseLocked) StatusDescription = null;
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
-                AbandonSession(ex, PluginStrings.ExceptionCaughtWhenProcessingMessage);
-                Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.MessageRelay_MessageReceived caught exception {0}", ex.ToString()));
-                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
+                // If this is a lock exception then the flight records won't have been set up, and we won't have the flight
+                // tracked in the dictionary of flights. This isn't a huge deal, the next message will trigger another attempt
+                // at recording the flight.
+                if(IsSQLiteLockException(ex)) {
+                    StatusDescription = PluginStrings.DatabaseLocked;
+                } else {
+                    AbandonSession(ex, PluginStrings.ExceptionCaughtWhenProcessingMessage);
+                    Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.MessageRelay_MessageReceived caught exception {0}", ex.ToString()));
+                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
+                }
             }
         }
 
@@ -725,12 +772,16 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             try {
                 FlushFlights(false);
+                if(StatusDescription == PluginStrings.DatabaseLocked) StatusDescription = null;
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
-                Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.Heartbeat_SlowTick caught exception {0}", ex.ToString()));
-                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on flushing old flights: {0}", ex.ToString());
-                StatusDescription = String.Format(PluginStrings.ExceptionCaught, ex.Message);
-                OnStatusChanged(EventArgs.Empty);
+                if(IsSQLiteLockException(ex)) {
+                    StatusDescription = PluginStrings.DatabaseLocked;
+                } else {
+                    Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.Heartbeat_SlowTick caught exception {0}", ex.ToString()));
+                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on flushing old flights: {0}", ex.ToString());
+                    StatusDescription = String.Format(PluginStrings.ExceptionCaught, ex.Message);
+                }
             }
         }
 

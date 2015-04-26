@@ -88,6 +88,15 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The database is currently locked by another program. Some flights may not be recorded..
+        /// </summary>
+        public static string DatabaseLocked {
+            get {
+                return ResourceManager.GetString("DatabaseLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disabled.
         /// </summary>
         public static string Disabled {

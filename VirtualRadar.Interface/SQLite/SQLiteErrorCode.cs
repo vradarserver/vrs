@@ -55,12 +55,13 @@ namespace VirtualRadar.Interface.SQLite
         Abort /* 4 */,
 
         /// <summary>
-        /// The database file is locked
+        /// The database file could not be written, probably because another process has it locked.
         /// </summary>
         Busy /* 5 */,
 
         /// <summary>
-        /// A table in the database is locked
+        /// The database file could not be written, probably because another command on the same connection has it locked or
+        /// because it has been locked through a cache that is shared with another process.
         /// </summary>
         Locked /* 6 */,
 

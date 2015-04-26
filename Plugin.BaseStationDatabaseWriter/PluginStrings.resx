@@ -189,4 +189,7 @@
   <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
     <value>Exception caught when processing message: {0}</value>
   </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>The database is currently locked by another program. Some flights may not be recorded.</value>
+  </data>
 </root>

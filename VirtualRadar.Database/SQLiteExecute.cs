@@ -41,7 +41,7 @@ namespace VirtualRadar.Database
         public SQLiteExecute()
         {
             RetryIfLocked = true;
-            RetryIfLockedTimeout = 60000;
+            RetryIfLockedTimeout = 20000;
         }
 
         /// <summary>
@@ -142,12 +142,17 @@ namespace VirtualRadar.Database
                 } catch(Exception ex) {
                     var sqliteException = Factory.Singleton.Resolve<ISQLiteException>();
                     sqliteException.Initialise(ex);
-                    if(!sqliteException.IsSQLiteException || sqliteException.ErrorCode != SQLiteErrorCode.Locked || !RetryIfLocked) throw;
+                    if(!sqliteException.IsLocked || !RetryIfLocked) {
+                        throw;
+                    }
 
-                    if(firstFailureTime == DateTime.MinValue) firstFailureTime = DateTime.UtcNow;
-                    else if(firstFailureTime.AddMilliseconds(RetryIfLockedTimeout) >= DateTime.UtcNow) throw;
+                    if(firstFailureTime == DateTime.MinValue) {
+                        firstFailureTime = DateTime.UtcNow;
+                    } else if(firstFailureTime.AddMilliseconds(RetryIfLockedTimeout) <= DateTime.UtcNow) {
+                        throw;
+                    }
 
-                    Thread.Sleep(100);
+                    Thread.Sleep(100);      // Note that SQLite has a built-in timeout of 5 seconds on locks, we may not need to bother with this
                 }
             } while(!executed);
         }
