@@ -274,6 +274,144 @@
         };
         //endregion
 
+        //region Programmatical control over filters - getFilterForProperty, addFilterForProperty, removeFilterForProperty
+        /**
+         * Returns the index of the filter for the filter property passed across or -1 if no such filter exists.
+         * @param {VRS.AircraftFilterProperty} filterProperty A VRS.AircraftFilterProperty property name.
+         * @returns {number}
+         */
+        this.getFilterIndexForProperty = function(filterProperty)
+        {
+            return VRS.aircraftFilterHelper.getIndexForFilterProperty(_Filters, filterProperty);
+        };
+
+        /**
+         * Returns the filter that exists for the filter property passed across or null if no such filter exists.
+         * @param {VRS.AircraftFilterProperty} filterProperty A VRS.AircraftFilterProperty property name.
+         * @returns {VRS.AircraftFilter}
+         */
+        this.getFilterForProperty = function(filterProperty)
+        {
+            return VRS.aircraftFilterHelper.getFilterForFilterProperty(_Filters, filterProperty);
+        };
+
+        /**
+         * Removes the filter for the property passed across, if it exists.
+         * @param {VRS.AircraftFilterProperty} filterProperty A VRS.AircraftFilterProperty property name.
+         */
+        this.removeFilterForProperty = function(filterProperty)
+        {
+            var index = VRS.aircraftFilterHelper.getIndexForFilterProperty(_Filters, filterProperty);
+            if(index !== -1) {
+                that.removeFilterAt(index);
+            }
+        };
+
+        /**
+         * Adds a filter for a single-condition property. If the property is already present then it is
+         * removed first. Note that you must ensure that the condition and value are appropriate.
+         * @param {VRS.AircraftFilterProperty}  filterProperty
+         * @param {VRS.FilterCondition}         condition
+         * @param {boolean}                     reverseCondition
+         * @param {*}                           value
+         * @returns {VRS.AircraftFilter}
+         */
+        this.addFilterForOneConditionProperty = function(filterProperty, condition, reverseCondition, value)
+        {
+            that.removeFilterForProperty(filterProperty);
+
+            var filter = VRS.aircraftFilterHelper.createFilter(filterProperty);
+            var condObj = filter.getValueCondition();
+            condObj.setCondition(condition);
+            condObj.setReverseCondition(reverseCondition);
+            condObj.setValue(value);
+
+            return that.addFilter(filter);
+        };
+
+        /**
+         * Adds a filter for a two-condition property. If the property is already present then it is
+         * removed first. Note that you must ensure that the condition and value are appropriate.
+         * @param {VRS.AircraftFilterProperty}  filterProperty
+         * @param {VRS.FilterCondition}         condition
+         * @param {boolean}                     reverseCondition
+         * @param {*}                           value1
+         * @param {*}                           value2
+         * @returns {VRS.AircraftFilter}
+         */
+        this.addFilterForTwoConditionProperty = function(filterProperty, condition, reverseCondition, value1, value2)
+        {
+            that.removeFilterForProperty(filterProperty);
+
+            var filter = VRS.aircraftFilterHelper.createFilter(filterProperty);
+            var condObj = filter.getValueCondition();
+            condObj.setCondition(condition);
+            condObj.setReverseCondition(reverseCondition);
+            condObj.setValue1(value1);
+            condObj.setValue2(value2);
+
+            return that.addFilter(filter);
+        };
+
+        /**
+         * Returns true if there is a filter for the filter property passed across and the filter's condition
+         * and value match the parameters passed across. Note that you must ensure that the property uses a OneValue
+         * condition.
+         * @param {VRS.AircraftFilterProperty}  filterProperty
+         * @param {VRS.FilterCondition}         condition
+         * @param {boolean}                     reverseCondition
+         * @param {*}                           value
+         * @returns {boolean}
+         */
+        this.hasFilterForOneConditionProperty = function(filterProperty, condition, reverseCondition, value)
+        {
+            var result = false;
+            var filter = that.getFilterForProperty(filterProperty);
+
+            if(filter) {
+                var condObj = filter.getValueCondition();
+                var isReversed = condObj.getReverseCondition();
+                if(isReversed === undefined) isReversed = false;
+
+                result = condObj.getCondition() == condition &&
+                         isReversed == reverseCondition &&
+                         condObj.getValue() == value;
+            }
+
+            return result;
+        };
+
+        /**
+         * Returns true if there is a filter for the filter property passed across and the filter's condition
+         * and values match the parameters passed across. Note that you must ensure that the property uses a OneValue
+         * condition.
+         * @param {VRS.AircraftFilterProperty}  filterProperty
+         * @param {VRS.FilterCondition}         condition
+         * @param {boolean}                     reverseCondition
+         * @param {*}                           value1
+         * @param {*}                           value2
+         * @returns {boolean}
+         */
+        this.hasFilterForTwoConditionProperty = function(filterProperty, condition, reverseCondition, value1, value2)
+        {
+            var result = false;
+            var filter = that.getFilterForProperty(filterProperty);
+
+            if(filter) {
+                var condObj = filter.getValueCondition();
+                var isReversed = condObj.getReverseCondition();
+                if(isReversed === undefined) isReversed = false;
+
+                result = condObj.getCondition() == condition &&
+                         isReversed == reverseCondition &&
+                         condObj.getValue1() == value1 &&
+                         condObj.getValue2() == value2;
+            }
+
+            return result;
+        };
+        //endregion
+
         //region -- filterAircraft
         //noinspection JSUnusedGlobalSymbols
         /**
