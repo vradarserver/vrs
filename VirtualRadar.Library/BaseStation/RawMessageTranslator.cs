@@ -101,44 +101,19 @@ namespace VirtualRadar.Library.BaseStation
         private IClock _Clock;
 
         /// <summary>
-        /// The heartbeat service that has had its events hooked.
-        /// </summary>
-        private IHeartbeatService _HeartbeatService;
-
-        /// <summary>
         /// The aircraft for which valid messages have already been received.
         /// </summary>
-        private Dictionary<int, TrackedAircraft> _TrackedAircraft = new Dictionary<int, TrackedAircraft>();
-
-        /// <summary>
-        /// The object used for locking the <see cref="_TrackedAircraft"/> field.
-        /// </summary>
-        /// <remarks>
-        /// THIS IS NOT TO ALLOW THE TRANSLATOR TO BE RUN ON MULTIPLE THREADS. It is not thread safe. It is here so
-        /// that the heartbeat thread can safely remove items from the collection while the translator is running.
-        /// Never hold a lock on both this and <see cref="_AcceptIcaoLock"/> simultaneously.
-        /// </remarks>
-        private object _TrackedAircraftLock = new object();
+        private ExpiringDictionary<int, TrackedAircraft> _TrackedAircraft = new ExpiringDictionary<int, TrackedAircraft>(360000, 10000);
 
         /// <summary>
         /// A map of ICAO24 codes to the times that messages with parity for those codes were received.
         /// </summary>
-        private Dictionary<int, List<DateTime>> _AcceptIcaoParity = new Dictionary<int, List<DateTime>>();
+        private ExpiringDictionary<int, List<DateTime>> _AcceptIcaoParity = new ExpiringDictionary<int, List<DateTime>>(360000, 10000);
 
         /// <summary>
         /// A map of ICAO24 codes to the times that messages for those codes were received.
         /// </summary>
-        private Dictionary<int, List<DateTime>> _AcceptIcaoNonParity = new Dictionary<int, List<DateTime>>();
-
-        /// <summary>
-        /// The object used to lock <see cref="_AcceptIcaoParity"/>.
-        /// </summary>
-        /// <remarks>Again, this is not to allow the translator to run on multiple threads. It is not multi-threading.
-        /// It is only here so that the heartbeat thread can clean up <see cref="_AcceptIcaoParity"/> while the
-        /// translator is running.
-        /// Never hold a lock on both this and <see cref="_TrackedAircraftLock"/> simultaneously.
-        /// </remarks>
-        private object _AcceptIcaoLock = new object();
+        private ExpiringDictionary<int, List<DateTime>> _AcceptIcaoNonParity = new ExpiringDictionary<int, List<DateTime>>(360000, 10000);
 
         /// <summary>
         /// The object that can decode Compact Position Report coordinates for us.
@@ -266,30 +241,54 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         public double LocalDecodeMaxSpeedSurface { get; set; }
 
+        private int _TrackingTimeoutSeconds;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int TrackingTimeoutSeconds { get; set; }
+        public int TrackingTimeoutSeconds
+        {
+            get { return _TrackingTimeoutSeconds; }
+            set {
+                _TrackingTimeoutSeconds = value;
+                _TrackedAircraft.ExpireMilliseconds = TrackingTimeoutSeconds * 1000;
+            }
+        }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public int AcceptIcaoInNonPICount { get; set; }
 
+        private int _AcceptIcaoInNonPiMilliseconds;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int AcceptIcaoInNonPIMilliseconds { get; set; }
+        public int AcceptIcaoInNonPIMilliseconds
+        {
+            get { return _AcceptIcaoInNonPiMilliseconds; }
+            set {
+                _AcceptIcaoInNonPiMilliseconds = value;
+                _AcceptIcaoNonParity.ExpireMilliseconds = value + 1000;
+            }
+        }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public int AcceptIcaoInPI0Count { get; set; }
 
+        private int _AcceptIcaoInPI0Milliseconds;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int AcceptIcaoInPI0Milliseconds { get; set; }
+        public int AcceptIcaoInPI0Milliseconds
+        {
+            get { return _AcceptIcaoInPI0Milliseconds; }
+            set {
+                _AcceptIcaoInPI0Milliseconds = value;
+                _AcceptIcaoParity.ExpireMilliseconds = value + 1000;
+            }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -340,9 +339,7 @@ namespace VirtualRadar.Library.BaseStation
             IgnoreInvalidCodeBlockInOtherMessages = true;
 
             _CompactPositionReporting = Factory.Singleton.Resolve<ICompactPositionReporting>();
-
-            _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
-            _HeartbeatService.SlowTick += Heartbeat_SlowTick;
+            _TrackedAircraft.CountChangedDelegate = TrackedAircraft_CountChanged;
         }
 
         /// <summary>
@@ -372,10 +369,9 @@ namespace VirtualRadar.Library.BaseStation
         {
             if(disposing) {
                 _Disposed = true;
-                if(_HeartbeatService != null) {
-                    _HeartbeatService.SlowTick -= Heartbeat_SlowTick;
-                    _HeartbeatService = null;
-                }
+                _TrackedAircraft.Dispose();
+                _AcceptIcaoParity.Dispose();
+                _AcceptIcaoNonParity.Dispose();
             }
         }
         #endregion
@@ -397,24 +393,18 @@ namespace VirtualRadar.Library.BaseStation
                 var isValidMessage = DetermineWhetherValid(modeSMessage, messageReceivedUtc);
 
                 if(isValidMessage) {
-                    TrackedAircraft trackedAircraft;
-                    lock(_TrackedAircraftLock) {
-                        if(!_TrackedAircraft.TryGetValue(modeSMessage.Icao24, out trackedAircraft)) {
-                            trackedAircraft = new TrackedAircraft() { Icao24 = modeSMessage.FormattedIcao24, LatestMessageUtc = messageReceivedUtc, };
-                            _TrackedAircraft.Add(modeSMessage.Icao24, trackedAircraft);
-                        } else {
-                            if((messageReceivedUtc - trackedAircraft.LatestMessageUtc).TotalSeconds >= TrackingTimeoutSeconds) {
-                                trackedAircraft = new TrackedAircraft() { Icao24 = modeSMessage.FormattedIcao24 };
-                                _TrackedAircraft[modeSMessage.Icao24] = trackedAircraft;
-                            }
-                            trackedAircraft.LatestMessageUtc = messageReceivedUtc;
-                        }
+                    var trackedAircraft = _TrackedAircraft.GetForKeyAndRefresh(modeSMessage.Icao24);
+                    if(trackedAircraft != null) {
+                        trackedAircraft.LatestMessageUtc = messageReceivedUtc;
+                    } else {
+                        trackedAircraft = new TrackedAircraft() {
+                            Icao24 = modeSMessage.FormattedIcao24,
+                            LatestMessageUtc = messageReceivedUtc,
+                         };
+                        _TrackedAircraft.Add(modeSMessage.Icao24, trackedAircraft);
                     }
 
-                    if(isValidMessage) {
-                        result = CreateBaseStationMessage(messageReceivedUtc, modeSMessage, adsbMessage, trackedAircraft);
-                        if(Statistics != null) Statistics.Lock(r => r.AdsbAircraftTracked = _TrackedAircraft.Count);
-                    }
+                    result = CreateBaseStationMessage(messageReceivedUtc, modeSMessage, adsbMessage, trackedAircraft);
                 }
             }
 
@@ -523,7 +513,7 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="modeSMessage"></param>
         /// <param name="messageReceivedUtc"></param>
         /// <returns></returns>
-        private bool AddIcaoToAcceptList(Dictionary<int, List<DateTime>> acceptList, int countThreshold, int millisecondsThreshold, ModeSMessage modeSMessage, DateTime messageReceivedUtc)
+        private bool AddIcaoToAcceptList(ExpiringDictionary<int, List<DateTime>> acceptList, int countThreshold, int millisecondsThreshold, ModeSMessage modeSMessage, DateTime messageReceivedUtc)
         {
             bool result = false;
 
@@ -538,21 +528,16 @@ namespace VirtualRadar.Library.BaseStation
             }
 
             if(!ignoreIcao) {
-                lock(_AcceptIcaoLock) {
-                    List<DateTime> messageTimes;
-                    if(acceptList.TryGetValue(modeSMessage.Icao24, out messageTimes)) {
-                        PruneAcceptMessageTimes(messageTimes, millisecondsThreshold);
-                    } else {
-                        messageTimes = new List<DateTime>();
-                        acceptList.Add(modeSMessage.Icao24, messageTimes);
-                    }
-                    if(messageTimes.Count == 0 || messageTimes[messageTimes.Count - 1] != messageReceivedUtc) {
-                        if(messageTimes.Count + 1 < countThreshold) messageTimes.Add(messageReceivedUtc);
-                        else {
-                            result = true;
-                            RemoveAcceptedIcaoFromAcceptList(modeSMessage.Icao24, _AcceptIcaoParity);
-                            RemoveAcceptedIcaoFromAcceptList(modeSMessage.Icao24, _AcceptIcaoNonParity);
-                        }
+                List<DateTime> messageTimes = acceptList.GetAndRefreshOrCreate(modeSMessage.Icao24, (unused) => new List<DateTime>());
+                PruneAcceptMessageTimes(messageTimes, millisecondsThreshold);
+
+                var count = messageTimes.Count;
+                if(count == 0 || messageTimes[count - 1] != messageReceivedUtc) {
+                    if(count + 1 < countThreshold) messageTimes.Add(messageReceivedUtc);
+                    else {
+                        result = true;
+                        RemoveAcceptedIcaoFromAcceptList(modeSMessage.Icao24, _AcceptIcaoParity);
+                        RemoveAcceptedIcaoFromAcceptList(modeSMessage.Icao24, _AcceptIcaoNonParity);
                     }
                 }
             }
@@ -565,9 +550,9 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         /// <param name="icao24"></param>
         /// <param name="acceptList"></param>
-        private void RemoveAcceptedIcaoFromAcceptList(int icao24, Dictionary<int, List<DateTime>> acceptList)
+        private void RemoveAcceptedIcaoFromAcceptList(int icao24, ExpiringDictionary<int, List<DateTime>> acceptList)
         {
-            if(acceptList.ContainsKey(icao24)) acceptList.Remove(icao24);
+            acceptList.RemoveIfExists(icao24);
         }
 
         /// <summary>
@@ -578,13 +563,9 @@ namespace VirtualRadar.Library.BaseStation
         /// <returns></returns>
         private bool AircraftIsTracked(ModeSMessage modeSMessage, DateTime messageReceivedUtc)
         {
-            bool result = false;
-
-            lock(_TrackedAircraftLock) {
-                TrackedAircraft trackedAircraft;
-                result = _TrackedAircraft.TryGetValue(modeSMessage.Icao24, out trackedAircraft);
-                if(result && (messageReceivedUtc - trackedAircraft.LatestMessageUtc).TotalSeconds >= TrackingTimeoutSeconds) result = false;
-            }
+            var trackedAircraft = _TrackedAircraft.GetForKey(modeSMessage.Icao24);
+            var result = trackedAircraft != null;
+            if(result && (messageReceivedUtc - trackedAircraft.LatestMessageUtc).TotalSeconds >= TrackingTimeoutSeconds) result = false;
 
             return result;
         }
@@ -596,15 +577,17 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="milliseconds"></param>
         private void PruneAcceptMessageTimes(List<DateTime> messageTimes, int milliseconds)
         {
-            var threshold = _Clock.UtcNow.AddMilliseconds(-milliseconds);
-            var removeCount = -1;
-            for(var i = messageTimes.Count - 1;i >= 0;--i) {
-                if(messageTimes[i] < threshold) {
-                    removeCount = i + 1;
-                    break;
+            if(messageTimes.Count > 0) {
+                var threshold = _Clock.UtcNow.AddMilliseconds(-milliseconds);
+                var removeCount = -1;
+                for(var i = messageTimes.Count - 1;i >= 0;--i) {
+                    if(messageTimes[i] < threshold) {
+                        removeCount = i + 1;
+                        break;
+                    }
                 }
+                if(removeCount >= 0) messageTimes.RemoveRange(0, removeCount);
             }
-            if(removeCount >= 0) messageTimes.RemoveRange(0, removeCount);
         }
 
         /// <summary>
@@ -987,39 +970,12 @@ namespace VirtualRadar.Library.BaseStation
 
         #region Events subscribed
         /// <summary>
-        /// Raised on a background thread when the heartbeat service performs its slow tick.
+        /// Called whenever the <see cref="_TrackedAircraft"/> count changes.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Heartbeat_SlowTick(object sender, EventArgs args)
+        /// <param name="newCount"></param>
+        private void TrackedAircraft_CountChanged(int newCount)
         {
-            var timeoutThreshold = _Clock.UtcNow.AddSeconds(-TrackingTimeoutSeconds);
-            lock(_TrackedAircraftLock) {
-                foreach(var timedOutAircraft in _TrackedAircraft.Where(r => r.Value.LatestMessageUtc <= timeoutThreshold).ToList()) {
-                    _TrackedAircraft.Remove(timedOutAircraft.Key);
-                }
-            }
-            if(Statistics != null) Statistics.Lock(r => r.AdsbAircraftTracked = _TrackedAircraft.Count);
-
-            lock(_AcceptIcaoLock) {
-                RemoveOldEntriesFromAcceptList(_AcceptIcaoParity, AcceptIcaoInPI0Milliseconds);
-                RemoveOldEntriesFromAcceptList(_AcceptIcaoNonParity, AcceptIcaoInNonPIMilliseconds);
-            }
-        }
-
-        /// <summary>
-        /// Removes ICAOs from accept lists when all of their entries are past the threshold.
-        /// </summary>
-        /// <param name="acceptList"></param>
-        /// <param name="thresholdMilliseconds"></param>
-        private void RemoveOldEntriesFromAcceptList(Dictionary<int, List<DateTime>> acceptList, int thresholdMilliseconds)
-        {
-            foreach(var kvp in acceptList) {
-                PruneAcceptMessageTimes(kvp.Value, thresholdMilliseconds);
-            }
-            foreach(var icao24 in acceptList.Where(r => r.Value.Count == 0).Select(r => r.Key).ToList()) {
-                acceptList.Remove(icao24);
-            }
+            if(Statistics != null) Statistics.Lock(r => r.AdsbAircraftTracked = newCount);
         }
         #endregion
     }

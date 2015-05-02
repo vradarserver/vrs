@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Web;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -161,11 +162,30 @@ namespace VirtualRadar.WebServer
         }
         #endregion
 
+        #region Private class - FailedLogin
+        /// <summary>
+        /// A class that represents the credentials used on the last failed login.
+        /// </summary>
+        class FailedLogin
+        {
+            public string User { get; set; }
+
+            public string Password { get; set; }
+
+            public int Attempts { get; set; }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// A map of cached user names to their credentials.
         /// </summary>
         private Dictionary<string, CachedCredential> _AuthenticatedUserCache = new Dictionary<string, CachedCredential>();
+
+        /// <summary>
+        /// A map of IPAddresses to credentials used in failed logins.
+        /// </summary>
+        private ExpiringDictionary<IPAddress, FailedLogin> _FailedLoginAttempts = new ExpiringDictionary<IPAddress, FailedLogin>(10 * 60000, 60000);
 
         /// <summary>
         /// Protects the administrator paths from multi-threaded access.
@@ -639,6 +659,18 @@ namespace VirtualRadar.WebServer
                                 _AuthenticatedUserCache.Add(context.BasicUserName, cachedCredential);
                             }
                         } else {
+                            var failedLogin = _FailedLoginAttempts.GetAndRefreshOrCreate(context.Request.RemoteEndPoint.Address, (unused) => new FailedLogin());
+                            var sameCredentials = context.BasicUserName == failedLogin.User && context.BasicPassword == failedLogin.Password;
+                            failedLogin.User = context.BasicUserName;
+                            failedLogin.Password = context.BasicPassword;
+                            if(!sameCredentials) {
+                                if(failedLogin.Attempts < int.MaxValue) ++failedLogin.Attempts;
+                                if(failedLogin.Attempts > 2) {
+                                    var pauseMilliseconds = (Math.Min(failedLogin.Attempts, 14) - 2) * 5000;
+                                    Thread.Sleep(pauseMilliseconds);
+                                }
+                            }
+
                             context.Response.StatusCode = HttpStatusCode.Unauthorized;
                             context.Response.AddHeader("WWW-Authenticate", String.Format(@"Basic Realm=""{0}""", Provider.ListenerRealm));
                         }

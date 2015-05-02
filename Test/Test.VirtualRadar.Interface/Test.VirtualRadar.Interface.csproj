@@ -76,6 +76,8 @@
     <Compile Include="BaseStation\BaseStationSupplementaryMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorExceptionTests.cs" />
+    <Compile Include="ExpiringDictionaryTests.cs" />
+    <Compile Include="ExpiringListTests.cs" />
     <Compile Include="PortableBinding\NotifyListTests.cs" />
     <Compile Include="CidrTests.cs" />
     <Compile Include="Listener\PolarPlotSliceTests.cs" />

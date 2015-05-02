@@ -106,6 +106,9 @@
     <Compile Include="AircraftDetail.cs" />
     <Compile Include="Crc64.cs" />
     <Compile Include="CultureSwitcher.cs" />
+    <Compile Include="ExpiringCollection.cs" />
+    <Compile Include="ExpiringDictionary.cs" />
+    <Compile Include="ExpiringList.cs" />
     <Compile Include="IExceptionReporter.cs" />
     <Compile Include="IMessageBox.cs" />
     <Compile Include="PortableBinding\GenericListWrapper.cs" />

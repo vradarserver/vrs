@@ -295,6 +295,7 @@ namespace VirtualRadar.Library.BaseStation
                 if(_Port30003Listener != null) _Port30003Listener.Port30003MessageReceived -= BaseStationListener_MessageReceived;
                 if(_AircraftDetailFetcher != null) _AircraftDetailFetcher.Fetched -= AircraftDetailFetcher_Fetched;
                 if(_CallsignRouteFetcher != null) _CallsignRouteFetcher.Fetched -= CallsignRouteFetcher_Fetched;
+                if(_SanityChecker != null) _SanityChecker.Dispose();
             }
         }
         #endregion

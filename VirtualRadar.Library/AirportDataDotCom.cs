@@ -90,17 +90,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// A cache of recent thumbnail requests and their responses.
         /// </summary>
-        private static Dictionary<ThumbnailKey, CachedThumbnail> _ThumbnailCache = new Dictionary<ThumbnailKey,CachedThumbnail>();
-
-        /// <summary>
-        /// The date and time at UTC of the last cleanup of the cache.
-        /// </summary>
-        private static DateTime _ThumbnailCacheLastCleanTime;
-
-        /// <summary>
-        /// The lock that controls multi-threaded access to the thumbnail cache.
-        /// </summary>
-        private static object _ThumbnailCacheSyncLock = new object();
+        private static ExpiringDictionary<ThumbnailKey, CachedThumbnail> _ThumbnailCache = new ExpiringDictionary<ThumbnailKey,CachedThumbnail>(ThumbnailCacheMaxMinutes * 60000, 60000);
         #endregion
 
         #region GetThumbnails
@@ -114,11 +104,7 @@ namespace VirtualRadar.Library
         public WebRequestResult<AirportDataThumbnailsJson> GetThumbnails(string icao, string registration, int maxThumbnails)
         {
             var thumbnailKey = new ThumbnailKey(icao, maxThumbnails);
-            CachedThumbnail cachedThumbnail;
-            lock(_ThumbnailCacheSyncLock) {
-                _ThumbnailCache.TryGetValue(thumbnailKey, out cachedThumbnail);
-            }
-
+            var cachedThumbnail = _ThumbnailCache.GetForKeyAndRefresh(thumbnailKey);
             if(cachedThumbnail != null) {
                 cachedThumbnail.LastAccessTimeUtc = DateTime.UtcNow;
             } else {
@@ -126,13 +112,8 @@ namespace VirtualRadar.Library
                     LastAccessTimeUtc = DateTime.UtcNow,
                     Thumbnail = RequestThumbnails(icao, registration, maxThumbnails),
                 };
-                lock(_ThumbnailCacheSyncLock) {
-                    if(_ThumbnailCache.ContainsKey(thumbnailKey)) _ThumbnailCache[thumbnailKey] = cachedThumbnail;
-                    else                                          _ThumbnailCache.Add(thumbnailKey, cachedThumbnail);
-                }
+                _ThumbnailCache.UpsertAndRefresh(thumbnailKey, cachedThumbnail);
             }
-
-            CleanOldThumbnailCacheEntries();
 
             return cachedThumbnail.Thumbnail;
         }
@@ -161,22 +142,6 @@ namespace VirtualRadar.Library
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Removes out-of-date thumbnail cache entries.
-        /// </summary>
-        private void CleanOldThumbnailCacheEntries()
-        {
-            var threshold = DateTime.UtcNow.AddMinutes(-ThumbnailCacheMaxMinutes);
-            lock(_ThumbnailCacheSyncLock) {
-                if(_ThumbnailCacheLastCleanTime <= DateTime.UtcNow.AddMinutes(-1)) {
-                    foreach(var kvp in _ThumbnailCache.Where(r => r.Value.LastAccessTimeUtc <= threshold).ToList()) {
-                        _ThumbnailCache.Remove(kvp.Key);
-                    }
-                    _ThumbnailCacheLastCleanTime = DateTime.UtcNow;
-                }
-            }
         }
         #endregion
     }

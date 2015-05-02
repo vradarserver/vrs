@@ -20,7 +20,7 @@ namespace VirtualRadar.Interface
     /// The interface for objects that test the sanity of position reports and altitudes
     /// received for aircraft.
     /// </summary>
-    public interface IAircraftSanityChecker
+    public interface IAircraftSanityChecker : IDisposable
     {
         /// <summary>
         /// Returns true if the string represents a valid ICAO code.

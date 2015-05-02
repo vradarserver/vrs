@@ -606,23 +606,29 @@ namespace Test.VirtualRadar.Library.BaseStation
                     var timeoutMilliseconds = 100 * 1000;
 
                     // Message comes in with a clean ICAO24 at _NowUtc
+                    _Clock.UtcNowValue = _NowUtc;
                     _Translator.Translate(_NowUtc, cleanIcao24Message, null);
 
                     // If a parity-overlaid message arrives before the timeout expires then the translator should accept it
                     var now = _NowUtc.AddMilliseconds(timeoutMilliseconds - 1);
+                    _Clock.UtcNowValue = now;
                     Assert.IsNotNull(_Translator.Translate(now, parityIcao24Message, null));
 
                     // The parity-overlaid message should reset the timeout, so if one arrives a couple of milliseconds after the
                     // timeout would have expired from the first message seen for the aircraft then it should still accept it
                     now = now.AddMilliseconds(2);
+                    _Clock.UtcNowValue = now;
                     Assert.IsNotNull(_Translator.Translate(now, parityIcao24Message, null));
 
                     // But if a message arrives after the timeout from the last message received has expired then it should be ignored
                     now = now.AddMilliseconds(timeoutMilliseconds);
+                    _Clock.UtcNowValue = now;
                     Assert.IsNull(_Translator.Translate(now, parityIcao24Message, null));
 
                     // And it should keep on ignoring it
-                    Assert.IsNull(_Translator.Translate(now.AddMilliseconds(1), parityIcao24Message, null));
+                    now = now.AddMilliseconds(1);
+                    _Clock.UtcNowValue = now;
+                    Assert.IsNull(_Translator.Translate(now, parityIcao24Message, null));
                 }
             }
         }
@@ -670,29 +676,31 @@ namespace Test.VirtualRadar.Library.BaseStation
             var parityIcao24Message = CreateModeSMessagesWithNoPIField().First();
             cleanIcao24Message.Icao24 = parityIcao24Message.Icao24 = icao24;
 
+            var now = _NowUtc;
+            _Clock.UtcNowValue = now;
+
             // Receipt of a clean ICAO24 message should begin the tracking of the aircraft
-            Assert.IsNotNull(_Translator.Translate(_NowUtc, cleanIcao24Message, null));
+            Assert.IsNotNull(_Translator.Translate(now, cleanIcao24Message, null));
 
             _Translator.TrackingTimeoutSeconds = 400;
             var timeoutMilliseconds = 400 * 1000;
 
             // A heartbeat event raised just before the timeout expires on that message should not affect tracking of the aircraft
-            var now = _NowUtc.AddMilliseconds(timeoutMilliseconds - 1);
+            now = now.AddMilliseconds(timeoutMilliseconds - 1);
             _Clock.UtcNowValue = now;
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
+            _HeartbeatService.Raise(r => r.FastTick += null, EventArgs.Empty);
 
-            // Bit of a kludge - we'll use the same time when translating all messages to avoid triggering code in Translate that
-            // might clean the tracked aircraft. We want to make sure that when no messages are received for an aircraft it doesn't
-            // end up consuming memory forever in the translator.
-            Assert.IsNotNull(_Translator.Translate(_NowUtc, parityIcao24Message, null));
+            Assert.IsNotNull(_Translator.Translate(now, parityIcao24Message, null));
 
             // A heartbeat event raised just on the timeout should remove the aircraft from the tracked list and prevent a parity
             // encoded ICAO24 from being converted into a BaseStation message.
-            now = _NowUtc.AddMilliseconds(timeoutMilliseconds);
+            now = now.AddMilliseconds(timeoutMilliseconds);
             _Clock.UtcNowValue = now;
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
+            _HeartbeatService.Raise(r => r.FastTick += null, EventArgs.Empty);
 
-            Assert.IsNull(_Translator.Translate(_NowUtc, parityIcao24Message, null));
+            Assert.IsNull(_Translator.Translate(now, parityIcao24Message, null));
         }
 
         [TestMethod]
