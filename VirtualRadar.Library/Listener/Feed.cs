@@ -99,6 +99,12 @@ namespace VirtualRadar.Library.Listener
         {
             if(disposing) {
                 if(AircraftList != null) {
+                    if(AircraftList.PolarPlotter != null) {
+                        var polarPlotter = AircraftList.PolarPlotter;
+                        AircraftList.PolarPlotter = null;
+                        polarPlotter.Dispose();
+                    }
+
                     AircraftList.ExceptionCaught -= AircraftList_ExceptionCaught;
                     AircraftList.Dispose();
                     AircraftList = null;

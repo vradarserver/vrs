@@ -103,29 +103,14 @@ namespace VirtualRadar.Library
         private const double MaxSpeedKilometersPerSecond = 1.0;     // This is 3,600 km/h, just over the top speed of a Lockheed SR-71 Blackbird
 
         /// <summary>
-        /// The date and time at UTC that the maps were last flushed of old entries.
-        /// </summary>
-        private DateTime _LastFlushTime = DateTime.UtcNow;
-
-        /// <summary>
         /// A map of aircraft identifiers to the history of altitudes seen for the aircraft.
         /// </summary>
-        private Dictionary<int, ValueHistory<int, int?>> _AltitudeHistoryMap = new Dictionary<int,ValueHistory<int, int?>>();
-
-        /// <summary>
-        /// A lock on the altitude history map.
-        /// </summary>
-        private object _AltitudeHistoryMapSyncLock = new object();
+        private ExpiringDictionary<int, ValueHistory<int, int?>> _AltitudeHistoryMap = new ExpiringDictionary<int,ValueHistory<int, int?>>(FlushHistoryMinutes * 60000, 60000);
 
         /// <summary>
         /// A map of aircraft identifiers to the history of positions seen for the aircraft.
         /// </summary>
-        private Dictionary<int, ValueHistory<GlobalCoordinate, GlobalCoordinate>> _PositionHistoryMap = new Dictionary<int,ValueHistory<GlobalCoordinate, GlobalCoordinate>>();
-
-        /// <summary>
-        /// A lock on the position history map.
-        /// </summary>
-        private object _PositionHistoryMapSyncLock = new object();
+        private ExpiringDictionary<int, ValueHistory<GlobalCoordinate, GlobalCoordinate>> _PositionHistoryMap = new ExpiringDictionary<int,ValueHistory<GlobalCoordinate, GlobalCoordinate>>(FlushHistoryMinutes * 60000, 60000);
 
         /// <summary>
         /// The object that tracks configuration changes for us.
@@ -133,13 +118,43 @@ namespace VirtualRadar.Library
         private ISharedConfiguration _SharedConfiguration;
         #endregion
 
-        #region Configuration
+        #region Ctor and finaliser
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public AircraftSanityChecker()
         {
             _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+        }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~AircraftSanityChecker()
+        {
+            Dispose(false);
+        }
+        #endregion
+
+        #region Dispose
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                _AltitudeHistoryMap.Dispose();
+                _PositionHistoryMap.Dispose();
+            }
         }
         #endregion
 
@@ -171,7 +186,7 @@ namespace VirtualRadar.Library
         public Certainty CheckAltitude(int aircraftId, DateTime messageReceived, int altitude)
         {
             var timedValue = new TimedValue<int>(messageReceived, altitude);
-            return CheckValue(aircraftId, timedValue, _AltitudeHistoryMap, _AltitudeHistoryMapSyncLock, CalculateAltitudeCertainty, FindFirstGoodAltitude);
+            return CheckValue(aircraftId, timedValue, _AltitudeHistoryMap, CalculateAltitudeCertainty, FindFirstGoodAltitude);
         }
 
         /// <summary>
@@ -225,7 +240,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public int? FirstGoodAltitude(int aircraftId)
         {
-            return FirstGoodValue(aircraftId, _AltitudeHistoryMap, _AltitudeHistoryMapSyncLock);
+            return FirstGoodValue(aircraftId, _AltitudeHistoryMap);
         }
         #endregion
 
@@ -241,7 +256,7 @@ namespace VirtualRadar.Library
         public Certainty CheckPosition(int aircraftId, DateTime messageReceived, double latitude, double longitude)
         {
             var timedValue = new TimedValue<GlobalCoordinate>(messageReceived, new GlobalCoordinate(latitude, longitude));
-            return CheckValue(aircraftId, timedValue, _PositionHistoryMap, _PositionHistoryMapSyncLock, CalculatePositionCertainty, FindFirstGoodPosition);
+            return CheckValue(aircraftId, timedValue, _PositionHistoryMap, CalculatePositionCertainty, FindFirstGoodPosition);
         }
 
         /// <summary>
@@ -298,7 +313,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public GlobalCoordinate FirstGoodPosition(int aircraftId)
         {
-            return FirstGoodValue(aircraftId, _PositionHistoryMap, _PositionHistoryMapSyncLock);
+            return FirstGoodValue(aircraftId, _PositionHistoryMap);
         }
         #endregion
 
@@ -309,12 +324,8 @@ namespace VirtualRadar.Library
         /// <param name="aircraftId"></param>
         public void ResetAircraft(int aircraftId)
         {
-            lock(_AltitudeHistoryMapSyncLock) {
-                if(_AltitudeHistoryMap.ContainsKey(aircraftId)) _AltitudeHistoryMap.Remove(aircraftId);
-            }
-            lock(_PositionHistoryMapSyncLock) {
-                if(_PositionHistoryMap.ContainsKey(aircraftId)) _PositionHistoryMap.Remove(aircraftId);
-            }
+            _AltitudeHistoryMap.RemoveIfExists(aircraftId);
+            _PositionHistoryMap.RemoveIfExists(aircraftId);
         }
         #endregion
 
@@ -327,54 +338,43 @@ namespace VirtualRadar.Library
         /// <param name="aircraftId"></param>
         /// <param name="timedValue"></param>
         /// <param name="map"></param>
-        /// <param name="mapLock"></param>
         /// <param name="calculateCertainty"></param>
         /// <param name="findFirstValue"></param>
         /// <returns></returns>
         private Certainty CheckValue<TValue, TNullable>(
             int                                                             aircraftId,
             TimedValue<TValue>                                              timedValue,
-            Dictionary<int, ValueHistory<TValue, TNullable>>                map,
-            object                                                          mapLock,
+            ExpiringDictionary<int, ValueHistory<TValue, TNullable>>        map,
             Func<bool, TimedValue<TValue>, TimedValue<TValue>, Certainty>   calculateCertainty,
             Func<List<TimedValue<TValue>>, TNullable>                       findFirstValue
         )
         {
-            FlushOldEntries();
+            var valueHistory = map.GetAndRefreshOrCreate(aircraftId, (unused) => new ValueHistory<TValue, TNullable>() {
+                AircraftId = aircraftId,
+            });
+            if(valueHistory.RecordedFirstGoodValue && valueHistory.FirstGoodValue != null) valueHistory.FirstGoodValue = default(TNullable);
 
-            lock(mapLock) {
-                ValueHistory<TValue, TNullable> valueHistory;
-                if(!map.TryGetValue(aircraftId, out valueHistory)) {
-                    valueHistory = new ValueHistory<TValue, TNullable>() {
-                        AircraftId = aircraftId,
-                    };
-                    map.Add(aircraftId, valueHistory);
-                }
+            var resetThreshold = timedValue.Time.AddSeconds(-ResetHistorySeconds);
+            var resetOnMessage = valueHistory.PreviousValue;
+            if(resetOnMessage != null && resetOnMessage.Time <= resetThreshold) valueHistory.Reset();
 
-                if(valueHistory.RecordedFirstGoodValue && valueHistory.FirstGoodValue != null) valueHistory.FirstGoodValue = default(TNullable);
+            var result = Certainty.Uncertain;
+            var previousValue = valueHistory.PreviousValue;
+            valueHistory.AddValue(timedValue);
 
-                var resetThreshold = timedValue.Time.AddSeconds(-ResetHistorySeconds);
-                var resetOnMessage = valueHistory.PreviousValue;
-                if(resetOnMessage != null && resetOnMessage.Time <= resetThreshold) valueHistory.Reset();
-
-                var result = Certainty.Uncertain;
-                var previousValue = valueHistory.PreviousValue;
-                valueHistory.AddValue(timedValue);
-
-                if(previousValue != null) {
-                    result = calculateCertainty(valueHistory.PreviousValueIsGood, previousValue, timedValue);
-                    if(result != Certainty.ProbablyRight) valueHistory.Reset();
-                    else {
-                        if(!valueHistory.RecordedFirstGoodValue) {
-                            valueHistory.FirstGoodValue = findFirstValue(valueHistory.History);
-                            valueHistory.RecordedFirstGoodValue = true;
-                        }
-                        valueHistory.PreviousValueIsGood = true;
+            if(previousValue != null) {
+                result = calculateCertainty(valueHistory.PreviousValueIsGood, previousValue, timedValue);
+                if(result != Certainty.ProbablyRight) valueHistory.Reset();
+                else {
+                    if(!valueHistory.RecordedFirstGoodValue) {
+                        valueHistory.FirstGoodValue = findFirstValue(valueHistory.History);
+                        valueHistory.RecordedFirstGoodValue = true;
                     }
+                    valueHistory.PreviousValueIsGood = true;
                 }
-
-                return result;
             }
+
+            return result;
         }
         #endregion
 
@@ -386,49 +386,17 @@ namespace VirtualRadar.Library
         /// <typeparam name="TNullable"></typeparam>
         /// <param name="aircraftId"></param>
         /// <param name="map"></param>
-        /// <param name="mapLock"></param>
         /// <returns></returns>
-        private TNullable FirstGoodValue<TValue, TNullable>(int aircraftId, Dictionary<int, ValueHistory<TValue, TNullable>> map, object mapLock)
+        private TNullable FirstGoodValue<TValue, TNullable>(int aircraftId, ExpiringDictionary<int, ValueHistory<TValue, TNullable>> map)
         {
             TNullable result = default(TNullable);
 
-            lock(mapLock) {
-                ValueHistory<TValue, TNullable> valueHistory;
-                if(map.TryGetValue(aircraftId, out valueHistory)) {
-                    result = valueHistory.FirstGoodValue;
-                }
+            var valueHistory = map.GetForKey(aircraftId);
+            if(valueHistory != null) {
+                result = valueHistory.FirstGoodValue;
             }
 
             return result;
-        }
-        #endregion
-
-        #region FlushOldEntries
-        /// <summary>
-        /// Removes old entries from the maps.
-        /// </summary>
-        private void FlushOldEntries()
-        {
-            var flushDue = _LastFlushTime.AddMinutes(1);
-            if(DateTime.UtcNow >= flushDue) {
-                _LastFlushTime = DateTime.UtcNow;
-
-                FlushMap(_AltitudeHistoryMap, _AltitudeHistoryMapSyncLock);
-                FlushMap(_PositionHistoryMap, _PositionHistoryMapSyncLock);
-            }
-        }
-
-        private void FlushMap<TValue, TNullable>(Dictionary<int, ValueHistory<TValue, TNullable>> map, object mapLock)
-        {
-            var deleteThreshold = DateTime.UtcNow.AddMinutes(-FlushHistoryMinutes);
-            lock(mapLock) {
-                var deleteKeys = map.Where(r => r.Value.PreviousValue != null && r.Value.PreviousValue.Time <= deleteThreshold)
-                                    .Select(r => r.Key)
-                                    .ToList();
-                foreach(var key in deleteKeys) {
-                    map.Remove(key);
-                }
-            }
         }
         #endregion
     }

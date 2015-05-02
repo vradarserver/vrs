@@ -38,5 +38,18 @@ namespace Test.Framework
             UtcNowValue = DateTime.UtcNow;
             Setup(r => r.UtcNow).Returns(() => { return UtcNowValue; });
         }
+
+        /// <summary>
+        /// Advances <see cref="UtcNowValue"/> by so-many milliseconds.
+        /// </summary>
+        /// <param name="milliseconds"></param>
+        /// <returns></returns>
+        public DateTime AddMilliseconds(int milliseconds)
+        {
+            var result = UtcNowValue.AddMilliseconds(milliseconds);
+            UtcNowValue = result;
+
+            return result;
+        }
     }
 }

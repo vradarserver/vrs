@@ -37,7 +37,7 @@ namespace VirtualRadar.Interface.Listener
     /// Implementations must be thread safe.
     /// </para>
     /// </remarks>
-    public interface IPolarPlotter
+    public interface IPolarPlotter : IDisposable
     {
         /// <summary>
         /// Gets the latitude from which distances will be calculated.

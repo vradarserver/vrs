@@ -70,6 +70,38 @@ namespace VirtualRadar.Library.Listener
         public int RoundToDegrees { get; private set; }
         #endregion
 
+        #region Ctors and finaliser
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~PolarPlotter()
+        {
+            Dispose(false);
+        }
+        #endregion
+
+        #region Dispose
+        /// <summary>
+        /// Disposes of the object.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                _SanityChecker.Dispose();
+            }
+        }
+        #endregion
+
         #region Initialise
         /// <summary>
         /// See interface docs.
