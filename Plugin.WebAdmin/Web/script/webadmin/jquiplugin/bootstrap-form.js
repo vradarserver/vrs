@@ -45,6 +45,39 @@
         };
 
         /**
+         * Extracts the value of the data-vrs-bind-visible attribute on the element passed across.
+         * @param {jQuery}      elementJQ
+         * @param {Boolean}    [isMandatory]    Defaults to false
+         * @returns {string}
+         */
+        this.getDataVrsBindVisibleAttr = function(elementJQ, isMandatory)
+        {
+            return that.getAttributeValue(elementJQ, 'data-vrs-bind-visible', isMandatory, false);
+        };
+
+        /**
+         * Extracts the value of the data-vrs-bind-enable attribute on the element passed across.
+         * @param {jQuery}      elementJQ
+         * @param {Boolean}    [isMandatory]    Defaults to false
+         * @returns {string}
+         */
+        this.getDataVrsBindEnableAttr = function(elementJQ, isMandatory)
+        {
+            return that.getAttributeValue(elementJQ, 'data-vrs-bind-enable', isMandatory, false);
+        };
+
+        /**
+         * Extracts the value of the data-vrs-bind-disable attribute on the element passed across.
+         * @param {jQuery}      elementJQ
+         * @param {Boolean}    [isMandatory]    Defaults to false
+         * @returns {string}
+         */
+        this.getDataVrsBindDisableAttr = function(elementJQ, isMandatory)
+        {
+            return that.getAttributeValue(elementJQ, 'data-vrs-bind-disable', isMandatory, false);
+        };
+
+        /**
          * Extracts the value of the data-vrs-class attribute on the element passed across.
          * @param {jQuery}      elementJQ
          * @param {Boolean}    [isMandatory]    Defaults to false
@@ -250,6 +283,7 @@
             $('[data-vrs-plugin="field-numeric"]', element).bootstrapFieldNumeric();
             $('[data-vrs-plugin="field-checkbox"]', element).bootstrapFieldCheckbox();
             $('[data-vrs-plugin="field-select"]', element).bootstrapFieldSelect();
+            $('[data-vrs-plugin="field-panel"]', element).bootstrapFieldPanel();
             $('[data-vrs-plugin="field-list"]', element).bootstrapFieldList();
         },
 
@@ -409,6 +443,16 @@
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
+            var visible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+            var enable = VRS.bootstrapFormHelper.getDataVrsBindEnableAttr(this.element);
+            var disable = VRS.bootstrapFormHelper.getDataVrsBindDisableAttr(this.element);
+
+            var dataBind = VRS.bootstrapFormHelper.glueDataBindings({
+                textInput:  dataField,
+                visible:    visible,
+                enable:     enable,
+                disable:    disable
+            });
 
             this.element.addClass('form-group vrs-input-text');
             state.label = $('<label />')
@@ -416,7 +460,7 @@
             state.input = $('<input />')
                 .uniqueId()
                 .attr('type', 'text')
-                .attr('data-bind', 'textInput: ' + dataField)
+                .attr('data-bind', dataBind)
                 .addClass('form-control');
             state.label.attr('for', '#' + state.input.attr('id'));
 
@@ -496,6 +540,9 @@
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
+            var visible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+            var enable = VRS.bootstrapFormHelper.getDataVrsBindEnableAttr(this.element);
+            var disable = VRS.bootstrapFormHelper.getDataVrsBindDisableAttr(this.element);
             var suffix = VRS.bootstrapFormHelper.getDataVrsSuffixAttr(this.element, true);
             var minVal = Number(this.element.attr('data-vrs-min'));
             var maxVal = Number(this.element.attr('data-vrs-max'));
@@ -505,13 +552,20 @@
             if(isNaN(maxVal)) throw 'Numeric max value is missing or NaN';
             if(isNaN(stepVal)) throw 'Numeric step value is NaN';
 
+            var dataBind = VRS.bootstrapFormHelper.glueDataBindings({
+                textInput:  dataField,
+                visible:    visible,
+                enable:     enable,
+                disable:    disable
+            });
+
             this.element.addClass('form-group vrs-input-numeric');
             state.label = $('<label />')
                 .text(title);
             state.input = $('<input />')
                 .uniqueId()
                 .attr('type', 'text')
-                .attr('data-bind', 'textInput: ' + dataField);
+                .attr('data-bind', dataBind);
             state.label.attr('for', '#' + state.input.attr('id'));
 
             this.element
@@ -564,6 +618,16 @@
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element, true);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
+            var visible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+            var enable = VRS.bootstrapFormHelper.getDataVrsBindEnableAttr(this.element);
+            var disable = VRS.bootstrapFormHelper.getDataVrsBindDisableAttr(this.element);
+
+            var dataBind = VRS.bootstrapFormHelper.glueDataBindings({
+                checked:    dataField,
+                visible:    visible,
+                enable:     enable,
+                disable:    disable
+            });
 
             this.element.addClass('checkbox');
             state.label = $('<label />')
@@ -571,7 +635,7 @@
             state.input = $('<input />')
                 .uniqueId()
                 .attr('type', 'checkbox')
-                .attr('data-bind', 'checked: ' + dataField);
+                .attr('data-bind', dataBind);
 
             this.element.append(state.label);
             state.label.prepend(state.input);
@@ -620,6 +684,9 @@
             });
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
+            var visible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+            var enable = VRS.bootstrapFormHelper.getDataVrsBindEnableAttr(this.element);
+            var disable = VRS.bootstrapFormHelper.getDataVrsBindDisableAttr(this.element);
             var optionsBinding = VRS.bootstrapFormHelper.getAttributeValue(this.element, 'data-vrs-bind-options', true, true);
             var optionsCaption = VRS.bootstrapFormHelper.getAttributeValue(this.element, 'data-vrs-caption', false, false);
             var optionsText = VRS.bootstrapFormHelper.getAttributeValue(this.element, 'data-vrs-options-text', false, false);
@@ -634,11 +701,14 @@
 
             var dataBind = VRS.bootstrapFormHelper.glueDataBindings({
                 value: dataField,
-                options: optionsBinding,
-                optionsCaption: optionsCaption,
-                optionsText: optionsText,
-                optionsValue: optionsValue,
-                valueAllowUnset: flags.allowUnset
+                visible:            visible,
+                enable:             enable,
+                disable:            disable,
+                options:            optionsBinding,
+                optionsCaption:     optionsCaption,
+                optionsText:        optionsText,
+                optionsValue:       optionsValue,
+                valueAllowUnset:    flags.allowUnset
             });
 
             state.label = $('<label />')
@@ -650,6 +720,72 @@
 
             this.element.append(state.label);
             state.label.append(state.select);
+        }
+    });
+    //endregion
+
+    //region bootstrapFieldPanel
+    VRS.bootstrapFormHelper.addFieldDataName('vrsBootstrapFieldPanel');
+    $.widget('vrs.bootstrapFieldPanel', {
+        /**
+         * @typedef {{
+         * panel:                   jQuery,
+         * bootstrapPanelOuter:     jQuery,
+         * bootstrapPanelHeading:   jQuery,
+         * bootstrapPanelBody:      jQuery
+         * }} VRS_BOOTSTRAP_FIELD_PANEL_STATE
+         * @private
+         */
+        /**
+         * @returns {VRS_BOOTSTRAP_FIELD_PANEL_STATE}
+         * @private
+         */
+        _getState: function()
+        {
+            var key = 'vrs-bootstrap-field-panel-state';
+            var result = this.element.data(key);
+            if(result === undefined) {
+                result = {
+                    panel:                  undefined,
+                    bootstrapPanelOuter:    undefined,
+                    bootstrapPanelHeading:  undefined,
+                    bootstrapPanelBody:     undefined
+                };
+                this.element.data(key, result);
+            }
+
+            return result;
+        },
+
+        _create: function()
+        {
+            VRS.bootstrapFormHelper.markPluginAsBuilt(this.element);
+
+            var state = this._getState();
+            var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
+            var bindVisible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+
+            var visibleBind = VRS.bootstrapFormHelper.glueDataBindings({
+                visible: bindVisible
+            });
+
+            state.panel = $('<div />')
+                .uniqueId()
+                .attr('data-bind', visibleBind);
+            state.bootstrapPanelOuter = $('<div />')
+                .addClass('panel panel-default')
+                .appendTo(state.panel);
+            state.bootstrapPanelHeading = $('<div />')
+                .addClass('panel-heading')
+                .text(title)
+                .appendTo(state.bootstrapPanelOuter);
+            state.bootstrapPanelBody = $('<div />')
+                .addClass('panel-body')
+                .appendTo(state.bootstrapPanelOuter);
+
+            this.element.before(state.panel);
+            this.element.detach();
+            this.element.appendTo(state.bootstrapPanelBody);
         }
     });
     //endregion
@@ -738,9 +874,9 @@
                 detailElement.attr('data-vrs-plugin', null);
                 detailElement.addClass('vrs-panel');
 
-                if(detailElement.children('[data-vrs-plugin]').length > 0) throw 'The list detail panel must not contain vrs-data-plugin elements';
+                if(detailElement.find('[data-vrs-plugin]').length > 0) throw 'The list detail panel must not contain vrs-data-plugin elements';
 
-                $.each(detailElement.children('[data-vrs-late-plugin]'), function() {
+                $.each(detailElement.find('[data-vrs-late-plugin]'), function() {
                     var element = $(this);
                     var pluginValue = element.attr('data-vrs-late-plugin');
                     element.attr('data-vrs-plugin', pluginValue);
