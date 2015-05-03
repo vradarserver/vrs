@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
@@ -53,6 +54,18 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public List<NameValue> DataSources { get; private set; }
 
         public List<NameValue> ConnectionTypes { get; private set; }
+
+        public String[] SerialPortNames { get; set; }
+
+        public int[] BaudRates { get; set; }
+
+        public int[] DataBits { get; set; }
+
+        public List<NameValue> StopBits { get; private set; }
+
+        public List<NameValue> Parities { get; private set; }
+
+        public List<NameValue> Handshakes { get; private set; }
         #endregion
 
         #region Interface events
@@ -80,6 +93,32 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             RunningMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
             DataSources = CreateEnumNameValue<DataSource>(r => Describe.DataSource(r));
             ConnectionTypes = CreateEnumNameValue<ConnectionType>(r => Describe.ConnectionType(r));
+            SerialPortNames = new string[0];
+            BaudRates = new int[] {
+                110,
+                300,
+                1200,
+                2400,
+                4800,
+                9600,
+                19200,
+                38400,
+                57600,
+                115200,
+                230400,
+                460800,
+                921600,
+                3000000,
+            };
+            DataBits = new int[] {
+                5,
+                6,
+                7,
+                8,
+            };
+            StopBits = CreateEnumNameValue<StopBits>(r => Describe.StopBits(r));
+            Parities = CreateEnumNameValue<Parity>(r => Describe.Parity(r));
+            Handshakes = CreateEnumNameValue<Handshake>(r => Describe.Handshake(r));
         }
         #endregion
 
@@ -87,6 +126,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public void PopulateTextToSpeechVoices(IEnumerable<string> voiceNames)
         {
             VoiceNames = voiceNames == null ? new string[0] : voiceNames.ToArray();
+        }
+
+        private void PopulateSerialPortNames(IEnumerable<string> serialPortNames)
+        {
+            SerialPortNames = serialPortNames == null ? new string[0] : serialPortNames.ToArray();
         }
 
         public void ShowTestConnectionResults(string message, string title)
@@ -127,6 +171,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
                 _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
                 _Presenter.Initialise(this);
                 PopulateTextToSpeechVoices(_Presenter.GetVoiceNames());
+                PopulateSerialPortNames(_Presenter.GetSerialPortNames());
                 _Presenter.ValidateView();
             }
 
