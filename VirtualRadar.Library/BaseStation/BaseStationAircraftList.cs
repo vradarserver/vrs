@@ -202,6 +202,7 @@ namespace VirtualRadar.Library.BaseStation
                     }
                     _Port30003Listener = value;
                     if(_Port30003Listener != null) {
+                        _DataVersion = Math.Max(_Clock.UtcNow.Ticks, _DataVersion + 1);
                         _Port30003Listener.Port30003MessageReceived += BaseStationListener_MessageReceived;
                         _Port30003Listener.SourceChanged += BaseStationListener_SourceChanged;
                         _Port30003Listener.PositionReset += BaseStationListener_PositionReset;
@@ -698,9 +699,7 @@ namespace VirtualRadar.Library.BaseStation
             // we don't, and if they forgot to acquire the lock, then we could get inconsistencies.
             lock(_AircraftMapLock) {
                 lock(aircraft) {
-                    var dataVersion = _Clock.UtcNow.Ticks;
-                    if(dataVersion <= _DataVersion) dataVersion = _DataVersion + 1;
-                    aircraft.DataVersion = _DataVersion = dataVersion;
+                    aircraft.DataVersion = ++_DataVersion;
                 }
             }
         }

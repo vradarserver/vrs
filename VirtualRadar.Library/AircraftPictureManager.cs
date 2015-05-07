@@ -30,11 +30,26 @@ namespace VirtualRadar.Library
         /// </summary>
         private ILog _Log;
 
+        /// <summary>
+        /// The object that can fetch image dimensions for us.
+        /// </summary>
+        private IImageDimensionsFetcher _ImageDimensionsFetcher;
+
         private static readonly IAircraftPictureManager _Singleton = new AircraftPictureManager();
         /// <summary>
         /// See interface docs.
         /// </summary>
         public IAircraftPictureManager Singleton { get { return _Singleton; } }
+
+        /// <summary>
+        /// Creates the <see cref="_ImageDimensionsFetcher"/> if it hasn't already been created.
+        /// </summary>
+        private void CreateImageDimensionsFetcher()
+        {
+            if(_ImageDimensionsFetcher == null) {
+                _ImageDimensionsFetcher = Factory.Singleton.Resolve<IImageDimensionsFetcher>();
+            }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -51,21 +66,16 @@ namespace VirtualRadar.Library
             if(!String.IsNullOrEmpty(fileName)) {
                 var fileInfo = new FileInfo(fileName);
                 if(fileInfo != null) {
-                    Image image = null;
-                    try {
-                        image = LoadImage(fileName);
-                        if(image != null) {
-                            result = new PictureDetail() {
-                                FileName = fileName,
-                                Width = image.Width,
-                                Height = image.Height,
-                                LastModifiedTime = fileInfo.LastWriteTimeUtc,
-                                Length = fileInfo.Length,
-                            };
-                        }
-                    } finally {
-                        if(image != null) image.Dispose();
-                    }
+                    CreateImageDimensionsFetcher();
+
+                    var size = _ImageDimensionsFetcher.ReadDimensions(fileName);
+                    result = new PictureDetail() {
+                        FileName = fileName,
+                        Width = size.Width,
+                        Height = size.Height,
+                        LastModifiedTime = fileInfo.LastWriteTimeUtc,
+                        Length = fileInfo.Length,
+                    };
                 }
             }
 

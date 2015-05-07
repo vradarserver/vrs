@@ -321,6 +321,8 @@ namespace VirtualRadar.Library
             }
 
             var registration = databaseAircraft != null ? databaseAircraft.Registration : aircraft.Registration;
+            if(registration == null && basicAircraft != null) registration = basicAircraft.Registration;
+
             if(_PictureLookupThread != null) {
                 _PictureLookupThread.Enqueue(new LookupPictureDetail() {
                     Icao = aircraft.Icao24,
