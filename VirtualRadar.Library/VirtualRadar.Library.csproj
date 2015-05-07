@@ -88,6 +88,7 @@
     <Compile Include="ConnectionLogger.cs" />
     <Compile Include="DirectoryCache.cs" />
     <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />
+    <Compile Include="ImageDimensionsFetcher.cs" />
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\Connector.cs" />
     <Compile Include="Network\ConnectorActivityLog.cs" />

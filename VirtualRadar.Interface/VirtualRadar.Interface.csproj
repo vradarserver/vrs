@@ -110,6 +110,7 @@
     <Compile Include="ExpiringDictionary.cs" />
     <Compile Include="ExpiringList.cs" />
     <Compile Include="IExceptionReporter.cs" />
+    <Compile Include="IImageDimensionsFetcher.cs" />
     <Compile Include="IMessageBox.cs" />
     <Compile Include="PortableBinding\GenericListWrapper.cs" />
     <Compile Include="PortableBinding\NotifyList.cs" />
