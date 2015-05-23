@@ -45,9 +45,18 @@
                                                 <div data-vrs-bind="Passphrase"         data-vrs-title="::Passphrase::"         data-vrs-plugin="field-text"></div>
                                                 <div data-vrs-bind="UseKeepAlive"       data-vrs-title="::UseKeepAlive::"       data-vrs-plugin="field-checkbox"></div>
                                                 <div data-vrs-bind="IdleTimeoutSeconds" data-vrs-title="::IdleTimeout::"        data-vrs-plugin="field-numeric" data-vrs-bind-disable="UseKeepAlive" data-vrs-min="5" data-vrs-max="86400" data-vrs-suffix="::PSeconds::"></div>
+
+                                                <div data-vrs-title="::AccessControl::" data-vrs-plugin="field-panel" data-vrs-bind-enable="IsPassive">
+                                                    <div data-vrs-bind="Access.DefaultAccess" data-vrs-title="::DefaultAccess::"        data-vrs-plugin="field-select" data-vrs-bind-options="$root.DefaultAccesses" data-vrs-options-text="item.Name" data-vrs-options-value="item.Value"></div>
+                                                    <div data-vrs-bind="Access.Addresses"     data-vrs-title="::AllowTheseAddresses::"  data-vrs-plugin="field-list"   data-vrs-bind-selected="selectedReceiverAccess">
+                                                        <div data-vrs-plugin="list-columns">
+                                                            <div data-vrs-bind="$data" data-vrs-title="::Cidr::"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div data-vrs-title="::USBOverCOM::" data-vrs-plugin="field-panel"     data-vrs-bind-visible="IsSerialConnectionType">
+                                            <div data-vrs-title="::USBOverCOM::" data-vrs-plugin="field-panel" data-vrs-bind-visible="IsSerialConnectionType">
                                                 <div data-vrs-bind="ComPort"        data-vrs-title="::SerialComPort::"      data-vrs-plugin="field-select" data-vrs-bind-options="$root.SerialPortNames"></div>
                                                 <div data-vrs-bind="BaudRate"       data-vrs-title="::SerialBaudRate::"     data-vrs-plugin="field-select" data-vrs-bind-options="$root.BaudRates"></div>
                                                 <div data-vrs-bind="DataBits"       data-vrs-title="::SerialDataBits::"     data-vrs-plugin="field-select" data-vrs-bind-options="$root.DataBits"></div>
@@ -127,6 +136,7 @@
                         };
 
                         model.selectedReceiver = ko.observable(undefined);
+                        model.selectedReceiverAccess = ko.observable(undefined);
 
                         $.each(model.Configuration.Receivers(), function(idx, receiver) {
                             receiver.EnabledYesNo = ko.computed(function() {
