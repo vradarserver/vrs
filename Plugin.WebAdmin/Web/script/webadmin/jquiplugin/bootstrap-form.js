@@ -774,15 +774,19 @@
 
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
-            var bindVisible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+            var visible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+            var enable = VRS.bootstrapFormHelper.getDataVrsBindEnableAttr(this.element);
+            var disable = VRS.bootstrapFormHelper.getDataVrsBindDisableAttr(this.element);
 
-            var visibleBind = VRS.bootstrapFormHelper.glueDataBindings({
-                visible: bindVisible
+            var dataBinding = VRS.bootstrapFormHelper.glueDataBindings({
+                visible:    visible,
+                enable:     enable,
+                disable:    disable
             });
 
             state.panel = $('<div />')
                 .uniqueId()
-                .attr('data-bind', visibleBind);
+                .attr('data-bind', dataBinding);
             state.bootstrapPanelOuter = $('<div />')
                 .addClass('panel panel-default')
                 .appendTo(state.panel);
@@ -836,7 +840,8 @@
             var result = this.element.data(key);
             if(result === undefined) {
                 result = {
-                    table:  undefined
+                    table:          undefined,
+                    detailElement:  undefined
                 };
                 this.element.data(key, result);
             }
@@ -854,6 +859,9 @@
             var selectedFieldName = VRS.bootstrapFormHelper.getDataVrsBindSelectedAttr(this.element);
             var columnsElement = this.element.children('[data-vrs-plugin="list-columns"]').first();
             var detailElement = this.element.children('[data-vrs-plugin="list-detail"]').first();
+            var visible = VRS.bootstrapFormHelper.getDataVrsBindVisibleAttr(this.element);
+            var enable = VRS.bootstrapFormHelper.getDataVrsBindEnableAttr(this.element);
+            var disable = VRS.bootstrapFormHelper.getDataVrsBindDisableAttr(this.element);
 
             var hasDetailElement = detailElement.length > 0;
             if(hasDetailElement) {
@@ -861,6 +869,13 @@
                 detailElement.attr('data-vrs-plugin', null);
                 detailElement.attr('data-bind', 'with: ' + selectedFieldName);
                 detailElement.addClass('vrs-panel');
+
+                var detailDataBind = VRS.bootstrapFormHelper.glueDataBindings({
+                    with:       selectedFieldName,
+                    enable:     enable,
+                    disable:    disable
+                });
+                detailElement.attr('data-bind', detailDataBind);
 
                 state.detailElement = detailElement;
             }
@@ -877,14 +892,27 @@
             });
             columnsElement.remove();
 
+            var tableDataBind = VRS.bootstrapFormHelper.glueDataBindings({
+                visible:    visible,
+                enable:     enable,
+                disable:    disable
+            });
+
             this.element
                 .addClass('table-responsive')
                 .addClass('vrs-field-list');            // This is used to identify the parent list when expanding detail rows, do not remove
             state.table = $('<table />')
                 .addClass('table table-condensed')
+                .attr('data-bind', tableDataBind)
                 .appendTo(this.element);
             if(hasDetailElement) {
                 state.table.addClass('has-detail');
+            }
+
+            if(title) {
+                $('<caption />')
+                    .text(title)
+                    .prependTo(state.table);
             }
 
             var head = $('<thead />').appendTo(state.table);

@@ -55,6 +55,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public List<NameValue> ConnectionTypes { get; private set; }
 
+        public List<NameValue> DefaultAccesses { get; private set; }
+
         public String[] SerialPortNames { get; set; }
 
         public int[] BaudRates { get; set; }
@@ -93,6 +95,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             RunningMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
             DataSources = CreateEnumNameValue<DataSource>(r => Describe.DataSource(r));
             ConnectionTypes = CreateEnumNameValue<ConnectionType>(r => Describe.ConnectionType(r));
+            DefaultAccesses = CreateEnumNameValue<DefaultAccess>(r => Describe.DefaultAccess(r));
             SerialPortNames = new string[0];
             BaudRates = new int[] {
                 110,
