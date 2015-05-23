@@ -78,6 +78,17 @@
         };
 
         /**
+         * Extracts the value of the data-vrs-bind-selected attribute on the element passed across.
+         * @param {jQuery}      elementJQ
+         * @param {Boolean}    [isMandatory]    Defaults to true
+         * @returns {string}
+         */
+        this.getDataVrsBindSelectedAttr = function(elementJQ, isMandatory)
+        {
+            return that.getAttributeValue(elementJQ, 'data-vrs-bind-selected', isMandatory, true);
+        };
+
+        /**
          * Extracts the value of the data-vrs-class attribute on the element passed across.
          * @param {jQuery}      elementJQ
          * @param {Boolean}    [isMandatory]    Defaults to false
@@ -792,31 +803,6 @@
 
     //region bootstrapFieldList
     /**
-     * The custom knockout binding applied to the detail panel for every list detail row. This
-     * adds the detail panel template and then applies the jQuery elements to it. The detail
-     * panel should use data-vrs-late-plugin to mark plugins instead of data-vrs-plugin, thus
-     * ensuring that the plugins are not applied until after the row has been expanded. This
-     * ensures that each plugin for each row is a separate instance with a separate ID and
-     * state.
-     */
-    ko.bindingHandlers.vrsFieldListDetail = {
-        init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            var jqElement = $(element);
-            var parentListElement = jqElement.closest('.vrs-field-list');
-            var parentListPlugin = VRS.jQueryUIHelper.getBootstrapFieldListPlugin(parentListElement);
-            var formElement = parentListElement.closest('.vrs-form');
-            var formPlugin = VRS.jQueryUIHelper.getBootstrapFormPlugin(formElement);
-
-            var detail = parentListPlugin.getDetailClone();
-            jqElement.html(detail);
-            formPlugin.refreshPartial(jqElement);
-        }/*,
-        update: function(element, valueAccessor, allBindings, deprecated, bindingContext) {
-        }
-        */
-    };
-
-    /**
      * @param {jQuery} jQueryElement
      * @returns {VRS.bootstrapFieldList}
      */
@@ -865,23 +851,16 @@
             var state = this._getState();
             var title = VRS.bootstrapFormHelper.getDataVrsTitleAttr(this.element);
             var dataField = VRS.bootstrapFormHelper.getDataVrsBindAttr(this.element);
-            var columnsElement = $('[data-vrs-plugin="list-columns"]', this.element);
-            var detailElement = $('[data-vrs-plugin="list-detail"]', this.element);
+            var selectedFieldName = VRS.bootstrapFormHelper.getDataVrsBindSelectedAttr(this.element);
+            var columnsElement = this.element.children('[data-vrs-plugin="list-columns"]').first();
+            var detailElement = this.element.children('[data-vrs-plugin="list-detail"]').first();
 
             var hasDetailElement = detailElement.length > 0;
             if(hasDetailElement) {
-                detailElement.remove();
+                detailElement.hide();
                 detailElement.attr('data-vrs-plugin', null);
+                detailElement.attr('data-bind', 'with: ' + selectedFieldName);
                 detailElement.addClass('vrs-panel');
-
-                if(detailElement.find('[data-vrs-plugin]').length > 0) throw 'The list detail panel must not contain vrs-data-plugin elements';
-
-                $.each(detailElement.find('[data-vrs-late-plugin]'), function() {
-                    var element = $(this);
-                    var pluginValue = element.attr('data-vrs-late-plugin');
-                    element.attr('data-vrs-plugin', pluginValue);
-                    element.attr('data-vrs-late-plugin', null);
-                });
 
                 state.detailElement = detailElement;
             }
@@ -936,17 +915,17 @@
                     .hide()
                     .append($('<td />')
                         .attr('colspan', columns.length)
-                        .attr('data-bind', 'vrsFieldListDetail: $data')
                     )
                     .appendTo(body);
 
                 bodyRow.addClass('clickable');
                 bodyRow.attr('data-bind',
                     'event: { click: function(data, event) { ' +
+                        '$root.' + selectedFieldName + '(data); ' +
                         '$(event.currentTarget)' +
                             '.closest(\'[data-vrs-plugin=\"field-list-built\"]\')' +
                             '.bootstrapFieldList(\'rowClicked\', data, event.currentTarget);' +
-                    '}, clickBubble: false }');
+                    ' }, clickBubble: false }');
             }
         },
 
@@ -962,10 +941,19 @@
             var row = $(targetRow);
             var otherRows = $('.vrs-list-master').not(row);
             var detailRow = row.next();
+            var willShowDetail = !detailRow.is(':visible');
             var otherDetailRows = $('.vrs-list-detail', this.element).not(detailRow);
 
             otherRows.removeClass('info');
             otherDetailRows.hide();
+
+            if(willShowDetail) {
+                var detailCell = detailRow.children('td');
+                state.detailElement.detach();
+                state.detailElement.appendTo(detailCell);
+                state.detailElement.show();
+            }
+
             detailRow.toggle();
             row.toggleClass('info');
         }
