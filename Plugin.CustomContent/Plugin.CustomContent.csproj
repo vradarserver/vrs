@@ -94,6 +94,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CustomContentStrings.de-DE.resx" />
     <EmbeddedResource Include="CustomContentStrings.fr-FR.resx" />
     <EmbeddedResource Include="CustomContentStrings.pt-BR.resx" />
     <EmbeddedResource Include="CustomContentStrings.sr-Latn-RS.resx" />
