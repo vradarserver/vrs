@@ -496,6 +496,10 @@
     VRS.globalisation.addCultureInfo('en-US',   { language: 'en', countryFlag: 'us', englishName: 'English (United States)' });
     VRS.globalisation.addCultureInfo('en-ZA',   { language: 'en', countryFlag: 'za', englishName: 'English (South Africa)' });
 
+    // German
+    VRS.globalisation.addCultureInfo('de',    { language: 'de',                    englishName: 'German',           nativeName: 'Deutsch', topLevel: true });
+    VRS.globalisation.addCultureInfo('de-DE', { language: 'de', countryFlag: 'de', englishName: 'German (Germany)', nativeName: 'Deutsch (Deutschland)' });
+
     // French
     VRS.globalisation.addCultureInfo('fr',    { language: 'fr',                    englishName: 'French',                  nativeName: 'Français', topLevel: true });
     VRS.globalisation.addCultureInfo('fr-BE', { language: 'fr', countryFlag: 'be', englishName: 'French (Belgium)',        nativeName: 'Français (Belgique)' });

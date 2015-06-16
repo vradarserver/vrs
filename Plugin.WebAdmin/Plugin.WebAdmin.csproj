@@ -117,6 +117,7 @@
     <Content Include="Web\_external\_typedefs.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="WebAdminStrings.de-DE.resx" />
     <EmbeddedResource Include="WebAdminStrings.fr-FR.resx" />
     <EmbeddedResource Include="WebAdminStrings.pt-BR.resx" />
     <EmbeddedResource Include="WebAdminStrings.sr-Latn-RS.resx" />

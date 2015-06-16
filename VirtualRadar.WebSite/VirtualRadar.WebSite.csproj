@@ -185,12 +185,16 @@
     <Content Include="Site\Web\images\Mode-S.png" />
     <Content Include="Site\Web\images\regions\br.bmp" />
     <Content Include="Site\Web\images\regions\fi.bmp" />
+    <Content Include="Site\Web\images\regions\de.bmp" />
     <Content Include="Site\Web\images\regions\hr.bmp" />
     <Content Include="Site\Web\images\regions\no.bmp" />
     <Content Include="Site\Web\images\regions\se.bmp" />
     <Content Include="Site\Web\images\regions\sr.bmp" />
     <Content Include="Site\Web\images\regions\zh.bmp" />
     <Content Include="Site\Web\mobileReport.html" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.de-DE.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.de.js" />
+    <Content Include="Site\Web\script\i18n\strings.de.js" />
     <Content Include="Site\Web\script\i18n\strings.pt-br.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi-FI.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi.js" />
