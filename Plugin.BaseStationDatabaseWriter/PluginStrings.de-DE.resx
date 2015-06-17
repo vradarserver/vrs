@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SomethingDoesNotExist" xml:space="preserve">
-    <value>'{0}' existiert nicht</value>
+    <value>&apos;{0}&apos; does not exist</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
@@ -129,16 +129,67 @@
   <data name="DatabaseFileName" xml:space="preserve">
     <value>Datenbank-Dateiname</value>
   </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Deaktiviert</value>
+  </data>
   <data name="Enabled" xml:space="preserve">
-    <value>Aktiviert</value>
+    <value>&amp;Aktiviert</value>
+  </data>
+  <data name="EnabledAndUpdatingSomething" xml:space="preserve">
+    <value>Aktiviert, aktualisiere {0}</value>
+  </data>
+  <data name="EnabledNoDatabase" xml:space="preserve">
+    <value>Aktiviert, Datenbank nicht angegeben</value>
+  </data>
+  <data name="EnabledNotUpdating" xml:space="preserve">
+    <value>Aktiviert aber Datenbank wird nicht aktualisiert</value>
+  </data>
+  <data name="ExceptionCaught" xml:space="preserve">
+    <value>Ausnahmefehler: {0}</value>
+  </data>
+  <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
+    <value>Ausnahmefehler beim Schließen der Sitzung: {0}</value>
+  </data>
+  <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
+    <value>Ausnahmefehler beim Starten der Sitzung: {0}</value>
+  </data>
+  <data name="NotUpdatingDatabase" xml:space="preserve">
+    <value>Datenbank wird nicht aktualisiert</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="OnlyUpdateDatabasesCreatedByPlugin" xml:space="preserve">
-    <value>Nur Datenbanken aktualisieren die dieses Plugin erstellt hat</value>
+    <value>Nur Datenbanken aktualisieren, die über dieses Plug-In erstellt wurden</value>
   </data>
   <data name="OptionsViewTitle" xml:space="preserve">
     <value>BaseStation Database Writer Optionen</value>
   </data>
+  <data name="SelectDatabaseFile" xml:space="preserve">
+    <value>Datenbank auswählen</value>
+  </data>
+  <data name="SomethingIsZeroLength" xml:space="preserve">
+    <value>&apos;{0}&apos; hat Null Länge</value>
+  </data>
+  <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
+    <value>Einstellungen verhindern das Aktualisieren von Datenbanken, die nicht mit diesem Plug-In erstellt wurden</value>
+  </data>
   <data name="UseDefaultFileName" xml:space="preserve">
-    <value>Verwenden Sie Standard-Dateinamen</value>
+    <value>Verwende Standard Dateiname</value>
+  </data>
+  <data name="EnabledBadReceiver" xml:space="preserve">
+    <value>Aktiv, Empfänger nicht aktiv oder ungültig</value>
+  </data>
+  <data name="EnabledNoReceiver" xml:space="preserve">
+    <value>Aktiv, kein Empfänger angegeben</value>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>Empfänger</value>
+  </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>Ausnahmefehler während der Verarbeitung: {0}</value>
+  </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>Die Datenbank ist derzeit durch ein anderes Programm gesperrt. Einige Flüge könnten nicht verzeichnet werden.</value>
   </data>
 </root>
