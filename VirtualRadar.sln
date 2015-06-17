@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRadar\VirtualRadar.csproj", "{11805B5F-027A-4ED6-9491-DC85A3B2462D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{86248078-7A1C-486D-8D08-064CC14FDB70} = {86248078-7A1C-486D-8D08-064CC14FDB70}
+		{FE25F47B-7A81-4A04-8E00-99C36BCA8E03} = {FE25F47B-7A81-4A04-8E00-99C36BCA8E03}
+		{2BCFACA1-27D3-4D74-B528-3F702E17DC01} = {2BCFACA1-27D3-4D74-B528-3F702E17DC01}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceFactory", "InterfaceFactory\InterfaceFactory.csproj", "{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}"
 EndProject
