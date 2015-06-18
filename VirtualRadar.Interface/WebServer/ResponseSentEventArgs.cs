@@ -36,6 +36,11 @@ namespace VirtualRadar.Interface.WebServer
         public string UserAddress { get; private set; }
 
         /// <summary>
+        /// Gets the name of the authenticated user that made the request, if any.
+        /// </summary>
+        public string UserName { get; private set; }
+
+        /// <summary>
         /// Gets a value indicating the type of content served.
         /// </summary>
         public ContentClassification Classification { get; private set; }
@@ -71,7 +76,8 @@ namespace VirtualRadar.Interface.WebServer
         /// <param name="request"></param>
         /// <param name="httpStatus"></param>
         /// <param name="milliseconds"></param>
-        public ResponseSentEventArgs(string urlRequested, string userAddressAndPort, string userAddress, long bytesSent, ContentClassification classification, IRequest request, int httpStatus, int milliseconds)
+        /// <param name="userName"></param>
+        public ResponseSentEventArgs(string urlRequested, string userAddressAndPort, string userAddress, long bytesSent, ContentClassification classification, IRequest request, int httpStatus, int milliseconds, string userName)
         {
             UrlRequested = urlRequested;
             UserAddressAndPort = userAddressAndPort;
@@ -81,6 +87,7 @@ namespace VirtualRadar.Interface.WebServer
             Request = request;
             HttpStatus = httpStatus;
             Milliseconds = milliseconds;
+            UserName = userName;
         }
     }
 }

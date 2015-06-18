@@ -587,7 +587,8 @@ namespace VirtualRadar.WebServer
                                 var fullClientAddress = String.Format("{0}:{1}", requestArgs.ClientAddress, context.Request.RemoteEndPoint.Port);
                                 var responseArgs = new ResponseSentEventArgs(requestArgs.PathAndFile, fullClientAddress, requestArgs.ClientAddress,
                                                                              context.Response.ContentLength, requestArgs.Classification, context.Request,
-                                                                             (int)context.Response.StatusCode, (int)(Provider.UtcNow - startTime).TotalMilliseconds);
+                                                                             (int)context.Response.StatusCode, (int)(Provider.UtcNow - startTime).TotalMilliseconds,
+                                                                             context.BasicUserName);
                                 OnResponseSent(responseArgs);
                             }
                         } catch(HttpListenerException ex) {

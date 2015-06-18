@@ -57,6 +57,7 @@
                                     <thead>
                                         <tr>
                                             <th class="thin-column">::IPAddress::</th>
+                                            <th class="thin-column">::User::</th>
                                             <th class="thin-column text-right">::BytesSent::</th>
                                             <th>::LastURL::</th>
                                         </tr>
@@ -275,6 +276,7 @@
                         $.each(data.Requests, function(/** number */ idx, /** VRS_WEBADMIN_VIEWDATA_SERVER_REQUEST */ request) {
                             var row = $('<tr />')
                                 .append($('<td />').text(request.RemoteAddr).addClass('thin-column'))
+                                .append($('<td />').text(request.User).addClass('thin-column'))
                                 .append($('<td />').text(VRS.stringUtility.formatNumber(request.Bytes, '0,000')).addClass('thin-column text-right'))
                                 .append($('<td />').text(request.LastUrl));
                             _RequestsTableBody.append(row);

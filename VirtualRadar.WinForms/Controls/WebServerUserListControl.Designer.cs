@@ -32,12 +32,14 @@
             this.columnHeaderLastRequest = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderBytesSent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLastUrl = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderUser = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listView
             // 
             this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderAddress,
+            this.columnHeaderUser,
             this.columnHeaderLastRequest,
             this.columnHeaderBytesSent,
             this.columnHeaderLastUrl});
@@ -55,7 +57,7 @@
             // columnHeaderAddress
             // 
             this.columnHeaderAddress.Text = "::IPAddress::";
-            this.columnHeaderAddress.Width = 202;
+            this.columnHeaderAddress.Width = 105;
             // 
             // columnHeaderLastRequest
             // 
@@ -72,6 +74,11 @@
             // 
             this.columnHeaderLastUrl.Text = "::LastURL::";
             this.columnHeaderLastUrl.Width = 226;
+            // 
+            // columnHeaderUser
+            // 
+            this.columnHeaderUser.Text = "::User::";
+            this.columnHeaderUser.Width = 79;
             // 
             // WebServerUserListControl
             // 
@@ -91,6 +98,7 @@
         private System.Windows.Forms.ColumnHeader columnHeaderLastRequest;
         private System.Windows.Forms.ColumnHeader columnHeaderBytesSent;
         private System.Windows.Forms.ColumnHeader columnHeaderLastUrl;
+        private System.Windows.Forms.ColumnHeader columnHeaderUser;
 
     }
 }

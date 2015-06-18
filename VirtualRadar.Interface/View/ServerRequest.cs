@@ -34,6 +34,12 @@ namespace VirtualRadar.Interface.View
         public long DataVersion { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the user that is making the request, if any. Null if anonymous.
+        /// </summary>
+        [DataMember(Name="User")]
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Gets the address of the machine that made the request.
         /// </summary>
         [DataMember(Name="RemoteAddr")]
@@ -85,6 +91,7 @@ namespace VirtualRadar.Interface.View
             result.LastRequest = LastRequest;
             result.LastUrl = LastUrl;
             result.RemoteEndPoint = RemoteEndPoint;
+            result.UserName = UserName;
 
             return result;
         }
