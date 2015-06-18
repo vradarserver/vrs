@@ -486,8 +486,10 @@
     VRS.$$.ToAltitude =                                 'bis {0}';
     VRS.$$.TitleSiteTimedOut =                          'Abgelaufen';
     VRS.$$.TotalHours =                                 'Stunden Total';
-    VRS.$$.TrackingCountAircraft =                      'Verfolge {0:N0} Flugzeug[e]';
-    VRS.$$.TrackingCountAircraftOutOf =                 'Verfolge {0:N0} Flugzeug[e] (aus {1:N0})';
+    VRS.$$.TrackingCountAircraft =                      'Verfolge {0:N0} Flugzeuge';
+    VRS.$$.TrackingCountAircraftOutOf =                 'Verfolge {0:N0} Flugzeuge (aus {1:N0})';
+    VRS.$$.TrackingOneAircraft =                        'Verfolge 1 Flugzeug';
+    VRS.$$.TrackingOneAircraftOutOf =                   'Verfolge 1 Flugzeug (aus {0:N0})';
     VRS.$$.TransponderType =                            'Transponder';
     VRS.$$.TransponderTypeFlag =                        'Transponderflagge';
     VRS.$$.TrueAirSpeed =                               'Wahr';

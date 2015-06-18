@@ -488,6 +488,8 @@
     VRS.$$.TotalHours =                                 'Total Hours';
     VRS.$$.TrackingCountAircraft =                      'Tracking {0:N0} aircraft';
     VRS.$$.TrackingCountAircraftOutOf =                 'Tracking {0:N0} aircraft (out of {1:N0})';
+    VRS.$$.TrackingOneAircraft =                        'Tracking 1 aircraft';
+    VRS.$$.TrackingOneAircraftOutOf =                   'Tracking 1 aircraft (out of {0:N0})';
     VRS.$$.TransponderType =                            'Transponder';
     VRS.$$.TransponderTypeFlag =                        'Transponder Flag';
     VRS.$$.TrueAirSpeed =                               'True';

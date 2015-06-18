@@ -629,8 +629,14 @@
             var availableAircraft = this.options.aircraftList.getCountAvailableAircraft();
 
             if(refreshAll || state.trackingAircraftCount !== trackedAircraft || state.availableAircraftCount !== availableAircraft) {
-                var text = trackedAircraft == availableAircraft ? VRS.stringUtility.format(VRS.$$.TrackingCountAircraft, availableAircraft)
+                var text = '';
+                if(availableAircraft == 1) {
+                    text = trackedAircraft == availableAircraft ? VRS.$$.TrackingOneAircraft
+                                                                : VRS.stringUtility.format(VRS.$$.TrackingOneAircraftOutOf, trackedAircraft);
+                } else {
+                    text = trackedAircraft == availableAircraft ? VRS.stringUtility.format(VRS.$$.TrackingCountAircraft, availableAircraft)
                                                                 : VRS.stringUtility.format(VRS.$$.TrackingCountAircraftOutOf, availableAircraft, trackedAircraft);
+                }
                 state.trackingAircraftElement.text(text);
                 state.trackingAircraftCount = trackedAircraft;
                 state.availableAircraftCount = availableAircraft;
