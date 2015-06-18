@@ -1159,10 +1159,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
+            bool sawInsertOfNull = false;
             _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns((CodeBlock)null);
             _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
             _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft aircraft) => {
-                Assert.AreEqual(null, aircraft.ModeSCountry);
+                sawInsertOfNull = aircraft.ModeSCountry == null;
             });
 
             _Plugin.Startup(_StartupParameters);
@@ -1170,7 +1171,29 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
-            _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Once());
+            Assert.IsTrue(sawInsertOfNull);
+        }
+
+        [TestMethod]
+        public void Plugin_Aircraft_ModeSCountry_Filled_Correctly_When_Country_Name_Starts_With_Unknown_Space()
+        {
+            SetEnabledOption(true);
+
+            bool sawInsertOfNull = false;
+            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(new CodeBlock() {
+                Country = "Unknown or unassigned country",
+            });
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
+            _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft aircraft) => {
+                sawInsertOfNull = aircraft.ModeSCountry == null;
+            });
+
+            _Plugin.Startup(_StartupParameters);
+
+            var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+
+            Assert.IsTrue(sawInsertOfNull);
         }
 
         [TestMethod]
