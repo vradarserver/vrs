@@ -313,7 +313,8 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="remoteEndPoint"></param>
         /// <param name="url"></param>
         /// <param name="bytesSent"></param>
-        private void UpdateServerRequestEntry(IPEndPoint remoteEndPoint, string url, long bytesSent)
+        /// <param name="userName"></param>
+        private void UpdateServerRequestEntry(IPEndPoint remoteEndPoint, string url, long bytesSent, string userName)
         {
             if(bytesSent > 0) {
                 ServerRequest serverRequest = null;
@@ -336,6 +337,7 @@ namespace VirtualRadar.Library.Presenter
                 serverRequest.LastRequest = _Clock.UtcNow;
                 serverRequest.BytesSent += bytesSent;
                 serverRequest.LastUrl = url;
+                serverRequest.UserName = userName;
             }
         }
 
@@ -580,7 +582,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void WebServer_ResponseSent(object sender, ResponseSentEventArgs args)
         {
-            UpdateServerRequestEntry(args.Request.RemoteEndPoint, args.UrlRequested, args.BytesSent);
+            UpdateServerRequestEntry(args.Request.RemoteEndPoint, args.UrlRequested, args.BytesSent, args.UserName);
         }
         #endregion
     }

@@ -25,7 +25,7 @@ namespace Test.VirtualRadar.Interface.WebServer
         public void ResponseSentEventArgs_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             var request = new Mock<IRequest>();
-            var args = new ResponseSentEventArgs("the url", "user address and port", "user's address", 1023L, ContentClassification.Json, request.Object, 404, 998877);
+            var args = new ResponseSentEventArgs("the url", "user address and port", "user's address", 1023L, ContentClassification.Json, request.Object, 404, 998877, "MyName");
 
             Assert.AreEqual(1023L, args.BytesSent);
             Assert.AreEqual(ContentClassification.Json, args.Classification);
@@ -35,6 +35,7 @@ namespace Test.VirtualRadar.Interface.WebServer
             Assert.AreSame(request.Object, args.Request);
             Assert.AreEqual(404, args.HttpStatus);
             Assert.AreEqual(998877, args.Milliseconds);
+            Assert.AreEqual("MyName", args.UserName);
         }
     }
 }

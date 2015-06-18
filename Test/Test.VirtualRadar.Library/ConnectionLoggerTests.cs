@@ -90,7 +90,7 @@ namespace Test.VirtualRadar.Library
         private DateTime RaiseResponseEvent(string userAddress, long bytesSent, ContentClassification contentClassification, DateTime timeSent)
         {
             SetUtcNow(timeSent);
-            _WebServer.Raise(s => s.ResponseSent += null, new ResponseSentEventArgs(null, null, userAddress, bytesSent, contentClassification, null, 0, 0));
+            _WebServer.Raise(s => s.ResponseSent += null, new ResponseSentEventArgs(null, null, userAddress, bytesSent, contentClassification, null, 0, 0, null));
             return timeSent;
         }
 

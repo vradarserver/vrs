@@ -147,11 +147,12 @@ namespace VirtualRadar.WinForms.Controls
         {
             var request = listViewItem.Tag as ServerRequest;
 
-            while(listViewItem.SubItems.Count < 4) listViewItem.SubItems.Add("");
+            while(listViewItem.SubItems.Count < 5) listViewItem.SubItems.Add("");
             listViewItem.SubItems[0].Text = request.RemoteAddress;
-            listViewItem.SubItems[1].Text = request.LastRequest.ToString("G");
-            listViewItem.SubItems[2].Text = request.BytesSent.ToString("N0");
-            listViewItem.SubItems[3].Text = request.LastUrl;
+            listViewItem.SubItems[1].Text = request.UserName;
+            listViewItem.SubItems[2].Text = request.LastRequest.ToString("G");
+            listViewItem.SubItems[3].Text = request.BytesSent.ToString("N0");
+            listViewItem.SubItems[4].Text = request.LastUrl;
         }
         #endregion
     }
