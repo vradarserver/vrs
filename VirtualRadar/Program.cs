@@ -308,28 +308,31 @@ namespace VirtualRadar
         {
             // Don't translate, I don't want to confuse things if the translation throws exceptions
 
-            var message = Describe.ExceptionMultiLine(ex, "\r\n");
+            var isThreadAbort = Hierarchy.Flatten(ex, r => r.InnerException).Any(r => r is ThreadAbortException);
+            if(!isThreadAbort) {
+                var message = Describe.ExceptionMultiLine(ex, "\r\n");
 
-            try {
-                var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
-                if(!applicationInformation.Headless) {
-                    Clipboard.SetText(message);
-                }
-            } catch { }
-
-            ILog log = null;
-            try {
-                log = Factory.Singleton.Resolve<ILog>().Singleton;
-                if(log != null) log.WriteLine(message);
-            } catch { }
-
-            try {
-                Factory.Singleton.Resolve<IMessageBox>().Show(message, "Unhandled Exception Caught");
-            } catch(Exception doubleEx) {
-                Debug.WriteLine(String.Format("Program.ShowException caught double-exception: {0} when trying to display / log {1}", doubleEx.ToString(), ex.ToString()));
                 try {
-                    if(log != null) log.WriteLine("Caught exception while trying to show a previous exception: {0}", doubleEx.ToString());
+                    var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
+                    if(!applicationInformation.Headless) {
+                        Clipboard.SetText(message);
+                    }
                 } catch { }
+
+                ILog log = null;
+                try {
+                    log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    if(log != null) log.WriteLine(message);
+                } catch { }
+
+                try {
+                    Factory.Singleton.Resolve<IMessageBox>().Show(message, "Unhandled Exception Caught");
+                } catch(Exception doubleEx) {
+                    Debug.WriteLine(String.Format("Program.ShowException caught double-exception: {0} when trying to display / log {1}", doubleEx.ToString(), ex.ToString()));
+                    try {
+                        if(log != null) log.WriteLine("Caught exception while trying to show a previous exception: {0}", doubleEx.ToString());
+                    } catch { }
+                }
             }
         }
         #endregion
