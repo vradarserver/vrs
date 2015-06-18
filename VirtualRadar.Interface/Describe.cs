@@ -134,7 +134,8 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
-        /// Returns the registration passed across with characters that contravene the ICAO registration rules stripped out or transformed to upper-case as appropriate.
+        /// Returns the registration passed across with characters that contravene the ICAO registration rules stripped out or
+        /// transformed to upper-case as appropriate. Plus and minus are also accepted.
         /// </summary>
         /// <param name="registration"></param>
         /// <returns></returns>
@@ -145,7 +146,7 @@ namespace VirtualRadar.Interface
             if(registration != null) {
                 var buffer = new StringBuilder();
                 foreach(var ch in registration) {
-                    if(Char.IsDigit(ch) || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '-') buffer.Append(Char.ToUpper(ch));
+                    if((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '-' || ch == '+') buffer.Append(Char.ToUpper(ch));
                 }
 
                 result = buffer.ToString();
