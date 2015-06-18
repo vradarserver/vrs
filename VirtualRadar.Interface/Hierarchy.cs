@@ -30,7 +30,7 @@ namespace VirtualRadar.Interface
         public static IEnumerable<T> Flatten<T>(T root, Func<T, T> getChild)
         {
             var result = new List<T>();
-            for(var i = root;i != null;i =getChild(i)) {
+            for(var i = root;i != null;i = getChild(i)) {
                 result.Add(i);
             }
 
