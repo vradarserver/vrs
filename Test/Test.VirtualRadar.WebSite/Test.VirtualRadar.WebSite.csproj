@@ -65,6 +65,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AircraftListJsonBuilderTests.cs" />
     <Compile Include="AssemblyInitialise.cs" />
     <Compile Include="BundlerTests.cs" />
     <Compile Include="MinifierTests.cs" />

@@ -15,13 +15,13 @@ using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.StandingData;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// The arguments passed to <see cref="AircraftListJsonBuilder.Build"/> that can be used to suppress
-    /// aircraft from the list returned to the browser.
+    /// The arguments passed to <see cref="IAircraftListJsonBuilder.Build"/> that can be used to suppress
+    /// aircraft from the generated JSON.
     /// </summary>
-    class AircraftListJsonBuilderFilter
+    public class AircraftListJsonBuilderFilter
     {
         /// <summary>
         /// Gets or sets an airport code that the aircraft has to be flying from, to or via in order to pass the filter.

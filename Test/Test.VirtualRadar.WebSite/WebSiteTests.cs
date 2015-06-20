@@ -53,6 +53,7 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IInstallerSettingsStorage> _InstallerSettingsStorage;
         private InstallerSettings _InstallerSettings;
         private Mock<IConfigurationStorage> _ConfigurationStorage;
+        private Mock<ISharedConfiguration> _SharedConfiguration;
         private Configuration _Configuration;
         private Mock<ISimpleAircraftList> _FlightSimulatorAircraftList;
         private List<IAircraft> _FlightSimulatorAircraft;
@@ -138,10 +139,12 @@ namespace Test.VirtualRadar.WebSite
             _InstallerSettingsStorage.Setup(m => m.Load()).Returns(_InstallerSettings);
 
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
+            _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Configuration = new Configuration();
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 1;
             _Configuration.GoogleMapSettings.ClosestAircraftReceiverId = 1;
             _ConfigurationStorage.Setup(m => m.Load()).Returns(_Configuration);
+            _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
 
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsMono).Returns(false);

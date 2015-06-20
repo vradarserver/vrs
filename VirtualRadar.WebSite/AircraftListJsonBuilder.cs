@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.WebSite;
@@ -24,9 +25,68 @@ namespace VirtualRadar.WebSite
     /// <summary>
     /// An object that can translate a list of <see cref="IAircraft"/> into an <see cref="AircraftListJson"/>.
     /// </summary>
-    class AircraftListJsonBuilder
+    class AircraftListJsonBuilder : IAircraftListJsonBuilder
     {
+        #region Private class - ConfiguredFolder
+        /// <summary>
+        /// Records the configuration setting for a folder and the result of a check on whether it exists or not.
+        /// </summary>
+        class ConfiguredFolder
+        {
+            public string Folder;
+
+            public bool Tested;
+
+            public bool Exists;
+
+            public bool CheckConfiguration(string folder, IWebSiteProvider provider)
+            {
+                if(Folder != folder || !Tested) {
+                    Folder = folder;
+                    Tested = true;
+                    try {
+                        Exists = !String.IsNullOrEmpty(Folder) && provider.DirectoryExists(Folder);
+                    } catch {
+                        Exists =  false;
+                    }
+                }
+
+                return Exists;
+            }
+        }
+        #endregion
+
         #region Fields
+        /// <summary>
+        /// The singleton ISharedConfiguration object.
+        /// </summary>
+        private ISharedConfiguration _SharedConfiguration;
+
+        /// <summary>
+        /// The singleton IFeedManager object.
+        /// </summary>
+        private IFeedManager _FeedManager;
+
+        /// <summary>
+        /// An aircraft list that is permanently empty.
+        /// </summary>
+        private IAircraftList _EmptyAircraftList;
+
+        /// <summary>
+        /// The configured flags folder.
+        /// </summary>
+        private ConfiguredFolder _ConfiguredFlagsFolder = new ConfiguredFolder();
+
+        /// <summary>
+        /// The configured picutures folder.
+        /// </summary>
+        private ConfiguredFolder _ConfiguredPicturesFolder = new ConfiguredFolder();
+
+        /// <summary>
+        /// The configured silhouettes folder.
+        /// </summary>
+        private ConfiguredFolder _ConfiguredSilhouettesFolder = new ConfiguredFolder();
+
         /// <summary>
         /// True if the server allows aircraft pictures to be sent to Internet clients.
         /// </summary>
@@ -53,39 +113,44 @@ namespace VirtualRadar.WebSite
         private int _ShortTrailLength;
 
         /// <summary>
-        /// The provider that will abstract away parts of the environment for us.
+        /// The default aircraft list feed.
         /// </summary>
-        private IWebSiteProvider _Provider;
+        private int _DefaultAircraftListFeedId;
         #endregion
 
-        #region Constructor
+        #region Properties
         /// <summary>
-        /// Creates a new object.
+        /// See interface docs.
         /// </summary>
-        /// <param name="provider"></param>
-        public AircraftListJsonBuilder(IWebSiteProvider provider)
+        public IWebSiteProvider Provider { get; private set; }
+        #endregion
+
+        #region Initialise, LoadConfiguration
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Initialise(IWebSiteProvider provider)
         {
-            _Provider = provider;
+            if(provider == null) throw new ArgumentNullException("provider");
+            Provider = provider;
 
-            LoadConfiguration();
-
-            var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
-            configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            _FeedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            _EmptyAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
         }
 
         /// <summary>
-        /// Loads the bits of configuration that the object is interested in.
+        /// Refreshes the flags from the shared configuration.
         /// </summary>
-        private void LoadConfiguration()
+        private void RefreshConfigurationSettings()
         {
-            var config = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var config = _SharedConfiguration.Get();
 
+            _DefaultAircraftListFeedId = config.GoogleMapSettings.WebSiteReceiverId;
             _ShowPicturesToInternetClients = config.InternetClientSettings.CanShowPictures;
-
-            _ShowFlags = !String.IsNullOrEmpty(config.BaseStationSettings.OperatorFlagsFolder) && _Provider.DirectoryExists(config.BaseStationSettings.OperatorFlagsFolder);
-            _ShowPictures = !String.IsNullOrEmpty(config.BaseStationSettings.PicturesFolder) && _Provider.DirectoryExists(config.BaseStationSettings.PicturesFolder);
-            _ShowSilhouettes = !String.IsNullOrEmpty(config.BaseStationSettings.SilhouettesFolder) && _Provider.DirectoryExists(config.BaseStationSettings.SilhouettesFolder);
-
+            _ShowFlags = _ConfiguredFlagsFolder.CheckConfiguration(config.BaseStationSettings.OperatorFlagsFolder, Provider);
+            _ShowPictures = _ConfiguredPicturesFolder.CheckConfiguration(config.BaseStationSettings.PicturesFolder, Provider);
+            _ShowSilhouettes = _ConfiguredSilhouettesFolder.CheckConfiguration(config.BaseStationSettings.SilhouettesFolder, Provider);
             _ShortTrailLength = config.GoogleMapSettings.ShortTrailLengthSeconds;
         }
         #endregion
@@ -98,8 +163,23 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public AircraftListJson Build(AircraftListJsonBuilderArgs args)
         {
-            if(args == null) throw new ArgumentNullException("aircraftList");
-            if(args.AircraftList == null) throw new InvalidOperationException("The AircraftList must be supplied");
+            if(args == null) throw new ArgumentNullException("args");
+
+            RefreshConfigurationSettings();
+
+            var feedId = args.SourceFeedId == -1 ? _DefaultAircraftListFeedId : args.SourceFeedId;
+
+            IAircraftList aircraftList = null;
+            if(args.IsFlightSimulatorList) aircraftList = args.AircraftList;
+            else {
+                var selectedFeed = _FeedManager.GetByUniqueId(feedId);
+                if(selectedFeed == null) selectedFeed = _FeedManager.GetByUniqueId(_DefaultAircraftListFeedId);
+                aircraftList = selectedFeed == null ? null : selectedFeed.AircraftList;
+            }
+            if(aircraftList == null) {
+                aircraftList = _EmptyAircraftList;
+                feedId = args.SourceFeedId;
+            }
 
             var result = new AircraftListJson() {
                 FlagHeight = 20,
@@ -108,20 +188,22 @@ namespace VirtualRadar.WebSite
                 ShowPictures = _ShowPictures && (!args.IsInternetClient || _ShowPicturesToInternetClients) && !args.IsFlightSimulatorList,
                 ShowSilhouettes = _ShowSilhouettes && !args.IsFlightSimulatorList,
                 ShortTrailLengthSeconds = _ShortTrailLength,
-                Source = (int)args.AircraftList.Source,
-                SourceFeedId = args.SourceFeedId,
+                Source = (int)aircraftList.Source,
+                SourceFeedId = feedId,
             };
 
-            foreach(var feed in args.ReceiverManager.Feeds) {
-                result.Feeds.Add(new FeedJson() {
-                    UniqueId = feed.UniqueId,
-                    Name = feed.Name,
-                    HasPolarPlot = feed.AircraftList != null && feed.AircraftList.PolarPlotter != null
-                });
+            if(!args.FeedsNotRequired) {
+                foreach(var feed in _FeedManager.Feeds) {
+                    result.Feeds.Add(new FeedJson() {
+                        UniqueId = feed.UniqueId,
+                        Name = feed.Name,
+                        HasPolarPlot = feed.AircraftList != null && feed.AircraftList.PolarPlotter != null
+                    });
+                }
             }
 
             long timestamp, dataVersion;
-            var aircraft = args.AircraftList.TakeSnapshot(out timestamp, out dataVersion);
+            var aircraft = aircraftList.TakeSnapshot(out timestamp, out dataVersion);
             result.AvailableAircraft = aircraft.Count;
             result.LastDataVersion = dataVersion.ToString();
             result.ServerTime = JavascriptHelper.ToJavascriptTicks(timestamp);
@@ -161,16 +243,18 @@ namespace VirtualRadar.WebSite
         /// <param name="distances"></param>
         private void SortAircraft(List<IAircraft> aircraftListSnapshot, AircraftListJsonBuilderArgs args, Dictionary<int, double?> distances)
         {
-            IAircraftComparer comparer = Factory.Singleton.Resolve<IAircraftComparer>();
-            comparer.BrowserLocation = args.BrowserLatitude == null || args.BrowserLongitude == null ? null : new Coordinate((float)args.BrowserLatitude, (float)args.BrowserLongitude);
-            foreach(var sortBy in args.SortBy) {
-                comparer.SortBy.Add(sortBy);
-            }
-            foreach(var distance in distances) {
-                comparer.PrecalculatedDistances.Add(distance.Key, distance.Value);
-            }
+            if(args.SortBy.Count > 0) {
+                IAircraftComparer comparer = Factory.Singleton.Resolve<IAircraftComparer>();
+                comparer.BrowserLocation = args.BrowserLatitude == null || args.BrowserLongitude == null ? null : new Coordinate((float)args.BrowserLatitude, (float)args.BrowserLongitude);
+                foreach(var sortBy in args.SortBy) {
+                    comparer.SortBy.Add(sortBy);
+                }
+                foreach(var distance in distances) {
+                    comparer.PrecalculatedDistances.Add(distance.Key, distance.Value);
+                }
 
-            aircraftListSnapshot.Sort(comparer);
+                aircraftListSnapshot.Sort(comparer);
+            }
         }
 
         /// <summary>
@@ -182,7 +266,7 @@ namespace VirtualRadar.WebSite
         /// <param name="distances"></param>
         private void CopyAircraft(AircraftListJson aircraftListJson, List<IAircraft> aircraftListSnapshot, AircraftListJsonBuilderArgs args, Dictionary<int, double?> distances)
         {
-            var now = _Provider.UtcNow;
+            var now = Provider.UtcNow;
 
             foreach(var aircraftSnapshot in aircraftListSnapshot) {
                 double? distance;
@@ -454,18 +538,6 @@ namespace VirtualRadar.WebSite
         private static double ConvertLongitudeToLinear(double longitude)
         {
             return longitude >= 0.0 ? longitude : longitude + 360.0;
-        }
-        #endregion
-
-        #region Events subscribed
-        /// <summary>
-        /// Called when the configuration changes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
-        {
-            LoadConfiguration();
         }
         #endregion
     }

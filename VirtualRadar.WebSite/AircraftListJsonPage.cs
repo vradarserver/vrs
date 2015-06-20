@@ -36,7 +36,7 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// The object that will do the work of producing JSON files from aircraft lists.
         /// </summary>
-        private AircraftListJsonBuilder _Builder;
+        private IAircraftListJsonBuilder _Builder;
 
         /// <summary>
         /// The singleton receiver manager - we retain a reference to it to save having to constantly resolve the singleton, it will never change
@@ -125,7 +125,10 @@ namespace VirtualRadar.WebSite
         /// <returns>Always returns true - this just helps to make the caller's code a little more compact.</returns>
         private bool HandleAircraftListJson(RequestReceivedEventArgs args, int feedId, IAircraftList aircraftList, bool isFlightSimulator)
         {
-            if(_Builder == null) _Builder = new AircraftListJsonBuilder(Provider);
+            if(_Builder == null) {
+                _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+                _Builder.Initialise(Provider);
+            }
 
             if(aircraftList == null) args.Response.StatusCode = HttpStatusCode.InternalServerError;
             else {
@@ -161,7 +164,6 @@ namespace VirtualRadar.WebSite
                 IsFlightSimulatorList = isFlightSimulator,
                 IsInternetClient =      args.IsInternetRequest,
                 PreviousDataVersion =   QueryLong(args, "ldv", -1),
-                ReceiverManager =       _ReceiverManager,
                 ResendTrails =          QueryString(args, "refreshTrails", false) == "1",
                 SelectedAircraftId =    QueryInt(args, "selAc", -1),
                 SourceFeedId =          feedId,

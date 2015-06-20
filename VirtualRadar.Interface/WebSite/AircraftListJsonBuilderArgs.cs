@@ -15,18 +15,13 @@ using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// The object that passes arguments to the <see cref="AircraftListJsonBuilder.Build"/> method.
+    /// The object that passes arguments to the <see cref="IAircraftListJsonBuilder.Build"/> method.
     /// </summary>
-    class AircraftListJsonBuilderArgs
+    public class AircraftListJsonBuilderArgs
     {
-        /// <summary>
-        /// Gets or sets the receiver manager that controls the full list of receivers.
-        /// </summary>
-        public IFeedManager ReceiverManager { get; set; }
-
         /// <summary>
         /// Gets or sets the ID of the source receiver.
         /// </summary>
@@ -95,9 +90,14 @@ namespace VirtualRadar.WebSite
 
         /// <summary>
         /// Gets a list of <see cref="AircraftComparerColumn"/> columns to sort by and a bool to indicate whether the sort direction
-        /// is ascending or descending.
+        /// is ascending (true) or descending (false).
         /// </summary>
         public List<KeyValuePair<string, bool>> SortBy { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the Feeds list does not need to be filled in.
+        /// </summary>
+        public bool FeedsNotRequired { get; set; }
 
         /// <summary>
         /// Creates a new object.
@@ -106,6 +106,8 @@ namespace VirtualRadar.WebSite
         {
             PreviousAircraft = new List<int>();
             PreviousDataVersion = -1L;
+            SelectedAircraftId = -1;
+            SourceFeedId = -1;
             SortBy = new List<KeyValuePair<string,bool>>();
         }
     }

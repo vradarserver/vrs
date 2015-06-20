@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,19 +13,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// An enumeration of the different trail types.
+    /// The interface for an object that can build an <see cref="AircraftListJson"/> object
+    /// from an <see cref="IAircraftList"/> object's list of aircraft.
     /// </summary>
-    enum TrailType : byte
+    public interface IAircraftListJsonBuilder
     {
-        None,
-        Full,
-        Short,
-        FullAltitude,
-        ShortAltitude,
-        FullSpeed,
-        ShortSpeed,
+        /// <summary>
+        /// Gets the provider that abstracts away some aspects of the environment for the object.
+        /// </summary>
+        IWebSiteProvider Provider { get; }
+
+        /// <summary>
+        /// Initialises the object.
+        /// </summary>
+        /// <param name="provider"></param>
+        void Initialise(IWebSiteProvider provider);
+
+        /// <summary>
+        /// Returns a fully-formed <see cref="AircraftListJson"/> from the arguments passed across.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        AircraftListJson Build(AircraftListJsonBuilderArgs args);
     }
 }

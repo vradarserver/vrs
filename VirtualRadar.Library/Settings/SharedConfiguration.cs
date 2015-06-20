@@ -91,8 +91,13 @@ namespace VirtualRadar.Library.Settings
         /// <returns></returns>
         public Configuration Get()
         {
-            if(_Configuration == null) LoadConfiguration(forceLoad: false);
-            return _Configuration;
+            var result = _Configuration;
+            if(result == null) {
+                LoadConfiguration(forceLoad: false);
+                result = _Configuration;
+            }
+
+            return result;
         }
 
         /// <summary>
