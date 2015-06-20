@@ -173,7 +173,10 @@ namespace VirtualRadar.WebSite
             if(args.IsFlightSimulatorList) aircraftList = args.AircraftList;
             else {
                 var selectedFeed = _FeedManager.GetByUniqueId(feedId);
-                if(selectedFeed == null) selectedFeed = _FeedManager.GetByUniqueId(_DefaultAircraftListFeedId);
+                if(selectedFeed == null) {
+                    feedId = _DefaultAircraftListFeedId;
+                    selectedFeed = _FeedManager.GetByUniqueId(feedId);
+                }
                 aircraftList = selectedFeed == null ? null : selectedFeed.AircraftList;
             }
             if(aircraftList == null) {

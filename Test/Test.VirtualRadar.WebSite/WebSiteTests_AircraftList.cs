@@ -477,17 +477,6 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_FlightSimAircraftList_Responds_With_ServerError_If_FlightSimAircraftList_Property_Is_Empty()
-        {
-            _AircraftListAddress.Page = FlightSimListPage;
-
-            _WebSite.FlightSimulatorAircraftList = null;
-            SendRequest(_AircraftListAddress.Address);
-
-            Assert.AreEqual(HttpStatusCode.InternalServerError, _Response.Object.StatusCode);
-        }
-
-        [TestMethod]
         public void WebSite_FlightSimAircraftList_Returns_Empty_AircraftListJson_When_FlightSimAircraftList_Is_Empty()
         {
             _AircraftListAddress.Page = FlightSimListPage;
