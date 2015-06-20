@@ -33,6 +33,7 @@ namespace Test.VirtualRadar.Library.Network
 
         private IClassFactory _OriginalFactory;
         private IRebroadcastServer _Server;
+        private Mock<IFeed> _Feed;
         private Mock<IListener> _Listener;
         private MockConnector<INetworkConnector, INetworkConnection> _Connector;
         private BaseStationMessage _Port30003Message;
@@ -51,14 +52,16 @@ namespace Test.VirtualRadar.Library.Network
             _Compressor = TestUtilities.CreateMockImplementation<IBaseStationMessageCompressor>();
 
             _Server = Factory.Singleton.Resolve<IRebroadcastServer>();
-            _Listener = new Mock<IListener>(MockBehavior.Default) { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _Feed = new Mock<IFeed>(MockBehavior.Default) { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _Listener = TestUtilities.CreateMockInstance<IListener>();
+            _Feed.SetupGet(r => r.Listener).Returns(_Listener.Object);
 
             _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
 
             _Server.UniqueId = 1;
             _Server.Name = "It's the code word";
             _Server.Format = RebroadcastFormat.Port30003;
-            _Server.Listener = _Listener.Object;
+            _Server.Feed = _Feed.Object;
             _Server.Connector = _Connector.Object;
 
             _ExceptionCaughtEvent = new EventRecorder<EventArgs<Exception>>();
@@ -117,7 +120,7 @@ namespace Test.VirtualRadar.Library.Network
             var server = Factory.Singleton.Resolve<IRebroadcastServer>();
             TestUtilities.TestProperty(server, r => r.Connector, null, _Connector.Object);
             TestUtilities.TestProperty(server, r => r.Format, RebroadcastFormat.None, RebroadcastFormat.Port30003);
-            TestUtilities.TestProperty(server, r => r.Listener, null, _Listener.Object);
+            TestUtilities.TestProperty(server, r => r.Feed, null, _Feed.Object);
             TestUtilities.TestProperty(server, r => r.Name, null, "Abc");
             TestUtilities.TestProperty(server, r => r.Online, false);
             TestUtilities.TestProperty(server, r => r.UniqueId, 0, 123);
@@ -135,9 +138,9 @@ namespace Test.VirtualRadar.Library.Network
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void RebroadcastServer_Initialise_Throws_If_Listener_Is_Null()
+        public void RebroadcastServer_Initialise_Throws_If_Feed_Is_Null()
         {
-            _Server.Listener = null;
+            _Server.Feed = null;
             _Server.Initialise();
         }
 
@@ -239,7 +242,7 @@ namespace Test.VirtualRadar.Library.Network
 
         #region Rebroadcasting of messages
         [TestMethod]
-        public void RebroadcastServer_Transmits_Port30003_Messages_From_Listener()
+        public void RebroadcastServer_Transmits_Port30003_Messages_From_Feed()
         {
             _Server.Format = RebroadcastFormat.Port30003;
             _Server.Initialise();
@@ -253,7 +256,7 @@ namespace Test.VirtualRadar.Library.Network
         }
 
         [TestMethod]
-        public void RebroadcastServer_Transmits_Compressed_Port30003_Messages_From_Listener()
+        public void RebroadcastServer_Transmits_Compressed_Port30003_Messages_From_Feed()
         {
             var bytes = new byte[] { 0x01, 0xff };
             _Compressor.Setup(r => r.Compress(_Port30003Message)).Returns(bytes);
@@ -447,6 +450,22 @@ namespace Test.VirtualRadar.Library.Network
         }
 
         [TestMethod]
+        public void RebroadcastServer_Dispose_Can_Cope_If_Feed_Changes_Listener_Before_Dispose()
+        {
+            _Server.Format = RebroadcastFormat.Port30003;
+            _Server.Initialise();
+            _Server.Online = true;
+
+            _Feed.SetupGet(r => r.Listener).Returns(TestUtilities.CreateMockInstance<IListener>().Object);
+
+            _Server.Dispose();
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
         public void RebroadcastServer_Dispose_Unhooks_From_Listener_Raw_Bytes_Events()
         {
             var bytes = new byte[] { 0x01, 0xff };
@@ -477,9 +496,9 @@ namespace Test.VirtualRadar.Library.Network
         }
 
         [TestMethod]
-        public void RebroadcastServer_Dispose_Does_Not_Care_If_Listener_Is_Null()
+        public void RebroadcastServer_Dispose_Does_Not_Care_If_Feed_Is_Null()
         {
-            _Server.Listener = null;
+            _Server.Feed = null;
             _Server.Dispose();
         }
 

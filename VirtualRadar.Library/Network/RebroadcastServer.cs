@@ -43,6 +43,11 @@ namespace VirtualRadar.Library.Network
         private bool _Hooked_ModeS_Bytes;
 
         /// <summary>
+        /// Gets the listener that has had its events hooked.
+        /// </summary>
+        private IListener _HookedListener;
+
+        /// <summary>
         /// The object that can compress messages for us.
         /// </summary>
         private IBaseStationMessageCompressor _Compressor;
@@ -67,7 +72,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IListener Listener { get; set; }
+        public IFeed Feed { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -150,9 +155,9 @@ namespace VirtualRadar.Library.Network
         private void Dispose(bool disposing)
         {
             if(disposing) {
-                if(_Hooked_Port30003_Messages) Listener.Port30003MessageReceived -= Listener_Port30003MessageReceived;
-                if(_Hooked_Raw_Bytes)          Listener.RawBytesReceived -= Listener_RawBytesReceived;
-                if(_Hooked_ModeS_Bytes)        Listener.ModeSBytesReceived -= Listener_ModeSBytesReceived;
+                if(_Hooked_Port30003_Messages) _HookedListener.Port30003MessageReceived -= Listener_Port30003MessageReceived;
+                if(_Hooked_Raw_Bytes)          _HookedListener.RawBytesReceived -= Listener_RawBytesReceived;
+                if(_Hooked_ModeS_Bytes)        _HookedListener.ModeSBytesReceived -= Listener_ModeSBytesReceived;
                 _Hooked_Port30003_Messages = _Hooked_Raw_Bytes = false;
             }
         }
@@ -165,7 +170,7 @@ namespace VirtualRadar.Library.Network
         public void Initialise()
         {
             if(UniqueId == 0) throw new InvalidOperationException("UniqueId must be set before calling Initialise");
-            if(Listener == null) throw new InvalidOperationException("Listener must be set before calling Initialise");
+            if(Feed == null) throw new InvalidOperationException("Feed must be set before calling Initialise");
             if(Connector == null) throw new InvalidOperationException("Connector must be set before calling Initialise");
             if(Format == RebroadcastFormat.None) throw new InvalidOperationException("Format must be specified before calling Initialise");
             if(_Hooked_Port30003_Messages || _Hooked_Raw_Bytes || _Hooked_ModeS_Bytes) throw new InvalidOperationException("Initialise has already been called");
@@ -173,18 +178,19 @@ namespace VirtualRadar.Library.Network
             Connector.Name = Name;
             Connector.EstablishConnection();
 
+            _HookedListener = Feed.Listener;
             switch(Format) {
                 case RebroadcastFormat.Passthrough:
-                    Listener.RawBytesReceived += Listener_RawBytesReceived;
+                    _HookedListener.RawBytesReceived += Listener_RawBytesReceived;
                     _Hooked_Raw_Bytes = true;
                     break;
                 case RebroadcastFormat.CompressedVRS:
                 case RebroadcastFormat.Port30003:
-                    Listener.Port30003MessageReceived += Listener_Port30003MessageReceived;
+                    _HookedListener.Port30003MessageReceived += Listener_Port30003MessageReceived;
                     _Hooked_Port30003_Messages = true;
                     break;
                 case RebroadcastFormat.Avr:
-                    Listener.ModeSBytesReceived += Listener_ModeSBytesReceived;
+                    _HookedListener.ModeSBytesReceived += Listener_ModeSBytesReceived;
                     _Hooked_ModeS_Bytes = true;
                     break;
                 default:

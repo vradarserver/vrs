@@ -39,9 +39,9 @@ namespace VirtualRadar.Interface.Network
         RebroadcastFormat Format { get; set; }
 
         /// <summary>
-        /// Gets or sets the listener to take messages and bytes from.
+        /// Gets or sets the feed to take messages and bytes from.
         /// </summary>
-        IListener Listener { get; set; }
+        IFeed Feed { get; set; }
 
         /// <summary>
         /// Gets or sets the object that establishes the connection for us.

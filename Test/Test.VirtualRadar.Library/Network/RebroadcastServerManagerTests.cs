@@ -130,7 +130,7 @@ namespace Test.VirtualRadar.Library.Network
 
             Assert.AreEqual(22, _Server.Object.UniqueId);
             Assert.AreEqual("A", _Server.Object.Name);
-            Assert.AreSame(_Listeners[0].Object, _Server.Object.Listener);
+            Assert.AreSame(_Feeds[0].Object, _Server.Object.Feed);
             Assert.AreSame(_Connector.Object, _Server.Object.Connector);
             Assert.AreEqual(1000, _Connector.Object.Port);
             Assert.AreEqual(true, _Connector.Object.IsPassive);
@@ -271,7 +271,7 @@ namespace Test.VirtualRadar.Library.Network
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreSame(_Server.Object, _Manager.RebroadcastServers[0]);
 
-            Assert.AreSame(_Listeners[0].Object, _Server.Object.Listener);
+            Assert.AreSame(_Feeds[0].Object, _Server.Object.Feed);
             Assert.AreSame(_Connector.Object, _Server.Object.Connector);
             Assert.AreEqual(1000, _Connector.Object.Port);
             Assert.AreEqual(RebroadcastFormat.Passthrough, _Server.Object.Format);
@@ -307,7 +307,7 @@ namespace Test.VirtualRadar.Library.Network
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
-            Assert.AreSame(_Listeners[1].Object, _Manager.RebroadcastServers[0].Listener);
+            Assert.AreSame(_Feeds[1].Object, _Manager.RebroadcastServers[0].Feed);
         }
 
         [TestMethod]
@@ -421,7 +421,7 @@ namespace Test.VirtualRadar.Library.Network
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
-            Assert.AreSame(_Listeners[1].Object, _Manager.RebroadcastServers[0].Listener);
+            Assert.AreSame(_Feeds[1].Object, _Manager.RebroadcastServers[0].Feed);
             _Server.Verify(r => r.Dispose(), Times.Once());
             _Connector.Verify(r => r.Dispose(), Times.Once());
         }
@@ -621,7 +621,7 @@ namespace Test.VirtualRadar.Library.Network
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreSame(_Server.Object, _Manager.RebroadcastServers[0]);
-            Assert.AreSame(_Listeners[2].Object, _Server.Object.Listener);
+            Assert.AreSame(_Feeds[2].Object, _Server.Object.Feed);
             Assert.AreSame(_Connector.Object, _Server.Object.Connector);
             Assert.AreEqual(1000, _Connector.Object.Port);
             Assert.AreEqual(true, _Connector.Object.IsPassive);

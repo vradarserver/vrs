@@ -225,7 +225,7 @@ namespace VirtualRadar.Library.Network
                         r.Format == rebroadcastSettings.Format &&
                         r.Connector.Port == rebroadcastSettings.Port &&
                         r.UniqueId == rebroadcastSettings.UniqueId &&
-                        r.Listener.ReceiverId == feed.UniqueId &&
+                        r.Feed.UniqueId == feed.UniqueId &&
                         r.Connector.IsPassive == !rebroadcastSettings.IsTransmitter &&
                         (!rebroadcastSettings.IsTransmitter || r.Connector.Address == rebroadcastSettings.TransmitAddress) &&
                         (rebroadcastSettings.IsTransmitter || Object.Equals(r.Connector.Access, rebroadcastSettings.Access)) &&
@@ -254,7 +254,7 @@ namespace VirtualRadar.Library.Network
                 var server = Factory.Singleton.Resolve<IRebroadcastServer>();
                 server.UniqueId = rebroadcastSettings.UniqueId;
                 server.Name = rebroadcastSettings.Name;
-                server.Listener = feed.Listener;
+                server.Feed = feed;
                 server.Connector = Factory.Singleton.Resolve<INetworkConnector>();
                 server.Connector.Name = rebroadcastSettings.Name;
                 server.Connector.Port = rebroadcastSettings.Port;
