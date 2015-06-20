@@ -39,25 +39,9 @@ namespace VirtualRadar.WebSite
         private IAircraftListJsonBuilder _Builder;
 
         /// <summary>
-        /// The singleton receiver manager - we retain a reference to it to save having to constantly resolve the singleton, it will never change
-        /// over the life of the program.
-        /// </summary>
-        private IFeedManager _ReceiverManager;
-
-        /// <summary>
-        /// The unique ID of the receiver to use when no feed ID has been specified in the request.
-        /// </summary>
-        private int _DefaultReceiverId;
-
-        /// <summary>
         /// The tick on which the configuration was changed.
         /// </summary>
         private long _ConfigurationChangedTick;
-
-        /// <summary>
-        /// An aircraft list that is permanently empty.
-        /// </summary>
-        private IAircraftList _EmptyAircraftList;
 
         /// <summary>
         /// Gets or sets the aircraft list that is keeping track of aircraft in a flight simulator.
@@ -65,23 +49,20 @@ namespace VirtualRadar.WebSite
         public ISimpleAircraftList FlightSimulatorAircraftList { get; set; }
 
         /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="webSite"></param>
-        public AircraftListJsonPage(WebSite webSite) : base(webSite)
-        {
-            _EmptyAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
-            _ReceiverManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
-        }
-
-        /// <summary>
         /// See base class.
         /// </summary>
         /// <param name="configuration"></param>
         protected override void DoLoadConfiguration(Configuration configuration)
         {
-            _DefaultReceiverId = configuration.GoogleMapSettings.WebSiteReceiverId;
             _ConfigurationChangedTick = Provider.UtcNow.Ticks;
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="webSite"></param>
+        public AircraftListJsonPage(WebSite webSite) : base(webSite)
+        {
         }
 
         /// <summary>
@@ -98,16 +79,9 @@ namespace VirtualRadar.WebSite
                 var feedText = args.QueryString["feed"];
                 int feed;
                 if(String.IsNullOrEmpty(feedText) || !int.TryParse(feedText, NumberStyles.None, CultureInfo.InvariantCulture, out feed)) {
-                    feed = _DefaultReceiverId;
+                    feed = -1;
                 }
-                var receiver = _ReceiverManager.GetByUniqueId(feed);
-                if(receiver == null && feed != _DefaultReceiverId) {
-                    feed = _DefaultReceiverId;
-                    receiver = _ReceiverManager.GetByUniqueId(feed);
-                }
-
-                var aircraftList = receiver == null ? _EmptyAircraftList : receiver.AircraftList;
-                result = HandleAircraftListJson(args, feed, aircraftList, false);
+                result = HandleAircraftListJson(args, feed, null, false);
             } else if(args.PathAndFile.Equals("/FlightSimList.json", StringComparison.OrdinalIgnoreCase)) {
                 result = HandleAircraftListJson(args, -1, FlightSimulatorAircraftList, true);
             }
@@ -130,18 +104,15 @@ namespace VirtualRadar.WebSite
                 _Builder.Initialise(Provider);
             }
 
-            if(aircraftList == null) args.Response.StatusCode = HttpStatusCode.InternalServerError;
-            else {
-                var buildArgs = ConstructBuildArgs(args, feedId, aircraftList, isFlightSimulator);
-                var json = _Builder.Build(buildArgs);
+            var buildArgs = ConstructBuildArgs(args, feedId, aircraftList, isFlightSimulator);
+            var json = _Builder.Build(buildArgs);
 
-                if(buildArgs.PreviousDataVersion > -1 && buildArgs.PreviousDataVersion <= _ConfigurationChangedTick) {
-                    json.ServerConfigChanged = true;
-                }
-
-                Responder.SendJson(args.Request, args.Response, json, args.QueryString["callback"], null);
-                args.Classification = ContentClassification.Json;
+            if(buildArgs.PreviousDataVersion > -1 && buildArgs.PreviousDataVersion <= _ConfigurationChangedTick) {
+                json.ServerConfigChanged = true;
             }
+
+            Responder.SendJson(args.Request, args.Response, json, args.QueryString["callback"], null);
+            args.Classification = ContentClassification.Json;
 
             return true;
         }
