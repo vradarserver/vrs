@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2013 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,29 +12,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// An enumeration of the different trail types.
     /// </summary>
-    public static class Implementations
+    public enum TrailType : byte
     {
-        /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
-        /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<IAircraftListJsonBuilder, AircraftListJsonBuilder>();
-            factory.Register<IBundler, Bundler>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
-        }
+        None,
+        Full,
+        Short,
+        FullAltitude,
+        ShortAltitude,
+        FullSpeed,
+        ShortSpeed,
     }
 }

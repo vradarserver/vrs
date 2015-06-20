@@ -63,8 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AircraftListJsonBuilder.cs" />
-    <Compile Include="AircraftListJsonBuilderArgs.cs" />
-    <Compile Include="AircraftListJsonBuilderFilter.cs" />
     <Compile Include="AircraftListJsonPage.cs" />
     <Compile Include="AirportDataProxyPage.cs" />
     <Compile Include="AudioPage.cs" />
@@ -96,7 +94,6 @@
     </Compile>
     <Compile Include="TextContent.cs" />
     <Compile Include="TextPage.cs" />
-    <Compile Include="TrailType.cs" />
     <Compile Include="WebSite.cs" />
     <Compile Include="WebSiteExtender.cs" />
   </ItemGroup>

@@ -598,15 +598,12 @@ namespace Test.VirtualRadar.WebSite
         public void WebSite_BaseStationAircraftList_Sets_ShowFlags_From_Configuration_Options()
         {
             _Configuration.BaseStationSettings.OperatorFlagsFolder = null;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowFlags);
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = "EXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(true, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowFlags);
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = "NOTEXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowFlags);
         }
 
@@ -632,15 +629,12 @@ namespace Test.VirtualRadar.WebSite
         public void WebSite_BaseStationAircraftList_Sets_ShowPictures_From_Configuration_Options()
         {
             _Configuration.BaseStationSettings.PicturesFolder = null;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowPictures);
 
             _Configuration.BaseStationSettings.PicturesFolder = "EXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(true, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowPictures);
 
             _Configuration.BaseStationSettings.PicturesFolder = "NOTEXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowPictures);
         }
 
@@ -668,19 +662,15 @@ namespace Test.VirtualRadar.WebSite
             _Configuration.BaseStationSettings.PicturesFolder = "EXISTS";
 
             _Configuration.InternetClientSettings.CanShowPictures = true;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(true, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address, false).ShowPictures);
 
             _Configuration.InternetClientSettings.CanShowPictures = true;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(true, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address, true).ShowPictures);
 
             _Configuration.InternetClientSettings.CanShowPictures = false;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(true, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address, false).ShowPictures);
 
             _Configuration.InternetClientSettings.CanShowPictures = false;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address, true).ShowPictures);
         }
 
@@ -688,15 +678,12 @@ namespace Test.VirtualRadar.WebSite
         public void WebSite_BaseStationAircraftList_Sets_ShowSilhouettes_From_Configuration_Options()
         {
             _Configuration.BaseStationSettings.SilhouettesFolder = null;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = "EXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(true, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = "NOTEXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowSilhouettes);
         }
 
@@ -706,15 +693,12 @@ namespace Test.VirtualRadar.WebSite
             _AircraftListAddress.Page = FlightSimListPage;
 
             _Configuration.BaseStationSettings.SilhouettesFolder = null;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = "EXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = "NOTEXISTS";
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(false, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShowSilhouettes);
         }
 
@@ -724,11 +708,9 @@ namespace Test.VirtualRadar.WebSite
             _AircraftListAddress.ShowShortTrail = true;
 
             _Configuration.GoogleMapSettings.ShortTrailLengthSeconds = 10;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(10, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShortTrailLengthSeconds);
 
             _Configuration.GoogleMapSettings.ShortTrailLengthSeconds = 20;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
             Assert.AreEqual(20, SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address).ShortTrailLengthSeconds);
         }
 
