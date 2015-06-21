@@ -161,6 +161,7 @@
     <Compile Include="SimpleAircraftList.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Network\TcpConnectionStateService.cs" />
+    <Compile Include="Timer.cs" />
     <Compile Include="VersionComparer.cs" />
     <Compile Include="Web References\webservice.virtualradarserver.co.uk\Reference.cs">
       <AutoGen>True</AutoGen>

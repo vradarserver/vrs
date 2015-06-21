@@ -10,11 +10,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json;
 using Test.Framework;
 using Test.VirtualRadar.Library.Network;
 using VirtualRadar.Interface;
@@ -22,6 +25,7 @@ using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebSite;
 
 namespace Test.VirtualRadar.Library.Network
 {
@@ -33,6 +37,7 @@ namespace Test.VirtualRadar.Library.Network
 
         private IClassFactory _OriginalFactory;
         private IRebroadcastServer _Server;
+
         private Mock<IFeed> _Feed;
         private Mock<IListener> _Listener;
         private MockConnector<INetworkConnector, INetworkConnection> _Connector;
@@ -40,7 +45,14 @@ namespace Test.VirtualRadar.Library.Network
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtEvent;
         private EventRecorder<EventArgs> _OnlineChangedEvent;
         private Mock<IBaseStationMessageCompressor> _Compressor;
+        private Mock<IAircraftListJsonBuilder> _AircraftListJsonBuilder;
         private ClockMock _Clock;
+        private Mock<ITimer> _Timer;
+        private AircraftListJson _AircraftListJson;
+        private Mock<IWebSiteProvider> _WebsiteProvider;
+        private AircraftListJsonBuilderArgs _AircraftListJsonBuilderArgs;
+        private Mock<IBaseStationAircraftList> _AircraftList;
+        private List<IAircraft> _SnapshotAircraft;
 
         [TestInitialize]
         public void TestInitialise()
@@ -48,15 +60,31 @@ namespace Test.VirtualRadar.Library.Network
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
+            _Timer = TestUtilities.CreateMockImplementation<ITimer>();
 
             _Compressor = TestUtilities.CreateMockImplementation<IBaseStationMessageCompressor>();
 
             _Server = Factory.Singleton.Resolve<IRebroadcastServer>();
-            _Feed = new Mock<IFeed>(MockBehavior.Default) { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+
+            _Feed = TestUtilities.CreateMockInstance<IFeed>();
             _Listener = TestUtilities.CreateMockInstance<IListener>();
             _Feed.SetupGet(r => r.Listener).Returns(_Listener.Object);
 
             _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
+
+            _AircraftListJsonBuilder = TestUtilities.CreateMockImplementation<IAircraftListJsonBuilder>();
+            _WebsiteProvider = TestUtilities.CreateMockImplementation<IWebSiteProvider>();
+            _AircraftListJson = new AircraftListJson();
+            _AircraftListJsonBuilderArgs = null;
+            _AircraftListJsonBuilder.Setup(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>())).Callback((AircraftListJsonBuilderArgs args) => {
+                _AircraftListJsonBuilderArgs = args;
+            }).Returns(_AircraftListJson);
+
+            _AircraftList = TestUtilities.CreateMockImplementation<IBaseStationAircraftList>();
+            _Feed.SetupGet(r => r.AircraftList).Returns(_AircraftList.Object);
+            _SnapshotAircraft = new List<IAircraft>();
+            long of1, of2;
+            _AircraftList.Setup(m => m.TakeSnapshot(out of1, out of2)).Returns(_SnapshotAircraft);
 
             _Server.UniqueId = 1;
             _Server.Name = "It's the code word";
@@ -111,6 +139,12 @@ namespace Test.VirtualRadar.Library.Network
         {
             return Encoding.ASCII.GetBytes(String.Concat(message.ToBaseStationString(), "\r\n"));
         }
+
+        private byte[] ExpectedBytes(AircraftListJson json)
+        {
+            var jsonText = JsonConvert.SerializeObject(json);
+            return Encoding.UTF8.GetBytes(jsonText);
+        }
         #endregion
 
         #region Constructor and Properties
@@ -123,6 +157,7 @@ namespace Test.VirtualRadar.Library.Network
             TestUtilities.TestProperty(server, r => r.Feed, null, _Feed.Object);
             TestUtilities.TestProperty(server, r => r.Name, null, "Abc");
             TestUtilities.TestProperty(server, r => r.Online, false);
+            TestUtilities.TestProperty(server, r => r.SendListIntervalMilliseconds, 1000, 30000);
             TestUtilities.TestProperty(server, r => r.UniqueId, 0, 123);
         }
         #endregion
@@ -240,7 +275,7 @@ namespace Test.VirtualRadar.Library.Network
         }
         #endregion
 
-        #region Rebroadcasting of messages
+        #region Rebroadcasting of messages from the feed's Listener
         [TestMethod]
         public void RebroadcastServer_Transmits_Port30003_Messages_From_Feed()
         {
@@ -434,6 +469,246 @@ namespace Test.VirtualRadar.Library.Network
         }
         #endregion
 
+        #region Rebroadcasting of entire aircraft lists
+        private void ConfigureForAircraftListJson()
+        {
+            _Server.Format = RebroadcastFormat.AircraftListJson;
+            _Server.SendListIntervalMilliseconds = 1000;
+            _Server.Initialise();
+
+            _Connector.SetupGet(r => r.HasConnection).Returns(true);
+        }
+
+        private Mock<IAircraft> AddSnapshotAircraft(int uniqueId = -1)
+        {
+            var result = TestUtilities.CreateMockInstance<IAircraft>();
+            result.Object.UniqueId = uniqueId == -1 ? _SnapshotAircraft.Count + 1 : uniqueId;
+            _SnapshotAircraft.Add(result.Object);
+
+            return result;
+        }
+
+        private void SetupAircraftJson(Func<IAircraft, bool> excludeAircraft = null)
+        {
+            _AircraftListJson.Aircraft.Clear();
+
+            foreach(var snapshotAircraft in _SnapshotAircraft) {
+                if(excludeAircraft == null || !excludeAircraft(snapshotAircraft)) {
+                    _AircraftListJson.Aircraft.Add(new AircraftJson() {
+                        UniqueId = snapshotAircraft.UniqueId,
+                    });
+                }
+            }
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Initialises_Timer()
+        {
+            ConfigureForAircraftListJson();
+
+            Assert.AreEqual(_Server.SendListIntervalMilliseconds, _Timer.Object.Interval);
+            Assert.AreEqual(true, _Timer.Object.Enabled);
+            Assert.AreEqual(false, _Timer.Object.AutoReset);
+            _Timer.Verify(r => r.Start(), Times.Once());
+            _Timer.Verify(r => r.Stop(), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Sends_Aircraft_List_When_Timer_Elapses()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft();
+            SetupAircraftJson();
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            var expectedBytes = ExpectedBytes(_AircraftListJson);
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.IsTrue(expectedBytes.SequenceEqual(_Connector.Written[0]));
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Passes_Correct_Arguments_To_AircraftListJsonBuilder()
+        {
+            ConfigureForAircraftListJson();
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            Assert.IsNotNull(_AircraftListJsonBuilderArgs);
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.AircraftList);
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLatitude);
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLongitude);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.FeedsNotRequired);
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.Filter);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.IgnoreUnchanged);
+            Assert.AreEqual(false, _AircraftListJsonBuilderArgs.IsFlightSimulatorList);
+            Assert.AreEqual(false, _AircraftListJsonBuilderArgs.IsInternetClient);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.OnlyIncludeMessageFields);
+            Assert.AreEqual(false, _AircraftListJsonBuilderArgs.ResendTrails);
+            Assert.AreEqual(-1, _AircraftListJsonBuilderArgs.SelectedAircraftId);
+            Assert.AreEqual(0, _AircraftListJsonBuilderArgs.SortBy.Count);
+            Assert.AreEqual(_Feed.Object.UniqueId, _AircraftListJsonBuilderArgs.SourceFeedId);
+            Assert.AreEqual(TrailType.None, _AircraftListJsonBuilderArgs.TrailType);
+
+            // Data version can't be easily tested because Moq doesn't support setting out parameters.
+            // However for the first call, which this is, the previous settings should all have default values.
+            Assert.AreEqual(-1, _AircraftListJsonBuilderArgs.PreviousDataVersion);
+            Assert.AreEqual(0, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Passes_Correct_Arguments_To_AircraftListJsonBuilder_For_Second_Call()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft(91);
+            SetupAircraftJson();
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Exactly(2));
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.AircraftList);
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLatitude);
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLongitude);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.FeedsNotRequired);
+            Assert.AreEqual(null, _AircraftListJsonBuilderArgs.Filter);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.IgnoreUnchanged);
+            Assert.AreEqual(false, _AircraftListJsonBuilderArgs.IsFlightSimulatorList);
+            Assert.AreEqual(false, _AircraftListJsonBuilderArgs.IsInternetClient);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.OnlyIncludeMessageFields);
+            Assert.AreEqual(false, _AircraftListJsonBuilderArgs.ResendTrails);
+            Assert.AreEqual(-1, _AircraftListJsonBuilderArgs.SelectedAircraftId);
+            Assert.AreEqual(0, _AircraftListJsonBuilderArgs.SortBy.Count);
+            Assert.AreEqual(_Feed.Object.UniqueId, _AircraftListJsonBuilderArgs.SourceFeedId);
+            Assert.AreEqual(TrailType.None, _AircraftListJsonBuilderArgs.TrailType);
+
+            Assert.AreEqual(1, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
+            Assert.AreEqual(91, _AircraftListJsonBuilderArgs.PreviousAircraft[0]);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Starts_New_Timer_When_Old_Timer_Elapses()
+        {
+            ConfigureForAircraftListJson();
+
+            _Server.SendListIntervalMilliseconds = 30000;
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            Assert.AreEqual(30000, _Timer.Object.Interval);
+            Assert.AreEqual(true, _Timer.Object.Enabled);
+            Assert.AreEqual(false, _Timer.Object.AutoReset);
+            _Timer.Verify(r => r.Start(), Times.Exactly(2));
+            _Timer.Verify(r => r.Stop(), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Nothing_Is_Sent_If_The_Json_Has_No_Aircraft()
+        {
+            ConfigureForAircraftListJson();
+            _SnapshotAircraft.Clear();
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Sends_Full_Json_On_First_Connection()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft();
+            SetupAircraftJson();
+
+            var connection = TestUtilities.CreateMockInstance<IConnection>();
+            var args = new ConnectionEventArgs(connection.Object);
+            _Connector.Raise(r => r.AddingConnection += null, args);
+
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Once());
+            Assert.AreEqual(-1, _AircraftListJsonBuilderArgs.PreviousDataVersion);
+            Assert.AreEqual(0, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
+            connection.Verify(r => r.Write(It.IsAny<byte[]>(), It.IsAny<int>()), Times.Once());
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Does_Not_Use_PreviousAircraftList_On_First_Connection()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft();
+            SetupAircraftJson();
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            var connection = TestUtilities.CreateMockInstance<IConnection>();
+            var args = new ConnectionEventArgs(connection.Object);
+            _Connector.Raise(r => r.AddingConnection += null, args);
+
+            Assert.AreEqual(0, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Does_Not_Use_AircraftList_From_First_Connection()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft();
+            SetupAircraftJson();
+
+            var connection = TestUtilities.CreateMockInstance<IConnection>();
+            var args = new ConnectionEventArgs(connection.Object);
+            _Connector.Raise(r => r.AddingConnection += null, args);
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            Assert.AreEqual(0, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Does_Not_Restart_The_Timer_On_First_Connection()
+        {
+            ConfigureForAircraftListJson();
+
+            var connection = TestUtilities.CreateMockInstance<IConnection>();
+            var args = new ConnectionEventArgs(connection.Object);
+            _Connector.Raise(r => r.AddingConnection += null, args);
+
+            _Timer.Verify(r => r.Start(), Times.Once());        // 1 call from initialise, none from the connector getting added
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Does_Nothing_If_Connector_Has_No_Connections()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft();
+            SetupAircraftJson();
+
+            _Connector.SetupGet(r => r.HasConnection).Returns(false);
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            long of1, of2;
+            _AircraftList.Verify(r => r.TakeSnapshot(out of1, out of2), Times.Never());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
+            Assert.AreEqual(0, _Connector.Written.Count);
+            _Timer.Verify(r => r.Start(), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Sends_First_Time_Data_When_Connector_Has_No_Connections()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft();
+            SetupAircraftJson();
+
+            _Connector.SetupGet(r => r.HasConnection).Returns(false);
+
+            var connection = TestUtilities.CreateMockInstance<IConnection>();
+            var args = new ConnectionEventArgs(connection.Object);
+            _Connector.Raise(r => r.AddingConnection += null, args);
+
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Once());
+        }
+        #endregion
+
         #region Dispose
         [TestMethod]
         public void RebroadcastServer_Dispose_Unhooks_From_Listener_Port30003_Events()
@@ -525,6 +800,31 @@ namespace Test.VirtualRadar.Library.Network
             _Server.Dispose();
 
             _Connector.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Disposes_Of_Timer()
+        {
+            ConfigureForAircraftListJson();
+            _Server.Dispose();
+            _Timer.Verify(r => r.Dispose(), Times.Once());
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Unhooks_Connector()
+        {
+            ConfigureForAircraftListJson();
+            _Server.Dispose();
+
+            var connection = TestUtilities.CreateMockInstance<IConnection>();
+            var args = new ConnectionEventArgs(connection.Object);
+            _Connector.Raise(r => r.AddingConnection += null, args);
+
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
         }
         #endregion
     }

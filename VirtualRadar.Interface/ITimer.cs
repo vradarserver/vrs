@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,30 +12,51 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
+using System.Timers;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// The interface for objects that periodically raise an event.
     /// </summary>
-    public static class Implementations
+    /// <remarks>
+    /// This is just wrapping a standard System.Timers timer. It exists so that objects that rely on timers can
+    /// be unit tested.
+    /// </remarks>
+    public interface ITimer : IDisposable
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Gets or sets a value indicating that the <see cref="Elapsed"/> event should be periodically raised.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<IAircraftListJsonBuilder, AircraftListJsonBuilder>();
-            factory.Register<IBundler, Bundler>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteProvider, WebSiteProvider>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
-        }
+        bool Enabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the <see cref="Elapsed"/> event should be raised every time
+        /// the interval elapses (true) or only once (false).
+        /// </summary>
+        bool AutoReset { get; set; }
+
+        /// <summary>
+        /// Gets or sets the interval at which to raise the <see cref="Elapsed"/> event.
+        /// </summary>
+        double Interval { get; set; }
+
+        /// <summary>
+        /// Raised when the interval elapses.
+        /// </summary>
+        event EventHandler Elapsed;
+
+        /// <summary>
+        /// Starts the timer.
+        /// </summary>
+        void Start();
+
+        /// <summary>
+        /// Stops the timer.
+        /// </summary>
+        /// <remarks>
+        /// Note that the event can still fire while this function is running.
+        /// </remarks>
+        void Stop();
     }
 }

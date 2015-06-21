@@ -52,6 +52,6 @@ namespace VirtualRadar.Interface.Settings
         /// receiving side the JSON is translated into a set of BaseStation messages, one per
         /// aircraft.
         /// </summary>
-//        AircraftListJson,
+        AircraftListJson,
     }
 }

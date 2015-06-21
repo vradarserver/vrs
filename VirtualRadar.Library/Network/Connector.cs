@@ -291,6 +291,20 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public event EventHandler<ConnectionEventArgs> AddingConnection;
+
+        /// <summary>
+        /// Raises <see cref="AddingConnection"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnAddingConnection(ConnectionEventArgs args)
+        {
+            if(AddingConnection != null) AddingConnection(this, args);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler<ConnectionEventArgs> ConnectionEstablished;
 
         /// <summary>
@@ -707,6 +721,10 @@ namespace VirtualRadar.Library.Network
         {
             if(connection != null) {
                 RecordConnectActivity("{0} connected", connection == null || connection.Description == null ? "<ANONYMOUS>" : connection.Description);
+
+                if(raiseConnectionEstablished) {
+                    OnAddingConnection(new ConnectionEventArgs(connection));
+                }
 
                 lock(_SyncLock) {
                     _Connections.Add(connection);

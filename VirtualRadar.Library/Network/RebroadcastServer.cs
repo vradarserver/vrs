@@ -11,13 +11,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using InterfaceFactory;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Library.Network
 {
@@ -26,6 +31,35 @@ namespace VirtualRadar.Library.Network
     /// </summary>
     sealed class RebroadcastServer : IRebroadcastServer
     {
+        #region Private Class - AircraftListJsonContractResolver
+        /// <summary>
+        /// See base docs. Suppresses JSON properties that don't need to be sent in a rebroadcast server but do need to
+        /// be sent to web sites.
+        /// </summary>
+        class AircraftListJsonContractResolver : DefaultContractResolver
+        {
+            private List<string> _AllowNames = new List<string>();
+
+            public AircraftListJsonContractResolver() : base()
+            {
+                _AllowNames.Add(PropertyHelper.ExtractName<AircraftListJson>(r => r.Aircraft));
+            }
+
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var result = base.CreateProperty(member, memberSerialization);
+
+                if(member.DeclaringType == typeof(AircraftListJson)) {
+                    if(!_AllowNames.Contains(member.Name)) {
+                        result.ShouldSerialize = (instance) => false;
+                    }
+                }
+
+                return result;
+            }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// True if the listener's port 30003 message events have been hooked.
@@ -51,6 +85,41 @@ namespace VirtualRadar.Library.Network
         /// The object that can compress messages for us.
         /// </summary>
         private IBaseStationMessageCompressor _Compressor;
+
+        /// <summary>
+        /// The timer object that aircraft list rebroadcasts use.
+        /// </summary>
+        private ITimer _Timer;
+
+        /// <summary>
+        /// The object that creates aircraft list JSON for us.
+        /// </summary>
+        private IAircraftListJsonBuilder _AircraftListJsonBuilder;
+
+        /// <summary>
+        /// The list of aircraft unique identifiers taken on the previous snapshot.
+        /// </summary>
+        private int[] _PreviousAircraftList;
+
+        /// <summary>
+        /// The last data version that was used when taking snapshots.
+        /// </summary>
+        private long _PreviousDataVersion = -1;
+
+        /// <summary>
+        /// The connector that has been hooked.
+        /// </summary>
+        private IConnector _HookedConnector;
+
+        /// <summary>
+        /// The object that suppresses properties on <see cref="AircraftListJson"/> that we're not interested in.
+        /// </summary>
+        private AircraftListJsonContractResolver _AircraftListJsonContractResolver;
+
+        /// <summary>
+        /// The serialiser settings for <see cref="AircraftListJson"/> serialisation.
+        /// </summary>
+        private JsonSerializerSettings _AircraftListJsonSerialiserSettings;
         #endregion
 
         #region Properties
@@ -68,6 +137,11 @@ namespace VirtualRadar.Library.Network
         /// See interface docs.
         /// </summary>
         public RebroadcastFormat Format { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int SendListIntervalMilliseconds { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -127,6 +201,7 @@ namespace VirtualRadar.Library.Network
         public RebroadcastServer()
         {
             _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
+            SendListIntervalMilliseconds = 1000;
         }
 
         /// <summary>
@@ -159,6 +234,18 @@ namespace VirtualRadar.Library.Network
                 if(_Hooked_Raw_Bytes)          _HookedListener.RawBytesReceived -= Listener_RawBytesReceived;
                 if(_Hooked_ModeS_Bytes)        _HookedListener.ModeSBytesReceived -= Listener_ModeSBytesReceived;
                 _Hooked_Port30003_Messages = _Hooked_Raw_Bytes = false;
+
+                if(_Timer != null) {
+                    var timer = _Timer;
+                    _Timer = null;
+                    timer.Elapsed -= Timer_Elapsed;
+                    timer.Dispose();
+                }
+
+                if(_HookedConnector != null) {
+                    _HookedConnector.AddingConnection -= Connector_AddingConnection;
+                    _HookedConnector = null;
+                }
             }
         }
         #endregion
@@ -173,7 +260,7 @@ namespace VirtualRadar.Library.Network
             if(Feed == null) throw new InvalidOperationException("Feed must be set before calling Initialise");
             if(Connector == null) throw new InvalidOperationException("Connector must be set before calling Initialise");
             if(Format == RebroadcastFormat.None) throw new InvalidOperationException("Format must be specified before calling Initialise");
-            if(_Hooked_Port30003_Messages || _Hooked_Raw_Bytes || _Hooked_ModeS_Bytes) throw new InvalidOperationException("Initialise has already been called");
+            if(_Hooked_Port30003_Messages || _Hooked_Raw_Bytes || _Hooked_ModeS_Bytes || _AircraftListJsonBuilder != null) throw new InvalidOperationException("Initialise has already been called");
 
             Connector.Name = Name;
             Connector.EstablishConnection();
@@ -193,6 +280,27 @@ namespace VirtualRadar.Library.Network
                     _HookedListener.ModeSBytesReceived += Listener_ModeSBytesReceived;
                     _Hooked_ModeS_Bytes = true;
                     break;
+                case RebroadcastFormat.AircraftListJson:
+                    _AircraftListJsonBuilder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+                    var provider = Factory.Singleton.Resolve<IWebSiteProvider>();
+                    _AircraftListJsonBuilder.Initialise(provider);
+
+                    _AircraftListJsonContractResolver = new AircraftListJsonContractResolver();
+                    _AircraftListJsonSerialiserSettings = new JsonSerializerSettings() {
+                        ContractResolver = _AircraftListJsonContractResolver,
+                    };
+
+                    _HookedConnector = Connector;
+                    _HookedConnector.AddingConnection += Connector_AddingConnection;
+
+                    _Timer = Factory.Singleton.Resolve<ITimer>();
+                    _Timer.Elapsed += Timer_Elapsed;
+                    _Timer.AutoReset = false;
+                    _Timer.Enabled = true;
+                    _Timer.Interval = SendListIntervalMilliseconds;
+
+                    _Timer.Start();
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -211,7 +319,7 @@ namespace VirtualRadar.Library.Network
         }
         #endregion
 
-        #region GetConnections
+        #region GetConnections, SendToNewConnection
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -240,6 +348,83 @@ namespace VirtualRadar.Library.Network
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Sends bytes to a new connection.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <remarks>
+        /// Note that this will be called on a background thread.
+        /// </remarks>
+        private void SendToNewConnection(IConnection connection)
+        {
+            var format = Format;
+            switch(format) {
+                case RebroadcastFormat.AircraftListJson:
+                    SendAircraftList(connection);
+                    break;
+            }
+        }
+        #endregion
+
+        #region Aircraft list rebroadcasting
+        /// <summary>
+        /// Sends the aircraft list.
+        /// </summary>
+        /// <param name="connection">The connection to send to. If this is not null then it is assumed that it is a new
+        /// connection and that a full aircraft list has to be sent 'out-of-bound'. The connection is assumed to not already
+        /// be in the connector's list of established connections.</param>
+        /// <remarks>
+        /// It's possible that this could be called on the timer's thread while the manager is messing about with
+        /// our object.
+        /// </remarks>
+        private void SendAircraftList(IConnection connection = null)
+        {
+            var format = Format;
+            var feed = Feed;
+            var aircraftList = feed == null ? null : feed.AircraftList;
+            var connector = Connector;
+            var isNewConnection = connection != null;
+
+            if(aircraftList != null && connector != null && (connector.HasConnection || isNewConnection)) {
+                switch(format) {
+                    case RebroadcastFormat.AircraftListJson:
+                        long timestamp, dataVersion;
+                        var snapshot = aircraftList.TakeSnapshot(out timestamp, out dataVersion);
+
+                        var args = new AircraftListJsonBuilderArgs() {
+                            FeedsNotRequired = true,
+                            IgnoreUnchanged = true,
+                            OnlyIncludeMessageFields = true,
+                            SourceFeedId = feed.UniqueId,
+                            PreviousDataVersion = isNewConnection ? -1 : _PreviousDataVersion,
+                        };
+
+                        if(!isNewConnection) {
+                            if(_PreviousAircraftList != null) {
+                                args.PreviousAircraft.AddRange(_PreviousAircraftList);
+                            }
+                            _PreviousAircraftList = snapshot.Select(r => r.UniqueId).ToArray();
+                            _PreviousDataVersion = dataVersion;
+                        }
+
+                        var json = _AircraftListJsonBuilder.Build(args);
+                        if(json.Aircraft.Count > 0) {
+                            var jsonText = JsonConvert.SerializeObject(json, _AircraftListJsonSerialiserSettings);
+                            var bytes = Encoding.UTF8.GetBytes(jsonText);
+                            if(connection != null) {
+                                connection.Write(bytes);
+                            } else {
+                                connector.Write(bytes);
+                            }
+                        }
+                        break;
+                    default:
+                        // Do not throw on an invalid format, it might be in the middle of being switched.
+                        break;
+                }
+            }
         }
         #endregion
 
@@ -299,6 +484,44 @@ namespace VirtualRadar.Library.Network
 
                 Connector.Write(bytes);
             }
+        }
+
+        /// <summary>
+        /// Raised when <see cref="_Timer"/>'s timer elapses.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Timer_Elapsed(object sender, EventArgs args)
+        {
+            var abortingThread = false;
+
+            try {
+                SendAircraftList();
+            } catch(ThreadAbortException) {
+                abortingThread = true;
+                // rethrow is automatic
+            } finally {
+                if(!abortingThread) {
+                    var timer = _Timer;
+                    if(timer != null) {
+                        try {
+                            timer.Interval = SendListIntervalMilliseconds;
+                            timer.Start();
+                        } catch(ObjectDisposedException) {
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Raised when <see cref="Connector"/> establishes a connection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Connector_AddingConnection(object sender, ConnectionEventArgs args)
+        {
+            SendToNewConnection(args.Connection);
         }
         #endregion
     }

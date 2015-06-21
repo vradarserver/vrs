@@ -33,17 +33,6 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class WebSite : IWebSite
     {
-        #region Private class - DefaultProvider
-        /// <summary>
-        /// The default implementation of <see cref="IWebSiteProvider"/>.
-        /// </summary>
-        class DefaultProvider : IWebSiteProvider
-        {
-            public bool DirectoryExists(string folder)  { return Directory.Exists(folder); }
-            public DateTime UtcNow                      { get { return DateTime.UtcNow; } }
-        }
-        #endregion
-
         #region Private class - SimpleRequest
         /// <summary>
         /// The fake request object used by <see cref="RequestSimpleContent"/>.
@@ -305,7 +294,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public WebSite()
         {
-            Provider = new DefaultProvider();
+            Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
 
             _AircraftListJsonPage = new AircraftListJsonPage(this);
             _ClosestAircraftJsonPage = new ClosestAircraftJsonPage(this);

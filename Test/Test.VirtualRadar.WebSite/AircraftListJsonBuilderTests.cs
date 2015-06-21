@@ -282,6 +282,15 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
+        public void AircraftListJsonBuilder_Does_Not_Emit_Flag_Dimensions_In_OnlyIncludeMessageFields_Mode()
+        {
+            _Args.OnlyIncludeMessageFields = true;
+            var json = _Builder.Build(_Args);
+            Assert.AreEqual(0, json.FlagWidth);
+            Assert.AreEqual(0, json.FlagHeight);
+        }
+
+        [TestMethod]
         public void AircraftListJsonBuilder_Build_Sets_LastDataVersion_Correctly()
         {
             long o1 = 0, o2 = 200;
