@@ -22,6 +22,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             Assert.AreEqual(0, args.SortBy.Count);
 
             TestUtilities.TestProperty(args, r => r.AircraftList, null, TestUtilities.CreateMockInstance<IAircraftList>().Object);
+            TestUtilities.TestProperty(args, r => r.AlwaysShowIcao, false);
             TestUtilities.TestProperty(args, r => r.BrowserLatitude, null, 1.1);
             TestUtilities.TestProperty(args, r => r.BrowserLongitude, null, 2.2);
             TestUtilities.TestProperty(args, r => r.FeedsNotRequired, false);

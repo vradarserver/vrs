@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using InterfaceFactory;
 using Newtonsoft.Json;
@@ -38,11 +39,15 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         class AircraftListJsonContractResolver : DefaultContractResolver
         {
-            private List<string> _AllowNames = new List<string>();
+            private List<string> _AllowAircraftListJsonNames = new List<string>();
+            private List<string> _SuppressAircraftJsonNames = new List<string>();
 
             public AircraftListJsonContractResolver() : base()
             {
-                _AllowNames.Add(PropertyHelper.ExtractName<AircraftListJson>(r => r.Aircraft));
+                _AllowAircraftListJsonNames.Add(PropertyHelper.ExtractName<AircraftListJson>(r => r.Aircraft));
+
+                _SuppressAircraftJsonNames.Add(PropertyHelper.ExtractName<AircraftJson>(r => r.UniqueId));
+                _SuppressAircraftJsonNames.Add(PropertyHelper.ExtractName<AircraftJson>(r => r.HasSignalLevel));
             }
 
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
@@ -50,7 +55,11 @@ namespace VirtualRadar.Library.Network
                 var result = base.CreateProperty(member, memberSerialization);
 
                 if(member.DeclaringType == typeof(AircraftListJson)) {
-                    if(!_AllowNames.Contains(member.Name)) {
+                    if(!_AllowAircraftListJsonNames.Contains(member.Name)) {
+                        result.ShouldSerialize = (instance) => false;
+                    }
+                } else if(member.DeclaringType == typeof(AircraftJson)) {
+                    if(_SuppressAircraftJsonNames.Contains(member.Name)) {
                         result.ShouldSerialize = (instance) => false;
                     }
                 }
@@ -120,6 +129,8 @@ namespace VirtualRadar.Library.Network
         /// The serialiser settings for <see cref="AircraftListJson"/> serialisation.
         /// </summary>
         private JsonSerializerSettings _AircraftListJsonSerialiserSettings;
+
+        private static Regex _AircraftJsonJustIcao = new Regex(@"\{\""Icao\"":\""[0-9a-zA-Z]{6}\""\}[,]?");
         #endregion
 
         #region Properties
@@ -288,6 +299,7 @@ namespace VirtualRadar.Library.Network
                     _AircraftListJsonContractResolver = new AircraftListJsonContractResolver();
                     _AircraftListJsonSerialiserSettings = new JsonSerializerSettings() {
                         ContractResolver = _AircraftListJsonContractResolver,
+                        
                     };
 
                     _HookedConnector = Connector;
@@ -394,6 +406,7 @@ namespace VirtualRadar.Library.Network
                         var snapshot = aircraftList.TakeSnapshot(out timestamp, out dataVersion);
 
                         var args = new AircraftListJsonBuilderArgs() {
+                            AlwaysShowIcao = true,
                             FeedsNotRequired = true,
                             IgnoreUnchanged = true,
                             OnlyIncludeMessageFields = true,
@@ -412,6 +425,12 @@ namespace VirtualRadar.Library.Network
                         var json = _AircraftListJsonBuilder.Build(args);
                         if(json.Aircraft.Count > 0) {
                             var jsonText = JsonConvert.SerializeObject(json, _AircraftListJsonSerialiserSettings);
+
+                            // The json text can include some entries that have ICAO codes and nothing else. This happens when something
+                            // has changed on the aircraft but it's something that we've asked the builder to ignore. Adding code to the
+                            // builder to completely suppress these would be tedious, so we get rid of them here.
+                            jsonText = _AircraftJsonJustIcao.Replace(jsonText, "");
+
                             var bytes = Encoding.UTF8.GetBytes(jsonText);
                             if(connection != null) {
                                 connection.Write(bytes);
