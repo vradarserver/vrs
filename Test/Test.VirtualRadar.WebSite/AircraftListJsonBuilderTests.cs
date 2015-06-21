@@ -1199,6 +1199,127 @@ namespace Test.VirtualRadar.WebSite
 
             Assert.AreEqual(77L, aircraftJson.SecondsTracked);
         }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Only_Sends_Message_Fields_If_OnlySendMessageFields_Is_Set()
+        {
+            AddBlankAircraft(1);
+            var aircraft = Mock.Get(_AircraftLists[0][0]);
+            var properties = typeof(IAircraft).GetProperties().Where(r => !r.Name.EndsWith("Changed") && typeof(IAircraft).GetProperty(String.Format("{0}Changed", r.Name)) != null).ToArray();
+
+            aircraft.Object.UniqueId = 7;
+            aircraft.Object.DataVersion = 1;
+            aircraft.Object.FirstSeen = new DateTime(2000, 1, 1);
+
+            var dateTimeValue = DateTime.UtcNow;
+            var altitudeTypeValue = AltitudeType.Geometric;
+            var speedTypeValue = SpeedType.GroundSpeedReversing;
+            var transponderType = TransponderType.Adsb2;
+            foreach(var property in properties) {
+                if(property.PropertyType == typeof(string))                         property.SetValue(aircraft.Object, "TEXT", null);
+                else if(property.PropertyType == typeof(long))                      property.SetValue(aircraft.Object, 1L, null);
+                else if(property.PropertyType == typeof(long?))                     property.SetValue(aircraft.Object, 1L, null);
+                else if(property.PropertyType == typeof(int))                       property.SetValue(aircraft.Object, 1, null);
+                else if(property.PropertyType == typeof(int?))                      property.SetValue(aircraft.Object, 1, null);
+                else if(property.PropertyType == typeof(bool))                      property.SetValue(aircraft.Object, true, null);
+                else if(property.PropertyType == typeof(bool?))                     property.SetValue(aircraft.Object, true, null);
+                else if(property.PropertyType == typeof(double))                    property.SetValue(aircraft.Object, 1.0, null);
+                else if(property.PropertyType == typeof(double?))                   property.SetValue(aircraft.Object, 1.0, null);
+                else if(property.PropertyType == typeof(float))                     property.SetValue(aircraft.Object, 1F, null);
+                else if(property.PropertyType == typeof(float?))                    property.SetValue(aircraft.Object, 1F, null);
+                else if(property.PropertyType == typeof(DateTime))                  property.SetValue(aircraft.Object, dateTimeValue, null);
+                else if(property.PropertyType == typeof(DateTime?))                 property.SetValue(aircraft.Object, dateTimeValue, null);
+                else if(property.PropertyType == typeof(AltitudeType))              property.SetValue(aircraft.Object, altitudeTypeValue, null);
+                else if(property.PropertyType == typeof(SpeedType))                 property.SetValue(aircraft.Object, speedTypeValue, null);
+                else if(property.PropertyType == typeof(TransponderType))           property.SetValue(aircraft.Object, transponderType, null);
+                else if(property.PropertyType == typeof(EngineType))                property.SetValue(aircraft.Object, EngineType.Electric, null);
+                else if(property.PropertyType == typeof(Species))                   property.SetValue(aircraft.Object, Species.TiltWing, null);
+                else if(property.PropertyType == typeof(WakeTurbulenceCategory))    property.SetValue(aircraft.Object, WakeTurbulenceCategory.Light, null);
+                else if(property.PropertyType == typeof(ICollection<string>))       aircraft.Object.Stopovers.Add("A");
+                else throw new NotImplementedException(String.Format("Need to add code to set dummy values for {0} properties", property.PropertyType.Name));
+            }
+
+            _Args.OnlyIncludeMessageFields = true;
+            var json = _Builder.Build(_Args).Aircraft[0];
+
+            foreach(var property in typeof(AircraftJson).GetProperties()) {
+                var value = property.GetValue(json, null);
+                bool isEmpty = true;
+                if(!Object.Equals(value, null)) {
+                    var type = property.PropertyType;
+                    if(property.PropertyType.IsEnum) type = Enum.GetUnderlyingType(type);
+                    if(type == typeof(byte))            isEmpty = Object.Equals((byte)0, (byte)value);
+                    else if(type == typeof(short))      isEmpty = Object.Equals((short)0, (short)value);
+                    else if(type == typeof(int))        isEmpty = Object.Equals((int)0, (int)value);
+                    else if(type == typeof(long))       isEmpty = Object.Equals((long)0, (long)value);
+                    else if(type == typeof(bool))       isEmpty = Object.Equals(default(bool), (bool)value);
+                    else if(type == typeof(DateTime))   isEmpty = Object.Equals(default(DateTime), (DateTime)value);
+                    else if(type == typeof(string))     isEmpty = Object.Equals(null, (string)value);
+                    else if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
+                        isEmpty = Object.Equals(null, value);
+                    } else if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) {
+                        isEmpty = Object.Equals(null, value);
+                    } else {
+                        throw new NotImplementedException(String.Format("Need test code for JSON property type {0}", property.PropertyType.Name));
+                    }
+                }
+
+                switch(property.Name) {
+                    // All of these are properties that we want filled in
+                    case "HasSignalLevel":
+                    case "SignalLevel":
+                    case "Icao24":
+                    case "Registration":
+                    case "Altitude":
+                    case "AltitudeType":
+                    case "TargetAltitude":
+                    case "Callsign":
+                    case "Latitude":
+                    case "Longitude":
+                    case "PositionTime":
+                    case "GroundSpeed":
+                    case "Track":
+                    case "TrackIsHeading":
+                    case "TargetTrack":
+                    case "Squawk":
+                    case "Emergency":
+                    case "VerticalRate":
+                    case "VerticalRateType":
+                    case "OnGround":
+                    case "SpeedType":
+                    case "CallsignIsSuspect":
+                    case "TransponderType":
+                        Assert.IsFalse(isEmpty, property.Name);
+                        break;
+                    // These are properties that get filled in whether we like it or not
+                    case "UniqueId":
+                    case "DataVersion":
+                        break;
+                    // And everything else should be null / default
+                    default:
+                        Assert.IsTrue(isEmpty, property.Name);
+                        break;
+                }
+            }
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Does_Not_Include_Unchanged_Aircraft_If_IgnoreUnchanged_Is_Set()
+        {
+            AddBlankAircraft(2);
+            var aircraft1 = Mock.Get(_AircraftLists[0][0]);
+            var aircraft2 = Mock.Get(_AircraftLists[0][1]);
+
+            aircraft1.Object.DataVersion = 100;
+            aircraft2.Object.DataVersion = 101;
+
+            _Args.PreviousDataVersion = 100;
+            _Args.IgnoreUnchanged = true;
+            var json = _Builder.Build(_Args);
+
+            Assert.AreEqual(1, json.Aircraft.Count);
+            Assert.AreEqual(aircraft2.Object.UniqueId, json.Aircraft[0].UniqueId);
+        }
         #endregion
 
         #region Sorting of list
