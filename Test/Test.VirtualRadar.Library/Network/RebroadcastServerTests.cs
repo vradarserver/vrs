@@ -139,12 +139,6 @@ namespace Test.VirtualRadar.Library.Network
         {
             return Encoding.ASCII.GetBytes(String.Concat(message.ToBaseStationString(), "\r\n"));
         }
-
-        private byte[] ExpectedBytes(AircraftListJson json)
-        {
-            var jsonText = JsonConvert.SerializeObject(json);
-            return Encoding.UTF8.GetBytes(jsonText);
-        }
         #endregion
 
         #region Constructor and Properties
@@ -522,9 +516,7 @@ namespace Test.VirtualRadar.Library.Network
 
             _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
 
-            var expectedBytes = ExpectedBytes(_AircraftListJson);
             Assert.AreEqual(1, _Connector.Written.Count);
-            Assert.IsTrue(expectedBytes.SequenceEqual(_Connector.Written[0]));
         }
 
         [TestMethod]
@@ -536,6 +528,7 @@ namespace Test.VirtualRadar.Library.Network
 
             Assert.IsNotNull(_AircraftListJsonBuilderArgs);
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.AircraftList);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.AlwaysShowIcao);
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLatitude);
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLongitude);
             Assert.AreEqual(true, _AircraftListJsonBuilderArgs.FeedsNotRequired);
@@ -569,6 +562,7 @@ namespace Test.VirtualRadar.Library.Network
 
             _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Exactly(2));
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.AircraftList);
+            Assert.AreEqual(true, _AircraftListJsonBuilderArgs.AlwaysShowIcao);
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLatitude);
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLongitude);
             Assert.AreEqual(true, _AircraftListJsonBuilderArgs.FeedsNotRequired);

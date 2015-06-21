@@ -48,9 +48,8 @@ namespace VirtualRadar.Interface.Settings
         CompressedVRS,
 
         /// <summary>
-        /// Changes to the aircraft list are periodically sent as GZIP compressed JSON. On the
-        /// receiving side the JSON is translated into a set of BaseStation messages, one per
-        /// aircraft.
+        /// Changes to the aircraft list are periodically sent as JSON. On the receiving side the
+        /// JSON is translated into a set of BaseStation messages, one per aircraft.
         /// </summary>
         AircraftListJson,
     }

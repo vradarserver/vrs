@@ -74,7 +74,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Gets or sets the number of seconds that the aircraft has been tracked for.
         /// </summary>
-        [DataMember(Name="TSecs")]
+        [DataMember(Name="TSecs", IsRequired=false, EmitDefaultValue=false)]
         public long SecondsTracked { get; set; }
 
         /// <summary>

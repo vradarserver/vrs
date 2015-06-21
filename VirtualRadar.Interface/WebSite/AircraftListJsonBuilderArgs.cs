@@ -112,6 +112,11 @@ namespace VirtualRadar.Interface.WebSite
         public bool IgnoreUnchanged { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the ICAO should always be shown for each aircraft, even if it has not changed.
+        /// </summary>
+        public bool AlwaysShowIcao { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public AircraftListJsonBuilderArgs()

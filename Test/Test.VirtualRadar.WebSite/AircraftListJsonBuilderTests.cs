@@ -282,15 +282,6 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void AircraftListJsonBuilder_Does_Not_Emit_Flag_Dimensions_In_OnlyIncludeMessageFields_Mode()
-        {
-            _Args.OnlyIncludeMessageFields = true;
-            var json = _Builder.Build(_Args);
-            Assert.AreEqual(0, json.FlagWidth);
-            Assert.AreEqual(0, json.FlagHeight);
-        }
-
-        [TestMethod]
         public void AircraftListJsonBuilder_Build_Sets_LastDataVersion_Correctly()
         {
             long o1 = 0, o2 = 200;
@@ -587,6 +578,20 @@ namespace Test.VirtualRadar.WebSite
                 aircraftJson = _Builder.Build(_Args).Aircraft[0];
                 Assert.IsNotNull(jsonProperty.GetValue(aircraftJson, null), aircraftProperty.Name);
             }
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Always_Copies_Icao_If_AlwaysCopyIcao_Is_Set()
+        {
+            AddBlankAircraft(1);
+            _AircraftLists[0][0].Icao24 = "A";
+
+            _Args.AlwaysShowIcao = true;
+            _Args.PreviousAircraft.Add(0);
+            _Args.PreviousDataVersion = _AircraftLists[0][0].Icao24Changed;
+
+            var aircraftJson = _Builder.Build(_Args);
+            Assert.AreEqual("A", aircraftJson.Aircraft[0].Icao24);
         }
 
         [TestMethod]
@@ -1285,7 +1290,6 @@ namespace Test.VirtualRadar.WebSite
                     case "Callsign":
                     case "Latitude":
                     case "Longitude":
-                    case "PositionTime":
                     case "GroundSpeed":
                     case "Track":
                     case "TrackIsHeading":
