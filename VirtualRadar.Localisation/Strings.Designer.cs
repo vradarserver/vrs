@@ -331,6 +331,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aircraft List (JSON).
+        /// </summary>
+        public static string AircraftListJson {
+            get {
+                return ResourceManager.GetString("AircraftListJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ALL.
         /// </summary>
         public static string AllCaps {

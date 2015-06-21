@@ -39,6 +39,15 @@ namespace VirtualRadar.Interface.Network
         RebroadcastFormat Format { get; set; }
 
         /// <summary>
+        /// Gets or sets the interval at which aircraft lists are rebroadcast.
+        /// </summary>
+        /// <remarks>
+        /// Only used when the rebroadcast format involves sending the aircraft list instead of sending aircraft
+        /// messages. Defaults to 1 second.
+        /// </remarks>
+        int SendListIntervalMilliseconds { get; set; }
+
+        /// <summary>
         /// Gets or sets the feed to take messages and bytes from.
         /// </summary>
         IFeed Feed { get; set; }

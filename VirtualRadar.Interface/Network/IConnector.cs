@@ -131,8 +131,16 @@ namespace VirtualRadar.Interface.Network
         int StaleMessageTimeout { get; set; }
 
         /// <summary>
+        /// Raised when a connection has been established. The connection will not yet be in the list
+        /// of established connections, writes on the connector will not go to this connection. Usually
+        /// raised from a background thread.
+        /// </summary>
+        event EventHandler<ConnectionEventArgs> AddingConnection;
+
+        /// <summary>
         /// Raised when a connection has been established. This will usually be raised from
-        /// a background thread.
+        /// a background thread. The connection will be in the list of established connections when
+        /// this is raised.
         /// </summary>
         event EventHandler<ConnectionEventArgs> ConnectionEstablished;
 
