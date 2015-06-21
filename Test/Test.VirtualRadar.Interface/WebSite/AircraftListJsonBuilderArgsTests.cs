@@ -26,8 +26,10 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(args, r => r.BrowserLongitude, null, 2.2);
             TestUtilities.TestProperty(args, r => r.FeedsNotRequired, false);
             TestUtilities.TestProperty(args, r => r.Filter, null, new AircraftListJsonBuilderFilter());
+            TestUtilities.TestProperty(args, r => r.IgnoreUnchanged, false);
             TestUtilities.TestProperty(args, r => r.IsFlightSimulatorList, false);
             TestUtilities.TestProperty(args, r => r.IsInternetClient, false);
+            TestUtilities.TestProperty(args, r => r.OnlyIncludeMessageFields, false);
             TestUtilities.TestProperty(args, r => r.PreviousDataVersion, -1L, 1L);
             TestUtilities.TestProperty(args, r => r.ResendTrails, false);
             TestUtilities.TestProperty(args, r => r.SelectedAircraftId, -1, 1);

@@ -100,6 +100,18 @@ namespace VirtualRadar.Interface.WebSite
         public bool FeedsNotRequired { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that fields derived from aircraft messages are to be suppressed,
+        /// only fields taken directly from an aircraft are to be included in the aircraft JSON.
+        /// </summary>
+        public bool OnlyIncludeMessageFields { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that aircraft that have not changed are not to be included in the
+        /// aircraft list.
+        /// </summary>
+        public bool IgnoreUnchanged { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public AircraftListJsonBuilderArgs()

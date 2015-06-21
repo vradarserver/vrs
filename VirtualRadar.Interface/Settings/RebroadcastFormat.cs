@@ -46,5 +46,12 @@ namespace VirtualRadar.Interface.Settings
         /// The Port30003 messages are compressed before broadcast.
         /// </summary>
         CompressedVRS,
+
+        /// <summary>
+        /// Changes to the aircraft list are periodically sent as GZIP compressed JSON. On the
+        /// receiving side the JSON is translated into a set of BaseStation messages, one per
+        /// aircraft.
+        /// </summary>
+//        AircraftListJson,
     }
 }
