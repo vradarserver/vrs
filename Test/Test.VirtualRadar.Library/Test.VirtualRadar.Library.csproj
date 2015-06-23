@@ -70,6 +70,8 @@
     <Compile Include="BaseStation\BaseStationMessageCompressorTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageTranslatorTests.cs" />
     <Compile Include="BitStreamTests.cs" />
+    <Compile Include="Listener\AircraftListJsonMessageBytesExtractorTests.cs" />
+    <Compile Include="Listener\AircraftListJsonMessageConverterTests.cs" />
     <Compile Include="Listener\BeastMessageBytesExtractorTests.cs" />
     <Compile Include="Listener\CommonListenerTests.cs" />
     <Compile Include="Listener\CommonMessageBytesExtractorTests.cs" />

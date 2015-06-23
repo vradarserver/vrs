@@ -89,6 +89,8 @@
     <Compile Include="DirectoryCache.cs" />
     <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />
     <Compile Include="ImageDimensionsFetcher.cs" />
+    <Compile Include="Listener\AircraftListJsonMessageBytesExtractor.cs" />
+    <Compile Include="Listener\AircraftListJsonMessageConverter.cs" />
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\Connector.cs" />
     <Compile Include="Network\ConnectorActivityLog.cs" />

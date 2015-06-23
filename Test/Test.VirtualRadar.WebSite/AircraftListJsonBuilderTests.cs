@@ -1283,7 +1283,6 @@ namespace Test.VirtualRadar.WebSite
                     case "HasSignalLevel":
                     case "SignalLevel":
                     case "Icao24":
-                    case "Registration":
                     case "Altitude":
                     case "AltitudeType":
                     case "TargetAltitude":

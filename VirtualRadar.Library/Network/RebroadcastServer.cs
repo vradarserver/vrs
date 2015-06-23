@@ -129,8 +129,6 @@ namespace VirtualRadar.Library.Network
         /// The serialiser settings for <see cref="AircraftListJson"/> serialisation.
         /// </summary>
         private JsonSerializerSettings _AircraftListJsonSerialiserSettings;
-
-        private static Regex _AircraftJsonJustIcao = new Regex(@"\{\""Icao\"":\""[0-9a-zA-Z]{6}\""\}[,]?");
         #endregion
 
         #region Properties
@@ -426,10 +424,13 @@ namespace VirtualRadar.Library.Network
                         if(json.Aircraft.Count > 0) {
                             var jsonText = JsonConvert.SerializeObject(json, _AircraftListJsonSerialiserSettings);
 
-                            // The json text can include some entries that have ICAO codes and nothing else. This happens when something
-                            // has changed on the aircraft but it's something that we've asked the builder to ignore. Adding code to the
-                            // builder to completely suppress these would be tedious, so we get rid of them here.
-                            jsonText = _AircraftJsonJustIcao.Replace(jsonText, "");
+                            // The json text can include some entries that have ICAO codes and nothing else. When I
+                            // first wrote this I was taking them out at this point... but that is a mistake, if the
+                            // aircraft is sending messages between refreshes but not changing any message values (e.g.
+                            // test beacons that transmit a constant callsign, altitude etc. then by removing their
+                            // entry here we make the receiving end think that they've gone off the radar. We need to
+                            // send ICAOs for aircraft that aren't changing message values. This will bump the JSON
+                            // size up a bit but c'est la vie.
 
                             var bytes = Encoding.UTF8.GetBytes(jsonText);
                             if(connection != null) {

@@ -96,6 +96,7 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<ISbs3MessageBytesExtractor> _Sbs3MessageBytesExtractor;
         private Mock<IBeastMessageBytesExtractor> _BeastMessageBytesExtractor;
         private Mock<ICompressedMessageBytesExtractor> _CompressedMessageBytesExtractor;
+        private Mock<IAircraftListJsonMessageBytesExtractor> _AircraftListJsonMessageBytesExtractor;
         private Mock<IRawMessageTranslator> _RawMessageTranslator;
         private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
         private SavedPolarPlot _SavedPolarPlot;
@@ -248,6 +249,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Sbs3MessageBytesExtractor = TestUtilities.CreateMockImplementation<ISbs3MessageBytesExtractor>();
             _BeastMessageBytesExtractor = TestUtilities.CreateMockImplementation<IBeastMessageBytesExtractor>();
             _CompressedMessageBytesExtractor = TestUtilities.CreateMockImplementation<ICompressedMessageBytesExtractor>();
+            _AircraftListJsonMessageBytesExtractor = TestUtilities.CreateMockImplementation<IAircraftListJsonMessageBytesExtractor>();
 
             _RawMessageTranslator = TestUtilities.CreateMockImplementation<IRawMessageTranslator>();
             _RawMessageTranslator.Object.ReceiverLocation = null;
@@ -366,11 +368,12 @@ namespace Test.VirtualRadar.Library.Listener
                 _Feed.Initialise(_Receiver, _Configuration);
 
                 switch(dataSource) {
-                    case DataSource.Beast:          Assert.AreSame(_BeastMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
-                    case DataSource.Port30003:      Assert.AreSame(_Port30003Extractor.Object, _Listener.Object.BytesExtractor); break;
-                    case DataSource.Sbs3:           Assert.AreSame(_Sbs3MessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
-                    case DataSource.CompressedVRS:  Assert.AreSame(_CompressedMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
-                    default:                        throw new NotImplementedException();
+                    case DataSource.Beast:              Assert.AreSame(_BeastMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
+                    case DataSource.Port30003:          Assert.AreSame(_Port30003Extractor.Object, _Listener.Object.BytesExtractor); break;
+                    case DataSource.Sbs3:               Assert.AreSame(_Sbs3MessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
+                    case DataSource.CompressedVRS:      Assert.AreSame(_CompressedMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
+                    case DataSource.AircraftListJson:   Assert.AreSame(_AircraftListJsonMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
+                    default:                            throw new NotImplementedException();
                 }
 
                 switch(connectionType) {

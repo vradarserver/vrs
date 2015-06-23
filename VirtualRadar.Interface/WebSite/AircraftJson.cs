@@ -25,7 +25,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Gets or sets the unique identifier of the aircraft.
         /// </summary>
-        [DataMember(Name="Id", IsRequired=true)]
+        [DataMember(Name="Id")]
         public int UniqueId { get; set; }
 
         /// <summary>
