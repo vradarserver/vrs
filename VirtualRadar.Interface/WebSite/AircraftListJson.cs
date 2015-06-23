@@ -25,13 +25,13 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Gets or sets the source of the aircraft list (see <see cref="AircraftListSource"/>).
         /// </summary>
-        [DataMember(Name="src", IsRequired=true)]
+        [DataMember(Name="src")]
         public int Source { get; set; }
 
         /// <summary>
         /// Gets a collection of feeds that VRS has been configured to listen to and are currently enabled.
         /// </summary>
-        [DataMember(Name="feeds", IsRequired=true)]
+        [DataMember(Name="feeds")]
         public List<FeedJson> Feeds { get; private set; }
 
         /// <summary>
@@ -42,37 +42,37 @@ namespace VirtualRadar.Interface.WebSite
         /// can happen when reporting on the Flight Simulator X feed, or when the feed requested by the website no
         /// longer exists on the server.
         /// </remarks>
-        [DataMember(Name="srcFeed", IsRequired=true)]
+        [DataMember(Name="srcFeed")]
         public int SourceFeedId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that silhouettes can be shown for aircraft.
         /// </summary>
-        [DataMember(Name="showSil", IsRequired=true)]
+        [DataMember(Name="showSil")]
         public bool ShowSilhouettes { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that operator flags can be shown for aircraft.
         /// </summary>
-        [DataMember(Name="showFlg", IsRequired=true)]
+        [DataMember(Name="showFlg")]
         public bool ShowFlags { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that pictures can be shown for aircraft.
         /// </summary>
-        [DataMember(Name="showPic", IsRequired=true)]
+        [DataMember(Name="showPic")]
         public bool ShowPictures { get; set; }
 
         /// <summary>
         /// Gets or sets the height of the operator flags.
         /// </summary>
-        [DataMember(Name="flgH", IsRequired=true)]
+        [DataMember(Name="flgH")]
         public int FlagHeight { get; set; }
 
         /// <summary>
         /// Gets or sets the width of the operator flags.
         /// </summary>
-        [DataMember(Name="flgW", IsRequired=true)]
+        [DataMember(Name="flgW")]
         public int FlagWidth { get; set; }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Gets or sets the total number of aircraft that the server is currently tracking.
         /// </summary>
-        [DataMember(Name="totalAc", IsRequired=true)]
+        [DataMember(Name="totalAc")]
         public int AvailableAircraft { get; set; }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         /// <remarks>The browser sends this value back to the server when it asks for another aircraft list. In this
         /// way the server can figure out what has changed since the last time the browser asked for a list.</remarks>
-        [DataMember(Name="lastDv", IsRequired=true)]
+        [DataMember(Name="lastDv")]
         public string LastDataVersion { get; set; }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Gets or sets the server's current time as the number of Javascript ticks in a UTC DateTime.
         /// </summary>
-        [DataMember(Name="stm", IsRequired=true)]
+        [DataMember(Name="stm")]
         public long ServerTime { get; set; }
 
         /// <summary>

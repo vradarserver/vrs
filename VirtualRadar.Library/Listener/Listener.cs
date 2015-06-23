@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using InterfaceFactory;
+using Newtonsoft.Json;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Adsb;
 using VirtualRadar.Interface.BaseStation;
@@ -21,6 +22,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.ModeS;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Library.Listener
 {
@@ -97,6 +99,11 @@ namespace VirtualRadar.Library.Listener
         private IBaseStationMessageCompressor _Compressor;
 
         /// <summary>
+        /// The object that can turn <see cref="AircraftListJson"/> objects into lists of <see cref="BaseStationMessage"/> objects.
+        /// </summary>
+        private IAircraftListJsonMessageConverter _AircraftListJsonMessageConverter;
+
+        /// <summary>
         /// The background thread that will dispatch Port30003 messages for us.
         /// </summary>
         private BackgroundThreadQueue<MessageDispatch> _MessageProcessingAndDispatchQueue;
@@ -122,6 +129,13 @@ namespace VirtualRadar.Library.Listener
         /// Set to true if the listener has been, or is in the process of being, disposed.
         /// </summary>
         private bool _Disposed;
+
+        /// <summary>
+        /// Deserialisation settings for aircraft list JSON.
+        /// </summary>
+        private static JsonSerializerSettings _AircraftListJsonSerialiserSettings = new JsonSerializerSettings() {
+            MissingMemberHandling = MissingMemberHandling.Ignore,
+        };
         #endregion
 
         #region Properties
@@ -313,6 +327,7 @@ namespace VirtualRadar.Library.Listener
             _AdsbMessageTranslator = Factory.Singleton.Resolve<IAdsbTranslator>();
             _ModeSParity = Factory.Singleton.Resolve<IModeSParity>();
             _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
+            _AircraftListJsonMessageConverter = Factory.Singleton.Resolve<IAircraftListJsonMessageConverter>();
 
             _ModeSMessageTranslator.Statistics = Statistics;
             _AdsbMessageTranslator.Statistics = Statistics;
@@ -486,7 +501,7 @@ namespace VirtualRadar.Library.Listener
         }
         #endregion
 
-        #region BytesReceived, ProcessPort30003MessageBytes, ProcessModeSMessageBytes
+        #region BytesReceived, Process****MessageBytes
         /// <summary>
         /// Called every time the connection sends some bytes to us.
         /// </summary>
@@ -526,10 +541,11 @@ namespace VirtualRadar.Library.Listener
                             }
 
                             switch(extractedBytes.Format) {
-                                case ExtractedBytesFormat.Port30003:    ProcessPort30003MessageBytes(extractedBytes); break;
-                                case ExtractedBytesFormat.ModeS:        ProcessModeSMessageBytes(now, extractedBytes); break;
-                                case ExtractedBytesFormat.Compressed:   ProcessCompressedMessageBytes(now, extractedBytes); break;
-                                default:                                throw new NotImplementedException();
+                                case ExtractedBytesFormat.Port30003:        ProcessPort30003MessageBytes(extractedBytes); break;
+                                case ExtractedBytesFormat.ModeS:            ProcessModeSMessageBytes(now, extractedBytes); break;
+                                case ExtractedBytesFormat.Compressed:       ProcessCompressedMessageBytes(now, extractedBytes); break;
+                                case ExtractedBytesFormat.AircraftListJson: ProcessAircraftListJsonMessageBytes(now, extractedBytes); break;
+                                default:                                    throw new NotImplementedException();
                             }
                         }
                     }
@@ -584,6 +600,34 @@ namespace VirtualRadar.Library.Listener
                     ++TotalMessages;
                     if(Statistics != null) Statistics.Lock(r => ++r.BaseStationMessagesReceived);
                     _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = new BaseStationMessageEventArgs(message) });
+                }
+            } catch(Exception) {
+                ++TotalBadMessages;
+                if(Statistics != null) Statistics.Lock(r => ++r.BaseStationBadFormatMessagesReceived);
+                if(!IgnoreBadMessages) throw;
+            }
+        }
+
+        /// <summary>
+        /// Translates the bytes for an <see cref="AircraftListJson"/> into a list of cooked messages and raises th
+        /// appropriate events.
+        /// </summary>
+        /// <param name="now"></param>
+        /// <param name="extractedBytes"></param>
+        private void ProcessAircraftListJsonMessageBytes(DateTime now, ExtractedBytes extractedBytes)
+        {
+            try {
+                var jsonText = Encoding.UTF8.GetString(extractedBytes.Bytes, extractedBytes.Offset, extractedBytes.Length);
+                var json = JsonConvert.DeserializeObject<AircraftListJson>(jsonText, _AircraftListJsonSerialiserSettings);
+                var totalMessages = 0;
+                foreach(var message in _AircraftListJsonMessageConverter.ConvertIntoBaseStationMessages(json)) {
+                    ++totalMessages;
+                    _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = new BaseStationMessageEventArgs(message) });
+                }
+
+                if(totalMessages != 0) {
+                    TotalMessages += totalMessages;
+                    if(Statistics != null) Statistics.Lock(r => r.BaseStationMessagesReceived += totalMessages);
                 }
             } catch(Exception) {
                 ++TotalBadMessages;

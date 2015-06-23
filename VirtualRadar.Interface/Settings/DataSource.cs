@@ -42,5 +42,10 @@ namespace VirtualRadar.Interface.Settings
         /// Compressed messages in VRS format.
         /// </summary>
         CompressedVRS,
+
+        /// <summary>
+        /// The feed is sending changes to an aircraft list in JSON format.
+        /// </summary>
+        AircraftListJson,
     }
 }

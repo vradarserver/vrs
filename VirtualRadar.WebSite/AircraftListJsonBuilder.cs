@@ -312,7 +312,6 @@ namespace VirtualRadar.WebSite
                 if(firstTimeSeen || aircraftSnapshot.LatitudeChanged > args.PreviousDataVersion)                        aircraftJson.Latitude = Round.Coordinate(aircraftSnapshot.Latitude);
                 if(firstTimeSeen || aircraftSnapshot.LongitudeChanged > args.PreviousDataVersion)                       aircraftJson.Longitude = Round.Coordinate(aircraftSnapshot.Longitude);
                 if(firstTimeSeen || aircraftSnapshot.OnGroundChanged > args.PreviousDataVersion)                        aircraftJson.OnGround = aircraftSnapshot.OnGround;
-                if(firstTimeSeen || aircraftSnapshot.RegistrationChanged > args.PreviousDataVersion)                    aircraftJson.Registration = aircraftSnapshot.Registration;
                 if(firstTimeSeen || aircraftSnapshot.SignalLevelChanged > args.PreviousDataVersion)                     { aircraftJson.HasSignalLevel = aircraftSnapshot.SignalLevel != null; aircraftJson.SignalLevel = aircraftSnapshot.SignalLevel; }
                 if(firstTimeSeen || aircraftSnapshot.SpeedTypeChanged > args.PreviousDataVersion)                       aircraftJson.SpeedType = (int)aircraftSnapshot.SpeedType;
                 if(firstTimeSeen || aircraftSnapshot.SquawkChanged > args.PreviousDataVersion)                          aircraftJson.Squawk = String.Format("{0:0000}", aircraftSnapshot.Squawk);
@@ -345,6 +344,7 @@ namespace VirtualRadar.WebSite
                     if(firstTimeSeen || aircraftSnapshot.PictureWidthChanged > args.PreviousDataVersion)                aircraftJson.PictureWidth = aircraftSnapshot.PictureWidth == 0 ? (int?)null : aircraftSnapshot.PictureWidth;
                     if(firstTimeSeen || aircraftSnapshot.PositionTimeChanged > args.PreviousDataVersion)                aircraftJson.PositionTime = aircraftSnapshot.PositionTime == null ? (long?)null : JavascriptHelper.ToJavascriptTicks(aircraftSnapshot.PositionTime.Value);
                     if(firstTimeSeen || aircraftSnapshot.ReceiverIdChanged > args.PreviousDataVersion)                  aircraftJson.ReceiverId = aircraftSnapshot.ReceiverId;
+                    if(firstTimeSeen || aircraftSnapshot.RegistrationChanged > args.PreviousDataVersion)                aircraftJson.Registration = aircraftSnapshot.Registration;
                     if(firstTimeSeen || aircraftSnapshot.SpeciesChanged > args.PreviousDataVersion)                     aircraftJson.Species = (int)aircraftSnapshot.Species;
                     if(firstTimeSeen || aircraftSnapshot.TypeChanged > args.PreviousDataVersion)                        aircraftJson.Type = aircraftSnapshot.Type;
                     if(firstTimeSeen || aircraftSnapshot.UserTagChanged > args.PreviousDataVersion)                     aircraftJson.UserTag = aircraftSnapshot.UserTag;

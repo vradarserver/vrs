@@ -263,11 +263,12 @@ namespace VirtualRadar.Interface
         public static string DataSource(DataSource dataSource)
         {
             switch(dataSource) {
-                case Settings.DataSource.Beast:         return Strings.BeastModeSFeed;
-                case Settings.DataSource.CompressedVRS: return Strings.CompressedPort30003;
-                case Settings.DataSource.Port30003:     return Strings.Port30003Feed;
-                case Settings.DataSource.Sbs3:          return Strings.SBS3ModeSFeed;
-                default:                                throw new NotImplementedException();
+                case Settings.DataSource.AircraftListJson:  return Strings.AircraftListJson;
+                case Settings.DataSource.Beast:             return Strings.BeastModeSFeed;
+                case Settings.DataSource.CompressedVRS:     return Strings.CompressedPort30003;
+                case Settings.DataSource.Port30003:         return Strings.Port30003Feed;
+                case Settings.DataSource.Sbs3:              return Strings.SBS3ModeSFeed;
+                default:                                    throw new NotImplementedException();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,37 +12,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VirtualRadar.Interface.Listener;
 
-namespace VirtualRadar.Interface.Listener
+namespace Test.VirtualRadar.Library.Listener
 {
-    /// <summary>
-    /// An enumeration of the different formats that the payload of <see cref="ExtractedBytes"/> can be in.
-    /// </summary>
-    public enum ExtractedBytesFormat
+    [TestClass]
+    public class AircraftListJsonMessageBytesExtractorTests
     {
-        /// <summary>
-        /// The format of the payload is unknown.
-        /// </summary>
-        None,
+        public TestContext TestContext { get; set; }
+        private IAircraftListJsonMessageBytesExtractor _Extractor;
+        private CommonMessageBytesExtractorTests _CommonTests;
 
-        /// <summary>
-        /// The format of the payload corresponds with Kinetic's de-facto standard port 30003 text.
-        /// </summary>
-        Port30003,
+        [TestInitialize]
+        public void TestInitialise()
+        {
+            _Extractor = Factory.Singleton.Resolve<IAircraftListJsonMessageBytesExtractor>();
+            _CommonTests = new CommonMessageBytesExtractorTests(TestContext, _Extractor, ExtractedBytesFormat.AircraftListJson);
+        }
 
-        /// <summary>
-        /// The format of the payload corresponds with ICAO's specification for Mode-S messages.
-        /// </summary>
-        ModeS,
-
-        /// <summary>
-        /// The format of the payload is a compressed Port30003 object.
-        /// </summary>
-        Compressed,
-
-        /// <summary>
-        /// The format of the payload is an aircraft list formatted in UTF-8 JSON.
-        /// </summary>
-        AircraftListJson,
+        [TestMethod]
+        [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "AircraftListJsonMessageBytes$")]
+        public void AircraftListJsonMessageBytesExtractor_ExtractMessageBytes_Extracts_Mode_S_Messages_From_Bytes()
+        {
+            _CommonTests.Do_ExtractMessageBytes_Extracts_Messages_From_Bytes(true, 3, 2);
+        }
     }
 }
