@@ -76,6 +76,7 @@ namespace Test.VirtualRadar.Library.Network
                     DefaultAccess = DefaultAccess.Allow,
                 },
                 IsTransmitter = false,
+                SendIntervalMilliseconds = 1000,
             };
             _Configuration.RebroadcastSettings.Add(_RebroadcastSettings);
 
@@ -490,6 +491,20 @@ namespace Test.VirtualRadar.Library.Network
 
             Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
             Assert.AreEqual(10000, _Connector.Object.StaleMessageTimeout);
+            _Server.Verify(r => r.Dispose(), Times.Never());
+            _Connector.Verify(r => r.Dispose(), Times.Never());
+        }
+
+        [TestMethod]
+        public void RebroadcastServerManager_ConfigurationChanged_Keeps_Existing_And_Sets_Property_If_SendInterval_Changes()
+        {
+            _Manager.Initialise();
+
+            _RebroadcastSettings.SendIntervalMilliseconds = 10000;
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, _Manager.RebroadcastServers.Count);
+            Assert.AreEqual(10000, _Server.Object.SendIntervalMilliseconds);
             _Server.Verify(r => r.Dispose(), Times.Never());
             _Connector.Verify(r => r.Dispose(), Times.Never());
         }

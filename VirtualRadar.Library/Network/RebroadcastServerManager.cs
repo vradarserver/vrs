@@ -214,6 +214,11 @@ namespace VirtualRadar.Library.Network
                 var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId);
                 if(feed != null && rebroadcastSettings.Enabled) {
                     var server = RebroadcastServers.FirstOrDefault(r => r.UniqueId == rebroadcastSettings.UniqueId);
+                    if(server != null) {
+                        if(server.SendIntervalMilliseconds != rebroadcastSettings.SendIntervalMilliseconds) {
+                            server.SendIntervalMilliseconds = rebroadcastSettings.SendIntervalMilliseconds;
+                        }
+                    }
                     if(server != null && server.Connector != null) {
                         var milliseconds = rebroadcastSettings.StaleSeconds * 1000;
                         if(server.Connector.StaleMessageTimeout != milliseconds) {

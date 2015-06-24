@@ -1106,6 +1106,14 @@ namespace VirtualRadar.Library.Presenter
                     IsWarning = !server.Enabled,
                 });
 
+                // The send interval must be between 1 and 30 seconds, but only if format is AircraftListJson
+                ConditionIsTrue(server, r => r.Format != RebroadcastFormat.AircraftListJson || (r.SendIntervalMilliseconds >= 1000 && r.SendIntervalMilliseconds <= 30000),
+                    new Validation(ValidationField.SendInterval, defaults) {
+                        Message = Strings.RebroadcastSendIntervalOutOfBounds,
+                        IsWarning = !server.Enabled,
+                    }
+                );
+
                 // Format is present
                 ValueNotEqual(server.Format, RebroadcastFormat.None, new Validation(ValidationField.Format, defaults) {
                     Message = Strings.RebroadcastFormatRequired,

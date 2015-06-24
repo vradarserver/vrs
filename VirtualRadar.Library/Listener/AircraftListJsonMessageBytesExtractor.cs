@@ -41,6 +41,11 @@ namespace VirtualRadar.Library.Listener
         int _ReadBufferLength;
 
         /// <summary>
+        /// The largest we'll let a read buffer grow to.
+        /// </summary>
+        const int _MaxReadBufferLength = 1000000;
+
+        /// <summary>
         /// An offset that is one past the end of the last good byte read from _ReadBuffer.
         /// </summary>
         /// <remarks>
@@ -88,55 +93,58 @@ namespace VirtualRadar.Library.Listener
         public IEnumerable<ExtractedBytes> ExtractMessageBytes(byte[] bytes, int offset, int length)
         {
             var resetBufferIfNoStartFound = _ReadBufferLength != 0;
-            AppendBytesToReadBuffer(bytes, offset, length);
-
-            while(_ReadBufferPosition < _ReadBufferLength) {
-                if(_ReadBufferPosition == 0) {
-                    // Find the start of the JSON and move it to the start of the buffer. If everything is working
-                    // as it should be the start will normally be on position 0 and no shift should be required.
-                    var startOffset = GetJsonFirstBraceOffset();
-                    if(startOffset == -1) {
-                        if(resetBufferIfNoStartFound) {
-                            // We only append one packet - if we still can't find the start then give up and wait
-                            // for the next one. We don't want the buffer to keep growing indefinitely.
-                            _ReadBufferLength = 0;
+            if(!AppendBytesToReadBuffer(bytes, offset, length)) {
+                ResetState();
+                _ReadBufferLength = 0;
+            } else {
+                while(_ReadBufferPosition < _ReadBufferLength) {
+                    if(_ReadBufferPosition == 0) {
+                        // Find the start of the JSON and move it to the start of the buffer. If everything is working
+                        // as it should be the start will normally be on position 0 and no shift should be required.
+                        var startOffset = GetJsonFirstBraceOffset();
+                        if(startOffset == -1) {
+                            if(resetBufferIfNoStartFound) {
+                                // We only append one packet - if we still can't find the start then give up and wait
+                                // for the next one. We don't want the buffer to keep growing indefinitely.
+                                _ReadBufferLength = 0;
+                            }
+                            break;
                         }
-                        break;
+                        if(startOffset > 0) {
+                            ShiftReadBufferLeft(startOffset);
+                        }
+
+                        ResetState();
+                        _ReadBufferPosition = 1;
+                        _BraceNestLevel = 1;
                     }
-                    if(startOffset > 0) {
-                        ShiftReadBufferLeft(startOffset);
-                    }
 
-                    ResetState();
-                    _ReadBufferPosition = 1;
-                    _BraceNestLevel = 1;
-                }
+                    var finalBraceOffset = GetJsonLastBraceOffset();
 
-                var finalBraceOffset = GetJsonLastBraceOffset();
-
-                if(_BraceNestLevel > 0) {
-                    _ReadBufferPosition = _ReadBufferLength;
-                } else {
-                    var jsonLength = finalBraceOffset + 1;
-
-                    _ExtractedBytes.Bytes = _ReadBuffer;
-                    _ExtractedBytes.Offset = 0;
-                    _ExtractedBytes.Length = jsonLength;
-                    _ExtractedBytes.HasParity = false;
-                    _ExtractedBytes.SignalLevel = null;
-
-                    yield return _ExtractedBytes;
-
-                    ResetState();
-
-                    // I expect most of the time we get one complete JSON and then nothing else for a while,
-                    // but just in case we've got a bunch of them we need to shift what remains to the start
-                    // of the buffer and repeat the process.
-                    if(jsonLength >= _ReadBufferLength) {
-                        _ReadBufferLength = 0;
+                    if(_BraceNestLevel > 0) {
+                        _ReadBufferPosition = _ReadBufferLength;
                     } else {
-                        ShiftReadBufferLeft(jsonLength);
-                        resetBufferIfNoStartFound = false;
+                        var jsonLength = finalBraceOffset + 1;
+
+                        _ExtractedBytes.Bytes = _ReadBuffer;
+                        _ExtractedBytes.Offset = 0;
+                        _ExtractedBytes.Length = jsonLength;
+                        _ExtractedBytes.HasParity = false;
+                        _ExtractedBytes.SignalLevel = null;
+
+                        yield return _ExtractedBytes;
+
+                        ResetState();
+
+                        // I expect most of the time we get one complete JSON and then nothing else for a while,
+                        // but just in case we've got a bunch of them we need to shift what remains to the start
+                        // of the buffer and repeat the process.
+                        if(jsonLength >= _ReadBufferLength) {
+                            _ReadBufferLength = 0;
+                        } else {
+                            ShiftReadBufferLeft(jsonLength);
+                            resetBufferIfNoStartFound = false;
+                        }
                     }
                 }
             }
@@ -148,25 +156,34 @@ namespace VirtualRadar.Library.Listener
         /// <param name="bytes"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        private void AppendBytesToReadBuffer(byte[] bytes, int offset, int length)
+        private bool AppendBytesToReadBuffer(byte[] bytes, int offset, int length)
         {
             var newLength = 0;
 
             if(_ReadBuffer == null) {
-                _ReadBuffer = new byte[length];
-                Array.Copy(bytes, offset, _ReadBuffer, 0, length);
+                if(length < _MaxReadBufferLength) {
+                    _ReadBuffer = new byte[length];
+                    Array.Copy(bytes, offset, _ReadBuffer, 0, length);
+                }
                 newLength = length;
             } else {
                 newLength = _ReadBufferLength + length;
-                if(newLength > _ReadBuffer.Length) {
-                    var newReadBuffer = new byte[newLength];
-                    if(_ReadBuffer != null) _ReadBuffer.CopyTo(newReadBuffer, 0);
-                    _ReadBuffer = newReadBuffer;
+                if(newLength < _MaxReadBufferLength) {
+                    if(newLength > _ReadBuffer.Length) {
+                        var newReadBuffer = new byte[newLength];
+                        if(_ReadBuffer != null) _ReadBuffer.CopyTo(newReadBuffer, 0);
+                        _ReadBuffer = newReadBuffer;
+                    }
+                    Array.Copy(bytes, offset, _ReadBuffer, _ReadBufferLength, length);
                 }
-                Array.Copy(bytes, offset, _ReadBuffer, _ReadBufferLength, length);
             }
 
-            _ReadBufferLength = newLength;
+            var result = newLength < _MaxReadBufferLength;
+            if(result) {
+                _ReadBufferLength = newLength;
+            }
+
+            return result;
         }
 
         /// <summary>

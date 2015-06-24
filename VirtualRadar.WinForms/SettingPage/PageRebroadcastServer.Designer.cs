@@ -39,6 +39,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.groupBoxAccessControl = new System.Windows.Forms.GroupBox();
+            this.accessControl = new VirtualRadar.WinForms.Controls.AccessControl();
             this.checkBoxIsTransmitter = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textBoxTransmitAddress = new System.Windows.Forms.TextBox();
@@ -49,25 +50,28 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.textBoxPassphrase = new System.Windows.Forms.TextBox();
-            this.accessControl = new VirtualRadar.WinForms.Controls.AccessControl();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericSendInterval = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericStaleSeconds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxAccessControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericSendInterval)).BeginInit();
             this.SuspendLayout();
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(0, 207);
+            this.label3.Location = new System.Drawing.Point(0, 232);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(88, 13);
-            this.label3.TabIndex = 14;
+            this.label3.TabIndex = 17;
             this.label3.Text = "::StaleSeconds:::";
             // 
             // numericStaleSeconds
             // 
-            this.numericStaleSeconds.Location = new System.Drawing.Point(200, 205);
+            this.numericStaleSeconds.Location = new System.Drawing.Point(200, 230);
             this.numericStaleSeconds.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -80,7 +84,7 @@
             0});
             this.numericStaleSeconds.Name = "numericStaleSeconds";
             this.numericStaleSeconds.Size = new System.Drawing.Size(77, 20);
-            this.numericStaleSeconds.TabIndex = 15;
+            this.numericStaleSeconds.TabIndex = 18;
             this.numericStaleSeconds.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericStaleSeconds.Value = new decimal(new int[] {
             1,
@@ -91,15 +95,15 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(0, 155);
+            this.label6.Location = new System.Drawing.Point(0, 180);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(41, 13);
-            this.label6.TabIndex = 10;
+            this.label6.TabIndex = 13;
             this.label6.Text = "::Port:::";
             // 
             // numericPort
             // 
-            this.numericPort.Location = new System.Drawing.Point(200, 153);
+            this.numericPort.Location = new System.Drawing.Point(200, 178);
             this.numericPort.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -107,7 +111,7 @@
             0});
             this.numericPort.Name = "numericPort";
             this.numericPort.Size = new System.Drawing.Size(77, 20);
-            this.numericPort.TabIndex = 11;
+            this.numericPort.TabIndex = 14;
             this.numericPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label1
@@ -180,60 +184,70 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxAccessControl.Controls.Add(this.accessControl);
-            this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 280);
+            this.groupBoxAccessControl.Location = new System.Drawing.Point(0, 305);
             this.groupBoxAccessControl.Name = "groupBoxAccessControl";
-            this.groupBoxAccessControl.Size = new System.Drawing.Size(636, 217);
-            this.groupBoxAccessControl.TabIndex = 21;
+            this.groupBoxAccessControl.Size = new System.Drawing.Size(636, 192);
+            this.groupBoxAccessControl.TabIndex = 24;
             this.groupBoxAccessControl.TabStop = false;
             this.groupBoxAccessControl.Text = "::AccessControl::";
+            // 
+            // accessControl
+            // 
+            this.accessControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.accessControl.Location = new System.Drawing.Point(6, 19);
+            this.accessControl.Name = "accessControl";
+            this.accessControl.Size = new System.Drawing.Size(624, 167);
+            this.accessControl.TabIndex = 0;
             // 
             // checkBoxIsTransmitter
             // 
             this.checkBoxIsTransmitter.AutoSize = true;
-            this.checkBoxIsTransmitter.Location = new System.Drawing.Point(200, 104);
+            this.checkBoxIsTransmitter.Location = new System.Drawing.Point(200, 129);
             this.checkBoxIsTransmitter.Name = "checkBoxIsTransmitter";
             this.checkBoxIsTransmitter.Size = new System.Drawing.Size(102, 17);
-            this.checkBoxIsTransmitter.TabIndex = 7;
+            this.checkBoxIsTransmitter.TabIndex = 10;
             this.checkBoxIsTransmitter.Text = "::TransmitFeed::";
             this.checkBoxIsTransmitter.UseVisualStyleBackColor = true;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(0, 130);
+            this.label7.Location = new System.Drawing.Point(0, 155);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(45, 13);
-            this.label7.TabIndex = 8;
+            this.label7.TabIndex = 11;
             this.label7.Text = "::UNC:::";
             // 
             // textBoxTransmitAddress
             // 
-            this.textBoxTransmitAddress.Location = new System.Drawing.Point(200, 127);
+            this.textBoxTransmitAddress.Location = new System.Drawing.Point(200, 152);
             this.textBoxTransmitAddress.Name = "textBoxTransmitAddress";
             this.textBoxTransmitAddress.Size = new System.Drawing.Size(150, 20);
-            this.textBoxTransmitAddress.TabIndex = 9;
+            this.textBoxTransmitAddress.TabIndex = 12;
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(283, 256);
+            this.label16.Location = new System.Drawing.Point(283, 281);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(68, 13);
-            this.label16.TabIndex = 20;
+            this.label16.TabIndex = 23;
             this.label16.Text = "::PSeconds::";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(0, 256);
+            this.label15.Location = new System.Drawing.Point(0, 281);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(77, 13);
-            this.label15.TabIndex = 18;
+            this.label15.TabIndex = 21;
             this.label15.Text = "::IdleTimeout:::";
             // 
             // numericIdleTimeout
             // 
-            this.numericIdleTimeout.Location = new System.Drawing.Point(200, 254);
+            this.numericIdleTimeout.Location = new System.Drawing.Point(200, 279);
             this.numericIdleTimeout.Maximum = new decimal(new int[] {
             86400,
             0,
@@ -246,7 +260,7 @@
             0});
             this.numericIdleTimeout.Name = "numericIdleTimeout";
             this.numericIdleTimeout.Size = new System.Drawing.Size(77, 20);
-            this.numericIdleTimeout.TabIndex = 19;
+            this.numericIdleTimeout.TabIndex = 22;
             this.numericIdleTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericIdleTimeout.Value = new decimal(new int[] {
             5,
@@ -257,54 +271,89 @@
             // checkBoxUseKeepAlive
             // 
             this.checkBoxUseKeepAlive.AutoSize = true;
-            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(200, 231);
+            this.checkBoxUseKeepAlive.Location = new System.Drawing.Point(200, 256);
             this.checkBoxUseKeepAlive.Name = "checkBoxUseKeepAlive";
             this.checkBoxUseKeepAlive.Size = new System.Drawing.Size(105, 17);
-            this.checkBoxUseKeepAlive.TabIndex = 17;
+            this.checkBoxUseKeepAlive.TabIndex = 20;
             this.checkBoxUseKeepAlive.Text = "::UseKeepAlive::";
             this.checkBoxUseKeepAlive.UseVisualStyleBackColor = true;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(283, 207);
+            this.label8.Location = new System.Drawing.Point(283, 232);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(68, 13);
-            this.label8.TabIndex = 16;
+            this.label8.TabIndex = 19;
             this.label8.Text = "::PSeconds::";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(0, 182);
+            this.label9.Location = new System.Drawing.Point(0, 207);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(77, 13);
-            this.label9.TabIndex = 12;
+            this.label9.TabIndex = 15;
             this.label9.Text = "::Passphrase:::";
             // 
             // textBoxPassphrase
             // 
             this.textBoxPassphrase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPassphrase.Location = new System.Drawing.Point(200, 179);
+            this.textBoxPassphrase.Location = new System.Drawing.Point(200, 204);
             this.textBoxPassphrase.MaxLength = 512;
             this.textBoxPassphrase.Name = "textBoxPassphrase";
             this.textBoxPassphrase.Size = new System.Drawing.Size(436, 20);
-            this.textBoxPassphrase.TabIndex = 13;
+            this.textBoxPassphrase.TabIndex = 16;
             // 
-            // accessControl
+            // label5
             // 
-            this.accessControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.accessControl.Location = new System.Drawing.Point(6, 19);
-            this.accessControl.Name = "accessControl";
-            this.accessControl.Size = new System.Drawing.Size(624, 192);
-            this.accessControl.TabIndex = 0;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(0, 105);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(71, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "::SendEvery::";
+            // 
+            // numericSendInterval
+            // 
+            this.numericSendInterval.DecimalPlaces = 1;
+            this.numericSendInterval.Location = new System.Drawing.Point(200, 103);
+            this.numericSendInterval.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.numericSendInterval.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericSendInterval.Name = "numericSendInterval";
+            this.numericSendInterval.Size = new System.Drawing.Size(77, 20);
+            this.numericSendInterval.TabIndex = 8;
+            this.numericSendInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericSendInterval.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(283, 105);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(68, 13);
+            this.label10.TabIndex = 9;
+            this.label10.Text = "::PSeconds::";
             // 
             // PageRebroadcastServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.numericSendInterval);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.textBoxPassphrase);
             this.Controls.Add(this.label8);
@@ -333,6 +382,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxAccessControl.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericIdleTimeout)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericSendInterval)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -363,5 +413,8 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBoxPassphrase;
         private Controls.AccessControl accessControl;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericSendInterval;
+        private System.Windows.Forms.Label label10;
     }
 }

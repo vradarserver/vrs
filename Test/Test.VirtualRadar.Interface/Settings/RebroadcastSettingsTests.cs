@@ -40,6 +40,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.Port, 0, 19000);
             TestUtilities.TestProperty(settings, r => r.ReceiverId, 0, 1234);
             TestUtilities.TestProperty(settings, r => r.UniqueId, 0, 456);
+            TestUtilities.TestProperty(settings, r => r.SendIntervalMilliseconds, 1000, 2000);
             TestUtilities.TestProperty(settings, r => r.StaleSeconds, 3, 15);
 
             Assert.IsNotNull(settings.Access);

@@ -316,6 +316,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(-1, readBack.RebroadcastSettings[0].ReceiverId);
                         Assert.AreEqual(7, readBack.RebroadcastSettings[0].StaleSeconds);
                         Assert.AreEqual(null, readBack.RebroadcastSettings[0].Passphrase);
+                        Assert.AreEqual(1000, readBack.RebroadcastSettings[0].SendIntervalMilliseconds);
 
                         Assert.AreEqual(2, readBack.RebroadcastSettings[1].UniqueId);
                         Assert.AreEqual(false, readBack.RebroadcastSettings[1].Enabled);
@@ -329,6 +330,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(1, readBack.RebroadcastSettings[1].ReceiverId);
                         Assert.AreEqual(10, readBack.RebroadcastSettings[1].StaleSeconds);
                         Assert.AreEqual("Two", readBack.RebroadcastSettings[1].Passphrase);
+                        Assert.AreEqual(2000, readBack.RebroadcastSettings[1].SendIntervalMilliseconds);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.RebroadcastSettings[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.RebroadcastSettings[0].Access.Addresses.Count);
@@ -585,6 +587,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                 }
                                                             },
                                                             Passphrase = null,
+                                                            SendIntervalMilliseconds = 1000,
                                                         },
                                                         new RebroadcastSettings() {
                                                             UniqueId = 2,
@@ -605,6 +608,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                                 },
                                                             },
                                                             Passphrase = "Two",
+                                                            SendIntervalMilliseconds = 2000,
                                                         },
                                                     });
                                                     break;
