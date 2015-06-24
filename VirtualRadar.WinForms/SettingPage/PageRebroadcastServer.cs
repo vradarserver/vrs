@@ -91,6 +91,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     { ValidationField.IdleTimeout,              page == null ? null : page.numericIdleTimeout },
                     { ValidationField.Format,                   page == null ? null : page.comboBoxFormat },
                     { ValidationField.RebroadcastReceiver,      page == null ? null : page.comboBoxReceiver },
+                    { ValidationField.SendInterval,             page == null ? null : page.numericSendInterval },
                     { ValidationField.StaleSeconds,             page == null ? null : page.numericStaleSeconds },
                 });
             }
@@ -148,18 +149,18 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxIsTransmitter,    r => r.IsTransmitter,   (r,v) => r.IsTransmitter = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxUseKeepAlive,     r => r.UseKeepAlive,    (r,v) => r.UseKeepAlive = v)  { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
-
             AddControlBinder(new TextBoxStringBinder<RebroadcastSettings>(RebroadcastSettings, textBoxName,            r => r.Name,             (r,v) => r.Name = v)                { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new TextBoxStringBinder<RebroadcastSettings>(RebroadcastSettings, textBoxTransmitAddress, r => r.TransmitAddress,  (r,v) => r.TransmitAddress = v));
             AddControlBinder(new TextBoxStringBinder<RebroadcastSettings>(RebroadcastSettings, textBoxPassphrase,      r => r.Passphrase,       (r,v) => r.Passphrase = v));
 
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericPort,            r => r.Port,                            (r,v) => r.Port = v));
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericIdleTimeout,     r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IdleTimeoutMilliseconds) });
+            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericSendInterval,    r => r.SendIntervalMilliseconds / 1000, (r,v) => r.SendIntervalMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<RebroadcastSettings>(r => r.SendIntervalMilliseconds) });
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,                    (r,v) => r.StaleSeconds = v));
 
             AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>(RebroadcastSettings, comboBoxReceiver, SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
 
-            AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings, comboBoxFormat, r => r.Format, (r,v) => r.Format = v, r => Describe.RebroadcastFormat(r)));
+            AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings, comboBoxFormat, r => r.Format, (r,v) => r.Format = v, r => Describe.RebroadcastFormat(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged, });
 
             AddControlBinder(new AccessControlBinder<RebroadcastSettings>(RebroadcastSettings, accessControl, r => r.Access));
         }
@@ -180,6 +181,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(textBoxPassphrase,        Strings.Passphrase,     Strings.OptionsDescribePassphrase);
             SetInlineHelp(checkBoxUseKeepAlive,     Strings.UseKeepAlive,   Strings.OptionsDescribeRebroadcastUseKeepAlive);
             SetInlineHelp(numericIdleTimeout,       Strings.IdleTimeout,    Strings.OptionsDescribeRebroadcastIdleTimeout);
+            SetInlineHelp(numericSendInterval,      Strings.SendEvery,      Strings.OptionsDescribeRebroadcastSendInterval);
             SetInlineHelp(numericStaleSeconds,      Strings.StaleSeconds,   Strings.OptionsDescribeRebroadcastStaleSeconds);
         }
 
@@ -191,6 +193,7 @@ namespace VirtualRadar.WinForms.SettingPage
             textBoxTransmitAddress.Enabled = RebroadcastSettings.IsTransmitter;
             accessControl.Enabled = !RebroadcastSettings.IsTransmitter;
             numericIdleTimeout.Enabled = !RebroadcastSettings.UseKeepAlive;
+            numericSendInterval.Enabled = RebroadcastSettings.Format == RebroadcastFormat.AircraftListJson;
         }
 
         /// <summary>
@@ -204,7 +207,8 @@ namespace VirtualRadar.WinForms.SettingPage
             if(SettingsView != null && this.IsHandleCreated) {
                 if(Object.ReferenceEquals(args.Record, RebroadcastSettings)) {
                     if(args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IsTransmitter) ||
-                       args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive)) {
+                       args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive) ||
+                       args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.Format)) {
                         EnableDisableControls();
                     }
                 }

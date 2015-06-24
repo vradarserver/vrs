@@ -160,6 +160,19 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _Passphrase, value, () => Passphrase); }
         }
 
+        private int _SendIntervalMilliseconds;
+        /// <summary>
+        /// Gets or sets the delay between sends for formats that lend themselves to message batching.
+        /// </summary>
+        /// <remarks>
+        /// At the time of writing the only format that uses this is <see cref="RebroadcastFormat.AircraftListJson"/>.
+        /// </remarks>
+        public int SendIntervalMilliseconds
+        {
+            get { return _SendIntervalMilliseconds; }
+            set { SetField(ref _SendIntervalMilliseconds, value, () => SendIntervalMilliseconds); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -203,6 +216,7 @@ namespace VirtualRadar.Interface.Settings
             Access = new Access();
             StaleSeconds = 3;
             IdleTimeoutMilliseconds = 30000;
+            SendIntervalMilliseconds = 1000;
         }
     }
 }

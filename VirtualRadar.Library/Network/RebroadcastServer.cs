@@ -150,7 +150,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int SendListIntervalMilliseconds { get; set; }
+        public int SendIntervalMilliseconds { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -210,7 +210,7 @@ namespace VirtualRadar.Library.Network
         public RebroadcastServer()
         {
             _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
-            SendListIntervalMilliseconds = 1000;
+            SendIntervalMilliseconds = 1000;
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace VirtualRadar.Library.Network
                     _Timer.Elapsed += Timer_Elapsed;
                     _Timer.AutoReset = false;
                     _Timer.Enabled = true;
-                    _Timer.Interval = SendListIntervalMilliseconds;
+                    _Timer.Interval = SendIntervalMilliseconds;
 
                     _Timer.Start();
                     break;
@@ -525,7 +525,7 @@ namespace VirtualRadar.Library.Network
                     var timer = _Timer;
                     if(timer != null) {
                         try {
-                            timer.Interval = SendListIntervalMilliseconds;
+                            timer.Interval = SendIntervalMilliseconds;
                             timer.Start();
                         } catch(ObjectDisposedException) {
                         }

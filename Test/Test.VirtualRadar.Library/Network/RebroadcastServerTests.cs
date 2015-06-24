@@ -151,7 +151,7 @@ namespace Test.VirtualRadar.Library.Network
             TestUtilities.TestProperty(server, r => r.Feed, null, _Feed.Object);
             TestUtilities.TestProperty(server, r => r.Name, null, "Abc");
             TestUtilities.TestProperty(server, r => r.Online, false);
-            TestUtilities.TestProperty(server, r => r.SendListIntervalMilliseconds, 1000, 30000);
+            TestUtilities.TestProperty(server, r => r.SendIntervalMilliseconds, 1000, 30000);
             TestUtilities.TestProperty(server, r => r.UniqueId, 0, 123);
         }
         #endregion
@@ -467,7 +467,7 @@ namespace Test.VirtualRadar.Library.Network
         private void ConfigureForAircraftListJson()
         {
             _Server.Format = RebroadcastFormat.AircraftListJson;
-            _Server.SendListIntervalMilliseconds = 1000;
+            _Server.SendIntervalMilliseconds = 1000;
             _Server.Initialise();
 
             _Connector.SetupGet(r => r.HasConnection).Returns(true);
@@ -500,7 +500,7 @@ namespace Test.VirtualRadar.Library.Network
         {
             ConfigureForAircraftListJson();
 
-            Assert.AreEqual(_Server.SendListIntervalMilliseconds, _Timer.Object.Interval);
+            Assert.AreEqual(_Server.SendIntervalMilliseconds, _Timer.Object.Interval);
             Assert.AreEqual(true, _Timer.Object.Enabled);
             Assert.AreEqual(false, _Timer.Object.AutoReset);
             _Timer.Verify(r => r.Start(), Times.Once());
@@ -586,7 +586,7 @@ namespace Test.VirtualRadar.Library.Network
         {
             ConfigureForAircraftListJson();
 
-            _Server.SendListIntervalMilliseconds = 30000;
+            _Server.SendIntervalMilliseconds = 30000;
             _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
 
             Assert.AreEqual(30000, _Timer.Object.Interval);

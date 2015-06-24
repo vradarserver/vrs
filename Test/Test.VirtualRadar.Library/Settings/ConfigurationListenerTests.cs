@@ -391,6 +391,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.Passphrase,                r => r.Passphrase = "TEST" },
                     { r => r.Port,                      r => r.Port += 1 },
                     { r => r.ReceiverId,                r => r.ReceiverId += 1 },
+                    { r => r.SendIntervalMilliseconds,  r => r.SendIntervalMilliseconds += 1 },
                     { r => r.StaleSeconds,              r => r.StaleSeconds += 1 },
                     { r => r.TransmitAddress,           r => r.TransmitAddress += 1 },
                     { r => r.UniqueId,                  r => r.UniqueId += 1 },

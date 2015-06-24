@@ -3703,6 +3703,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of seconds to wait between sending batches of messages. Only the Aircraft List (JSON) format supports this setting..
+        /// </summary>
+        public static string OptionsDescribeRebroadcastSendInterval {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRebroadcastSendInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes if this rebroadcast server can serve requests for a data feed, no if it cannot..
         /// </summary>
         public static string OptionsDescribeRebroadcastServerEnabled {
@@ -4675,6 +4684,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The send interval must be between 1 and 30 seconds.
+        /// </summary>
+        public static string RebroadcastSendIntervalOutOfBounds {
+            get {
+                return ResourceManager.GetString("RebroadcastSendIntervalOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rebroadcast server.
         /// </summary>
         public static string RebroadcastServer {
@@ -4684,7 +4702,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The idle timeout must be at least 5 seconds..
+        ///   Looks up a localized string similar to The idle timeout must be at least 5 seconds.
         /// </summary>
         public static string RebroadcastServerIdleTimeoutOutOfBounds {
             get {
@@ -5283,6 +5301,15 @@ namespace VirtualRadar.Localisation {
         public static string SelectBaseStationDatabaseFile {
             get {
                 return ResourceManager.GetString("SelectBaseStationDatabaseFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send every.
+        /// </summary>
+        public static string SendEvery {
+            get {
+                return ResourceManager.GetString("SendEvery", resourceCulture);
             }
         }
         

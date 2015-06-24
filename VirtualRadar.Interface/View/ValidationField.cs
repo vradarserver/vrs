@@ -309,5 +309,10 @@ namespace VirtualRadar.Interface.View
         /// The field that accepts exported settings from the web site.
         /// </summary>
         ExportedSettings,
+
+        /// <summary>
+        /// The interval between sends.
+        /// </summary>
+        SendInterval,
     }
 }

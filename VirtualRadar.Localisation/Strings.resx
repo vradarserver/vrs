@@ -2274,7 +2274,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Push feed</value>
   </data>
   <data name="RebroadcastServerIdleTimeoutOutOfBounds" xml:space="preserve">
-    <value>The idle timeout must be at least 5 seconds.</value>
+    <value>The idle timeout must be at least 5 seconds</value>
   </data>
   <data name="PassiveReceiver" xml:space="preserve">
     <value>Push receiver</value>
@@ -2458,5 +2458,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="AircraftListJson" xml:space="preserve">
     <value>Aircraft List (JSON)</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastSendInterval" xml:space="preserve">
+    <value>The number of seconds to wait between sending batches of messages. Only the Aircraft List (JSON) format supports this setting.</value>
+  </data>
+  <data name="SendEvery" xml:space="preserve">
+    <value>Send every</value>
+    <comment>As in "Send every 5 seconds"</comment>
+  </data>
+  <data name="RebroadcastSendIntervalOutOfBounds" xml:space="preserve">
+    <value>The send interval must be between 1 and 30 seconds</value>
   </data>
 </root>
