@@ -15,6 +15,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.PortableBinding
 {
@@ -54,6 +56,18 @@ namespace VirtualRadar.WinForms.PortableBinding
         protected override void DoUnhookControlPropertyChanged(EventHandler eventHandler)
         {
             Control.ValueChanged -= eventHandler;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        protected override void DoInitialiseControl()
+        {
+            var isMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            if(isMono) {
+                Control.TextAlign = HorizontalAlignment.Left;
+            }
+            base.DoInitialiseControl();
         }
     }
 }
