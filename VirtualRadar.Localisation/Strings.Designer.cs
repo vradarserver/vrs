@@ -2992,6 +2992,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Offline mode.
+        /// </summary>
+        public static string OfflineMode {
+            get {
+                return ResourceManager.GetString("OfflineMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK {
