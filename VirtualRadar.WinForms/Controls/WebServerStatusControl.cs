@@ -180,6 +180,16 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
+        /// Gets or sets the checked setting of the offline mode checkbox.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool OfflineMode
+        {
+            get { return checkBoxOfflineMode.Checked; }
+            set { checkBoxOfflineMode.Checked = value; }
+        }
+
+        /// <summary>
         /// Gets a value indicating that the <see cref="Address"/> property represents a valid address.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -324,7 +334,18 @@ namespace VirtualRadar.WinForms.Controls
                     else if(ShowOldFlightSimSite) page = "FlightSim.htm";
                     else if(ShowSettingsPage) page = "settings.html";
 
-                    if(page != null) Address = String.Format("{0}{1}{2}", Address, Address.EndsWith("/") ? "" : "/", page);
+                    if(page != null) {
+                        Address = String.Format("{0}{1}{2}",
+                            Address,
+                            Address.EndsWith("/") ? "" : "/",
+                            page
+                        );
+                    }
+
+                    var showOffline = OfflineMode && (page == null || ShowDesktopSite || ShowMobileSite || ShowFlightSimSite);
+                    if(showOffline) {
+                        Address = String.Format("{0}?notOnline=1", Address);
+                    }
                 }
             }
         }
@@ -449,6 +470,11 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         private void comboBoxSite_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ShowCorrectAddress();
+        }
+
+        private void checkBoxOfflineMode_CheckedChanged(object sender, EventArgs e)
         {
             ShowCorrectAddress();
         }

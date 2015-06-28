@@ -29,23 +29,25 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBoxOfflineMode = new System.Windows.Forms.CheckBox();
             this.buttonToggleUPnpStatus = new System.Windows.Forms.Button();
             this.labelUPnpStatus = new System.Windows.Forms.Label();
             this.comboBoxShowAddressType = new System.Windows.Forms.ComboBox();
             this.comboBoxSite = new System.Windows.Forms.ComboBox();
+            this.webServerUserList = new VirtualRadar.WinForms.Controls.WebServerUserListControl();
             this.buttonToggleServerStatus = new System.Windows.Forms.Button();
             this.labelServerStatus = new System.Windows.Forms.Label();
             this.linkLabelAddress = new System.Windows.Forms.LinkLabel();
             this.contextMenuStripWebSiteLink = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyLinkToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.webServerUserList = new VirtualRadar.WinForms.Controls.WebServerUserListControl();
             this.groupBox1.SuspendLayout();
             this.contextMenuStripWebSiteLink.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBoxOfflineMode);
             this.groupBox1.Controls.Add(this.buttonToggleUPnpStatus);
             this.groupBox1.Controls.Add(this.labelUPnpStatus);
             this.groupBox1.Controls.Add(this.comboBoxShowAddressType);
@@ -62,13 +64,25 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::WebServerStatus::";
             // 
+            // checkBoxOfflineMode
+            // 
+            this.checkBoxOfflineMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBoxOfflineMode.AutoSize = true;
+            this.checkBoxOfflineMode.Location = new System.Drawing.Point(352, 340);
+            this.checkBoxOfflineMode.Name = "checkBoxOfflineMode";
+            this.checkBoxOfflineMode.Size = new System.Drawing.Size(95, 17);
+            this.checkBoxOfflineMode.TabIndex = 7;
+            this.checkBoxOfflineMode.Text = "::OfflineMode::";
+            this.checkBoxOfflineMode.UseVisualStyleBackColor = true;
+            this.checkBoxOfflineMode.CheckedChanged += new System.EventHandler(this.checkBoxOfflineMode_CheckedChanged);
+            // 
             // buttonToggleUPnpStatus
             // 
             this.buttonToggleUPnpStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonToggleUPnpStatus.Location = new System.Drawing.Point(535, 44);
             this.buttonToggleUPnpStatus.Name = "buttonToggleUPnpStatus";
             this.buttonToggleUPnpStatus.Size = new System.Drawing.Size(120, 23);
-            this.buttonToggleUPnpStatus.TabIndex = 7;
+            this.buttonToggleUPnpStatus.TabIndex = 3;
             this.buttonToggleUPnpStatus.Text = "Toggle Port Mapping";
             this.buttonToggleUPnpStatus.UseVisualStyleBackColor = true;
             this.buttonToggleUPnpStatus.Click += new System.EventHandler(this.buttonToggleUPnpStatus_Click);
@@ -79,7 +93,7 @@
             this.labelUPnpStatus.Location = new System.Drawing.Point(4, 49);
             this.labelUPnpStatus.Name = "labelUPnpStatus";
             this.labelUPnpStatus.Size = new System.Drawing.Size(220, 13);
-            this.labelUPnpStatus.TabIndex = 6;
+            this.labelUPnpStatus.TabIndex = 2;
             this.labelUPnpStatus.Text = "UPnP port mapping status will be shown here";
             // 
             // comboBoxShowAddressType
@@ -87,10 +101,10 @@
             this.comboBoxShowAddressType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.comboBoxShowAddressType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxShowAddressType.FormattingEnabled = true;
-            this.comboBoxShowAddressType.Location = new System.Drawing.Point(7, 358);
+            this.comboBoxShowAddressType.Location = new System.Drawing.Point(7, 338);
             this.comboBoxShowAddressType.Name = "comboBoxShowAddressType";
             this.comboBoxShowAddressType.Size = new System.Drawing.Size(193, 21);
-            this.comboBoxShowAddressType.TabIndex = 3;
+            this.comboBoxShowAddressType.TabIndex = 5;
             this.comboBoxShowAddressType.SelectedIndexChanged += new System.EventHandler(this.comboBoxShowAddressType_SelectedIndexChanged);
             // 
             // comboBoxSite
@@ -98,11 +112,21 @@
             this.comboBoxSite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.comboBoxSite.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSite.FormattingEnabled = true;
-            this.comboBoxSite.Location = new System.Drawing.Point(206, 358);
+            this.comboBoxSite.Location = new System.Drawing.Point(206, 338);
             this.comboBoxSite.Name = "comboBoxSite";
             this.comboBoxSite.Size = new System.Drawing.Size(140, 21);
-            this.comboBoxSite.TabIndex = 4;
+            this.comboBoxSite.TabIndex = 6;
             this.comboBoxSite.SelectedIndexChanged += new System.EventHandler(this.comboBoxSite_SelectedIndexChanged);
+            // 
+            // webServerUserList
+            // 
+            this.webServerUserList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.webServerUserList.Location = new System.Drawing.Point(7, 73);
+            this.webServerUserList.Name = "webServerUserList";
+            this.webServerUserList.Size = new System.Drawing.Size(644, 259);
+            this.webServerUserList.TabIndex = 4;
             // 
             // buttonToggleServerStatus
             // 
@@ -129,13 +153,13 @@
             this.linkLabelAddress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabelAddress.AutoEllipsis = true;
-            this.linkLabelAddress.Location = new System.Drawing.Point(352, 357);
+            this.linkLabelAddress.Location = new System.Drawing.Point(6, 362);
             this.linkLabelAddress.Name = "linkLabelAddress";
-            this.linkLabelAddress.Size = new System.Drawing.Size(299, 20);
-            this.linkLabelAddress.TabIndex = 5;
+            this.linkLabelAddress.Size = new System.Drawing.Size(645, 20);
+            this.linkLabelAddress.TabIndex = 8;
             this.linkLabelAddress.TabStop = true;
             this.linkLabelAddress.Text = "http://localhost/Whatever.html";
-            this.linkLabelAddress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.linkLabelAddress.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.linkLabelAddress.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelAddress_LinkClicked);
             // 
             // contextMenuStripWebSiteLink
@@ -160,16 +184,6 @@
             this.copyLinkToClipboardToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.copyLinkToClipboardToolStripMenuItem.Text = "&Copy Link to Clipboard";
             this.copyLinkToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyLinkToClipboardToolStripMenuItem_Click);
-            // 
-            // webServerUserList
-            // 
-            this.webServerUserList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.webServerUserList.Location = new System.Drawing.Point(7, 73);
-            this.webServerUserList.Name = "webServerUserList";
-            this.webServerUserList.Size = new System.Drawing.Size(644, 279);
-            this.webServerUserList.TabIndex = 2;
             // 
             // WebServerStatusControl
             // 
@@ -199,5 +213,6 @@
         private System.Windows.Forms.ComboBox comboBoxSite;
         private System.Windows.Forms.Button buttonToggleUPnpStatus;
         private System.Windows.Forms.Label labelUPnpStatus;
+        private System.Windows.Forms.CheckBox checkBoxOfflineMode;
     }
 }

@@ -2469,4 +2469,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="RebroadcastSendIntervalOutOfBounds" xml:space="preserve">
     <value>The send interval must be between 1 and 30 seconds</value>
   </data>
+  <data name="OfflineMode" xml:space="preserve">
+    <value>Offline mode</value>
+  </data>
 </root>
