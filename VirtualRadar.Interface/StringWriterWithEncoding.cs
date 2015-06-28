@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,57 +10,64 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
 using System.IO;
-using VirtualRadar.Interface;
+using System.Linq;
+using System.Text;
 
-namespace VirtualRadar.Library.Settings
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// The default implementation of <see cref="IInstallerSettingsStorage"/>.
+    /// A string writer that lets you set the encoding.
     /// </summary>
-    class InstallerSettingsStorage : IInstallerSettingsStorage
+    public class StringWriterWithEncoding : StringWriter
     {
+        private Encoding _Encoding = Encoding.Unicode;
         /// <summary>
-        /// The default implementation of <see cref="IInstallerSettingsStorageProvider"/>.
+        /// See base docs.
         /// </summary>
-        class DefaultProvider : IInstallerSettingsStorageProvider
+        public override Encoding Encoding
         {
-            public string Folder { get { return Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder; } }
+            get { return _Encoding; }
         }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IInstallerSettingsStorageProvider Provider { get; set; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public InstallerSettingsStorage()
+        /// <param name="encoding"></param>
+        public StringWriterWithEncoding(Encoding encoding) : base()
         {
-            Provider = new DefaultProvider();
+            _Encoding = encoding;
         }
 
         /// <summary>
-        /// See interface docs.
+        /// Creates a new object.
         /// </summary>
-        /// <returns></returns>
-        public InstallerSettings Load()
+        /// <param name="formatProvider"></param>
+        /// <param name="encoding"></param>
+        public StringWriterWithEncoding(IFormatProvider formatProvider, Encoding encoding) : base(formatProvider)
         {
-            InstallerSettings result = new InstallerSettings();
+            _Encoding = encoding;
+        }
 
-            string fileName = Path.Combine(Provider.Folder, "InstallerConfiguration.xml");
-            if(File.Exists(fileName)) {
-                using(StreamReader reader = new StreamReader(fileName)) {
-                    var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
-                    result = serialiser.Deserialise<InstallerSettings>(reader);
-                }
-            }
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="encoding"></param>
+        public StringWriterWithEncoding(StringBuilder sb, Encoding encoding) : base(sb)
+        {
+            _Encoding = encoding;
+        }
 
-            return result;
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="formatProvider"></param>
+        /// <param name="encoding"></param>
+        public StringWriterWithEncoding(StringBuilder sb, IFormatProvider formatProvider, Encoding encoding) : base(sb, formatProvider)
+        {
+            _Encoding = encoding;
         }
     }
 }
