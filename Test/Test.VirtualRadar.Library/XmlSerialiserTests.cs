@@ -166,6 +166,11 @@ namespace Test.VirtualRadar.Library
             //public TimeSpan ATimeSpan { get; set; }   XmlSerializer emits an empty value for these
             //public IntPtr AnIntPtr { get; set; }      Not supported by XmlSerializer so we don't test it
             public Guid AGuid { get; set; }
+            public UInt16 AUInt16 { get; set; }
+            public UInt32 AUint32 { get; set; }
+            public UInt64 AUInt64 { get; set; }
+            public sbyte AnSByte { get; set; }
+            public Decimal ADecimal { get; set; }
         }
 
         public class ListsOfValueTypes : Comparable
@@ -196,6 +201,21 @@ namespace Test.VirtualRadar.Library
 
             private List<Guid> _Guids = new List<Guid>();
             public List<Guid> Guids { get { return _Guids; } }
+
+            private List<UInt16> _UInt16s = new List<UInt16>();
+            public List<UInt16> UInt16s { get { return _UInt16s; } }
+
+            private List<UInt32> _UInt32s = new List<UInt32>();
+            public List<UInt32> UInt32s { get { return _UInt32s; } }
+
+            private List<UInt64> _UInt64s = new List<UInt64>();
+            public List<UInt64> UInt64s { get { return _UInt64s; } }
+
+            private List<SByte> _SBytes = new List<SByte>();
+            public List<SByte> SBytes { get { return _SBytes; } }
+
+            private List<Decimal> _Decimals = new List<Decimal>();
+            public List<Decimal> Decimals { get { return _Decimals; } }
         }
 
         public class ListOfStrings : Comparable
@@ -872,6 +892,11 @@ namespace Test.VirtualRadar.Library
                 AnInt32 = 9,
                 AnInt64 = 10,
                 ASingle = 12.13F,
+                AUInt16 = 14,
+                AUint32 = 15,
+                AUInt64 = 16,
+                AnSByte = -17,
+                ADecimal = 18,
             };
             var expected = GetXmlSerializerOutput(obj);
             var actual = run(obj);
@@ -930,6 +955,11 @@ namespace Test.VirtualRadar.Library
                 Int32s = { 5, 6, },
                 Int64s = { 7, 8, },
                 Singles = { 9.10f, 11.12f },
+                UInt16s = { 13, 14 },
+                UInt32s = { 15, 16 },
+                UInt64s = { 17, 18 },
+                SBytes = { -19, 20 },
+                Decimals = { -21, 22 },
             };
             var expected = GetXmlSerializerOutput(obj);
             var actual = run(obj);
@@ -1418,6 +1448,11 @@ namespace Test.VirtualRadar.Library
                 AnInt32 = Int32.MaxValue,
                 AnInt64 = Int64.MinValue,
                 ASingle = Single.MaxValue,
+                AUInt16 = UInt16.MaxValue,
+                AUint32 = UInt32.MaxValue,
+                AUInt64 = UInt64.MaxValue,
+                AnSByte = SByte.MinValue,
+                ADecimal = Decimal.MinValue,
             };
             var text = GetXmlSerializerOutput(original);
             var expected = DeserialiseWithXmlSerializer<ValueTypes>(text);
@@ -1507,6 +1542,11 @@ namespace Test.VirtualRadar.Library
                 Int32s = { 5, 6, },
                 Int64s = { 7, 8, },
                 Singles = { 9.10f, 11.12f },
+                UInt16s = { 13, 14 },
+                UInt32s = { 15, 16 },
+                UInt64s = { 17, 18 },
+                SBytes = { -19, 20 },
+                Decimals = { -21, 22 },
             };
             var text = GetXmlSerializerOutput(original);
             var expected = DeserialiseWithXmlSerializer<ListsOfValueTypes>(text);
