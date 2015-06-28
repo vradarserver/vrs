@@ -51,7 +51,11 @@ namespace VirtualRadar.Library
             { "Int16",  "Short" },
             { "Int32",  "Int" },
             { "Int64",  "Long" },
+            { "SByte",  "Byte" },
             { "Single", "Float" },
+            { "UInt16", "UnsignedShort" },
+            { "UInt32", "UnsignedInt" },
+            { "UInt64", "UnsignedLong" },
         };
         #endregion
 
