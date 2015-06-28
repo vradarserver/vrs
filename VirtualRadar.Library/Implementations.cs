@@ -103,6 +103,7 @@ namespace VirtualRadar.Library
             factory.Register<ISimpleAircraftList, SimpleAircraftList>();
             factory.Register<IStatistics, Statistics>();
             factory.Register<ITimer, Timer>();
+            factory.Register<IXmlSerialiser, XmlSerialiser>();
 
             if(Type.GetType("Mono.Runtime") == null) {
                 factory.Register<ISpeechSynthesizerWrapper, DotNetSpeechSynthesizerWrapper>();

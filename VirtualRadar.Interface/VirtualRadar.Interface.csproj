@@ -106,13 +106,16 @@
     <Compile Include="AircraftDetail.cs" />
     <Compile Include="Crc64.cs" />
     <Compile Include="CultureSwitcher.cs" />
+    <Compile Include="CustomConvert.cs" />
     <Compile Include="ExpiringCollection.cs" />
     <Compile Include="ExpiringDictionary.cs" />
     <Compile Include="ExpiringList.cs" />
     <Compile Include="Hierarchy.cs" />
     <Compile Include="ITimer.cs" />
+    <Compile Include="IXmlSerialiser.cs" />
     <Compile Include="Listener\IAircraftListJsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\IAircraftListJsonMessageConverter.cs" />
+    <Compile Include="StringWriterWithEncoding.cs" />
     <Compile Include="WebSite\IAircraftListJsonBuilder.cs" />
     <Compile Include="IExceptionReporter.cs" />
     <Compile Include="IImageDimensionsFetcher.cs" />

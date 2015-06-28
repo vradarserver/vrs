@@ -244,20 +244,8 @@ namespace Test.Framework
         /// <returns></returns>
         public static object ChangeType(object value, Type type, IFormatProvider provider)
         {
-            object result = null;
-
-            if(!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Nullable<>)) {
-                if(type.IsEnum) {
-                    result = Enum.Parse(type, (string)Convert.ChangeType(value, typeof(string)));
-                } else {
-                    result = Convert.ChangeType(value, type, provider);
-                }
-            } else if(value != null) {
-                var underlyingType = type.GetGenericArguments()[0];
-                result = ChangeType(value, underlyingType, provider);
-            }
-
-            return result;
+            // Moved the code to Interface so that I could use it in the program
+            return VirtualRadar.Interface.CustomConvert.ChangeType(value, type, provider);
         }
         #endregion
 

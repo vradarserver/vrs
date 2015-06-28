@@ -14,7 +14,8 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Settings;
 using System.IO;
-using System.Xml.Serialization;
+using InterfaceFactory;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library.Settings
 {
@@ -65,8 +66,8 @@ namespace VirtualRadar.Library.Settings
             if(Provider.FileExists(manifestFileName)) {
                 var fileContent = Provider.ReadAllText(manifestFileName);
                 using(var textReader = new StringReader(fileContent)) {
-                    var serialiser = new XmlSerializer(typeof(PluginManifest));
-                    result = (PluginManifest)serialiser.Deserialize(textReader);
+                    var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                    result = serialiser.Deserialise<PluginManifest>(textReader);
                 }
             }
 

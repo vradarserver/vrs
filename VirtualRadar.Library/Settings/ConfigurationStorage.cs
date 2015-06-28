@@ -18,7 +18,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
-using System.Xml.Serialization;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
@@ -191,8 +190,8 @@ namespace VirtualRadar.Library.Settings
             try {
                 if(File.Exists(FileName)) {
                     using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
-                        XmlSerializer serialiser = new XmlSerializer(typeof(Configuration));
-                        result = (Configuration)serialiser.Deserialize(stream);
+                        var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                        result = serialiser.Deserialise<Configuration>(stream);
                     }
                 }
             } finally {
@@ -329,8 +328,8 @@ namespace VirtualRadar.Library.Settings
                 ++configuration.DataVersion;
 
                 using(StreamWriter stream = new StreamWriter(FileName, false, Encoding.UTF8)) {
-                    XmlSerializer serialiser = new XmlSerializer(typeof(Configuration));
-                    serialiser.Serialize(stream, configuration);
+                    var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                    serialiser.Serialise(configuration, stream);
                 }
             }
 
