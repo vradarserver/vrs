@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,31 +12,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// An enumeration of the different resize modes supported by the website graphics code.
     /// </summary>
-    public static class Implementations
+    public enum ResizeImageMode
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Image is drawn at top-left and is just large enough to fill the new space in both axis. One axis
+        /// may end up being clipped.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<IAircraftListJsonBuilder, AircraftListJsonBuilder>();
-            factory.Register<IBundler, Bundler>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteProvider, WebSiteProvider>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
-            factory.Register<IWebSiteGraphics, WebSiteGraphics>();
-        }
+        Normal,
+
+        /// <summary>
+        /// As per <see cref="Normal"/> but if an axis is clipped then the top or left is offset so that the centre is
+        /// still in the middle of the new stockImage.
+        /// </summary>
+        Centre,
+
+        /// <summary>
+        /// Image is stretched to exactly fill the width and height of the new image.
+        /// </summary>
+        Stretch,
+
+        /// <summary>
+        /// Image is centred within new image, keeping the same aspect ratio as the original. One axis will be
+        /// the same as the new image, the other may be smaller. Unused space is filled with a brush.
+        /// </summary>
+        Zoom,
     }
 }

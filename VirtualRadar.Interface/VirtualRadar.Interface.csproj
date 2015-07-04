@@ -111,6 +111,7 @@
     <Compile Include="ExpiringDictionary.cs" />
     <Compile Include="ExpiringList.cs" />
     <Compile Include="Hierarchy.cs" />
+    <Compile Include="WebSite\IWebSiteGraphics.cs" />
     <Compile Include="ITimer.cs" />
     <Compile Include="IXmlSerialiser.cs" />
     <Compile Include="Listener\IAircraftListJsonMessageBytesExtractor.cs" />
@@ -465,10 +466,12 @@
     <Compile Include="WebSite\ReportFlightJson.cs" />
     <Compile Include="WebSite\ReportRouteJson.cs" />
     <Compile Include="WebSite\ReportRowsJson.cs" />
+    <Compile Include="WebSite\ResizeImageMode.cs" />
     <Compile Include="WebSite\ServerConfigJson.cs" />
     <Compile Include="WebSite\ServerReceiverJson.cs" />
     <Compile Include="WebSite\SimpleContent.cs" />
     <Compile Include="WebSite\SiteRoot.cs" />
+    <Compile Include="WebSite\StandardWebSiteImageSize.cs" />
     <Compile Include="WebSite\TextContentEventArgs.cs" />
     <Compile Include="WebSite\TrailType.cs" />
   </ItemGroup>
