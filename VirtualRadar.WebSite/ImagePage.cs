@@ -9,17 +9,12 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
@@ -153,32 +148,6 @@ namespace VirtualRadar.WebSite
         /// A value indicating whether browsers coming from the Internet are allowed to add text to images, which could be computationally expensive.
         /// </summary>
         private bool _InternetClientCanShowText;
-
-        /// <summary>
-        /// The cache of known fonts.
-        /// </summary>
-        private static FontCache _FontCache = new FontCache();
-
-        /// <summary>
-        /// When true this blocks multithreaded access to image generation.
-        /// </summary>
-        /// <remarks>
-        /// When multiple requests are received on many threads you can get two threads generating images at the same time. This is not a problem for
-        /// .NET but under some Mono environments the native image library they use (libcairo) does not appear to be thread-safe. I don't want to degrade
-        /// performance for .NET environments, under .NET I still want to allow multithreaded image generation, so this flag gets set when VRS is running
-        /// under Mono and then when it's set a Monitor is used to force single-threaded access to image manipulation calls.
-        /// </remarks>
-        private bool _ForceSingleThreadAccess;
-
-        /// <summary>
-        /// The object on which <see cref="_ForceSingleThreadAccess"/> environments will lock.
-        /// </summary>
-        private static object _ForceSingleThreadAccessLock = new object();
-
-        /// <summary>
-        /// True if the web site is running under Mono.
-        /// </summary>
-        private bool _IsMono;
         #endregion
 
         #region Properties
@@ -206,8 +175,6 @@ namespace VirtualRadar.WebSite
             _Graphics = Factory.Singleton.Resolve<IWebSiteGraphics>().Singleton;
             _PictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
             _PictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton.DirectoryCache;
-            _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
-            _ForceSingleThreadAccess = false; //_IsMono;
         }
         #endregion
 
@@ -250,7 +217,6 @@ namespace VirtualRadar.WebSite
                 Image tempImage = null;
 
                 if(result) {
-                    if(_ForceSingleThreadAccess) Monitor.Enter(_ForceSingleThreadAccessLock);
                     try {
                         result = BuildInitialImage(imageRequest, args, ref stockImage, ref tempImage);
                         if(result) {
@@ -270,7 +236,6 @@ namespace VirtualRadar.WebSite
                     } finally {
                         if(stockImage != null) stockImage.Dispose();        // clones are now made of all stock images
                         if(tempImage != null) tempImage.Dispose();
-                        if(_ForceSingleThreadAccess) Monitor.Exit(_ForceSingleThreadAccessLock);
                     }
                 }
             }
