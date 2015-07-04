@@ -430,6 +430,9 @@ Global
 		{40F37767-C554-453F-8748-784EF41E0AFB} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
 		{9E538513-A812-4A09-BD54-96734AD4A850} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
 	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = VirtualRadar.vsmdi
 	EndGlobalSection

@@ -171,6 +171,15 @@ namespace VirtualRadar.Library.Network
             get { return _Online; }
             set { if(_Online != value) { _Online = value; OnOnlineChanged(EventArgs.Empty); } }
         }
+
+        /// <summary>
+        /// Gets a value indicating that we should rebroadcast something. If the server is offline or nothing is
+        /// currently connected to it then there's no point in doing any rebroadcasting work.
+        /// </summary>
+        private bool ShouldRebroadcast
+        {
+            get { return Online && Connector.HasConnection; }
+        }
         #endregion
 
         #region Events exposed
@@ -397,7 +406,7 @@ namespace VirtualRadar.Library.Network
             var connector = Connector;
             var isNewConnection = connection != null;
 
-            if(aircraftList != null && connector != null && (connector.HasConnection || isNewConnection)) {
+            if(aircraftList != null && Online && connector != null && (connector.HasConnection || isNewConnection)) {
                 switch(format) {
                     case RebroadcastFormat.AircraftListJson:
                         long timestamp, dataVersion;
@@ -456,7 +465,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void Listener_Port30003MessageReceived(object sender, BaseStationMessageEventArgs args)
         {
-            if(Online) {
+            if(ShouldRebroadcast) {
                 byte[] bytes;
                 switch(Format) {
                     case RebroadcastFormat.CompressedVRS:   bytes = _Compressor.Compress(args.Message); break;
@@ -474,7 +483,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void Listener_RawBytesReceived(object sender, EventArgs<byte[]> args)
         {
-            if(Online) Connector.Write(args.Value);
+            if(ShouldRebroadcast) Connector.Write(args.Value);
         }
 
         /// <summary>
@@ -484,7 +493,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void Listener_ModeSBytesReceived(object sender, EventArgs<ExtractedBytes> args)
         {
-            if(Online) {
+            if(ShouldRebroadcast) {
                 var extractedBytes = args.Value;
 
                 var bytes = new byte[(extractedBytes.Length * 2) + 4];
