@@ -270,12 +270,42 @@ namespace Test.VirtualRadar.Library.Network
         #endregion
 
         #region Rebroadcasting of messages from the feed's Listener
-        [TestMethod]
-        public void RebroadcastServer_Transmits_Port30003_Messages_From_Feed()
+        private void SetupForAvr()
+        {
+            _Server.Format = RebroadcastFormat.Avr;
+            _Server.Initialise();
+            _Server.Online = true;
+            _Connector.SetupGet(r => r.HasConnection).Returns(true);
+        }
+
+        private void SetupForPort30003()
         {
             _Server.Format = RebroadcastFormat.Port30003;
             _Server.Initialise();
             _Server.Online = true;
+            _Connector.SetupGet(r => r.HasConnection).Returns(true);
+        }
+
+        private void SetupForCompressedVRS()
+        {
+            _Server.Format = RebroadcastFormat.CompressedVRS;
+            _Server.Initialise();
+            _Server.Online = true;
+            _Connector.SetupGet(r => r.HasConnection).Returns(true);
+        }
+
+        private void SetupForPassthrough()
+        {
+            _Server.Format = RebroadcastFormat.Passthrough;
+            _Server.Initialise();
+            _Server.Online = true;
+            _Connector.SetupGet(r => r.HasConnection).Returns(true);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Transmits_Port30003_Messages_From_Feed()
+        {
+            SetupForPort30003();
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
@@ -289,9 +319,7 @@ namespace Test.VirtualRadar.Library.Network
         {
             var bytes = new byte[] { 0x01, 0xff };
             _Compressor.Setup(r => r.Compress(_Port30003Message)).Returns(bytes);
-            _Server.Format = RebroadcastFormat.CompressedVRS;
-            _Server.Initialise();
-            _Server.Online = true;
+            SetupForCompressedVRS();
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
@@ -307,9 +335,7 @@ namespace Test.VirtualRadar.Library.Network
                 TestInitialise();
 
                 _Compressor.Setup(r => r.Compress(_Port30003Message)).Returns(isNull ? null : new byte[] { });
-                _Server.Format = RebroadcastFormat.CompressedVRS;
-                _Server.Initialise();
-                _Server.Online = true;
+                SetupForCompressedVRS();
 
                 _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
@@ -320,10 +346,8 @@ namespace Test.VirtualRadar.Library.Network
         [TestMethod]
         public void RebroadcastServer_Transmits_Raw_Bytes_From_Listener()
         {
+            SetupForPassthrough();
             var bytes = new byte[] { 0x01, 0xff };
-            _Server.Format = RebroadcastFormat.Passthrough;
-            _Server.Initialise();
-            _Server.Online = true;
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(bytes));
 
@@ -335,9 +359,7 @@ namespace Test.VirtualRadar.Library.Network
         public void RebroadcastServer_Transmits_AVR_Colon_Messages_When_Listener_Transmits_ModeS_Bytes_With_Parity_Stripped()
         {
             var bytes = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54 };
-            _Server.Format = RebroadcastFormat.Avr;
-            _Server.Initialise();
-            _Server.Online = true;
+            SetupForAvr();
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = false }));
 
@@ -349,9 +371,7 @@ namespace Test.VirtualRadar.Library.Network
         public void RebroadcastServer_Transmits_AVR_Star_Messages_When_Listener_Transmits_ModeS_Bytes_With_Parity_Present()
         {
             var bytes = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54 };
-            _Server.Format = RebroadcastFormat.Avr;
-            _Server.Initialise();
-            _Server.Online = true;
+            SetupForAvr();
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = true }));
 
@@ -363,9 +383,7 @@ namespace Test.VirtualRadar.Library.Network
         public void RebroadcastServer_Honours_Offset_And_Length_For_ModeS_Bytes()
         {
             var bytes = new byte[] { 0x01, 0x02, 0x03, 0x04 };
-            _Server.Format = RebroadcastFormat.Avr;
-            _Server.Initialise();
-            _Server.Online = true;
+            SetupForAvr();
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Offset = 1, Length = bytes.Length - 1, Format = ExtractedBytesFormat.ModeS, HasParity = true }));
 
@@ -376,9 +394,7 @@ namespace Test.VirtualRadar.Library.Network
         [TestMethod]
         public void RebroadcastServer_Does_Not_Transmit_Raw_Bytes_If_Port30003_Format_Specified()
         {
-            _Server.Format = RebroadcastFormat.Port30003;
-            _Server.Initialise();
-            _Server.Online = true;
+            SetupForPort30003();
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(new byte[] { 0x01, 0x02 }));
 
@@ -388,9 +404,7 @@ namespace Test.VirtualRadar.Library.Network
         [TestMethod]
         public void RebroadcastServer_Does_Not_Transmit_Raw_Bytes_If_Compressed_Format_Specified()
         {
-            _Server.Format = RebroadcastFormat.CompressedVRS;
-            _Server.Initialise();
-            _Server.Online = true;
+            SetupForCompressedVRS();
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(new byte[] { 0x01, 0x02 }));
 
@@ -401,9 +415,7 @@ namespace Test.VirtualRadar.Library.Network
         public void RebroadcastServer_Does_Not_Transmit_Port30003_Messages_If_Passthrough_Format_Specified()
         {
             var bytes = new byte[] { 0x01, 0xff };
-            _Server.Format = RebroadcastFormat.Passthrough;
-            _Server.Initialise();
-            _Server.Online = true;
+            SetupForPassthrough();
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
@@ -413,9 +425,19 @@ namespace Test.VirtualRadar.Library.Network
         [TestMethod]
         public void RebroadcastServer_Does_Not_Transmit_Port30003_Messages_When_Offline()
         {
-            _Server.Format = RebroadcastFormat.Port30003;
-            _Server.Initialise();
+            SetupForPort30003();
             _Server.Online = false;
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Does_Not_Transmit_Port30003_Messages_When_There_Are_No_Connections()
+        {
+            SetupForPort30003();
+            _Connector.SetupGet(r => r.HasConnection).Returns(false);
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
@@ -427,9 +449,21 @@ namespace Test.VirtualRadar.Library.Network
         {
             var bytes = new byte[] { 0x01, 0xff };
             _Compressor.Setup(r => r.Compress(_Port30003Message)).Returns(bytes);
-            _Server.Format = RebroadcastFormat.CompressedVRS;
-            _Server.Initialise();
+            SetupForCompressedVRS();
             _Server.Online = false;
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Does_Not_Transmit_Compressed_Messages_When_There_Are_No_Connections()
+        {
+            var bytes = new byte[] { 0x01, 0xff };
+            _Compressor.Setup(r => r.Compress(_Port30003Message)).Returns(bytes);
+            SetupForCompressedVRS();
+            _Connector.SetupGet(r => r.HasConnection).Returns(false);
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
@@ -440,9 +474,20 @@ namespace Test.VirtualRadar.Library.Network
         public void RebroadcastServer_Does_Not_Transmit_Raw_Bytes_When_Offline()
         {
             var bytes = new byte[] { 0x01, 0xff };
-            _Server.Format = RebroadcastFormat.Passthrough;
-            _Server.Initialise();
+            SetupForPassthrough();
             _Server.Online = false;
+
+            _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(bytes));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Does_Not_Transmit_Raw_Bytes_When_There_Are_No_Connections()
+        {
+            var bytes = new byte[] { 0x01, 0xff };
+            SetupForPassthrough();
+            _Connector.SetupGet(r => r.HasConnection).Returns(false);
 
             _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(bytes));
 
@@ -453,9 +498,20 @@ namespace Test.VirtualRadar.Library.Network
         public void RebroadcastServer_Does_Not_Transmit_AVR_Format_When_Offline()
         {
             var bytes = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54 };
-            _Server.Format = RebroadcastFormat.Avr;
-            _Server.Initialise();
+            SetupForAvr();
             _Server.Online = false;
+
+            _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = false }));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Does_Not_Transmit_AVR_Format_When_There_Are_No_Connections()
+        {
+            var bytes = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54 };
+            SetupForAvr();
+            _Connector.SetupGet(r => r.HasConnection).Returns(false);
 
             _Listener.Raise(r => r.ModeSBytesReceived += null, new EventArgs<ExtractedBytes>(new ExtractedBytes() { Bytes = bytes, Length = bytes.Length, Format = ExtractedBytesFormat.ModeS, HasParity = false }));
 
@@ -469,6 +525,7 @@ namespace Test.VirtualRadar.Library.Network
             _Server.Format = RebroadcastFormat.AircraftListJson;
             _Server.SendIntervalMilliseconds = 1000;
             _Server.Initialise();
+            _Server.Online = true;
 
             _Connector.SetupGet(r => r.HasConnection).Returns(true);
         }
@@ -676,6 +733,24 @@ namespace Test.VirtualRadar.Library.Network
             SetupAircraftJson();
 
             _Connector.SetupGet(r => r.HasConnection).Returns(false);
+
+            _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
+
+            long of1, of2;
+            _AircraftList.Verify(r => r.TakeSnapshot(out of1, out of2), Times.Never());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
+            Assert.AreEqual(0, _Connector.Written.Count);
+            _Timer.Verify(r => r.Start(), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_AircraftListJson_Does_Nothing_When_Offline()
+        {
+            ConfigureForAircraftListJson();
+            AddSnapshotAircraft();
+            SetupAircraftJson();
+
+            _Server.Online = false;
 
             _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
 
