@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,31 +12,53 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// An enumeration of the standard sizes for images used by the web site.
     /// </summary>
-    public static class Implementations
+    public enum StandardWebSiteImageSize
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Not applicable / not specified.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<IAircraftListJsonBuilder, AircraftListJsonBuilder>();
-            factory.Register<IBundler, Bundler>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteProvider, WebSiteProvider>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
-            factory.Register<IWebSiteGraphics, WebSiteGraphics>();
-        }
+        None,
+
+        /// <summary>
+        /// The original size of the stock image.
+        /// </summary>
+        Full,
+
+        /// <summary>
+        /// The size of a thumbnail of an aircraft picture in the aircraft list.
+        /// </summary>
+        PictureListThumbnail,
+
+        /// <summary>
+        /// The size of an aircraft picture in the aircraft detail panel.
+        /// </summary>
+        PictureDetail,
+
+        /// <summary>
+        /// The size of an aircraft picture in the iPhone detail panel.
+        /// </summary>
+        IPhoneDetail,
+
+        /// <summary>
+        /// The size of an aircraft picture in the iPad detail panel.
+        /// </summary>
+        IPadDetail,
+
+        /// <summary>
+        /// The size of an aircraft picture conforming to the 200 x 133 standard.
+        /// </summary>
+        /// <remarks>
+        /// If the original is larger than 200 x 133 it is scaled to fit on the longest edge
+        /// and then cropped to 200 x 133 from the centre, as per <see cref="PictureListThumbnail"/>.
+        /// If the original is smaller than 200 x 133 then it is zoomed up so that the shortest
+        /// side is either 200 or 133, and then cropped from the centre.
+        /// </remarks>
+        BaseStation,
     }
 }

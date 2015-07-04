@@ -96,6 +96,7 @@
     <Compile Include="TextPage.cs" />
     <Compile Include="WebSite.cs" />
     <Compile Include="WebSiteExtender.cs" />
+    <Compile Include="WebSiteGraphics.cs" />
     <Compile Include="WebSiteProvider.cs" />
   </ItemGroup>
   <ItemGroup>
