@@ -62,5 +62,14 @@ namespace VirtualRadar.Interface.Settings
         /// passwords and it must never return passwords when loading users.
         /// </remarks>
         string UIPassword { get; set; }
+
+        /// <summary>
+        /// Gets or sets an object that the application can tag the user with.
+        /// </summary>
+        /// <remarks>
+        /// This is not to be saved to the database, it's just an object that the application
+        /// has assigned to the user. It should be ignored by the user manager.
+        /// </remarks>
+        object Tag { get; set; }
     }
 }

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Settings;
@@ -30,6 +31,11 @@ namespace VirtualRadar.Database.Users
         /// The database that is recording user information for us.
         /// </summary>
         private Database _Database;
+
+        /// <summary>
+        /// The last temporary unique ID assigned by the manager.
+        /// </summary>
+        private long _TemporaryUniqueId;
         #endregion
 
         #region Properties
@@ -292,6 +298,21 @@ namespace VirtualRadar.Database.Users
         {
             var ourUser = CastUser(user);
             return ourUser.Hash.PasswordMatches(password);
+        }
+        #endregion
+
+        #region GenerateTemporaryUniqueId
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public string GenerateTemporaryUniqueId(IUser user)
+        {
+            var result = _TemporaryUniqueId - 1;
+            _TemporaryUniqueId = result;
+
+            return result.ToString(CultureInfo.InvariantCulture);
         }
         #endregion
     }

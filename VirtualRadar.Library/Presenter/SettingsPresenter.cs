@@ -141,6 +141,19 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
+        #region Private class - UserTag
+        /// <summary>
+        /// The tag object assigned to new users.
+        /// </summary>
+        class UserTag
+        {
+            /// <summary>
+            /// Gets or sets the ID assigned to a new user.
+            /// </summary>
+            public string OriginalNewId { get; set; }
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// True if validation on changes to values on the view is disabled.
@@ -373,6 +386,11 @@ namespace VirtualRadar.Library.Presenter
             result.Enabled = true;
             result.LoginName = "";
             result.Name = "";
+
+            result.Tag = new UserTag() {
+                OriginalNewId = result.UniqueId,
+            };
+            result.UniqueId = _UserManager.GenerateTemporaryUniqueId(result);
 
             return result;
         }
@@ -1484,6 +1502,13 @@ namespace VirtualRadar.Library.Presenter
         {
             var existing = _UserManager.GetUsers();
 
+            // We need a copy of all of the instances of user IDs in the configuration so that we can preserve changes to the
+            // ID. The ID can change when new users are referenced by the settings, they start off with an invalid ID and then
+            // get assigned a valid ID when they're inserted. This changes their ID property and the new user will be removed
+            // from any place that they're referenced, so we need to fix that back up later.
+            var administratorUserIds = new List<string>(_View.Configuration.WebServerSettings.AdministratorUserIds);
+            var basicAuthenticationUserIds = new List<string>(_View.Configuration.WebServerSettings.BasicAuthenticationUserIds);
+
             // Update existing records
             foreach(var record in _View.Users) {
                 var current = existing.FirstOrDefault(r => r.UniqueId == record.UniqueId);
@@ -1516,8 +1541,43 @@ namespace VirtualRadar.Library.Presenter
             if(_UserManager.CanCreateUsers) {
                 foreach(var record in _View.Users.Where(r => !r.IsPersisted)) {
                     if(record.UIPassword == _DefaultPassword) record.UIPassword = null;
+
+                    var temporaryUniqueId = record.UniqueId;
+                    var tag = (UserTag)record.Tag;
+                    record.UniqueId = tag.OriginalNewId;
+
                     _UserManager.CreateUser(record);
+
                     record.UIPassword = _DefaultPassword;
+
+                    // Fix up the identifiers in the copy of the user ID lists that are NOT data-bound to the objects
+                    FixupUserIDList(administratorUserIds,       temporaryUniqueId, record.UniqueId);
+                    FixupUserIDList(basicAuthenticationUserIds, temporaryUniqueId, record.UniqueId);
+                }
+            }
+
+            // Rebuild the data-bound lists of user IDs - note that this will trigger data binding events. At the time
+            // of writing that should not have any ill effect.
+            _View.Configuration.WebServerSettings.AdministratorUserIds.Clear();
+            _View.Configuration.WebServerSettings.AdministratorUserIds.AddRange(administratorUserIds);
+
+            _View.Configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
+            _View.Configuration.WebServerSettings.BasicAuthenticationUserIds.AddRange(basicAuthenticationUserIds);
+        }
+
+        /// <summary>
+        /// Searches for instances of the temporary unique ID in the user ID list passed across and replaces
+        /// them with references to the actual unique ID passed across.
+        /// </summary>
+        /// <param name="userIDList"></param>
+        /// <param name="temporaryUniqueID"></param>
+        /// <param name="actualUniqueID"></param>
+        private void FixupUserIDList(IList<string> userIDList, string temporaryUniqueID, string actualUniqueID)
+        {
+            for(var i = 0;i < userIDList.Count;++i) {
+                var userID = userIDList[i];
+                if(userID == temporaryUniqueID) {
+                    userIDList[i] = actualUniqueID;
                 }
             }
         }
