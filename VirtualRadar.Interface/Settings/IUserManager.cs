@@ -168,5 +168,24 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="password"></param>
         /// <returns></returns>
         bool PasswordMatches(IUser user, string password);
+
+        /// <summary>
+        /// Returns an identifier that does not exist on any user record, has not been previously returned
+        /// by other calls to GenerateTemporaryUniqueId in this session and cannot be assigned to a new user
+        /// by any of the Create calls.
+        /// </summary>
+        /// <param name="user">The user that the temporary ID will be assigned to.</param>
+        /// <returns></returns>
+        /// <remarks><para>
+        /// The user creation UI has a bit of a chicken-and-egg situation, whereby the same screen that lets people
+        /// create users also lets them use the new user's unique IDs in the settings. All new users tend to have
+        /// the same default ID so any settings that refer to these new users are all referring to an ID that won't
+        /// exist once the user is saved.
+        /// </para><para>
+        /// What the UI now does is it creates a new user object via the factory and then assigns it a temporary
+        /// ID, the ID returned by this function. When the settings are saved it saves the users first and then
+        /// replaces instances of the temporary ID with the ID assigned during the save.
+        /// </para></remarks>
+        string GenerateTemporaryUniqueId(IUser user);
     }
 }

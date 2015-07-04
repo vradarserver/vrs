@@ -155,6 +155,16 @@ namespace VirtualRadar.Database.Users
             }
         }
 
+        private object _Tag;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public object Tag
+        {
+            get { return _Tag; }
+            set { SetField(ref _Tag, value, () => Tag); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
