@@ -120,7 +120,7 @@ namespace VirtualRadar.Interface.WebSite
         Font GetFontForRectangle(string fontFamily, FontStyle fontStyle, float startSize, Graphics graphics, float width, float height, string text);
 
         /// <summary>
-        /// When passed the current temporary image and the image that will become to new temporary image this
+        /// When passed the current temporary image and the image that will become the new temporary image this
         /// disposes of the old temporary image and returns the new one. Can cope when the same image is passed
         /// across for both the temporary and new image.
         /// </summary>
