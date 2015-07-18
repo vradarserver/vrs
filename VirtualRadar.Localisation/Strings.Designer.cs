@@ -1754,6 +1754,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide from web site.
+        /// </summary>
+        public static string HideFromWebSite {
+            get {
+                return ResourceManager.GetString("HideFromWebSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ICAO.
         /// </summary>
         public static string ICAO {
@@ -2641,6 +2650,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge only.
+        /// </summary>
+        public static string MergeOnly {
+            get {
+                return ResourceManager.GetString("MergeOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message.
         /// </summary>
         public static string Message {
@@ -2938,6 +2956,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        public static string Normal {
+            get {
+                return ResourceManager.GetString("Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No snapshot has yet been taken.
         /// </summary>
         public static string NoSnapshotBody {
@@ -2952,6 +2979,15 @@ namespace VirtualRadar.Localisation {
         public static string NoSnapshotTitle {
             get {
                 return ResourceManager.GetString("NoSnapshotTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to N/A.
+        /// </summary>
+        public static string NotApplicableAbbr {
+            get {
+                return ResourceManager.GetString("NotApplicableAbbr", resourceCulture);
             }
         }
         
@@ -3015,6 +3051,33 @@ namespace VirtualRadar.Localisation {
         public static string Operator {
             get {
                 return ResourceManager.GetString("Operator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This receiver will not appear on the web site but it can have and rebroadcast server set up for it and it can be merged with other feeds..
+        /// </summary>
+        public static string OptionDescribeReceiverUsageHideFromWebSite {
+            get {
+                return ResourceManager.GetString("OptionDescribeReceiverUsageHideFromWebSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This receiver will not appear on the web site and it can only have certain formats of rebroadcast server set up for it. However it can be merged with other feeds..
+        /// </summary>
+        public static string OptionDescribeReceiverUsageMergeOnly {
+            get {
+                return ResourceManager.GetString("OptionDescribeReceiverUsageMergeOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This receiver will appear on the web site, it can have rebroadcast servers set up for it and it can be merged with other feeds..
+        /// </summary>
+        public static string OptionDescribeReceiverUsageNormal {
+            get {
+                return ResourceManager.GetString("OptionDescribeReceiverUsageNormal", resourceCulture);
             }
         }
         

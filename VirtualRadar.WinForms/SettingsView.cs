@@ -1033,7 +1033,7 @@ namespace VirtualRadar.WinForms
             // Normally here we'd set DialogResult to None if we had any errors. Unfortunately Mono's
             // implementation of DialogResult is broken, we can't use it. Instead we need to set a flag
             // that the OK button click handler can use to control whether the form closes or not.
-            _LastValidationFailed = results.HasErrors;
+            if(results.HasErrors) _LastValidationFailed = true;
 
             var showPageSummary = ShowValidationResultsAgainstControls(results);
             if(showPageSummary != null) DisplayPage(showPageSummary);
@@ -1153,6 +1153,10 @@ namespace VirtualRadar.WinForms
         #region Events subscribed - buttons
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            if(!_IsSaving) {
+                _LastValidationFailed = false;
+            }
+
             var isSaving = _IsSaving;
             _IsSaving = true;
             try {

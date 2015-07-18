@@ -458,6 +458,7 @@ namespace VirtualRadar.Library.Presenter
 
                 var isMerged = noValue ? false : listener is IMergedFeedListener;
                 var hasPolarPlot = noValue ? false : aircraftList.PolarPlotter != null;
+                var hasAircraftList = noValue ? false : aircraftList.IsTracking;
                 var connectionStatus = noValue ? ConnectionStatus.Disconnected : feed.Listener.ConnectionStatus;
                 var connectionStatusDescription = Describe.ConnectionStatus(connectionStatus);
                 var totalAircraft = noValue ? 0 : aircraftList.Count;
@@ -466,6 +467,7 @@ namespace VirtualRadar.Library.Presenter
 
                 _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatus,               connectionStatus,               (r,v) => r.ConnectionStatus = v);
                 _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatusDescription,    connectionStatusDescription,    (r,v) => r.ConnectionStatusDescription = v);
+                _FeedStatusHelper.Update(feedStatus, feedStatus.HasAircraftList,                hasAircraftList,                (r,v) => r.HasAircraftList = v);
                 _FeedStatusHelper.Update(feedStatus, feedStatus.HasPolarPlot,                   hasPolarPlot,                   (r,v) => r.HasPolarPlot = v);
                 _FeedStatusHelper.Update(feedStatus, feedStatus.IsMergedFeed,                   isMerged,                       (r,v) => r.IsMergedFeed = v);
                 _FeedStatusHelper.Update(feedStatus, feedStatus.Name,                           feed.Name,                      (r,v) => r.Name = v);

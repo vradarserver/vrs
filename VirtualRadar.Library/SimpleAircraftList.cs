@@ -49,6 +49,11 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public int Count { get { return Aircraft.Count; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsTracking { get; private set; }
         #endregion
 
         #region Events
@@ -69,6 +74,25 @@ namespace VirtualRadar.Library
         /// this event.</remarks>
         public event EventHandler CountChanged;
         #pragma warning restore 0067
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler TrackingStateChanged;
+
+        /// <summary>
+        /// Raises <see cref="TrackingStateChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <remarks>
+        /// Note that the class is sealed.
+        /// </remarks>
+        private void OnTrackingStateChanged(EventArgs args)
+        {
+            if(TrackingStateChanged != null) {
+                TrackingStateChanged(this, args);
+            }
+        }
         #endregion
 
         #region Constructor
@@ -113,13 +137,27 @@ namespace VirtualRadar.Library
         }
         #endregion
 
-        #region Start, FindAircraft, TakeSnapshot
+        #region Start, Stop, FindAircraft, TakeSnapshot
         /// <summary>
         /// See interface docs.
         /// </summary>
         public void Start()
         {
-            ;
+            if(!IsTracking) {
+                IsTracking = true;
+                OnTrackingStateChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Stop()
+        {
+            if(IsTracking) {
+                IsTracking = false;
+                OnTrackingStateChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>

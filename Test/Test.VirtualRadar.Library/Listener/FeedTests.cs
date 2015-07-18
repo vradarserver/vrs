@@ -570,16 +570,32 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Starts_AircraftList()
+        public void Feed_Initialise_Starts_AircraftList_If_Required()
         {
-            _AircraftList.Setup(r => r.Start()).Callback(() => {
-                Assert.IsNotNull(_AircraftList.Object.Listener);
-                Assert.IsNotNull(_AircraftList.Object.StandingDataManager);
-            });
+            foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
+                TestCleanup();
+                TestInitialise();
 
-            _Feed.Initialise(_Receiver, _Configuration);
+                _AircraftList.Setup(r => r.Start()).Callback(() => {
+                    Assert.IsNotNull(_AircraftList.Object.Listener);
+                    Assert.IsNotNull(_AircraftList.Object.StandingDataManager);
+                });
 
-            _AircraftList.Verify(r => r.Start(), Times.Once());
+                _Receiver.ReceiverUsage = receiverUsage;
+                _Feed.Initialise(_Receiver, _Configuration);
+
+                switch(receiverUsage) {
+                    case ReceiverUsage.Normal:
+                    case ReceiverUsage.HideFromWebSite:
+                        _AircraftList.Verify(r => r.Start(), Times.Once());
+                        break;
+                    case ReceiverUsage.MergeOnly:
+                        _AircraftList.Verify(r => r.Start(), Times.Never());
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
         }
 
         [TestMethod]
@@ -1200,6 +1216,33 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
             Assert.IsNull(_Feed.Listener.Connector.Authentication);
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Starts_Or_Stops_AircraftList_As_Appropriate()
+        {
+            foreach(ReceiverUsage initialReceiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
+                foreach(ReceiverUsage newReceiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
+                    var wasStarted = initialReceiverUsage != ReceiverUsage.MergeOnly;
+                    var shouldStart = newReceiverUsage != ReceiverUsage.MergeOnly;
+
+                    TestCleanup();
+                    TestInitialise();
+
+                    _Receiver.ReceiverUsage = initialReceiverUsage;
+                    _Feed.Initialise(_Receiver, _Configuration);
+
+                    _Receiver.ReceiverUsage = newReceiverUsage;
+                    _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+                    var expectedStarts = (wasStarted ? 1 : 0) + (shouldStart ? 1 : 0);
+                    var expectedStops = !shouldStart ? 1 : 0;
+                    var message = String.Format("initial: {0}, new: {1}", initialReceiverUsage, newReceiverUsage);
+
+                    _AircraftList.Verify(r => r.Start(), Times.Exactly(expectedStarts), message);
+                    _AircraftList.Verify(r => r.Stop(), Times.Exactly(expectedStops), message);
+                }
+            }
         }
         #endregion
 

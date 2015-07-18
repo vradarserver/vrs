@@ -265,6 +265,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _ReceiverLocationId, value, () => ReceiverLocationId); }
         }
 
+        private ReceiverUsage _ReceiverUsage;
+        /// <summary>
+        /// Gets or sets a value indicating how the receiver should be used by the system.
+        /// </summary>
+        public ReceiverUsage ReceiverUsage
+        {
+            get { return _ReceiverUsage; }
+            set { SetField(ref _ReceiverUsage, value, () => ReceiverUsage); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

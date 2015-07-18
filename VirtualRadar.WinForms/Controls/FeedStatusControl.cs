@@ -46,6 +46,8 @@ namespace VirtualRadar.WinForms.Controls
 
             public bool HasPolarPlotter { get; set; }
 
+            public bool HasAircraftList { get; set; }
+
             public ConnectionStatus ConnectionStatus { get; set; }
 
             public long TotalMessages { get; set; }
@@ -224,6 +226,7 @@ namespace VirtualRadar.WinForms.Controls
                 var feedDetail = feedDetails.FirstOrDefault(r => r.UniqueId == feed.FeedId);
                 if(feedDetail != null) {
                     feedDetail.HasPolarPlotter = feed.HasPolarPlot;
+                    feedDetail.HasAircraftList = feed.HasAircraftList;
                     feedDetails.Remove(feedDetail);
                     UpdateFeedDisplay(feed, feedDetail, forceRefresh: false);
                 } else {
@@ -231,6 +234,7 @@ namespace VirtualRadar.WinForms.Controls
                         UniqueId = feed.FeedId,
                         IsMergedFeed = feed.IsMergedFeed,
                         HasPolarPlotter = feed.HasPolarPlot,
+                        HasAircraftList = feed.HasAircraftList,
                         ListViewItem = new ListViewItem(new string[] { "", "", "", "", "" }),
                     };
                     feedDetail.ListViewItem.Tag = feedDetail;
@@ -294,8 +298,8 @@ namespace VirtualRadar.WinForms.Controls
                 feedDetail.TotalBadMessages = feed.TotalBadMessages;
             }
 
-            if(forceRefresh || feed.TotalAircraft != feedDetail.AircraftCount) {
-                item.SubItems[4].Text = feed.TotalAircraft.ToString("N0");
+            if(forceRefresh || feed.HasAircraftList != feedDetail.HasAircraftList || feed.TotalAircraft != feedDetail.AircraftCount) {
+                item.SubItems[4].Text = feed.HasAircraftList ? feed.TotalAircraft.ToString("N0") : Strings.NotApplicableAbbr;
                 feedDetail.AircraftCount = feed.TotalAircraft;
             }
         }

@@ -52,6 +52,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.StartupText, "#43-02\\r", "anything");
             TestUtilities.TestProperty(settings, r => r.ShutdownText, "#43-00\\r", "anything");
             TestUtilities.TestProperty(settings, r => r.ReceiverLocationId, 0, 1);
+            TestUtilities.TestProperty(settings, r => r.ReceiverUsage, ReceiverUsage.Normal, ReceiverUsage.MergeOnly);
 
             Assert.IsNotNull(settings.Access);
         }

@@ -368,6 +368,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(1, receiver.ReceiverLocationId);
                         Assert.AreEqual(null, receiver.Passphrase);
                         Assert.AreEqual(MultilaterationFeedType.None, receiver.MultilaterationFeedType);
+                        Assert.AreEqual(ReceiverUsage.Normal, receiver.ReceiverUsage);
 
                         receiver = readBack.Receivers[1];
                         Assert.AreEqual(false, receiver.Enabled);
@@ -392,6 +393,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(2, receiver.ReceiverLocationId);
                         Assert.AreEqual("Two", receiver.Passphrase);
                         Assert.AreEqual(MultilaterationFeedType.PositionsInjected, receiver.MultilaterationFeedType);
+                        Assert.AreEqual(ReceiverUsage.MergeOnly, receiver.ReceiverUsage);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.Receivers[0].Access.Addresses.Count);
@@ -644,6 +646,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             },
                                                             Passphrase = null,
                                                             MultilaterationFeedType = MultilaterationFeedType.None,
+                                                            ReceiverUsage = ReceiverUsage.Normal,
                                                         },
                                                         new Receiver() {
                                                             Enabled = false,
@@ -674,6 +677,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             },
                                                             Passphrase = "Two",
                                                             MultilaterationFeedType = MultilaterationFeedType.PositionsInjected,
+                                                            ReceiverUsage = ReceiverUsage.MergeOnly,
                                                         },
                                                     });
                                                     break;

@@ -169,6 +169,9 @@
     <Compile Include="Controls\PluginDetailsControl.Designer.cs">
       <DependentUpon>PluginDetailsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RadioButtonPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\RadioPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -252,6 +255,7 @@
     <Compile Include="PortableBinding\MasterListToSubsetBinder.cs" />
     <Compile Include="PortableBinding\NumericDoubleBinder.cs" />
     <Compile Include="PortableBinding\NumericIntBinder.cs" />
+    <Compile Include="PortableBinding\RadioButtonEnumBinder.cs" />
     <Compile Include="PortableBinding\ValueBinder.cs" />
     <Compile Include="PortableBinding\TextBoxStringBinder.cs" />
     <Compile Include="PortableBinding\ValueFromListBinder.cs" />
