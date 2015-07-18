@@ -60,6 +60,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         private BaseStationMessageEventArgs _BaseStationMessageEventArgs;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtEvent;
         private EventRecorder<EventArgs> _CountChangedEvent;
+        private EventRecorder<EventArgs> _TrackingStateChangedEvent;
         private Exception _BackgroundException;
         private Configuration _Configuration;
         private Mock<IConfigurationStorage> _ConfigurationStorage;
@@ -88,6 +89,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
 
             _Clock = new ClockMock();
+            _Clock.UtcNowValue = new DateTime(99L);
             Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
 
             _Port30003Listener = new Mock<IListener>().SetupAllProperties();
@@ -124,6 +126,7 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             _ExceptionCaughtEvent = new EventRecorder<EventArgs<Exception>>();
             _CountChangedEvent = new EventRecorder<EventArgs>();
+            _TrackingStateChangedEvent = new EventRecorder<EventArgs>();
 
             _AircraftList = Factory.Singleton.Resolve<IBaseStationAircraftList>();
             _AircraftList.ExceptionCaught += AircraftListExceptionCaughtHandler;
@@ -174,6 +177,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             TestUtilities.TestProperty(_AircraftList, r => r.PolarPlotter, null, _PolarPlotter.Object);
             Assert.AreEqual(AircraftListSource.BaseStation, _AircraftList.Source);
             Assert.AreEqual(0, _AircraftList.Count);
+            Assert.IsFalse(_AircraftList.IsTracking);
         }
 
         [TestMethod]
@@ -292,7 +296,123 @@ namespace Test.VirtualRadar.Library.BaseStation
         {
             _AircraftList.StandingDataManager = null;
             _AircraftList.Start();
-        }        
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Start_Sets_IsTracking()
+        {
+            _AircraftList.Start();
+            Assert.IsTrue(_AircraftList.IsTracking);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Start_Raises_TrackingStateChanged()
+        {
+            _AircraftList.TrackingStateChanged += _TrackingStateChangedEvent.Handler;
+            _AircraftList.Start();
+
+            Assert.AreEqual(1, _TrackingStateChangedEvent.CallCount);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Start_Does_Not_Raise_TrackingStateChanged_If_Already_Tracking()
+        {
+            _AircraftList.Start();
+
+            _AircraftList.TrackingStateChanged += _TrackingStateChangedEvent.Handler;
+            _AircraftList.Start();
+            Assert.AreEqual(0, _TrackingStateChangedEvent.CallCount);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Ignores_Aircraft_Messages_Until_Start_Is_Called()
+        {
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+            Assert.AreEqual(0, _AircraftList.Count);
+
+            _AircraftList.Start();
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+            Assert.AreEqual(1, _AircraftList.Count);
+        }
+        #endregion
+
+        #region Stop
+        [TestMethod]
+        public void BaseStationAircraftList_Stop_Clears_IsTracking()
+        {
+            _AircraftList.Start();
+            _AircraftList.Stop();
+
+            Assert.IsFalse(_AircraftList.IsTracking);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Stop_Raises_TrackingStateChanged()
+        {
+            _AircraftList.Start();
+
+            _AircraftList.TrackingStateChanged += _TrackingStateChangedEvent.Handler;
+            _AircraftList.Stop();
+
+            Assert.AreEqual(1, _TrackingStateChangedEvent.CallCount);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Stop_Does_Not_Raise_TrackingStateChanged_If_Already_Stopped()
+        {
+            _AircraftList.Start();
+            _AircraftList.Stop();
+
+            _AircraftList.TrackingStateChanged += _TrackingStateChangedEvent.Handler;
+            _AircraftList.Stop();
+
+            Assert.AreEqual(0, _TrackingStateChangedEvent.CallCount);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Stop_Prevents_Further_Processing_Of_Messages()
+        {
+            _AircraftList.Start();
+            _AircraftList.Stop();
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+            Assert.AreEqual(0, _AircraftList.Count);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Stop_Can_Be_Reversed_By_Calling_Start()
+        {
+            _AircraftList.Start();
+            _AircraftList.Stop();
+            _AircraftList.Start();
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+            Assert.AreEqual(1, _AircraftList.Count);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Stop_Removes_All_Tracked_Aircraft()
+        {
+            _AircraftList.Start();
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _AircraftList.Stop();
+
+            Assert.AreEqual(0, _AircraftList.Count);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Stop_Raises_CountChanged()
+        {
+            _AircraftList.Start();
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _AircraftList.CountChanged += _CountChangedEvent.Handler;
+            _AircraftList.Stop();
+
+            Assert.AreEqual(1, _CountChangedEvent.CallCount);
+        }
         #endregion
 
         #region FindAircraft
@@ -370,20 +490,19 @@ namespace Test.VirtualRadar.Library.BaseStation
         {
             _AircraftList.Start();
 
-            var time = DateTime.UtcNow;
-            _Clock.UtcNowValue = time;
-
             _BaseStationMessage.Icao24 = "1";
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
             _BaseStationMessage.Icao24 = "2";
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
+            var expectedDataVersion = _Clock.UtcNowValue.Ticks + 2;     // DataVersion was initialised to 99, 2 messages came in incrementing it twice
+
             long timeStamp, dataVersion;
             var list = _AircraftList.TakeSnapshot(out timeStamp, out dataVersion);
             Assert.AreEqual(2, list.Count);
-            Assert.AreEqual(time.Ticks, timeStamp);
-            Assert.AreEqual(time.Ticks + 1, dataVersion);
+            Assert.AreEqual(_Clock.UtcNowValue.Ticks, timeStamp);
+            Assert.AreEqual(expectedDataVersion, dataVersion);
         }
 
         [TestMethod]
@@ -850,35 +969,6 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
-        public void BaseStationAircraftList_MessageReceived_DataVersion_Uses_UtcNow()
-        {
-            _ReturnNullAircraftDetail = true;
-            var dateTime = new DateTime(1925);
-            _Clock.UtcNowValue = dateTime;
-
-            _AircraftList.Start();
-            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
-
-            var aircraft = _AircraftList.FindAircraft(0x4008f6);
-            Assert.AreEqual(1925, aircraft.DataVersion);
-        }
-
-        [TestMethod]
-        public void BaseStationAircraftList_MessageReceived_DataVersion_Increments_If_UtcNow_Is_Same_As_Current_DataVersion()
-        {
-            // This can happen if two messages are processed before the clock tick is updated by the O/S
-            _Clock.UtcNowValue = new DateTime(100);
-            _ReturnNullAircraftDetail = true;
-
-            _AircraftList.Start();
-            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
-            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
-
-            var aircraft = _AircraftList.FindAircraft(0x4008f6);
-            Assert.AreEqual(101, aircraft.DataVersion);
-        }
-
-        [TestMethod]
         public void BaseStationAircraftList_MessageReceived_DataVersion_Increments_If_UtcNow_Is_Before_Current_DataVersion()
         {
             // This can happen if the clock is reset while the program is running. DataVersion must never go backwards.
@@ -899,7 +989,6 @@ namespace Test.VirtualRadar.Library.BaseStation
             // and then, when it's sent back to us by the browser, we know for certain what has changed since the last time the
             // browser was sent the aircraft list.
             _AircraftList.Start();
-            _Clock.UtcNowValue = new DateTime(100);
             _BaseStationMessageEventArgs.Message.Icao24 = "1";
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
             _BaseStationMessageEventArgs.Message.Icao24 = "2";

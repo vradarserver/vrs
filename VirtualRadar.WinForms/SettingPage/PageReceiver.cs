@@ -154,6 +154,12 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         protected override void InitialiseControls()
         {
+            radioButtonPanelUsage.MapButtonValues(r => {
+                if(r == radioButtonUsageNormal)                 return ReceiverUsage.Normal;
+                else if(r == radioButtonUsageHideFromWebSite)   return ReceiverUsage.HideFromWebSite;
+                else if(r == radioButtonUsageMergeOnly)         return ReceiverUsage.MergeOnly;
+                else                                            return null;
+            });
             base.InitialiseControls();
         }
 
@@ -190,6 +196,8 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialBaudRate,  _SupportedBaudRates,                r => r.BaudRate,    (r,v) => r.BaudRate = v));
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialDataBits,  _SupportedDataBits,                 r => r.DataBits,    (r,v) => r.DataBits = v));
 
+            AddControlBinder(new RadioButtonEnumBinder<Receiver, ReceiverUsage>(Receiver, radioButtonPanelUsage, r => r.ReceiverUsage, (r,v) => r.ReceiverUsage = v));
+
             AddControlBinder(new AccessControlBinder<Receiver>(Receiver, accessControl, r => r.Access));
         }
 
@@ -204,6 +212,9 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(comboBoxDataSource,               Strings.DataSource,             Strings.OptionsDescribeDataSourcesDataSource);
             SetInlineHelp(comboBoxConnectionType,           Strings.ConnectionType,         Strings.OptionsDescribeDataSourcesConnectionType);
             SetInlineHelp(comboBoxMultilaterationType,      Strings.MultilaterationType,    Strings.OptionsDescribeDataSourcesMultilaterationType);
+            SetInlineHelp(radioButtonUsageNormal,           Strings.Normal,                 Strings.OptionDescribeReceiverUsageNormal);
+            SetInlineHelp(radioButtonUsageHideFromWebSite,  Strings.HideFromWebSite,        Strings.OptionDescribeReceiverUsageHideFromWebSite);
+            SetInlineHelp(radioButtonUsageMergeOnly,        Strings.MergeOnly,              Strings.OptionDescribeReceiverUsageMergeOnly);
 
             SetInlineHelp(checkBoxIsPassive,                Strings.PassiveReceiver,        Strings.OptionsDescribeDataSourcePassiveReceiver);
             SetInlineHelp(textBoxAddress,                   Strings.UNC,                    Strings.OptionsDescribeDataSourcesAddress);

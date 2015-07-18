@@ -1156,6 +1156,7 @@ namespace VirtualRadar.Library.Presenter
                         }
                     } else if(receiver != null) {
                         var isCooked = false;
+                        var hasAircraftList = receiver.ReceiverUsage != ReceiverUsage.MergeOnly;
                         switch(receiver.DataSource) {
                             case DataSource.Beast:          break;
                             case DataSource.CompressedVRS:  isCooked = true; break;
@@ -1169,7 +1170,7 @@ namespace VirtualRadar.Library.Presenter
                             case RebroadcastFormat.None:                break;
                             case RebroadcastFormat.Passthrough:         formatIsOK = true; break;
                             case RebroadcastFormat.Port30003:           formatIsOK = true; break;
-                            case RebroadcastFormat.AircraftListJson:    formatIsOK = true; break;       // Once merge-only feeds are implemented we'll have to check that the feed has an aircraft list on it before we allow this format.
+                            case RebroadcastFormat.AircraftListJson:    formatIsOK = hasAircraftList; break;
                             default:                                    throw new NotImplementedException();
                         }
                     }

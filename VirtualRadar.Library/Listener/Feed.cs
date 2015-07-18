@@ -138,7 +138,7 @@ namespace VirtualRadar.Library.Listener
             Listener.IgnoreBadMessages = true;
             ApplyReceiverListenerSettings(false, receiver, configuration, receiverLocation);
 
-            DoCommonInitialise(receiver.UniqueId, receiver.Name);
+            DoCommonInitialise(receiver.UniqueId, receiver.Name, startAircraftList: receiver.ReceiverUsage != ReceiverUsage.MergeOnly);
             ConfigurePolarPlotter(receiverLocation, nameChanged: false);
         }
 
@@ -164,7 +164,7 @@ namespace VirtualRadar.Library.Listener
             mergedFeedListener.IgnoreAircraftWithNoPosition = mergedFeed.IgnoreAircraftWithNoPosition;
             mergedFeedListener.SetListeners(mergedListeners);
 
-            DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name);
+            DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name, startAircraftList: true);
         }
 
         private static List<IListener> GetListenersFromMergeFeeds(MergedFeed mergedFeed, IEnumerable<IFeed> mergeFeeds)
@@ -178,7 +178,8 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         /// <param name="uniqueId"></param>
         /// <param name="name"></param>
-        private void DoCommonInitialise(int uniqueId, string name)
+        /// <param name="startAircraftList"></param>
+        private void DoCommonInitialise(int uniqueId, string name, bool startAircraftList)
         {
             _Initialised = true;
             UniqueId = uniqueId;
@@ -191,7 +192,10 @@ namespace VirtualRadar.Library.Listener
             AircraftList.ExceptionCaught += AircraftList_ExceptionCaught;
             AircraftList.Listener = Listener;
             AircraftList.StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
-            AircraftList.Start();
+
+            if(startAircraftList) {
+                AircraftList.Start();
+            }
         }
 
         /// <summary>
@@ -253,6 +257,12 @@ namespace VirtualRadar.Library.Listener
 
             Name = receiver.Name;
             ApplyReceiverListenerSettings(true, receiver, configuration, receiverLocation);
+
+            if(receiver.ReceiverUsage == ReceiverUsage.MergeOnly) {
+                AircraftList.Stop();
+            } else {
+                AircraftList.Start();
+            }
 
             ConfigurePolarPlotter(receiverLocation, nameChanged);
         }

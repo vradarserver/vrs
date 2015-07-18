@@ -474,6 +474,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.Passphrase,                r => r.Passphrase = r.Passphrase + 'A' },
                     { r => r.Port,                      r => r.Port += 1 },
                     { r => r.ReceiverLocationId,        r => r.ReceiverLocationId += 1 },
+                    { r => r.ReceiverUsage,             r => r.ReceiverUsage = ReceiverUsage.HideFromWebSite },
                     { r => r.ShutdownText,              r => r.ShutdownText = "TEST" },
                     { r => r.StartupText,               r => r.StartupText = "TEST" },
                     { r => r.StopBits,                  r => r.StopBits = System.IO.Ports.StopBits.OnePointFive },

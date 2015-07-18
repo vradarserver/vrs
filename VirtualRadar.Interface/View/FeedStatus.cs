@@ -53,6 +53,12 @@ namespace VirtualRadar.Interface.View
         public bool HasPolarPlot { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that an aircraft list is tracking the aircraft on the feed.
+        /// </summary>
+        [DataMember]
+        public bool HasAircraftList { get; set; }
+
+        /// <summary>
         /// Gets or sets the connection status.
         /// </summary>
         [DataMember(Name="Connection")]
@@ -102,6 +108,7 @@ namespace VirtualRadar.Interface.View
             result.ConnectionStatusDescription =    ConnectionStatusDescription;
             result.DataVersion =                    DataVersion;
             result.FeedId =                         FeedId;
+            result.HasAircraftList =                HasAircraftList;
             result.HasPolarPlot =                   HasPolarPlot;
             result.IsMergedFeed =                   IsMergedFeed;
             result.Name =                           Name;

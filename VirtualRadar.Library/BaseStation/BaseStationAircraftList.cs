@@ -164,6 +164,11 @@ namespace VirtualRadar.Library.BaseStation
         /// An object that can detect bad altitudes and positions.
         /// </summary>
         private IAircraftSanityChecker _SanityChecker;
+
+        /// <summary>
+        /// True if the listener has had its events hooked.
+        /// </summary>
+        private bool _Port30003ListenerHooked;
         #endregion
 
         #region Properties
@@ -180,10 +185,15 @@ namespace VirtualRadar.Library.BaseStation
             get
             {
                 int result;
-                lock(_AircraftMap) result = _AircraftMap.Count;
+                lock(_AircraftMapLock) result = _AircraftMap.Count;
                 return result;
             }
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsTracking { get; private set; }
 
         IListener _Port30003Listener;
         /// <summary>
@@ -195,17 +205,10 @@ namespace VirtualRadar.Library.BaseStation
             set
             {
                 if(_Port30003Listener != value) {
-                    if(_Port30003Listener != null) {
-                        _Port30003Listener.Port30003MessageReceived -= BaseStationListener_MessageReceived;
-                        _Port30003Listener.SourceChanged -= BaseStationListener_SourceChanged;
-                        _Port30003Listener.PositionReset -= BaseStationListener_PositionReset;
-                    }
+                    UnhookListener();
                     _Port30003Listener = value;
-                    if(_Port30003Listener != null) {
-                        _DataVersion = Math.Max(_Clock.UtcNow.Ticks, _DataVersion + 1);
-                        _Port30003Listener.Port30003MessageReceived += BaseStationListener_MessageReceived;
-                        _Port30003Listener.SourceChanged += BaseStationListener_SourceChanged;
-                        _Port30003Listener.PositionReset += BaseStationListener_PositionReset;
+                    if(IsTracking) {
+                        HookListener();
                     }
                 }
             }
@@ -251,6 +254,22 @@ namespace VirtualRadar.Library.BaseStation
         {
             if(CountChanged != null) CountChanged(this, args);
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler TrackingStateChanged;
+
+        /// <summary>
+        /// Raises <see cref="TrackingStateChanged"/>. Note that the class is sealed.
+        /// </summary>
+        /// <param name="args"></param>
+        private void OnTrackingStateChanged(EventArgs args)
+        {
+            if(TrackingStateChanged != null) {
+                TrackingStateChanged(this, args);
+            }
+        }
         #endregion
 
         #region Constructor and Finaliser
@@ -260,11 +279,6 @@ namespace VirtualRadar.Library.BaseStation
         public BaseStationAircraftList()
         {
             _Clock = Factory.Singleton.Resolve<IClock>();
-
-            _AircraftDetailFetcher = Factory.Singleton.Resolve<IAircraftDetailFetcher>().Singleton;
-            _AircraftDetailFetcher.Fetched += AircraftDetailFetcher_Fetched;
-            _CallsignRouteFetcher = Factory.Singleton.Resolve<ICallsignRouteFetcher>().Singleton;
-            _CallsignRouteFetcher.Fetched += CallsignRouteFetcher_Fetched;
         }
 
         /// <summary>
@@ -301,7 +315,7 @@ namespace VirtualRadar.Library.BaseStation
         }
         #endregion
 
-        #region Start, LoadConfiguration
+        #region Start, Stop, LoadConfiguration
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -321,7 +335,58 @@ namespace VirtualRadar.Library.BaseStation
                 Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
                 Factory.Singleton.Resolve<IStandingDataManager>().Singleton.LoadCompleted += StandingDataManager_LoadCompleted;
 
+                _AircraftDetailFetcher = Factory.Singleton.Resolve<IAircraftDetailFetcher>().Singleton;
+                _AircraftDetailFetcher.Fetched += AircraftDetailFetcher_Fetched;
+                _CallsignRouteFetcher = Factory.Singleton.Resolve<ICallsignRouteFetcher>().Singleton;
+                _CallsignRouteFetcher.Fetched += CallsignRouteFetcher_Fetched;
+
                 _Started = true;
+            }
+
+            if(!IsTracking) {
+                HookListener();
+                IsTracking = true;
+                OnTrackingStateChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Stop()
+        {
+            if(IsTracking) {
+                IsTracking = false;
+                UnhookListener();
+                ResetAircraftList();
+                OnTrackingStateChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Hooks the listener.
+        /// </summary>
+        private void HookListener()
+        {
+            if(_Port30003Listener != null && !_Port30003ListenerHooked) {
+                _Port30003ListenerHooked = true;
+                _DataVersion = Math.Max(_Clock.UtcNow.Ticks, _DataVersion + 1);
+                _Port30003Listener.Port30003MessageReceived += BaseStationListener_MessageReceived;
+                _Port30003Listener.SourceChanged += BaseStationListener_SourceChanged;
+                _Port30003Listener.PositionReset += BaseStationListener_PositionReset;
+            }
+        }
+
+        /// <summary>
+        /// Unhooks the listener.
+        /// </summary>
+        private void UnhookListener()
+        {
+            if(_Port30003Listener != null && _Port30003ListenerHooked) {
+                _Port30003ListenerHooked = false;
+                _Port30003Listener.Port30003MessageReceived -= BaseStationListener_MessageReceived;
+                _Port30003Listener.SourceChanged -= BaseStationListener_SourceChanged;
+                _Port30003Listener.PositionReset -= BaseStationListener_PositionReset;
             }
         }
 
@@ -668,7 +733,7 @@ namespace VirtualRadar.Library.BaseStation
         private int ConvertIcaoToUniqueId(string icao)
         {
             int uniqueId = -1;
-            if(_SanityChecker.IsGoodAircraftIcao(icao)) {
+            if(_SanityChecker != null && _SanityChecker.IsGoodAircraftIcao(icao)) {
                 try {
                     uniqueId = Convert.ToInt32(icao, 16);
                 } catch(Exception ex) {
@@ -899,7 +964,7 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void BaseStationListener_MessageReceived(object sender, BaseStationMessageEventArgs args)
         {
-            if(_Started) ProcessMessage(args.Message);
+            if(IsTracking) ProcessMessage(args.Message);
         }
 
         /// <summary>

@@ -30,14 +30,29 @@ namespace VirtualRadar.Interface
         int Count { get; }
 
         /// <summary>
+        /// Gets a value indicating that the aircraft list is tracking aircraft.
+        /// </summary>
+        bool IsTracking { get; }
+
+        /// <summary>
         /// Raised when the count of aircraft has changed. This could be raised from any thread, it needn't be raised on a GUI thread.
         /// </summary>
         event EventHandler CountChanged;
 
         /// <summary>
+        /// Raised when the aircraft list is started or stopped. Could be raised from any thread.
+        /// </summary>
+        event EventHandler TrackingStateChanged;
+
+        /// <summary>
         /// Starts the tracking of aircraft.
         /// </summary>
         void Start();
+
+        /// <summary>
+        /// Stops tracking aircraft.
+        /// </summary>
+        void Stop();
 
         /// <summary>
         /// Returns details of the aircraft with the unique ID passed across or null if no such aircraft exists. The aircraft
