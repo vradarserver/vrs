@@ -53,6 +53,11 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public IListener Listener { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsVisible { get; private set; }
         #endregion
 
         #region Constructors and finaliser
@@ -138,7 +143,9 @@ namespace VirtualRadar.Library.Listener
             Listener.IgnoreBadMessages = true;
             ApplyReceiverListenerSettings(false, receiver, configuration, receiverLocation);
 
-            DoCommonInitialise(receiver.UniqueId, receiver.Name, startAircraftList: receiver.ReceiverUsage != ReceiverUsage.MergeOnly);
+            var startAircraftList = receiver.ReceiverUsage != ReceiverUsage.MergeOnly;
+
+            DoCommonInitialise(receiver.UniqueId, receiver.Name, startAircraftList: startAircraftList);
             ConfigurePolarPlotter(receiverLocation, nameChanged: false);
         }
 
@@ -163,6 +170,8 @@ namespace VirtualRadar.Library.Listener
             mergedFeedListener.IcaoTimeout = mergedFeed.IcaoTimeout;
             mergedFeedListener.IgnoreAircraftWithNoPosition = mergedFeed.IgnoreAircraftWithNoPosition;
             mergedFeedListener.SetListeners(mergedListeners);
+
+            IsVisible = true;
 
             DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name, startAircraftList: true);
         }
@@ -232,6 +241,7 @@ namespace VirtualRadar.Library.Listener
             }
 
             Listener.MultilaterationFeedType = receiver.MultilaterationFeedType;
+            IsVisible = receiver.ReceiverUsage == ReceiverUsage.Normal;
         }
         #endregion
 

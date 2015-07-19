@@ -86,7 +86,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         private DirectoryEntryJson BuildDirectoryEntry()
         {
-            var feeds = _FeedManager.Feeds.Where(r => r.AircraftList != null).ToArray();
+            var feeds = _FeedManager.VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
             var result = new DirectoryEntryJson() {
                 Version = _ApplicationInformation.ShortVersion,
                 NumberOfFeeds = feeds.Length,

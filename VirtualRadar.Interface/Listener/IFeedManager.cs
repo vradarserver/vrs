@@ -30,6 +30,14 @@ namespace VirtualRadar.Interface.Listener
         IFeed[] Feeds { get; }
 
         /// <summary>
+        /// Gets a collection of feeds that the web site can see.
+        /// </summary>
+        /// <remarks>
+        /// This is a subset of <see cref="Feeds"/>.
+        /// </remarks>
+        IFeed[] VisibleFeeds { get; }
+
+        /// <summary>
         /// Raised when the collection of feeds managed by the object is changed.
         /// </summary>
         event EventHandler FeedsChanged;
@@ -58,15 +66,17 @@ namespace VirtualRadar.Interface.Listener
         /// Returns the feed with a given name or null if no such feed exists. Only enabled feed are returned.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="ignoreInvisibleFeeds"></param>
         /// <returns></returns>
-        IFeed GetByName(string name);
+        IFeed GetByName(string name, bool ignoreInvisibleFeeds);
 
         /// <summary>
         /// Returns the feed with the given identifier or null if no such feed exists. Only enabled feeds are
         /// returned.
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="ignoreInvisibleFeeds"></param>
         /// <returns></returns>
-        IFeed GetByUniqueId(int id);
+        IFeed GetByUniqueId(int id, bool ignoreInvisibleFeeds);
     }
 }

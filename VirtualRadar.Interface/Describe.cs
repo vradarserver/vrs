@@ -421,5 +421,20 @@ namespace VirtualRadar.Interface
                 default:                                                    throw new NotImplementedException();
             }
         }
+
+        /// <summary>
+        /// Returns a translated description of a receiver usage.
+        /// </summary>
+        /// <param name="receiverUsage"></param>
+        /// <returns></returns>
+        public static string ReceiverUsage(ReceiverUsage receiverUsage)
+        {
+            switch(receiverUsage) {
+                case Settings.ReceiverUsage.Normal:             return Strings.Normal;
+                case Settings.ReceiverUsage.HideFromWebSite:    return Strings.Hidden;
+                case Settings.ReceiverUsage.MergeOnly:          return Strings.MergeOnly;
+                default:                                        throw new NotImplementedException();
+            }
+        }
     }
 }

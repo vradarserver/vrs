@@ -211,7 +211,7 @@ namespace VirtualRadar.Library.Network
             var newServers = new List<RebroadcastSettings>();
 
             foreach(var rebroadcastSettings in configuration.RebroadcastSettings) {
-                var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId);
+                var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != null && rebroadcastSettings.Enabled) {
                     var server = RebroadcastServers.FirstOrDefault(r => r.UniqueId == rebroadcastSettings.UniqueId);
                     if(server != null) {
@@ -255,7 +255,7 @@ namespace VirtualRadar.Library.Network
             }
 
             foreach(var rebroadcastSettings in newServers) {
-                var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId);
+                var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId, ignoreInvisibleFeeds: false);
                 var server = Factory.Singleton.Resolve<IRebroadcastServer>();
                 server.UniqueId = rebroadcastSettings.UniqueId;
                 server.Name = rebroadcastSettings.Name;

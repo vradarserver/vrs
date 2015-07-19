@@ -39,6 +39,7 @@
             this.columnHeaderLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderConnection = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderConnectionParameters = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderReceiverUsage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // comboBoxClosestAircraftReceiverId
@@ -101,6 +102,7 @@
             this.listReceivers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderName,
             this.columnHeaderFormat,
+            this.columnHeaderReceiverUsage,
             this.columnHeaderLocation,
             this.columnHeaderConnection,
             this.columnHeaderConnectionParameters});
@@ -134,6 +136,11 @@
             this.columnHeaderConnectionParameters.Text = "::ConnectionParameters::";
             this.columnHeaderConnectionParameters.Width = 165;
             // 
+            // columnHeaderReceiverUsage
+            // 
+            this.columnHeaderReceiverUsage.Text = "::Hidden::";
+            this.columnHeaderReceiverUsage.Width = 80;
+            // 
             // PageReceivers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -165,5 +172,6 @@
         private System.Windows.Forms.ColumnHeader columnHeaderConnection;
         private System.Windows.Forms.ColumnHeader columnHeaderConnectionParameters;
         private System.Windows.Forms.ComboBox comboBoxFsxReceiverId;
+        private System.Windows.Forms.ColumnHeader columnHeaderReceiverUsage;
     }
 }

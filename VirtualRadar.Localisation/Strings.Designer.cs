@@ -1754,6 +1754,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hidden.
+        /// </summary>
+        public static string Hidden {
+            get {
+                return ResourceManager.GetString("Hidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide from web site.
         /// </summary>
         public static string HideFromWebSite {
@@ -3055,7 +3064,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This receiver will not appear on the web site but it can have and rebroadcast server set up for it and it can be merged with other feeds..
+        ///   Looks up a localized string similar to This receiver will not appear on the web site but it can have rebroadcast servers set up for it and it can be merged with other feeds..
         /// </summary>
         public static string OptionDescribeReceiverUsageHideFromWebSite {
             get {
@@ -3064,7 +3073,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This receiver will not appear on the web site and it can only have certain formats of rebroadcast server set up for it. However it can be merged with other feeds..
+        ///   Looks up a localized string similar to This receiver will not appear on the web site and only certain rebroadcast server formats can be used for it. However, it can be merged with other feeds and it will consume fewer resources than normal or hidden receivers..
         /// </summary>
         public static string OptionDescribeReceiverUsageMergeOnly {
             get {
@@ -5080,6 +5089,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This receiver cannot be set to merge-only.
+        /// </summary>
+        public static string ReceiverCannotBeMergeOnly {
+            get {
+                return ResourceManager.GetString("ReceiverCannotBeMergeOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Receiver Configuration Wizard.
         /// </summary>
         public static string ReceiverConfigurationWizard {
@@ -5112,6 +5130,15 @@ namespace VirtualRadar.Localisation {
         public static string ReceiverLocationsTitle {
             get {
                 return ResourceManager.GetString("ReceiverLocationsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This receiver cannot be hidden from the web site.
+        /// </summary>
+        public static string ReceiverMustBeVisible {
+            get {
+                return ResourceManager.GetString("ReceiverMustBeVisible", resourceCulture);
             }
         }
         
