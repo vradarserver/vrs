@@ -2483,10 +2483,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Normal</value>
   </data>
   <data name="OptionDescribeReceiverUsageHideFromWebSite" xml:space="preserve">
-    <value>This receiver will not appear on the web site but it can have and rebroadcast server set up for it and it can be merged with other feeds.</value>
+    <value>This receiver will not appear on the web site but it can have rebroadcast servers set up for it and it can be merged with other feeds.</value>
   </data>
   <data name="OptionDescribeReceiverUsageMergeOnly" xml:space="preserve">
-    <value>This receiver will not appear on the web site and it can only have certain formats of rebroadcast server set up for it. However it can be merged with other feeds.</value>
+    <value>This receiver will not appear on the web site and only certain rebroadcast server formats can be used for it. However, it can be merged with other feeds and it will consume fewer resources than normal or hidden receivers.</value>
   </data>
   <data name="OptionDescribeReceiverUsageNormal" xml:space="preserve">
     <value>This receiver will appear on the web site, it can have rebroadcast servers set up for it and it can be merged with other feeds.</value>
@@ -2494,5 +2494,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="NotApplicableAbbr" xml:space="preserve">
     <value>N/A</value>
     <comment>Abbreviation of "not applicable"</comment>
+  </data>
+  <data name="Hidden" xml:space="preserve">
+    <value>Hidden</value>
+  </data>
+  <data name="ReceiverMustBeVisible" xml:space="preserve">
+    <value>This receiver cannot be hidden from the web site</value>
+  </data>
+  <data name="ReceiverCannotBeMergeOnly" xml:space="preserve">
+    <value>This receiver cannot be set to merge-only</value>
   </data>
 </root>

@@ -46,6 +46,11 @@ namespace VirtualRadar.Interface.Listener
         IListener Listener { get; }
 
         /// <summary>
+        /// Gets a value indicating that the feed can be viewed from the web site.
+        /// </summary>
+        bool IsVisible { get; }
+
+        /// <summary>
         /// Initialises the feed with the receiver configuration settings passed across.
         /// </summary>
         /// <param name="receiver"></param>

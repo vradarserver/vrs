@@ -31,11 +31,12 @@ namespace Test.Framework
         /// </summary>
         /// <param name="feeds"></param>
         /// <param name="listeners"></param>
+        /// <param name="useVisibleFeeds"></param>
         /// <param name="feedIds"></param>
         /// <returns></returns>
-        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, List<Mock<IListener>> listeners, params int[] feedIds)
+        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, List<Mock<IListener>> listeners, bool useVisibleFeeds, params int[] feedIds)
         {
-            var result = CreateMockFeedManager(feeds);
+            var result = CreateMockFeedManager(feeds, useVisibleFeeds);
             AddFeeds(feeds, listeners, feedIds);
 
             return result;
@@ -48,26 +49,34 @@ namespace Test.Framework
         /// <param name="feeds"></param>
         /// <param name="baseStationAircraftLists"></param>
         /// <param name="aircraftLists"></param>
+        /// <param name="useVisibleFeeds"></param>
         /// <param name="feedIds"></param>
         /// <returns></returns>
-        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, params int[] feedIds)
+        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, bool useVisibleFeeds, params int[] feedIds)
         {
-            var result = CreateMockFeedManager(feeds);
+            var result = CreateMockFeedManager(feeds, useVisibleFeeds);
             AddFeeds(feeds, baseStationAircraftLists, aircraftLists, feedIds);
 
             return result;
         }
 
-        private static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds)
+        private static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, bool useVisibleFeeds)
         {
             var result = TestUtilities.CreateMockSingleton<IFeedManager>();
-            result.Setup(r => r.Feeds).Returns(() => {
-                return feeds.Select(r => r.Object).ToArray();
-            });
-            result.Setup(r => r.GetByUniqueId(It.IsAny<int>())).Returns((int id) => {
+
+            if(useVisibleFeeds) {
+                result.Setup(r => r.VisibleFeeds).Returns(() => {
+                    return feeds.Select(r => r.Object).ToArray();
+                });
+            } else {
+                result.Setup(r => r.Feeds).Returns(() => {
+                    return feeds.Select(r => r.Object).ToArray();
+                });
+            }
+            result.Setup(r => r.GetByUniqueId(It.IsAny<int>(), useVisibleFeeds)).Returns((int id, bool ignoreInvisibleFeeds) => {
                 return feeds.Select(r => r.Object).FirstOrDefault(r => r.UniqueId == id);
             });
-            result.Setup(r => r.GetByName(It.IsAny<string>())).Returns((string name) => {
+            result.Setup(r => r.GetByName(It.IsAny<string>(), useVisibleFeeds)).Returns((string name, bool ignoreInvisibleFeeds) => {
                 return feeds.Select(r => r.Object).FirstOrDefault(r => String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
             });
             return result;

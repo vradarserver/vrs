@@ -172,10 +172,10 @@ namespace VirtualRadar.WebSite
             IAircraftList aircraftList = null;
             if(args.IsFlightSimulatorList) aircraftList = args.AircraftList;
             else {
-                var selectedFeed = _FeedManager.GetByUniqueId(feedId);
+                var selectedFeed = _FeedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
                 if(selectedFeed == null) {
                     feedId = _DefaultAircraftListFeedId;
-                    selectedFeed = _FeedManager.GetByUniqueId(feedId);
+                    selectedFeed = _FeedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
                 }
                 aircraftList = selectedFeed == null ? null : selectedFeed.AircraftList;
             }
@@ -196,7 +196,7 @@ namespace VirtualRadar.WebSite
             };
 
             if(!args.FeedsNotRequired) {
-                foreach(var feed in _FeedManager.Feeds) {
+                foreach(var feed in _FeedManager.VisibleFeeds) {
                     result.Feeds.Add(new FeedJson() {
                         UniqueId = feed.UniqueId,
                         Name = feed.Name,

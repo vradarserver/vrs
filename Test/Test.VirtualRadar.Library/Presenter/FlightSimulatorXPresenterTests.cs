@@ -92,7 +92,8 @@ namespace Test.VirtualRadar.Library.Presenter
             _BaseStationAircraftLists = new List<Mock<IBaseStationAircraftList>>();
             _Feeds = new List<Mock<IFeed>>();
             _RealAircraftLists = new List<List<IAircraft>>();
-            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _BaseStationAircraftLists, _RealAircraftLists, 1, 2);
+            var useVisibleFeeds = false;
+            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _BaseStationAircraftLists, _RealAircraftLists, useVisibleFeeds, 1, 2);
 
             _Configuration.GoogleMapSettings.FlightSimulatorXReceiverId = 1;
             _BaseStationAircraftList = _BaseStationAircraftLists[0];

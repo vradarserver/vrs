@@ -227,7 +227,7 @@ namespace VirtualRadar.Library.Presenter
             _ShortTrailLengthSeconds = configuration.GoogleMapSettings.ShortTrailLengthSeconds;
 
             var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
-            _Feed = feedManager.GetByUniqueId(configuration.GoogleMapSettings.FlightSimulatorXReceiverId);
+            _Feed = feedManager.GetByUniqueId(configuration.GoogleMapSettings.FlightSimulatorXReceiverId, ignoreInvisibleFeeds: false);
         }
         #endregion
 

@@ -836,31 +836,50 @@ namespace VirtualRadar.Library.Presenter
                 var allReceiverIds = _View.Configuration.Receivers.Where(r => r.Enabled).Select(r => r.UniqueId)
                                                         .Concat(_View.Configuration.MergedFeeds.Where(r => r.Enabled).Select(r => r.UniqueId)).ToArray();
 
-                // Closest aircraft widget receiver has been filled in and is a valid ID
+                // Closest aircraft widget receiver has been filled in, it's visible and it has a valid ID
                 if(ValueNotEqual(settings.ClosestAircraftReceiverId, 0, new Validation(ValidationField.ClosestAircraftReceiver, defaults) {
                     Message = Strings.ClosestAircraftReceiverRequired,
                 })) {
                     ValueIsInList(settings.ClosestAircraftReceiverId, allReceiverIds, new Validation(ValidationField.ClosestAircraftReceiver, defaults) {
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
+                    var receiver = _View.Configuration.Receivers.FirstOrDefault(r => r.UniqueId == settings.ClosestAircraftReceiverId);
+                    if(receiver != null) {
+                        ConditionIsTrue<ReceiverUsage>(receiver.ReceiverUsage, r => r == ReceiverUsage.Normal, new Validation(ValidationField.ClosestAircraftReceiver, defaults) {
+                            Message = Strings.ReceiverMustBeVisible,
+                        });
+                    }
                 }
 
-                // FSX receiver has been filled in and is a valid ID
+                // FSX receiver has been filled in, is a valid ID and has an aircraft list
                 if(ValueNotEqual(settings.FlightSimulatorXReceiverId, 0, new Validation(ValidationField.FlightSimulatorXReceiver, defaults) {
                     Message = Strings.FlightSimulatorXReceiverRequired,
                 })) {
                     ValueIsInList(settings.FlightSimulatorXReceiverId, allReceiverIds, new Validation(ValidationField.FlightSimulatorXReceiver, defaults) {
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
+                    var receiver = _View.Configuration.Receivers.FirstOrDefault(r => r.UniqueId == settings.FlightSimulatorXReceiverId);
+                    if(receiver != null) {
+                        ConditionIsTrue<ReceiverUsage>(receiver.ReceiverUsage, r => r != ReceiverUsage.MergeOnly, new Validation(ValidationField.FlightSimulatorXReceiver, defaults) {
+                            Message = Strings.ReceiverCannotBeMergeOnly,
+                        });
+                    }
                 }
 
-                // Default website receiver has been filled in and is a valid ID
+                // Default website receiver has been filled in, is visible and is a valid ID
                 if(ValueNotEqual(settings.WebSiteReceiverId, 0, new Validation(ValidationField.WebSiteReceiver, defaults) {
                     Message = Strings.WebSiteReceiverRequired,
                 })) {
                     ValueIsInList(settings.WebSiteReceiverId, allReceiverIds, new Validation(ValidationField.WebSiteReceiver, defaults) {
                         Message = Strings.ReceiverOrMergedFeedDoesNotExist,
                     });
+
+                    var receiver = _View.Configuration.Receivers.FirstOrDefault(r => r.UniqueId == settings.WebSiteReceiverId);
+                    if(receiver != null) {
+                        ConditionIsTrue<ReceiverUsage>(receiver.ReceiverUsage, r => r == ReceiverUsage.Normal, new Validation(ValidationField.WebSiteReceiver, defaults) {
+                            Message = Strings.ReceiverMustBeVisible,
+                        });
+                    }
                 }
 
                 // Minimum refresh period is within range

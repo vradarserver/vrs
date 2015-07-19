@@ -203,7 +203,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _Feeds = new List<Mock<IFeed>>();
             _Listeners = new List<Mock<IListener>>();
-            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, 1, 2);
+            var useVisibleFeeds = false;
+            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);
             _MergedFeedReceivers = FeedHelper.GetFeeds(_Feeds);
             _MergedFeed = new MergedFeed() { UniqueId = 3, Name = "M1", ReceiverIds = { 1, 2 } };
 
@@ -266,6 +267,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed = Factory.Singleton.Resolve<IFeed>();
 
             Assert.IsNull(_Feed.AircraftList);
+            Assert.IsFalse(_Feed.IsVisible);
             Assert.IsNull(_Feed.Listener);
             Assert.IsNull(_Feed.Name);
             Assert.AreEqual(0, _Feed.UniqueId);
@@ -576,11 +578,6 @@ namespace Test.VirtualRadar.Library.Listener
                 TestCleanup();
                 TestInitialise();
 
-                _AircraftList.Setup(r => r.Start()).Callback(() => {
-                    Assert.IsNotNull(_AircraftList.Object.Listener);
-                    Assert.IsNotNull(_AircraftList.Object.StandingDataManager);
-                });
-
                 _Receiver.ReceiverUsage = receiverUsage;
                 _Feed.Initialise(_Receiver, _Configuration);
 
@@ -595,6 +592,21 @@ namespace Test.VirtualRadar.Library.Listener
                     default:
                         throw new NotImplementedException();
                 }
+            }
+        }
+
+        [TestMethod]
+        public void Feed_Initialise_Sets_IsVisible_From_ReceiverUsage()
+        {
+            foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
+                TestCleanup();
+                TestInitialise();
+
+                _Receiver.ReceiverUsage = receiverUsage;
+                _Feed.Initialise(_Receiver, _Configuration);
+
+                var isVisible = receiverUsage == ReceiverUsage.Normal;
+                Assert.AreEqual(isVisible, _Feed.IsVisible, receiverUsage.ToString());
             }
         }
 
@@ -800,6 +812,13 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
 
             _AircraftList.Verify(r => r.Start(), Times.Once());
+        }
+
+        [TestMethod]
+        public void Feed_Initialise_Sets_IsVisible_For_MergedFeeds()
+        {
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+            Assert.IsTrue(_Feed.IsVisible);
         }
 
         [TestMethod]
@@ -1242,6 +1261,21 @@ namespace Test.VirtualRadar.Library.Listener
                     _AircraftList.Verify(r => r.Start(), Times.Exactly(expectedStarts), message);
                     _AircraftList.Verify(r => r.Stop(), Times.Exactly(expectedStops), message);
                 }
+            }
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Sets_IsVisible_As_Appropriate()
+        {
+            _Feed.Initialise(_Receiver, _Configuration);
+
+            foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
+                _Receiver.ReceiverUsage = receiverUsage;
+
+                _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+                var expected = receiverUsage == ReceiverUsage.Normal;
+                Assert.AreEqual(expected, _Feed.IsVisible, receiverUsage.ToString());
             }
         }
         #endregion

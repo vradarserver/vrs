@@ -50,15 +50,29 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public IFeed[] Feeds
         {
-            get
-            {
+            get {
                 IFeed[] result;
                 lock(_SyncLock) result = _Feeds;
                 return result;
             }
-            set
-            {
-                lock(_SyncLock) _Feeds = value;
+            set {
+                lock(_SyncLock) {
+                    _Feeds = value;
+                    _VisibleFeeds = value.Where(r => r.IsVisible).ToArray();
+                }
+            }
+        }
+
+        private IFeed[] _VisibleFeeds;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IFeed[] VisibleFeeds
+        {
+            get {
+                IFeed[] result;
+                lock(_SyncLock) result = _VisibleFeeds;
+                return result;
             }
         }
         #endregion
@@ -263,20 +277,32 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="ignoreInvisibleFeeds"></param>
         /// <returns></returns>
-        public IFeed GetByName(string name)
+        public IFeed GetByName(string name, bool ignoreInvisibleFeeds)
         {
-            return Feeds.FirstOrDefault(r => (r.Name ?? "").Equals(name, StringComparison.CurrentCultureIgnoreCase));
+            var result = Feeds.FirstOrDefault(r => (r.Name ?? "").Equals(name, StringComparison.CurrentCultureIgnoreCase));
+            if(result != null && ignoreInvisibleFeeds && !result.IsVisible) {
+                result = null;
+            }
+
+            return result;
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="ignoreInvisibleFeeds"></param>
         /// <returns></returns>
-        public IFeed GetByUniqueId(int id)
+        public IFeed GetByUniqueId(int id, bool ignoreInvisibleFeeds)
         {
-            return Feeds.FirstOrDefault(r => r.UniqueId == id);
+            var result = Feeds.FirstOrDefault(r => r.UniqueId == id);
+            if(result != null && ignoreInvisibleFeeds && !result.IsVisible) {
+                result = null;
+            }
+
+            return result;
         }
         #endregion
 

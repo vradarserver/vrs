@@ -81,7 +81,8 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _Feeds = new List<Mock<IFeed>>();
             _Listeners = new List<Mock<IListener>>();
-            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, 1, 2);
+            var useVisibleFeeds = false;
+            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);
 
             _Clock = new ClockMock();
             Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);

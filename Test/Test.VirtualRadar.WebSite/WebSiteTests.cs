@@ -153,7 +153,8 @@ namespace Test.VirtualRadar.WebSite
             _ReceiverPathways = new List<Mock<IFeed>>();
             _BaseStationAircraftLists = new List<Mock<IBaseStationAircraftList>>();
             _AircraftLists = new List<List<IAircraft>>();
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(_ReceiverPathways, _BaseStationAircraftLists, _AircraftLists, 1, 2);
+            var useVisibleFeeds = true;
+            _ReceiverManager = FeedHelper.CreateMockFeedManager(_ReceiverPathways, _BaseStationAircraftLists, _AircraftLists, useVisibleFeeds, 1, 2);
 
             _PolarPlotter = TestUtilities.CreateMockInstance<IPolarPlotter>();
             _PolarPlotSlices = new List<PolarPlotSlice>();

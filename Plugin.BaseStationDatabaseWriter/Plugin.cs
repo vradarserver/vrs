@@ -304,7 +304,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             lock(_SyncLock) {
                 var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
-                var feed = feedManager.GetByUniqueId(_Options.ReceiverId);
+                var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
                     if(feed != null) {
                         feed.Listener.Port30003MessageReceived += MessageListener_MessageReceived;
@@ -323,7 +323,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             lock(_SyncLock) {
                 var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
-                var feed = feedManager.GetByUniqueId(_Options.ReceiverId);
+                var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
                     if(_Feed != null && _Feed.Listener != null) {
                         _Feed.Listener.Port30003MessageReceived -= MessageListener_MessageReceived;
@@ -351,7 +351,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         StatusDescription = null;
                     } else if(_Options.ReceiverId == 0) {
                         Status = PluginStrings.EnabledNoReceiver;
-                    } else if(feedManager.GetByUniqueId(_Options.ReceiverId) == null) {
+                    } else if(feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false) == null) {
                         Status = PluginStrings.EnabledBadReceiver;
                     } else if(String.IsNullOrEmpty(_Database.FileName)) {
                         Status = PluginStrings.EnabledNoDatabase;

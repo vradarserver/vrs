@@ -123,6 +123,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     e.Checked = receiver.Enabled;
                     e.ColumnTexts.Add(receiver.Name);
                     e.ColumnTexts.Add(Describe.DataSource(receiver.DataSource));
+                    e.ColumnTexts.Add(Describe.ReceiverUsage(receiver.ReceiverUsage));
                     e.ColumnTexts.Add(location == null ? "" : location.Name);
                     e.ColumnTexts.Add(Describe.ConnectionType(receiver.ConnectionType));
                     e.ColumnTexts.Add(DescribeConnectionParameters(receiver));

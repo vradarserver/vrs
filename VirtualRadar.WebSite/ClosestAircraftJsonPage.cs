@@ -86,7 +86,7 @@ namespace VirtualRadar.WebSite
 
                 if(latitude == null || longitude == null) json.WarningMessage = "Position not supplied";
                 else {
-                    var receiver = _ReceiverManager.GetByUniqueId(_ReceiverId);
+                    var receiver = _ReceiverManager.GetByUniqueId(_ReceiverId, ignoreInvisibleFeeds: true);
                     if(receiver == null) json.WarningMessage = "Receiver is offline";
                     else {
                         var baseStationAircraftList = receiver.AircraftList;

@@ -34,7 +34,7 @@ namespace Test.VirtualRadar.WebSite
         private Mock<ISharedConfiguration> _SharedConfiguration;
         private Configuration _Configuration;
 
-        private List<Mock<IFeed>> _ReceiverPathways;
+        private List<Mock<IFeed>> _Feeds;
         private List<Mock<IBaseStationAircraftList>> _BaseStationAircraftLists;
         private List<List<IAircraft>> _AircraftLists;
         private Mock<IFeedManager> _ReceiverManager;
@@ -55,10 +55,11 @@ namespace Test.VirtualRadar.WebSite
             _Args = new AircraftListJsonBuilderArgs();
             _Filter = new AircraftListJsonBuilderFilter();
 
-            _ReceiverPathways = new List<Mock<IFeed>>();
+            _Feeds = new List<Mock<IFeed>>();
             _BaseStationAircraftLists = new List<Mock<IBaseStationAircraftList>>();
             _AircraftLists = new List<List<IAircraft>>();
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(_ReceiverPathways, _BaseStationAircraftLists, _AircraftLists, 1, 2);
+            var useVisibleFeeds = true;
+            _ReceiverManager = FeedHelper.CreateMockFeedManager(_Feeds, _BaseStationAircraftLists, _AircraftLists, useVisibleFeeds, 1, 2);
 
             _FlightSimulatorAircraftList = new Mock<ISimpleAircraftList>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _FlightSimulatorAircraft = new List<IAircraft>();
@@ -147,7 +148,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Returns_Empty_Json_When_There_Are_No_Feeds()
         {
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>());
+            _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
             _Builder.Initialise(_Provider.Object);
 
@@ -161,7 +162,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Returns_Requested_SourceFeedId_When_There_Are_No_Feeds()
         {
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>());
+            _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
             _Builder.Initialise(_Provider.Object);
 
@@ -215,8 +216,8 @@ namespace Test.VirtualRadar.WebSite
                 TestInitialise();
 
                 _Args.SourceFeedId = feedExists ? 1 : 99;
-                _ReceiverPathways[0].Setup(r => r.Name).Returns("Feed 1");
-                _ReceiverPathways[1].Setup(r => r.Name).Returns("Feed 2");
+                _Feeds[0].Setup(r => r.Name).Returns("Feed 1");
+                _Feeds[1].Setup(r => r.Name).Returns("Feed 2");
 
                 var json = _Builder.Build(_Args);
 

@@ -75,7 +75,7 @@ namespace VirtualRadar.WebSite
                 };
 
                 if(allowRequest) {
-                    var feed = _FeedManager.GetByUniqueId(feedId);
+                    var feed = _FeedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
                     var polarPlotter = feed == null || feed.AircraftList == null ? null : feed.AircraftList.PolarPlotter;
                     if(polarPlotter != null) {
                         foreach(var slice in polarPlotter.TakeSnapshot()) {

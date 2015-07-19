@@ -70,7 +70,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Feeds = new List<Mock<IFeed>>();
             _Listeners = new List<Mock<IListener>>();
-            _FeedManger = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, 1, 2);
+            var useVisibleFeeds = false;
+            _FeedManger = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);
 
             _BaseStationDatabase = new Mock<IBaseStationDatabase>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _BaseStationDatabase.Object.FileName = "fn";
