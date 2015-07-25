@@ -59,7 +59,40 @@ namespace VirtualRadar.Interface.Settings
         /// <summary>
         /// Gets a list of the IDs for the receivers that are going to be merged into this feed.
         /// </summary>
-        public NotifyList<int> ReceiverIds { get { return _ReceiverIds; } }
+        /// <remarks><para>
+        /// Originally this was the only list of receivers on a merged feed. Unfortunately because it's
+        /// just a list of integers and not a list of objects I couldn't store any information that was
+        /// unique to a receiver in a merged feed. That caused problems, so the <see cref="ReceiverFlags"/>
+        /// list was added.
+        /// </para><para>
+        /// I could not just abandon ReceiverIds without causing backwards compatability issues, so this
+        /// property continues to be sole source of receiver IDs for the merged feed. The user is responsible
+        /// for adding and removing entries in this list. The <see cref="ReceiverFlags"/> entries are
+        /// maintained by the configuration GUI, it tries to ensure that each receiver in ReceiverIds gets
+        /// a mirror entry in ReceiverFlags but it may not be a perfect mirror.
+        /// </para><para>
+        /// Always use ReceiverIds when building the list of receivers to merge together.
+        /// </para></remarks>
+        public NotifyList<int> ReceiverIds
+        {
+            get { return _ReceiverIds; }
+        }
+
+        private NotifyList<MergedFeedReceiver> _ReceiverFlags = new NotifyList<MergedFeedReceiver>();
+        /// <summary>
+        /// Gets a list of settings stored against each receiver that is merged into this feed.
+        /// </summary>
+        /// <remarks>
+        /// See the comments against <see cref="ReceiverIds"/>. The configuration GUI is reponsible for adding
+        /// and removing entries in this list. There may be entries in this list that are not in <see cref="ReceiverIds"/>,
+        /// in which case those entries should be ignored. This list is subordinate to <see cref="ReceiverIds"/>,
+        /// it only carries extra information that could not be held by <see cref="ReceiverIds"/> without
+        /// breaking backwards compatibility.
+        /// </remarks>
+        public NotifyList<MergedFeedReceiver> ReceiverFlags
+        {
+            get { return _ReceiverFlags; }
+        }
 
         private int _IcaoTimeout;
         /// <summary>
@@ -125,12 +158,20 @@ namespace VirtualRadar.Interface.Settings
             IcaoTimeout = 3000;
 
             _ReceiverIds.ListChanged += ReceiverIds_ListChanged;
+            _ReceiverFlags.ListChanged += ReceiverFlags_ListChanged;
         }
 
         private void ReceiverIds_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
                 OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverIds)));
+            }
+        }
+
+        private void ReceiverFlags_ListChanged(object sender, ListChangedEventArgs args)
+        {
+            if(args.ListChangedType != ListChangedType.ItemChanged) {
+                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverFlags)));
             }
         }
     }

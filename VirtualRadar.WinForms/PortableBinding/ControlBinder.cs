@@ -137,7 +137,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         }
         #endregion
 
-        #region Initialise
+        #region Initialise, ChangeModel
         /// <summary>
         /// Initialises the binder. Must be called before the binder will start working.
         /// </summary>
@@ -154,6 +154,24 @@ namespace VirtualRadar.WinForms.PortableBinding
                 Initialised = true;
             }
         }
+
+        /// <summary>
+        /// Changes the model object.
+        /// </summary>
+        /// <param name="modelObject"></param>
+        protected void ChangeModelObject(object modelObject)
+        {
+            if(Initialised) {
+                UnhookModel();
+            }
+
+            ModelObject = modelObject;
+
+            if(Initialised && ModelObject != null) {
+                HookModel();
+                CopyModelToControl();
+            }
+        }
         #endregion
 
         #region HookModel, HookControl, UnhookModel, UnhookControl, Do* methods for hooking and unhooking
@@ -162,7 +180,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// </summary>
         protected void HookModel()
         {
-            if(!_ModelHooked) {
+            if(!_ModelHooked && ModelObject != null) {
                 try {
                     DoHookModel();
                 } finally {
@@ -312,7 +330,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// </summary>
         public virtual void CopyModelToControl()
         {
-            if(!_UpdatesLocked) {
+            if(!_UpdatesLocked && ModelObject != null) {
                 try {
                     _UpdatesLocked = true;
                     DoCopyModelToControl();

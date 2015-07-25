@@ -36,6 +36,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         public TModel Model
         {
             get { return ModelObject as TModel; }
+            set { ChangeModelObject(value); }
         }
 
         /// <summary>

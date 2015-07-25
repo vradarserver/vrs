@@ -240,7 +240,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         protected abstract void DoSetSelectedListValue(TValue value);
         #endregion
 
-        #region DoCopyModelToControl, 
+        #region DoCopyModelToControl, DoCopyControlToModel
         /// <summary>
         /// See base docs.
         /// </summary>

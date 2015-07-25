@@ -2848,6 +2848,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MLAT Type.
+        /// </summary>
+        public static string MultilaterationTypeListHeader {
+            get {
+                return ResourceManager.GetString("MultilaterationTypeListHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {

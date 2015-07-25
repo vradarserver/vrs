@@ -41,6 +41,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Listener.IFeed, Listener.Feed>();
             factory.Register<VirtualRadar.Interface.Listener.IFeedManager, Listener.FeedManager>();
             factory.Register<VirtualRadar.Interface.Listener.IListener, Listener.Listener>();
+            factory.Register<VirtualRadar.Interface.Listener.IMergedFeedComponentListener, Listener.MergedFeedComponentListener>();
             factory.Register<VirtualRadar.Interface.Listener.IMergedFeedListener, Listener.MergedFeedListener>();
             factory.Register<VirtualRadar.Interface.Listener.IPort30003MessageBytesExtractor, Listener.Port30003MessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.ISbs3MessageBytesExtractor, Listener.Sbs3MessageBytesExtractor>();

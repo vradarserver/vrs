@@ -109,7 +109,7 @@ namespace Test.VirtualRadar.Library.Listener
         private List<Mock<IListener>> _Listeners;
         private Mock<IFeedManager> _FeedManager;
         private List<IFeed> _MergedFeedReceivers;
-        private List<IListener> _SetMergedFeedListeners;
+        private List<IMergedFeedComponentListener> _SetMergedFeedListeners;
         private Mock<IPolarPlotter> _PolarPlotter;
 
         private readonly List<ConnectionProperty> _ConnectionProperties = new List<ConnectionProperty>() {
@@ -192,9 +192,9 @@ namespace Test.VirtualRadar.Library.Listener
                 _Listener.Setup(r => r.RawMessageTranslator).Returns(translator);
             });
 
-            _SetMergedFeedListeners = new List<IListener>();
+            _SetMergedFeedListeners = new List<IMergedFeedComponentListener>();
             _MergedFeedListener = TestUtilities.CreateMockImplementation<IMergedFeedListener>();
-            _MergedFeedListener.Setup(r => r.SetListeners(It.IsAny<IEnumerable<IListener>>())).Callback((IEnumerable<IListener> listeners) => {
+            _MergedFeedListener.Setup(r => r.SetListeners(It.IsAny<IEnumerable<IMergedFeedComponentListener>>())).Callback((IEnumerable<IMergedFeedComponentListener> listeners) => {
                 _SetMergedFeedListeners.Clear();
                 _SetMergedFeedListeners.AddRange(listeners);
             });
@@ -418,12 +418,10 @@ namespace Test.VirtualRadar.Library.Listener
                     _Receiver.Handshake = Handshake.XOnXOff;
                     _Receiver.StartupText = "Up";
                     _Receiver.ShutdownText = "Down";
-                    _Receiver.MultilaterationFeedType = feedType;
 
                     action();
 
                     Assert.AreEqual(true, _Listener.Object.IgnoreBadMessages);
-                    Assert.AreEqual(feedType, _Listener.Object.MultilaterationFeedType);
 
                     switch(connectionType) {
                         case ConnectionType.COM:
@@ -768,8 +766,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
 
             Assert.AreEqual(2, _SetMergedFeedListeners.Count);
-            Assert.IsTrue(_SetMergedFeedListeners.Contains(_Listeners[0].Object));
-            Assert.IsTrue(_SetMergedFeedListeners.Contains(_Listeners[1].Object));
+            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object)));
+            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object)));
         }
 
         [TestMethod]
@@ -781,8 +779,40 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
 
             Assert.AreEqual(2, _SetMergedFeedListeners.Count);
-            Assert.IsTrue(_SetMergedFeedListeners.Contains(_Listeners[0].Object));
-            Assert.IsTrue(_SetMergedFeedListeners.Contains(_Listeners[1].Object));
+            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object)));
+            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object)));
+        }
+
+        [TestMethod]
+        public void Feed_Initialise_Calls_SetListeners_With_The_Correct_Feed_Types()
+        {
+            _MergedFeed.ReceiverFlags.Add(new MergedFeedReceiver() {
+                UniqueId = _Listeners[0].Object.ReceiverId,
+                MultilaterationFeedType = MultilaterationFeedType.None,
+            });
+            _MergedFeed.ReceiverFlags.Add(new MergedFeedReceiver() {
+                UniqueId = _Listeners[1].Object.ReceiverId,
+                MultilaterationFeedType = MultilaterationFeedType.PositionsOnly,
+            });
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+
+            var component0 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object));
+            var component1 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object));
+
+            Assert.AreEqual(MultilaterationFeedType.None, component0.MultilaterationFeedType);
+            Assert.AreEqual(MultilaterationFeedType.PositionsOnly, component1.MultilaterationFeedType);
+        }
+
+        [TestMethod]
+        public void Feed_Initialise_Calls_SetListeners_With_No_Feed_Type_When_No_Flag_Is_Set()
+        {
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+
+            var component0 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object));
+            var component1 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object));
+
+            Assert.AreEqual(MultilaterationFeedType.None, component0.MultilaterationFeedType);
+            Assert.AreEqual(MultilaterationFeedType.None, component1.MultilaterationFeedType);
         }
 
         [TestMethod]
@@ -1349,8 +1379,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
 
             Assert.AreEqual(2, _SetMergedFeedListeners.Count);
-            Assert.IsTrue(_SetMergedFeedListeners.Contains(_Listeners[0].Object));
-            Assert.IsTrue(_SetMergedFeedListeners.Contains(_Listeners[1].Object));
+            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object)));
+            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object)));
         }
 
         [TestMethod]

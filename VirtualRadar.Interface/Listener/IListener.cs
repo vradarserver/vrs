@@ -82,11 +82,6 @@ namespace VirtualRadar.Interface.Listener
         bool IgnoreBadMessages { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of MLAT feed that the listener is listening to.
-        /// </summary>
-        MultilaterationFeedType MultilaterationFeedType { get; set; }
-
-        /// <summary>
         /// Raised when bytes have been received from the data source. This may not be on the same thread that started
         /// the listener - however all messages are guaranteed to be transmitted in the order in which they were received.
         /// </summary>

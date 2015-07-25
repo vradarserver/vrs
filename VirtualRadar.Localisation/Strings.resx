@@ -2504,4 +2504,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ReceiverCannotBeMergeOnly" xml:space="preserve">
     <value>This receiver cannot be set to merge-only</value>
   </data>
+  <data name="MultilaterationTypeListHeader" xml:space="preserve">
+    <value>MLAT Type</value>
+  </data>
 </root>

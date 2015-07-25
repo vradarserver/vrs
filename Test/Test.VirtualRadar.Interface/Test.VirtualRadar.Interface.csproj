@@ -117,6 +117,7 @@
     <Compile Include="Settings\AudioSettingsTests.cs" />
     <Compile Include="Settings\InternetClientSettingsTests.cs" />
     <Compile Include="Settings\InstallerSettingsTests.cs" />
+    <Compile Include="Settings\MergedFeedReceiverTests.cs" />
     <Compile Include="Settings\MergedFeedTests.cs" />
     <Compile Include="Settings\MonoSettingsTests.cs" />
     <Compile Include="Settings\PluginManifestTests.cs" />

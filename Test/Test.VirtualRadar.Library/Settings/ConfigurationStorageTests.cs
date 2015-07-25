@@ -367,7 +367,6 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("", receiver.ShutdownText);
                         Assert.AreEqual(1, receiver.ReceiverLocationId);
                         Assert.AreEqual(null, receiver.Passphrase);
-                        Assert.AreEqual(MultilaterationFeedType.None, receiver.MultilaterationFeedType);
                         Assert.AreEqual(ReceiverUsage.Normal, receiver.ReceiverUsage);
 
                         receiver = readBack.Receivers[1];
@@ -392,7 +391,6 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("Stop", receiver.ShutdownText);
                         Assert.AreEqual(2, receiver.ReceiverLocationId);
                         Assert.AreEqual("Two", receiver.Passphrase);
-                        Assert.AreEqual(MultilaterationFeedType.PositionsInjected, receiver.MultilaterationFeedType);
                         Assert.AreEqual(ReceiverUsage.MergeOnly, receiver.ReceiverUsage);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
@@ -417,6 +415,11 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(2, mergedFeed.ReceiverIds.Count);
                         Assert.AreEqual(1, mergedFeed.ReceiverIds[0]);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds[1]);
+                        Assert.AreEqual(2, mergedFeed.ReceiverFlags.Count);
+                        Assert.AreEqual(1,                              mergedFeed.ReceiverFlags[0].UniqueId);
+                        Assert.AreEqual(MultilaterationFeedType.None,   mergedFeed.ReceiverFlags[0].MultilaterationFeedType);
+                        Assert.AreEqual(2,                                      mergedFeed.ReceiverFlags[1].UniqueId);
+                        Assert.AreEqual(MultilaterationFeedType.PositionsOnly,  mergedFeed.ReceiverFlags[1].MultilaterationFeedType);
 
                         mergedFeed = readBack.MergedFeeds[1];
                         Assert.AreEqual(false, mergedFeed.Enabled);
@@ -427,6 +430,10 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(2, mergedFeed.ReceiverIds.Count);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds[0]);
                         Assert.AreEqual(1, mergedFeed.ReceiverIds[1]);
+                        Assert.AreEqual(2,                                      mergedFeed.ReceiverFlags[0].UniqueId);
+                        Assert.AreEqual(MultilaterationFeedType.PositionsOnly,  mergedFeed.ReceiverFlags[0].MultilaterationFeedType);
+                        Assert.AreEqual(1,                              mergedFeed.ReceiverFlags[1].UniqueId);
+                        Assert.AreEqual(MultilaterationFeedType.None,   mergedFeed.ReceiverFlags[1].MultilaterationFeedType);
                         break;
                     case "DataVersion":
                         Assert.AreEqual(102, readBack.DataVersion);     // Save adds one to the saved DataVersion of 101
@@ -645,7 +652,6 @@ namespace Test.VirtualRadar.Library.Settings
                                                                 }
                                                             },
                                                             Passphrase = null,
-                                                            MultilaterationFeedType = MultilaterationFeedType.None,
                                                             ReceiverUsage = ReceiverUsage.Normal,
                                                         },
                                                         new Receiver() {
@@ -676,7 +682,6 @@ namespace Test.VirtualRadar.Library.Settings
                                                                 },
                                                             },
                                                             Passphrase = "Two",
-                                                            MultilaterationFeedType = MultilaterationFeedType.PositionsInjected,
                                                             ReceiverUsage = ReceiverUsage.MergeOnly,
                                                         },
                                                     });
@@ -690,6 +695,10 @@ namespace Test.VirtualRadar.Library.Settings
                                                             IcaoTimeout = 1000,
                                                             IgnoreAircraftWithNoPosition = false,
                                                             ReceiverIds = { 1, 2 },
+                                                            ReceiverFlags = {
+                                                                new MergedFeedReceiver() { UniqueId = 1, MultilaterationFeedType = MultilaterationFeedType.None },
+                                                                new MergedFeedReceiver() { UniqueId = 2, MultilaterationFeedType = MultilaterationFeedType.PositionsOnly },
+                                                            }
                                                         },
                                                         new MergedFeed() {
                                                             Enabled = false,
@@ -698,6 +707,10 @@ namespace Test.VirtualRadar.Library.Settings
                                                             IcaoTimeout = 2000,
                                                             IgnoreAircraftWithNoPosition = true,
                                                             ReceiverIds = { 2, 1 },
+                                                            ReceiverFlags = {
+                                                                new MergedFeedReceiver() { UniqueId = 2, MultilaterationFeedType = MultilaterationFeedType.PositionsOnly },
+                                                                new MergedFeedReceiver() { UniqueId = 1, MultilaterationFeedType = MultilaterationFeedType.None },
+                                                            }
                                                         },
                                                     });
                                                     break;
