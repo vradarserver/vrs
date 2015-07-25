@@ -175,7 +175,7 @@ Tradução francesa por: Francois /F5ANN.</value>
     <value>Copyright © 2010 onwards, Andrew Whewell</value>
   </data>
   <data name="DatabaseFileName" xml:space="preserve">
-    <value>Nome do arquivo de banco de dados</value>
+    <value>Caminho do banco de dados</value>
   </data>
   <data name="DefaultVoice" xml:space="preserve">
     <value>Voz padrão</value>
@@ -191,7 +191,7 @@ Tradução francesa por: Francois /F5ANN.</value>
     <value>Primeira atividade</value>
   </data>
   <data name="FlagsFolder" xml:space="preserve">
-    <value>Flags folder</value>
+    <value>pasta das bandeiras</value>
     <comment>The folder containing images of country or airline flags</comment>
   </data>
   <data name="ICAO" xml:space="preserve">
@@ -246,7 +246,7 @@ Tradução francesa por: Francois /F5ANN.</value>
     <comment>The number of times someone has connected to the server</comment>
   </data>
   <data name="SilhouettesFolder" xml:space="preserve">
-    <value>Silhouettes folder</value>
+    <value>Pasta das silhuetas</value>
     <comment>The folder containing images of aircraft silhouettes</comment>
   </data>
   <data name="Source" xml:space="preserve">
@@ -484,7 +484,7 @@ Tradução francesa por: Francois /F5ANN.</value>
     <value>Não foi possível verificar a existência de uma versão posterior</value>
   </data>
   <data name="CurrentRouteData" xml:space="preserve">
-    <value>Dados de rota atual</value>
+    <value>Dados disponíveis</value>
     <comment>Label for status message describing the flight route data held by the program</comment>
   </data>
   <data name="Download" xml:space="preserve">
@@ -508,7 +508,7 @@ Tradução francesa por: Francois /F5ANN.</value>
     <value>De</value>
   </data>
   <data name="LatestVersion" xml:space="preserve">
-    <value>Esta é a versão mais recente do programa disponível</value>
+    <value>Esta é a versão mais recente do programa</value>
   </data>
   <data name="menuAbout" xml:space="preserve">
     <value>&amp;Sobre...</value>
@@ -562,7 +562,7 @@ Tradução francesa por: Francois /F5ANN.</value>
     <value>Até</value>
   </data>
   <data name="VersionCheckResult" xml:space="preserve">
-    <value>Resultado da verificação da versão</value>
+    <value>Resultado da procura de atualizações</value>
     <comment>Title for a dialog box displaying the result of a check for a later version</comment>
   </data>
   <data name="AnotherInstanceRunningFull" xml:space="preserve">
@@ -783,7 +783,7 @@ ESTE SOFTWARE É FORNECIDO PELOS DETENTORES DE DIREITOS AUTORAIS E COLABORADORES
     <comment>UPnP does not need to be translated</comment>
   </data>
   <data name="PicturesFolder" xml:space="preserve">
-    <value>Destino das fotos</value>
+    <value>Pasta das fotos</value>
   </data>
   <data name="AutoStartUPnP" xml:space="preserve">
     <value>Tornar online assim que o servidor iniciar</value>

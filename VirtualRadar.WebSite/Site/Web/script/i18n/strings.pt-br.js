@@ -71,16 +71,16 @@
     VRS.$$.CofAExpiry =                                 'C/A Expiry';                       // certificate of airworthiness expiry
     VRS.$$.Columns =                                    'Columns';
     VRS.$$.Contains =                                   'Contenha'; 
-    VRS.$$.CountAdsb =                                  'ADS-B Count';
-    VRS.$$.Country =                                    'Pais';
-    VRS.$$.CountModeS =                                 'Mode-S Count';
+    VRS.$$.CountAdsb =                                  'Mensagens ADS-B';
+    VRS.$$.Country =                                    'País';
+    VRS.$$.CountModeS =                                 'Mensagens Mode-S;
     VRS.$$.CountPositions =                             'Position Count';
     VRS.$$.Criteria =                                   'Filtro';
     VRS.$$.CurrentLocationInstruction =                 'Para definir a sua localização atual clique "Definir a localização atual" e arraste o marcador.';
     VRS.$$.CurrentRegDate =                             'Current Reg. Date';
     VRS.$$.Date =                                       'Data';
     VRS.$$.DateTimeShort =                              '{0} {1}';                          // Where "{0}" is a date, e.g. 10/10/2013; and "{1}" is a time, e.g. 17:41:32.
-    VRS.$$.DefaultSetting =                             '< Default >';
+    VRS.$$.DefaultSetting =                             '< Padrão >';
     VRS.$$.DegreesAbbreviation =                        '{0}°';
     VRS.$$.DeRegDate =                                  'De-reg. Date';
     VRS.$$.DesktopPage =                                'Desktop Page';
@@ -91,9 +91,9 @@
     VRS.$$.Distance =                                   'Distancia';
     VRS.$$.Distances =                                  'Distancias';
     VRS.$$.DoNotImportAutoSelect =                      'Do not import auto-select settings';
-    VRS.$$.DoNotImportCurrentLocation =                 'Do not import current location';
+    VRS.$$.DoNotImportCurrentLocation =                 'Não importar a localização';
     VRS.$$.DoNotImportRequestFeedId =                   'Do not import request feed ID';
-    VRS.$$.DoNotImportLanguageSettings =                'Do not import language settings';
+    VRS.$$.DoNotImportLanguageSettings =                'Não importar a configuração de idioma';
     VRS.$$.DoNotImportSplitters =                       'Do not import splitters';
     VRS.$$.DoNotShow =                                  'Não mostrar';
     VRS.$$.Duration =                                   'Duração';
@@ -106,28 +106,28 @@
     VRS.$$.EndsWith =                                   'Termina com';
     VRS.$$.Engines =                                    'Motores';
     VRS.$$.EngineType =                                 'Tipo de Motor';
-    VRS.$$.Equals =                                     'É';
-    VRS.$$.EraseBeforeImport =                          'Erase all settings before import';
-    VRS.$$.ExportSettings =                             'Export Settings';
+    VRS.$$.Equals =                                     'Extamente';
+    VRS.$$.EraseBeforeImport =                          'Apague todas as configurações antes da importação';
+    VRS.$$.ExportSettings =                             'Exportar configurações';
     VRS.$$.Feet =                                       'Pés';
     VRS.$$.FeetAbbreviation =                           '{0} ft';
     VRS.$$.FeetPerMinuteAbbreviation =                  '{0} ft/m';
     VRS.$$.FeetPerSecondAbbreviation =                  '{0} ft/s';
-    VRS.$$.FetchPage =                                  'Fetch';
+    VRS.$$.FetchPage =                                  'Buscar';
     VRS.$$.FillOpacity =                                'Transparencia do gráfico de alcance';
     VRS.$$.Filters =                                    'Filtros';
     VRS.$$.FindAllPermutationsOfCallsign =              'Find all permutations of callsign';
-    VRS.$$.FirstAltitude =                              'First Altitude';
+    VRS.$$.FirstAltitude =                              'Primeira altitude';
     VRS.$$.FirstHeading =                               'Primeira proa';
-    VRS.$$.FirstFlightLevel =                           'First FL';
-    VRS.$$.FirstLatitude =                              'First Latitude';
-    VRS.$$.FirstLongitude =                             'First Longitude';
-    VRS.$$.FirstOnGround =                              'First On Ground';
+    VRS.$$.FirstFlightLevel =                           'Primeiro FL';
+    VRS.$$.FirstLatitude =                              'Primeira Latitude';
+    VRS.$$.FirstLongitude =                             'Primeira Longitude';
+    VRS.$$.FirstOnGround =                              'Primeira vez no solo';
     VRS.$$.FirstRegDate =                               'First Reg.Date';
-    VRS.$$.FirstSpeed =                                 'First Speed';
-    VRS.$$.FirstSquawk =                                'First Squawk';
-    VRS.$$.FirstVerticalSpeed =                         'First Vertical Speed';
-    VRS.$$.FlightDetailShort =                          'Detailhe';
+    VRS.$$.FirstSpeed =                                 'Primeira Velocidade';
+    VRS.$$.FirstSquawk =                                'Primeiro Squawk';
+    VRS.$$.FirstVerticalSpeed =                         'Primeira Velocidade Vertical';
+    VRS.$$.FlightDetailShort =                          'Detalhe';
     VRS.$$.FlightLevel =                                'Nível de voo';
     VRS.$$.FlightLevelAbbreviation =                    'FL{0}';
     VRS.$$.FlightLevelAndVerticalSpeed =                'FL & VS';
@@ -172,10 +172,10 @@
     VRS.$$.HideNoPosition =                             'Has position';
     VRS.$$.HighContrastMap =                            'Contraste';                         // <-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room
     VRS.$$.Icao =                                       'ICAO';
-    VRS.$$.Import =                                     'Import';
-    VRS.$$.ImportFailedTitle =                          'Import Settings Failed';
-    VRS.$$.ImportFailedBody =                           'Could not import your settings. The reported error was: {0}';
-    VRS.$$.ImportSettings =                             'Import Settings';
+    VRS.$$.Import =                                     'Importar';
+    VRS.$$.ImportFailedTitle =                          'A importação falhoud';
+    VRS.$$.ImportFailedBody =                           'Não foi possível importar as suas definições. O erro relatado foi: {0}';
+    VRS.$$.ImportSettings =                             'Importar configurações';
     VRS.$$.Index =                                      'Index';
     VRS.$$.IndicatedAirSpeed =                          'Indicated';
     VRS.$$.IndicatedAirSpeedShort =                     'IAS';                              // <-- please try to keep this short, an abbreviation if possible
@@ -186,7 +186,7 @@
     VRS.$$.JustPositions =                              'Posição';
     VRS.$$.KilometreAbbreviation =                      '{0} km';
     VRS.$$.Kilometres =                                 'Quilômetros';
-    VRS.$$.KilometresPerHour =                          'Quilômetros/Hora';
+    VRS.$$.KilometresPerHour =                          'Km/h';
     VRS.$$.KilometresPerHourAbbreviation =              '{0} km/h';
     VRS.$$.Knots =                                      'Knots';
     VRS.$$.KnotsAbbreviation =                          '{0} kts';
@@ -209,7 +209,7 @@
     VRS.$$.Layout5 =                                    'Tall List, Map Bottom';
     VRS.$$.Layout6 =                                    'Tall Detail and List';
     VRS.$$.ListAircraftClass =                          'A/C Class';
-    VRS.$$.ListAirportDataThumbnails =                  'Thumbnails (airport-data.com)';
+    VRS.$$.ListAirportDataThumbnails =                  'Miniaturas (airport-data.com)';
     VRS.$$.ListAltitude =                               'Altitude';
     VRS.$$.ListAltitudeType =                           'Alt. Type';
     VRS.$$.ListAltitudeAndVerticalSpeed =               'Alt & VSI';
@@ -223,7 +223,7 @@
     VRS.$$.ListCountMessages =                          'Msgs.';
     VRS.$$.ListCountModeS =                             'Mode-S Msgs.';
     VRS.$$.ListCountPositions =                         'Posn. Msgs.';
-    VRS.$$.ListCountry =                                'Country';
+    VRS.$$.ListCountry =                                'País';
     VRS.$$.ListCurrentRegDate =                         'Current Reg.';             // Date of current registration
     VRS.$$.ListDeRegDate =                              'De-reg Date';              // as in the date it was taken off the register
     VRS.$$.ListDistance =                               'Distancia';
@@ -236,7 +236,7 @@
     VRS.$$.ListFirstLatitude =                          'From Lat.';
     VRS.$$.ListFirstLongitude =                         'From Lng.';
     VRS.$$.ListFirstOnGround =                          'From On Gnd.';
-    VRS.$$.ListFirstRegDate =                           'Primeiro Reg.';               // Date of first registration
+    VRS.$$.ListFirstRegDate =                           'Primeiro Registro';               // Date of first registration
     VRS.$$.ListFirstSpeed =                             'From Speed';
     VRS.$$.ListFirstSquawk =                            'From Squawk';
     VRS.$$.ListFirstVerticalSpeed =                     'From VSI';
@@ -266,7 +266,7 @@
     VRS.$$.ListManufacturer =                           'Manufacturer';
     VRS.$$.ListMaxTakeoffWeight =                       'Max T/O Weight';
     VRS.$$.ListModel =                                  'Modelo';
-    VRS.$$.ListModelIcao =                              'Type';
+    VRS.$$.ListModelIcao =                              'Aeronave';
     VRS.$$.ListModeSCountry =                           'Mode-S Country';
     VRS.$$.ListModelSilhouette =                        'Silhueta';
     VRS.$$.ListModelSilhouetteAndOpFlag =               'Bandeiras';
@@ -275,11 +275,11 @@
     VRS.$$.ListOperatorIcao =                           'Op. Code';
     VRS.$$.ListOwnershipStatus =                        'Ownership Status';
     VRS.$$.ListPicture =                                'Picture';
-    VRS.$$.ListPopularName =                            'Popular Name';
+    VRS.$$.ListPopularName =                            'Nome Popular';
     VRS.$$.ListPreviousId =                             'Previous ID';
     VRS.$$.ListReceiver =                               'Receiver';
     VRS.$$.ListRegistration =                           'Reg.';
-    VRS.$$.ListRowNumber =                              'Row';
+    VRS.$$.ListRowNumber =                              'Linha';
     VRS.$$.ListRoute =                                  'Rota';
     VRS.$$.ListSerialNumber =                           'Serial';
     VRS.$$.ListSignalLevel =                            'Sig';
@@ -287,7 +287,7 @@
     VRS.$$.ListSpeed =                                  'Velocidade';
     VRS.$$.ListSpeedType =                              'Velocimetro';
     VRS.$$.ListSquawk =                                 'Squawk';
-    VRS.$$.ListStartTime =                              'Seen';
+    VRS.$$.ListStartTime =                              'Hora';
     VRS.$$.ListStatus =                                 'Status';
     VRS.$$.ListTargetAltitude =                         'A/P Alt.';
     VRS.$$.ListTargetHeading =                          'A/P Hdg.';
@@ -302,7 +302,7 @@
     VRS.$$.Longitude =                                  'Longitude';
     VRS.$$.Manufacturer =                               'Manufacturer';
     VRS.$$.Map =                                        'Map';
-    VRS.$$.MaxTakeoffWeight =                           'MaxTakeoffWeight';
+    VRS.$$.MaxTakeoffWeight =                           'Peso max. de decolagem';
     VRS.$$.Menu =                                       'Menu';
     VRS.$$.MenuBack =                                   'voltar';
     VRS.$$.MessageCount =                               'Mensagens recebidas';
@@ -310,29 +310,29 @@
     VRS.$$.MetrePerSecondAbbreviation =                 '{0} m/seg';
     VRS.$$.MetrePerMinuteAbbreviation =                 '{0} m/min';
     VRS.$$.Metres =                                     'Metros';
-    VRS.$$.MilesPerHour =                               'Milhas/Hora';
+    VRS.$$.MilesPerHour =                               'Milhas por hora';
     VRS.$$.MilesPerHourAbbreviation =                   '{0} mph';
     VRS.$$.Military =                                   'Militar';
     VRS.$$.MobilePage =                                 'Mobile Page';
     VRS.$$.MobileReportPage =                           'Mobile Report Page';
     VRS.$$.Model =                                      'Modelo';
-    VRS.$$.ModelIcao =                                  'Código do modelo';
+    VRS.$$.ModelIcao =                                  'Modelo da aeronave';
     VRS.$$.ModeS =                                      'Mode-S';
     VRS.$$.ModeSCountry =                               'Mode-S Country';
     VRS.$$.MovingMap =                                  'Seguir aeronave';
-    VRS.$$.MuteOff =                                    'Mute Off';
+    VRS.$$.MuteOff =                                    'Desligar mudo';
     VRS.$$.MuteOn =                                     'Mudo';
     VRS.$$.NauticalMileAbbreviation =                   '{0} mn';
     VRS.$$.NauticalMiles =                              'Milhas Náuticas';
     VRS.$$.No =                                         'No';
-    VRS.$$.NoLocalStorage =                             'This browser does not support local storage. Your configuration settings will not be saved.\n\nIf you are browsing in "Private Mode" then try switching if off. Private Mode will disable local storage on some browsers.';
+    VRS.$$.NoLocalStorage = 'Este navegador não suporta o armazenamento local. Suas configurações não serão salvas\n\nSe você está navegando no "modo anonimo", em seguida, va para a versão normal. O modo anomimo não salva as alterações';
     VRS.$$.None =                                       'Nenhum';
     VRS.$$.Notes =                                      'Notas';
     VRS.$$.NoSettingsFound =                            'No settings found';
     VRS.$$.NotBetween =                                 'Não está entre';
     VRS.$$.NotContains =                                'Que não contenha';
     VRS.$$.NotEndsWith =                                'Não termina com';
-    VRS.$$.NotEquals =                                  'Não é';
+    VRS.$$.NotEquals =                                  'Exceto';
     VRS.$$.NotStartsWith =                              'Não começa com';
     VRS.$$.OffRadarAction =                             'Quando a aeronave sair do alcance::';
     VRS.$$.OffRadarActionWait =                         'Desmarque a aeronave';
@@ -346,17 +346,17 @@
     VRS.$$.OperatorFlag =                               'Bandeira do operador';
     VRS.$$.Options =                                    'Opções';
     VRS.$$.OverwriteExistingSettings =                  'Overwrite existing settings';
-    VRS.$$.OwnershipStatus =                            'Ownership Status';
+    VRS.$$.OwnershipStatus =                            'Status do Proprietário';
     VRS.$$.PageAircraft =                               'Aeronave';
     VRS.$$.AircraftDetailShort =                        'Detail';
-    VRS.$$.PageFirst =                                  'First';
+    VRS.$$.PageFirst =                                  'Primeira';
     VRS.$$.PageGeneral =                                'Geral';
     VRS.$$.PageLast =                                   'Última';
     VRS.$$.PageList =                                   'Lista';
     VRS.$$.PageListShort =                              'Lista';
     VRS.$$.PageMapShort =                               'Mapa';
-    VRS.$$.PageNext =                                   'Next';
-    VRS.$$.PagePrevious =                               'Previous';
+    VRS.$$.PageNext =                                   'Próxima';
+    VRS.$$.PagePrevious =                               'Anterior';
     VRS.$$.PaneAircraftDisplay =                        'Exibição da aeronave';
     VRS.$$.PaneAircraftTrails =                         'Trilhas das aeronaves';
     VRS.$$.PaneAudio =                                  'Áudio';
@@ -418,8 +418,8 @@
     VRS.$$.RouteFull =                                  'Rota (completa)';
     VRS.$$.RouteNotKnown =                              'Rota não conhecida';
     VRS.$$.RowNumber =                                  'Row Number';
-    VRS.$$.Rows =                                       'Rows';
-    VRS.$$.RunReport =                                  'Executar relatório';
+    VRS.$$.Rows =                                       'Linha';
+    VRS.$$.RunReport =                                  'Gerar relatório';
     VRS.$$.SeaPlane =                                   'Seaplane';
     VRS.$$.Select =                                     'Selecionar a:';
     VRS.$$.SeparateTwoValues =                          ' e ';
@@ -458,16 +458,16 @@
     VRS.$$.Speeds =                                     'Velocidades';
     VRS.$$.SpeedType =                                  'Velocimetro';
     VRS.$$.Squawk =                                     'Squawk';
-    VRS.$$.Squawk7000 =                                 'No squawk assigned';
+    VRS.$$.Squawk7000 =                                 'Nenhum squawk atribuído';
     VRS.$$.Squawk7500 =                                 'Aircraft hijacking';
     VRS.$$.Squawk7600 =                                 'Falha no Radio';
     VRS.$$.Squawk7700 =                                 'Emergência Geral';
     VRS.$$.Start =                                      'Iniciar';
     VRS.$$.StartsWith =                                 'Começa com';
-    VRS.$$.StartTime =                                  'Start Time';
+    VRS.$$.StartTime =                                  'Hora de inicio';
     VRS.$$.Status =                                     'Status';
     VRS.$$.StatuteMileAbbreviation =                    '{0} mi';
-    VRS.$$.StatuteMiles =                               'MIlhas Terrestres';
+    VRS.$$.StatuteMiles =                               'Milhas Terrestres';
     VRS.$$.StorageEngine =                              'Storage engine';
     VRS.$$.StorageSize =                                'Storage size';
     VRS.$$.StrokeOpacity =                              'Transparencia da borda do gráfico';
@@ -497,7 +497,7 @@
     VRS.$$.Turbo =                                      'Turbo';
     VRS.$$.Unknown =                                    'Desconhecido';
     VRS.$$.UseBrowserLocation =                         'Use a localização GPS';
-    VRS.$$.UseRelativeDates =                           'Use datas relativas';
+    VRS.$$.UseRelativeDates =                           'Manter as datas';
     VRS.$$.UserTag =                                    'User Tag';
     VRS.$$.VerticalSpeed =                              'Velocidade vertical';
     VRS.$$.VerticalSpeedType =                          'Vertical Speed Type';
@@ -506,14 +506,14 @@
     VRS.$$.Volume50 =                                   'Volume 50%';
     VRS.$$.Volume75 =                                   'Volume 75%';
     VRS.$$.Volume100 =                                  'Volume 100%';
-    VRS.$$.VrsVersion =                                 'Version {0}';
-    VRS.$$.WakeTurbulenceCategory =                     'Esteira de turbulencia';
+    VRS.$$.VrsVersion =                                 'Versão {0}';
+    VRS.$$.WakeTurbulenceCategory =                     'Esteira de turbulência';
     VRS.$$.Warning =                                    'Aviso';
     VRS.$$.WorkingInOfflineMode =                       'Trabalhando em modo offline';
     VRS.$$.WtcLight =                                   'Leve';
     VRS.$$.WtcMedium =                                  'Médio';
     VRS.$$.WtcHeavy =                                   'Pesado';
-    VRS.$$.YearBuilt =                                  'Year Built';
+    VRS.$$.YearBuilt =                                  'Ano de fabricação';
     VRS.$$.Yes =                                        'Sim';
 
     // Date picker text
@@ -522,7 +522,7 @@
     VRS.$$.DateNext =                                   'Próx.';                         // Keep this short
     VRS.$$.DatePrevious =                               'Ante.';                         // Keep this short
     VRS.$$.DateWeekAbbr =                               'Wk';                           // Keep this very short
-    VRS.$$.DateYearSuffix =                             '';                             // This is displayed after the year
+    VRS.$$.DateYearSuffix =                             'Ano';                             // This is displayed after the year
     // If your language has a different month format when days preceed months, and the date picker
     // should be using that month format, then set this to true. Otherwise leave at false.
     VRS.$$.DateUseGenetiveMonths =                      false;
@@ -530,7 +530,7 @@
     // Text-to-speech formatting
     VRS.$$.SayCallsign =                                'Voo {0}.';
     VRS.$$.SayHyphen =                                  'hyphen';
-    VRS.$$.SayIcao =                                    'eye co {0}.';
+    VRS.$$.SayIcao =                                    'ICAO {0}.';
     VRS.$$.SayModelIcao =                               'Tipo {0}.';
     VRS.$$.SayOperator =                                'Operado pela {0}.';
     VRS.$$.SayRegistration =                            'Registro {0}.';
@@ -659,9 +659,9 @@
         }
 
         switch(engineType) {
-            case VRS.EngineType.Electric:   result += ' electric'; break;
-            case VRS.EngineType.Jet:        result += ' jet'; break;
-            case VRS.EngineType.Piston:     result += ' piston'; break;
+            case VRS.EngineType.Electric:   result += ' electrico'; break;
+            case VRS.EngineType.Jet:        result += ' jato'; break;
+            case VRS.EngineType.Piston:     result += ' pistão'; break;
             case VRS.EngineType.Turbo:      result += ' turbo'; break;
         }
 
@@ -691,7 +691,7 @@
                 case VRS.WakeTurbulenceCategory.Light:  result = 'Leve'; break;
                 case VRS.WakeTurbulenceCategory.Medium: result = 'Médio'; break;
                 case VRS.WakeTurbulenceCategory.Heavy:  result = 'Pesado'; break;
-                default: throw 'Unknown wake turbulence category ' + category;  // Do not translate this line
+                default: throw 'Unknown wake turbulence category' + category;  // Do not translate this line
             }
 
             if(expandedDescription && result) {
@@ -727,10 +727,10 @@
                 To AIRPORT via AIRPORT, AIRPORT (..., AIRPORT)
          */
         var result = '';
-        if(from) result = 'From ' + from;
+        if(from) result = 'De ' + from;
         if(to) {
-            if(result.length) result += ' to ';
-            else              result = 'To ';
+            if(result.length) result += ' Para ';
+            else              result = 'Para ';
             result += to;
         }
         var stopovers = via ? via.length : 0;

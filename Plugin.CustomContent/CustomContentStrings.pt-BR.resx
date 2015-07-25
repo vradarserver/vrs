@@ -196,7 +196,7 @@
     <value>Por favor, insira o caminho e o nome do arquivo HTML para inserir o conteúdo (por exemplo /index.html) ou * para inseir em todo o HTML</value>
   </data>
   <data name="Start" xml:space="preserve">
-    <value>Iniciar</value>
+    <value>Start</value>
     <comment>As in at the beginning of a file</comment>
   </data>
   <data name="Address" xml:space="preserve">
