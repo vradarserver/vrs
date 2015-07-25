@@ -158,6 +158,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericIcaoTimeout,                   Strings.IcaoTimeout,                    Strings.OptionsDescribeIcaoTimeout);
             SetInlineHelp(checkBoxIgnoreAircraftWithNoPosition, Strings.IgnoreAircraftWithNoPosition,   Strings.OptionsDescribeIgnoreAircraftWithNoPosition);
             SetInlineHelp(listReceiverIds,                      "",                                     "");
+            SetInlineHelp(comboBoxMlatType,                     Strings.MultilaterationType,            Strings.OptionsDescribeDataSourcesMultilaterationType);
         }
 
         public void SynchroniseReceiverIdsToFlags()
