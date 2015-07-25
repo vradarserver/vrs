@@ -15,17 +15,58 @@
 
 (function(VRS, $, undefined)
 {
+    //region AircraftMarker
+    /**
+     * Describes the properties of an aircraft marker.
+     * @param {VRS_AIRCRAFTMARKER_SETTINGS} settings
+     * @constructor
+     */
+    VRS.AircraftMarker = function(settings)
+    {
+        /** @type {string} */
+        var _NormalFileName = settings.normalFileName || null;
+        this.getNormalFileName = function()                     { return _NormalFileName; };
+        this.setNormalFileName = function(/**string*/ value)    { _NormalFileName = value; };
+
+        /** @type {string} */
+        var _SelectedFileName = settings.selectedFileName || settings.normalFileName || null;
+        this.getSelectedFileName = function()                   { return _SelectedFileName; };
+        this.setSelectedFileName = function(/**string*/ value)  { _SelectedFileName = value; };
+
+        /** @type {VRS_SIZE} */
+        var _Size = settings.size || { width: 35, height: 35};
+        this.getSize = function()                               { return _Size; };
+        this.setSize = function(/**VRS_SIZE*/ value)            { _Size = value; };
+
+        /** @type {bool} */
+        var _IsAircraft = settings.isAircraft || true;
+        this.getIsAircraft = function()                         { return _IsAircraft; };
+        this.setIsAircraft = function(/**bool*/ value)          { _IsAircraft = value; };
+
+        /** @type {bool} */
+        var _CanRotate = settings.canRotate || true;
+        this.getCanRotate = function()                          { return _CanRotate; };
+        this.setCanRotate = function(/**bool*/ value)           { _CanRotate = value; };
+
+        /** @type {function(VRS.Aircraft):bool} */
+        var _Matches = settings.matches;
+        this.getMatches = function()                                          { return _Matches; };
+        this.setMatches = function(/** function(VRS.Aircraft):bool */ value)  { _Matches = value; };
+
+        /**
+         * Returns true if the marker can be used to represent the aircraft passed across.
+         * @param {VRS.Aircraft} aircraft
+         * @returns {boolean}
+         */
+        this.matchesAircraft = function(aircraft)
+        {
+            return _Matches ? _Matches(aircraft) : false;
+        };
+    };
+    //endregion
+
     //region Global options
     VRS.globalOptions = VRS.globalOptions || {};
-    VRS.globalOptions.aircraftMarkerNormal = VRS.globalOptions.aircraftMarkerNormal || 'Airplane.png';                  // The name of the image to display for aircraft that are not selected.
-    VRS.globalOptions.aircraftMarkerSelected = VRS.globalOptions.aircraftMarkerSelected || 'AirplaneSelected.png';      // The name of the image to display for aircraft that are selected.
-    VRS.globalOptions.aircraftMarkerGroundVehicleNormal = VRS.globalOptions.aircraftMarkerGroundVehicleNormal || 'GroundVehicle.png';   // The name of the image to display for ground vehicles that are not selected.
-    VRS.globalOptions.aircraftMarkerGroundVehicleSelected = VRS.globalOptions.aircraftMarkerGroundVehicleSelected || 'GroundVehicleSelected.png';   // The name of the image to display for ground vehicles that are selected.
-    VRS.globalOptions.aircraftMarkerTowerNormal = VRS.globalOptions.aircraftMarkerTowerNormal || 'Tower.png';               // The name of the image to display for towers that are not selected.
-    VRS.globalOptions.aircraftMarkerTowerSelected = VRS.globalOptions.aircraftMarkerTowerSelected || 'TowerSelected.png';   // The name of the image to display for towers that are selected.
-    VRS.globalOptions.aircraftMarkerSize = VRS.globalOptions.aircraftMarkerSize || { width: 35, height: 35 };           // The base width and height of an aircraft marker image.
-    VRS.globalOptions.aircraftMarkerGroundVehicleSize = VRS.globalOptions.aircraftMarkerGroundVehicleSize || { width: 26, height: 24};    // The base width and height of a ground vehicle marker image.
-    VRS.globalOptions.aircraftMarkerTowerSize = VRS.globalOptions.aircraftMarkerTowerSize || { width: 20, height: 20 }; // The width and height of the tower pin image.
     VRS.globalOptions.aircraftMarkerPinTextWidth = VRS.globalOptions.aircraftMarkerPinTextWidth || 68;                  // The width for markers that are showing pin text.
     VRS.globalOptions.aircraftMarkerPinTextLineHeight = VRS.globalOptions.aircraftMarkerPinTextLineHeight || 12;        // The height added to each marker for each line of pin text.
     VRS.globalOptions.aircraftMarkerRotate = VRS.globalOptions.aircraftMarkerRotate !== undefined ? VRS.globalOptions.aircraftMarkerRotate : true;     // True to rotate aircraft markers to follow the aircraft heading, false otherwise.
@@ -72,6 +113,37 @@
     VRS.globalOptions.aircraftMarkerAlwaysPlotSelected = VRS.globalOptions.aircraftMarkerAlwaysPlotSelected !== undefined ? VRS.globalOptions.aircraftMarkerAlwaysPlotSelected : true;  // Always plot the selected aircraft, even if it is not on the map. This preserves the selected aircraft's trail.
     VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel = VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel != undefined ? VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel : 13;   // Ground vehicles and towers are only shown when the zoom level is this value or above. Set to 0 to always show them, 99999 to never show them.
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false; // True if trails are to be shown for ground vehicles and towers, false if they are not.
+
+    // The order in which these appear in the list is important. Earlier items take precedence over later items.
+    VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
+        new VRS.AircraftMarker({
+            normalFileName: 'GroundVehicle.png',
+            selectedFileName: 'GroundVehicle.png',
+            size: { width: 26, height: 24},
+            isAircraft: false,
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.GroundVehicle; }
+        }),
+        new VRS.AircraftMarker ({
+            normalFileName: 'Tower.png',
+            selectedFileName: 'Tower.png',
+            size: { width: 20, height: 20 },
+            isAircraft: false,
+            canRotate: false,
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.Tower; }
+        }),
+        new VRS.AircraftMarker ({
+            normalFileName: 'WtcHeavy.png',
+            selectedFileName: 'WtcHeavySelected.png',
+            size: { width: 50, height: 50 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy; }
+        }),
+        new VRS.AircraftMarker({
+            normalFileName: 'Airplane.png',
+            selectedFileName: 'AirplaneSelected.png',
+            size: { width: 35, height: 35 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return true; }
+        })
+    ];
     //endregion
 
     //region PlottedDetail
@@ -842,10 +914,7 @@
      * @param {string=}                     settings.name                               The name to use when saving the object's state.
      * @param {function():VRS.AircraftCollection} [settings.getAircraft]                A function that returns the collection of aircraft to plot. Defaults to the current aircraft on the aircraft list or an empty collection if no list is supplied.
      * @param {function():VRS.Aircraft}    [settings.getSelectedAircraft]               A function that returns the selected aircraft. Defaults to the selected aircraft from the aircraft list or null if no list is supplied.
-     * @param {string}                     [settings.normalImageUrl]                    The URL of the image to use for aircraft that are not selected. If rotation is enabled then the server must be capable of rotating the image.
-     * @param {string}                     [settings.selectedImageUrl]                  The URL of the image to use for aircraft that are selected. If rotation is enabled then the server must be capable of rotating the image.
-     * @param {VRS_SIZE}                   [settings.imageSize]                         The dimensions of the unrotated aircraft marker image (both normal and selected). Note that a rotated marker must leave enough transparent space around it in the image to encompass all degrees of rotation without clipping.
-     * @param {VRS_SIZE}                   [settings.groundVehicleImageSize]            The dimensions of the unrotated ground vehicle marker image.
+     * @param {VRS.AircraftMarker[]}       [settings.aircraftMarkers]                   An array of objects that describe all of the different types of aircraft marker.
      * @param {Number}                     [settings.pinTextMarkerWidth]                The width in pixels for markers that are showing pin text. Has no effect if labels are used to display pin text.
      * @param {Number}                     [settings.pinTextLineHeight]                 The pixels added to the height of the marker for each line of pin text. Has no effect if labels are used to display pin text. The actual number of pixels added may be slightly larger to prevent jaggies in the rendered text.
      * @param {boolean}                    [settings.allowRotation]                     True if rotation of the normal and selected aircraft images is enabled, false if it is not.
@@ -865,15 +934,7 @@
     {
         //region -- Default settings
         var _Settings = $.extend({
-            normalImageUrl:                 VRS.globalOptions.aircraftMarkerNormal,
-            selectedImageUrl:               VRS.globalOptions.aircraftMarkerSelected,
-            normalGroundVehicleUrl:         VRS.globalOptions.aircraftMarkerGroundVehicleNormal,
-            selectedGroundVehicleUrl:       VRS.globalOptions.aircraftMarkerGroundVehicleSelected,
-            normalTowerUrl:                 VRS.globalOptions.aircraftMarkerTowerNormal,
-            selectedTowerUrl:               VRS.globalOptions.aircraftMarkerTowerSelected,
-            imageSize:                      VRS.globalOptions.aircraftMarkerSize,
-            groundVehicleImageSize:         VRS.globalOptions.aircraftMarkerGroundVehicleSize,
-            towerImageSize:                 VRS.globalOptions.aircraftMarkerTowerSize,
+            aircraftMarkers:                VRS.globalOptions.aircraftMarkers,
             pinTextMarkerWidth:             VRS.globalOptions.aircraftMarkerPinTextWidth,
             pinTextLineHeight:              VRS.globalOptions.aircraftMarkerPinTextLineHeight,
             allowRotation:                  VRS.globalOptions.aircraftMarkerRotate,
@@ -1298,18 +1359,15 @@
         function createIcon(details, mapZoomLevel, isSelectedAircraft)
         {
             var aircraft = details.aircraft;
-            var isGroundVehicle = aircraft.species.val === VRS.Species.GroundVehicle;
-            var isTower = aircraft.species.val === VRS.Species.Tower;
-            var isNotAircraft = isGroundVehicle || isTower;
+            var marker = getAircraftMarker(aircraft);
 
-            var size = { width: _Settings.imageSize.width, height: _Settings.imageSize.height };
-            if(isGroundVehicle) size = { width: _Settings.groundVehicleImageSize.width, height: _Settings.groundVehicleImageSize.height };
-            else if(isTower) size = { width: _Settings.towerImageSize.width, height: _Settings.towerImageSize.height };
+            var size = marker.getSize();
+            size = { width: size.width, height: size.height };
             var anchorY = Math.floor(size.height / 2);
             var suppressPinText = _SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel);
 
-            if(!allowIconRotation() || isTower) details.iconRotation = undefined;
-            else                                details.iconRotation = getIconHeading(aircraft);
+            if(!allowIconRotation() || !marker.getCanRotate()) details.iconRotation = undefined;
+            else                                               details.iconRotation = getIconHeading(aircraft);
 
             var blankPixelsAtBottom = 0;
             if(!suppressPinText) {
@@ -1329,7 +1387,7 @@
             var pinTextLines = suppressPinText ? 0 : details.pinTexts.length;
 
             var hasAltitudeStalk = false;
-            if(isNotAircraft || !allowIconAltitudeStalk(mapZoomLevel)) details.iconAltitudeStalkHeight = undefined;
+            if(!marker.getIsAircraft() || !allowIconAltitudeStalk(mapZoomLevel)) details.iconAltitudeStalkHeight = undefined;
             else {
                 hasAltitudeStalk = true;
                 details.iconAltitudeStalkHeight = getIconAltitudeStalkHeight(aircraft);
@@ -1354,7 +1412,7 @@
                 requestSize = { width: size.width * multiplier, height: size.height * multiplier };
             }
 
-            var url = 'images';
+            var url = 'images/top/web-markers';
             url += '/Wdth-' + requestSize.width;
             url += '/Hght-' + requestSize.height;
             if(VRS.browserHelper.isHighDpi()) url += '/hiDpi';
@@ -1368,15 +1426,33 @@
                     url += '/PL' + (i + 1) + '-' + encodeURIComponent(details.pinTexts[i]);
                 }
             }
-            url += '/';
-            if(isGroundVehicle) url += (isSelectedAircraft ? _Settings.selectedGroundVehicleUrl : _Settings.normalGroundVehicleUrl);
-            else if(isTower)    url += (isSelectedAircraft ? _Settings.selectedTowerUrl : _Settings.normalTowerUrl);
-            else                url += (isSelectedAircraft ? _Settings.selectedImageUrl : _Settings.normalImageUrl);
+            url += '/' + (isSelectedAircraft ? marker.getSelectedFileName() : marker.getNormalFileName());
 
             var urlChanged = details.iconUrl !== url;
             details.iconUrl = url;
 
             return !urlChanged ? null : new VRS.MapIcon(url, size, { x: centreX, y: anchorY }, { x: 0, y: 0 }, size, labelAnchor);
+        }
+
+        /**
+         * Returns the aircraft marker to use for the aircraft passed across.
+         * @param {VRS.Aircraft} aircraft
+         * @returns {VRS.AircraftMarker|null}
+         */
+        function getAircraftMarker(aircraft)
+        {
+            var result = null;
+
+            if(aircraft) {
+                var markers = _Settings.aircraftMarkers;
+                var length = markers.length;
+                for(var i = 0;i < length;++i) {
+                    result = markers[i];
+                    if(result.matchesAircraft(aircraft)) break;
+                }
+            }
+
+            return result;
         }
 
         /**

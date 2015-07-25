@@ -45,6 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE.txt = LICENSE.txt
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 		VirtualRadar.vsmdi = VirtualRadar.vsmdi
+		WebEssentials-Settings.json = WebEssentials-Settings.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.VirtualRadar.Database", "Test\Test.VirtualRadar.Database\Test.VirtualRadar.Database.csproj", "{3BCD0AE3-BC71-47DC-836C-41BDF0C2533E}"

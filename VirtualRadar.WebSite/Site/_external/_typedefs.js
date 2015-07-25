@@ -30,6 +30,20 @@ VRS_AIRCRAFTLIST_ROWDATA_CELL;
 VRS_AIRCRAFTLIST_ROWDATA;
 //endregion
 
+//region VRS_AIRCRAFTMARKER_SETTINGS
+/**
+ * @typedef {{
+ * normalFileName:      string,
+ * selectedFileName:    string,
+ * size:                VRS_SIZE,
+ * isAircraft:         [bool],
+ * canRotate:          [bool],
+ * matches:             function(VRS.Aircraft):bool
+ * }} VRS_AIRCRAFTMARKER_SETTINGS
+ */
+VRS_AIRCRAFTMARKER_SETTINGS;
+//endregion
+
 //region VRS_ANY_FILTERPROPERTY
 /**
  * @typedef {(VRS.AircraftFilterProperty|VRS.ReportFilterProperty)}
