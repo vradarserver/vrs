@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Interface
 {
@@ -34,5 +35,15 @@ namespace VirtualRadar.Interface
         /// <param name="fileName"></param>
         /// <returns></returns>
         Size ImageFileDimensions(string fileName);
+
+        /// <summary>
+        /// Loads the image from the web site passed across. If caching is allowed then a clone of the cached
+        /// image is always returned.
+        /// </summary>
+        /// <param name="webSite"></param>
+        /// <param name="webPathAndFileName"></param>
+        /// <param name="useImageCache"></param>
+        /// <returns></returns>
+        Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache);
     }
 }

@@ -14,6 +14,9 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface;
 using System.Drawing;
+using VirtualRadar.Interface.WebSite;
+using InterfaceFactory;
+using System.IO;
 
 namespace VirtualRadar.Library
 {
@@ -21,8 +24,52 @@ namespace VirtualRadar.Library
     /// A simple implementation of <see cref="IImageFileManager"/> that doesn't cache and doesn't
     /// force serial access to different drives or network shares.
     /// </summary>
+    /// <remarks>
+    /// Since this was originally written a cache has been introduced, but it's just a simple
+    /// cache on the web site images. Saves having to fetch every image through the web server.
+    /// </remarks>
     class ParallelAccessImageFileManager : IImageFileManager
     {
+        /// <summary>
+        /// Describes an entry in the cache of web site images.
+        /// </summary>
+        class CacheEntry
+        {
+            public string NormalisedFileName;
+
+            public Image Image;
+
+            public DateTime LastFetchedUtc;
+        }
+
+        /// <summary>
+        /// The number of seconds that entries can stay in the cache for.
+        /// </summary>
+        private const int WebSiteCacheExpirySeconds = 60;
+
+        /// <summary>
+        /// Map of normalised filenames to images fetched from the web site.
+        /// </summary>
+        private Dictionary<string, CacheEntry> _WebSiteImageCache = new Dictionary<string,CacheEntry>();
+
+        /// <summary>
+        /// Lock object on the cache.
+        /// </summary>
+        private object _SyncLock = new object();
+
+        /// <summary>
+        /// The clock object.
+        /// </summary>
+        private IClock _Clock;
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public ParallelAccessImageFileManager()
+        {
+            _Clock = Factory.Singleton.Resolve<IClock>();
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -55,6 +102,89 @@ namespace VirtualRadar.Library
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="webSite"></param>
+        /// <param name="webPathAndFileName"></param>
+        /// <param name="useImageCache"></param>
+        /// <returns></returns>
+        public Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache)
+        {
+            Image result = null;
+
+            if(!useImageCache) {
+                result = FetchFromWebSite(webSite, webPathAndFileName);
+            } else {
+                var normalisedName = NormaliseWebPath(webPathAndFileName);
+                CacheEntry cacheEntry;
+                lock(_SyncLock) {
+                    _WebSiteImageCache.TryGetValue(normalisedName, out cacheEntry);
+                    if(cacheEntry != null && cacheEntry.LastFetchedUtc >= _Clock.UtcNow.AddSeconds(-WebSiteCacheExpirySeconds)) {
+                        if(cacheEntry.Image != null) {
+                            result = (Image)cacheEntry.Image.Clone();
+                        }
+                    }
+                }
+
+                if(cacheEntry == null || (cacheEntry.Image != null && result == null)) {
+                    // This can lead to double-fetches, however I would rather have those than have multiple threads block while images are
+                    // being fetched serially.
+                    result = FetchFromWebSite(webSite, webPathAndFileName);
+                    cacheEntry = new CacheEntry() {
+                        Image = result == null ? null : (Image)result.Clone(),
+                        LastFetchedUtc = _Clock.UtcNow,
+                        NormalisedFileName = normalisedName,
+                    };
+
+                    lock(_SyncLock) {
+                        CacheEntry oldEntry;
+                        if(!_WebSiteImageCache.TryGetValue(normalisedName, out oldEntry)) {
+                            _WebSiteImageCache.Add(normalisedName, cacheEntry);
+                        } else {
+                            if(oldEntry.Image != null) {
+                                oldEntry.Image.Dispose();
+                                oldEntry.Image = null;
+                            }
+                            _WebSiteImageCache[normalisedName] = cacheEntry;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Fetches an image from the web site passed across.
+        /// </summary>
+        /// <param name="webSite"></param>
+        /// <param name="webPathAndFileName"></param>
+        /// <returns></returns>
+        private Image FetchFromWebSite(IWebSite webSite, string webPathAndFileName)
+        {
+            Image result = null;
+
+            var simpleContent = webSite.RequestSimpleContent(webPathAndFileName);
+            if(simpleContent != null && simpleContent.HttpStatusCode == System.Net.HttpStatusCode.OK) {
+                using(var memoryStream = new MemoryStream(simpleContent.Content)) {
+                    result = Image.FromStream(memoryStream);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Normalises a web path and filename.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private string NormaliseWebPath(string path)
+        {
+            return (path ?? "").ToUpper();
         }
     }
 }

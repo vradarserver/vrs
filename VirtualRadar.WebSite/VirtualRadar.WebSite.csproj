@@ -180,6 +180,12 @@
     <Content Include="Site\Web\images\ADSB-2.png" />
     <Content Include="Site\Web\images\ADSB.png" />
     <Content Include="Site\Web\images\location.png" />
+    <Content Include="Site\Web\images\markers\FollowMe.png" />
+    <Content Include="Site\Web\images\markers\Marker_Airplane.png" />
+    <Content Include="Site\Web\images\markers\Marker_AirplaneSelected.png" />
+    <Content Include="Site\Web\images\markers\Tower.png" />
+    <Content Include="Site\Web\images\markers\WtcHeavy.png" />
+    <Content Include="Site\Web\images\markers\WtcHeavySelected.png" />
     <Content Include="Site\Web\images\Mode-S%402x.png" />
     <Content Include="Site\Web\images\Mode-S.png" />
     <Content Include="Site\Web\images\regions\br.bmp" />
