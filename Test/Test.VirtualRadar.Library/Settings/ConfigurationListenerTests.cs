@@ -283,6 +283,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.IgnoreAircraftWithNoPosition,  r => r.IgnoreAircraftWithNoPosition = !r.IgnoreAircraftWithNoPosition },
                     { r => r.Name,                          r => r.Name = "TEST" },
                     { r => r.ReceiverIds,                   r => r.ReceiverIds.Add(100) },
+                    { r => r.ReceiverFlags,                 r => r.ReceiverFlags.Add(new MergedFeedReceiver() { UniqueId = 100, MultilaterationFeedType = MultilaterationFeedType.PositionsOnly }) },
                     { r => r.UniqueId,                      r => r.UniqueId += 1 },
                 });
 
@@ -300,6 +301,42 @@ namespace Test.VirtualRadar.Library.Settings
             record.UniqueId += 1;
 
             Assert.IsFalse(RaisedEvent<MergedFeed>(ConfigurationListenerGroup.MergedFeed, r => r.UniqueId, record, isListChild: true));
+            Assert.AreEqual(2, _PropertyChanged.CallCount);
+        }
+        #endregion
+
+        #region MergedFeedReceiver
+        [TestMethod]
+        public void ConfigurationListener_Raises_Events_When_MergedFeedRecevier_Changes()
+        {
+            foreach(var propertyName in typeof(MergedFeedReceiver).GetProperties().Select(r => r.Name)) {
+                TestCleanup();
+                TestInitialise();
+
+                var mergedFeed = new MergedFeed();
+                var settings = new MergedFeedReceiver();
+                _Configuration.MergedFeeds.Add(new MergedFeed() { ReceiverFlags = { settings } });
+
+                SetValue(settings, propertyName, new Dictionary<Expression<Func<MergedFeedReceiver,object>>,Action<MergedFeedReceiver>>() {
+                    { r => r.UniqueId,                      r => r.UniqueId += 1 },
+                    { r => r.MultilaterationFeedType,       r => r.MultilaterationFeedType = MultilaterationFeedType.PositionsInjected },
+                });
+
+                Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.MergedFeedReceiver, propertyName, settings, isListChild: true), "MergedFeedReceiver.{0}", propertyName);
+            }
+        }
+
+        [TestMethod]
+        public void ConfigurationListener_Does_Not_Raise_Events_After_MergedFeedReceiver_Is_Detached()
+        {
+            var mergedFeed = new MergedFeed();
+            var settings = new MergedFeedReceiver();
+            _Configuration.MergedFeeds.Add(new MergedFeed() { ReceiverFlags = { settings } });
+
+            _Configuration.MergedFeeds[0].ReceiverFlags.Remove(settings);
+            settings.UniqueId += 1;
+
+            Assert.IsFalse(RaisedEvent<MergedFeed>(ConfigurationListenerGroup.MergedFeedReceiver, r => r.UniqueId, settings, isListChild: true));
             Assert.AreEqual(2, _PropertyChanged.CallCount);
         }
         #endregion
@@ -468,7 +505,6 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.Handshake,                 r => r.Handshake = System.IO.Ports.Handshake.RequestToSendXOnXOff },
                     { r => r.IdleTimeoutMilliseconds,   r => r.IdleTimeoutMilliseconds++ },
                     { r => r.IsPassive,                 r => r.IsPassive = !r.IsPassive },
-                    { r => r.MultilaterationFeedType,   r => r.MultilaterationFeedType = MultilaterationFeedType.PositionsInjected },
                     { r => r.Name,                      r => r.Name = "TEST" },
                     { r => r.Parity,                    r => r.Parity = System.IO.Ports.Parity.Mark },
                     { r => r.Passphrase,                r => r.Passphrase = r.Passphrase + 'A' },

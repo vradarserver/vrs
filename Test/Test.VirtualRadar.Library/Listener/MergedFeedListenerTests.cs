@@ -36,6 +36,9 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IListener> _Listener1;
         private Mock<IListener> _Listener2;
         private List<IListener> _Listeners;
+        private Mock<IMergedFeedComponentListener> _Component1;
+        private Mock<IMergedFeedComponentListener> _Component2;
+        private List<IMergedFeedComponentListener> _Components;
         private Mock<IHeartbeatService> _HeartbeatService;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
         private EventRecorder<BaseStationMessageEventArgs> _BaseStationMessageEventRecorder;
@@ -57,8 +60,16 @@ namespace Test.VirtualRadar.Library.Listener
             _MergedFeed = Factory.Singleton.Resolve<IMergedFeedListener>();
 
             _Listener1 = TestUtilities.CreateMockInstance<IListener>();
+            _Listener1.Setup(r => r.ReceiverId).Returns(1);
             _Listener2 = TestUtilities.CreateMockInstance<IListener>();
+            _Listener2.Setup(r => r.ReceiverId).Returns(2);
             _Listeners = new List<IListener>(new IListener[] { _Listener1.Object, _Listener2.Object });
+
+            _Component1 = TestUtilities.CreateMockInstance<IMergedFeedComponentListener>();
+            _Component1.Setup(r => r.Listener).Returns(_Listener1.Object);
+            _Component2 = TestUtilities.CreateMockInstance<IMergedFeedComponentListener>();
+            _Component2.Setup(r => r.Listener).Returns(_Listener2.Object);
+            _Components = new List<IMergedFeedComponentListener>(new IMergedFeedComponentListener[] { _Component1.Object, _Component2.Object });
 
             _BaseStationMessageEventRecorder = new EventRecorder<BaseStationMessageEventArgs>();
             _PositionResetRecorder = new EventRecorder<EventArgs<string>>();
@@ -90,7 +101,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_Dispose_Does_Not_Dispose_Listeners()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
 
             _MergedFeed.Dispose();
 
@@ -102,7 +113,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedListener_Dispose_Stops_Listening_To_Events()
         {
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Dispose();
             _Listener1.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage()));
 
@@ -114,17 +125,17 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_SetListeners_Populates_Listeners()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
 
             Assert.AreEqual(2, _MergedFeed.Listeners.Count);
-            Assert.IsTrue(_MergedFeed.Listeners.Contains(_Listener1.Object));
-            Assert.IsTrue(_MergedFeed.Listeners.Contains(_Listener2.Object));
+            Assert.IsTrue(_MergedFeed.Listeners.Contains(_Component1.Object));
+            Assert.IsTrue(_MergedFeed.Listeners.Contains(_Component2.Object));
         }
 
         [TestMethod]
         public void MergedFeedListener_SetListener_BaseStationMessage_Events_On_Listeners_Passed_Through()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
 
             var args = new BaseStationMessageEventArgs(new BaseStationMessage());
@@ -139,7 +150,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedListener_SetListener_Passes_Through_Receiver_Id_On_BaseStation_Messages()
         {
             _MergedFeed.ReceiverId = 1234;
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
 
             var args = new BaseStationMessageEventArgs(new BaseStationMessage() { ReceiverId = 998877 });
@@ -151,7 +162,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_SetListener_PositionReset_Events_On_Listeners_Passed_Through()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.PositionReset += _PositionResetRecorder.Handler;
 
             var args = new EventArgs<string>("123123");
@@ -165,8 +176,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_SetListener_Does_Not_Double_Hook_Listeners_If_Same_Listener_Is_Passed_Twice()
         {
-            _MergedFeed.SetListeners(_Listeners);
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
             _MergedFeed.PositionReset += _PositionResetRecorder.Handler;
 
@@ -184,10 +195,10 @@ namespace Test.VirtualRadar.Library.Listener
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
-            _Listener1.Object.MultilaterationFeedType = worksheet.ParseEnum<MultilaterationFeedType>("L1MLAT");
-            _Listener2.Object.MultilaterationFeedType = worksheet.ParseEnum<MultilaterationFeedType>("L2MLAT");
+            _Component1.Setup(r => r.MultilaterationFeedType).Returns(worksheet.ParseEnum<MultilaterationFeedType>("L1MLAT"));
+            _Component2.Setup(r => r.MultilaterationFeedType).Returns(worksheet.ParseEnum<MultilaterationFeedType>("L2MLAT"));
 
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.IcaoTimeout = worksheet.Int("IcaoTimeout");
             _MergedFeed.IgnoreAircraftWithNoPosition = worksheet.Bool("IgnoreNoPos");
             var startTime = new DateTime(2013, 10, 8, 14, 56, 21, 0);
@@ -257,7 +268,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_SetListener_Not_Interferred_With_By_Background_ICAO_Cleanup()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
             _MergedFeed.PositionReset += _PositionResetRecorder.Handler;
             var messageArgs = new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "123456" });
@@ -279,14 +290,14 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_SetListener_Does_Not_Respond_To_Events_From_Old_Listeners()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
             _MergedFeed.PositionReset += _PositionResetRecorder.Handler;
             var messageArgs = new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "123456" });
             var resetArgs = new EventArgs<string>("123456");
 
-            _Listeners.Remove(_Listener2.Object);
-            _MergedFeed.SetListeners(_Listeners);
+            _Components.Remove(_Component2.Object);
+            _MergedFeed.SetListeners(_Components);
             _Listener2.Raise(r => r.Port30003MessageReceived += null, messageArgs);
             _Listener2.Raise(r => r.PositionReset += null, resetArgs);
 
@@ -297,14 +308,14 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_SetListener_Still_Considers_Old_Listeners_Offical_Sources_Of_Icaos_Until_They_Expire()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             var messageArgs = new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "123456" });
             var resetArgs = new EventArgs<string>("123456");
 
             _Listener2.Raise(r => r.Port30003MessageReceived += null, messageArgs);
             _Listener2.Raise(r => r.PositionReset += null, resetArgs);
             _Listeners.Remove(_Listener2.Object);
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
             _MergedFeed.PositionReset += _PositionResetRecorder.Handler;
 
@@ -324,8 +335,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_SetListener_Strips_Extraneous_Portions_Of_PositionsOnly_Messages()
         {
-            _Listener1.Object.MultilaterationFeedType = MultilaterationFeedType.PositionsOnly;
-            _MergedFeed.SetListeners(_Listeners);
+            _Component1.Setup(r => r.MultilaterationFeedType).Returns(MultilaterationFeedType.PositionsOnly);
+            _MergedFeed.SetListeners(_Components);
             _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
 
             var original = new BaseStationMessage() {
@@ -382,7 +393,7 @@ namespace Test.VirtualRadar.Library.Listener
             var exception = new InvalidCastException();
             _BaseStationMessageEventRecorder.EventRaised += (sender, args) => { throw exception; };
 
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
             _Listener1.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage()));
 
             Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
@@ -427,7 +438,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_TotalMessages_Increments_When_Filter_Allows_Message_Through()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
 
             _Listener1.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage()));
 
@@ -437,7 +448,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedListener_TotalMessages_Not_Incremented_When_Filter_Blocks_Message()
         {
-            _MergedFeed.SetListeners(_Listeners);
+            _MergedFeed.SetListeners(_Components);
 
             _Listener1.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "AABBCC" }));
             _Listener2.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "AABBCC" }));

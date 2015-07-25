@@ -39,7 +39,7 @@ namespace VirtualRadar.Interface.Listener
         /// <summary>
         /// Gets the list of listeners that will be merged into a single feed.
         /// </summary>
-        ReadOnlyCollection<IListener> Listeners { get; }
+        ReadOnlyCollection<IMergedFeedComponentListener> Listeners { get; }
 
         /// <summary>
         /// Gets or sets the number of milliseconds that must elapse after the last message from a given ICAO on a receiver before
@@ -56,6 +56,6 @@ namespace VirtualRadar.Interface.Listener
         /// Sets the <see cref="Listeners"/> list.
         /// </summary>
         /// <param name="listeners"></param>
-        void SetListeners(IEnumerable<IListener> listeners);
+        void SetListeners(IEnumerable<IMergedFeedComponentListener> listeners);
     }
 }

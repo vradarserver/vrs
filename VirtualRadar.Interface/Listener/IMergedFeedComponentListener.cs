@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -9,34 +9,37 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Text;
 using VirtualRadar.Interface.Settings;
-using Test.Framework;
 
-namespace Test.VirtualRadar.Interface.Settings
+namespace VirtualRadar.Interface.Listener
 {
-    [TestClass]
-    public class MergedFeedTests
+    /// <summary>
+    /// The listener for a receiver that will be merged into a single feed by <see cref="IMergedFeedListener"/>.
+    /// </summary>
+    /// <remarks>
+    /// Implementations are expected to be immutable. They need to implement Equals, returning true if the other
+    /// object has the same instance of <see cref="Listener"/> and same value for <see cref="MultilaterationFeedType"/>.
+    /// </remarks>
+    public interface IMergedFeedComponentListener
     {
-        [TestMethod]
-        public void MergedFeed_Constructor_Initialises_To_Known_State_And_Properties_Work()
-        {
-            CheckProperties(new MergedFeed());
-        }
+        /// <summary>
+        /// Gets the listener for the receiver.
+        /// </summary>
+        IListener Listener { get; }
 
-        public static void CheckProperties(MergedFeed settings)
-        {
-            Assert.AreEqual(0, settings.ReceiverIds.Count);
-            Assert.AreEqual(0, settings.ReceiverFlags.Count);
+        /// <summary>
+        /// Gets the MLAT feed type associated with the listener on this merged feed.
+        /// </summary>
+        MultilaterationFeedType MultilaterationFeedType { get; }
 
-            TestUtilities.TestProperty(settings, r => r.Enabled, true);
-            TestUtilities.TestProperty(settings, r => r.UniqueId, 0, 1);
-            TestUtilities.TestProperty(settings, r => r.Name, null, "ABC");
-            TestUtilities.TestProperty(settings, r => r.IcaoTimeout, 3000, 10000);
-            TestUtilities.TestProperty(settings, r => r.IgnoreAircraftWithNoPosition, false);
-        }
+        /// <summary>
+        /// Initialises the object. Objects can only be initialised once.
+        /// </summary>
+        /// <param name="listener"></param>
+        /// <param name="feedType"></param>
+        void SetListener(IListener listener, MultilaterationFeedType feedType);
     }
 }

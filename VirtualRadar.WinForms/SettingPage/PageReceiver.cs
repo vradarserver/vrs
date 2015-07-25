@@ -190,7 +190,6 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxEnumBinder<Receiver, StopBits>                 (Receiver,          comboBoxSerialStopBits,         r => r.StopBits,                (r,v) => r.StopBits = v,                r => Describe.StopBits(r)));
             AddControlBinder(new ComboBoxEnumBinder<Receiver, Parity>                   (Receiver,          comboBoxSerialParity,           r => r.Parity,                  (r,v) => r.Parity = v,                  r => Describe.Parity(r)));
             AddControlBinder(new ComboBoxEnumBinder<Receiver, Handshake>                (Receiver,          comboBoxSerialHandshake,        r => r.Handshake,               (r,v) => r.Handshake = v,               r => Describe.Handshake(r)));
-            AddControlBinder(new ComboBoxEnumBinder<Receiver, MultilaterationFeedType>  (Receiver,          comboBoxMultilaterationType,    r => r.MultilaterationFeedType, (r,v) => r.MultilaterationFeedType = v, r => Describe.MultilaterationFeedType(r)));
 
             AddControlBinder(new ComboBoxValueBinder<Receiver, string>  (Receiver, comboBoxSerialComPort,   SettingsView.GetSerialPortNames(),  r => r.ComPort,     (r,v) => r.ComPort = v));
             AddControlBinder(new ComboBoxValueBinder<Receiver, int>     (Receiver, comboBoxSerialBaudRate,  _SupportedBaudRates,                r => r.BaudRate,    (r,v) => r.BaudRate = v));
@@ -211,7 +210,6 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(comboBoxLocationId,               Strings.ReceiverLocation,       Strings.OptionsDescribeRawFeedReceiverLocation);
             SetInlineHelp(comboBoxDataSource,               Strings.DataSource,             Strings.OptionsDescribeDataSourcesDataSource);
             SetInlineHelp(comboBoxConnectionType,           Strings.ConnectionType,         Strings.OptionsDescribeDataSourcesConnectionType);
-            SetInlineHelp(comboBoxMultilaterationType,      Strings.MultilaterationType,    Strings.OptionsDescribeDataSourcesMultilaterationType);
             SetInlineHelp(radioButtonUsageNormal,           Strings.Normal,                 Strings.OptionDescribeReceiverUsageNormal);
             SetInlineHelp(radioButtonUsageHideFromWebSite,  Strings.HideFromWebSite,        Strings.OptionDescribeReceiverUsageHideFromWebSite);
             SetInlineHelp(radioButtonUsageMergeOnly,        Strings.MergeOnly,              Strings.OptionDescribeReceiverUsageMergeOnly);

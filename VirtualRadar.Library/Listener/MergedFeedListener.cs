@@ -34,7 +34,7 @@ namespace VirtualRadar.Library.Listener
             /// <summary>
             /// The listener that is the only source of messages from an ICAO that the merged feed will report on.
             /// </summary>
-            public IListener Listener;
+            public IMergedFeedComponentListener Component;
 
             /// <summary>
             /// The last time that a message for a given ICAO was picked up.
@@ -149,6 +149,11 @@ namespace VirtualRadar.Library.Listener
         /// so this counter is appended to the name of the queue thread to avoid clashes with other listeners.
         /// </summary>
         private static int _ListenerCounter;
+
+        /// <summary>
+        /// A map of receiver IDs to <see cref="IMergedFeedComponentListener"/>s.
+        /// </summary>
+        private Dictionary<int, IMergedFeedComponentListener> _ComponentListenersMap = new Dictionary<int,IMergedFeedComponentListener>();
         #endregion
 
         #region Properties
@@ -162,11 +167,11 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public string ReceiverName { get; set; }
 
-        private List<IListener> _Listeners = new List<IListener>();
+        private List<IMergedFeedComponentListener> _Listeners = new List<IMergedFeedComponentListener>();
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ReadOnlyCollection<IListener> Listeners { get; private set; }
+        public ReadOnlyCollection<IMergedFeedComponentListener> Listeners { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -289,7 +294,7 @@ namespace VirtualRadar.Library.Listener
         public MergedFeedListener()
         {
             _Clock = Factory.Singleton.Resolve<IClock>();
-            Listeners = new ReadOnlyCollection<IListener>(_Listeners);
+            Listeners = new ReadOnlyCollection<IMergedFeedComponentListener>(_Listeners);
             IcaoTimeout = 5000;
             ConnectionStatus = ConnectionStatus.Connected;
 
@@ -336,37 +341,72 @@ namespace VirtualRadar.Library.Listener
 
                 lock(_SyncLock) {
                     foreach(var listener in _Listeners) {
-                        listener.Port30003MessageReceived -= Listener_Port30003MessageReceived;
-                        listener.PositionReset -= Listener_PositionReset;
+                        listener.Listener.Port30003MessageReceived -= Listener_Port30003MessageReceived;
+                        listener.Listener.PositionReset -= Listener_PositionReset;
                     }
                     _Listeners.Clear();
+                    _ComponentListenersMap.Clear();
                 }
             }
         }
         #endregion
 
-        #region SetListeners
+        #region SetListeners, GetComponentListener
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="listeners"></param>
-        public void SetListeners(IEnumerable<IListener> listeners)
+        public void SetListeners(IEnumerable<IMergedFeedComponentListener> listeners)
         {
             lock(_SyncLock) {
                 var newListeners = listeners.Except(_Listeners).ToArray();
                 var oldListeners = _Listeners.Except(listeners).ToArray();
 
                 foreach(var oldListener in oldListeners) {
-                    oldListener.Port30003MessageReceived -= Listener_Port30003MessageReceived;
-                    oldListener.PositionReset -= Listener_PositionReset;
+                    oldListener.Listener.Port30003MessageReceived -= Listener_Port30003MessageReceived;
+                    oldListener.Listener.PositionReset -= Listener_PositionReset;
+                    _Listeners.Remove(oldListener);
                 }
 
                 foreach(var newListener in newListeners) {
-                    newListener.Port30003MessageReceived += Listener_Port30003MessageReceived;
-                    newListener.PositionReset += Listener_PositionReset;
+                    newListener.Listener.Port30003MessageReceived += Listener_Port30003MessageReceived;
+                    newListener.Listener.PositionReset += Listener_PositionReset;
                     _Listeners.Add(newListener);
                 }
+
+                _ComponentListenersMap.Clear();
+                foreach(var listener in _Listeners) {
+                    _ComponentListenersMap.Add(listener.Listener.ReceiverId, listener);
+                }
             }
+        }
+
+        /// <summary>
+        /// Returns the component listener for the listener passed across.
+        /// </summary>
+        /// <param name="listener"></param>
+        /// <returns></returns>
+        private IMergedFeedComponentListener GetComponentListener(IListener listener)
+        {
+            IMergedFeedComponentListener result = null;
+
+            if(listener != null) {
+                lock(_SyncLock) {
+                    if(_Listeners.Count >= 12) {
+                        _ComponentListenersMap.TryGetValue(listener.ReceiverId, out result);
+                    } else {
+                        for(var i = 0;i < _Listeners.Count;++i) {
+                            var component = _Listeners[i];
+                            if(component.Listener.ReceiverId == listener.ReceiverId) {
+                                result = component;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
         #endregion
 
@@ -412,41 +452,45 @@ namespace VirtualRadar.Library.Listener
         {
             icao = icao ?? "";
 
-            Source source;
+            Source source = null;
+            IMergedFeedComponentListener component = null;
             lock(_SyncLock) {
-                if(!_IcaoSourceMap.TryGetValue(icao, out source)) {
-                    if(listener.MultilaterationFeedType != MultilaterationFeedType.PositionsOnly) {
-                        source = new Source() {
-                            LastMessageUtc = receivedUtc,
-                            Listener = listener,
-                            SeenPositionMessage = hasPosition,
-                        };
-                        _IcaoSourceMap.Add(icao, source);
-                    }
-                } else {
-                    if(source.Listener != listener) {
-                        var threshold = receivedUtc.AddMilliseconds(-IcaoTimeout);
-                        if(source.LastMessageUtc < threshold) {
-                            source.Listener = listener;
-                        } else if(listener.MultilaterationFeedType == MultilaterationFeedType.PositionsInjected && source.Listener.MultilaterationFeedType != MultilaterationFeedType.PositionsInjected) {
-                            source.Listener = listener;
-                        } else {
-                            source = null;
+                component = GetComponentListener(listener);
+                if(component != null) {
+                    if(!_IcaoSourceMap.TryGetValue(icao, out source)) {
+                        if(component.MultilaterationFeedType != MultilaterationFeedType.PositionsOnly) {
+                            source = new Source() {
+                                LastMessageUtc = receivedUtc,
+                                Component = component,
+                                SeenPositionMessage = hasPosition,
+                            };
+                            _IcaoSourceMap.Add(icao, source);
+                        }
+                    } else {
+                        if(source.Component != component) {
+                            var threshold = receivedUtc.AddMilliseconds(-IcaoTimeout);
+                            if(source.LastMessageUtc < threshold) {
+                                source.Component = component;
+                            } else if(component.MultilaterationFeedType == MultilaterationFeedType.PositionsInjected && source.Component.MultilaterationFeedType != MultilaterationFeedType.PositionsInjected) {
+                                source.Component = component;
+                            } else {
+                                source = null;
+                            }
+                        }
+
+                        if(source != null) {
+                            source.LastMessageUtc = receivedUtc;
+                            if(hasPosition) source.SeenPositionMessage = true;
                         }
                     }
 
-                    if(source != null) {
-                        source.LastMessageUtc = receivedUtc;
-                        if(hasPosition) source.SeenPositionMessage = true;
-                    }
+                    if(source != null && IgnoreAircraftWithNoPosition && !source.SeenPositionMessage) source = null;
                 }
-
-                if(source != null && IgnoreAircraftWithNoPosition && !source.SeenPositionMessage) source = null;
             }
 
             var result = new FilterMessageOutcome();
             result.PassedFilter = source != null;
-            if(!result.PassedFilter && hasPosition && listener.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly) {
+            if(!result.PassedFilter && hasPosition && component != null && component.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly) {
                 result.PassedFilter = true;
                 result.IsPositionsOnlyListener = true;
             }

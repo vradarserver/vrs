@@ -99,16 +99,6 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _IsPassive, value, () => IsPassive); }
         }
 
-        private MultilaterationFeedType _MultilaterationFeedType;
-        /// <summary>
-        /// The type of multilateration data being fed into VRS by this receiver.
-        /// </summary>
-        public MultilaterationFeedType MultilaterationFeedType
-        {
-            get { return _MultilaterationFeedType; }
-            set { SetField(ref _MultilaterationFeedType, value, () => MultilaterationFeedType); }
-        }
-
         private Access _Access;
         /// <summary>
         /// Gets or sets the access settings to use when the receiver is in passive mode.

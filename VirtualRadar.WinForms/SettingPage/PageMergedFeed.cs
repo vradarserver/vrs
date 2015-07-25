@@ -134,10 +134,17 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new MasterListToSubsetBinder<MergedFeed, Configuration, Receiver, int>(MergedFeed, listReceiverIds, SettingsView.Configuration, r => r.ReceiverIds, r => r.Receivers, r => r.UniqueId) {
                 FetchColumns = (receiver, e) => {
+                    var mergedFeedReceiver = MergedFeed.ReceiverFlags.FirstOrDefault(r => r.UniqueId == receiver.UniqueId);
+
                     e.ColumnTexts.Add(receiver.Name);
                     e.ColumnTexts.Add(receiver.Enabled ? Strings.Yes : Strings.No);
+                    e.ColumnTexts.Add(Describe.MultilaterationFeedType(mergedFeedReceiver == null ? MultilaterationFeedType.None : mergedFeedReceiver.MultilaterationFeedType));
                 },
             });
+
+            AddControlBinder(new ComboBoxEnumBinder<MergedFeedReceiver, MultilaterationFeedType>(null, comboBoxMlatType, r => r.MultilaterationFeedType, (r,v) => r.MultilaterationFeedType = v, r => Describe.MultilaterationFeedType(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
+            BindSelectedMergedFeedReceiver();
         }
 
         /// <summary>
@@ -151,6 +158,66 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericIcaoTimeout,                   Strings.IcaoTimeout,                    Strings.OptionsDescribeIcaoTimeout);
             SetInlineHelp(checkBoxIgnoreAircraftWithNoPosition, Strings.IgnoreAircraftWithNoPosition,   Strings.OptionsDescribeIgnoreAircraftWithNoPosition);
             SetInlineHelp(listReceiverIds,                      "",                                     "");
+        }
+
+        public void SynchroniseReceiverIdsToFlags()
+        {
+            var addFlags = MergedFeed.ReceiverIds.Where(r => !MergedFeed.ReceiverFlags.Any(i => i.UniqueId == r)).ToArray();
+            var delFlags = MergedFeed.ReceiverFlags.Where(r => !MergedFeed.ReceiverIds.Any(i => r.UniqueId == i)).ToArray();
+
+            foreach(var addFlag in addFlags) {
+                MergedFeed.ReceiverFlags.Add(new MergedFeedReceiver() {
+                    UniqueId = addFlag,
+                });
+            }
+
+            foreach(var delFlag in delFlags) {
+                MergedFeed.ReceiverFlags.Remove(delFlag);
+            }
+
+            if(delFlags.Length > 0) {
+                listReceiverIds.RefreshList();
+            }
+        }
+
+        private void BindSelectedMergedFeedReceiver()
+        {
+            var binder = (ComboBoxEnumBinder<MergedFeedReceiver, MultilaterationFeedType>)GetControlBinders().Single(r => r.ControlObject == comboBoxMlatType);
+            MergedFeedReceiver model = null;
+
+            var selectedRecords = listReceiverIds.SelectedRecords.ToArray();
+            if(selectedRecords.Length == 1) {
+                SynchroniseReceiverIdsToFlags();
+
+                var receiver = (Receiver)selectedRecords[0];
+                model = MergedFeed.ReceiverFlags.FirstOrDefault(r => r.UniqueId == receiver.UniqueId);
+            }
+
+            binder.Model = model;
+            comboBoxMlatType.Enabled = model != null;
+            if(model == null) comboBoxMlatType.SelectedValue = null;
+        }
+
+        private void listReceiverIds_SelectedRecordChanged(object sender, EventArgs e)
+        {
+            BindSelectedMergedFeedReceiver();
+        }
+
+        internal override void ConfigurationChanged(ConfigurationListenerEventArgs args)
+        {
+            base.ConfigurationChanged(args);
+
+            if(args.Record == MergedFeed) {
+                if(args.PropertyName == PropertyHelper.ExtractName<MergedFeed>(r => r.ReceiverIds)) {
+                    SynchroniseReceiverIdsToFlags();
+                    BindSelectedMergedFeedReceiver();
+                }
+            } else {
+                var mergedFeedReceiver = args.Record as MergedFeedReceiver;
+                if(MergedFeed.ReceiverFlags.Contains(mergedFeedReceiver)) {
+                    listReceiverIds.RefreshList();
+                }
+            }
         }
     }
 }

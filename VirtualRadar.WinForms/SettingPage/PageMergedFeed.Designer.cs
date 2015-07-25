@@ -37,6 +37,9 @@
             this.listReceiverIds = new VirtualRadar.WinForms.Controls.MasterListView();
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEnabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colMlatType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBoxMlatType = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericIcaoTimeout)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,7 +49,7 @@
             this.label3.Location = new System.Drawing.Point(0, 79);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(70, 13);
-            this.label3.TabIndex = 18;
+            this.label3.TabIndex = 6;
             this.label3.Text = "::Receivers:::";
             // 
             // checkBoxIgnoreAircraftWithNoPosition
@@ -55,7 +58,7 @@
             this.checkBoxIgnoreAircraftWithNoPosition.Location = new System.Drawing.Point(283, 50);
             this.checkBoxIgnoreAircraftWithNoPosition.Name = "checkBoxIgnoreAircraftWithNoPosition";
             this.checkBoxIgnoreAircraftWithNoPosition.Size = new System.Drawing.Size(174, 17);
-            this.checkBoxIgnoreAircraftWithNoPosition.TabIndex = 16;
+            this.checkBoxIgnoreAircraftWithNoPosition.TabIndex = 5;
             this.checkBoxIgnoreAircraftWithNoPosition.Text = "::IgnoreAircraftWithNoPosition::";
             this.checkBoxIgnoreAircraftWithNoPosition.UseVisualStyleBackColor = true;
             // 
@@ -65,7 +68,7 @@
             this.label1.Location = new System.Drawing.Point(0, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(81, 13);
-            this.label1.TabIndex = 15;
+            this.label1.TabIndex = 3;
             this.label1.Text = "::IcaoTimeout:::";
             // 
             // numericIcaoTimeout
@@ -84,7 +87,7 @@
             0});
             this.numericIcaoTimeout.Name = "numericIcaoTimeout";
             this.numericIcaoTimeout.Size = new System.Drawing.Size(77, 20);
-            this.numericIcaoTimeout.TabIndex = 14;
+            this.numericIcaoTimeout.TabIndex = 4;
             this.numericIcaoTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericIcaoTimeout.Value = new decimal(new int[] {
             1,
@@ -98,7 +101,7 @@
             this.checkBoxEnabled.Location = new System.Drawing.Point(200, 0);
             this.checkBoxEnabled.Name = "checkBoxEnabled";
             this.checkBoxEnabled.Size = new System.Drawing.Size(77, 17);
-            this.checkBoxEnabled.TabIndex = 11;
+            this.checkBoxEnabled.TabIndex = 0;
             this.checkBoxEnabled.Text = "::Enabled::";
             this.checkBoxEnabled.UseVisualStyleBackColor = true;
             // 
@@ -108,7 +111,7 @@
             this.label2.Location = new System.Drawing.Point(0, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 13);
-            this.label2.TabIndex = 12;
+            this.label2.TabIndex = 1;
             this.label2.Text = "::Name:::";
             // 
             // textBoxName
@@ -118,22 +121,26 @@
             this.textBoxName.Location = new System.Drawing.Point(200, 23);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(436, 20);
-            this.textBoxName.TabIndex = 13;
+            this.textBoxName.TabIndex = 2;
             // 
             // listReceiverIds
             // 
             this.listReceiverIds.AllowAdd = false;
             this.listReceiverIds.AllowDelete = false;
             this.listReceiverIds.AllowUpdate = false;
+            this.listReceiverIds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.listReceiverIds.CheckBoxes = true;
             this.listReceiverIds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colName,
-            this.colEnabled});
+            this.colEnabled,
+            this.colMlatType});
             this.listReceiverIds.HideAllButList = true;
             this.listReceiverIds.Location = new System.Drawing.Point(200, 75);
             this.listReceiverIds.Name = "listReceiverIds";
-            this.listReceiverIds.Size = new System.Drawing.Size(436, 300);
-            this.listReceiverIds.TabIndex = 19;
+            this.listReceiverIds.Size = new System.Drawing.Size(436, 266);
+            this.listReceiverIds.TabIndex = 7;
+            this.listReceiverIds.SelectedRecordChanged += new System.EventHandler(this.listReceiverIds_SelectedRecordChanged);
             // 
             // colName
             // 
@@ -145,9 +152,36 @@
             this.colEnabled.Text = "::Enabled::";
             this.colEnabled.Width = 90;
             // 
+            // colMlatType
+            // 
+            this.colMlatType.Text = "::MultilaterationTypeListHeader::";
+            this.colMlatType.Width = 120;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(0, 351);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(111, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "::MultilaterationType:::";
+            // 
+            // comboBoxMlatType
+            // 
+            this.comboBoxMlatType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comboBoxMlatType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMlatType.FormattingEnabled = true;
+            this.comboBoxMlatType.Location = new System.Drawing.Point(200, 348);
+            this.comboBoxMlatType.Name = "comboBoxMlatType";
+            this.comboBoxMlatType.Size = new System.Drawing.Size(198, 21);
+            this.comboBoxMlatType.TabIndex = 9;
+            // 
             // PageMergedFeed
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.comboBoxMlatType);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.listReceiverIds);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.checkBoxIgnoreAircraftWithNoPosition);
@@ -157,7 +191,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxName);
             this.Name = "PageMergedFeed";
-            this.Size = new System.Drawing.Size(636, 375);
+            this.Size = new System.Drawing.Size(636, 374);
             ((System.ComponentModel.ISupportInitialize)(this.numericIcaoTimeout)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -176,5 +210,8 @@
         private Controls.MasterListView listReceiverIds;
         private System.Windows.Forms.ColumnHeader colName;
         private System.Windows.Forms.ColumnHeader colEnabled;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBoxMlatType;
+        private System.Windows.Forms.ColumnHeader colMlatType;
     }
 }

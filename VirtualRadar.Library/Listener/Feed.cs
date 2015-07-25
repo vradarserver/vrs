@@ -176,10 +176,23 @@ namespace VirtualRadar.Library.Listener
             DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name, startAircraftList: true);
         }
 
-        private static List<IListener> GetListenersFromMergeFeeds(MergedFeed mergedFeed, IEnumerable<IFeed> mergeFeeds)
+        private static List<IMergedFeedComponentListener> GetListenersFromMergeFeeds(MergedFeed mergedFeed, IEnumerable<IFeed> mergeFeeds)
         {
-            var mergedListeners = mergeFeeds.Where(r => mergedFeed.ReceiverIds.Contains(r.UniqueId)).Select(r => r.Listener).ToList();
-            return mergedListeners;
+            var result = new List<IMergedFeedComponentListener>();
+            foreach(var receiverId in mergedFeed.ReceiverIds) {
+                var feed = mergeFeeds.FirstOrDefault(r => r.UniqueId == receiverId);
+                var listener = feed == null ? null : feed.Listener;
+                if(listener != null) {
+                    var mergedFeedReceiver = mergedFeed.ReceiverFlags.FirstOrDefault(r => r.UniqueId == receiverId);
+                    var feedType = mergedFeedReceiver == null ? MultilaterationFeedType.None : mergedFeedReceiver.MultilaterationFeedType;
+
+                    var mergedFeedComponent = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
+                    mergedFeedComponent.SetListener(listener, feedType);
+                    result.Add(mergedFeedComponent);
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -240,7 +253,6 @@ namespace VirtualRadar.Library.Listener
                 if(Listener.Statistics != null) Listener.Statistics.ResetMessageCounters();
             }
 
-            Listener.MultilaterationFeedType = receiver.MultilaterationFeedType;
             IsVisible = receiver.ReceiverUsage == ReceiverUsage.Normal;
         }
         #endregion

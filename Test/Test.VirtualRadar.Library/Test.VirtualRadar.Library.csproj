@@ -80,6 +80,7 @@
     <Compile Include="DirectoryCacheTests.cs" />
     <Compile Include="Listener\CompressedMessageBytesExtractorTests.cs" />
     <Compile Include="Listener\ListenerTests.cs" />
+    <Compile Include="Listener\MergedFeedComponentListenerTests.cs" />
     <Compile Include="Listener\MergedFeedListenerTests.cs" />
     <Compile Include="Listener\MockMessageBytesExtractor.cs" />
     <Compile Include="Network\MockConnector.cs" />

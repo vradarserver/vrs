@@ -72,8 +72,6 @@
             this.panelConnectionTypeSettings = new System.Windows.Forms.Panel();
             this.groupBoxAccessControl = new System.Windows.Forms.GroupBox();
             this.accessControl = new VirtualRadar.WinForms.Controls.AccessControl();
-            this.label17 = new System.Windows.Forms.Label();
-            this.comboBoxMultilaterationType = new System.Windows.Forms.ComboBox();
             this.radioButtonUsageNormal = new System.Windows.Forms.RadioButton();
             this.radioButtonUsageHideFromWebSite = new System.Windows.Forms.RadioButton();
             this.radioButtonUsageMergeOnly = new System.Windows.Forms.RadioButton();
@@ -525,7 +523,7 @@
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxAccessControl);
-            this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 235);
+            this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 207);
             this.panelConnectionTypeSettings.Name = "panelConnectionTypeSettings";
             this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 601);
             this.panelConnectionTypeSettings.TabIndex = 30;
@@ -551,24 +549,6 @@
             this.accessControl.Name = "accessControl";
             this.accessControl.Size = new System.Drawing.Size(621, 153);
             this.accessControl.TabIndex = 0;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(0, 139);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(111, 13);
-            this.label17.TabIndex = 12;
-            this.label17.Text = "::MultilaterationType:::";
-            // 
-            // comboBoxMultilaterationType
-            // 
-            this.comboBoxMultilaterationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxMultilaterationType.FormattingEnabled = true;
-            this.comboBoxMultilaterationType.Location = new System.Drawing.Point(200, 136);
-            this.comboBoxMultilaterationType.Name = "comboBoxMultilaterationType";
-            this.comboBoxMultilaterationType.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxMultilaterationType.TabIndex = 13;
             // 
             // radioButtonUsageNormal
             // 
@@ -597,7 +577,7 @@
             // radioButtonUsageMergeOnly
             // 
             this.radioButtonUsageMergeOnly.AutoSize = true;
-            this.radioButtonUsageMergeOnly.Location = new System.Drawing.Point(0, 48);
+            this.radioButtonUsageMergeOnly.Location = new System.Drawing.Point(0, 47);
             this.radioButtonUsageMergeOnly.Name = "radioButtonUsageMergeOnly";
             this.radioButtonUsageMergeOnly.Size = new System.Drawing.Size(88, 17);
             this.radioButtonUsageMergeOnly.TabIndex = 16;
@@ -613,7 +593,7 @@
             this.radioButtonPanelUsage.Controls.Add(this.radioButtonUsageNormal);
             this.radioButtonPanelUsage.Controls.Add(this.radioButtonUsageMergeOnly);
             this.radioButtonPanelUsage.Controls.Add(this.radioButtonUsageHideFromWebSite);
-            this.radioButtonPanelUsage.Location = new System.Drawing.Point(200, 163);
+            this.radioButtonPanelUsage.Location = new System.Drawing.Point(200, 136);
             this.radioButtonPanelUsage.Name = "radioButtonPanelUsage";
             this.radioButtonPanelUsage.Size = new System.Drawing.Size(433, 65);
             this.radioButtonPanelUsage.TabIndex = 14;
@@ -622,8 +602,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Controls.Add(this.radioButtonPanelUsage);
-            this.Controls.Add(this.label17);
-            this.Controls.Add(this.comboBoxMultilaterationType);
             this.Controls.Add(this.panelConnectionTypeSettings);
             this.Controls.Add(this.buttonTestConnection);
             this.Controls.Add(this.checkBoxEnabled);
@@ -638,7 +616,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxDataSource);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 839);
+            this.Size = new System.Drawing.Size(636, 811);
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
@@ -700,8 +678,6 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox textBoxPassphrase;
         private Controls.AccessControl accessControl;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.ComboBox comboBoxMultilaterationType;
         private System.Windows.Forms.RadioButton radioButtonUsageNormal;
         private System.Windows.Forms.RadioButton radioButtonUsageHideFromWebSite;
         private System.Windows.Forms.RadioButton radioButtonUsageMergeOnly;
