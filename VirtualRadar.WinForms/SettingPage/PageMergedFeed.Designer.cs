@@ -155,7 +155,7 @@
             // colMlatType
             // 
             this.colMlatType.Text = "::MultilaterationTypeListHeader::";
-            this.colMlatType.Width = 120;
+            this.colMlatType.Width = 130;
             // 
             // label4
             // 
