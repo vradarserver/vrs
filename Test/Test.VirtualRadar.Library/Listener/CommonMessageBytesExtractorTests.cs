@@ -57,12 +57,14 @@ namespace Test.VirtualRadar.Library.Listener
                 var parityColumn = String.Format("HadParity{0}", i);
                 var checksumColumn = String.Format("BadChecksum{0}", i);
                 var signalLevelColumn = String.Format("SignalLevel{0}", i);
+                var isMlatColumn = String.Format("IsMlat{0}", i);
                 if(worksheet.String(bytesColumn) != null || worksheet.String(checksumColumn) != null) {
                     expectedOutput.Add(new ExtractedBytes() { 
                         Bytes = worksheet.Bytes(bytesColumn),
                         HasParity = worksheet.Bool(parityColumn),
                         ChecksumFailed = worksheet.Bool(checksumColumn),
                         SignalLevel = worksheet.NInt(signalLevelColumn),
+                        IsMlat = worksheet.Bool(isMlatColumn),
                     });
                 }
             }
@@ -83,6 +85,7 @@ namespace Test.VirtualRadar.Library.Listener
                 if(!expected.ChecksumFailed) {
                     Assert.AreEqual(expected.HasParity, actual.HasParity, comments);
                     Assert.AreEqual(expected.SignalLevel, actual.SignalLevel, comments);
+                    Assert.AreEqual(expected.IsMlat, actual.IsMlat, comments);
 
                     var actualBytes = new byte[actual.Length];
                     Array.Copy(actual.Bytes, actual.Offset, actualBytes, 0, actual.Length);

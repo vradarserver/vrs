@@ -30,6 +30,7 @@ namespace Test.VirtualRadar.Interface.Listener
             TestUtilities.TestProperty(extractedBytes, r => r.ChecksumFailed, false);
             TestUtilities.TestProperty(extractedBytes, r => r.Format, ExtractedBytesFormat.None, ExtractedBytesFormat.ModeS);
             TestUtilities.TestProperty(extractedBytes, r => r.HasParity, false);
+            TestUtilities.TestProperty(extractedBytes, r => r.IsMlat, false);
             TestUtilities.TestProperty(extractedBytes, r => r.Length, 0, 1);
             TestUtilities.TestProperty(extractedBytes, r => r.Offset, 0, 1);
             TestUtilities.TestProperty(extractedBytes, r => r.SignalLevel, null, 123);
@@ -47,6 +48,7 @@ namespace Test.VirtualRadar.Interface.Listener
                     case "ChecksumFailed":  original.ChecksumFailed = true; break;
                     case "Format":          original.Format = ExtractedBytesFormat.Port30003; break;
                     case "HasParity":       original.HasParity = true; break;
+                    case "IsMlat":          original.IsMlat = true; break;
                     case "Length":          original.Length = 1; break;
                     case "Offset":          original.Offset = 1; break;
                     case "SignalLevel":     original.SignalLevel = 12; break;
@@ -67,6 +69,7 @@ namespace Test.VirtualRadar.Interface.Listener
                     case "ChecksumFailed":  Assert.AreEqual(true, clone.ChecksumFailed); break;
                     case "Format":          Assert.AreEqual(ExtractedBytesFormat.Port30003, clone.Format); break;
                     case "HasParity":       Assert.AreEqual(true, clone.HasParity); break;
+                    case "IsMlat":          Assert.AreEqual(true, clone.IsMlat); break;
                     case "Length":          Assert.AreEqual(1, clone.Length); break;
                     case "Offset":          Assert.AreEqual(1, clone.Offset); break;
                     case "SignalLevel":     Assert.AreEqual(12, clone.SignalLevel); break;
@@ -108,6 +111,10 @@ namespace Test.VirtualRadar.Interface.Listener
 
             obj1.HasParity = obj2.HasParity;
             obj1.SignalLevel = 32;
+            Assert.AreNotEqual(obj1, obj2);
+
+            obj1.SignalLevel = 22;
+            obj1.IsMlat = true;
             Assert.AreNotEqual(obj1, obj2);
         }
     }
