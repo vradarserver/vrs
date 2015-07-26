@@ -132,10 +132,28 @@
             matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.Tower; }
         }),
         new VRS.AircraftMarker ({
-            normalFileName: 'WtcHeavy.png',
-            selectedFileName: 'WtcHeavySelected.png',
-            size: { width: 50, height: 50 },
-            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy; }
+            normalFileName: 'Helicopter.png',
+            selectedFileName: 'Helicopter-Selected.png',
+            size: { width: 32, height: 32 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.Helicopter; }
+        }),
+        new VRS.AircraftMarker ({
+            normalFileName: 'WTC-Medium-2-Jet.png',
+            selectedFileName: 'WTC-Medium-2-Jet-Selected.png',
+            size: { width: 40, height: 40 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val === '2' && aircraft.engineType.val === VRS.EngineType.Jet; }
+        }),
+        new VRS.AircraftMarker ({
+            normalFileName: 'WTC-Heavy-2-Jet.png',
+            selectedFileName: 'WTC-Heavy-2-Jet-Selected.png',
+            size: { width: 57, height: 57 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy && aircraft.countEngines.val === '2'; }
+        }),
+        new VRS.AircraftMarker ({
+            normalFileName: 'WTC-Heavy-4-Jet.png',
+            selectedFileName: 'WTC-Heavy-4-Jet-Selected.png',
+            size: { width: 60, height: 60 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy && aircraft.countEngines.val === '4'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Airplane.png',
@@ -1376,7 +1394,8 @@
                 } else {
                     details.pinTexts = getPinTexts(aircraft);
                     size.height += (_Settings.pinTextLineHeight * details.pinTexts.length);
-                    size.width = _Settings.pinTextMarkerWidth;
+                    if(size.width <= _Settings.pinTextMarkerWidth) size.width = _Settings.pinTextMarkerWidth;
+                    else                                           size.width += size.width % 4;
 
                     // The text scaling works best if the icon height and width are multiples of 4. We already ensure that
                     // the width is a multiple of 4 so we just need to add pixels to adjust the height.
