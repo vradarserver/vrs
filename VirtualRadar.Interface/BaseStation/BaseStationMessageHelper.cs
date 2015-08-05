@@ -29,45 +29,41 @@ namespace VirtualRadar.Interface.BaseStation
         /// Converts from BaseStation text to a message type.
         /// </summary>
         /// <param name="text"></param>
+        /// <param name="isMlat"></param>
         /// <returns></returns>
-        public static BaseStationMessageType ConvertToBaseStationMessageType(string text)
+        public static BaseStationMessageType ConvertToBaseStationMessageType(string text, ref bool isMlat)
         {
-            BaseStationMessageType result = BaseStationMessageType.Unknown;
-
-            if(!String.IsNullOrEmpty(text)) {
-                switch(text) {
-                    case "SEL":     result = BaseStationMessageType.UserClicked; break;
-                    case "ID":      result = BaseStationMessageType.NewIdentifier; break;
-                    case "AIR":     result = BaseStationMessageType.NewAircraft; break;
-                    case "STA":     result = BaseStationMessageType.StatusChange; break;
-                    case "CLK":     result = BaseStationMessageType.UserDoubleClicked; break;
-                    case "MSG":     result = BaseStationMessageType.Transmission; break;
-                }
+            switch(text) {
+                case "SEL":     return BaseStationMessageType.UserClicked;
+                case "ID":      return BaseStationMessageType.NewIdentifier;
+                case "AIR":     return BaseStationMessageType.NewAircraft;
+                case "STA":     return BaseStationMessageType.StatusChange;
+                case "CLK":     return BaseStationMessageType.UserDoubleClicked;
+                case "MSG":     return BaseStationMessageType.Transmission;
+                case "MLAT":    isMlat = true; goto case "MSG";
+                default:        return BaseStationMessageType.Unknown;
             }
-
-            return result;
         }
 
         /// <summary>
         /// Converts from a message type to the expected BaseStation text.
         /// </summary>
         /// <param name="messageType"></param>
+        /// <param name="isMlatSourced"></param>
+        /// <param name="useExtendedFormat"></param>
         /// <returns></returns>
-        public static string ConvertToString(BaseStationMessageType messageType)
+        public static string ConvertToString(BaseStationMessageType messageType, bool isMlatSourced = false, bool useExtendedFormat = false)
         {
-            string result = null;
             switch(messageType) {
-                case BaseStationMessageType.NewAircraft:        result = "AIR"; break;
-                case BaseStationMessageType.NewIdentifier:      result = "ID"; break;
-                case BaseStationMessageType.StatusChange:       result = "STA"; break;
-                case BaseStationMessageType.Transmission:       result = "MSG"; break;
-                case BaseStationMessageType.Unknown:            result = ""; break;
-                case BaseStationMessageType.UserClicked:        result = "SEL"; break;
-                case BaseStationMessageType.UserDoubleClicked:  result = "CLK"; break;
-                default:                                        throw new NotImplementedException();
+                case BaseStationMessageType.NewAircraft:                return "AIR";
+                case BaseStationMessageType.NewIdentifier:              return "ID";
+                case BaseStationMessageType.StatusChange:               return "STA";
+                case BaseStationMessageType.Unknown:                    return "";
+                case BaseStationMessageType.UserClicked:                return "SEL";
+                case BaseStationMessageType.UserDoubleClicked:          return "CLK";
+                case BaseStationMessageType.Transmission:               return !isMlatSourced || !useExtendedFormat ? "MSG" : "MLAT";
+                default:                                                throw new NotImplementedException();
             }
-
-            return result;
         }
 
         /// <summary>
@@ -77,22 +73,17 @@ namespace VirtualRadar.Interface.BaseStation
         /// <returns></returns>
         public static BaseStationTransmissionType ConvertToBaseStationTransmissionType(string text)
         {
-            BaseStationTransmissionType result = BaseStationTransmissionType.None;
-
-            if(!String.IsNullOrEmpty(text)) {
-                switch(text) {
-                    case "1":   result = BaseStationTransmissionType.IdentificationAndCategory; break;
-                    case "2":   result = BaseStationTransmissionType.SurfacePosition; break;
-                    case "3":   result = BaseStationTransmissionType.AirbornePosition; break;
-                    case "4":   result = BaseStationTransmissionType.AirborneVelocity; break;
-                    case "5":   result = BaseStationTransmissionType.SurveillanceAlt; break;
-                    case "6":   result = BaseStationTransmissionType.SurveillanceId; break;
-                    case "7":   result = BaseStationTransmissionType.AirToAir; break;
-                    case "8":   result = BaseStationTransmissionType.AllCallReply; break;
-                }
+            switch(text) {
+                case "1":   return BaseStationTransmissionType.IdentificationAndCategory;
+                case "2":   return BaseStationTransmissionType.SurfacePosition;
+                case "3":   return BaseStationTransmissionType.AirbornePosition;
+                case "4":   return BaseStationTransmissionType.AirborneVelocity;
+                case "5":   return BaseStationTransmissionType.SurveillanceAlt;
+                case "6":   return BaseStationTransmissionType.SurveillanceId;
+                case "7":   return BaseStationTransmissionType.AirToAir;
+                case "8":   return BaseStationTransmissionType.AllCallReply;
+                default:    return BaseStationTransmissionType.None;
             }
-
-            return result;
         }
 
         /// <summary>
@@ -102,22 +93,18 @@ namespace VirtualRadar.Interface.BaseStation
         /// <returns></returns>
         public static string ConvertToString(BaseStationTransmissionType transmissionType)
         {
-            string result = "";
-
             switch(transmissionType) {
-                case BaseStationTransmissionType.AirbornePosition:              result = "3"; break;
-                case BaseStationTransmissionType.AirborneVelocity:              result = "4"; break;
-                case BaseStationTransmissionType.AirToAir:                      result = "7"; break;
-                case BaseStationTransmissionType.AllCallReply:                  result = "8"; break;
-                case BaseStationTransmissionType.IdentificationAndCategory:     result = "1"; break;
-                case BaseStationTransmissionType.None:                          break;
-                case BaseStationTransmissionType.SurfacePosition:               result = "2"; break;
-                case BaseStationTransmissionType.SurveillanceAlt:               result = "5"; break;
-                case BaseStationTransmissionType.SurveillanceId:                result = "6"; break;
+                case BaseStationTransmissionType.AirbornePosition:              return "3";
+                case BaseStationTransmissionType.AirborneVelocity:              return "4";
+                case BaseStationTransmissionType.AirToAir:                      return "7";
+                case BaseStationTransmissionType.AllCallReply:                  return "8";
+                case BaseStationTransmissionType.IdentificationAndCategory:     return "1";
+                case BaseStationTransmissionType.None:                          return "";
+                case BaseStationTransmissionType.SurfacePosition:               return "2";
+                case BaseStationTransmissionType.SurveillanceAlt:               return "5";
+                case BaseStationTransmissionType.SurveillanceId:                return "6";
                 default:                                                        throw new NotImplementedException();
             }
-
-            return result;
         }
 
         /// <summary>
@@ -127,19 +114,14 @@ namespace VirtualRadar.Interface.BaseStation
         /// <returns></returns>
         public static BaseStationStatusCode ConvertToBaseStationStatusCode(string text)
         {
-            BaseStationStatusCode result = BaseStationStatusCode.None;
-
-            if(!String.IsNullOrEmpty(text)) {
-                switch(text) {
-                    case "PL":      result = BaseStationStatusCode.PositionLost; break;
-                    case "SL":      result = BaseStationStatusCode.SignalLost; break;
-                    case "RM":      result = BaseStationStatusCode.Remove; break;
-                    case "AD":      result = BaseStationStatusCode.Delete; break;
-                    case "OK":      result = BaseStationStatusCode.OK; break;
-                }
+            switch(text) {
+                case "PL":      return BaseStationStatusCode.PositionLost;
+                case "SL":      return BaseStationStatusCode.SignalLost;
+                case "RM":      return BaseStationStatusCode.Remove;
+                case "AD":      return BaseStationStatusCode.Delete;
+                case "OK":      return BaseStationStatusCode.OK;
+                default:        return BaseStationStatusCode.None;
             }
-
-            return result;
         }
 
         /// <summary>
@@ -149,19 +131,15 @@ namespace VirtualRadar.Interface.BaseStation
         /// <returns></returns>
         public static string ConvertToString(BaseStationStatusCode statusCode)
         {
-            string result = "";
-
             switch(statusCode) {
-                case BaseStationStatusCode.Delete:          result = "AD"; break;
-                case BaseStationStatusCode.None:            break;
-                case BaseStationStatusCode.OK:              result = "OK"; break;
-                case BaseStationStatusCode.PositionLost:    result = "PL"; break;
-                case BaseStationStatusCode.Remove:          result = "RM"; break;
-                case BaseStationStatusCode.SignalLost:      result = "SL"; break;
+                case BaseStationStatusCode.Delete:          return "AD";
+                case BaseStationStatusCode.None:            return "";
+                case BaseStationStatusCode.OK:              return "OK";
+                case BaseStationStatusCode.PositionLost:    return "PL";
+                case BaseStationStatusCode.Remove:          return "RM";
+                case BaseStationStatusCode.SignalLost:      return "SL";
                 default:                                    throw new NotImplementedException();
             }
-
-            return result;
         }
     }
 }

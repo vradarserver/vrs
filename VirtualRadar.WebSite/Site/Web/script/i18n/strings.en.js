@@ -265,6 +265,7 @@
     VRS.$$.ListNotes =                                  'Notes';
     VRS.$$.ListManufacturer =                           'Manufacturer';
     VRS.$$.ListMaxTakeoffWeight =                       'Max T/O Weight';
+    VRS.$$.ListMlat =                                   'MLAT';                 // Abbreviation of Multilateration
     VRS.$$.ListModel =                                  'Model';
     VRS.$$.ListModelIcao =                              'Type';
     VRS.$$.ListModeSCountry =                           'Mode-S Country';
@@ -313,6 +314,7 @@
     VRS.$$.MilesPerHour =                               'Miles/Hour';
     VRS.$$.MilesPerHourAbbreviation =                   '{0} mph';
     VRS.$$.Military =                                   'Military';
+    VRS.$$.Mlat =                                       'MLAT';                 // An abbreviation of Multilateration
     VRS.$$.MobilePage =                                 'Mobile Page';
     VRS.$$.MobileReportPage =                           'Mobile Report Page';
     VRS.$$.Model =                                      'Model';

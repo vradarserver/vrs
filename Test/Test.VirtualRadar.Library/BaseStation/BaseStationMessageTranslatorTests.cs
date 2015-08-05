@@ -184,6 +184,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             Assert.AreEqual(worksheet.NBool("Emergency"), translated.Emergency);
             Assert.AreEqual(worksheet.NBool("IdentActive"), translated.IdentActive);
             Assert.AreEqual(worksheet.NBool("OnGround"), translated.OnGround);
+            Assert.AreEqual(worksheet.Bool("IsMlat"), translated.IsMlat);
         }
         #endregion
     }

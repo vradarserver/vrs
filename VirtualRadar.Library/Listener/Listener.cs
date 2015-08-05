@@ -609,7 +609,7 @@ namespace VirtualRadar.Library.Listener
         }
 
         /// <summary>
-        /// Translates the bytes for an <see cref="AircraftListJson"/> into a list of cooked messages and raises th
+        /// Translates the bytes for an <see cref="AircraftListJson"/> into a list of cooked messages and raises the
         /// appropriate events.
         /// </summary>
         /// <param name="now"></param>
@@ -647,7 +647,7 @@ namespace VirtualRadar.Library.Listener
                 if(extractedBytes.HasParity) _ModeSParity.StripParity(extractedBytes.Bytes, extractedBytes.Offset, extractedBytes.Length);
 
                 try {
-                    var modeSMessage = _ModeSMessageTranslator.Translate(extractedBytes.Bytes, extractedBytes.Offset, extractedBytes.SignalLevel);
+                    var modeSMessage = _ModeSMessageTranslator.Translate(extractedBytes.Bytes, extractedBytes.Offset, extractedBytes.SignalLevel, extractedBytes.IsMlat);
                     if(modeSMessage != null) {
                         bool hasPIField = modeSMessage.ParityInterrogatorIdentifier != null;
                         bool isPIWithBadParity = hasPIField && modeSMessage.ParityInterrogatorIdentifier != 0;

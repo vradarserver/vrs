@@ -45,12 +45,16 @@ namespace VirtualRadar.Library.Listener
                 if(json.Emergency != null)      message.Emergency = json.Emergency;
                 if(json.GroundSpeed != null)    message.GroundSpeed = json.GroundSpeed;
                 if(json.Icao24 != null)         message.Icao24 = json.Icao24;
-                if(json.Latitude != null)       message.Latitude = json.Latitude;
-                if(json.Longitude != null)      message.Longitude = json.Longitude;
                 if(json.OnGround != null)       message.OnGround = json.OnGround;
                 if(json.SignalLevel != null)    message.SignalLevel = json.SignalLevel;
                 if(json.Track != null)          message.Track = json.Track;
                 if(json.VerticalRate != null)   message.VerticalRate = json.VerticalRate;
+
+                if(json.Latitude != null || json.Longitude != null) {
+                    if(json.Latitude != null)       message.Latitude = json.Latitude;
+                    if(json.Longitude != null)      message.Longitude = json.Longitude;
+                    if(json.PositionIsMlat != null) message.IsMlat = json.PositionIsMlat.Value;
+                }
 
                 if(json.Squawk != null) {
                     int squawk;

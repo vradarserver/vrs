@@ -48,6 +48,68 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
+        public void AircraftListJsonMessageConverter_Sets_IsMlat_When_Position_Is_Present_And_Position_Is_MLAT()
+        {
+            var aircraft = new AircraftJson() {
+                Icao24 = "A",
+                Latitude = 1,
+                Longitude = 2,
+                PositionIsMlat = true,
+            };
+            _AircraftListJson.Aircraft.Add(aircraft);
+
+            var message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+
+            Assert.IsTrue(message.IsMlat);
+        }
+
+        [TestMethod]
+        public void AircraftListJsonMessageConverter_Clears_IsMlat_When_Position_Is_Present_And_Position_Is_Not_MLAT()
+        {
+            var aircraft = new AircraftJson() {
+                Icao24 = "A",
+                Latitude = 1,
+                Longitude = 2,
+                PositionIsMlat = false,
+            };
+            _AircraftListJson.Aircraft.Add(aircraft);
+
+            var message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+
+            Assert.IsFalse(message.IsMlat);
+        }
+
+        [TestMethod]
+        public void AircraftListJsonMessageConverter_Clears_IsMlat_When_Position_Is_Not_Present_And_Position_Is_Not_MLAT()
+        {
+            var aircraft = new AircraftJson() {
+                Icao24 = "A",
+                PositionIsMlat = true,
+            };
+            _AircraftListJson.Aircraft.Add(aircraft);
+
+            var message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+
+            Assert.IsFalse(message.IsMlat);
+        }
+
+        [TestMethod]
+        public void AircraftListJsonMessageConverter_Clears_IsMlat_When_Position_Is_Present_And_Position_Is_MLAT_Is_Null()
+        {
+            var aircraft = new AircraftJson() {
+                Icao24 = "A",
+                Latitude = 1,
+                Longitude = 2,
+                PositionIsMlat = null
+            };
+            _AircraftListJson.Aircraft.Add(aircraft);
+
+            var message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+
+            Assert.IsFalse(message.IsMlat);
+        }
+
+        [TestMethod]
         [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListJsonMessageCnvter$")]
         public void AircraftListJsonMessageConverter_Copies_Json_Properties_To_Correct_Message_Property()

@@ -127,6 +127,13 @@ namespace VirtualRadar.Interface.WebSite
         public long? PositionTime { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the <see cref="Latitude"/> and <see cref="Longitude"/>
+        /// were calculated by an MLAT source.
+        /// </summary>
+        [DataMember(Name="Mlat", IsRequired=false, EmitDefaultValue=false)]
+        public bool? PositionIsMlat { get; set; }
+
+        /// <summary>
         /// Gets or sets the ground speed of the aircraft in knots.
         /// </summary>
         [DataMember(Name="Spd", IsRequired=false, EmitDefaultValue=false)]

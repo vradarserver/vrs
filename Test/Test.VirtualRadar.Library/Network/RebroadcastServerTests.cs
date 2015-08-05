@@ -286,6 +286,14 @@ namespace Test.VirtualRadar.Library.Network
             _Connector.SetupGet(r => r.HasConnection).Returns(true);
         }
 
+        private void SetupForExtendedBaseStation()
+        {
+            _Server.Format = RebroadcastFormat.ExtendedBaseStation;
+            _Server.Initialise();
+            _Server.Online = true;
+            _Connector.SetupGet(r => r.HasConnection).Returns(true);
+        }
+
         private void SetupForCompressedVRS()
         {
             _Server.Format = RebroadcastFormat.CompressedVRS;
@@ -306,6 +314,18 @@ namespace Test.VirtualRadar.Library.Network
         public void RebroadcastServer_Transmits_Port30003_Messages_From_Feed()
         {
             SetupForPort30003();
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            var expectedBytes = ExpectedBytes(_Port30003Message);
+            Assert.AreEqual(1, _Connector.Written.Count);
+            Assert.IsTrue(expectedBytes.SequenceEqual(_Connector.Written[0]));
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Transmits_ExtendedBaseStation_Messages_From_Feed()
+        {
+            SetupForExtendedBaseStation();
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
@@ -402,6 +422,16 @@ namespace Test.VirtualRadar.Library.Network
         }
 
         [TestMethod]
+        public void RebroadcastServer_Does_Not_Transmit_Raw_Bytes_If_ExtendedBaseStation_Format_Specified()
+        {
+            SetupForExtendedBaseStation();
+
+            _Listener.Raise(r => r.RawBytesReceived += null, new EventArgs<byte[]>(new byte[] { 0x01, 0x02 }));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
         public void RebroadcastServer_Does_Not_Transmit_Raw_Bytes_If_Compressed_Format_Specified()
         {
             SetupForCompressedVRS();
@@ -434,6 +464,17 @@ namespace Test.VirtualRadar.Library.Network
         }
 
         [TestMethod]
+        public void RebroadcastServer_Does_Not_Transmit_ExtendedBaseStation_Messages_When_Offline()
+        {
+            SetupForExtendedBaseStation();
+            _Server.Online = false;
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
         public void RebroadcastServer_Does_Not_Transmit_Port30003_Messages_When_There_Are_No_Connections()
         {
             SetupForPort30003();
@@ -442,6 +483,51 @@ namespace Test.VirtualRadar.Library.Network
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
 
             Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Does_Not_Transmit_ExtendedBaseStation_Messages_When_There_Are_No_Connections()
+        {
+            SetupForExtendedBaseStation();
+            _Connector.SetupGet(r => r.HasConnection).Returns(false);
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            Assert.AreEqual(0, _Connector.Written.Count);
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_Port30003_Messages_Do_Not_Distinguish_Between_MLAT_And_Normal_Positions()
+        {
+            SetupForPort30003();
+
+            _Port30003Message.Icao24 = "ABCDEF";
+            _Port30003Message.MessageType = BaseStationMessageType.Transmission;
+            _Port30003Message.Latitude = 1;
+            _Port30003Message.Longitude = 2;
+            _Port30003Message.IsMlat = true;
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            var writtenText = Encoding.ASCII.GetString(_Connector.Written[0]);
+            Assert.IsTrue(writtenText.StartsWith("MSG,"));
+        }
+
+        [TestMethod]
+        public void RebroadcastServer_ExtendedBaseStation_Messages_Distinguish_Between_MLAT_And_Normal_Positions()
+        {
+            SetupForExtendedBaseStation();
+
+            _Port30003Message.Icao24 = "ABCDEF";
+            _Port30003Message.MessageType = BaseStationMessageType.Transmission;
+            _Port30003Message.Latitude = 1;
+            _Port30003Message.Longitude = 2;
+            _Port30003Message.IsMlat = true;
+
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(_Port30003Message));
+
+            var writtenText = Encoding.ASCII.GetString(_Connector.Written[0]);
+            Assert.IsTrue(writtenText.StartsWith("MLAT,"));
         }
 
         [TestMethod]

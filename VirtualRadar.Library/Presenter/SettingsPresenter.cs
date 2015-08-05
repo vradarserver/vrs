@@ -1167,6 +1167,7 @@ namespace VirtualRadar.Library.Presenter
                         switch(format) {
                             case RebroadcastFormat.Avr:                 formatIsOK = false; break;      // Cannot convert BaseStation to AVR
                             case RebroadcastFormat.CompressedVRS:       formatIsOK = true; break;
+                            case RebroadcastFormat.ExtendedBaseStation: formatIsOK = true; break;
                             case RebroadcastFormat.Passthrough:         formatIsOK = false; break;      // As-of time of writing Passthrough not raised for merged feed listeners
                             case RebroadcastFormat.Port30003:           formatIsOK = true; break;
                             case RebroadcastFormat.AircraftListJson:    formatIsOK = true; break;       // Once merge-only feeds are implemented we'll have to check that the feed has an aircraft list on it before we allow this format.
@@ -1186,6 +1187,7 @@ namespace VirtualRadar.Library.Presenter
                         switch(format) {
                             case RebroadcastFormat.Avr:                 formatIsOK = !isCooked; break;
                             case RebroadcastFormat.CompressedVRS:       formatIsOK = true; break;
+                            case RebroadcastFormat.ExtendedBaseStation: formatIsOK = true; break;
                             case RebroadcastFormat.None:                break;
                             case RebroadcastFormat.Passthrough:         formatIsOK = true; break;
                             case RebroadcastFormat.Port30003:           formatIsOK = true; break;

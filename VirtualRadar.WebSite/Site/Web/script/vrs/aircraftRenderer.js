@@ -590,7 +590,7 @@
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
         headingKey:             'ListInteresting',
         labelKey:               'Interesting',
-        hasChangedCallback:     function(aircraft) { return aircraft.userInterested; },
+        hasChangedCallback:     function(aircraft) { return aircraft.userInterested.chg; },
         contentCallback:        function(aircraft) { return aircraft.formatUserInterested(); }
     });
 
@@ -614,6 +614,15 @@
         alignment:              VRS.Alignment.Right,
         hasChangedCallback:     function(aircraft) { return aircraft.longitude.chg; },
         contentCallback:        function(aircraft, options) { return aircraft.formatLongitude(options.showUnits); }
+    });
+
+    VRS.renderPropertyHandlers[VRS.RenderProperty.Mlat] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.Mlat,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListMlat',
+        labelKey:               'Mlat',
+        hasChangedCallback:     function(aircraft) { return aircraft.isMlat.chg; },
+        contentCallback:        function(aircraft) { return aircraft.formatIsMlat(); }
     });
 
     VRS.renderPropertyHandlers[VRS.RenderProperty.Model] = new VRS.RenderPropertyHandler({

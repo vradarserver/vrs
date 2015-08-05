@@ -107,7 +107,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Port30003Message = new BaseStationMessage();
             _Port30003Translator.Setup(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>())).Returns(_Port30003Message);
             _AdsbTranslator.Setup(r => r.Translate(It.IsAny<ModeSMessage>())).Returns(_AdsbMessage);
-            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>())).Returns(_ModeSMessage);
+            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>())).Returns(_ModeSMessage);
             _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Returns(_Port30003Message);
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns(_Port30003Message);
             _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessages(It.IsAny<AircraftListJson>())).Returns(new List<BaseStationMessage>() { _Port30003Message });
@@ -209,7 +209,7 @@ namespace Test.VirtualRadar.Library.Listener
             var exception = new InvalidOperationException();
             switch(translatorType) {
                 case TranslatorType.Adsb:               _AdsbTranslator.Setup(r => r.Translate(It.IsAny<ModeSMessage>())).Throws(exception); break;
-                case TranslatorType.ModeS:              _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>())).Throws(exception); break;
+                case TranslatorType.ModeS:              _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>())).Throws(exception); break;
                 case TranslatorType.Port30003:          _Port30003Translator.Setup(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>())).Throws(exception); break;
                 case TranslatorType.Raw:                _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Throws(exception); break;
                 case TranslatorType.Compressed:         _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Throws(exception); break;
@@ -638,7 +638,7 @@ namespace Test.VirtualRadar.Library.Listener
             ChangeSourceAndConnect();
 
             _Port30003Translator.Verify(r => r.Translate("ABC123", It.IsAny<int?>()), Times.Once());
-            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()), Times.Never());
+            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()), Times.Never());
             _AdsbTranslator.Verify(r => r.Translate(It.IsAny<ModeSMessage>()), Times.Never());
             _RawMessageTranslator.Verify(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>()), Times.Never());
         }
@@ -809,30 +809,35 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Listener_Connect_Passes_ModeS_Messages_To_ModeS_Message_Translators()
         {
-            var extractedBytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+            var packetBytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
             _Connector.ConfigureForConnect();
             _Connector.ConfigureForReadStream("a");
-            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, extractedBytes, 1, 7, false, false).SignalLevel = 123;
+            var extractedBytes = _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, packetBytes, 1, 7, false, false);
+            extractedBytes.SignalLevel = 123;
+            extractedBytes.IsMlat = true;
 
             byte[] bytesPassedToTranslator = null;
             int offsetPassedToTranslator = 0;
             int? signalLevelPassedToTranslator = null;
-            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()))
-            .Callback((byte[] bytes, int offset, int? signalLevel) => {
+            bool? isMlatPassedToTranslator = null;
+            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()))
+            .Callback((byte[] bytes, int offset, int? signalLevel, bool isMlat) => {
                 bytesPassedToTranslator = bytes;
                 offsetPassedToTranslator = offset;
                 signalLevelPassedToTranslator = signalLevel;
+                isMlatPassedToTranslator = isMlat;
             })
             .Returns(_ModeSMessage);
 
             ChangeSourceAndConnect();
 
-            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()), Times.Once());
-            Assert.AreSame(extractedBytes, bytesPassedToTranslator);
+            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()), Times.Once());
+            Assert.AreSame(packetBytes, bytesPassedToTranslator);
             Assert.AreEqual(1, offsetPassedToTranslator);
             Assert.AreEqual(123, signalLevelPassedToTranslator);
+            Assert.AreEqual(true, isMlatPassedToTranslator);
 
             _Port30003Translator.Verify(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>()), Times.Never());
             _AdsbTranslator.Verify(r => r.Translate(_ModeSMessage), Times.Once());
@@ -856,12 +861,12 @@ namespace Test.VirtualRadar.Library.Listener
                 string failMessage = String.Format("For length of {0}", length);
                 if(length != 7 && length != 14) {
                     _Port30003Translator.Verify(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>()), Times.Never(), failMessage);
-                    _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()), Times.Never(), failMessage);
+                    _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()), Times.Never(), failMessage);
                     _AdsbTranslator.Verify(r => r.Translate(It.IsAny<ModeSMessage>()), Times.Never(), failMessage);
                     _RawMessageTranslator.Verify(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>()), Times.Never(), failMessage);
                 } else {
                     _Port30003Translator.Verify(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>()), Times.Never(), failMessage);
-                    _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()), Times.Once(), failMessage);
+                    _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()), Times.Once(), failMessage);
                     _AdsbTranslator.Verify(r => r.Translate(It.IsAny<ModeSMessage>()), Times.Once(), failMessage);
                     _RawMessageTranslator.Verify(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>()), Times.Once(), failMessage);
                 }
@@ -1002,11 +1007,11 @@ namespace Test.VirtualRadar.Library.Listener
             _Connector.ConfigureForConnect();
             _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
-            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>())).Returns((ModeSMessage)null);
+            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>())).Returns((ModeSMessage)null);
 
             ChangeSourceAndConnect();
 
-            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()), Times.Once());
+            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()), Times.Once());
             _AdsbTranslator.Verify(r => r.Translate(It.IsAny<ModeSMessage>()), Times.Never());
             _RawMessageTranslator.Verify(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>()), Times.Never());
             Assert.AreEqual(0, _ModeSMessageReceivedEvent.CallCount);
@@ -1025,7 +1030,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             ChangeSourceAndConnect();
 
-            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()), Times.Once());
+            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()), Times.Once());
             _AdsbTranslator.Verify(r => r.Translate(It.IsAny<ModeSMessage>()), Times.Once());
             _RawMessageTranslator.Verify(r => r.Translate(_Clock.UtcNowValue, _ModeSMessage, null), Times.Once());
 
@@ -1083,7 +1088,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Connector.ConfigureForConnect();
             _Connector.ConfigureForReadStream("a");
             _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
-            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>())).Returns((ModeSMessage)null);
+            _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>())).Returns((ModeSMessage)null);
 
             ChangeSourceAndConnect();
 
@@ -1130,7 +1135,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             _Compressor.Verify(r => r.Decompress(payload), Times.Once());
             _Port30003Translator.Verify(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>()), Times.Never());
-            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>()), Times.Never());
+            _ModeSTranslator.Verify(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>()), Times.Never());
             _AdsbTranslator.Verify(r => r.Translate(It.IsAny<ModeSMessage>()), Times.Never());
             _RawMessageTranslator.Verify(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>()), Times.Never());
         }

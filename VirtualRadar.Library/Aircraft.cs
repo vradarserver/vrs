@@ -208,6 +208,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long PositionTimeChanged { get; private set; }
 
+        private bool? _PositionIsMlat;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool? PositionIsMlat { get { return _PositionIsMlat; } set { if(value != _PositionIsMlat) { _PositionIsMlat = value; PositionIsMlatChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long PositionIsMlatChanged { get; private set; }
+
         private float? _Track;
         /// <summary>
         /// See interface docs.
@@ -710,6 +721,7 @@ namespace VirtualRadar.Library
                 result.PictureFileName = PictureFileName;
                 result.PictureHeight = PictureHeight;
                 result.PictureWidth = PictureWidth;
+                result.PositionIsMlat = PositionIsMlat;
                 result.PositionTime = PositionTime;
                 result.ReceiverId = ReceiverId;
                 result.Registration = Registration;
@@ -763,6 +775,7 @@ namespace VirtualRadar.Library
                 result.PictureFileNameChanged = PictureFileNameChanged;
                 result.PictureHeightChanged = PictureHeightChanged;
                 result.PictureWidthChanged = PictureWidthChanged;
+                result.PositionIsMlatChanged = PositionIsMlatChanged;
                 result.PositionTimeChanged = PositionTimeChanged;
                 result.ReceiverIdChanged = ReceiverIdChanged;
                 result.RegistrationChanged = RegistrationChanged;

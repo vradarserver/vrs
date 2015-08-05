@@ -1529,6 +1529,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BaseStation + MLAT.
+        /// </summary>
+        public static string ExtendedBaseStation {
+            get {
+                return ResourceManager.GetString("ExtendedBaseStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fake Aircraft Mode.
         /// </summary>
         public static string FakeAircraftMode {

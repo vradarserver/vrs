@@ -47,8 +47,9 @@ namespace VirtualRadar.Library.ModeS
         /// <param name="rawMessage"></param>
         /// <param name="start"></param>
         /// <param name="signalLevel"></param>
+        /// <param name="isMlat"></param>
         /// <returns></returns>
-        public ModeSMessage Translate(byte[] rawMessage, int start, int? signalLevel)
+        public ModeSMessage Translate(byte[] rawMessage, int start, int? signalLevel, bool isMlat)
         {
             if(Statistics == null) throw new InvalidOperationException("Statistics must be provided before Translate can do any work");
             ModeSMessage result = null;
@@ -77,6 +78,7 @@ namespace VirtualRadar.Library.ModeS
 
                 if(result != null) {
                     result.SignalLevel = signalLevel;
+                    result.IsMlat = isMlat;
                     result.DownlinkFormat = (DownlinkFormat)downlinkFormatValue;
 
                     switch(result.DownlinkFormat) {

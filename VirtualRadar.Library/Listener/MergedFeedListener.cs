@@ -569,6 +569,7 @@ namespace VirtualRadar.Library.Listener
                 Icao24 = original.Icao24,
                 Latitude = original.Latitude,
                 Longitude = original.Longitude,
+                IsMlat = original.IsMlat,
                 AircraftId = original.AircraftId,
                 FlightId = original.FlightId,
                 ReceiverId = original.ReceiverId,

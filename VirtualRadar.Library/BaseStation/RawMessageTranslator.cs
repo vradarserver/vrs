@@ -602,6 +602,7 @@ namespace VirtualRadar.Library.BaseStation
         {
             var result = new BaseStationMessage() {
                 SignalLevel = modeSMessage.SignalLevel,
+                IsMlat = modeSMessage.IsMlat,
                 MessageType = BaseStationMessageType.Transmission,
                 TransmissionType = ConvertToTransmissionType(modeSMessage, adsbMessage),
                 MessageGenerated = messageReceivedUtc,

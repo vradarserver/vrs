@@ -345,6 +345,22 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
+        public void RawMessageTranslator_Translate_Copies_IsMlat_From_ModeSMessage_To_BaseStationMessage()
+        {
+            foreach(var modeSMessage in CreateModeSMessagesWithPIField().Concat(CreateModeSMessagesWithNoPIField())) {
+                modeSMessage.Icao24 = 112233;
+
+                modeSMessage.IsMlat = true;
+                var baseStationMessage = _Translator.Translate(_NowUtc, modeSMessage, null);
+                Assert.AreEqual(true, baseStationMessage.IsMlat);
+
+                modeSMessage.IsMlat = false;
+                baseStationMessage = _Translator.Translate(_NowUtc, modeSMessage, null);
+                Assert.AreEqual(false, baseStationMessage.IsMlat);
+            }
+        }
+
+        [TestMethod]
         public void RawMessageTranslator_Translate_Accepts_Mode_S_Messages_That_Transmit_ICAO24_With_PI_Field()
         {
             foreach(var modeSMessage in CreateModeSMessagesWithPIField()) {

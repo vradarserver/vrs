@@ -1290,6 +1290,7 @@ namespace Test.VirtualRadar.WebSite
                     case "Callsign":
                     case "Latitude":
                     case "Longitude":
+                    case "PositionIsMlat":
                     case "GroundSpeed":
                     case "Track":
                     case "TrackIsHeading":
