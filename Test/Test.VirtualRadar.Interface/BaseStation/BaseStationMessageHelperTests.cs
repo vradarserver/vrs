@@ -36,7 +36,8 @@ namespace Test.VirtualRadar.Interface.BaseStation
                     case BaseStationMessageType.UserDoubleClicked:  text = "CLK"; break;
                     default:                                        throw new NotImplementedException();
                 }
-                Assert.AreEqual(messageType, BaseStationMessageHelper.ConvertToBaseStationMessageType(text), messageType.ToString());
+                var isMlat = false;
+                Assert.AreEqual(messageType, BaseStationMessageHelper.ConvertToBaseStationMessageType(text, ref isMlat), messageType.ToString());
             }
         }
 
@@ -44,8 +45,24 @@ namespace Test.VirtualRadar.Interface.BaseStation
         public void BaseStationMessageHelper_ConvertToBaseStationMessageType_Converts_Unknown_Text_Correctly()
         {
             foreach(string text in new string[] { null, "", "HHH", " MSG", "ID " }) {
-                Assert.AreEqual(BaseStationMessageType.Unknown, BaseStationMessageHelper.ConvertToBaseStationMessageType(text));
+                var isMlat = false;
+                Assert.AreEqual(BaseStationMessageType.Unknown, BaseStationMessageHelper.ConvertToBaseStationMessageType(text, ref isMlat));
             }
+        }
+
+        [TestMethod]
+        public void BaseStationMessageHelper_ConvertToBaseStationMessageType_Converts_Mlat_Message_Types_Correctly()
+        {
+            var isMlat = false;
+
+            var messageType = BaseStationMessageHelper.ConvertToBaseStationMessageType("MLAT", ref isMlat);
+            Assert.AreEqual(BaseStationMessageType.Transmission, messageType);
+            Assert.IsTrue(isMlat);
+
+            isMlat = false;
+            messageType = BaseStationMessageHelper.ConvertToBaseStationMessageType("MSG", ref isMlat);
+            Assert.AreEqual(BaseStationMessageType.Transmission, messageType);
+            Assert.IsFalse(isMlat);         // Actually this is untouched, but it's definitely not true
         }
         #endregion
 

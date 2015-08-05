@@ -2507,4 +2507,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="MultilaterationTypeListHeader" xml:space="preserve">
     <value>MLAT Type</value>
   </data>
+  <data name="ExtendedBaseStation" xml:space="preserve">
+    <value>BaseStation + MLAT</value>
+  </data>
 </root>

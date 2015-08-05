@@ -52,7 +52,7 @@ namespace Test.VirtualRadar.Library.ModeS
         public void ModeSTranslator_Translate_Throws_If_Statistics_Is_Not_Initialised()
         {
             _Translator.Statistics = null;
-            _Translator.Translate(new byte[0], 0, null);
+            _Translator.Translate(new byte[0], 0, null, false);
         }
 
         [TestMethod]
@@ -66,7 +66,7 @@ namespace Test.VirtualRadar.Library.ModeS
             var bits = worksheet.String("Packet");
             var bytes = TestUtilities.ConvertBitStringToBytes(bits);
 
-            var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+            var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
             foreach(var replyProperty in reply.GetType().GetProperties()) {
                 switch(replyProperty.Name) {
@@ -89,6 +89,7 @@ namespace Test.VirtualRadar.Library.ModeS
                     case "FormattedIcao24":                      Assert.AreEqual(worksheet.String("Icao24"), reply.FormattedIcao24); break;
                     case "Icao24":                               Assert.AreEqual(Convert.ToInt32(worksheet.String("Icao24"), 16), reply.Icao24); break;
                     case "Identity":                             Assert.AreEqual(expectedValue.GetNShort("ID"), reply.Identity); break;
+                    case "IsMlat":                               break;
                     case "NonIcao24Address":                     Assert.AreEqual(expectedValue.GetNInt("AAX", true), reply.NonIcao24Address); break;
                     case "ParityInterrogatorIdentifier":         Assert.AreEqual(expectedValue.GetNInt("PI", true), reply.ParityInterrogatorIdentifier); break;
                     case "PossibleCallsign":                     Assert.AreEqual(expectedValue.GetString("PC"), reply.PossibleCallsign); break;
@@ -113,7 +114,7 @@ namespace Test.VirtualRadar.Library.ModeS
             var bits = worksheet.String("Packet");
             var bytes = TestUtilities.ConvertBitStringToBytes(bits);
 
-            var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+            var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
             Assert.AreEqual(1L, _Statistics.Object.ModeSMessagesReceived);
             for(var i = 0;i < _Statistics.Object.ModeSDFCount.Length;++i) {
@@ -128,7 +129,7 @@ namespace Test.VirtualRadar.Library.ModeS
         public void ModeSTranslator_Translate_Ignores_Bytes_Before_Packet()
         {
             List<byte> bytes = TestUtilities.ConvertBitStringToBytes("00000000 01011 000 11111111 00000000 11111111 00000000 11111111 00000000");
-            var reply = _Translator.Translate(bytes.ToArray(), 1, null);
+            var reply = _Translator.Translate(bytes.ToArray(), 1, null, false);
             Assert.AreEqual(DownlinkFormat.AllCallReply, reply.DownlinkFormat);
             Assert.AreEqual(0x00FF00, reply.ParityInterrogatorIdentifier);
         }
@@ -137,7 +138,7 @@ namespace Test.VirtualRadar.Library.ModeS
         public void ModeSTranslator_Translate_Ignores_Bytes_Before_DF24_Packet()
         {
             List<byte> bytes = TestUtilities.ConvertBitStringToBytes("00000000 11 0 0 1111 11111111 00000000 11001100 00110011 10101010 01010101 11110000 00001111 11100010 00011101 11111111 00000000 11111111");
-            var reply = _Translator.Translate(bytes.ToArray(), 1, null);
+            var reply = _Translator.Translate(bytes.ToArray(), 1, null, false);
             Assert.AreEqual(DownlinkFormat.CommD, reply.DownlinkFormat);
             Assert.IsTrue(new byte[] { 0xFF, 0x00, 0xCC, 0x33, 0xAA, 0x55, 0xF0, 0x0F, 0xE2, 0x1D }.SequenceEqual(reply.CommDMessage));
         }
@@ -147,23 +148,35 @@ namespace Test.VirtualRadar.Library.ModeS
         {
             List<byte> bytes = TestUtilities.ConvertBitStringToBytes("00000000 01011 000 11111111 00000000 11111111 00000000 11111111 00000000");
 
-            var reply = _Translator.Translate(bytes.ToArray(), 1, 123);
+            var reply = _Translator.Translate(bytes.ToArray(), 1, 123, false);
             Assert.AreEqual(123, reply.SignalLevel);
 
-            reply = _Translator.Translate(bytes.ToArray(), 1, null);
+            reply = _Translator.Translate(bytes.ToArray(), 1, null, false);
             Assert.AreEqual(null, reply.SignalLevel);
+        }
+
+        [TestMethod]
+        public void ModeSTranslator_Translate_Copies_IsMlat_To_ModeSMessage()
+        {
+            List<byte> bytes = TestUtilities.ConvertBitStringToBytes("00000000 01011 000 11111111 00000000 11111111 00000000 11111111 00000000");
+
+            var reply = _Translator.Translate(bytes.ToArray(), 1, null, false);
+            Assert.IsFalse(reply.IsMlat);
+
+            reply = _Translator.Translate(bytes.ToArray(), 1, null, true);
+            Assert.IsTrue(reply.IsMlat);
         }
 
         [TestMethod]
         public void ModeSTranslator_Translate_Returns_Null_If_Passed_Null_Buffer()
         {
-            Assert.IsNull(_Translator.Translate(null, 0, null));
+            Assert.IsNull(_Translator.Translate(null, 0, null, false));
         }
 
         [TestMethod]
         public void ModeSTranslator_Translate_Returns_Null_If_Buffer_Is_Empty()
         {
-            Assert.IsNull(_Translator.Translate(new byte[] {}, 0, null));
+            Assert.IsNull(_Translator.Translate(new byte[] {}, 0, null, false));
         }
 
         [TestMethod]
@@ -191,11 +204,11 @@ namespace Test.VirtualRadar.Library.ModeS
                 correctLength[0] = correctLengthPlusOne[1] = shortLength[0] = encodedDF;
 
                 var failMessage = String.Format("Failed on DF {0}", df);
-                Assert.IsNotNull(_Translator.Translate(correctLength, 0, null), failMessage);
-                Assert.IsNotNull(_Translator.Translate(correctLengthPlusOne, 1, null), failMessage);
-                Assert.IsNull(_Translator.Translate(shortLength, 0, null), failMessage);
+                Assert.IsNotNull(_Translator.Translate(correctLength, 0, null, false), failMessage);
+                Assert.IsNotNull(_Translator.Translate(correctLengthPlusOne, 1, null, false), failMessage);
+                Assert.IsNull(_Translator.Translate(shortLength, 0, null, false), failMessage);
                 correctLength[1] = encodedDF;
-                Assert.IsNull(_Translator.Translate(correctLength, 1, null), failMessage);
+                Assert.IsNull(_Translator.Translate(correctLength, 1, null, false), failMessage);
             }
         }
 
@@ -214,7 +227,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append(bitsAfterCA);
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                 Assert.AreEqual(capability, reply.Capability);
             }
@@ -237,7 +250,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append(bitsAfterFS);
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                 Assert.AreEqual(flightStatus, reply.FlightStatus);
             }
@@ -274,7 +287,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append(bitsAfterAC);
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                 Assert.AreEqual(altitude, reply.Altitude.Value);
             }
@@ -299,7 +312,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append(bitsAfterAC);
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                _Translator.Translate(bytes.ToArray(), 0, null);
+                _Translator.Translate(bytes.ToArray(), 0, null, false);
             }
         }
 
@@ -322,7 +335,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append(bitsAfterAC);
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                 Assert.AreEqual(altitude, reply.Altitude.Value);
             }
@@ -353,7 +366,7 @@ namespace Test.VirtualRadar.Library.ModeS
                             bits = String.Format("{0}{1}{2}", bitsBeforeID, bits, bitsAfterID);
 
                             var bytes = TestUtilities.ConvertBitStringToBytes(bits);
-                            var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                            var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                             Assert.AreEqual(expectedIdentity, reply.Identity);
                         }
@@ -371,7 +384,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append("11111111000000001111111111110000000011111111111100000000101010100101010111100011000000001111111100000000");
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                 Assert.AreEqual(controlField, reply.ControlField);
                 switch(controlField) {
@@ -410,7 +423,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append("11111111000000001111111111110000000011111111111100000000101010100101010111100011000000001111111100000000");
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                 Assert.AreEqual(applicationField, reply.ApplicationField);
                 switch(applicationField) {
@@ -450,7 +463,7 @@ namespace Test.VirtualRadar.Library.ModeS
                 bits.Append(bitsAfter);
 
                 var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
-                var reply = _Translator.Translate(bytes.ToArray(), 0, null);
+                var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
                 Assert.AreEqual(expectedIdentification, reply.PossibleCallsign, "Failed on character '{0}'", ch);
             }

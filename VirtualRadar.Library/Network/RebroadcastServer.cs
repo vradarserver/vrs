@@ -290,6 +290,7 @@ namespace VirtualRadar.Library.Network
                     _Hooked_Raw_Bytes = true;
                     break;
                 case RebroadcastFormat.CompressedVRS:
+                case RebroadcastFormat.ExtendedBaseStation:
                 case RebroadcastFormat.Port30003:
                     _HookedListener.Port30003MessageReceived += Listener_Port30003MessageReceived;
                     _Hooked_Port30003_Messages = true;
@@ -468,9 +469,13 @@ namespace VirtualRadar.Library.Network
             if(ShouldRebroadcast) {
                 byte[] bytes;
                 switch(Format) {
-                    case RebroadcastFormat.CompressedVRS:   bytes = _Compressor.Compress(args.Message); break;
-                    case RebroadcastFormat.Port30003:       bytes = Encoding.ASCII.GetBytes(String.Concat(args.Message.ToBaseStationString(), "\r\n")); break;
-                    default:                                throw new NotImplementedException();
+                    case RebroadcastFormat.CompressedVRS:
+                        bytes = _Compressor.Compress(args.Message);
+                        break;
+                    default:
+                        var emitExtendedBaseStation = Format == RebroadcastFormat.ExtendedBaseStation;
+                        bytes = Encoding.ASCII.GetBytes(String.Concat(args.Message.ToBaseStationString(emitExtendedBaseStation), "\r\n"));
+                        break;
                 }
                 if(bytes != null && bytes.Length > 0) Connector.Write(bytes);
             }

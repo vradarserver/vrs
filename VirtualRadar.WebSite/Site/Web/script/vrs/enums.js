@@ -392,6 +392,7 @@
         Interesting:                    'int',
         Latitude:                       'lat',
         Longitude:                      'lng',
+        Mlat:                           'mlt',
         Model:                          'mod',
         ModelIcao:                      'typ',
         Operator:                       'opr',

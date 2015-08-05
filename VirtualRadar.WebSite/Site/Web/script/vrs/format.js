@@ -488,6 +488,16 @@
         };
 
         /**
+         * Formats the is-MLAT flag for display.
+         * @param {boolean} isMlat
+         * @returns {string}
+         */
+        this.isMlat = function(isMlat)
+        {
+            return isMlat === undefined || isMlat === null ? '' : isMlat ? VRS.$$.Yes : VRS.$$.No;
+        };
+
+        /**
          * Formats the on-ground flag for display.
          * @param {boolean} isOnGround
          * @returns {string}

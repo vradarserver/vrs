@@ -377,6 +377,7 @@
         this.callsignSuspect =          new VRS.BoolValue();
         this.latitude =                 new VRS.NumberValue();
         this.longitude =                new VRS.NumberValue();
+        this.isMlat =                   new VRS.BoolValue();
         this.positionTime =             new VRS.NumberValue();
         this.speed =                    new VRS.NumberValue();
         this.speedType =                new VRS.NumberValue();
@@ -451,6 +452,7 @@
             setValue(this.callsignSuspect,      aircraftJson.CallSus);
             setValue(this.latitude,             aircraftJson.Lat);
             setValue(this.longitude,            aircraftJson.Long);
+            setValue(this.isMlat,               aircraftJson.Mlat);
             setValue(this.positionTime,         aircraftJson.PosTime);
             setValue(this.speed,                aircraftJson.Spd);
             setValue(this.speedType,            aircraftJson.SpdTyp);
@@ -1055,6 +1057,15 @@
         this.formatIsMilitary = function()
         {
             return VRS.format.isMilitary(this.isMilitary.val);
+        };
+
+        /**
+         * Formats the aircraft's is MLAT value as a string.
+         * @returns {string}
+         */
+        this.formatIsMlat = function()
+        {
+            return VRS.format.isMlat(this.isMlat.val);
         };
 
         /**

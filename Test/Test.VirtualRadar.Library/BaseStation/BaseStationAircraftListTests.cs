@@ -685,6 +685,54 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Sets_PositionIsMlat_When_Position_Is_MLAT()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.Icao24 = "1";
+            _BaseStationMessage.Latitude = 1;
+            _BaseStationMessage.Longitude = 2;
+            _BaseStationMessage.IsMlat = true;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(1);
+            Assert.AreEqual(1.0, aircraft.Latitude);
+            Assert.AreEqual(2.0, aircraft.Longitude);
+            Assert.IsTrue(aircraft.PositionIsMlat.Value);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Leaves_PositionIsMlat_When_Position_Is_Not_Supplied()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.Icao24 = "1";
+            _BaseStationMessage.IsMlat = true;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(1);
+            Assert.IsNull(aircraft.PositionIsMlat);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Clears_PositionIsMlat_When_Position_Is_No_Longer_MLAT()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.Icao24 = "1";
+            _BaseStationMessage.Latitude = 1;
+            _BaseStationMessage.Longitude = 2;
+            _BaseStationMessage.IsMlat = true;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _BaseStationMessage.IsMlat = false;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(1);
+            Assert.IsFalse(aircraft.PositionIsMlat.Value);
+        }
+
+        [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Increments_Count_Of_Messages()
         {
             _AircraftList.Start();

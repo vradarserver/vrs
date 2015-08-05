@@ -35,13 +35,14 @@ namespace VirtualRadar.Library.BaseStation
             };
 
             if(!String.IsNullOrEmpty(text)) {
+                var isMlat = false;
                 string[] parts = text.Split(',');
                 for(int c = 0;c < parts.Length;c++) {
                     string chunk = parts[c];
                     try {
                         if(!String.IsNullOrEmpty(chunk)) {
                             switch(c) {
-                                case 0:     result.MessageType = BaseStationMessageHelper.ConvertToBaseStationMessageType(chunk); break;
+                                case 0:     result.MessageType = BaseStationMessageHelper.ConvertToBaseStationMessageType(chunk, ref isMlat); break;
                                 case 1:     result.TransmissionType = result.MessageType == BaseStationMessageType.Transmission ? BaseStationMessageHelper.ConvertToBaseStationTransmissionType(chunk) : BaseStationTransmissionType.None; break;
                                 case 2:     result.SessionId = ParseInt(chunk); break;
                                 case 3:     result.AircraftId = ParseInt(chunk); break;
@@ -75,6 +76,8 @@ namespace VirtualRadar.Library.BaseStation
                         throw new BaseStationTranslatorException(String.Format("{0} while translating \"{1}\" (chunk {2}) in \"{3}\"", ex.Message, chunk, c, text));
                     }
                 }
+
+                result.IsMlat = isMlat;
             }
 
             return result;

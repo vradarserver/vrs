@@ -167,6 +167,16 @@ namespace VirtualRadar.Interface
         long PositionTimeChanged { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the position was calculated by an MLAT server, or came off an MLAT feed.
+        /// </summary>
+        bool? PositionIsMlat { get; set; }
+
+        /// <summary>
+        /// Gets the UTC date and time that <see cref="PositionIsMlat"/> last changed.
+        /// </summary>
+        long PositionIsMlatChanged { get; }
+
+        /// <summary>
         /// Gets or sets the last reported heading over the ground of the aircraft. If the aircraft is not
         /// reporting its track (see <see cref="IsTransmittingTrack"/>) then the code will calculate one for it.
         /// This is in degrees clockwise.

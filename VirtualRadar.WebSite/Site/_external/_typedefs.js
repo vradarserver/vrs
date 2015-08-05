@@ -171,6 +171,7 @@ VRS_GOOGLE_ICON;
 * CallSus:      boolean,
 * Lat:          Number,
 * Long:         Number,
+* Mlat:         boolean,
 * PosTime:      Number,
 * Spd:          Number,
 * SpdTyp:       Number,

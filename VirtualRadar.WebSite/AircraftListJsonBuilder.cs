@@ -312,6 +312,7 @@ namespace VirtualRadar.WebSite
                 if(firstTimeSeen || aircraftSnapshot.LatitudeChanged > args.PreviousDataVersion)                        aircraftJson.Latitude = Round.Coordinate(aircraftSnapshot.Latitude);
                 if(firstTimeSeen || aircraftSnapshot.LongitudeChanged > args.PreviousDataVersion)                       aircraftJson.Longitude = Round.Coordinate(aircraftSnapshot.Longitude);
                 if(firstTimeSeen || aircraftSnapshot.OnGroundChanged > args.PreviousDataVersion)                        aircraftJson.OnGround = aircraftSnapshot.OnGround;
+                if(firstTimeSeen || aircraftSnapshot.PositionIsMlatChanged > args.PreviousDataVersion)                  aircraftJson.PositionIsMlat = aircraftSnapshot.PositionIsMlat;
                 if(firstTimeSeen || aircraftSnapshot.SignalLevelChanged > args.PreviousDataVersion)                     { aircraftJson.HasSignalLevel = aircraftSnapshot.SignalLevel != null; aircraftJson.SignalLevel = aircraftSnapshot.SignalLevel; }
                 if(firstTimeSeen || aircraftSnapshot.SpeedTypeChanged > args.PreviousDataVersion)                       aircraftJson.SpeedType = (int)aircraftSnapshot.SpeedType;
                 if(firstTimeSeen || aircraftSnapshot.SquawkChanged > args.PreviousDataVersion)                          aircraftJson.Squawk = String.Format("{0:0000}", aircraftSnapshot.Squawk);

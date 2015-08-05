@@ -346,6 +346,7 @@ namespace Test.VirtualRadar.Library.Listener
                 GroundSpeed = 1,
                 Icao24 = "123456",
                 IdentActive = true,
+                IsMlat = true,
                 Latitude = 50,
                 Longitude = 40,
                 OnGround = true,
@@ -371,6 +372,7 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.IsNull(filtered.GroundSpeed);
             Assert.AreEqual("123456", filtered.Icao24);
             Assert.IsNull(filtered.IdentActive);
+            Assert.IsTrue(filtered.IsMlat);
             Assert.AreEqual(50.0, filtered.Latitude);
             Assert.AreEqual(40.0, filtered.Longitude);
             Assert.IsNull(filtered.OnGround);

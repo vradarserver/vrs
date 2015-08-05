@@ -501,8 +501,11 @@ namespace VirtualRadar.Library.BaseStation
                 if(message.GroundSpeed != null) aircraft.GroundSpeed = message.GroundSpeed;
                 if(track != null) aircraft.Track = track;
                 if(message.Track != null && message.Track != 0.0) aircraft.IsTransmittingTrack = true;
-                if(message.Latitude != null) aircraft.Latitude = message.Latitude;
-                if(message.Longitude != null) aircraft.Longitude = message.Longitude;
+                if(message.Latitude != null || message.Longitude != null) {
+                    if(message.Latitude != null) aircraft.Latitude = message.Latitude;
+                    if(message.Longitude != null) aircraft.Longitude = message.Longitude;
+                    aircraft.PositionIsMlat = message.IsMlat;
+                }
                 if(message.VerticalRate != null) aircraft.VerticalRate = message.VerticalRate;
                 if(message.OnGround != null) aircraft.OnGround = message.OnGround;
                 if(message.Squawk != null) {

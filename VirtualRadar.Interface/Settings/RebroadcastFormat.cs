@@ -52,5 +52,11 @@ namespace VirtualRadar.Interface.Settings
         /// JSON is translated into a set of BaseStation messages, one per aircraft.
         /// </summary>
         AircraftListJson,
+
+        /// <summary>
+        /// Same as BaseStation except if the message is an MLAT generated message then MLAT is sent
+        /// instead of MSG.
+        /// </summary>
+        ExtendedBaseStation,
     }
 }

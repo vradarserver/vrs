@@ -47,6 +47,7 @@ namespace Test.VirtualRadar.Interface.BaseStation
             TestUtilities.TestProperty(_Implementation, r => r.MessageLogged, DateTime.MinValue, DateTime.Now);
             TestUtilities.TestProperty(_Implementation, r => r.MessageType, BaseStationMessageType.Unknown, BaseStationMessageType.StatusChange);
             TestUtilities.TestProperty(_Implementation, r => r.Icao24, null, "1203");
+            TestUtilities.TestProperty(_Implementation, r => r.IsMlat, false);
             TestUtilities.TestProperty(_Implementation, r => r.OnGround, null, false);
             TestUtilities.TestProperty(_Implementation, r => r.ReceiverId, 0, 1234);
             TestUtilities.TestProperty(_Implementation, r => r.SessionId, 0, 123);
@@ -109,8 +110,11 @@ namespace Test.VirtualRadar.Interface.BaseStation
             _Implementation.Emergency = worksheet.NBool("Emergency");
             _Implementation.IdentActive = worksheet.NBool("IdentActive");
             _Implementation.OnGround = worksheet.NBool("OnGround");
+            _Implementation.IsMlat = worksheet.Bool("IsMlat");
 
-            Assert.AreEqual(worksheet.String("Text"), _Implementation.ToBaseStationString());
+            var emitExtendedBaseStationFormat = worksheet.Bool("Extended");
+
+            Assert.AreEqual(worksheet.String("Text"), _Implementation.ToBaseStationString(emitExtendedBaseStationFormat));
         }
 
         [TestMethod]

@@ -50,6 +50,7 @@ namespace Test.VirtualRadar.Interface.ModeS
             TestUtilities.TestProperty(_Message, r => r.FlightStatus, null, FlightStatus.OnGround);
             TestUtilities.TestProperty(_Message, r => r.Icao24, 0, 0xffffff);
             TestUtilities.TestProperty(_Message, r => r.Identity, null, (short)4095);
+            TestUtilities.TestProperty(_Message, r => r.IsMlat, false);
             TestUtilities.TestProperty(_Message, r => r.NonIcao24Address, null, 0xff1234);
             TestUtilities.TestProperty(_Message, r => r.ParityInterrogatorIdentifier, null, 0xffffff);
             TestUtilities.TestProperty(_Message, r => r.PossibleCallsign, null, "ABC123");
