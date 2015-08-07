@@ -2434,6 +2434,41 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
+        public void BaseStationAircraftList_OutOfBand_Changes_Position_For_Normal_Position_Aircraft_Set_By_Another_Receiver()
+        {
+            _AircraftList.Start();
+
+            // This covers the situation where an MLAT feed with messages that are not marked as MLAT temporarily becomes the
+            // nominated source in a merged feed. Its positions will be marked as non-MLAT in the aircraft list because they
+            // just look like normal positions. In this case the non-MLAT positions will not have the same receiver ID as the
+            // nominated receiver, so we overwrite them.
+
+            // Nominated receiver has positions
+            _BaseStationMessage.ReceiverId = 1;
+            _BaseStationMessage.Latitude = -1;
+            _BaseStationMessage.Longitude = -1;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            // New nominated receiver does not have positions
+            _BaseStationMessage.ReceiverId = 2;
+            _BaseStationMessage.Latitude = null;
+            _BaseStationMessage.Longitude = null;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            // OOB receiver can overwrite non-MLAT positions because position receiver ID will be 1 and the
+            // aircraft will be branded as belonging (for now) to 2.
+            _BaseStationMessage.ReceiverId = 3;
+            _BaseStationMessage.Latitude = 10;
+            _BaseStationMessage.Longitude = 20;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _OobBaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(10, aircraft.Latitude);
+            Assert.AreEqual(20, aircraft.Longitude);
+            Assert.IsTrue(aircraft.PositionIsMlat.GetValueOrDefault());
+        }
+
+        [TestMethod]
         public void BaseStationAircraftList_OutOfBand_Only_Sets_Position_And_Track()
         {
             _AircraftList.Start();
