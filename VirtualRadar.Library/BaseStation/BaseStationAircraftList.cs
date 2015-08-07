@@ -446,7 +446,7 @@ namespace VirtualRadar.Library.BaseStation
                                     _AircraftMap.Add(uniqueId, aircraft);
                                 } else if(isOutOfBand) {
                                     if(aircraft.Latitude.GetValueOrDefault() != 0 || aircraft.Longitude.GetValueOrDefault() != 0) {
-                                        if(!aircraft.PositionIsMlat.GetValueOrDefault()) {
+                                        if(!aircraft.PositionIsMlat.GetValueOrDefault() && aircraft.ReceiverId == aircraft.PositionReceiverId) {
                                             aircraft = null;
                                         }
                                     }
@@ -502,6 +502,7 @@ namespace VirtualRadar.Library.BaseStation
                 aircraft.LastUpdate = now;
 
                 if(message.Latitude.GetValueOrDefault() != 0.0 || message.Longitude.GetValueOrDefault() != 0.0) {
+                    aircraft.PositionReceiverId = message.ReceiverId;
                     aircraft.Latitude = message.Latitude.GetValueOrDefault();
                     aircraft.Longitude = message.Longitude.GetValueOrDefault();
                     aircraft.PositionIsMlat = message.IsMlat || isOutOfBand;

@@ -79,6 +79,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.PictureHeightChanged);
             Assert.AreEqual(0, _Aircraft.PictureWidthChanged);
             Assert.AreEqual(0, _Aircraft.PositionIsMlatChanged);
+            Assert.AreEqual(0, _Aircraft.PositionReceiverIdChanged);
             Assert.AreEqual(0, _Aircraft.PositionTimeChanged);
             Assert.AreEqual(0, _Aircraft.ReceiverIdChanged);
             Assert.AreEqual(0, _Aircraft.RegistrationChanged);
@@ -137,6 +138,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.PictureHeight, 0, 1024);
             TestUtilities.TestProperty(_Aircraft, r => r.PictureWidth, 0, 2048);
             TestUtilities.TestProperty(_Aircraft, r => r.PositionIsMlat, null, true);
+            TestUtilities.TestProperty(_Aircraft, r => r.PositionReceiverId, null, 1);
             TestUtilities.TestProperty(_Aircraft, r => r.PositionTime, null, DateTime.Now);
             TestUtilities.TestProperty(_Aircraft, r => r.ReceiverId, 0, 1234);
             TestUtilities.TestProperty(_Aircraft, r => r.Registration, null, "JS");
@@ -311,10 +313,12 @@ namespace Test.VirtualRadar.Library
                             case "LatitudeChanged":                 value = _Aircraft.LatitudeChanged; break;
                             case "Longitude":                       value = _Aircraft.Longitude = doubleValue; break;
                             case "LongitudeChanged":                value = _Aircraft.LongitudeChanged; break;
-                            case "PositionTime":                    value = _Aircraft.PositionTime = dateTimeValue; break;
-                            case "PositionTimeChanged":             value = _Aircraft.PositionTimeChanged; break;
                             case "PositionIsMlat":                  value = _Aircraft.PositionIsMlat = property.Name == trueBool; break;
                             case "PositionIsMlatChanged":           value = _Aircraft.PositionIsMlatChanged; break;
+                            case "PositionReceiverId":              value = _Aircraft.PositionReceiverId = intValue; break;
+                            case "PositionReceiverIdChanged":       value = _Aircraft.PositionReceiverIdChanged; break;
+                            case "PositionTime":                    value = _Aircraft.PositionTime = dateTimeValue; break;
+                            case "PositionTimeChanged":             value = _Aircraft.PositionTimeChanged; break;
                             case "Track":                           value = _Aircraft.Track = floatValue; break;
                             case "TrackChanged":                    value = _Aircraft.TrackChanged; break;
                             case "IsTransmittingTrack":             value = _Aircraft.IsTransmittingTrack = property.Name == trueBool; break;

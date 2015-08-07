@@ -177,6 +177,16 @@ namespace VirtualRadar.Interface
         long PositionIsMlatChanged { get; }
 
         /// <summary>
+        /// Gets or sets the ID of the receiver that supplied the last position for the aircraft.
+        /// </summary>
+        int? PositionReceiverId { get; set; }
+
+        /// <summary>
+        /// Gets the UTC date and time that <see cref="PositionReceiverId"/> last changed.
+        /// </summary>
+        long PositionReceiverIdChanged { get; }
+
+        /// <summary>
         /// Gets or sets the last reported heading over the ground of the aircraft. If the aircraft is not
         /// reporting its track (see <see cref="IsTransmittingTrack"/>) then the code will calculate one for it.
         /// This is in degrees clockwise.
