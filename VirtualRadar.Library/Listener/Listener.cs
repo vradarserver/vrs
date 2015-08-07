@@ -188,11 +188,6 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public bool IgnoreBadMessages { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public MultilaterationFeedType MultilaterationFeedType { get; set; }
         #endregion
 
         #region Events

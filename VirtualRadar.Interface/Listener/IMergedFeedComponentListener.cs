@@ -31,15 +31,15 @@ namespace VirtualRadar.Interface.Listener
         IListener Listener { get; }
 
         /// <summary>
-        /// Gets the MLAT feed type associated with the listener on this merged feed.
+        /// Gets or sets a value indicating that every position message on the feed should be treated as an MLAT message.
         /// </summary>
-        MultilaterationFeedType MultilaterationFeedType { get; }
+        bool IsMlatFeed { get; }
 
         /// <summary>
         /// Initialises the object. Objects can only be initialised once.
         /// </summary>
         /// <param name="listener"></param>
-        /// <param name="feedType"></param>
-        void SetListener(IListener listener, MultilaterationFeedType feedType);
+        /// <param name="isMlatFeed"></param>
+        void SetListener(IListener listener, bool isMlatFeed);
     }
 }

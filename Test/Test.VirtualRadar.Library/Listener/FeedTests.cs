@@ -397,52 +397,50 @@ namespace Test.VirtualRadar.Library.Listener
         private void Do_Check_Configuration_Changes_Are_Applied(bool initialiseFirst, Action action)
         {
             foreach(ConnectionType connectionType in Enum.GetValues(typeof(ConnectionType))) {
-                foreach(MultilaterationFeedType feedType in Enum.GetValues(typeof(MultilaterationFeedType))) {
-                    TestCleanup();
-                    TestInitialise();
+                TestCleanup();
+                TestInitialise();
 
-                    if(initialiseFirst) _Feed.Initialise(_Receiver, _Configuration);
+                if(initialiseFirst) _Feed.Initialise(_Receiver, _Configuration);
 
-                    _Receiver.ConnectionType = connectionType;
+                _Receiver.ConnectionType = connectionType;
 
-                    _Receiver.Address = "TCP Address";
-                    _Receiver.Port = 12345;
-                    _Receiver.UseKeepAlive = true;
-                    _Receiver.IdleTimeoutMilliseconds = 30000;
+                _Receiver.Address = "TCP Address";
+                _Receiver.Port = 12345;
+                _Receiver.UseKeepAlive = true;
+                _Receiver.IdleTimeoutMilliseconds = 30000;
 
-                    _Receiver.ComPort = "Serial COM Port";
-                    _Receiver.BaudRate = 10;
-                    _Receiver.DataBits = 9;
-                    _Receiver.StopBits = StopBits.Two;
-                    _Receiver.Parity = Parity.Mark;
-                    _Receiver.Handshake = Handshake.XOnXOff;
-                    _Receiver.StartupText = "Up";
-                    _Receiver.ShutdownText = "Down";
+                _Receiver.ComPort = "Serial COM Port";
+                _Receiver.BaudRate = 10;
+                _Receiver.DataBits = 9;
+                _Receiver.StopBits = StopBits.Two;
+                _Receiver.Parity = Parity.Mark;
+                _Receiver.Handshake = Handshake.XOnXOff;
+                _Receiver.StartupText = "Up";
+                _Receiver.ShutdownText = "Down";
 
-                    action();
+                action();
 
-                    Assert.AreEqual(true, _Listener.Object.IgnoreBadMessages);
+                Assert.AreEqual(true, _Listener.Object.IgnoreBadMessages);
 
-                    switch(connectionType) {
-                        case ConnectionType.COM:
-                            Assert.AreEqual("Serial COM Port", _SerialActiveConnector.Object.ComPort);
-                            Assert.AreEqual(10, _SerialActiveConnector.Object.BaudRate);
-                            Assert.AreEqual(9, _SerialActiveConnector.Object.DataBits);
-                            Assert.AreEqual(StopBits.Two, _SerialActiveConnector.Object.StopBits);
-                            Assert.AreEqual(Parity.Mark, _SerialActiveConnector.Object.Parity);
-                            Assert.AreEqual(Handshake.XOnXOff, _SerialActiveConnector.Object.Handshake);
-                            Assert.AreEqual("Up", _SerialActiveConnector.Object.StartupText);
-                            Assert.AreEqual("Down", _SerialActiveConnector.Object.ShutdownText);
-                            break;
-                        case ConnectionType.TCP:
-                            Assert.AreEqual("TCP Address", _IPActiveConnector.Object.Address);
-                            Assert.AreEqual(12345, _IPActiveConnector.Object.Port);
-                            Assert.AreEqual(true, _IPActiveConnector.Object.UseKeepAlive);
-                            Assert.AreEqual(30000, _IPActiveConnector.Object.IdleTimeout);
-                            break;
-                        default:
-                            throw new NotImplementedException();
-                    }
+                switch(connectionType) {
+                    case ConnectionType.COM:
+                        Assert.AreEqual("Serial COM Port", _SerialActiveConnector.Object.ComPort);
+                        Assert.AreEqual(10, _SerialActiveConnector.Object.BaudRate);
+                        Assert.AreEqual(9, _SerialActiveConnector.Object.DataBits);
+                        Assert.AreEqual(StopBits.Two, _SerialActiveConnector.Object.StopBits);
+                        Assert.AreEqual(Parity.Mark, _SerialActiveConnector.Object.Parity);
+                        Assert.AreEqual(Handshake.XOnXOff, _SerialActiveConnector.Object.Handshake);
+                        Assert.AreEqual("Up", _SerialActiveConnector.Object.StartupText);
+                        Assert.AreEqual("Down", _SerialActiveConnector.Object.ShutdownText);
+                        break;
+                    case ConnectionType.TCP:
+                        Assert.AreEqual("TCP Address", _IPActiveConnector.Object.Address);
+                        Assert.AreEqual(12345, _IPActiveConnector.Object.Port);
+                        Assert.AreEqual(true, _IPActiveConnector.Object.UseKeepAlive);
+                        Assert.AreEqual(30000, _IPActiveConnector.Object.IdleTimeout);
+                        break;
+                    default:
+                        throw new NotImplementedException();
                 }
             }
         }
@@ -786,21 +784,22 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Feed_Initialise_Calls_SetListeners_With_The_Correct_Feed_Types()
         {
+        //MLATME
             _MergedFeed.ReceiverFlags.Add(new MergedFeedReceiver() {
                 UniqueId = _Listeners[0].Object.ReceiverId,
-                MultilaterationFeedType = MultilaterationFeedType.None,
+                IsMlatFeed = false,
             });
             _MergedFeed.ReceiverFlags.Add(new MergedFeedReceiver() {
                 UniqueId = _Listeners[1].Object.ReceiverId,
-                MultilaterationFeedType = MultilaterationFeedType.PositionsOnly,
+                IsMlatFeed = true,
             });
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
 
             var component0 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object));
             var component1 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object));
 
-            Assert.AreEqual(MultilaterationFeedType.None, component0.MultilaterationFeedType);
-            Assert.AreEqual(MultilaterationFeedType.PositionsOnly, component1.MultilaterationFeedType);
+            Assert.AreEqual(false, component0.IsMlatFeed);
+            Assert.AreEqual(true, component1.IsMlatFeed);
         }
 
         [TestMethod]
@@ -811,8 +810,8 @@ namespace Test.VirtualRadar.Library.Listener
             var component0 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object));
             var component1 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object));
 
-            Assert.AreEqual(MultilaterationFeedType.None, component0.MultilaterationFeedType);
-            Assert.AreEqual(MultilaterationFeedType.None, component1.MultilaterationFeedType);
+            Assert.AreEqual(false, component0.IsMlatFeed);
+            Assert.AreEqual(false, component1.IsMlatFeed);
         }
 
         [TestMethod]

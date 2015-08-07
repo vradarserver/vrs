@@ -2785,20 +2785,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Positions injected.
+        ///   Looks up a localized string similar to MLAT.
         /// </summary>
-        public static string MLATPositionsInjected {
+        public static string MLAT {
             get {
-                return ResourceManager.GetString("MLATPositionsInjected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Positions only.
-        /// </summary>
-        public static string MLATPositionsOnly {
-            get {
-                return ResourceManager.GetString("MLATPositionsOnly", resourceCulture);
+                return ResourceManager.GetString("MLAT", resourceCulture);
             }
         }
         
@@ -2844,24 +2835,6 @@ namespace VirtualRadar.Localisation {
         public static string MonoSettings {
             get {
                 return ResourceManager.GetString("MonoSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MLAT feed type.
-        /// </summary>
-        public static string MultilaterationType {
-            get {
-                return ResourceManager.GetString("MultilaterationType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MLAT Type.
-        /// </summary>
-        public static string MultilaterationTypeListHeader {
-            get {
-                return ResourceManager.GetString("MultilaterationTypeListHeader", resourceCulture);
             }
         }
         
@@ -3271,15 +3244,6 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Leave at NONE if the receiver is not a source of multilateration data, set to POSITIONS ONLY if the source only sends calculated positions, use POSITIONS INJECTED if it adds calculated positions to a feed..
-        /// </summary>
-        public static string OptionsDescribeDataSourcesMultilaterationType {
-            get {
-                return ResourceManager.GetString("OptionsDescribeDataSourcesMultilaterationType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The parity check to apply when communicating with the serial device. Only used for serial feeds..
         /// </summary>
         public static string OptionsDescribeDataSourcesParity {
@@ -3528,6 +3492,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeIgnoreAircraftWithNoPosition {
             get {
                 return ResourceManager.GetString("OptionsDescribeIgnoreAircraftWithNoPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes if position messages on this feed should be treated as calculated MLAT positions. Only required for MLAT feeds that do not identify the calculated position messages..
+        /// </summary>
+        public static string OptionsDescribeIsMlatFeed {
+            get {
+                return ResourceManager.GetString("OptionsDescribeIsMlatFeed", resourceCulture);
             }
         }
         

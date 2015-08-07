@@ -32,15 +32,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UniqueId, value, () => UniqueId); }
         }
 
-        private MultilaterationFeedType _MultilaterationFeedType;
+        private bool _IsMlatFeed;
         /// <summary>
-        /// Gets or sets the flag that indicates what should happen when this feed and
-        /// another have messages from the same aircraft.
+        /// Gets or sets a value indicating that the feed should be treated as if it is coming from
+        /// an MLAT source. Every position message is potentially an MLAT position, even if it is not
+        /// marked as such in the feed.
         /// </summary>
-        public MultilaterationFeedType MultilaterationFeedType
+        public bool IsMlatFeed
         {
-            get { return _MultilaterationFeedType; }
-            set { SetField(ref _MultilaterationFeedType, value, () => MultilaterationFeedType); }
+            get { return _IsMlatFeed; }
+            set { SetField(ref _IsMlatFeed, value, () => IsMlatFeed); }
         }
 
         /// <summary>

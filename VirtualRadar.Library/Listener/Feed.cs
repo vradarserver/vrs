@@ -184,10 +184,10 @@ namespace VirtualRadar.Library.Listener
                 var listener = feed == null ? null : feed.Listener;
                 if(listener != null) {
                     var mergedFeedReceiver = mergedFeed.ReceiverFlags.FirstOrDefault(r => r.UniqueId == receiverId);
-                    var feedType = mergedFeedReceiver == null ? MultilaterationFeedType.None : mergedFeedReceiver.MultilaterationFeedType;
+                    var isMlatFeed = mergedFeedReceiver == null ? false : mergedFeedReceiver.IsMlatFeed;
 
                     var mergedFeedComponent = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
-                    mergedFeedComponent.SetListener(listener, feedType);
+                    mergedFeedComponent.SetListener(listener, isMlatFeed);
                     result.Add(mergedFeedComponent);
                 }
             }

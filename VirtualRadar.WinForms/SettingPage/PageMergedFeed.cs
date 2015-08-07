@@ -128,6 +128,8 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxEnabled,                        r => r.Enabled,                         (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,   r => r.IgnoreAircraftWithNoPosition,    (r,v) => r.IgnoreAircraftWithNoPosition = v));
 
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeedReceiver>(null, checkBoxIsMlatFeed, r => r.IsMlatFeed, (r,v) => r.IsMlatFeed = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
             AddControlBinder(new TextBoxStringBinder<MergedFeed>(MergedFeed,    textBoxName,    r => r.Name,    (r,v) => r.Name = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             AddControlBinder(new NumericIntBinder<MergedFeed>(MergedFeed,   numericIcaoTimeout, r => r.IcaoTimeout / 1000, (r,v) => r.IcaoTimeout = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<MergedFeed>(r => r.IcaoTimeout) });
@@ -138,11 +140,9 @@ namespace VirtualRadar.WinForms.SettingPage
 
                     e.ColumnTexts.Add(receiver.Name);
                     e.ColumnTexts.Add(receiver.Enabled ? Strings.Yes : Strings.No);
-                    e.ColumnTexts.Add(Describe.MultilaterationFeedType(mergedFeedReceiver == null ? MultilaterationFeedType.None : mergedFeedReceiver.MultilaterationFeedType));
+                    e.ColumnTexts.Add(mergedFeedReceiver == null || !mergedFeedReceiver.IsMlatFeed ? Strings.No : Strings.Yes);
                 },
             });
-
-            AddControlBinder(new ComboBoxEnumBinder<MergedFeedReceiver, MultilaterationFeedType>(null, comboBoxMlatType, r => r.MultilaterationFeedType, (r,v) => r.MultilaterationFeedType = v, r => Describe.MultilaterationFeedType(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             BindSelectedMergedFeedReceiver();
         }
@@ -158,7 +158,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericIcaoTimeout,                   Strings.IcaoTimeout,                    Strings.OptionsDescribeIcaoTimeout);
             SetInlineHelp(checkBoxIgnoreAircraftWithNoPosition, Strings.IgnoreAircraftWithNoPosition,   Strings.OptionsDescribeIgnoreAircraftWithNoPosition);
             SetInlineHelp(listReceiverIds,                      "",                                     "");
-            SetInlineHelp(comboBoxMlatType,                     Strings.MultilaterationType,            Strings.OptionsDescribeDataSourcesMultilaterationType);
+            SetInlineHelp(checkBoxIsMlatFeed,                   Strings.MLAT,                           Strings.OptionsDescribeIsMlatFeed);
         }
 
         public void SynchroniseReceiverIdsToFlags()
@@ -183,7 +183,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
         private void BindSelectedMergedFeedReceiver()
         {
-            var binder = (ComboBoxEnumBinder<MergedFeedReceiver, MultilaterationFeedType>)GetControlBinders().Single(r => r.ControlObject == comboBoxMlatType);
+            var binder = (CheckBoxBoolBinder<MergedFeedReceiver>)GetControlBinders().Single(r => r.ControlObject == checkBoxIsMlatFeed);
             MergedFeedReceiver model = null;
 
             var selectedRecords = listReceiverIds.SelectedRecords.ToArray();
@@ -195,8 +195,8 @@ namespace VirtualRadar.WinForms.SettingPage
             }
 
             binder.Model = model;
-            comboBoxMlatType.Enabled = model != null;
-            if(model == null) comboBoxMlatType.SelectedValue = null;
+            checkBoxIsMlatFeed.Enabled = model != null;
+            if(model == null) checkBoxIsMlatFeed.Checked = false;
         }
 
         private void listReceiverIds_SelectedRecordChanged(object sender, EventArgs e)

@@ -2435,18 +2435,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="NotYetKnown" xml:space="preserve">
     <value>Not yet known</value>
   </data>
-  <data name="MLATPositionsInjected" xml:space="preserve">
-    <value>Positions injected</value>
-  </data>
-  <data name="MLATPositionsOnly" xml:space="preserve">
-    <value>Positions only</value>
-  </data>
-  <data name="MultilaterationType" xml:space="preserve">
-    <value>MLAT feed type</value>
-  </data>
-  <data name="OptionsDescribeDataSourcesMultilaterationType" xml:space="preserve">
-    <value>Leave at NONE if the receiver is not a source of multilateration data, set to POSITIONS ONLY if the source only sends calculated positions, use POSITIONS INJECTED if it adds calculated positions to a feed.</value>
-  </data>
   <data name="MonoSettings" xml:space="preserve">
     <value>Mono Settings</value>
   </data>
@@ -2504,10 +2492,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="ReceiverCannotBeMergeOnly" xml:space="preserve">
     <value>This receiver cannot be set to merge-only</value>
   </data>
-  <data name="MultilaterationTypeListHeader" xml:space="preserve">
-    <value>MLAT Type</value>
-  </data>
   <data name="ExtendedBaseStation" xml:space="preserve">
     <value>BaseStation + MLAT</value>
+  </data>
+  <data name="MLAT" xml:space="preserve">
+    <value>MLAT</value>
+    <comment>Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
+  </data>
+  <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
+    <value>Yes if position messages on this feed should be treated as calculated MLAT positions. Only required for MLAT feeds that do not identify the calculated position messages.</value>
   </data>
 </root>

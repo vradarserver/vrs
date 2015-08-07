@@ -412,7 +412,8 @@ namespace VirtualRadar.Library.BaseStation
         /// does not already exist).
         /// </summary>
         /// <param name="message"></param>
-        private void ProcessMessage(BaseStationMessage message)
+        /// <param name="isOutOfBand"></param>
+        private void ProcessMessage(BaseStationMessage message, bool isOutOfBand)
         {
             try {
                 if(message.MessageType == BaseStationMessageType.Transmission) {
@@ -443,12 +444,20 @@ namespace VirtualRadar.Library.BaseStation
                                     aircraft = Factory.Singleton.Resolve<IAircraft>();
                                     aircraft.UniqueId = uniqueId;
                                     _AircraftMap.Add(uniqueId, aircraft);
+                                } else if(isOutOfBand) {
+                                    if(aircraft.Latitude.GetValueOrDefault() != 0 || aircraft.Longitude.GetValueOrDefault() != 0) {
+                                        if(!aircraft.PositionIsMlat.GetValueOrDefault()) {
+                                            aircraft = null;
+                                        }
+                                    }
                                 }
 
-                                ApplyMessageToAircraft(message, aircraft, isNewAircraft);
+                                if(aircraft != null) {
+                                    ApplyMessageToAircraft(message, aircraft, isNewAircraft, isOutOfBand);
+                                }
                             }
 
-                            if(altitudeCertainty == Certainty.ProbablyRight && positionCertainty == Certainty.ProbablyRight) {
+                            if(!isOutOfBand && altitudeCertainty == Certainty.ProbablyRight && positionCertainty == Certainty.ProbablyRight) {
                                 if(PolarPlotter != null) {
                                     PolarPlotter.AddCheckedCoordinate(uniqueId, isOnGround ? 0 : message.Altitude.Value, message.Latitude.Value, message.Longitude.Value);
                                 }
@@ -464,7 +473,7 @@ namespace VirtualRadar.Library.BaseStation
             }
         }
 
-        private void ApplyMessageToAircraft(BaseStationMessage message, IAircraft aircraft, bool isNewAircraft)
+        private void ApplyMessageToAircraft(BaseStationMessage message, IAircraft aircraft, bool isNewAircraft, bool isOutOfBand)
         {
             var now = _Clock.UtcNow;
 
@@ -486,62 +495,66 @@ namespace VirtualRadar.Library.BaseStation
             lock(aircraft) {
                 GenerateDataVersion(aircraft);
 
-                aircraft.LastUpdate = now;
-                aircraft.ReceiverId = message.ReceiverId;
-                aircraft.SignalLevel = message.SignalLevel;
-                ++aircraft.CountMessagesReceived;
                 if(isNewAircraft) {
                     aircraft.FirstSeen = now;
                     aircraft.TransponderType = TransponderType.ModeS;
                 }
-                if(aircraft.Icao24 == null) aircraft.Icao24 = message.Icao24;
+                aircraft.LastUpdate = now;
 
-                if(!String.IsNullOrEmpty(message.Callsign)) aircraft.Callsign = message.Callsign;
-                if(message.Altitude != null) aircraft.Altitude = message.Altitude;
-                if(message.GroundSpeed != null) aircraft.GroundSpeed = message.GroundSpeed;
+                if(message.Latitude.GetValueOrDefault() != 0.0 || message.Longitude.GetValueOrDefault() != 0.0) {
+                    aircraft.Latitude = message.Latitude.GetValueOrDefault();
+                    aircraft.Longitude = message.Longitude.GetValueOrDefault();
+                    aircraft.PositionIsMlat = message.IsMlat || isOutOfBand;
+                }
                 if(track != null) aircraft.Track = track;
                 if(message.Track != null && message.Track != 0.0) aircraft.IsTransmittingTrack = true;
-                if(message.Latitude != null || message.Longitude != null) {
-                    if(message.Latitude != null) aircraft.Latitude = message.Latitude;
-                    if(message.Longitude != null) aircraft.Longitude = message.Longitude;
-                    aircraft.PositionIsMlat = message.IsMlat;
-                }
-                if(message.VerticalRate != null) aircraft.VerticalRate = message.VerticalRate;
-                if(message.OnGround != null) aircraft.OnGround = message.OnGround;
-                if(message.Squawk != null) {
-                    aircraft.Squawk = message.Squawk;
-                    aircraft.Emergency = message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700;
-                }
 
-                if(aircraft.TransponderType == TransponderType.ModeS) {
-                    if((message.GroundSpeed != null && message.GroundSpeed != 0) ||
-                       (message.VerticalRate != null && message.VerticalRate != 0) ||
-                       (message.Latitude != null && message.Latitude != 0) ||
-                       (message.Longitude != null && message.Longitude != 0) ||
-                       (message.Track != null && message.Track != 0)) {
-                        aircraft.TransponderType = TransponderType.Adsb;
+                if(!isOutOfBand || isNewAircraft) {                 // new aircraft should never be out-of-band, but if they are then we need to treat them normally
+                    aircraft.ReceiverId = message.ReceiverId;
+                    aircraft.SignalLevel = message.SignalLevel;
+                    ++aircraft.CountMessagesReceived;
+                    if(aircraft.Icao24 == null) aircraft.Icao24 = message.Icao24;
+
+                    if(!String.IsNullOrEmpty(message.Callsign)) aircraft.Callsign = message.Callsign;
+                    if(message.Altitude != null) aircraft.Altitude = message.Altitude;
+                    if(message.GroundSpeed != null) aircraft.GroundSpeed = message.GroundSpeed;
+                    if(message.VerticalRate != null) aircraft.VerticalRate = message.VerticalRate;
+                    if(message.OnGround != null) aircraft.OnGround = message.OnGround;
+                    if(message.Squawk != null) {
+                        aircraft.Squawk = message.Squawk;
+                        aircraft.Emergency = message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700;
                     }
-                }
 
-                var supplementaryMessage = message != null && message.Supplementary != null ? message.Supplementary : null;
-                if(supplementaryMessage != null) {
-                    ApplySupplementaryMessage(aircraft, supplementaryMessage);
-                }
+                    if(aircraft.TransponderType == TransponderType.ModeS) {
+                        if((message.GroundSpeed != null && message.GroundSpeed != 0) ||
+                           (message.VerticalRate != null && message.VerticalRate != 0) ||
+                           (message.Latitude != null && message.Latitude != 0) ||
+                           (message.Longitude != null && message.Longitude != 0) ||
+                           (message.Track != null && message.Track != 0)) {
+                            aircraft.TransponderType = TransponderType.Adsb;
+                        }
+                    }
 
-                var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);
-                if(isNewAircraft || callsignChanged) {
-                    ApplyRoute(aircraft, callsignRouteDetail == null ? null : callsignRouteDetail.Route);
-                }
+                    var supplementaryMessage = message != null && message.Supplementary != null ? message.Supplementary : null;
+                    if(supplementaryMessage != null) {
+                        ApplySupplementaryMessage(aircraft, supplementaryMessage);
+                    }
 
-                ApplyCodeBlock(aircraft , codeBlock);
+                    var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);
+                    if(isNewAircraft || callsignChanged) {
+                        ApplyRoute(aircraft, callsignRouteDetail == null ? null : callsignRouteDetail.Route);
+                    }
 
-                if(message.Latitude != null && message.Longitude != null) {
-                    aircraft.UpdateCoordinates(now, _ShortTrailLengthSeconds);
-                }
+                    ApplyCodeBlock(aircraft , codeBlock);
 
-                var aircraftDetail = _AircraftDetailFetcher.RegisterAircraft(aircraft);
-                if(isNewAircraft) {
-                    if(aircraftDetail != null) ApplyAircraftDetail(aircraft, aircraftDetail);
+                    if(message.Latitude != null && message.Longitude != null) {
+                        aircraft.UpdateCoordinates(now, _ShortTrailLengthSeconds);
+                    }
+
+                    var aircraftDetail = _AircraftDetailFetcher.RegisterAircraft(aircraft);
+                    if(isNewAircraft) {
+                        if(aircraftDetail != null) ApplyAircraftDetail(aircraft, aircraftDetail);
+                    }
                 }
             }
         }
@@ -967,7 +980,7 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void BaseStationListener_MessageReceived(object sender, BaseStationMessageEventArgs args)
         {
-            if(IsTracking) ProcessMessage(args.Message);
+            if(IsTracking) ProcessMessage(args.Message, args.IsOutOfBand);
         }
 
         /// <summary>
