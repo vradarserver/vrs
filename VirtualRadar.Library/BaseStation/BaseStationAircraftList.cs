@@ -506,6 +506,8 @@ namespace VirtualRadar.Library.BaseStation
                     aircraft.Latitude = message.Latitude.GetValueOrDefault();
                     aircraft.Longitude = message.Longitude.GetValueOrDefault();
                     aircraft.PositionIsMlat = message.IsMlat || isOutOfBand;
+
+                    aircraft.UpdateCoordinates(now, _ShortTrailLengthSeconds);
                 }
                 if(track != null) aircraft.Track = track;
                 if(message.Track != null && message.Track != 0.0) aircraft.IsTransmittingTrack = true;
@@ -547,10 +549,6 @@ namespace VirtualRadar.Library.BaseStation
                     }
 
                     ApplyCodeBlock(aircraft , codeBlock);
-
-                    if(message.Latitude != null && message.Longitude != null) {
-                        aircraft.UpdateCoordinates(now, _ShortTrailLengthSeconds);
-                    }
 
                     var aircraftDetail = _AircraftDetailFetcher.RegisterAircraft(aircraft);
                     if(isNewAircraft) {
