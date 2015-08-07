@@ -66,36 +66,36 @@ namespace VirtualRadar.Library.Listener
             /// </summary>
             public BaseStationMessageEventArgs MessageArgs;
 
-            /// <summary>
-            /// A rough indication of how large MessageArgs is.
-            /// </summary>
-            public int MessageArgsSize;
-
-            public MessageReceived(DateTime receivedUtc, IListener listener, BaseStationMessageEventArgs message, int messageArgsSize)
+            public MessageReceived(DateTime receivedUtc, IListener listener, BaseStationMessageEventArgs message)
             {
                 ReceivedUtc = receivedUtc;
                 Listener = listener;
                 MessageArgs = message;
-                MessageArgsSize = messageArgsSize;
             }
         }
         #endregion
 
-        #region Private struct - FilterMessageOutcome
+        #region Private enum - FilterMessageOutcome
         /// <summary>
-        /// The return value from <see cref="FilterMessageFromListener"/>.
+        /// The outcome of the message filter method.
         /// </summary>
-        struct FilterMessageOutcome
+        enum FilterMessageOutcome
         {
             /// <summary>
-            /// True if the message can be passed through the merge.
+            /// The message is from the nominated receiver, it should be passed up to the aircraft list.
             /// </summary>
-            public bool PassedFilter;
+            Passed,
 
             /// <summary>
-            /// True if the listener is a Positions-Only listener.
+            /// The message is not from the nominated receiver and has no MLAT qualities. It should be ignored.
             /// </summary>
-            public bool IsPositionsOnlyListener;
+            Failed,
+
+            /// <summary>
+            /// The message is not from the nominated receiver but it might contain an MLAT position. It should be passed
+            /// to the aircraft list but flagged as out-of-band.
+            /// </summary>
+            OutOfBand,
         }
         #endregion
 
@@ -133,16 +133,6 @@ namespace VirtualRadar.Library.Listener
         /// the receiver onto a background thread and process from there.
         /// </remarks>
         private BackgroundThreadQueue<MessageReceived> _MessageProcessingQueue;
-
-        /// <summary>
-        /// The total of extracted bytes that have been added to the queue.
-        /// </summary>
-        private long _BytesBuffered;
-
-        /// <summary>
-        /// A lock that protects access to <see cref="_BytesBuffered"/>.
-        /// </summary>
-        private object _BytesBufferedSyncLock = new object();
 
         /// <summary>
         /// The number of listeners that have been created. We want to ensure that we can have as many listeners as we like
@@ -222,11 +212,6 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public bool IgnoreBadMessages { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public MultilaterationFeedType MultilaterationFeedType { get; set; }
         #endregion
 
         #region Events exposed
@@ -447,9 +432,11 @@ namespace VirtualRadar.Library.Listener
         /// <param name="listener"></param>
         /// <param name="icao"></param>
         /// <param name="hasPosition"></param>
+        /// <param name="positionIsMlat"></param>
         /// <returns></returns>
-        private FilterMessageOutcome FilterMessageFromListener(DateTime receivedUtc, IListener listener, string icao, bool hasPosition)
+        private FilterMessageOutcome FilterMessageFromListener(DateTime receivedUtc, IListener listener, string icao, bool hasPosition, bool positionIsMlat)
         {
+            var result = FilterMessageOutcome.Failed;
             icao = icao ?? "";
 
             Source source = null;
@@ -458,41 +445,42 @@ namespace VirtualRadar.Library.Listener
                 component = GetComponentListener(listener);
                 if(component != null) {
                     if(!_IcaoSourceMap.TryGetValue(icao, out source)) {
-                        if(component.MultilaterationFeedType != MultilaterationFeedType.PositionsOnly) {
-                            source = new Source() {
-                                LastMessageUtc = receivedUtc,
-                                Component = component,
-                                SeenPositionMessage = hasPosition,
-                            };
-                            _IcaoSourceMap.Add(icao, source);
-                        }
+                        source = new Source() {
+                            LastMessageUtc = receivedUtc,
+                            Component = component,
+                            SeenPositionMessage = hasPosition,
+                        };
+                        _IcaoSourceMap.Add(icao, source);
+                        result = FilterMessageOutcome.Passed;
                     } else {
-                        if(source.Component != component) {
+                        if(source.Component == component) {
+                            result = FilterMessageOutcome.Passed;
+                        } else {
                             var threshold = receivedUtc.AddMilliseconds(-IcaoTimeout);
                             if(source.LastMessageUtc < threshold) {
                                 source.Component = component;
-                            } else if(component.MultilaterationFeedType == MultilaterationFeedType.PositionsInjected && source.Component.MultilaterationFeedType != MultilaterationFeedType.PositionsInjected) {
-                                source.Component = component;
-                            } else {
-                                source = null;
+                                result = FilterMessageOutcome.Passed;
                             }
                         }
 
-                        if(source != null) {
-                            source.LastMessageUtc = receivedUtc;
-                            if(hasPosition) source.SeenPositionMessage = true;
+                        if(result == FilterMessageOutcome.Failed && hasPosition && (positionIsMlat || component.IsMlatFeed)) {
+                            result = FilterMessageOutcome.OutOfBand;
+                        }
+
+                        switch(result) {
+                            case FilterMessageOutcome.OutOfBand:
+                                if(hasPosition) source.SeenPositionMessage = true;
+                                break;
+                            case FilterMessageOutcome.Passed:
+                                source.LastMessageUtc = receivedUtc;
+                                goto case FilterMessageOutcome.OutOfBand;
                         }
                     }
-
-                    if(source != null && IgnoreAircraftWithNoPosition && !source.SeenPositionMessage) source = null;
                 }
             }
 
-            var result = new FilterMessageOutcome();
-            result.PassedFilter = source != null;
-            if(!result.PassedFilter && hasPosition && component != null && component.MultilaterationFeedType == MultilaterationFeedType.PositionsOnly) {
-                result.PassedFilter = true;
-                result.IsPositionsOnlyListener = true;
+            if(result == FilterMessageOutcome.Passed && IgnoreAircraftWithNoPosition && source != null && !source.SeenPositionMessage) {
+                result = FilterMessageOutcome.Failed;
             }
 
             return result;
@@ -525,12 +513,7 @@ namespace VirtualRadar.Library.Listener
             try {
                 var listener = (IListener)sender;
                 
-                var argsSize = args.Message.CalculateRoughSize();
-                lock(_BytesBufferedSyncLock) {
-                    _BytesBuffered += argsSize;
-                }
-
-                _MessageProcessingQueue.Enqueue(new MessageReceived(_Clock.UtcNow, listener, args, argsSize));
+                _MessageProcessingQueue.Enqueue(new MessageReceived(_Clock.UtcNow, listener, args));
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }
@@ -543,42 +526,15 @@ namespace VirtualRadar.Library.Listener
         /// <param name="messageReceived"></param>
         private void ProcessReceivedMessage(MessageReceived messageReceived)
         {
-            lock(_BytesBufferedSyncLock) {
-                _BytesBuffered -= messageReceived.MessageArgsSize;
-            }
-
             var message = messageReceived.MessageArgs.Message;
             var hasNoPosition = message.Latitude.GetValueOrDefault() == 0.0 && message.Longitude.GetValueOrDefault() == 0.0;
-            var filterOutcome = FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition);
-            if(filterOutcome.PassedFilter) {
-                var messageArgs = !filterOutcome.IsPositionsOnlyListener ? messageReceived.MessageArgs : CreatePositionsOnlyArgs(messageReceived.MessageArgs);
-                OnPort30003MessageReceived(messageArgs);
+            var filterOutcome = FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition, message.IsMlat);
+
+            if(filterOutcome != FilterMessageOutcome.Failed) {
+                var args = new BaseStationMessageEventArgs(message, isOutOfBand: filterOutcome == FilterMessageOutcome.OutOfBand);
+                OnPort30003MessageReceived(args);
                 ++TotalMessages;
             }
-        }
-
-        /// <summary>
-        /// Clones the args passed in and strips off everything but the essential information and the position.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        private BaseStationMessageEventArgs CreatePositionsOnlyArgs(BaseStationMessageEventArgs args)
-        {
-            var original = args.Message;
-            var clone = new BaseStationMessage() {
-                Icao24 = original.Icao24,
-                Latitude = original.Latitude,
-                Longitude = original.Longitude,
-                IsMlat = original.IsMlat,
-                AircraftId = original.AircraftId,
-                FlightId = original.FlightId,
-                ReceiverId = original.ReceiverId,
-                SessionId = original.SessionId,
-                StatusCode = original.StatusCode,
-                TransmissionType = original.TransmissionType,
-            };
-
-            return new BaseStationMessageEventArgs(clone);
         }
 
         /// <summary>
@@ -600,7 +556,7 @@ namespace VirtualRadar.Library.Listener
         {
             try {
                 var listener = (IListener)sender;
-                if(FilterMessageFromListener(_Clock.UtcNow, listener, args.Value, false).PassedFilter) OnPositionReset(args);
+                if(FilterMessageFromListener(_Clock.UtcNow, listener, args.Value, false, false) != FilterMessageOutcome.Failed) OnPositionReset(args);
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }

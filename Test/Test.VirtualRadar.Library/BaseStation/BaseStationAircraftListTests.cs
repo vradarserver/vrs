@@ -58,6 +58,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         private Airport _JohnFKennedy;
         private Airport _Boston;
         private BaseStationMessageEventArgs _BaseStationMessageEventArgs;
+        private BaseStationMessageEventArgs _OobBaseStationMessageEventArgs;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtEvent;
         private EventRecorder<EventArgs> _CountChangedEvent;
         private EventRecorder<EventArgs> _TrackingStateChangedEvent;
@@ -101,6 +102,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _BaseStationMessage.MessageType = BaseStationMessageType.Transmission;
             _BaseStationMessage.Icao24 = "4008F6";
             _BaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessage);
+            _OobBaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessage, isOutOfBand: true);
 
             _CallsignRouteFetcher = TestUtilities.CreateMockSingleton<ICallsignRouteFetcher>();
             _CallsignRouteDetail = new CallsignRouteDetail();
@@ -2361,6 +2363,146 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             var aircraft = _AircraftList.FindAircraft(0x4008F6);
             Assert.AreEqual(TransponderType.Adsb, aircraft.TransponderType);
+        }
+        #endregion
+
+        #region OutOfBand messages
+        [TestMethod]
+        public void BaseStationAircraftList_OutOfBand_Adds_MLAT_Position_To_No_Position_Aircraft()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.ReceiverId = 1;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _BaseStationMessage.ReceiverId = 2;
+            _BaseStationMessage.Latitude = 10;
+            _BaseStationMessage.Longitude = 20;
+            _BaseStationMessage.Track = 30;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _OobBaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(10, aircraft.Latitude);
+            Assert.AreEqual(20, aircraft.Longitude);
+            Assert.AreEqual(30, aircraft.Track);
+            Assert.IsTrue(aircraft.PositionIsMlat.GetValueOrDefault());
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_OutOfBand_Adds_MLAT_Position_To_MLAT_Position_Aircraft()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.ReceiverId = 1;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _BaseStationMessage.ReceiverId = 2;
+            _BaseStationMessage.Latitude = 5;
+            _BaseStationMessage.Longitude = 6;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _OobBaseStationMessageEventArgs);
+
+            _BaseStationMessage.ReceiverId = 3;
+            _BaseStationMessage.Latitude = 10;
+            _BaseStationMessage.Longitude = 20;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _OobBaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(10, aircraft.Latitude);
+            Assert.AreEqual(20, aircraft.Longitude);
+            Assert.IsTrue(aircraft.PositionIsMlat.GetValueOrDefault());
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_OutOfBand_Does_Not_Change_Position_For_Normal_Position_Aircraft()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.ReceiverId = 1;
+            _BaseStationMessage.Latitude = 10;
+            _BaseStationMessage.Longitude = 20;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _BaseStationMessage.ReceiverId = 2;
+            _BaseStationMessage.Latitude = 41;
+            _BaseStationMessage.Longitude = 42;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _OobBaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(10, aircraft.Latitude);
+            Assert.AreEqual(20, aircraft.Longitude);
+            Assert.IsFalse(aircraft.PositionIsMlat.GetValueOrDefault());
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_OutOfBand_Only_Sets_Position_And_Track()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.ReceiverId = 1;
+            _BaseStationMessage.Altitude = 1;
+            _BaseStationMessage.Callsign = "1";
+            _BaseStationMessage.Emergency = false;
+            _BaseStationMessage.GroundSpeed = 1;
+            _BaseStationMessage.OnGround = false;
+            _BaseStationMessage.SignalLevel = 1;
+            _BaseStationMessage.Squawk = 1;
+            _BaseStationMessage.Supplementary = new BaseStationSupplementaryMessage() {
+                AltitudeIsGeometric = false,
+                CallsignIsSuspect = false,
+                SpeedType = SpeedType.GroundSpeed,
+                TargetAltitude = 1,
+                TargetHeading = 1,
+                TrackIsHeading = false,
+                TransponderType = TransponderType.Adsb,
+                VerticalRateIsGeometric = false,
+            };
+            _BaseStationMessage.Track = 1;
+            _BaseStationMessage.VerticalRate = 1;
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _BaseStationMessage.ReceiverId = 2;
+            _BaseStationMessage.Latitude = 10;
+            _BaseStationMessage.Longitude = 20;
+            _BaseStationMessage.Altitude = 2;
+            _BaseStationMessage.Callsign = "2";
+            _BaseStationMessage.Emergency = true;
+            _BaseStationMessage.GroundSpeed = 2;
+            _BaseStationMessage.OnGround = true;
+            _BaseStationMessage.SignalLevel = 2;
+            _BaseStationMessage.Squawk = 2;
+            _BaseStationMessage.Supplementary = new BaseStationSupplementaryMessage() {
+                AltitudeIsGeometric = true,
+                CallsignIsSuspect = true,
+                SpeedType = SpeedType.GroundSpeedReversing,
+                TargetAltitude = 2,
+                TargetHeading = 2,
+                TrackIsHeading = true,
+                TransponderType = TransponderType.Adsb0,
+                VerticalRateIsGeometric = true,
+            };
+            _BaseStationMessage.Track = 2;
+            _BaseStationMessage.VerticalRate = 2;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _OobBaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(1, aircraft.Altitude);
+            Assert.AreEqual("1", aircraft.Callsign);
+            Assert.AreEqual(false, aircraft.Emergency);
+            Assert.AreEqual(1, aircraft.GroundSpeed);
+            Assert.AreEqual(false, aircraft.OnGround);
+            Assert.AreEqual(10, aircraft.Latitude);
+            Assert.AreEqual(20, aircraft.Longitude);
+            Assert.AreEqual(1, aircraft.SignalLevel);
+            Assert.AreEqual(1, aircraft.Squawk);
+            Assert.AreEqual(AltitudeType.Barometric, aircraft.AltitudeType);
+            Assert.AreEqual(false, aircraft.CallsignIsSuspect);
+            Assert.AreEqual(SpeedType.GroundSpeed, aircraft.SpeedType);
+            Assert.AreEqual(1, aircraft.TargetAltitude);
+            Assert.AreEqual(1, aircraft.TargetTrack);
+            Assert.AreEqual(2, aircraft.Track);
+            Assert.AreEqual(TransponderType.Adsb, aircraft.TransponderType);
+            Assert.AreEqual(AltitudeType.Barometric, aircraft.VerticalRateType);
         }
         #endregion
         #endregion

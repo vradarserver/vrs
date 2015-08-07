@@ -416,10 +416,10 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(1, mergedFeed.ReceiverIds[0]);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds[1]);
                         Assert.AreEqual(2, mergedFeed.ReceiverFlags.Count);
-                        Assert.AreEqual(1,                              mergedFeed.ReceiverFlags[0].UniqueId);
-                        Assert.AreEqual(MultilaterationFeedType.None,   mergedFeed.ReceiverFlags[0].MultilaterationFeedType);
-                        Assert.AreEqual(2,                                      mergedFeed.ReceiverFlags[1].UniqueId);
-                        Assert.AreEqual(MultilaterationFeedType.PositionsOnly,  mergedFeed.ReceiverFlags[1].MultilaterationFeedType);
+                        Assert.AreEqual(1, mergedFeed.ReceiverFlags[0].UniqueId);
+                        Assert.AreEqual(false, mergedFeed.ReceiverFlags[0].IsMlatFeed);
+                        Assert.AreEqual(2, mergedFeed.ReceiverFlags[1].UniqueId);
+                        Assert.AreEqual(true, mergedFeed.ReceiverFlags[1].IsMlatFeed);
 
                         mergedFeed = readBack.MergedFeeds[1];
                         Assert.AreEqual(false, mergedFeed.Enabled);
@@ -430,10 +430,10 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(2, mergedFeed.ReceiverIds.Count);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds[0]);
                         Assert.AreEqual(1, mergedFeed.ReceiverIds[1]);
-                        Assert.AreEqual(2,                                      mergedFeed.ReceiverFlags[0].UniqueId);
-                        Assert.AreEqual(MultilaterationFeedType.PositionsOnly,  mergedFeed.ReceiverFlags[0].MultilaterationFeedType);
-                        Assert.AreEqual(1,                              mergedFeed.ReceiverFlags[1].UniqueId);
-                        Assert.AreEqual(MultilaterationFeedType.None,   mergedFeed.ReceiverFlags[1].MultilaterationFeedType);
+                        Assert.AreEqual(2, mergedFeed.ReceiverFlags[0].UniqueId);
+                        Assert.AreEqual(true,  mergedFeed.ReceiverFlags[0].IsMlatFeed);
+                        Assert.AreEqual(1, mergedFeed.ReceiverFlags[1].UniqueId);
+                        Assert.AreEqual(false, mergedFeed.ReceiverFlags[1].IsMlatFeed);
                         break;
                     case "DataVersion":
                         Assert.AreEqual(102, readBack.DataVersion);     // Save adds one to the saved DataVersion of 101
@@ -696,8 +696,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                             IgnoreAircraftWithNoPosition = false,
                                                             ReceiverIds = { 1, 2 },
                                                             ReceiverFlags = {
-                                                                new MergedFeedReceiver() { UniqueId = 1, MultilaterationFeedType = MultilaterationFeedType.None },
-                                                                new MergedFeedReceiver() { UniqueId = 2, MultilaterationFeedType = MultilaterationFeedType.PositionsOnly },
+                                                                new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
+                                                                new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
                                                             }
                                                         },
                                                         new MergedFeed() {
@@ -708,8 +708,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                             IgnoreAircraftWithNoPosition = true,
                                                             ReceiverIds = { 2, 1 },
                                                             ReceiverFlags = {
-                                                                new MergedFeedReceiver() { UniqueId = 2, MultilaterationFeedType = MultilaterationFeedType.PositionsOnly },
-                                                                new MergedFeedReceiver() { UniqueId = 1, MultilaterationFeedType = MultilaterationFeedType.None },
+                                                                new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
+                                                                new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
                                                             }
                                                         },
                                                     });

@@ -409,21 +409,6 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
-        /// Returns a translated description of a multilateration feed type.
-        /// </summary>
-        /// <param name="feedType"></param>
-        /// <returns></returns>
-        public static string MultilaterationFeedType(MultilaterationFeedType feedType)
-        {
-            switch(feedType) {
-                case Settings.MultilaterationFeedType.None:                 return Strings.None;
-                case Settings.MultilaterationFeedType.PositionsInjected:    return Strings.MLATPositionsInjected;
-                case Settings.MultilaterationFeedType.PositionsOnly:        return Strings.MLATPositionsOnly;
-                default:                                                    throw new NotImplementedException();
-            }
-        }
-
-        /// <summary>
         /// Returns a translated description of a receiver usage.
         /// </summary>
         /// <param name="receiverUsage"></param>

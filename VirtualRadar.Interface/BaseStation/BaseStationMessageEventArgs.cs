@@ -25,12 +25,32 @@ namespace VirtualRadar.Interface.BaseStation
         public BaseStationMessage Message { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating that the message was received on a feed that is not the nominated feed for
+        /// the aircraft in a merged feed.
+        /// </summary>
+        /// <remarks>
+        /// At the time of writing this is only set on merged feeds when the message was received from an MLAT source
+        /// and the aircraft is currently being serviced by a different receiver.
+        /// </remarks>
+        public bool IsOutOfBand { get; private set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="message"></param>
         public BaseStationMessageEventArgs(BaseStationMessage message)
         {
             Message = message;
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isOutOfBand"></param>
+        public BaseStationMessageEventArgs(BaseStationMessage message, bool isOutOfBand) : this(message)
+        {
+            IsOutOfBand = isOutOfBand;
         }
     }
 }

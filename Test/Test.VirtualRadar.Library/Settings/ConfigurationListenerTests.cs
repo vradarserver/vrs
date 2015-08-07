@@ -283,7 +283,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.IgnoreAircraftWithNoPosition,  r => r.IgnoreAircraftWithNoPosition = !r.IgnoreAircraftWithNoPosition },
                     { r => r.Name,                          r => r.Name = "TEST" },
                     { r => r.ReceiverIds,                   r => r.ReceiverIds.Add(100) },
-                    { r => r.ReceiverFlags,                 r => r.ReceiverFlags.Add(new MergedFeedReceiver() { UniqueId = 100, MultilaterationFeedType = MultilaterationFeedType.PositionsOnly }) },
+                    { r => r.ReceiverFlags,                 r => r.ReceiverFlags.Add(new MergedFeedReceiver() { UniqueId = 100, IsMlatFeed = true }) },
                     { r => r.UniqueId,                      r => r.UniqueId += 1 },
                 });
 
@@ -318,8 +318,8 @@ namespace Test.VirtualRadar.Library.Settings
                 _Configuration.MergedFeeds.Add(new MergedFeed() { ReceiverFlags = { settings } });
 
                 SetValue(settings, propertyName, new Dictionary<Expression<Func<MergedFeedReceiver,object>>,Action<MergedFeedReceiver>>() {
-                    { r => r.UniqueId,                      r => r.UniqueId += 1 },
-                    { r => r.MultilaterationFeedType,       r => r.MultilaterationFeedType = MultilaterationFeedType.PositionsInjected },
+                    { r => r.UniqueId,      r => r.UniqueId += 1 },
+                    { r => r.IsMlatFeed,    r => r.IsMlatFeed = !r.IsMlatFeed },
                 });
 
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.MergedFeedReceiver, propertyName, settings, isListChild: true), "MergedFeedReceiver.{0}", propertyName);

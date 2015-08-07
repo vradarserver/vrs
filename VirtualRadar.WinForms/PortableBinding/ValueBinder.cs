@@ -56,7 +56,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         public TValue ModelValue
         {
             get             { return _GetModelValue(Model); }
-            protected set   { _SetModelValue(Model, value); }
+            protected set   { if(Model != null) _SetModelValue(Model, value); }
         }
 
         /// <summary>

@@ -37,9 +37,8 @@
             this.listReceiverIds = new VirtualRadar.WinForms.Controls.MasterListView();
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEnabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colMlatType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboBoxMlatType = new System.Windows.Forms.ComboBox();
+            this.colIsMlatFeed = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.checkBoxIsMlatFeed = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericIcaoTimeout)).BeginInit();
             this.SuspendLayout();
             // 
@@ -134,7 +133,7 @@
             this.listReceiverIds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colName,
             this.colEnabled,
-            this.colMlatType});
+            this.colIsMlatFeed});
             this.listReceiverIds.HideAllButList = true;
             this.listReceiverIds.Location = new System.Drawing.Point(200, 75);
             this.listReceiverIds.Name = "listReceiverIds";
@@ -145,43 +144,33 @@
             // colName
             // 
             this.colName.Text = "::Name::";
-            this.colName.Width = 175;
+            this.colName.Width = 220;
             // 
             // colEnabled
             // 
             this.colEnabled.Text = "::Enabled::";
             this.colEnabled.Width = 90;
             // 
-            // colMlatType
+            // colIsMlatFeed
             // 
-            this.colMlatType.Text = "::MultilaterationTypeListHeader::";
-            this.colMlatType.Width = 130;
+            this.colIsMlatFeed.Text = "::MLAT::";
+            this.colIsMlatFeed.Width = 90;
             // 
-            // label4
+            // checkBoxIsMlatFeed
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(0, 351);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(111, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "::MultilaterationType:::";
-            // 
-            // comboBoxMlatType
-            // 
-            this.comboBoxMlatType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.comboBoxMlatType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxMlatType.FormattingEnabled = true;
-            this.comboBoxMlatType.Location = new System.Drawing.Point(200, 348);
-            this.comboBoxMlatType.Name = "comboBoxMlatType";
-            this.comboBoxMlatType.Size = new System.Drawing.Size(198, 21);
-            this.comboBoxMlatType.TabIndex = 9;
+            this.checkBoxIsMlatFeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBoxIsMlatFeed.AutoSize = true;
+            this.checkBoxIsMlatFeed.Location = new System.Drawing.Point(200, 347);
+            this.checkBoxIsMlatFeed.Name = "checkBoxIsMlatFeed";
+            this.checkBoxIsMlatFeed.Size = new System.Drawing.Size(67, 17);
+            this.checkBoxIsMlatFeed.TabIndex = 8;
+            this.checkBoxIsMlatFeed.Text = "::MLAT::";
+            this.checkBoxIsMlatFeed.UseVisualStyleBackColor = true;
             // 
             // PageMergedFeed
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.comboBoxMlatType);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.checkBoxIsMlatFeed);
             this.Controls.Add(this.listReceiverIds);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.checkBoxIgnoreAircraftWithNoPosition);
@@ -210,8 +199,7 @@
         private Controls.MasterListView listReceiverIds;
         private System.Windows.Forms.ColumnHeader colName;
         private System.Windows.Forms.ColumnHeader colEnabled;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBoxMlatType;
-        private System.Windows.Forms.ColumnHeader colMlatType;
+        private System.Windows.Forms.ColumnHeader colIsMlatFeed;
+        private System.Windows.Forms.CheckBox checkBoxIsMlatFeed;
     }
 }

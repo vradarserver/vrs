@@ -35,19 +35,19 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public MultilaterationFeedType MultilaterationFeedType { get; private set; }
+        public bool IsMlatFeed { get; private set; }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="listener"></param>
-        /// <param name="feedType"></param>
-        public void SetListener(IListener listener, MultilaterationFeedType feedType)
+        /// <param name="isMlatFeed"></param>
+        public void SetListener(IListener listener, bool isMlatFeed)
         {
             if(_Initialised) throw new InvalidOperationException();
 
             Listener = listener;
-            MultilaterationFeedType = feedType;
+            IsMlatFeed = isMlatFeed;
             _Initialised = true;
         }
 
@@ -57,7 +57,7 @@ namespace VirtualRadar.Library.Listener
         /// <returns></returns>
         public override string ToString()
         {
-            return String.Format("{0} ({1})", Listener, MultilaterationFeedType);
+            return String.Format("{0} ({1})", Listener, IsMlatFeed ? "MLAT" : "non-MLAT");
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace VirtualRadar.Library.Listener
                 var other = obj as MergedFeedComponentListener;
                 if(other != null) {
                     result = Object.Equals(Listener, other.Listener) &&
-                             MultilaterationFeedType == other.MultilaterationFeedType;
+                             IsMlatFeed == other.IsMlatFeed;
                 }
             }
 

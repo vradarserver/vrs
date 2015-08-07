@@ -195,8 +195,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
-            _Component1.Setup(r => r.MultilaterationFeedType).Returns(worksheet.ParseEnum<MultilaterationFeedType>("L1MLAT"));
-            _Component2.Setup(r => r.MultilaterationFeedType).Returns(worksheet.ParseEnum<MultilaterationFeedType>("L2MLAT"));
+            _Component1.Setup(r => r.IsMlatFeed).Returns(worksheet.Bool("L1MLAT"));
+            _Component2.Setup(r => r.IsMlatFeed).Returns(worksheet.Bool("L2MLAT"));
 
             _MergedFeed.SetListeners(_Components);
             _MergedFeed.IcaoTimeout = worksheet.Int("IcaoTimeout");
@@ -208,7 +208,9 @@ namespace Test.VirtualRadar.Library.Listener
                 var icaoName = String.Format("ICAO{0}", i);
                 var msOffsetName = String.Format("MSOffset{0}", i);
                 var hasPosnName = String.Format("HasPosn{0}", i);
+                var isMlatName = String.Format("IsMlat{0}", i);
                 var passesName = String.Format("Passes{0}", i);
+                var isOutOfBandName = String.Format("OOB{0}", i);
 
                 if(worksheet.String(listenerNumberName) != null) {
                     var listenerNumber = worksheet.Int(listenerNumberName);
@@ -216,8 +218,10 @@ namespace Test.VirtualRadar.Library.Listener
                     var msOffset = worksheet.Int(msOffsetName);
                     var hasZeroPosn = worksheet.String(hasPosnName) == "0";
                     var hasPosn = hasZeroPosn ? true : worksheet.Bool(hasPosnName);
+                    var isMlat = worksheet.Bool(isMlatName);
                     var resetExpected = worksheet.String(passesName) == "True";
                     var messageExpected = resetExpected || worksheet.String(passesName) == "NoReset";
+                    var isOutOfBand = worksheet.Bool(isOutOfBandName);
 
                     Mock<IListener> listener;
                     switch(listenerNumber) {
@@ -231,6 +235,8 @@ namespace Test.VirtualRadar.Library.Listener
                     var baseStationMessageEventArgs = new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = icao });
                     if(hasZeroPosn)  baseStationMessageEventArgs.Message.Latitude = baseStationMessageEventArgs.Message.Longitude = 0.0;
                     else if(hasPosn) baseStationMessageEventArgs.Message.Latitude = baseStationMessageEventArgs.Message.Longitude = 1.0;
+                    if(isMlat)       baseStationMessageEventArgs.Message.IsMlat = true;
+
                     var baseStationMessageEventRecorder = new EventRecorder<BaseStationMessageEventArgs>();
                     _MergedFeed.Port30003MessageReceived += baseStationMessageEventRecorder.Handler;
 
@@ -249,9 +255,8 @@ namespace Test.VirtualRadar.Library.Listener
                         Assert.AreEqual(1, baseStationMessageEventRecorder.CallCount, failDetails, "BaseStationMessage");
                         Assert.AreSame(_MergedFeed, baseStationMessageEventRecorder.Sender);
 
-                        // The args passed across is no longer the same, PositionsOnly feeds will raise an event with a
-                        // filtered clone of the original.
-                        // Assert.AreSame(baseStationMessageEventArgs, baseStationMessageEventRecorder.Args);
+                        Assert.AreSame(baseStationMessageEventArgs.Message, baseStationMessageEventRecorder.Args.Message);
+                        Assert.AreEqual(isOutOfBand, baseStationMessageEventRecorder.Args.IsOutOfBand);
 
                         if(!resetExpected) {
                             Assert.AreEqual(0, positionResetEventRecorder.CallCount, failDetails, "PostionReset");
@@ -330,58 +335,6 @@ namespace Test.VirtualRadar.Library.Listener
             _Listener1.Raise(r => r.PositionReset += null, resetArgs);
             Assert.AreEqual(1, _BaseStationMessageEventRecorder.CallCount);
             Assert.AreEqual(1, _PositionResetRecorder.CallCount);
-        }
-
-        [TestMethod]
-        public void MergedFeedListener_SetListener_Strips_Extraneous_Portions_Of_PositionsOnly_Messages()
-        {
-            _Component1.Setup(r => r.MultilaterationFeedType).Returns(MultilaterationFeedType.PositionsOnly);
-            _MergedFeed.SetListeners(_Components);
-            _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
-
-            var original = new BaseStationMessage() {
-                Altitude = 1,
-                Callsign = "1",
-                Emergency = true,
-                GroundSpeed = 1,
-                Icao24 = "123456",
-                IdentActive = true,
-                IsMlat = true,
-                Latitude = 50,
-                Longitude = 40,
-                OnGround = true,
-                SignalLevel = 1,
-                Squawk = 1234,
-                SquawkHasChanged = true,
-                Supplementary = new BaseStationSupplementaryMessage(),
-                Track = 1,
-                VerticalRate = 1,
-            };
-            var originalMessage = new BaseStationMessageEventArgs(original);
-
-            _Listener1.Raise(r => r.Port30003MessageReceived += null, originalMessage);
-
-            Assert.AreEqual(1, _BaseStationMessageEventRecorder.CallCount);
-            var filtered = _BaseStationMessageEventRecorder.Args.Message;
-
-            Assert.AreNotSame(original, filtered);  // Need to preserve the original message when filtering position-only
-
-            Assert.IsNull(filtered.Altitude);
-            Assert.IsNull(filtered.Callsign);
-            Assert.IsNull(filtered.Emergency);
-            Assert.IsNull(filtered.GroundSpeed);
-            Assert.AreEqual("123456", filtered.Icao24);
-            Assert.IsNull(filtered.IdentActive);
-            Assert.IsTrue(filtered.IsMlat);
-            Assert.AreEqual(50.0, filtered.Latitude);
-            Assert.AreEqual(40.0, filtered.Longitude);
-            Assert.IsNull(filtered.OnGround);
-            Assert.IsNull(filtered.SignalLevel);
-            Assert.IsNull(filtered.Squawk);
-            Assert.IsNull(filtered.SquawkHasChanged);
-            Assert.IsNull(filtered.Supplementary);
-            Assert.IsNull(filtered.Track);
-            Assert.IsNull(filtered.VerticalRate);
         }
         #endregion
 

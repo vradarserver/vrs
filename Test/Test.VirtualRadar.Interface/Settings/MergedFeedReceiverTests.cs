@@ -19,7 +19,7 @@ namespace Test.VirtualRadar.Interface.Settings
 
         public static void CheckProperties(MergedFeedReceiver settings)
         {
-            TestUtilities.TestProperty(settings, r => r.MultilaterationFeedType, MultilaterationFeedType.None, MultilaterationFeedType.PositionsOnly);
+            TestUtilities.TestProperty(settings, r => r.IsMlatFeed, false);
             TestUtilities.TestProperty(settings, r => r.UniqueId, 0, 120);
         }
     }

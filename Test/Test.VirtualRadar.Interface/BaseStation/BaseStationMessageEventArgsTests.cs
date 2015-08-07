@@ -31,8 +31,18 @@ namespace Test.VirtualRadar.Interface.BaseStation
         public void BaseStationMessageEventArgs_Constructs_To_Known_State_And_Properties_Work()
         {
             BaseStationMessage message = new Mock<BaseStationMessage>().Object;
+
             BaseStationMessageEventArgs args = new BaseStationMessageEventArgs(message);
             Assert.AreSame(message, args.Message);
+            Assert.AreEqual(false, args.IsOutOfBand);
+
+            var args2 = new BaseStationMessageEventArgs(message, true);
+            Assert.AreSame(message, args2.Message);
+            Assert.AreEqual(true, args2.IsOutOfBand);
+
+            var args3 = new BaseStationMessageEventArgs(message, false);
+            Assert.AreSame(message, args3.Message);
+            Assert.AreEqual(false, args3.IsOutOfBand);
         }
     }
 }

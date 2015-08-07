@@ -39,29 +39,29 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedComponentListener_Ctor_Initialises_To_Known_State()
         {
             Assert.IsNull(_Component.Listener);
-            Assert.AreEqual(MultilaterationFeedType.None, _Component.MultilaterationFeedType);
+            Assert.AreEqual(false, _Component.IsMlatFeed);
         }
 
         [TestMethod]
         public void MergedFeedComponentListener_SetListener_Sets_Properties()
         {
-            _Component.SetListener(_Listener.Object, MultilaterationFeedType.PositionsOnly);
+            _Component.SetListener(_Listener.Object, true);
             Assert.AreSame(_Listener.Object, _Component.Listener);
-            Assert.AreEqual(MultilaterationFeedType.PositionsOnly, _Component.MultilaterationFeedType);
+            Assert.AreEqual(true, _Component.IsMlatFeed);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void MergedFeedComponentListener_SetListener_Throws_If_Called_Twice()
         {
-            _Component.SetListener(_Listener.Object, MultilaterationFeedType.PositionsOnly);
-            _Component.SetListener(_Listener.Object, MultilaterationFeedType.PositionsOnly);
+            _Component.SetListener(_Listener.Object, true);
+            _Component.SetListener(_Listener.Object, true);
         }
 
         [TestMethod]
         public void MergedFeedComponentListener_Equals_Returns_True_If_ReferenceEquals()
         {
-            _Component.SetListener(_Listener.Object, MultilaterationFeedType.PositionsInjected);
+            _Component.SetListener(_Listener.Object, true);
 
             Assert.IsTrue(_Component.Equals(_Component));
         }
@@ -70,8 +70,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedComponentListener_Equals_Returns_True_If_Two_Objects_Are_Same()
         {
             var other = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
-            _Component.SetListener(_Listener.Object, MultilaterationFeedType.PositionsInjected);
-            other.SetListener(_Listener.Object, MultilaterationFeedType.PositionsInjected);
+            _Component.SetListener(_Listener.Object, true);
+            other.SetListener(_Listener.Object, true);
 
             Assert.IsTrue(_Component.Equals(other));
         }
@@ -80,8 +80,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedComponentListener_Equals_Returns_False_If_Listener_Is_Different()
         {
             var other = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
-            _Component.SetListener(_Listener.Object, MultilaterationFeedType.PositionsInjected);
-            other.SetListener(TestUtilities.CreateMockInstance<IListener>().Object, MultilaterationFeedType.PositionsInjected);
+            _Component.SetListener(_Listener.Object, true);
+            other.SetListener(TestUtilities.CreateMockInstance<IListener>().Object, true);
 
             Assert.IsFalse(_Component.Equals(other));
         }
@@ -90,8 +90,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void MergedFeedComponentListener_Equals_Returns_False_If_MLAT_Feed_Type_Is_Different()
         {
             var other = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
-            _Component.SetListener(_Listener.Object, MultilaterationFeedType.PositionsInjected);
-            other.SetListener(_Listener.Object, MultilaterationFeedType.None);
+            _Component.SetListener(_Listener.Object, true);
+            other.SetListener(_Listener.Object, false);
 
             Assert.IsFalse(_Component.Equals(other));
         }
