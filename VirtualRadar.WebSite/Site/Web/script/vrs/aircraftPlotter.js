@@ -48,6 +48,10 @@
         this.getCanRotate = function()                          { return _CanRotate; };
         this.setCanRotate = function(/**bool*/ value)           { _CanRotate = value; };
 
+        var _IsPre22Icon = settings.isPre22Icon || false;
+        this.getIsPre22Icon = function()                        { return _IsPre22Icon; };
+        this.setIsPre22Icon = function(/**bool*/ value)         { _IsPre22Icon = value; };
+
         /** @type {function(VRS.Aircraft):bool} */
         var _Matches = settings.matches;
         this.getMatches = function()                                          { return _Matches; };
@@ -113,6 +117,7 @@
     VRS.globalOptions.aircraftMarkerAlwaysPlotSelected = VRS.globalOptions.aircraftMarkerAlwaysPlotSelected !== undefined ? VRS.globalOptions.aircraftMarkerAlwaysPlotSelected : true;  // Always plot the selected aircraft, even if it is not on the map. This preserves the selected aircraft's trail.
     VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel = VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel != undefined ? VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel : 13;   // Ground vehicles and towers are only shown when the zoom level is this value or above. Set to 0 to always show them, 99999 to never show them.
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false; // True if trails are to be shown for ground vehicles and towers, false if they are not.
+    VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false; // True if we should only show the old style (pre-version 2.2) aircraft markers.
 
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
@@ -121,6 +126,7 @@
             selectedFileName: 'GroundVehicle.png',
             size: { width: 26, height: 24},
             isAircraft: false,
+            isPre22Icon: true,
             matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.GroundVehicle; }
         }),
         new VRS.AircraftMarker ({
@@ -128,6 +134,7 @@
             selectedFileName: 'Tower.png',
             size: { width: 20, height: 20 },
             isAircraft: false,
+            isPre22Icon: true,
             canRotate: false,
             matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.Tower; }
         }),
@@ -159,6 +166,7 @@
             normalFileName: 'Airplane.png',
             selectedFileName: 'AirplaneSelected.png',
             size: { width: 35, height: 35 },
+            isPre22Icon: true,
             matches: function(/** VRS.Aircraft */ aircraft) { return true; }
         })
     ];
@@ -268,6 +276,7 @@
      * @param {Number}                 [settings.rangeCircleOddWeight]              The pixel width of odd range circles.
      * @param {string}                 [settings.rangeCircleEvenColour]             The CSS colour for even range circles.
      * @param {Number}                 [settings.rangeCircleEvenWeight]             The pixel width of even range circles.
+     * @param {boolean}                [settings.onlyUsePre22Icons]                 True to only show the old-school aircraft markers.
      * @constructor
      */
     VRS.AircraftPlotterOptions = function(settings)
@@ -290,7 +299,8 @@
             rangeCircleOddColour:               VRS.globalOptions.aircraftMarkerRangeCircleOddColour,
             rangeCircleOddWeight:               VRS.globalOptions.aircraftMarkerRangeCircleOddWeight,
             rangeCircleEvenColour:              VRS.globalOptions.aircraftMarkerRangeCircleEvenColour,
-            rangeCircleEvenWeight:              VRS.globalOptions.aircraftMarkerRangeCircleEvenWeight
+            rangeCircleEvenWeight:              VRS.globalOptions.aircraftMarkerRangeCircleEvenWeight,
+            onlyUsePre22Icons:                  VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons
         }, settings);
         //endregion
 
@@ -504,6 +514,16 @@
                 raiseRangeCirclePropertyChanged();
             }
         };
+
+        /** @type {boolean} */
+        var _OnlyUsePre22Icons = settings.onlyUsePre22Icons;
+        this.getOnlyUsePre22Icons = function() { return _OnlyUsePre22Icons; };
+        this.setOnlyUsePre22Icons = function(/**bool*/ value) {
+            if(_OnlyUsePre22Icons !== value) {
+                _OnlyUsePre22Icons = value;
+                raisePropertyChanged();
+            }
+        };
         //endregion
 
         //region -- Events exposed
@@ -536,6 +556,7 @@
 
             if(result.showAltitudeStalk && !VRS.globalOptions.aircraftMarkerAllowAltitudeStalk) result.showAltitudeStalk = false;
             if(result.showPinText && !VRS.globalOptions.aircraftMarkerAllowPinText)             result.showPinText = false;
+            if(!result.onlyUsePre22Icons && VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons)  result.onlyUsePre22Icons = true;
 
             if(result.rangeCircleCount > VRS.globalOptions.aircraftMarkerRangeCircleMaxCircles)     result.rangeCircleCount = VRS.globalOptions.aircraftMarkerRangeCircleMaxCircles;
             if(result.rangeCircleInterval > VRS.globalOptions.aircraftMarkerRangeCircleMaxInterval) result.rangeCircleInterval = VRS.globalOptions.aircraftMarkerRangeCircleMaxInterval;
@@ -581,6 +602,7 @@
             that.setRangeCircleOddWeight(settings.rangeCircleOddWeight);
             that.setRangeCircleEvenColour(settings.rangeCircleEvenColour);
             that.setRangeCircleEvenWeight(settings.rangeCircleEvenWeight);
+            that.setOnlyUsePre22Icons(settings.onlyUsePre22Icons);
 
             _SuppressEvents = suppressEvents;
 
@@ -627,7 +649,8 @@
                 rangeCircleOddColour:               that.getRangeCircleOddColour(),
                 rangeCircleOddWeight:               that.getRangeCircleOddWeight(),
                 rangeCircleEvenColour:              that.getRangeCircleEvenColour(),
-                rangeCircleEvenWeight:              that.getRangeCircleEvenWeight()
+                rangeCircleEvenWeight:              that.getRangeCircleEvenWeight(),
+                onlyUsePre22Icons:                  that.getOnlyUsePre22Icons()
             };
         }
         //endregion
@@ -664,6 +687,17 @@
                     labelKey:       'SuppressAltitudeStalkWhenZoomedOut',
                     getValue:       that.getSuppressAltitudeStalkWhenZoomedOut,
                     setValue:       that.setSuppressAltitudeStalkWhenZoomedOut,
+                    saveState:      that.saveState
+                }));
+            }
+
+            // Pre-version 2.2 icon options
+            if(!VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons) {
+                displayPane.addField(new VRS.OptionFieldCheckBox({
+                    name:           'onlyUsePre22Icons',
+                    labelKey:       'OnlyUsePre22Icons',
+                    getValue:       that.getOnlyUsePre22Icons,
+                    setValue:       that.setOnlyUsePre22Icons,
                     saveState:      that.saveState
                 }));
             }
@@ -1464,9 +1498,11 @@
 
             if(aircraft) {
                 var markers = _Settings.aircraftMarkers;
+                var onlyUsePre22Icons = _Settings.plotterOptions.getOnlyUsePre22Icons();
                 var length = markers.length;
                 for(var i = 0;i < length;++i) {
                     result = markers[i];
+                    if(onlyUsePre22Icons && !result.getIsPre22Icon()) continue;
                     if(result.matchesAircraft(aircraft)) break;
                 }
             }

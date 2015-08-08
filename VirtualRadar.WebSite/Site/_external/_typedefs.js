@@ -38,6 +38,7 @@ VRS_AIRCRAFTLIST_ROWDATA;
  * size:                VRS_SIZE,
  * isAircraft:         [bool],
  * canRotate:          [bool],
+ * isPre22Icon:        [bool],
  * matches:             function(VRS.Aircraft):bool
  * }} VRS_AIRCRAFTMARKER_SETTINGS
  */
@@ -1353,7 +1354,8 @@ VRS_STATE_AIRCRAFTLISTFILTER;
 * rangeCircleOddWeight:                 number,
 * rangeCircleEvenColour:                string,
 * rangeCircleEvenWeight:                number,
-* showCurrentLocation:                  boolean
+* showCurrentLocation:                  boolean,
+* onlyUsePre22Icons:                    boolean
 * }} VRS_STATE_AIRCRAFTLISTPLOTTER
 */
 VRS_STATE_AIRCRAFTLISTPLOTTER;
