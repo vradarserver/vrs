@@ -181,6 +181,7 @@ VRS_GOOGLE_ICON;
 * Trak:         Number,
 * TrkH:         boolean,
 * TTrk:         Number,
+* Man:          String,
 * Mdl:          String,
 * Type:         String,
 * From:         String,

@@ -335,6 +335,7 @@ namespace VirtualRadar.WebSite
                     if(firstTimeSeen || aircraftSnapshot.Icao24InvalidChanged > args.PreviousDataVersion)               aircraftJson.Icao24Invalid = aircraftSnapshot.Icao24Invalid;
                     if(firstTimeSeen || aircraftSnapshot.IsInterestingChanged > args.PreviousDataVersion)               aircraftJson.IsInteresting = aircraftSnapshot.IsInteresting;
                     if(firstTimeSeen || aircraftSnapshot.IsMilitaryChanged > args.PreviousDataVersion)                  aircraftJson.IsMilitary = aircraftSnapshot.IsMilitary;
+                    if(firstTimeSeen || aircraftSnapshot.ManufacturerChanged > args.PreviousDataVersion)                aircraftJson.Manufacturer = aircraftSnapshot.Manufacturer;
                     if(firstTimeSeen || aircraftSnapshot.ModelChanged > args.PreviousDataVersion)                       aircraftJson.Model = aircraftSnapshot.Model;
                     if(firstTimeSeen || aircraftSnapshot.NumberOfEnginesChanged > args.PreviousDataVersion)             aircraftJson.NumberOfEngines = aircraftSnapshot.NumberOfEngines;
                     if(firstTimeSeen || aircraftSnapshot.OperatorChanged > args.PreviousDataVersion)                    aircraftJson.Operator = aircraftSnapshot.Operator;

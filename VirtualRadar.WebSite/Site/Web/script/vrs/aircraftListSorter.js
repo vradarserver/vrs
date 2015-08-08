@@ -179,6 +179,12 @@
         getNumberCallback:  function(aircraft) { return aircraft.longitude.val; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Manufacturer] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.Manufacturer,
+        labelKey:           'Manufacturer',
+        getStringCallback:  function(aircraft) { return aircraft.manufacturer.val; }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Model] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.Model,
         labelKey:           'Model',

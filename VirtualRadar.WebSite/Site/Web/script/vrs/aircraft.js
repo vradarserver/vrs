@@ -386,6 +386,7 @@
         this.heading =                  new VRS.NumberValue();            // The track across the ground that the aircraft is following, unless headingIsTrue is true in which case it's the aircraft's true heading (i.e. the direction the nose is pointing in)
         this.headingIsTrue =            new VRS.BoolValue();              // True if heading is the aircraft's true heading, false if it's the ground track.
         this.targetHeading =            new VRS.NumberValue();
+        this.manufacturer =             new VRS.StringValue();
         this.model =                    new VRS.StringValue();
         this.modelIcao =                new VRS.StringValue();
         this.from =                     new VRS.RouteValue();
@@ -461,6 +462,7 @@
             setValue(this.heading,              aircraftJson.Trak);
             setValue(this.headingIsTrue,        aircraftJson.TrkH);
             setValue(this.targetHeading,        aircraftJson.TTrk);
+            setValue(this.manufacturer,         aircraftJson.Man);
             setValue(this.model,                aircraftJson.Mdl);
             setValue(this.modelIcao,            aircraftJson.Type);
             setValue(this.from,                 aircraftJson.From);
@@ -1086,6 +1088,15 @@
         this.formatLongitude = function(showUnit)
         {
             return VRS.format.longitude(this.longitude.val, showUnit);
+        };
+
+        /**
+         * Format's the aircraft's manufacturer as a string.
+         * @returns {*|string}
+         */
+        this.formatManufacturer = function()
+        {
+            return VRS.format.manufacturer(this.manufacturer.val);
         };
 
         /**
