@@ -164,10 +164,16 @@ namespace VirtualRadar.Interface.WebSite
         public string Type { get; set; }
 
         /// <summary>
-        /// Gets or sets the English description of the aircraft model.
+        /// Gets or sets the English description of the aircraft model. Usually includes the manufacturer.
         /// </summary>
         [DataMember(Name="Mdl", IsRequired=false, EmitDefaultValue=false)]
         public string Model { get; set; }
+
+        /// <summary>
+        /// Gets or sets the manufacturer's name.
+        /// </summary>
+        [DataMember(Name="Man", IsRequired=false, EmitDefaultValue=false)]
+        public string Manufacturer { get; set; }
 
         /// <summary>
         /// Gets or sets the construction / serial number of the aircraft.

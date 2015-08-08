@@ -616,6 +616,16 @@
         contentCallback:        function(aircraft, options) { return aircraft.formatLongitude(options.showUnits); }
     });
 
+    VRS.renderPropertyHandlers[VRS.RenderProperty.Manufacturer] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.Manufacturer,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListManufacturer',
+        labelKey:               'Manufacturer',
+        sortableField:          VRS.AircraftListSortableField.Manufacturer,
+        hasChangedCallback:     function(aircraft) { return aircraft.manufacturer.chg; },
+        contentCallback:        function(aircraft) { return aircraft.formatManufacturer(); }
+    });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.Mlat] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.Mlat,
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,

@@ -47,6 +47,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(aircraftJson, r => r.IsMilitary, null, false);
             TestUtilities.TestProperty(aircraftJson, r => r.Latitude, null, 1.234);
             TestUtilities.TestProperty(aircraftJson, r => r.Longitude, null, 1.234);
+            TestUtilities.TestProperty(aircraftJson, r => r.Manufacturer, null, "Aa");
             TestUtilities.TestProperty(aircraftJson, r => r.Model, null, "Mm");
             TestUtilities.TestProperty(aircraftJson, r => r.NumberOfEngines, null, "C");
             TestUtilities.TestProperty(aircraftJson, r => r.OnGround, null, true);
