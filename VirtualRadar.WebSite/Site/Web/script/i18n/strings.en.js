@@ -343,6 +343,7 @@
     VRS.$$.OfPages =                                    'of {0:N0}';                            // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          'List only visible';
     VRS.$$.OnlyAutoSelected =                           'Only announce details of auto-selected aircraft';
+    VRS.$$.OnlyUsePre22Icons =                          'Only show old style aircraft markers';
     VRS.$$.Operator =                                   'Operator';
     VRS.$$.OperatorCode =                               'Operator Code';
     VRS.$$.OperatorFlag =                               'Operator Flag';
