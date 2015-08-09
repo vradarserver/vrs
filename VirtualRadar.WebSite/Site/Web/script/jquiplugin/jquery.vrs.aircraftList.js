@@ -527,6 +527,18 @@
         },
         //endregion
 
+        //region -- prependElement
+        /**
+         * Prepends a jQuery element to the aircraft list.
+         * @param {jQuery} elementJQ
+         */
+        prependElement: function(elementJQ)
+        {
+            var state = this._getState();
+            state.container.prepend(elementJQ);
+        },
+        //endregion
+
         //region -- _buildTable, _buildHeader, _refreshDisplay, _buildRows
         /**
          * Builds up the table, refreshing content if required.

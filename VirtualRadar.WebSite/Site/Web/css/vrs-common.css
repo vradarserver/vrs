@@ -444,6 +444,14 @@ body.wait .modal {
     text-align: center;
     padding-top: 2em;
 }
+.vrsAircraftList .mapButtonContainer {
+    text-align: right;
+}
+.vrsAircraftList .mapButtonContainer .mapButton {
+    display: inline-block;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+}
 .aircraftList {
     white-space: nowrap;
     border-collapse: collapse;
