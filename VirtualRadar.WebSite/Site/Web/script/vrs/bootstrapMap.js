@@ -924,24 +924,41 @@
                 ]
             }));
 
-            /*
-            Having problems getting side-by-side splitters working nicely... didn't find out until just before release
-            so I'm disabling this one for now and I'll look at it for the .1 release :)
-            // Tall list and detail layout (detail, map and list in full height panels across page)
+            var mapButtonParent = null;
+            var mapButtonContainer = $('<div />').addClass('mapButtonContainer');
+            var aircraftListPlugin = VRS.jQueryUIHelper.getAircraftListPlugin(pageSettings.aircraftListJQ);
             VRS.layoutManager.registerLayout(new VRS.Layout({
                 name: 'vrsLayout-A05',
                 labelKey: 'Layout6',
                 layout: [
-                    pageSettings.mapJQ,
-                    { name: 'S1', vertical: true, savePane: 2, startSizePane: 1, startSize: '33%', collapsePane: 2 },
-                    [
-                        pageSettings.aircraftListJQ,
-                        { name: 'S2', vertical: true, collapsePane: 2, savePane: 1, startSize: 550, fixedPane: 1, startSizePane: 1 },
-                        pageSettings.aircraftDetailJQ
-                    ]
-                ]
+                    pageSettings.aircraftListJQ,
+                    { name: 'S1', vertical: true, collapsePane: 2, savePane: 1, startSize: 550, fixedPane: 1, startSizePane: 1 },
+                    pageSettings.aircraftDetailJQ
+                ],
+                onFocus: function() {
+                    if(pageSettings.aircraftPlotter) pageSettings.aircraftPlotter.suspend(true);
+                    if(pageSettings.mapJQ) {
+                        pageSettings.mapJQ.hide();
+                        if(pageSettings.mapButton) {
+                            mapButtonParent = pageSettings.mapButton.parent();
+                            pageSettings.mapButton.detach();
+                            mapButtonContainer.append(pageSettings.mapButton);
+                            aircraftListPlugin.prependElement(mapButtonContainer);
+                        }
+                    }
+                },
+                onBlur: function() {
+                    if(pageSettings.mapJQ) {
+                        if(pageSettings.mapButton) {
+                            mapButtonContainer.detach();
+                            pageSettings.mapButton.detach();
+                            mapButtonParent.append(pageSettings.mapButton);
+                        }
+                        pageSettings.mapJQ.show();
+                    }
+                    if(pageSettings.aircraftPlotter) pageSettings.aircraftPlotter.suspend(false);
+                }
             }));
-             */
 
             base.endLayoutInitialisation(pageSettings);
             base.createLayoutMenuEntry(pageSettings, [ 'Layout2', 'Layout4', 'Layout6' ]);

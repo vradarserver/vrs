@@ -207,7 +207,7 @@
     VRS.$$.Layout3 =                                    'Tall Detail, Map Bottom';
     VRS.$$.Layout4 =                                    'Tall List, Map Top';
     VRS.$$.Layout5 =                                    'Tall List, Map Bottom';
-    VRS.$$.Layout6 =                                    'Tall Detail and List';
+    VRS.$$.Layout6 =                                    'List Left, Detail Right, No Map';
     VRS.$$.ListAircraftClass =                          'A/C Class';
     VRS.$$.ListAirportDataThumbnails =                  'Thumbnails (airport-data.com)';
     VRS.$$.ListAltitude =                               'Altitude';

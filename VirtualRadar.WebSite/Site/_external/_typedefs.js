@@ -571,7 +571,10 @@ VRS_OPTIONS_AIRCRAFTLINKS;
  * distinguishOnGround:         bool,
  * flagUncertainCallsigns:      bool,
  * showPause:                   bool,
- * showHideAircraftNotOnMap:    bool
+ * showHideAircraftNotOnMap:    bool,
+ * showMenuLink:               [bool],
+ * showMenuLabel:              [string|function():string]
+ * showMenuFunction:           [function()]
  * }} VRS_OPTIONS_AIRCRAFTLIST
  */
 VRS_OPTIONS_AIRCRAFTLIST

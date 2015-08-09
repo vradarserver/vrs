@@ -20,9 +20,11 @@
     /**
      * Describes a display layout.
      * @param {object}              settings
-     * @param {string}              settings.name        The name of the layout. Must be unique.
-     * @param {string}              settings.labelKey    The index into VRS.$$ of the text used to describe the layout.
-     * @param {VRS_LAYOUT_ARRAY}    settings.layout      The description of the layout.
+     * @param {string}              settings.name           The name of the layout. Must be unique.
+     * @param {string}              settings.labelKey       The index into VRS.$$ of the text used to describe the layout.
+     * @param {VRS_LAYOUT_ARRAY}    settings.layout         The description of the layout.
+     * @param {function()}         [settings.onFocus]       Called after the user has selected the layout, but before it is shown to the user.
+     * @param {function()}         [settings.onBlur]        Called after the user has selected another layout, after this layout has been torn down but before the new layout is shown.
      * @constructor
      */
     VRS.Layout = function(settings)
@@ -36,6 +38,8 @@
         this.name = settings.name;
         this.labelKey = settings.labelKey;
         this.layout = settings.layout;
+        this.onFocus = settings.onFocus || function() { };
+        this.onBlur = settings.onBlur || function() { };
     };
     //endregion
 
@@ -106,6 +110,7 @@
             if(layout === null) throw 'Cannot find a layout with a name of ' + layoutOrName;
 
             undoLayout();
+            layout.onFocus();
 
             var splitterGroupPersistence = new VRS.SplitterGroupPersistence(_Name + '-' + layout.name);
 
@@ -171,6 +176,8 @@
                 if(_CurrentLayout.topSplitter && _CurrentLayout.topSplitterIsSplitter) {
                     _CurrentLayout.topSplitter.vrsSplitter('destroy');
                 }
+
+                _CurrentLayout.layout.onBlur();
             }
             _CurrentLayout = null;
         }
