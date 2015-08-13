@@ -103,12 +103,21 @@ foreach(Project project in dte.Solution.Projects) {
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="<#=propertyName#>"/>.
+        /// Creates a copy of <see cref="<#=propertyName#>"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static <#=type#> Clone_<#=propertyName#>()
         {
             lock(<#=propertyName#>_SyncLock) {
-                return (<#=type#>)<#=propertyName#>.Clone();
+<#
+        switch(type) {
+            case "Bitmap":#>
+                return new Bitmap(<#=propertyName#>);
+<#break;    case "Icon":#>
+                return Icon.FromHandle(<#=propertyName#>.Handle);
+<#break;
+        }
+#>
             }
         }
 <#

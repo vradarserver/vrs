@@ -73,12 +73,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Add16x16"/>.
+        /// Creates a copy of <see cref="Add16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Add16x16()
         {
             lock(Add16x16_SyncLock) {
-                return (Bitmap)Add16x16.Clone();
+                return new Bitmap(Add16x16);
             }
         }
 
@@ -119,12 +120,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="ApplicationIcon"/>.
+        /// Creates a copy of <see cref="ApplicationIcon"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Icon Clone_ApplicationIcon()
         {
             lock(ApplicationIcon_SyncLock) {
-                return (Icon)ApplicationIcon.Clone();
+                return Icon.FromHandle(ApplicationIcon.Handle);
             }
         }
 
@@ -165,12 +167,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="ArrowBack16x16"/>.
+        /// Creates a copy of <see cref="ArrowBack16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_ArrowBack16x16()
         {
             lock(ArrowBack16x16_SyncLock) {
-                return (Bitmap)ArrowBack16x16.Clone();
+                return new Bitmap(ArrowBack16x16);
             }
         }
 
@@ -211,12 +214,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="ArrowForward16x16"/>.
+        /// Creates a copy of <see cref="ArrowForward16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_ArrowForward16x16()
         {
             lock(ArrowForward16x16_SyncLock) {
-                return (Bitmap)ArrowForward16x16.Clone();
+                return new Bitmap(ArrowForward16x16);
             }
         }
 
@@ -257,12 +261,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="BlueBall"/>.
+        /// Creates a copy of <see cref="BlueBall"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_BlueBall()
         {
             lock(BlueBall_SyncLock) {
-                return (Bitmap)BlueBall.Clone();
+                return new Bitmap(BlueBall);
             }
         }
 
@@ -303,12 +308,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Cancel16x16"/>.
+        /// Creates a copy of <see cref="Cancel16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Cancel16x16()
         {
             lock(Cancel16x16_SyncLock) {
-                return (Bitmap)Cancel16x16.Clone();
+                return new Bitmap(Cancel16x16);
             }
         }
 
@@ -349,12 +355,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="CancelSmall16x16"/>.
+        /// Creates a copy of <see cref="CancelSmall16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_CancelSmall16x16()
         {
             lock(CancelSmall16x16_SyncLock) {
-                return (Bitmap)CancelSmall16x16.Clone();
+                return new Bitmap(CancelSmall16x16);
             }
         }
 
@@ -395,12 +402,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="ChevronBlueCircle"/>.
+        /// Creates a copy of <see cref="ChevronBlueCircle"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_ChevronBlueCircle()
         {
             lock(ChevronBlueCircle_SyncLock) {
-                return (Bitmap)ChevronBlueCircle.Clone();
+                return new Bitmap(ChevronBlueCircle);
             }
         }
 
@@ -441,12 +449,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="ChevronGreenCircle"/>.
+        /// Creates a copy of <see cref="ChevronGreenCircle"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_ChevronGreenCircle()
         {
             lock(ChevronGreenCircle_SyncLock) {
-                return (Bitmap)ChevronGreenCircle.Clone();
+                return new Bitmap(ChevronGreenCircle);
             }
         }
 
@@ -487,12 +496,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="ChevronRedCircle"/>.
+        /// Creates a copy of <see cref="ChevronRedCircle"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_ChevronRedCircle()
         {
             lock(ChevronRedCircle_SyncLock) {
-                return (Bitmap)ChevronRedCircle.Clone();
+                return new Bitmap(ChevronRedCircle);
             }
         }
 
@@ -533,12 +543,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="CloseSlider"/>.
+        /// Creates a copy of <see cref="CloseSlider"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_CloseSlider()
         {
             lock(CloseSlider_SyncLock) {
-                return (Bitmap)CloseSlider.Clone();
+                return new Bitmap(CloseSlider);
             }
         }
 
@@ -579,12 +590,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Collapse"/>.
+        /// Creates a copy of <see cref="Collapse"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Collapse()
         {
             lock(Collapse_SyncLock) {
-                return (Bitmap)Collapse.Clone();
+                return new Bitmap(Collapse);
             }
         }
 
@@ -625,12 +637,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Compass"/>.
+        /// Creates a copy of <see cref="Compass"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Compass()
         {
             lock(Compass_SyncLock) {
-                return (Bitmap)Compass.Clone();
+                return new Bitmap(Compass);
             }
         }
 
@@ -671,12 +684,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Corner_BottomLeft"/>.
+        /// Creates a copy of <see cref="Corner_BottomLeft"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Corner_BottomLeft()
         {
             lock(Corner_BottomLeft_SyncLock) {
-                return (Bitmap)Corner_BottomLeft.Clone();
+                return new Bitmap(Corner_BottomLeft);
             }
         }
 
@@ -717,12 +731,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Corner_BottomRight"/>.
+        /// Creates a copy of <see cref="Corner_BottomRight"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Corner_BottomRight()
         {
             lock(Corner_BottomRight_SyncLock) {
-                return (Bitmap)Corner_BottomRight.Clone();
+                return new Bitmap(Corner_BottomRight);
             }
         }
 
@@ -763,12 +778,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Corner_TopLeft"/>.
+        /// Creates a copy of <see cref="Corner_TopLeft"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Corner_TopLeft()
         {
             lock(Corner_TopLeft_SyncLock) {
-                return (Bitmap)Corner_TopLeft.Clone();
+                return new Bitmap(Corner_TopLeft);
             }
         }
 
@@ -809,12 +825,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Corner_TopRight"/>.
+        /// Creates a copy of <see cref="Corner_TopRight"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Corner_TopRight()
         {
             lock(Corner_TopRight_SyncLock) {
-                return (Bitmap)Corner_TopRight.Clone();
+                return new Bitmap(Corner_TopRight);
             }
         }
 
@@ -855,12 +872,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Crosshair"/>.
+        /// Creates a copy of <see cref="Crosshair"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Crosshair()
         {
             lock(Crosshair_SyncLock) {
-                return (Bitmap)Crosshair.Clone();
+                return new Bitmap(Crosshair);
             }
         }
 
@@ -901,12 +919,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Decoding16x16"/>.
+        /// Creates a copy of <see cref="Decoding16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Decoding16x16()
         {
             lock(Decoding16x16_SyncLock) {
-                return (Bitmap)Decoding16x16.Clone();
+                return new Bitmap(Decoding16x16);
             }
         }
 
@@ -947,12 +966,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Edit16x16"/>.
+        /// Creates a copy of <see cref="Edit16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Edit16x16()
         {
             lock(Edit16x16_SyncLock) {
-                return (Bitmap)Edit16x16.Clone();
+                return new Bitmap(Edit16x16);
             }
         }
 
@@ -993,12 +1013,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Expand"/>.
+        /// Creates a copy of <see cref="Expand"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Expand()
         {
             lock(Expand_SyncLock) {
-                return (Bitmap)Expand.Clone();
+                return new Bitmap(Expand);
             }
         }
 
@@ -1039,12 +1060,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Favicon"/>.
+        /// Creates a copy of <see cref="Favicon"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Icon Clone_Favicon()
         {
             lock(Favicon_SyncLock) {
-                return (Icon)Favicon.Clone();
+                return Icon.FromHandle(Favicon.Handle);
             }
         }
 
@@ -1085,12 +1107,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="FollowMe"/>.
+        /// Creates a copy of <see cref="FollowMe"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_FollowMe()
         {
             lock(FollowMe_SyncLock) {
-                return (Bitmap)FollowMe.Clone();
+                return new Bitmap(FollowMe);
             }
         }
 
@@ -1131,12 +1154,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Gear16x16"/>.
+        /// Creates a copy of <see cref="Gear16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Gear16x16()
         {
             lock(Gear16x16_SyncLock) {
-                return (Bitmap)Gear16x16.Clone();
+                return new Bitmap(Gear16x16);
             }
         }
 
@@ -1177,12 +1201,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="GotoCurrentLocation"/>.
+        /// Creates a copy of <see cref="GotoCurrentLocation"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_GotoCurrentLocation()
         {
             lock(GotoCurrentLocation_SyncLock) {
-                return (Bitmap)GotoCurrentLocation.Clone();
+                return new Bitmap(GotoCurrentLocation);
             }
         }
 
@@ -1223,12 +1248,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="HelpAbout"/>.
+        /// Creates a copy of <see cref="HelpAbout"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_HelpAbout()
         {
             lock(HelpAbout_SyncLock) {
-                return (Bitmap)HelpAbout.Clone();
+                return new Bitmap(HelpAbout);
             }
         }
 
@@ -1269,12 +1295,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="HideList"/>.
+        /// Creates a copy of <see cref="HideList"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_HideList()
         {
             lock(HideList_SyncLock) {
-                return (Bitmap)HideList.Clone();
+                return new Bitmap(HideList);
             }
         }
 
@@ -1315,12 +1342,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPadSplash"/>.
+        /// Creates a copy of <see cref="IPadSplash"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPadSplash()
         {
             lock(IPadSplash_SyncLock) {
-                return (Bitmap)IPadSplash.Clone();
+                return new Bitmap(IPadSplash);
             }
         }
 
@@ -1361,12 +1389,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneBackButton"/>.
+        /// Creates a copy of <see cref="IPhoneBackButton"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneBackButton()
         {
             lock(IPhoneBackButton_SyncLock) {
-                return (Bitmap)IPhoneBackButton.Clone();
+                return new Bitmap(IPhoneBackButton);
             }
         }
 
@@ -1407,12 +1436,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneBlueButton"/>.
+        /// Creates a copy of <see cref="IPhoneBlueButton"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneBlueButton()
         {
             lock(IPhoneBlueButton_SyncLock) {
-                return (Bitmap)IPhoneBlueButton.Clone();
+                return new Bitmap(IPhoneBlueButton);
             }
         }
 
@@ -1453,12 +1483,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneChevron"/>.
+        /// Creates a copy of <see cref="IPhoneChevron"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneChevron()
         {
             lock(IPhoneChevron_SyncLock) {
-                return (Bitmap)IPhoneChevron.Clone();
+                return new Bitmap(IPhoneChevron);
             }
         }
 
@@ -1499,12 +1530,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneGrayButton"/>.
+        /// Creates a copy of <see cref="IPhoneGrayButton"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneGrayButton()
         {
             lock(IPhoneGrayButton_SyncLock) {
-                return (Bitmap)IPhoneGrayButton.Clone();
+                return new Bitmap(IPhoneGrayButton);
             }
         }
 
@@ -1545,12 +1577,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneIcon"/>.
+        /// Creates a copy of <see cref="IPhoneIcon"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneIcon()
         {
             lock(IPhoneIcon_SyncLock) {
-                return (Bitmap)IPhoneIcon.Clone();
+                return new Bitmap(IPhoneIcon);
             }
         }
 
@@ -1591,12 +1624,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneListGroup"/>.
+        /// Creates a copy of <see cref="IPhoneListGroup"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneListGroup()
         {
             lock(IPhoneListGroup_SyncLock) {
-                return (Bitmap)IPhoneListGroup.Clone();
+                return new Bitmap(IPhoneListGroup);
             }
         }
 
@@ -1637,12 +1671,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneOnOff"/>.
+        /// Creates a copy of <see cref="IPhoneOnOff"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneOnOff()
         {
             lock(IPhoneOnOff_SyncLock) {
-                return (Bitmap)IPhoneOnOff.Clone();
+                return new Bitmap(IPhoneOnOff);
             }
         }
 
@@ -1683,12 +1718,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhonePinstripes"/>.
+        /// Creates a copy of <see cref="IPhonePinstripes"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhonePinstripes()
         {
             lock(IPhonePinstripes_SyncLock) {
-                return (Bitmap)IPhonePinstripes.Clone();
+                return new Bitmap(IPhonePinstripes);
             }
         }
 
@@ -1729,12 +1765,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneSelectedTick"/>.
+        /// Creates a copy of <see cref="IPhoneSelectedTick"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneSelectedTick()
         {
             lock(IPhoneSelectedTick_SyncLock) {
-                return (Bitmap)IPhoneSelectedTick.Clone();
+                return new Bitmap(IPhoneSelectedTick);
             }
         }
 
@@ -1775,12 +1812,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneSelection"/>.
+        /// Creates a copy of <see cref="IPhoneSelection"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneSelection()
         {
             lock(IPhoneSelection_SyncLock) {
-                return (Bitmap)IPhoneSelection.Clone();
+                return new Bitmap(IPhoneSelection);
             }
         }
 
@@ -1821,12 +1859,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneSplash"/>.
+        /// Creates a copy of <see cref="IPhoneSplash"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneSplash()
         {
             lock(IPhoneSplash_SyncLock) {
-                return (Bitmap)IPhoneSplash.Clone();
+                return new Bitmap(IPhoneSplash);
             }
         }
 
@@ -1867,12 +1906,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneToolbar"/>.
+        /// Creates a copy of <see cref="IPhoneToolbar"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneToolbar()
         {
             lock(IPhoneToolbar_SyncLock) {
-                return (Bitmap)IPhoneToolbar.Clone();
+                return new Bitmap(IPhoneToolbar);
             }
         }
 
@@ -1913,12 +1953,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneToolButton"/>.
+        /// Creates a copy of <see cref="IPhoneToolButton"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneToolButton()
         {
             lock(IPhoneToolButton_SyncLock) {
-                return (Bitmap)IPhoneToolButton.Clone();
+                return new Bitmap(IPhoneToolButton);
             }
         }
 
@@ -1959,12 +2000,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="IPhoneWhiteButton"/>.
+        /// Creates a copy of <see cref="IPhoneWhiteButton"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_IPhoneWhiteButton()
         {
             lock(IPhoneWhiteButton_SyncLock) {
-                return (Bitmap)IPhoneWhiteButton.Clone();
+                return new Bitmap(IPhoneWhiteButton);
             }
         }
 
@@ -2005,12 +2047,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Location16x16"/>.
+        /// Creates a copy of <see cref="Location16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Location16x16()
         {
             lock(Location16x16_SyncLock) {
-                return (Bitmap)Location16x16.Clone();
+                return new Bitmap(Location16x16);
             }
         }
 
@@ -2051,12 +2094,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Logo128x128"/>.
+        /// Creates a copy of <see cref="Logo128x128"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Logo128x128()
         {
             lock(Logo128x128_SyncLock) {
-                return (Bitmap)Logo128x128.Clone();
+                return new Bitmap(Logo128x128);
             }
         }
 
@@ -2097,12 +2141,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Marker_Airplane"/>.
+        /// Creates a copy of <see cref="Marker_Airplane"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Marker_Airplane()
         {
             lock(Marker_Airplane_SyncLock) {
-                return (Bitmap)Marker_Airplane.Clone();
+                return new Bitmap(Marker_Airplane);
             }
         }
 
@@ -2143,12 +2188,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Marker_AirplaneSelected"/>.
+        /// Creates a copy of <see cref="Marker_AirplaneSelected"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Marker_AirplaneSelected()
         {
             lock(Marker_AirplaneSelected_SyncLock) {
-                return (Bitmap)Marker_AirplaneSelected.Clone();
+                return new Bitmap(Marker_AirplaneSelected);
             }
         }
 
@@ -2189,12 +2235,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="MergedFeed16x16"/>.
+        /// Creates a copy of <see cref="MergedFeed16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_MergedFeed16x16()
         {
             lock(MergedFeed16x16_SyncLock) {
-                return (Bitmap)MergedFeed16x16.Clone();
+                return new Bitmap(MergedFeed16x16);
             }
         }
 
@@ -2235,12 +2282,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="MovingMapChecked"/>.
+        /// Creates a copy of <see cref="MovingMapChecked"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_MovingMapChecked()
         {
             lock(MovingMapChecked_SyncLock) {
-                return (Bitmap)MovingMapChecked.Clone();
+                return new Bitmap(MovingMapChecked);
             }
         }
 
@@ -2281,12 +2329,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="MovingMapUnchecked"/>.
+        /// Creates a copy of <see cref="MovingMapUnchecked"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_MovingMapUnchecked()
         {
             lock(MovingMapUnchecked_SyncLock) {
-                return (Bitmap)MovingMapUnchecked.Clone();
+                return new Bitmap(MovingMapUnchecked);
             }
         }
 
@@ -2327,12 +2376,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Notebook16x16"/>.
+        /// Creates a copy of <see cref="Notebook16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Notebook16x16()
         {
             lock(Notebook16x16_SyncLock) {
-                return (Bitmap)Notebook16x16.Clone();
+                return new Bitmap(Notebook16x16);
             }
         }
 
@@ -2373,12 +2423,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="OpenSlider"/>.
+        /// Creates a copy of <see cref="OpenSlider"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_OpenSlider()
         {
             lock(OpenSlider_SyncLock) {
-                return (Bitmap)OpenSlider.Clone();
+                return new Bitmap(OpenSlider);
             }
         }
 
@@ -2419,12 +2470,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Radio16x16"/>.
+        /// Creates a copy of <see cref="Radio16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Radio16x16()
         {
             lock(Radio16x16_SyncLock) {
-                return (Bitmap)Radio16x16.Clone();
+                return new Bitmap(Radio16x16);
             }
         }
 
@@ -2465,12 +2517,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Radio48x48"/>.
+        /// Creates a copy of <see cref="Radio48x48"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Radio48x48()
         {
             lock(Radio48x48_SyncLock) {
-                return (Bitmap)Radio48x48.Clone();
+                return new Bitmap(Radio48x48);
             }
         }
 
@@ -2511,12 +2564,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Rebroadcast16x16"/>.
+        /// Creates a copy of <see cref="Rebroadcast16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Rebroadcast16x16()
         {
             lock(Rebroadcast16x16_SyncLock) {
-                return (Bitmap)Rebroadcast16x16.Clone();
+                return new Bitmap(Rebroadcast16x16);
             }
         }
 
@@ -2557,12 +2611,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="RowHeader"/>.
+        /// Creates a copy of <see cref="RowHeader"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_RowHeader()
         {
             lock(RowHeader_SyncLock) {
-                return (Bitmap)RowHeader.Clone();
+                return new Bitmap(RowHeader);
             }
         }
 
@@ -2603,12 +2658,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="RowHeaderSelected"/>.
+        /// Creates a copy of <see cref="RowHeaderSelected"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_RowHeaderSelected()
         {
             lock(RowHeaderSelected_SyncLock) {
-                return (Bitmap)RowHeaderSelected.Clone();
+                return new Bitmap(RowHeaderSelected);
             }
         }
 
@@ -2649,12 +2705,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Server16x16"/>.
+        /// Creates a copy of <see cref="Server16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Server16x16()
         {
             lock(Server16x16_SyncLock) {
-                return (Bitmap)Server16x16.Clone();
+                return new Bitmap(Server16x16);
             }
         }
 
@@ -2695,12 +2752,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="ShowList"/>.
+        /// Creates a copy of <see cref="ShowList"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_ShowList()
         {
             lock(ShowList_SyncLock) {
-                return (Bitmap)ShowList.Clone();
+                return new Bitmap(ShowList);
             }
         }
 
@@ -2741,12 +2799,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Site16x16"/>.
+        /// Creates a copy of <see cref="Site16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Site16x16()
         {
             lock(Site16x16_SyncLock) {
-                return (Bitmap)Site16x16.Clone();
+                return new Bitmap(Site16x16);
             }
         }
 
@@ -2787,12 +2846,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="SmallPlaneNorth"/>.
+        /// Creates a copy of <see cref="SmallPlaneNorth"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_SmallPlaneNorth()
         {
             lock(SmallPlaneNorth_SyncLock) {
-                return (Bitmap)SmallPlaneNorth.Clone();
+                return new Bitmap(SmallPlaneNorth);
             }
         }
 
@@ -2833,12 +2893,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Test16x16"/>.
+        /// Creates a copy of <see cref="Test16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Test16x16()
         {
             lock(Test16x16_SyncLock) {
-                return (Bitmap)Test16x16.Clone();
+                return new Bitmap(Test16x16);
             }
         }
 
@@ -2879,12 +2940,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="TestSquare"/>.
+        /// Creates a copy of <see cref="TestSquare"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_TestSquare()
         {
             lock(TestSquare_SyncLock) {
-                return (Bitmap)TestSquare.Clone();
+                return new Bitmap(TestSquare);
             }
         }
 
@@ -2925,12 +2987,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Tower"/>.
+        /// Creates a copy of <see cref="Tower"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Tower()
         {
             lock(Tower_SyncLock) {
-                return (Bitmap)Tower.Clone();
+                return new Bitmap(Tower);
             }
         }
 
@@ -2971,12 +3034,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Transparent_25"/>.
+        /// Creates a copy of <see cref="Transparent_25"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Transparent_25()
         {
             lock(Transparent_25_SyncLock) {
-                return (Bitmap)Transparent_25.Clone();
+                return new Bitmap(Transparent_25);
             }
         }
 
@@ -3017,12 +3081,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Transparent_50"/>.
+        /// Creates a copy of <see cref="Transparent_50"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Transparent_50()
         {
             lock(Transparent_50_SyncLock) {
-                return (Bitmap)Transparent_50.Clone();
+                return new Bitmap(Transparent_50);
             }
         }
 
@@ -3063,12 +3128,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Transparent_16x16"/>.
+        /// Creates a copy of <see cref="Transparent_16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Transparent_16x16()
         {
             lock(Transparent_16x16_SyncLock) {
-                return (Bitmap)Transparent_16x16.Clone();
+                return new Bitmap(Transparent_16x16);
             }
         }
 
@@ -3109,12 +3175,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="User16x16"/>.
+        /// Creates a copy of <see cref="User16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_User16x16()
         {
             lock(User16x16_SyncLock) {
-                return (Bitmap)User16x16.Clone();
+                return new Bitmap(User16x16);
             }
         }
 
@@ -3155,12 +3222,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Volume0"/>.
+        /// Creates a copy of <see cref="Volume0"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Volume0()
         {
             lock(Volume0_SyncLock) {
-                return (Bitmap)Volume0.Clone();
+                return new Bitmap(Volume0);
             }
         }
 
@@ -3201,12 +3269,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Volume100"/>.
+        /// Creates a copy of <see cref="Volume100"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Volume100()
         {
             lock(Volume100_SyncLock) {
-                return (Bitmap)Volume100.Clone();
+                return new Bitmap(Volume100);
             }
         }
 
@@ -3247,12 +3316,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Volume25"/>.
+        /// Creates a copy of <see cref="Volume25"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Volume25()
         {
             lock(Volume25_SyncLock) {
-                return (Bitmap)Volume25.Clone();
+                return new Bitmap(Volume25);
             }
         }
 
@@ -3293,12 +3363,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Volume50"/>.
+        /// Creates a copy of <see cref="Volume50"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Volume50()
         {
             lock(Volume50_SyncLock) {
-                return (Bitmap)Volume50.Clone();
+                return new Bitmap(Volume50);
             }
         }
 
@@ -3339,12 +3410,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Volume75"/>.
+        /// Creates a copy of <see cref="Volume75"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Volume75()
         {
             lock(Volume75_SyncLock) {
-                return (Bitmap)Volume75.Clone();
+                return new Bitmap(Volume75);
             }
         }
 
@@ -3385,12 +3457,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="VolumeDown"/>.
+        /// Creates a copy of <see cref="VolumeDown"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_VolumeDown()
         {
             lock(VolumeDown_SyncLock) {
-                return (Bitmap)VolumeDown.Clone();
+                return new Bitmap(VolumeDown);
             }
         }
 
@@ -3431,12 +3504,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="VolumeMute"/>.
+        /// Creates a copy of <see cref="VolumeMute"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_VolumeMute()
         {
             lock(VolumeMute_SyncLock) {
-                return (Bitmap)VolumeMute.Clone();
+                return new Bitmap(VolumeMute);
             }
         }
 
@@ -3477,12 +3551,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="VolumeUp"/>.
+        /// Creates a copy of <see cref="VolumeUp"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_VolumeUp()
         {
             lock(VolumeUp_SyncLock) {
-                return (Bitmap)VolumeUp.Clone();
+                return new Bitmap(VolumeUp);
             }
         }
 
@@ -3523,12 +3598,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="WarningBitmap"/>.
+        /// Creates a copy of <see cref="WarningBitmap"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_WarningBitmap()
         {
             lock(WarningBitmap_SyncLock) {
-                return (Bitmap)WarningBitmap.Clone();
+                return new Bitmap(WarningBitmap);
             }
         }
 
@@ -3569,12 +3645,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="WarningIcon"/>.
+        /// Creates a copy of <see cref="WarningIcon"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Icon Clone_WarningIcon()
         {
             lock(WarningIcon_SyncLock) {
-                return (Icon)WarningIcon.Clone();
+                return Icon.FromHandle(WarningIcon.Handle);
             }
         }
 
@@ -3615,12 +3692,13 @@ namespace VirtualRadar.Resources
         }
 
         /// <summary>
-        /// Creates a clone of <see cref="Wizard16x16"/>.
+        /// Creates a copy of <see cref="Wizard16x16"/>. Despite the name this does not use Clone, it creates
+        /// a fresh copy.
         /// </summary>
         public static Bitmap Clone_Wizard16x16()
         {
             lock(Wizard16x16_SyncLock) {
-                return (Bitmap)Wizard16x16.Clone();
+                return new Bitmap(Wizard16x16);
             }
         }
     }
