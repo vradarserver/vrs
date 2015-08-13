@@ -313,7 +313,7 @@ namespace VirtualRadar.WebSite
             var left = 0f;
             var top = (image.Height - topOffset) - (lines.Count * lineHeight);
 
-            Image result = (Image)image.Clone();
+            Image result = new Bitmap(image);
 
             lock(_SyncLock) {
                 using(Graphics graphics = Graphics.FromImage(result)) {

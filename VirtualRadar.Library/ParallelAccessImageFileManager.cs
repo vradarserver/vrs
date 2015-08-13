@@ -124,7 +124,7 @@ namespace VirtualRadar.Library
                     _WebSiteImageCache.TryGetValue(normalisedName, out cacheEntry);
                     if(cacheEntry != null && cacheEntry.LastFetchedUtc >= _Clock.UtcNow.AddSeconds(-WebSiteCacheExpirySeconds)) {
                         if(cacheEntry.Image != null) {
-                            result = (Image)cacheEntry.Image.Clone();
+                            result = new Bitmap(cacheEntry.Image);
                         }
                     }
                 }
@@ -134,7 +134,7 @@ namespace VirtualRadar.Library
                     // being fetched serially.
                     result = FetchFromWebSite(webSite, webPathAndFileName);
                     cacheEntry = new CacheEntry() {
-                        Image = result == null ? null : (Image)result.Clone(),
+                        Image = result == null ? null : new Bitmap(result),
                         LastFetchedUtc = _Clock.UtcNow,
                         NormalisedFileName = normalisedName,
                     };
