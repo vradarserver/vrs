@@ -165,7 +165,7 @@
          */
         this.createCriteriaMenuEntry = function(pageSettings)
         {
-            return new VRS.MenuItem({
+            var menuEntry = new VRS.MenuItem({
                 name: 'options',
                 labelKey: 'Criteria',
                 vrsIcon:  'equalizer',
@@ -173,15 +173,21 @@
                     if(objSettings.showOptionsInPage) VRS.pageManager.show(VRS.MobilePageName.Options);
                     else {
                         that.buildCriteriaOptionPanelPages(pageSettings);
-                        var dialog = $('<div/>')
+                        $('<div/>')
                             .appendTo($('body'))
                             .vrsOptionDialog(VRS.jQueryUIHelper.getOptionDialogOptions({
                                 pages: pageSettings.pages,
                                 autoRemove: true
-                            }));
+                        }));
                     }
                 }
             });
+
+            pageSettings.report.hookFailedNoCriteria(function() {
+                menuEntry.clickCallback();
+            }, this);
+
+            return menuEntry;
         };
         //endregion
 
