@@ -75,6 +75,13 @@
         serverFilterName:   'emg-'
     });
 
+    VRS.reportFilterPropertyHandlers[VRS.ReportFilterProperty.FirstAltitude] = new VRS.ReportFilterPropertyHandler({
+        property:           VRS.ReportFilterProperty.FirstAltitude,
+        type:               VRS.FilterPropertyType.NumberRange,
+        labelKey:           'FirstAltitude',
+        serverFilterName:   'falt-'
+    });
+
     VRS.reportFilterPropertyHandlers[VRS.ReportFilterProperty.Icao] = new VRS.ReportFilterPropertyHandler({
         property:           VRS.ReportFilterProperty.Icao,
         type:               VRS.FilterPropertyType.TextMatch,
@@ -89,6 +96,13 @@
         type:               VRS.FilterPropertyType.OnOff,
         labelKey:           'IsMilitary',
         serverFilterName:   'mil-'
+    });
+
+    VRS.reportFilterPropertyHandlers[VRS.ReportFilterProperty.LastAltitude] = new VRS.ReportFilterPropertyHandler({
+        property:           VRS.ReportFilterProperty.LastAltitude,
+        type:               VRS.FilterPropertyType.NumberRange,
+        labelKey:           'LastAltitude',
+        serverFilterName:   'lalt-'
     });
 
     VRS.reportFilterPropertyHandlers[VRS.ReportFilterProperty.ModelIcao] = new VRS.ReportFilterPropertyHandler({

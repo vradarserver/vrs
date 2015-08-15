@@ -35,6 +35,8 @@ namespace Test.VirtualRadar.Database
             TestUtilities.TestProperty(criteria, r => r.Operator, null, new FilterString());
             TestUtilities.TestProperty(criteria, r => r.Registration, null, new FilterString());
             TestUtilities.TestProperty(criteria, r => r.Type, null, new FilterString());
+            TestUtilities.TestProperty(criteria, r => r.FirstAltitude, null, new FilterRange<int>());
+            TestUtilities.TestProperty(criteria, r => r.LastAltitude, null, new FilterRange<int>());
         }
     }
 }

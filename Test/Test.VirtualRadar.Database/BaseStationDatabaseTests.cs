@@ -39,7 +39,7 @@ namespace Test.VirtualRadar.Database
         private string _EmptyDatabaseFileName;
         private SQLiteConnectionStringBuilder _ConnectionStringBuilder;
         private SearchBaseStationCriteria _Criteria;
-        private readonly string[] _SortColumns = new string[] { "callsign", "country", "date", "model", "type", "operator", "reg", "icao" };
+        private readonly string[] _SortColumns = new string[] { "callsign", "country", "date", "model", "type", "operator", "reg", "icao", "firstaltitude", "lastaltitude", };
         private string _CreateDatabaseFileName;
         private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Configuration _Configuration;
@@ -79,6 +79,8 @@ namespace Test.VirtualRadar.Database
 
             _Criteria = new SearchBaseStationCriteria() {
                 Date = new FilterRange<DateTime>(DateTime.MinValue, DateTime.MaxValue),
+                FirstAltitude = new FilterRange<int>(int.MinValue, int.MaxValue),
+                LastAltitude = new FilterRange<int>(int.MinValue, int.MaxValue),
             };
 
             _FileNameChangingEvent = new EventRecorder<EventArgs>();
@@ -1669,6 +1671,8 @@ namespace Test.VirtualRadar.Database
                     case "Date":
                     case "IsEmergency":
                     case "UseAlternateCallsigns":
+                    case "FirstAltitude":
+                    case "LastAltitude":
                         isStringProperty = false;
                         break;
                     default:                throw new NotImplementedException(criteriaProperty.Name);
@@ -1712,6 +1716,8 @@ namespace Test.VirtualRadar.Database
                     case "Type":
                     case "IsEmergency":
                     case "UseAlternateCallsigns":
+                    case "FirstAltitude":
+                    case "LastAltitude":
                         isStringProperty = false;
                         break;
                     default:                throw new NotImplementedException(criteriaProperty.Name);
@@ -1819,9 +1825,9 @@ namespace Test.VirtualRadar.Database
             var lowFlight = CreateFlight("lowFlight", false);
             var highFlight = CreateFlight("highFlight", false);
 
-            defaultFlight.FirstAltitude = 1;
-            lowFlight.FirstAltitude = 2;
-            highFlight.FirstAltitude = 3;
+            defaultFlight.NumPosMsgRec = 1;
+            lowFlight.NumPosMsgRec = 2;
+            highFlight.NumPosMsgRec = 3;
 
             foreach(var sortColumn in _SortColumns) {
                 TestCleanup();
@@ -1837,15 +1843,15 @@ namespace Test.VirtualRadar.Database
 
                 var flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, true, null, false);
                 Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(1, flights[0].FirstAltitude, sortColumn);
-                Assert.AreEqual(2, flights[1].FirstAltitude, sortColumn);
-                Assert.AreEqual(3, flights[2].FirstAltitude, sortColumn);
+                Assert.AreEqual(1, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(3, flights[2].NumPosMsgRec, sortColumn);
 
                 flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, false, null, false);
                 Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(3, flights[0].FirstAltitude, sortColumn);
-                Assert.AreEqual(2, flights[1].FirstAltitude, sortColumn);
-                Assert.AreEqual(1, flights[2].FirstAltitude, sortColumn);
+                Assert.AreEqual(3, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(1, flights[2].NumPosMsgRec, sortColumn);
             }
         }
 
@@ -1985,8 +1991,8 @@ namespace Test.VirtualRadar.Database
                         AddFlight(aboveRangeFlight);
 
                         var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
-                        var message = "";
-                        foreach(var flight in flights) message = String.Format("{0}{1}{2}", message, message.Length == 0 ? "" : ", " , flight.Callsign);
+                        var message = String.Format("{0}:", criteriaProperty.Name);
+                        foreach(var flight in flights) message = String.Format("{0} {1}", message, flight.Callsign);
 
                         if(!reverseCondition) {
                             Assert.AreEqual(3, flights.Count, message);
@@ -2044,9 +2050,9 @@ namespace Test.VirtualRadar.Database
             var lowFlight = CreateFlight(aircraft, "lowFlight");
             var highFlight = CreateFlight(aircraft, "highFlight");
 
-            defaultFlight.FirstAltitude = 1;
-            lowFlight.FirstAltitude = 2;
-            highFlight.FirstAltitude = 3;
+            defaultFlight.NumPosMsgRec = 1;
+            lowFlight.NumPosMsgRec = 2;
+            highFlight.NumPosMsgRec = 3;
 
             foreach(var sortColumn in _SortColumns) {
                 if(!IsFlightSortColumn(sortColumn)) continue;
@@ -2066,15 +2072,15 @@ namespace Test.VirtualRadar.Database
 
                 var flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, true, null, false);
                 Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(1, flights[0].FirstAltitude, sortColumn);
-                Assert.AreEqual(2, flights[1].FirstAltitude, sortColumn);
-                Assert.AreEqual(3, flights[2].FirstAltitude, sortColumn);
+                Assert.AreEqual(1, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(3, flights[2].NumPosMsgRec, sortColumn);
 
                 flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, false, null, false);
                 Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(3, flights[0].FirstAltitude, sortColumn);
-                Assert.AreEqual(2, flights[1].FirstAltitude, sortColumn);
-                Assert.AreEqual(1, flights[2].FirstAltitude, sortColumn);
+                Assert.AreEqual(3, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(1, flights[2].NumPosMsgRec, sortColumn);
             }
         }
 
@@ -3600,6 +3606,8 @@ namespace Test.VirtualRadar.Database
             switch(criteriaProperty.Name) {
                 case "Date":
                 case "IsEmergency":
+                case "FirstAltitude":
+                case "LastAltitude":
                 case "Callsign":                return true;
 
                 case "Icao":
@@ -3622,6 +3630,8 @@ namespace Test.VirtualRadar.Database
         {
             switch(sortColumn) {
                 case "date":
+                case "firstaltitude":
+                case "lastaltitude":
                 case "callsign":    return true;
 
                 case "country":
@@ -3709,6 +3719,8 @@ namespace Test.VirtualRadar.Database
                     goto case "Callsign";
                 case "Date":
                 case "UseAlternateCallsigns":
+                case "FirstAltitude":
+                case "LastAltitude":
                     result = false;
                     break;
                 case "IsEmergency":
@@ -3785,6 +3797,8 @@ namespace Test.VirtualRadar.Database
                 case "Date":
                 case "IsEmergency":
                 case "UseAlternateCallsigns":
+                case "FirstAltitude":
+                case "LastAltitude":
                     result = false;
                     break;
                 default:
@@ -3854,6 +3868,8 @@ namespace Test.VirtualRadar.Database
                 case "Date":
                 case "IsEmergency":
                 case "UseAlternateCallsigns":
+                case "FirstAltitude":
+                case "LastAltitude":
                     result = false;
                     break;
                 default:
@@ -3923,6 +3939,8 @@ namespace Test.VirtualRadar.Database
                 case "Date":
                 case "IsEmergency":
                 case "UseAlternateCallsigns":
+                case "FirstAltitude":
+                case "LastAltitude":
                     result = false;
                     break;
                 default:
@@ -3974,6 +3992,26 @@ namespace Test.VirtualRadar.Database
 
                     _Criteria.Date.ReverseCondition =reverseCondition;
                     break;
+                case "FirstAltitude":
+                    var firstAltitude = 100;
+                    belowRangeFlight.FirstAltitude = firstAltitude - 1;
+                    _Criteria.FirstAltitude.LowerValue = startRangeFlight.FirstAltitude = firstAltitude;
+                    inRangeFlight.FirstAltitude = firstAltitude + 1;
+                    _Criteria.FirstAltitude.UpperValue = endRangeFlight.FirstAltitude = firstAltitude + 2;
+                    aboveRangeFlight.FirstAltitude = firstAltitude + 3;
+
+                    _Criteria.FirstAltitude.ReverseCondition = reverseCondition;
+                    break;
+                case "LastAltitude":
+                    var lastAltitude = 100;
+                    belowRangeFlight.LastAltitude = lastAltitude - 1;
+                    _Criteria.LastAltitude.LowerValue = startRangeFlight.LastAltitude = lastAltitude;
+                    inRangeFlight.LastAltitude = lastAltitude + 1;
+                    _Criteria.LastAltitude.UpperValue = endRangeFlight.LastAltitude = lastAltitude + 2;
+                    aboveRangeFlight.LastAltitude = lastAltitude + 3;
+
+                    _Criteria.LastAltitude.ReverseCondition = reverseCondition;
+                    break;
                 case "Callsign":
                 case "IsEmergency":
                 case "Operator":
@@ -3995,17 +4033,20 @@ namespace Test.VirtualRadar.Database
         {
             var stringValue = isDefault ? sortColumn == "reg" || sortColumn == "icao" ? "" : null : isHigh ? "B" : "A";
             var dateValue = isDefault ? default(DateTime) : isHigh ? new DateTime(2001, 1, 2) : new DateTime(2001, 1, 1);
+            var intValue = isDefault ? (int?)null : isHigh ? 10 : -10;
 
             switch(sortColumn) {
-                case "callsign":    flight.Callsign = stringValue; break;
-                case "country":     flight.Aircraft.ModeSCountry = stringValue; break;
-                case "date":        flight.StartTime = dateValue; break;
-                case "model":       flight.Aircraft.Type = stringValue; break;
-                case "type":        flight.Aircraft.ICAOTypeCode = stringValue; break;
-                case "operator":    flight.Aircraft.RegisteredOwners = stringValue; break;
-                case "reg":         flight.Aircraft.Registration = stringValue; break;
-                case "icao":        flight.Aircraft.ModeS = stringValue; break;
-                default:            throw new NotImplementedException();
+                case "callsign":        flight.Callsign = stringValue; break;
+                case "country":         flight.Aircraft.ModeSCountry = stringValue; break;
+                case "date":            flight.StartTime = dateValue; break;
+                case "firstaltitude":   flight.FirstAltitude = intValue; break;
+                case "lastaltitude":    flight.LastAltitude = intValue; break;
+                case "model":           flight.Aircraft.Type = stringValue; break;
+                case "type":            flight.Aircraft.ICAOTypeCode = stringValue; break;
+                case "operator":        flight.Aircraft.RegisteredOwners = stringValue; break;
+                case "reg":             flight.Aircraft.Registration = stringValue; break;
+                case "icao":            flight.Aircraft.ModeS = stringValue; break;
+                default:                throw new NotImplementedException();
             }
         }
         #endregion

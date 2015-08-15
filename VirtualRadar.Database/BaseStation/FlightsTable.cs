@@ -451,6 +451,12 @@ namespace VirtualRadar.Database.BaseStation
             AddCriteria(command, criteria.Type, "a.[ICAOTypeCode]");
             AddParameter(result.PropertyValues, criteria.Type);
 
+            AddCriteria(command, criteria.FirstAltitude, "f.[FirstAltitude]");
+            AddParameter(result.PropertyValues, criteria.FirstAltitude);
+
+            AddCriteria(command, criteria.LastAltitude, "f.[LastAltitude]");
+            AddParameter(result.PropertyValues, criteria.LastAltitude);
+
             result.SqlChunk = command.ToString();
             return result;
         }
@@ -533,6 +539,49 @@ namespace VirtualRadar.Database.BaseStation
                     case FilterCondition.Between:
                         var lowerPresent = filter.LowerValue != null && filter.LowerValue.Value.Year != DateTime.MinValue.Year;
                         var upperPresent = filter.UpperValue != null && filter.UpperValue.Value.Year != DateTime.MaxValue.Year;
+                        if(lowerPresent) onLowerValue(lowerPresent && upperPresent);
+                        if(upperPresent) onUpperValue(lowerPresent && upperPresent);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds a single criteria to the statement passed across
+        /// </summary>
+        /// <param name="criteriaText"></param>
+        /// <param name="filter"></param>
+        /// <param name="fieldName"></param>
+        private void AddCriteria(StringBuilder criteriaText, FilterRange<int> filter, string fieldName)
+        {
+            HandleIntRangeFilter(filter,
+                (bothUsed) => { AddCriteria(criteriaText, fieldName, String.Format(" {0} ?", !filter.ReverseCondition ? ">=" : "<"), openParenthesis: bothUsed); },
+                (bothUsed) => { AddCriteria(criteriaText, fieldName, String.Format(" {0} ?", !filter.ReverseCondition ? "<=" : ">"), useOR: bothUsed && filter.ReverseCondition, closeParenthesis: bothUsed); }
+            );
+        }
+
+        /// <summary>
+        /// Adds a parameter to the command for the filter value.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="filter"></param>
+        private void AddParameter(List<object> parameters, FilterRange<int> filter)
+        {
+            HandleIntRangeFilter(filter,
+                (bothUsed) => { parameters.Add(filter.LowerValue); },
+                (bothUsed) => { parameters.Add(filter.UpperValue); }
+            );
+        }
+
+        private void HandleIntRangeFilter(FilterRange<int> filter, Action<bool> onLowerValue, Action<bool> onUpperValue)
+        {
+            if(filter != null) {
+                switch(filter.Condition) {
+                    case FilterCondition.Between:
+                        var lowerPresent = filter.LowerValue != null && filter.LowerValue != int.MinValue;
+                        var upperPresent = filter.UpperValue != null && filter.UpperValue != int.MaxValue;
                         if(lowerPresent) onLowerValue(lowerPresent && upperPresent);
                         if(upperPresent) onUpperValue(lowerPresent && upperPresent);
                         break;
@@ -683,14 +732,16 @@ namespace VirtualRadar.Database.BaseStation
             string result = null;
             if(sortField != null) {
                 switch(sortField.ToUpperInvariant()) {
-                    case "CALLSIGN":    result = "f.[Callsign]"; break;
-                    case "COUNTRY":     result = "a.[ModeSCountry]"; break;
-                    case "DATE":        result = "f.[StartTime]"; break;
-                    case "MODEL":       result = "a.[Type]"; break;
-                    case "TYPE":        result = "a.[ICAOTypeCode]"; break;
-                    case "OPERATOR":    result = "a.[RegisteredOwners]"; break;
-                    case "REG":         result = "a.[Registration]"; break;
-                    case "ICAO":        result = "a.[ModeS]"; break;
+                    case "CALLSIGN":        result = "f.[Callsign]"; break;
+                    case "COUNTRY":         result = "a.[ModeSCountry]"; break;
+                    case "DATE":            result = "f.[StartTime]"; break;
+                    case "MODEL":           result = "a.[Type]"; break;
+                    case "TYPE":            result = "a.[ICAOTypeCode]"; break;
+                    case "OPERATOR":        result = "a.[RegisteredOwners]"; break;
+                    case "REG":             result = "a.[Registration]"; break;
+                    case "ICAO":            result = "a.[ModeS]"; break;
+                    case "FIRSTALTITUDE":   result = "f.[FirstAltitude]"; break;
+                    case "LASTALTITUDE":    result = "f.[LastAltitude]"; break;
                 }
             }
 

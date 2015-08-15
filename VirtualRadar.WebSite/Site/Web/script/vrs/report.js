@@ -628,14 +628,16 @@
         function getSortColumnValues()
         {
             return [
-                new VRS.ValueText({ value: VRS.ReportSortColumn.None,         textKey: 'None' }),
-                new VRS.ValueText({ value: VRS.ReportSortColumn.Callsign,     textKey: 'Callsign' }),
-                new VRS.ValueText({ value: VRS.ReportSortColumn.Date,         textKey: 'Date' }),
-                new VRS.ValueText({ value: VRS.ReportSortColumn.Icao,         textKey: 'Icao' }),
-                new VRS.ValueText({ value: VRS.ReportSortColumn.Model,        textKey: 'Model' }),
-                new VRS.ValueText({ value: VRS.ReportSortColumn.ModelIcao,    textKey: 'ModelIcao' }),
-                new VRS.ValueText({ value: VRS.ReportSortColumn.Operator,     textKey: 'Operator' }),
-                new VRS.ValueText({ value: VRS.ReportSortColumn.Registration, textKey: 'Registration' })
+                new VRS.ValueText({ value: VRS.ReportSortColumn.None,           textKey: 'None' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.Callsign,       textKey: 'Callsign' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.Date,           textKey: 'Date' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.FirstAltitude,  textKey: 'FirstAltitude' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.Icao,           textKey: 'Icao' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.LastAltitude,   textKey: 'LastAltitude' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.Model,          textKey: 'Model' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.ModelIcao,      textKey: 'ModelIcao' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.Operator,       textKey: 'Operator' }),
+                new VRS.ValueText({ value: VRS.ReportSortColumn.Registration,   textKey: 'Registration' })
             ];
         }
         //endregion

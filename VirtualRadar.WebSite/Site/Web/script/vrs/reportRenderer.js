@@ -534,8 +534,10 @@
         headingKey:         'ListFirstAltitude',
         labelKey:           'FirstAltitude',
         alignment:          VRS.Alignment.Right,
+        sortColumn:         VRS.ReportSortColumn.FirstAltitude,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.fAlt !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.fAlt, VRS.AltitudeType.Barometric, json.fOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.fAlt, VRS.AltitudeType.Barometric, json.fOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false); },
+        groupValue:         function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.fAlt; }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.FirstFlightLevel] = new VRS.ReportPropertyHandler({
@@ -677,8 +679,10 @@
         headingKey:         'ListLastAltitude',
         labelKey:           'LastAltitude',
         alignment:          VRS.Alignment.Right,
+        sortColumn:         VRS.ReportSortColumn.LastAltitude,
         hasValue:           function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.lAlt !== undefined; },
-        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.lAlt, VRS.AltitudeType.Barometric, json.lOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false); }
+        contentCallback:    function(/** VRS_JSON_REPORT_FLIGHT */ json, /** Object */ options) { return VRS.format.altitude(json.lAlt, VRS.AltitudeType.Barometric, json.lOnGnd, options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false); },
+        groupValue:         function(/** VRS_JSON_REPORT_FLIGHT */ json) { return json.lAlt; }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.LastFlightLevel] = new VRS.ReportPropertyHandler({
