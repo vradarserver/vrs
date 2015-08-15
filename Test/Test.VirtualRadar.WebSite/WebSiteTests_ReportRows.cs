@@ -79,6 +79,8 @@ namespace Test.VirtualRadar.WebSite
             public BoolFilter<WakeTurbulenceCategory> WakeTurbulenceCategory { get; set; }
             public BoolFilter<Species> Species { get; set; }
             public StringFilter Type { get; set; }
+            public NumericFilter<int> FirstAltitude { get; set; }
+            public NumericFilter<int> LastAltitude { get; set; }
 
             public ReportRowsAddress()
             {
@@ -110,6 +112,8 @@ namespace Test.VirtualRadar.WebSite
                     if(WakeTurbulenceCategory != null)  WakeTurbulenceCategory.AddQueryValues("wtc-", queryValues);
                     if(Species != null)                 Species.AddQueryValues("spc-", queryValues);
                     if(Type != null)                    Type.AddQueryValues("typ-", queryValues);
+                    if(FirstAltitude != null)           FirstAltitude.AddQueryValues("falt-", queryValues);
+                    if(LastAltitude != null)            LastAltitude.AddQueryValues("lalt-", queryValues);
 
                     StringBuilder queryString = new StringBuilder();
                     foreach(var kvp in queryValues) {
@@ -135,6 +139,22 @@ namespace Test.VirtualRadar.WebSite
                     case "ToDate":
                         if(Date == null) Date = new DateFilter(null, null, false);
                         if(!String.IsNullOrEmpty(queryValue)) Date.Upper = DateTime.ParseExact("yyyy-MM-dd", queryValue, CultureInfo.InvariantCulture);
+                        break;
+                    case "FromFirstAltitude":
+                        if(FirstAltitude == null) FirstAltitude = new NumericFilter<int>(null, null, false);
+                        if(!String.IsNullOrEmpty(queryValue)) FirstAltitude.Lower = int.Parse(queryValue, CultureInfo.InvariantCulture);
+                        break;
+                    case "ToFirstAltitude":
+                        if(FirstAltitude == null) FirstAltitude = new NumericFilter<int>(null, null, false);
+                        if(!String.IsNullOrEmpty(queryValue)) FirstAltitude.Upper = int.Parse(queryValue, CultureInfo.InvariantCulture);
+                        break;
+                    case "FromLastAltitude":
+                        if(LastAltitude == null) LastAltitude = new NumericFilter<int>(null, null, false);
+                        if(!String.IsNullOrEmpty(queryValue)) LastAltitude.Lower = int.Parse(queryValue, CultureInfo.InvariantCulture);
+                        break;
+                    case "ToLastAltitude":
+                        if(LastAltitude == null) LastAltitude = new NumericFilter<int>(null, null, false);
+                        if(!String.IsNullOrEmpty(queryValue)) LastAltitude.Upper = int.Parse(queryValue, CultureInfo.InvariantCulture);
                         break;
                     case "Icao24":                  Icao24 = new StringFilter(queryValue, FilterCondition.Equals, false); break;
                     case "Registration":            Registration = new StringFilter(queryValue, FilterCondition.Equals, false); break;

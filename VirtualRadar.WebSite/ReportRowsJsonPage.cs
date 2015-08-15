@@ -271,8 +271,10 @@ namespace VirtualRadar.WebSite
                 if(caselessName.StartsWith("CALL-"))        result.Callsign = DecodeStringFilter(name, args.QueryString[name]);
                 else if(caselessName.StartsWith("COU-"))    result.Country = DecodeStringFilter(name, args.QueryString[name]);
                 else if(caselessName.StartsWith("DATE-"))   result.Date = DecodeDateRangeFilter(result.Date, name, args.QueryString[name]);
+                else if(caselessName.StartsWith("FALT-"))   result.FirstAltitude = DecodeIntRangeFilter(result.FirstAltitude, name, args.QueryString[name]);
                 else if(caselessName.StartsWith("ICAO-"))   result.Icao = DecodeStringFilter(name, args.QueryString[name]);
                 else if(caselessName.StartsWith("EMG-"))    result.IsEmergency = DecodeBoolFilter(name, args.QueryString[name]);
+                else if(caselessName.StartsWith("LALT-"))   result.LastAltitude = DecodeIntRangeFilter(result.LastAltitude, name, args.QueryString[name]);
                 else if(caselessName.StartsWith("OP-"))     result.Operator = DecodeStringFilter(name, args.QueryString[name]);
                 else if(caselessName.StartsWith("REG-"))    result.Registration = DecodeStringFilter(name, args.QueryString[name]);
                 else if(caselessName.StartsWith("MIL-"))    result.IsMilitary = DecodeBoolFilter(name, args.QueryString[name]);

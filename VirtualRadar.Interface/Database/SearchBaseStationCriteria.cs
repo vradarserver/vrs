@@ -69,5 +69,15 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets the model ICAO code to search for.
         /// </summary>
         public FilterString Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the first altitude range to search for.
+        /// </summary>
+        public FilterRange<int> FirstAltitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last altitude range to search for.
+        /// </summary>
+        public FilterRange<int> LastAltitude { get; set; }
     }
 }
