@@ -49,6 +49,7 @@
             buildingRequest:        'buildingRequest',
             pageSizeChanged:        'pageSizeChanged',
             rowsFetched:            'rowsFetched',
+            failedNoCriteria:       'failedNoCriteria',
             fetchFailed:            'fetchFailed',
             selectedFlightChanged:  'selectedFlightChanged'
         };
@@ -170,6 +171,15 @@
         //endregion
 
         //region Events exposed
+        /**
+         * Hooks an event that is raised when a report run is requested but it immediately fails because no criteria
+         * has been supplied.
+         * @param {function(VRS.Report)}    callback    Passed a reference to the report.
+         * @param {Object}                  forceThis   The object to use as 'this' for the event call.
+         * @returns {Object}
+         */
+        this.hookFailedNoCriteria = function(callback, forceThis) { return _Dispatcher.hook(_Events.failedNoCriteria, callback, forceThis); };
+
         /**
          * Hooks an event that is raised before a request for a report page is made.
          * @param {function(VRS.Report, object, object)}    callback    Passed a reference to the report, the XHR parameters object and the XHR headers object.
@@ -475,7 +485,11 @@
         {
             if(!pageNumber) pageNumber = 0;
 
-            if(that.getCriteria().hasCriteria()) {
+            if(!that.getCriteria().hasCriteria()) {
+                _Dispatcher.raise(_Events.failedNoCriteria, [
+                    that
+                ]);
+            } else {
                 var firstRow = _PageSize > 0 ? pageNumber * _PageSize : -1;
                 var lastRow = _PageSize > 0 ? ((pageNumber + 1) * _PageSize) - 1 : -1;
                 var parameters = {

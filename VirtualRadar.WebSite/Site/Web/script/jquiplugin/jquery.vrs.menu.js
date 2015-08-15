@@ -373,7 +373,60 @@
         },
         //endregion
 
-        //region -- _triggerPressed
+        //region -- getIsOpen, toggleMenu, openMenu, closeMenu, _triggerPressed
+        /**
+         * Returns true if the menu is open.
+         * @param {VRS.MenuPluginState} [state]     Leave undefined. For internal use.
+         * @returns {boolean}
+         */
+        getIsOpen: function(state)
+        {
+            state = state || this._getState();
+            return !!state.menuContainer;
+        },
+
+        /**
+         * Opens the menu unless it's already open, in which case it closes it.
+         * @param {VRS.MenuPluginState} [state]     Leave undefined. For internal use.
+         */
+        toggleMenu: function(state)
+        {
+            state = state || this._getState();
+
+            if(this.getIsOpen(state)) {
+                this.closeMenu(state);
+            } else {
+                this.openMenu(state);
+            }
+        },
+
+        /**
+         * Opens the menu. Does nothing if it's already open.
+         * @param {VRS.MenuPluginState} [state]     Leave undefined. For internal use.
+         */
+        openMenu: function(state)
+        {
+            state = state || this._getState();
+
+            if(!state.menuContainer) {
+                this._createMenu(state);
+                state.menuContainer.dlmenu('openMenu');
+            }
+        },
+
+        /**
+         * Closes the menu. Does nothing if it's already closed.
+         * @param {VRS.MenuPluginState} [state]     Leave undefined. For internal use.
+         */
+        closeMenu: function(state)
+        {
+            state = state || this._getState();
+
+            if(state.menuContainer) {
+                this._destroyMenu(state);
+            }
+        },
+
         /**
          * Called when the trigger element is pressed.
          * @params {Event} event
@@ -381,15 +434,7 @@
          */
         _triggerPressed: function(event)
         {
-            var state = this._getState();
-
-            if(state.menuContainer) {
-                this._destroyMenu(state);
-            } else {
-                this._createMenu(state);
-                state.menuContainer.dlmenu('openMenu');
-            }
-
+            this.toggleMenu();
             event.stopPropagation();
         },
         //endregion
