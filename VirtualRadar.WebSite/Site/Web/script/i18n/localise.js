@@ -517,14 +517,6 @@
     VRS.globalisation.addCultureInfo('zh',    { language: 'zh', englishName: 'Chinese',                 nativeName: '中文', topLevel: true });
     VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)',         nativeName: '中文 (中国)' });
 
-    // Croatian
-    VRS.globalisation.addCultureInfo('hr',    { language: 'hr', englishName: 'Croatian',                nativeName: 'Hrvatski', topLevel: true });
-    VRS.globalisation.addCultureInfo('hr-HR', { language: 'hr', englishName: 'Croatian (Croatia)',      nativeName: 'Hrvatski (Hrvatska)' });
-
-    // Serbian
-    VRS.globalisation.addCultureInfo('sr-Latn',     { language: 'sr-Latn', englishName: 'Serbian',          nativeName: 'Srpski',           countryFlag: 'sr', topLevel: true });
-    VRS.globalisation.addCultureInfo('sr-Latn-RS',  { language: 'sr-Latn', englishName: 'Serbian (Serbia)', nativeName: 'Srpski (Srbija)',  countryFlag: 'sr' });
-
     // Portuguese
     VRS.globalisation.addCultureInfo('pt-BR',   { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)',  countryFlag: 'br', topLevel: true });
 

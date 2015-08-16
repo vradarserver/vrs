@@ -120,8 +120,6 @@
     <EmbeddedResource Include="WebAdminStrings.de-DE.resx" />
     <EmbeddedResource Include="WebAdminStrings.fr-FR.resx" />
     <EmbeddedResource Include="WebAdminStrings.pt-BR.resx" />
-    <EmbeddedResource Include="WebAdminStrings.sr-Latn-RS.resx" />
-    <EmbeddedResource Include="WebAdminStrings.hr-HR.resx" />
     <EmbeddedResource Include="WebAdminStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebAdminStrings.Designer.cs</LastGenOutput>
