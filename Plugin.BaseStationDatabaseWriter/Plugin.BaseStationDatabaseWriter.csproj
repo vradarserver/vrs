@@ -94,9 +94,6 @@
   <ItemGroup>
     <EmbeddedResource Include="PluginStrings.fr-FR.resx" />
     <EmbeddedResource Include="PluginStrings.pt-BR.resx" />
-    <EmbeddedResource Include="PluginStrings.sr-Latn-RS.resx" />
-    <EmbeddedResource Include="PluginStrings.hr-HR.resx" />
-    <EmbeddedResource Include="PluginStrings.pl-PL.resx" />
     <EmbeddedResource Include="PluginStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PluginStrings.Designer.cs</LastGenOutput>

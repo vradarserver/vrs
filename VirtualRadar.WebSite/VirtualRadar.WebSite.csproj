@@ -228,8 +228,6 @@
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.se.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.zh-CN.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.zh.js" />
-    <Content Include="Site\Web\script\i18n\strings.sr-Latn.js" />
-    <Content Include="Site\Web\script\i18n\strings.hr.js" />
     <Content Include="Site\Web\script\i18n\strings.fr.js" />
     <Content Include="Site\Web\script\i18n\strings.zh.js" />
     <Content Include="Site\Web\script\jquery.colorPicker.js" />
