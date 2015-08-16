@@ -47,6 +47,11 @@ namespace VirtualRadar.Interface.View
         Rtl1090,
 
         /// <summary>
+        /// The user is using FR24 Feeder.
+        /// </summary>
+        FR24Feeder,
+
+        /// <summary>
         /// The user is using something we don't know about.
         /// </summary>
         Other,

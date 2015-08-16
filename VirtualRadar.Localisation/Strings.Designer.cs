@@ -5008,6 +5008,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flightradar24 Feeder.
+        /// </summary>
+        public static string RecConWizSdrFR24Feeder {
+            get {
+                return ResourceManager.GetString("RecConWizSdrFR24Feeder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to gr-air-modes.
         /// </summary>
         public static string RecConWizSdrGrAirModes {
