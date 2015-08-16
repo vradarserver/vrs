@@ -2502,4 +2502,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
     <value>Yes if position messages on this feed should be treated as calculated MLAT positions. Only required for MLAT feeds that do not identify the calculated position messages.</value>
   </data>
+  <data name="RecConWizSdrFR24Feeder" xml:space="preserve">
+    <value>Flightradar24 Feeder</value>
+    <comment>It's the name of a program</comment>
+  </data>
 </root>

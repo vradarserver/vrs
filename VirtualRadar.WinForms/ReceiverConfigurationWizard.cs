@@ -130,6 +130,7 @@ namespace VirtualRadar.WinForms
             radioButtonSdrModesdeco.Tag =   SdrDecoder.Modesdeco;
             radioButtonSdrOther.Tag =       SdrDecoder.Other;
             radioButtonSdrRtl1090.Tag =     SdrDecoder.Rtl1090;
+            radioButtonSdrFR24Feeder.Tag =  SdrDecoder.FR24Feeder;
             radioPanelSdrDecoder.ValueMember = PropertyHelper.ExtractName(answers, r => r.SdrDecoder);
             radioPanelSdrDecoder.DataSource = Answers;
 

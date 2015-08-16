@@ -35,6 +35,16 @@
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.textBoxNetworkAddress = new System.Windows.Forms.TextBox();
             this.wizard = new Gui.Wizard.Wizard();
+            this.wizardPageSdrDecoder = new Gui.Wizard.WizardPage();
+            this.radioPanelSdrDecoder = new RadioPanelApp.RadioPanel();
+            this.radioButtonSdrFR24Feeder = new System.Windows.Forms.RadioButton();
+            this.radioButtonSdrAdsbSharp = new System.Windows.Forms.RadioButton();
+            this.radioButtonSdrOther = new System.Windows.Forms.RadioButton();
+            this.radioButtonSdrRtl1090 = new System.Windows.Forms.RadioButton();
+            this.radioButtonSdrGrAirModes = new System.Windows.Forms.RadioButton();
+            this.radioButtonSdrDump1090 = new System.Windows.Forms.RadioButton();
+            this.radioButtonSdrModesdeco = new System.Windows.Forms.RadioButton();
+            this.label3 = new System.Windows.Forms.Label();
             this.wizardPageSdrOrDedicated = new Gui.Wizard.WizardPage();
             this.radioPanelReceiverClass = new RadioPanelApp.RadioPanel();
             this.radioButtonReceiverSdr = new System.Windows.Forms.RadioButton();
@@ -70,20 +80,13 @@
             this.radioButtonDedicatedMicroAdsb = new System.Windows.Forms.RadioButton();
             this.radioButtonDedicatedBeast = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
-            this.wizardPageSdrDecoder = new Gui.Wizard.WizardPage();
-            this.radioPanelSdrDecoder = new RadioPanelApp.RadioPanel();
-            this.radioButtonSdrAdsbSharp = new System.Windows.Forms.RadioButton();
-            this.radioButtonSdrOther = new System.Windows.Forms.RadioButton();
-            this.radioButtonSdrRtl1090 = new System.Windows.Forms.RadioButton();
-            this.radioButtonSdrGrAirModes = new System.Windows.Forms.RadioButton();
-            this.radioButtonSdrDump1090 = new System.Windows.Forms.RadioButton();
-            this.radioButtonSdrModesdeco = new System.Windows.Forms.RadioButton();
-            this.label3 = new System.Windows.Forms.Label();
             this.panelBorder.SuspendLayout();
             this.panelHeading.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.wizard.SuspendLayout();
+            this.wizardPageSdrDecoder.SuspendLayout();
+            this.radioPanelSdrDecoder.SuspendLayout();
             this.wizardPageSdrOrDedicated.SuspendLayout();
             this.radioPanelReceiverClass.SuspendLayout();
             this.wizardPageFinish.SuspendLayout();
@@ -96,8 +99,6 @@
             this.radioPanelConnectionType.SuspendLayout();
             this.wizardPageDedicatedReceiver.SuspendLayout();
             this.radioPanelDedicatedReceiver.SuspendLayout();
-            this.wizardPageSdrDecoder.SuspendLayout();
-            this.radioPanelSdrDecoder.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelBorder
@@ -186,6 +187,117 @@
             this.wizardPageFinish});
             this.wizard.Size = new System.Drawing.Size(569, 350);
             this.wizard.TabIndex = 0;
+            // 
+            // wizardPageSdrDecoder
+            // 
+            this.wizardPageSdrDecoder.Controls.Add(this.radioPanelSdrDecoder);
+            this.wizardPageSdrDecoder.Controls.Add(this.label3);
+            this.wizardPageSdrDecoder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wizardPageSdrDecoder.IsFinishPage = false;
+            this.wizardPageSdrDecoder.Location = new System.Drawing.Point(0, 0);
+            this.wizardPageSdrDecoder.Name = "wizardPageSdrDecoder";
+            this.wizardPageSdrDecoder.Size = new System.Drawing.Size(569, 302);
+            this.wizardPageSdrDecoder.TabIndex = 0;
+            // 
+            // radioPanelSdrDecoder
+            // 
+            this.radioPanelSdrDecoder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrFR24Feeder);
+            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrAdsbSharp);
+            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrOther);
+            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrRtl1090);
+            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrGrAirModes);
+            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrDump1090);
+            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrModesdeco);
+            this.radioPanelSdrDecoder.Location = new System.Drawing.Point(15, 46);
+            this.radioPanelSdrDecoder.Name = "radioPanelSdrDecoder";
+            this.radioPanelSdrDecoder.Size = new System.Drawing.Size(542, 174);
+            this.radioPanelSdrDecoder.TabIndex = 8;
+            this.radioPanelSdrDecoder.ValueMember = null;
+            // 
+            // radioButtonSdrFR24Feeder
+            // 
+            this.radioButtonSdrFR24Feeder.AutoSize = true;
+            this.radioButtonSdrFR24Feeder.Location = new System.Drawing.Point(3, 49);
+            this.radioButtonSdrFR24Feeder.Name = "radioButtonSdrFR24Feeder";
+            this.radioButtonSdrFR24Feeder.Size = new System.Drawing.Size(169, 17);
+            this.radioButtonSdrFR24Feeder.TabIndex = 2;
+            this.radioButtonSdrFR24Feeder.TabStop = true;
+            this.radioButtonSdrFR24Feeder.Text = "::RecConWizSdrFR24Feeder::";
+            this.radioButtonSdrFR24Feeder.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSdrAdsbSharp
+            // 
+            this.radioButtonSdrAdsbSharp.AutoSize = true;
+            this.radioButtonSdrAdsbSharp.Location = new System.Drawing.Point(3, 3);
+            this.radioButtonSdrAdsbSharp.Name = "radioButtonSdrAdsbSharp";
+            this.radioButtonSdrAdsbSharp.Size = new System.Drawing.Size(162, 17);
+            this.radioButtonSdrAdsbSharp.TabIndex = 0;
+            this.radioButtonSdrAdsbSharp.Text = "::RecConWizSdrAdsbSharp::";
+            this.radioButtonSdrAdsbSharp.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSdrOther
+            // 
+            this.radioButtonSdrOther.AutoSize = true;
+            this.radioButtonSdrOther.Location = new System.Drawing.Point(3, 148);
+            this.radioButtonSdrOther.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.radioButtonSdrOther.Name = "radioButtonSdrOther";
+            this.radioButtonSdrOther.Size = new System.Drawing.Size(63, 17);
+            this.radioButtonSdrOther.TabIndex = 6;
+            this.radioButtonSdrOther.Text = "::Other::";
+            this.radioButtonSdrOther.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSdrRtl1090
+            // 
+            this.radioButtonSdrRtl1090.AutoSize = true;
+            this.radioButtonSdrRtl1090.Location = new System.Drawing.Point(3, 118);
+            this.radioButtonSdrRtl1090.Name = "radioButtonSdrRtl1090";
+            this.radioButtonSdrRtl1090.Size = new System.Drawing.Size(147, 17);
+            this.radioButtonSdrRtl1090.TabIndex = 5;
+            this.radioButtonSdrRtl1090.Text = "::RecConWizSdrRtl1090::";
+            this.radioButtonSdrRtl1090.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSdrGrAirModes
+            // 
+            this.radioButtonSdrGrAirModes.AutoSize = true;
+            this.radioButtonSdrGrAirModes.Location = new System.Drawing.Point(3, 72);
+            this.radioButtonSdrGrAirModes.Name = "radioButtonSdrGrAirModes";
+            this.radioButtonSdrGrAirModes.Size = new System.Drawing.Size(165, 17);
+            this.radioButtonSdrGrAirModes.TabIndex = 3;
+            this.radioButtonSdrGrAirModes.Text = "::RecConWizSdrGrAirModes::";
+            this.radioButtonSdrGrAirModes.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSdrDump1090
+            // 
+            this.radioButtonSdrDump1090.AutoSize = true;
+            this.radioButtonSdrDump1090.Location = new System.Drawing.Point(3, 26);
+            this.radioButtonSdrDump1090.Name = "radioButtonSdrDump1090";
+            this.radioButtonSdrDump1090.Size = new System.Drawing.Size(162, 17);
+            this.radioButtonSdrDump1090.TabIndex = 1;
+            this.radioButtonSdrDump1090.Text = "::RecConWizSdrDump1090::";
+            this.radioButtonSdrDump1090.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSdrModesdeco
+            // 
+            this.radioButtonSdrModesdeco.AutoSize = true;
+            this.radioButtonSdrModesdeco.Location = new System.Drawing.Point(3, 95);
+            this.radioButtonSdrModesdeco.Name = "radioButtonSdrModesdeco";
+            this.radioButtonSdrModesdeco.Size = new System.Drawing.Size(166, 17);
+            this.radioButtonSdrModesdeco.TabIndex = 4;
+            this.radioButtonSdrModesdeco.Text = "::RecConWizSdrModesdeco::";
+            this.radioButtonSdrModesdeco.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(12, 20);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 20, 3, 10);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(133, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "::RecConWizSdrTitle::";
             // 
             // wizardPageSdrOrDedicated
             // 
@@ -572,105 +684,6 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "::RecConWizDedicatedTitle::";
             // 
-            // wizardPageSdrDecoder
-            // 
-            this.wizardPageSdrDecoder.Controls.Add(this.radioPanelSdrDecoder);
-            this.wizardPageSdrDecoder.Controls.Add(this.label3);
-            this.wizardPageSdrDecoder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.wizardPageSdrDecoder.IsFinishPage = false;
-            this.wizardPageSdrDecoder.Location = new System.Drawing.Point(0, 0);
-            this.wizardPageSdrDecoder.Name = "wizardPageSdrDecoder";
-            this.wizardPageSdrDecoder.Size = new System.Drawing.Size(569, 302);
-            this.wizardPageSdrDecoder.TabIndex = 4;
-            // 
-            // radioPanelSdrDecoder
-            // 
-            this.radioPanelSdrDecoder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrAdsbSharp);
-            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrOther);
-            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrRtl1090);
-            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrGrAirModes);
-            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrDump1090);
-            this.radioPanelSdrDecoder.Controls.Add(this.radioButtonSdrModesdeco);
-            this.radioPanelSdrDecoder.Location = new System.Drawing.Point(15, 46);
-            this.radioPanelSdrDecoder.Name = "radioPanelSdrDecoder";
-            this.radioPanelSdrDecoder.Size = new System.Drawing.Size(542, 174);
-            this.radioPanelSdrDecoder.TabIndex = 8;
-            this.radioPanelSdrDecoder.ValueMember = null;
-            // 
-            // radioButtonSdrAdsbSharp
-            // 
-            this.radioButtonSdrAdsbSharp.AutoSize = true;
-            this.radioButtonSdrAdsbSharp.Location = new System.Drawing.Point(3, 3);
-            this.radioButtonSdrAdsbSharp.Name = "radioButtonSdrAdsbSharp";
-            this.radioButtonSdrAdsbSharp.Size = new System.Drawing.Size(162, 17);
-            this.radioButtonSdrAdsbSharp.TabIndex = 1;
-            this.radioButtonSdrAdsbSharp.Text = "::RecConWizSdrAdsbSharp::";
-            this.radioButtonSdrAdsbSharp.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonSdrOther
-            // 
-            this.radioButtonSdrOther.AutoSize = true;
-            this.radioButtonSdrOther.Location = new System.Drawing.Point(3, 125);
-            this.radioButtonSdrOther.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
-            this.radioButtonSdrOther.Name = "radioButtonSdrOther";
-            this.radioButtonSdrOther.Size = new System.Drawing.Size(63, 17);
-            this.radioButtonSdrOther.TabIndex = 7;
-            this.radioButtonSdrOther.Text = "::Other::";
-            this.radioButtonSdrOther.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonSdrRtl1090
-            // 
-            this.radioButtonSdrRtl1090.AutoSize = true;
-            this.radioButtonSdrRtl1090.Location = new System.Drawing.Point(3, 95);
-            this.radioButtonSdrRtl1090.Name = "radioButtonSdrRtl1090";
-            this.radioButtonSdrRtl1090.Size = new System.Drawing.Size(147, 17);
-            this.radioButtonSdrRtl1090.TabIndex = 6;
-            this.radioButtonSdrRtl1090.Text = "::RecConWizSdrRtl1090::";
-            this.radioButtonSdrRtl1090.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonSdrGrAirModes
-            // 
-            this.radioButtonSdrGrAirModes.AutoSize = true;
-            this.radioButtonSdrGrAirModes.Location = new System.Drawing.Point(3, 49);
-            this.radioButtonSdrGrAirModes.Name = "radioButtonSdrGrAirModes";
-            this.radioButtonSdrGrAirModes.Size = new System.Drawing.Size(165, 17);
-            this.radioButtonSdrGrAirModes.TabIndex = 4;
-            this.radioButtonSdrGrAirModes.Text = "::RecConWizSdrGrAirModes::";
-            this.radioButtonSdrGrAirModes.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonSdrDump1090
-            // 
-            this.radioButtonSdrDump1090.AutoSize = true;
-            this.radioButtonSdrDump1090.Location = new System.Drawing.Point(3, 26);
-            this.radioButtonSdrDump1090.Name = "radioButtonSdrDump1090";
-            this.radioButtonSdrDump1090.Size = new System.Drawing.Size(162, 17);
-            this.radioButtonSdrDump1090.TabIndex = 3;
-            this.radioButtonSdrDump1090.Text = "::RecConWizSdrDump1090::";
-            this.radioButtonSdrDump1090.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonSdrModesdeco
-            // 
-            this.radioButtonSdrModesdeco.AutoSize = true;
-            this.radioButtonSdrModesdeco.Location = new System.Drawing.Point(3, 72);
-            this.radioButtonSdrModesdeco.Name = "radioButtonSdrModesdeco";
-            this.radioButtonSdrModesdeco.Size = new System.Drawing.Size(166, 17);
-            this.radioButtonSdrModesdeco.TabIndex = 5;
-            this.radioButtonSdrModesdeco.Text = "::RecConWizSdrModesdeco::";
-            this.radioButtonSdrModesdeco.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(12, 20);
-            this.label3.Margin = new System.Windows.Forms.Padding(3, 20, 3, 10);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(133, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "::RecConWizSdrTitle::";
-            // 
             // ReceiverConfigurationWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -692,6 +705,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.wizard.ResumeLayout(false);
+            this.wizardPageSdrDecoder.ResumeLayout(false);
+            this.wizardPageSdrDecoder.PerformLayout();
+            this.radioPanelSdrDecoder.ResumeLayout(false);
+            this.radioPanelSdrDecoder.PerformLayout();
             this.wizardPageSdrOrDedicated.ResumeLayout(false);
             this.wizardPageSdrOrDedicated.PerformLayout();
             this.radioPanelReceiverClass.ResumeLayout(false);
@@ -716,10 +733,6 @@
             this.wizardPageDedicatedReceiver.PerformLayout();
             this.radioPanelDedicatedReceiver.ResumeLayout(false);
             this.radioPanelDedicatedReceiver.PerformLayout();
-            this.wizardPageSdrDecoder.ResumeLayout(false);
-            this.wizardPageSdrDecoder.PerformLayout();
-            this.radioPanelSdrDecoder.ResumeLayout(false);
-            this.radioPanelSdrDecoder.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -777,5 +790,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.PictureBox pictureBoxLogo;
+        private System.Windows.Forms.RadioButton radioButtonSdrFR24Feeder;
     }
 }

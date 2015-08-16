@@ -592,6 +592,7 @@ namespace VirtualRadar.Library.Presenter
                         case SdrDecoder.GrAirModes: receiver.Port = 30003; receiver.DataSource = DataSource.Port30003; break; // The source for gr-air-modes mentions a raw server but I couldn't see it being initialised? No idea what the format would be either.
                         case SdrDecoder.Modesdeco:  receiver.Port = 30005; break;
                         case SdrDecoder.Rtl1090:    receiver.Port = 31001; break;
+                        case SdrDecoder.FR24Feeder: receiver.Port = 30334; break;
                         case SdrDecoder.Other:      receiver.Port = 30003; receiver.DataSource = DataSource.Port30003; break; // Most things support vanilla BaseStation
                         default:                    throw new NotImplementedException();
                     }
