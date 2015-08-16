@@ -265,6 +265,7 @@
     VRS.$$.ListNotes =                                  '注意';
     VRS.$$.ListManufacturer =                           '制造商';
     VRS.$$.ListMaxTakeoffWeight =                       '最大起飞重量';
+    VRS.$$.ListMlat =                                   'MLAT';  /** THIS IS NEW! **/  // Abbreviation of Multilateration
     VRS.$$.ListModel =                                  '机型';
     VRS.$$.ListModelIcao =                              '机型';
     VRS.$$.ListModeSCountry =                           'Mode-S国家';
@@ -313,6 +314,7 @@
     VRS.$$.MilesPerHour =                               '英里/小时';
     VRS.$$.MilesPerHourAbbreviation =                   '{0} mph';
     VRS.$$.Military =                                   '军航';
+    VRS.$$.Mlat =                                       'MLAT';  /** THIS IS NEW! **/  // An abbreviation of Multilateration
     VRS.$$.MobilePage =                                 '移动版页面';
     VRS.$$.MobileReportPage =                           '移动版报告页面';
     VRS.$$.Model =                                      '机型';
@@ -341,6 +343,7 @@
     VRS.$$.OfPages =                                    ': {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          '仅列出可见';
     VRS.$$.OnlyAutoSelected =                           '仅通知自动选择航班详细';
+    VRS.$$.OnlyUsePre22Icons =                          'Only show old style aircraft markers';  /** THIS IS NEW! **/
     VRS.$$.Operator =                                   '航空公司';
     VRS.$$.OperatorCode =                               '航空公司代码';
     VRS.$$.OperatorFlag =                               '航空公司标志';
@@ -488,6 +491,8 @@
     VRS.$$.TotalHours =                                 '小时总计';
     VRS.$$.TrackingCountAircraft =                      '跟踪 {0:N0} 航空器';
     VRS.$$.TrackingCountAircraftOutOf =                 '跟踪 {0:N0} 航空器 (越界 {1:N0})';
+    VRS.$$.TrackingOneAircraft =                        '跟踪 1 航空器';  /** THIS IS NEW! **/
+    VRS.$$.TrackingOneAircraftOutOf =                   '跟踪 1 航空器 (越界 {0:N0})';  /** THIS IS NEW! **/
     VRS.$$.TransponderType =                            '应答机';
     VRS.$$.TransponderTypeFlag =                        '应答机标志';
     VRS.$$.TrueAirSpeed =                               '实速';

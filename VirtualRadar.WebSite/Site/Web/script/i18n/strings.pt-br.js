@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+// Copyright © 2013 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -67,19 +67,19 @@
     VRS.$$.Civil =                                      'Civil';
     VRS.$$.CivilOrMilitary =                            'Civil / MIlitar';
     VRS.$$.ClosestToCurrentLocation =                   'Mais próxima';
-    VRS.$$.CofACategory =                               'C/A Category';                     // certificate of airworthiness category
-    VRS.$$.CofAExpiry =                                 'C/A Expiry';                       // certificate of airworthiness expiry
+    VRS.$$.CofACategory =                               'C/A Category';  // certificate of airworthiness category
+    VRS.$$.CofAExpiry =                                 'C/A Expiry';  // certificate of airworthiness expiry
     VRS.$$.Columns =                                    'Columns';
-    VRS.$$.Contains =                                   'Contenha'; 
+    VRS.$$.Contains =                                   'Contenha';
     VRS.$$.CountAdsb =                                  'Mensagens ADS-B';
     VRS.$$.Country =                                    'País';
-    VRS.$$.CountModeS =                                 'Mensagens Mode-S;
+    VRS.$$.CountModeS =                                 'Mode-S Count';  /** THIS IS NEW! **/
     VRS.$$.CountPositions =                             'Position Count';
     VRS.$$.Criteria =                                   'Filtro';
     VRS.$$.CurrentLocationInstruction =                 'Para definir a sua localização atual clique "Definir a localização atual" e arraste o marcador.';
     VRS.$$.CurrentRegDate =                             'Current Reg. Date';
     VRS.$$.Date =                                       'Data';
-    VRS.$$.DateTimeShort =                              '{0} {1}';                          // Where "{0}" is a date, e.g. 10/10/2013; and "{1}" is a time, e.g. 17:41:32.
+    VRS.$$.DateTimeShort =                              '{0} {1}';  // Where "{0}" is a date, e.g. 10/10/2013; and "{1}" is a time, e.g. 17:41:32.
     VRS.$$.DefaultSetting =                             '< Padrão >';
     VRS.$$.DegreesAbbreviation =                        '{0}°';
     VRS.$$.DeRegDate =                                  'De-reg. Date';
@@ -137,10 +137,10 @@
     VRS.$$.FlightsListShort =                           'Voos';
     VRS.$$.FlightSimPage =                              'Pagina Flight Sim';
     VRS.$$.FlightSimTitle =                             'Virtual Radar - FSX';
-    VRS.$$.ForcePhoneOff =                              'Nao é um smartphone';                      // As in "force the page to ignore the fact that this is a smart phone"
-    VRS.$$.ForcePhoneOn =                               'É um smartphone';                          // As in "force the page to pretend that this is a smart phone"
-    VRS.$$.ForceTabletOff =                             'Não é um tablet';                     // As in "force the page to ignore the fact that this is a tablet PC"
-    VRS.$$.ForceTabletOn =                              'É um tablet';                         // As in "force the page to use the settings for a tablet PC"
+    VRS.$$.ForcePhoneOff =                              'Nao é um smartphone';  // As in "force the page to ignore the fact that this is a smart phone"
+    VRS.$$.ForcePhoneOn =                               'É um smartphone';  // As in "force the page to pretend that this is a smart phone"
+    VRS.$$.ForceTabletOff =                             'Não é um tablet';  // As in "force the page to ignore the fact that this is a tablet PC"
+    VRS.$$.ForceTabletOn =                              'É um tablet';  // As in "force the page to use the settings for a tablet PC"
     VRS.$$.FromAltitude =                               'Acima de {0}';
     VRS.$$.FromToAltitude =                             '{0} a {1}';
     VRS.$$.FromToDate =                                 '{0} a {1}';
@@ -150,7 +150,7 @@
     VRS.$$.FurthestFromCurrentLocation =                'Mais distante';
     VRS.$$.GenericName =                                'Generic Name';
     VRS.$$.Geometric =                                  'Geometric';
-    VRS.$$.GeometricAltitudeIndicator =                 'GPS';                              // A ** SHORT ** indication that the reported altitude is geometric (i.e. usually coming from a GPS unit) as opposed to barometric (i.e. coming off one or more pressure sensors).
+    VRS.$$.GeometricAltitudeIndicator =                 'GPS';  // A ** SHORT ** indication that the reported altitude is geometric (i.e. usually coming from a GPS unit) as opposed to barometric (i.e. coming off one or more pressure sensors).
     VRS.$$.GoogleMapsCouldNotBeLoaded =                 'Google Maps não pôde ser carregado';
     VRS.$$.GotoCurrentLocation =                        'Ir para a localização atual';
     VRS.$$.GotoSelectedAircraft =                       'Ir para a aeronave selecionada';
@@ -161,7 +161,7 @@
     VRS.$$.Gyrocopter =                                 'Gyrocopter';
     VRS.$$.HadAlert =                                   'Had Alert';
     VRS.$$.HadEmergency =                               'Had Emergency';
-    VRS.$$.HadSPI =                                     'Had Ident';                        // SPI is the name of a pulse in Mode-S, used when ATC has asked for ident from aircraft.
+    VRS.$$.HadSPI =                                     'Had Ident';  // SPI is the name of a pulse in Mode-S, used when ATC has asked for ident from aircraft.
     VRS.$$.Heading =                                    'Proa';
     VRS.$$.HeadingType =                                'Tipo de proa';
     VRS.$$.Heights =                                    'Altitudes';
@@ -170,7 +170,7 @@
     VRS.$$.HideAircraftNotOnMap =                       'Ocultar aeronaves que não estejam no mapa';
     VRS.$$.HideEmptyPinTextLines =                      'Ocultar linhas vazias';
     VRS.$$.HideNoPosition =                             'Has position';
-    VRS.$$.HighContrastMap =                            'Contraste';                         // <-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room
+    VRS.$$.HighContrastMap =                            'Contraste';  // <-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room
     VRS.$$.Icao =                                       'ICAO';
     VRS.$$.Import =                                     'Importar';
     VRS.$$.ImportFailedTitle =                          'A importação falhoud';
@@ -178,7 +178,7 @@
     VRS.$$.ImportSettings =                             'Importar configurações';
     VRS.$$.Index =                                      'Index';
     VRS.$$.IndicatedAirSpeed =                          'Indicated';
-    VRS.$$.IndicatedAirSpeedShort =                     'IAS';                              // <-- please try to keep this short, an abbreviation if possible
+    VRS.$$.IndicatedAirSpeedShort =                     'IAS';  // <-- please try to keep this short, an abbreviation if possible
     VRS.$$.Interesting =                                'Interesting';
     VRS.$$.IntervalSeconds =                            'Atualizar a cada (seg)';
     VRS.$$.IsMilitary =                                 'Militar';
@@ -217,18 +217,18 @@
     VRS.$$.ListBearing =                                'Rumo';
     VRS.$$.ListCallsign =                               'Indicativo';
     VRS.$$.ListCivOrMil =                               'Civ/Mil';
-    VRS.$$.ListCofACategory =                           'C/A Cat.';                 // Certificate of airworthiness category
-    VRS.$$.ListCofAExpiry =                             'C/A Expiry';               // Certificate of airworthiness expiry
+    VRS.$$.ListCofACategory =                           'C/A Cat.';  // Certificate of airworthiness category
+    VRS.$$.ListCofAExpiry =                             'C/A Expiry';  // Certificate of airworthiness expiry
     VRS.$$.ListCountAdsb =                              'ADS-B Msgs.';
     VRS.$$.ListCountMessages =                          'Msgs.';
     VRS.$$.ListCountModeS =                             'Mode-S Msgs.';
     VRS.$$.ListCountPositions =                         'Posn. Msgs.';
     VRS.$$.ListCountry =                                'País';
-    VRS.$$.ListCurrentRegDate =                         'Current Reg.';             // Date of current registration
-    VRS.$$.ListDeRegDate =                              'De-reg Date';              // as in the date it was taken off the register
+    VRS.$$.ListCurrentRegDate =                         'Current Reg.';  // Date of current registration
+    VRS.$$.ListDeRegDate =                              'De-reg Date';  // as in the date it was taken off the register
     VRS.$$.ListDistance =                               'Distancia';
     VRS.$$.ListDuration =                               'Duração';
-    VRS.$$.ListEndTime =                                'Última Message';             // As in the date and time of the last message.
+    VRS.$$.ListEndTime =                                'Última Message';  // As in the date and time of the last message.
     VRS.$$.ListEngines =                                'Motores';
     VRS.$$.ListFirstAltitude =                          'From Alt.';
     VRS.$$.ListFirstFlightLevel =                       'From FL';
@@ -236,7 +236,7 @@
     VRS.$$.ListFirstLatitude =                          'From Lat.';
     VRS.$$.ListFirstLongitude =                         'From Lng.';
     VRS.$$.ListFirstOnGround =                          'From On Gnd.';
-    VRS.$$.ListFirstRegDate =                           'Primeiro Registro';               // Date of first registration
+    VRS.$$.ListFirstRegDate =                           'Primeiro Registro';  // Date of first registration
     VRS.$$.ListFirstSpeed =                             'From Speed';
     VRS.$$.ListFirstSquawk =                            'From Squawk';
     VRS.$$.ListFirstVerticalSpeed =                     'From VSI';
@@ -246,7 +246,7 @@
     VRS.$$.ListGenericName =                            'Nome generico';
     VRS.$$.ListHadAlert =                               'Alert';
     VRS.$$.ListHadEmergency =                           'Emergency';
-    VRS.$$.ListHadSPI =                                 'SPI';                      // Name of a pulse in Mode-S, may not need translation. Used when ATC has asked for ident from aircraft.
+    VRS.$$.ListHadSPI =                                 'SPI';  // Name of a pulse in Mode-S, may not need translation. Used when ATC has asked for ident from aircraft.
     VRS.$$.ListHeading =                                'Hdg.';
     VRS.$$.ListHeadingType =                            'Hdg. Type';
     VRS.$$.ListIcao =                                   'ICAO';
@@ -265,6 +265,7 @@
     VRS.$$.ListNotes =                                  'Notes';
     VRS.$$.ListManufacturer =                           'Manufacturer';
     VRS.$$.ListMaxTakeoffWeight =                       'Max T/O Weight';
+    VRS.$$.ListMlat =                                   'MLAT';  /** THIS IS NEW! **/  // Abbreviation of Multilateration
     VRS.$$.ListModel =                                  'Modelo';
     VRS.$$.ListModelIcao =                              'Aeronave';
     VRS.$$.ListModeSCountry =                           'Mode-S Country';
@@ -313,6 +314,7 @@
     VRS.$$.MilesPerHour =                               'Milhas por hora';
     VRS.$$.MilesPerHourAbbreviation =                   '{0} mph';
     VRS.$$.Military =                                   'Militar';
+    VRS.$$.Mlat =                                       'MLAT';  /** THIS IS NEW! **/  // An abbreviation of Multilateration
     VRS.$$.MobilePage =                                 'Mobile Page';
     VRS.$$.MobileReportPage =                           'Mobile Report Page';
     VRS.$$.Model =                                      'Modelo';
@@ -325,7 +327,7 @@
     VRS.$$.NauticalMileAbbreviation =                   '{0} mn';
     VRS.$$.NauticalMiles =                              'Milhas Náuticas';
     VRS.$$.No =                                         'No';
-    VRS.$$.NoLocalStorage = 'Este navegador não suporta o armazenamento local. Suas configurações não serão salvas\n\nSe você está navegando no "modo anonimo", em seguida, va para a versão normal. O modo anomimo não salva as alterações';
+    VRS.$$.NoLocalStorage =                             'Este navegador não suporta o armazenamento local. Suas configurações não serão salvas\n\nSe você está navegando no "modo anonimo", em seguida, va para a versão normal. O modo anomimo não salva as alterações';
     VRS.$$.None =                                       'Nenhum';
     VRS.$$.Notes =                                      'Notas';
     VRS.$$.NoSettingsFound =                            'No settings found';
@@ -338,9 +340,10 @@
     VRS.$$.OffRadarActionWait =                         'Desmarque a aeronave';
     VRS.$$.OffRadarActionEnableAutoSelect =             'Ativar auto-selecionar';
     VRS.$$.OffRadarActionNothing =                      'Não fazer nada';
-    VRS.$$.OfPages =                                    'de {0:N0}';                            // As in "1 of 10" pages
+    VRS.$$.OfPages =                                    'de {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          'Listar apenas os visiveis';
     VRS.$$.OnlyAutoSelected =                           'Apenas anunciar detalhes de aeronaves auto-selecionadas';
+    VRS.$$.OnlyUsePre22Icons =                          'Only show old style aircraft markers';  /** THIS IS NEW! **/
     VRS.$$.Operator =                                   'Operador';
     VRS.$$.OperatorCode =                               'Código do operador';
     VRS.$$.OperatorFlag =                               'Bandeira do operador';
@@ -486,12 +489,14 @@
     VRS.$$.ToAltitude =                                 'Até {0}';
     VRS.$$.TitleSiteTimedOut =                          'Tempo Esgotado';
     VRS.$$.TotalHours =                                 'Total de horas';
-    VRS.$$.TrackingCountAircraft =                      'Rastreando {0:N0} aeronave(s)';
-    VRS.$$.TrackingCountAircraftOutOf =                 'Rastreando {0:N0} aeronave(s) (de {1:N0})';
+    VRS.$$.TrackingCountAircraft =                      'Rastreando {0:N0} aeronaves';
+    VRS.$$.TrackingCountAircraftOutOf =                 'Rastreando {0:N0} aeronaves (de {1:N0})';
+    VRS.$$.TrackingOneAircraft =                        'Rastreando 1 aeronave';  /** THIS IS NEW! **/
+    VRS.$$.TrackingOneAircraftOutOf =                   'Rastreando 1 aeronave (de {0:N0})';  /** THIS IS NEW! **/
     VRS.$$.TransponderType =                            'Transponder';
     VRS.$$.TransponderTypeFlag =                        'Band. do Transponder';
     VRS.$$.TrueAirSpeed =                               'True';
-    VRS.$$.TrueAirSpeedShort =                          'TAS';                          // Keep this one short, an abbreviation if possible.
+    VRS.$$.TrueAirSpeedShort =                          'TAS';  // Keep this one short, an abbreviation if possible.
     VRS.$$.TrueHeading =                                'True heading';
     VRS.$$.TrueHeadingShort =                           'True';
     VRS.$$.Turbo =                                      'Turbo';
@@ -517,12 +522,12 @@
     VRS.$$.Yes =                                        'Sim';
 
     // Date picker text
-    VRS.$$.DateClose =                                  'Feito';                         // Keep this short
-    VRS.$$.DateCurrent =                                'Hoje';                        // Keep this short
-    VRS.$$.DateNext =                                   'Próx.';                         // Keep this short
-    VRS.$$.DatePrevious =                               'Ante.';                         // Keep this short
-    VRS.$$.DateWeekAbbr =                               'Wk';                           // Keep this very short
-    VRS.$$.DateYearSuffix =                             'Ano';                             // This is displayed after the year
+    VRS.$$.DateClose =                                  'Feito';  // Keep this short
+    VRS.$$.DateCurrent =                                'Hoje';  // Keep this short
+    VRS.$$.DateNext =                                   'Próx.';  // Keep this short
+    VRS.$$.DatePrevious =                               'Ante.';  // Keep this short
+    VRS.$$.DateWeekAbbr =                               'Wk';  // Keep this very short
+    VRS.$$.DateYearSuffix =                             'Ano';  // This is displayed after the year
     // If your language has a different month format when days preceed months, and the date picker
     // should be using that month format, then set this to true. Otherwise leave at false.
     VRS.$$.DateUseGenetiveMonths =                      false;
@@ -564,6 +569,7 @@
     VRS.$$.SayXRay =                                    'x-ray';
     VRS.$$.SayYankee =                                  'yankee';
     VRS.$$.SayZulu =                                    'zulu';
+
 
     // [[ MARKER END SIMPLE STRINGS ]]
 

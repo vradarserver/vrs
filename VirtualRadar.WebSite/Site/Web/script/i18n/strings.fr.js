@@ -265,6 +265,7 @@
     VRS.$$.ListNotes =                                  'Notes';
     VRS.$$.ListManufacturer =                           'Constructeur';
     VRS.$$.ListMaxTakeoffWeight =                       'Poids Max T/O';
+    VRS.$$.ListMlat =                                   'MLAT';  /** THIS IS NEW! **/  // Abbreviation of Multilateration
     VRS.$$.ListModel =                                  'Model';
     VRS.$$.ListModelIcao =                              'Type';
     VRS.$$.ListModeSCountry =                           'Pays Mode-S';
@@ -313,6 +314,7 @@
     VRS.$$.MilesPerHour =                               'Miles/Hour';
     VRS.$$.MilesPerHourAbbreviation =                   '{0} mph';
     VRS.$$.Military =                                   'Militaire';
+    VRS.$$.Mlat =                                       'MLAT';  /** THIS IS NEW! **/  // An abbreviation of Multilateration
     VRS.$$.MobilePage =                                 'Page Mobile ';
     VRS.$$.MobileReportPage =                           'Rapport Page Mobile';
     VRS.$$.Model =                                      'Model';
@@ -341,6 +343,7 @@
     VRS.$$.OfPages =                                    'de {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          'Liste si visible';
     VRS.$$.OnlyAutoSelected =                           'Annonce détails avion auto-selectionné';
+    VRS.$$.OnlyUsePre22Icons =                          'Only show old style aircraft markers';  /** THIS IS NEW! **/
     VRS.$$.Operator =                                   'Operateur';
     VRS.$$.OperatorCode =                               'Code Operateur';
     VRS.$$.OperatorFlag =                               'Logo Operateur';
@@ -488,6 +491,8 @@
     VRS.$$.TotalHours =                                 'Heures totales';
     VRS.$$.TrackingCountAircraft =                      'Suit {0:N0} avions';
     VRS.$$.TrackingCountAircraftOutOf =                 'Suit {0:N0} avions (out of {1:N0})';
+    VRS.$$.TrackingOneAircraft =                        'Suit 1 avions';  /** THIS IS NEW! **/
+    VRS.$$.TrackingOneAircraftOutOf =                   'Suit 1 avions (out of {0:N0})';  /** THIS IS NEW! **/
     VRS.$$.TransponderType =                            'Type de transpondeur';
     VRS.$$.TransponderTypeFlag =                        'Flag type de transpondeur ';
     VRS.$$.TrueAirSpeed =                               'Vrai';
