@@ -265,6 +265,7 @@
     VRS.$$.ListNotes =                                  'Прим.';
     VRS.$$.ListManufacturer =                           'Изготов.';
     VRS.$$.ListMaxTakeoffWeight =                       'Макс.взлт.масса';
+    VRS.$$.ListMlat =                                   'MLAT';  /** THIS IS NEW! **/  // Abbreviation of Multilateration
     VRS.$$.ListModel =                                  'Модель самолета';
     VRS.$$.ListModelIcao =                              'Тип';
     VRS.$$.ListModeSCountry =                           'Страна';
@@ -313,6 +314,7 @@
     VRS.$$.MilesPerHour =                               'Мили/час';
     VRS.$$.MilesPerHourAbbreviation =                   '{0} ми/ч';
     VRS.$$.Military =                                   'Военный';
+    VRS.$$.Mlat =                                       'MLAT';  /** THIS IS NEW! **/  // An abbreviation of Multilateration
     VRS.$$.MobilePage =                                 'Для мобильного компьютера';
     VRS.$$.MobileReportPage =                           'Страница Мобильного Отчета';
     VRS.$$.Model =                                      'Модель';
@@ -341,6 +343,7 @@
     VRS.$$.OfPages =                                    'по {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          'Только в окне карты';
     VRS.$$.OnlyAutoSelected =                           'Только для авто выбранных самолетов';
+    VRS.$$.OnlyUsePre22Icons =                          'Only show old style aircraft markers';  /** THIS IS NEW! **/
     VRS.$$.Operator =                                   'Оператор';
     VRS.$$.OperatorCode =                               'Код авиакомпании';
     VRS.$$.OperatorFlag =                               'Логотип авиакомпании';
@@ -488,6 +491,8 @@
     VRS.$$.TotalHours =                                 'Общее количество часов';
     VRS.$$.TrackingCountAircraft =                      'Отслеживается: {0:N0}';
     VRS.$$.TrackingCountAircraftOutOf =                 'Отслеживается: {0:N0} (из {1:N0})';
+    VRS.$$.TrackingOneAircraft =                        'Отслеживается: 1';  /** THIS IS NEW! **/
+    VRS.$$.TrackingOneAircraftOutOf =                   'Отслеживается: 1 (из {0:N0})';  /** THIS IS NEW! **/
     VRS.$$.TransponderType =                            'Транспондер';
     VRS.$$.TransponderTypeFlag =                        'Тип транспондера';
     VRS.$$.TrueAirSpeed =                               'Истинная';
