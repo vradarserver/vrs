@@ -402,7 +402,7 @@ Französische Übersetzung von Francois /F5ANN.</value>
     <value>Der Web Server ist Online</value>
   </data>
   <data name="WebServerStatus" xml:space="preserve">
-    <value>Web Server Status </value>
+    <value>Web Server Status</value>
   </data>
   <data name="ADSBAircraft" xml:space="preserve">
     <value>ADS-B Flugzeug(e)</value>
@@ -710,7 +710,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Nicht geladen</value>
   </data>
   <data name="RouteFileStatus" xml:space="preserve">
-    <value> {0:N0} Routen geladen für den Zeitraum {1:d} bis {2:d}</value>
+    <value>{0:N0} Routen geladen für den Zeitraum {1:d} bis {2:d}</value>
     <comment>Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
   </data>
   <data name="RouteStateFileContentInvalid" xml:space="preserve">
@@ -868,7 +868,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&
     <value>Schließe Log Datenbank</value>
   </data>
   <data name="ShuttingDownPlugin" xml:space="preserve">
-    <value>Beende Plugin {0} </value>
+    <value>Beende Plugin {0}</value>
   </data>
   <data name="ShuttingDownUPnpManager" xml:space="preserve">
     <value>Beeende UPnP</value>
@@ -1806,7 +1806,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&
     <value>Ja, um diesen zusammengeführten Datenstrom zu aktivieren, nein um zu deaktivieren.</value>
   </data>
   <data name="OptionsDescribeMergedFeedName" xml:space="preserve">
-    <value>Der eindeutige Name für den zusammengeführten Datenstrom. Muss ebenfalls über alle Empfänger eindeutig sein </value>
+    <value>Der eindeutige Name für den zusammengeführten Datenstrom. Muss ebenfalls über alle Empfänger eindeutig sein</value>
   </data>
   <data name="OptionsDescribeMergedFeedReceviers" xml:space="preserve">
     <value>Die Empfänger, die in diesem Datenstrom zusammengeführt sind.</value>
@@ -2141,7 +2141,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&
     <value>Aus der Flugzeugverfolgung entfernen</value>
   </data>
   <data name="ShortTrailDuration" xml:space="preserve">
-    <value>Dauer Kurze Spur </value>
+    <value>Dauer Kurze Spur</value>
   </data>
   <data name="AirborneGlobal" xml:space="preserve">
     <value>&quot;Airborne&quot; Global</value>
@@ -2247,10 +2247,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&
     <value>Letzte Ausnahme</value>
   </data>
   <data name="ReceiverIdleTimeoutOutOfBounds" xml:space="preserve">
-    <value>Das Idle Timeout muss mindestens 5 Sekunden sein</value>
+    <value>Das Idle Timeout muss mindestens 5 Sekunden betragen</value>
   </data>
   <data name="OptionsDescribeDataSourcesIdleTimeout" xml:space="preserve">
-    <value>Die Dauer in Sekunden bevor die Verbindung des Datenstroms beendet werden wenn keine Daten empfangen werden und keine Keep-Alive Pakete verwendet werden.</value>
+    <value>Die Dauer in Sekunden bevor die Verbindung des Datenstroms beendet wird, wenn keine Daten empfangen werden und keine Keep-Alive Pakete verwendet werden.</value>
   </data>
   <data name="OptionsDescribeDataSourcesUseKeepAlive" xml:space="preserve">
     <value>Ja, um Keep-Alive Pakete zu verwenden und damit Datenströme zu ermitteln die keine Daten mehr liefern, Nein um die Verbindung zurückzusetzen wenn nach einer gewissen Anzahl Sekunden keine Daten mehr empfangen werden.</value>
@@ -2435,18 +2435,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&
   <data name="NotYetKnown" xml:space="preserve">
     <value>Bisher unbekannt</value>
   </data>
-  <data name="MLATPositionsInjected" xml:space="preserve">
-    <value>Eingespeiste Positionen</value>
-  </data>
-  <data name="MLATPositionsOnly" xml:space="preserve">
-    <value>Nur Positionen</value>
-  </data>
-  <data name="MultilaterationType" xml:space="preserve">
-    <value>MLAT Datenstromtyp</value>
-  </data>
-  <data name="OptionsDescribeDataSourcesMultilaterationType" xml:space="preserve">
-    <value>Wählen Sie NONE wenn der Empfänger keine Quelle für multilaterale Daten ist, setzen Sie auf POSITIONS ONLY wenn die Quelle nur kalkulierte Positionen sendet, verwenden Sie POSITIONS INJECTED wenn der Empfänger kalkulierte Positionen zu einem Datenstrom hinzufügt.</value>
-  </data>
   <data name="MonoSettings" xml:space="preserve">
     <value>Mono Einstellungen</value>
   </data>
@@ -2460,7 +2448,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&
     <value>Flugzeugliste (JSON)</value>
   </data>
   <data name="OptionsDescribeRebroadcastSendInterval" xml:space="preserve">
-    <value>Anzahl Sekunden die zwischen dem Senden von gebündelten Nachrichten gewartet wird. Nur die Flugzeugliste (JSON) unterstützt diese Einstellung.</value>
+    <value>Die Anzahl Sekunden die gewartet wird zwischen dem Senden von gebündelten Nachrichten. Nur das Format Flugzeugliste (JSON) unterstützt diese Einstellung.</value>
   </data>
   <data name="SendEvery" xml:space="preserve">
     <value>Sende alle</value>
@@ -2468,5 +2456,54 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&
   </data>
   <data name="RebroadcastSendIntervalOutOfBounds" xml:space="preserve">
     <value>Der Sendeintervall muss zwischen 1 und 30 Sekunden liegen</value>
+  </data>
+  <data name="OfflineMode" xml:space="preserve">
+    <value>Offline Modus</value>
+  </data>
+  <data name="HideFromWebSite" xml:space="preserve">
+    <value>Auf Webseite verbergen</value>
+  </data>
+  <data name="MergeOnly" xml:space="preserve">
+    <value>Nur-Zusammenführen</value>
+    <comment>As in &quot;this receiver can only be merged with other receivers&quot;</comment>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageHideFromWebSite" xml:space="preserve">
+    <value>Dieser Empfänger wird auf der Webseite verborgen, kann aber Rebroadcast Server gesetzt haben und er kann mit weiteren Datenströmen zusammengeführt werden.</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageMergeOnly" xml:space="preserve">
+    <value>Dieser Empfänger wird auf der Webseite verborgen und nur bestimmte Rebroadcast Server Formate können dafür verwendet werden. Er kann aber mit anderen Datenströmen zusammengeführt werden und verbraucht weniger Ressourcen als normale oder verborgene Empfänger.</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageNormal" xml:space="preserve">
+    <value>Dieser Empfänger wird auf der Webseite erscheinen, kann Rebroadcast Server gesetzt haben und er kann mit weiteren Datenströmen zusammengeführt werden.</value>
+  </data>
+  <data name="NotApplicableAbbr" xml:space="preserve">
+    <value>N/A</value>
+    <comment>Abbreviation of &quot;not applicable&quot;</comment>
+  </data>
+  <data name="Hidden" xml:space="preserve">
+    <value>Verborgen</value>
+  </data>
+  <data name="ReceiverMustBeVisible" xml:space="preserve">
+    <value>Dieser Empfänger kann auf der Webseite nicht verborgen werden</value>
+  </data>
+  <data name="ReceiverCannotBeMergeOnly" xml:space="preserve">
+    <value>Dieser Empfänger kann nicht auf Nur-Zusammenführen eingestellt werden</value>
+  </data>
+  <data name="ExtendedBaseStation" xml:space="preserve">
+    <value>Basestation + MLAT</value>
+  </data>
+  <data name="MLAT" xml:space="preserve">
+    <value>MLAT</value>
+    <comment>Short for multilateration. If there&apos;s no equivalent then just leave it as MLAT</comment>
+  </data>
+  <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
+    <value>Ja, wenn Positionsmeldungen für diesen Datenstrom als berechnete MLAT Positionen behandelt werden sollen. Nur für MLAT Datenströme benötigt, welche  berechnete Positionsmeldungen nicht identifizieren.</value>
+  </data>
+  <data name="RecConWizSdrFR24Feeder" xml:space="preserve">
+    <value>Flightradar24 &apos;Feeder&apos;</value>
+    <comment>It&apos;s the name of a program</comment>
   </data>
 </root>
