@@ -459,11 +459,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// Creates database records and updates internal objects to track an aircraft that is currently transmitting messages.
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="isMlat"></param>
         /// <remarks>
         /// This defers the recording of the flight for as long as possible so that if the database is locked then we don't
         /// have a record of the flight, and the next message will try again to record the flight.
         /// </remarks>
-        private void TrackFlight(BaseStationMessage message)
+        private void TrackFlight(BaseStationMessage message, bool isMlat)
         {
             if(IsTransmissionMessage(message)) {
                 lock(_SyncLock) {
@@ -491,10 +492,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         var flight = flightRecords.Flight;
                         flightRecords.EndTimeUtc = Provider.UtcNow;
                         flight.EndTime = localNow;
-                        if(message.SquawkHasChanged.GetValueOrDefault()) flight.HadAlert = true;
-                        if(message.IdentActive.GetValueOrDefault()) flight.HadSpi = true;
-                        if(message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700) flight.HadEmergency = true;
-                        UpdateFirstLastValues(message, flight, flightRecords);
+                        if(!isMlat) {
+                            if(message.SquawkHasChanged.GetValueOrDefault()) flight.HadAlert = true;
+                            if(message.IdentActive.GetValueOrDefault()) flight.HadSpi = true;
+                            if(message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700) flight.HadEmergency = true;
+                        }
+                        UpdateFirstLastValues(message, flight, flightRecords, isMlat);
                         UpdateMessageCounters(message, flight);
 
                         if(flightRecords.Flight.Callsign.Length == 0 && !String.IsNullOrEmpty(message.Callsign)) {
@@ -604,22 +607,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <param name="message"></param>
         /// <param name="flight"></param>
         /// <param name="flightRecords"></param>
-        private static void UpdateFirstLastValues(BaseStationMessage message, BaseStationFlight flight, FlightRecords flightRecords)
+        /// <param name="isMlat"></param>
+        private static void UpdateFirstLastValues(BaseStationMessage message, BaseStationFlight flight, FlightRecords flightRecords, bool isMlat)
         {
             bool isLocationZeroZero = message.Latitude.GetValueOrDefault() == 0F && message.Longitude.GetValueOrDefault() == 0F;
 
-            if(message.Altitude != null) {
-                if(flight.FirstAltitude == null) flight.FirstAltitude = message.Altitude;
-                flight.LastAltitude = message.Altitude;
-            }
-            if(message.GroundSpeed != null) {
-                if(flight.FirstGroundSpeed == null) flight.FirstGroundSpeed = message.GroundSpeed;
-                flight.LastGroundSpeed = message.GroundSpeed;
-            }
-            if(message.OnGround != null) {
-                if(flightRecords.OnGround == null) flightRecords.OnGround = flight.FirstIsOnGround = message.OnGround.Value;
-                flight.LastIsOnGround = message.OnGround.Value;
-            }
             if(message.Latitude != null && !isLocationZeroZero) {
                 if(flight.FirstLat == null) flight.FirstLat = message.Latitude;
                 flight.LastLat = message.Latitude;
@@ -628,17 +620,32 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 if(flight.FirstLon == null) flight.FirstLon = message.Longitude;
                 flight.LastLon = message.Longitude;
             }
-            if(message.Squawk != null) {
-                if(flight.FirstSquawk == null) flight.FirstSquawk = message.Squawk;
-                flight.LastSquawk = message.Squawk;
-            }
             if(message.Track != null) {
                 if(flight.FirstTrack == null) flight.FirstTrack = message.Track;
                 flight.LastTrack = message.Track;
             }
-            if(message.VerticalRate != null) {
-                if(flight.FirstVerticalRate == null) flight.FirstVerticalRate = message.VerticalRate;
-                flight.LastVerticalRate = message.VerticalRate;
+
+            if(!isMlat) {
+                if(message.Altitude != null) {
+                    if(flight.FirstAltitude == null) flight.FirstAltitude = message.Altitude;
+                    flight.LastAltitude = message.Altitude;
+                }
+                if(message.GroundSpeed != null) {
+                    if(flight.FirstGroundSpeed == null) flight.FirstGroundSpeed = message.GroundSpeed;
+                    flight.LastGroundSpeed = message.GroundSpeed;
+                }
+                if(message.OnGround != null) {
+                    if(flightRecords.OnGround == null) flightRecords.OnGround = flight.FirstIsOnGround = message.OnGround.Value;
+                    flight.LastIsOnGround = message.OnGround.Value;
+                }
+                if(message.Squawk != null) {
+                    if(flight.FirstSquawk == null) flight.FirstSquawk = message.Squawk;
+                    flight.LastSquawk = message.Squawk;
+                }
+                if(message.VerticalRate != null) {
+                    if(flight.FirstVerticalRate == null) flight.FirstVerticalRate = message.VerticalRate;
+                    flight.LastVerticalRate = message.VerticalRate;
+                }
             }
         }
 
@@ -736,7 +743,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private void MessageQueue_MessageReceived(BaseStationMessageEventArgs args)
         {
             try {
-                TrackFlight(args.Message);
+                TrackFlight(args.Message, isMlat: args.IsOutOfBand);
                 if(StatusDescription == PluginStrings.DatabaseLocked) StatusDescription = null;
             } catch(ThreadAbortException) {
             } catch(Exception ex) {

@@ -1958,22 +1958,26 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             var messageProperty = typeof(BaseStationMessage).GetProperty(worksheet.String("MsgProperty"));
+            var isMlat = worksheet.Bool("IsMlat");
+
             for(int i = 0;i < worksheet.Int("Count");++i) {
                 var message = new BaseStationMessage() { Icao24 = "Z", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+                var args = new BaseStationMessageEventArgs(message, isOutOfBand: isMlat);
 
                 var valueText = worksheet.EString(String.Format("MsgValue{0}", i + 1));
                 messageProperty.SetValue(message, TestUtilities.ChangeType(valueText, messageProperty.PropertyType, CultureInfo.InvariantCulture), null);
 
-                _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+                _Listener.Raise(r => r.Port30003MessageReceived += null, args);
             }
 
             SetProviderTimes(_Provider.Object.LocalNow.AddMinutes(MinutesBeforeFlightClosed));
             _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
 
+            var flightPropertyName = worksheet.String("FlightProperty");
             _BaseStationDatabase.Verify(d => d.UpdateFlight(It.IsAny<BaseStationFlight>()), Times.Once());
 
             foreach(var prefix in new string[] { "First", "Last" }) {
-                var propertyName = String.Format("{0}{1}", prefix, worksheet.String("FlightProperty"));
+                var propertyName = String.Format("{0}{1}", prefix, flightPropertyName);
                 var flightProperty = typeof(BaseStationFlight).GetProperty(propertyName);
                 var valueText = worksheet.EString(String.Format("{0}Value", prefix));
 
