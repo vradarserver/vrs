@@ -619,7 +619,7 @@ Französische Übersetzung von Francois /F5ANN.</value>
     <comment>Title for an error message box</comment>
   </data>
   <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>This program needs the full .NET 3.5 Framework installed. Möchten Sie zur .NET 3.5 Download Seite von Microsoft&apos;s weitergeleitet werden?</value>
+    <value>This program needs the full .NET 3.5 Framework installed. Möchten Sie zur .NET 3.5 Download Seite von Microsoft weitergeleitet werden?</value>
   </data>
   <data name="DotNetVersionTooLowTitle" xml:space="preserve">
     <value>Falsche Version des .NET Framework</value>
