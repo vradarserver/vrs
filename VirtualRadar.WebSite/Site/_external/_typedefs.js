@@ -174,6 +174,7 @@ VRS_GOOGLE_ICON;
 * Long:         Number,
 * Mlat:         boolean,
 * PosTime:      Number,
+* PosStale:     boolean,
 * Spd:          Number,
 * SpdTyp:       Number,
 * Vsi:          Number,

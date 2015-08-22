@@ -1344,6 +1344,43 @@ namespace Test.VirtualRadar.WebSite
             Assert.AreEqual(1, json.Aircraft.Count);
             Assert.AreEqual(aircraft2.Object.UniqueId, json.Aircraft[0].UniqueId);
         }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Sets_PositionIsStale_To_Either_True_Or_Null()
+        {
+            var now = DateTime.UtcNow;
+
+            foreach(var threshold in new string[] { "before", "on", "after" }) {
+                TestCleanup();
+                TestInitialise();
+
+                _Provider.SetupGet(r => r.UtcNow).Returns(now);
+                _Configuration.BaseStationSettings.DisplayTimeoutSeconds = 30;
+
+                AddBlankAircraft(1);
+                var aircraft = Mock.Get(_AircraftLists[0][0]);
+                aircraft.SetupGet(r => r.Latitude).Returns(1.0);
+                aircraft.SetupGet(r => r.Longitude).Returns(1.0);
+                aircraft.SetupGet(r => r.PositionTime).Returns(now);
+
+                now = now.AddSeconds(_Configuration.BaseStationSettings.DisplayTimeoutSeconds);
+                switch(threshold) {
+                    case "before":  now = now.AddMilliseconds(-1); break;
+                    case "on":      break;
+                    case "after":   now = now.AddMilliseconds(1); break;
+                }
+                _Provider.SetupGet(r => r.UtcNow).Returns(now);
+
+                var json = _Builder.Build(_Args);
+                var jsonAircraft = json.Aircraft[0];
+
+                switch(threshold) {
+                    case "before":  Assert.AreEqual(null, jsonAircraft.PositionIsStale); break;
+                    case "on":      Assert.AreEqual(null, jsonAircraft.PositionIsStale); break;
+                    case "after":   Assert.AreEqual(true, jsonAircraft.PositionIsStale); break;
+                }
+            }
+        }
         #endregion
 
         #region Sorting of list

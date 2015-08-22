@@ -1241,9 +1241,10 @@
         function refreshAircraftMarker(aircraft, forceRefresh, ignoreBounds, bounds, mapZoomLevel, isSelectedAircraft)
         {
             if((ignoreBounds || bounds) && aircraft.hasPosition()) {
-                var position = aircraft.getPosition();
-                var isInBounds = ignoreBounds || aircraft.positionWithinBounds(bounds);
-                var plotAircraft = isInBounds || (isSelectedAircraft && VRS.globalOptions.aircraftMarkerAlwaysPlotSelected);
+                var isStale = aircraft.positionStale.val;
+                var position = isStale ? null : aircraft.getPosition();
+                var isInBounds = isStale ? false : ignoreBounds || aircraft.positionWithinBounds(bounds);
+                var plotAircraft = !isStale && (isInBounds || (isSelectedAircraft && VRS.globalOptions.aircraftMarkerAlwaysPlotSelected));
                 if(plotAircraft && !aircraft.isAircraftSpecies() && mapZoomLevel < _Settings.hideNonAircraftZoomLevel) plotAircraft = false;
 
                 var details = _PlottedDetail[aircraft.id];

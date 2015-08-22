@@ -134,6 +134,18 @@ namespace VirtualRadar.Interface.WebSite
         public bool? PositionIsMlat { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the position is older than the display timeout.
+        /// </summary>
+        /// <remarks>
+        /// This is usually only seen on merged feeds that include an MLAT feed, and only for aircraft
+        /// that are not transmitting positions. The aircraft can appear to freeze on the map when it
+        /// moves out of range of the MLAT receiver, this flag controls whether we should keep showing
+        /// the aircraft on the map.
+        /// </remarks>
+        [DataMember(Name="PosStale", IsRequired=false, EmitDefaultValue=false)]
+        public bool? PositionIsStale { get; set; }
+
+        /// <summary>
         /// Gets or sets the ground speed of the aircraft in knots.
         /// </summary>
         [DataMember(Name="Spd", IsRequired=false, EmitDefaultValue=false)]
