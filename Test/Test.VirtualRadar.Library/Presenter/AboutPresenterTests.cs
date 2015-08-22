@@ -56,11 +56,14 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void AboutPresenter_Initialise_Copies_Initial_Values_From_Model_To_View()
         {
+            var buildDate = new DateTime(2015, 8, 20, 19, 18, 17);
+
             _ApplicationInformation.Setup(m => m.Copyright).Returns("The copyright");
             _ApplicationInformation.Setup(m => m.Description).Returns("The description");
             _ApplicationInformation.Setup(m => m.ApplicationName).Returns("The name");
             _ApplicationInformation.Setup(m => m.FullVersion).Returns("The version");
             _ApplicationInformation.Setup(m => m.ProductName).Returns("The product name");
+            _ApplicationInformation.Setup(m => m.BuildDate).Returns(buildDate);
             _ConfigurationStorage.Setup(m => m.Folder).Returns("The config folder");
             _RuntimeEnvironment.Setup(m => m.IsMono).Returns(true);
 
@@ -72,6 +75,7 @@ namespace Test.VirtualRadar.Library.Presenter
             Assert.AreEqual("The version", _View.Object.Version);
             Assert.AreEqual("The config folder", _View.Object.ConfigurationFolder);
             Assert.AreEqual("The product name", _View.Object.ProductName);
+            Assert.AreEqual(buildDate, _View.Object.BuildDate);
             Assert.AreEqual(true, _View.Object.IsMono);
         }
 

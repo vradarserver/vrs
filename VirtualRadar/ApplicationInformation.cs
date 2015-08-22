@@ -16,6 +16,7 @@ using VirtualRadar.Interface;
 using System.Reflection;
 using VirtualRadar.Localisation;
 using System.Globalization;
+using System.IO;
 
 namespace VirtualRadar
 {
@@ -35,6 +36,7 @@ namespace VirtualRadar
         private static string _Description;
         private static string _Copyright;
         private static bool _Headless;
+        private static DateTime _BuildDate;
 
         /// <summary>
         /// See interface docs.
@@ -50,6 +52,11 @@ namespace VirtualRadar
         /// See interface docs.
         /// </summary>
         public string FullVersion { get { return _FullVersion; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime BuildDate { get { return _BuildDate; } }
 
         /// <summary>
         /// See interface docs.
@@ -98,6 +105,7 @@ namespace VirtualRadar
                 _ProductName = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false).OfType<AssemblyProductAttribute>().First().Product;
                 _Description = String.Format("{0}{1}{1}{2}:{1}{1}{3}", Strings.ApplicationDescription, Environment.NewLine, Strings.License, Strings.LicenseContent);
                 _Copyright = Strings.Copyright;
+                _BuildDate = ExtractBuildDate(assembly);
             }
         }
 
@@ -108,6 +116,41 @@ namespace VirtualRadar
         public static void SetHeadless(bool headless)
         {
             _Headless = headless;
+        }
+
+        /// <summary>
+        /// Extracts the build date from the PE header of the main executable.
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        private DateTime ExtractBuildDate(Assembly assembly)
+        {
+            DateTime result = DateTime.MinValue;
+            const int peHeaderOffset = 60;
+            const int peLinkerTimestampOffset = 8;
+
+            try {
+                var fileName = assembly.Location;
+                if(!String.IsNullOrEmpty(fileName) && File.Exists(fileName)) {
+                    var buffer = new byte[2048];
+                    using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read)) {
+                        var bytesRead = stream.Read(buffer, 0, buffer.Length);
+                        if(peHeaderOffset + 4 < bytesRead) {
+                            var linkerHeaderOffset = BitConverter.ToInt32(buffer, peHeaderOffset);
+                            var timestampOffset = linkerHeaderOffset + peLinkerTimestampOffset;
+                            if(timestampOffset + 4 < bytesRead) {
+                                var timestamp = BitConverter.ToInt32(buffer, timestampOffset);
+                                result = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                                result = result.AddSeconds(timestamp);
+                            }
+                        }
+                    }
+                }
+            } catch {
+                ;
+            }
+
+            return result;
         }
     }
 }

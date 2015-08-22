@@ -31,6 +31,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public string Version { get; set; }
 
+        public DateTime BuildDate { get; set; }
+
         public string Copyright { get; set; }
 
         public string Description { get; set; }

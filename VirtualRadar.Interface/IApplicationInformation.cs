@@ -37,6 +37,11 @@ namespace VirtualRadar.Interface
         string FullVersion { get; }
 
         /// <summary>
+        /// Gets the build date of the application.
+        /// </summary>
+        DateTime BuildDate { get; }
+
+        /// <summary>
         /// Gets the content of the AssemblyTitle attribute for the application.
         /// </summary>
         string ApplicationName { get; }
