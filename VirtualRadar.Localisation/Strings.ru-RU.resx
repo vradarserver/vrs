@@ -1897,7 +1897,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>"Да", включать в объединенный поток только самолеты с координатами, "Нет" - включать все.</value>
   </data>
   <data name="FeedStatus" xml:space="preserve">
-    <value>Состояние потока</value>
+    <value>Состояние канала данных</value>
   </data>
   <data name="FlightSimulatorXReceiverId" xml:space="preserve">
     <value>Приемник для Flight Simulator X</value>
@@ -2474,5 +2474,101 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="DirectoryEntryKey" xml:space="preserve">
     <value>Ключ публичного каталога</value>
+  </data>
+  <data name="CopyToClipboard" xml:space="preserve">
+    <value>Копировать в буфер обмена</value>
+  </data>
+  <data name="InitialSettingsTitle" xml:space="preserve">
+    <value>Начальные настройки</value>
+  </data>
+  <data name="InvalidPluginsCount" xml:space="preserve">
+    <value>Неверный плагин: {0}</value>
+  </data>
+  <data name="LocalAddress" xml:space="preserve">
+    <value>Local address: {0}</value>
+  </data>
+  <data name="NetworkAddress" xml:space="preserve">
+    <value>Network address: {0}</value>
+  </data>
+  <data name="PressQToQuit" xml:space="preserve">
+    <comment>You can have any key you like here, as long as it's Q</comment>
+    <value>Нажмите Q, чтобы выйти</value>
+  </data>
+  <data name="Administrators" xml:space="preserve">
+    <value>Администраторы</value>
+  </data>
+  <data name="NotYetKnown" xml:space="preserve">
+    <value>Еще не известно</value>
+  </data>
+  <data name="MonoSettings" xml:space="preserve">
+    <value>Настройки Mono</value>
+  </data>
+  <data name="OptionsDescribeMonoUseMarkerLabels" xml:space="preserve">
+    <value>"Да", чтобы показать текст метки самолета с помощью библиотеки Google marker labels, "Нет" для наложения текста на изображение, как это происходит при работе под Microsoft .NET. Некоторые собственные графические библиотеки могут выдать исключения, если установлено значение "Нет".</value>
+  </data>
+  <data name="SendEvery" xml:space="preserve">
+    <comment>As in "Send every 5 seconds"</comment>
+    <value>Посылать каждые</value>
+  </data>
+  <data name="MergeOnly" xml:space="preserve">
+    <comment>As in "this receiver can only be merged with other receivers"</comment>
+    <value>Только для объединения</value>
+  </data>
+  <data name="NotApplicableAbbr" xml:space="preserve">
+    <comment>Abbreviation of "not applicable"</comment>
+    <value>Нет</value>
+  </data>
+  <data name="MLAT" xml:space="preserve">
+    <comment>Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
+    <value>MLAT</value>
+  </data>
+  <data name="RecConWizSdrFR24Feeder" xml:space="preserve">
+    <comment>It's the name of a program</comment>
+    <value>Flightradar24 Feeder</value>
+  </data>
+  <data name="UseMarkerLabels" xml:space="preserve">
+    <value>Используйте маркер метки</value>
+  </data>
+  <data name="AircraftListJson" xml:space="preserve">
+    <value>Список самолетов ( JSON )</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastSendInterval" xml:space="preserve">
+    <value>Количество секунд ожидания между отправкой пакетов сообщений.  Только Список самолетов (JSON) поддерживает эту настройку.</value>
+  </data>
+  <data name="RebroadcastSendIntervalOutOfBounds" xml:space="preserve">
+    <value>Интервал отправки может быть от 1 до 30 с</value>
+  </data>
+  <data name="OfflineMode" xml:space="preserve">
+    <value>Автономный режим</value>
+  </data>
+  <data name="HideFromWebSite" xml:space="preserve">
+    <value>Скрыть от показа на ВЕБ-сайте</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Обычный</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageHideFromWebSite" xml:space="preserve">
+    <value>Этот приемник не будет виден на ВЕБ-сайте, но он может иметь созданные для него ретранслирующие  серверы и может быть объединен с другими каналами.</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageMergeOnly" xml:space="preserve">
+    <value>Этот приемник не будет виден на ВЕБ-сайте. Только некоторые форматы ретранслирующего сервера могут быть использованы для него. Тем не менее, он может быть объединен с другими каналами и  будет потреблять меньше ресурсов, чем обычные или скрытые приемники.</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageNormal" xml:space="preserve">
+    <value>Этот приемник будет виден на ВЕБ-сайте, может иметь созданные для него ретранслирующие серверы и быть объединен с другими потоками.</value>
+  </data>
+  <data name="Hidden" xml:space="preserve">
+    <value>Скрытый</value>
+  </data>
+  <data name="ReceiverMustBeVisible" xml:space="preserve">
+    <value>Этот приемник не может быть скрыт на ВЕБ-сайте</value>
+  </data>
+  <data name="ReceiverCannotBeMergeOnly" xml:space="preserve">
+    <value>Этот приемник не может быть установлен только для объединения</value>
+  </data>
+  <data name="ExtendedBaseStation" xml:space="preserve">
+    <value>BaseStation + MLAT</value>
+  </data>
+  <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
+    <value>"Да", если сообщения о местоположении из этого канала должны рассматриваться как рассчитанные местоположения MLAT. Требуется только для MLAT каналов, которые не определить, как сообщения с расчетными местоположениями.</value>
   </data>
 </root>

@@ -192,4 +192,7 @@
   <data name="Reset" xml:space="preserve">
     <value>Сбросить</value>
   </data>
+  <data name="ResourceImagesFolder" xml:space="preserve">
+    <value>Папка с изображениями</value>
+  </data>
 </root>
