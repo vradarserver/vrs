@@ -143,8 +143,9 @@ namespace VirtualRadar.Library.Presenter
             _View.ReportProgress(Strings.SplashScreenInitialisingLog);
 
             var log = Factory.Singleton.Resolve<ILog>().Singleton;
+            var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
             log.Truncate(100);
-            log.WriteLine("Program started, version {0}", Factory.Singleton.Resolve<IApplicationInformation>().FullVersion);
+            log.WriteLine("Program started, version {0}, build date {1} UTC", applicationInformation.FullVersion, applicationInformation.BuildDate);
             log.WriteLine("Working folder {0}", configurationStorage.Folder);
         }
 
