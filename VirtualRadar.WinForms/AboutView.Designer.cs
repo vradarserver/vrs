@@ -35,6 +35,7 @@
             this.linkLabelWorkingFolder = new System.Windows.Forms.LinkLabel();
             this.labelConfigurationFolder = new System.Windows.Forms.Label();
             this.labelEnvironment = new System.Windows.Forms.Label();
+            this.labelBuildDate = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,13 +66,13 @@
             // 
             // labelVersion
             // 
-            this.labelVersion.Location = new System.Drawing.Point(177, 34);
+            this.labelVersion.Location = new System.Drawing.Point(338, 34);
             this.labelVersion.Margin = new System.Windows.Forms.Padding(6, 5, 3, 5);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(189, 17);
+            this.labelVersion.Size = new System.Drawing.Size(126, 17);
             this.labelVersion.TabIndex = 0;
             this.labelVersion.Text = "Version";
-            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelCopyright
             // 
@@ -139,12 +140,20 @@
             // 
             this.labelEnvironment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelEnvironment.Location = new System.Drawing.Point(372, 36);
+            this.labelEnvironment.Location = new System.Drawing.Point(470, 36);
             this.labelEnvironment.Name = "labelEnvironment";
-            this.labelEnvironment.Size = new System.Drawing.Size(247, 15);
+            this.labelEnvironment.Size = new System.Drawing.Size(149, 15);
             this.labelEnvironment.TabIndex = 27;
             this.labelEnvironment.Text = "Environment";
             this.labelEnvironment.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // labelBuildDate
+            // 
+            this.labelBuildDate.Location = new System.Drawing.Point(177, 36);
+            this.labelBuildDate.Name = "labelBuildDate";
+            this.labelBuildDate.Size = new System.Drawing.Size(152, 17);
+            this.labelBuildDate.TabIndex = 28;
+            this.labelBuildDate.Text = "Build date";
             // 
             // AboutView
             // 
@@ -152,6 +161,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(631, 422);
+            this.Controls.Add(this.labelBuildDate);
             this.Controls.Add(this.labelEnvironment);
             this.Controls.Add(this.labelConfigurationFolder);
             this.Controls.Add(this.linkLabelWorkingFolder);
@@ -187,5 +197,6 @@
         private System.Windows.Forms.LinkLabel linkLabelWorkingFolder;
         private System.Windows.Forms.Label labelConfigurationFolder;
         private System.Windows.Forms.Label labelEnvironment;
+        private System.Windows.Forms.Label labelBuildDate;
     }
 }

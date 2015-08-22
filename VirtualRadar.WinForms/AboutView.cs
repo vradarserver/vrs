@@ -21,6 +21,7 @@ using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using System.Text;
 
 namespace VirtualRadar.WinForms
 {
@@ -61,6 +62,16 @@ namespace VirtualRadar.WinForms
         {
             get { return labelVersion.Text; }
             set { labelVersion.Text = value; }
+        }
+
+        private DateTime _BuildDate;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime BuildDate
+        {
+            get { return _BuildDate; }
+            set { _BuildDate = value; labelBuildDate.Text = String.Format("{0:dd}-{0:MMM}-{0:yyyy}  {0:HH}:{0:mm}:{0:ss}", _BuildDate); }
         }
 
         /// <summary>

@@ -36,6 +36,11 @@ namespace VirtualRadar.Interface.View
         string Version { get; set; }
 
         /// <summary>
+        /// Gets or sets the application's build date.
+        /// </summary>
+        DateTime BuildDate { get; set; }
+
+        /// <summary>
         /// Gets or sets a small summary of the application's copyright information.
         /// </summary>
         string Copyright { get; set; }
