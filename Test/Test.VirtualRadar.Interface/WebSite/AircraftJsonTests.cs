@@ -56,6 +56,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(aircraftJson, r => r.Origin, null, "Yh");
             TestUtilities.TestProperty(aircraftJson, r => r.PictureHeight, null, 1203);
             TestUtilities.TestProperty(aircraftJson, r => r.PictureWidth, null, 2048);
+            TestUtilities.TestProperty(aircraftJson, r => r.PositionIsStale, null, true);
             TestUtilities.TestProperty(aircraftJson, r => r.PositionTime, null, 1234L);
             TestUtilities.TestProperty(aircraftJson, r => r.ReceiverId, null, 9931);
             TestUtilities.TestProperty(aircraftJson, r => r.Registration, null, "Fd");

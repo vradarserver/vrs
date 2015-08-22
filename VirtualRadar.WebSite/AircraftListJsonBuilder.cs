@@ -275,6 +275,8 @@ namespace VirtualRadar.WebSite
         private void CopyAircraft(AircraftListJson aircraftListJson, List<IAircraft> aircraftListSnapshot, AircraftListJsonBuilderArgs args, Dictionary<int, double?> distances)
         {
             var now = Provider.UtcNow;
+            var configuration = _SharedConfiguration.Get();
+            var positionTimeoutThreshold = now.AddSeconds(-configuration.BaseStationSettings.DisplayTimeoutSeconds);
 
             HashSet<int> previousAircraftSet = null;
             List<int> previousAircraft = args.PreviousAircraft;
@@ -358,6 +360,7 @@ namespace VirtualRadar.WebSite
                     }
 
                     aircraftJson.SecondsTracked = (long)((now - aircraftSnapshot.FirstSeen).TotalSeconds);
+                    aircraftJson.PositionIsStale = aircraftSnapshot.PositionTime != null && aircraftSnapshot.PositionTime < positionTimeoutThreshold ? true : (bool?)null;
                 }
 
                 if(args.TrailType != TrailType.None) {

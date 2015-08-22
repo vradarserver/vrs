@@ -379,6 +379,7 @@
         this.longitude =                new VRS.NumberValue();
         this.isMlat =                   new VRS.BoolValue();
         this.positionTime =             new VRS.NumberValue();
+        this.positionStale =            new VRS.BoolValue();
         this.speed =                    new VRS.NumberValue();
         this.speedType =                new VRS.NumberValue();
         this.verticalSpeed =            new VRS.NumberValue();
@@ -455,6 +456,7 @@
             setValue(this.longitude,            aircraftJson.Long);
             setValue(this.isMlat,               aircraftJson.Mlat);
             setValue(this.positionTime,         aircraftJson.PosTime);
+            setValue(this.positionStale,        !!aircraftJson.PosStale, true);
             setValue(this.speed,                aircraftJson.Spd);
             setValue(this.speedType,            aircraftJson.SpdTyp);
             setValue(this.verticalSpeed,        aircraftJson.Vsi);

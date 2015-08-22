@@ -191,7 +191,7 @@
         VRS.LinkRenderHandler.call(this, {
             linkSite:           VRS.LinkSite.None,
             displayOrder:       -1,
-            canLinkAircraft:    function(/** VRS.Aircraft */ aircraft) { return aircraft && mapPlugin && aircraftList && aircraft.hasPosition(); },
+            canLinkAircraft:    function(/** VRS.Aircraft */ aircraft) { return aircraft && mapPlugin && aircraftList && aircraft.hasPosition() && !aircraft.positionStale.val; },
             hasChanged:         function() { return false; },
             title:              function() { return VRS.$$.CentreOnSelectedAircraft; },
             buildUrl:           function() { return "#"; },
