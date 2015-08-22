@@ -169,4 +169,7 @@
   <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
     <value>Получено исключение при обработке сообщения: {0}</value>
   </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>База данных в настоящее время заблокирована другой программой.  Некоторые полеты не могут быть записаны. </value>
+  </data>
 </root>
