@@ -466,7 +466,6 @@ VRS_LINK_ELEMENT;
  * key:         string=,
  * url:         string,
  * params:      object=,
- * async:       boolean=,
  * queue:       boolean=,
  * success:     function()=,
  * error:       function(jQuery.jqXHR, string, string)=

@@ -117,18 +117,27 @@
         this.getLocale = function() { return _Locale; };
         /**
          * Sets the locale by region code.
-         * @param {string} value
+         * @param {string}      value               The code of the language to load.
+         * @param {function}    successCallback     Function called if the language is loaded successfully, or is already loaded.
          */
-        this.setLocale = function(value) {
-            if(value !== _Locale) {
+        this.setLocale = function(value, successCallback) {
+            if(value === _Locale) {
+                if(successCallback) successCallback();
+            } else {
                 _Locale = value;
                 var cultureInfo = _CultureInfos[_Locale];
                 if(cultureInfo) {
-                    loadLanguage('en');     // English is the base language, if other language files don't supply a string then the English version should be used instead.
-                    loadLanguage(cultureInfo.language);
-                    loadCulture(cultureInfo.cultureName);
-                    Globalize.culture(cultureInfo.cultureName);
-                    _Dispatcher.raise(_Events.localeChanged);
+                    // English is the base language, if other language files don't supply a string then the English version should be used instead.
+                    loadLanguage('en', function() {
+                        loadLanguage(cultureInfo.language, function() {
+                            loadCulture(cultureInfo.cultureName, function() {
+                                Globalize.culture(cultureInfo.cultureName);
+                                _Dispatcher.raise(_Events.localeChanged);
+
+                                if(successCallback) successCallback();
+                            });
+                        });
+                    });
                 }
             }
         };
@@ -176,20 +185,22 @@
 
         /**
          * Applies a saved state to the object.
-         * @param config
+         * @param {*}           config
+         * @param {function}    successCallback
          */
-        this.applyState = function(config)
+        this.applyState = function(config, successCallback)
         {
             config = config || {};
-            this.setLocale(config.locale || 'en');
+            this.setLocale(config.locale || 'en', successCallback);
         };
 
         /**
          * Loads and then applies the saved state to the object.
+         * @param {function()}  successCallback
          */
-        this.loadAndApplyState = function()
+        this.loadAndApplyState = function(successCallback)
         {
-            this.applyState(this.loadState());
+            this.applyState(this.loadState(), successCallback);
         };
 
         /**
@@ -207,27 +218,37 @@
         //region -- loadLanguage, loadCulture
         /**
          * Loads a language script (i.e. translations of text) from the server.
-         * @param language The ISO-2 code(e.g. 'en') for the language to load.
+         * @param {string}      language            The ISO-2 code(e.g. 'en') for the language to load.
+         * @param {function}    successCallback     The function to call after the language has been loaded
          */
-        function loadLanguage(language)
+        function loadLanguage(language, successCallback)
         {
-            if(language !== _LoadedLanguage) {
+            if(language === _LoadedLanguage) {
+                if(successCallback) successCallback();
+            } else {
                 var url = 'script/i18n/strings.' + language + '.js';
-                VRS.scriptManager.loadScript({ url: url });
-                _LoadedLanguage = language;
+                VRS.scriptManager.loadScript({ url: url, success: function() {
+                    _LoadedLanguage = language;
+                    if(successCallback) successCallback();
+                }});
             }
         }
 
         /**
          * Loads a culture script (i.e. number and date formatting) from the server.
-         * @param cultureName The name of the culture (e.g. 'en-GB') to load from the server.
+         * @param {string}      cultureName     The name of the culture (e.g. 'en-GB') to load from the server.
+         * @param {function}    successCallback The function to call once the script has been loaded.
          */
-        function loadCulture(cultureName)
+        function loadCulture(cultureName, successCallback)
         {
-            if(!_LoadedGlobalizations[cultureName]) {
+            if(_LoadedGlobalizations[cultureName]) {
+                if(successCallback) successCallback();
+            } else {
                 var url = 'script/i18n/globalize/globalize.culture.' + cultureName + '.js';
-                VRS.scriptManager.loadScript({ url: url });
-                _LoadedGlobalizations[cultureName] = true;
+                VRS.scriptManager.loadScript({ url: url, success: function() {
+                    _LoadedGlobalizations[cultureName] = true;
+                    if(successCallback) successCallback();
+                }});
             }
         }
         //endregion
@@ -462,11 +483,10 @@
             var self = this;
             if(showModalWait === undefined) showModalWait = true;
             if(showModalWait) VRS.pageHelper.showModalWaitAnimation(true);
-            setTimeout(function() {
-                self.setLocale(locale);
+            self.setLocale(locale, function() {
                 if(showModalWait) VRS.pageHelper.showModalWaitAnimation(false);
                 if(localeLoadedCallback) localeLoadedCallback();
-            }, 50);
+            });
         };
         //endregion
     };

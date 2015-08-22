@@ -100,31 +100,32 @@
             }, pageSettings);
 
             // Common startup stuff
-            base.doStartInitialise(pageSettings);
+            var self = this;
+            base.doStartInitialise(pageSettings, function() {
+                // Page title
+                if(!objSettings.suppressTitleUpdate) document.title = VRS.$$.VirtualRadar;
 
-            // Page title
-            if(!objSettings.suppressTitleUpdate) document.title = VRS.$$.VirtualRadar;
+                // Load the map. If the user has disabled the map then jump straight to the "map loaded" callback.
+                if(!pageSettings.mapJQ) {
+                    that.mapLoaded(pageSettings);
+                } else {
+                    pageSettings.mapSettings = $.extend(pageSettings.mapSettings, {
+                        useStateOnOpen: true,
+                        autoSaveState: true,
+                        useServerDefaults: true,
+                        loadMarkerWithLabel: true,
+                        controlStyle: VRS.MapControlStyle.DropdownMenu,
+                        afterOpen: $.proxy(function() {
+                            base.raiseMapInitialising(pageSettings);
+                            self.mapLoaded(pageSettings);
+                            base.raiseMapInitialised(pageSettings);
+                        }, self)
+                    }, objSettings.mapSettings || {});
+                    base.raiseMapSettingsInitialised(pageSettings);
 
-            // Load the map. If the user has disabled the map then jump straight to the "map loaded" callback.
-            if(!pageSettings.mapJQ) {
-                that.mapLoaded(pageSettings);
-            } else {
-                pageSettings.mapSettings = $.extend(pageSettings.mapSettings, {
-                    useStateOnOpen: true,
-                    autoSaveState: true,
-                    useServerDefaults: true,
-                    loadMarkerWithLabel: true,
-                    controlStyle: VRS.MapControlStyle.DropdownMenu,
-                    afterOpen: $.proxy(function() {
-                        base.raiseMapInitialising(pageSettings);
-                        this.mapLoaded(pageSettings);
-                        base.raiseMapInitialised(pageSettings);
-                    }, this)
-                }, objSettings.mapSettings || {});
-                base.raiseMapSettingsInitialised(pageSettings);
-
-                pageSettings.mapJQ.vrsMap(VRS.jQueryUIHelper.getMapOptions(pageSettings.mapSettings));
-            }
+                    pageSettings.mapJQ.vrsMap(VRS.jQueryUIHelper.getMapOptions(pageSettings.mapSettings));
+                }
+            });
         };
         //endregion
 

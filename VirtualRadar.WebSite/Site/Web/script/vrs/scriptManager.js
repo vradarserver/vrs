@@ -60,7 +60,6 @@
          * @param {string}                                     [options.key]        The key associated with the URL. Used to control duplicate loads - pass null if duplicate load protection not required.
          * @param {string}                                      options.url         The URL of the script to load.
          * @param {Object}                                     [options.params]     The parameters to pass with the url.
-         * @param {bool}                                       [options.async]      True if the script is to be loaded asynchronously.
          * @param {bool}                                       [options.queue]      True if the script is to loaded in a queue. Queued loads are always performed in order.
          * @param {function}                                   [options.success]    The function to call after the script has loaded (or to be called immediately if it has already been loaded).
          * @param {function(jQuery.jqXHR, string, string)=}    [options.error]      The function to call if the script cannot be loaded.
@@ -71,7 +70,6 @@
             options = $.extend({
                 key:        null,
                 params:     {},
-                async:      false,
                 queue:      false,
                 success:    $.noop,
                 error:      null,
@@ -128,13 +126,10 @@
                             options.error(jqXHR, textStatus, errorThrown);
                             if(onCompletion) onCompletion();
                         },
-                        async: options.async,
                         dataType: 'script',
                         timeout: VRS.globalOptions.scriptManagerTimeout
                     });
                 } else {
-                    if(!options.async) throw 'Cannot load Google Maps synchronously';
-
                     var callbackName = 'googleMapCallback_' + $.now();
                     options.params = $.extend({}, options.params, { callback: callbackName });
 
