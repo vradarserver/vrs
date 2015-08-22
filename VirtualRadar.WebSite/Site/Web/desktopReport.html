@@ -122,22 +122,23 @@
         VRS.serverConfig.fetch(function() {
             // Ensure that any accidental attempts to use globalised text before the bootstrapper has loaded the
             // correct locale will not throw an exception.
-            VRS.globalisation.setLocale('en-GB');
+            VRS.globalisation.setLocale('en-GB', function() {
+                if(!VRS.serverConfig.reportsEnabled()) $('body').append($('<p/>').text(VRS.$$.ReportsAreDisabled));
+                else {
+                    // Boot the page
+                    var bootstrap = new VRS.BootstrapReportDesktop();
+                    VRS.globalDispatch.raise(VRS.globalEvent.bootstrapCreated, [ bootstrap ] );
 
-            if(!VRS.serverConfig.reportsEnabled()) $('body').append($('<p/>').text(VRS.$$.ReportsAreDisabled));
-            else {
-                // Boot the page
-                var bootstrap = new VRS.BootstrapReportDesktop();
-                VRS.globalDispatch.raise(VRS.globalEvent.bootstrapCreated, [ bootstrap ] );
+                    bootstrap.initialise({
+                        reportName: 'general',
+                        splittersJQ: $('#splitters'),
+                        mapJQ: $('#map'),
+                        listJQ: $('#list'),
+                        detailJQ: $('#detail')
+                    });
+                }
 
-                bootstrap.initialise({
-                    reportName: 'general',
-                    splittersJQ: $('#splitters'),
-                    mapJQ: $('#map'),
-                    listJQ: $('#list'),
-                    detailJQ: $('#detail')
-                });
-            }
+            });
         });
     });
 </script>

@@ -68,79 +68,80 @@
                 mapJQ:                      null
             }, userPageSettings);
 
-            base.doStartInitialise(pageSettings);
+            var self = this;
+            base.doStartInitialise(pageSettings, function() {
+                // Make sure that the current location isn't shown on any map
+                VRS.currentLocation.setShowCurrentLocationOnMap(false);
 
-            // Make sure that the current location isn't shown on any map
-            VRS.currentLocation.setShowCurrentLocationOnMap(false);
+                // Set up the page title
+                if(!objSettings.suppressTitleUpdate) document.title = VRS.$$.VirtualRadar;
 
-            // Set up the page title
-            if(!objSettings.suppressTitleUpdate) document.title = VRS.$$.VirtualRadar;
-
-            // Create the report object
-            pageSettings.report = new VRS.Report({
-                name: pageSettings.reportName,
-                autoSaveState: true,
-                unitDisplayPreferences: pageSettings.unitDisplayPreferences
-            });
-            pageSettings.report.loadAndApplyState();
-            pageSettings.report.getCriteria().loadAndApplyState();
-            pageSettings.report.populateFromQueryString();
-            base.raiseReportCreated(pageSettings);
-
-            // Create the settings button
-            if(pageSettings.mapJQ) base.createMapSettingsControl(pageSettings);
-
-            // Create the plotter options - these are used on the various maps
-            pageSettings.plotterOptions = new VRS.AircraftPlotterOptions({
-                trailDisplay:           VRS.TrailDisplay.AllAircraft,
-                trailType:              VRS.TrailType.Full
-            });
-
-            // Create the report map
-            if(pageSettings.mapJQ) {
-                /** @type {VRS_OPTIONS_REPORTMAP} */
-                var mapOptions = {
-                    plotterOptions:         pageSettings.plotterOptions,
-                    report:                 pageSettings.report,
+                // Create the report object
+                pageSettings.report = new VRS.Report({
+                    name: pageSettings.reportName,
+                    autoSaveState: true,
                     unitDisplayPreferences: pageSettings.unitDisplayPreferences
-                };
-                if(pageSettings.menuJQ && pageSettings.showSettingsButton) mapOptions.mapControls = [
-                    { control: pageSettings.menuJQ, position: objSettings.settingsPosition }
-                ];
-                pageSettings.mapJQ.vrsReportMap(VRS.jQueryUIHelper.getReportMapOptions(mapOptions));
-                pageSettings.mapPlugin = pageSettings.mapJQ ? VRS.jQueryUIHelper.getReportMapPlugin(pageSettings.mapJQ) : null;
-                if(pageSettings.mapPlugin && !pageSettings.mapPlugin.isOpen()) pageSettings.mapPlugin = null;
-            }
+                });
+                pageSettings.report.loadAndApplyState();
+                pageSettings.report.getCriteria().loadAndApplyState();
+                pageSettings.report.populateFromQueryString();
+                base.raiseReportCreated(pageSettings);
 
-            // Create the report detail panel
-            if(pageSettings.detailJQ) {
-                pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
-                    report:                 pageSettings.report,
-                    unitDisplayPreferences: pageSettings.unitDisplayPreferences,
-                    plotterOptions:         pageSettings.plotterOptions
-                }));
-                pageSettings.detailPlugin = VRS.jQueryUIHelper.getReportDetailPlugin(pageSettings.detailJQ);
-            }
+                // Create the settings button
+                if(pageSettings.mapJQ) base.createMapSettingsControl(pageSettings);
 
-            // Create the report list panel
-            if(pageSettings.listJQ) {
-                pageSettings.listJQ.vrsReportList(VRS.jQueryUIHelper.getReportListOptions({
-                    report:                 pageSettings.report,
-                    unitDisplayPreferences: pageSettings.unitDisplayPreferences
-                }));
-                pageSettings.listPlugin = VRS.jQueryUIHelper.getReportListPlugin(pageSettings.listJQ);
-            }
+                // Create the plotter options - these are used on the various maps
+                pageSettings.plotterOptions = new VRS.AircraftPlotterOptions({
+                    trailDisplay:           VRS.TrailDisplay.AllAircraft,
+                    trailType:              VRS.TrailType.Full
+                });
 
-            // Configure the layouts
-            if(pageSettings.splittersJQ) this.initialisePageLayouts(pageSettings);
-            if(pageSettings.pagesJQ) this.initialisePageManager(pageSettings);
+                // Create the report map
+                if(pageSettings.mapJQ) {
+                    /** @type {VRS_OPTIONS_REPORTMAP} */
+                    var mapOptions = {
+                        plotterOptions:         pageSettings.plotterOptions,
+                        report:                 pageSettings.report,
+                        unitDisplayPreferences: pageSettings.unitDisplayPreferences
+                    };
+                    if(pageSettings.menuJQ && pageSettings.showSettingsButton) mapOptions.mapControls = [
+                        { control: pageSettings.menuJQ, position: objSettings.settingsPosition }
+                    ];
+                    pageSettings.mapJQ.vrsReportMap(VRS.jQueryUIHelper.getReportMapOptions(mapOptions));
+                    pageSettings.mapPlugin = pageSettings.mapJQ ? VRS.jQueryUIHelper.getReportMapPlugin(pageSettings.mapJQ) : null;
+                    if(pageSettings.mapPlugin && !pageSettings.mapPlugin.isOpen()) pageSettings.mapPlugin = null;
+                }
 
-            // Configure the settings menu
-            this.buildSettingsMenu(pageSettings, pageSettings.settingsMenu.getTopLevelMenuItems());
+                // Create the report detail panel
+                if(pageSettings.detailJQ) {
+                    pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
+                        report:                 pageSettings.report,
+                        unitDisplayPreferences: pageSettings.unitDisplayPreferences,
+                        plotterOptions:         pageSettings.plotterOptions
+                    }));
+                    pageSettings.detailPlugin = VRS.jQueryUIHelper.getReportDetailPlugin(pageSettings.detailJQ);
+                }
 
-            // Lift-off :)
-            base.doEndInitialise(pageSettings);
-            pageSettings.report.fetchPage();
+                // Create the report list panel
+                if(pageSettings.listJQ) {
+                    pageSettings.listJQ.vrsReportList(VRS.jQueryUIHelper.getReportListOptions({
+                        report:                 pageSettings.report,
+                        unitDisplayPreferences: pageSettings.unitDisplayPreferences
+                    }));
+                    pageSettings.listPlugin = VRS.jQueryUIHelper.getReportListPlugin(pageSettings.listJQ);
+                }
+
+                // Configure the layouts
+                if(pageSettings.splittersJQ) self.initialisePageLayouts(pageSettings);
+                if(pageSettings.pagesJQ) self.initialisePageManager(pageSettings);
+
+                // Configure the settings menu
+                self.buildSettingsMenu(pageSettings, pageSettings.settingsMenu.getTopLevelMenuItems());
+
+                // Lift-off :)
+                base.doEndInitialise(pageSettings);
+                pageSettings.report.fetchPage();
+            });
         };
         //endregion
 

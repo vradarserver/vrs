@@ -153,9 +153,10 @@
                 //region -- doStartInitialise, doEndInitialise
                 /**
                  * All implementations of initialise should call this before doing any work.
-                 * @param {Object}  pageSettings
+                 * @param {Object}      pageSettings
+                 * @param {function}    successCallback
                  */
-                doStartInitialise: function(pageSettings) {
+                doStartInitialise: function(pageSettings, successCallback) {
                     // Make the bootstrap and page settings accessible to the browser's console to aid in debugging / diagnostics
                     VRS.bootstrap = that;
                     VRS.bootstrap.pageSettings = pageSettings;
@@ -170,19 +171,23 @@
                     this.raiseConfigStorageInitialised(pageSettings);
 
                     // Load the appropriate language
-                    VRS.globalisation.loadAndApplyState();
-                    this.raiseLocaleInitialised(pageSettings);
+                    var self = this;
+                    VRS.globalisation.loadAndApplyState(function() {
+                        self.raiseLocaleInitialised(pageSettings);
 
-                    // If a timeout manager is present then initialise it
-                    if(VRS.timeoutManager) VRS.timeoutManager.initialise();
+                        // If a timeout manager is present then initialise it
+                        if(VRS.timeoutManager) VRS.timeoutManager.initialise();
 
-                    // Initialise the unit display preferences
-                    pageSettings.unitDisplayPreferences = new VRS.UnitDisplayPreferences();
-                    pageSettings.unitDisplayPreferences.loadAndApplyState();
+                        // Initialise the unit display preferences
+                        pageSettings.unitDisplayPreferences = new VRS.UnitDisplayPreferences();
+                        pageSettings.unitDisplayPreferences.loadAndApplyState();
 
-                    // Create the settings menu - the page decides where this goes, but all pages have one somewhere
-                    if(!pageSettings.settingsMenu) pageSettings.settingsMenu = new VRS.Menu();
-                    this.raiseCreatedSettingsMenu(pageSettings);
+                        // Create the settings menu - the page decides where this goes, but all pages have one somewhere
+                        if(!pageSettings.settingsMenu) pageSettings.settingsMenu = new VRS.Menu();
+                        self.raiseCreatedSettingsMenu(pageSettings);
+
+                        if(successCallback) successCallback();
+                    });
                 },
 
                 /**

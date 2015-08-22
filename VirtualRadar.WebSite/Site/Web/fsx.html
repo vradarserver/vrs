@@ -97,23 +97,23 @@
         VRS.serverConfig.fetch(function() {
             // Ensure that any accidental attempts to use globalised text before the bootstrapper has loaded the
             // correct locale will not throw an exception.
-            VRS.globalisation.setLocale('en-GB');
+            VRS.globalisation.setLocale('en-GB', function() {
+                // Boot the page
+                var bootstrap = new VRS.BootstrapMapFsx();
+                VRS.globalDispatch.raise(VRS.globalEvent.bootstrapCreated, [ bootstrap ] );
 
-            // Boot the page
-            var bootstrap = new VRS.BootstrapMapFsx();
-            VRS.globalDispatch.raise(VRS.globalEvent.bootstrapCreated, [ bootstrap ] );
-
-            bootstrap.initialise({
-                splittersJQ: $('#splitters'),
-                mapJQ: $('#map'),
-                aircraftListJQ: $('#aircraftList'),
-                showReportLinks: false,
-                showLayoutSetting: false,
-                showReceiversShortcut: false,
-                showAudioSetting: false,
-                showRangeCircleSetting: false,
-                showAutoSelectToggle: false,
-                showGotoCurrentLocation: false
+                bootstrap.initialise({
+                    splittersJQ: $('#splitters'),
+                    mapJQ: $('#map'),
+                    aircraftListJQ: $('#aircraftList'),
+                    showReportLinks: false,
+                    showLayoutSetting: false,
+                    showReceiversShortcut: false,
+                    showAudioSetting: false,
+                    showRangeCircleSetting: false,
+                    showAutoSelectToggle: false,
+                    showGotoCurrentLocation: false
+                });
             });
         });
     });

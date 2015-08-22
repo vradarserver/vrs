@@ -42,9 +42,10 @@
 
         <script type="text/javascript">
             jQuery(document).ready(function($) {
-                VRS.globalisation.loadAndApplyState();
-                $('h1').text(VRS.$$.Settings);
-                $('#storedSettingsList').vrsStoredSettingsList();
+                VRS.globalisation.loadAndApplyState(function() {
+                    $('h1').text(VRS.$$.Settings);
+                    $('#storedSettingsList').vrsStoredSettingsList();
+                });
         });
         </script>
     </head>
