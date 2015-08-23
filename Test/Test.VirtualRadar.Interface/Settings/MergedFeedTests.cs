@@ -37,6 +37,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.Name, null, "ABC");
             TestUtilities.TestProperty(settings, r => r.IcaoTimeout, 3000, 10000);
             TestUtilities.TestProperty(settings, r => r.IgnoreAircraftWithNoPosition, false);
+            TestUtilities.TestProperty(settings, r => r.ReceiverUsage, ReceiverUsage.Normal, ReceiverUsage.HideFromWebSite);
         }
     }
 }

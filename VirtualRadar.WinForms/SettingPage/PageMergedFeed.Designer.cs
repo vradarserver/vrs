@@ -39,16 +39,17 @@
             this.colEnabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colIsMlatFeed = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.checkBoxIsMlatFeed = new System.Windows.Forms.CheckBox();
+            this.checkBoxHideFromWebSite = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericIcaoTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(0, 79);
+            this.label3.Location = new System.Drawing.Point(3, 98);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(70, 13);
-            this.label3.TabIndex = 6;
+            this.label3.TabIndex = 7;
             this.label3.Text = "::Receivers:::";
             // 
             // checkBoxIgnoreAircraftWithNoPosition
@@ -135,10 +136,10 @@
             this.colEnabled,
             this.colIsMlatFeed});
             this.listReceiverIds.HideAllButList = true;
-            this.listReceiverIds.Location = new System.Drawing.Point(200, 75);
+            this.listReceiverIds.Location = new System.Drawing.Point(200, 98);
             this.listReceiverIds.Name = "listReceiverIds";
-            this.listReceiverIds.Size = new System.Drawing.Size(436, 266);
-            this.listReceiverIds.TabIndex = 7;
+            this.listReceiverIds.Size = new System.Drawing.Size(436, 195);
+            this.listReceiverIds.TabIndex = 8;
             this.listReceiverIds.SelectedRecordChanged += new System.EventHandler(this.listReceiverIds_SelectedRecordChanged);
             // 
             // colName
@@ -160,16 +161,27 @@
             // 
             this.checkBoxIsMlatFeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxIsMlatFeed.AutoSize = true;
-            this.checkBoxIsMlatFeed.Location = new System.Drawing.Point(200, 347);
+            this.checkBoxIsMlatFeed.Location = new System.Drawing.Point(200, 299);
             this.checkBoxIsMlatFeed.Name = "checkBoxIsMlatFeed";
             this.checkBoxIsMlatFeed.Size = new System.Drawing.Size(67, 17);
-            this.checkBoxIsMlatFeed.TabIndex = 8;
+            this.checkBoxIsMlatFeed.TabIndex = 9;
             this.checkBoxIsMlatFeed.Text = "::MLAT::";
             this.checkBoxIsMlatFeed.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxHideFromWebSite
+            // 
+            this.checkBoxHideFromWebSite.AutoSize = true;
+            this.checkBoxHideFromWebSite.Location = new System.Drawing.Point(200, 75);
+            this.checkBoxHideFromWebSite.Name = "checkBoxHideFromWebSite";
+            this.checkBoxHideFromWebSite.Size = new System.Drawing.Size(124, 17);
+            this.checkBoxHideFromWebSite.TabIndex = 6;
+            this.checkBoxHideFromWebSite.Text = "::HideFromWebSite::";
+            this.checkBoxHideFromWebSite.UseVisualStyleBackColor = true;
             // 
             // PageMergedFeed
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.checkBoxHideFromWebSite);
             this.Controls.Add(this.checkBoxIsMlatFeed);
             this.Controls.Add(this.listReceiverIds);
             this.Controls.Add(this.label3);
@@ -180,7 +192,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxName);
             this.Name = "PageMergedFeed";
-            this.Size = new System.Drawing.Size(636, 374);
+            this.Size = new System.Drawing.Size(636, 326);
             ((System.ComponentModel.ISupportInitialize)(this.numericIcaoTimeout)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -201,5 +213,6 @@
         private System.Windows.Forms.ColumnHeader colEnabled;
         private System.Windows.Forms.ColumnHeader colIsMlatFeed;
         private System.Windows.Forms.CheckBox checkBoxIsMlatFeed;
+        private System.Windows.Forms.CheckBox checkBoxHideFromWebSite;
     }
 }

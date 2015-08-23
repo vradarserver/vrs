@@ -35,7 +35,7 @@ namespace VirtualRadar.Interface.Settings
         /// <summary>
         /// Do not maintain an aircraft list for the receiver, can only be rebroadcast using formats
         /// that do not require an aircraft list and do not show it on the web site. It can only be
-        /// merged with other feeds.
+        /// merged with other feeds. Illegal on merged feeds.
         /// </summary>
         MergeOnly = 2,
     }
