@@ -107,19 +107,6 @@ namespace VirtualRadar.Interface.WebSite
         Image AddTextLines(Image image, IEnumerable<string> textLines, bool centreText, bool isHighDpi);
 
         /// <summary>
-        /// Returns the largest font that will fit all of the text passed across into the rectangle specified.
-        /// </summary>
-        /// <param name="fontFamily"></param>
-        /// <param name="fontStyle"></param>
-        /// <param name="startSize"></param>
-        /// <param name="graphics"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        Font GetFontForRectangle(string fontFamily, FontStyle fontStyle, float startSize, Graphics graphics, float width, float height, string text);
-
-        /// <summary>
         /// When passed the current temporary image and the image that will become the new temporary image this
         /// disposes of the old temporary image and returns the new one. Can cope when the same image is passed
         /// across for both the temporary and new image.

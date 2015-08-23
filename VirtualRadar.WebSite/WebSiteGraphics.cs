@@ -386,7 +386,7 @@ namespace VirtualRadar.WebSite
         /// <param name="height"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public Font GetFontForRectangle(string fontFamily, FontStyle fontStyle, float startSize, Graphics graphics, float width, float height, string text)
+        private Font GetFontForRectangle(string fontFamily, FontStyle fontStyle, float startSize, Graphics graphics, float width, float height, string text)
         {
             Font result = null;
 
