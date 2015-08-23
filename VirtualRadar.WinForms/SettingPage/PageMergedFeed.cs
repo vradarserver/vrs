@@ -125,8 +125,9 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
-            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxEnabled,                        r => r.Enabled,                         (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,   r => r.IgnoreAircraftWithNoPosition,    (r,v) => r.IgnoreAircraftWithNoPosition = v));
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxEnabled,                        r => r.Enabled,                                         (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,   r => r.IgnoreAircraftWithNoPosition,                    (r,v) => r.IgnoreAircraftWithNoPosition = v));
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxHideFromWebSite,                r => r.ReceiverUsage == ReceiverUsage.HideFromWebSite,  (r,v) => r.ReceiverUsage = v ? ReceiverUsage.HideFromWebSite : ReceiverUsage.Normal) { ModelPropertyName = PropertyHelper.ExtractName<MergedFeed>(r => r.ReceiverUsage) });
 
             AddControlBinder(new CheckBoxBoolBinder<MergedFeedReceiver>(null, checkBoxIsMlatFeed, r => r.IsMlatFeed, (r,v) => r.IsMlatFeed = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
@@ -161,7 +162,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxIsMlatFeed,                   Strings.MLAT,                           Strings.OptionsDescribeIsMlatFeed);
         }
 
-        public void SynchroniseReceiverIdsToFlags()
+        private void SynchroniseReceiverIdsToFlags()
         {
             var addFlags = MergedFeed.ReceiverIds.Where(r => !MergedFeed.ReceiverFlags.Any(i => i.UniqueId == r)).ToArray();
             var delFlags = MergedFeed.ReceiverFlags.Where(r => !MergedFeed.ReceiverIds.Any(i => r.UniqueId == i)).ToArray();

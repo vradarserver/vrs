@@ -145,7 +145,7 @@ namespace VirtualRadar.Library.Listener
 
             var startAircraftList = receiver.ReceiverUsage != ReceiverUsage.MergeOnly;
 
-            DoCommonInitialise(receiver.UniqueId, receiver.Name, startAircraftList: startAircraftList);
+            DoCommonInitialise(receiver.UniqueId, receiver.Name, receiver.ReceiverUsage, startAircraftList: startAircraftList);
             ConfigurePolarPlotter(receiverLocation, nameChanged: false);
         }
 
@@ -171,9 +171,7 @@ namespace VirtualRadar.Library.Listener
             mergedFeedListener.IgnoreAircraftWithNoPosition = mergedFeed.IgnoreAircraftWithNoPosition;
             mergedFeedListener.SetListeners(mergedListeners);
 
-            IsVisible = true;
-
-            DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name, startAircraftList: true);
+            DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name, mergedFeed.ReceiverUsage, startAircraftList: true);
         }
 
         private static List<IMergedFeedComponentListener> GetListenersFromMergeFeeds(MergedFeed mergedFeed, IEnumerable<IFeed> mergeFeeds)
@@ -200,8 +198,9 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         /// <param name="uniqueId"></param>
         /// <param name="name"></param>
+        /// <param name="receiverUsage"></param>
         /// <param name="startAircraftList"></param>
-        private void DoCommonInitialise(int uniqueId, string name, bool startAircraftList)
+        private void DoCommonInitialise(int uniqueId, string name, ReceiverUsage receiverUsage, bool startAircraftList)
         {
             _Initialised = true;
             UniqueId = uniqueId;
@@ -215,9 +214,20 @@ namespace VirtualRadar.Library.Listener
             AircraftList.Listener = Listener;
             AircraftList.StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
 
+            SetIsVisible(receiverUsage);
+
             if(startAircraftList) {
                 AircraftList.Start();
             }
+        }
+
+        /// <summary>
+        /// Sets the <see cref="IsVisible"/> property from the receiver usage passed across.
+        /// </summary>
+        /// <param name="receiverUsage"></param>
+        private void SetIsVisible(ReceiverUsage receiverUsage)
+        {
+            IsVisible = receiverUsage == ReceiverUsage.Normal;
         }
 
         /// <summary>
@@ -253,7 +263,7 @@ namespace VirtualRadar.Library.Listener
                 if(Listener.Statistics != null) Listener.Statistics.ResetMessageCounters();
             }
 
-            IsVisible = receiver.ReceiverUsage == ReceiverUsage.Normal;
+            SetIsVisible(receiver.ReceiverUsage);
         }
         #endregion
 
@@ -362,6 +372,7 @@ namespace VirtualRadar.Library.Listener
             if(mergedFeedListener == null) throw new InvalidOperationException(String.Format("ReceiverPathway {0} was initialised with a receiver but updated with a merged feed", UniqueId));
 
             Name = mergedFeed.Name;
+            SetIsVisible(mergedFeed.ReceiverUsage);
 
             var listeners = GetListenersFromMergeFeeds(mergedFeed, mergeFeeds);
             mergedFeedListener.IcaoTimeout = mergedFeed.IcaoTimeout;

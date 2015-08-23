@@ -592,7 +592,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Sets_IsVisible_From_ReceiverUsage()
+        public void Feed_Initialise_Sets_Receiver_IsVisible_From_ReceiverUsage()
         {
             foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
                 TestCleanup();
@@ -876,6 +876,21 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
             Assert.AreSame(_Feed, _ExceptionCaughtRecorder.Sender);
             Assert.AreSame(exception, _ExceptionCaughtRecorder.Args.Value);
+        }
+
+        [TestMethod]
+        public void Feed_Initialise_Sets_MergedFeed_IsVisible_From_ReceiverUsage()
+        {
+            foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
+                TestCleanup();
+                TestInitialise();
+
+                _MergedFeed.ReceiverUsage = receiverUsage;
+                _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+
+                var isVisible = receiverUsage == ReceiverUsage.Normal;
+                Assert.AreEqual(isVisible, _Feed.IsVisible, receiverUsage.ToString());
+            }
         }
         #endregion
 
@@ -1408,6 +1423,21 @@ namespace Test.VirtualRadar.Library.Listener
                 _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
 
                 Assert.AreEqual(ignoreFlag, _MergedFeedListener.Object.IgnoreAircraftWithNoPosition);
+            }
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Sets_IsVisible_On_MergedFeeds_As_Appropriate()
+        {
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+
+            foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
+                _MergedFeed.ReceiverUsage = receiverUsage;
+
+                _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
+
+                var expected = receiverUsage == ReceiverUsage.Normal;
+                Assert.AreEqual(expected, _Feed.IsVisible, receiverUsage.ToString());
             }
         }
         #endregion

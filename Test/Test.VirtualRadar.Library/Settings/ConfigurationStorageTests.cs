@@ -412,6 +412,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("First", mergedFeed.Name);
                         Assert.AreEqual(1000, mergedFeed.IcaoTimeout);
                         Assert.AreEqual(false, mergedFeed.IgnoreAircraftWithNoPosition);
+                        Assert.AreEqual(ReceiverUsage.Normal, mergedFeed.ReceiverUsage);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds.Count);
                         Assert.AreEqual(1, mergedFeed.ReceiverIds[0]);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds[1]);
@@ -427,6 +428,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("Second", mergedFeed.Name);
                         Assert.AreEqual(2000, mergedFeed.IcaoTimeout);
                         Assert.AreEqual(true, mergedFeed.IgnoreAircraftWithNoPosition);
+                        Assert.AreEqual(ReceiverUsage.HideFromWebSite, mergedFeed.ReceiverUsage);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds.Count);
                         Assert.AreEqual(2, mergedFeed.ReceiverIds[0]);
                         Assert.AreEqual(1, mergedFeed.ReceiverIds[1]);
@@ -694,6 +696,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             Name = "First",
                                                             IcaoTimeout = 1000,
                                                             IgnoreAircraftWithNoPosition = false,
+                                                            ReceiverUsage = ReceiverUsage.Normal,
                                                             ReceiverIds = { 1, 2 },
                                                             ReceiverFlags = {
                                                                 new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
@@ -706,6 +709,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             Name = "Second",
                                                             IcaoTimeout = 2000,
                                                             IgnoreAircraftWithNoPosition = true,
+                                                            ReceiverUsage = ReceiverUsage.HideFromWebSite,
                                                             ReceiverIds = { 2, 1 },
                                                             ReceiverFlags = {
                                                                 new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },

@@ -114,6 +114,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _IgnoreAircraftWithNoPosition, value, () => IgnoreAircraftWithNoPosition); }
         }
 
+        private ReceiverUsage _ReceiverUsage;
+        /// <summary>
+        /// Gets or sets a value indicating how the merged feed is going to be used by the system.
+        /// </summary>
+        public ReceiverUsage ReceiverUsage
+        {
+            get { return _ReceiverUsage; }
+            set { SetField(ref _ReceiverUsage, value, () => ReceiverUsage); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

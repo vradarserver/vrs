@@ -57,8 +57,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Receiver2 = new Receiver() { UniqueId = 2, Name = "Second", DataSource = DataSource.Beast, ConnectionType = ConnectionType.COM, ComPort = "COM1", BaudRate = 19200, DataBits = 8, StopBits = StopBits.One };
             _Receiver3 = new Receiver() { UniqueId = 3, Name = "Third", ReceiverUsage = ReceiverUsage.HideFromWebSite, };
             _Receiver4 = new Receiver() { UniqueId = 4, Name = "Fourth", ReceiverUsage = ReceiverUsage.MergeOnly, };
-            _MergedFeed1 = new MergedFeed() { UniqueId = 5, Name = "M1", ReceiverIds = { 1, 2 } };
-            _MergedFeed2 = new MergedFeed() { UniqueId = 6, Name = "M2", ReceiverIds = { 3, 4 } };
+            _MergedFeed1 = new MergedFeed() { UniqueId = 5, Name = "M1", ReceiverIds = { 1, 2 }, ReceiverUsage = ReceiverUsage.Normal, };
+            _MergedFeed2 = new MergedFeed() { UniqueId = 6, Name = "M2", ReceiverIds = { 3, 4 }, ReceiverUsage = ReceiverUsage.HideFromWebSite, };
             _Configuration = new Configuration() {
                 Receivers = { _Receiver1, _Receiver2, _Receiver3, _Receiver4 },
                 MergedFeeds = { _MergedFeed1, _MergedFeed2 },
@@ -85,7 +85,7 @@ namespace Test.VirtualRadar.Library.Listener
                     feed.Setup(i => i.UniqueId).Returns(mfeed.UniqueId);
                     feed.Setup(i => i.Name).Returns(mfeed.Name);
                     feed.Setup(i => i.Listener).Returns(listener.Object);
-                    feed.Setup(i => i.IsVisible).Returns(true);
+                    feed.Setup(i => i.IsVisible).Returns(mfeed.ReceiverUsage == ReceiverUsage.Normal);
 
                     if(_MergedFeedFeeds.ContainsKey(mfeed)) _MergedFeedFeeds[mfeed] = feeds.ToList();
                     else                                    _MergedFeedFeeds.Add(mfeed, feeds.ToList());
@@ -222,12 +222,13 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void FeedManager_Initialise_Exposes_Visible_Feeds_In_VisibleFeeds_Property()
         {
-            // Feeds 3 & 4 should not be visible.
+            // Receivers 3 & 4 should not be visible, neither should merged feed 2
             _Manager.Initialise();
 
-            Assert.AreEqual(4, _Manager.VisibleFeeds.Length);
+            Assert.AreEqual(3, _Manager.VisibleFeeds.Length);
             Assert.IsFalse(_Manager.VisibleFeeds.Any(r => r.UniqueId == _Receiver3.UniqueId));
             Assert.IsFalse(_Manager.VisibleFeeds.Any(r => r.UniqueId == _Receiver4.UniqueId));
+            Assert.IsFalse(_Manager.VisibleFeeds.Any(r => r.UniqueId == _MergedFeed2.UniqueId));
         }
 
         [TestMethod]
@@ -563,7 +564,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            Assert.AreEqual(5, _Manager.VisibleFeeds.Length);
+            Assert.AreEqual(4, _Manager.VisibleFeeds.Length);
         }
 
         [TestMethod]
