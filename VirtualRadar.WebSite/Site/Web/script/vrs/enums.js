@@ -419,6 +419,7 @@
         TargetAltitude:                 'tal',
         TargetHeading:                  'thd',
         TimeTracked:                    'tim',
+        Tisb:                           'tsb',
         TransponderType:                'trt',
         TransponderTypeFlag:            'trf',
         UserTag:                        'tag',

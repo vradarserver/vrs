@@ -1313,6 +1313,7 @@ namespace Test.VirtualRadar.WebSite
                     case "SpeedType":
                     case "CallsignIsSuspect":
                     case "TransponderType":
+                    case "IsTisb":
                         Assert.IsFalse(isEmpty, property.Name);
                         break;
                     // These are properties that get filled in whether we like it or not

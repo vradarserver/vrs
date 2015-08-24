@@ -205,6 +205,8 @@ namespace VirtualRadar.Library.ModeS
                     ExtractAircraftAddress(reply);
                     ExtractExtendedSquitterMessage(reply);
                     break;
+                case ControlField.FineFormatTisb:
+                case ControlField.CoarseFormatTisb:
                 case ControlField.AdsbDeviceNotTransmittingIcao24:
                     reply.NonIcao24Address = (int)_BitStream.ReadUInt32(24);
                     ExtractExtendedSquitterMessage(reply);

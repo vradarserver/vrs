@@ -48,6 +48,7 @@ namespace Test.VirtualRadar.Interface.BaseStation
             TestUtilities.TestProperty(_Implementation, r => r.MessageType, BaseStationMessageType.Unknown, BaseStationMessageType.StatusChange);
             TestUtilities.TestProperty(_Implementation, r => r.Icao24, null, "1203");
             TestUtilities.TestProperty(_Implementation, r => r.IsMlat, false);
+            TestUtilities.TestProperty(_Implementation, r => r.IsTisb, false);
             TestUtilities.TestProperty(_Implementation, r => r.OnGround, null, false);
             TestUtilities.TestProperty(_Implementation, r => r.ReceiverId, 0, 1234);
             TestUtilities.TestProperty(_Implementation, r => r.SessionId, 0, 123);

@@ -36,6 +36,8 @@ namespace VirtualRadar.Interface.Adsb
         /// </para><para>
         /// Note also that these bits were previously assigned different meanings in their respective messages in older versions of
         /// the ADS-B transmission. Those older meanings are not represented in this class.
+        /// </para><para>
+        /// On TIS-B Fine Format messages this byte is not supplied, its position is used by the Icao/ModeA Flag.
         /// </para>
         /// </remarks>
         public byte NicB { get; set; }

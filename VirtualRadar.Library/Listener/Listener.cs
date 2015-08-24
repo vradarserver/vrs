@@ -656,6 +656,13 @@ namespace VirtualRadar.Library.Listener
                             });
                         }
 
+                        if(adsbMessage != null && modeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder) {
+                            if(modeSMessage.ControlField == ControlField.FineFormatTisb && adsbMessage.TisbIcaoModeAFlag == 0) {
+                                modeSMessage.Icao24 = modeSMessage.NonIcao24Address.GetValueOrDefault();
+                                modeSMessage.NonIcao24Address = null;
+                            }
+                        }
+
                         ++TotalMessages;
                         _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { ModeSMessageEventArgs = new ModeSMessageEventArgs(now, modeSMessage, adsbMessage) });
                     }

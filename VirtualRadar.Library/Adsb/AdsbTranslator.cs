@@ -184,6 +184,12 @@ namespace VirtualRadar.Library.Adsb
 
             subMessage.EmitterCategory = _EmitterCategories[message.Type - 1, _BitStream.ReadByte(3)];
             subMessage.Identification = ModeSCharacterTranslator.ExtractCharacters(_BitStream, 8);
+
+            if(IsFineFormatTisB(message)) {
+                // These are only sent for TIS-B fine format messages with a valid ICAO24, in which case the
+                // IMF flag can be assumed to be zero
+                message.TisbIcaoModeAFlag = 0;
+            }
         }
 
         /// <summary>
@@ -210,7 +216,11 @@ namespace VirtualRadar.Library.Adsb
             var track = _BitStream.ReadByte(7);
             if(trackIsValid) subMessage.GroundTrack = track * 2.8125;
 
-            subMessage.PositionTimeIsExact = _BitStream.ReadBit();
+            if(IsFineFormatTisB(message)) {
+                message.TisbIcaoModeAFlag = _BitStream.ReadByte(1);
+            } else {
+                subMessage.PositionTimeIsExact = _BitStream.ReadBit();
+            }
             subMessage.CompactPosition = ExtractCprCoordinate(message, 19);
         }
 
@@ -224,8 +234,12 @@ namespace VirtualRadar.Library.Adsb
             var subMessage = message.AirbornePosition = new AirbornePositionMessage();
 
             subMessage.SurveillanceStatus = (SurveillanceStatus)_BitStream.ReadByte(2);
-            if(message.Type == 0) _BitStream.Skip(1);
-            else subMessage.NicB = (byte)(_BitStream.ReadBit() ? 2 : 0);
+            if(IsFineFormatTisB(message)) {
+                message.TisbIcaoModeAFlag = _BitStream.ReadByte(1);
+            } else {
+                if(message.Type == 0) _BitStream.Skip(1);
+                else subMessage.NicB = (byte)(_BitStream.ReadBit() ? 2 : 0);
+            }
             var rawAltitude = _BitStream.ReadUInt16(12);
 
             var acCode = ((rawAltitude & 0xfe0) >> 1) | (rawAltitude & 0x0f);
@@ -251,7 +265,11 @@ namespace VirtualRadar.Library.Adsb
             var velocityType = _BitStream.ReadByte(3);
             subMessage.VelocityType = (VelocityType)velocityType;
             if(velocityType > 0 && velocityType < 5) {
-                subMessage.ChangeOfIntent = _BitStream.ReadBit();
+                if(IsFineFormatTisB(message)) {
+                    message.TisbIcaoModeAFlag = _BitStream.ReadByte(1);
+                } else {
+                    subMessage.ChangeOfIntent = _BitStream.ReadBit();
+                }
                 _BitStream.Skip(1);
 
                 switch(_BitStream.ReadByte(3)) {
@@ -504,6 +522,17 @@ namespace VirtualRadar.Library.Adsb
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns true if the parent Mode-S message indicates that this is the payload from a fine-format TIS-B message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool IsFineFormatTisB(AdsbMessage message)
+        {
+            return message.ModeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder &&
+                   message.ModeSMessage.ControlField == ControlField.FineFormatTisb;
         }
         #endregion
     }

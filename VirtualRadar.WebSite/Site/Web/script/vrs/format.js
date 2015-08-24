@@ -498,6 +498,16 @@
         };
 
         /**
+         * Formats the is Tis-B flag for display.
+         * @param {boolean} isTisb
+         * @returns {string}
+         */
+        this.isTisb = function(isTisb)
+        {
+            return isTisb === undefined || isTisb === null ? '' : isTisb ? VRS.$$.Yes : VRS.$$.No;
+        };
+
+        /**
          * Formats the on-ground flag for display.
          * @param {boolean} isOnGround
          * @returns {string}

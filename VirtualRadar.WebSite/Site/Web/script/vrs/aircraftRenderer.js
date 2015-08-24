@@ -998,6 +998,15 @@
         contentCallback:        function(aircraft) { return aircraft.formatSecondsTracked(); }
     });
 
+    VRS.renderPropertyHandlers[VRS.RenderProperty.Tisb] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.Tisb,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListTisb',
+        labelKey:               'Tisb',
+        hasChangedCallback:     function(aircraft) { return aircraft.isTisb.chg; },
+        contentCallback:        function(aircraft) { return aircraft.formatIsTisb(); }
+    });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.TransponderType] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.TransponderType,
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,

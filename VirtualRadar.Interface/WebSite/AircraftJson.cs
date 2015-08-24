@@ -146,6 +146,12 @@ namespace VirtualRadar.Interface.WebSite
         public bool? PositionIsStale { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the last message received for this aircraft was from a TIS-B source.
+        /// </summary>
+        [DataMember(Name="Tisb", IsRequired=false, EmitDefaultValue=false)]
+        public bool? IsTisb { get; set; }
+
+        /// <summary>
         /// Gets or sets the ground speed of the aircraft in knots.
         /// </summary>
         [DataMember(Name="Spd", IsRequired=false, EmitDefaultValue=false)]

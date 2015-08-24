@@ -390,7 +390,7 @@ namespace VirtualRadar.Library.BaseStation
             BaseStationMessage result = null;
 
             if(modeSMessage != null && !_Disposed) {
-                var isValidMessage = DetermineWhetherValid(modeSMessage, messageReceivedUtc);
+                var isValidMessage = DetermineWhetherValid(modeSMessage, adsbMessage, messageReceivedUtc);
 
                 if(isValidMessage) {
                     var trackedAircraft = _TrackedAircraft.GetForKeyAndRefresh(modeSMessage.Icao24);
@@ -415,9 +415,10 @@ namespace VirtualRadar.Library.BaseStation
         /// Returns true if the message's ICAO code looks valid.
         /// </summary>
         /// <param name="modeSMessage"></param>
+        /// <param name="adsbMessage"></param>
         /// <param name="messageReceivedUtc"></param>
         /// <returns></returns>
-        private bool DetermineWhetherValid(ModeSMessage modeSMessage, DateTime messageReceivedUtc)
+        private bool DetermineWhetherValid(ModeSMessage modeSMessage, AdsbMessage adsbMessage, DateTime messageReceivedUtc)
         {
             bool isValidMessage = false;
 
@@ -433,8 +434,12 @@ namespace VirtualRadar.Library.BaseStation
                             case ControlField.AdsbRebroadcastOfExtendedSquitter:
                                 isValidMessage = IsValidParityInterrogatorIdentifierMessage(modeSMessage, messageReceivedUtc);
                                 break;
+                            case ControlField.FineFormatTisb:
+                                if(adsbMessage != null && adsbMessage.TisbIcaoModeAFlag == 0) {
+                                    isValidMessage = IsValidParityInterrogatorIdentifierMessage(modeSMessage, messageReceivedUtc);
+                                }
+                                break;
                             default:
-                                isValidMessage = false;
                                 break;
                         }
                     }
@@ -603,6 +608,7 @@ namespace VirtualRadar.Library.BaseStation
             var result = new BaseStationMessage() {
                 SignalLevel = modeSMessage.SignalLevel,
                 IsMlat = modeSMessage.IsMlat,
+                IsTisb = modeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder && modeSMessage.ControlField == ControlField.FineFormatTisb,
                 MessageType = BaseStationMessageType.Transmission,
                 TransmissionType = ConvertToTransmissionType(modeSMessage, adsbMessage),
                 MessageGenerated = messageReceivedUtc,

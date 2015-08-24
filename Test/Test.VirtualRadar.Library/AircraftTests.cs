@@ -64,8 +64,9 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.Icao24Changed);
             Assert.AreEqual(0, _Aircraft.Icao24CountryChanged);
             Assert.AreEqual(0, _Aircraft.Icao24InvalidChanged);
-            Assert.AreEqual(0, _Aircraft.IsMilitaryChanged);
             Assert.AreEqual(0, _Aircraft.IsInterestingChanged);
+            Assert.AreEqual(0, _Aircraft.IsMilitaryChanged);
+            Assert.AreEqual(0, _Aircraft.IsTisbChanged);
             Assert.AreEqual(0, _Aircraft.LatitudeChanged);
             Assert.AreEqual(0, _Aircraft.LongitudeChanged);
             Assert.AreEqual(0, _Aircraft.ManufacturerChanged);
@@ -121,6 +122,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.Icao24Invalid, false);
             TestUtilities.TestProperty(_Aircraft, r => r.IsInteresting, false);
             TestUtilities.TestProperty(_Aircraft, r => r.IsMilitary, false);
+            TestUtilities.TestProperty(_Aircraft, r => r.IsTisb, false);
             TestUtilities.TestProperty(_Aircraft, r => r.IsTransmittingTrack, false);
             TestUtilities.TestProperty(_Aircraft, r => r.LastCoordinateChanged, 0L, 123L);
             TestUtilities.TestProperty(_Aircraft, r => r.LastUpdate, DateTime.MinValue, DateTime.Now);
@@ -399,6 +401,8 @@ namespace Test.VirtualRadar.Library
                             case "TargetAltitudeChanged":           value = _Aircraft.TargetAltitudeChanged; break;
                             case "TargetTrack":                     value = _Aircraft.TargetTrack = floatValue; break;
                             case "TargetTrackChanged":              value = _Aircraft.TargetTrackChanged; break;
+                            case "IsTisb":                          value = _Aircraft.IsTisb = property.Name == trueBool; break;
+                            case "IsTisbChanged":                   value = _Aircraft.IsTisbChanged; break;
                             default:                                throw new NotImplementedException();
                         }
 

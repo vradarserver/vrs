@@ -230,6 +230,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long PositionReceiverIdChanged { get; private set; }
 
+        private bool _IsTisb;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsTisb { get { return _IsTisb; } set { if(value != _IsTisb) { _IsTisb = value; IsTisbChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long IsTisbChanged { get; private set; }
+
         private float? _Track;
         /// <summary>
         /// See interface docs.
@@ -716,6 +727,7 @@ namespace VirtualRadar.Library
                 result.Icao24Invalid = Icao24Invalid;
                 result.IsInteresting = IsInteresting;
                 result.IsMilitary = IsMilitary;
+                result.IsTisb = IsTisb;
                 result.IsTransmittingTrack = IsTransmittingTrack;
                 result.LastUpdate = LastUpdate;
                 result.LatestCoordinateTime = LatestCoordinateTime;
@@ -774,6 +786,7 @@ namespace VirtualRadar.Library
                 result.Icao24InvalidChanged = Icao24InvalidChanged;
                 result.IsInterestingChanged = IsInterestingChanged;
                 result.IsMilitaryChanged = IsMilitaryChanged;
+                result.IsTisbChanged = IsTisbChanged;
                 result.LatitudeChanged = LatitudeChanged;
                 result.LineNumberChanged = LineNumberChanged;
                 result.LongitudeChanged = LongitudeChanged;

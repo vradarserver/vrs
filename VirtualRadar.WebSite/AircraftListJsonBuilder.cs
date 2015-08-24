@@ -311,6 +311,7 @@ namespace VirtualRadar.WebSite
                 if(firstTimeSeen || aircraftSnapshot.GroundSpeedChanged > args.PreviousDataVersion)                     aircraftJson.GroundSpeed = Round.GroundSpeed(aircraftSnapshot.GroundSpeed);
                 if(firstTimeSeen || aircraftSnapshot.EmergencyChanged > args.PreviousDataVersion)                       aircraftJson.Emergency = aircraftSnapshot.Emergency;
                 if(firstTimeSeen || args.AlwaysShowIcao || aircraftSnapshot.Icao24Changed > args.PreviousDataVersion)   aircraftJson.Icao24 = aircraftSnapshot.Icao24;
+                if(firstTimeSeen || aircraftSnapshot.IsTisbChanged > args.PreviousDataVersion)                          aircraftJson.IsTisb = aircraftSnapshot.IsTisb;
                 if(firstTimeSeen || aircraftSnapshot.LatitudeChanged > args.PreviousDataVersion)                        aircraftJson.Latitude = Round.Coordinate(aircraftSnapshot.Latitude);
                 if(firstTimeSeen || aircraftSnapshot.LongitudeChanged > args.PreviousDataVersion)                       aircraftJson.Longitude = Round.Coordinate(aircraftSnapshot.Longitude);
                 if(firstTimeSeen || aircraftSnapshot.OnGroundChanged > args.PreviousDataVersion)                        aircraftJson.OnGround = aircraftSnapshot.OnGround;
