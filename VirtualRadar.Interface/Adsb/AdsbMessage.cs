@@ -42,6 +42,15 @@ namespace VirtualRadar.Interface.Adsb
         public MessageFormat MessageFormat { get; set; }
 
         /// <summary>
+        /// Gets or sets the value of the ICAO/Mode-A flag for TIS-B fine-format messages.
+        /// </summary>
+        /// <remarks>
+        /// This is only used on TIS-B fine format messages. It is either zero or one for those
+        /// messages. For all other types of message this value is null.
+        /// </remarks>
+        public byte? TisbIcaoModeAFlag { get; set; }
+
+        /// <summary>
         /// Gets or sets the content of an airborne position message.
         /// </summary>
         /// <remarks>

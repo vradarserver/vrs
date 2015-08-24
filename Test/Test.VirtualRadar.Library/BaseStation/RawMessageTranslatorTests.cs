@@ -151,6 +151,7 @@ namespace Test.VirtualRadar.Library.BaseStation
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitter, ParityInterrogatorIdentifier = 0 }),
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.AdsbDeviceTransmittingIcao24, ParityInterrogatorIdentifier = 0 }),
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.AdsbRebroadcastOfExtendedSquitter, ParityInterrogatorIdentifier = 0 }),
+                new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.FineFormatTisb, ParityInterrogatorIdentifier = 0 }) { TisbIcaoModeAFlag = 0 },
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.MilitaryExtendedSquitter, ApplicationField = ApplicationField.ADSB, ParityInterrogatorIdentifier = 0 }),
             };
         }
@@ -357,6 +358,24 @@ namespace Test.VirtualRadar.Library.BaseStation
                 modeSMessage.IsMlat = false;
                 baseStationMessage = _Translator.Translate(_NowUtc, modeSMessage, null);
                 Assert.AreEqual(false, baseStationMessage.IsMlat);
+            }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Sets_IsTisb_When_ModeSMessage_Is_FineFormatTisb()
+        {
+            foreach(ControlField controlField in Enum.GetValues(typeof(ControlField))) {
+                foreach(var imfValue in new byte?[] { null, 0, 1 }) {
+                    _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+                    _ModeSMessage.ControlField = controlField;
+                    _AdsbMessage.TisbIcaoModeAFlag = imfValue;
+
+                    var baseStationMessage = _Translator.Translate(_NowUtc, _ModeSMessage, _AdsbMessage);
+
+                    var expected = controlField == ControlField.FineFormatTisb && imfValue == 0;     // I think we should ignore the IMF flag for our purposes, we just want an answer to the broad "was this TIS-B?", but the translator currently ignores messages that aren't IMF=0
+                    var actual = baseStationMessage == null ? false : baseStationMessage.IsTisb;
+                    Assert.AreEqual(expected, actual);
+                }
             }
         }
 
@@ -776,24 +795,36 @@ namespace Test.VirtualRadar.Library.BaseStation
         public void RawMessageTranslator_Translate_Ignores_Extended_Squitter_From_Non_Transponders_When_Icao24_Is_Unknown_Format()
         {
             foreach(ControlField controlField in Enum.GetValues(typeof(ControlField))) {
-                TestCleanup();
-                TestInitialise();
+                foreach(var imfValue in new byte?[] { null, 0, 1 }) {
+                    TestCleanup();
+                    TestInitialise();
 
-                var icao24 = CreateRandomIcao24();
-                _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
-                _ModeSMessage.ControlField = controlField;
-                _ModeSMessage.Icao24 = icao24;
+                    var icao24 = CreateRandomIcao24();
+                    _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+                    _ModeSMessage.ControlField = controlField;
+                    _ModeSMessage.Icao24 = icao24;
 
-                var message = _Translator.Translate(_NowUtc, _ModeSMessage, null);
-                switch(controlField) {
-                    case ControlField.AdsbDeviceTransmittingIcao24:
-                    case ControlField.AdsbRebroadcastOfExtendedSquitter:
-                        Assert.IsNotNull(message);
-                        Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
-                        break;
-                    default:
-                        Assert.IsNull(message);
-                        break;
+                    _AdsbMessage.TisbIcaoModeAFlag = imfValue;
+
+                    var message = _Translator.Translate(_NowUtc, _ModeSMessage, _AdsbMessage);
+                    switch(controlField) {
+                        case ControlField.AdsbDeviceTransmittingIcao24:
+                        case ControlField.AdsbRebroadcastOfExtendedSquitter:
+                            Assert.IsNotNull(message);
+                            Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
+                            break;
+                        case ControlField.FineFormatTisb:
+                            if(imfValue == 0) {         // AA field on Mode-S is valid ICAO24
+                                Assert.IsNotNull(message);
+                                Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
+                            } else {                        // IMF = null: not decoded correctly, IMF = 1: AA field is squawk and tracking number
+                                Assert.IsNull(message);
+                            }
+                            break;
+                        default:
+                            Assert.IsNull(message);
+                            break;
+                    }
                 }
             }
         }

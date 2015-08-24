@@ -172,7 +172,7 @@ namespace VirtualRadar.Interface
         bool? PositionIsMlat { get; set; }
 
         /// <summary>
-        /// Gets the UTC date and time that <see cref="PositionIsMlat"/> last changed.
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="PositionIsMlat"/> last changed.
         /// </summary>
         long PositionIsMlatChanged { get; }
 
@@ -185,6 +185,16 @@ namespace VirtualRadar.Interface
         /// Gets the UTC date and time that <see cref="PositionReceiverId"/> last changed.
         /// </summary>
         long PositionReceiverIdChanged { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the last message received for the aircraft came from a TIS-B source.
+        /// </summary>
+        bool IsTisb { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="IsTisb"/> last changed.
+        /// </summary>
+        long IsTisbChanged { get; }
 
         /// <summary>
         /// Gets or sets the last reported heading over the ground of the aircraft. If the aircraft is not

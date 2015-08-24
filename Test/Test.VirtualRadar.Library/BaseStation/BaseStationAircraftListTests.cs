@@ -1144,23 +1144,35 @@ namespace Test.VirtualRadar.Library.BaseStation
                 messageProperty = typeof(BaseStationSupplementaryMessage).GetProperty(messageColumn);
             }
 
-            var aircraftProperty = typeof(IAircraft).GetProperty(worksheet.String("AircraftColumn"));
+            // Up to and including version 2.1 all values being tested here were nullable. After 2.1 the IsTisb field
+            // was added, and that's unconditionally set or cleared by either the message source or the raw message decoder.
+            // We can ignore that field.
+            var ignoreThisRow = false;
+            switch(messageColumn) {
+                case "IsTisb":
+                    ignoreThisRow = true;
+                    break;
+            }
 
-            var culture = new CultureInfo("en-GB");
-            var messageValue = TestUtilities.ChangeType(worksheet.EString("MessageValue"), messageProperty.PropertyType, culture);
-            var aircraftValue = TestUtilities.ChangeType(worksheet.EString("AircraftValue"), aircraftProperty.PropertyType, culture);
+            if(!ignoreThisRow) {
+                var aircraftProperty = typeof(IAircraft).GetProperty(worksheet.String("AircraftColumn"));
 
-            messageProperty.SetValue(messageObject, messageValue, null);
-            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+                var culture = new CultureInfo("en-GB");
+                var messageValue = TestUtilities.ChangeType(worksheet.EString("MessageValue"), messageProperty.PropertyType, culture);
+                var aircraftValue = TestUtilities.ChangeType(worksheet.EString("AircraftValue"), aircraftProperty.PropertyType, culture);
 
-            var aircraft = _AircraftList.FindAircraft(0x4008F6);
-            Assert.AreEqual(aircraftValue, aircraftProperty.GetValue(aircraft, null));
+                messageProperty.SetValue(messageObject, messageValue, null);
+                _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
-            messageProperty.SetValue(messageObject, null, null);
-            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+                var aircraft = _AircraftList.FindAircraft(0x4008F6);
+                Assert.AreEqual(aircraftValue, aircraftProperty.GetValue(aircraft, null));
 
-            var outerAircraft = _AircraftList.FindAircraft(0x4008F6);
-            Assert.AreEqual(aircraftValue, aircraftProperty.GetValue(outerAircraft, null));
+                messageProperty.SetValue(messageObject, null, null);
+                _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+                var outerAircraft = _AircraftList.FindAircraft(0x4008F6);
+                Assert.AreEqual(aircraftValue, aircraftProperty.GetValue(outerAircraft, null));
+            }
         }
 
         [TestMethod]
@@ -1527,14 +1539,14 @@ namespace Test.VirtualRadar.Library.BaseStation
             aircraft.Setup(a => a.UpdateCoordinates(It.IsAny<DateTime>(), It.IsAny<int>())).Callback(() => {
                 Assert.AreEqual(1.0001, aircraft.Object.Latitude);
                 Assert.AreEqual(1.0002, aircraft.Object.Longitude);
-                Assert.AreEqual(1, aircraft.Object.Track);
+                Assert.AreEqual(1F, aircraft.Object.Track);
             });
 
             _AircraftList.Start();
 
             _BaseStationMessage.Latitude = 1.0001;
             _BaseStationMessage.Longitude = 1.0002;
-            _BaseStationMessage.Track = 1;
+            _BaseStationMessage.Track = 1F;
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
             aircraft.Verify(a => a.UpdateCoordinates(It.IsAny<DateTime>(), It.IsAny<int>()), Times.Once());

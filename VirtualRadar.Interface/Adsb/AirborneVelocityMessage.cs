@@ -28,16 +28,21 @@ namespace VirtualRadar.Interface.Adsb
         /// <summary>
         /// Gets or sets a value indicating that the Intent Change flag in a velocity message was set.
         /// </summary>
+        /// <remarks>
+        /// In Fine Format TIS-B messages this field is not present, it is used to carry the ICAO/Mode-A Flag field. On those
+        /// messages this value is always false.
+        /// </remarks>
         public bool ChangeOfIntent { get; set; }
 
         /// <summary>
         /// Gets or sets the margin for error for the horizontal velocity values.
         /// </summary>
-        /// <remarks>
+        /// <remarks><para>
         /// Positive values indicate an error that is greater than or equal to the value in metres/second. Negative values
         /// indicate a margin for error that is less than the absolute value in metres/second. So a value of 10.0 indicates
         /// a margin for error greater than or equal to 10 m/s whereas a value of -10 indicates a margin for error that
         /// is less than 10 m/s. Null values indicate that the value was undefined by the documentation.
+        /// </para>
         /// </remarks>
         public float? HorizontalVelocityError { get; set; }
 

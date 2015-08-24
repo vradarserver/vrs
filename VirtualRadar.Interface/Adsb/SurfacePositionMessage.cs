@@ -45,6 +45,10 @@ namespace VirtualRadar.Interface.Adsb
         /// <summary>
         /// Gets or sets a value indicating that the time at which the horizontal position was recorded is an exact 0.2 second UTC epoch or not.
         /// </summary>
+        /// <remarks>
+        /// This value is not present on Fine Format TIS-B messages, its position is taken by the ICAO/Mode-A Flag
+        /// field. On those messages this value will always be false.
+        /// </remarks>
         public bool PositionTimeIsExact { get; set; }
 
         /// <summary>

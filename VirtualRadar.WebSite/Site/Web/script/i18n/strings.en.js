@@ -292,6 +292,7 @@
     VRS.$$.ListStatus =                                 'Status';
     VRS.$$.ListTargetAltitude =                         'A/P Alt.';
     VRS.$$.ListTargetHeading =                          'A/P Hdg.';
+    VRS.$$.ListTisb =                                   'TIS-B';
     VRS.$$.ListTotalHours =                             'Total Hours';
     VRS.$$.ListTransponderType =                        'Transponder';
     VRS.$$.ListTransponderTypeFlag =                    '';
@@ -482,6 +483,7 @@
     VRS.$$.ThenBy =                                     'then by';
     VRS.$$.Tiltwing =                                   'Tiltwing';
     VRS.$$.TimeTracked =                                'Time Tracked';
+    VRS.$$.Tisb =                                       'TIS-B';
     VRS.$$.TitleAircraftDetail =                        'Aircraft Detail';
     VRS.$$.TitleAircraftList =                          'Aircraft List';
     VRS.$$.TitleFlightDetail =                          'Detail';

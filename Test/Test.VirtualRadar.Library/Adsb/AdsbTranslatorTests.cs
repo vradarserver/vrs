@@ -137,9 +137,13 @@ namespace Test.VirtualRadar.Library.Adsb
                     case 4: downlinkFormat = DownlinkFormat.MilitaryExtendedSquitter; applicationField = ApplicationField.ADSB; break;
                 }
                 if(df != "ALL") {
-                    if((int)downlinkFormat != worksheet.Int("DF")) continue;
-                    if((int?)controlField != worksheet.NInt("CF")) continue;
-                    if((int?)applicationField != worksheet.NInt("AF")) continue;
+                    modeSDownlinkFormats = int.MaxValue - 1;
+
+                    downlinkFormat = (DownlinkFormat)worksheet.Int("DF");
+                    var controlFieldValue = worksheet.NInt("CF");
+                    controlField = controlFieldValue == null ? (ControlField?)null : (ControlField)controlFieldValue.Value;
+                    var applicationFieldValue = worksheet.NInt("AF");
+                    applicationField = applicationFieldValue == null ? (ApplicationField?)null : (ApplicationField)applicationFieldValue.Value;
                 }
                 ++countTestsPerformed;
 
@@ -308,6 +312,7 @@ namespace Test.VirtualRadar.Library.Adsb
                         case "ThreatIcao24":                        Assert.AreEqual(expectedValue.GetNInt("TID", true), message.AircraftStatus.TcasResolutionAdvisory.ThreatIcao24, failMessage); break;
                         case "ThreatRange":                         Assert.AreEqual(expectedValue.GetNFloat("TID-R"), message.AircraftStatus.TcasResolutionAdvisory.ThreatRange, failMessage); break;
                         case "ThreatRangeExceeded":                 Assert.AreEqual(expectedValue.GetNBool("TID-R:M"), message.AircraftStatus.TcasResolutionAdvisory.ThreatRangeExceeded, failMessage); break;
+                        case "TisBIcaoModeAFlag":                   Assert.AreEqual(worksheet.NByte("IMF"), message.TisbIcaoModeAFlag, failMessage); break;
                         case "Type":                                Assert.AreEqual(worksheet.Byte("Type"), message.Type, failMessage); break;
                         case "VectorVelocity":                      Assert.AreEqual(expectedValue.GetString("VV"), message.AirborneVelocity.VectorVelocity == null ? null : message.AirborneVelocity.VectorVelocity.ToString(), failMessage); break;
                         case "VelocityType":                        Assert.AreEqual(expectedValue.GetEnum<VelocityType>("VT"), message.AirborneVelocity.VelocityType, failMessage); break;

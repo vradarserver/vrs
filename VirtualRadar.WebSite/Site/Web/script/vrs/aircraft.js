@@ -404,6 +404,7 @@
         this.engineType =               new VRS.NumberValue();
         this.species =                  new VRS.StringValue();
         this.isMilitary =               new VRS.BoolValue();
+        this.isTisb =                   new VRS.BoolValue();
         this.country =                  new VRS.StringValue();
         this.hasPicture =               new VRS.BoolValue();
         this.pictureWidth =             new VRS.NumberValue();
@@ -480,6 +481,7 @@
             setValue(this.engineType,           aircraftJson.EngType);
             setValue(this.species,              aircraftJson.Species);
             setValue(this.isMilitary,           aircraftJson.Mil);
+            setValue(this.isTisb,               aircraftJson.Tisb);
             setValue(this.country,              aircraftJson.Cou);
             setValue(this.hasPicture,           aircraftJson.HasPic && settings.picturesEnabled);
             setValue(this.pictureWidth,         aircraftJson.PicX);
@@ -1070,6 +1072,15 @@
         this.formatIsMlat = function()
         {
             return VRS.format.isMlat(this.isMlat.val);
+        };
+
+        /**
+         * Formats the aircraft's is TIS-B value as a string.
+         * @returns {string}
+         */
+        this.formatIsTisb = function()
+        {
+            return VRS.format.isTisb(this.isTisb.val);
         };
 
         /**

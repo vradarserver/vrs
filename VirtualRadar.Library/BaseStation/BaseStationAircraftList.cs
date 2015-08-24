@@ -501,6 +501,8 @@ namespace VirtualRadar.Library.BaseStation
                 }
                 aircraft.LastUpdate = now;
 
+                if(track != null) aircraft.Track = track;
+                if(message.Track != null && message.Track != 0.0) aircraft.IsTransmittingTrack = true;
                 if(message.Latitude.GetValueOrDefault() != 0.0 || message.Longitude.GetValueOrDefault() != 0.0) {
                     aircraft.PositionReceiverId = message.ReceiverId;
                     aircraft.Latitude = message.Latitude.GetValueOrDefault();
@@ -509,12 +511,11 @@ namespace VirtualRadar.Library.BaseStation
 
                     aircraft.UpdateCoordinates(now, _ShortTrailLengthSeconds);
                 }
-                if(track != null) aircraft.Track = track;
-                if(message.Track != null && message.Track != 0.0) aircraft.IsTransmittingTrack = true;
 
                 if(!isOutOfBand || isNewAircraft) {                 // new aircraft should never be out-of-band, but if they are then we need to treat them normally
                     aircraft.ReceiverId = message.ReceiverId;
                     aircraft.SignalLevel = message.SignalLevel;
+                    aircraft.IsTisb = message.IsTisb;
                     ++aircraft.CountMessagesReceived;
                     if(aircraft.Icao24 == null) aircraft.Icao24 = message.Icao24;
 

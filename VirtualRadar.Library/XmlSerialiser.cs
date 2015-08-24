@@ -335,6 +335,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// Returns the element name for a type.
         /// </summary>
+        /// <param name="type"></param>
         /// <param name="lowerCamelCaseValueTypeName"></param>
         /// <returns></returns>
         private string GetValueName(Type type, bool lowerCamelCaseValueTypeName = false)

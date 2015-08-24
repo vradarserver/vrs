@@ -214,7 +214,8 @@ VRS_GOOGLE_ICON;
 * Cot:          Number[],
 * ResetTrail:   boolean,
 * HasSig:       boolean=,
-* Sig:          Number=
+* Sig:          Number=,
+* Tisb:         boolean=
 * }} VRS_JSON_AIRCRAFT
 */
 VRS_JSON_AIRCRAFT;
