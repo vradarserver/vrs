@@ -435,6 +435,7 @@ namespace VirtualRadar.Library.BaseStation
                                 isValidMessage = IsValidParityInterrogatorIdentifierMessage(modeSMessage, messageReceivedUtc);
                                 break;
                             case ControlField.FineFormatTisb:
+                            case ControlField.CoarseFormatTisb:
                                 if(adsbMessage != null && adsbMessage.TisbIcaoModeAFlag == 0) {
                                     isValidMessage = IsValidParityInterrogatorIdentifierMessage(modeSMessage, messageReceivedUtc);
                                 }
@@ -608,7 +609,8 @@ namespace VirtualRadar.Library.BaseStation
             var result = new BaseStationMessage() {
                 SignalLevel = modeSMessage.SignalLevel,
                 IsMlat = modeSMessage.IsMlat,
-                IsTisb = modeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder && modeSMessage.ControlField == ControlField.FineFormatTisb,
+                IsTisb = modeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder &&
+                    (modeSMessage.ControlField == ControlField.FineFormatTisb || modeSMessage.ControlField == ControlField.CoarseFormatTisb),
                 MessageType = BaseStationMessageType.Transmission,
                 TransmissionType = ConvertToTransmissionType(modeSMessage, adsbMessage),
                 MessageGenerated = messageReceivedUtc,
@@ -693,6 +695,19 @@ namespace VirtualRadar.Library.BaseStation
             if(adsbMessage.IdentifierAndCategory != null)       ApplyAdsbIdentifierAndCategory(adsbMessage, trackedAircraft, baseStationMessage);
             if(adsbMessage.SurfacePosition != null)             ApplyAdsbSurfacePosition(messageReceivedUtc, adsbMessage, trackedAircraft, baseStationMessage);
             if(adsbMessage.TargetStateAndStatus != null)        ApplyAdsbTargetStateAndStatus(adsbMessage, baseStationMessage);
+            if(adsbMessage.CoarseTisbAirbornePosition != null)  ApplyAdsbCoarseTisbAirbornePosition(messageReceivedUtc, adsbMessage, trackedAircraft, baseStationMessage);
+        }
+
+        private void ApplyAdsbCoarseTisbAirbornePosition(DateTime messageReceivedUtc, AdsbMessage adsbMessage, TrackedAircraft trackedAircraft, BaseStationMessage baseStationMessage)
+        {
+            if(adsbMessage.CoarseTisbAirbornePosition.BarometricAltitude != null) baseStationMessage.Altitude = adsbMessage.CoarseTisbAirbornePosition.BarometricAltitude;
+            if(adsbMessage.CoarseTisbAirbornePosition.GroundSpeed != null) baseStationMessage.GroundSpeed = (float?)adsbMessage.CoarseTisbAirbornePosition.GroundSpeed;
+            if(adsbMessage.CoarseTisbAirbornePosition.GroundTrack != null) baseStationMessage.Track = (float?)adsbMessage.CoarseTisbAirbornePosition.GroundTrack;
+
+            if(adsbMessage.CoarseTisbAirbornePosition.CompactPosition != null) {
+                trackedAircraft.RecordMessage(messageReceivedUtc, adsbMessage.CoarseTisbAirbornePosition.CompactPosition);
+                DecodePosition(baseStationMessage, trackedAircraft, null);
+            }
         }
 
         private void ApplyAdsbAirbornePosition(DateTime messageReceivedUtc, AdsbMessage adsbMessage, TrackedAircraft trackedAircraft, BaseStationMessage baseStationMessage)
@@ -959,7 +974,8 @@ namespace VirtualRadar.Library.BaseStation
                 }
             } else {
                 switch(adsbMessage.MessageFormat) {
-                    case MessageFormat.AirbornePosition:                    result = BaseStationTransmissionType.AirbornePosition; break;
+                    case MessageFormat.AirbornePosition:
+                    case MessageFormat.CoarseTisbAirbornePosition:          result = BaseStationTransmissionType.AirbornePosition; break;
                     case MessageFormat.AirborneVelocity:                    result = BaseStationTransmissionType.AirborneVelocity; break;
                     case MessageFormat.IdentificationAndCategory:           result = BaseStationTransmissionType.IdentificationAndCategory; break;
                     case MessageFormat.SurfacePosition:                     result = BaseStationTransmissionType.SurfacePosition; break;

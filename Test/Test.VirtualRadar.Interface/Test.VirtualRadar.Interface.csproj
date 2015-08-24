@@ -57,6 +57,7 @@
     <Compile Include="Adsb\AirbornePositionMessageTests.cs" />
     <Compile Include="Adsb\AircraftOperationalStatusMessageTests.cs" />
     <Compile Include="Adsb\AircraftStatusMessageTests.cs" />
+    <Compile Include="Adsb\CoarseTisbAirbornePositionTests.cs" />
     <Compile Include="Adsb\CompactPositionReportingCoordinateTests.cs" />
     <Compile Include="Adsb\EmergencyStatusTests.cs" />
     <Compile Include="Adsb\GlobalCoordinateTests.cs" />

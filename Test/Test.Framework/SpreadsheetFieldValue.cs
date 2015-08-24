@@ -200,6 +200,18 @@ namespace Test.Framework
         /// Returns the value for the field passed across or null if the field could not be found.
         /// </summary>
         /// <param name="fieldName"></param>
+        /// <param name="isHex">True if the cell contains a hex value rather than decimal.</param>
+        /// <returns></returns>
+        public byte GetByte(string fieldName, bool isHex = false)
+        {
+            var valueColumn = FindValueColumn(fieldName);
+            return isHex ? Convert.ToByte(Worksheet.String(valueColumn), 16) : Worksheet.Byte(valueColumn);
+        }
+
+        /// <summary>
+        /// Returns the value for the field passed across or null if the field could not be found.
+        /// </summary>
+        /// <param name="fieldName"></param>
         /// <returns></returns>
         public byte[] GetBytes(string fieldName)
         {

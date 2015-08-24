@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -16,58 +16,56 @@ using System.Text;
 namespace VirtualRadar.Interface.Adsb
 {
     /// <summary>
-    /// An enumeration of the different ADS-B message formats.
+    /// Describes the content of a TIS-B coarse airborne position message.
     /// </summary>
-    public enum MessageFormat : byte
+    public class CoarseTisbAirbornePosition
     {
         /// <summary>
-        /// Unknown / unrecognised message format.
+        /// Gets the state of the Mode-A transponder.
         /// </summary>
-        None,
+        public SurveillanceStatus SurveillanceStatus { get; set; }
 
         /// <summary>
-        /// Type 0 - airborne or surface vehicle with no position message.
+        /// Gets or sets the identifier of the TIS-B station that generated the message.
         /// </summary>
-        NoPositionInformation,
+        public byte ServiceVolumeID { get; set; }
 
         /// <summary>
-        /// Types 1-4 - vehicle identification and category messages.
+        /// Gets or sets the altitude in feet relative to a standard pressure of 1013.25mb / 29.92Hg.
         /// </summary>
-        IdentificationAndCategory,
+        public int? BarometricAltitude { get; set; }
 
         /// <summary>
-        /// Types 5-8 - surface position message.
+        /// Gets or sets the ground track, where 0 is north, 90 east, 180 south and 270 west.
         /// </summary>
-        SurfacePosition,
+        public double? GroundTrack { get; set; }
 
         /// <summary>
-        /// Types 9-18 and 20-22 - airborne position message.
+        /// Gets or sets the ground speed in knots.
         /// </summary>
-        AirbornePosition,
+        public double? GroundSpeed { get; set; }
 
         /// <summary>
-        /// Type 19 - airborne velocity message, ground speed or airspeed.
+        /// Gets or sets the location of the aircraft encoded in a CPR.
         /// </summary>
-        AirborneVelocity,
+        public CompactPositionReportingCoordinate CompactPosition { get; set; }
 
         /// <summary>
-        /// Type 28 - aircraft status message.
+        /// Returns an English description of the message content.
         /// </summary>
-        AircraftStatus,
+        /// <returns></returns>
+        public override string ToString()
+        {
+            var result = new StringBuilder("TIS-B(C)");
 
-        /// <summary>
-        /// Type 29 - target state and status message (ADS-B versions 1 and 2).
-        /// </summary>
-        TargetStateAndStatus,
+            result.AppendFormat(" SS:{0}", SurveillanceStatus);
+            result.AppendFormat(" SVID:{0}", ServiceVolumeID);
+            if(BarometricAltitude != null) result.AppendFormat(" ALT:{0}", BarometricAltitude);
+            if(GroundTrack != null) result.AppendFormat(" TRK:{0}", GroundTrack);
+            if(GroundSpeed != null) result.AppendFormat(" SPD:{0}", GroundSpeed);
+            if(CompactPosition != null) result.AppendFormat(" SPR:{0}", CompactPosition);
 
-        /// <summary>
-        /// Type 31 - aircraft operational status message.
-        /// </summary>
-        AircraftOperationalStatus,
-
-        /// <summary>
-        /// DF18 CA3 - coarse TIS-B airborne position message.
-        /// </summary>
-        CoarseTisbAirbornePosition,
+            return result.ToString();
+        }
     }
 }

@@ -657,9 +657,14 @@ namespace VirtualRadar.Library.Listener
                         }
 
                         if(adsbMessage != null && modeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder) {
-                            if(modeSMessage.ControlField == ControlField.FineFormatTisb && adsbMessage.TisbIcaoModeAFlag == 0) {
-                                modeSMessage.Icao24 = modeSMessage.NonIcao24Address.GetValueOrDefault();
-                                modeSMessage.NonIcao24Address = null;
+                            if(adsbMessage.TisbIcaoModeAFlag == 0) {
+                                switch(modeSMessage.ControlField) {
+                                    case ControlField.CoarseFormatTisb:
+                                    case ControlField.FineFormatTisb:
+                                        modeSMessage.Icao24 = modeSMessage.NonIcao24Address.GetValueOrDefault();
+                                        modeSMessage.NonIcao24Address = null;
+                                        break;
+                                }
                             }
                         }
 

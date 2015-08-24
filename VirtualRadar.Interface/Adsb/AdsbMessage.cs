@@ -90,6 +90,11 @@ namespace VirtualRadar.Interface.Adsb
         public AircraftOperationalStatusMessage AircraftOperationalStatus { get; set; }
 
         /// <summary>
+        /// Gets or sets the content of the TIS-B coarse airborne position message.
+        /// </summary>
+        public CoarseTisbAirbornePosition CoarseTisbAirbornePosition { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public AdsbMessage()
@@ -126,6 +131,7 @@ namespace VirtualRadar.Interface.Adsb
             if(AircraftStatus != null) result.AppendFormat(" {0}", AircraftStatus);
             if(TargetStateAndStatus != null) result.AppendFormat(" {0}", TargetStateAndStatus);
             if(AircraftOperationalStatus != null) result.AppendFormat(" {0}", AircraftOperationalStatus);
+            if(CoarseTisbAirbornePosition != null) result.AppendFormat(" {0}", CoarseTisbAirbornePosition);
 
             return result.ToString();
         }

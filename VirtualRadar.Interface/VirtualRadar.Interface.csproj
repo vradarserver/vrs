@@ -63,6 +63,7 @@
     <Compile Include="Adsb\AircraftOperationalStatusType.cs" />
     <Compile Include="Adsb\AircraftStatusMessage.cs" />
     <Compile Include="Adsb\AircraftStatusType.cs" />
+    <Compile Include="Adsb\CoarseTisbAirbornePosition.cs" />
     <Compile Include="Adsb\CompactPositionReportingCoordinate.cs" />
     <Compile Include="Adsb\EmergencyState.cs" />
     <Compile Include="Adsb\EmergencyStatus.cs" />

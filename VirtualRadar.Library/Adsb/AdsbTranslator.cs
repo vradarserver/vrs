@@ -130,35 +130,40 @@ namespace VirtualRadar.Library.Adsb
                 _BitStream.Initialise(modeSMessage.ExtendedSquitterMessage);
 
                 result = new AdsbMessage(modeSMessage);
-                result.Type = _BitStream.ReadByte(5);
 
-                switch(result.Type) {
-                    case 0:     DecodeAirbornePosition(result); break;
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:     DecodeIdentification(result); break;
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:     DecodeSurfacePosition(result); break;
-                    case 9:
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                    case 15:
-                    case 16:
-                    case 17:
-                    case 18:    DecodeAirbornePosition(result); break;
-                    case 19:    DecodeVelocity(result); break;
-                    case 20:
-                    case 21:
-                    case 22:    DecodeAirbornePosition(result); break;
-                    case 28:    DecodeAircraftStatus(result); break;
-                    case 29:    DecodeTargetStateAndStatus(result); break;
-                    case 31:    DecodeAircraftOperationalStatus(result); break;
+                if(IsCoarseFormatTisb(result)) {
+                    DecodeCoarseTisbAirbornePosition(result);
+                } else {
+                    result.Type = _BitStream.ReadByte(5);
+
+                    switch(result.Type) {
+                        case 0:     DecodeAirbornePosition(result); break;
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:     DecodeIdentification(result); break;
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:     DecodeSurfacePosition(result); break;
+                        case 9:
+                        case 10:
+                        case 11:
+                        case 12:
+                        case 13:
+                        case 14:
+                        case 15:
+                        case 16:
+                        case 17:
+                        case 18:    DecodeAirbornePosition(result); break;
+                        case 19:    DecodeVelocity(result); break;
+                        case 20:
+                        case 21:
+                        case 22:    DecodeAirbornePosition(result); break;
+                        case 28:    DecodeAircraftStatus(result); break;
+                        case 29:    DecodeTargetStateAndStatus(result); break;
+                        case 31:    DecodeAircraftOperationalStatus(result); break;
+                    }
                 }
 
                 if(Statistics != null) {
@@ -174,6 +179,35 @@ namespace VirtualRadar.Library.Adsb
         }
 
         /// <summary>
+        /// Decodes a coarse format TIS-B airborne position message.
+        /// </summary>
+        /// <param name="message"></param>
+        private void DecodeCoarseTisbAirbornePosition(AdsbMessage message)
+        {
+            message.MessageFormat = MessageFormat.CoarseTisbAirbornePosition;
+            var subMessage = message.CoarseTisbAirbornePosition = new CoarseTisbAirbornePosition();
+
+            message.TisbIcaoModeAFlag = _BitStream.ReadByte(1);
+            subMessage.SurveillanceStatus = (SurveillanceStatus)_BitStream.ReadByte(2);
+            subMessage.ServiceVolumeID = _BitStream.ReadByte(4);
+
+            var rawAltitude = _BitStream.ReadUInt16(12);
+            var acCode = ((rawAltitude & 0xfe0) >> 1) | (rawAltitude & 0x0f);
+            if((rawAltitude & 0x10) != 0) subMessage.BarometricAltitude = ModeSAltitudeConversion.CalculateBinaryAltitude(acCode);
+            else subMessage.BarometricAltitude= ModeSAltitudeConversion.LookupGillhamAltitude(acCode);
+
+            var groundTrackValid = _BitStream.ReadBit();
+            var groundTrack = _BitStream.ReadByte(5);
+            var groundSpeed = _BitStream.ReadByte(6);
+            if(groundTrackValid) {
+                subMessage.GroundTrack = (double)groundTrack * 11.25;
+            }
+            subMessage.GroundSpeed = (double)groundSpeed * 16.0;
+
+            subMessage.CompactPosition = ExtractCprCoordinate(message, 12, ignoreMessageType: true);
+        }
+
+        /// <summary>
         /// Decodes an identification and emitter category message.
         /// </summary>
         /// <param name="message"></param>
@@ -185,7 +219,7 @@ namespace VirtualRadar.Library.Adsb
             subMessage.EmitterCategory = _EmitterCategories[message.Type - 1, _BitStream.ReadByte(3)];
             subMessage.Identification = ModeSCharacterTranslator.ExtractCharacters(_BitStream, 8);
 
-            if(IsFineFormatTisB(message)) {
+            if(IsFineFormatTisb(message)) {
                 // These are only sent for TIS-B fine format messages with a valid ICAO24, in which case the
                 // IMF flag can be assumed to be zero
                 message.TisbIcaoModeAFlag = 0;
@@ -216,7 +250,7 @@ namespace VirtualRadar.Library.Adsb
             var track = _BitStream.ReadByte(7);
             if(trackIsValid) subMessage.GroundTrack = track * 2.8125;
 
-            if(IsFineFormatTisB(message)) {
+            if(IsFineFormatTisb(message)) {
                 message.TisbIcaoModeAFlag = _BitStream.ReadByte(1);
             } else {
                 subMessage.PositionTimeIsExact = _BitStream.ReadBit();
@@ -234,7 +268,7 @@ namespace VirtualRadar.Library.Adsb
             var subMessage = message.AirbornePosition = new AirbornePositionMessage();
 
             subMessage.SurveillanceStatus = (SurveillanceStatus)_BitStream.ReadByte(2);
-            if(IsFineFormatTisB(message)) {
+            if(IsFineFormatTisb(message)) {
                 message.TisbIcaoModeAFlag = _BitStream.ReadByte(1);
             } else {
                 if(message.Type == 0) _BitStream.Skip(1);
@@ -265,7 +299,7 @@ namespace VirtualRadar.Library.Adsb
             var velocityType = _BitStream.ReadByte(3);
             subMessage.VelocityType = (VelocityType)velocityType;
             if(velocityType > 0 && velocityType < 5) {
-                if(IsFineFormatTisB(message)) {
+                if(IsFineFormatTisb(message)) {
                     message.TisbIcaoModeAFlag = _BitStream.ReadByte(1);
                 } else {
                     subMessage.ChangeOfIntent = _BitStream.ReadBit();
@@ -509,15 +543,17 @@ namespace VirtualRadar.Library.Adsb
         /// </summary>
         /// <param name="message"></param>
         /// <param name="encodingBits"></param>
+        /// <param name="ignoreMessageType"></param>
         /// <returns></returns>
-        private CompactPositionReportingCoordinate ExtractCprCoordinate(AdsbMessage message, byte encodingBits)
+        private CompactPositionReportingCoordinate ExtractCprCoordinate(AdsbMessage message, byte encodingBits, bool ignoreMessageType = false)
         {
             CompactPositionReportingCoordinate result = null;
+            var readBits = encodingBits >= 17 ? 17 : encodingBits;
 
-            if(message.Type != 0) {
+            if(message.Type != 0 || ignoreMessageType) {
                 bool isOddFormat = _BitStream.ReadBit();
-                int latitude = (int)_BitStream.ReadUInt32(17);
-                int longitude = (int)_BitStream.ReadUInt32(17);
+                int latitude = (int)_BitStream.ReadUInt32(readBits);
+                int longitude = (int)_BitStream.ReadUInt32(readBits);
                 result = new CompactPositionReportingCoordinate(latitude, longitude, isOddFormat, encodingBits);
             }
 
@@ -529,10 +565,21 @@ namespace VirtualRadar.Library.Adsb
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private bool IsFineFormatTisB(AdsbMessage message)
+        private bool IsFineFormatTisb(AdsbMessage message)
         {
             return message.ModeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder &&
                    message.ModeSMessage.ControlField == ControlField.FineFormatTisb;
+        }
+
+        /// <summary>
+        /// Returns true if the parent Mode-S message indicates that this is the payload from a coarse-format TIS-B message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool IsCoarseFormatTisb(AdsbMessage message)
+        {
+            return message.ModeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder &&
+                   message.ModeSMessage.ControlField == ControlField.CoarseFormatTisb;
         }
         #endregion
     }

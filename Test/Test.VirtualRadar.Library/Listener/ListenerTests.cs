@@ -1011,6 +1011,48 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
+        public void Listener_Connect_Moves_NonIcao24Address_To_Icao24_If_CoarseFormatTisB_With_Icao24_Address()
+        {
+            _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
+
+            _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+            _ModeSMessage.ControlField = ControlField.CoarseFormatTisb;
+            _ModeSMessage.Icao24 = 0;
+            _ModeSMessage.NonIcao24Address = 0xABCDEF;
+
+            _AdsbMessage.TisbIcaoModeAFlag = 0;
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(0xABCDEF, _ModeSMessage.Icao24);
+            Assert.AreEqual(null, _ModeSMessage.NonIcao24Address);
+        }
+
+        [TestMethod]
+        public void Listener_Connect_Keeps_NonIcao24Address_If_CoarseFormatTisB_With_NonIcao24_Address()
+        {
+            _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
+
+            _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+            _ModeSMessage.ControlField = ControlField.CoarseFormatTisb;
+            _ModeSMessage.Icao24 = 0;
+            _ModeSMessage.NonIcao24Address = 0xABCDEF;
+
+            _AdsbMessage.TisbIcaoModeAFlag = 1;
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(0xABCDEF, _ModeSMessage.NonIcao24Address);
+            Assert.AreEqual(0, _ModeSMessage.Icao24);
+        }
+
+        [TestMethod]
         public void Listener_Connect_Raises_ModeSMessageReceived_When_ModeS_Message_Received()
         {
             _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
