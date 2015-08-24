@@ -152,8 +152,18 @@ namespace Test.VirtualRadar.Library.BaseStation
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.AdsbDeviceTransmittingIcao24, ParityInterrogatorIdentifier = 0 }),
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.AdsbRebroadcastOfExtendedSquitter, ParityInterrogatorIdentifier = 0 }),
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.FineFormatTisb, ParityInterrogatorIdentifier = 0 }) { TisbIcaoModeAFlag = 0 },
+                new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.CoarseFormatTisb, ParityInterrogatorIdentifier = 0 }) { TisbIcaoModeAFlag = 0 },
                 new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.MilitaryExtendedSquitter, ApplicationField = ApplicationField.ADSB, ParityInterrogatorIdentifier = 0 }),
             };
+        }
+
+        /// <summary>
+        /// Returns a Coarse TIS-B Airborne Position ADS-B message.
+        /// </summary>
+        /// <returns></returns>
+        private AdsbMessage CreateAdsbMessageForCoarseTisbAirbornePosition()
+        {
+            return new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.CoarseFormatTisb, ParityInterrogatorIdentifier = 0 }) { TisbIcaoModeAFlag = 0, CoarseTisbAirbornePosition = new CoarseTisbAirbornePosition() };
         }
 
         /// <summary>
@@ -362,7 +372,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
-        public void RawMessageTranslator_Translate_Sets_IsTisb_When_ModeSMessage_Is_FineFormatTisb()
+        public void RawMessageTranslator_Translate_Sets_IsTisb_When_ModeSMessage_Is_FineFormat_Or_CoarseFormat_Tisb()
         {
             foreach(ControlField controlField in Enum.GetValues(typeof(ControlField))) {
                 foreach(var imfValue in new byte?[] { null, 0, 1 }) {
@@ -372,7 +382,18 @@ namespace Test.VirtualRadar.Library.BaseStation
 
                     var baseStationMessage = _Translator.Translate(_NowUtc, _ModeSMessage, _AdsbMessage);
 
-                    var expected = controlField == ControlField.FineFormatTisb && imfValue == 0;     // I think we should ignore the IMF flag for our purposes, we just want an answer to the broad "was this TIS-B?", but the translator currently ignores messages that aren't IMF=0
+                    // I think we should ignore the IMF flag for our purposes, we just want an answer to the broad "was this TIS-B?", but the translator currently ignores messages that aren't IMF=0
+                    var expected = imfValue == 0;
+                    if(expected) {
+                        switch(controlField) {
+                            case ControlField.CoarseFormatTisb:
+                            case ControlField.FineFormatTisb:
+                                break;
+                            default:
+                                expected = false;
+                                break;
+                        }
+                    }
                     var actual = baseStationMessage == null ? false : baseStationMessage.IsTisb;
                     Assert.AreEqual(expected, actual);
                 }
@@ -814,6 +835,7 @@ namespace Test.VirtualRadar.Library.BaseStation
                             Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
                             break;
                         case ControlField.FineFormatTisb:
+                        case ControlField.CoarseFormatTisb:
                             if(imfValue == 0) {         // AA field on Mode-S is valid ICAO24
                                 Assert.IsNotNull(message);
                                 Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
@@ -1058,6 +1080,7 @@ namespace Test.VirtualRadar.Library.BaseStation
                         case MessageFormat.NoPositionInformation:       Assert.AreEqual(BaseStationTransmissionType.AllCallReply, message.TransmissionType); break;
                         case MessageFormat.SurfacePosition:             Assert.AreEqual(BaseStationTransmissionType.SurfacePosition, message.TransmissionType); break;
                         case MessageFormat.TargetStateAndStatus:        Assert.AreEqual(BaseStationTransmissionType.AllCallReply, message.TransmissionType); break;
+                        case MessageFormat.CoarseTisbAirbornePosition:  Assert.AreEqual(BaseStationTransmissionType.AirbornePosition, message.TransmissionType); break;
                         default:                                        throw new NotImplementedException();
                     }
                 }
@@ -1267,6 +1290,18 @@ namespace Test.VirtualRadar.Library.BaseStation
                 }
             }
         }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Extracts_Altitudes_From_Adsb_Coarse_TISB_Airborne_Position_Messages()
+        {
+            var adsbMessage = CreateAdsbMessageForCoarseTisbAirbornePosition();
+            adsbMessage.CoarseTisbAirbornePosition.BarometricAltitude = 4100;
+
+            var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+            Assert.AreEqual(4100, message.Altitude);
+            if(message.Supplementary != null) Assert.AreEqual(false, message.Supplementary.AltitudeIsGeometric);
+        }
         #endregion
 
         #region Translate - GroundSpeed
@@ -1325,6 +1360,20 @@ namespace Test.VirtualRadar.Library.BaseStation
                 }
             }
         }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Extracts_GroundSpeed_From_Adsb_Coarse_TISB_Airborne_Position_Messages()
+        {
+            var adsbMessage = CreateAdsbMessageForCoarseTisbAirbornePosition();
+            adsbMessage.CoarseTisbAirbornePosition.GroundSpeed = 123;
+
+            var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+            Assert.AreEqual(123F, message.GroundSpeed);
+            if(message.Supplementary != null) {
+                Assert.AreEqual(SpeedType.GroundSpeed, message.Supplementary.SpeedType);
+            }
+        }
         #endregion
 
         #region Translate - Track
@@ -1379,6 +1428,17 @@ namespace Test.VirtualRadar.Library.BaseStation
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Extracts_Track_From_Adsb_Coarse_TISB_Airborne_Position_Messages()
+        {
+            var adsbMessage = CreateAdsbMessageForCoarseTisbAirbornePosition();
+            adsbMessage.CoarseTisbAirbornePosition.GroundTrack = 97.153;
+
+            var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+            Assert.AreEqual(97.2F, message.Track);
         }
         #endregion
 
@@ -1498,6 +1558,26 @@ namespace Test.VirtualRadar.Library.BaseStation
             }
 
             return result;
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Extracts_Latitude_And_Longitude_From_Adsb_Coarse_TISB_Airborne_Position_Messages()
+        {
+            var expectedLatitude = 51.4;
+            var expectedLongitude = -0.6;
+            var encoder = Factory.Singleton.Resolve<ICompactPositionReporting>();
+            var oddCpr = encoder.Encode(new GlobalCoordinate(expectedLatitude, expectedLongitude), oddFormat: true, numberOfBits: 12);
+            var evenCpr = encoder.Encode(new GlobalCoordinate(expectedLatitude, expectedLongitude), oddFormat: false, numberOfBits: 12);
+
+            var adsbMessage = CreateAdsbMessageForCoarseTisbAirbornePosition();
+            adsbMessage.CoarseTisbAirbornePosition.CompactPosition = oddCpr;
+            var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+            adsbMessage.CoarseTisbAirbornePosition.CompactPosition = evenCpr;
+            message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+            Assert.AreEqual(51.4, (double)message.Latitude, 0.1);
+            Assert.AreEqual(-0.6, (double)message.Longitude, 0.1);
         }
         #endregion
 

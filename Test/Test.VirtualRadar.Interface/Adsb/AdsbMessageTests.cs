@@ -39,6 +39,7 @@ namespace Test.VirtualRadar.Interface.Adsb
             TestUtilities.TestProperty(message, m => m.Type, (byte)0, (byte)255);
             TestUtilities.TestProperty(message, m => m.AircraftStatus, null, new AircraftStatusMessage());
             TestUtilities.TestProperty(message, m => m.AircraftOperationalStatus, null, new AircraftOperationalStatusMessage());
+            TestUtilities.TestProperty(message, m => m.CoarseTisbAirbornePosition, null, new CoarseTisbAirbornePosition());
         }
     }
 }
