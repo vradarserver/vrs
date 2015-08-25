@@ -170,9 +170,9 @@ namespace VirtualRadar.Library
             var simpleContent = webSite.RequestSimpleContent(webPathAndFileName);
             if(simpleContent != null && simpleContent.HttpStatusCode == System.Net.HttpStatusCode.OK) {
                 using(var memoryStream = new MemoryStream(simpleContent.Content)) {
-                    var image = Image.FromStream(memoryStream);
-                    result = new Bitmap(image);     // work around the problem that GDI+ has with images built from streams being accessed after the stream has been disposed
-                    image.Dispose();
+                    using(var image = Image.FromStream(memoryStream)) {
+                        result = new Bitmap(image);     // work around the problem that GDI+ has with images built from streams being accessed after the stream has been disposed
+                    }
                 }
             }
 
