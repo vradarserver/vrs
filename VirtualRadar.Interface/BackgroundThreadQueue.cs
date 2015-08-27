@@ -181,28 +181,37 @@ namespace VirtualRadar.Interface
         /// </summary>
         private void BackgroundThreadMethod()
         {
-            var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
-            if(applicationInformation.CultureInfo != null) {
-                Thread.CurrentThread.CurrentCulture = applicationInformation.CultureInfo;
-                Thread.CurrentThread.CurrentUICulture = applicationInformation.CultureInfo;
-            }
+            try {
+                var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
+                if(applicationInformation.CultureInfo != null) {
+                    Thread.CurrentThread.CurrentCulture = applicationInformation.CultureInfo;
+                    Thread.CurrentThread.CurrentUICulture = applicationInformation.CultureInfo;
+                }
 
-            while(!_Stopped) {
+                while(!_Stopped) {
+                    try {
+                        T itemFromQueue;
+                        lock(_SyncLock) {
+                            itemFromQueue = _Queue.Count == 0 ? null : _Queue.Dequeue();
+                        }
+
+                        if(itemFromQueue != null) _ProcessObject(itemFromQueue);
+                        else {
+                            if(_SurrenderTimeSlice) Thread.Sleep(1);
+                            else                    _Signal.WaitOne();
+                        }
+                    } catch(Exception ex) {
+                        if(!(ex is ThreadAbortException)) {
+                            _ProcessException(ex);
+                        }
+                    }
+                }
+            } catch(ThreadAbortException) {
+            } catch(Exception ex) {
                 try {
-                    T itemFromQueue;
-                    lock(_SyncLock) {
-                        itemFromQueue = _Queue.Count == 0 ? null : _Queue.Dequeue();
-                    }
-
-                    if(itemFromQueue != null) _ProcessObject(itemFromQueue);
-                    else {
-                        if(_SurrenderTimeSlice) Thread.Sleep(1);
-                        else                    _Signal.WaitOne();
-                    }
-                } catch(Exception ex) {
-                    if(!(ex is ThreadAbortException)) {
-                        _ProcessException(ex);
-                    }
+                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    log.WriteLine("Caught exception in BackgroundThreadMethod for queue {0}: {1}", _QueueName, ex);
+                } catch {
                 }
             }
         }
