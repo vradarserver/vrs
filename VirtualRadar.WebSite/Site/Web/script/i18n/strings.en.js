@@ -117,6 +117,7 @@
     VRS.$$.FillOpacity =                                'Fill opacity';
     VRS.$$.Filters =                                    'Filters';
     VRS.$$.FindAllPermutationsOfCallsign =              'Find all permutations of callsign';
+    VRS.$$.First =                                      'First';
     VRS.$$.FirstAltitude =                              'First Altitude';
     VRS.$$.FirstHeading =                               'First Heading';
     VRS.$$.FirstFlightLevel =                           'First FL';
@@ -191,6 +192,7 @@
     VRS.$$.Knots =                                      'Knots';
     VRS.$$.KnotsAbbreviation =                          '{0} kts';
     VRS.$$.LandPlane =                                  'Landplane';
+    VRS.$$.Last =                                       'Last';
     VRS.$$.LastAltitude =                               'Last Altitude';
     VRS.$$.LastFlightLevel =                            'Last FL';
     VRS.$$.LastHeading =                                'Last Heading';
@@ -327,6 +329,7 @@
     VRS.$$.MuteOn =                                     'Mute';
     VRS.$$.NauticalMileAbbreviation =                   '{0} nmi';
     VRS.$$.NauticalMiles =                              'Nautical Miles';
+    VRS.$$.Neither =                                    'Neither';
     VRS.$$.No =                                         'No';
     VRS.$$.NoLocalStorage =                             'This browser does not support local storage. Your configuration settings will not be saved.\n\nIf you are browsing in "Private Mode" then try switching if off. Private Mode will disable local storage on some browsers.';
     VRS.$$.None =                                       'None';
@@ -442,8 +445,10 @@
     VRS.$$.ShowCurrentLocation =                        'Show current location';
     VRS.$$.ShowDetail =                                 'Show detail';
     VRS.$$.ShowForAllAircraft =                         'Show for all aircraft';
+    VRS.$$.ShowEmergencySquawks =                       'Show emergency squawks';                       // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            'Show empty values';
     VRS.$$.ShowForSelectedOnly =                        'Show just for the selected aircraft';
+    VRS.$$.ShowInterestingAircraft =                    'Show interesting aircraft';                    // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           'Show range circles';
     VRS.$$.ShowShortTrails =                            'Show short trails';
     VRS.$$.ShowSpeedType =                              'Show speed type';

@@ -69,7 +69,7 @@
             if(field.getLabelKey()) {
                 $('<span/>')
                     .addClass('asLabel')
-                    .text(VRS.globalisation.getText(field.getLabelKey()))
+                    .text(VRS.globalisation.getText(field.getLabelKey()) + ':')
                     .appendTo(container);
             }
 
