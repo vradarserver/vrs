@@ -546,6 +546,9 @@ body.wait .modal {
     background-color: #ff8080;
     color: #f6f6f6;
 }
+.aircraftList .interested {
+    font-weight: 700;
+}
 .aircraftList.live tbody td.fixedWidth {
     border: 0;
     background: #ffffff;

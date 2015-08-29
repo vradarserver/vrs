@@ -202,7 +202,8 @@
         Even:               0x0002,
         Selected:           0x0004,
         Emergency:          0x0008,
-        FirstRow:           0x0010
+        FirstRow:           0x0010,
+        Interested:         0x0020
     };
     //endregion
 
@@ -753,7 +754,7 @@
                     }
                 }
 
-                this._setRowState(row, rowDataRow, rowNum, aircraft === selectedAircraft, aircraft.isEmergency.val);
+                this._setRowState(row, rowDataRow, rowNum, aircraft === selectedAircraft, aircraft.isEmergency.val, aircraft.userInterested.val);
                 this._showRow(state, row, data, true);
             }
 
@@ -911,9 +912,10 @@
          * @param {number} rowNumber
          * @param {bool} isSelectedAircraft
          * @param {bool} isEmergency
+         * @param {bool} isInterested
          * @private
          */
-        _setRowState: function(row, rowData, rowNumber, isSelectedAircraft, isEmergency)
+        _setRowState: function(row, rowData, rowNumber, isSelectedAircraft, isEmergency, isInterested)
         {
             var rowState = isSelectedAircraft ?
                 VRS.AircraftListPluginState.RowState.Selected
@@ -922,19 +924,21 @@
                     : VRS.AircraftListPluginState.RowState.Even;
 
             if(isEmergency) rowState |= VRS.AircraftListPluginState.RowState.Emergency;
+            if(isInterested) rowState |= VRS.AircraftListPluginState.RowState.Interested;
             if(rowNumber === 0) rowState |= VRS.AircraftListPluginState.RowState.FirstRow;
 
             var getRowStateClass = function(value) {
                 var result = [];
 
-                if(value & VRS.AircraftListPluginState.RowState.FirstRow) result.push('firstRow');
+                if(value & VRS.AircraftListPluginState.RowState.FirstRow)       result.push('firstRow');
+                if(value & VRS.AircraftListPluginState.RowState.Interested)     result.push('interested');
                 if(value & VRS.AircraftListPluginState.RowState.Selected) {
-                    if(value & VRS.AircraftListPluginState.RowState.Emergency) result.push('vrsSelectedEmergency');
-                    else                                                       result.push('vrsSelected');
+                    if(value & VRS.AircraftListPluginState.RowState.Emergency)  result.push('vrsSelectedEmergency');
+                    else                                                        result.push('vrsSelected');
                 } else {
-                    if(value & VRS.AircraftListPluginState.RowState.Emergency) result.push('vrsEmergency');
-                    else if(value & VRS.AircraftListPluginState.RowState.Even) result.push('vrsEven');
-                    else                                                       result.push('vrsOdd');
+                    if(value & VRS.AircraftListPluginState.RowState.Emergency)  result.push('vrsEmergency');
+                    else if(value & VRS.AircraftListPluginState.RowState.Even)  result.push('vrsEven');
+                    else                                                        result.push('vrsOdd');
                 }
 
                 return result;
