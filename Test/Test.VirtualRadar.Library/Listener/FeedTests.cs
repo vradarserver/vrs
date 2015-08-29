@@ -510,6 +510,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.RawDecodingSettings.ReceiverLocationId = 12;
             _Configuration.RawDecodingSettings.ReceiverRange = 1234;
             _Configuration.RawDecodingSettings.SuppressReceiverRangeCheck = true;
+            _Configuration.RawDecodingSettings.SuppressTisbDecoding = true;
             _Configuration.RawDecodingSettings.UseLocalDecodeForInitialPosition = true;
             _Configuration.BaseStationSettings.TrackingTimeoutSeconds = 100;
             _Configuration.RawDecodingSettings.AcceptIcaoInNonPICount = 8;
@@ -518,28 +519,40 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.RawDecodingSettings.AcceptIcaoInPI0Seconds = 32;
             _Configuration.RawDecodingSettings.IgnoreInvalidCodeBlockInOtherMessages = false;
             _Configuration.RawDecodingSettings.IgnoreInvalidCodeBlockInParityMessages = true;
+
             triggerAction();
 
-            Assert.AreEqual(1.2345, _RawMessageTranslator.Object.ReceiverLocation.Latitude);
-            Assert.AreEqual(-17.89, _RawMessageTranslator.Object.ReceiverLocation.Longitude);
-            Assert.AreEqual(99000, _RawMessageTranslator.Object.GlobalDecodeAirborneThresholdMilliseconds);
-            Assert.AreEqual(88000, _RawMessageTranslator.Object.GlobalDecodeFastSurfaceThresholdMilliseconds);
-            Assert.AreEqual(77000, _RawMessageTranslator.Object.GlobalDecodeSlowSurfaceThresholdMilliseconds);
-            Assert.AreEqual(true, _RawMessageTranslator.Object.SuppressCallsignsFromBds20);
-            Assert.AreEqual(true, _RawMessageTranslator.Object.IgnoreMilitaryExtendedSquitter);
-            Assert.AreEqual(999.123, _RawMessageTranslator.Object.LocalDecodeMaxSpeedAirborne);
-            Assert.AreEqual(888.456, _RawMessageTranslator.Object.LocalDecodeMaxSpeedTransition);
-            Assert.AreEqual(777.789, _RawMessageTranslator.Object.LocalDecodeMaxSpeedSurface);
-            Assert.AreEqual(1234, _RawMessageTranslator.Object.ReceiverRangeKilometres);
-            Assert.AreEqual(true, _RawMessageTranslator.Object.SuppressReceiverRangeCheck);
-            Assert.AreEqual(true, _RawMessageTranslator.Object.UseLocalDecodeForInitialPosition);
-            Assert.AreEqual(100, _RawMessageTranslator.Object.TrackingTimeoutSeconds);
-            Assert.AreEqual(8, _RawMessageTranslator.Object.AcceptIcaoInNonPICount);
-            Assert.AreEqual(16000, _RawMessageTranslator.Object.AcceptIcaoInNonPIMilliseconds);
-            Assert.AreEqual(24, _RawMessageTranslator.Object.AcceptIcaoInPI0Count);
-            Assert.AreEqual(32000, _RawMessageTranslator.Object.AcceptIcaoInPI0Milliseconds);
-            Assert.AreEqual(false, _RawMessageTranslator.Object.IgnoreInvalidCodeBlockInOtherMessages);
-            Assert.AreEqual(true, _RawMessageTranslator.Object.IgnoreInvalidCodeBlockInParityMessages);
+            foreach(var property in typeof(IRawMessageTranslator).GetProperties()) {
+                switch(property.Name) {
+                    case "AcceptIcaoInNonPICount":                          Assert.AreEqual(8, _RawMessageTranslator.Object.AcceptIcaoInNonPICount); break;
+                    case "AcceptIcaoInNonPIMilliseconds":                   Assert.AreEqual(16000, _RawMessageTranslator.Object.AcceptIcaoInNonPIMilliseconds); break;
+                    case "AcceptIcaoInPI0Count":                            Assert.AreEqual(24, _RawMessageTranslator.Object.AcceptIcaoInPI0Count); break;
+                    case "AcceptIcaoInPI0Milliseconds":                     Assert.AreEqual(32000, _RawMessageTranslator.Object.AcceptIcaoInPI0Milliseconds); break;
+                    case "GlobalDecodeAirborneThresholdMilliseconds":       Assert.AreEqual(99000, _RawMessageTranslator.Object.GlobalDecodeAirborneThresholdMilliseconds); break;
+                    case "GlobalDecodeFastSurfaceThresholdMilliseconds":    Assert.AreEqual(88000, _RawMessageTranslator.Object.GlobalDecodeFastSurfaceThresholdMilliseconds); break;
+                    case "GlobalDecodeSlowSurfaceThresholdMilliseconds":    Assert.AreEqual(77000, _RawMessageTranslator.Object.GlobalDecodeSlowSurfaceThresholdMilliseconds); break;
+                    case "IgnoreInvalidCodeBlockInOtherMessages":           Assert.AreEqual(false, _RawMessageTranslator.Object.IgnoreInvalidCodeBlockInOtherMessages); break;
+                    case "IgnoreInvalidCodeBlockInParityMessages":          Assert.AreEqual(true, _RawMessageTranslator.Object.IgnoreInvalidCodeBlockInParityMessages); break;
+                    case "IgnoreMilitaryExtendedSquitter":                  Assert.AreEqual(true, _RawMessageTranslator.Object.IgnoreMilitaryExtendedSquitter); break;
+                    case "LocalDecodeMaxSpeedAirborne":                     Assert.AreEqual(999.123, _RawMessageTranslator.Object.LocalDecodeMaxSpeedAirborne); break;
+                    case "LocalDecodeMaxSpeedSurface":                      Assert.AreEqual(777.789, _RawMessageTranslator.Object.LocalDecodeMaxSpeedSurface); break;
+                    case "LocalDecodeMaxSpeedTransition":                   Assert.AreEqual(888.456, _RawMessageTranslator.Object.LocalDecodeMaxSpeedTransition); break;
+                    case "ReceiverRangeKilometres":                         Assert.AreEqual(1234, _RawMessageTranslator.Object.ReceiverRangeKilometres); break;
+                    case "SuppressCallsignsFromBds20":                      Assert.AreEqual(true, _RawMessageTranslator.Object.SuppressCallsignsFromBds20); break;
+                    case "SuppressTisbDecoding":                            Assert.AreEqual(true, _RawMessageTranslator.Object.SuppressTisbDecoding); break;
+                    case "SuppressReceiverRangeCheck":                      Assert.AreEqual(true, _RawMessageTranslator.Object.SuppressReceiverRangeCheck); break;
+                    case "TrackingTimeoutSeconds":                          Assert.AreEqual(100, _RawMessageTranslator.Object.TrackingTimeoutSeconds); break;
+                    case "UseLocalDecodeForInitialPosition":                Assert.AreEqual(true, _RawMessageTranslator.Object.UseLocalDecodeForInitialPosition); break;
+                    case "ReceiverLocation":
+                        Assert.AreEqual(1.2345, _RawMessageTranslator.Object.ReceiverLocation.Latitude);
+                        Assert.AreEqual(-17.89, _RawMessageTranslator.Object.ReceiverLocation.Longitude);
+                        break;
+                    case "Statistics":
+                        break;
+                    default:
+                        throw new NotImplementedException(String.Format("Need to implement test for {0}", property.Name));
+                }
+            }
         }
 
         [TestMethod]

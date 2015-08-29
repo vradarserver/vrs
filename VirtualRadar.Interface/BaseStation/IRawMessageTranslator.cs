@@ -166,6 +166,11 @@ namespace VirtualRadar.Interface.BaseStation
         bool IgnoreInvalidCodeBlockInOtherMessages { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether TIS-B messages should be ignored.
+        /// </summary>
+        bool SuppressTisbDecoding { get; set; }
+
+        /// <summary>
         /// Raised during the processing of <see cref="Translate"/> when it becomes apparent that a previous position
         /// established for an aircraft was wrong and it has been reset.
         /// </summary>

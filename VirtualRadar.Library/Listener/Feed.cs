@@ -496,6 +496,7 @@ namespace VirtualRadar.Library.Listener
             result.ReceiverRangeKilometres                      = config.RawDecodingSettings.ReceiverRange;
             result.SuppressCallsignsFromBds20                   = config.RawDecodingSettings.IgnoreCallsignsInBds20;
             result.SuppressReceiverRangeCheck                   = config.RawDecodingSettings.SuppressReceiverRangeCheck;
+            result.SuppressTisbDecoding                         = config.RawDecodingSettings.SuppressTisbDecoding;
             result.TrackingTimeoutSeconds                       = config.BaseStationSettings.TrackingTimeoutSeconds;
             result.UseLocalDecodeForInitialPosition             = config.RawDecodingSettings.UseLocalDecodeForInitialPosition;
             result.IgnoreInvalidCodeBlockInOtherMessages        = config.RawDecodingSettings.IgnoreInvalidCodeBlockInOtherMessages;

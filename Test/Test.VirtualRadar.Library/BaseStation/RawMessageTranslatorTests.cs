@@ -158,6 +158,15 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         /// <summary>
+        /// Returns an ADS-B message that represents the extended squitter for fine-format TIS-B.
+        /// </summary>
+        /// <returns></returns>
+        private AdsbMessage CreateAdsbMessageForFindFormatTisbExtendedSquitter()
+        {
+            return new AdsbMessage(new ModeSMessage() { DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder, ControlField = ControlField.FineFormatTisb, ParityInterrogatorIdentifier = 0 }) { TisbIcaoModeAFlag = 0 };
+        }
+
+        /// <summary>
         /// Returns a Coarse TIS-B Airborne Position ADS-B message.
         /// </summary>
         /// <returns></returns>
@@ -1018,6 +1027,34 @@ namespace Test.VirtualRadar.Library.BaseStation
                     Assert.IsNull(_Translator.Translate(_NowUtc, parityIcao24ModeSMessage, null));
                 }
             }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_SuppressTisbDecoding_Prevents_Creation_Of_BaseStationMessage_From_FineFormatTisb()
+        {
+            _Translator.SuppressTisbDecoding = true;
+            var adsbMessage = CreateAdsbMessageForFindFormatTisbExtendedSquitter();
+            adsbMessage.AirbornePosition = new AirbornePositionMessage() {
+                BarometricAltitude = 100,
+            };
+
+            var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+            Assert.AreEqual(null, message);
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_SuppressTisbDecoding_Prevents_Creation_Of_BaseStationMessage_From_CoarseFormatTisb()
+        {
+            _Translator.SuppressTisbDecoding = true;
+            var adsbMessage = CreateAdsbMessageForCoarseTisbAirbornePosition();
+            adsbMessage.CoarseTisbAirbornePosition = new CoarseTisbAirbornePosition() {
+                BarometricAltitude = 100,
+            };
+
+            var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+            Assert.AreEqual(null, message);
         }
         #endregion
 

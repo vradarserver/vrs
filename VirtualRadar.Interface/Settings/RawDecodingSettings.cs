@@ -221,6 +221,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _IgnoreInvalidCodeBlockInOtherMessages, value, () => IgnoreInvalidCodeBlockInOtherMessages); }
         }
 
+        private bool _SuppressTisbDecoding;
+        /// <summary>
+        /// Gets or sets a value indicating whether TIS-B messages should be used or ignored.
+        /// </summary>
+        public bool SuppressTisbDecoding
+        {
+            get { return _SuppressTisbDecoding; }
+            set { SetField(ref _SuppressTisbDecoding, value, () => SuppressTisbDecoding); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

@@ -299,6 +299,11 @@ namespace VirtualRadar.Library.BaseStation
         /// See interface docs.
         /// </summary>
         public bool IgnoreInvalidCodeBlockInOtherMessages { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool SuppressTisbDecoding { get; set; }
         #endregion
 
         #region Events exposed
@@ -436,7 +441,7 @@ namespace VirtualRadar.Library.BaseStation
                                 break;
                             case ControlField.FineFormatTisb:
                             case ControlField.CoarseFormatTisb:
-                                if(adsbMessage != null && adsbMessage.TisbIcaoModeAFlag == 0) {
+                                if(!SuppressTisbDecoding && adsbMessage != null && adsbMessage.TisbIcaoModeAFlag == 0) {
                                     isValidMessage = IsValidParityInterrogatorIdentifierMessage(modeSMessage, messageReceivedUtc);
                                 }
                                 break;

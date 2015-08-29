@@ -71,6 +71,7 @@
             this.numericAirborneGlobalPositionLimit = new System.Windows.Forms.NumericUpDown();
             this.checkBoxIgnoreMilitaryExtendedSquitter = new System.Windows.Forms.CheckBox();
             this.linkLabelUseRecommendedSettings = new System.Windows.Forms.LinkLabel();
+            this.checkBoxSuppressTisbMessages = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericReceiverRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericAcceptIcaoInNonPISeconds)).BeginInit();
@@ -422,7 +423,7 @@
             this.groupBox3.Controls.Add(this.numericAcceptIcaoInPI0Seconds);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.numericAcceptIcaoInPI0Count);
-            this.groupBox3.Location = new System.Drawing.Point(0, 375);
+            this.groupBox3.Location = new System.Drawing.Point(0, 398);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(636, 96);
             this.groupBox3.TabIndex = 4;
@@ -498,6 +499,7 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.checkBoxSuppressTisbMessages);
             this.groupBox2.Controls.Add(this.checkBoxSuppressIcao0);
             this.groupBox2.Controls.Add(this.label17);
             this.groupBox2.Controls.Add(this.label16);
@@ -522,7 +524,7 @@
             this.groupBox2.Controls.Add(this.checkBoxIgnoreMilitaryExtendedSquitter);
             this.groupBox2.Location = new System.Drawing.Point(0, 100);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(636, 269);
+            this.groupBox2.Size = new System.Drawing.Size(636, 292);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "::OptionsRawFeedDecoderParametersCategory::";
@@ -677,6 +679,16 @@
             this.linkLabelUseRecommendedSettings.Text = "::UseRecommendedSettings::";
             this.linkLabelUseRecommendedSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelUseRecommendedSettings_LinkClicked);
             // 
+            // checkBoxSuppressTisbMessages
+            // 
+            this.checkBoxSuppressTisbMessages.AutoSize = true;
+            this.checkBoxSuppressTisbMessages.Location = new System.Drawing.Point(200, 267);
+            this.checkBoxSuppressTisbMessages.Name = "checkBoxSuppressTisbMessages";
+            this.checkBoxSuppressTisbMessages.Size = new System.Drawing.Size(150, 17);
+            this.checkBoxSuppressTisbMessages.TabIndex = 22;
+            this.checkBoxSuppressTisbMessages.Text = "::SuppressTisbMessages::";
+            this.checkBoxSuppressTisbMessages.UseVisualStyleBackColor = true;
+            // 
             // PageRawFeedDecoding
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -686,7 +698,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.linkLabelUseRecommendedSettings);
             this.Name = "PageRawFeedDecoding";
-            this.Size = new System.Drawing.Size(636, 475);
+            this.Size = new System.Drawing.Size(636, 497);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericReceiverRange)).EndInit();
@@ -755,5 +767,6 @@
         private System.Windows.Forms.CheckBox checkBoxIgnoreBadCodeblockNonPI0;
         private System.Windows.Forms.CheckBox checkBoxIgnoreBadCodeblockPI0;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox checkBoxSuppressTisbMessages;
     }
 }
