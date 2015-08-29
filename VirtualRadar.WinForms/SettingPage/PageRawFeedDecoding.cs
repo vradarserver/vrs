@@ -112,6 +112,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxUseLocalDecodeForInitialPosition,    r => r.UseLocalDecodeForInitialPosition,        (r,v) => r.UseLocalDecodeForInitialPosition = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreCallsignsInBds20,              r => r.IgnoreCallsignsInBds20,                  (r,v) => r.IgnoreCallsignsInBds20 = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxSuppressIcao0,                       r => r.SuppressIcao0,                           (r,v) => r.SuppressIcao0 = v));
+            AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxSuppressTisbMessages,                r => r.SuppressTisbDecoding,                    (r,v) => r.SuppressTisbDecoding = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreBadCodeblockPI0,               r => r.IgnoreInvalidCodeBlockInParityMessages,  (r,v) => r.IgnoreInvalidCodeBlockInParityMessages = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreBadCodeblockNonPI0,            r => r.IgnoreInvalidCodeBlockInOtherMessages,   (r,v) => r.IgnoreInvalidCodeBlockInOtherMessages = v));
         }
@@ -134,6 +135,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericAcceptableSurfaceSpeed,                 Strings.MaxSurfaceSpeed,                       Strings.OptionsDescribeRawFeedAcceptableSurfaceSpeed);
             SetInlineHelp(checkBoxIgnoreCallsignsInBds20,                Strings.IgnoreCallsignsInBds20,                Strings.OptionsDescribeRawFeedIgnoreCallsignsInBds20);
             SetInlineHelp(checkBoxSuppressIcao0,                         Strings.SuppressICAO0,                         Strings.OptionsDescribeRawFeedSuppressIcao0);
+            SetInlineHelp(checkBoxSuppressTisbMessages,                  Strings.SuppressTisbMessages,                  Strings.OptionsDescribeRawFeedSuppressTisbMessages);
             SetInlineHelp(numericAcceptIcaoInPI0Count,                   Strings.AcceptIcaoInPI0Count,                  Strings.OptionsDescribeRawFeedAcceptIcaoInPI0Count);
             SetInlineHelp(numericAcceptIcaoInPI0Seconds,                 Strings.AcceptIcaoInPI0Seconds,                Strings.OptionsDescribeRawFeedAcceptIcaoInPI0Seconds);
             SetInlineHelp(numericAcceptIcaoInNonPICount,                 Strings.AcceptIcaoInNonPICount,                Strings.OptionsDescribeRawFeedAcceptIcaoInNonPICount);

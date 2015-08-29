@@ -3739,6 +3739,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set to &apos;Yes&apos; if you do not want to use TIS-B messages when tracking aircraft..
+        /// </summary>
+        public static string OptionsDescribeRawFeedSuppressTisbMessages {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRawFeedSuppressTisbMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;Yes&apos; will show aircraft positions earlier but aircraft at extreme ranges are more likely to first appear at an inaccurate position. Only takes effect if a receiver location has been entered..
         /// </summary>
         public static string OptionsDescribeRawFeedUseLocalDecodeForInitialPosition {
@@ -6167,6 +6176,15 @@ namespace VirtualRadar.Localisation {
         public static string SuppressReceiverRangeCheck {
             get {
                 return ResourceManager.GetString("SuppressReceiverRangeCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suppress TIS-B messages.
+        /// </summary>
+        public static string SuppressTisbMessages {
+            get {
+                return ResourceManager.GetString("SuppressTisbMessages", resourceCulture);
             }
         }
         

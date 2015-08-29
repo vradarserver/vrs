@@ -42,6 +42,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.ReceiverRange, 650, 400);
             TestUtilities.TestProperty(settings, r => r.SlowSurfaceGlobalPositionLimit, 50, 60);
             TestUtilities.TestProperty(settings, r => r.SuppressReceiverRangeCheck, true);
+            TestUtilities.TestProperty(settings, r => r.SuppressTisbDecoding, false);
             TestUtilities.TestProperty(settings, r => r.UseLocalDecodeForInitialPosition, false);
             TestUtilities.TestProperty(settings, r => r.AcceptIcaoInPI0Count, 1, 10);
             TestUtilities.TestProperty(settings, r => r.AcceptIcaoInPI0Seconds, 1, 199);
