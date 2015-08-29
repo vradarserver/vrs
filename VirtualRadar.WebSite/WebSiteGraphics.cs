@@ -244,20 +244,28 @@ namespace VirtualRadar.WebSite
                     RectangleF titleBounds = new RectangleF(5, (result.Height - 5) - (lineHeight * 2f), result.Width - 10f, lineHeight);
                     RectangleF addressBounds = new RectangleF(5, titleBounds.Bottom + 5, result.Width - 10f, lineHeight);
 
-                    Font titleFont = _FontCache.BuildFont("Tahoma", titleSize);
-                    graphics.DrawString("Virtual Radar Server", titleFont, Brushes.White, titleBounds, new StringFormat() {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Far,
-                        FormatFlags = StringFormatFlags.NoWrap,
-                    });
+                    // It looks like we can occasionally have an issue here under Mono when Tahoma isn't installed and Mono
+                    // throws an exception instead of falling back to a default font. We don't really care too much about the
+                    // text on the splash image so if we get exceptions here just swallow them
+                    try {
+                        Font titleFont = _FontCache.BuildFont("Tahoma", titleSize);
+                        graphics.DrawString("Virtual Radar Server", titleFont, Brushes.White, titleBounds, new StringFormat() {
+                            Alignment = StringAlignment.Center,
+                            LineAlignment = StringAlignment.Far,
+                            FormatFlags = StringFormatFlags.NoWrap,
+                        });
 
-                    Font addressFont = GetFontForRectangle("Tahoma", FontStyle.Regular, addressSize, graphics, addressBounds.Width, addressBounds.Height, webSiteAddress);
-                    graphics.DrawString(webSiteAddress, addressFont, Brushes.LightGray, addressBounds, new StringFormat() {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Near,
-                        FormatFlags = StringFormatFlags.NoWrap,
-                        Trimming = StringTrimming.EllipsisCharacter,
-                    });
+                        Font addressFont = GetFontForRectangle("Tahoma", FontStyle.Regular, addressSize, graphics, addressBounds.Width, addressBounds.Height, webSiteAddress);
+                        graphics.DrawString(webSiteAddress, addressFont, Brushes.LightGray, addressBounds, new StringFormat() {
+                            Alignment = StringAlignment.Center,
+                            LineAlignment = StringAlignment.Near,
+                            FormatFlags = StringFormatFlags.NoWrap,
+                            Trimming = StringTrimming.EllipsisCharacter,
+                        });
+                    } catch(Exception ex) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Swallowed exception while generating {0} splash: {1}", isIPad ? "iPad" : "iPhone", ex.Message);
+                    }
                 }
             }
 
