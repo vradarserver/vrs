@@ -1116,7 +1116,7 @@
             var refreshRowStateForAircraft = function(aircraft, isSelected) {
                 var rowNum = self._getRowIndexForAircraftId(state, aircraft.id);
                 if(rowNum !== -1 && rowNum < tbodyRows.length) {
-                    self._setRowState(tbodyRows[rowNum], state.rowData[rowNum].row, rowNum, isSelected, aircraft.isEmergency.val);
+                    self._setRowState(tbodyRows[rowNum], state.rowData[rowNum].row, rowNum, isSelected, aircraft.isEmergency.val, aircraft.userInterested.val);
                 }
             };
 
