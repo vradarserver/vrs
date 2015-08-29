@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRadar\VirtualRadar.csproj", "{11805B5F-027A-4ED6-9491-DC85A3B2462D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{86248078-7A1C-486D-8D08-064CC14FDB70} = {86248078-7A1C-486D-8D08-064CC14FDB70}
@@ -155,9 +157,6 @@ Global
 		SccProjectUniqueName25 = VirtualRadar.Headless\\VirtualRadar.Headless.csproj
 		SccProjectName25 = VirtualRadar.Headless
 		SccLocalPath25 = VirtualRadar.Headless
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = VirtualRadar.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -432,7 +431,7 @@ Global
 		{40F37767-C554-453F-8748-784EF41E0AFB} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
 		{9E538513-A812-4A09-BD54-96734AD4A850} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
 	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = VirtualRadar.vsmdi
 	EndGlobalSection
 EndGlobal
