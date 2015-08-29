@@ -590,6 +590,19 @@
     };
     //endregion
 
+    //region SortSpecial
+    /**
+     * An enumeration of the different special positions an element can appear at within a sorted list.
+     * @enum {number}
+     * @readonly
+     */
+    VRS.SortSpecial = {
+        Neither:        0,
+        First:          1,
+        Last:           2
+    };
+    //endregion
+
     //region Species
     /**
      * An enumeration of the different species types sent by the server.

@@ -23,14 +23,16 @@
         { field: VRS.AircraftListSortableField.None,        ascending: true },
         { field: VRS.AircraftListSortableField.None,        ascending: true }
     ];
+    VRS.globalOptions.aircraftListShowEmergencySquawks = VRS.globalOptions.aircraftListShowEmergencySquawks !== undefined ? VRS.globalOptions.aircraftListShowEmergencySquawks : VRS.SortSpecial.First; // Whether to force aircraft reporting an emergency squawk to the start or end of the list
+    VRS.globalOptions.aircraftListShowInteresting = VRS.globalOptions.aircraftListShowInteresting !== undefined ? VRS.globalOptions.aircraftListShowInteresting : VRS.SortSpecial.First;                // Whether to force aircraft flagged as interesting to the start or end of the list
     //endregion
 
     //region AircraftListSortHandler
     /**
      * The class that can determine the relative sort order of two aircraft based on the content of a single property on the aircraft.
      * @param {Object}                                       settings
-     * @param {VRS.AircraftListSortableField}                settings.field              The VRS.AircraftListSortableField field that this handler is dealing with.
-     * @param {string}                                       settings.labelKey           The VRS.$$ entry to use for UI labels.
+     * @param {VRS.AircraftListSortableField}               [settings.field]             The VRS.AircraftListSortableField field that this handler is dealing with.
+     * @param {string}                                      [settings.labelKey]          The VRS.$$ entry to use for UI labels.
      * @param {function(VRS.Aircraft):number}               [settings.getNumberCallback] A function that returns a numeric value from an aircraft. If supplied then the sort order is based on the returned value.
      * @param {function(VRS.Aircraft):string}               [settings.getStringCallback] A function that returns a string value from an aircraft. If supplied then the sort order is based on the returned string.
      * @param {function(VRS.Aircraft, VRS.Aircraft):number} [settings.compareCallback]   A function that takes two aircraft and returns an integer describing their relative sort order.
@@ -39,8 +41,8 @@
     VRS.AircraftListSortHandler = function(settings)
     {
         if(!settings) throw 'You must supply a settings object';
-        if(!settings.field) throw 'You must supply a field field';
-        if(!settings.labelKey) throw 'You must supply a labelKey field';
+        if(!settings.field && !settings.compareCallback) throw 'You must supply a field field';
+        if(!settings.labelKey && !settings.compareCallback) throw 'You must supply a labelKey field';
         if(!settings.compareCallback && !settings.getNumberCallback && !settings.getStringCallback) throw 'You must supply a compareCallback, getNumberCallback or getStringCallback';
 
         var that = this;
@@ -294,6 +296,41 @@
     });
     //endregion
 
+    //region VRS.aircraftListSpecialHandlers - handlers that force special entries to the start or end of the list
+    /**
+     * An enumeration of the indexes used for the list of special handlers.
+     * @enum {number}
+     * @readonly
+     */
+    VRS.AircraftListSpecialHandlerIndex = {
+        Emergency:     0,
+        Interesting:   1
+    };
+
+    /**
+     * A collection of special handlers that deal with forcing emergency / interesting etc. aircraft to the
+     * start or the end of the list, as determined by the options.
+     * @type {Array<VRS.AircraftListSortHandler>}
+     */
+    VRS.aircraftListSpecialHandlers = [
+        // Make sure that these are inserted in the same order as the VRS.AircraftListSpecialHandlerIndex enum
+
+        // 0: Emergency First
+        new VRS.AircraftListSortHandler({
+            compareCallback: function(/** VRS.Aircraft */lhs, /** VRS.Aircraft */ rhs) {
+                return lhs.isEmergency.val === rhs.isEmergency.val ? 0 : lhs.isEmergency.val ? -1 : 1;
+            }
+        }),
+
+        // 1: Interesting First
+        new VRS.AircraftListSortHandler({
+            compareCallback: function(/** VRS.Aircraft */lhs, /** VRS.Aircraft */ rhs) {
+                return lhs.userInterested.val === rhs.userInterested.val ? 0 : lhs.userInterested.val ? -1 : 1;
+            }
+        })
+    ];
+    //endregion
+
     //region AircraftListSorter
     /**
      * A class that can sort an aircraft list in a configurable order.
@@ -395,6 +432,46 @@
 
             if(raiseEvent) _Dispatcher.raise(_Events.sortFieldsChanged);
         };
+
+        var _ShowEmergencySquawksSortSpecial = VRS.globalOptions.aircraftListShowEmergencySquawks;
+        /**
+         * Returns a value indicating how emergency squawks should be treated in the sort.
+         * @returns {VRS.SortSpecial}
+         */
+        this.getShowEmergencySquawksSortSpecial = function()
+        {
+            return _ShowEmergencySquawksSortSpecial;
+        };
+
+        /**
+         * Sets a value indicating how emergency squawks should be treated in the sort.
+         * @param {VRS.SortSpecial} value
+         */
+        this.setShowEmergencySquawksSortSpecial = function(value)
+        {
+            _ShowEmergencySquawksSortSpecial = value;
+            _Dispatcher.raise(_Events.sortFieldsChanged);
+        };
+
+        var _ShowInterestingSortSpecial = VRS.globalOptions.aircraftListShowInteresting;
+        /**
+         * Returns a value indicating how interesting aircraft should be treated in the sort.
+         * @returns {VRS.SortSpecial}
+         */
+        this.getShowInterestingSortSpecial = function()
+        {
+            return _ShowInterestingSortSpecial;
+        };
+
+        /**
+         * Sets a value indicating how interesting aircraft should be treated in the sort.
+         * @param {VRS.SortSpecial} value
+         */
+        this.setShowInterestingSortSpecial = function(value)
+        {
+            _ShowInterestingSortSpecial = value;
+            _Dispatcher.raise(_Events.sortFieldsChanged);
+        };
         //endregion
 
         //region -- Events
@@ -436,6 +513,9 @@
         {
             _SortFields = [];
             $.each(settings.sortFields, function(idx, sortField) { _SortFields.push(sortField); });
+            _ShowEmergencySquawksSortSpecial = settings.showEmergencySquawks;
+            _ShowInterestingSortSpecial = settings.showInteresting;
+
             _Dispatcher.raise(_Events.sortFieldsChanged);
         };
 
@@ -463,7 +543,9 @@
         function createSettings()
         {
             return {
-                sortFields: _SortFields
+                sortFields:             _SortFields,
+                showEmergencySquawks:   _ShowEmergencySquawksSortSpecial,
+                showInteresting:        _ShowInterestingSortSpecial
             };
         }
         //endregion
@@ -525,6 +607,31 @@
                 }));
             });
 
+            pane.addField(new VRS.OptionFieldRadioButton({
+                name:           'showEmergency',
+                getValue:       that.getShowEmergencySquawksSortSpecial,
+                setValue:       that.setShowEmergencySquawksSortSpecial,
+                saveState:      that.saveState,
+                labelKey:       'ShowEmergencySquawks',
+                values: [
+                    new VRS.ValueText({ value: VRS.SortSpecial.First,   textKey: 'First' }),
+                    new VRS.ValueText({ value: VRS.SortSpecial.Last,    textKey: 'Last' }),
+                    new VRS.ValueText({ value: VRS.SortSpecial.Neither, textKey: 'Neither' })
+                ]
+            }));
+            pane.addField(new VRS.OptionFieldRadioButton({
+                name:           'showInteresting',
+                getValue:       that.getShowInterestingSortSpecial,
+                setValue:       that.setShowInterestingSortSpecial,
+                saveState:      that.saveState,
+                labelKey:       'ShowInterestingAircraft',
+                values: [
+                    new VRS.ValueText({ value: VRS.SortSpecial.First,   textKey: 'First' }),
+                    new VRS.ValueText({ value: VRS.SortSpecial.Last,    textKey: 'Last' }),
+                    new VRS.ValueText({ value: VRS.SortSpecial.Neither, textKey: 'Neither' })
+                ]
+            }));
+
             return pane;
         };
         //endregion
@@ -538,6 +645,16 @@
         {
             var i = 0;
             var handlers = [];
+
+            switch(_ShowEmergencySquawksSortSpecial) {
+                case VRS.SortSpecial.First:     handlers.push({ handler: VRS.aircraftListSpecialHandlers[VRS.AircraftListSpecialHandlerIndex.Emergency], ascending: true }); break;
+                case VRS.SortSpecial.Last:      handlers.push({ handler: VRS.aircraftListSpecialHandlers[VRS.AircraftListSpecialHandlerIndex.Emergency], ascending: false }); break;
+            }
+            switch(_ShowInterestingSortSpecial) {
+                case VRS.SortSpecial.First:     handlers.push({ handler: VRS.aircraftListSpecialHandlers[VRS.AircraftListSpecialHandlerIndex.Interesting], ascending: true }); break;
+                case VRS.SortSpecial.Last:      handlers.push({ handler: VRS.aircraftListSpecialHandlers[VRS.AircraftListSpecialHandlerIndex.Interesting], ascending: false }); break;
+            }
+
             for(i = 0;i < _SortFieldsLength;++i) {
                 var sortField = _SortFields[i];
                 if(sortField.field !== VRS.AircraftListSortableField.None) {

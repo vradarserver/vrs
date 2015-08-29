@@ -1335,7 +1335,9 @@ VRS_STATE_AIRCRAFTLISTFILTER;
 //region VRS_STATE_AIRCRAFTLISTSORTER
 /**
 * @typedef {{
-* sortFields: VRS_SORTFIELD[]
+* sortFields:               VRS_SORTFIELD[],
+* showEmergencySquawks:     VRS.SortSpecial,
+* showInteresting:          VRS.SortSpecial
 * }} VRS_STATE_AIRCRAFTLISTSORTER
 */
 //endregion
