@@ -190,6 +190,10 @@
     <Content Include="Site\Web\images\markers\WTC-Heavy-2-Jet.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-4-Jet-Selected.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-4-Jet.png" />
+    <Content Include="Site\Web\images\markers\WTC-Light-1-Prop-Selected.png" />
+    <Content Include="Site\Web\images\markers\WTC-Light-1-Prop.png" />
+    <Content Include="Site\Web\images\markers\WTC-Light-2-Prop-Selected.png" />
+    <Content Include="Site\Web\images\markers\WTC-Light-2-Prop.png" />
     <Content Include="Site\Web\images\markers\WTC-Medium-2-Jet-Selected.png" />
     <Content Include="Site\Web\images\markers\WTC-Medium-2-Jet.png" />
     <Content Include="Site\Web\images\Mode-S%402x.png" />
@@ -335,6 +339,7 @@
     <Content Include="Site\Web\script\vrs\reportFilter.js" />
     <Content Include="Site\Web\script\vrs\serverConfiguration.js" />
     <Content Include="Site\Web\script\vrs\timeoutManager.js" />
+    <Content Include="Site\Web\zz-norel-marker-contact-sheet.html" />
     <Content Include="Site\Web\zz-norel-test.html" />
     <Content Include="Site\Web\_WARNING.txt" />
     <Content Include="Site\_external\_googleMaps.js" />
