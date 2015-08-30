@@ -116,6 +116,12 @@ namespace VirtualRadar.WebSite
             {
                 get { return TextLines.Count > 0 && TextLines.Any(r => r != null); }
             }
+
+            /// <summary>
+            /// True if the web image should always be fetched from disk rather than from the cache. This should always
+            /// be disabled for Internet requests.
+            /// </summary>
+            public bool NoCache;
         }
         #endregion
 
@@ -283,6 +289,7 @@ namespace VirtualRadar.WebSite
                 else if(caselessPart == "HIDPI")            result.IsHighDpi = true;
                 else if(caselessPart == "LEFT")             result.CentreImageHorizontally = false;
                 else if(caselessPart == "TOP")              result.CentreImageVertically = false;
+                else if(caselessPart == "NO-CACHE")         result.NoCache = !args.IsInternetRequest;
                 else if(caselessPart.StartsWith("WEB") && isValid) {
                     var pathAndFileName = new StringBuilder("/images/");
                     var hyphenPosn = pathPart.IndexOf('-');
@@ -372,7 +379,7 @@ namespace VirtualRadar.WebSite
 
             if(imageRequest.WebSiteFileName != null) {
                 // This will return a clone, we don't have to clone it. We are responsible for destroying the image.
-                stockImage = ImageFileManager.LoadFromWebSite(_WebSite, imageRequest.WebSiteFileName, useImageCache: true);
+                stockImage = ImageFileManager.LoadFromWebSite(_WebSite, imageRequest.WebSiteFileName, !imageRequest.NoCache);
             } else {
                 switch(imageRequest.ImageName) {
                     case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
