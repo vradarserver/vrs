@@ -3739,7 +3739,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set to &apos;Yes&apos; if you do not want to use TIS-B messages when tracking aircraft..
+        ///   Looks up a localized string similar to Set to &apos;Yes&apos; if you do not want to use TIS-B messages to track aircraft..
         /// </summary>
         public static string OptionsDescribeRawFeedSuppressTisbMessages {
             get {
