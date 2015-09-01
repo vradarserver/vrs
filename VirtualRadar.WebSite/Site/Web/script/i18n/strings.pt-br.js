@@ -117,6 +117,7 @@
     VRS.$$.FillOpacity =                                'Transparencia do gráfico de alcance';
     VRS.$$.Filters =                                    'Filtros';
     VRS.$$.FindAllPermutationsOfCallsign =              'Find all permutations of callsign';
+    VRS.$$.First =                                      'First';  /** THIS IS NEW! **/
     VRS.$$.FirstAltitude =                              'Primeira altitude';
     VRS.$$.FirstHeading =                               'Primeira proa';
     VRS.$$.FirstFlightLevel =                           'Primeiro FL';
@@ -191,6 +192,7 @@
     VRS.$$.Knots =                                      'Knots';
     VRS.$$.KnotsAbbreviation =                          '{0} kts';
     VRS.$$.LandPlane =                                  'Landplane';
+    VRS.$$.Last =                                       'Last';  /** THIS IS NEW! **/
     VRS.$$.LastAltitude =                               'Última Altitude';
     VRS.$$.LastFlightLevel =                            'Último FL';
     VRS.$$.LastHeading =                                'Última proa';
@@ -292,6 +294,7 @@
     VRS.$$.ListStatus =                                 'Status';
     VRS.$$.ListTargetAltitude =                         'A/P Alt.';
     VRS.$$.ListTargetHeading =                          'A/P Hdg.';
+    VRS.$$.ListTisb =                                   'TIS-B';  /** THIS IS NEW! **/
     VRS.$$.ListTotalHours =                             'Total Hours';
     VRS.$$.ListTransponderType =                        'Transponder';
     VRS.$$.ListTransponderTypeFlag =                    '';
@@ -326,6 +329,7 @@
     VRS.$$.MuteOn =                                     'Mudo';
     VRS.$$.NauticalMileAbbreviation =                   '{0} mn';
     VRS.$$.NauticalMiles =                              'Milhas Náuticas';
+    VRS.$$.Neither =                                    'Neither';  /** THIS IS NEW! **/
     VRS.$$.No =                                         'No';
     VRS.$$.NoLocalStorage =                             'Este navegador não suporta o armazenamento local. Suas configurações não serão salvas\n\nSe você está navegando no "modo anonimo", em seguida, va para a versão normal. O modo anomimo não salva as alterações';
     VRS.$$.None =                                       'Nenhum';
@@ -441,8 +445,10 @@
     VRS.$$.ShowCurrentLocation =                        'Mostrar a localização atual';
     VRS.$$.ShowDetail =                                 'MOstrar detalhes';
     VRS.$$.ShowForAllAircraft =                         'Mostrar para todas as aeronaves';
+    VRS.$$.ShowEmergencySquawks =                       'Show emergency squawks';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            'Mostrar valores em branco';
     VRS.$$.ShowForSelectedOnly =                        'Mostrar apenas para a aeronave selecionada';
+    VRS.$$.ShowInterestingAircraft =                    'Show interesting aircraft';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           'Mostrar círculos de alcance';
     VRS.$$.ShowShortTrails =                            'Mostrar trilhas curtas';
     VRS.$$.ShowSpeedType =                              'Mostrar unidade da velocidade';
@@ -482,6 +488,7 @@
     VRS.$$.ThenBy =                                     'em seguida por';
     VRS.$$.Tiltwing =                                   'Tiltwing';
     VRS.$$.TimeTracked =                                'Duração do rasterio';
+    VRS.$$.Tisb =                                       'TIS-B';  /** THIS IS NEW! **/
     VRS.$$.TitleAircraftDetail =                        'Detalhes da aeronave ';
     VRS.$$.TitleAircraftList =                          'Lista de aeronaves';
     VRS.$$.TitleFlightDetail =                          'Detalhes';
@@ -491,8 +498,8 @@
     VRS.$$.TotalHours =                                 'Total de horas';
     VRS.$$.TrackingCountAircraft =                      'Rastreando {0:N0} aeronaves';
     VRS.$$.TrackingCountAircraftOutOf =                 'Rastreando {0:N0} aeronaves (de {1:N0})';
-    VRS.$$.TrackingOneAircraft =                        'Rastreando 1 aeronave';  /** THIS IS NEW! **/
-    VRS.$$.TrackingOneAircraftOutOf =                   'Rastreando 1 aeronave (de {0:N0})';  /** THIS IS NEW! **/
+    VRS.$$.TrackingOneAircraft =                        'Rastreando 1 aeronave';
+    VRS.$$.TrackingOneAircraftOutOf =                   'Rastreando 1 aeronave (de {0:N0})';
     VRS.$$.TransponderType =                            'Transponder';
     VRS.$$.TransponderTypeFlag =                        'Band. do Transponder';
     VRS.$$.TrueAirSpeed =                               'True';

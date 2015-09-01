@@ -117,6 +117,7 @@
     VRS.$$.FillOpacity =                                '填充透明度';
     VRS.$$.Filters =                                    '过滤器';
     VRS.$$.FindAllPermutationsOfCallsign =              '查询航班号的所有排列';
+    VRS.$$.First =                                      'First';  /** THIS IS NEW! **/
     VRS.$$.FirstAltitude =                              '初始高度';
     VRS.$$.FirstHeading =                               '初始航向';
     VRS.$$.FirstFlightLevel =                           '初始飞行高度层';
@@ -191,6 +192,7 @@
     VRS.$$.Knots =                                      '节';
     VRS.$$.KnotsAbbreviation =                          '{0} kts';
     VRS.$$.LandPlane =                                  '陆上飞机';
+    VRS.$$.Last =                                       'Last';  /** THIS IS NEW! **/
     VRS.$$.LastAltitude =                               '最后高度';
     VRS.$$.LastFlightLevel =                            '最后飞行高度层';
     VRS.$$.LastHeading =                                '最后航向';
@@ -292,6 +294,7 @@
     VRS.$$.ListStatus =                                 '状态';
     VRS.$$.ListTargetAltitude =                         'A/P 高度';
     VRS.$$.ListTargetHeading =                          'A/P 航向';
+    VRS.$$.ListTisb =                                   'TIS-B';  /** THIS IS NEW! **/
     VRS.$$.ListTotalHours =                             '小时总计';
     VRS.$$.ListTransponderType =                        '应答机';
     VRS.$$.ListTransponderTypeFlag =                    '应答机类型标志';
@@ -326,6 +329,7 @@
     VRS.$$.MuteOn =                                     '开启静音';
     VRS.$$.NauticalMileAbbreviation =                   '{0} nmi';
     VRS.$$.NauticalMiles =                              '海里';
+    VRS.$$.Neither =                                    'Neither';  /** THIS IS NEW! **/
     VRS.$$.No =                                         '否';
     VRS.$$.NoLocalStorage =                             '该浏览器不支持本地存储. 您的配置信息将不能保存.\n\n如果您在"私人模式"访问请尝试转换关闭状态. 私人模式在某些浏览器上不能进行本地存储.';
     VRS.$$.None =                                       '无';
@@ -441,8 +445,10 @@
     VRS.$$.ShowCurrentLocation =                        '显示当前坐标';
     VRS.$$.ShowDetail =                                 '显示详情';
     VRS.$$.ShowForAllAircraft =                         '显示所有航空器';
+    VRS.$$.ShowEmergencySquawks =                       'Show emergency squawks';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            '显示空值';
     VRS.$$.ShowForSelectedOnly =                        '仅显示选择的航空器';
+    VRS.$$.ShowInterestingAircraft =                    'Show interesting aircraft';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           '显示范围环';
     VRS.$$.ShowShortTrails =                            '显示短轨迹';
     VRS.$$.ShowSpeedType =                              '显示速度类型';
@@ -482,6 +488,7 @@
     VRS.$$.ThenBy =                                     '依据';
     VRS.$$.Tiltwing =                                   '倾斜翼飞机';
     VRS.$$.TimeTracked =                                '跟踪持续';
+    VRS.$$.Tisb =                                       'TIS-B';  /** THIS IS NEW! **/
     VRS.$$.TitleAircraftDetail =                        '航空器详情';
     VRS.$$.TitleAircraftList =                          '航空器列表';
     VRS.$$.TitleFlightDetail =                          '详情';
@@ -491,8 +498,8 @@
     VRS.$$.TotalHours =                                 '小时总计';
     VRS.$$.TrackingCountAircraft =                      '跟踪 {0:N0} 航空器';
     VRS.$$.TrackingCountAircraftOutOf =                 '跟踪 {0:N0} 航空器 (越界 {1:N0})';
-    VRS.$$.TrackingOneAircraft =                        '跟踪 1 航空器';  /** THIS IS NEW! **/
-    VRS.$$.TrackingOneAircraftOutOf =                   '跟踪 1 航空器 (越界 {0:N0})';  /** THIS IS NEW! **/
+    VRS.$$.TrackingOneAircraft =                        '跟踪 1 航空器';
+    VRS.$$.TrackingOneAircraftOutOf =                   '跟踪 1 航空器 (越界 {0:N0})';
     VRS.$$.TransponderType =                            '应答机';
     VRS.$$.TransponderTypeFlag =                        '应答机标志';
     VRS.$$.TrueAirSpeed =                               '实速';

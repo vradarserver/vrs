@@ -92,7 +92,7 @@
     VRS.$$.Distances =                                  'Расстояние';
     VRS.$$.DoNotImportAutoSelect =                      'Не импортировать настройки автоматического выбора';
     VRS.$$.DoNotImportCurrentLocation =                 'Не импортировать текущее местоположение';
-    VRS.$$.DoNotImportRequestFeedId =                   'Не импортировать запрос ID канала';  /** THIS IS NEW! **/
+    VRS.$$.DoNotImportRequestFeedId =                   'Не импортировать запрос ID канала';
     VRS.$$.DoNotImportLanguageSettings =                'Не импортировать настройки языка';
     VRS.$$.DoNotImportSplitters =                       'Не импортировать сплиттеры';
     VRS.$$.DoNotShow =                                  'Не показывать';
@@ -117,6 +117,7 @@
     VRS.$$.FillOpacity =                                'Непрозрачность заливки';
     VRS.$$.Filters =                                    'Фильтры';
     VRS.$$.FindAllPermutationsOfCallsign =              'Найти все изменения позывного';
+    VRS.$$.First =                                      'First';  /** THIS IS NEW! **/
     VRS.$$.FirstAltitude =                              'Начальная высота';
     VRS.$$.FirstHeading =                               'Начальный курс';
     VRS.$$.FirstFlightLevel =                           'Начальный FL';
@@ -191,6 +192,7 @@
     VRS.$$.Knots =                                      'Узлы';
     VRS.$$.KnotsAbbreviation =                          '{0} уз.';
     VRS.$$.LandPlane =                                  'Сухопутный';
+    VRS.$$.Last =                                       'Last';  /** THIS IS NEW! **/
     VRS.$$.LastAltitude =                               'Конечная высота';
     VRS.$$.LastFlightLevel =                            'Конечный FL';
     VRS.$$.LastHeading =                                'Конечный курс';
@@ -292,6 +294,7 @@
     VRS.$$.ListStatus =                                 'Статус';
     VRS.$$.ListTargetAltitude =                         'Выс. AП';
     VRS.$$.ListTargetHeading =                          'Курс АП';
+    VRS.$$.ListTisb =                                   'TIS-B';  /** THIS IS NEW! **/
     VRS.$$.ListTotalHours =                             'Общ.налет';
     VRS.$$.ListTransponderType =                        'Трансп.';
     VRS.$$.ListTransponderTypeFlag =                    '';  /** THIS IS NEW! **/
@@ -319,13 +322,14 @@
     VRS.$$.MobileReportPage =                           'Страница мобильного отчета';
     VRS.$$.Model =                                      'Модель';
     VRS.$$.ModelIcao =                                  'Код типа';
-    VRS.$$.ModeS =                                      'Mode S';  /** THIS IS NEW! **/
+    VRS.$$.ModeS =                                      'Mode S';
     VRS.$$.ModeSCountry =                               'Страна';
     VRS.$$.MovingMap =                                  'Перемещение карты';
     VRS.$$.MuteOff =                                    'Выкл.звук';
     VRS.$$.MuteOn =                                     'Вкл.звук';
     VRS.$$.NauticalMileAbbreviation =                   '{0} м.миль';
     VRS.$$.NauticalMiles =                              'Морские мили';
+    VRS.$$.Neither =                                    'Neither';  /** THIS IS NEW! **/
     VRS.$$.No =                                         'Нет';
     VRS.$$.NoLocalStorage =                             'Ваш браузер не поддерживает локальное сохранение. Параметры конфигурации не будут сохранены.\n\nЕсли вы просматриваете в "Private Mode", то попробуйте переключиться. "Private Mode" отключает локальное сохранение в некоторых браузерах';
     VRS.$$.None =                                       'Нет';
@@ -343,7 +347,7 @@
     VRS.$$.OfPages =                                    'по {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          'Только в окне карты';
     VRS.$$.OnlyAutoSelected =                           'Только для авто выбранных самолетов';
-    VRS.$$.OnlyUsePre22Icons =                          'Использовать старый стиль метки';  /** THIS IS NEW! **/
+    VRS.$$.OnlyUsePre22Icons =                          'Использовать старый стиль метки';
     VRS.$$.Operator =                                   'Оператор';
     VRS.$$.OperatorCode =                               'Код авиакомпании';
     VRS.$$.OperatorFlag =                               'Логотип авиакомпании';
@@ -415,7 +419,7 @@
     VRS.$$.ReportsAreDisabled =                         'Настройки сервера запрещают создание отчетов';
     VRS.$$.Resume =                                     'Возобновить';
     VRS.$$.Reversing =                                  'Реверсивный';
-    VRS.$$.ReversingShort =                             'РЕВ';  /** THIS IS NEW! **/
+    VRS.$$.ReversingShort =                             'РЕВ';
     VRS.$$.Route =                                      'Маршрут';
     VRS.$$.RouteShort =                                 'Маршрут (кратко)';
     VRS.$$.RouteFull =                                  'Маршрут (подробно)';
@@ -441,8 +445,10 @@
     VRS.$$.ShowCurrentLocation =                        'Показывать текущее местоположение';
     VRS.$$.ShowDetail =                                 'Показать формуляр';
     VRS.$$.ShowForAllAircraft =                         'Для всех';
+    VRS.$$.ShowEmergencySquawks =                       'Show emergency squawks';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            'Показывать пустые значения';
     VRS.$$.ShowForSelectedOnly =                        'Для выбранного самолета';
+    VRS.$$.ShowInterestingAircraft =                    'Show interesting aircraft';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           'Показывать шкалу';
     VRS.$$.ShowShortTrails =                            'Показывать короткий след';
     VRS.$$.ShowSpeedType =                              'Показывать тип скорости';
@@ -482,6 +488,7 @@
     VRS.$$.ThenBy =                                     'затем по';
     VRS.$$.Tiltwing =                                   'C поворотным крылом';
     VRS.$$.TimeTracked =                                'Длительность отслеживания';
+    VRS.$$.Tisb =                                       'TIS-B';  /** THIS IS NEW! **/
     VRS.$$.TitleAircraftDetail =                        'Формуляр';
     VRS.$$.TitleAircraftList =                          'Список';
     VRS.$$.TitleFlightDetail =                          'Формуляр';
@@ -491,8 +498,8 @@
     VRS.$$.TotalHours =                                 'Общее количество часов';
     VRS.$$.TrackingCountAircraft =                      'Отслеживается: {0:N0}';
     VRS.$$.TrackingCountAircraftOutOf =                 'Отслеживается: {0:N0} (из {1:N0})';
-    VRS.$$.TrackingOneAircraft =                        'Отслеживается: 1';  /** THIS IS NEW! **/
-    VRS.$$.TrackingOneAircraftOutOf =                   'Отслеживается: 1 (из {0:N0})';  /** THIS IS NEW! **/
+    VRS.$$.TrackingOneAircraft =                        'Отслеживается: 1';
+    VRS.$$.TrackingOneAircraftOutOf =                   'Отслеживается: 1 (из {0:N0})';
     VRS.$$.TransponderType =                            'Транспондер';
     VRS.$$.TransponderTypeFlag =                        'Тип транспондера';
     VRS.$$.TrueAirSpeed =                               'Истинная';
