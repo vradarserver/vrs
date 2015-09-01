@@ -43,6 +43,18 @@ namespace VirtualRadar.WebSite
 
         #region Properties
         protected WebSite _WebSite;
+
+        private static ISharedConfiguration _SharedConfiguration;
+        /// <summary>
+        /// Gets the shared configuration object for pages that want to use it.
+        /// </summary>
+        protected ISharedConfiguration SharedConfiguration
+        {
+            get {
+                if(_SharedConfiguration == null) _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                return _SharedConfiguration;
+            }
+        }
         #endregion
 
         #region Constructor
