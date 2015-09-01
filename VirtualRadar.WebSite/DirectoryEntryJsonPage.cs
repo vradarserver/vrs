@@ -86,11 +86,19 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         private DirectoryEntryJson BuildDirectoryEntry()
         {
+            var configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+
             var feeds = _FeedManager.VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
+            var maxAircraft = feeds.Select(r => {
+                long unused1, unused2;
+                var aircraftList = r.AircraftList.TakeSnapshot(out unused1, out unused2);
+                return aircraftList.Count;
+            }).Max();
+
             var result = new DirectoryEntryJson() {
                 Version = _ApplicationInformation.ShortVersion,
                 NumberOfFeeds = feeds.Length,
-                NumberOfAircraft = feeds.Length == 0 ? 0 : feeds.Select(r => r.AircraftList.Count).Max(),
+                NumberOfAircraft = maxAircraft,
             };
 
             return result;
