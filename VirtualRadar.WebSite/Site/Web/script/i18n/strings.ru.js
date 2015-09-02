@@ -117,7 +117,7 @@
     VRS.$$.FillOpacity =                                'Непрозрачность заливки';
     VRS.$$.Filters =                                    'Фильтры';
     VRS.$$.FindAllPermutationsOfCallsign =              'Найти все изменения позывного';
-    VRS.$$.First =                                      'First';  /** THIS IS NEW! **/
+    VRS.$$.First =                                      'Начальный';
     VRS.$$.FirstAltitude =                              'Начальная высота';
     VRS.$$.FirstHeading =                               'Начальный курс';
     VRS.$$.FirstFlightLevel =                           'Начальный FL';
@@ -192,7 +192,7 @@
     VRS.$$.Knots =                                      'Узлы';
     VRS.$$.KnotsAbbreviation =                          '{0} уз.';
     VRS.$$.LandPlane =                                  'Сухопутный';
-    VRS.$$.Last =                                       'Last';  /** THIS IS NEW! **/
+    VRS.$$.Last =                                       'Конечный';
     VRS.$$.LastAltitude =                               'Конечная высота';
     VRS.$$.LastFlightLevel =                            'Конечный FL';
     VRS.$$.LastHeading =                                'Конечный курс';
@@ -329,7 +329,7 @@
     VRS.$$.MuteOn =                                     'Вкл.звук';
     VRS.$$.NauticalMileAbbreviation =                   '{0} м.миль';
     VRS.$$.NauticalMiles =                              'Морские мили';
-    VRS.$$.Neither =                                    'Neither';  /** THIS IS NEW! **/
+    VRS.$$.Neither =                                    'Никакой';
     VRS.$$.No =                                         'Нет';
     VRS.$$.NoLocalStorage =                             'Ваш браузер не поддерживает локальное сохранение. Параметры конфигурации не будут сохранены.\n\nЕсли вы просматриваете в "Private Mode", то попробуйте переключиться. "Private Mode" отключает локальное сохранение в некоторых браузерах';
     VRS.$$.None =                                       'Нет';
@@ -445,10 +445,10 @@
     VRS.$$.ShowCurrentLocation =                        'Показывать текущее местоположение';
     VRS.$$.ShowDetail =                                 'Показать формуляр';
     VRS.$$.ShowForAllAircraft =                         'Для всех';
-    VRS.$$.ShowEmergencySquawks =                       'Show emergency squawks';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
+    VRS.$$.ShowEmergencySquawks =                       'Показывать аварийные сквоки';  // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            'Показывать пустые значения';
     VRS.$$.ShowForSelectedOnly =                        'Для выбранного самолета';
-    VRS.$$.ShowInterestingAircraft =                    'Show interesting aircraft';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
+    VRS.$$.ShowInterestingAircraft =                    'Показывать интересующие самолеты';     // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           'Показывать шкалу';
     VRS.$$.ShowShortTrails =                            'Показывать короткий след';
     VRS.$$.ShowSpeedType =                              'Показывать тип скорости';
