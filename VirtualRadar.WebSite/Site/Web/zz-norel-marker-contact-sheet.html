@@ -1,12 +1,7 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
-
-        <!-- Virtual Radar Server Desktop Page -->
-
-        <!-- Fonts -->
-        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic,greek,vietnamese' rel='stylesheet' type='text/css'>
 
         <!-- iOS bare minimum configuration -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui" />
@@ -38,62 +33,65 @@
     <body>
         <div id="sheet">
         </div>
-    </body>
-    <script type="text/javascript">
-        var _StepAngle = 11.25;
+        <script type="text/javascript">
+            var _StepAngle = 11.25;
         
-        function formFullPath(rotationAngle, fileName)
-        {
-            return 'images/top/web-markers/no-cache/Rotate-' + rotationAngle + '/' + fileName;
-        }
+            function formFullPath(rotationAngle, folder, fileName)
+            {
+                return folder + '/top/no-cache/Rotate-' + rotationAngle + '/' + fileName;
+            }
         
-        jQuery(document).ready(function($) {
-            $.each(VRS.globalOptions.aircraftMarkers, function(idx, marker) {
-                $('#sheet')
-                .append($('<p />')
-                    .append($('<span />')
-                        .text(marker.getNormalFileName())
+            jQuery(document).ready(function($) {
+                $.each(VRS.globalOptions.aircraftMarkers, function(idx, marker) {
+                    $('#sheet')
+                    .append($('<p />')
+                        .append($('<span />')
+                            .text(marker.getNormalFileName())
+                        )
                     )
-                )
-                .append($('<p />')
-                    .addClass('detail')
-                    .append($('<span />')
-                        .text('' + marker.getSize().width + 'x' + marker.getSize().height)
-                    ).append($('<span />')
-                        .text(' ' + (marker.getIsAircraft() ? 'aircraft' : 'not aircraft'))
-                    ).append($('<span />')
-                        .text(' ' + (marker.getIsPre22Icon() ? 'old icon' : 'new icon'))
+                    .append($('<p />')
+                        .addClass('detail')
+                        .append($('<span />')
+                            .text('' + marker.getSize().width + 'x' + marker.getSize().height)
+                        ).append($('<span />')
+                            .text(' ' + marker.getFolder())
+                        ).append($('<span />')
+                            .text(' ' + (marker.getIsAircraft() ? 'aircraft' : 'not aircraft'))
+                        ).append($('<span />')
+                            .text(' ' + (marker.getIsPre22Icon() ? 'old icon' : 'new icon'))
+                        )
                     )
-                )
-                .append($('<code />')
-                    .text(marker.getMatches().toString())
-                );
+                    .append($('<code />')
+                        .text(marker.getMatches().toString())
+                    );
                     
-                for(var innerCount = 0;innerCount < 2;++innerCount) {
-                    var fileName = innerCount == 0 ? marker.getNormalFileName() : marker.getSelectedFileName();
-                    if(innerCount == 1) {
-                        if(fileName == marker.getNormalFileName()) continue;
-                        $('#sheet')
-                        .append($('<p />')
-                            .append($('<span />')
-                                .text(fileName)
-                            )
-                        );
+                    for(var innerCount = 0;innerCount < 2;++innerCount) {
+                        var folder = marker.getFolder();
+                        var fileName = innerCount == 0 ? marker.getNormalFileName() : marker.getSelectedFileName();
+                        if(innerCount == 1) {
+                            if(fileName == marker.getNormalFileName()) continue;
+                            $('#sheet')
+                            .append($('<p />')
+                                .append($('<span />')
+                                    .text(fileName)
+                                )
+                            );
+                        }
+                    
+                        var container = $('<div />').addClass('container');
+                        $('#sheet').append(container);
+                    
+                        var step = marker.getCanRotate() ? _StepAngle : 999;
+                        for(var angle = 0;angle < 361;angle += step) {
+                            var normalisedAngle = angle % 360;
+                            $('<img />')
+                                .attr('src', formFullPath(normalisedAngle, folder, fileName))
+                                .appendTo(container);
+                        }
                     }
-                    
-                    var container = $('<div />').addClass('container');
-                    $('#sheet').append(container);
-                    
-                    var step = marker.getCanRotate() ? _StepAngle : 999;
-                    for(var angle = 0;angle < 361;angle += step) {
-                        var normalisedAngle = angle % 360;
-                        $('<img />')
-                            .attr('src', formFullPath(normalisedAngle, fileName))
-                            .appendTo(container);
-                    }
-                }
-                $('#sheet').append('<hr />');
+                    $('#sheet').append('<hr />');
+                });
             });
-        });
-    </script>
+        </script>
+    </body>
 </html>
