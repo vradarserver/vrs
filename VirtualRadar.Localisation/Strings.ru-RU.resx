@@ -2491,8 +2491,8 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Network address: {0}</value>
   </data>
   <data name="PressQToQuit" xml:space="preserve">
-    <comment>You can have any key you like here, as long as it's Q</comment>
     <value>Нажмите Q, чтобы выйти</value>
+    <comment>You can have any key you like here, as long as it's Q</comment>
   </data>
   <data name="Administrators" xml:space="preserve">
     <value>Администраторы</value>
@@ -2507,24 +2507,24 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>"Да", чтобы показать текст метки самолета с помощью библиотеки Google marker labels, "Нет" для наложения текста на изображение, как это происходит при работе под Microsoft .NET. Некоторые собственные графические библиотеки могут выдать исключения, если установлено значение "Нет".</value>
   </data>
   <data name="SendEvery" xml:space="preserve">
-    <comment>As in "Send every 5 seconds"</comment>
     <value>Посылать каждые</value>
+    <comment>As in "Send every 5 seconds"</comment>
   </data>
   <data name="MergeOnly" xml:space="preserve">
-    <comment>As in "this receiver can only be merged with other receivers"</comment>
     <value>Только для объединения</value>
+    <comment>As in "this receiver can only be merged with other receivers"</comment>
   </data>
   <data name="NotApplicableAbbr" xml:space="preserve">
-    <comment>Abbreviation of "not applicable"</comment>
     <value>Нет</value>
+    <comment>Abbreviation of "not applicable"</comment>
   </data>
   <data name="MLAT" xml:space="preserve">
-    <comment>Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
     <value>MLAT</value>
+    <comment>Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
   </data>
   <data name="RecConWizSdrFR24Feeder" xml:space="preserve">
-    <comment>It's the name of a program</comment>
     <value>Flightradar24 Feeder</value>
+    <comment>It's the name of a program</comment>
   </data>
   <data name="UseMarkerLabels" xml:space="preserve">
     <value>Используйте маркер метки</value>
@@ -2570,5 +2570,11 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
     <value>"Да", если сообщения о местоположении из этого канала должны рассматриваться как рассчитанные местоположения MLAT. Требуется только для MLAT каналов, которые не определить, как сообщения с расчетными местоположениями.</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSuppressTisbMessages" xml:space="preserve">
+    <value>"Да", чтобы не использовать TIS-B сообщения для отслеживания самолетов.</value>
+  </data>
+  <data name="SuppressTisbMessages" xml:space="preserve">
+    <value>Не использовать TIS-B сообщения</value>
   </data>
 </root>
