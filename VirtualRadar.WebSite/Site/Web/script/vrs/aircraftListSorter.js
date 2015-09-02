@@ -318,14 +318,14 @@
         // 0: Emergency First
         new VRS.AircraftListSortHandler({
             compareCallback: function(/** VRS.Aircraft */lhs, /** VRS.Aircraft */ rhs) {
-                return lhs.isEmergency.val === rhs.isEmergency.val ? 0 : lhs.isEmergency.val ? -1 : 1;
+                return !!lhs.isEmergency.val === !!rhs.isEmergency.val ? 0 : !!lhs.isEmergency.val ? -1 : 1;
             }
         }),
 
         // 1: Interesting First
         new VRS.AircraftListSortHandler({
             compareCallback: function(/** VRS.Aircraft */lhs, /** VRS.Aircraft */ rhs) {
-                return lhs.userInterested.val === rhs.userInterested.val ? 0 : lhs.userInterested.val ? -1 : 1;
+                return !!lhs.userInterested.val === !!rhs.userInterested.val ? 0 : !!lhs.userInterested.val ? -1 : 1;
             }
         })
     ];
