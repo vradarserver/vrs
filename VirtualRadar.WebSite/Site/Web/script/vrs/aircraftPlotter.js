@@ -122,6 +122,12 @@
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
         new VRS.AircraftMarker({
+            normalFileName: 'Type-A340.png',
+            selectedFileName: 'Type-A340-Selected.png',
+            size: { width: 60, height: 60},
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.modelIcao.val && aircraft.modelIcao.val.length === 4 && VRS.stringUtility.startsWith(aircraft.modelIcao.val, 'A34', false); }
+        }),
+        new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
             selectedFileName: 'GroundVehicle.png',
             size: { width: 26, height: 24},
