@@ -24,6 +24,11 @@
     VRS.AircraftMarker = function(settings)
     {
         /** @type {string} */
+        var _Folder = settings.folder || 'images/web-markers';
+        this.getFolder = function()                             { return _Folder; };
+        this.setFolder = function(/**string*/ value)            { _Folder = value; };
+
+        /** @type {string} */
         var _NormalFileName = settings.normalFileName || null;
         this.getNormalFileName = function()                     { return _NormalFileName; };
         this.setNormalFileName = function(/**string*/ value)    { _NormalFileName = value; };
@@ -1484,7 +1489,8 @@
                 requestSize = { width: size.width * multiplier, height: size.height * multiplier };
             }
 
-            var url = 'images/top/web-markers';
+            var url = marker.getFolder();
+            url += '/top';
             url += '/Wdth-' + requestSize.width;
             url += '/Hght-' + requestSize.height;
             if(VRS.browserHelper.isHighDpi()) url += '/hiDpi';
