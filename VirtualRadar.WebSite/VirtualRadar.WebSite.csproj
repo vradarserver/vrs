@@ -188,6 +188,10 @@
     <Content Include="Site\Web\images\markers\Tower.png" />
     <Content Include="Site\Web\images\markers\Type-A340-Selected.png" />
     <Content Include="Site\Web\images\markers\Type-A340.png" />
+    <Content Include="Site\Web\images\markers\Type-A380-Selected.png" />
+    <Content Include="Site\Web\images\markers\Type-A380.png" />
+    <Content Include="Site\Web\images\markers\Type-GLFx-Selected.png" />
+    <Content Include="Site\Web\images\markers\Type-GLFx.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-2-Jet-Selected.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-2-Jet.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-4-Jet-Selected.png" />
