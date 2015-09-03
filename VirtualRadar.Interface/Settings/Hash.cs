@@ -28,7 +28,7 @@ namespace VirtualRadar.Interface.Settings
         /// The version of the hashing algorithm used. If a new algorithm is implemented support should remain for hashes in older
         /// algorithms.
         /// </summary>
-        public const int LatestVersion = 1;
+        public static readonly int LatestVersion = 1;
 
         /// <summary>
         /// Gets or sets the version of the hashing algorithm used to produce <see cref="Buffer"/>.
