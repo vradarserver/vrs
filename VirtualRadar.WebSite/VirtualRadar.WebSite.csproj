@@ -202,6 +202,8 @@
     <Content Include="Site\Web\images\markers\WTC-Light-2-Prop.png" />
     <Content Include="Site\Web\images\markers\WTC-Medium-2-Jet-Selected.png" />
     <Content Include="Site\Web\images\markers\WTC-Medium-2-Jet.png" />
+    <Content Include="Site\Web\images\markers\WTC-Medium-2-Turbo-Selected.png" />
+    <Content Include="Site\Web\images\markers\WTC-Medium-2-Turbo.png" />
     <Content Include="Site\Web\images\Mode-S%402x.png" />
     <Content Include="Site\Web\images\Mode-S.png" />
     <Content Include="Site\Web\images\regions\br.bmp" />
