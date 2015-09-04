@@ -153,23 +153,29 @@
             normalFileName: 'WTC-Light-1-Prop.png',
             selectedFileName: 'WTC-Light-1-Prop-Selected.png',
             size: { width: 32, height: 32 },
-            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.LandPlane && aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light && aircraft.countEngines.val === '1'; }
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.LandPlane && aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light && aircraft.engineType.val !== VRS.EngineType.Jet && aircraft.countEngines.val === '1'; }
         }),
         new VRS.AircraftMarker ({
             normalFileName: 'WTC-Light-2-Prop.png',
             selectedFileName: 'WTC-Light-2-Prop-Selected.png',
             size: { width: 36, height: 36 },
-            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.LandPlane && aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light; }
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.species.val === VRS.Species.LandPlane && aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light && aircraft.engineType.val !== VRS.EngineType.Jet; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Type-GLFx.png',
             selectedFileName: 'Type-GLFx-Selected.png',
             size: { width: 40, height: 40},
             matches: function(/** VRS.Aircraft */ aircraft) {
-                return aircraft.modelIcao.val && (
-                    (VRS.stringUtility.startsWith(aircraft.modelIcao.val, 'LJ') || VRS.stringUtility.startsWith(aircraft.modelIcao.val, 'GLF'))
-                    || VRS.arrayHelper.indexOf([ 'CL30', 'CL35', 'CL60', 'E545', 'E550', 'E55P', 'F900', 'G280', 'G250', 'GA5C', 'GA6C', 'GALX', 'GL5T', 'GLEX' ], aircraft.modelIcao.val) !== -1
-                );
+                return 
+                    aircraft.species.val === VRS.Species.LandPlane &&
+                    (
+                        (aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light && aircraft.engineType.val === VRS.EngineType.Jet)
+                        ||
+                        (aircraft.modelIcao.val && (
+                            (VRS.stringUtility.startsWith(aircraft.modelIcao.val, 'LJ') || VRS.stringUtility.startsWith(aircraft.modelIcao.val, 'GLF'))
+                            || VRS.arrayHelper.indexOf([ 'CL30', 'CL35', 'CL60', 'E545', 'E550', 'E55P', 'F900', 'G280', 'G250', 'GA5C', 'GA6C', 'GALX', 'GL5T', 'GLEX' ], aircraft.modelIcao.val) !== -1
+                        ))
+                    );
             }
         }),
         new VRS.AircraftMarker ({
@@ -177,6 +183,12 @@
             selectedFileName: 'WTC-Medium-2-Jet-Selected.png',
             size: { width: 40, height: 40 },
             matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val !== '4' && aircraft.engineType.val === VRS.EngineType.Jet; }
+        }),
+        new VRS.AircraftMarker ({
+            normalFileName: 'WTC-Medium-2-Turbo.png',
+            selectedFileName: 'WTC-Medium-2-Turbo-Selected.png',
+            size: { width: 40, height: 40 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val !== '4'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Type-A380.png',
