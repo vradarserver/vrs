@@ -402,6 +402,7 @@
         this.wakeTurbulenceCat =        new VRS.StringValue();
         this.countEngines =             new VRS.StringValue();
         this.engineType =               new VRS.NumberValue();
+        this.enginePlacement =          new VRS.NumberValue();
         this.species =                  new VRS.StringValue();
         this.isMilitary =               new VRS.BoolValue();
         this.isTisb =                   new VRS.BoolValue();
@@ -479,6 +480,7 @@
             setValue(this.wakeTurbulenceCat,    aircraftJson.WTC);
             setValue(this.countEngines,         aircraftJson.Engines);
             setValue(this.engineType,           aircraftJson.EngType);
+            setValue(this.enginePlacement,      aircraftJson.EngMount);
             setValue(this.species,              aircraftJson.Species);
             setValue(this.isMilitary,           aircraftJson.Mil);
             setValue(this.isTisb,               aircraftJson.Tisb);

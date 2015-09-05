@@ -1257,6 +1257,7 @@ namespace Test.VirtualRadar.WebSite
                 else if(property.PropertyType == typeof(AltitudeType))              property.SetValue(aircraft.Object, altitudeTypeValue, null);
                 else if(property.PropertyType == typeof(SpeedType))                 property.SetValue(aircraft.Object, speedTypeValue, null);
                 else if(property.PropertyType == typeof(TransponderType))           property.SetValue(aircraft.Object, transponderType, null);
+                else if(property.PropertyType == typeof(EnginePlacement))           property.SetValue(aircraft.Object, EnginePlacement.AftMounted, null);
                 else if(property.PropertyType == typeof(EngineType))                property.SetValue(aircraft.Object, EngineType.Electric, null);
                 else if(property.PropertyType == typeof(Species))                   property.SetValue(aircraft.Object, Species.TiltWing, null);
                 else if(property.PropertyType == typeof(WakeTurbulenceCategory))    property.SetValue(aircraft.Object, WakeTurbulenceCategory.Light, null);

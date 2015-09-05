@@ -430,6 +430,16 @@ namespace VirtualRadar.Interface
         long EngineTypeChanged { get; }
 
         /// <summary>
+        /// Gets or sets an indication of where the engines are mounted on the aircraft.
+        /// </summary>
+        EnginePlacement EnginePlacement { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="EnginePlacement"/> was last changed.
+        /// </summary>
+        long EnginePlacementChanged { get; }
+
+        /// <summary>
         /// Gets or sets the number of engines as per ICAO 8643. Note that this 'number' can include the value C...
         /// </summary>
         string NumberOfEngines { get; set; }

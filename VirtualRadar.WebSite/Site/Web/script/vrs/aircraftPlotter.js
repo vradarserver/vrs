@@ -166,16 +166,11 @@
             selectedFileName: 'Type-GLFx-Selected.png',
             size: { width: 40, height: 40},
             matches: function(/** VRS.Aircraft */ aircraft) {
-                return 
-                    aircraft.species.val === VRS.Species.LandPlane &&
-                    (
-                        (aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light && aircraft.engineType.val === VRS.EngineType.Jet)
-                        ||
-                        (aircraft.modelIcao.val && (
-                            (VRS.stringUtility.startsWith(aircraft.modelIcao.val, 'LJ') || VRS.stringUtility.startsWith(aircraft.modelIcao.val, 'GLF'))
-                            || VRS.arrayHelper.indexOf([ 'CL30', 'CL35', 'CL60', 'E545', 'E550', 'E55P', 'F900', 'G280', 'G250', 'GA5C', 'GA6C', 'GALX', 'GL5T', 'GLEX' ], aircraft.modelIcao.val) !== -1
-                        ))
-                    );
+                return aircraft.species.val === VRS.Species.LandPlane && aircraft.engineType.val === VRS.EngineType.Jet &&
+                (
+                    aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light || 
+                    (aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.enginePlacement.val === VRS.EnginePlacement.AftMounted)
+                );
             }
         }),
         new VRS.AircraftMarker ({
