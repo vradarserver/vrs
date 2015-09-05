@@ -44,6 +44,7 @@ namespace Test.Framework
                    propertyType == typeof(WakeTurbulenceCategory) ? WakeTurbulenceCategory.Heavy :
                    propertyType == typeof(Species) ? Species.Helicopter :
                    propertyType == typeof(EngineType) ? EngineType.Turboprop :
+                   propertyType == typeof(EnginePlacement) ? EnginePlacement.AftMounted :
                    propertyType == typeof(SpeedType) ? SpeedType.IndicatedAirSpeed :
                    propertyType == typeof(List<Coordinate>) ? new Coordinate(1L, 2L, 3f, 4f, 5f) :
                    propertyType == typeof(AltitudeType) ? AltitudeType.Geometric :

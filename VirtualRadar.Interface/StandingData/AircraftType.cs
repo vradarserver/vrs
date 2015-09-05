@@ -58,6 +58,11 @@ namespace VirtualRadar.Interface.StandingData
         public EngineType EngineType { get; set; }
 
         /// <summary>
+        /// Gets or sets an indication of how the engines are mounted on the aircraft.
+        /// </summary>
+        public EnginePlacement EnginePlacement { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public AircraftType()

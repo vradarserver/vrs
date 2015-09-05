@@ -196,6 +196,7 @@ VRS_GOOGLE_ICON;
 * WTC:          Number,
 * Engines:      String,
 * EngType:      Number,
+* EngMount:     Number,
 * Species:      Number,
 * Mil:          boolean,
 * Cou:          String,

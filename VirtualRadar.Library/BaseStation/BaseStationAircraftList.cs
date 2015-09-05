@@ -848,6 +848,7 @@ namespace VirtualRadar.Library.BaseStation
         {
             aircraft.NumberOfEngines = typeDetails == null ? null : typeDetails.Engines;
             aircraft.EngineType = typeDetails == null ? EngineType.None : typeDetails.EngineType;
+            aircraft.EnginePlacement = typeDetails == null ? EnginePlacement.Unknown : typeDetails.EnginePlacement;
             aircraft.Species = typeDetails == null ? Species.None : typeDetails.Species;
             aircraft.WakeTurbulenceCategory = typeDetails == null ? WakeTurbulenceCategory.None : typeDetails.WakeTurbulenceCategory;
         }

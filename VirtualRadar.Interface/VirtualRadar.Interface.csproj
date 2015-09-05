@@ -115,6 +115,7 @@
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
+    <Compile Include="StandingData\EnginePlacement.cs" />
     <Compile Include="WebSite\IWebSiteGraphics.cs" />
     <Compile Include="ITimer.cs" />
     <Compile Include="IXmlSerialiser.cs" />

@@ -57,6 +57,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.CountMessagesReceivedChanged);
             Assert.AreEqual(0, _Aircraft.DestinationChanged);
             Assert.AreEqual(0, _Aircraft.EmergencyChanged);
+            Assert.AreEqual(0, _Aircraft.EnginePlacementChanged);
             Assert.AreEqual(0, _Aircraft.EngineTypeChanged);
             Assert.AreEqual(0, _Aircraft.FirstSeenChanged);
             Assert.AreEqual(0, _Aircraft.FlightsCountChanged);
@@ -112,6 +113,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.DataVersion, 0L, 12023L);
             TestUtilities.TestProperty(_Aircraft, r => r.Destination, null, "XYZ");
             TestUtilities.TestProperty(_Aircraft, r => r.Emergency, null, false);
+            TestUtilities.TestProperty(_Aircraft, r => r.EnginePlacement, EnginePlacement.Unknown, EnginePlacement.AftMounted);
             TestUtilities.TestProperty(_Aircraft, r => r.EngineType, EngineType.None, EngineType.Jet);
             TestUtilities.TestProperty(_Aircraft, r => r.FirstCoordinateChanged, 0L, 123L);
             TestUtilities.TestProperty(_Aircraft, r => r.FirstSeen, DateTime.MinValue, DateTime.Now);
@@ -359,6 +361,8 @@ namespace Test.VirtualRadar.Library
                             case "OperatorIcaoChanged":             value = _Aircraft.OperatorIcaoChanged; break;
                             case "WakeTurbulenceCategory":          value = _Aircraft.WakeTurbulenceCategory = WakeTurbulenceCategory.Light; break;
                             case "WakeTurbulenceCategoryChanged":   value = _Aircraft.WakeTurbulenceCategoryChanged; break;
+                            case "EnginePlacement":                 value = _Aircraft.EnginePlacement = EnginePlacement.AftMounted; break;
+                            case "EnginePlacementChanged":          value = _Aircraft.EnginePlacementChanged; break;
                             case "EngineType":                      value = _Aircraft.EngineType = EngineType.Electric; break;
                             case "EngineTypeChanged":               value = _Aircraft.EngineTypeChanged; break;
                             case "NumberOfEngines":                 value = _Aircraft.NumberOfEngines = stringValue; break;

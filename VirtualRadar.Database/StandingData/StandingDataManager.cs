@@ -582,6 +582,7 @@ namespace VirtualRadar.Database.StandingData
                                 "      ,[Engines]" +
                                 "      ,[Model]" +
                                 "      ,[Manufacturer]" +
+                                (_DatabaseVersion >= 5 ? ",[EnginePlacementId]" : "") +
                                 "  FROM [AircraftTypeNoEnumsView]" +
                                 " WHERE [Icao] = @icao",
                             new Dictionary<string,object>() {
@@ -599,6 +600,11 @@ namespace VirtualRadar.Database.StandingData
                                 result.Models.Add(Sql.GetString(reader, 5));
                                 var manufacturer = Sql.GetString(reader, 6);
                                 if(!String.IsNullOrEmpty(manufacturer)) result.Manufacturers.Add(manufacturer);
+
+                                if(_DatabaseVersion >= 5) {
+                                    result.EnginePlacement = (EnginePlacement)Sql.GetInt32(reader, 7);
+                                }
+
                                 return true;
                             }, false, null);
                         }

@@ -2014,6 +2014,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _AircraftDetail.AircraftType = new AircraftType() {
                 Engines = "C",
                 EngineType = EngineType.Piston,
+                EnginePlacement = EnginePlacement.AftMounted,
                 Manufacturers = { "UNUSED 1" },
                 Models = { "UNUSED 2" },
                 Species = Species.Landplane,
@@ -2027,6 +2028,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             var aircraft = _AircraftList.FindAircraft(0x4008F6);
             Assert.AreEqual("C", aircraft.NumberOfEngines);
             Assert.AreEqual(EngineType.Piston, aircraft.EngineType);
+            Assert.AreEqual(EnginePlacement.AftMounted, aircraft.EnginePlacement);
             Assert.AreEqual(Species.Landplane, aircraft.Species);
             Assert.AreEqual(WakeTurbulenceCategory.Medium, aircraft.WakeTurbulenceCategory);
             Assert.AreNotEqual("UNUSED", aircraft.Type);
@@ -2046,6 +2048,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _AircraftDetail.AircraftType = new AircraftType() {
                 Engines = "C",
                 EngineType = EngineType.Piston,
+                EnginePlacement = EnginePlacement.AftMounted,
                 Species = Species.Landplane,
                 WakeTurbulenceCategory = WakeTurbulenceCategory.Medium,
             };
@@ -2054,6 +2057,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             var aircraft = _AircraftList.FindAircraft(0x4008F6);
             Assert.AreEqual("C", aircraft.NumberOfEngines);
             Assert.AreEqual(EngineType.Piston, aircraft.EngineType);
+            Assert.AreEqual(EnginePlacement.AftMounted, aircraft.EnginePlacement);
             Assert.AreEqual(Species.Landplane, aircraft.Species);
             Assert.AreEqual(WakeTurbulenceCategory.Medium, aircraft.WakeTurbulenceCategory);
         }

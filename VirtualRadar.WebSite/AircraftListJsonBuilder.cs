@@ -331,6 +331,7 @@ namespace VirtualRadar.WebSite
                     if(firstTimeSeen || aircraftSnapshot.ConstructionNumberChanged > args.PreviousDataVersion)          aircraftJson.ConstructionNumber = aircraftSnapshot.ConstructionNumber;
                     if(firstTimeSeen || aircraftSnapshot.CountMessagesReceivedChanged > args.PreviousDataVersion)       aircraftJson.CountMessagesReceived = aircraftSnapshot.CountMessagesReceived;
                     if(firstTimeSeen || aircraftSnapshot.DestinationChanged > args.PreviousDataVersion)                 aircraftJson.Destination = aircraftSnapshot.Destination;
+                    if(firstTimeSeen || aircraftSnapshot.EnginePlacementChanged > args.PreviousDataVersion)             aircraftJson.EnginePlacement = (int)aircraftSnapshot.EnginePlacement;
                     if(firstTimeSeen || aircraftSnapshot.EngineTypeChanged > args.PreviousDataVersion)                  aircraftJson.EngineType = (int)aircraftSnapshot.EngineType;
                     if(firstTimeSeen || aircraftSnapshot.FirstSeenChanged > args.PreviousDataVersion)                   aircraftJson.FirstSeen = aircraftSnapshot.FirstSeen;
                     if(firstTimeSeen || aircraftSnapshot.FlightsCountChanged > args.PreviousDataVersion)                aircraftJson.FlightsCount = aircraftSnapshot.FlightsCount;

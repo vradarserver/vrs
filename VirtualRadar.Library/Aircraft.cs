@@ -510,6 +510,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long EngineTypeChanged { get; private set; }
 
+        private EnginePlacement _EnginePlacement;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public EnginePlacement EnginePlacement { get { return _EnginePlacement; } set { if(value != _EnginePlacement) { _EnginePlacement = value; EnginePlacementChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long EnginePlacementChanged { get; private set; }
+
         private string _NumberOfEngines;
         /// <summary>
         /// See interface docs.
@@ -718,6 +729,7 @@ namespace VirtualRadar.Library
                 result.DataVersion = DataVersion;
                 result.Destination = Destination;
                 result.Emergency = Emergency;
+                result.EnginePlacement = EnginePlacement;
                 result.EngineType = EngineType;
                 result.FirstSeen = FirstSeen;
                 result.FlightsCount = FlightsCount;
@@ -777,6 +789,7 @@ namespace VirtualRadar.Library
                 result.CountMessagesReceivedChanged = CountMessagesReceivedChanged;
                 result.DestinationChanged = DestinationChanged;
                 result.EmergencyChanged = EmergencyChanged;
+                result.EnginePlacementChanged = EnginePlacementChanged;
                 result.EngineTypeChanged = EngineTypeChanged;
                 result.FirstSeenChanged = FirstSeenChanged;
                 result.FlightsCountChanged = FlightsCountChanged;

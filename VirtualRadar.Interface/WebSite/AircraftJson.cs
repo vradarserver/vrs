@@ -291,6 +291,12 @@ namespace VirtualRadar.Interface.WebSite
         public int? EngineType { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating the placement of the engines mounted to the aircraft (see <see cref="EnginePlacement"/>).
+        /// </summary>
+        [DataMember(Name="EngMount", IsRequired=false, EmitDefaultValue=false)]
+        public int? EnginePlacement { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating that the aircraft is operated by a country's military.
         /// </summary>
         [DataMember(Name="Mil", IsRequired=false, EmitDefaultValue=false)]

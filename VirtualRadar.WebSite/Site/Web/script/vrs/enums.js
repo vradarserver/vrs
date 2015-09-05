@@ -198,6 +198,22 @@
     };
     //endregion
 
+    //region EnginePlacement
+    /**
+     * An enumeration of the different engine placements sent by the server.
+     * @enum {number}
+     * @readonly
+     */
+    VRS.EnginePlacement = {
+        Unknown:        0,
+        AftMounted:     1,
+        WingBuried:     2,
+        FuselageBuried: 3,
+        NoseMounted:    4,
+        WingMounted:    5
+    };
+    //endregion
+
     //region FilterCondition
     /**
      * An enumeration of the different filter conditions.
