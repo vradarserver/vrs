@@ -510,15 +510,15 @@
 
 Il s'agit d'un serveur Web simple qui peut être utilisé pour afficher l'avion reçu par une installation BaseStation.
 
-Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user 'SabreJV' and hosted by Kinetic forum user 'Bones' (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
-
 Icône application de Aha-Soft (http://www.aha-soft.com).
 
-iPhone CSS a été extraite à partir du projet jQTouch (http://www.jqtouch.com).
+Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user 'SabreJV' and hosted by Kinetic forum user 'Bones'.
 
-German translation by Eva Knapp and Michael Leigh.
-Russian translation by Sergey Serov and friends.
-French translation by Francois /F5ANN.</value>
+Brazilian Portuguese translation by Alan Farley
+Chinese translation by Vincent Deng
+French translation by Francois /F5ANN.
+German translation by Annette Shaupp.
+Russian translation by Sergey Serov /sergsero and friends.</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
   <data name="LocationDoesNotExist" xml:space="preserve">

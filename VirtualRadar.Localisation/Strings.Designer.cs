@@ -400,11 +400,12 @@ namespace VirtualRadar.Localisation {
         ///
         ///Application icon courtesy of aha-soft (http://www.aha-soft.com).
         ///
-        ///Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user &apos;SabreJV&apos; and hosted by Kinetic forum user &apos;Bones&apos; (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
+        ///Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user &apos;SabreJV&apos; and hosted by Kinetic forum user &apos;Bones&apos;.
         ///
-        ///iPhone CSS was lifted from the jQTouch project (http://www.jqtouch.com).
-        ///
-        ///Chinese tra [rest of string was truncated]&quot;;.
+        ///Brazilian Portuguese translation by Alan Farley
+        ///Chinese translation by Vincent Deng
+        ///French translation by Francois /F5ANN.
+        ///German translation by An [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ApplicationDescription {
             get {

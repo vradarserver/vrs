@@ -128,14 +128,14 @@ This is a simple web server that can be used to display the aircraft picked up b
 
 Application icon courtesy of aha-soft (http://www.aha-soft.com).
 
-Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user 'SabreJV' and hosted by Kinetic forum user 'Bones' (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
+Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user 'SabreJV' and hosted by Kinetic forum user 'Bones'.
 
-iPhone CSS was lifted from the jQTouch project (http://www.jqtouch.com).
-
+Brazilian Portuguese translation by Alan Farley
 Chinese translation by Vincent Deng
-German translation by Eva Knapp and Michael Leigh.
+French translation by Francois /F5ANN.
+German translation by Annette Shaupp.
 Russian translation by Sergey Serov /sergsero and friends.
-French translation by Francois /F5ANN.</value>
+</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
   <data name="BaseStationStatus" xml:space="preserve">
