@@ -192,6 +192,8 @@
     <Content Include="Site\Web\images\markers\Type-A380.png" />
     <Content Include="Site\Web\images\markers\Type-GLFx-Selected.png" />
     <Content Include="Site\Web\images\markers\Type-GLFx.png" />
+    <Content Include="Site\Web\images\markers\Type-GLID-Selected.png" />
+    <Content Include="Site\Web\images\markers\Type-GLID.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-2-Jet-Selected.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-2-Jet.png" />
     <Content Include="Site\Web\images\markers\WTC-Heavy-4-Jet-Selected.png" />
