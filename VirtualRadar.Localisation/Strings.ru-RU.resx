@@ -128,13 +128,14 @@
 
 Иконка для приложения любезно предоставлена aha-soft (http://www.aha-soft.com). 
 
-Гражданские и военные коды регистрационной принадлежности любезно получены из файла countries.dat, поддерживающегося пользователем Kinetic-форума 'SabreJV' и опубликованного пользователем Kinetic-форума 'Bones' (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
+Гражданские и военные коды регистрационной принадлежности любезно получены из файла countries.dat, поддерживающегося пользователем Kinetic-форума 'SabreJV' и опубликованного пользователем Kinetic-форума 'Bones'. 
 
-iPhone CSS был позаимствован из jQTouch проекта (http://www.jqtouch.com). 
-
-Немецкий перевод Евы Кнапп и Майкла Ли.
 Русский перевод Сергея Серова /Sergsero и друзей.
-Французский перевод Франсуа /F5ANN.</value>
+
+Brazilian Portuguese translation by Alan Farley
+Chinese translation by Vincent Deng
+French translation by Francois /F5ANN.
+German translation by Annette Shaupp.</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
   <data name="BaseStationStatus" xml:space="preserve">

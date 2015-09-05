@@ -128,15 +128,13 @@ Este é um servidor Web simples que pode ser utilizado para exibir dados de aero
 
 O Icone do aplicativo é uma cortesia de aha-soft (http://www.aha-soft.com).
 
-Grupos de códigos civis e militares são cortesia de countries.dat, arquivo mantido pelo usuário 'SabreJV' do fórum Kinect e hospedado e é hospedado pelo usuario 'Bones' (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
-
-iPhone CSS foi feito apartir do jQTouch project (http://www.jqtouch.com).
+Grupos de códigos civis e militares são cortesia de countries.dat, arquivo mantido pelo usuário 'SabreJV' do fórum Kinect e hospedado e é hospedado pelo usuario 'Bones'.
 
 Tradução português por: Alan Farley
 Tradução chinesa por: Vincent Deng
-Tradução alemã por: Eva Knapp and Michael Leigh.
-Tradução russa por: Sergey Serov /sergsero and friends.
-Tradução francesa por: Francois /F5ANN.</value>
+Tradução francesa por: Francois /F5ANN.
+Tradução alemã por: Annette Shaupp.
+Tradução russa por: Sergey Serov /sergsero and friends.</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
   <data name="BaseStationStatus" xml:space="preserve">
