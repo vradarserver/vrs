@@ -174,6 +174,12 @@
             }
         }),
         new VRS.AircraftMarker ({
+            normalFileName: 'WTC-Medium-4-Jet.png',
+            selectedFileName: 'WTC-Medium-4-Jet-Selected.png',
+            size: { width: 40, height: 40 },
+            matches: function(/** VRS.Aircraft */ aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val === '4' && aircraft.engineType.val === VRS.EngineType.Jet; }
+        }),
+        new VRS.AircraftMarker ({
             normalFileName: 'WTC-Medium-2-Jet.png',
             selectedFileName: 'WTC-Medium-2-Jet-Selected.png',
             size: { width: 40, height: 40 },
