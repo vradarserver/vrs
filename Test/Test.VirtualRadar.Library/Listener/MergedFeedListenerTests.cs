@@ -143,7 +143,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             Assert.AreEqual(1, _BaseStationMessageEventRecorder.CallCount);
             Assert.AreSame(_MergedFeed, _BaseStationMessageEventRecorder.Sender);
-            Assert.AreSame(args, _BaseStationMessageEventRecorder.Args);
+            Assert.AreSame(args.Message, _BaseStationMessageEventRecorder.Args.Message);
         }
 
         [TestMethod]

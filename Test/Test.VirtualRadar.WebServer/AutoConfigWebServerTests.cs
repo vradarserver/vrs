@@ -40,11 +40,15 @@ namespace Test.VirtualRadar.WebServer
         private Mock<IHeartbeatService> _HeartbeatService;
         private Mock<ILog> _Log;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
+        private ClockMock _Clock;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _ClassFactorySnapshot = Factory.TakeSnapshot();
+
+            _Clock = new ClockMock();
+            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
 
             _WebServer = TestUtilities.CreateMockImplementation<IWebServer>();
             _WebServerProvider = TestUtilities.CreateMockImplementation<IWebServerProvider>();
@@ -206,13 +210,16 @@ namespace Test.VirtualRadar.WebServer
         }
 
         [TestMethod]
-        public void AutoConfigWebServer_Heartbeat_Tries_To_Fetch_External_IP_Address_Again_If_Previous_Attempt_Threw_Exception()
+        public void AutoConfigWebServer_Heartbeat_Only_Tries_To_Fetch_External_IP_Address_After_Exception_Once_Timeout_Has_Elapsed()
         {
             _AutoConfigWebServer.Initialise();
             _ExternalIPAddressService.Setup(s => s.GetExternalIPAddress()).Callback(() => { throw new NotImplementedException(); });
-            _HeartbeatService.Raise(h => h.SlowTick += null, EventArgs.Empty);
-            _HeartbeatService.Raise(h => h.SlowTick += null, EventArgs.Empty);
 
+            _HeartbeatService.Raise(h => h.SlowTick += null, EventArgs.Empty);
+            _ExternalIPAddressService.Verify(s => s.GetExternalIPAddress(), Times.Exactly(1));
+
+            _Clock.UtcNowValue = _Clock.UtcNowValue.AddMinutes(5);
+            _HeartbeatService.Raise(h => h.SlowTick += null, EventArgs.Empty);
             _ExternalIPAddressService.Verify(s => s.GetExternalIPAddress(), Times.Exactly(2));
         }
         #endregion

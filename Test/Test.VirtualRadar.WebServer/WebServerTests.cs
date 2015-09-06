@@ -33,12 +33,14 @@ namespace Test.VirtualRadar.WebServer
         #region TestContext, TestInitialise, TestCleanup, Fields
         public TestContext TestContext { get; set; }
 
+        private ClockMock _Clock;
         private IClassFactory _OriginalFactory;
         private IWebServer _WebServer;
         private Mock<IWebServerProvider> _Provider;
         private Mock<IContext> _Context;
         private Mock<IRequest> _Request;
         private Mock<IResponse> _Response;
+        private Mock<IHeartbeatService> _Heartbeat;
         private MemoryStream _OutputStream;
         private EventRecorder<EventArgs> _OnlineChangedEvent;
         private EventRecorder<AuthenticationRequiredEventArgs> _AuthenticationRequiredEvent;
@@ -54,6 +56,10 @@ namespace Test.VirtualRadar.WebServer
         public void TestInitialise()
         {
             _OriginalFactory = Factory.TakeSnapshot();
+
+            _Clock = new ClockMock();
+            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            _Heartbeat = TestUtilities.CreateMockSingleton<IHeartbeatService>();
 
             _WebServer = Factory.Singleton.Resolve<IWebServer>();
 

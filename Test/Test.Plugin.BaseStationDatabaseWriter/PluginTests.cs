@@ -25,6 +25,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 using PluginNS = VirtualRadar.Plugin.BaseStationDatabaseWriter;
 using VirtualRadar.Plugin.BaseStationDatabaseWriter;
+using VirtualRadar.Interface.SQLite;
 
 namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
@@ -56,6 +57,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         private List<Mock<IListener>> _Listeners;
         private Mock<IFeedManager> _FeedManger;
         private Mock<IListener> _Listener;
+        private Mock<ISQLiteException> _SqliteException;
 
         [TestInitialize]
         public void TestInitialise()
@@ -84,6 +86,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _Log = TestUtilities.CreateMockSingleton<ILog>();
+            _SqliteException = TestUtilities.CreateMockImplementation<ISQLiteException>();
 
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _Configuration = new Configuration();
@@ -192,16 +195,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         public void Plugin_Startup_Sets_Correct_Status_If_Plugin_Disabled()
         {
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("Disabled", _Plugin.Status);
-                Assert.AreEqual(null, _Plugin.StatusDescription);
-            };
 
             SetEnabledOption(false);
             _Plugin.Startup(_StartupParameters);
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
-            Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
+            Assert.AreEqual(PluginStrings.Disabled, _Plugin.Status);
+            Assert.AreEqual(null, _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -265,7 +264,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.AreNotEqual(0, _StatusChangedEvent.CallCount);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
         }
 
@@ -274,16 +273,14 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("Enabled, database not specified", _Plugin.Status);
-                Assert.AreEqual(null, _Plugin.StatusDescription);
-            };
             _BaseStationDatabase.Object.FileName = null;
 
             _Plugin.Startup(_StartupParameters);
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.AreNotEqual(0, _StatusChangedEvent.CallCount);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
+            Assert.AreEqual("Enabled, database not specified", _Plugin.Status);
+            Assert.AreEqual(null, _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -291,17 +288,15 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
-                Assert.AreEqual(@"'c:\folder\database.sqb' does not exist", _Plugin.StatusDescription);
-            };
             _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
             _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(false);
 
             _Plugin.Startup(_StartupParameters);
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.AreNotEqual(0, _StatusChangedEvent.CallCount);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
+            Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
+            Assert.AreEqual(@"'c:\folder\database.sqb' does not exist", _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -309,18 +304,16 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
-                Assert.AreEqual(@"'c:\folder\database.sqb' is zero length", _Plugin.StatusDescription);
-            };
             _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
             _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(true);
             _Provider.Setup(p => p.FileSize(@"c:\folder\database.sqb")).Returns(0L);
 
             _Plugin.Startup(_StartupParameters);
 
-            Assert.AreEqual(1, _StatusChangedEvent.CallCount);
+            Assert.AreNotEqual(0, _StatusChangedEvent.CallCount);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
+            Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
+            Assert.AreEqual(@"'c:\folder\database.sqb' is zero length", _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -329,16 +322,14 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             var exception = new InvalidOperationException();
             SetEnabledOption(true);
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
-                Assert.AreEqual(String.Format("Exception caught when starting session: {0}", exception.Message), _Plugin.StatusDescription);
-            };
             _BaseStationDatabase.Setup(d => d.InsertSession(It.IsAny<BaseStationSession>())).Callback(() => { throw exception; });
 
             _Plugin.Startup(_StartupParameters);
 
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
+            Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
+            Assert.AreEqual(String.Format("Exception caught when starting session: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -381,15 +372,13 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         [TestMethod]
         public void Plugin_Startup_Writes_Correct_Status_If_Database_Not_Created_By_Plugin()
         {
-            _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
-                Assert.AreEqual("Settings prevent update of databases not created by plugin", _Plugin.StatusDescription);
-            };
             SetDBHistory(false);
             SetEnabledOption(true);
 
             _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
+            Assert.AreEqual("Settings prevent update of databases not created by plugin", _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -495,16 +484,14 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _Plugin.Startup(_StartupParameters);
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("Not updating database", _Plugin.Status);
-                Assert.AreEqual(String.Format("Exception caught when closing session: {0}", exception.Message), _Plugin.StatusDescription);
-            };
 
             _Plugin.Shutdown();
 
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreNotEqual(null, _StatusChangedEvent.Args);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
+            Assert.AreEqual("Not updating database", _Plugin.Status);
+            Assert.AreEqual(String.Format("Exception caught when closing session: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1510,9 +1497,6 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
-            };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1520,6 +1504,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
+            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1532,9 +1517,6 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
-            };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1542,6 +1524,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
+            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1554,9 +1537,6 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
-            };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1567,6 +1547,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
+            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1579,9 +1560,6 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
-            };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1589,6 +1567,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
+            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1601,9 +1580,6 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-            _StatusChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
-            };
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1611,6 +1587,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
+            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
         }
         #endregion
 

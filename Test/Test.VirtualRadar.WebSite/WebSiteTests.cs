@@ -1932,25 +1932,6 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_Authentication_Ignores_Unknown_Authentication_Schemes()
-        {
-            foreach(AuthenticationSchemes scheme in Enum.GetValues(typeof(AuthenticationSchemes))) {
-                if(scheme == AuthenticationSchemes.Basic) continue;
-
-                _Configuration.WebServerSettings.AuthenticationScheme = scheme;
-                _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-                _PasswordForUser = "B26354";
-                _WebSite.AttachSiteToServer(_WebServer.Object);
-                var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-
-                _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-                Assert.IsFalse(args.IsAuthenticated);
-                Assert.IsFalse(args.IsHandled);
-            }
-        }
-
-        [TestMethod]
         public void WebSite_Authentication_Ignores_Events_That_Have_Already_Been_Handled()
         {
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
