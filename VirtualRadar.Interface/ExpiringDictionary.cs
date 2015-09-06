@@ -20,10 +20,11 @@ namespace VirtualRadar.Interface
     /// </summary>
     /// <remarks>
     /// When an item is added to this dictionary it is given a timestamp. The items in the dictionary are
-    /// periodically checked, if they have been in the map for longer than <see cref="ExpireMilliseconds"/>
+    /// periodically checked, if they have been in the map for longer than ExpireMilliseconds
     /// then they are removed. This class is thread-safe.
     /// </remarks>
-    /// <typeparam name="TItem">The type of item being held by the collection.</typeparam>
+    /// <typeparam name="TKey">The type of key being held by the collection.</typeparam>
+    /// <typeparam name="TValue">The type of value being held by the collection.</typeparam>
     public class ExpiringDictionary<TKey, TValue> : ExpiringCollection<TValue>
         where TValue: class
     {

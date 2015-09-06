@@ -20,12 +20,39 @@ namespace VirtualRadar.Interface.WebSite
     /// </summary>
     public enum TrailType : byte
     {
+        /// <summary>
+        /// No trail is to be shown.
+        /// </summary>
         None,
+
+        /// <summary>
+        /// Show the complete path taken by the aircraft.
+        /// </summary>
         Full,
+
+        /// <summary>
+        /// Show the path taken by the aircraft over the last so-many seconds.
+        /// </summary>
         Short,
+
+        /// <summary>
+        /// Show the entire path and all changes in altitude.
+        /// </summary>
         FullAltitude,
+
+        /// <summary>
+        /// Show the path and changes in altitude over the last so-many seconds.
+        /// </summary>
         ShortAltitude,
+
+        /// <summary>
+        /// Show the entire path and all changes in speed.
+        /// </summary>
         FullSpeed,
+
+        /// <summary>
+        /// Show the path and changes in speed over the last so-many seconds.
+        /// </summary>
         ShortSpeed,
     }
 }

@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace VirtualRadar.WinForms.Controls
 {
     /// <summary>
-    /// A panel that maps a single value to a set of radio buttons. A bit like <see cref="RadioPanel"/>
+    /// A panel that maps a single value to a set of radio buttons. A bit like <see cref="RadioPanelApp.RadioPanel"/>
     /// but without the binding.
     /// </summary>
     public class RadioButtonPanel : Panel
@@ -28,9 +28,21 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         protected class RadioButtonValue
         {
+            /// <summary>
+            /// Gets or sets the radio button that has a value mapped to it.
+            /// </summary>
             public RadioButton RadioButton { get; set; }
+
+            /// <summary>
+            /// Gets or sets the value mapped to the radio button.
+            /// </summary>
             public object Value { get; set; }
 
+            /// <summary>
+            /// Creates a new object.
+            /// </summary>
+            /// <param name="radioButton"></param>
+            /// <param name="value"></param>
             public RadioButtonValue(RadioButton radioButton, object value)
             {
                 RadioButton = radioButton;

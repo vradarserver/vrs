@@ -20,7 +20,7 @@ namespace VirtualRadar.Interface
     /// </summary>
     /// <remarks>
     /// When an item is added to this list it is given a timestamp. The items in the list are
-    /// periodically checked, if they have been in the list for longer than <see cref="ExpireMilliseconds"/>
+    /// periodically checked, if they have been in the list for longer than ExpireMilliseconds
     /// then they are removed. This class is thread-safe.
     /// </remarks>
     public class ExpiringList<T> : ExpiringCollection<T>
