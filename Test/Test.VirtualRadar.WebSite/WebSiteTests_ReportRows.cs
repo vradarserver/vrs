@@ -688,6 +688,7 @@ namespace Test.VirtualRadar.WebSite
                 Engines = "X",
                 EngineType = EngineType.Piston,
                 Species = Species.Gyrocopter,
+                EnginePlacement = EnginePlacement.AftMounted,
                 WakeTurbulenceCategory = WakeTurbulenceCategory.Light,
             };
 
@@ -699,12 +700,14 @@ namespace Test.VirtualRadar.WebSite
             _StandingDataManager.Verify(m => m.FindAircraftType(It.IsAny<string>()), Times.Once());
             Assert.AreEqual("X", aircraft.Engines);
             Assert.AreEqual((int)EngineType.Piston, aircraft.EngineType);
+            Assert.AreEqual((int)EnginePlacement.AftMounted, aircraft.EnginePlacement);
             Assert.AreEqual((int)Species.Gyrocopter, aircraft.Species);
             Assert.AreEqual((int)WakeTurbulenceCategory.Light, aircraft.WakeTurbulenceCategory);
 
             foreach(var otherAircraft in json.Aircraft.Where(a => String.IsNullOrEmpty(a.IcaoTypeCode))) {
                 Assert.AreEqual(null, otherAircraft.Engines);
                 Assert.AreEqual(null, otherAircraft.EngineType);
+                Assert.AreEqual(null, otherAircraft.EnginePlacement);
                 Assert.AreEqual(null, otherAircraft.Species);
                 Assert.AreEqual(null, otherAircraft.WakeTurbulenceCategory);
             }

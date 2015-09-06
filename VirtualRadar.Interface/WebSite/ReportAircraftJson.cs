@@ -90,6 +90,12 @@ namespace VirtualRadar.Interface.WebSite
         public int? EngineType { get; set; }
 
         /// <summary>
+        /// Gets or sets the placement of the engine on the aircraft.
+        /// </summary>
+        [DataMember(Name="engMount", EmitDefaultValue=false)]
+        public int? EnginePlacement { get; set; }
+
+        /// <summary>
         /// Gets or sets the species of the aircraft cast to an int (see <see cref="Species"/>).
         /// </summary>
         [DataMember(Name="species", EmitDefaultValue=false)]

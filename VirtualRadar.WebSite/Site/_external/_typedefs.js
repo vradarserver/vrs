@@ -299,6 +299,7 @@ VRS_JSON_REPORT;
  * wtc:             VRS.WakeTurbulenceCategory=,
  * engines:         string=,
  * engType:         VRS.EngineType=,
+ * engMount:        VRS.EnginePlacement=,
  * species:         VRS.Species=,
  * genericName:     string=,
  * icaoType:        string=,

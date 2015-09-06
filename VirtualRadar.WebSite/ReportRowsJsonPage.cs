@@ -538,6 +538,7 @@ namespace VirtualRadar.WebSite
                 result.WakeTurbulenceCategory = (int)aircraftType.WakeTurbulenceCategory;
                 result.Engines = aircraftType.Engines;
                 result.EngineType = (int)aircraftType.EngineType;
+                result.EnginePlacement = (int)aircraftType.EnginePlacement;
                 result.Species = (int)aircraftType.Species;
             }
 
