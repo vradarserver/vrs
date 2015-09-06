@@ -661,7 +661,8 @@
             result.callsign.setValue(flight.call);
             result.countEngines.setValue(flight.aircraft.engines);
             result.country.setValue(flight.aircraft.country);
-            result.engineType.setValue(flight.aircraft.engineType);
+            result.engineType.setValue(flight.aircraft.engType);
+            result.enginePlacement.setValue(flight.aircraft.engMount);
             result.hasPicture.setValue(flight.aircraft.hasPic);
             result.heading.setValue(useFirstValues ? flight.fTrk : flight.lTrk);
             result.icao.setValue(flight.aircraft.icao);
