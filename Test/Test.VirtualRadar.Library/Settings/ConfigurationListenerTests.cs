@@ -284,6 +284,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.Name,                          r => r.Name = "TEST" },
                     { r => r.ReceiverIds,                   r => r.ReceiverIds.Add(100) },
                     { r => r.ReceiverFlags,                 r => r.ReceiverFlags.Add(new MergedFeedReceiver() { UniqueId = 100, IsMlatFeed = true }) },
+                    { r => r.ReceiverUsage,                 r => r.ReceiverUsage = ReceiverUsage.MergeOnly },
                     { r => r.UniqueId,                      r => r.UniqueId += 1 },
                 });
 
@@ -386,6 +387,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.SlowSurfaceGlobalPositionLimit,            r => r.SlowSurfaceGlobalPositionLimit += 1 },
                     { r => r.SuppressIcao0,                             r => r.SuppressIcao0 = !r.SuppressIcao0 },
                     { r => r.SuppressReceiverRangeCheck,                r => r.SuppressReceiverRangeCheck = !r.SuppressReceiverRangeCheck },
+                    { r => r.SuppressTisbDecoding,                      r => r.SuppressTisbDecoding = !r.SuppressTisbDecoding },
                     { r => r.UseLocalDecodeForInitialPosition,          r => r.UseLocalDecodeForInitialPosition = !r.UseLocalDecodeForInitialPosition },
                 }, silentPropertyMap: new Dictionary<Expression<Func<RawDecodingSettings,object>>,Action<RawDecodingSettings>>() {
                     { r => r.ReceiverLocationId,                    r => r.ReceiverLocationId += 1 },

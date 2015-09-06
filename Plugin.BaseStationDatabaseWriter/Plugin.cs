@@ -540,7 +540,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     ModeS = icao24,
                     FirstCreated = now,
                     LastModified = now,
-                    ModeSCountry = codeBlock == null || codeBlock.Country.StartsWith("Unknown ", StringComparison.InvariantCultureIgnoreCase) ? null : codeBlock.Country,
+                    ModeSCountry = codeBlock == null || codeBlock.Country == null || codeBlock.Country.StartsWith("Unknown ", StringComparison.InvariantCultureIgnoreCase) ? null : codeBlock.Country,
                 };
                 _Database.InsertAircraft(result);
             }

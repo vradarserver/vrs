@@ -264,13 +264,15 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void SplashPresenter_StartApplication_Records_Startup_In_Log()
         {
+            var buildDate = new DateTime(2015, 6, 9, 10, 11, 12);
             _ApplicationInformation.Setup(p => p.FullVersion).Returns("5.4.3.2");
+            _ApplicationInformation.Setup(p => p.BuildDate).Returns(buildDate);
             _ConfigurationStorage.Setup(c => c.Folder).Returns(@"c:\abc");
 
             _Presenter.Initialise(_View.Object);
             _Presenter.StartApplication();
 
-            _Log.Verify(g => g.WriteLine("Program started, version {0}", "5.4.3.2"), Times.Once());
+            _Log.Verify(g => g.WriteLine("Program started, version {0}, build date {1} UTC", "5.4.3.2", buildDate), Times.Once());
             _Log.Verify(g => g.WriteLine("Working folder {0}", @"c:\abc"), Times.Once());
         }
 

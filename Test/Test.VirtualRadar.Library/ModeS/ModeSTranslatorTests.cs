@@ -396,6 +396,8 @@ namespace Test.VirtualRadar.Library.ModeS
                         Assert.IsNull(reply.ExtendedSquitterSupplementaryMessage);
                         Assert.IsNotNull(reply.ParityInterrogatorIdentifier);
                         break;
+                    case ControlField.CoarseFormatTisb:
+                    case ControlField.FineFormatTisb:
                     case ControlField.AdsbDeviceNotTransmittingIcao24:
                         Assert.AreEqual(0, reply.Icao24);
                         Assert.IsNotNull(reply.NonIcao24Address);
