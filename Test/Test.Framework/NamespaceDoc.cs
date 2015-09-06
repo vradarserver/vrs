@@ -23,7 +23,7 @@ namespace Test.Framework
     /// This library does not contain any unit tests, it just contains helper objects and the test files.
     /// </para><para>
     /// Some of the helper objects (e.g. <see cref="AircraftTestHelper"/> and <see cref="RequestReceivedEventArgsHelper"/>)
-    /// are only of interest to Virtual Radar Server tests whereas some of them (e.g. <see cref="CultureSwitcher"/>,
+    /// are only of interest to Virtual Radar Server tests whereas some of them (e.g.
     /// <see cref="EventRecorder{T}"/>, <see cref="ExcelWorksheetData"/> and <see cref="TestUtilities"/>) may be
     /// applicable to unit tests for other projects.
     /// </para></remarks>

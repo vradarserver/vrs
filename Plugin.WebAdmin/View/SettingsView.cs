@@ -71,6 +71,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         #endregion
 
         #region Interface events
+        #pragma warning disable 0067
         public event EventHandler SaveClicked;
 
         public event EventHandler<EventArgs<Receiver>> TestConnectionClicked;
@@ -84,6 +85,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public event EventHandler UseRecommendedRawDecodingSettingsClicked;
 
         public event EventHandler FlightSimulatorXOnlyClicked;
+        #pragma warning restore
         #endregion
 
         #region Ctor

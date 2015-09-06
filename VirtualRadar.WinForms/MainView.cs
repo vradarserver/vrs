@@ -381,7 +381,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="receiver"></param>
+        /// <param name="feed"></param>
         public void ShowFeedConnectionStatus(FeedStatus feed)
         {
             feedStatusControl.ShowFeed(feed);

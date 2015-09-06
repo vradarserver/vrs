@@ -21,7 +21,7 @@ namespace VirtualRadar.Interface.Listener
     /// </summary>
     /// <remarks>
     /// Implementations are expected to be immutable. They need to implement Equals, returning true if the other
-    /// object has the same instance of <see cref="Listener"/> and same value for <see cref="MultilaterationFeedType"/>.
+    /// object has the same instance of <see cref="Listener"/> and same value for <see cref="IsMlatFeed"/>.
     /// </remarks>
     public interface IMergedFeedComponentListener
     {

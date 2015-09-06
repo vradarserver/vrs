@@ -98,7 +98,6 @@ namespace VirtualRadar.Database
         /// the attempt fails due to a locked database.
         /// </summary>
         /// <param name="command"></param>
-        /// <param name="commandBehaviour"></param>
         /// <returns></returns>
         public object ExecuteScalar(IDbCommand command)
         {
