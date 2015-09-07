@@ -2505,4 +2505,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Flightradar24 'Feeder'</value>
     <comment>It's the name of a program</comment>
   </data>
+  <data name="OptionsDescribeRawFeedSuppressTisbMessages" xml:space="preserve">
+    <value>Wähle 'Ja' wenn TIS-B Nachrichten nicht zur Verfolgung von Flugzeugen verwendet werden soll.</value>
+  </data>
+  <data name="SuppressTisbMessages" xml:space="preserve">
+    <value>TIS-B Nachrichten unterdrücken</value>
+  </data>
 </root>
