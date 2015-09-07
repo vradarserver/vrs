@@ -75,7 +75,9 @@
     <EmbeddedResource Include="Strings.fr-FR.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Strings.pt-BR.resx" />
+    <EmbeddedResource Include="Strings.pt-BR.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
