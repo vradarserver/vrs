@@ -1179,11 +1179,12 @@ namespace VirtualRadar.Library.Presenter
                         var isCooked = false;
                         var hasAircraftList = receiver.ReceiverUsage != ReceiverUsage.MergeOnly;
                         switch(receiver.DataSource) {
-                            case DataSource.Beast:          break;
-                            case DataSource.CompressedVRS:  isCooked = true; break;
-                            case DataSource.Port30003:      isCooked = true; break;
-                            case DataSource.Sbs3:           break;
-                            default:                        throw new NotImplementedException();
+                            case DataSource.Beast:              break;
+                            case DataSource.CompressedVRS:      isCooked = true; break;
+                            case DataSource.Port30003:          isCooked = true; break;
+                            case DataSource.Sbs3:               break;
+                            case DataSource.AircraftListJson:   isCooked = true; break;
+                            default:                            throw new NotImplementedException();
                         }
                         switch(format) {
                             case RebroadcastFormat.Avr:                 formatIsOK = !isCooked; break;
