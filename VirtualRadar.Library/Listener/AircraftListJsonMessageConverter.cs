@@ -37,6 +37,7 @@ namespace VirtualRadar.Library.Listener
             foreach(var json in aircraftListJson.Aircraft) {
                 var message = new BaseStationMessage() {
                     MessageType = BaseStationMessageType.Transmission,
+                    TransmissionType = BaseStationTransmissionType.AirToAir,        // This needs to be something other than "None" or "AllCallReply" if we want to have these messages work with the message compressor
                     StatusCode = BaseStationStatusCode.None,
                 };
 
