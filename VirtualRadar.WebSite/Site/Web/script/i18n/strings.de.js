@@ -117,7 +117,7 @@
     VRS.$$.FillOpacity =                                'Fülldichte';
     VRS.$$.Filters =                                    'Filter';
     VRS.$$.FindAllPermutationsOfCallsign =              'Finde alle Permutationen des Callsign';
-    VRS.$$.First =                                      'First';  /** THIS IS NEW! **/
+    VRS.$$.First =                                      'Erstes';  /** THIS IS NEW! **/
     VRS.$$.FirstAltitude =                              'Erste Höhe';
     VRS.$$.FirstHeading =                               'Erster Kurs';
     VRS.$$.FirstFlightLevel =                           'Erste FH';
@@ -192,7 +192,7 @@
     VRS.$$.Knots =                                      'Knoten';
     VRS.$$.KnotsAbbreviation =                          '{0} kts';
     VRS.$$.LandPlane =                                  'Landplane';
-    VRS.$$.Last =                                       'Last';  /** THIS IS NEW! **/
+    VRS.$$.Last =                                       'Letztes';  /** THIS IS NEW! **/
     VRS.$$.LastAltitude =                               'Letzte Höhe';
     VRS.$$.LastFlightLevel =                            'Letzte FH';
     VRS.$$.LastHeading =                                'Letzter Kurs';
@@ -329,7 +329,7 @@
     VRS.$$.MuteOn =                                     'Stummschalten';
     VRS.$$.NauticalMileAbbreviation =                   '{0} nmi';
     VRS.$$.NauticalMiles =                              'Seemeilen';
-    VRS.$$.Neither =                                    'Neither';  /** THIS IS NEW! **/
+    VRS.$$.Neither =                                    'Keines';  /** THIS IS NEW! **/
     VRS.$$.No =                                         'Nein';
     VRS.$$.NoLocalStorage =                             'Dieser Browser unterstützt keinen lokalen Speicher. Ihre Konfigurationseinstellungen werden nicht gespeichert.\n\nWenn Sie im privaten Modus browsen, versuchen Sie diesen abzuschalten. Der private Modus deaktiviert den lokalen Speicher in manchen Browsern.';
     VRS.$$.None =                                       'Leer';
@@ -445,10 +445,10 @@
     VRS.$$.ShowCurrentLocation =                        'Anzeige aktueller Standort';
     VRS.$$.ShowDetail =                                 'Anzeige Detail';
     VRS.$$.ShowForAllAircraft =                         'Anzeige für alle Flugzeuge';
-    VRS.$$.ShowEmergencySquawks =                       'Show emergency squawks';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
+    VRS.$$.ShowEmergencySquawks =                       'Zeige Notfall "Squawks"';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            'Anzeige leere Werte';
     VRS.$$.ShowForSelectedOnly =                        'Nur für das ausgewählte Flugzeug anzeigen';
-    VRS.$$.ShowInterestingAircraft =                    'Show interesting aircraft';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
+    VRS.$$.ShowInterestingAircraft =                    'Zeige interesante Flugzeuge';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           'Anzeige Reichweitenkreise';
     VRS.$$.ShowShortTrails =                            'Anzeige kurze Spur';
     VRS.$$.ShowSpeedType =                              'Anzeige Geschwindigkeit';
