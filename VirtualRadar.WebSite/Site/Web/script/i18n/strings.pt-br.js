@@ -45,7 +45,7 @@
     VRS.$$.Airport =                                    'Aeroporto';
     VRS.$$.AirportDataThumbnails =                      'Miniaturas (airport-data.com)';
     VRS.$$.AllAltitudes =                               'Todas as altitudes';
-    VRS.$$.AllRows =                                    'Todas as linhas';
+    VRS.$$.AllRows =                                    'Todos os voos';
     VRS.$$.Altitude =                                   'Altitude';
     VRS.$$.AltitudeAndSpeedGraph =                      'Altitude & Velocidade';
     VRS.$$.AltitudeAndVerticalSpeed =                   'Altitude & VSI';
@@ -56,7 +56,7 @@
     VRS.$$.AnnounceSelected =                           'Anunciar detalhes de aeronaves selecionadas';
     VRS.$$.Ascending =                                  'Crescente';
     VRS.$$.AutoSelectAircraft =                         'Auto selecionar as aeronaves';
-    VRS.$$.AverageSignalLevel =                         'Avg. Signal Level';
+    VRS.$$.AverageSignalLevel =                         'Nivel médio do sinal';
     VRS.$$.Barometric =                                 'barométrico';
     VRS.$$.Bearing =                                    'Rumo';
     VRS.$$.Between =                                    'Entre';
@@ -67,17 +67,17 @@
     VRS.$$.Civil =                                      'Civil';
     VRS.$$.CivilOrMilitary =                            'Civil / MIlitar';
     VRS.$$.ClosestToCurrentLocation =                   'Mais próxima';
-    VRS.$$.CofACategory =                               'C/A Category';  // certificate of airworthiness category
-    VRS.$$.CofAExpiry =                                 'C/A Expiry';  // certificate of airworthiness expiry
-    VRS.$$.Columns =                                    'Columns';
+    VRS.$$.CofACategory =                               'Categoria do C/A';  // certificate of airworthiness category
+    VRS.$$.CofAExpiry =                                 'C/A Expirado';  // certificate of airworthiness expiry
+    VRS.$$.Columns =                                    'Colunas';
     VRS.$$.Contains =                                   'Contenha';
     VRS.$$.CountAdsb =                                  'Mensagens ADS-B';
     VRS.$$.Country =                                    'País';
-    VRS.$$.CountModeS =                                 'Mode-S Count';  /** THIS IS NEW! **/
-    VRS.$$.CountPositions =                             'Position Count';
+    VRS.$$.CountModeS =                                 'Contagem de Mode-S';
+    VRS.$$.CountPositions =                             'Contagem de posição';
     VRS.$$.Criteria =                                   'Filtro';
     VRS.$$.CurrentLocationInstruction =                 'Para definir a sua localização atual clique "Definir a localização atual" e arraste o marcador.';
-    VRS.$$.CurrentRegDate =                             'Current Reg. Date';
+    VRS.$$.CurrentRegDate =                             'Data do registro atual';
     VRS.$$.Date =                                       'Data';
     VRS.$$.DateTimeShort =                              '{0} {1}';  // Where "{0}" is a date, e.g. 10/10/2013; and "{1}" is a time, e.g. 17:41:32.
     VRS.$$.DefaultSetting =                             '< Padrão >';
@@ -90,7 +90,7 @@
     VRS.$$.DisableAutoSelect =                          'Desativar auto-seleção';
     VRS.$$.Distance =                                   'Distancia';
     VRS.$$.Distances =                                  'Distancias';
-    VRS.$$.DoNotImportAutoSelect =                      'Do not import auto-select settings';
+    VRS.$$.DoNotImportAutoSelect =                      'Não importar configurações de auto-selecionar';
     VRS.$$.DoNotImportCurrentLocation =                 'Não importar a localização';
     VRS.$$.DoNotImportRequestFeedId =                   'Do not import request feed ID';
     VRS.$$.DoNotImportLanguageSettings =                'Não importar a configuração de idioma';
@@ -100,9 +100,9 @@
     VRS.$$.Electric =                                   'Electric';
     VRS.$$.EnableAutoSelect =                           'Ativar auto-seleção';
     VRS.$$.EnableFilters =                              'Ativar filtros';
-    VRS.$$.EnableInfoWindow =                           'Enable info window';
+    VRS.$$.EnableInfoWindow =                           'Ativar pup-up';
     VRS.$$.End =                                        'End';
-    VRS.$$.EndTime =                                    'End Time';
+    VRS.$$.EndTime =                                    'Hora do final';
     VRS.$$.EndsWith =                                   'Termina com';
     VRS.$$.Engines =                                    'Motores';
     VRS.$$.EngineType =                                 'Tipo de Motor';
@@ -170,7 +170,7 @@
     VRS.$$.Help =                                       'Ajuda';
     VRS.$$.HideAircraftNotOnMap =                       'Ocultar aeronaves que não estejam no mapa';
     VRS.$$.HideEmptyPinTextLines =                      'Ocultar linhas vazias';
-    VRS.$$.HideNoPosition =                             'Has position';
+    VRS.$$.HideNoPosition =                             'Tem posição';
     VRS.$$.HighContrastMap =                            'Contraste';  // <-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room
     VRS.$$.Icao =                                       'ICAO';
     VRS.$$.Import =                                     'Importar';
@@ -180,7 +180,7 @@
     VRS.$$.Index =                                      'Index';
     VRS.$$.IndicatedAirSpeed =                          'Indicated';
     VRS.$$.IndicatedAirSpeedShort =                     'IAS';  // <-- please try to keep this short, an abbreviation if possible
-    VRS.$$.Interesting =                                'Interesting';
+    VRS.$$.Interesting =                                'Interessante';
     VRS.$$.IntervalSeconds =                            'Atualizar a cada (seg)';
     VRS.$$.IsMilitary =                                 'Militar';
     VRS.$$.Jet =                                        'Jet';
@@ -252,7 +252,7 @@
     VRS.$$.ListHeading =                                'Hdg.';
     VRS.$$.ListHeadingType =                            'Hdg. Type';
     VRS.$$.ListIcao =                                   'ICAO';
-    VRS.$$.ListInteresting =                            'Interesting';
+    VRS.$$.ListInteresting =                            'Interessante';
     VRS.$$.ListLastAltitude =                           'To Alt.';
     VRS.$$.ListLastFlightLevel =                        'To FL';
     VRS.$$.ListLastHeading =                            'To Hdg.';
@@ -265,7 +265,7 @@
     VRS.$$.ListLatitude =                               'Lat.';
     VRS.$$.ListLongitude =                              'Lng.';
     VRS.$$.ListNotes =                                  'Notes';
-    VRS.$$.ListManufacturer =                           'Manufacturer';
+    VRS.$$.ListManufacturer =                           'Fabricante';
     VRS.$$.ListMaxTakeoffWeight =                       'Max T/O Weight';
     VRS.$$.ListMlat =                                   'MLAT';  /** THIS IS NEW! **/  // Abbreviation of Multilateration
     VRS.$$.ListModel =                                  'Modelo';
@@ -304,7 +304,7 @@
     VRS.$$.ListWtc =                                    'WTC';
     VRS.$$.ListYearBuilt =                              'Built';
     VRS.$$.Longitude =                                  'Longitude';
-    VRS.$$.Manufacturer =                               'Manufacturer';
+    VRS.$$.Manufacturer =                               'Fabricante';
     VRS.$$.Map =                                        'Map';
     VRS.$$.MaxTakeoffWeight =                           'Peso max. de decolagem';
     VRS.$$.Menu =                                       'Menu';
@@ -330,7 +330,7 @@
     VRS.$$.NauticalMileAbbreviation =                   '{0} mn';
     VRS.$$.NauticalMiles =                              'Milhas Náuticas';
     VRS.$$.Neither =                                    'Neither';  /** THIS IS NEW! **/
-    VRS.$$.No =                                         'No';
+    VRS.$$.No =                                         'Não';
     VRS.$$.NoLocalStorage =                             'Este navegador não suporta o armazenamento local. Suas configurações não serão salvas\n\nSe você está navegando no "modo anonimo", em seguida, va para a versão normal. O modo anomimo não salva as alterações';
     VRS.$$.None =                                       'Nenhum';
     VRS.$$.Notes =                                      'Notas';
@@ -347,12 +347,12 @@
     VRS.$$.OfPages =                                    'de {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          'Listar apenas os visiveis';
     VRS.$$.OnlyAutoSelected =                           'Apenas anunciar detalhes de aeronaves auto-selecionadas';
-    VRS.$$.OnlyUsePre22Icons =                          'Only show old style aircraft markers';  /** THIS IS NEW! **/
+    VRS.$$.OnlyUsePre22Icons =                          'Mostrar os icones antigos das aeronaves';
     VRS.$$.Operator =                                   'Operador';
     VRS.$$.OperatorCode =                               'Código do operador';
     VRS.$$.OperatorFlag =                               'Bandeira do operador';
     VRS.$$.Options =                                    'Opções';
-    VRS.$$.OverwriteExistingSettings =                  'Overwrite existing settings';
+    VRS.$$.OverwriteExistingSettings =                  'Substituir as configurações existentes';
     VRS.$$.OwnershipStatus =                            'Status do Proprietário';
     VRS.$$.PageAircraft =                               'Aeronave';
     VRS.$$.AircraftDetailShort =                        'Detail';
@@ -378,7 +378,7 @@
     VRS.$$.PaneRangeCircles =                           'Círculos de alcance';
     VRS.$$.PaneReceiverRange =                          'Alcance do receptor';
     VRS.$$.PaneSingleAircraft =                         'Relatórios de uma única aeronave';
-    VRS.$$.PaneSortAircraftList =                       'Sort Aircraft List';
+    VRS.$$.PaneSortAircraftList =                       'Lista curta de aeronaves';
     VRS.$$.PaneSortReport =                             'Ordenar Relatório';
     VRS.$$.PaneUnits =                                  'Unidades';
     VRS.$$.Pause =                                      'Pausar';
@@ -387,7 +387,7 @@
     VRS.$$.PositionAndAltitude =                        'Posição e altitude';
     VRS.$$.PositionAndSpeed =                           'Posição e velocidade';
     VRS.$$.Picture =                                    'Imagem';
-    VRS.$$.PictureOrThumbnails =                        'Picture or Thumbnails';
+    VRS.$$.PictureOrThumbnails =                        'Imagem ou Miniaturas';
     VRS.$$.PinTextLines =                               'Legendas a exibir';
     VRS.$$.Piston =                                     'Piston';
     VRS.$$.Pixels =                                     'pixels';
@@ -402,17 +402,17 @@
     VRS.$$.ReceiverRange =                              'Alcance do receptor';
     VRS.$$.Refresh =                                    'Atualizar';
     VRS.$$.Registration =                               'Registro';
-    VRS.$$.RegistrationAndIcao =                        'Reg. & Icao';
+    VRS.$$.RegistrationAndIcao =                        'Reg. & Hexa.';
     VRS.$$.Remove =                                     'Remover';
     VRS.$$.RemoveAll =                                  'Remover tudo';
     VRS.$$.ReportCallsignInvalid =                      'Relatório deste indicativo';
-    VRS.$$.ReportCallsignValid =                        'Relatório do ondicativo: {0}';
+    VRS.$$.ReportCallsignValid =                        'Relatório do indicativo: {0}';
     VRS.$$.ReportEmpty =                                'Nenhum dado encontrato com o filtro aplicado';
     VRS.$$.ReportFreeForm =                             'Relatório customizado';
-    VRS.$$.ReportIcaoInvalid =                          'Relatório deste ICAO';
-    VRS.$$.ReportIcaoValid =                            'Relatórios do ICAO: {0}';
+    VRS.$$.ReportIcaoInvalid =                          'Relatório deste HEX.';
+    VRS.$$.ReportIcaoValid =                            'Relatório do HEXA.: {0}';
     VRS.$$.ReportRegistrationInvalid =                  'Relatório desta matrícula';
-    VRS.$$.ReportRegistrationValid =                    'Registration Report for {0}';
+    VRS.$$.ReportRegistrationValid =                    'Relatório da matricula {0}';
     VRS.$$.ReportTodaysFlights =                        'Voos de hoje';
     VRS.$$.ReportYesterdaysFlights =                    'Voos de ontem';
     VRS.$$.Reports =                                    'Reportes';
@@ -425,7 +425,7 @@
     VRS.$$.RouteFull =                                  'Rota (completa)';
     VRS.$$.RouteNotKnown =                              'Rota não conhecida';
     VRS.$$.RowNumber =                                  'Row Number';
-    VRS.$$.Rows =                                       'Linha';
+    VRS.$$.Rows =                                       'Voos por pagina';
     VRS.$$.RunReport =                                  'Gerar relatório';
     VRS.$$.SeaPlane =                                   'Seaplane';
     VRS.$$.Select =                                     'Selecionar a:';
@@ -461,7 +461,7 @@
     VRS.$$.SilhouetteAndOpFlag =                        'Sil. & Op. Flag';
     VRS.$$.SiteTimedOut =                               'O site está em pausa devido à inatividade. Feche a caixa de mensagem para retomar as atualizações.';
     VRS.$$.SortBy =                                     'Ordenar por';
-    VRS.$$.Species =                                    'Species';
+    VRS.$$.Species =                                    'Espécie';
     VRS.$$.Speed =                                      'Velocidade';
     VRS.$$.SpeedGraph =                                 'Speed Graph';
     VRS.$$.Speeds =                                     'Velocidades';
@@ -477,8 +477,8 @@
     VRS.$$.Status =                                     'Status';
     VRS.$$.StatuteMileAbbreviation =                    '{0} mi';
     VRS.$$.StatuteMiles =                               'Milhas Terrestres';
-    VRS.$$.StorageEngine =                              'Storage engine';
-    VRS.$$.StorageSize =                                'Storage size';
+    VRS.$$.StorageEngine =                              'Mecanismo de armazenamento';
+    VRS.$$.StorageSize =                                'Tamanho do armazenamento';
     VRS.$$.StrokeOpacity =                              'Transparencia da borda do gráfico';
     VRS.$$.SubmitRoute =                                'Enviar rota';
     VRS.$$.SubmitRouteCorrection =                      'Enviar correção de rota';
@@ -493,7 +493,7 @@
     VRS.$$.TitleAircraftList =                          'Lista de aeronaves';
     VRS.$$.TitleFlightDetail =                          'Detalhes';
     VRS.$$.TitleFlightsList =                           'Voos';
-    VRS.$$.ToAltitude =                                 'Até {0}';
+    VRS.$$.ToAltitude =                                 'Abaixo de {0}';
     VRS.$$.TitleSiteTimedOut =                          'Tempo Esgotado';
     VRS.$$.TotalHours =                                 'Total de horas';
     VRS.$$.TrackingCountAircraft =                      'Rastreando {0:N0} aeronaves';
@@ -512,7 +512,7 @@
     VRS.$$.UseRelativeDates =                           'Manter as datas';
     VRS.$$.UserTag =                                    'User Tag';
     VRS.$$.VerticalSpeed =                              'Velocidade vertical';
-    VRS.$$.VerticalSpeedType =                          'Vertical Speed Type';
+    VRS.$$.VerticalSpeedType =                          'Medidor de vel. vertical';
     VRS.$$.VirtualRadar =                               'Virtual Radar';
     VRS.$$.Volume25 =                                   'Volume 25%';
     VRS.$$.Volume50 =                                   'Volume 50%';
@@ -524,7 +524,7 @@
     VRS.$$.WorkingInOfflineMode =                       'Trabalhando em modo offline';
     VRS.$$.WtcLight =                                   'Leve';
     VRS.$$.WtcMedium =                                  'Médio';
-    VRS.$$.WtcHeavy =                                   'Pesado';
+    VRS.$$.WtcHeavy =                                   'Pesada';
     VRS.$$.YearBuilt =                                  'Ano de fabricação';
     VRS.$$.Yes =                                        'Sim';
 
@@ -542,7 +542,7 @@
     // Text-to-speech formatting
     VRS.$$.SayCallsign =                                'Voo {0}.';
     VRS.$$.SayHyphen =                                  'hyphen';
-    VRS.$$.SayIcao =                                    'ICAO {0}.';
+    VRS.$$.SayIcao =                                    'HEXA. {0}.';
     VRS.$$.SayModelIcao =                               'Tipo {0}.';
     VRS.$$.SayOperator =                                'Operado pela {0}.';
     VRS.$$.SayRegistration =                            'Registro {0}.';

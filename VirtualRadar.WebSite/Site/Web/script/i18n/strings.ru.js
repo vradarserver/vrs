@@ -448,7 +448,7 @@
     VRS.$$.ShowEmergencySquawks =                       'Показывать аварийные сквоки';  // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            'Показывать пустые значения';
     VRS.$$.ShowForSelectedOnly =                        'Для выбранного самолета';
-    VRS.$$.ShowInterestingAircraft =                    'Показывать интересующие самолеты';     // Followed by "first / last / neither"
+    VRS.$$.ShowInterestingAircraft =                    'Показывать интересующие самолеты';  // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           'Показывать шкалу';
     VRS.$$.ShowShortTrails =                            'Показывать короткий след';
     VRS.$$.ShowSpeedType =                              'Показывать тип скорости';

@@ -189,7 +189,7 @@ Tradução russa por: Sergey Serov /sergsero and friends.</value>
     <value>Primeira atividade</value>
   </data>
   <data name="FlagsFolder" xml:space="preserve">
-    <value>pasta das bandeiras</value>
+    <value>Pasta das bandeiras</value>
     <comment>The folder containing images of country or airline flags</comment>
   </data>
   <data name="ICAO" xml:space="preserve">
@@ -1338,7 +1338,7 @@ ESTE SOFTWARE É FORNECIDO PELOS DETENTORES DE DIREITOS AUTORAIS E COLABORADORES
     <value>O texto para a velocidade de fala deve estar entre -10 e 10</value>
   </data>
   <data name="ResetPortAssignmentsOnStartup" xml:space="preserve">
-    <value>Reset port assignments on startup</value>
+    <value>Redefinir as configurações de porta na inicialização</value>
   </data>
   <data name="UPnpPortOutOfBounds" xml:space="preserve">
     <value>A porta UPnP deve estar entre 1 e 65535</value>
@@ -1952,7 +1952,7 @@ Por favor, especifique o receptor que o widget de desktop vai usar</value>
     <value>&amp;Usuarios...</value>
   </data>
   <data name="LoginName" xml:space="preserve">
-    <value>nome de login</value>
+    <value>Nome de login</value>
   </data>
   <data name="LoginNameTitle" xml:space="preserve">
     <value>Nome de Login</value>
