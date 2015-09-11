@@ -58,6 +58,12 @@ namespace VirtualRadar.WebSite
 
         #region Fields
         /// <summary>
+        /// The number of seconds added to the display timeout when deciding if a position
+        /// is stale.
+        /// </summary>
+        private const int BoostStalePositionSeconds = 60;
+
+        /// <summary>
         /// The singleton ISharedConfiguration object.
         /// </summary>
         private ISharedConfiguration _SharedConfiguration;
@@ -276,7 +282,7 @@ namespace VirtualRadar.WebSite
         {
             var now = Provider.UtcNow;
             var configuration = _SharedConfiguration.Get();
-            var positionTimeoutThreshold = now.AddSeconds(-configuration.BaseStationSettings.DisplayTimeoutSeconds);
+            var positionTimeoutThreshold = now.AddSeconds(-(configuration.BaseStationSettings.DisplayTimeoutSeconds + BoostStalePositionSeconds));
 
             HashSet<int> previousAircraftSet = null;
             List<int> previousAircraft = args.PreviousAircraft;

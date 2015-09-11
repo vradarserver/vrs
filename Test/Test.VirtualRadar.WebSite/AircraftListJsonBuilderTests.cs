@@ -1350,7 +1350,19 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Sets_PositionIsStale_To_Either_True_Or_Null()
         {
+            // In 2.2 positions were marked as stale if the last position message was longer
+            // than <display timeout> seconds ago. In 2.2.1 I have revised this so that it is
+            // stale when the message is longer than:
+            //   <display timeout seconds> + 60 seconds
+            // This is to account for aircraft that are at an extreme range and a non-position
+            // message comes in some time after the last position message. In those cases the
+            // aircraft was removed from the map before it was removed from the list. 60 seconds
+            // should hopefully be enough to cover that, and still be short enough to remove the
+            // aircraft from the map when they were getting positions from an MLAT feed that
+            // they're now out of range of.
+
             var now = DateTime.UtcNow;
+            var boostSeconds = 60;
 
             foreach(var threshold in new string[] { "before", "on", "after" }) {
                 TestCleanup();
@@ -1365,7 +1377,7 @@ namespace Test.VirtualRadar.WebSite
                 aircraft.SetupGet(r => r.Longitude).Returns(1.0);
                 aircraft.SetupGet(r => r.PositionTime).Returns(now);
 
-                now = now.AddSeconds(_Configuration.BaseStationSettings.DisplayTimeoutSeconds);
+                now = now.AddSeconds(_Configuration.BaseStationSettings.DisplayTimeoutSeconds + boostSeconds);
                 switch(threshold) {
                     case "before":  now = now.AddMilliseconds(-1); break;
                     case "on":      break;
