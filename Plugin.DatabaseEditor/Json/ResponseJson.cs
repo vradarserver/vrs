@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,49 +12,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Localisation;
 
-namespace VirtualRadar.Interface.WebSite
+namespace VirtualRadar.Plugin.DatabaseEditor.Json
 {
     /// <summary>
-    /// The interface for objects that can localise HTML using string resources.
+    /// The base class for all JSON response objects.
     /// </summary>
-    public interface IHtmlLocaliser
+    class ResponseJson
     {
         /// <summary>
-        /// Gets the localised strings that the localiser is using.
+        /// Gets or sets the message from the exception encountered during the processing of the request.
         /// </summary>
-        LocalisedStringsMap LocalisedStringsMap { get; }
-
-        /// <summary>
-        /// Initialises the localiser with the Virtual Radar Server application strings.
-        /// </summary>
-        void Initialise();
-
-        /// <summary>
-        /// Initialises the localiser with the strings from the compiled resource object passed across.
-        /// </summary>
-        void Initialise(Type resourceStringsType);
-
-        /// <summary>
-        /// Adds resource strings to the localised strings map.
-        /// </summary>
-        /// <param name="resourceStringsType"></param>
-        void AddResourceStrings(Type resourceStringsType);
-
-        /// <summary>
-        /// Replaces all instances of ::STRING:: with the localised text.
-        /// </summary>
-        /// <param name="html"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        string Html(string html, Encoding encoding);
-
-        /// <summary>
-        /// Escapes HTML in the string, converts linebreaks to break tags and so on.
-        /// </summary>
-        /// <param name="resourceString"></param>
-        /// <returns></returns>
-        string ConvertResourceStringToHtmlString(string resourceString);
+        public string Exception { get; set; }
     }
 }

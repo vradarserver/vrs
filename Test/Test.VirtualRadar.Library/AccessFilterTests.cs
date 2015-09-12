@@ -40,6 +40,14 @@ namespace Test.VirtualRadar.Library
         }
         #endregion
 
+        #region Ctors
+        [TestMethod]
+        public void AccessFilter_Constructor_Initialises_To_Known_Values()
+        {
+            Assert.IsNull(_Filter.Access);
+        }
+        #endregion
+
         #region Initialise
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -62,6 +70,13 @@ namespace Test.VirtualRadar.Library
             }
 
             Assert.IsTrue(seenException);
+        }
+
+        [TestMethod]
+        public void AccessFilter_Initialise_Exposes_Access_Passed_Across()
+        {
+            _Filter.Initialise(_Access);
+            Assert.AreEqual(_Access, _Filter.Access);
         }
         #endregion
 

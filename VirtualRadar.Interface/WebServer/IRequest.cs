@@ -101,5 +101,12 @@ namespace VirtualRadar.Interface.WebServer
         /// of the site.
         /// </summary>
         string UserHostName { get; }
+
+        /// <summary>
+        /// Returns the body as a single string.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        string ReadBodyAsString(Encoding encoding);
     }
 }

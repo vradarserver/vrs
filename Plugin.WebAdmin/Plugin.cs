@@ -45,14 +45,9 @@ namespace VirtualRadar.Plugin.WebAdmin
         private IWebSiteExtender _WebSiteExtender;
 
         /// <summary>
-        /// A localiser that can substitute the VRS application strings into HTML.
+        /// A localiser that can substitute strings into HTML.
         /// </summary>
-        private IHtmlLocaliser _StandardStringsLocaliser;
-
-        /// <summary>
-        /// A localiser that can substitute the plugin's strings into HTML.
-        /// </summary>
-        private IHtmlLocaliser _PluginStringsLocaliser;
+        private IHtmlLocaliser _HtmlLocaliser;
 
         /// <summary>
         /// A map from a server path and file (in lower-case) to the <see cref="ViewMap"/> representing a view.
@@ -147,10 +142,9 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             _Options = OptionsStorage.Load(this);
 
-            _StandardStringsLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
-            _PluginStringsLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
-            _StandardStringsLocaliser.Initialise();
-            _PluginStringsLocaliser.Initialise(WebAdminStringsJavaScript.LocalisedWebAdminStrings);
+            _HtmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            _HtmlLocaliser.Initialise();
+            _HtmlLocaliser.AddResourceStrings(typeof(WebAdminStrings));
 
             _HeadTemplateFileName = Path.Combine(parameters.PluginFolder, "Web");
             _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "WebAdmin");
@@ -252,8 +246,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                 ViewMap viewMap;
                 if(_PathAndFileViewMap.TryGetValue(key, out viewMap)) {
                     // Subtitute simple strings
-                    e.Content = _PluginStringsLocaliser.Html(e.Content, e.Encoding);
-                    e.Content = _StandardStringsLocaliser.Html(e.Content, e.Encoding);
+                    e.Content = _HtmlLocaliser.Html(e.Content, e.Encoding);
 
                     // Substitute in the content of the head template file
                     e.Content = ExpandTemplateMarkerFromFile(e.Content, "@head.html@", _HeadTemplateFileName);

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Interface.WebSite
@@ -114,15 +115,30 @@ namespace VirtualRadar.Interface.WebSite
         /// Marks a URL folder as protected. Only administrators may access protected folders.
         /// </summary>
         /// <param name="folder"></param>
-        /// <remarks><para>
+        /// <remarks>
         /// For example, if you were to protect the folder &quot;MyPlugin/Admin&quot; then access to
         /// http://127.0.0.1/VirtualRadar/MyPlugin/index.html would not be protected, but access to
         /// http://127.0.0.1/VirtualRadar/MyPlugin/Admin/index.html would only be allowed once the user had supplied credentials,
         /// and only if the credentials could be authenticated against the list of administrator users.
-        /// </para><para>
-        /// Once a folder is marked as protected you cannot unprotect it, it remains protected for the
-        /// remainder of the session.
-        /// </para></remarks>
+        /// </remarks>
         void ProtectFolder(string folder);
+
+        /// <summary>
+        /// Marks a URL folder as unprotected. Anyone can access unprotected folders (subject to global authentication rules).
+        /// </summary>
+        /// <param name="folder"></param>
+        void UnprotectFolder(string folder);
+
+        /// <summary>
+        /// Restricts access to a folder based on IP address.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="access"></param>
+        /// <remarks>
+        /// Similar to <see cref="ProtectFolder"/> except you can call this method many times after you
+        /// have called <see cref="Initialise"/>. To remove access restrictions pass a null reference
+        /// for <paramref name="access"/>.
+        /// </remarks>
+        void RestrictAccessToFolder(string folder, Access access);
     }
 }

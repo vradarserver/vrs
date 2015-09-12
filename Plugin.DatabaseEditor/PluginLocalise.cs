@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,48 +13,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Localisation;
+using System.Windows.Forms;
 
-namespace VirtualRadar.Interface.WebSite
+namespace VirtualRadar.Plugin.DatabaseEditor
 {
     /// <summary>
-    /// The interface for objects that can localise HTML using string resources.
+    /// A static wrapper around a <see cref="Localiser"/> for the plugin's strings.
     /// </summary>
-    public interface IHtmlLocaliser
+    public static class PluginLocalise
     {
         /// <summary>
-        /// Gets the localised strings that the localiser is using.
+        /// The object that's going to do all of the work.
         /// </summary>
-        LocalisedStringsMap LocalisedStringsMap { get; }
+        private static Localiser _Localiser;
 
         /// <summary>
-        /// Initialises the localiser with the Virtual Radar Server application strings.
+        /// Initialises the static object.
         /// </summary>
-        void Initialise();
+        static PluginLocalise()
+        {
+            _Localiser = new Localiser(typeof(VirtualRadar.Localisation.Strings));
+            _Localiser.AddResourceStrings(typeof(DatabaseEditorStrings));
+        }
 
         /// <summary>
-        /// Initialises the localiser with the strings from the compiled resource object passed across.
+        /// See <see cref="Localiser.Form"/>.
         /// </summary>
-        void Initialise(Type resourceStringsType);
-
-        /// <summary>
-        /// Adds resource strings to the localised strings map.
-        /// </summary>
-        /// <param name="resourceStringsType"></param>
-        void AddResourceStrings(Type resourceStringsType);
-
-        /// <summary>
-        /// Replaces all instances of ::STRING:: with the localised text.
-        /// </summary>
-        /// <param name="html"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        string Html(string html, Encoding encoding);
-
-        /// <summary>
-        /// Escapes HTML in the string, converts linebreaks to break tags and so on.
-        /// </summary>
-        /// <param name="resourceString"></param>
-        /// <returns></returns>
-        string ConvertResourceStringToHtmlString(string resourceString);
+        /// <param name="form"></param>
+        public static void Form(Form form)
+        {
+            _Localiser.Form(form);
+        }
     }
 }

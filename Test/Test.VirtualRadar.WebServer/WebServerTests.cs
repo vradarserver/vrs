@@ -41,6 +41,7 @@ namespace Test.VirtualRadar.WebServer
         private Mock<IRequest> _Request;
         private Mock<IResponse> _Response;
         private Mock<IHeartbeatService> _Heartbeat;
+        private Mock<IAccessFilter> _AccessFilter;
         private MemoryStream _OutputStream;
         private EventRecorder<EventArgs> _OnlineChangedEvent;
         private EventRecorder<AuthenticationRequiredEventArgs> _AuthenticationRequiredEvent;
@@ -60,6 +61,10 @@ namespace Test.VirtualRadar.WebServer
             _Clock = new ClockMock();
             Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
             _Heartbeat = TestUtilities.CreateMockSingleton<IHeartbeatService>();
+            _AccessFilter = TestUtilities.CreateMockImplementation<IAccessFilter>();
+            _AccessFilter.Setup(r => r.Initialise(It.IsAny<Access>())).Callback((Access r) => {
+                _AccessFilter.SetupGet(i => i.Access).Returns(r);
+            });
 
             _WebServer = Factory.Singleton.Resolve<IWebServer>();
 
@@ -1251,6 +1256,201 @@ namespace Test.VirtualRadar.WebServer
             var paths = _WebServer.GetAdministratorPaths();
             Assert.AreEqual(1, paths.Length);
             Assert.AreEqual("/", paths[0], ignoreCase: true);
+        }
+        #endregion
+
+        #region RemoveAdministratorPath
+        [TestMethod]
+        public void WebServer_RemoveAdministratorPath_Removes_Path()
+        {
+            _WebServer.AddAdministratorPath("/MyPlugin/");
+            _WebServer.AddAdministratorPath("/AnotherPlugin/");
+            _WebServer.RemoveAdministratorPath("/MyPlugin/");
+
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(1, paths.Length);
+            Assert.AreEqual("/AnotherPlugin/", paths[0], ignoreCase: true);
+        }
+
+        [TestMethod]
+        public void WebServer_RemoveAdministratorPath_Adds_Leading_Slash()
+        {
+            _WebServer.AddAdministratorPath("/MyPlugin/");
+            _WebServer.RemoveAdministratorPath("MyPlugin/");
+
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(0, paths.Length);
+        }
+
+        [TestMethod]
+        public void WebServer_RemoveAdministratorPath_Adds_Trailing_Slash()
+        {
+            _WebServer.AddAdministratorPath("/MyPlugin/");
+            _WebServer.RemoveAdministratorPath("/MyPlugin");
+
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(0, paths.Length);
+        }
+
+        [TestMethod]
+        public void WebServer_RemoveAdministratorPath_Handles_Root_Request_Correctly()
+        {
+            _WebServer.AddAdministratorPath("/");
+            _WebServer.RemoveAdministratorPath("/");
+
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(0, paths.Length);
+        }
+
+        [TestMethod]
+        public void WebServer_RemoveAdministratorPath_Handles_Null_Correctly()
+        {
+            _WebServer.AddAdministratorPath("/");
+            _WebServer.RemoveAdministratorPath(null);
+
+            var paths = _WebServer.GetAdministratorPaths();
+            Assert.AreEqual(0, paths.Length);
+        }
+        #endregion
+
+        #region SetRestrictedPath
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Records_Access_To_Path()
+        {
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/MyPlugin/", access);
+
+            var map = _WebServer.GetRestrictedPathsMap();
+
+            Assert.AreEqual(1, map.Count);
+            Assert.IsTrue("/MyPlugin/".Equals(map.First().Key, StringComparison.OrdinalIgnoreCase));
+            Assert.AreEqual(access, map.First().Value);
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Allows_Overwrites()
+        {
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/MyPlugin/", access);
+
+            access = new Access() { DefaultAccess = DefaultAccess.Allow };
+            _WebServer.SetRestrictedPath("/MyPlugin/", access);
+
+            var map = _WebServer.GetRestrictedPathsMap();
+
+            Assert.AreEqual(1, map.Count);
+            Assert.IsTrue("/MyPlugin/".Equals(map.First().Key, StringComparison.OrdinalIgnoreCase));
+            Assert.AreEqual(access, map.First().Value);
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Allows_Removal_By_Passing_UnrestrictAccess_Access_Object()
+        {
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/MyPlugin/", access);
+
+            access = new Access() { DefaultAccess = DefaultAccess.Unrestricted };
+            _WebServer.SetRestrictedPath("/MyPlugin/", access);
+
+            var map = _WebServer.GetRestrictedPathsMap();
+
+            Assert.AreEqual(0, map.Count);
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Allows_Removal_By_Passing_Null_Access_Object()
+        {
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/MyPlugin/", access);
+
+            access = new Access() { DefaultAccess = DefaultAccess.Unrestricted };
+            _WebServer.SetRestrictedPath("/MyPlugin/", null);
+
+            var map = _WebServer.GetRestrictedPathsMap();
+
+            Assert.AreEqual(0, map.Count);
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Prefixes_Path_With_Leading_Slash_If_Required()
+        {
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("MyPlugin/", access);
+
+            var map = _WebServer.GetRestrictedPathsMap();
+
+            Assert.IsTrue("/MyPlugin/".Equals(map.First().Key, StringComparison.OrdinalIgnoreCase));
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Suffixes_Path_With_Trailing_Slash_If_Required()
+        {
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/MyPlugin", access);
+
+            var map = _WebServer.GetRestrictedPathsMap();
+
+            Assert.IsTrue("/MyPlugin/".Equals(map.First().Key, StringComparison.OrdinalIgnoreCase));
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Rejects_Request_For_Path_If_AccessFilter_Does_Not_Match()
+        {
+            var address = IPAddress.Parse("192.168.0.100");
+
+            ConfigureProviderForGetContext();
+            _WebServer.Root = "/Root";
+            _Request.Setup(r => r.RawUrl).Returns("/Root/Restricted/Page.html");
+            _Request.Setup(r => r.Url).Returns(new Uri("http://Root/Restricted/Page.html"));
+            _Request.Setup(r => r.RemoteEndPoint).Returns(new IPEndPoint(address, 54321));
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/Restricted/", access);
+            _AccessFilter.Setup(r => r.Allow(It.IsAny<IPAddress>())).Returns(false);
+
+            _WebServer.Online = true;
+
+            Assert.AreEqual(HttpStatusCode.Forbidden, _Response.Object.StatusCode);
+            _AccessFilter.Verify(r => r.Allow(address), Times.Once());
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Accepts_Request_For_Path_If_AccessFilter_Matches()
+        {
+            var address = IPAddress.Parse("192.168.0.100");
+
+            ConfigureProviderForGetContext();
+            _WebServer.Root = "/Root";
+            _Request.Setup(r => r.RawUrl).Returns("/Root/Restricted/Page.html");
+            _Request.Setup(r => r.Url).Returns(new Uri("http://Root/Restricted/Page.html"));
+            _Request.Setup(r => r.RemoteEndPoint).Returns(new IPEndPoint(address, 54321));
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/Restricted/", access);
+            _AccessFilter.Setup(r => r.Allow(It.IsAny<IPAddress>())).Returns(true);
+
+            _WebServer.Online = true;
+
+            Assert.AreNotEqual(HttpStatusCode.Forbidden, _Response.Object.StatusCode);
+            _AccessFilter.Verify(r => r.Allow(address), Times.Once());
+        }
+
+        [TestMethod]
+        public void WebServer_SetRestrictedPath_Ignores_Paths_That_Are_Not_Restricted()
+        {
+            var address = IPAddress.Parse("192.168.0.100");
+
+            ConfigureProviderForGetContext();
+            _WebServer.Root = "/Root";
+            _Request.Setup(r => r.RawUrl).Returns("/Root/NotRestricted/Page.html");
+            _Request.Setup(r => r.Url).Returns(new Uri("http://Root/NotRestricted/Page.html"));
+            _Request.Setup(r => r.RemoteEndPoint).Returns(new IPEndPoint(address, 54321));
+            var access = new Access() { DefaultAccess = DefaultAccess.Deny };
+            _WebServer.SetRestrictedPath("/Restricted/", access);
+            _AccessFilter.Setup(r => r.Allow(It.IsAny<IPAddress>())).Returns(false);
+
+            _WebServer.Online = true;
+
+            Assert.AreNotEqual(HttpStatusCode.Forbidden, _Response.Object.StatusCode);
+            _AccessFilter.Verify(r => r.Allow(address), Times.Never());
         }
         #endregion
     }

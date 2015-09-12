@@ -176,6 +176,17 @@ namespace VirtualRadar.WebServer
         }
         #endregion
 
+        #region Private class - RestrictedPath
+        /// <summary>
+        /// Describes a restricted path.
+        /// </summary>
+        class RestrictedPath
+        {
+            public string NormalisedPath;
+            public IAccessFilter Filter;
+        }
+        #endregion
+
         #region Fields
         /// <summary>
         /// A map of cached user names to their credentials.
@@ -196,6 +207,16 @@ namespace VirtualRadar.WebServer
         /// The list of paths that require administrator permissions.
         /// </summary>
         private List<string> _AdministratorPaths = new List<string>();
+
+        /// <summary>
+        /// The lock object that protects access to <see cref="_RestrictedPaths"/> from concurrent access.
+        /// </summary>
+        private SpinLock _RestrictedPathSpinLock = new SpinLock();
+
+        /// <summary>
+        /// The dictionary of restricted paths to the filters that indicate whether an IP address can access the path.
+        /// </summary>
+        private List<RestrictedPath> _RestrictedPaths = new List<RestrictedPath>();
         #endregion
 
         #region Properties
@@ -576,7 +597,9 @@ namespace VirtualRadar.WebServer
                     if(context != null) {
                         try {
                             var requestArgs = new RequestReceivedEventArgs(context.Request, context.Response, Root);
-                            if(Authenticated(context, requestArgs)) {
+                            if(IsRestricted(requestArgs)) {
+                                context.Response.StatusCode = HttpStatusCode.Forbidden;
+                            } else if(Authenticated(context, requestArgs)) {
                                 var startTime = Provider.UtcNow;
                                 OnBeforeRequestReceived(requestArgs);
                                 OnRequestReceived(requestArgs);
@@ -723,6 +746,21 @@ namespace VirtualRadar.WebServer
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        public void RemoveAdministratorPath(string pathFromRoot)
+        {
+            pathFromRoot = (pathFromRoot ?? "").Trim().ToLower();
+            if(!pathFromRoot.StartsWith("/")) pathFromRoot = String.Format("/{0}", pathFromRoot);
+            if(!pathFromRoot.EndsWith("/")) pathFromRoot = String.Format("{0}/", pathFromRoot);
+
+            using(_AdministratorPathSpinLock.AcquireLock()) {
+                if(_AdministratorPaths.Contains(pathFromRoot)) _AdministratorPaths.Remove(pathFromRoot);
+            }
+        }
+
+        /// <summary>
         /// Returns true if the context represents a path that is marked as for administrators only.
         /// </summary>
         /// <param name="requestArgs"></param>
@@ -742,6 +780,93 @@ namespace VirtualRadar.WebServer
                 }
             } finally {
                 _AdministratorPathSpinLock.Unlock();
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region GetRestrictedPathsMap, SetRestrictedPath
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, Access> GetRestrictedPathsMap()
+        {
+            var result = new Dictionary<string, Access>();
+
+            using(_RestrictedPathSpinLock.AcquireLock()) {
+                foreach(var entry in _RestrictedPaths) {
+                    result.Add(entry.NormalisedPath, entry.Filter.Access);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        /// <param name="access"></param>
+        public void SetRestrictedPath(string pathFromRoot, Access access)
+        {
+            pathFromRoot = (pathFromRoot ?? "").Trim().ToLower();
+            if(!pathFromRoot.StartsWith("/")) pathFromRoot = String.Format("/{0}", pathFromRoot);
+            if(!pathFromRoot.EndsWith("/")) pathFromRoot = String.Format("{0}/", pathFromRoot);
+
+            var removeEntry = access == null || access.DefaultAccess == DefaultAccess.Unrestricted;
+            using(_RestrictedPathSpinLock.AcquireLock()) {
+                var restrictedPath = _RestrictedPaths.FirstOrDefault(r => r.NormalisedPath == pathFromRoot);
+
+                if(removeEntry) {
+                    if(restrictedPath != null) _RestrictedPaths.Remove(restrictedPath);
+                } else {
+                    if(restrictedPath != null) {
+                        restrictedPath.Filter.Initialise(access);
+                    } else {
+                        var filter = Factory.Singleton.Resolve<IAccessFilter>();
+                        filter.Initialise(access);
+
+                        restrictedPath = new RestrictedPath() {
+                            NormalisedPath = pathFromRoot,
+                            Filter = filter,
+                        };
+
+                        _RestrictedPaths.Add(restrictedPath);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the request is for a restricted path and the address is not allowed to access it.
+        /// </summary>
+        /// <param name="requestArgs"></param>
+        /// <returns></returns>
+        private bool IsRestricted(RequestReceivedEventArgs requestArgs)
+        {
+            var result = false;
+
+            if(requestArgs.PathAndFile != null && requestArgs.Request != null && requestArgs.Request.RemoteEndPoint != null) {
+                var path = requestArgs.PathAndFile.ToLower();
+                IAccessFilter filter = null;
+                _RestrictedPathSpinLock.Lock();
+                try {
+                    for(var i = 0;i < _RestrictedPaths.Count;++i) {
+                        var restrictedPath = _RestrictedPaths[i];
+                        if(path.StartsWith(restrictedPath.NormalisedPath)) {
+                            filter = restrictedPath.Filter;
+                            break;
+                        }
+                    }
+                } finally {
+                    _RestrictedPathSpinLock.Unlock();
+                }
+
+                if(filter != null) {
+                    result = !filter.Allow(requestArgs.Request.RemoteEndPoint.Address);
+                }
             }
 
             return result;

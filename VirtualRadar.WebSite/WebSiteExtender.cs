@@ -17,6 +17,7 @@ using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using System.IO;
 using InterfaceFactory;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.WebSite
 {
@@ -214,7 +215,7 @@ namespace VirtualRadar.WebSite
         }
         #endregion
 
-        #region EnableDisableContent, ProtectFolder
+        #region EnableDisableContent, ProtectFolder, RestrictAccessToFolder
         /// <summary>
         /// Adds or removes content to the web site.
         /// </summary>
@@ -246,6 +247,31 @@ namespace VirtualRadar.WebSite
             var webServer = _WebServer ?? Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
             webServer.AddAdministratorPath(folder);
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="folder"></param>
+        public void UnprotectFolder(string folder)
+        {
+            folder = (folder ?? "").Replace('\\', '/');
+
+            var webServer = _WebServer ?? Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            webServer.RemoveAdministratorPath(folder);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="access"></param>
+        public void RestrictAccessToFolder(string folder, Access access)
+        {
+            folder = (folder ?? "").Replace('\\', '/');
+
+            var webServer = _WebServer ?? Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            webServer.SetRestrictedPath(folder, access);
+        }
         #endregion
 
         #region Events consumed
@@ -258,7 +284,12 @@ namespace VirtualRadar.WebSite
         {
             if(Enabled) {
                 foreach(var pageHandler in _PageHandlers) {
-                    if(pageHandler.Key.Equals(args.PathAndFile, StringComparison.OrdinalIgnoreCase)) pageHandler.Value(args);
+                    if(pageHandler.Key.Equals(args.PathAndFile, StringComparison.OrdinalIgnoreCase)) {
+                        pageHandler.Value(args);
+                        if(args.Handled) {
+                            break;
+                        }
+                    }
                 }
             }
         }

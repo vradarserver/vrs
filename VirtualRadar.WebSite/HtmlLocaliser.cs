@@ -40,17 +40,26 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public void Initialise()
         {
-            Initialise(Localise.VirtualRadarStrings);
+            Initialise(typeof(Strings));
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="localisedStringsMap"></param>
-        public void Initialise(LocalisedStringsMap localisedStringsMap)
+        /// <param name="resourceStringsType"></param>
+        public void Initialise(Type resourceStringsType)
         {
-            LocalisedStringsMap = localisedStringsMap;
+            LocalisedStringsMap = new Localisation.LocalisedStringsMap(resourceStringsType);
             _MainThreadCultureInfo = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.MainThreadCultureInfo;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="resourceStringsType"></param>
+        public void AddResourceStrings(Type resourceStringsType)
+        {
+            LocalisedStringsMap.AddResourceStrings(resourceStringsType);
         }
 
         /// <summary>

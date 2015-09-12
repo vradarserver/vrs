@@ -185,11 +185,11 @@ namespace VirtualRadar.WebServer
         }
 
         /// <summary>
-        /// Reads the content of the body as a string.
+        /// See interface docs.
         /// </summary>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        private string ReadBodyAsString(Encoding encoding)
+        public string ReadBodyAsString(Encoding encoding)
         {
             string result = null;
 
