@@ -53,6 +53,15 @@ namespace VirtualRadar.Localisation
         }
 
         /// <summary>
+        /// Adds strings from a resource file to the localiser.
+        /// </summary>
+        /// <param name="stringsResourceType"></param>
+        public void AddResourceStrings(Type stringsResourceType)
+        {
+            _LocalisedStrings.AddResourceStrings(stringsResourceType);
+        }
+
+        /// <summary>
         /// Returns the localised version of the string identifier passed across.
         /// </summary>
         /// <param name="name"></param>
