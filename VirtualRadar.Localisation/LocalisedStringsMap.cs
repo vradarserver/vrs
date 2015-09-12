@@ -37,8 +37,20 @@ namespace VirtualRadar.Localisation
         /// <param name="stringsType">The type of the generated strings resource object holding all of the strings.</param>
         public LocalisedStringsMap(Type stringsType)
         {
+            AddResourceStrings(stringsType);
+        }
+
+        /// <summary>
+        /// Adds the strings from a generated strings resource object to the localised map.
+        /// </summary>
+        /// <param name="stringsType"></param>
+        public void AddResourceStrings(Type stringsType)
+        {
             foreach(PropertyInfo property in stringsType.GetProperties(BindingFlags.Public | BindingFlags.Static)) {
-                if(property.PropertyType == typeof(string)) _LocalisedStrings.Add(property.Name, property);
+                if(property.PropertyType == typeof(string)) {
+                    if(_LocalisedStrings.ContainsKey(property.Name)) _LocalisedStrings[property.Name] = property;
+                    else                                             _LocalisedStrings.Add(property.Name, property);
+                }
             }
         }
 
