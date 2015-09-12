@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Collections.ObjectModel;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.WebServer
 {
@@ -201,7 +202,7 @@ namespace VirtualRadar.Interface.WebServer
         void ResetCredentialCache();
         #endregion
 
-        #region GetAdministratorPaths, AddAdministratorPath
+        #region GetAdministratorPaths, AddAdministratorPath, RemoveAdministratorPath, GetRestrictedPaths, AddRestrictedPath
         /// <summary>
         /// Returns the paths that have been marked as requiring authentication.
         /// </summary>
@@ -214,6 +215,26 @@ namespace VirtualRadar.Interface.WebServer
         /// </summary>
         /// <param name="pathFromRoot"></param>
         void AddAdministratorPath(string pathFromRoot);
+
+        /// <summary>
+        /// Tells the server that anyone can now access this path.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        void RemoveAdministratorPath(string pathFromRoot);
+
+        /// <summary>
+        /// Returns a map of restricted paths to the <see cref="Access"/> describing which IPAddresses can access the path.
+        /// </summary>
+        /// <returns></returns>
+        IDictionary<string, Access> GetRestrictedPathsMap();
+
+        /// <summary>
+        /// Sets access on a restricted path. If <paramref name="access"/> is null then the restrictions are removed
+        /// from the path.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        /// <param name="access"></param>
+        void SetRestrictedPath(string pathFromRoot, Access access);
         #endregion
     }
 }

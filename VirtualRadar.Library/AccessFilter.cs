@@ -57,6 +57,13 @@ namespace VirtualRadar.Library
         private List<Cidr> _Cidrs;
         #endregion
 
+        #region Properties
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public Access Access { get; private set; }
+        #endregion
+
         #region Initialise, Allow
         /// <summary>
         /// See interface docs.
@@ -74,6 +81,8 @@ namespace VirtualRadar.Library
                 foreach(var address in access.Addresses) {
                     _Cidrs.Add(Cidr.Parse(address));
                 }
+
+                Access = access;
             }
         }
 

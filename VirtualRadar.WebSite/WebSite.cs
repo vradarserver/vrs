@@ -110,6 +110,11 @@ namespace VirtualRadar.WebSite
                     }
                 }
             }
+
+            public string ReadBodyAsString(Encoding encoding)
+            {
+                return "";
+            }
         }
         #endregion
 

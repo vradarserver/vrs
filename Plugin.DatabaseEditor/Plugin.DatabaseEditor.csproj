@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3465B4A9-2278-422D-B1D5-E2CDCB308D03}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar.Plugin.DatabaseEditor</RootNamespace>
+    <AssemblyName>VirtualRadar.Plugin.DatabaseEditor</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DatabaseEditorStrings.zh-CN.Designer.cs">
+      <DependentUpon>DatabaseEditorStrings.zh-CN.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DatabaseEditorStrings.ru-RU.Designer.cs">
+      <DependentUpon>DatabaseEditorStrings.ru-RU.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DatabaseEditorStrings.pt-BR.Designer.cs">
+      <DependentUpon>DatabaseEditorStrings.pt-BR.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DatabaseEditorStrings.fr-FR.Designer.cs">
+      <DependentUpon>DatabaseEditorStrings.fr-FR.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DatabaseEditorStrings.de-DE.Designer.cs">
+      <DependentUpon>DatabaseEditorStrings.de-DE.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DatabaseEditorStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DatabaseEditorStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="IOptionsView.cs" />
+    <Compile Include="Json\ResponseJson.cs" />
+    <Compile Include="Json\SingleAircraftSaveResultsJson.cs" />
+    <Compile Include="Json\SingleSearchResultsJson.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="OptionsStorage.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="PluginLocalise.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinForms\OptionsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OptionsView.Designer.cs">
+      <DependentUpon>OptionsView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
+      <Project>{3a1330d8-1e7d-4c70-ba9a-39851389cfff}</Project>
+      <Name>VirtualRadar.WinForms</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="VirtualRadar.Plugin.DatabaseEditor.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap.css" />
+    <Content Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Web\css-DatabaseEditor\database-editor.css" />
+    <Content Include="Web\DatabaseEditor\index.html" />
+    <Content Include="Web\DatabaseEditor\index.js" />
+    <Content Include="Web\DatabaseEditor\models.js" />
+    <Content Include="Web\script-DatabaseEditor\bootstrap-collapsible-panel.js" />
+    <Content Include="Web\script-DatabaseEditor\bootstrap.js" />
+    <Content Include="Web\script-DatabaseEditor\inject.js" />
+    <Content Include="Web\script-DatabaseEditor\knockout-extenders.js" />
+    <Content Include="Web\script-DatabaseEditor\knockout.js" />
+    <Content Include="Web\script-DatabaseEditor\knockout.mapping.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PostBuildCopyLanguage.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DatabaseEditorStrings.zh-CN.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseEditorStrings.zh-CN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseEditorStrings.ru-RU.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseEditorStrings.ru-RU.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseEditorStrings.pt-BR.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseEditorStrings.pt-BR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseEditorStrings.fr-FR.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseEditorStrings.fr-FR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseEditorStrings.de-DE.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseEditorStrings.de-DE.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseEditorStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseEditorStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OptionsView.resx">
+      <DependentUpon>OptionsView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "DatabaseEditor"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

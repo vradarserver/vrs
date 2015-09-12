@@ -27,6 +27,11 @@ namespace VirtualRadar.Interface
     public interface IAccessFilter
     {
         /// <summary>
+        /// Gets the access last passed to <see cref="Initialise"/>.
+        /// </summary>
+        Access Access { get; }
+
+        /// <summary>
         /// Initialises the filter. Changes to the <see cref="Access"/> object after this call have
         /// no effect on the operation of the filter. Multiple calls are permitted.
         /// </summary>
