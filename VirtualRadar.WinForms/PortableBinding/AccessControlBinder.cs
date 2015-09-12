@@ -23,7 +23,7 @@ namespace VirtualRadar.WinForms.PortableBinding
     /// <summary>
     /// A binder between an <see cref="Access"/> object and an <see cref="AccessControl"/> control.
     /// </summary>
-    class AccessControlBinder<TModel> : ControlBinder
+    public class AccessControlBinder<TModel> : ControlBinder
     {
         #region Fields
         #endregion
