@@ -203,7 +203,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         {
             using(var dialog = new WinForms.OptionsView()) {
                 var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
-                dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "DatabaseEditor/Index.html");
+                dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "DatabaseEditor/index.html");
                 dialog.Options = OptionsStorage.Load(this);
 
                 if(dialog.ShowDialog() == DialogResult.OK) {
