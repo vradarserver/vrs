@@ -196,6 +196,42 @@ namespace VirtualRadar.Plugin.DatabaseEditor {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enabled, allowing updates from anyone.
+        /// </summary>
+        public static string StatusAllowingUpdatesFromAnyone {
+            get {
+                return ResourceManager.GetString("StatusAllowingUpdatesFromAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        public static string StatusDisabled {
+            get {
+                return ResourceManager.GetString("StatusDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled, only allowing updates from administrators.
+        /// </summary>
+        public static string StatusOnlyAllowingAdministrators {
+            get {
+                return ResourceManager.GetString("StatusOnlyAllowingAdministrators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:N0} searches, {1:N0} updates.
+        /// </summary>
+        public static string StatusStatistics {
+            get {
+                return ResourceManager.GetString("StatusStatistics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tag.
         /// </summary>
         public static string Tag {
