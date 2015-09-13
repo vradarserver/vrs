@@ -162,6 +162,18 @@
   <data name="ServerReportedException" xml:space="preserve">
     <value>Exception encountered: {0}</value>
   </data>
+  <data name="StatusAllowingUpdatesFromAnyone" xml:space="preserve">
+    <value>Enabled, allowing updates from anyone</value>
+  </data>
+  <data name="StatusDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="StatusOnlyAllowingAdministrators" xml:space="preserve">
+    <value>Enabled, only allowing updates from administrators</value>
+  </data>
+  <data name="StatusStatistics" xml:space="preserve">
+    <value>{0:N0} searches, {1:N0} updates</value>
+  </data>
   <data name="Tag" xml:space="preserve">
     <value>Tag</value>
   </data>

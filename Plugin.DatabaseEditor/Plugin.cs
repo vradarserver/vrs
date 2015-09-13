@@ -21,6 +21,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Localisation;
 using VirtualRadar.Plugin.DatabaseEditor.Json;
 
 namespace VirtualRadar.Plugin.DatabaseEditor
@@ -57,6 +58,16 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// The object that handles access to the database.
         /// </summary>
         private IBaseStationDatabase _BaseStationDatabase;
+
+        /// <summary>
+        /// The number of searches made through the plugin.
+        /// </summary>
+        private int _SearchCount;
+
+        /// <summary>
+        /// The number of updates made through the plugin.
+        /// </summary>
+        private int _UpdateCount;
         #endregion
 
         #region Properties
@@ -182,6 +193,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         public void Shutdown()
         {
+            if(_WebSiteExtender != null) _WebSiteExtender.Dispose();
         }
 
         /// <summary>
@@ -216,10 +228,28 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             } else {
                 _WebSiteExtender.UnprotectFolder(ProtectedFolder);
             }
+
+            if(!options.Enabled) {
+                Status = DatabaseEditorStrings.StatusDisabled;
+            } else if(options.OnlyAllowAdministrators) {
+                Status = DatabaseEditorStrings.StatusOnlyAllowingAdministrators;
+            } else {
+                Status = DatabaseEditorStrings.StatusAllowingUpdatesFromAnyone;
+            }
+
+            UpdateStatusTotals();
+        }
+
+        /// <summary>
+        /// Shows the counters on the status description line.
+        /// </summary>
+        private void UpdateStatusTotals()
+        {
+            StatusDescription = String.Format(DatabaseEditorStrings.StatusStatistics, _SearchCount, _UpdateCount);
         }
         #endregion
 
-        #region JSON page handlers - SingleAircraftSearch
+        #region JSON page handlers - SingleAircraftSearch, SingleAircraftSave
         /// <summary>
         /// Handles searches for a single aircraft.
         /// </summary>
@@ -231,9 +261,11 @@ namespace VirtualRadar.Plugin.DatabaseEditor
                 string icao = null;
 
                 try {
-                    icao = args.QueryString["icao"] ?? "";
+                    icao = (args.QueryString["icao"] ?? "").ToUpper();
                     if(icao != "") {
                         json.Aircraft = _BaseStationDatabase.GetAircraftByCode(icao);
+                        ++_SearchCount;
+                        UpdateStatusTotals();
                     }
                 } catch(Exception ex) {
                     json.Exception = LogException(ex, "Exception caught during DatabaseEditor SingleAircraftSearch ({0}): {1}", icao, ex.ToString());
@@ -255,12 +287,18 @@ namespace VirtualRadar.Plugin.DatabaseEditor
                 try {
                     var aircraftJson = args.Request.ReadBodyAsString(Encoding.UTF8);
                     json.Aircraft = JsonConvert.DeserializeObject<BaseStationAircraft>(aircraftJson);
+                    if(json.Aircraft.Registration != null)      json.Aircraft.Registration =     json.Aircraft.Registration.ToUpper();
+                    if(json.Aircraft.ICAOTypeCode != null)      json.Aircraft.ICAOTypeCode =     json.Aircraft.ICAOTypeCode.ToUpper();
+                    if(json.Aircraft.OperatorFlagCode != null)  json.Aircraft.OperatorFlagCode = json.Aircraft.OperatorFlagCode.ToUpper();
 
                     if(json.Aircraft.AircraftID == 0) {
                         _BaseStationDatabase.InsertAircraft(json.Aircraft);
                     } else {
                         _BaseStationDatabase.UpdateAircraft(json.Aircraft);
                     }
+
+                    ++_UpdateCount;
+                    UpdateStatusTotals();
                 } catch(Exception ex) {
                     var aircraftID = json.Aircraft == null ? "<no aircraft>" : json.Aircraft.AircraftID.ToString();
                     var icao = json.Aircraft == null ? "<no aircraft>" : json.Aircraft.ModeS;
