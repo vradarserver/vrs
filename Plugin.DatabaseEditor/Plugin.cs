@@ -287,18 +287,21 @@ namespace VirtualRadar.Plugin.DatabaseEditor
                 try {
                     var aircraftJson = args.Request.ReadBodyAsString(Encoding.UTF8);
                     json.Aircraft = JsonConvert.DeserializeObject<BaseStationAircraft>(aircraftJson);
-                    if(json.Aircraft.Registration != null)      json.Aircraft.Registration =     json.Aircraft.Registration.ToUpper();
-                    if(json.Aircraft.ICAOTypeCode != null)      json.Aircraft.ICAOTypeCode =     json.Aircraft.ICAOTypeCode.ToUpper();
-                    if(json.Aircraft.OperatorFlagCode != null)  json.Aircraft.OperatorFlagCode = json.Aircraft.OperatorFlagCode.ToUpper();
 
-                    if(json.Aircraft.AircraftID == 0) {
-                        _BaseStationDatabase.InsertAircraft(json.Aircraft);
-                    } else {
-                        _BaseStationDatabase.UpdateAircraft(json.Aircraft);
+                    if(json.Aircraft.ModeS != null && json.Aircraft.ModeS.Length == 6) {
+                        if(json.Aircraft.Registration != null)      json.Aircraft.Registration =     json.Aircraft.Registration.ToUpper();
+                        if(json.Aircraft.ICAOTypeCode != null)      json.Aircraft.ICAOTypeCode =     json.Aircraft.ICAOTypeCode.ToUpper();
+                        if(json.Aircraft.OperatorFlagCode != null)  json.Aircraft.OperatorFlagCode = json.Aircraft.OperatorFlagCode.ToUpper();
+
+                        if(json.Aircraft.AircraftID == 0) {
+                            _BaseStationDatabase.InsertAircraft(json.Aircraft);
+                        } else {
+                            _BaseStationDatabase.UpdateAircraft(json.Aircraft);
+                        }
+
+                        ++_UpdateCount;
+                        UpdateStatusTotals();
                     }
-
-                    ++_UpdateCount;
-                    UpdateStatusTotals();
                 } catch(Exception ex) {
                     var aircraftID = json.Aircraft == null ? "<no aircraft>" : json.Aircraft.AircraftID.ToString();
                     var icao = json.Aircraft == null ? "<no aircraft>" : json.Aircraft.ModeS;
