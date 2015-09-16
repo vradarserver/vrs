@@ -486,6 +486,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Queues.
+        /// </summary>
+        public static string BackgroundThreadQueues {
+            get {
+                return ResourceManager.GetString("BackgroundThreadQueues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bad checksum.
         /// </summary>
         public static string BadChecksum {
@@ -2498,6 +2507,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;Diagnostics.
+        /// </summary>
+        public static string menuDiagnostics {
+            get {
+                return ResourceManager.GetString("menuDiagnostics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download D&amp;ata....
         /// </summary>
         public static string menuDownloadData {
@@ -2611,6 +2629,15 @@ namespace VirtualRadar.Localisation {
         public static string menuShowExceptions {
             get {
                 return ResourceManager.GetString("menuShowExceptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show &amp;Queues....
+        /// </summary>
+        public static string menuShowQueues {
+            get {
+                return ResourceManager.GetString("menuShowQueues", resourceCulture);
             }
         }
         
@@ -4303,6 +4330,15 @@ namespace VirtualRadar.Localisation {
         public static string PasswordMissing {
             get {
                 return ResourceManager.GetString("PasswordMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peak.
+        /// </summary>
+        public static string Peak {
+            get {
+                return ResourceManager.GetString("Peak", resourceCulture);
             }
         }
         

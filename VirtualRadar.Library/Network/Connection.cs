@@ -150,7 +150,7 @@ namespace VirtualRadar.Library.Network
         {
             get {
                 lock(_SyncLock) {
-                    return _OperationQueue.GetQueueLength();
+                    return _OperationQueue.CountQueuedItems;
                 }
             }
         }

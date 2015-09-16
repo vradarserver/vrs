@@ -2512,4 +2512,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="SuppressTisbMessages" xml:space="preserve">
     <value>Suppress TIS-B messages</value>
   </data>
+  <data name="BackgroundThreadQueues" xml:space="preserve">
+    <value>Queues</value>
+  </data>
+  <data name="menuDiagnostics" xml:space="preserve">
+    <value>&amp;Diagnostics</value>
+  </data>
+  <data name="menuShowQueues" xml:space="preserve">
+    <value>Show &amp;Queues...</value>
+  </data>
+  <data name="Peak" xml:space="preserve">
+    <value>Peak</value>
+    <comment>As in the largest number of something, the maximum</comment>
+  </data>
 </root>

@@ -49,6 +49,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackgroundThreadQueuesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BackgroundThreadQueuesView.Designer.cs">
+      <DependentUpon>BackgroundThreadQueuesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -477,6 +483,9 @@
     <EmbeddedResource Include="AboutView.resx">
       <DependentUpon>AboutView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BackgroundThreadQueuesView.resx">
+      <DependentUpon>BackgroundThreadQueuesView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CidrEditView.resx">
       <DependentUpon>CidrEditView.cs</DependentUpon>

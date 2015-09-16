@@ -23,7 +23,7 @@ namespace VirtualRadar.Interface
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <remarks>This can be told to force everything onto a single thread by unit tests via the <see cref="IRuntimeEnvironment"/> interface.</remarks>
-    public class BackgroundThreadQueue<T> : IDisposable
+    public class BackgroundThreadQueue<T> : IQueue, IDisposable
         where T: class
     {
         /// <summary>
@@ -92,6 +92,33 @@ namespace VirtualRadar.Interface
         private bool _Stopped;
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string Name { get { return _QueueName; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int CountQueuedItems
+        {
+            get {
+                var result = 0;
+                if(!_ForceOntoSingleThread && _BackgroundThread != null) {
+                    lock(_SyncLock) {
+                        result = _Queue.Count;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int PeakQueuedItems { get; private set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="queueName"></param>
@@ -112,6 +139,8 @@ namespace VirtualRadar.Interface
             _QueueName = queueName;
             _ForceOntoSingleThread = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
             _SurrenderTimeSlice = surrenderTimeSliceOnEmptyQueue;
+
+            BackgroundThreadQueueRepository.AddBackgroundThreadQueue(this);
         }
 
         /// <summary>
@@ -138,6 +167,8 @@ namespace VirtualRadar.Interface
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
+                BackgroundThreadQueueRepository.RemoveBackgroundThreadQueue(this);
+
                 if(_BackgroundThread != null) {
                     _BackgroundThread.Abort();
                     _BackgroundThread = null;
@@ -190,9 +221,11 @@ namespace VirtualRadar.Interface
 
                 while(!_Stopped) {
                     try {
-                        T itemFromQueue;
+                        T itemFromQueue = null;
                         lock(_SyncLock) {
-                            itemFromQueue = _Queue.Count == 0 ? null : _Queue.Dequeue();
+                            if(_Queue.Count > 0) {
+                                itemFromQueue = _Queue.Dequeue();
+                            }
                         }
 
                         if(itemFromQueue != null) _ProcessObject(itemFromQueue);
@@ -228,6 +261,7 @@ namespace VirtualRadar.Interface
                     if(_BackgroundThread != null) {
                         lock(_SyncLock) {
                             _Queue.Enqueue(item);
+                            if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
                         }
                         if(!_SurrenderTimeSlice) _Signal.Set();
                     }
@@ -251,6 +285,7 @@ namespace VirtualRadar.Interface
                         foreach(var item in items) {
                             _Queue.Enqueue(item);
                         }
+                        if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
                     }
 
                     if(!_SurrenderTimeSlice) _Signal.Set();
@@ -268,22 +303,6 @@ namespace VirtualRadar.Interface
                     _Queue.Clear();
                 }
             }
-        }
-
-        /// <summary>
-        /// Returns the number of entries in the queue.
-        /// </summary>
-        /// <returns></returns>
-        public int GetQueueLength()
-        {
-            var result = 0;
-            if(_BackgroundThread != null) {
-                lock(_SyncLock) {
-                    result = _Queue.Count;
-                }
-            }
-
-            return result;
         }
 
         /// <summary>

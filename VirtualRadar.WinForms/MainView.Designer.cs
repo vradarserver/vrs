@@ -65,6 +65,8 @@
             this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuDiagnosticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuShowQueuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.splitContainerInner.Panel1.SuspendLayout();
@@ -231,6 +233,7 @@
             this.menuHelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuCheckForUpdatesToolStripMenuItem,
             this.toolStripMenuItem2,
+            this.menuDiagnosticsToolStripMenuItem,
             this.menuAboutToolStripMenuItem});
             this.menuHelpToolStripMenuItem.Name = "menuHelpToolStripMenuItem";
             this.menuHelpToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
@@ -396,6 +399,21 @@
             this.exitToolStripMenuItem.Text = "::menuExit::";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // menuDiagnosticsToolStripMenuItem
+            // 
+            this.menuDiagnosticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuShowQueuesToolStripMenuItem});
+            this.menuDiagnosticsToolStripMenuItem.Name = "menuDiagnosticsToolStripMenuItem";
+            this.menuDiagnosticsToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.menuDiagnosticsToolStripMenuItem.Text = "::menuDiagnostics::";
+            // 
+            // menuShowQueuesToolStripMenuItem
+            // 
+            this.menuShowQueuesToolStripMenuItem.Name = "menuShowQueuesToolStripMenuItem";
+            this.menuShowQueuesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.menuShowQueuesToolStripMenuItem.Text = "::menuShowQueues::";
+            this.menuShowQueuesToolStripMenuItem.Click += new System.EventHandler(this.menuShowQueuesToolStripMenuItem_Click);
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -463,5 +481,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuResetReceiverRangeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuOpenConnectionLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem menuDiagnosticsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuShowQueuesToolStripMenuItem;
     }
 }
