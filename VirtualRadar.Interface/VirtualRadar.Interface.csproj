@@ -101,6 +101,7 @@
     <Compile Include="AirportDataThumbnailsJson.cs" />
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
+    <Compile Include="BackgroundThreadQueueRepository.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
     <Compile Include="BaseStation\IRawMessageTranslator.cs" />
@@ -112,10 +113,13 @@
     <Compile Include="ExpiringDictionary.cs" />
     <Compile Include="ExpiringList.cs" />
     <Compile Include="Hierarchy.cs" />
+    <Compile Include="IQueue.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
+    <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="View\IBackgroundThreadQueuesView.cs" />
     <Compile Include="WebSite\IWebSiteGraphics.cs" />
     <Compile Include="ITimer.cs" />
     <Compile Include="IXmlSerialiser.cs" />

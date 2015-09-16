@@ -119,6 +119,7 @@
     <Compile Include="Network\SerialConnector.cs" />
     <Compile Include="Network\SerialConnection.cs" />
     <Compile Include="Network\SocketConnection.cs" />
+    <Compile Include="Presenter\BackgroundThreadQueuesPresenter.cs" />
     <Compile Include="Presenter\CidrEditPresenter.cs" />
     <Compile Include="Presenter\ConnectorActivityLogPresenter.cs" />
     <Compile Include="Presenter\SettingsPresenter.cs" />

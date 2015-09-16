@@ -734,6 +734,13 @@ namespace VirtualRadar.WinForms
                 dialog.ShowDialog(this);
             }
         }
+
+        private void menuShowQueuesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using(var dialog = new BackgroundThreadQueuesView()) {
+                dialog.ShowDialog(this);
+            }
+        }
         #endregion
     }
 }

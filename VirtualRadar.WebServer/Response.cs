@@ -233,7 +233,8 @@ namespace VirtualRadar.WebServer
                 _MemoryStream.Dispose();
             }
 
-            _Response.Close();
+            // See http://blogs.msdn.com/b/aspnetue/archive/2010/05/25/response-end-response-close-and-how-customer-feedback-helps-us-improve-msdn-documentation.aspx
+            // _Response.Close();
         }
 
         /// <summary>

@@ -57,6 +57,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Network.ISerialConnector, Network.SerialConnector>();
             factory.Register<VirtualRadar.Interface.Network.ITcpConnectionStateService, Network.TcpConnectionStateService>();
             factory.Register<VirtualRadar.Interface.Presenter.IAboutPresenter, Presenter.AboutPresenter>();
+            factory.Register<VirtualRadar.Interface.Presenter.IBackgroundThreadQueuesPresenter, Presenter.BackgroundThreadQueuesPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ICidrEditPresenter, Presenter.CidrEditPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionClientLogPresenter, Presenter.ConnectionClientLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionSessionLogPresenter, Presenter.ConnectionSessionLogPresenter>();
