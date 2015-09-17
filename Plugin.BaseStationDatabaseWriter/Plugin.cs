@@ -100,6 +100,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// The feed whose aircraft messages are being recorded in the database.
         /// </summary>
         private IFeed _Feed;
+
+        /// <summary>
+        /// The private heartbeat service that the plugin uses. Some of the database operations can take a long time
+        /// and we don't want to clog up other things using the service.
+        /// </summary>
+        private IHeartbeatService _HeartbeatService;
         #endregion
 
         #region Properties
@@ -234,7 +240,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
                 HookFeed();
 
-                Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
+                _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>();
+                _HeartbeatService.SlowTick += Heartbeat_SlowTick;
+                _HeartbeatService.Start();
             }
         }
         #endregion
@@ -255,6 +263,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         public void Shutdown()
         {
             if(_BackgroundThreadMessageQueue != null) _BackgroundThreadMessageQueue.Dispose();
+            if(_HeartbeatService != null) {
+                _HeartbeatService.SlowTick -= Heartbeat_SlowTick;
+                _HeartbeatService.Dispose();
+            }
             EndSession();
         }
         #endregion
@@ -473,18 +485,27 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
                         FlightRecords flightRecords;
                         if(!_FlightMap.TryGetValue(message.Icao24, out flightRecords)) {
-                            flightRecords = new FlightRecords();
-
-                            _Database.StartTransaction();
-                            try {
-                                flightRecords.Aircraft = FetchOrCreateAircraft(localNow, message.Icao24);
-                                flightRecords.Flight = CreateFlight(localNow, flightRecords.Aircraft.AircraftID, message.Callsign);
-                                flightRecords.EndTimeUtc = Provider.UtcNow;
-                                _Database.EndTransaction();
-                            } catch {
-                                _Database.RollbackTransaction();
-                                throw;
-                            }
+                            flightRecords = new FlightRecords() {
+                                Aircraft = new BaseStationAircraft() {
+                                    ModeS = message.Icao24,
+                                    FirstCreated = localNow,
+                                },
+                                Flight = new BaseStationFlight() {
+                                    Callsign = message.Callsign,
+                                    StartTime = localNow,
+                                    NumADSBMsgRec = 0,
+                                    NumAirCallRepMsgRec = 0,
+                                    NumAirPosMsgRec = 0,
+                                    NumAirToAirMsgRec = 0,
+                                    NumAirVelMsgRec = 0,
+                                    NumIDMsgRec = 0,
+                                    NumModeSMsgRec = 0,
+                                    NumPosMsgRec = 0,
+                                    NumSurAltMsgRec = 0,
+                                    NumSurIDMsgRec = 0,
+                                    NumSurPosMsgRec = 0,
+                                },
+                            };
 
                             _FlightMap.Add(message.Icao24, flightRecords);
                         }
@@ -500,15 +521,98 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         UpdateFirstLastValues(message, flight, flightRecords, isMlat);
                         UpdateMessageCounters(message, flight);
 
-                        if(flightRecords.Flight.Callsign.Length == 0 && !String.IsNullOrEmpty(message.Callsign)) {
-                            var databaseVersion = _Database.GetFlightById(flightRecords.Flight.FlightID);
-                            databaseVersion.Callsign = message.Callsign;
-                            _Database.UpdateFlight(databaseVersion);
-                            flightRecords.Flight.Callsign = message.Callsign;   // Do after the database write so that if the write throws we'll try again on the next message
+                        if(!String.IsNullOrEmpty(message.Callsign)) {
+                            if(message.Callsign != flightRecords.Flight.Callsign) {
+                                flightRecords.Flight.Callsign = message.Callsign;
+                            }
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Looks for flight records where the records haven't been created yet and creates them.
+        /// </summary>
+        private void WriteNewFlights()
+        {
+            FlightRecords[] newFlights = null;
+            lock(_SyncLock) {
+                newFlights = _FlightMap.Where(r => r.Value.Aircraft.AircraftID == 0 && r.Value.Flight.FlightID == 0).Select(r => r.Value).ToArray();
+            }
+
+            foreach(var flight in newFlights) {
+                WriteFlightRecords(flight);
+            }
+        }
+
+        /// <summary>
+        /// Creates or reads all of the database records associated with a <see cref="FlightRecords"/> object.
+        /// </summary>
+        /// <param name="flightRecords"></param>
+        private void WriteFlightRecords(FlightRecords flightRecords)
+        {
+            if(flightRecords.Aircraft.AircraftID == 0 && flightRecords.Flight.FlightID == 0) {
+                _Database.StartTransaction();
+                try {
+                    var aircraft = FetchOrCreateAircraft(flightRecords.Aircraft.FirstCreated, flightRecords.Aircraft.ModeS);
+                    var flight = CreateFlight(flightRecords.Flight.StartTime, aircraft.AircraftID, flightRecords.Flight.Callsign);
+                    _Database.EndTransaction();
+
+                    lock(_SyncLock) {
+                        flightRecords.Aircraft = aircraft;
+                        flightRecords.Flight = ApplyFlightDetails(flightRecords.Flight, flight);
+                    }
+                } catch {
+                    _Database.RollbackTransaction();
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copies most of the flight details from the source to the destination and returns the destination. The flight ID and creation time
+        /// are not touched, neither are the aircraft references.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
+        private BaseStationFlight ApplyFlightDetails(BaseStationFlight source, BaseStationFlight destination)
+        {
+            destination.Callsign =                  source.Callsign ?? "";
+            destination.EndTime =                   source.EndTime;
+            destination.FirstAltitude =             source.FirstAltitude;
+            destination.FirstGroundSpeed =          source.FirstGroundSpeed;
+            destination.FirstIsOnGround =           source.FirstIsOnGround;
+            destination.FirstLat =                  source.FirstLat;
+            destination.FirstLon =                  source.FirstLon;
+            destination.FirstSquawk =               source.FirstSquawk;
+            destination.FirstTrack =                source.FirstTrack;
+            destination.FirstVerticalRate =         source.FirstVerticalRate;
+            destination.HadAlert =                  source.HadAlert;
+            destination.HadEmergency =              source.HadEmergency;
+            destination.HadSpi =                    source.HadSpi;
+            destination.LastAltitude =              source.LastAltitude;
+            destination.LastGroundSpeed =           source.LastGroundSpeed;
+            destination.LastIsOnGround =            source.LastIsOnGround;
+            destination.LastLat =                   source.LastLat;
+            destination.LastLon =                   source.LastLon;
+            destination.LastSquawk =                source.LastSquawk;
+            destination.LastTrack =                 source.LastTrack;
+            destination.LastVerticalRate =          source.LastVerticalRate;
+            destination.NumADSBMsgRec =             source.NumADSBMsgRec;
+            destination.NumAirCallRepMsgRec =       source.NumAirCallRepMsgRec;
+            destination.NumAirPosMsgRec =           source.NumAirPosMsgRec;
+            destination.NumAirToAirMsgRec =         source.NumAirToAirMsgRec;
+            destination.NumAirVelMsgRec =           source.NumAirVelMsgRec;
+            destination.NumIDMsgRec =               source.NumIDMsgRec;
+            destination.NumModeSMsgRec =            source.NumModeSMsgRec;
+            destination.NumPosMsgRec =              source.NumPosMsgRec;
+            destination.NumSurAltMsgRec =           source.NumSurAltMsgRec;
+            destination.NumSurIDMsgRec =            source.NumSurIDMsgRec;
+            destination.NumSurPosMsgRec =           source.NumSurPosMsgRec;
+
+            return destination;
         }
 
         /// <summary>
@@ -585,18 +689,6 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 StartTime = localNow,
             };
             _Database.InsertFlight(result);
-
-            result.NumADSBMsgRec = 0;
-            result.NumAirCallRepMsgRec = 0;
-            result.NumAirPosMsgRec = 0;
-            result.NumAirToAirMsgRec = 0;
-            result.NumAirVelMsgRec = 0;
-            result.NumIDMsgRec = 0;
-            result.NumModeSMsgRec = 0;
-            result.NumPosMsgRec = 0;
-            result.NumSurAltMsgRec = 0;
-            result.NumSurIDMsgRec = 0;
-            result.NumSurPosMsgRec = 0;
 
             return result;
         }
@@ -681,14 +773,28 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <param name="flushAll"></param>
         private void FlushFlights(bool flushAll)
         {
-            lock(_SyncLock) {
-                var utcNow = Provider.UtcNow;
-                var flushEntries = (flushAll ? _FlightMap : _FlightMap.Where(kvp => kvp.Value.EndTimeUtc.AddMinutes(25) <= utcNow)).ToArray();
+            var utcNow = Provider.UtcNow;
 
+            KeyValuePair<string, FlightRecords>[] flushEntries = null;
+            lock(_SyncLock) {
+                flushEntries = (flushAll ? _FlightMap : _FlightMap.Where(kvp => kvp.Value.EndTimeUtc.AddMinutes(25) <= utcNow)).ToArray();
+            }
+
+            _Database.StartTransaction();
+            try {
                 foreach(var kvp in flushEntries) {
                     _Database.UpdateFlight(kvp.Value.Flight);
-                    _FlightMap.Remove(kvp.Key);     // Do this last so that if a write fails then the flight remains in the queue of flights to flush
                 }
+                _Database.EndTransaction();
+
+                lock(_SyncLock) {
+                    foreach(var kvp in flushEntries) {
+                        _FlightMap.Remove(kvp.Key);
+                    }
+                }
+            } catch {
+                _Database.RollbackTransaction();
+                throw;
             }
         }
         #endregion
@@ -744,19 +850,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             try {
                 TrackFlight(args.Message, isMlat: args.IsOutOfBand);
-                if(StatusDescription == PluginStrings.DatabaseLocked) StatusDescription = null;
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
-                // If this is a lock exception then the flight records won't have been set up, and we won't have the flight
-                // tracked in the dictionary of flights. This isn't a huge deal, the next message will trigger another attempt
-                // at recording the flight.
-                if(IsSQLiteLockException(ex)) {
-                    StatusDescription = PluginStrings.DatabaseLocked;
-                } else {
-                    AbandonSession(ex, PluginStrings.ExceptionCaughtWhenProcessingMessage);
-                    Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.MessageRelay_MessageReceived caught exception {0}", ex.ToString()));
-                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
-                }
+                AbandonSession(ex, PluginStrings.ExceptionCaughtWhenProcessingMessage);
+                Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.MessageRelay_MessageReceived caught exception {0}", ex.ToString()));
+                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
             }
         }
 
@@ -778,6 +876,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private void Heartbeat_SlowTick(object sender, EventArgs args)
         {
             try {
+                WriteNewFlights();
                 FlushFlights(false);
                 if(StatusDescription == PluginStrings.DatabaseLocked) StatusDescription = null;
             } catch(ThreadAbortException) {
