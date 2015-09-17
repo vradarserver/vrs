@@ -292,6 +292,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
                         if(json.Aircraft.Registration != null)      json.Aircraft.Registration =     json.Aircraft.Registration.ToUpper();
                         if(json.Aircraft.ICAOTypeCode != null)      json.Aircraft.ICAOTypeCode =     json.Aircraft.ICAOTypeCode.ToUpper();
                         if(json.Aircraft.OperatorFlagCode != null)  json.Aircraft.OperatorFlagCode = json.Aircraft.OperatorFlagCode.ToUpper();
+                        json.Aircraft.LastModified = DateTime.Now;
 
                         if(json.Aircraft.AircraftID == 0) {
                             _BaseStationDatabase.InsertAircraft(json.Aircraft);
