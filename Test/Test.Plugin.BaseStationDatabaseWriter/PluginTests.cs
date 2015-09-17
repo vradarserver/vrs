@@ -80,11 +80,16 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _AutoConfigBaseStationDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();
             _AutoConfigBaseStationDatabase.Setup(a => a.Database).Returns(_BaseStationDatabase.Object);
 
+            _BaseStationDatabase.Setup(r => r.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft r) => r.AircraftID = 100);
+            _BaseStationDatabase.Setup(r => r.InsertFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight r) => r.FlightID = 200);
+
             _BaseStationDatabase.Setup(d => d.GetLocations()).Returns(new List<BaseStationLocation>() { new BaseStationLocation() { LocationID = 9821 } } );
             SetDBHistory(true);
 
+            _HeartbeatService = TestUtilities.CreateMockInstance<IHeartbeatService>();
+            Factory.Singleton.RegisterInstance(typeof(IHeartbeatService), _HeartbeatService.Object);
+
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
-            _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _Log = TestUtilities.CreateMockSingleton<ILog>();
             _SqliteException = TestUtilities.CreateMockImplementation<ISQLiteException>();
 
@@ -407,6 +412,14 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _BaseStationDatabase.Verify(d => d.InsertSession(It.IsAny<BaseStationSession>()), Times.Once());
         }
+
+        [TestMethod]
+        public void Plugin_Startup_Initialises_Private_Heartbeat_Service()
+        {
+            _Plugin.Startup(_StartupParameters);
+
+            _HeartbeatService.Verify(r => r.Start(), Times.Once());
+        }
         #endregion
 
         #region Shutdown
@@ -706,6 +719,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "X" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
         }
@@ -760,6 +774,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "X" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
         }
@@ -1104,6 +1119,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Once());
             Assert.AreEqual(0, aircraft.AircraftID);
@@ -1158,6 +1174,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             Assert.IsTrue(sawInsertOfNull);
         }
@@ -1180,6 +1197,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             Assert.IsTrue(sawInsertOfNull);
         }
@@ -1199,6 +1217,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(new CodeBlock() { Country = "Y" });
             _StandingDataManager.Raise(r => r.LoadCompleted += null, EventArgs.Empty);
@@ -1237,6 +1256,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _StandingDataManager.Raise(r => r.LoadCompleted += null, EventArgs.Empty);
 
@@ -1297,6 +1317,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
         }
@@ -1327,8 +1348,9 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 if(message.MessageType == BaseStationMessageType.Transmission && message.TransmissionType != BaseStationTransmissionType.None) ++expectedInserts;
 
                 _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+                _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-                _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Exactly(expectedInserts), messageType.ToString());
+                _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Exactly(expectedInserts), String.Format("{0}/{1}/{2}", messageType.MessageType, messageType.StatusCode, messageType.TransmissionType));
             }
         }
 
@@ -1351,6 +1373,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "Z", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir }));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.EndTransaction(), Times.Once());
         }
@@ -1386,6 +1409,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             Assert.AreEqual(5832, flight.AircraftID);
@@ -1404,8 +1428,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             var messageX = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             var messageY = new BaseStationMessage() { AircraftId = 42, Icao24 = "Y", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageX));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageX));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageY));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.GetAircraftByCode("X"), Times.Once());
             _BaseStationDatabase.Verify(d => d.GetAircraftByCode("Y"), Times.Once());
@@ -1423,7 +1450,9 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             _BaseStationDatabase.Verify(d => d.UpdateFlight(It.IsAny<BaseStationFlight>()), Times.Never());
@@ -1500,11 +1529,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
-            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
+            Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1520,34 +1550,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
-            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
-        }
-
-        [TestMethod]
-        public void Plugin_Reports_Exceptions_During_Flight_Callsign_Update()
-        {
-            var exception = new InvalidOperationException();
-            SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback(() => { throw exception; });
-
-            _Plugin.Startup(_StartupParameters);
-
-            _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            message.Callsign = "Z";
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
-            Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
-            _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
-            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
+            Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1563,11 +1571,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
-            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
+            Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
         }
 
         [TestMethod]
@@ -1583,11 +1592,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
-            Assert.AreEqual(String.Format("Exception caught when processing message: {0}", exception.Message), _Plugin.StatusDescription);
+            Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
         }
         #endregion
 
@@ -1604,86 +1614,10 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = null, MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             Assert.AreEqual("", flight.Callsign);
-        }
-
-        [TestMethod]
-        public void Plugin_Flight_Updated_If_Subsequent_Message_Adds_Callsign()
-        {
-            SetEnabledOption(true);
-
-            _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight flight) => {
-                // The update must ONLY update the callsign, it isn't allowed to fill in the values that are set when the flight is closed off
-                Assert.AreEqual("ABC123", flight.Callsign);
-                Assert.AreEqual(null, flight.EndTime);
-                Assert.AreEqual(null, flight.FirstAltitude);
-                Assert.AreEqual(null, flight.FirstGroundSpeed);
-                Assert.AreEqual(false, flight.FirstIsOnGround);
-                Assert.AreEqual(null, flight.FirstLat);
-                Assert.AreEqual(null, flight.FirstLon);
-                Assert.AreEqual(null, flight.FirstSquawk);
-                Assert.AreEqual(null, flight.FirstTrack);
-                Assert.AreEqual(null, flight.FirstVerticalRate);
-                Assert.AreEqual(false, flight.HadAlert);
-                Assert.AreEqual(false, flight.HadEmergency);
-                Assert.AreEqual(false, flight.HadSpi);
-                Assert.AreEqual(null, flight.LastAltitude);
-                Assert.AreEqual(null, flight.LastGroundSpeed);
-                Assert.AreEqual(false, flight.LastIsOnGround);
-                Assert.AreEqual(null, flight.LastLat);
-                Assert.AreEqual(null, flight.LastLon);
-                Assert.AreEqual(null, flight.LastSquawk);
-                Assert.AreEqual(null, flight.LastTrack);
-                Assert.AreEqual(null, flight.LastVerticalRate);
-                Assert.AreEqual(null, flight.NumADSBMsgRec);
-                Assert.AreEqual(null, flight.NumModeSMsgRec);
-                Assert.AreEqual(null, flight.NumIDMsgRec);
-                Assert.AreEqual(null, flight.NumSurPosMsgRec);
-                Assert.AreEqual(null, flight.NumAirPosMsgRec);
-                Assert.AreEqual(null, flight.NumAirVelMsgRec);
-                Assert.AreEqual(null, flight.NumSurAltMsgRec);
-                Assert.AreEqual(null, flight.NumSurIDMsgRec);
-                Assert.AreEqual(null, flight.NumAirToAirMsgRec);
-                Assert.AreEqual(null, flight.NumAirCallRepMsgRec);
-                Assert.AreEqual(null, flight.NumPosMsgRec);
-            });
-
-            _Plugin.Startup(_StartupParameters);
-
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = null, Altitude = 31, Emergency = true,
-                GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
-                OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            message.Callsign = "ABC123";
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            _BaseStationDatabase.Verify(d => d.UpdateFlight(It.IsAny<BaseStationFlight>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Plugin_Flight_Not_Updated_After_Callsign_Set()
-        {
-            SetEnabledOption(true);
-
-            BaseStationFlight flight = null;
-            _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight f) => { flight = f; });
-
-            _Plugin.Startup(_StartupParameters);
-
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = null };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir,AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123" };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir,AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "XYZ987" };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            _BaseStationDatabase.Verify(d => d.UpdateFlight(It.IsAny<BaseStationFlight>()), Times.Once());
-            Assert.AreEqual("ABC123", flight.Callsign);
         }
 
         [TestMethod]
@@ -1702,6 +1636,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             var endTime = SetProviderTimes(startTime.AddMinutes(MinutesBeforeFlightClosed));
             _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
@@ -1871,9 +1806,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             message.Callsign = "ABC123";
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight flight) => {
                 Assert.AreEqual("ABC123", flight.Callsign);
@@ -1882,7 +1819,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             var endTime = SetProviderTimes(startTime.AddMinutes(MinutesBeforeFlightClosed));
             _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.UpdateFlight(It.IsAny<BaseStationFlight>()), Times.Exactly(2));
+            _BaseStationDatabase.Verify(d => d.UpdateFlight(It.IsAny<BaseStationFlight>()), Times.Once());
         }
 
         [TestMethod]
@@ -2112,6 +2049,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             time = SetProviderTimes(time.AddMilliseconds(1));
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Exactly(2));
         }
