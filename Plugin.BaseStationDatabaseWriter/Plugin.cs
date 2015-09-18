@@ -541,8 +541,15 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 newFlights = _FlightMap.Where(r => r.Value.Aircraft.AircraftID == 0 && r.Value.Flight.FlightID == 0).Select(r => r.Value).ToArray();
             }
 
-            foreach(var flight in newFlights) {
-                WriteFlightRecords(flight);
+            _Database.StartTransaction();
+            try {
+                foreach(var flight in newFlights) {
+                    WriteFlightRecords(flight);
+                }
+                _Database.EndTransaction();
+            } catch {
+                _Database.RollbackTransaction();
+                throw;
             }
         }
 
