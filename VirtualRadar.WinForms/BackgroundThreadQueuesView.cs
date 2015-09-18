@@ -185,19 +185,22 @@ namespace VirtualRadar.WinForms
         {
             var item = queueDetail.ListViewItem;
 
+            var countQueuedItems = queue.CountQueuedItems;
+            var peakQueuedItems = queue.PeakQueuedItems;
+
             if(forceRefresh || queue.Name != queueDetail.Name) {
                 item.SubItems[0].Text = queue.Name;
                 queueDetail.Name = queue.Name;
             }
 
-            if(forceRefresh || queue.CountQueuedItems != queueDetail.Count) {
-                item.SubItems[1].Text = queue.CountQueuedItems.ToString("N0");
-                queueDetail.Count = queue.CountQueuedItems;
+            if(forceRefresh || countQueuedItems != queueDetail.Count) {
+                item.SubItems[1].Text = countQueuedItems.ToString("N0");
+                queueDetail.Count = countQueuedItems;
             }
 
-            if(forceRefresh || queue.PeakQueuedItems != queueDetail.Peak) {
-                item.SubItems[2].Text = queue.PeakQueuedItems.ToString("N0");
-                queueDetail.Peak = queue.PeakQueuedItems;
+            if(forceRefresh || peakQueuedItems != queueDetail.Peak) {
+                item.SubItems[2].Text = peakQueuedItems.ToString("N0");
+                queueDetail.Peak = peakQueuedItems;
             }
         }
     }
