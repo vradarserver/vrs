@@ -209,8 +209,5 @@ namespace VirtualRadar.Plugin.FeedFilter
             }
         }
         #endregion
-
-        #region Events subscribed
-        #endregion
     }
 }
