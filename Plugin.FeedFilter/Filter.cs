@@ -62,7 +62,7 @@ namespace VirtualRadar.Plugin.FeedFilter
                                 var icaoNumber = Convert.ToInt32(normalisedIcao, 16);
                                 _ProhibitedIcaoStrings.Add(normalisedIcao);
                                 _ProhibitedIcaoNumbers.Add(icaoNumber);
-                            } catch {
+                            } catch(FormatException) {
                                 // Unparsable ICAO. These should have been caught by validation, we're not
                                 // going to make a song and dance about them here.
                             }
