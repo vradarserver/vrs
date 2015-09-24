@@ -8,6 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRada
 		{86248078-7A1C-486D-8D08-064CC14FDB70} = {86248078-7A1C-486D-8D08-064CC14FDB70}
 		{FE25F47B-7A81-4A04-8E00-99C36BCA8E03} = {FE25F47B-7A81-4A04-8E00-99C36BCA8E03}
 		{2BCFACA1-27D3-4D74-B528-3F702E17DC01} = {2BCFACA1-27D3-4D74-B528-3F702E17DC01}
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB} = {DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}
 		{3465B4A9-2278-422D-B1D5-E2CDCB308D03} = {3465B4A9-2278-422D-B1D5-E2CDCB308D03}
 	EndProjectSection
 EndProject
@@ -75,9 +76,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DisableAudio", "Plug
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DatabaseEditor", "Plugin.DatabaseEditor\Plugin.DatabaseEditor.csproj", "{3465B4A9-2278-422D-B1D5-E2CDCB308D03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.FeedFilter", "Plugin.FeedFilter\Plugin.FeedFilter.csproj", "{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 29
+		SccNumberOfProjects = 30
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs22
 		SccLocalPath0 = .
@@ -173,6 +176,9 @@ Global
 		SccProjectUniqueName28 = Plugin.DatabaseEditor\\Plugin.DatabaseEditor.csproj
 		SccProjectName28 = Plugin.DatabaseEditor
 		SccLocalPath28 = Plugin.DatabaseEditor
+		SccProjectUniqueName29 = Plugin.FeedFilter\\Plugin.FeedFilter.csproj
+		SccProjectName29 = Plugin.FeedFilter
+		SccLocalPath29 = Plugin.FeedFilter
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -463,6 +469,16 @@ Global
 		{3465B4A9-2278-422D-B1D5-E2CDCB308D03}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3465B4A9-2278-422D-B1D5-E2CDCB308D03}.Release|x86.ActiveCfg = Release|x86
 		{3465B4A9-2278-422D-B1D5-E2CDCB308D03}.Release|x86.Build.0 = Release|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Debug|x86.ActiveCfg = Debug|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Debug|x86.Build.0 = Debug|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|Any CPU.ActiveCfg = Release|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|Mixed Platforms.Build.0 = Release|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|x86.ActiveCfg = Release|x86
+		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

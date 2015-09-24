@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3465B4A9-2278-422D-B1D5-E2CDCB308D03}</ProjectGuid>
+    <ProjectGuid>{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VirtualRadar.Plugin.DatabaseEditor</RootNamespace>
-    <AssemblyName>VirtualRadar.Plugin.DatabaseEditor</AssemblyName>
+    <RootNamespace>VirtualRadar.Plugin.FeedFilter</RootNamespace>
+    <AssemblyName>VirtualRadar.Plugin.FeedFilter</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -49,51 +49,57 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseEditorStrings.zh-CN.Designer.cs">
-      <DependentUpon>DatabaseEditorStrings.zh-CN.resx</DependentUpon>
+    <Compile Include="FeedFilterStrings.fr-FR.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FeedFilterStrings.fr-FR.resx</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseEditorStrings.ru-RU.Designer.cs">
-      <DependentUpon>DatabaseEditorStrings.ru-RU.resx</DependentUpon>
+    <Compile Include="FeedFilterStrings.ru-RU.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FeedFilterStrings.ru-RU.resx</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseEditorStrings.pt-BR.Designer.cs">
-      <DependentUpon>DatabaseEditorStrings.pt-BR.resx</DependentUpon>
+    <Compile Include="FeedFilterStrings.zh-CN.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FeedFilterStrings.zh-CN.resx</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseEditorStrings.fr-FR.Designer.cs">
-      <DependentUpon>DatabaseEditorStrings.fr-FR.resx</DependentUpon>
+    <Compile Include="Filter.cs" />
+    <Compile Include="FeedFilterStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FeedFilterStrings.resx</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseEditorStrings.de-DE.Designer.cs">
-      <DependentUpon>DatabaseEditorStrings.de-DE.resx</DependentUpon>
+    <Compile Include="FeedFilterStrings.de-DE.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FeedFilterStrings.de-DE.resx</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseEditorStrings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DatabaseEditorStrings.resx</DependentUpon>
-    </Compile>
-    <Compile Include="IOptionsView.cs" />
-    <Compile Include="Json\ResponseJson.cs" />
-    <Compile Include="Json\SingleAircraftSaveResultsJson.cs" />
-    <Compile Include="Json\SingleSearchResultsJson.cs" />
+    <Compile Include="FilterConfiguration.cs" />
+    <Compile Include="FilterConfigurationStorage.cs" />
+    <Compile Include="ListenerWrapper.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="OptionsStorage.cs" />
+    <Compile Include="OriginalImplementationFactory.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginLocalise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FeedFilterStrings.pt-BR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FeedFilterStrings.pt-BR.resx</DependentUpon>
+    </Compile>
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WinForms\OptionsView.Designer.cs">
       <DependentUpon>OptionsView.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="VirtualRadar.Plugin.FeedFilter.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -113,68 +119,46 @@
       <Name>VirtualRadar.WinForms</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="VirtualRadar.Plugin.DatabaseEditor.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap.css" />
-    <Content Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Web\css-DatabaseEditor\database-editor.css" />
-    <Content Include="Web\DatabaseEditor\index.html" />
-    <Content Include="Web\DatabaseEditor\index.js" />
-    <Content Include="Web\DatabaseEditor\models.js" />
-    <Content Include="Web\script-DatabaseEditor\bootstrap-collapsible-panel.js" />
-    <Content Include="Web\script-DatabaseEditor\bootstrap.js" />
-    <Content Include="Web\script-DatabaseEditor\inject.js" />
-    <Content Include="Web\script-DatabaseEditor\knockout-extenders.js" />
-    <Content Include="Web\script-DatabaseEditor\knockout.js" />
-    <Content Include="Web\script-DatabaseEditor\knockout.mapping.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="_PostBuild.bat" />
-    <None Include="_PostBuildCopyLanguage.bat" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="DatabaseEditorStrings.zh-CN.resx">
+    <EmbeddedResource Include="FeedFilterStrings.de-DE.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DatabaseEditorStrings.zh-CN.Designer.cs</LastGenOutput>
+      <LastGenOutput>FeedFilterStrings.de-DE.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseEditorStrings.ru-RU.resx">
+    <EmbeddedResource Include="FeedFilterStrings.fr-FR.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DatabaseEditorStrings.ru-RU.Designer.cs</LastGenOutput>
+      <LastGenOutput>FeedFilterStrings.fr-FR.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseEditorStrings.pt-BR.resx">
+    <EmbeddedResource Include="FeedFilterStrings.pt-BR.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DatabaseEditorStrings.pt-BR.Designer.cs</LastGenOutput>
+      <LastGenOutput>FeedFilterStrings.pt-BR.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseEditorStrings.fr-FR.resx">
+    <EmbeddedResource Include="FeedFilterStrings.ru-RU.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DatabaseEditorStrings.fr-FR.Designer.cs</LastGenOutput>
+      <LastGenOutput>FeedFilterStrings.ru-RU.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseEditorStrings.de-DE.resx">
+    <EmbeddedResource Include="FeedFilterStrings.zh-CN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DatabaseEditorStrings.de-DE.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseEditorStrings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DatabaseEditorStrings.Designer.cs</LastGenOutput>
+      <LastGenOutput>FeedFilterStrings.zh-CN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\OptionsView.resx">
       <DependentUpon>OptionsView.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="_PostBuild.bat" />
+    <None Include="_PostBuildCopyLanguage.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FeedFilterStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FeedFilterStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Web\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "DatabaseEditor"</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "FeedFilter"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
