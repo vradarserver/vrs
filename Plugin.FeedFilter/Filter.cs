@@ -28,18 +28,40 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// </summary>
         class ParsedConfiguration
         {
+            /// <summary>
+            /// Protects the fields from multi-threaded access.
+            /// </summary>
             private SpinLock _Lock = new SpinLock();
 
+            /// <summary>
+            /// True if the plugin is enabled.
+            /// </summary>
             private bool _Enabled;
 
+            /// <summary>
+            /// True if MLAT positions are to be stripped out.
+            /// </summary>
             private bool _ProhibitMlat;
 
+            /// <summary>
+            /// True if unfilterable feeds are to be prohibited.
+            /// </summary>
             private bool _ProhibitUnfilterableFeeds;
 
+            /// <summary>
+            /// The collection of prohibited ICAOs as 6 digit upper-case hex strings.
+            /// </summary>
             private HashSet<string> _ProhibitedIcaoStrings = new HashSet<string>();
 
+            /// <summary>
+            /// The collection of prohibited ICAOs as integers.
+            /// </summary>
             private HashSet<int> _ProhibitedIcaoNumbers = new HashSet<int>();
 
+            /// <summary>
+            /// Applies changes to the plugin options.
+            /// </summary>
+            /// <param name="options"></param>
             public void ApplyOptionsChange(Options options)
             {
                 using(_Lock.AcquireLock()) {
@@ -48,6 +70,10 @@ namespace VirtualRadar.Plugin.FeedFilter
                 }
             }
 
+            /// <summary>
+            /// Applies changes to the filter settings.
+            /// </summary>
+            /// <param name="filterConfiguration"></param>
             public void ApplyFilterConfigurationChange(FilterConfiguration filterConfiguration)
             {
                 using(_Lock.AcquireLock()) {
@@ -71,6 +97,10 @@ namespace VirtualRadar.Plugin.FeedFilter
                 }
             }
 
+            /// <summary>
+            /// Returns true if unfilterable feeds are to be prohibited.
+            /// </summary>
+            /// <returns></returns>
             public bool AreUnfilterableFeedsProhibited()
             {
                 _Lock.Lock();
@@ -81,6 +111,10 @@ namespace VirtualRadar.Plugin.FeedFilter
                 }
             }
 
+            /// <summary>
+            /// Returns true if MLAT is prohibited.
+            /// </summary>
+            /// <returns></returns>
             public bool IsMlatProhibited()
             {
                 _Lock.Lock();
@@ -91,6 +125,11 @@ namespace VirtualRadar.Plugin.FeedFilter
                 }
             }
 
+            /// <summary>
+            /// Returns true if the ICAO is prohibited.
+            /// </summary>
+            /// <param name="icao"></param>
+            /// <returns></returns>
             public bool IsIcaoProhibited(string icao)
             {
                 var result = false;
@@ -107,6 +146,11 @@ namespace VirtualRadar.Plugin.FeedFilter
                 return result;
             }
 
+            /// <summary>
+            /// Returns true if the ICAO is prohibited.
+            /// </summary>
+            /// <param name="icao"></param>
+            /// <returns></returns>
             public bool IsIcaoProhibited(int icao)
             {
                 _Lock.Lock();
@@ -117,6 +161,11 @@ namespace VirtualRadar.Plugin.FeedFilter
                 }
             }
 
+            /// <summary>
+            /// Normalises an ICAO for use in the prohibited ICAOs hashset.
+            /// </summary>
+            /// <param name="icao"></param>
+            /// <returns></returns>
             private string NormaliseIcao(string icao)
             {
                 return (icao ?? "").ToUpperInvariant().Trim();
