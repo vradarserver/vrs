@@ -70,11 +70,29 @@ namespace VirtualRadar.Plugin.FeedFilter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prohibit MLAT positions.
+        /// </summary>
+        public static string ProhibitMlat {
+            get {
+                return ResourceManager.GetString("ProhibitMlat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prohibit unfilterable feeds.
         /// </summary>
         public static string ProhibitUnfilterableFeeds {
             get {
                 return ResourceManager.GetString("ProhibitUnfilterableFeeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception encountered: {0}.
+        /// </summary>
+        public static string ServerReportedException {
+            get {
+                return ResourceManager.GetString("ServerReportedException", resourceCulture);
             }
         }
         
@@ -93,6 +111,15 @@ namespace VirtualRadar.Plugin.FeedFilter {
         public static string StatusEnabled {
             get {
                 return ResourceManager.GetString("StatusEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not fetch from server: {0}.
+        /// </summary>
+        public static string XhrFailed {
+            get {
+                return ResourceManager.GetString("XhrFailed", resourceCulture);
             }
         }
     }

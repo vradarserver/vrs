@@ -1,0 +1,26 @@
+﻿#modalWait {
+    display: none;
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.6) url('../images/wait.gif') 50% 50% no-repeat;
+}
+body.wait {
+    overflow: hidden;
+}
+body.wait #modalWait {
+    display: block;
+}
+
+.links {
+    margin-bottom: 20px;
+}
+
+#search-error,
+#save-error,
+#save-success {
+    margin-top: 20px;
+}

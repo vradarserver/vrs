@@ -100,6 +100,18 @@
     <Content Include="VirtualRadar.Plugin.FeedFilter.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\css-FeedFilter\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Web\css-FeedFilter\bootstrap\css\bootstrap.css" />
+    <Content Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Web\css-FeedFilter\feed-filter.css" />
+    <Content Include="Web\FeedFilter\index.html" />
+    <Content Include="Web\FeedFilter\index.js" />
+    <Content Include="Web\FeedFilter\models.js" />
+    <Content Include="Web\script-FeedFilter\bootstrap-collapsible-panel.js" />
+    <Content Include="Web\script-FeedFilter\bootstrap.js" />
+    <Content Include="Web\script-FeedFilter\knockout-extenders.js" />
+    <Content Include="Web\script-FeedFilter\knockout.js" />
+    <Content Include="Web\script-FeedFilter\knockout.mapping.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -144,6 +156,9 @@
     <EmbeddedResource Include="WinForms\OptionsView.resx">
       <DependentUpon>OptionsView.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
@@ -153,9 +168,7 @@
       <LastGenOutput>FeedFilterStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Web\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "FeedFilter"</PostBuildEvent>

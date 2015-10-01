@@ -120,14 +120,23 @@
   <data name="PluginName" xml:space="preserve">
     <value>Feed Filter</value>
   </data>
+  <data name="ProhibitMlat" xml:space="preserve">
+    <value>Prohibit MLAT positions</value>
+  </data>
   <data name="ProhibitUnfilterableFeeds" xml:space="preserve">
     <value>Prohibit unfilterable feeds</value>
     <comment>Do not allow feeds that cannot be filtered</comment>
+  </data>
+  <data name="ServerReportedException" xml:space="preserve">
+    <value>Exception encountered: {0}</value>
   </data>
   <data name="StatusDisabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="StatusEnabled" xml:space="preserve">
     <value>Enabled</value>
+  </data>
+  <data name="XhrFailed" xml:space="preserve">
+    <value>Could not fetch from server: {0}</value>
   </data>
 </root>
