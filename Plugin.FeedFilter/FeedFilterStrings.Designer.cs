@@ -61,6 +61,51 @@ namespace VirtualRadar.Plugin.FeedFilter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prohibit ICAOs.
+        /// </summary>
+        public static string BlockIcaos {
+            get {
+                return ResourceManager.GetString("BlockIcaos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter ICAOs separated by commas or on separate lines.
+        /// </summary>
+        public static string BlockIcaosInstructions {
+            get {
+                return ResourceManager.GetString("BlockIcaosInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The filter configuration could not be saved because it has been changed elsewhere. Reload the page and try again..
+        /// </summary>
+        public static string CouldNotSaveOutOfDate {
+            get {
+                return ResourceManager.GetString("CouldNotSaveOutOfDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The duplicate entries for the following ICAOs were not saved.
+        /// </summary>
+        public static string FoundDuplicateIcaos {
+            get {
+                return ResourceManager.GetString("FoundDuplicateIcaos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following ICAOs were invalid and were not saved.
+        /// </summary>
+        public static string FoundInvalidIcaos {
+            get {
+                return ResourceManager.GetString("FoundInvalidIcaos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feed Filter.
         /// </summary>
         public static string PluginName {
@@ -84,6 +129,15 @@ namespace VirtualRadar.Plugin.FeedFilter {
         public static string ProhibitUnfilterableFeeds {
             get {
                 return ResourceManager.GetString("ProhibitUnfilterableFeeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        public static string Saved {
+            get {
+                return ResourceManager.GetString("Saved", resourceCulture);
             }
         }
         

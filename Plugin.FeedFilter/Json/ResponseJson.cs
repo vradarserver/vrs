@@ -13,34 +13,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Plugin.FeedFilter
+namespace VirtualRadar.Plugin.FeedFilter.Json
 {
     /// <summary>
-    /// All of the configuration settings for the filter.
+    /// The base class for all JSON response objects.
     /// </summary>
-    class FilterConfiguration
+    class ResponseJson
     {
         /// <summary>
-        /// Gets a list of aircraft ICAO codes that must not be allowed through to the rest of the system.
+        /// Gets or sets the message from the exception encountered during the processing of the request.
         /// </summary>
-        public List<string> ProhibitedIcaos { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that MLAT positions must not be allowed through the filter.
-        /// </summary>
-        public bool ProhibitMlat { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value that is incremented every time the settings are saved.
-        /// </summary>
-        public long DataVersion { get; set; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public FilterConfiguration()
-        {
-            ProhibitedIcaos = new List<string>();
-        }
+        public string Exception { get; set; }
     }
 }

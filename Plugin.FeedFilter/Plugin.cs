@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Localisation;
+using VirtualRadar.Plugin.FeedFilter.Json;
 
 namespace VirtualRadar.Plugin.FeedFilter
 {
@@ -155,7 +157,11 @@ namespace VirtualRadar.Plugin.FeedFilter
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = false;
             _WebSiteExtender.WebRootSubFolder = "Web";
+            _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/FetchFilterConfiguration.json", ProtectedFolder), FetchFilterConfiguration);
+            _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SaveFilterConfiguration.json", ProtectedFolder), SaveFilterConfiguration);
             _WebSiteExtender.Initialise(parameters);
+
+            parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
 
             ApplyOptions(options);
         }
@@ -181,7 +187,10 @@ namespace VirtualRadar.Plugin.FeedFilter
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
+                var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+
                 dialog.Options = OptionsStorage.Load(this);
+                dialog.FilterSettingsUrl = String.Format("{0}/FeedFilter/index.html", webServer.LocalAddress);
 
                 if(dialog.ShowDialog() == DialogResult.OK) {
                     OptionsStorage.Save(this, dialog.Options);
@@ -206,6 +215,110 @@ namespace VirtualRadar.Plugin.FeedFilter
                 Status = FeedFilterStrings.StatusDisabled;
             } else {
                 Status = FeedFilterStrings.StatusEnabled;
+            }
+        }
+        #endregion
+
+        #region JSON page handlers - FetchFilterConfiguration, SaveFilterConfiguration
+        /// <summary>
+        /// Returns the current filter settings.
+        /// </summary>
+        /// <param name="args"></param>
+        private void FetchFilterConfiguration(RequestReceivedEventArgs args)
+        {
+            if(args.Request.HttpMethod == "GET") {
+                var json = new FilterConfigurationJson();
+
+                try {
+                    json.FromFilterConfiguration(FilterConfigurationStorage.Load());
+                } catch(Exception ex) {
+                    json.Exception = LogException(ex, "Exception caught during FeedFilter FetchFilterConfiguration: {0}", ex.ToString());
+                }
+
+                SendJsonResponse(args, json);
+            }
+        }
+
+        /// <summary>
+        /// Saves the settings passed across and returns the saved values.
+        /// </summary>
+        /// <param name="args"></param>
+        private void SaveFilterConfiguration(RequestReceivedEventArgs args)
+        {
+            if(args.Request.HttpMethod == "POST") {
+                var json = new SaveFilterConfigurationJson();
+
+                try {
+                    json.DataVersion = long.Parse(args.Request.FormValues["DataVersion"], CultureInfo.InvariantCulture);
+                    json.ProhibitMlat = bool.Parse(args.Request.FormValues["ProhibitMlat"]);
+                    json.ProhibitedIcaos = args.Request.FormValues["ProhibitedIcaos"];
+
+                    var filterConfiguration = json.ToFilterConfiguration(json.DuplicateProhibitedIcaos, json.InvalidProhibitedIcaos);
+
+                    json.WasStaleData = !FilterConfigurationStorage.Save(this, filterConfiguration);
+                    if(!json.WasStaleData) {
+                        json.FromFilterConfiguration(filterConfiguration);
+                    }
+                } catch(Exception ex) {
+                    json.Exception = LogException(ex, "Exception caught during FeedFilter SaveFilterConfiguration: {0}", ex.ToString());
+                }
+
+                SendJsonResponse(args, json);
+            }
+        }
+
+        /// <summary>
+        /// Logs an exception and returns the message portion.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private string LogException(Exception ex, string logMessage)
+        {
+            var log = Factory.Singleton.Resolve<ILog>().Singleton;
+            log.WriteLine(logMessage);
+
+            return ex.Message;
+        }
+
+        /// <summary>
+        /// Logs an exception and returns the message portion.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="formatLogMessage"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private string LogException(Exception ex, string formatLogMessage, params object[] args)
+        {
+            var logMessage = String.Format(formatLogMessage, args);
+            return LogException(ex, logMessage);
+        }
+
+        /// <summary>
+        /// Sends the object passed across as a JSON response.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="args"></param>
+        /// <param name="json"></param>
+        private void SendJsonResponse<T>(RequestReceivedEventArgs args, T json)
+        {
+            var jsonText = JsonConvert.SerializeObject(json);
+            var responder = Factory.Singleton.Resolve<IResponder>();
+            responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
+            args.Handled = true;
+        }
+        #endregion
+
+        #region Events subscribed
+        /// <summary>
+        /// Called whenever the web site fetches an HTML file from disk.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void WebSite_HtmlLoadedFromFile(object sender, TextContentEventArgs e)
+        {
+            var key = e.PathAndFile.ToLower();
+            if(key.StartsWith("/feedfilter/")) {
+                e.Content = _HtmlLocaliser.Html(e.Content, e.Encoding);
             }
         }
         #endregion
