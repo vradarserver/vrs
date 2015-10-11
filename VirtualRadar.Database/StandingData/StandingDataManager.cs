@@ -88,6 +88,11 @@ namespace VirtualRadar.Database.StandingData
         private List<CodeBlockBitMask> _CodeBlockCache = new List<CodeBlockBitMask>();
 
         /// <summary>
+        /// The object that is used to lock _CodeBlockCache while it's being loaded.
+        /// </summary>
+        private SpinLock _CodeBlockSpinLock = new SpinLock();
+
+        /// <summary>
         /// A list of every fake ground vehicle model code;
         /// </summary>
         private string[] _FakeGroundVehicleCodes;
@@ -251,9 +256,7 @@ namespace VirtualRadar.Database.StandingData
 
         private void CacheCodeBlocks()
         {
-            _CodeBlockCache.Clear();
-            CodeBlocksLoaded = false;
-
+            var newCache = new List<CodeBlockBitMask>();
             if(_FilesValid) {
                 using(var connection = CreateOpenConnection()) {
                     Sql.RunSql(connection, null,
@@ -271,14 +274,17 @@ namespace VirtualRadar.Database.StandingData
                                 Country =           Sql.GetString(reader, 3),
                             },
                         };
-                        _CodeBlockCache.Add(cacheEntry);
+                        newCache.Add(cacheEntry);
                         return true;
                     }, false, null);
                 }
+                newCache.Sort((CodeBlockBitMask lhs, CodeBlockBitMask rhs) => { return -(lhs.SignificantBitMask - rhs.SignificantBitMask); });
             }
 
-            CodeBlocksLoaded = _CodeBlockCache.Count > 0;
-            _CodeBlockCache.Sort((CodeBlockBitMask lhs, CodeBlockBitMask rhs) => { return -(lhs.SignificantBitMask - rhs.SignificantBitMask); });
+            using(var codeBlockLock = _CodeBlockSpinLock.AcquireLock()) {
+                _CodeBlockCache = newCache;
+                CodeBlocksLoaded = _CodeBlockCache.Count > 0;
+            }
         }
 
         private void LoadOverrides()
@@ -295,6 +301,8 @@ namespace VirtualRadar.Database.StandingData
 
         private void LoadCodeBlocksOverrides(string fileName, ILog log)
         {
+            var newCodeBlocks = new List<CodeBlockBitMask>();
+
             string country = null;
             int lineNumber = 0;
             foreach(var line in Provider.ReadAllLines(fileName)) {
@@ -327,7 +335,7 @@ namespace VirtualRadar.Database.StandingData
                                     continue;
                                 }
 
-                                _CodeBlockCache.Insert(0, new CodeBlockBitMask() {
+                                newCodeBlocks.Add(new CodeBlockBitMask() {
                                     BitMask = bitmask,
                                     SignificantBitMask = 0xffffff,
                                     CodeBlock = new CodeBlock() {
@@ -338,6 +346,14 @@ namespace VirtualRadar.Database.StandingData
                             }
                         }
                     }
+                }
+            }
+
+            if(newCodeBlocks.Count > 0) {
+                using(var codeBlockLock = _CodeBlockSpinLock.AcquireLock()) {
+                    var newCache = new List<CodeBlockBitMask>(newCodeBlocks);
+                    newCache.AddRange(_CodeBlockCache);
+                    _CodeBlockCache = newCache;
                 }
             }
         }
@@ -684,15 +700,21 @@ namespace VirtualRadar.Database.StandingData
                 }
 
                 if(icaoValue != -1) {
-                    lock(Lock) {
-                        foreach(var entry in _CodeBlockCache) {
-                            if(entry.CodeMatches(icaoValue)) {
-                                result = entry.CodeBlock;
-                                break;
-                            }
-                        }
-                        if(result == null && _FilesValid) result = new CodeBlock();
+                    List<CodeBlockBitMask> codeBlockCache;
+                    _CodeBlockSpinLock.Lock();
+                    try {
+                        codeBlockCache = _CodeBlockCache;
+                    } finally {
+                        _CodeBlockSpinLock.Unlock();
                     }
+
+                    foreach(var entry in codeBlockCache) {
+                        if(entry.CodeMatches(icaoValue)) {
+                            result = entry.CodeBlock;
+                            break;
+                        }
+                    }
+                    if(result == null && _FilesValid) result = new CodeBlock();
                 }
             }
 
