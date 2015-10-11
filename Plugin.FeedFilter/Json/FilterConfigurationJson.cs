@@ -16,9 +16,15 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
         public long DataVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets a newline separated list of aircraft ICAO codes that must not be allowed through to the rest of the system.
+        /// Gets or sets a newline separated list of aircraft ICAO codes.
         /// </summary>
-        public string ProhibitedIcaos { get; set; }
+        public string Icaos { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether <see cref="Icaos"/> are ICAOs that are prohibited or the
+        /// only ICAOs allowed.
+        /// </summary>
+        public bool ProhibitIcaos { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that MLAT positions must not be allowed through the filter.
@@ -32,9 +38,10 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
         /// <returns></returns>
         public void FromFilterConfiguration(FilterConfiguration filterConfiguration)
         {
-            DataVersion =       filterConfiguration.DataVersion;
-            ProhibitMlat =      filterConfiguration.ProhibitMlat;
-            ProhibitedIcaos =   String.Join("\n", filterConfiguration.ProhibitedIcaos.ToArray());
+            DataVersion =   filterConfiguration.DataVersion;
+            ProhibitMlat =  filterConfiguration.ProhibitMlat;
+            ProhibitIcaos = filterConfiguration.ProhibitIcaos;
+            Icaos =         String.Join("\n", filterConfiguration.Icaos.ToArray());
         }
 
         /// <summary>
@@ -46,10 +53,11 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
         public FilterConfiguration ToFilterConfiguration(List<string> duplicateIcaos, List<string> invalidIcaos)
         {
             var result = new FilterConfiguration() {
-                DataVersion =       DataVersion,
-                ProhibitMlat =      ProhibitMlat,
+                DataVersion =   DataVersion,
+                ProhibitMlat =  ProhibitMlat,
+                ProhibitIcaos = ProhibitIcaos,
             };
-            result.ProhibitedIcaos.AddRange(ParseIcaos(ProhibitedIcaos, duplicateIcaos, invalidIcaos));
+            result.Icaos.AddRange(ParseIcaos(Icaos, duplicateIcaos, invalidIcaos));
 
             return result;
         }

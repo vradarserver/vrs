@@ -109,7 +109,6 @@
     <Content Include="Web\css-FeedFilter\feed-filter.css" />
     <Content Include="Web\FeedFilter\index.html" />
     <Content Include="Web\FeedFilter\index.js" />
-    <Content Include="Web\FeedFilter\models.js" />
     <Content Include="Web\script-FeedFilter\bootstrap-collapsible-panel.js" />
     <Content Include="Web\script-FeedFilter\bootstrap.js" />
     <Content Include="Web\script-FeedFilter\knockout-extenders.js" />

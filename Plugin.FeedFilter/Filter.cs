@@ -49,14 +49,19 @@ namespace VirtualRadar.Plugin.FeedFilter
             private bool _ProhibitUnfilterableFeeds;
 
             /// <summary>
-            /// The collection of prohibited ICAOs as 6 digit upper-case hex strings.
+            /// The collection of ICAOs as 6 digit upper-case hex strings.
             /// </summary>
-            private HashSet<string> _ProhibitedIcaoStrings = new HashSet<string>();
+            private HashSet<string> _IcaoStrings = new HashSet<string>();
 
             /// <summary>
             /// The collection of prohibited ICAOs as integers.
             /// </summary>
-            private HashSet<int> _ProhibitedIcaoNumbers = new HashSet<int>();
+            private HashSet<int> _IcaoNumbers = new HashSet<int>();
+
+            /// <summary>
+            /// True if the ICAOs list are prohibited ICAOs, false if they're the only allowable ICAOs.
+            /// </summary>
+            private bool _ProhibitIcaos;
 
             /// <summary>
             /// Applies changes to the plugin options.
@@ -78,16 +83,17 @@ namespace VirtualRadar.Plugin.FeedFilter
             {
                 using(_Lock.AcquireLock()) {
                     _ProhibitMlat = filterConfiguration.ProhibitMlat;
+                    _ProhibitIcaos = filterConfiguration.ProhibitIcaos;
 
-                    _ProhibitedIcaoStrings.Clear();
-                    _ProhibitedIcaoNumbers.Clear();
-                    foreach(var icao in filterConfiguration.ProhibitedIcaos) {
+                    _IcaoStrings.Clear();
+                    _IcaoNumbers.Clear();
+                    foreach(var icao in filterConfiguration.Icaos) {
                         var normalisedIcao = NormaliseIcao(icao);
-                        if(normalisedIcao.Length == 6 && !_ProhibitedIcaoStrings.Contains(normalisedIcao)) {
+                        if(normalisedIcao.Length == 6 && !_IcaoStrings.Contains(normalisedIcao)) {
                             try {
                                 var icaoNumber = Convert.ToInt32(normalisedIcao, 16);
-                                _ProhibitedIcaoStrings.Add(normalisedIcao);
-                                _ProhibitedIcaoNumbers.Add(icaoNumber);
+                                _IcaoStrings.Add(normalisedIcao);
+                                _IcaoNumbers.Add(icaoNumber);
                             } catch(FormatException) {
                                 // Unparsable ICAO. These should have been caught by validation, we're not
                                 // going to make a song and dance about them here.
@@ -137,7 +143,8 @@ namespace VirtualRadar.Plugin.FeedFilter
                     var normalisedIcao = NormaliseIcao(icao);
                     _Lock.Lock();
                     try {
-                        result = _Enabled && _ProhibitedIcaoStrings.Contains(icao);
+                        if(_ProhibitIcaos) result = _Enabled && _IcaoStrings.Contains(icao);
+                        else               result = _Enabled && !_IcaoStrings.Contains(icao);
                     } finally {
                         _Lock.Unlock();
                     }
@@ -155,7 +162,8 @@ namespace VirtualRadar.Plugin.FeedFilter
             {
                 _Lock.Lock();
                 try {
-                    return _Enabled && _ProhibitedIcaoNumbers.Contains(icao);
+                    if(_ProhibitIcaos) return _Enabled && _IcaoNumbers.Contains(icao);
+                    else               return _Enabled && !_IcaoNumbers.Contains(icao);
                 } finally {
                     _Lock.Unlock();
                 }

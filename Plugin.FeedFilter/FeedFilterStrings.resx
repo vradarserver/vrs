@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BlockIcaos" xml:space="preserve">
-    <value>Prohibit ICAOs</value>
+  <data name="AllowIcaos" xml:space="preserve">
+    <value>Only allow ICAOs in list</value>
   </data>
   <data name="BlockIcaosInstructions" xml:space="preserve">
     <value>Enter ICAOs separated by commas or on separate lines</value>
@@ -132,8 +132,14 @@
   <data name="FoundInvalidIcaos" xml:space="preserve">
     <value>The following ICAOs were invalid and were not saved</value>
   </data>
+  <data name="Icaos" xml:space="preserve">
+    <value>ICAOs</value>
+  </data>
   <data name="PluginName" xml:space="preserve">
     <value>Feed Filter</value>
+  </data>
+  <data name="ProhibitIcaos" xml:space="preserve">
+    <value>Block all ICAOs in list</value>
   </data>
   <data name="ProhibitMlat" xml:space="preserve">
     <value>Prohibit MLAT positions</value>

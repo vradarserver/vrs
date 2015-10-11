@@ -16,22 +16,22 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
         public bool WasStaleData { get; set; }
 
         /// <summary>
-        /// Gets a list of prohibited ICAOs that were invalid and therefore not saved.
+        /// Gets a list of ICAOs that were invalid and therefore not saved.
         /// </summary>
-        public List<string> InvalidProhibitedIcaos { get; private set; }
+        public List<string> InvalidIcaos { get; private set; }
 
         /// <summary>
-        /// Gets a list of prohibited ICAOs that were duplicated. Duplicates are removed before saving.
+        /// Gets a list of ICAOs that were duplicated. Duplicates are removed before saving.
         /// </summary>
-        public List<string> DuplicateProhibitedIcaos { get; private set; }
+        public List<string> DuplicateIcaos { get; private set; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public SaveFilterConfigurationJson()
         {
-            InvalidProhibitedIcaos = new List<string>();
-            DuplicateProhibitedIcaos = new List<string>();
+            InvalidIcaos = new List<string>();
+            DuplicateIcaos = new List<string>();
         }
     }
 }

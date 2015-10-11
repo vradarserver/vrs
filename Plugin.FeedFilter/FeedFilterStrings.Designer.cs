@@ -61,11 +61,11 @@ namespace VirtualRadar.Plugin.FeedFilter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prohibit ICAOs.
+        ///   Looks up a localized string similar to Only allow ICAOs in list.
         /// </summary>
-        public static string BlockIcaos {
+        public static string AllowIcaos {
             get {
-                return ResourceManager.GetString("BlockIcaos", resourceCulture);
+                return ResourceManager.GetString("AllowIcaos", resourceCulture);
             }
         }
         
@@ -106,11 +106,29 @@ namespace VirtualRadar.Plugin.FeedFilter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ICAOs.
+        /// </summary>
+        public static string Icaos {
+            get {
+                return ResourceManager.GetString("Icaos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feed Filter.
         /// </summary>
         public static string PluginName {
             get {
                 return ResourceManager.GetString("PluginName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block all ICAOs in list.
+        /// </summary>
+        public static string ProhibitIcaos {
+            get {
+                return ResourceManager.GetString("ProhibitIcaos", resourceCulture);
             }
         }
         
