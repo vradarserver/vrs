@@ -251,9 +251,10 @@ namespace VirtualRadar.Plugin.FeedFilter
                 try {
                     json.DataVersion = long.Parse(args.Request.FormValues["DataVersion"], CultureInfo.InvariantCulture);
                     json.ProhibitMlat = bool.Parse(args.Request.FormValues["ProhibitMlat"]);
-                    json.ProhibitedIcaos = args.Request.FormValues["ProhibitedIcaos"];
+                    json.ProhibitIcaos = bool.Parse(args.Request.FormValues["ProhibitIcaos"]);
+                    json.Icaos = args.Request.FormValues["Icaos"];
 
-                    var filterConfiguration = json.ToFilterConfiguration(json.DuplicateProhibitedIcaos, json.InvalidProhibitedIcaos);
+                    var filterConfiguration = json.ToFilterConfiguration(json.DuplicateIcaos, json.InvalidIcaos);
 
                     json.WasStaleData = !FilterConfigurationStorage.Save(this, filterConfiguration);
                     if(!json.WasStaleData) {

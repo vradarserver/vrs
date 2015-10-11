@@ -40,11 +40,28 @@
 
             fetchFilterConfiguration();
 
-            $('input').on('change', function() { _SavedPanel.hide(); });
+            $('input').on('input change', function() { _SavedPanel.hide(); });
             $('textarea').on('input propertychange', function() { _SavedPanel.hide(); });
 
             _SaveButton.on('click', saveClicked);
         };
+
+        function applyFilterConfigurationToModel(filterConfiguration)
+        {
+            if(_FilterConfigurationModel) {
+                ko.mapping.fromJS(filterConfiguration, _FilterConfigurationModel);
+            } else {
+                _FilterConfigurationModel = ko.mapping.fromJS(filterConfiguration);
+
+                _FilterConfigurationModel.ProhibitIcaosRadio = ko.pureComputed({
+                    read:   function() { return _FilterConfigurationModel.ProhibitIcaos() ? 'prohibit' : 'allow'; },
+                    write:  function(value) { _FilterConfigurationModel.ProhibitIcaos(value == 'prohibit'); },
+                    owner:  _FilterConfigurationModel
+                });
+
+                ko.applyBindings(_FilterConfigurationModel, _FilterConfigurationPanel[0]);
+            }
+        }
 
         function fetchFilterConfiguration()
         {
@@ -98,7 +115,8 @@
                 data: {
                     DataVersion:        _FilterConfigurationModel.DataVersion(),
                     ProhibitMlat:       _FilterConfigurationModel.ProhibitMlat(),
-                    ProhibitedIcaos:    _FilterConfigurationModel.ProhibitedIcaos()
+                    Icaos:              _FilterConfigurationModel.Icaos(),
+                    ProhibitIcaos:      _FilterConfigurationModel.ProhibitIcaos()
                 },
                 complete: function() {
                     VRS.pageHelper.showModalWaitAnimation(false);
@@ -115,11 +133,11 @@
                         _SaveErrorPanel.text(translations.couldNotSaveOutOfDate);
                         _SaveErrorPanel.show();
                     } else {
-                        if(data.DuplicateProhibitedIcaos.length > 0) {
-                            showWarningListPanel(_SaveDuplicatesPanel, translations.foundDuplicates, data.DuplicateProhibitedIcaos);
+                        if(data.DuplicateIcaos.length > 0) {
+                            showWarningListPanel(_SaveDuplicatesPanel, translations.foundDuplicates, data.DuplicateIcaos);
                         }
-                        if(data.InvalidProhibitedIcaos.length > 0) {
-                            showWarningListPanel(_SaveInvalidPanel, translations.foundInvalidIcaos, data.InvalidProhibitedIcaos);
+                        if(data.InvalidIcaos.length > 0) {
+                            showWarningListPanel(_SaveInvalidPanel, translations.foundInvalidIcaos, data.InvalidIcaos);
                         }
 
                         applyFilterConfigurationToModel(data);
@@ -141,16 +159,6 @@
 
             jqPanel.text(message);
             jqPanel.show();
-        }
-
-        function applyFilterConfigurationToModel(filterConfiguration)
-        {
-            if(_FilterConfigurationModel) {
-                ko.mapping.fromJS(filterConfiguration, _FilterConfigurationModel);
-            } else {
-                _FilterConfigurationModel = ko.mapping.fromJS(filterConfiguration);
-                ko.applyBindings(_FilterConfigurationModel, _FilterConfigurationPanel[0]);
-            }
         }
     };
 }(window.VRS = window.VRS || {}, jQuery));

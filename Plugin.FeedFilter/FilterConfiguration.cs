@@ -21,9 +21,16 @@ namespace VirtualRadar.Plugin.FeedFilter
     class FilterConfiguration
     {
         /// <summary>
-        /// Gets a list of aircraft ICAO codes that must not be allowed through to the rest of the system.
+        /// Gets a list of aircraft ICAO codes that either must not be allowed through to the rest of the system
+        /// or are the only ones that can be allowed through to the rest of the system.
         /// </summary>
-        public List<string> ProhibitedIcaos { get; private set; }
+        public List<string> Icaos { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether aircraft in <see cref="Icaos"/> are to be blocked or whether
+        /// they are the only ICAOs that can be used.
+        /// </summary>
+        public bool ProhibitIcaos { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that MLAT positions must not be allowed through the filter.
@@ -40,7 +47,8 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// </summary>
         public FilterConfiguration()
         {
-            ProhibitedIcaos = new List<string>();
+            Icaos = new List<string>();
+            ProhibitIcaos = true;
         }
     }
 }

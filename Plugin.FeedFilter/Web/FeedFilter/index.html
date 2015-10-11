@@ -36,8 +36,7 @@
         <script src="../script/vrs/string.js" type="text/javascript"></script>
         <script src="../script/vrs/utility.js" type="text/javascript"></script>
 
-        <!-- Database Editor modules -->
-        <script src="models.js" type="text/javascript"></script>
+        <!-- Feed Filter modules -->
         <script src="index.js" type="text/javascript"></script>
 
         <!-- [[ BUNDLE END ]] -->
@@ -63,8 +62,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="prohibited-icaos" class="control-label">::BlockIcaos::</label>
-                        <textarea id="prohibited-icaos" class="form-control" rows="20" data-bind="value: ProhibitedIcaos"></textarea>
+                        <div class="radio">
+                            <label>
+                                <input id="prohibit-icaos" name="prohibit-icaos" data-bind="checked: ProhibitIcaosRadio" type="radio" value="prohibit" />
+                                ::ProhibitIcaos::
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input id="allow-icaos" name="allow-icaos" data-bind="checked: ProhibitIcaosRadio" type="radio" value="allow" />
+                                ::AllowIcaos::
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="icaos" class="control-label">::Icaos::</label>
+                        <textarea id="icaos" class="form-control" rows="20" data-bind="value: Icaos"></textarea>
                     </div>
                 </div>
             </div>
