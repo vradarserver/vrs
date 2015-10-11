@@ -44,22 +44,38 @@
     </head>
     <body>
         <div class="container">
-            <h1>
-                ::PluginName::
-            </h1>
 
-            <div id="settings-panel" class="panel panel-default">
-                <div class="panel-body">
-                    <form id="settings-form">
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input id="prohibitMlat" data-bind="checked: ProhibitMlat" type="checkbox" /> ::ProhibitMlat::
-                                </label>
-                            </div>
+            <div class="page-header">
+                <h1>
+                    ::PluginName::
+                </h1>
+            </div>
+
+            <div id="filter-configuration-panel">
+                <div id="settings-form">
+                    <div id="fetch-error" class="alert alert-danger text-center" role="alert"></div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input id="prohibitMlat" data-bind="checked: ProhibitMlat" type="checkbox" /> ::ProhibitMlat::
+                            </label>
                         </div>
-                    </form>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prohibited-icaos" class="control-label">::BlockIcaos::</label>
+                        <textarea id="prohibited-icaos" class="form-control" rows="20" data-bind="value: ProhibitedIcaos"></textarea>
+                    </div>
                 </div>
+            </div>
+
+            <div id="save-results-panel">
+                <button id="save" type="button" class="btn btn-primary">::Save::</button>
+                <hr />
+                <div id="saved" class="alert alert-info">::Saved::</div>
+                <div id="save-error" class="alert alert-danger text-center" role="alert"></div>
+                <div id="save-duplicate" class="alert alert-warning" role="alert"></div>
+                <div id="save-invalid" class="alert alert-warning" role="alert"></div>
             </div>
 
         </div>
@@ -70,7 +86,10 @@
             jQuery(document).ready(function($) {
                 var pageHandler = new VRS.FeedFilterIndexPageHandler({
                     serverReportedExceptionFormat:  '::ServerReportedException::',
-                    xhrFailedFormat:                '::XhrFailed::'
+                    xhrFailedFormat:                '::XhrFailed::',
+                    couldNotSaveOutOfDate:          '::CouldNotSaveOutOfDate::',
+                    foundDuplicateIcaos:            '::FoundDuplicateIcaos::',
+                    foundInvalidIcaos:              '::FoundInvalidIcaos::'
                 });
                 pageHandler.initialise();
             });

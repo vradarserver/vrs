@@ -16,6 +16,11 @@ namespace VirtualRadar.Plugin.FeedFilter
     static class FilterConfigurationStorage
     {
         /// <summary>
+        /// Ensures that saves are single-threaded.
+        /// </summary>
+        private static object _SyncLock = new object();
+
+        /// <summary>
         /// Gets the configuration folder.
         /// </summary>
         private static string Folder
@@ -67,17 +72,34 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// </summary>
         /// <param name="plugin"></param>
         /// <param name="filterConfiguration"></param>
-        public static void Save(Plugin plugin, FilterConfiguration filterConfiguration)
+        /// <returns>
+        /// True if the configuration was saved, false if the configuration was out-of-date.
+        /// </returns>
+        public static bool Save(Plugin plugin, FilterConfiguration filterConfiguration)
         {
-            var folder = Folder;
-            if(!Directory.Exists(folder)) {
-                Directory.CreateDirectory(folder);
+            var result = false;
+
+            lock(_SyncLock) {
+                var folder = Folder;
+                if(!Directory.Exists(folder)) {
+                    Directory.CreateDirectory(folder);
+                }
+
+                var currentSettings = Load();
+                result = currentSettings.DataVersion == filterConfiguration.DataVersion;
+                if(result) {
+                    ++filterConfiguration.DataVersion;
+
+                    var json = JsonConvert.SerializeObject(filterConfiguration);
+                    File.WriteAllText(FileName, json);
+                }
             }
 
-            var json = JsonConvert.SerializeObject(filterConfiguration);
-            File.WriteAllText(FileName, json);
+            if(result) {
+                OnFilterConfigurationChanged(new EventArgs<FilterConfiguration>(filterConfiguration));
+            }
 
-            OnFilterConfigurationChanged(new EventArgs<FilterConfiguration>(filterConfiguration));
+            return result;
         }
     }
 }

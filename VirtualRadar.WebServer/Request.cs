@@ -153,7 +153,7 @@ namespace VirtualRadar.WebServer
         public Request(HttpListenerRequest request)
         {
             _Request = request;
-            MaximumPostBodySize = 32 * 1024;
+            MaximumPostBodySize = 4 * 1024 * 1024;
         }
 
         /// <summary>
@@ -161,16 +161,23 @@ namespace VirtualRadar.WebServer
         /// </summary>
         private void ExtractFormValues()
         {
-            if(HttpMethod == "POST" && _Request.ContentType == "application/x-www-form-urlencoded") {
+            var contentType = _Request.ContentType;
+            var parameterIndex = contentType.IndexOf(';');
+            var parameter = parameterIndex == -1 ? "" : contentType.Substring(parameterIndex + 1).Trim();
+            if(parameterIndex != -1) contentType = contentType.Substring(0, parameterIndex).Trim();
+
+            if(HttpMethod == "POST" && contentType == "application/x-www-form-urlencoded") {
                 if(_Request.ContentLength64 <= MaximumPostBodySize) {
-                    string content = ReadBodyAsString(Encoding.UTF8);
-                    if(content != null) {
-                        var finished = false;
-                        var start = 0;
-                        while(!finished) {
-                            var end = content.IndexOf('&');
+                    var charset = Encoding.UTF8;
+                    if(parameter.StartsWith("charset=")) charset = ParseEncoding(parameter.Substring(8).Trim());
+
+                    string content = ReadBodyAsString(charset);
+                    if(!String.IsNullOrEmpty(content)) {
+                        for(int start = 0, end = 0;start < content.Length;start = end + 1) {
+                            end = content.IndexOf('&', start);
                             if(end == -1) end = content.Length;
                             var nameValue = content.Substring(start, end - start);
+
                             var separator = nameValue.IndexOf('=');
                             var name = separator == -1 ? nameValue : nameValue.Substring(0, separator).Trim();
                             var value = separator == -1 ? "" : nameValue.Substring(separator + 1);
@@ -182,6 +189,21 @@ namespace VirtualRadar.WebServer
                     }
                 }
             }
+        }
+
+        private Encoding ParseEncoding(string charsetName)
+        {
+            var result = Encoding.UTF8;
+            switch(charsetName.ToUpper()) {
+                case "US-ASCII":    result = Encoding.ASCII; break;
+                case "UTF-7":       result = Encoding.UTF7; break;
+                case "UTF-16BE":    result = Encoding.BigEndianUnicode; break;
+                case "UTF-16LE":    result = Encoding.Unicode; break;
+                case "UTF-32LE":    result = Encoding.UTF32; break;
+                default:            break;
+            }
+
+            return result;
         }
 
         /// <summary>

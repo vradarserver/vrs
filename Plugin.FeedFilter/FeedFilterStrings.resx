@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BlockIcaos" xml:space="preserve">
+    <value>Prohibit ICAOs</value>
+  </data>
+  <data name="BlockIcaosInstructions" xml:space="preserve">
+    <value>Enter ICAOs separated by commas or on separate lines</value>
+  </data>
+  <data name="CouldNotSaveOutOfDate" xml:space="preserve">
+    <value>The filter configuration could not be saved because it has been changed elsewhere. Reload the page and try again.</value>
+  </data>
+  <data name="FoundDuplicateIcaos" xml:space="preserve">
+    <value>The duplicate entries for the following ICAOs were not saved</value>
+  </data>
+  <data name="FoundInvalidIcaos" xml:space="preserve">
+    <value>The following ICAOs were invalid and were not saved</value>
+  </data>
   <data name="PluginName" xml:space="preserve">
     <value>Feed Filter</value>
   </data>
@@ -126,6 +141,9 @@
   <data name="ProhibitUnfilterableFeeds" xml:space="preserve">
     <value>Prohibit unfilterable feeds</value>
     <comment>Do not allow feeds that cannot be filtered</comment>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Saved</value>
   </data>
   <data name="ServerReportedException" xml:space="preserve">
     <value>Exception encountered: {0}</value>

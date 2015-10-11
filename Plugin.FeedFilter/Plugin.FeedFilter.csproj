@@ -77,6 +77,9 @@
     </Compile>
     <Compile Include="FilterConfiguration.cs" />
     <Compile Include="FilterConfigurationStorage.cs" />
+    <Compile Include="Json\FilterConfigurationJson.cs" />
+    <Compile Include="Json\ResponseJson.cs" />
+    <Compile Include="Json\SaveFilterConfigurationJson.cs" />
     <Compile Include="ListenerWrapper.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="OptionsStorage.cs" />
