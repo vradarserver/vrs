@@ -128,13 +128,14 @@ Dies ist ein einfacher Web Server welcher verwendet werden kann um Flugzeuge anz
 
 Application icon courtesy of aha-soft (http://www.aha-soft.com).
 
-Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user 'SabreJV' and hosted by Kinetic forum user 'Bones'.
+Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user &apos;SabreJV&apos; and hosted by Kinetic forum user &apos;Bones&apos; (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
 
-Brasilianisches Portugiesisch Übersetzung von Alan Farley
-Chinesische Übersetzung von Vincent Deng
-Französische Übersetzung von Francois /F5ANN.
-Deutsche Übersetzung von  Annette Schaupp
-Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
+Brazilian Portuguese translation by Alan Farley
+Chinese translation by Vincent Deng
+French translation by Francois /F5ANN.
+German translation by Annette Shaupp.
+Russische Übersetzung von Sergey Serov /sergsero and friends.
+</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
   <data name="BaseStationStatus" xml:space="preserve">
@@ -401,7 +402,7 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
     <value>Der Web Server ist Online</value>
   </data>
   <data name="WebServerStatus" xml:space="preserve">
-    <value>Web Server Status</value>
+    <value>Web Server Status </value>
   </data>
   <data name="ADSBAircraft" xml:space="preserve">
     <value>ADS-B Flugzeug(e)</value>
@@ -409,7 +410,7 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
   </data>
   <data name="CannotCommunicateWithFlightSimulatorX" xml:space="preserve">
     <value>Keine Kommunikation mit Flight Simulator X möglich</value>
-    <comment>"Flight Simulator X" may not need translating</comment>
+    <comment>&quot;Flight Simulator X&quot; may not need translating</comment>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Schließen</value>
@@ -433,7 +434,7 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
   </data>
   <data name="FlightSimulatorXIsNotInstalled" xml:space="preserve">
     <value>Flight Simulator X ist nicht installiert (kann SimConnect nicht laden)</value>
-    <comment>"Flight Simulator X" and "SimConnect" may not need translating</comment>
+    <comment>&quot;Flight Simulator X&quot; and &quot;SimConnect&quot; may not need translating</comment>
   </data>
   <data name="FlightSimulatorXShutdown" xml:space="preserve">
     <value>Verbindung unterbrochen durch Beenden von Flight Simulator X</value>
@@ -463,12 +464,12 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
     <comment>Stop riding in the cockpit of an aircraft</comment>
   </data>
   <data name="UseFreezeMethod" xml:space="preserve">
-    <value>Verwende "freeze" Methode</value>
-    <comment>"Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+    <value>Verwende &quot;freeze&quot; Methode</value>
+    <comment>&quot;Freeze&quot; may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
   </data>
   <data name="UseSlewMethod" xml:space="preserve">
-    <value>Verwende "slew" Methode</value>
-    <comment>"Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+    <value>Verwende &quot;slew&quot; Methode</value>
+    <comment>&quot;Slew&quot; may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
   </data>
   <data name="ConnectionClientLog" xml:space="preserve">
     <value>Log Clientverbindungen</value>
@@ -572,7 +573,7 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
   </data>
   <data name="BaseStation" xml:space="preserve">
     <value>BaseStation</value>
-    <comment>May not need to be translated, it's the name of a program</comment>
+    <comment>May not need to be translated, it&apos;s the name of a program</comment>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
@@ -618,7 +619,7 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
     <comment>Title for an error message box</comment>
   </data>
   <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>This program needs the full .NET 3.5 Framework installed. Möchten Sie zur .NET 3.5 Download Seite von Microsoft weitergeleitet werden?</value>
+    <value>This program needs the full .NET 3.5 Framework installed. Möchten Sie zur .NET 3.5 Download Seite von Microsoft&apos;s weitergeleitet werden?</value>
   </data>
   <data name="DotNetVersionTooLowTitle" xml:space="preserve">
     <value>Falsche Version des .NET Framework</value>
@@ -652,7 +653,7 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
     <comment>Options that affect clients connecting to the web server from the Internet (instead of from the local network)</comment>
   </data>
   <data name="InvalidConfigurationFileFull" xml:space="preserve">
-    <value>Es gibt ein Problem ('{0}') beim Laden der Konfigurationsdatei von {1}. Dies könnte verursacht werden durch einen Bug der es erlaubt einen ungültigen Wert für eine der Konfigurationseinstellungen einzutragen. Möchten Sie die Konfiguration auf die Standardeinstellungen zurücksetzen und es erneut versuchen?</value>
+    <value>Es gibt ein Problem (&apos;{0}&apos;) beim Laden der Konfigurationsdatei von {1}. Dies könnte verursacht werden durch einen Bug der es erlaubt einen ungültigen Wert für eine der Konfigurationseinstellungen einzutragen. Möchten Sie die Konfiguration auf die Standardeinstellungen zurücksetzen und es erneut versuchen?</value>
     <comment>Where {0} is an exception message and {1} is a filename</comment>
   </data>
   <data name="InvalidConfigurationFileTitle" xml:space="preserve">
@@ -669,7 +670,7 @@ Russische Übersetzung von Sergey Serov /sergsero and friends.</value>
     <value>Optionen</value>
   </data>
   <data name="SomethingDoesNotExist" xml:space="preserve">
-    <value>"{0}" ist nicht vorhanden</value>
+    <value>&quot;{0}&quot; ist nicht vorhanden</value>
     <comment>Where {0} is a filename or a folder name</comment>
   </data>
   <data name="SuggestUseDifferentPortFull" xml:space="preserve">
@@ -709,7 +710,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Nicht geladen</value>
   </data>
   <data name="RouteFileStatus" xml:space="preserve">
-    <value>{0:N0} Routen geladen für den Zeitraum {1:d} bis {2:d}</value>
+    <value> {0:N0} Routen geladen für den Zeitraum {1:d} bis {2:d}</value>
     <comment>Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
   </data>
   <data name="RouteStateFileContentInvalid" xml:space="preserve">
@@ -734,9 +735,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
     * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+    * Neither the name of the author nor the names of the program&apos;s contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</value>
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</value>
     <comment>** MULTILINE FIELD **</comment>
   </data>
   <data name="License" xml:space="preserve">
@@ -867,7 +868,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Schließe Log Datenbank</value>
   </data>
   <data name="ShuttingDownPlugin" xml:space="preserve">
-    <value>Beende Plugin {0}</value>
+    <value>Beende Plugin {0} </value>
   </data>
   <data name="ShuttingDownUPnpManager" xml:space="preserve">
     <value>Beeende UPnP</value>
@@ -1033,7 +1034,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="BeastModeSFeed" xml:space="preserve">
     <value>AVR or Beast Raw Feed</value>
-    <comment>'Beast' is the name of a product and may not need translating</comment>
+    <comment>&apos;Beast&apos; is the name of a product and may not need translating</comment>
   </data>
   <data name="DecoderSettings" xml:space="preserve">
     <value>Dekodereinstellungen</value>
@@ -1174,13 +1175,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Anzahl Sekunden die verstreichen können zwischen ungerade/gerade formatierten Oberflächen-Positionsnachrichten in der globalen Dekodierung für Verkehrsmittel die mit weniger als 25 Knoten unterwegs sind.. ICAO empfiehlt 50 Sekunden. Hohe Werte können verursachen, dass Verkehrsmittel anfänglich mehrere Hundert Meilen entfernt von ihrem tatsächlichen Standort erscheinen.</value>
   </data>
   <data name="OptionsDescribeWebServerAllowInternetProximityGadgets" xml:space="preserve">
-    <value>Ja, wenn Näherungs-"Gadgets", die sich aus dem Internet verbinden erlaubt werden soll Flugzeugdaten abzurufen, Nein, wenn dies nicht erlaubt werden soll. Näherungs-"Gadgets" im lokalen Netzwerk sind von diesen Einstellungen nicht betroffen.</value>
+    <value>Ja, wenn Näherungs-&quot;Gadgets&quot;, die sich aus dem Internet verbinden erlaubt werden soll Flugzeugdaten abzurufen, Nein, wenn dies nicht erlaubt werden soll. Näherungs-&quot;Gadgets&quot; im lokalen Netzwerk sind von diesen Einstellungen nicht betroffen.</value>
   </data>
   <data name="OptionsDescribeWebServerAutoStartUPnp" xml:space="preserve">
     <value>Ja, um VRS automatisch aus dem Internet zugänglich zu machen wenn das Programm startet, Nein wenn VRS nicht zugänglich sein soll bis VRS manuell verbunden wird.</value>
   </data>
   <data name="OptionsDescribeWebServerEnableUPnpFeatures" xml:space="preserve">
-    <value>Ja, um die "Universal Plug and Play" Komponenten des Programms zu aktivieren, Nein um diese zu deaktivieren.</value>
+    <value>Ja, um die &quot;Universal Plug and Play&quot; Komponenten des Programms zu aktivieren, Nein um diese zu deaktivieren.</value>
   </data>
   <data name="OptionsDescribeWebServerInternetClientCanPlayAudio" xml:space="preserve">
     <value>Ja, wenn es Benutzern aus dem Internet erlaubt sein soll Audio zu verwenden, Nein falls nicht. Audiofunktionen verbrauchen Bandbreite und erhöhen die Serverauslastung. Lokale Netzwerkbenutzer  sind von diesen Einstellunge nnicht betroffen.</value>
@@ -1195,7 +1196,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Ja, wenn es Benutzern aus dem Internet erlaubt sein soll Bilder von Flugzeugen zu sehen, Nein falls nicht. Bilder von Flugzeugen verbrauchen Bandbreite und Grössenanpassung kann die Serverauslastung erhöhen. Lokale Netzwerkbenutzer  sind von diesen Einstellungen nicht betroffen.</value>
   </data>
   <data name="OptionsDescribeWebServerInternetClientTimeoutMinutes" xml:space="preserve">
-    <value>Anzahl der Minuten an Inaktivität, die verstreichen können bevor die Seite nicht mehr auf eine Benutzerverbindung antwortet. 0 deaktiviert diese Funktion. Lokale Netzwerkbenutzer erhalten kein "Timeout".</value>
+    <value>Anzahl der Minuten an Inaktivität, die verstreichen können bevor die Seite nicht mehr auf eine Benutzerverbindung antwortet. 0 deaktiviert diese Funktion. Lokale Netzwerkbenutzer erhalten kein &quot;Timeout&quot;.</value>
   </data>
   <data name="OptionsDescribeWebServerIsOnlyVirtualRadarServerOnLan" xml:space="preserve">
     <value>Ja, wenn dies der einzige Computer mit VRS im Netzwerk ist den Sie ins Internet setzen möchten, Nein, falls nicht.</value>
@@ -1222,7 +1223,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Der Kartentyp der angezeigt werden soll. Wird nur verwendet beim ersten Besuch der Webseite mit einem Browser.</value>
   </data>
   <data name="OptionsDescribeWebSiteInitialGoogleMapZoom" xml:space="preserve">
-    <value>Der "Zoomlevel" der verwendet werden soll, wobei 0 die Erde vollständig anzeigt, und höhere Werte (bis zu über 20) mehr Details anzeigen. Wird nur verwendet beim ersten Besuch der Webseite mit einem Browser.</value>
+    <value>Der &quot;Zoomlevel&quot; der verwendet werden soll, wobei 0 die Erde vollständig anzeigt, und höhere Werte (bis zu über 20) mehr Details anzeigen. Wird nur verwendet beim ersten Besuch der Webseite mit einem Browser.</value>
   </data>
   <data name="OptionsDescribeWebSiteInitialHeightUnit" xml:space="preserve">
     <value>Wie Höhen angezeigt werden. Wird nur verwendet beim ersten Besuch der Webseite mit einem Browser.</value>
@@ -1262,7 +1263,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Webseite</value>
   </data>
   <data name="TextToSpeechVoice" xml:space="preserve">
-    <value>"Text-to-speech" Stimme</value>
+    <value>&quot;Text-to-speech&quot; Stimme</value>
   </data>
   <data name="USBOverCOM" xml:space="preserve">
     <value>Seriennummer</value>
@@ -1314,7 +1315,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Aktiviere UPnP</value>
   </data>
   <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
-    <value>Der Google Maps "Zoomlevel" muss zwischen 0 und 19</value>
+    <value>Der Google Maps &quot;Zoomlevel&quot; muss zwischen 0 und 19</value>
   </data>
   <data name="InitialRefreshLessThanMinimumRefresh" xml:space="preserve">
     <value>Der Anfangswert für die Aktualisierung darf nicht kleiner sein als der Minimalwert.</value>
@@ -1335,7 +1336,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Der Minimalwert für die Aktualisierung muss zwischen 0 und 3600 liegen</value>
   </data>
   <data name="ReadingSpeedOutOfBounds" xml:space="preserve">
-    <value>Die "Text-to-Speech"-Geschwindigkeit muss zwischen -10 und 10 liegen</value>
+    <value>Die &quot;Text-to-Speech&quot;-Geschwindigkeit muss zwischen -10 und 10 liegen</value>
   </data>
   <data name="ResetPortAssignmentsOnStartup" xml:space="preserve">
     <value>Setze Portzuweisungen beim Starten zurück</value>
@@ -1383,7 +1384,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>As in the bits per byte when talking over a serial port</comment>
   </data>
   <data name="SerialHandshake" xml:space="preserve">
-    <value>"Handshake"</value>
+    <value>&quot;Handshake&quot;</value>
     <comment>As in the handshaking protocol to use when talking over a serial port. Also known as flow control.</comment>
   </data>
   <data name="SerialParity" xml:space="preserve">
@@ -1440,7 +1441,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Ungerade</value>
   </data>
   <data name="SerialParitySpace" xml:space="preserve">
-    <value>"???All???"</value>
+    <value>&quot;???All???&quot;</value>
   </data>
   <data name="SerialStopBitsNone" xml:space="preserve">
     <value>0</value>
@@ -1464,7 +1465,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Nein</value>
   </data>
   <data name="OptionsDescribeGeneralRebroadcastServers" xml:space="preserve">
-    <value>Die Konfiguration von Servern, die Nachrichten 'rebroadcasten' welche vom Empfänger übertragen werden.</value>
+    <value>Die Konfiguration von Servern, die Nachrichten &apos;rebroadcasten&apos; welche vom Empfänger übertragen werden.</value>
   </data>
   <data name="RebroadcastFormatPassthrough" xml:space="preserve">
     <value>Weiterleitung</value>
@@ -1524,7 +1525,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="RebroadcastFormatAvr" xml:space="preserve">
     <value>AVR</value>
-    <comment>Probably doesn't need translating, it's a format for transmitting Mode-S messages</comment>
+    <comment>Probably doesn&apos;t need translating, it&apos;s a format for transmitting Mode-S messages</comment>
   </data>
   <data name="IgnoreCallsignsInBds20" xml:space="preserve">
     <value>Ignoriere Callsigns von BDS2,0 Nachrichten</value>
@@ -1533,10 +1534,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Ja, wenn VRS nur Callsigns aus ADS-B Nachrichten extrahieren soll, Nein, wenn ebenfalls versucht werden soll BDS2,0 Nachrichten zu erkennen und Callsigns daraus zu extrahieren.</value>
   </data>
   <data name="OptionsDescribeRawFeedSuppressReceiverRangeCheck" xml:space="preserve">
-    <value>'Ja'  wenn der Empfängerstandort oder die Reichweite nicht akkurat sind. Die Einstellung 'Nein' wird alle Positionen verwerfen, die außerhalb der Empfängerreichweite sind.</value>
+    <value>&apos;Ja&apos;  wenn der Empfängerstandort oder die Reichweite nicht akkurat sind. Die Einstellung &apos;Nein&apos; wird alle Positionen verwerfen, die außerhalb der Empfängerreichweite sind.</value>
   </data>
   <data name="OptionsDescribeRawFeedUseLocalDecodeForInitialPosition" xml:space="preserve">
-    <value>'Ja' zeigt Flugzeugpositionen früher an, aber Flugzeuge mit extremer Reichweite erscheinen eher an einer ungenauen Position. Wird nur wirksam wenn ein Empfängerstandort angegeben ist.</value>
+    <value>&apos;Ja&apos; zeigt Flugzeugpositionen früher an, aber Flugzeuge mit extremer Reichweite erscheinen eher an einer ungenauen Position. Wird nur wirksam wenn ein Empfängerstandort angegeben ist.</value>
   </data>
   <data name="SuppressReceiverRangeCheck" xml:space="preserve">
     <value>Zeige Flugzeuge außerhalb der Empfängerreichweite an</value>
@@ -1629,13 +1630,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Ja um automatisch einen Verbindungsaufbau zur Datenquelle zu versuchen wenn das Programm startet, Nein um nur einen Verbindungsversuch zu unternehmen und einen Fehler zu melden wenn die Verbindung nicht aufgebaut werden kann.</value>
   </data>
   <data name="OptionsDescribeGeneralTrackingTimeoutSeconds" xml:space="preserve">
-    <value>Die Anzahl Sekunden die vergehen müssen seit eine Nachricht von einem Flugzeug zuletzt erhalten wurde bevor das 'Tracking' dafür gestopped wird.</value>
+    <value>Die Anzahl Sekunden die vergehen müssen seit eine Nachricht von einem Flugzeug zuletzt erhalten wurde bevor das &apos;Tracking&apos; dafür gestopped wird.</value>
   </data>
   <data name="TrackingTimeoutLessThanDisplayTimeout" xml:space="preserve">
-    <value>Das 'Tracking Timeout' kann nicht kleiner als das Anzeigetimeout sein</value>
+    <value>Das &apos;Tracking Timeout&apos; kann nicht kleiner als das Anzeigetimeout sein</value>
   </data>
   <data name="TrackingTimeoutOutOfBounds" xml:space="preserve">
-    <value>Das 'Tracking Timeout' kann nicht größer als 3600 sein</value>
+    <value>Das &apos;Tracking Timeout&apos; kann nicht größer als 3600 sein</value>
   </data>
   <data name="AcceptIcaoInNonPICount" xml:space="preserve">
     <value>Mode-S Nachrichtenzähler</value>
@@ -1692,18 +1693,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Bytes buffered</value>
   </data>
   <data name="PleaseSelectSiteRootFolder" xml:space="preserve">
-    <value>Bitte wählen Sie den 'Root'-Ordner für die Seite</value>
+    <value>Bitte wählen Sie den &apos;Root&apos;-Ordner für die Seite</value>
   </data>
   <data name="OptionsWebSiteCustomisationCategory" xml:space="preserve">
     <value>Web Seiten Anpassung</value>
   </data>
   <data name="EnableBundling" xml:space="preserve">
     <value>Aktiviere Bündelung</value>
-    <comment>"Bundling" is where multiple files are bundled together into a single file to improve a page's load time</comment>
+    <comment>&quot;Bundling&quot; is where multiple files are bundled together into a single file to improve a page&apos;s load time</comment>
   </data>
   <data name="EnableMinifying" xml:space="preserve">
-    <value>Aktiviere "Minifying"</value>
-    <comment>"Minifying" is where a CSS or JavaScript source file is compressed to improve a page's load time and to improve the speed at which they are executed by the browser.</comment>
+    <value>Aktiviere &quot;Minifying&quot;</value>
+    <comment>&quot;Minifying&quot; is where a CSS or JavaScript source file is compressed to improve a page&apos;s load time and to improve the speed at which they are executed by the browser.</comment>
   </data>
   <data name="OptionsDescribeEnableBundling" xml:space="preserve">
     <value>Ja, um mehrere CSS oder Java Skript Dateien in einen einzigen Download zusammenzuführen, Nein, um die Dateien separat zu halten.</value>
@@ -1784,13 +1785,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Bitte wählen Sie den Empfänger der anfangs auf der Webseite angezeigt wird.</value>
   </data>
   <data name="ClosestAircraftReceiverRequired" xml:space="preserve">
-    <value>Bitte wählen Sie den Empfänger, den das 'Closest Aircraft desktop widget verwendet</value>
+    <value>Bitte wählen Sie den Empfänger, den das &apos;Closest Aircraft desktop widget verwendet</value>
   </data>
   <data name="ClosestAircraftReceiverId" xml:space="preserve">
     <value>Nächstliegender Flugzeugempfänger</value>
   </data>
   <data name="OptionsDescribeClosestAircraftReceiverId" xml:space="preserve">
-    <value>Der Empfänger der verwendet wird wenn das 'Closest Aircraft desktop widget' Details aabfragt für das Flugzeug das am nächsten ist.</value>
+    <value>Der Empfänger der verwendet wird wenn das &apos;Closest Aircraft desktop widget&apos; Details aabfragt für das Flugzeug das am nächsten ist.</value>
   </data>
   <data name="IcaoTimeout" xml:space="preserve">
     <value>ICAO Timeout</value>
@@ -1805,7 +1806,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Ja, um diesen zusammengeführten Datenstrom zu aktivieren, nein um zu deaktivieren.</value>
   </data>
   <data name="OptionsDescribeMergedFeedName" xml:space="preserve">
-    <value>Der eindeutige Name für den zusammengeführten Datenstrom. Muss ebenfalls über alle Empfänger eindeutig sein</value>
+    <value>Der eindeutige Name für den zusammengeführten Datenstrom. Muss ebenfalls über alle Empfänger eindeutig sein </value>
   </data>
   <data name="OptionsDescribeMergedFeedReceviers" xml:space="preserve">
     <value>Die Empfänger, die in diesem Datenstrom zusammengeführt sind.</value>
@@ -1841,7 +1842,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Flight Simulator X Empfänger</value>
   </data>
   <data name="OptionsDescribeFlightSimulatorXReceiverId" xml:space="preserve">
-    <value>Der Empfänger der für Flight Simulator X "ride-along" verwendet wird.</value>
+    <value>Der Empfänger der für Flight Simulator X &quot;ride-along&quot; verwendet wird.</value>
   </data>
   <data name="FlightSimulatorXReceiverRequired" xml:space="preserve">
     <value>Bitte geben Sie den Empfänger an der FSX ride-along verwenden wird</value>
@@ -1871,7 +1872,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Das-ListenerTimeout muss mindestens 10 Sekunden betragen</value>
   </data>
   <data name="CoarseListenerTimeoutUnparseable" xml:space="preserve">
-    <value>Kann den ListenerTimeout Wert von "{0}" nicht parsen</value>
+    <value>Kann den ListenerTimeout Wert von &quot;{0}&quot; nicht parsen</value>
   </data>
   <data name="EnableCompression" xml:space="preserve">
     <value>Aktiviere Komprimierung</value>
@@ -1892,7 +1893,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Forward Proxy</value>
   </data>
   <data name="OptionsDescribeProxyType" xml:space="preserve">
-    <value>Proxytyp hinter dem der Server ist. Wenn Sie nicht sicher sind ob der Server hinter einem Proxy ist, lassen Sie die Einstellung auf 'nicht bekannt'.</value>
+    <value>Proxytyp hinter dem der Server ist. Wenn Sie nicht sicher sind ob der Server hinter einem Proxy ist, lassen Sie die Einstellung auf &apos;nicht bekannt&apos;.</value>
   </data>
   <data name="ProxyType" xml:space="preserve">
     <value>Proxytyp</value>
@@ -1980,7 +1981,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Zugelassene Benutzer</value>
   </data>
   <data name="LoginNameUnknown" xml:space="preserve">
-    <value>Kann Benutzer mit Log in Name '{0}' nicht finden</value>
+    <value>Kann Benutzer mit Log in Name &apos;{0}&apos; nicht finden</value>
   </data>
   <data name="ConnectionParameters" xml:space="preserve">
     <value>Verbindungsparameter</value>
@@ -2140,16 +2141,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Aus der Flugzeugverfolgung entfernen</value>
   </data>
   <data name="ShortTrailDuration" xml:space="preserve">
-    <value>Dauer Kurze Spur</value>
+    <value>Dauer Kurze Spur </value>
   </data>
   <data name="AirborneGlobal" xml:space="preserve">
-    <value>"Airborne" Global</value>
+    <value>&quot;Airborne&quot; Global</value>
   </data>
   <data name="FastSurfaceGlobal" xml:space="preserve">
     <value>Fast surface global</value>
   </data>
   <data name="MaxAirborneSpeed" xml:space="preserve">
-    <value>Max "Airborne" Geschwindigkeit</value>
+    <value>Max &quot;Airborne&quot; Geschwindigkeit</value>
   </data>
   <data name="MaxSurfaceSpeed" xml:space="preserve">
     <value>Max. Oberflächen-Geschwindigkeit</value>
@@ -2246,10 +2247,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Letzte Ausnahme</value>
   </data>
   <data name="ReceiverIdleTimeoutOutOfBounds" xml:space="preserve">
-    <value>Das Idle Timeout muss mindestens 5 Sekunden betragen</value>
+    <value>Das Idle Timeout muss mindestens 5 Sekunden sein</value>
   </data>
   <data name="OptionsDescribeDataSourcesIdleTimeout" xml:space="preserve">
-    <value>Die Dauer in Sekunden bevor die Verbindung des Datenstroms beendet wird, wenn keine Daten empfangen werden und keine Keep-Alive Pakete verwendet werden.</value>
+    <value>Die Dauer in Sekunden bevor die Verbindung des Datenstroms beendet werden wenn keine Daten empfangen werden und keine Keep-Alive Pakete verwendet werden.</value>
   </data>
   <data name="OptionsDescribeDataSourcesUseKeepAlive" xml:space="preserve">
     <value>Ja, um Keep-Alive Pakete zu verwenden und damit Datenströme zu ermitteln die keine Daten mehr liefern, Nein um die Verbindung zurückzusetzen wenn nach einer gewissen Anzahl Sekunden keine Daten mehr empfangen werden.</value>
@@ -2335,7 +2336,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="AllCaps" xml:space="preserve">
     <value>Alle</value>
-    <comment>"All" in capitals - used in combo boxes to select all options</comment>
+    <comment>&quot;All&quot; in capitals - used in combo boxes to select all options</comment>
   </data>
   <data name="Passphrase" xml:space="preserve">
     <value>Passwort</value>
@@ -2426,7 +2427,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="PressQToQuit" xml:space="preserve">
     <value>Drücke Q zum Beenden</value>
-    <comment>You can have any key you like here, as long as it's Q</comment>
+    <comment>You can have any key you like here, as long as it&apos;s Q</comment>
   </data>
   <data name="Administrators" xml:space="preserve">
     <value>Administratoren</value>
@@ -2451,7 +2452,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="SendEvery" xml:space="preserve">
     <value>Sende alle</value>
-    <comment>As in "Send every 5 seconds"</comment>
+    <comment>As in &quot;Send every 5 seconds&quot;</comment>
   </data>
   <data name="RebroadcastSendIntervalOutOfBounds" xml:space="preserve">
     <value>Der Sendeintervall muss zwischen 1 und 30 Sekunden liegen</value>
@@ -2464,7 +2465,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="MergeOnly" xml:space="preserve">
     <value>Nur-Zusammenführen</value>
-    <comment>As in "this receiver can only be merged with other receivers"</comment>
+    <comment>As in &quot;this receiver can only be merged with other receivers&quot;</comment>
   </data>
   <data name="Normal" xml:space="preserve">
     <value>Normal</value>
@@ -2480,7 +2481,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="NotApplicableAbbr" xml:space="preserve">
     <value>N/A</value>
-    <comment>Abbreviation of "not applicable"</comment>
+    <comment>Abbreviation of &quot;not applicable&quot;</comment>
   </data>
   <data name="Hidden" xml:space="preserve">
     <value>Verborgen</value>
@@ -2496,19 +2497,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="MLAT" xml:space="preserve">
     <value>MLAT</value>
-    <comment>Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
+    <comment>Short for multilateration. If there&apos;s no equivalent then just leave it as MLAT</comment>
   </data>
   <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
     <value>Ja, wenn Positionsmeldungen für diesen Datenstrom als berechnete MLAT Positionen behandelt werden sollen. Nur für MLAT Datenströme benötigt, welche  berechnete Positionsmeldungen nicht identifizieren.</value>
   </data>
   <data name="RecConWizSdrFR24Feeder" xml:space="preserve">
-    <value>Flightradar24 'Feeder'</value>
-    <comment>It's the name of a program</comment>
+    <value>Flightradar24 &apos;Feeder&apos;</value>
+    <comment>It&apos;s the name of a program</comment>
   </data>
   <data name="OptionsDescribeRawFeedSuppressTisbMessages" xml:space="preserve">
-    <value>Wähle 'Ja' wenn TIS-B Nachrichten nicht zur Verfolgung von Flugzeugen verwendet werden soll.</value>
+    <value>Wähle ‚Ja‘, wenn TIS-B Nachrichten nicht verwendet werden sollen um Flugzeuge zu verfolgen.</value>
   </data>
   <data name="SuppressTisbMessages" xml:space="preserve">
-    <value>TIS-B Nachrichten unterdrücken</value>
+    <value>Unterdrücken von TIS-B Nachrichten</value>
+  </data>
+  <data name="BackgroundThreadQueues" xml:space="preserve">
+    <value>Warteschlange</value>
+  </data>
+  <data name="menuDiagnostics" xml:space="preserve">
+    <value>&amp;Diagnose</value>
+  </data>
+  <data name="menuShowQueues" xml:space="preserve">
+    <value>Zeige &amp;Warteschlange</value>
+  </data>
+  <data name="Peak" xml:space="preserve">
+    <value>Höchstwert</value>
+    <comment>As in the largest number of something, the maximum</comment>
   </data>
 </root>
