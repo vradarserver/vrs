@@ -117,7 +117,7 @@
     VRS.$$.FillOpacity =                                '填充透明度';
     VRS.$$.Filters =                                    '过滤器';
     VRS.$$.FindAllPermutationsOfCallsign =              '查询航班号的所有排列';
-    VRS.$$.First =                                      'First';  /** THIS IS NEW! **/
+    VRS.$$.First =                                      '初始';  /** THIS IS NEW! **/
     VRS.$$.FirstAltitude =                              '初始高度';
     VRS.$$.FirstHeading =                               '初始航向';
     VRS.$$.FirstFlightLevel =                           '初始飞行高度层';
@@ -192,7 +192,7 @@
     VRS.$$.Knots =                                      '节';
     VRS.$$.KnotsAbbreviation =                          '{0} kts';
     VRS.$$.LandPlane =                                  '陆上飞机';
-    VRS.$$.Last =                                       'Last';  /** THIS IS NEW! **/
+    VRS.$$.Last =                                       '最后';  /** THIS IS NEW! **/
     VRS.$$.LastAltitude =                               '最后高度';
     VRS.$$.LastFlightLevel =                            '最后飞行高度层';
     VRS.$$.LastHeading =                                '最后航向';
@@ -329,7 +329,7 @@
     VRS.$$.MuteOn =                                     '开启静音';
     VRS.$$.NauticalMileAbbreviation =                   '{0} nmi';
     VRS.$$.NauticalMiles =                              '海里';
-    VRS.$$.Neither =                                    'Neither';  /** THIS IS NEW! **/
+    VRS.$$.Neither =                                    '都不';  /** THIS IS NEW! **/
     VRS.$$.No =                                         '否';
     VRS.$$.NoLocalStorage =                             '该浏览器不支持本地存储. 您的配置信息将不能保存.\n\n如果您在"私人模式"访问请尝试转换关闭状态. 私人模式在某些浏览器上不能进行本地存储.';
     VRS.$$.None =                                       '无';
@@ -347,7 +347,7 @@
     VRS.$$.OfPages =                                    ': {0:N0}';  // As in "1 of 10" pages
     VRS.$$.OnlyAircraftOnMap =                          '仅列出可见';
     VRS.$$.OnlyAutoSelected =                           '仅通知自动选择航班详细';
-    VRS.$$.OnlyUsePre22Icons =                          'Only show old style aircraft markers';  /** THIS IS NEW! **/
+    VRS.$$.OnlyUsePre22Icons =                          '仅显示旧风格航空器标记';  /** THIS IS NEW! **/
     VRS.$$.Operator =                                   '航空公司';
     VRS.$$.OperatorCode =                               '航空公司代码';
     VRS.$$.OperatorFlag =                               '航空公司标志';
@@ -445,10 +445,10 @@
     VRS.$$.ShowCurrentLocation =                        '显示当前坐标';
     VRS.$$.ShowDetail =                                 '显示详情';
     VRS.$$.ShowForAllAircraft =                         '显示所有航空器';
-    VRS.$$.ShowEmergencySquawks =                       'Show emergency squawks';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
+    VRS.$$.ShowEmergencySquawks =                       '显示紧急squawks';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowEmptyValues =                            '显示空值';
     VRS.$$.ShowForSelectedOnly =                        '仅显示选择的航空器';
-    VRS.$$.ShowInterestingAircraft =                    'Show interesting aircraft';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
+    VRS.$$.ShowInterestingAircraft =                    '显示关注的航空器';  /** THIS IS NEW! **/  // Followed by "first / last / neither"
     VRS.$$.ShowRangeCircles =                           '显示范围环';
     VRS.$$.ShowShortTrails =                            '显示短轨迹';
     VRS.$$.ShowSpeedType =                              '显示速度类型';
