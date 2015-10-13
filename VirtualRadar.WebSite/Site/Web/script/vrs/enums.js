@@ -84,6 +84,7 @@
         OperatorIcao:       'opi',
         Receiver:           'rec',
         Registration:       'reg',
+        Serial:             'ser',
         SignalLevel:        'sig',
         Speed:              'spd',
         SpeedType:          'sty',
@@ -94,7 +95,8 @@
         TransponderType:    'trt',
         UserTag:            'tag',
         VerticalSpeed:      'vsi',
-        VerticalSpeedType:  'vty'
+        VerticalSpeedType:  'vty',
+        YearBuilt:          'yrb'
     };
     //endregion
 
@@ -424,6 +426,7 @@
         RegistrationAndIcao:            'rai',
         RouteFull:                      'rtf',
         RouteShort:                     'rts',
+        Serial:                         'ser',
         SignalLevel:                    'sig',
         Silhouette:                     'sil',
         SilhouetteAndOpFlag:            'sop',
@@ -441,7 +444,8 @@
         UserTag:                        'tag',
         VerticalSpeed:                  'vsi',
         VerticalSpeedType:              'vty',
-        Wtc:                            'wtc'
+        Wtc:                            'wtc',
+        YearBuilt:                      'yrb'
     };
     //endregion
 

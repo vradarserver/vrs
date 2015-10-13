@@ -99,6 +99,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.VerticalRateChanged);
             Assert.AreEqual(0, _Aircraft.VerticalRateTypeChanged);
             Assert.AreEqual(0, _Aircraft.WakeTurbulenceCategoryChanged);
+            Assert.AreEqual(0, _Aircraft.YearBuiltChanged);
 
             Assert.AreEqual(0, _Aircraft.FullCoordinates.Count);
             Assert.AreEqual(0, _Aircraft.ShortCoordinates.Count);
@@ -162,6 +163,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.VerticalRate, null, -120);
             TestUtilities.TestProperty(_Aircraft, r => r.VerticalRateType, AltitudeType.Barometric, AltitudeType.Geometric);
             TestUtilities.TestProperty(_Aircraft, r => r.WakeTurbulenceCategory, WakeTurbulenceCategory.None, WakeTurbulenceCategory.Heavy);
+            TestUtilities.TestProperty(_Aircraft, r => r.YearBuilt, null, "Abc123");
         }
 
         [TestMethod]
@@ -407,6 +409,8 @@ namespace Test.VirtualRadar.Library
                             case "TargetTrackChanged":              value = _Aircraft.TargetTrackChanged; break;
                             case "IsTisb":                          value = _Aircraft.IsTisb = property.Name == trueBool; break;
                             case "IsTisbChanged":                   value = _Aircraft.IsTisbChanged; break;
+                            case "YearBuilt":                       value = _Aircraft.YearBuilt = stringValue; break;
+                            case "YearBuiltChanged":                value = _Aircraft.YearBuiltChanged; break;
                             default:                                throw new NotImplementedException();
                         }
 

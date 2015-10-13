@@ -360,6 +360,16 @@ namespace VirtualRadar.Interface
         long ConstructionNumberChanged { get; }
 
         /// <summary>
+        /// Gets or sets the year the aircraft was manufactured as a string (it's a string in BaseStation.sqb).
+        /// </summary>
+        string YearBuilt { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="YearBuilt"/> was last changed.
+        /// </summary>
+        long YearBuiltChanged { get; }
+
+        /// <summary>
         /// Gets or sets a description of the airport where the aircraft's journey began.
         /// </summary>
         string Origin { get; set; }

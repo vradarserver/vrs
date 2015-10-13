@@ -229,6 +229,12 @@
         getStringCallback:  function(aircraft) { return aircraft.registration.val; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Serial] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.Serial,
+        labelKey:           'SerialNumber',
+        getStringCallback:  function(aircraft) { return aircraft.serial.val; }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.SignalLevel] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.SignalLevel,
         labelKey:           'SignalLevel',
@@ -293,6 +299,12 @@
         field:              VRS.AircraftListSortableField.VerticalSpeedType,
         labelKey:           'VerticalSpeedType',
         getStringCallback:  function(aircraft) { return aircraft.formatVerticalSpeedType(); }
+    });
+
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.YearBuilt] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.YearBuilt,
+        labelKey:           'YearBuilt',
+        getStringCallback:  function(aircraft) { return aircraft.yearBuilt.val; }
     });
     //endregion
 

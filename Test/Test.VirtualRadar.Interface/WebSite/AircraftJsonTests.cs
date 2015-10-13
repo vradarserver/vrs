@@ -80,6 +80,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(aircraftJson, r => r.VerticalRate, null, -239);
             TestUtilities.TestProperty(aircraftJson, r => r.VerticalRateType, null, 1);
             TestUtilities.TestProperty(aircraftJson, r => r.WakeTurbulenceCategory, null, 7);
+            TestUtilities.TestProperty(aircraftJson, r => r.YearBuilt, null, "1999");
         }
     }
 }

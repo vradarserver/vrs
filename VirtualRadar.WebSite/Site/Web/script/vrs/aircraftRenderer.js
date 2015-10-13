@@ -847,6 +847,16 @@
         renderCallback:         function(aircraft, /** VRS_OPTIONS_AIRCRAFTRENDER */ options) { return aircraft.formatRouteMultiLine(); }
     });
 
+    VRS.renderPropertyHandlers[VRS.RenderProperty.Serial] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.Serial,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListSerialNumber',
+        labelKey:               'SerialNumber',
+        sortableField:          VRS.AircraftListSortableField.Serial,
+        hasChangedCallback:     function(aircraft) { return aircraft.serial.chg; },
+        contentCallback:        function(aircraft) { return aircraft.serial.val; }
+    });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.SignalLevel] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.SignalLevel,
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
@@ -1078,6 +1088,16 @@
         hasChangedCallback:     function(aircraft) { return aircraft.wakeTurbulenceCat.chg; },
         contentCallback:        function(aircraft) { return aircraft.formatWakeTurbulenceCat(false, false); },
         tooltipCallback:        function(aircraft) { return aircraft.formatWakeTurbulenceCat(true, true); }
+    });
+
+    VRS.renderPropertyHandlers[VRS.RenderProperty.YearBuilt] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.YearBuilt,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListYearBuilt',
+        labelKey:               'YearBuilt',
+        sortableField:          VRS.AircraftListSortableField.YearBuilt,
+        hasChangedCallback:     function(aircraft) { return aircraft.yearBuilt.chg; },
+        contentCallback:        function(aircraft) { return aircraft.yearBuilt.val; }
     });
     //endregion
 

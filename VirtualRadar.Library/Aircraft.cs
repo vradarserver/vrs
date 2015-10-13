@@ -423,16 +423,16 @@ namespace VirtualRadar.Library
         /// </summary>
         public long ConstructionNumberChanged { get; private set; }
 
-        private string _LineNumber;
+        private string _YearBuilt;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string LineNumber { get { return _LineNumber; } set { if(value != _LineNumber) { _LineNumber = value; LineNumberChanged = DataVersion; } } }
+        public string YearBuilt { get { return _YearBuilt; } set { if(value != _YearBuilt) { _YearBuilt = value; YearBuiltChanged = DataVersion; } } }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public long LineNumberChanged { get; private set; }
+        public long YearBuiltChanged { get; private set; }
 
         private string _Origin;
         /// <summary>
@@ -744,7 +744,6 @@ namespace VirtualRadar.Library
                 result.LastUpdate = LastUpdate;
                 result.LatestCoordinateTime = LatestCoordinateTime;
                 result.Latitude = Latitude;
-                result.LineNumber = LineNumber;
                 result.Longitude = Longitude;
                 result.Manufacturer = Manufacturer;
                 result.Model = Model;
@@ -776,6 +775,7 @@ namespace VirtualRadar.Library
                 result.VerticalRate = VerticalRate;
                 result.VerticalRateType = VerticalRateType;
                 result.WakeTurbulenceCategory = WakeTurbulenceCategory;
+                result.YearBuilt = YearBuilt;
 
                 foreach(var stopover in Stopovers) {
                     result.Stopovers.Add(stopover);
@@ -801,7 +801,6 @@ namespace VirtualRadar.Library
                 result.IsMilitaryChanged = IsMilitaryChanged;
                 result.IsTisbChanged = IsTisbChanged;
                 result.LatitudeChanged = LatitudeChanged;
-                result.LineNumberChanged = LineNumberChanged;
                 result.LongitudeChanged = LongitudeChanged;
                 result.ManufacturerChanged = ManufacturerChanged;
                 result.ModelChanged = ModelChanged;
@@ -833,6 +832,7 @@ namespace VirtualRadar.Library
                 result.VerticalRateChanged = VerticalRateChanged;
                 result.VerticalRateTypeChanged = VerticalRateTypeChanged;
                 result.WakeTurbulenceCategoryChanged = WakeTurbulenceCategoryChanged;
+                result.YearBuiltChanged = YearBuiltChanged;
             }
 
             return result;

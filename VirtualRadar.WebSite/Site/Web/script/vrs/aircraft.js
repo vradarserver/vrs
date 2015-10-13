@@ -388,6 +388,8 @@
         this.headingIsTrue =            new VRS.BoolValue();              // True if heading is the aircraft's true heading, false if it's the ground track.
         this.targetHeading =            new VRS.NumberValue();
         this.manufacturer =             new VRS.StringValue();
+        this.serial =                   new VRS.StringValue();
+        this.yearBuilt =                new VRS.StringValue();
         this.model =                    new VRS.StringValue();
         this.modelIcao =                new VRS.StringValue();
         this.from =                     new VRS.RouteValue();
@@ -467,6 +469,8 @@
             setValue(this.headingIsTrue,        aircraftJson.TrkH);
             setValue(this.targetHeading,        aircraftJson.TTrk);
             setValue(this.manufacturer,         aircraftJson.Man);
+            setValue(this.serial,               aircraftJson.CNum);
+            setValue(this.yearBuilt,            aircraftJson.Year);
             setValue(this.model,                aircraftJson.Mdl);
             setValue(this.modelIcao,            aircraftJson.Type);
             setValue(this.from,                 aircraftJson.From);
