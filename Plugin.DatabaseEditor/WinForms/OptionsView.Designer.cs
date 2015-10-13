@@ -32,7 +32,6 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.accessControl = new VirtualRadar.WinForms.Controls.AccessControl();
             this.linkLabelIndexPageAddress = new System.Windows.Forms.LinkLabel();
-            this.checkBoxOnlyAllowAdministrators = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -72,9 +71,9 @@
             this.accessControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.accessControl.Location = new System.Drawing.Point(12, 58);
+            this.accessControl.Location = new System.Drawing.Point(12, 35);
             this.accessControl.Name = "accessControl";
-            this.accessControl.Size = new System.Drawing.Size(597, 204);
+            this.accessControl.Size = new System.Drawing.Size(597, 227);
             this.accessControl.TabIndex = 2;
             // 
             // linkLabelIndexPageAddress
@@ -89,16 +88,6 @@
             this.linkLabelIndexPageAddress.Text = "http://127.0.0.1";
             this.linkLabelIndexPageAddress.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelIndexPageAddress_LinkClicked);
             // 
-            // checkBoxOnlyAllowAdministrators
-            // 
-            this.checkBoxOnlyAllowAdministrators.AutoSize = true;
-            this.checkBoxOnlyAllowAdministrators.Location = new System.Drawing.Point(212, 35);
-            this.checkBoxOnlyAllowAdministrators.Name = "checkBoxOnlyAllowAdministrators";
-            this.checkBoxOnlyAllowAdministrators.Size = new System.Drawing.Size(149, 17);
-            this.checkBoxOnlyAllowAdministrators.TabIndex = 1;
-            this.checkBoxOnlyAllowAdministrators.Text = "::OnlyAllowAdministrators::";
-            this.checkBoxOnlyAllowAdministrators.UseVisualStyleBackColor = true;
-            // 
             // OptionsView
             // 
             this.AcceptButton = this.buttonOK;
@@ -106,7 +95,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(621, 315);
-            this.Controls.Add(this.checkBoxOnlyAllowAdministrators);
             this.Controls.Add(this.linkLabelIndexPageAddress);
             this.Controls.Add(this.accessControl);
             this.Controls.Add(this.buttonCancel);
@@ -131,6 +119,5 @@
         private System.Windows.Forms.Button buttonCancel;
         private VirtualRadar.WinForms.Controls.AccessControl accessControl;
         private System.Windows.Forms.LinkLabel linkLabelIndexPageAddress;
-        private System.Windows.Forms.CheckBox checkBoxOnlyAllowAdministrators;
     }
 }

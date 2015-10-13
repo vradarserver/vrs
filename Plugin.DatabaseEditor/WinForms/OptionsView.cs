@@ -88,8 +88,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor.WinForms
         /// </summary>
         private void ApplyBindings()
         {
-            AddControlBinder(new CheckBoxBoolBinder<Options>(Options, checkBoxEnabled,                  r => r.Enabled,                 (r,v) => r.Enabled = v));
-            AddControlBinder(new CheckBoxBoolBinder<Options>(Options, checkBoxOnlyAllowAdministrators,  r => r.OnlyAllowAdministrators, (r,v) => r.OnlyAllowAdministrators = v));
+            AddControlBinder(new CheckBoxBoolBinder<Options>(Options, checkBoxEnabled, r => r.Enabled, (r,v) => r.Enabled = v));
             AddControlBinder(new AccessControlBinder<Options>(Options, accessControl, r => r.Access));
         }
         #endregion

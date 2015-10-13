@@ -196,29 +196,11 @@ namespace VirtualRadar.Plugin.DatabaseEditor {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enabled, allowing updates from anyone.
-        /// </summary>
-        public static string StatusAllowingUpdatesFromAnyone {
-            get {
-                return ResourceManager.GetString("StatusAllowingUpdatesFromAnyone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Disabled.
         /// </summary>
         public static string StatusDisabled {
             get {
                 return ResourceManager.GetString("StatusDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enabled, only allowing updates from administrators.
-        /// </summary>
-        public static string StatusOnlyAllowingAdministrators {
-            get {
-                return ResourceManager.GetString("StatusOnlyAllowingAdministrators", resourceCulture);
             }
         }
         
@@ -246,6 +228,15 @@ namespace VirtualRadar.Plugin.DatabaseEditor {
         public static string XhrFailed {
             get {
                 return ResourceManager.GetString("XhrFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year built.
+        /// </summary>
+        public static string YearBuilt {
+            get {
+                return ResourceManager.GetString("YearBuilt", resourceCulture);
             }
         }
     }
