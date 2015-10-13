@@ -382,6 +382,12 @@ namespace VirtualRadar.Interface.WebSite
         public int? TransponderType { get; set; }
 
         /// <summary>
+        /// Gets or sets the year the aircraft was manufactured.
+        /// </summary>
+        [DataMember(Name="Year", EmitDefaultValue=false)]
+        public string YearBuilt { get; set; }
+
+        /// <summary>
         /// Gets or sets a list of coordinates representing the full trail for the aircraft. If <see cref="ResetTrail"/>
         /// is true then it is the entire trail, otherwise it extends the existing trail.
         /// </summary>

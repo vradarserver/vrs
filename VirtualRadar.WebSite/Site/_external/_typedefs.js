@@ -216,7 +216,8 @@ VRS_GOOGLE_ICON;
 * ResetTrail:   boolean,
 * HasSig:       boolean=,
 * Sig:          Number=,
-* Tisb:         boolean=
+* Tisb:         boolean=,
+* Year:         String
 * }} VRS_JSON_AIRCRAFT
 */
 VRS_JSON_AIRCRAFT;

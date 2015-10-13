@@ -609,6 +609,7 @@ namespace VirtualRadar.Library.BaseStation
             aircraft.Manufacturer =         baseStationAircraft.Manufacturer;
             aircraft.Model =                aircraftDetail.ModelName;
             aircraft.ConstructionNumber =   baseStationAircraft.SerialNo;
+            aircraft.YearBuilt =            baseStationAircraft.YearBuilt;
             aircraft.Operator =             aircraftDetail.OperatorName;
             aircraft.OperatorIcao =         aircraftDetail.OperatorIcao;
             aircraft.IsInteresting =        baseStationAircraft.Interested;
