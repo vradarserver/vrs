@@ -162,14 +162,8 @@
   <data name="ServerReportedException" xml:space="preserve">
     <value>遇到异常:{0}</value>
   </data>
-  <data name="StatusAllowingUpdatesFromAnyone" xml:space="preserve">
-    <value>启用，允许任何人更新</value>
-  </data>
   <data name="StatusDisabled" xml:space="preserve">
     <value>禁用</value>
-  </data>
-  <data name="StatusOnlyAllowingAdministrators" xml:space="preserve">
-    <value>启用，仅允许管理员更新</value>
   </data>
   <data name="StatusStatistics" xml:space="preserve">
     <value>{0:N0} 搜索, {1:N0} 更新</value>
@@ -179,5 +173,8 @@
   </data>
   <data name="XhrFailed" xml:space="preserve">
     <value>不能从服务器获得:{0}</value>
+  </data>
+  <data name="YearBuilt" xml:space="preserve">
+    <value>出厂年份</value>
   </data>
 </root>

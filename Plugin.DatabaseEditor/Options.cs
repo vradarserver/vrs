@@ -33,16 +33,6 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             set { SetField(ref _Enabled, value, () => Enabled); }
         }
 
-        private bool _OnlyAllowAdministrators;
-        /// <summary>
-        /// Gets or sets a value indicating that only administrators can access the editor pages.
-        /// </summary>
-        public bool OnlyAllowAdministrators
-        {
-            get { return _OnlyAllowAdministrators; }
-            set { SetField(ref _OnlyAllowAdministrators, value, () => OnlyAllowAdministrators); }
-        }
-
         private Access _Access;
         /// <summary>
         /// Gets or sets a list of whitelisted or blacklisted IP addresses.
@@ -93,7 +83,6 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         public Options()
         {
-            OnlyAllowAdministrators = true;
             Access = new Access();
         }
     }

@@ -162,14 +162,8 @@
   <data name="ServerReportedException" xml:space="preserve">
     <value>Ausnahmefehler: {0}</value>
   </data>
-  <data name="StatusAllowingUpdatesFromAnyone" xml:space="preserve">
-    <value>Aktiviert, lasse Aktualisierungen von Jedem zu</value>
-  </data>
   <data name="StatusDisabled" xml:space="preserve">
     <value>Deaktiviert</value>
-  </data>
-  <data name="StatusOnlyAllowingAdministrators" xml:space="preserve">
-    <value>Aktiviert; nur Aktualisierungen von Administratoren zulassen</value>
   </data>
   <data name="StatusStatistics" xml:space="preserve">
     <value>{0:N0} Suche[n], {1:N0} Aktualisierung[en]</value>
@@ -179,5 +173,8 @@
   </data>
   <data name="XhrFailed" xml:space="preserve">
     <value>Konnte keine Daten vom Server abrufen: {0}</value>
+  </data>
+  <data name="YearBuilt" xml:space="preserve">
+    <value>Baujahr</value>
   </data>
 </root>

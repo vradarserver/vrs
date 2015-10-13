@@ -175,6 +175,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SingleAircraftSearch.json", ProtectedFolder), SingleAircraftSearch);
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SingleAircraftSave.json", ProtectedFolder), SingleAircraftSave);
             _WebSiteExtender.Initialise(parameters);
+            _WebSiteExtender.ProtectFolder(ProtectedFolder);
 
             parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
 
@@ -223,18 +224,11 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _Options = options;
             _WebSiteExtender.Enabled = options.Enabled;
             _WebSiteExtender.RestrictAccessToFolder(ProtectedFolder, options.Access);
-            if(options.OnlyAllowAdministrators) {
-                _WebSiteExtender.ProtectFolder(ProtectedFolder);
-            } else {
-                _WebSiteExtender.UnprotectFolder(ProtectedFolder);
-            }
 
             if(!options.Enabled) {
                 Status = DatabaseEditorStrings.StatusDisabled;
-            } else if(options.OnlyAllowAdministrators) {
-                Status = DatabaseEditorStrings.StatusOnlyAllowingAdministrators;
             } else {
-                Status = DatabaseEditorStrings.StatusAllowingUpdatesFromAnyone;
+                Status = Strings.Enabled;
             }
 
             UpdateStatusTotals();

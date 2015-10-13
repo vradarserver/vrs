@@ -45,8 +45,8 @@
             _SearchError.hide();
             _SaveSuccess.hide();
 
-            $('#importantProperties-panel').bootstrapCollapsiblePanel({ startCollapsed: false });
-            $('#otherProperties-panel').bootstrapCollapsiblePanel({ startCollapsed: true });
+            $('input').on('input change', function() { _SaveSuccess.hide(); });
+            $('textarea').on('input propertychange', function() { _SaveSuccess.hide(); });
 
             _SearchButton.on('click', SearchButton_Clicked);
             _SaveButton.on('click', SaveButton_Clicked);
