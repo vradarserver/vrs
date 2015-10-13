@@ -189,4 +189,7 @@
   <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
     <value>消息处理过程中发生异常：{0}</value>
   </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>数据库当前被另一个程序锁住。一些航班可能不能被记录。</value>
+  </data>
 </root>

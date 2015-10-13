@@ -2406,6 +2406,108 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="InitialSettingsTitle" xml:space="preserve">
     <value>初始化设置</value>
   </data>
+  <data name="InvalidPluginsCount" xml:space="preserve">
+    <value>无效的插件:{0}</value>
+  </data>
+  <data name="LocalAddress" xml:space="preserve">
+    <value>本地地址:{0}</value>
+  </data>
+  <data name="NetworkAddress" xml:space="preserve">
+    <value>网络地址:{0}</value>
+  </data>
+  <data name="PressQToQuit" xml:space="preserve">
+    <value>按 Q键 退出</value>
+  </data>
+  <data name="Administrators" xml:space="preserve">
+    <value>Administrators</value>
+  </data>
+  <data name="NotYetKnown" xml:space="preserve">
+    <value>仍未知</value>
+  </data>
+  <data name="MonoSettings" xml:space="preserve">
+    <value>Mono设置</value>
+  </data>
+  <data name="OptionsDescribeMonoUseMarkerLabels" xml:space="preserve">
+    <value>是，采用google标记标签显示航空器标签文本；否，当运行于Microsoft .NET下在图片上绘制文本。若选择 否，一些本地图形库可能会抛出异常。</value>
+  </data>
+  <data name="UseMarkerLabels" xml:space="preserve">
+    <value>使用标记标签</value>
+  </data>
+  <data name="AircraftListJson" xml:space="preserve">
+    <value>航空器列表(JSON)</value>
+  </data>
+  <data name="OptionsDescribeRebroadcastSendInterval" xml:space="preserve">
+    <value>发送批量消息等待的秒数。仅在航空器列表(JSON)格式下支持这个设置。</value>
+  </data>
+  <data name="SendEvery" xml:space="preserve">
+    <value>每次发送</value>
+  </data>
+  <data name="RebroadcastSendIntervalOutOfBounds" xml:space="preserve">
+    <value>发送间隔必须在1至30秒之间。</value>
+  </data>
+  <data name="OfflineMode" xml:space="preserve">
+    <value>离线模式</value>
+  </data>
+  <data name="HideFromWebSite" xml:space="preserve">
+    <value>从WebSite隐藏</value>
+  </data>
+  <data name="MergeOnly" xml:space="preserve">
+    <value>仅合并</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>普通</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageHideFromWebSite" xml:space="preserve">
+    <value>这个接收器将不会出现在WebSite上但它可以拥有转发服务器设置并且它可以与其他数据源合并。</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageMergeOnly" xml:space="preserve">
+    <value>这个接收器将不会出现在WebSite上并且仅某些转发服务器格式可以用于它。然而，它可以被其他数据源合并且它相比普通或隐藏的接收器消耗很少的资源。</value>
+  </data>
+  <data name="OptionDescribeReceiverUsageNormal" xml:space="preserve">
+    <value>这个接收器将出现在WebSite上，它可以拥有转发服务器设置并且它可以与其他数据源合并。</value>
+  </data>
+  <data name="NotApplicableAbbr" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="Hidden" xml:space="preserve">
+    <value>隐藏</value>
+  </data>
+  <data name="ReceiverMustBeVisible" xml:space="preserve">
+    <value>这个接收器不能从WebSite上隐藏。</value>
+  </data>
+  <data name="ReceiverCannotBeMergeOnly" xml:space="preserve">
+    <value>这个接收器不能被设置为"仅合并"。</value>
+  </data>
+  <data name="ExtendedBaseStation" xml:space="preserve">
+    <value>BaseStation + MLAT</value>
+  </data>
+  <data name="MLAT" xml:space="preserve">
+    <value>MLAT</value>
+  </data>
+  <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
+    <value>是，如果位置消息在数据源上应该被处理作为可计算MLAT位置。仅所需的MLAT数据源不能被识别为可计算位置消息。</value>
+  </data>
+  <data name="RecConWizSdrFR24Feeder" xml:space="preserve">
+    <value>Flightradar24数据源</value>
+  </data>
+  <data name="OptionsDescribeRawFeedSuppressTisbMessages" xml:space="preserve">
+    <value>设置Yes，如果你不想使用TIS-B消息来跟踪飞行器。</value>
+  </data>
+  <data name="SuppressTisbMessages" xml:space="preserve">
+    <value>支持TIS-B消息</value>
+  </data>
+  <data name="BackgroundThreadQueues" xml:space="preserve">
+    <value>队列</value>
+  </data>
+  <data name="menuDiagnostics" xml:space="preserve">
+    <value>诊断</value>
+  </data>
+  <data name="menuShowQueues" xml:space="preserve">
+    <value>显示队列</value>
+  </data>
+  <data name="Peak" xml:space="preserve">
+    <value>最大</value>
+  </data>
   <data name="ReceiversAndMergedFeedNamesMustBeUnique" xml:space="preserve">
     <value>接收器和合并源不能共享名称</value>
   </data>
