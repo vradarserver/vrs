@@ -1262,6 +1262,14 @@
         };
 
         /**
+         * Formats the serial number.
+         */
+        this.formatSerial = function()
+        {
+            return VRS.format.serial(this.serial.val);
+        }
+
+        /**
          * Formats the signal level as a string.
          * @returns {string}
          */
@@ -1408,6 +1416,14 @@
         this.formatWakeTurbulenceCat = function(ignoreNone, expandedDescription)
         {
             return VRS.format.wakeTurbulenceCat(this.wakeTurbulenceCat.val, ignoreNone, expandedDescription);
+        };
+
+        /**
+         * Returns the year built as a string.
+         */
+        this.formatYearBuilt = function()
+        {
+            return VRS.format.yearBuilt(this.yearBuilt.val);
         };
         //endregion
     };

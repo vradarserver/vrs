@@ -854,7 +854,7 @@
         labelKey:               'SerialNumber',
         sortableField:          VRS.AircraftListSortableField.Serial,
         hasChangedCallback:     function(aircraft) { return aircraft.serial.chg; },
-        contentCallback:        function(aircraft) { return aircraft.serial.val; }
+        contentCallback:        function(aircraft) { return aircraft.formatSerial(); }
     });
 
     VRS.renderPropertyHandlers[VRS.RenderProperty.SignalLevel] = new VRS.RenderPropertyHandler({
@@ -1097,7 +1097,7 @@
         labelKey:               'YearBuilt',
         sortableField:          VRS.AircraftListSortableField.YearBuilt,
         hasChangedCallback:     function(aircraft) { return aircraft.yearBuilt.chg; },
-        contentCallback:        function(aircraft) { return aircraft.yearBuilt.val; }
+        contentCallback:        function(aircraft) { return aircraft.formatYearBuilt(); }
     });
     //endregion
 
