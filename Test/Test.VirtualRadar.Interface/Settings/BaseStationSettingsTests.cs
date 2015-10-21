@@ -78,6 +78,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.TrackingTimeoutSeconds, 600, 3600);
             TestUtilities.TestProperty(settings, r => r.MinimiseToSystemTray, false);
             TestUtilities.TestProperty(settings, r => r.SearchPictureSubFolders, false);
+            TestUtilities.TestProperty(settings, r => r.LookupAircraftDetailsOnline, true);
         }
 
         [TestMethod]

@@ -97,6 +97,8 @@
     <Compile Include="Adsb\VerticalDataSource.cs" />
     <Compile Include="Adsb\VerticalModeIndicator.cs" />
     <Compile Include="AircraftFetcher.cs" />
+    <Compile Include="AircraftOnlineLookupDetail.cs" />
+    <Compile Include="AircraftOnlineLookupEventArgs.cs" />
     <Compile Include="AirportDataThumbnailJson.cs" />
     <Compile Include="AirportDataThumbnailsJson.cs" />
     <Compile Include="AltitudeType.cs" />
@@ -109,10 +111,13 @@
     <Compile Include="Crc64.cs" />
     <Compile Include="CultureSwitcher.cs" />
     <Compile Include="CustomConvert.cs" />
+    <Compile Include="EventHelper.cs" />
     <Compile Include="ExpiringCollection.cs" />
     <Compile Include="ExpiringDictionary.cs" />
     <Compile Include="ExpiringList.cs" />
     <Compile Include="Hierarchy.cs" />
+    <Compile Include="IAircraftOnlineLookup.cs" />
+    <Compile Include="IAircraftOnlineLookupProvider.cs" />
     <Compile Include="IQueue.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
     <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />

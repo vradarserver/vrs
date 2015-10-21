@@ -34,79 +34,79 @@ namespace VirtualRadar.Interface.Settings
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public DataSource DataSource { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public ConnectionType ConnectionType { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public bool AutoReconnectAtStartup { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public string Address { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public int Port { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public string ComPort { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public int BaudRate { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public int DataBits { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public StopBits StopBits { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public Parity Parity { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public Handshake Handshake { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public string StartupText { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
-        // It'd be nice to use this wouldn't it? Microsoft rendered it unusable. // [Obsolete("Use Configuration.Receivers instead", false)]
+        // Obsolete (we can't use the attribute)
         public string ShutdownText { get; set; }
 
         private string _DatabaseFileName;
@@ -219,6 +219,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _AutoSavePolarPlotsMinutes, value, () => AutoSavePolarPlotsMinutes); }
         }
 
+        private bool _LookupAircraftDetailsOnline;
+        /// <summary>
+        /// Gets or sets a value indicating that the program should lookup aircraft details online.
+        /// </summary>
+        public bool LookupAircraftDetailsOnline
+        {
+            get { return _LookupAircraftDetailsOnline; }
+            set { SetField(ref _LookupAircraftDetailsOnline, value, () => LookupAircraftDetailsOnline); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -280,6 +290,7 @@ namespace VirtualRadar.Interface.Settings
             AutoSavePolarPlotsMinutes = 60;
             DisplayTimeoutSeconds = 30;
             TrackingTimeoutSeconds = 600;
+            LookupAircraftDetailsOnline = true;
         }
     }
 }

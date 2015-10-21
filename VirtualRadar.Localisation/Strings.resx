@@ -2525,4 +2525,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Peak</value>
     <comment>As in the largest number of something, the maximum</comment>
   </data>
+  <data name="LookupAircraftDetailsOnline" xml:space="preserve">
+    <value>Lookup aircraft details online</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesLookupAircraftDetailsOnline" xml:space="preserve">
+    <value>Yes if missing aircraft details should be fetched from an online source and cached locally, no to only use the local BaseStation.sqb as a source of aircraft data</value>
+  </data>
 </root>

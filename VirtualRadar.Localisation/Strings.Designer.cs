@@ -2417,6 +2417,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lookup aircraft details online.
+        /// </summary>
+        public static string LookupAircraftDetailsOnline {
+            get {
+                return ResourceManager.GetString("LookupAircraftDetailsOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max airborne speed.
         /// </summary>
         public static string MaxAirborneSpeed {
@@ -3268,6 +3277,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeDataSourcesIgnoreBadConnection {
             get {
                 return ResourceManager.GetString("OptionsDescribeDataSourcesIgnoreBadConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes if missing aircraft details should be fetched from an online source and cached locally, no to only use the local BaseStation.sqb as a source of aircraft data.
+        /// </summary>
+        public static string OptionsDescribeDataSourcesLookupAircraftDetailsOnline {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDataSourcesLookupAircraftDetailsOnline", resourceCulture);
             }
         }
         
