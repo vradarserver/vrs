@@ -94,7 +94,8 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderSilhouettes,                 r => r.SilhouettesFolder,      (r,v) => r.SilhouettesFolder = v));
             AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderPictures,                    r => r.PicturesFolder,         (r,v) => r.PicturesFolder = v));
 
-            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxSearchPictureSubFolders,   r => r.SearchPictureSubFolders,    (r,v) => r.SearchPictureSubFolders = v));
+            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxSearchPictureSubFolders,      r => r.SearchPictureSubFolders,     (r,v) => r.SearchPictureSubFolders = v));
+            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxLookupAircraftDetailsOnline,  r => r.LookupAircraftDetailsOnline, (r,v) => r.LookupAircraftDetailsOnline = v));
         }
 
         /// <summary>
@@ -103,11 +104,12 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();
-            SetInlineHelp(fileDatabaseFileName,             Strings.DatabaseFileName,           Strings.OptionsDescribeDataSourcesDatabaseFileName);
-            SetInlineHelp(folderFlags,                      Strings.FlagsFolder,                Strings.OptionsDescribeDataSourcesFlagsFolder);
-            SetInlineHelp(folderSilhouettes,                Strings.SilhouettesFolder,          Strings.OptionsDescribeDataSourcesSilhouettesFolder);
-            SetInlineHelp(folderPictures,                   Strings.PicturesFolder,             Strings.OptionsDescribeDataSourcesPicturesFolder);
-            SetInlineHelp(checkBoxSearchPictureSubFolders,  Strings.SearchPictureSubFolders,    Strings.OptionsDescribeDataSourcesSearchPictureSubFolders);
+            SetInlineHelp(fileDatabaseFileName,                 Strings.DatabaseFileName,               Strings.OptionsDescribeDataSourcesDatabaseFileName);
+            SetInlineHelp(folderFlags,                          Strings.FlagsFolder,                    Strings.OptionsDescribeDataSourcesFlagsFolder);
+            SetInlineHelp(folderSilhouettes,                    Strings.SilhouettesFolder,              Strings.OptionsDescribeDataSourcesSilhouettesFolder);
+            SetInlineHelp(folderPictures,                       Strings.PicturesFolder,                 Strings.OptionsDescribeDataSourcesPicturesFolder);
+            SetInlineHelp(checkBoxSearchPictureSubFolders,      Strings.SearchPictureSubFolders,        Strings.OptionsDescribeDataSourcesSearchPictureSubFolders);
+            SetInlineHelp(checkBoxLookupAircraftDetailsOnline,  Strings.LookupAircraftDetailsOnline,    Strings.OptionsDescribeDataSourcesLookupAircraftDetailsOnline);
         }
     }
 }

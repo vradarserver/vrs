@@ -36,6 +36,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.folderSilhouettes = new VirtualRadar.WinForms.Controls.FolderControl();
             this.label2 = new System.Windows.Forms.Label();
+            this.checkBoxLookupAircraftDetailsOnline = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBoxSearchPictureSubFolders
@@ -120,9 +121,20 @@
             this.label2.TabIndex = 12;
             this.label2.Text = "::FlagsFolder:::";
             // 
+            // checkBoxLookupAircraftDetailsOnline
+            // 
+            this.checkBoxLookupAircraftDetailsOnline.AutoSize = true;
+            this.checkBoxLookupAircraftDetailsOnline.Location = new System.Drawing.Point(200, 128);
+            this.checkBoxLookupAircraftDetailsOnline.Name = "checkBoxLookupAircraftDetailsOnline";
+            this.checkBoxLookupAircraftDetailsOnline.Size = new System.Drawing.Size(169, 17);
+            this.checkBoxLookupAircraftDetailsOnline.TabIndex = 18;
+            this.checkBoxLookupAircraftDetailsOnline.Text = "::LookupAircraftDetailsOnline::";
+            this.checkBoxLookupAircraftDetailsOnline.UseVisualStyleBackColor = true;
+            // 
             // PageDataSources
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.checkBoxLookupAircraftDetailsOnline);
             this.Controls.Add(this.checkBoxSearchPictureSubFolders);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.folderFlags);
@@ -133,7 +145,7 @@
             this.Controls.Add(this.folderSilhouettes);
             this.Controls.Add(this.label2);
             this.Name = "PageDataSources";
-            this.Size = new System.Drawing.Size(705, 129);
+            this.Size = new System.Drawing.Size(705, 155);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -150,5 +162,6 @@
         private System.Windows.Forms.Label label1;
         private Controls.FolderControl folderSilhouettes;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBoxLookupAircraftDetailsOnline;
     }
 }

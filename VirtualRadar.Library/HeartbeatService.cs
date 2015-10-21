@@ -61,17 +61,10 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void OnSlowTick(EventArgs args)
         {
-            if(SlowTick != null) {
-                foreach(EventHandler eventHandler in SlowTick.GetInvocationList()) {
-                    try {
-                        eventHandler(this, EventArgs.Empty);
-                    } catch(ThreadAbortException) {
-                    } catch(Exception ex) {
-                        ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
-                        log.WriteLine("Caught an exception on a slow tick heartbeat event: {0}", ex.ToString());
-                    }
-                }
-            }
+            EventHelper.Raise(SlowTick, this, args, ex => {
+                ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught an exception on a slow tick heartbeat event: {0}", ex.ToString());
+            });
         }
 
         /// <summary>
@@ -85,17 +78,10 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void OnFastTick(EventArgs args)
         {
-            if(FastTick != null) {
-                foreach(EventHandler eventHandler in FastTick.GetInvocationList()) {
-                    try {
-                        eventHandler(this, EventArgs.Empty);
-                    } catch(ThreadAbortException) {
-                    } catch(Exception ex) {
-                        ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
-                        log.WriteLine("Caught an exception on a fast tick heartbeat event: {0}", ex.ToString());
-                    }
-                }
-            }
+            EventHelper.Raise(FastTick, this, args, ex => {
+                ILog log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught an exception on a fast tick heartbeat event: {0}", ex.ToString());
+            });
         }
 
         /// <summary>
