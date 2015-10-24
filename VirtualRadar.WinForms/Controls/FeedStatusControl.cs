@@ -117,7 +117,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnReconnectFeedId(FeedIdEventArgs args)
         {
-            if(ReconnectFeedId != null) ReconnectFeedId(this, args);
+            EventHelper.Raise(ReconnectFeedId, this, args);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnShowFeedIdStatistics(FeedIdEventArgs args)
         {
-            if(ShowFeedIdStatistics != null) ShowFeedIdStatistics(this, args);
+            EventHelper.Raise(ShowFeedIdStatistics, this, args);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         public virtual void OnResetPolarPlotter(FeedIdEventArgs args)
         {
-            if(ResetPolarPlotter != null) ResetPolarPlotter(this, args);
+            EventHelper.Raise(ResetPolarPlotter, this, args);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         public virtual void OnConfigureFeed(FeedIdEventArgs args)
         {
-            if(ConfigureFeed != null) ConfigureFeed(this, args);
+            EventHelper.Raise(ConfigureFeed, this, args);
         }
         #endregion
 

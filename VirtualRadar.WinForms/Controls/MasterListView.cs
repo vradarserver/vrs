@@ -18,6 +18,7 @@ using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Resources;
 
@@ -197,7 +198,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnFetchRecordContent(ListContentEventArgs args)
         {
-            if(FetchRecordContent != null) FetchRecordContent(this, args);
+            EventHelper.Raise(FetchRecordContent, this, args);
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnSelectedRecordChanged(EventArgs args)
         {
-            if(SelectedRecordChanged != null) SelectedRecordChanged(this, args);
+            EventHelper.Raise(SelectedRecordChanged, this, args);
         }
 
         /// <summary>
@@ -225,7 +226,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnAddClicked(EventArgs args)
         {
-            if(AddClicked != null && AllowAdd) AddClicked(this, args);
+            EventHelper.Raise(AddClicked, this, args);
         }
 
         /// <summary>
@@ -239,7 +240,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnDeleteClicked(EventArgs args)
         {
-            if(DeleteClicked != null && AllowDelete) DeleteClicked(this, args);
+            EventHelper.Raise(DeleteClicked, this, args);
         }
 
         /// <summary>
@@ -253,7 +254,9 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnEditClicked(EventArgs args)
         {
-            if(EditClicked != null && AllowUpdate) EditClicked(this, args);
+            if(AllowUpdate) {
+                EventHelper.Raise(EditClicked, this, args);
+            }
         }
 
         /// <summary>
@@ -267,7 +270,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnCheckedChanged(ListCheckedEventArgs args)
         {
-            if(CheckedChanged != null) CheckedChanged(this, args);
+            EventHelper.Raise(CheckedChanged, this, args);
         }
         #endregion
 

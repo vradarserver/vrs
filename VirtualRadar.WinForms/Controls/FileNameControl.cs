@@ -18,6 +18,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using VirtualRadar.Localisation;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -84,7 +85,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnFileNameTextChanged(EventArgs args)
         {
-            if(FileNameTextChanged != null) FileNameTextChanged(this, args);
+            EventHelper.Raise(FileNameTextChanged, this, args);
         }
 
         /// <summary>

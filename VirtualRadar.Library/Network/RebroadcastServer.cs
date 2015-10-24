@@ -194,7 +194,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void OnOnlineChanged(EventArgs args)
         {
-            if(OnlineChanged != null) OnlineChanged(this, args);
+            EventHelper.Raise(OnlineChanged, this, args);
         }
         #endregion
 

@@ -149,7 +149,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnAircraftInformationReceived(EventArgs<ReadAircraftInformation> args)
         {
-            if(AircraftInformationReceived != null) AircraftInformationReceived(this, args);
+            EventHelper.Raise(AircraftInformationReceived, this, args);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnConnectionStatusChanged(EventArgs args)
         {
-            if(ConnectionStatusChanged != null) ConnectionStatusChanged(this, args);
+            EventHelper.Raise(ConnectionStatusChanged, this, args);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnFlightSimulatorXExceptionRaised(EventArgs<FlightSimulatorXException> args)
         {
-            if(FlightSimulatorXExceptionRaised != null) FlightSimulatorXExceptionRaised(this, args);
+            EventHelper.Raise(FlightSimulatorXExceptionRaised, this, args);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnFreezeStatusChanged(EventArgs args)
         {
-            if(FreezeStatusChanged != null) FreezeStatusChanged(this, args);
+            EventHelper.Raise(FreezeStatusChanged, this, args);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnSlewStatusChanged(EventArgs args)
         {
-            if(SlewStatusChanged != null) SlewStatusChanged(this, args);
+            EventHelper.Raise(SlewStatusChanged, this, args);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnSlewToggled(EventArgs args)
         {
-            if(SlewToggled != null) SlewToggled(this, args);
+            EventHelper.Raise(SlewToggled, this, args);
         }
         #endregion
 

@@ -70,17 +70,10 @@ namespace VirtualRadar.Library.Settings
         /// <param name="args"></param>
         protected virtual void OnConfigurationChanged(EventArgs args)
         {
-            if(ConfigurationChanged != null) {
-                foreach(EventHandler handler in ConfigurationChanged.GetInvocationList()) {
-                    try {
-                        handler(this, args);
-                    } catch(ThreadAbortException) {
-                    } catch(Exception ex) {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                        log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
-                    }
-                }
-            }
+            EventHelper.Raise(ConfigurationChanged, this, args, ex => {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
+            });
         }
         #endregion
 

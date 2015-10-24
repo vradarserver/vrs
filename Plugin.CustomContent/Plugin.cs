@@ -137,7 +137,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <param name="args"></param>
         protected virtual void OnStatusChanged(EventArgs args)
         {
-            if(StatusChanged != null) StatusChanged(this, args);
+            EventHelper.Raise(StatusChanged, this, args);
         }
         #endregion
 

@@ -289,7 +289,7 @@ namespace VirtualRadar.WebSite
         /// <param name="args"></param>
         internal void OnHtmlLoadedFromFile(TextContentEventArgs args)
         {
-            if(HtmlLoadedFromFile != null) HtmlLoadedFromFile(this, args);
+            EventHelper.Raise(HtmlLoadedFromFile, this, args);
         }
         #endregion
 

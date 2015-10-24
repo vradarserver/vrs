@@ -17,6 +17,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.View;
 using VirtualRadar.WinForms.Controls;
 using VirtualRadar.WinForms.PortableBinding;
@@ -72,7 +73,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnValueChanged(object sender, EventArgs args)
         {
-            if(ValueChanged != null) ValueChanged(sender, args);
+            EventHelper.Raise(ValueChanged, sender, args);
         }
         #endregion
 

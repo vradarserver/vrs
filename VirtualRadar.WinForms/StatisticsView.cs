@@ -212,7 +212,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnResetCountersClicked(EventArgs args)
         {
-            if(ResetCountersClicked != null) ResetCountersClicked(this, args);
+            EventHelper.Raise(ResetCountersClicked, this, args);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnCloseClicked(EventArgs args)
         {
-            if(CloseClicked != null) CloseClicked(this, args);
+            EventHelper.Raise(CloseClicked, this, args);
         }
         #endregion
 

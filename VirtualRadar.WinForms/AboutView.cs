@@ -122,7 +122,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnOpenConfigurationFolderClicked(EventArgs args)
         {
-            if(OpenConfigurationFolderClicked != null) OpenConfigurationFolderClicked(this, args);
+            EventHelper.Raise(OpenConfigurationFolderClicked, this, args);
         }
 
         /// <summary>

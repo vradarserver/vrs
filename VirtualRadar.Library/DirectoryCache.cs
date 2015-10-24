@@ -243,7 +243,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         protected virtual void OnCacheChanged(EventArgs args)
         {
-            if(CacheChanged != null) CacheChanged(this, args);
+            EventHelper.Raise(CacheChanged, this, args);
         }
         #endregion
 

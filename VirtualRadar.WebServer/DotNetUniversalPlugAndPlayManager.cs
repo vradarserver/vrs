@@ -151,7 +151,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnStateChanged(EventArgs args)
         {
-            if(StateChanged != null) StateChanged(this, args);
+            EventHelper.Raise(StateChanged, this, args);
         }
         #endregion
 

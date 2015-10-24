@@ -150,7 +150,7 @@ namespace VirtualRadar.Database.StandingData
         /// <param name="args"></param>
         protected virtual void OnLoadCompleted(EventArgs args)
         {
-            if(LoadCompleted != null) LoadCompleted(this, args);
+            EventHelper.Raise(LoadCompleted, this, args);
         }
         #endregion
 

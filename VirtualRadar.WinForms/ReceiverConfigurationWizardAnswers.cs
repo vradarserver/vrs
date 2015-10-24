@@ -16,6 +16,7 @@ using VirtualRadar.Interface.View;
 using System.ComponentModel;
 using VirtualRadar.Interface.Settings;
 using System.Linq.Expressions;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms
 {
@@ -120,7 +121,7 @@ namespace VirtualRadar.WinForms
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            if(PropertyChanged != null) PropertyChanged(this, args);
+            EventHelper.Raise(PropertyChanged, this, args);
         }
 
         protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)

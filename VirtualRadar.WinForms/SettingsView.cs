@@ -243,7 +243,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            if(PropertyChanged != null) PropertyChanged(this, args);
+            EventHelper.Raise(PropertyChanged, this, args);
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnSaveClicked(EventArgs args)
         {
-            if(SaveClicked != null) SaveClicked(this, args);
+            EventHelper.Raise(SaveClicked, this, args);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         public void RaiseTestConnectionClicked(EventArgs<Receiver> args)
         {
-            if(TestConnectionClicked != null) TestConnectionClicked(this, args);
+            EventHelper.Raise(TestConnectionClicked, this, args);
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         public void RaiseTestTextToSpeechSettingsClicked(EventArgs args)
         {
-            if(TestTextToSpeechSettingsClicked != null) TestTextToSpeechSettingsClicked(this, args);
+            EventHelper.Raise(TestTextToSpeechSettingsClicked, this, args);
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         public void RaiseUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs args)
         {
-            if(UpdateReceiverLocationsFromBaseStationDatabaseClicked != null) UpdateReceiverLocationsFromBaseStationDatabaseClicked(this, args);
+            EventHelper.Raise(UpdateReceiverLocationsFromBaseStationDatabaseClicked, this, args);
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         public void RaiseUseIcaoRawDecodingSettingsClicked(EventArgs args)
         {
-            if(UseIcaoRawDecodingSettingsClicked != null) UseIcaoRawDecodingSettingsClicked(this, args);
+            EventHelper.Raise(UseIcaoRawDecodingSettingsClicked, this, args);
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         public void RaiseUseRecommendedRawDecodingSettingsClicked(EventArgs args)
         {
-            if(UseRecommendedRawDecodingSettingsClicked != null) UseRecommendedRawDecodingSettingsClicked(this, args);
+            EventHelper.Raise(UseRecommendedRawDecodingSettingsClicked, this, args);
         }
 
         /// <summary>
@@ -362,7 +362,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnFlightSimulatorXOnlyClicked(EventArgs args)
         {
-            if(FlightSimulatorXOnlyClicked != null) FlightSimulatorXOnlyClicked(this, args);
+            EventHelper.Raise(FlightSimulatorXOnlyClicked, this, args);
         }
         #endregion
 

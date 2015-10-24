@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Localisation;
@@ -114,31 +115,31 @@ namespace VirtualRadar.Plugin.CustomContent.WinForms
         public event EventHandler DeleteInjectSettingsClicked;
         protected virtual void OnDeleteInjectSettingsClicked(EventArgs args)
         {
-            if(DeleteInjectSettingsClicked != null) DeleteInjectSettingsClicked(this, args);
+            EventHelper.Raise(DeleteInjectSettingsClicked, this, args);
         }
 
         public event EventHandler NewInjectSettingsClicked;
         protected virtual void OnNewInjectSettingsClicked(EventArgs args)
         {
-            if(NewInjectSettingsClicked != null) NewInjectSettingsClicked(this, args);
+            EventHelper.Raise(NewInjectSettingsClicked, this, args);
         }
 
         public event EventHandler ResetClicked;
         protected virtual void OnResetClicked(EventArgs args)
         {
-            if(ResetClicked != null) ResetClicked(this, args);
+            EventHelper.Raise(ResetClicked, this, args);
         }
 
         public event CancelEventHandler SaveClicked;
         protected virtual void OnSaveClicked(CancelEventArgs args)
         {
-            if(SaveClicked != null) SaveClicked(this, args);
+            EventHelper.Raise(SaveClicked, this, args);
         }
 
         public event EventHandler SelectedInjectSettingsChanged;
         protected virtual void OnSelectedInjectSettingsChanged(EventArgs args)
         {
-            if(SelectedInjectSettingsChanged != null) SelectedInjectSettingsChanged(this, args);
+            EventHelper.Raise(SelectedInjectSettingsChanged, this, args);
         }
         #endregion
 

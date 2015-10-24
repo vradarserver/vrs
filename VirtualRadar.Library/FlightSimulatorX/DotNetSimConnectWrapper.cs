@@ -16,6 +16,7 @@ using Microsoft.FlightSimulator.SimConnect;
 using VirtualRadar.Interface.FlightSimulatorX;
 using System.Threading;
 using System.Diagnostics;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library.FlightSimulatorX
 {
@@ -73,7 +74,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnEventObserved(SimConnectEventObservedEventArgs args)
         {
-            if(EventObserved != null) EventObserved(this, args);
+            EventHelper.Raise(EventObserved, this, args);
         }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnExceptionRaised(SimConnectExceptionRaisedEventArgs args)
         {
-            if(ExceptionRaised != null) ExceptionRaised(this, args);
+            EventHelper.Raise(ExceptionRaised, this, args);
         }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnObjectReceived(SimConnectObjectReceivedEventArgs args)
         {
-            if(ObjectReceived != null) ObjectReceived(this, args);
+            EventHelper.Raise(ObjectReceived, this, args);
         }
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnUserHasQuit(EventArgs args)
         {
-            if(UserHasQuit != null) UserHasQuit(this, args);
+            EventHelper.Raise(UserHasQuit, this, args);
         }
         #endregion
 

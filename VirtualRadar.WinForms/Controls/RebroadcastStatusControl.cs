@@ -87,7 +87,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnShowRebroadcastServersConfigurationClicked(EventArgs args)
         {
-            if(ShowRebroadcastServersConfigurationClicked != null) ShowRebroadcastServersConfigurationClicked(this, args);
+            EventHelper.Raise(ShowRebroadcastServersConfigurationClicked, this, args);
         }
 
         /// <summary>

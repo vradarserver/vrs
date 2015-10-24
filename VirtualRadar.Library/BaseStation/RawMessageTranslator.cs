@@ -318,7 +318,7 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void OnPositionReset(EventArgs<string> args)
         {
-            if(PositionReset != null) PositionReset(this, args);
+            EventHelper.Raise(PositionReset, this, args);
         }
         #endregion
 

@@ -120,7 +120,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnLatitudeChanged(EventArgs args)
         {
-            if(LatitudeChanged != null) LatitudeChanged(this, args);
+            EventHelper.Raise(LatitudeChanged, this, args);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnLongitudeChanged(EventArgs args)
         {
-            if(LongitudeChanged != null) LongitudeChanged(this, args);
+            EventHelper.Raise(LongitudeChanged, this, args);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnMapTypeChanged(EventArgs args)
         {
-            if(MapTypeChanged != null) MapTypeChanged(this, args);
+            EventHelper.Raise(MapTypeChanged, this, args);
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnZoomLevelChanged(EventArgs args)
         {
-            if(ZoomLevelChanged != null) ZoomLevelChanged(this, args);
+            EventHelper.Raise(ZoomLevelChanged, this, args);
         }
         #endregion
 

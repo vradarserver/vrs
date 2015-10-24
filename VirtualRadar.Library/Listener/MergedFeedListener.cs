@@ -221,7 +221,7 @@ namespace VirtualRadar.Library.Listener
         public event EventHandler<BaseStationMessageEventArgs> Port30003MessageReceived;
         protected virtual void OnPort30003MessageReceived(BaseStationMessageEventArgs args)
         {
-            if(Port30003MessageReceived != null) Port30003MessageReceived(this, args);
+            EventHelper.Raise(Port30003MessageReceived, this, args);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace VirtualRadar.Library.Listener
         public event EventHandler<EventArgs<string>> PositionReset;
         protected virtual void OnPositionReset(EventArgs<string> args)
         {
-            if(PositionReset != null) PositionReset(this, args);
+            EventHelper.Raise(PositionReset, this, args);
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace VirtualRadar.Library.Listener
         public event EventHandler<EventArgs<Exception>> ExceptionCaught;
         protected virtual void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
 
         #region Inert events

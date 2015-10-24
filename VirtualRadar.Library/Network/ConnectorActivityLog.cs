@@ -67,7 +67,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         protected virtual void OnActivityRecorded(EventArgs<ConnectorActivityEvent> args)
         {
-            if(ActivityRecorded != null) ActivityRecorded(this, args);
+            EventHelper.Raise(ActivityRecorded, this, args);
         }
         #endregion
 

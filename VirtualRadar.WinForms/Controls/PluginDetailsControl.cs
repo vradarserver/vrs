@@ -49,7 +49,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnConfigurePluginClicked(PluginEventArgs args)
         {
-            if(ConfigurePluginClicked != null) ConfigurePluginClicked(this, args);
+            EventHelper.Raise(ConfigurePluginClicked, this, args);
         }
 
         /// <summary>

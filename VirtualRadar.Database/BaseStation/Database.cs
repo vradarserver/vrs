@@ -191,7 +191,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <param name="args"></param>
         private void OnFileNameChanging(EventArgs args)
         {
-            if(FileNameChanging != null) FileNameChanging(this, args);
+            EventHelper.Raise(FileNameChanging, this, args);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <param name="args"></param>
         private void OnFileNameChanged(EventArgs args)
         {
-            if(FileNameChanged != null) FileNameChanged(this, args);
+            EventHelper.Raise(FileNameChanged, this, args);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <param name="args"></param>
         private void OnAircraftUpdated(EventArgs<BaseStationAircraft> args)
         {
-            if(AircraftUpdated != null) AircraftUpdated(this, args);
+            EventHelper.Raise(AircraftUpdated, this, args);
         }
         #endregion
 

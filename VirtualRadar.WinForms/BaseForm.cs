@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Drawing;
 using VirtualRadar.WinForms.PortableBinding;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms
 {
@@ -76,7 +77,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnValueChanged(object sender, EventArgs args)
         {
-            if(ValueChanged != null) ValueChanged(sender, args);
+            EventHelper.Raise(ValueChanged, sender, args);
         }
 
         /// <summary>

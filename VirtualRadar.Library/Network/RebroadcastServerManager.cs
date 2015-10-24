@@ -81,7 +81,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void OnOnlineChanged(EventArgs args)
         {
-            if(OnlineChanged != null) OnlineChanged(this, args);
+            EventHelper.Raise(OnlineChanged, this, args);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void OnClientConnected(ConnectionEventArgs args)
         {
-            if(ClientConnected != null) ClientConnected(this, args);
+            EventHelper.Raise(ClientConnected, this, args);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         private void OnClientDisconnected(ConnectionEventArgs args)
         {
-            if(ClientDisconnected != null) ClientDisconnected(this, args);
+            EventHelper.Raise(ClientDisconnected, this, args);
         }
         #endregion
 

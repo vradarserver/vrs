@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
 using VirtualRadar.Interface.StandingData;
@@ -109,7 +110,7 @@ namespace VirtualRadar.Database.BasicAircraft
         /// <param name="args"></param>
         protected virtual void OnContentUpdated(EventArgs args)
         {
-            if(ContentUpdated != null) ContentUpdated(this, args);
+            EventHelper.Raise(ContentUpdated, this, args);
         }
         #endregion
 

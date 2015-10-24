@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 
@@ -48,7 +49,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public event EventHandler OpenConfigurationFolderClicked;
         public void OnOpenConfigurationFolderClicked(EventArgs args)
         {
-            if(OpenConfigurationFolderClicked != null) OpenConfigurationFolderClicked(this, args);
+            EventHelper.Raise(OpenConfigurationFolderClicked, this, args);
         }
 
         public void ShowConfigurationFolderContents()

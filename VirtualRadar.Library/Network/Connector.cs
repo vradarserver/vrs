@@ -254,13 +254,7 @@ namespace VirtualRadar.Library.Network
                     RecordActivity(new ConnectorActivityEvent(Name, String.Format("Exception caught by connector: {0}", timestampedException.Exception.Message), timestampedException));
                 }
 
-                if(ExceptionCaught != null) {
-                    try {
-                        ExceptionCaught(this, args);
-                    } catch {
-                        ;
-                    }
-                }
+                EventHelper.Raise(ExceptionCaught, this, args);
             }
         }
 
@@ -279,9 +273,7 @@ namespace VirtualRadar.Library.Network
                         RecordActivity(new ConnectorActivityEvent(Name, message, timestampedException));
                     }
 
-                    if(ExceptionCaught != null) {
-                        ExceptionCaught(connection, new EventArgs<Exception>(ex));
-                    }
+                    EventHelper.Raise(ExceptionCaught, connection, new EventArgs<Exception>(ex));
                 } catch {
                     ;
                 }
@@ -299,7 +291,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         protected virtual void OnAddingConnection(ConnectionEventArgs args)
         {
-            if(AddingConnection != null) AddingConnection(this, args);
+            EventHelper.Raise(AddingConnection, this, args);
         }
 
         /// <summary>
@@ -313,7 +305,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         protected virtual void OnConnectionEstablished(ConnectionEventArgs args)
         {
-            if(ConnectionEstablished != null) ConnectionEstablished(this, args);
+            EventHelper.Raise(ConnectionEstablished, this, args);
         }
 
         /// <summary>
@@ -327,7 +319,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         protected virtual void OnConnectionStateChanged(EventArgs args)
         {
-            if(ConnectionStateChanged != null) ConnectionStateChanged(this, args);
+            EventHelper.Raise(ConnectionStateChanged, this, args);
         }
 
         /// <summary>
@@ -336,8 +328,8 @@ namespace VirtualRadar.Library.Network
         /// <param name="connection"></param>
         internal void RaiseConnectionStateChanged(IConnection connection)
         {
-            if(ConnectionStateChanged != null && connection != null) {
-                ConnectionStateChanged(connection, EventArgs.Empty);
+            if(connection != null) {
+                EventHelper.Raise(ConnectionStateChanged, connection, EventArgs.Empty);
             }
         }
 
@@ -352,7 +344,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         protected virtual void OnConnectionClosed(ConnectionEventArgs args)
         {
-            if(ConnectionClosed != null) ConnectionClosed(this, args);
+            EventHelper.Raise(ConnectionClosed, this, args);
         }
 
         /// <summary>
@@ -366,7 +358,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         protected virtual void OnActivityRecorded(EventArgs<ConnectorActivityEvent> args)
         {
-            if(ActivityRecorded != null) ActivityRecorded(this, args);
+            EventHelper.Raise(ActivityRecorded, this, args);
         }
         #endregion
 

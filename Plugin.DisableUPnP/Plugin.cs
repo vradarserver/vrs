@@ -43,7 +43,7 @@ namespace VirtualRadar.Plugin.DisableUPnP
 
         protected virtual void OnStatusChanged(EventArgs args)
         {
-            if(StatusChanged != null) StatusChanged(this, args);
+            EventHelper.Raise(StatusChanged, this, args);
         }
 
         public void RegisterImplementations(InterfaceFactory.IClassFactory classFactory)

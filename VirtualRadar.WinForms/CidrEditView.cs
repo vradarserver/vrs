@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
@@ -76,7 +77,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnCidrChanged(EventArgs args)
         {
-            if(CidrChanged != null) CidrChanged(this, args);
+            EventHelper.Raise(CidrChanged, this, args);
         }
 
         /// <summary>

@@ -74,7 +74,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            if(PropertyChanged != null) PropertyChanged(this, args);
+            EventHelper.Raise(PropertyChanged, this, args);
         }
 
         /// <summary>

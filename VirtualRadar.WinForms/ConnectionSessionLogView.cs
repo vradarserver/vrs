@@ -69,7 +69,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnShowSessionsClicked(EventArgs args)
         {
-            if(ShowSessionsClicked != null) ShowSessionsClicked(this, args);
+            EventHelper.Raise(ShowSessionsClicked, this, args);
         }
 
         /// <summary>
