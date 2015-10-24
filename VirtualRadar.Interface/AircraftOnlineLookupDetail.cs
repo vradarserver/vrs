@@ -21,6 +21,12 @@ namespace VirtualRadar.Interface
     public class AircraftOnlineLookupDetail
     {
         /// <summary>
+        /// Gets or sets the cache's identifier for the record. This is not sent by the online service, it
+        /// is for use by the cache.
+        /// </summary>
+        public long AircraftDetailId { get; set; }
+
+        /// <summary>
         /// Gets or sets the aircraft's ICAO.
         /// </summary>
         public string Icao { get; set; }
@@ -69,5 +75,17 @@ namespace VirtualRadar.Interface
         /// Gets or sets the aircraft's year of manufacture.
         /// </summary>
         public int? YearBuilt { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date that the cache record was created. This is not sent by the online service, it
+        /// is for use by the cache.
+        /// </summary>
+        public DateTime? CreatedUtc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date that the cache record was last updated. This is not sent by the online service,
+        /// it is for use by the cache.
+        /// </summary>
+        public DateTime? UpdatedUtc { get; set; }
     }
 }

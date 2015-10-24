@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,37 +10,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.Database;
-using VirtualRadar.Interface.Settings;
-using VirtualRadar.Interface.StandingData;
 
-namespace VirtualRadar.Database
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// Caches the results of online aircraft detail lookups.
     /// </summary>
-    public static class Implementations
+    public interface IAircraftOnlineLookupCache : ISingleton<IAircraftOnlineLookupCache>
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Fetches an aircraft's details from the cache.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<IAircraftOnlineLookupCache, AircraftOnlineLookupCache.AircraftOnlineLookupCache>();
-            factory.Register<IAutoConfigBaseStationDatabase, BaseStation.AutoConfigBaseStationDatabase>();
-            factory.Register<IBackgroundDataDownloader, StandingData.BackgroundDataDownloader>();
-            factory.Register<IBaseStationDatabase, BaseStation.Database>();
-            factory.Register<IBasicAircraftLookupDatabase, BasicAircraft.BasicAircraftLookupDatabase>();
-            factory.Register<ICallsignRouteFetcher, StandingData.CallsignRouteFetcher>();
-            factory.Register<ILogDatabase, Log.Database>();
-            factory.Register<IStandingDataManager, StandingData.StandingDataManager>();
-            factory.Register<IStandingDataUpdater, StandingData.StandingDataUpdater>();
-            factory.Register<IUser, Users.User>();
-            factory.Register<IUserManager, Users.UserManager>();
-        }
+        /// <param name="icao"></param>
+        /// <returns>Null if there are no details for the ICAO in the cache, otherwise returns the cached details./returns>
+        AircraftOnlineLookupDetail Load(string icao);
+
+        /// <summary>
+        /// Loads multiple records from the cache simultaneously.
+        /// </summary>
+        /// <param name="icaos"></param>
+        /// <returns>A dictionary of ICAOs to cached records. If there is no record for a particular ICAO in the cache
+        /// then the dictionary value for the ICAO is null.</returns>
+        Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos);
+
+        /// <summary>
+        /// Saves an aircraft's details in the cache.
+        /// </summary>
+        /// <param name="lookupDetail"></param>
+        void Save(AircraftOnlineLookupDetail lookupDetail);
+
+        /// <summary>
+        /// Saves multiple records to the cache simultaneously.
+        /// </summary>
+        /// <param name="lookupDetails"></param>
+        void SaveMany(IEnumerable<AircraftOnlineLookupDetail> lookupDetails);
     }
 }
