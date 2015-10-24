@@ -150,7 +150,7 @@ namespace VirtualRadar.Interface.PortableBinding
         /// <param name="args"></param>
         protected virtual void OnListChanged(ListChangedEventArgs args)
         {
-            if(ListChanged != null) ListChanged(this, args);
+            EventHelper.Raise(ListChanged, this, args);
         }
         #endregion
 

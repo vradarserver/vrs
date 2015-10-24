@@ -22,84 +22,40 @@ namespace VirtualRadar.Interface
     public static class EventHelper
     {
         /// <summary>
-        /// Raises an event safely and guarantees that every handler will be called even if one or more handlers throws
-        /// an exception.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="eventHandler"></param>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        /// <param name="exceptionCallback">Optional callback that is passed an exception thrown by one of the event handlers. ThreadAbort
-        /// exceptions are never passed across.</param>
-        public static void Raise<T>(EventHandler<T> eventHandler, object sender, T args, Action<Exception> exceptionCallback = null)
-            where T: EventArgs
-        {
-            Raise(eventHandler, sender, () => args, exceptionCallback);
-        }
-
-        /// <summary>
-        /// Raises an event safely and guarantees that every handler will be called even if one or more handlers throws an exception.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="eventHandler"></param>
-        /// <param name="sender"></param>
-        /// <param name="buildArgsCallback">Only called if there are event handlers to call.</param>
-        /// <param name="exceptionCallback"></param>
-        public static void Raise<T>(EventHandler<T> eventHandler, object sender, Func<T> buildArgsCallback, Action<Exception> exceptionCallback = null)
-            where T: EventArgs
-        {
-            if(eventHandler != null) {
-                var args = buildArgsCallback();
-                var invocationList = eventHandler.GetInvocationList();
-                for(var i = 0;i < invocationList.Length;++i) {
-                    try {
-                        var eventHandlerMethod = (EventHandler<T>)invocationList[i];
-                        eventHandlerMethod(sender, args);
-                    } catch(ThreadAbortException) {
-                        ;
-                    } catch(Exception ex) {
-                        try {
-                            if(exceptionCallback != null) {
-                                exceptionCallback(ex);
-                            }
-                        } catch {
-                            ; // Don't let exceptions in the callback stop the event handlers being called
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Raises an event for a plain event args. If args is null then EventArgs.Empty is passed instead.
+        /// Raises an event for an event handler.
         /// </summary>
         /// <param name="eventHandler"></param>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <param name="exceptionCallback"></param>
-        public static void Raise(EventHandler eventHandler, object sender, EventArgs args = null, Action<Exception> exceptionCallback = null)
+        /// <typeparam name="TEventArgs"></typeparam>
+        public static void Raise<TEventArgs>(Delegate eventHandler, object sender, TEventArgs args = null, Action<Exception> exceptionCallback = null)
+            where TEventArgs: EventArgs
         {
             Raise(eventHandler, sender, () => args, exceptionCallback);
         }
 
         /// <summary>
-        /// Raises an event for a plain EventArgs. If <paramref name="buildArgsCallback"/> returns null then EventArgs.Empty is passed to the event handlers.
+        /// Raises an event for an event handler.
         /// </summary>
         /// <param name="eventHandler"></param>
         /// <param name="sender"></param>
         /// <param name="buildArgsCallback"></param>
         /// <param name="exceptionCallback"></param>
-        public static void Raise(EventHandler eventHandler, object sender, Func<EventArgs> buildArgsCallback, Action<Exception> exceptionCallback = null)
+        /// <typeparam name="TEventArgs"></typeparam>
+        public static void Raise<TEventArgs>(Delegate eventHandler, object sender, Func<TEventArgs> buildArgsCallback, Action<Exception> exceptionCallback = null)
+            where TEventArgs: EventArgs
         {
-            if(eventHandler != null) {
+            var handler = eventHandler as Delegate;
+            if(handler != null) {
                 var args = buildArgsCallback();
-                if(args == null) args = EventArgs.Empty;
+                var handlerParams = new object[] { sender, args };
 
-                var invocationList = eventHandler.GetInvocationList();
+                var invocationList = handler.GetInvocationList();
                 for(var i = 0;i < invocationList.Length;++i) {
                     try {
-                        var eventHandlerMethod = (EventHandler)invocationList[i];
-                        eventHandlerMethod(sender, args);
+                        var eventHandlerMethod = invocationList[i];
+                        eventHandlerMethod.DynamicInvoke(handlerParams);
                     } catch(ThreadAbortException) {
                         ;
                     } catch(Exception ex) {

@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Plugin.DatabaseEditor
@@ -54,7 +55,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            if(PropertyChanged != null) PropertyChanged(this, args);
+            EventHelper.Raise(PropertyChanged, this, args);
         }
 
         /// <summary>

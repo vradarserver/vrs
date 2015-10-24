@@ -83,7 +83,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void OnNewVersionAvailable(EventArgs args)
         {
-            if(NewVersionAvailable != null) NewVersionAvailable(this, args);
+            EventHelper.Raise(NewVersionAvailable, this, args);
         }
 
         /// <summary>

@@ -126,7 +126,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnDefaultAccessChanged(EventArgs args)
         {
-            if(DefaultAccessChanged != null) DefaultAccessChanged(this, args);
+            EventHelper.Raise(DefaultAccessChanged, this, args);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnAddressesChanged(EventArgs args)
         {
-            if(AddressesChanged != null) AddressesChanged(this, args);
+            EventHelper.Raise(AddressesChanged, this, args);
         }
         #endregion
 

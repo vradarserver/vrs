@@ -120,7 +120,7 @@ namespace VirtualRadar.Database.StandingData
         /// <param name="args"></param>
         private void OnFetched(EventArgs<CallsignRouteDetail> args)
         {
-            if(Fetched != null) Fetched(this, args);
+            EventHelper.Raise(Fetched, this, args);
         }
         #endregion
 

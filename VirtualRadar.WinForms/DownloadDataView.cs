@@ -19,6 +19,7 @@ using VirtualRadar.Localisation;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.Presenter;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms
 {
@@ -53,7 +54,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnDownloadButtonClicked(EventArgs args)
         {
-            if(DownloadButtonClicked != null) DownloadButtonClicked(this, args);
+            EventHelper.Raise(DownloadButtonClicked, this, args);
         }
 
         /// <summary>

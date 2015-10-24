@@ -278,7 +278,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnToggleServerStatus(EventArgs args)
         {
-            if(ToggleServerStatus != null) ToggleServerStatus(this, args);
+            EventHelper.Raise(ToggleServerStatus, this, args);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnToggleUPnpStatus(EventArgs args)
         {
-            if(ToggleUPnpStatus != null) ToggleUPnpStatus(this, args);
+            EventHelper.Raise(ToggleUPnpStatus, this, args);
         }
         #endregion
 

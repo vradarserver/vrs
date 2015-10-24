@@ -89,9 +89,7 @@ namespace VirtualRadar.Library
         /// </remarks>
         private void OnTrackingStateChanged(EventArgs args)
         {
-            if(TrackingStateChanged != null) {
-                TrackingStateChanged(this, args);
-            }
+            EventHelper.Raise(TrackingStateChanged, this, args);
         }
         #endregion
 

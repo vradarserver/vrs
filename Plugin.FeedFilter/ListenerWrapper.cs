@@ -184,7 +184,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="args"></param>
         private void OnRawBytesReceived(EventArgs<byte[]> args)
         {
-            if(RawBytesReceived != null) RawBytesReceived(this, args);
+            EventHelper.Raise(RawBytesReceived, this, args);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="args"></param>
         private void OnModeSBytesReceived(EventArgs<ExtractedBytes> args)
         {
-            if(ModeSBytesReceived != null) ModeSBytesReceived(this, args);
+            EventHelper.Raise(ModeSBytesReceived, this, args);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="args"></param>
         private void OnPort30003MessageReceived(BaseStationMessageEventArgs args)
         {
-            if(Port30003MessageReceived != null) Port30003MessageReceived(this, args);
+            EventHelper.Raise(Port30003MessageReceived, this, args);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="args"></param>
         private void OnModeSMessageReceived(ModeSMessageEventArgs args)
         {
-            if(ModeSMessageReceived != null) ModeSMessageReceived(this, args);
+            EventHelper.Raise(ModeSMessageReceived, this, args);
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="args"></param>
         private void OnConnectionStateChanged(EventArgs args)
         {
-            if(ConnectionStateChanged != null) ConnectionStateChanged(this, args);
+            EventHelper.Raise(ConnectionStateChanged, this, args);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace VirtualRadar.Plugin.FeedFilter
 
         private void OnSourceChanged(EventArgs args)
         {
-            if(SourceChanged != null) SourceChanged(this, args);
+            EventHelper.Raise(SourceChanged, this, args);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="args"></param>
         private void OnPositionReset(EventArgs<string> args)
         {
-            if(PositionReset != null) PositionReset(this, args);
+            EventHelper.Raise(PositionReset, this, args);
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="args"></param>
         private void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
         #endregion
 

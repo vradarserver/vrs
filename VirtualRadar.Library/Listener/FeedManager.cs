@@ -89,7 +89,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         protected virtual void OnConnectionStateChanged(EventArgs<IFeed> args)
         {
-            if(ConnectionStateChanged != null) ConnectionStateChanged(this, args);
+            EventHelper.Raise(ConnectionStateChanged, this, args);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         protected virtual void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         protected virtual void OnFeedsChanged(EventArgs args)
         {
-            if(FeedsChanged != null) FeedsChanged(this, args);
+            EventHelper.Raise(FeedsChanged, this, args);
         }
         #endregion
 

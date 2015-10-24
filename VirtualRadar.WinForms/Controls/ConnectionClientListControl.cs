@@ -131,7 +131,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnSelectionChanged(EventArgs args)
         {
-            if(SelectionChanged != null) SelectionChanged(this, args);
+            EventHelper.Raise(SelectionChanged, this, args);
         }
         #endregion
 

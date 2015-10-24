@@ -99,7 +99,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
         #endregion
 

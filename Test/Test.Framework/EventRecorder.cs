@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface;
 
 namespace Test.Framework
 {
@@ -130,7 +131,7 @@ namespace Test.Framework
         /// <param name="args"></param>
         protected virtual void OnEventRaised(T args)
         {
-            if(EventRaised != null) EventRaised(this, args);
+            EventHelper.Raise(EventRaised, this, args);
         }
 
         /// <summary>

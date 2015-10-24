@@ -86,31 +86,31 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public event EventHandler CheckForNewVersion;
         protected virtual void OnCheckForNewVersion(EventArgs args)
         {
-            if(CheckForNewVersion != null) CheckForNewVersion(this, args);
+            EventHelper.Raise(CheckForNewVersion, this, args);
         }
 
         public event EventHandler<EventArgs<IFeed>> ReconnectFeed;
         protected virtual void OnReconnectFeed(EventArgs<IFeed> args)
         {
-            if(ReconnectFeed != null) ReconnectFeed(this, args);
+            EventHelper.Raise(ReconnectFeed, this, args);
         }
 
         public event EventHandler<EventArgs<IFeed>> ResetPolarPlot;
         protected virtual void OnResetPolarPlot(EventArgs<IFeed> args)
         {
-            if(ResetPolarPlot != null) ResetPolarPlot(this, args);
+            EventHelper.Raise(ResetPolarPlot, this, args);
         }
 
         public event EventHandler ToggleServerStatus;
         protected virtual void OnToggleServerStatus(EventArgs args)
         {
-            if(ToggleServerStatus != null) ToggleServerStatus(this, args);
+            EventHelper.Raise(ToggleServerStatus, this, args);
         }
 
         public event EventHandler ToggleUPnpStatus;
         protected virtual void OnToggleUPnpStatus(EventArgs args)
         {
-            if(ToggleUPnpStatus != null) ToggleUPnpStatus(this, args);
+            EventHelper.Raise(ToggleUPnpStatus, this, args);
         }
         #endregion
 

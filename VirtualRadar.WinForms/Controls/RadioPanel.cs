@@ -298,10 +298,11 @@ namespace RadioPanelApp
 
         protected void FireRadioSelectionChanged(RadioButton rbSender)
         {
-            if (RadioSelectionChanged != null)
-            {
-                RadioSelectionChanged(rbSender, new RadioSelectionChangedEventArgs(rbSender));
-            }
+            VirtualRadar.Interface.EventHelper.Raise(RadioSelectionChanged, rbSender, new RadioSelectionChangedEventArgs(rbSender));
+            //if (RadioSelectionChanged != null)
+            //{
+            //    RadioSelectionChanged(rbSender, new RadioSelectionChangedEventArgs(rbSender));
+            //}
         }
 
         // Handle PropertyChanged notifications from the source.

@@ -142,7 +142,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnRefreshClicked(EventArgs args)
         {
-            if(RefreshClicked != null) RefreshClicked(this, args);
+            EventHelper.Raise(RefreshClicked, this, args);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnCopySelectedItemsToClipboardClicked(EventArgs args)
         {
-            if(CopySelectedItemsToClipboardClicked != null) CopySelectedItemsToClipboardClicked(this, args);
+            EventHelper.Raise(CopySelectedItemsToClipboardClicked, this, args);
         }
         #endregion
 

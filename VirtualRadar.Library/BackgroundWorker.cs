@@ -53,7 +53,7 @@ namespace VirtualRadar.Library
         /// <param name="state"></param>
         void ThreadPool_QueueUserWorkItem(object state)
         {
-            if(DoWork != null) DoWork(this, EventArgs.Empty);
+            EventHelper.Raise(DoWork, this, EventArgs.Empty);
         }
     }
 }

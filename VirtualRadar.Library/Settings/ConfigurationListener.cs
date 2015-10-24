@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using VirtualRadar.Interface.PortableBinding;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library.Settings
 {
@@ -58,7 +59,7 @@ namespace VirtualRadar.Library.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(ConfigurationListenerEventArgs args)
         {
-            if(PropertyChanged != null) PropertyChanged(this, args);
+            EventHelper.Raise(PropertyChanged, this, args);
         }
 
         /// <summary>
@@ -70,8 +71,7 @@ namespace VirtualRadar.Library.Settings
         /// <param name="isListChild"></param>
         private void RaisePropertyChanged(object record, ConfigurationListenerGroup group, PropertyChangedEventArgs propertyChanged, bool isListChild = false)
         {
-            var args = new ConfigurationListenerEventArgs(_Configuration, record, isListChild, group, propertyChanged.PropertyName);
-            OnPropertyChanged(args);
+            EventHelper.Raise(PropertyChanged, this, () => new ConfigurationListenerEventArgs(_Configuration, record, isListChild, group, propertyChanged.PropertyName));
         }
         #endregion
 

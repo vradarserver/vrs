@@ -152,7 +152,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnCloseClicked(EventArgs args)
         {
-            if(CloseClicked != null) CloseClicked(this, args);
+            EventHelper.Raise(CloseClicked, this, args);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnConnectClicked(EventArgs args)
         {
-            if(ConnectClicked != null) ConnectClicked(this, args);
+            EventHelper.Raise(ConnectClicked, this, args);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnRefreshFlightSimulatorXAircraftListTicked(EventArgs args)
         {
-            if(RefreshFlightSimulatorXInformation != null) RefreshFlightSimulatorXInformation(this, args);
+            EventHelper.Raise(RefreshFlightSimulatorXInformation, this, args);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnRideAircraftClicked(EventArgs args)
         {
-            if(RideAircraftClicked != null) RideAircraftClicked(this, args);
+            EventHelper.Raise(RideAircraftClicked, this, args);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnStopRidingAircraftClicked(EventArgs args)
         {
-            if(StopRidingAircraftClicked != null) StopRidingAircraftClicked(this, args);
+            EventHelper.Raise(StopRidingAircraftClicked, this, args);
         }
         #endregion
 

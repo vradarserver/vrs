@@ -17,6 +17,7 @@ using InterfaceFactory;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library.Settings
 {
@@ -80,7 +81,7 @@ namespace VirtualRadar.Library.Settings
         /// <param name="args"></param>
         private void OnConfigurationChanged(EventArgs args)
         {
-            if(ConfigurationChanged != null) ConfigurationChanged(this, args);
+            EventHelper.Raise(ConfigurationChanged, this, args);
         }
         #endregion
 

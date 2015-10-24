@@ -61,7 +61,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void OnAddressUpdated(EventArgs<string> args)
         {
-            if(AddressUpdated != null) AddressUpdated(this, args);
+            EventHelper.Raise(AddressUpdated, this, args);
         }
 
         /// <summary>

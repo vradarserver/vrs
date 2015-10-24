@@ -238,7 +238,7 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void OnCountChanged(EventArgs args)
         {
-            if(CountChanged != null) CountChanged(this, args);
+            EventHelper.Raise(CountChanged, this, args);
         }
 
         /// <summary>
@@ -266,9 +266,7 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void OnTrackingStateChanged(EventArgs args)
         {
-            if(TrackingStateChanged != null) {
-                TrackingStateChanged(this, args);
-            }
+            EventHelper.Raise(TrackingStateChanged, this, args);
         }
         #endregion
 

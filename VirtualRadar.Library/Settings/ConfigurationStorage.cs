@@ -96,17 +96,10 @@ namespace VirtualRadar.Library.Settings
         /// <param name="args"></param>
         private void OnConfigurationChanged(EventArgs args)
         {
-            if(ConfigurationChanged != null) {
-                foreach(EventHandler<EventArgs> eventHandler in ConfigurationChanged.GetInvocationList()) {
-                    try {
-                        eventHandler(this, args);
-                    } catch(ThreadAbortException) {
-                    } catch(Exception ex) {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                        log.WriteLine("Caught exception in ConfigurationChanged event handler: {0}", ex.ToString());
-                    }
-                }
-            }
+            EventHelper.Raise(ConfigurationChanged, this, args, ex => {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught exception in ConfigurationChanged event handler: {0}", ex.ToString());
+            });
         }
 
         /// <summary>

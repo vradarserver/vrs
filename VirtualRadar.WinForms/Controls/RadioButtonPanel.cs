@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -126,7 +127,9 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnCheckedChanged(EventArgs args)
         {
-            if(!_SuppressChangedEvent && CheckedChanged != null) CheckedChanged(this, args);
+            if(!_SuppressChangedEvent) {
+                EventHelper.Raise(CheckedChanged, this, args);
+            }
         }
 
         /// <summary>

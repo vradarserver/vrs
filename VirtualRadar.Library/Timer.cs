@@ -52,7 +52,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         protected virtual void OnElapsed(EventArgs args)
         {
-            if(Elapsed != null) Elapsed(this, args);
+            EventHelper.Raise(Elapsed, this, args);
         }
 
         /// <summary>

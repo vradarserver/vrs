@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms.PortableBinding
 {
@@ -58,7 +59,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// <param name="args"></param>
         protected virtual void OnChanged(EventArgs args)
         {
-            if(Changed != null) Changed(this, args);
+            EventHelper.Raise(Changed, this, args);
         }
 
         /// <summary>

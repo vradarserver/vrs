@@ -49,7 +49,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void OnCacheConfigurationChanged(EventArgs args)
         {
-            if(CacheConfigurationChanged != null) CacheConfigurationChanged(this, args);
+            EventHelper.Raise(CacheConfigurationChanged, this, args);
         }
 
         /// <summary>

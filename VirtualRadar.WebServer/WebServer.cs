@@ -403,7 +403,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnExternalAddressChanged(EventArgs args)
         {
-            if(ExternalAddressChanged != null) ExternalAddressChanged(this, args);
+            EventHelper.Raise(ExternalAddressChanged, this, args);
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnAuthenticationRequired(AuthenticationRequiredEventArgs args)
         {
-            if(AuthenticationRequired != null) AuthenticationRequired(this, args);
+            EventHelper.Raise(AuthenticationRequired, this, args);
         }
 
         /// <summary>
@@ -431,7 +431,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnOnlineChanged(EventArgs args)
         {
-            if(OnlineChanged != null) OnlineChanged(this, args);
+            EventHelper.Raise(OnlineChanged, this, args);
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnBeforeRequestReceived(RequestReceivedEventArgs args)
         {
-            if(BeforeRequestReceived != null) BeforeRequestReceived(this, args);
+            EventHelper.Raise(BeforeRequestReceived, this, args);
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnRequestReceived(RequestReceivedEventArgs args)
         {
-            if(RequestReceived != null) RequestReceived(this, args);
+            EventHelper.Raise(RequestReceived, this, args);
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnAfterRequestReceived(RequestReceivedEventArgs args)
         {
-            if(AfterRequestReceived != null) AfterRequestReceived(this, args);
+            EventHelper.Raise(AfterRequestReceived, this, args);
         }
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnResponseSent(ResponseSentEventArgs args)
         {
-            if(ResponseSent != null) ResponseSent(this, args);
+            EventHelper.Raise(ResponseSent, this, args);
         }
 
         /// <summary>
@@ -501,7 +501,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnExceptionCaught(EventArgs<Exception> args)
         {
-            if(ExceptionCaught != null) ExceptionCaught(this, args);
+            EventHelper.Raise(ExceptionCaught, this, args);
         }
         #endregion
 

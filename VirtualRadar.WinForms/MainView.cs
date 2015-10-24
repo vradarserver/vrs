@@ -197,7 +197,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnCheckForNewVersion(EventArgs args)
         {
-            if(CheckForNewVersion != null) CheckForNewVersion(this, args);
+            EventHelper.Raise(CheckForNewVersion, this, args);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnReconnectFeed(EventArgs<IFeed> args)
         {
-            if(ReconnectFeed != null) ReconnectFeed(this, args);
+            EventHelper.Raise(ReconnectFeed, this, args);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnResetPolarPlot(EventArgs<IFeed> args)
         {
-            if(ResetPolarPlot != null) ResetPolarPlot(this, args);
+            EventHelper.Raise(ResetPolarPlot, this, args);
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnToggleServerStatus(EventArgs args)
         {
-            if(ToggleServerStatus != null) ToggleServerStatus(this, args);
+            EventHelper.Raise(ToggleServerStatus, this, args);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnToggleUPnpStatus(EventArgs args)
         {
-            if(ToggleUPnpStatus != null) ToggleUPnpStatus(this, args);
+            EventHelper.Raise(ToggleUPnpStatus, this, args);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnRefreshTimerTicked(EventArgs args)
         {
-            if(RefreshTimerTicked != null) RefreshTimerTicked(this, args);
+            EventHelper.Raise(RefreshTimerTicked, this, args);
         }
         #endregion
 

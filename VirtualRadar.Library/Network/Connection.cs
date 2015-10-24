@@ -168,9 +168,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="args"></param>
         protected virtual void OnConnectionStateChanged(EventArgs args)
         {
-            if(ConnectionStateChanged != null) {
-                ConnectionStateChanged(this, args);
-            }
+            EventHelper.Raise(ConnectionStateChanged, this, args);
         }
         #endregion
 

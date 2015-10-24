@@ -139,7 +139,7 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         private void OnFetched(EventArgs<AircraftDetail> args)
         {
-            if(Fetched != null) Fetched(this, args);
+            EventHelper.Raise(Fetched, this, args);
         }
         #endregion
 
