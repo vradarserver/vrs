@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AircraftOnlineLookupCache\AircraftOnlineLookupCache.cs" />
+    <Compile Include="AircraftOnlineLookupCache\AircraftDetailTable.cs" />
     <Compile Include="BaseStation\AircraftTable.cs" />
     <Compile Include="BaseStation\AutoConfigBaseStationDatabase.cs" />
     <Compile Include="BaseStation\CriteriaAndProperties.cs" />

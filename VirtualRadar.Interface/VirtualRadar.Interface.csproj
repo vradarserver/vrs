@@ -117,6 +117,7 @@
     <Compile Include="ExpiringList.cs" />
     <Compile Include="Hierarchy.cs" />
     <Compile Include="IAircraftOnlineLookup.cs" />
+    <Compile Include="IAircraftOnlineLookupCache.cs" />
     <Compile Include="IAircraftOnlineLookupProvider.cs" />
     <Compile Include="IQueue.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
