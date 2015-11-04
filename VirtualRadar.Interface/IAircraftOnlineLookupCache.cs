@@ -18,8 +18,22 @@ namespace VirtualRadar.Interface
     /// <summary>
     /// Caches the results of online aircraft detail lookups.
     /// </summary>
-    public interface IAircraftOnlineLookupCache : ISingleton<IAircraftOnlineLookupCache>
+    /// <remarks>
+    /// Once you have created an instance of your cache you should register it with the singleton instance of the
+    /// <see cref="IAircraftOnlineLookupManager"/>. Your cache will not be called until it has been registered.
+    /// </remarks>
+    public interface IAircraftOnlineLookupCache
     {
+        /// <summary>
+        /// Gets a flag indicating that the cache is enabled.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="IAircraftOnlineLookupManager"/> checks this before it asks the cache to do something. However, given
+        /// the multi-threaded nature of things you might be asked to load or save objects after you have disabled yourself.
+        /// When this happens your cache should behave graciously, even if it does not honour the request.
+        /// </remarks>
+        bool Enabled { get; }
+
         /// <summary>
         /// Fetches an aircraft's details from the cache.
         /// </summary>

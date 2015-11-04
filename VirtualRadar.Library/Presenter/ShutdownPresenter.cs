@@ -73,16 +73,23 @@ namespace VirtualRadar.Library.Presenter
                 }
             };
 
-            isolatedShutdown("ShutdownPlugins",             ShutdownPlugins);
-            isolatedShutdown("ShutdownConnectionLogger",    ShutdownConnectionLogger);
-            isolatedShutdown("ShutdownUPnpManager",         ShutdownUPnpManager);
-            isolatedShutdown("ShutdownWebServer",           ShutdownWebServer);
-            isolatedShutdown("ShutdownRebroadcastServers",  ShutdownRebroadcastServers);
-            isolatedShutdown("SavePolarPlots",              SavePolarPlots);
-            isolatedShutdown("ShutdownListeners",           ShutdownListeners);
-            isolatedShutdown("ShutdownBaseStationDatabase", ShutdownBaseStationDatabase);
-            isolatedShutdown("ShutdownUserManager",         ShutdownUserManager);
-            isolatedShutdown("ShutdownLogDatabase",         ShutdownLogDatabase);
+            isolatedShutdown("ShutdownAircraftOnlineLookupManager", ShutdownAircraftOnlineLookupManager);  // Do this first so if the database writer was caching it won't temporarily fall back to the standalone cache during rest of shutdown
+            isolatedShutdown("ShutdownPlugins",                     ShutdownPlugins);
+            isolatedShutdown("ShutdownConnectionLogger",            ShutdownConnectionLogger);
+            isolatedShutdown("ShutdownUPnpManager",                 ShutdownUPnpManager);
+            isolatedShutdown("ShutdownWebServer",                   ShutdownWebServer);
+            isolatedShutdown("ShutdownRebroadcastServers",          ShutdownRebroadcastServers);
+            isolatedShutdown("SavePolarPlots",                      SavePolarPlots);
+            isolatedShutdown("ShutdownListeners",                   ShutdownListeners);
+            isolatedShutdown("ShutdownBaseStationDatabase",         ShutdownBaseStationDatabase);
+            isolatedShutdown("ShutdownUserManager",                 ShutdownUserManager);
+            isolatedShutdown("ShutdownLogDatabase",                 ShutdownLogDatabase);
+        }
+
+        private void ShutdownAircraftOnlineLookupManager()
+        {
+            _View.ReportProgress(Strings.ShuttingDownOnlineLookupManager);
+            Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton.Dispose();
         }
 
         private void ShutdownRebroadcastServers()

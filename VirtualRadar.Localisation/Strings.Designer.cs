@@ -5855,6 +5855,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shutting down online lookup manager.
+        /// </summary>
+        public static string ShuttingDownOnlineLookupManager {
+            get {
+                return ResourceManager.GetString("ShuttingDownOnlineLookupManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shutting down {0} plugin.
         /// </summary>
         public static string ShuttingDownPlugin {
@@ -6076,6 +6085,15 @@ namespace VirtualRadar.Localisation {
         public static string SplashScreenStartingDataUpdate {
             get {
                 return ResourceManager.GetString("SplashScreenStartingDataUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialising online lookup manager.
+        /// </summary>
+        public static string SplashScreenStartingOnlineLookupManager {
+            get {
+                return ResourceManager.GetString("SplashScreenStartingOnlineLookupManager", resourceCulture);
             }
         }
         

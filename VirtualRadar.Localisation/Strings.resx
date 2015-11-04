@@ -2531,4 +2531,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeDataSourcesLookupAircraftDetailsOnline" xml:space="preserve">
     <value>Yes if missing aircraft details should be fetched from an online source and cached locally, no to only use the local BaseStation.sqb as a source of aircraft data</value>
   </data>
+  <data name="ShuttingDownOnlineLookupManager" xml:space="preserve">
+    <value>Shutting down online lookup manager</value>
+  </data>
+  <data name="SplashScreenStartingOnlineLookupManager" xml:space="preserve">
+    <value>Initialising online lookup manager</value>
+  </data>
 </root>

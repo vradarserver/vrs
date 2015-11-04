@@ -49,6 +49,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IFeedManager> _FeedManager;
         private Mock<IUserManager> _UserManager;
         private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
+        private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
 
         [TestInitialize]
         public void TestInitialise()
@@ -67,6 +68,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _FeedManager = TestUtilities.CreateMockSingleton<IFeedManager>();
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
             _SavedPolarPlotStorage = TestUtilities.CreateMockSingleton<ISavedPolarPlotStorage>();
+            _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
 
             // This version of ILog should cause code that catches & logs exceptions to throw on the log write. Without this
             // the Asserts can go unnoticed.
@@ -231,6 +233,19 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.ShutdownApplication();
 
             _RebroadcastServerManager.Verify(m => m.Dispose(), Times.Once());
+        }
+
+        [TestMethod]
+        public void ShutdownPresenter_ShutdownApplication_Disposes_Of_AircraftOnlineLookupManager()
+        {
+            _AircraftOnlineLookupManager.Setup(m => m.Dispose()).Callback(() => {
+                _View.Verify(v => v.ReportProgress(Strings.ShuttingDownOnlineLookupManager), Times.Once());
+            });
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.ShutdownApplication();
+
+            _AircraftOnlineLookupManager.Verify(m => m.Dispose(), Times.Once());
         }
 
         [TestMethod]

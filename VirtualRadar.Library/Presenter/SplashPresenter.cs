@@ -111,6 +111,7 @@ namespace VirtualRadar.Library.Presenter
             var webSite = StartWebSite();
             StartRebroadcastServers();
             InitialiseUniversalPlugAndPlay(configuration);
+            InitialiseAircraftOnlineLookupManager();
             StartPlugins(webSite);
         }
 
@@ -311,6 +312,16 @@ namespace VirtualRadar.Library.Presenter
             }
 
             _View.UPnpManager = manager;
+        }
+
+        private void InitialiseAircraftOnlineLookupManager()
+        {
+            _View.ReportProgress(Strings.SplashScreenStartingOnlineLookupManager);
+
+            var manager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
+            var standaloneCache = Factory.Singleton.Resolve<IStandaloneAircraftOnlineLookupCache>();
+
+            manager.RegisterCache(standaloneCache, 0, true);
         }
 
         private void StartPlugins(IWebSite webSite)

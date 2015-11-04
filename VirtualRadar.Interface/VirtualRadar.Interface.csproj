@@ -118,8 +118,10 @@
     <Compile Include="Hierarchy.cs" />
     <Compile Include="IAircraftOnlineLookup.cs" />
     <Compile Include="IAircraftOnlineLookupCache.cs" />
+    <Compile Include="IAircraftOnlineLookupManager.cs" />
     <Compile Include="IAircraftOnlineLookupProvider.cs" />
     <Compile Include="IQueue.cs" />
+    <Compile Include="IStandaloneAircraftOnlineLookupCache.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
     <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
