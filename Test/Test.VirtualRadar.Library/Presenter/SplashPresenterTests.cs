@@ -65,6 +65,8 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IRebroadcastServerManager> _RebroadcastServerManager;
         private Mock<IFeedManager> _FeedManager;
         private Mock<IUserManager> _UserManager;
+        private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
+        private Mock<IStandaloneAircraftOnlineLookupCache> _StandaloneAircraftOnlineLookupCache;
 
         private EventRecorder<EventArgs<Exception>> _BackgroundExceptionEvent;
 
@@ -99,6 +101,8 @@ namespace Test.VirtualRadar.Library.Presenter
             _RebroadcastServerManager = TestUtilities.CreateMockSingleton<IRebroadcastServerManager>();
             _FeedManager = TestUtilities.CreateMockSingleton<IFeedManager>();
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
+            _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
+            _StandaloneAircraftOnlineLookupCache = TestUtilities.CreateMockImplementation<IStandaloneAircraftOnlineLookupCache>();
 
             _BackgroundExceptionEvent = new EventRecorder<EventArgs<Exception>>();
 
@@ -882,6 +886,23 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.StartApplication();
 
             Assert.AreEqual(_UniversalPlugAndPlayManager.Object, _View.Object.UPnpManager);
+        }
+        #endregion
+
+        #region OnlineLookupManager
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Registers_Standalone_Online_Cache()
+        {
+            string currentSection = null;
+            _View.Setup(v => v.ReportProgress(It.IsAny<string>())).Callback((string section) => { currentSection = section; });
+            _AircraftOnlineLookupManager.Setup(r => r.RegisterCache(It.IsAny<IAircraftOnlineLookupCache>(), It.IsAny<int>(), It.IsAny<bool>())).Callback(() => {
+                Assert.AreEqual(Strings.SplashScreenStartingOnlineLookupManager, currentSection);
+            });
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _AircraftOnlineLookupManager.Verify(s => s.RegisterCache(_StandaloneAircraftOnlineLookupCache.Object, 0, true), Times.Once());
         }
         #endregion
 

@@ -30,13 +30,13 @@ namespace VirtualRadar.Database
         /// <param name="factory"></param>
         public static void Register(IClassFactory factory)
         {
-            factory.Register<IAircraftOnlineLookupCache, AircraftOnlineLookupCache.AircraftOnlineLookupCache>();
             factory.Register<IAutoConfigBaseStationDatabase, BaseStation.AutoConfigBaseStationDatabase>();
             factory.Register<IBackgroundDataDownloader, StandingData.BackgroundDataDownloader>();
             factory.Register<IBaseStationDatabase, BaseStation.Database>();
             factory.Register<IBasicAircraftLookupDatabase, BasicAircraft.BasicAircraftLookupDatabase>();
             factory.Register<ICallsignRouteFetcher, StandingData.CallsignRouteFetcher>();
             factory.Register<ILogDatabase, Log.Database>();
+            factory.Register<IStandaloneAircraftOnlineLookupCache, AircraftOnlineLookupCache.StandaloneAircraftOnlineLookupCache>();
             factory.Register<IStandingDataManager, StandingData.StandingDataManager>();
             factory.Register<IStandingDataUpdater, StandingData.StandingDataUpdater>();
             factory.Register<IUser, Users.User>();

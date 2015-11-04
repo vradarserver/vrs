@@ -23,9 +23,10 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
 {
     /// <summary>
     /// A standalone implementation of the aircraft online lookup cache. This is used if the user does
-    /// not have the database writer plugin installed.
+    /// not have the database writer plugin installed, or the database writer has been disabled, or the
+    /// user has told the database writer not to cache records to BaseStation.sqb etc. etc. etc.
     /// </summary>
-    class AircraftOnlineLookupCache : IAircraftOnlineLookupCache
+    class StandaloneAircraftOnlineLookupCache : IStandaloneAircraftOnlineLookupCache
     {
         /// <summary>
         /// The object used to ensure that all database access is single-threaded.
@@ -47,11 +48,10 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// </summary>
         private bool _SchemaUpdated;
 
-        private static AircraftOnlineLookupCache _Singleton = new AircraftOnlineLookupCache();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. The cache is always enabled.
         /// </summary>
-        public IAircraftOnlineLookupCache Singleton { get { return _Singleton; } }
+        public bool Enabled { get { return true; } }
 
         /// <summary>
         /// Returns an open connection to the database.

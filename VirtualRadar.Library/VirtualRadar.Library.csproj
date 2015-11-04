@@ -74,6 +74,7 @@
     <Compile Include="AircraftComparer.cs" />
     <Compile Include="AircraftDetailFetcher.cs" />
     <Compile Include="AircraftOnlineLookup.cs" />
+    <Compile Include="AircraftOnlineLookupManager.cs" />
     <Compile Include="AircraftPictureManager.cs" />
     <Compile Include="AircraftSanityChecker.cs" />
     <Compile Include="AircraftOnlineLookupProvider.cs" />
