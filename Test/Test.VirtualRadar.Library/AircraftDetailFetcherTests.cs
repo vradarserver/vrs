@@ -58,6 +58,7 @@ namespace Test.VirtualRadar.Library
         private AircraftType _AircraftType;
         private ClockMock _Clock;
         private Mock<ILog> _Log;
+        private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
 
         [TestInitialize]
         public void TestInitialise()
@@ -127,6 +128,8 @@ namespace Test.VirtualRadar.Library
             _Log = TestUtilities.CreateMockSingleton<ILog>();
             _Log.Setup(r => r.WriteLine(It.IsAny<string>())).Callback((string x) => { throw new InvalidOperationException(x); });
             _Log.Setup(r => r.WriteLine(It.IsAny<string>(), It.IsAny<object[]>())).Callback((string x, object[] args) => { throw new InvalidOperationException(String.Format(x, args)); });
+
+            _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
         }
 
         [TestCleanup]

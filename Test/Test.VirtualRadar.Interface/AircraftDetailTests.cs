@@ -30,7 +30,7 @@ namespace Test.VirtualRadar.Interface
 
             TestUtilities.TestProperty(detail, r => r.Aircraft, null, new BaseStationAircraft());
             TestUtilities.TestProperty(detail, r => r.AircraftType, null, new AircraftType());
-            TestUtilities.TestProperty(detail, r => r.BasicAircraft, null, new BasicAircraftAndChildren());
+            TestUtilities.TestProperty(detail, r => r.OnlineAircraft, null, new AircraftOnlineLookupDetail());
             TestUtilities.TestProperty(detail, r => r.FlightsCount, 0, int.MaxValue);
             TestUtilities.TestProperty(detail, r => r.Icao24, null, "ABC123");
             TestUtilities.TestProperty(detail, r => r.Picture, null, new PictureDetail());

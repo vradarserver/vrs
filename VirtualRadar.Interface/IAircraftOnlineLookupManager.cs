@@ -22,6 +22,11 @@ namespace VirtualRadar.Interface
     public interface IAircraftOnlineLookupManager : ISingleton<IAircraftOnlineLookupManager>, IDisposable
     {
         /// <summary>
+        /// Raised when aircraft details have been looked up or fetched from the cache.
+        /// </summary>
+        event EventHandler<AircraftOnlineLookupEventArgs> AircraftFetched;
+
+        /// <summary>
         /// Register a cache with the manager.
         /// </summary>
         /// <param name="cache">The cache to register.</param>
@@ -65,5 +70,22 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="cache"></param>
         void DeregisterCache(IAircraftOnlineLookupCache cache);
+
+        /// <summary>
+        /// Requests a lookup. The details are either fetched from the cache and returned straight away or they
+        /// are queued for lookup by the online service and <see cref="AircraftFetched"/> raised once the results
+        /// are in.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        AircraftOnlineLookupDetail Lookup(string icao);
+
+        /// <summary>
+        /// Requests the lookup of many ICAOs. All ICAOs that are in the cache are returned immediately, the rest
+        /// are passed to the online lookup service and returned via the <see cref="AircraftFetched"/> event.
+        /// </summary>
+        /// <param name="icaos"></param>
+        /// <returns></returns>
+        Dictionary<string, AircraftOnlineLookupDetail> LookupMany(IEnumerable<string> icaos);
     }
 }

@@ -42,5 +42,11 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="icao"></param>
         void Lookup(string icao);
+
+        /// <summary>
+        /// Adds the lookup of multiple ICAOs to the next batch to be sent.
+        /// </summary>
+        /// <param name="icaos"></param>
+        void LookupMany(IEnumerable<string> icaos);
     }
 }
