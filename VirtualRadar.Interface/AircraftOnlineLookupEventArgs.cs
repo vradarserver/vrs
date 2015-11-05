@@ -57,5 +57,14 @@ namespace VirtualRadar.Interface
             _AircraftDetails.AddRange(fetchedAircraft);
             _MissingIcaos.AddRange(missingIcaos);
         }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="fetchedAircraft"></param>
+        public AircraftOnlineLookupEventArgs(AircraftOnlineLookupDetail fetchedAircraft)
+        {
+            _AircraftDetails.Add(fetchedAircraft);
+        }
     }
 }

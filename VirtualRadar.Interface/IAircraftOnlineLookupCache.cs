@@ -38,7 +38,7 @@ namespace VirtualRadar.Interface
         /// Fetches an aircraft's details from the cache.
         /// </summary>
         /// <param name="icao"></param>
-        /// <returns>Null if there are no details for the ICAO in the cache, otherwise returns the cached details./returns>
+        /// <returns>Null if there are no details for the ICAO in the cache, otherwise returns the cached details.</returns>
         AircraftOnlineLookupDetail Load(string icao);
 
         /// <summary>
@@ -60,5 +60,17 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="lookupDetails"></param>
         void SaveMany(IEnumerable<AircraftOnlineLookupDetail> lookupDetails);
+
+        /// <summary>
+        /// Records an ICAO that has no online details.
+        /// </summary>
+        /// <param name="icao"></param>
+        void RecordMissing(string icao);
+
+        /// <summary>
+        /// Records many missing ICAOs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        void RecordManyMissing(IEnumerable<string> icaos);
     }
 }

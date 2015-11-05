@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library
@@ -45,11 +47,31 @@ namespace VirtualRadar.Library
         /// </summary>
         private List<CacheEntry> _CacheEntries = new List<CacheEntry>();
 
+        /// <summary>
+        /// The object that can fetch aircraft details for us.
+        /// </summary>
+        private IAircraftOnlineLookup _AircraftOnlineLookup;
+
         private static IAircraftOnlineLookupManager _Singleton = new AircraftOnlineLookupManager();
         /// <summary>
         /// See interface docs.
         /// </summary>
         public IAircraftOnlineLookupManager Singleton { get { return _Singleton; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler<AircraftOnlineLookupEventArgs> AircraftFetched;
+
+        /// <summary>
+        /// Raises <see cref="AircraftFetched"/>. Note that the class is sealed, hence why this is private
+        /// instead of virtual.
+        /// </summary>
+        /// <param name="args"></param>
+        private void OnAircraftFetched(AircraftOnlineLookupEventArgs args)
+        {
+            EventHelper.Raise(AircraftFetched, this, args);
+        }
 
         /// <summary>
         /// Finalises the object.
@@ -75,6 +97,10 @@ namespace VirtualRadar.Library
         private void Dispose(bool disposing)
         {
             if(disposing) {
+                if(_AircraftOnlineLookup != null) {
+                    _AircraftOnlineLookup.AircraftFetched -= AircraftOnlineLookup_AircraftFetched;
+                }
+
                 var cacheEntries = _CacheEntries;
                 lock(_SyncLock) _CacheEntries = new List<CacheEntry>();
 
@@ -138,6 +164,128 @@ namespace VirtualRadar.Library
                     }
                 }
                 _CacheEntries = newCache;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        private void Initialise()
+        {
+            if(_AircraftOnlineLookup == null) {
+                lock(_SyncLock) {
+                    if(_AircraftOnlineLookup == null) {
+                        _AircraftOnlineLookup = Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton;
+                        _AircraftOnlineLookup.AircraftFetched += AircraftOnlineLookup_AircraftFetched;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        public AircraftOnlineLookupDetail Lookup(string icao)
+        {
+            Initialise();
+
+            var result = FetchAircraftDetailsFromCache(icao);
+            if(result == null) {
+                _AircraftOnlineLookup.Lookup(icao);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        /// <returns></returns>
+        public Dictionary<string, AircraftOnlineLookupDetail> LookupMany(IEnumerable<string> icaos)
+        {
+            Initialise();
+
+            var uniqueIcaos = icaos.Where(r => r != null).Select(r => r.ToUpper()).Distinct().ToArray();
+            var result = FetchManyAircraftDetailsFromCache(uniqueIcaos);
+
+            var icaosNotInCache = uniqueIcaos.Except(result.Select(r => r.Key)).ToArray();
+            if(icaosNotInCache.Length > 0) {
+                _AircraftOnlineLookup.LookupMany(icaosNotInCache);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Fetches an aircraft from the cache.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        private AircraftOnlineLookupDetail FetchAircraftDetailsFromCache(string icao)
+        {
+            AircraftOnlineLookupDetail result = null;
+
+            var cacheEntries = _CacheEntries;
+            foreach(var cacheEntry in cacheEntries) {
+                result = cacheEntry.Cache.Load(icao);
+                if(result != null) break;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Fetches many aircraft from the cache.
+        /// </summary>
+        /// <param name="icaos"></param>
+        /// <returns></returns>
+        private Dictionary<string, AircraftOnlineLookupDetail> FetchManyAircraftDetailsFromCache(IEnumerable<string> icaos)
+        {
+            var result = new Dictionary<string, AircraftOnlineLookupDetail>();
+
+            var remainingIcaos = new LinkedList<string>();
+            foreach(var icao in icaos) {
+                remainingIcaos.AddLast(icao);
+            }
+
+            var cacheEntries = _CacheEntries;
+            foreach(var cacheEntry in cacheEntries) {
+                var cacheResults = cacheEntry.Cache.LoadMany(remainingIcaos);
+                foreach(var kvp in cacheResults) {
+                    result.Add(kvp.Key, kvp.Value);
+                    remainingIcaos.Remove(kvp.Key);
+                }
+                if(remainingIcaos.Count == 0) {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Called when the online lookup service has finished fetching aircraft details.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void AircraftOnlineLookup_AircraftFetched(object sender, AircraftOnlineLookupEventArgs args)
+        {
+            try {
+                var cacheEntries = _CacheEntries;
+                var firstEnabledCache = cacheEntries.FirstOrDefault(r => r.Cache.Enabled);
+                if(firstEnabledCache != null) {
+                    firstEnabledCache.Cache.SaveMany(args.AircraftDetails);
+                    firstEnabledCache.Cache.RecordManyMissing(args.MissingIcaos);
+                }
+
+                OnAircraftFetched(args);
+            } catch(ThreadAbortException) {
+            } catch(Exception ex) {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught exception in AircraftOnlineLookupManager during AircraftFetched: {0}", ex);
             }
         }
     }

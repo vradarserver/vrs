@@ -22,7 +22,7 @@ namespace VirtualRadar.Interface
     {
         /// <summary>
         /// Gets or sets the cache's identifier for the record. This is not sent by the online service, it
-        /// is for use by the cache.
+        /// is for use by the cache. This is ignored by <see cref="ContentEquals"/>.
         /// </summary>
         public long AircraftDetailId { get; set; }
 
@@ -78,14 +78,40 @@ namespace VirtualRadar.Interface
 
         /// <summary>
         /// Gets or sets the date that the cache record was created. This is not sent by the online service, it
-        /// is for use by the cache.
+        /// is for use by the cache. It is not considered by <see cref="ContentEquals"/>.
         /// </summary>
         public DateTime? CreatedUtc { get; set; }
 
         /// <summary>
         /// Gets or sets the date that the cache record was last updated. This is not sent by the online service,
-        /// it is for use by the cache.
+        /// it is for use by the cache. It is not considered by <see cref="ContentEquals"/>.
         /// </summary>
         public DateTime? UpdatedUtc { get; set; }
+
+        /// <summary>
+        /// Returns true if the content (everything excluding <see cref="AircraftDetailId"/>, <see cref="CreatedUtc"/> and <see cref="UpdatedUtc"/>)
+        /// of the other object passed in is the same as this object's content.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool ContentEquals(AircraftOnlineLookupDetail other)
+        {
+            var result = Object.ReferenceEquals(this, other);
+            if(!result) {
+                result = other != null &&
+                         Icao ==            other.Icao &&
+                         Registration ==    other.Registration &&
+                         Country ==         other.Country &&
+                         Manufacturer ==    other.Manufacturer &&
+                         Model ==           other.Model &&
+                         ModelIcao ==       other.ModelIcao &&
+                         Operator ==        other.Operator &&
+                         OperatorIcao ==    other.OperatorIcao &&
+                         Serial ==          other.Serial &&
+                         YearBuilt ==       other.YearBuilt;
+            }
+
+            return result;
+        }
     }
 }

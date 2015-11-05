@@ -34,9 +34,10 @@ namespace VirtualRadar.Interface
         public BaseStationAircraft Aircraft { get; set; }
 
         /// <summary>
-        /// Gets or sets the basic aircraft record. This can be null if no record has yet been fetched.
+        /// Gets or sets the results of the aircraft online lookup. This can be null if no lookup has yet
+        /// been performed.
         /// </summary>
-        public BasicAircraftAndChildren BasicAircraft { get; set; }
+        public AircraftOnlineLookupDetail OnlineAircraft { get; set; }
 
         /// <summary>
         /// Gets or sets the basic model record. This can be null if no record has yet been fetched.
@@ -68,61 +69,61 @@ namespace VirtualRadar.Interface
         public int FlightsCount { get; set; }
 
         /// <summary>
-        /// Gets the registration. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// Gets the registration. If the BaseStation database record is present it takes precedence over the OnlineAircraft record.
         /// </summary>
         public string DatabaseRegistration
         {
             get {
                 var result = Aircraft == null ? null : Aircraft.Registration;
-                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.Registration;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.Registration;
                 return result;
             }
         }
 
         /// <summary>
-        /// Gets the model ICAO. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// Gets the model ICAO. If the BaseStation database record is present it takes precedence over the OnlineAircraft record.
         /// </summary>
         public string ModelIcao
         {
             get {
                 var result = Aircraft == null ? null : Aircraft.ICAOTypeCode;
-                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.ModelIcao;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.ModelIcao;
                 return result;
             }
         }
 
         /// <summary>
-        /// Gets the model name. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// Gets the model name. If the BaseStation database record is present it takes precedence over the OnlineAircraft record.
         /// </summary>
         public string ModelName
         {
             get {
                 var result = Aircraft == null ? null : Aircraft.Type;
-                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.ModelName;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.Model;
                 return result;
             }
         }
 
         /// <summary>
-        /// Gets the operator code. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// Gets the operator code. If the BaseStation database record is present it takes precedence over the OnlineAircraft record.
         /// </summary>
         public string OperatorIcao
         {
             get {
                 var result = Aircraft == null ? null : Aircraft.OperatorFlagCode;
-                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.OperatorIcao;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.OperatorIcao;
                 return result;
             }
         }
 
         /// <summary>
-        /// Gets the operator name. If the BaseStation database record is present it takes precedence over the BasicAircraft record.
+        /// Gets the operator name. If the BaseStation database record is present it takes precedence over the OnlineAircraft record.
         /// </summary>
         public string OperatorName
         {
             get {
                 var result = Aircraft == null ? null : Aircraft.RegisteredOwners;
-                if(String.IsNullOrEmpty(result) && BasicAircraft != null) result = BasicAircraft.OperatorName;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.Operator;
                 return result;
             }
         }

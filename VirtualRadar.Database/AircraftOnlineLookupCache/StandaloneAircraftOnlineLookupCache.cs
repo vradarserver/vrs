@@ -154,8 +154,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         {
             using(var connection = CreateOpenConnection()) {
                 lock(_SyncLock) {
-                    if(lookupDetail.AircraftDetailId == 0) _AircraftDetailTable.Insert(connection, null, lookupDetail);
-                    else                                   _AircraftDetailTable.Update(connection, null, lookupDetail);
+                    _AircraftDetailTable.Upsert(connection, null, lookupDetail);
                 }
             }
         }
@@ -169,13 +168,49 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
             using(var connection = CreateOpenConnection()) {
                 using(var transaction = connection.BeginTransaction()) {
                     lock(_SyncLock) {
-                        foreach(var lookupDetail in lookupDetails) {
-                            if(lookupDetail.AircraftDetailId == 0) _AircraftDetailTable.Insert(connection, transaction, lookupDetail);
-                            else                                   _AircraftDetailTable.Update(connection, transaction, lookupDetail);
+                        try {
+                            foreach(var lookupDetail in lookupDetails) {
+                                _AircraftDetailTable.Upsert(connection, transaction, lookupDetail);
+                            }
+                            transaction.Commit();
+                        } catch {
+                            transaction.Rollback();
+                            throw;
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        public void RecordMissing(string icao)
+        {
+            Save(CreateAircraftOnlineLookupDetailForMissingIcao(icao));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        public void RecordManyMissing(IEnumerable<string> icaos)
+        {
+            var details = icaos.Where(r => !String.IsNullOrEmpty(r)).Distinct().Select(r => CreateAircraftOnlineLookupDetailForMissingIcao(r)).ToArray();
+            SaveMany(details);
+        }
+
+        /// <summary>
+        /// Creates an empty <see cref="AircraftOnlineLookupDetail"/> to represent a missing ICAO.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        private AircraftOnlineLookupDetail CreateAircraftOnlineLookupDetailForMissingIcao(string icao)
+        {
+            return new AircraftOnlineLookupDetail() {
+                Icao = icao,
+            };
         }
     }
 }

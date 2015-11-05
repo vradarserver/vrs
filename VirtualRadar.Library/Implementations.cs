@@ -84,6 +84,7 @@ namespace VirtualRadar.Library
             factory.Register<IAircraftComparer, AircraftComparer>();
             factory.Register<IAircraftDetailFetcher, AircraftDetailFetcher>();
             factory.Register<IAircraftOnlineLookup, AircraftOnlineLookup>();
+            factory.Register<IAircraftOnlineLookupManager, AircraftOnlineLookupManager>();
             factory.Register<IAircraftOnlineLookupProvider, AircraftOnlineLookupProvider>();
             factory.Register<IAircraftPictureManager, AircraftPictureManager>();
             factory.Register<IAircraftSanityChecker, AircraftSanityChecker>();

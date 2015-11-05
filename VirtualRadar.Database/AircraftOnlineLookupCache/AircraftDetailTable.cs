@@ -26,6 +26,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         private string _GetByIcaoCommandText;
         private string _GetManyByIcaoCommandText;
         private string _UpdateCommandText;
+        private string _IcaoExistsCommandText;
         #endregion
 
         #region Properties
@@ -41,9 +42,9 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// </summary>
         public AircraftDetailTable()
         {
-            _GetByIcaoCommandText = String.Format("SELECT {0} FROM [AircraftDetail] AS [aircraft] WHERE [aircraft].[Icao] = ?", FieldList());
-            _GetManyByIcaoCommandText = String.Format("SELECT {0} FROM [AircraftDetail] AS [aircraft] ", FieldList());
-            _UpdateCommandText = "UPDATE [AircraftDetail] SET" +
+            _GetByIcaoCommandText = String.Format("SELECT {0} FROM [{1}] WHERE [Icao] = ?", FieldList(), TableName);
+            _GetManyByIcaoCommandText = String.Format("SELECT {0} FROM [{1}] ", FieldList(), TableName);
+            _UpdateCommandText = String.Format("UPDATE [{0}] SET" +
                     "  [Icao] = ?" +
                     ", [Registration] = ?" +
                     ", [Country] = ?" +
@@ -56,7 +57,9 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
                     ", [YearBuilt] = ?" +
                     ", [CreatedUtc] = ?" +
                     ", [UpdatedUtc] = ?" +
-                    " WHERE [AircraftDetailID] = ?";
+                    " WHERE [AircraftDetailID] = ?",
+                TableName);
+            _IcaoExistsCommandText = String.Format("SELECT [AircraftDetailID], [CreatedUtc] FROM [{0}] WHERE [Icao] = ?", TableName);
         }
         #endregion
 
@@ -85,7 +88,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
                 "   ,[UpdatedUtc]         DATETIME NOT NULL\n" +
                 ")", TableName));
 
-            Sql.ExecuteNonQuery(connection, null, "CREATE UNIQUE INDEX IF NOT EXISTS [IX_Aircraft_Icao] ON [Aircraft]([Icao])");
+            Sql.ExecuteNonQuery(connection, null, String.Format("CREATE UNIQUE INDEX IF NOT EXISTS [IX_Aircraft_Icao] ON [{0}]([Icao])", TableName));
         }
         #endregion
 
@@ -142,7 +145,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         public void Update(IDbConnection connection, IDbTransaction transaction, AircraftOnlineLookupDetail aircraft)
         {
             aircraft.UpdatedUtc = DateTime.UtcNow;
-            var preparedCommand = PrepareCommand(connection, transaction, "Update", _UpdateCommandText, 3);
+            var preparedCommand = PrepareCommand(connection, transaction, "Update", _UpdateCommandText, 13);
             Sql.SetParameters(preparedCommand,
                     aircraft.Icao,
                     aircraft.Registration,
@@ -153,11 +156,61 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
                     aircraft.Operator,
                     aircraft.OperatorIcao,
                     aircraft.Serial,
+                    aircraft.YearBuilt,
                     aircraft.CreatedUtc,
                     aircraft.UpdatedUtc,
                     aircraft.AircraftDetailId
             );
+
             preparedCommand.Command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Returns the Created date of the record for this ICAO or null if there is no record.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="icao"></param>
+        /// <param name="aircraftDetailId"></param>
+        /// <param name="created"></param>
+        /// <returns></returns>
+        public bool IcaoExists(IDbConnection connection, IDbTransaction transaction, string icao, out long? aircraftDetailId, out DateTime? created)
+        {
+            var result = false;
+            aircraftDetailId = null;
+            created = null;
+
+            var preparedCommand = PrepareCommand(connection, transaction, "IcaoExists", _IcaoExistsCommandText, 1);
+            Sql.SetParameters(preparedCommand, icao);
+            using(IDataReader reader = preparedCommand.Command.ExecuteReader()) {
+                if(reader.Read()) {
+                    aircraftDetailId = Sql.GetInt64(reader, 0);
+                    created          = Sql.GetNDateTime(reader, 1);
+                    result           = true;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Inserts or updates the aircraft detail passed across.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="aircraft"></param>
+        public void Upsert(IDbConnection connection, IDbTransaction transaction, AircraftOnlineLookupDetail aircraft)
+        {
+            long? existingAircraftDetailId;
+            DateTime? existingCreatedUtc;
+
+            if(!IcaoExists(connection, transaction, aircraft.Icao, out existingAircraftDetailId, out existingCreatedUtc)) {
+                Insert(connection, transaction, aircraft);
+            } else {
+                aircraft.AircraftDetailId = existingAircraftDetailId.Value;
+                aircraft.CreatedUtc = existingCreatedUtc;
+                Update(connection, transaction, aircraft);
+            }
         }
 
         /// <summary>
@@ -200,7 +253,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
             }
 
             using(var command = connection.CreateCommand()) {
-                var whereClause = String.Format(" WHERE a.[Icao] IN ({0})", parameterString);
+                var whereClause = String.Format(" WHERE [Icao] IN ({0})", parameterString);
                 var commandText = String.Format("{0} {1}", _GetManyByIcaoCommandText, whereClause);
                 command.Connection = connection;
                 command.Transaction = transaction;
@@ -227,19 +280,19 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <returns></returns>
         public static string FieldList()
         {
-            return "[aircraft].[AircraftDetailID], " +
-                   "[aircraft].[Icao], " +
-                   "[aircraft].[Registration], " +
-                   "[aircraft].[Country], " +
-                   "[aircraft].[Manufacturer], " +
-                   "[aircraft].[Model] " +
-                   "[aircraft].[ModelIcao] " +
-                   "[aircraft].[Operator] " +
-                   "[aircraft].[OperatorIcao] " +
-                   "[aircraft].[Serial] " +
-                   "[aircraft].[YearBuilt] " +
-                   "[aircraft].[CreatedUtc] " +
-                   "[aircraft].[UpdatedUtc] ";
+            return "[AircraftDetailID], " +
+                   "[Icao], " +
+                   "[Registration], " +
+                   "[Country], " +
+                   "[Manufacturer], " +
+                   "[Model], " +
+                   "[ModelIcao], " +
+                   "[Operator], " +
+                   "[OperatorIcao], " +
+                   "[Serial], " +
+                   "[YearBuilt], " +
+                   "[CreatedUtc], " +
+                   "[UpdatedUtc] ";
         }
 
         /// <summary>

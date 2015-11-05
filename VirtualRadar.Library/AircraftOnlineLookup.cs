@@ -131,8 +131,8 @@ namespace VirtualRadar.Library
             Initialise();
 
             if(_SharedConfiguration.Get().BaseStationSettings.LookupAircraftDetailsOnline) {
-                var normalisedIcao = (icao ?? "").Trim().ToUpper();
-                if(normalisedIcao.Length == 6) {
+                var normalisedIcao = NormaliseIcao(icao);
+                if(ValidateIcao(icao)) {
                     var queueEntry = new QueueEntry(normalisedIcao, _Clock.UtcNow);
                     lock(_Queue) {
                         if(!_Queue.ContainsKey(normalisedIcao)) {
@@ -144,13 +144,48 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        public void LookupMany(IEnumerable<string> icaos)
+        {
+            Initialise();
+
+            if(_SharedConfiguration.Get().BaseStationSettings.LookupAircraftDetailsOnline) {
+                var normalisedIcaos = icaos.Select(r => NormaliseIcao(r)).Where(r => ValidateIcao(r)).ToArray();
+                if(normalisedIcaos.Length > 0) {
+                    var now = _Clock.UtcNow;
+                    var queueEntries = normalisedIcaos.Select(r => new QueueEntry(r, now)).ToArray();
+                    lock(_Queue) {
+                        foreach(var queueEntry in queueEntries) {
+                            if(!_Queue.ContainsKey(queueEntry.Icao)) {
+                                _Queue.Add(queueEntry.Icao, queueEntry);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static string NormaliseIcao(string icao)
+        {
+            var result = (icao ?? "").Trim().ToUpper();
+            return result;
+        }
+
+        private static bool ValidateIcao(string icao)
+        {
+            return icao.Length == 6;
+        }
+
+        /// <summary>
         /// Initialises the object.
         /// </summary>
         private void Initialise()
         {
             if(!_Initialised) {
                 lock(_QueueLock) {
-                    if(_Initialised) {
+                    if(!_Initialised) {
                         _Initialised = true;
                         _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
                         _Clock = Factory.Singleton.Resolve<IClock>();
