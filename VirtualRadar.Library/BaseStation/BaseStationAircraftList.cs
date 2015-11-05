@@ -604,10 +604,10 @@ namespace VirtualRadar.Library.BaseStation
 
             aircraft.Registration =         aircraftDetail.DatabaseRegistration;
             aircraft.Type =                 aircraftDetail.ModelIcao;
-            aircraft.Manufacturer =         baseStationAircraft.Manufacturer;
+            aircraft.Manufacturer =         aircraftDetail.Manufacturer;
             aircraft.Model =                aircraftDetail.ModelName;
-            aircraft.ConstructionNumber =   baseStationAircraft.SerialNo;
-            aircraft.YearBuilt =            baseStationAircraft.YearBuilt;
+            aircraft.ConstructionNumber =   aircraftDetail.Serial;
+            aircraft.YearBuilt =            aircraftDetail.YearBuilt;
             aircraft.Operator =             aircraftDetail.OperatorName;
             aircraft.OperatorIcao =         aircraftDetail.OperatorIcao;
             aircraft.IsInteresting =        baseStationAircraft.Interested;

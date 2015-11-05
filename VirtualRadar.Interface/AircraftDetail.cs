@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Database;
@@ -81,6 +82,18 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
+        /// Gets the manufacturer.
+        /// </summary>
+        public string Manufacturer
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.Manufacturer;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.Manufacturer;
+                return result;
+            }
+        }
+
+        /// <summary>
         /// Gets the model ICAO. If the BaseStation database record is present it takes precedence over the OnlineAircraft record.
         /// </summary>
         public string ModelIcao
@@ -124,6 +137,30 @@ namespace VirtualRadar.Interface
             get {
                 var result = Aircraft == null ? null : Aircraft.RegisteredOwners;
                 if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.Operator;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets the serial number.
+        /// </summary>
+        public string Serial
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.SerialNo;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.Serial;
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets the year built.
+        /// </summary>
+        public string YearBuilt
+        {
+            get {
+                var result = Aircraft == null ? null : Aircraft.YearBuilt;
+                if(String.IsNullOrEmpty(result) && OnlineAircraft != null) result = OnlineAircraft.YearBuilt == null ? null : OnlineAircraft.YearBuilt.Value.ToString(CultureInfo.InvariantCulture);
                 return result;
             }
         }
