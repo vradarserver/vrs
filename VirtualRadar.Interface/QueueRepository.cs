@@ -16,54 +16,54 @@ using System.Text;
 namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// Exposes a collection of every background thread queue running within the program.
+    /// Exposes a collection of every queue running within the program.
     /// </summary>
-    public static class BackgroundThreadQueueRepository
+    public static class QueueRepository
     {
         /// <summary>
-        /// A static list of every background thread queue running on the system.
+        /// A static list of every queue running on the system.
         /// </summary>
-        private static List<IQueue> _BackgroundThreadQueues = new List<IQueue>();
+        private static List<IQueue> _Queues = new List<IQueue>();
 
         /// <summary>
-        /// The lock object for the static list of background thread queues.
+        /// The lock object for the static list of queues.
         /// </summary>
-        private static object _BackgroundThreadQueuesLock = new object();
+        private static object _QueuesLock = new object();
 
         /// <summary>
-        /// Adds a background thread queue to the static list of queues.
+        /// Adds a queue to the static list of queues.
         /// </summary>
-        /// <param name="backgroundThreadQueue"></param>
-        internal static void AddBackgroundThreadQueue(IQueue backgroundThreadQueue)
+        /// <param name="queue"></param>
+        public static void AddQueue(IQueue queue)
         {
-            lock(_BackgroundThreadQueuesLock) {
-                if(!_BackgroundThreadQueues.Contains(backgroundThreadQueue)) {
-                    _BackgroundThreadQueues.Add(backgroundThreadQueue);
+            lock(_QueuesLock) {
+                if(!_Queues.Contains(queue)) {
+                    _Queues.Add(queue);
                 }
             }
         }
 
         /// <summary>
-        /// Removes a background thread queue from the static list of queues.
+        /// Removes a queue from the static list of queues.
         /// </summary>
-        /// <param name="backgroundThreadQueue"></param>
-        internal static void RemoveBackgroundThreadQueue(IQueue backgroundThreadQueue)
+        /// <param name="queue"></param>
+        internal static void RemoveQueue(IQueue queue)
         {
-            lock(_BackgroundThreadQueuesLock) {
-                if(_BackgroundThreadQueues.Contains(backgroundThreadQueue)) {
-                    _BackgroundThreadQueues.Remove(backgroundThreadQueue);
+            lock(_QueuesLock) {
+                if(_Queues.Contains(queue)) {
+                    _Queues.Remove(queue);
                 }
             }
         }
 
         /// <summary>
-        /// Returns an array of every background thread queue currently running in the system.
+        /// Returns an array of every queue currently running in the system.
         /// </summary>
         /// <returns></returns>
-        public static IQueue[] GetAllBackgroundThreadQueues()
+        public static IQueue[] GetAllQueues()
         {
-            lock(_BackgroundThreadQueues) {
-                return _BackgroundThreadQueues.ToArray();
+            lock(_Queues) {
+                return _Queues.ToArray();
             }
         }
     }

@@ -79,7 +79,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void ShowQueues()
         {
-            _View.RefreshDisplay(BackgroundThreadQueueRepository.GetAllBackgroundThreadQueues());
+            _View.RefreshDisplay(QueueRepository.GetAllQueues());
         }
 
         /// <summary>

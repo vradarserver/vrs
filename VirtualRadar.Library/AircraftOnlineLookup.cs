@@ -22,7 +22,7 @@ namespace VirtualRadar.Library
     /// <summary>
     /// Default implementation of <see cref="IAircraftOnlineLookup"/>.
     /// </summary>
-    sealed class AircraftOnlineLookup : IAircraftOnlineLookup
+    sealed class AircraftOnlineLookup : IAircraftOnlineLookup, IQueue
     {
         /// <summary>
         /// Represents an ICAO in the queue.
@@ -111,6 +111,21 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public string Name { get { return "AircraftOnlineLookupQueue"; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int CountQueuedItems { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int PeakQueuedItems { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler<AircraftOnlineLookupEventArgs> AircraftFetched;
 
         /// <summary>
@@ -137,6 +152,7 @@ namespace VirtualRadar.Library
                     lock(_Queue) {
                         if(!_Queue.ContainsKey(normalisedIcao)) {
                             _Queue.Add(normalisedIcao, queueEntry);
+                            UpdateQueueStatistics();
                         }
                     }
                 }
@@ -162,6 +178,7 @@ namespace VirtualRadar.Library
                                 _Queue.Add(queueEntry.Icao, queueEntry);
                             }
                         }
+                        UpdateQueueStatistics();
                     }
                 }
             }
@@ -178,6 +195,12 @@ namespace VirtualRadar.Library
             return icao.Length == 6;
         }
 
+        private void UpdateQueueStatistics()
+        {
+            CountQueuedItems = _Queue.Count;
+            if(CountQueuedItems > PeakQueuedItems) PeakQueuedItems = CountQueuedItems;
+        }
+
         /// <summary>
         /// Initialises the object.
         /// </summary>
@@ -187,6 +210,7 @@ namespace VirtualRadar.Library
                 lock(_QueueLock) {
                     if(!_Initialised) {
                         _Initialised = true;
+                        QueueRepository.AddQueue(this);
                         _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
                         _Clock = Factory.Singleton.Resolve<IClock>();
 
@@ -227,6 +251,7 @@ namespace VirtualRadar.Library
                 if(_Queue.Count > 0) {
                     lock(_Queue) {
                         _Queue.Clear();
+                        UpdateQueueStatistics();
                     }
                 }
             } else {
@@ -257,6 +282,7 @@ namespace VirtualRadar.Library
                     foreach(var removeKey in removeSet) {
                         _Queue.Remove(removeKey);
                     }
+                    UpdateQueueStatistics();
 
                     queueEntries = _Queue.Select(r => r.Value).OrderBy(r => r.QueueDate).Take(batchSize).ToArray();
                 }
@@ -289,6 +315,7 @@ namespace VirtualRadar.Library
                             foreach(var icao in queueEntries.Select(r => r.Icao).Where(r => _Queue.ContainsKey(r))) {
                                 _Queue.Remove(icao);
                             }
+                            UpdateQueueStatistics();
                         }
                     }
                 }
