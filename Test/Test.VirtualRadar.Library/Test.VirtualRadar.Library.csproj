@@ -59,6 +59,7 @@
     <Compile Include="Adsb\CompactPositionReportingTests.cs" />
     <Compile Include="AircraftComparerTests.cs" />
     <Compile Include="AircraftDetailFetcherTests.cs" />
+    <Compile Include="AircraftOnlineLookupManagerTests.cs" />
     <Compile Include="AircraftOnlineLookupTests.cs" />
     <Compile Include="AircraftSanityCheckerTests.cs" />
     <Compile Include="AircraftTests.cs" />

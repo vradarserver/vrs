@@ -106,7 +106,7 @@ namespace VirtualRadar.Library
 
                 foreach(var cacheEntry in cacheEntries) {
                     if(cacheEntry.ManageLifetime) {
-                        var disposableCache = cacheEntry as IDisposable;
+                        var disposableCache = cacheEntry.Cache as IDisposable;
                         if(disposableCache != null) disposableCache.Dispose();
                     }
                 }
@@ -229,7 +229,7 @@ namespace VirtualRadar.Library
             AircraftOnlineLookupDetail result = null;
 
             var cacheEntries = _CacheEntries;
-            foreach(var cacheEntry in cacheEntries) {
+            foreach(var cacheEntry in cacheEntries.Where(r => r.Cache.Enabled)) {
                 result = cacheEntry.Cache.Load(icao);
                 if(result != null) break;
             }
@@ -252,7 +252,7 @@ namespace VirtualRadar.Library
             }
 
             var cacheEntries = _CacheEntries;
-            foreach(var cacheEntry in cacheEntries) {
+            foreach(var cacheEntry in cacheEntries.Where(r => r.Cache.Enabled)) {
                 var cacheResults = cacheEntry.Cache.LoadMany(remainingIcaos);
                 foreach(var kvp in cacheResults) {
                     result.Add(kvp.Key, kvp.Value);
@@ -277,8 +277,12 @@ namespace VirtualRadar.Library
                 var cacheEntries = _CacheEntries;
                 var firstEnabledCache = cacheEntries.FirstOrDefault(r => r.Cache.Enabled);
                 if(firstEnabledCache != null) {
-                    firstEnabledCache.Cache.SaveMany(args.AircraftDetails);
-                    firstEnabledCache.Cache.RecordManyMissing(args.MissingIcaos);
+                    if(args.AircraftDetails.Count > 0) {
+                        firstEnabledCache.Cache.SaveMany(args.AircraftDetails);
+                    }
+                    if(args.MissingIcaos.Count > 0) {
+                        firstEnabledCache.Cache.RecordManyMissing(args.MissingIcaos);
+                    }
                 }
 
                 OnAircraftFetched(args);
