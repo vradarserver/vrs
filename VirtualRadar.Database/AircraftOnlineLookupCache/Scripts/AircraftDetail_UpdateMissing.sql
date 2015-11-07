@@ -1,4 +1,3 @@
 ﻿UPDATE [AircraftDetail]
-   SET [Icao]          = @icao
-      ,[UpdatedUtc]    = @updatedUtc
+   SET [UpdatedUtc] = @updatedUtc
  WHERE [AircraftDetailID] = @aircraftDetailId;

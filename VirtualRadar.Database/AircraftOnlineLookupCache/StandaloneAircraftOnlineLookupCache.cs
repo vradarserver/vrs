@@ -57,7 +57,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         {
             var connectionStringBuilder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
             connectionStringBuilder.DataSource = BuildFileName();
-            connectionStringBuilder.DateTimeFormat = SQLiteDateFormats.JulianDay;
+            connectionStringBuilder.DateTimeFormat = SQLiteDateFormats.ISO8601;
             connectionStringBuilder.FailIfMissing = false;
             connectionStringBuilder.ReadOnly = false;
             connectionStringBuilder.JournalMode = SQLiteJournalModeEnum.Persist;
@@ -280,8 +280,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
             var existingId = GetAircraftDetailIDByIcao(connection, transaction, icao);
             if(existingId != null) {
                 connection.Execute(Commands.AircraftDetail_UpdateMissing, new {
-                    @icao =             icao,
-                    @updatedUtc =       now,
+                    @updatedUtc = now,
                     @aircraftDetailId = existingId.Value,
                 }, transaction: transaction);
             } else {
