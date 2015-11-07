@@ -140,7 +140,7 @@ namespace VirtualRadar.Interface
             _ForceOntoSingleThread = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
             _SurrenderTimeSlice = surrenderTimeSliceOnEmptyQueue;
 
-            BackgroundThreadQueueRepository.AddBackgroundThreadQueue(this);
+            QueueRepository.AddQueue(this);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace VirtualRadar.Interface
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                BackgroundThreadQueueRepository.RemoveBackgroundThreadQueue(this);
+                QueueRepository.RemoveQueue(this);
 
                 if(_BackgroundThread != null) {
                     _BackgroundThread.Abort();
