@@ -18,6 +18,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
+using Dapper;
 
 namespace VirtualRadar.Database.AircraftOnlineLookupCache
 {
@@ -32,11 +33,6 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// The object used to ensure that all database access is single-threaded.
         /// </summary>
         private object _SyncLock = new object();
-
-        /// <summary>
-        /// The object that handles the interactions with the aircraft detail table for us.
-        /// </summary>
-        private AircraftDetailTable _AircraftDetailTable = new AircraftDetailTable();
 
         /// <summary>
         /// The full path and filename of the cache database file.
@@ -61,7 +57,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         {
             var connectionStringBuilder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
             connectionStringBuilder.DataSource = BuildFileName();
-            connectionStringBuilder.DateTimeFormat = SQLiteDateFormats.ISO8601;
+            connectionStringBuilder.DateTimeFormat = SQLiteDateFormats.JulianDay;
             connectionStringBuilder.FailIfMissing = false;
             connectionStringBuilder.ReadOnly = false;
             connectionStringBuilder.JournalMode = SQLiteJournalModeEnum.Persist;
@@ -102,7 +98,15 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
                 lock(_SyncLock) {
                     if(!_SchemaUpdated) {
                         _SchemaUpdated = true;
-                        _AircraftDetailTable.CreateTable(connection);
+                        connection.Execute(Commands.UpdateSchema);
+
+                        var currentVersion = 1;
+                        var databaseVersion = connection.ExecuteScalar<long?>("SELECT [Version] FROM [DatabaseVersion]");
+                        if(databaseVersion != currentVersion) {
+                            connection.Execute("REPLACE INTO [DatabaseVersion] ([Version]) VALUES (@currentVersion)", new {
+                                currentVersion = currentVersion,
+                            });
+                        }
                     }
                 }
             }
@@ -115,9 +119,11 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <returns></returns>
         public AircraftOnlineLookupDetail Load(string icao)
         {
-            using(var connection = CreateOpenConnection()) {
-                lock(_SyncLock) {
-                    return _AircraftDetailTable.GetByIcao(connection, null, icao);
+            lock(_SyncLock) {
+                using(var connection = CreateOpenConnection()) {
+                    return connection.Query<AircraftOnlineLookupDetail>("SELECT * FROM [AircraftDetail] WHERE [Icao] = @icao", new {
+                        icao = icao,
+                    }).FirstOrDefault();
                 }
             }
         }
@@ -129,12 +135,14 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <returns></returns>
         public Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos)
         {
-            List<AircraftOnlineLookupDetail> details = null;
+            AircraftOnlineLookupDetail[] details = null;
             var filteredIcaos = icaos.Where(r => !String.IsNullOrEmpty(r)).Select(r => r.ToUpper().Trim()).Distinct().ToArray();
 
-            using(var connection = CreateOpenConnection()) {
-                lock(_SyncLock) {
-                    details = _AircraftDetailTable.GetManyByIcao(connection, null, filteredIcaos);
+            lock(_SyncLock) {
+                using(var connection = CreateOpenConnection()) {
+                    details = connection.Query<AircraftOnlineLookupDetail>("SELECT * FROM [AircraftDetail] WHERE [Icao] IN @icaos", new {
+                        icaos = icaos,
+                    }).ToArray();
                 }
             }
 
@@ -152,9 +160,9 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <param name="lookupDetail"></param>
         public void Save(AircraftOnlineLookupDetail lookupDetail)
         {
-            using(var connection = CreateOpenConnection()) {
-                lock(_SyncLock) {
-                    _AircraftDetailTable.Upsert(connection, null, lookupDetail);
+            lock(_SyncLock) {
+                using(var connection = CreateOpenConnection()) {
+                    UpsertFullAircraftDetail(connection, null, lookupDetail);
                 }
             }
         }
@@ -165,12 +173,12 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <param name="lookupDetails"></param>
         public void SaveMany(IEnumerable<AircraftOnlineLookupDetail> lookupDetails)
         {
-            using(var connection = CreateOpenConnection()) {
-                using(var transaction = connection.BeginTransaction()) {
-                    lock(_SyncLock) {
+            lock(_SyncLock) {
+                using(var connection = CreateOpenConnection()) {
+                    using(var transaction = connection.BeginTransaction()) {
                         try {
                             foreach(var lookupDetail in lookupDetails) {
-                                _AircraftDetailTable.Upsert(connection, transaction, lookupDetail);
+                                UpsertFullAircraftDetail(connection, transaction, lookupDetail);
                             }
                             transaction.Commit();
                         } catch {
@@ -182,13 +190,64 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
             }
         }
 
+        private void UpsertFullAircraftDetail(IDbConnection connection, IDbTransaction transaction, AircraftOnlineLookupDetail lookupDetail)
+        {
+            var now = DateTime.UtcNow;
+            var existingId = GetAircraftDetailIDByIcao(connection, transaction, lookupDetail.Icao);
+            if(existingId != null) {
+                lookupDetail.UpdatedUtc = now;
+                connection.Execute(Commands.AircraftDetail_Update, new {
+                    @icao =             lookupDetail.Icao,
+                    @registration =     lookupDetail.Registration,
+                    @country =          lookupDetail.Country,
+                    @manufacturer =     lookupDetail.Manufacturer,
+                    @model =            lookupDetail.Model,
+                    @modelIcao =        lookupDetail.ModelIcao,
+                    @operator =         lookupDetail.Operator,
+                    @operatorIcao =     lookupDetail.OperatorIcao,
+                    @serial =           lookupDetail.Serial,
+                    @yearBuilt =        lookupDetail.YearBuilt,
+                    @updatedUtc =       lookupDetail.UpdatedUtc,
+                    @aircraftDetailId = existingId.Value,
+                }, transaction: transaction);
+            } else {
+                lookupDetail.CreatedUtc = now;
+                lookupDetail.UpdatedUtc = now;
+                lookupDetail.AircraftDetailId = connection.ExecuteScalar<long>(Commands.AircraftDetail_Insert, new {
+                    @icao =             lookupDetail.Icao,
+                    @registration =     lookupDetail.Registration,
+                    @country =          lookupDetail.Country,
+                    @manufacturer =     lookupDetail.Manufacturer,
+                    @model =            lookupDetail.Model,
+                    @modelIcao =        lookupDetail.ModelIcao,
+                    @operator =         lookupDetail.Operator,
+                    @operatorIcao =     lookupDetail.OperatorIcao,
+                    @serial =           lookupDetail.Serial,
+                    @yearBuilt =        lookupDetail.YearBuilt,
+                    @createdUtc =       lookupDetail.CreatedUtc,
+                    @updatedUtc =       lookupDetail.UpdatedUtc,
+                });
+            }
+        }
+
+        private long? GetAircraftDetailIDByIcao(IDbConnection connection, IDbTransaction transaction, string icao)
+        {
+            return connection.Query<long?>("SELECT [AircraftDetailId] FROM [AircraftDetail] WHERE [Icao] = @icao;", new {
+                icao = icao
+            }, transaction: transaction).FirstOrDefault();
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="icao"></param>
         public void RecordMissing(string icao)
         {
-            Save(CreateAircraftOnlineLookupDetailForMissingIcao(icao));
+            lock(_SyncLock) {
+                using(var connection = CreateOpenConnection()) {
+                    UpsertMissingAircraftDetail(connection, null, icao);
+                }
+            }
         }
 
         /// <summary>
@@ -197,20 +256,41 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <param name="icaos"></param>
         public void RecordManyMissing(IEnumerable<string> icaos)
         {
-            var details = icaos.Where(r => !String.IsNullOrEmpty(r)).Distinct().Select(r => CreateAircraftOnlineLookupDetailForMissingIcao(r)).ToArray();
-            SaveMany(details);
+            var filteredIcaos = icaos.Where(r => !String.IsNullOrEmpty(r)).Distinct().ToArray();
+            lock(_SyncLock) {
+                using(var connection = CreateOpenConnection()) {
+                    using(var transaction = connection.BeginTransaction()) {
+                        try {
+                            foreach(var icao in filteredIcaos) {
+                                UpsertMissingAircraftDetail(connection, transaction, icao);
+                            }
+                            transaction.Commit();
+                        } catch {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+            }
         }
 
-        /// <summary>
-        /// Creates an empty <see cref="AircraftOnlineLookupDetail"/> to represent a missing ICAO.
-        /// </summary>
-        /// <param name="icao"></param>
-        /// <returns></returns>
-        private AircraftOnlineLookupDetail CreateAircraftOnlineLookupDetailForMissingIcao(string icao)
+        private void UpsertMissingAircraftDetail(IDbConnection connection, IDbTransaction transaction, string icao)
         {
-            return new AircraftOnlineLookupDetail() {
-                Icao = icao,
-            };
+            var now = DateTime.UtcNow;
+            var existingId = GetAircraftDetailIDByIcao(connection, transaction, icao);
+            if(existingId != null) {
+                connection.Execute(Commands.AircraftDetail_UpdateMissing, new {
+                    @icao =             icao,
+                    @updatedUtc =       now,
+                    @aircraftDetailId = existingId.Value,
+                }, transaction: transaction);
+            } else {
+                connection.Execute(Commands.AircraftDetail_InsertMissing, new {
+                    @icao =         icao,
+                    @createdUtc =   now,
+                    @updatedUtc =   now,
+                });
+            }
         }
     }
 }

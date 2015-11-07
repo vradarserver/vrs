@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CSHARP30</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -31,7 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;CSHARP30</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -51,8 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AircraftOnlineLookupCache\Commands.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Commands.resx</DependentUpon>
+    </Compile>
     <Compile Include="AircraftOnlineLookupCache\StandaloneAircraftOnlineLookupCache.cs" />
-    <Compile Include="AircraftOnlineLookupCache\AircraftDetailTable.cs" />
     <Compile Include="BaseStation\AircraftTable.cs" />
     <Compile Include="BaseStation\AutoConfigBaseStationDatabase.cs" />
     <Compile Include="BaseStation\CriteriaAndProperties.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sql.cs" />
     <Compile Include="SQLiteExecute.cs" />
+    <Compile Include="SqlMapper.cs" />
     <Compile Include="SqlPreparedCommand.cs" />
     <Compile Include="StandingData\BackgroundDataDownloader.cs" />
     <Compile Include="BasicAircraft\BasicAircraftLookupDatabase.cs" />
@@ -108,7 +113,19 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="AircraftOnlineLookupCache\Commands.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Commands.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Insert.sql" />
+    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_InsertMissing.sql" />
+    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Update.sql" />
+    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_UpdateMissing.sql" />
+    <Content Include="AircraftOnlineLookupCache\Scripts\UpdateSchema.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
