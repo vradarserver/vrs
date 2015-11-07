@@ -52,6 +52,11 @@ namespace VirtualRadar.Library
         /// </summary>
         private IAircraftOnlineLookup _AircraftOnlineLookup;
 
+        /// <summary>
+        /// The object that fetches the time for us.
+        /// </summary>
+        private IClock _Clock;
+
         private static IAircraftOnlineLookupManager _Singleton = new AircraftOnlineLookupManager();
         /// <summary>
         /// See interface docs.
@@ -175,6 +180,7 @@ namespace VirtualRadar.Library
             if(_AircraftOnlineLookup == null) {
                 lock(_SyncLock) {
                     if(_AircraftOnlineLookup == null) {
+                        _Clock = Factory.Singleton.Resolve<IClock>();
                         _AircraftOnlineLookup = Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton;
                         _AircraftOnlineLookup.AircraftFetched += AircraftOnlineLookup_AircraftFetched;
                     }
@@ -192,7 +198,7 @@ namespace VirtualRadar.Library
             Initialise();
 
             var result = FetchAircraftDetailsFromCache(icao);
-            if(result == null) {
+            if(RecordNeedsRefresh(result)) {
                 _AircraftOnlineLookup.Lookup(icao);
             }
 
@@ -211,9 +217,9 @@ namespace VirtualRadar.Library
             var uniqueIcaos = icaos.Where(r => r != null && r.Length == 6).Select(r => r.ToUpper()).Distinct().ToArray();
             var result = FetchManyAircraftDetailsFromCache(uniqueIcaos);
 
-            var icaosNotInCache = uniqueIcaos.Except(result.Select(r => r.Key)).ToArray();
-            if(icaosNotInCache.Length > 0) {
-                _AircraftOnlineLookup.LookupMany(icaosNotInCache);
+            var refreshIcaos = result.Where(r => RecordNeedsRefresh(r.Value)).Select(r => r.Key).ToArray();
+            if(refreshIcaos.Length > 0) {
+                _AircraftOnlineLookup.LookupMany(refreshIcaos);
             }
 
             return result;
@@ -254,13 +260,35 @@ namespace VirtualRadar.Library
             var cacheEntries = _CacheEntries;
             foreach(var cacheEntry in cacheEntries.Where(r => r.Cache.Enabled)) {
                 var cacheResults = cacheEntry.Cache.LoadMany(remainingIcaos);
-                foreach(var kvp in cacheResults) {
+                foreach(var kvp in cacheResults.Where(r => r.Value != null)) {
                     result.Add(kvp.Key, kvp.Value);
                     remainingIcaos.Remove(kvp.Key);
                 }
                 if(remainingIcaos.Count == 0) {
                     break;
                 }
+            }
+
+            for(var node = remainingIcaos.First;node != null;node = node.Next) {
+                result.Add(node.Value, null);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns true if the cache record needs a refresh.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        private bool RecordNeedsRefresh(AircraftOnlineLookupDetail record)
+        {
+            var result = record == null;
+
+            if(!result) {
+                var now = _Clock.UtcNow;
+                result =              String.IsNullOrEmpty(record.Registration) && record.UpdatedUtc != null && record.UpdatedUtc.Value.AddDays(1) <= now;
+                if(!result) result = !String.IsNullOrEmpty(record.Registration) && record.UpdatedUtc != null && record.UpdatedUtc.Value.AddDays(28) <= now;
             }
 
             return result;
