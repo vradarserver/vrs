@@ -97,6 +97,11 @@ namespace VirtualRadar.Library
         /// </summary>
         private bool _LookupInProgress;
 
+        /// <summary>
+        /// True if the class is running under the test environment.
+        /// </summary>
+        private bool _IsRunningUnderTestEnvironment;
+
         private static IAircraftOnlineLookup _Singleton = new AircraftOnlineLookup();
         /// <summary>
         /// See interface docs.
@@ -213,6 +218,7 @@ namespace VirtualRadar.Library
                         QueueRepository.AddQueue(this);
                         _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
                         _Clock = Factory.Singleton.Resolve<IClock>();
+                        _IsRunningUnderTestEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
 
                         // Give plugins two ways to set the provider - either they can fetch the singleton for this
                         // object and set the provider to their own implementation or they can register their provider
@@ -259,7 +265,11 @@ namespace VirtualRadar.Library
                     var threshold = _LastLookup.AddSeconds(_SecondsToNextLookup);
                     if(_Clock.UtcNow > threshold) {
                         _LookupInProgress = true;
-                        ThreadPool.QueueUserWorkItem(ThreadPool_LookupWorkItem);
+                        if(_IsRunningUnderTestEnvironment) {
+                            ThreadPool_LookupWorkItem(null);
+                        } else {
+                            ThreadPool.QueueUserWorkItem(ThreadPool_LookupWorkItem);
+                        }
                     }
                 }
             }
@@ -291,26 +301,34 @@ namespace VirtualRadar.Library
                     var missingIcaos = new List<string>();
                     var removeIcaos = new List<string>();
 
-                    var fetchFailed = true;
+                    var fetchFailed = false;
                     try {
                         fetchFailed = !Provider.DoLookup(queueEntries.Select(r => r.Icao).ToArray(), fetchedAircraft, missingIcaos);
                     } catch(System.Net.WebException) {
-                        ;
+                        fetchFailed = true;
                     } catch(ThreadAbortException) {
                         ;
                     } catch(Exception ex) {
+                        fetchedAircraft.Clear();
+                        missingIcaos.Clear();
+                        fetchFailed = false;
+
                         var log = Factory.Singleton.Resolve<ILog>().Singleton;
                         log.WriteLine("AircraftOnlineLookup caught exception: {0}", ex.ToString());
                     }
 
                     _LastLookup = _Clock.UtcNow;
-                    if(!fetchFailed) {
-                        _SecondsToNextLookup = Provider.MinSecondsBetweenRequests;
-                        OnAircraftFetched(() => new AircraftOnlineLookupEventArgs(fetchedAircraft, missingIcaos));
-                    } else {
-                        if(_SecondsToNextLookup + Provider.MinSecondsBetweenRequests < Provider.MaxSecondsAfterFailedRequest) {
+                    if(fetchFailed) {
+                        if(_SecondsToNextLookup + Provider.MinSecondsBetweenRequests <= Provider.MaxSecondsAfterFailedRequest) {
                             _SecondsToNextLookup += Provider.MinSecondsBetweenRequests;
                         }
+                    } else {
+                        _SecondsToNextLookup = Provider.MinSecondsBetweenRequests;
+
+                        if(fetchedAircraft.Count > 0 || missingIcaos.Count > 0) {
+                            OnAircraftFetched(() => new AircraftOnlineLookupEventArgs(fetchedAircraft, missingIcaos));
+                        }
+
                         lock(_QueueLock) {
                             foreach(var icao in queueEntries.Select(r => r.Icao).Where(r => _Queue.ContainsKey(r))) {
                                 _Queue.Remove(icao);
