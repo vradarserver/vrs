@@ -235,7 +235,6 @@ namespace VirtualRadar.Library
 
             var aircraftAndFlightCounts = _AutoConfigDatabase.Database.GetManyAircraftAndFlightsCountByCode(newIcaos);
             var aircraft = _AutoConfigDatabase.Database.GetManyAircraftByCode(existingIcaos);
-            var allOnlineAircraft = _AircraftOnlineLookupManager.LookupMany(allIcaos);
 
             foreach(var kvp in fetchedDetails) {
                 var icao24 = kvp.Key;
@@ -269,7 +268,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         private static bool NeedsOnlineLookup(BaseStationAircraft aircraft)
         {
-            return aircraft == null || String.IsNullOrEmpty(aircraft.Registration) || aircraft.LastModified <= DateTime.Today.AddMonths(-1);
+            return aircraft == null || String.IsNullOrEmpty(aircraft.Registration);
         }
 
         /// <summary>
