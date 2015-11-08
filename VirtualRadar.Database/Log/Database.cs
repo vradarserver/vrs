@@ -18,6 +18,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
+using Dapper;
 
 namespace VirtualRadar.Database.Log
 {
@@ -49,16 +50,6 @@ namespace VirtualRadar.Database.Log
         /// The connection to the database file.
         /// </summary>
         private IDbConnection _Connection;
-
-        /// <summary>
-        /// The object that persists data to and from the client table.
-        /// </summary>
-        private ClientTable _ClientTable;
-
-        /// <summary>
-        /// The object that persists data to and from the session table.
-        /// </summary>
-        private SessionTable _SessionTable;
 
         /// <summary>
         /// The object that manages nested transactions for us.
@@ -114,13 +105,9 @@ namespace VirtualRadar.Database.Log
         private void Dispose(bool disposing)
         {
             if(disposing) {
-                if(_ClientTable != null) _ClientTable.Dispose();
-                if(_SessionTable != null) _SessionTable.Dispose();
                 _TransactionHelper.Abandon();
                 if(_Connection != null) _Connection.Dispose();
                 _Connection = null;
-                _ClientTable = null;
-                _SessionTable = null;
             }
         }
         #endregion
@@ -178,12 +165,97 @@ namespace VirtualRadar.Database.Log
                 _Connection = connection;
                 _Connection.Open();
 
-                _ClientTable = new ClientTable();
-                _SessionTable = new SessionTable();
-
-                _ClientTable.CreateTable(_Connection);
-                _SessionTable.CreateTable(_Connection);
+                _Connection.Execute(Commands.UpdateSchema);
             }
+        }
+        #endregion
+
+        #region Client Operations
+        private LogClient[] Client_GetAll()
+        {
+            return _Connection.Query<LogClient>("SELECT * FROM [Client]", transaction: _TransactionHelper.Transaction).ToArray();
+        }
+
+        private LogClient Client_GetById(long id)
+        {
+            return _Connection.Query<LogClient>("SELECT * FROM [Client] WHERE [Id] = @id", new {
+                id = id,
+            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+        }
+
+        private LogClient Client_GetByIpAddress(string ipAddress)
+        {
+            return _Connection.Query<LogClient>("SELECT * FROM [Client] WHERE [IpAddress] = @ipAddress", new {
+                @ipAddress = ipAddress,
+            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+        }
+
+        private void Client_Insert(LogClient client)
+        {
+            client.Id = _Connection.ExecuteScalar<long>(Commands.Client_Insert, new {
+                @ipAddress =        client.IpAddress,
+                @reverseDns =       client.ReverseDns,
+                @reverseDnsDate =   client.ReverseDnsDate,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private void Client_Update(LogClient client)
+        {
+            _Connection.Execute(Commands.Client_Update, new {
+                @ipAddress          = client.IpAddress,
+                @reverseDns         = client.ReverseDns,
+                @reverseDnsDate     = client.ReverseDnsDate,
+                @id                 = client.Id,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+        #endregion
+
+        #region Session Operations
+        private LogSession[] Session_GetAll()
+        {
+            return _Connection.Query<LogSession>("SELECT * FROM [Session]", transaction: _TransactionHelper.Transaction).ToArray();
+        }
+
+        private LogSession[] Session_GetByDateRange(DateTime startDate, DateTime endDate)
+        {
+            startDate = startDate.ToUniversalTime();
+            endDate = endDate.ToUniversalTime();
+
+            return _Connection.Query<LogSession>(Commands.Session_GetByDateRange, new {
+                @startDate =    startDate,
+                @endDate =      endDate,
+            }, transaction: _TransactionHelper.Transaction).ToArray();
+        }
+
+        private void Session_Insert(LogSession session)
+        {
+            session.Id = _Connection.ExecuteScalar<long>(Commands.Session_Insert, new {
+                @clientId           = session.ClientId,
+                @startTime          = session.StartTime,
+                @endTime            = session.EndTime,
+                @countRequests      = session.CountRequests,
+                @otherBytesSent     = session.OtherBytesSent,
+                @htmlBytesSent      = session.HtmlBytesSent,
+                @jsonBytesSent      = session.JsonBytesSent,
+                @imageBytesSent     = session.ImageBytesSent,
+                @audioBytesSent     = session.AudioBytesSent,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private void Session_Update(LogSession session)
+        {
+            _Connection.Execute(Commands.Session_Update, new {
+                @clientId           = session.ClientId,
+                @startTime          = session.StartTime,
+                @endTime            = session.EndTime,
+                @countRequests      = session.CountRequests,
+                @otherBytesSent     = session.OtherBytesSent,
+                @htmlBytesSent      = session.HtmlBytesSent,
+                @jsonBytesSent      = session.JsonBytesSent,
+                @imageBytesSent     = session.ImageBytesSent,
+                @audioBytesSent     = session.AudioBytesSent,
+                @id                 = session.Id,
+            }, transaction: _TransactionHelper.Transaction);
         }
         #endregion
 
@@ -200,10 +272,10 @@ namespace VirtualRadar.Database.Log
             lock(_SyncLock) {
                 CreateConnection();
 
-                var client = _ClientTable.SelectByIpAddress(_Connection, _TransactionHelper.Transaction, null, ipAddress);
+                var client = Client_GetByIpAddress(ipAddress);
                 if(client == null) {
                     client = new LogClient() { IpAddress = ipAddress };
-                    _ClientTable.Insert(_Connection, _TransactionHelper.Transaction, null, client);
+                    Client_Insert(client);
                 }
 
                 result = new LogSession() {
@@ -211,7 +283,7 @@ namespace VirtualRadar.Database.Log
                     StartTime = Provider.UtcNow,
                     EndTime = Provider.UtcNow,
                 };
-                _SessionTable.Insert(_Connection, _TransactionHelper.Transaction, null, result);
+                Session_Insert(result);
             }
 
             return result;
@@ -227,7 +299,7 @@ namespace VirtualRadar.Database.Log
             if(_Connection == null) throw new InvalidOperationException("The connection must be opened before the client can be updated");
 
             lock(_SyncLock) {
-                _ClientTable.Update(_Connection, _TransactionHelper.Transaction, null, client);
+                Client_Update(client);
             }
         }
 
@@ -241,7 +313,7 @@ namespace VirtualRadar.Database.Log
             if(_Connection == null) throw new InvalidOperationException("The connection must be opened before the session can be updated");
 
             lock(_SyncLock) {
-                _SessionTable.Update(_Connection, _TransactionHelper.Transaction, null, session);
+                Session_Update(session);
             }
         }
         #endregion
@@ -262,10 +334,10 @@ namespace VirtualRadar.Database.Log
                 CreateConnection();
 
                 Dictionary<long, long> clientMap = new Dictionary<long,long>();
-                foreach(var session in _SessionTable.SelectByStartDate(_Connection, _TransactionHelper.Transaction, null, startTime, endTime)) {
+                foreach(var session in Session_GetByDateRange(startTime, endTime)) {
                     sessions.Add(session);
                     if(clients != null && !clientMap.ContainsKey(session.ClientId)) {
-                        clients.Add(_ClientTable.SelectById(_Connection, _TransactionHelper.Transaction, null, session.ClientId));
+                        clients.Add(Client_GetById(session.ClientId));
                         clientMap.Add(session.ClientId, session.ClientId);
                     }
                 }
@@ -287,12 +359,12 @@ namespace VirtualRadar.Database.Log
             lock(_SyncLock) {
                 CreateConnection();
 
-                foreach(var client in _ClientTable.SelectAll(_Connection, _TransactionHelper.Transaction, null)) {
+                foreach(var client in Client_GetAll()) {
                     clients.Add(client);
                 }
 
                 if(sessionsMap != null) {
-                    foreach(var session in _SessionTable.SelectAll(_Connection, _TransactionHelper.Transaction, null)) {
+                    foreach(var session in Session_GetAll()) {
                         IList<LogSession> sessions;
                         if(!sessionsMap.TryGetValue(session.ClientId, out sessions)) {
                             sessions = new List<LogSession>();

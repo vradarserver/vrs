@@ -69,13 +69,16 @@
     <Compile Include="BasicAircraft\BasicAircraftTable.cs" />
     <Compile Include="BasicAircraft\BasicModelTable.cs" />
     <Compile Include="BasicAircraft\BasicOperatorTable.cs" />
+    <Compile Include="Log\Commands.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Commands.resx</DependentUpon>
+    </Compile>
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="SQLiteDateHelper.cs" />
     <Compile Include="BaseStation\SystemEventsTable.cs" />
     <Compile Include="Implementations.cs" />
-    <Compile Include="Log\SessionTable.cs" />
     <Compile Include="Log\Database.cs" />
-    <Compile Include="Log\ClientTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sql.cs" />
     <Compile Include="SQLiteExecute.cs" />
@@ -118,6 +121,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Commands.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Log\Commands.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Commands.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Insert.sql" />
@@ -125,6 +132,12 @@
     <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Update.sql" />
     <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_UpdateMissing.sql" />
     <Content Include="AircraftOnlineLookupCache\Scripts\UpdateSchema.sql" />
+    <Content Include="Log\Scripts\Client_Insert.sql" />
+    <Content Include="Log\Scripts\Client_Update.sql" />
+    <Content Include="Log\Scripts\Session_GetByDateRange.sql" />
+    <Content Include="Log\Scripts\Session_Insert.sql" />
+    <Content Include="Log\Scripts\Session_Update.sql" />
+    <Content Include="Log\Scripts\UpdateSchema.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
