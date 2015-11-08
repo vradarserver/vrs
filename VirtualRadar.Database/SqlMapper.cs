@@ -1141,7 +1141,7 @@ namespace Dapper
         /// <returns>A sequence of data of the supplied type; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
         /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
         /// </returns>
-        public static IEnumerable<T> Query<T>(this IDbConnection cnn, string sql, object param)
+        public static IEnumerable<T> Query<T>(this IDbConnection cnn, string sql, object param = null)
         {
             return Query<T>(cnn, sql, param, null, true, null, null);
         }
@@ -1152,7 +1152,7 @@ namespace Dapper
         /// <returns>A sequence of data of the supplied type; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
         /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
         /// </returns>
-        public static IEnumerable<T> Query<T>(this IDbConnection cnn, string sql, object param, IDbTransaction transaction)
+        public static IEnumerable<T> Query<T>(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null)
         {
             return Query<T>(cnn, sql, param, transaction, true, null, null);
         }
