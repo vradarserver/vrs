@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CSHARP30</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -31,7 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;CSHARP30</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -57,18 +57,18 @@
       <DependentUpon>Commands.resx</DependentUpon>
     </Compile>
     <Compile Include="AircraftOnlineLookupCache\StandaloneAircraftOnlineLookupCache.cs" />
-    <Compile Include="BaseStation\AircraftTable.cs" />
     <Compile Include="BaseStation\AutoConfigBaseStationDatabase.cs" />
-    <Compile Include="BaseStation\CriteriaAndProperties.cs" />
-    <Compile Include="BaseStation\DBHistoryTable.cs" />
-    <Compile Include="BaseStation\DBInfoTable.cs" />
-    <Compile Include="BaseStation\FlightsTable.cs" />
+    <Compile Include="BaseStation\Commands.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Commands.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CriteriaAndProperties.cs" />
     <Compile Include="BaseStation\Database.cs" />
-    <Compile Include="BaseStation\LocationsTable.cs" />
-    <Compile Include="BaseStation\SessionsTable.cs" />
     <Compile Include="BasicAircraft\BasicAircraftTable.cs" />
     <Compile Include="BasicAircraft\BasicModelTable.cs" />
     <Compile Include="BasicAircraft\BasicOperatorTable.cs" />
+    <Compile Include="DynamicSqlBuilder.cs" />
     <Compile Include="Log\Commands.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -76,7 +76,6 @@
     </Compile>
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="SQLiteDateHelper.cs" />
-    <Compile Include="BaseStation\SystemEventsTable.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="Log\Database.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,6 +120,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Commands.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="BaseStation\Commands.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Commands.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Log\Commands.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Commands.Designer.cs</LastGenOutput>
@@ -131,7 +134,21 @@
     <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_InsertMissing.sql" />
     <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Update.sql" />
     <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_UpdateMissing.sql" />
+    <Content Include="BaseStation\Scripts\Aircraft_GetAircraftAndFlightsCountByIcao.sql" />
+    <Content Include="BaseStation\Scripts\Aircraft_Insert.sql" />
+    <Content Include="BaseStation\Scripts\Aircraft_Update.sql" />
+    <Content Include="BaseStation\Scripts\Flights_Update.sql" />
+    <Content Include="BaseStation\Scripts\Flights_Insert.sql" />
+    <Content Include="BaseStation\Scripts\Locations_Insert.sql" />
     <Content Include="AircraftOnlineLookupCache\Scripts\UpdateSchema.sql" />
+    <Content Include="BaseStation\Scripts\DBHistory_Insert.sql" />
+    <Content Include="BaseStation\Scripts\DBInfo_Insert.sql" />
+    <Content Include="BaseStation\Scripts\Locations_Update.sql" />
+    <Content Include="BaseStation\Scripts\Sessions_Insert.sql" />
+    <Content Include="BaseStation\Scripts\Sessions_Update.sql" />
+    <Content Include="BaseStation\Scripts\SystemEvents_Insert.sql" />
+    <Content Include="BaseStation\Scripts\SystemEvents_Update.sql" />
+    <Content Include="BaseStation\Scripts\UpdateSchema.sql" />
     <Content Include="Log\Scripts\Client_Insert.sql" />
     <Content Include="Log\Scripts\Client_Update.sql" />
     <Content Include="Log\Scripts\Session_GetByDateRange.sql" />

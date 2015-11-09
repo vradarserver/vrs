@@ -12,8 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dapper;
 
-namespace VirtualRadar.Database.BaseStation
+namespace VirtualRadar.Database
 {
     /// <summary>
     /// Holds a SQL gobbit for a set of criteria and a set of properties required by the SQL.
@@ -26,17 +27,16 @@ namespace VirtualRadar.Database.BaseStation
         public string SqlChunk { get; set; }
 
         /// <summary>
-        /// Gets a list of properties that need to be added in the order specified by the list in order
-        /// to satisfy the properties on the SQL chunk.
+        /// Gets the Dapper dynamic properties object for the criteria.
         /// </summary>
-        public List<Object> PropertyValues { get; private set; }
+        public DynamicParameters Parameters { get; private set; }
 
         /// <summary>
         /// Creates an object.
         /// </summary>
         public CriteriaAndProperties()
         {
-            PropertyValues = new List<object>();
+            Parameters = new DynamicParameters();
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <returns></returns>
         public override string ToString()
         {
-            return String.Format("{0} ({1} props)", SqlChunk, PropertyValues.Count);
+            return SqlChunk ?? "";
         }
     }
 }
