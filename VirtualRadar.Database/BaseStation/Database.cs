@@ -20,6 +20,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
+using Dapper;
 
 namespace VirtualRadar.Database.BaseStation
 {
@@ -39,41 +40,6 @@ namespace VirtualRadar.Database.BaseStation
         #endregion
 
         #region Fields
-        /// <summary>
-        /// The object that manages the ADO.NET for the Aircraft table for us.
-        /// </summary>
-        private AircraftTable _AircraftTable = new AircraftTable();
-
-        /// <summary>
-        /// The object that manages the ADO.NET for the Flights table for us.
-        /// </summary>
-        private FlightsTable _FlightTable = new FlightsTable();
-
-        /// <summary>
-        /// The object that manages the ADO.NET for the DBHistory table for us.
-        /// </summary>
-        private DBHistoryTable _DbHistoryTable = new DBHistoryTable();
-
-        /// <summary>
-        /// The object that manages the ADO.NET for the DBInfo table for us.
-        /// </summary>
-        private DBInfoTable _DbInfoTable = new DBInfoTable();
-
-        /// <summary>
-        /// The object that manages the ADO.NET for the Locations table for us.
-        /// </summary>
-        private LocationsTable _LocationsTable = new LocationsTable();
-
-        /// <summary>
-        /// The object that manages the ADO.NET for the Sessions table for us.
-        /// </summary>
-        private SessionsTable _SessionsTable = new SessionsTable();
-
-        /// <summary>
-        /// The object that manages the ADO.NET calls to the SystemEvents table for us.
-        /// </summary>
-        private SystemEventsTable _SystemEventsTable = new SystemEventsTable();
-
         /// <summary>
         /// The object that we synchronise threads on.
         /// </summary>
@@ -99,6 +65,11 @@ namespace VirtualRadar.Database.BaseStation
         /// and the connection is open.
         /// </summary>
         private TextWriter _DatabaseLog;
+
+        /// <summary>
+        /// The object that can parse callsigns out into alternates for us.
+        /// </summary>
+        private ICallsignParser _CallsignParser;
 
         /// <summary>
         /// True if the object has been disposed.
@@ -266,41 +237,6 @@ namespace VirtualRadar.Database.BaseStation
                     _TransactionHelper.Abandon();
                     CloseConnection();
 
-                    if(_AircraftTable != null) {
-                        _AircraftTable.Dispose();
-                        _AircraftTable = null;
-                    }
-
-                    if(_FlightTable != null) {
-                        _FlightTable.Dispose();
-                        _FlightTable = null;
-                    }
-
-                    if(_DbHistoryTable != null) {
-                        _DbHistoryTable.Dispose();
-                        _DbHistoryTable = null;
-                    }
-
-                    if(_DbInfoTable != null) {
-                        _DbInfoTable.Dispose();
-                        _DbInfoTable = null;
-                    }
-
-                    if(_LocationsTable != null) {
-                        _LocationsTable.Dispose();
-                        _LocationsTable = null;
-                    }
-
-                    if(_SessionsTable != null) {
-                        _SessionsTable.Dispose();
-                        _SessionsTable = null;
-                    }
-
-                    if(_SystemEventsTable != null) {
-                        _SystemEventsTable.Dispose();
-                        _SystemEventsTable = null;
-                    }
-
                     if(_ConfigurationStorage != null) {
                         _ConfigurationStorage.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
                         _ConfigurationStorage = null;
@@ -420,20 +356,11 @@ namespace VirtualRadar.Database.BaseStation
                         if(_Connection != null) {
                             var transaction = _Connection.BeginTransaction();
                             try {
-                                _DbHistoryTable.CreateTable(_Connection, _DatabaseLog);
-                                _DbInfoTable.CreateTable(_Connection, _DatabaseLog);
-                                _SystemEventsTable.CreateTable(_Connection, _DatabaseLog);
-                                _LocationsTable.CreateTable(_Connection, _DatabaseLog);
-                                _SessionsTable.CreateTable(_Connection, _DatabaseLog);
-                                _AircraftTable.CreateTable(_Connection, _DatabaseLog);
-                                _FlightTable.CreateTable(_Connection, _DatabaseLog);
+                                _Connection.Execute(Commands.UpdateSchema, transaction: _TransactionHelper.Transaction);
 
-                                _SessionsTable.CreateTriggers(_Connection, _DatabaseLog);
-                                _AircraftTable.CreateTriggers(_Connection, _DatabaseLog);
-
-                                _DbHistoryTable.Insert(_Connection, null, _DatabaseLog, new BaseStationDBHistory() { Description = "Database autocreated by Virtual Radar Server", TimeStamp = SQLiteDateHelper.Truncate(Provider.UtcNow) });
-                                _DbInfoTable.Insert(_Connection, null, _DatabaseLog, new BaseStationDBInfo() { OriginalVersion = 2, CurrentVersion = 2 });
-                                _LocationsTable.Insert(_Connection, null, _DatabaseLog, new BaseStationLocation() { LocationName = "Home", Latitude = configuration.GoogleMapSettings.InitialMapLatitude, Longitude = configuration.GoogleMapSettings.InitialMapLongitude });
+                                DBHistory_Insert(new BaseStationDBHistory() { Description = "Database autocreated by Virtual Radar Server", TimeStamp = SQLiteDateHelper.Truncate(Provider.UtcNow) });
+                                DBInfo_Insert(new BaseStationDBInfo() { OriginalVersion = 2, CurrentVersion = 2 });
+                                Locations_Insert(new BaseStationLocation() { LocationName = "Home", Latitude = configuration.GoogleMapSettings.InitialMapLatitude, Longitude = configuration.GoogleMapSettings.InitialMapLongitude });
 
                                 transaction.Commit();
                             } catch(Exception ex) {
@@ -593,7 +520,7 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _AircraftTable.GetByRegistration(_Connection, _TransactionHelper.Transaction, _DatabaseLog, registration);
+                if(_Connection != null) result = Aircraft_GetByRegistration(registration);
             }
 
             return result;
@@ -610,7 +537,7 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _AircraftTable.GetByIcao(_Connection, _TransactionHelper.Transaction, _DatabaseLog, icao24);
+                if(_Connection != null) result = Aircraft_GetByIcao(icao24);
             }
 
             return result;
@@ -626,7 +553,7 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) _AircraftTable.GetAll(_Connection, _TransactionHelper.Transaction, _DatabaseLog, result);
+                if(_Connection != null) result.AddRange(Aircraft_GetAll());
             }
 
             return result;
@@ -651,7 +578,7 @@ namespace VirtualRadar.Database.BaseStation
 
                         do {
                             var chunk = icao24s.Skip(offset).Take(maxParameters).ToArray();
-                            foreach(var aircraft in _AircraftTable.GetManyByIcao(_Connection, _TransactionHelper.Transaction, _DatabaseLog, chunk)) {
+                            foreach(var aircraft in Aircraft_GetByIcaos(chunk)) {
                                 if(aircraft.ModeS != null && !result.ContainsKey(aircraft.ModeS)) result.Add(aircraft.ModeS, aircraft);
                             }
                             offset += maxParameters;
@@ -682,7 +609,7 @@ namespace VirtualRadar.Database.BaseStation
 
                         do {
                             var chunk = icao24s.Skip(offset).Take(maxParameters).ToArray();
-                            foreach(var aircraft in _AircraftTable.GetManyAircraftAndFlightsByIcao(_Connection, _TransactionHelper.Transaction, _DatabaseLog, chunk)) {
+                            foreach(var aircraft in AircraftAndFlightsCount_GetByIcaos(chunk)) {
                                 if(aircraft.ModeS != null && !result.ContainsKey(aircraft.ModeS)) result.Add(aircraft.ModeS, aircraft);
                             }
                             offset += maxParameters;
@@ -705,7 +632,7 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _AircraftTable.GetById(_Connection, _TransactionHelper.Transaction, _DatabaseLog, id);
+                if(_Connection != null) result = Aircraft_GetById(id);
             }
 
             return result;
@@ -719,13 +646,10 @@ namespace VirtualRadar.Database.BaseStation
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
 
-            aircraft.FirstCreated = SQLiteDateHelper.Truncate(aircraft.FirstCreated);
-            aircraft.LastModified = SQLiteDateHelper.Truncate(aircraft.LastModified);
-
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    aircraft.AircraftID = _AircraftTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
+                    Aircraft_Insert(aircraft);
                 }
             }
         }
@@ -738,13 +662,10 @@ namespace VirtualRadar.Database.BaseStation
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot update aircraft when write support is disabled");
 
-            aircraft.FirstCreated = SQLiteDateHelper.Truncate(aircraft.FirstCreated);
-            aircraft.LastModified = SQLiteDateHelper.Truncate(aircraft.LastModified);
-
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _AircraftTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
+                    Aircraft_Update(aircraft);
                 }
             }
 
@@ -763,7 +684,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _AircraftTable.UpdateModeSCountry(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraftId, modeSCountry);
+                    Aircraft_UpdateModeSCountry(aircraftId, modeSCountry);
                 }
             }
         }
@@ -779,9 +700,151 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _AircraftTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, aircraft);
+                    Aircraft_Delete(aircraft);
                 }
             }
+        }
+
+        void Aircraft_Delete(BaseStationAircraft aircraft)
+        {
+            _Connection.Execute("DELETE FROM [Aircraft] WHERE [AircraftID] = @aircraftID", new {
+                @aircraftID = aircraft.AircraftID,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        BaseStationAircraft[] Aircraft_GetAll()
+        {
+            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft]", transaction: _TransactionHelper.Transaction).ToArray();
+        }
+
+        BaseStationAircraft Aircraft_GetByIcao(string icao)
+        {
+            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [ModeS] = @icao", new {
+                @icao = icao,
+            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+        }
+
+        BaseStationAircraft[] Aircraft_GetByIcaos(IEnumerable<string> icaos)
+        {
+            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [ModeS] IN @icaos", new {
+                @icaos = icaos,
+            }, transaction: _TransactionHelper.Transaction).ToArray();
+        }
+
+        BaseStationAircraft Aircraft_GetById(int aircraftId)
+        {
+            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [AircraftID] = @aircraftId", new {
+                @aircraftId = aircraftId,
+            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+        }
+
+        BaseStationAircraft Aircraft_GetByRegistration(string registration)
+        {
+            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [Registration] = @registration", new {
+                @registration = registration,
+            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+        }
+
+        void Aircraft_Insert(BaseStationAircraft aircraft)
+        {
+            aircraft.FirstCreated = SQLiteDateHelper.Truncate(aircraft.FirstCreated);
+            aircraft.LastModified = SQLiteDateHelper.Truncate(aircraft.LastModified);
+
+            aircraft.AircraftID = (int)_Connection.ExecuteScalar<long>(Commands.Aircraft_Insert, new {
+                @aircraftClass      = aircraft.AircraftClass,
+                @cofACategory       = aircraft.CofACategory,
+                @cofAExpiry         = aircraft.CofAExpiry,
+                @country            = aircraft.Country,
+                @currentRegDate     = aircraft.CurrentRegDate,
+                @deRegDate          = aircraft.DeRegDate,
+                @engines            = aircraft.Engines,
+                @firstCreated       = aircraft.FirstCreated,
+                @firstRegDate       = aircraft.FirstRegDate,
+                @genericName        = aircraft.GenericName,
+                @iCAOTypeCode       = aircraft.ICAOTypeCode,
+                @infoUrl            = aircraft.InfoUrl,
+                @interested         = aircraft.Interested,
+                @lastModified       = aircraft.LastModified,
+                @manufacturer       = aircraft.Manufacturer,
+                @modeS              = aircraft.ModeS,
+                @modeSCountry       = aircraft.ModeSCountry,
+                @mtow               = aircraft.MTOW,
+                @operatorFlagCode   = aircraft.OperatorFlagCode,
+                @ownershipStatus    = aircraft.OwnershipStatus,
+                @pictureUrl1        = aircraft.PictureUrl1,
+                @pictureUrl2        = aircraft.PictureUrl2,
+                @pictureUrl3        = aircraft.PictureUrl3,
+                @popularName        = aircraft.PopularName,
+                @previousID         = aircraft.PreviousID,
+                @registeredOwners   = aircraft.RegisteredOwners,
+                @registration       = aircraft.Registration,
+                @serialNo           = aircraft.SerialNo,
+                @status             = aircraft.Status,
+                @totalHours         = aircraft.TotalHours,
+                @type               = aircraft.Type,
+                @userNotes          = aircraft.UserNotes,
+                @userTag            = aircraft.UserTag,
+                @yearBuilt          = aircraft.YearBuilt,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        void Aircraft_Update(BaseStationAircraft aircraft)
+        {
+            aircraft.FirstCreated = SQLiteDateHelper.Truncate(aircraft.FirstCreated);
+            aircraft.LastModified = SQLiteDateHelper.Truncate(aircraft.LastModified);
+
+            _Connection.Execute(Commands.Aircraft_Update, new {
+                @aircraftClass      = aircraft.AircraftClass,
+                @cofACategory       = aircraft.CofACategory,
+                @cofAExpiry         = aircraft.CofAExpiry,
+                @country            = aircraft.Country,
+                @currentRegDate     = aircraft.CurrentRegDate,
+                @deRegDate          = aircraft.DeRegDate,
+                @engines            = aircraft.Engines,
+                @firstCreated       = aircraft.FirstCreated,
+                @firstRegDate       = aircraft.FirstRegDate,
+                @genericName        = aircraft.GenericName,
+                @iCAOTypeCode       = aircraft.ICAOTypeCode,
+                @infoUrl            = aircraft.InfoUrl,
+                @interested         = aircraft.Interested,
+                @lastModified       = aircraft.LastModified,
+                @manufacturer       = aircraft.Manufacturer,
+                @modeS              = aircraft.ModeS,
+                @modeSCountry       = aircraft.ModeSCountry,
+                @mtow               = aircraft.MTOW,
+                @operatorFlagCode   = aircraft.OperatorFlagCode,
+                @ownershipStatus    = aircraft.OwnershipStatus,
+                @pictureUrl1        = aircraft.PictureUrl1,
+                @pictureUrl2        = aircraft.PictureUrl2,
+                @pictureUrl3        = aircraft.PictureUrl3,
+                @popularName        = aircraft.PopularName,
+                @previousID         = aircraft.PreviousID,
+                @registeredOwners   = aircraft.RegisteredOwners,
+                @registration       = aircraft.Registration,
+                @serialNo           = aircraft.SerialNo,
+                @status             = aircraft.Status,
+                @totalHours         = aircraft.TotalHours,
+                @type               = aircraft.Type,
+                @userNotes          = aircraft.UserNotes,
+                @userTag            = aircraft.UserTag,
+                @yearBuilt          = aircraft.YearBuilt,
+                @aircraftID         = aircraft.AircraftID,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        void Aircraft_UpdateModeSCountry(int aircraftId, string modeSCountry)
+        {
+            _Connection.Execute("UPDATE [Aircraft] SET [ModeSCountry] = @modeSCountry WHERE [AircraftID] = @aircraftID", new {
+                @aircraftID =   aircraftId,
+                @modeSCountry = modeSCountry,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        BaseStationAircraftAndFlightsCount[] AircraftAndFlightsCount_GetByIcaos(IEnumerable<string> icaos)
+        {
+            return _Connection.Query<BaseStationAircraftAndFlightsCount>(Commands.Aircraft_GetAircraftAndFlightsCountByIcao, new {
+                @icaos = icaos,
+            }, transaction: _TransactionHelper.Transaction).ToArray();
         }
         #endregion
 
@@ -794,13 +857,13 @@ namespace VirtualRadar.Database.BaseStation
         public int GetCountOfFlights(SearchBaseStationCriteria criteria)
         {
             if(criteria == null) throw new ArgumentNullException("criteria");
-            FlightsTable.NormaliseCriteria(criteria);
+            NormaliseCriteria(criteria);
 
             int result = 0;
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _FlightTable.GetCount(_Connection, null, _DatabaseLog, criteria);
+                if(_Connection != null) result = Flights_GetCountByCriteria(null, criteria);
             }
 
             return result;
@@ -815,43 +878,14 @@ namespace VirtualRadar.Database.BaseStation
         public int GetCountOfFlightsForAircraft(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
         {
             if(criteria == null) throw new ArgumentNullException("criteria");
-            FlightsTable.NormaliseCriteria(criteria);
+            NormaliseCriteria(criteria);
 
             int result = 0;
 
             if(aircraft != null) {
                 lock(_ConnectionLock) {
                     OpenConnection();
-                    if(_Connection != null) result = _FlightTable.GetCountForAircraft(_Connection, null, _DatabaseLog, aircraft, criteria);
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="aircraft"></param>
-        /// <param name="criteria"></param>
-        /// <param name="fromRow"></param>
-        /// <param name="toRow"></param>
-        /// <param name="sort1"></param>
-        /// <param name="sort1Ascending"></param>
-        /// <param name="sort2"></param>
-        /// <param name="sort2Ascending"></param>
-        /// <returns></returns>
-        public List<BaseStationFlight> GetFlightsForAircraft(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria, int fromRow, int toRow, string sort1, bool sort1Ascending, string sort2, bool sort2Ascending)
-        {
-            if(criteria == null) throw new ArgumentNullException("criteria");
-            FlightsTable.NormaliseCriteria(criteria);
-
-            List<BaseStationFlight> result = new List<BaseStationFlight>();
-
-            if(aircraft != null) {
-                lock(_ConnectionLock) {
-                    OpenConnection();
-                    if(_Connection != null) result = _FlightTable.GetForAircraft(_Connection, null, _DatabaseLog, aircraft, criteria, fromRow, toRow, sort1, sort1Ascending, sort2, sort2Ascending);
+                    if(_Connection != null) result = Flights_GetCountByCriteria(aircraft, criteria);
                 }
             }
 
@@ -872,13 +906,42 @@ namespace VirtualRadar.Database.BaseStation
         public List<BaseStationFlight> GetFlights(SearchBaseStationCriteria criteria, int fromRow, int toRow, string sortField1, bool sortField1Ascending, string sortField2, bool sortField2Ascending)
         {
             if(criteria == null) throw new ArgumentNullException("criteria");
-            FlightsTable.NormaliseCriteria(criteria);
+            NormaliseCriteria(criteria);
 
             List<BaseStationFlight> result = new List<BaseStationFlight>();
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _FlightTable.GetFlights(_Connection, null, _DatabaseLog, criteria, fromRow, toRow, sortField1, sortField1Ascending, sortField2, sortField2Ascending);
+                if(_Connection != null) result = Flights_GetByCriteria(null, criteria, fromRow, toRow, sortField1, sortField1Ascending, sortField2, sortField2Ascending);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <param name="criteria"></param>
+        /// <param name="fromRow"></param>
+        /// <param name="toRow"></param>
+        /// <param name="sort1"></param>
+        /// <param name="sort1Ascending"></param>
+        /// <param name="sort2"></param>
+        /// <param name="sort2Ascending"></param>
+        /// <returns></returns>
+        public List<BaseStationFlight> GetFlightsForAircraft(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria, int fromRow, int toRow, string sort1, bool sort1Ascending, string sort2, bool sort2Ascending)
+        {
+            if(criteria == null) throw new ArgumentNullException("criteria");
+            NormaliseCriteria(criteria);
+
+            List<BaseStationFlight> result = new List<BaseStationFlight>();
+
+            if(aircraft != null) {
+                lock(_ConnectionLock) {
+                    OpenConnection();
+                    if(_Connection != null) result = Flights_GetByCriteria(aircraft, criteria, fromRow, toRow, sort1, sort1Ascending, sort2, sort2Ascending);
+                }
             }
 
             return result;
@@ -895,7 +958,7 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _FlightTable.GetById(_Connection, _TransactionHelper.Transaction, _DatabaseLog, id);
+                if(_Connection != null) result = Flights_GetById(id);
             }
 
             return result;
@@ -915,7 +978,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    flight.FlightID = _FlightTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
+                    Flights_Insert(flight);
                 }
             }
         }
@@ -934,7 +997,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _FlightTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
+                    Flights_Update(flight);
                 }
             }
         }
@@ -950,9 +1013,319 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _FlightTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, flight);
+                    Flights_Delete(flight);
                 }
             }
+        }
+
+        private void Flights_Delete(BaseStationFlight flight)
+        {
+            _Connection.Execute("DELETE FROM [Flights] WHERE [FlightID] = @flightID", new {
+                @flightID = flight.FlightID,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private BaseStationFlight Flights_GetById(int flightId)
+        {
+            return _Connection.Query<BaseStationFlight>("SELECT * FROM [Flights] WHERE [FlightID] = @flightID", new {
+                @flightID = flightId,
+            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+        }
+
+        private void Flights_Insert(BaseStationFlight flight)
+        {
+            flight.FlightID = (int)_Connection.ExecuteScalar<long>(Commands.Flights_Insert, new {
+                @sessionID              = flight.SessionID,
+                @aircraftID             = flight.AircraftID,
+                @startTime              = flight.StartTime,
+                @endTime                = flight.EndTime,
+                @callsign               = flight.Callsign,
+                @numPosMsgRec           = flight.NumPosMsgRec,
+                @numADSBMsgRec          = flight.NumADSBMsgRec,
+                @numModeSMsgRec         = flight.NumModeSMsgRec,
+                @numIDMsgRec            = flight.NumIDMsgRec,
+                @numSurPosMsgRec        = flight.NumSurPosMsgRec,
+                @numAirPosMsgRec        = flight.NumAirPosMsgRec,
+                @numAirVelMsgRec        = flight.NumAirVelMsgRec,
+                @numSurAltMsgRec        = flight.NumSurAltMsgRec,
+                @numSurIDMsgRec         = flight.NumSurIDMsgRec,
+                @numAirToAirMsgRec      = flight.NumAirToAirMsgRec,
+                @numAirCallRepMsgRec    = flight.NumAirCallRepMsgRec,
+                @firstIsOnGround        = flight.FirstIsOnGround,
+                @lastIsOnGround         = flight.LastIsOnGround,
+                @firstLat               = flight.FirstLat,
+                @lastLat                = flight.LastLat,
+                @firstLon               = flight.FirstLon,
+                @lastLon                = flight.LastLon,
+                @firstGroundSpeed       = flight.FirstGroundSpeed,
+                @lastGroundSpeed        = flight.LastGroundSpeed,
+                @firstAltitude          = flight.FirstAltitude,
+                @lastAltitude           = flight.LastAltitude,
+                @firstVerticalRate      = flight.FirstVerticalRate,
+                @lastVerticalRate       = flight.LastVerticalRate,
+                @firstTrack             = flight.FirstTrack,
+                @lastTrack              = flight.LastTrack,
+                @firstSquawk            = flight.FirstSquawk,
+                @lastSquawk             = flight.LastSquawk,
+                @hadAlert               = flight.HadAlert,
+                @hadEmergency           = flight.HadEmergency,
+                @hadSPI                 = flight.HadSpi,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private void Flights_Update(BaseStationFlight flight)
+        {
+            _Connection.Execute(Commands.Flights_Update, new {
+                @sessionID              = flight.SessionID,
+                @aircraftID             = flight.AircraftID,
+                @startTime              = flight.StartTime,
+                @endTime                = flight.EndTime,
+                @callsign               = flight.Callsign,
+                @numPosMsgRec           = flight.NumPosMsgRec,
+                @numADSBMsgRec          = flight.NumADSBMsgRec,
+                @numModeSMsgRec         = flight.NumModeSMsgRec,
+                @numIDMsgRec            = flight.NumIDMsgRec,
+                @numSurPosMsgRec        = flight.NumSurPosMsgRec,
+                @numAirPosMsgRec        = flight.NumAirPosMsgRec,
+                @numAirVelMsgRec        = flight.NumAirVelMsgRec,
+                @numSurAltMsgRec        = flight.NumSurAltMsgRec,
+                @numSurIDMsgRec         = flight.NumSurIDMsgRec,
+                @numAirToAirMsgRec      = flight.NumAirToAirMsgRec,
+                @numAirCallRepMsgRec    = flight.NumAirCallRepMsgRec,
+                @firstIsOnGround        = flight.FirstIsOnGround,
+                @lastIsOnGround         = flight.LastIsOnGround,
+                @firstLat               = flight.FirstLat,
+                @lastLat                = flight.LastLat,
+                @firstLon               = flight.FirstLon,
+                @lastLon                = flight.LastLon,
+                @firstGroundSpeed       = flight.FirstGroundSpeed,
+                @lastGroundSpeed        = flight.LastGroundSpeed,
+                @firstAltitude          = flight.FirstAltitude,
+                @lastAltitude           = flight.LastAltitude,
+                @firstVerticalRate      = flight.FirstVerticalRate,
+                @lastVerticalRate       = flight.LastVerticalRate,
+                @firstTrack             = flight.FirstTrack,
+                @lastTrack              = flight.LastTrack,
+                @firstSquawk            = flight.FirstSquawk,
+                @lastSquawk             = flight.LastSquawk,
+                @hadAlert               = flight.HadAlert,
+                @hadEmergency           = flight.HadEmergency,
+                @hadSPI                 = flight.HadSpi,
+                @flightID               = flight.FlightID,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private int Flights_GetCountByCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
+        {
+            StringBuilder commandText = new StringBuilder();
+            commandText.Append(CreateSearchBaseStationCriteriaSql(aircraft, criteria, justCount: true));
+            var criteriaAndProperties = GetFlightsCriteria(aircraft, criteria);
+            if(criteriaAndProperties.SqlChunk.Length > 0) commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
+
+            return (int)_Connection.ExecuteScalar<long>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _TransactionHelper.Transaction);
+        }
+
+        private List<BaseStationFlight> Flights_GetByCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria, int fromRow, int toRow, string sort1, bool sort1Ascending, string sort2, bool sort2Ascending)
+        {
+            List<BaseStationFlight> result = null;
+
+            sort1 = CriteriaSortFieldToColumnName(sort1);
+            sort2 = CriteriaSortFieldToColumnName(sort2);
+
+            StringBuilder commandText = new StringBuilder();
+            commandText.Append(CreateSearchBaseStationCriteriaSql(aircraft, criteria, justCount: false));
+            var criteriaAndProperties = GetFlightsCriteria(aircraft, criteria);
+            if(criteriaAndProperties.SqlChunk.Length > 0) commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
+            if(sort1 != null || sort2 != null) {
+                commandText.Append(" ORDER BY ");
+                if(sort1 != null) commandText.AppendFormat("{0} {1}", sort1, sort1Ascending ? "ASC" : "DESC");
+                if(sort2 != null) commandText.AppendFormat("{0}{1} {2}", sort1 == null ? "" : ", ", sort2, sort2Ascending ? "ASC" : "DESC");
+            }
+
+            commandText.Append(" LIMIT @limit OFFSET @offset");
+            int limit = toRow == -1 || toRow < fromRow ? int.MaxValue : (toRow - Math.Max(0, fromRow)) + 1;
+            int offset = fromRow < 0 ? 0 : fromRow;
+            criteriaAndProperties.Parameters.Add("limit", limit);
+            criteriaAndProperties.Parameters.Add("offset", offset);
+
+            if(aircraft != null) {
+                result = _Connection.Query<BaseStationFlight>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _TransactionHelper.Transaction).ToList();
+                foreach(var flight in result) {
+                    flight.Aircraft = aircraft;
+                }
+            } else {
+                var aircraftInstances = new Dictionary<int, BaseStationAircraft>();
+                Func<BaseStationAircraft, BaseStationAircraft> getAircraftInstance = (a) => {
+                    BaseStationAircraft instance = null;
+                    if(a != null) {
+                        if(!aircraftInstances.TryGetValue(a.AircraftID, out instance)) {
+                            instance = a;
+                            aircraftInstances.Add(a.AircraftID, instance);
+                        }
+                    }
+                    return instance;
+                };
+
+                // The results are always declared as flights then aircraft
+                result = _Connection.Query<BaseStationFlight, BaseStationAircraft, BaseStationFlight>(
+                    commandText.ToString(),
+                    (f, a) => { f.Aircraft = getAircraftInstance(a); return f; },
+                    criteriaAndProperties.Parameters,
+                    transaction: _TransactionHelper.Transaction, splitOn: "AircraftID"
+                ).ToList();
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Flight searches by criteria
+        /// <summary>
+        /// Normalises strings in the criteria object.
+        /// </summary>
+        /// <remarks>
+        /// Previous versions of VRS would implement case insensitivity in searches by using COLLATE NOCASE
+        /// statements in the SQL. This had the unfortunate side-effect of producing very slow searches, so
+        /// it has been removed. All searches are consequently case-sensitive but it is assumed that some
+        /// fields are always written in upper case. This method converts the criteria for those fields to
+        /// upper-case.
+        /// </remarks>
+        /// <param name="criteria"></param>
+        public static void NormaliseCriteria(SearchBaseStationCriteria criteria)
+        {
+            if(criteria.Callsign != null)       criteria.Callsign.ToUpper();
+            if(criteria.Icao != null)           criteria.Icao.ToUpper();
+            if(criteria.Registration != null)   criteria.Registration.ToUpper();
+            if(criteria.Type != null)           criteria.Type.ToUpper();
+        }
+
+        /// <summary>
+        /// Builds a select statement from criteria.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <param name="criteria"></param>
+        /// <param name="justCount"></param>
+        /// <returns></returns>
+        private string CreateSearchBaseStationCriteriaSql(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria, bool justCount)
+        {
+            StringBuilder result = new StringBuilder();
+
+            if(aircraft != null) {
+                result.AppendFormat("SELECT {0} FROM [Flights]", justCount ? "COUNT(*)" : "[Flights].*");
+            } else {
+                result.AppendFormat("SELECT {0}{1}{2} FROM ",
+                        justCount ? "COUNT(*)" : "[Flights].*",
+                        justCount ? "" : ", ",
+                        justCount ? "" : "[Aircraft].*");
+
+                if(FilterByAircraftFirst(criteria)) result.Append("[Aircraft] LEFT JOIN [Flights]");
+                else                                result.Append("[Flights] LEFT JOIN [Aircraft]");
+
+                result.Append(" ON ([Aircraft].[AircraftID] = [Flights].[AircraftID])");
+            }
+
+            return result.ToString();
+        }
+
+        /// <summary>
+        /// Returns true if the criteria attempts to restrict the search to a single aircraft.
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        private bool FilterByAircraftFirst(SearchBaseStationCriteria criteria)
+        {
+            return (criteria.Icao != null         && !String.IsNullOrEmpty(criteria.Icao.Value)) ||
+                   (criteria.Registration != null && !String.IsNullOrEmpty(criteria.Registration.Value));
+        }
+
+        /// <summary>
+        /// Returns the WHERE portion of an SQL statement contains the fields describing the criteria passed across.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        private CriteriaAndProperties GetFlightsCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
+        {
+            var result = new CriteriaAndProperties();
+            StringBuilder command = new StringBuilder();
+
+            if(aircraft != null) {
+                DynamicSqlBuilder.AddWhereClause(command, "[Flights].[AircraftID]", " = @aircraftID");
+                result.Parameters.Add("aircraftID", aircraft.AircraftID);
+            }
+
+            if(criteria.UseAlternateCallsigns && criteria.Callsign != null && criteria.Callsign.Condition == FilterCondition.Equals && !String.IsNullOrEmpty(criteria.Callsign.Value)) {
+                GetAlternateCallsignCriteria(command, result.Parameters, criteria.Callsign, "[Flights].[Callsign]");
+            } else {
+                DynamicSqlBuilder.AddCriteria(command, criteria.Callsign, result.Parameters, "[Flights].[Callsign]", "callsign");
+            }
+
+            DynamicSqlBuilder.AddCriteria(command, criteria.Date,           result.Parameters, "[Flights].[StartTime]",         "fromStartTime", "toStartTime");
+            DynamicSqlBuilder.AddCriteria(command, criteria.Operator,       result.Parameters, "[Aircraft].[RegisteredOwners]", "registeredOwners");
+            DynamicSqlBuilder.AddCriteria(command, criteria.Registration,   result.Parameters, "[Aircraft].[Registration]",     "registration");
+            DynamicSqlBuilder.AddCriteria(command, criteria.Icao,           result.Parameters, "[Aircraft].[ModeS]",            "icao");
+            DynamicSqlBuilder.AddCriteria(command, criteria.Country,        result.Parameters, "[Aircraft].[ModeSCountry]",     "modeSCountry");
+            DynamicSqlBuilder.AddCriteria(command, criteria.IsEmergency,                       "[Flights].[HadEmergency]");
+            DynamicSqlBuilder.AddCriteria(command, criteria.Type,           result.Parameters, "[Aircraft].[ICAOTypeCode]",     "modelIcao");
+            DynamicSqlBuilder.AddCriteria(command, criteria.FirstAltitude,  result.Parameters, "[Flights].[FirstAltitude]",     "fromFirstAltitude", "toFirstAltitude");
+            DynamicSqlBuilder.AddCriteria(command, criteria.LastAltitude,   result.Parameters, "[Flights].[LastAltitude]",      "fromLastAltitude", "toLastAltitude");
+
+            result.SqlChunk = command.ToString();
+            return result;
+        }
+
+        /// <summary>
+        /// Builds up the criteria and properties for all alternate callsigns.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="parameters"></param>
+        /// <param name="criteria"></param>
+        /// <param name="callsignField"></param>
+        private void GetAlternateCallsignCriteria(StringBuilder command, DynamicParameters parameters, FilterString criteria, string callsignField)
+        {
+            if(criteria != null && !String.IsNullOrEmpty(criteria.Value)) {
+                if(_CallsignParser == null) _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
+                var alternates = _CallsignParser.GetAllAlternateCallsigns(criteria.Value);
+                for(var i = 0;i < alternates.Count;++i) {
+                    var isFirst = i == 0;
+                    var isLast = i + 1 == alternates.Count;
+                    var callsign = alternates[i];
+                    var parameterName = String.Format("callsign{0}", i + 1);
+                    DynamicSqlBuilder.AddWhereClause(command, callsignField,
+                        String.Format(" {0} @{1}", !criteria.ReverseCondition ? "=" : "<>", parameterName),
+                        useOR: !isFirst && !criteria.ReverseCondition,
+                        openParenthesis: isFirst,
+                        closeParenthesis: isLast);
+                    parameters.Add(parameterName, callsign);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Translates from the sort field to an SQL field name.
+        /// </summary>
+        /// <param name="sortField"></param>
+        /// <returns></returns>
+        private string CriteriaSortFieldToColumnName(string sortField)
+        {
+            string result = null;
+            if(sortField != null) {
+                switch(sortField.ToUpperInvariant()) {
+                    case "CALLSIGN":        result = "[Flights].[Callsign]"; break;
+                    case "DATE":            result = "[Flights].[StartTime]"; break;
+                    case "FIRSTALTITUDE":   result = "[Flights].[FirstAltitude]"; break;
+                    case "LASTALTITUDE":    result = "[Flights].[LastAltitude]"; break;
+
+                    case "COUNTRY":         result = "[Aircraft].[ModeSCountry]"; break;
+                    case "MODEL":           result = "[Aircraft].[Type]"; break;
+                    case "TYPE":            result = "[Aircraft].[ICAOTypeCode]"; break;
+                    case "OPERATOR":        result = "[Aircraft].[RegisteredOwners]"; break;
+                    case "REG":             result = "[Aircraft].[Registration]"; break;
+                    case "ICAO":            result = "[Aircraft].[ModeS]"; break;
+                }
+            }
+
+            return result;
         }
         #endregion
 
@@ -967,11 +1340,24 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _DbHistoryTable.GetAllRecords(_Connection, _TransactionHelper.Transaction, _DatabaseLog);
+                if(_Connection != null) result = DBHistory_GetAll();
                 else                    result = new List<BaseStationDBHistory>();
             }
 
             return result;
+        }
+
+        private List<BaseStationDBHistory> DBHistory_GetAll()
+        {
+            return _Connection.Query<BaseStationDBHistory>("SELECT * FROM [DBHistory]", transaction: _TransactionHelper.Transaction).ToList();
+        }
+
+        private void DBHistory_Insert(BaseStationDBHistory record)
+        {
+            record.DBHistoryID = (int)_Connection.ExecuteScalar<long>(Commands.DBHistory_Insert, new {
+                @timeStamp      = record.TimeStamp,
+                @description    = record.Description,
+            }, transaction: _TransactionHelper.Transaction);
         }
         #endregion
 
@@ -986,10 +1372,23 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _DbInfoTable.GetAllRecords(_Connection, _TransactionHelper.Transaction, _DatabaseLog).Last();
+                if(_Connection != null) result = DBInfo_GetAll().Last();
             }
 
             return result;
+        }
+
+        private BaseStationDBInfo[] DBInfo_GetAll()
+        {
+            return _Connection.Query<BaseStationDBInfo>("SELECT * FROM [DBInfo]", transaction: _TransactionHelper.Transaction).ToArray();
+        }
+
+        private void DBInfo_Insert(BaseStationDBInfo record)
+        {
+            _Connection.Execute(Commands.DBInfo_Insert, new {
+                @originalVersion    = record.OriginalVersion,
+                @currentVersion     = record.CurrentVersion,
+            }, transaction: _TransactionHelper.Transaction);
         }
         #endregion
 
@@ -1005,7 +1404,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection == null) result = new List<BaseStationSystemEvents>();
-                else                    result = _SystemEventsTable.GetAllRecords(_Connection, _TransactionHelper.Transaction, _DatabaseLog);
+                else                    result = SystemEvents_GetAll();
             }
 
             return result;
@@ -1024,7 +1423,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    systemEvent.SystemEventsID = _SystemEventsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
+                    SystemEvents_Insert(systemEvent);
                 }
             }
         }
@@ -1042,7 +1441,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _SystemEventsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
+                    SystemEvents_Update(systemEvent);
                 }
             }
         }
@@ -1058,9 +1457,40 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _SystemEventsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, systemEvent);
+                    SystemEvents_Delete(systemEvent);
                 }
             }
+        }
+
+        private void SystemEvents_Delete(BaseStationSystemEvents systemEvent)
+        {
+            _Connection.Execute("DELETE FROM [SystemEvents] WHERE [SystemEventsID] = @systemEventsID", new {
+                @systemEventsID = systemEvent.SystemEventsID,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private List<BaseStationSystemEvents> SystemEvents_GetAll()
+        {
+            return _Connection.Query<BaseStationSystemEvents>("SELECT * FROM [SystemEvents]", transaction: _TransactionHelper.Transaction).ToList();
+        }
+
+        private void SystemEvents_Insert(BaseStationSystemEvents systemEvent)
+        {
+            systemEvent.SystemEventsID = (int)_Connection.ExecuteScalar<long>(Commands.SystemEvents_Insert, new {
+                @timeStamp  = systemEvent.TimeStamp,
+                @app        = systemEvent.App,
+                @msg        = systemEvent.Msg,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private void SystemEvents_Update(BaseStationSystemEvents systemEvent)
+        {
+            _Connection.Execute(Commands.SystemEvents_Update, new {
+                @timeStamp      = systemEvent.TimeStamp,
+                @app            = systemEvent.App,
+                @msg            = systemEvent.Msg,
+                @systemEventsID = systemEvent.SystemEventsID,
+            }, transaction: _TransactionHelper.Transaction);
         }
         #endregion
 
@@ -1075,7 +1505,7 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _LocationsTable.GetAllRecords(_Connection, _TransactionHelper.Transaction, _DatabaseLog);
+                if(_Connection != null) result = Locations_GetAll();
                 else                    result = new BaseStationLocation[] {};
             }
 
@@ -1093,7 +1523,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    location.LocationID = _LocationsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
+                    Locations_Insert(location);
                 }
             }
         }
@@ -1109,7 +1539,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _LocationsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
+                    Locations_Update(location);
                 }
             }
         }
@@ -1125,9 +1555,42 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _LocationsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, location);
+                    Locations_Delete(location);
                 }
             }
+        }
+
+        private void Locations_Delete(BaseStationLocation location)
+        {
+            _Connection.Execute("DELETE FROM [Locations] WHERE [LocationID] = @locationID", new {
+                locationID = location.LocationID,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private BaseStationLocation[] Locations_GetAll()
+        {
+            return _Connection.Query<BaseStationLocation>("SELECT * FROM [Locations]", transaction: _TransactionHelper.Transaction).ToArray();
+        }
+
+        private void Locations_Insert(BaseStationLocation location)
+        {
+            location.LocationID = (int)_Connection.ExecuteScalar<long>(Commands.Locations_Insert, new {
+                @locationName   = location.LocationName,
+                @latitude       = location.Latitude,
+                @longitude      = location.Longitude,
+                @altitude       = location.Altitude,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private void Locations_Update(BaseStationLocation location)
+        {
+            _Connection.Execute(Commands.Locations_Update, new {
+                @locationName   = location.LocationName,
+                @latitude       = location.Latitude,
+                @longitude      = location.Longitude,
+                @altitude       = location.Altitude,
+                @locationID     = location.LocationID,
+            }, transaction: _TransactionHelper.Transaction);
         }
         #endregion
 
@@ -1142,7 +1605,7 @@ namespace VirtualRadar.Database.BaseStation
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = _SessionsTable.GetAllRecords(_Connection, _TransactionHelper.Transaction, _DatabaseLog);
+                if(_Connection != null) result = Sessions_GetAll();
                 else                    result = new BaseStationSession[] {};
             }
 
@@ -1163,7 +1626,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    session.SessionID = _SessionsTable.Insert(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
+                    Sessions_Insert(session);
                 }
             }
         }
@@ -1182,7 +1645,7 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _SessionsTable.Update(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
+                    Sessions_Update(session);
                 }
             }
         }
@@ -1198,9 +1661,40 @@ namespace VirtualRadar.Database.BaseStation
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _SessionsTable.Delete(_Connection, _TransactionHelper.Transaction, _DatabaseLog, session);
+                    Sessions_Delete(session);
                 }
             }
+        }
+
+        private void Sessions_Delete(BaseStationSession session)
+        {
+            _Connection.Execute("DELETE FROM [Sessions] WHERE [SessionID] = @sessionID", new {
+                @sessionID = session.SessionID,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private List<BaseStationSession> Sessions_GetAll()
+        {
+            return _Connection.Query<BaseStationSession>("SELECT * FROM [Sessions]", transaction: _TransactionHelper.Transaction).ToList();
+        }
+
+        private void Sessions_Insert(BaseStationSession session)
+        {
+            session.SessionID = (int)_Connection.ExecuteScalar<long>(Commands.Sessions_Insert, new {
+                @locationID = session.LocationID,
+                @startTime  = session.StartTime,
+                @endTime    = session.EndTime,
+            }, transaction: _TransactionHelper.Transaction);
+        }
+
+        private void Sessions_Update(BaseStationSession session)
+        {
+            _Connection.Execute(Commands.Sessions_Update, new {
+                @locationID = session.LocationID,
+                @startTime  = session.StartTime,
+                @endTime    = session.EndTime,
+                @sessionID  = session.SessionID,
+            }, transaction: _TransactionHelper.Transaction);
         }
         #endregion
 

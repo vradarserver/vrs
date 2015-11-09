@@ -1,0 +1,37 @@
+﻿-- Note that not all columns are update, just the ones that VRS cares about
+UPDATE [Aircraft]
+   SET [AircraftClass]      = @aircraftClass
+      ,[CofACategory]       = @cofACategory
+      ,[CofAExpiry]         = @cofAExpiry
+      ,[Country]            = @country
+      ,[CurrentRegDate]     = @currentRegDate
+      ,[DeRegDate]          = @deRegDate
+      ,[Engines]            = @engines
+      ,[FirstCreated]       = @firstCreated
+      ,[FirstRegDate]       = @firstRegDate
+      ,[GenericName]        = @genericName
+      ,[ICAOTypeCode]       = @iCAOTypeCode
+      ,[InfoUrl]            = @infoUrl
+      ,[Interested]         = @interested
+      ,[LastModified]       = @lastModified
+      ,[Manufacturer]       = @manufacturer
+      ,[ModeS]              = @modeS
+      ,[ModeSCountry]       = @modeSCountry
+      ,[MTOW]               = @mtow
+      ,[OperatorFlagCode]   = @operatorFlagCode
+      ,[OwnershipStatus]    = @ownershipStatus
+      ,[PictureUrl1]        = @pictureUrl1
+      ,[PictureUrl2]        = @pictureUrl2
+      ,[PictureUrl3]        = @pictureUrl3
+      ,[PopularName]        = @popularName
+      ,[PreviousID]         = @previousID
+      ,[RegisteredOwners]   = @registeredOwners
+      ,[Registration]       = @registration
+      ,[SerialNo]           = @serialNo
+      ,[Status]             = @status
+      ,[TotalHours]         = @totalHours
+      ,[Type]               = @type
+      ,[UserNotes]          = @userNotes
+      ,[UserTag]            = @userTag
+      ,[YearBuilt]          = @yearBuilt
+ WHERE [AircraftID]         = @aircraftID;
