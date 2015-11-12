@@ -89,6 +89,11 @@ namespace VirtualRadar.Interface.View
         /// show their aircraft from FSX.
         /// </summary>
         event EventHandler FlightSimulatorXOnlyClicked;
+
+        /// <summary>
+        /// Raised when the user wants to open a browser on a URL.
+        /// </summary>
+        event EventHandler<EventArgs<string>> OpenUrlClicked;
         #endregion
 
         #region Methods
@@ -104,6 +109,17 @@ namespace VirtualRadar.Interface.View
         /// <param name="message"></param>
         /// <param name="title"></param>
         void ShowTestConnectionResults(string message, string title);
+
+        /// <summary>
+        /// Displays the current server-side settings for the aircraft online lookup data supplier.
+        /// </summary>
+        /// <param name="dataSupplier"></param>
+        /// <param name="supplierCredits"></param>
+        /// <param name="supplierUrl"></param>
+        /// <remnarks>
+        /// This is usually called from a background thread.
+        /// </remnarks>
+        void ShowAircraftDataLookupSettings(string dataSupplier, string supplierCredits, string supplierUrl);
         #endregion
     }
 }

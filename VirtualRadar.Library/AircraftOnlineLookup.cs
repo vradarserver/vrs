@@ -145,6 +145,17 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public void InitialiseProvider()
+        {
+            Initialise();
+            if(Provider != null) {
+                Provider.InitialiseSupplierDetails();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="icao"></param>
         public void Lookup(string icao)
         {

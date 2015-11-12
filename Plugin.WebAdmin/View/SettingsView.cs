@@ -85,6 +85,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public event EventHandler UseRecommendedRawDecodingSettingsClicked;
 
         public event EventHandler FlightSimulatorXOnlyClicked;
+
+        public event EventHandler<EventArgs<string>> OpenUrlClicked;
         #pragma warning restore
         #endregion
 
@@ -157,6 +159,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View
                     result.RecordId = receiver.UniqueId.ToString();
                 }
             }
+        }
+
+        public void ShowAircraftDataLookupSettings(string dataSupplier, string supplierCredits, string supplierUrl)
+        {
         }
         #endregion
 

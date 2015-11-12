@@ -2537,4 +2537,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="SplashScreenStartingOnlineLookupManager" xml:space="preserve">
     <value>Initialising online lookup manager</value>
   </data>
+  <data name="DataProvider" xml:space="preserve">
+    <value>Data provider</value>
+  </data>
+  <data name="AircraftDetailsOnlineLookup" xml:space="preserve">
+    <value>Aircraft details online lookup</value>
+  </data>
+  <data name="WebSiteUrl" xml:space="preserve">
+    <value>Web site URL</value>
+  </data>
 </root>

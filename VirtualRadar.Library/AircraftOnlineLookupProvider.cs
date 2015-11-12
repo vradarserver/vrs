@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using InterfaceFactory;
 using Newtonsoft.Json;
 using VirtualRadar.Interface;
 
@@ -26,6 +27,24 @@ namespace VirtualRadar.Library
     class AircraftOnlineLookupProvider : IAircraftOnlineLookupProvider
     {
         /// <summary>
+        /// The JSON object that carries the settings returned by the server.
+        /// </summary>
+        class ServerSettings
+        {
+            public string DataSupplier { get; set; }
+
+            public string SupplierCredits { get; set; }
+
+            public string SupplierUrl { get; set; }
+
+            public int MinSeconds { get; set; }
+
+            public int MaxSeconds { get; set; }
+
+            public int MaxBatchSize { get; set; }
+        }
+
+        /// <summary>
         /// The URL to fetch details from. This has to be called with a post whose body contains a single field called
         /// icaos, which is a hyphen-separated string of ICAOs. This replies with a JSON file containing all of the aircraft
         /// that could be found. We need to infer the missing ICAOs ourselves.
@@ -33,19 +52,57 @@ namespace VirtualRadar.Library
         private static readonly string ServiceUrl = "http://sdm.virtualradarserver.co.uk/Aircraft/GetAircraftByIcaos";
 
         /// <summary>
-        /// See interface docs.
+        /// The URL to fetch lookup settings from. This returns a single JSON object as outlined in <see cref="ServerSettings"/>.
         /// </summary>
-        public int MaxBatchSize { get { return 1000; } }
+        private static readonly string SettingsUrl = "http://sdm.virtualradarserver.co.uk/Aircraft/GetAircraftLookupSettings";
+
+        /// <summary>
+        /// The server settings last fetched by the provider.
+        /// </summary>
+        private ServerSettings _ServerSettings;
+
+        /// <summary>
+        /// The date and time the server settings were last fetched by the provider.
+        /// </summary>
+        private DateTime _ServerSettingsFetchedUtc;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int MinSecondsBetweenRequests { get { return 5; } }
+        public int MaxBatchSize { get { return _ServerSettings == null ? 10 : _ServerSettings.MaxBatchSize; } }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int MaxSecondsAfterFailedRequest { get { return 30; } }
+        public int MinSecondsBetweenRequests { get { return _ServerSettings == null ? 1 : _ServerSettings.MinSeconds; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int MaxSecondsAfterFailedRequest { get { return _ServerSettings == null ? 30 : _ServerSettings.MaxSeconds; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string DataSupplier { get { return _ServerSettings == null ? null : _ServerSettings.DataSupplier; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string SupplierCredits { get { return _ServerSettings == null ? null : _ServerSettings.SupplierCredits; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string SupplierWebSiteUrl { get { return _ServerSettings == null ? null : _ServerSettings.SupplierUrl; } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void InitialiseSupplierDetails()
+        {
+            FetchSettings();
+        }
 
         /// <summary>
         /// See interface docs.
@@ -56,6 +113,8 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public bool DoLookup(string[] icaos, IList<AircraftOnlineLookupDetail> fetchedAircraft, IList<string> missingIcaos)
         {
+            FetchSettings();
+
             var formContent = String.Format("icaos={0}", HttpUtility.UrlEncode(String.Join("-", icaos)));
             var formBytes = Encoding.UTF8.GetBytes(formContent);
 
@@ -83,6 +142,26 @@ namespace VirtualRadar.Library
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Fetches the settings from the server. These are fetched once on startup and then once every hour.
+        /// </summary>
+        private void FetchSettings()
+        {
+            if(_ServerSettings == null || _ServerSettingsFetchedUtc.AddHours(1) <= DateTime.UtcNow) {
+                var request = (HttpWebRequest)HttpWebRequest.Create(SettingsUrl);
+                request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+
+                using(var response = request.GetResponse()) {
+                    using(var streamReader = new StreamReader(response.GetResponseStream())) {
+                        var jsonText = streamReader.ReadToEnd();
+                        var settings = JsonConvert.DeserializeObject<ServerSettings>(jsonText);
+                        _ServerSettings = settings;
+                        _ServerSettingsFetchedUtc = DateTime.UtcNow;
+                    }
+                }
+            }
         }
     }
 }

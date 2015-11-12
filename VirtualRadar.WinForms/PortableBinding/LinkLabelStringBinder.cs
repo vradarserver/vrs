@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,48 +10,50 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Windows.Forms;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.WinForms.PortableBinding
 {
     /// <summary>
-    /// The interface for an object that can batch up lookups of aircraft details from an online source.
+    /// Binds a link label to a string property.
     /// </summary>
-    /// <remarks><para>
-    /// Implementations are expected to batch up ICAOs and send them off to an online source for lookup. Once the
-    /// online source replies they raise <see cref="AircraftFetched"/> with the results.
-    /// </para><para>
-    /// Implementations must honour the lookup aircraft details setting
-    /// (<see cref="VirtualRadar.Interface.Settings.BaseStationSettings"/>.LookupAircraftDetailsOnline).
-    /// </para></remarks>
-    public interface IAircraftOnlineLookup : ISingleton<IAircraftOnlineLookup>
+    public class LinkLabelStringBinder<TModel> : ValueBinder<TModel, Label, string>
+        where TModel: class, INotifyPropertyChanged
     {
         /// <summary>
-        /// Gets or sets the provider that will perform lookups for us.
+        /// Creates a new object.
         /// </summary>
-        IAircraftOnlineLookupProvider Provider { get; set; }
+        /// <param name="model"></param>
+        /// <param name="control"></param>
+        /// <param name="getModelValue"></param>
+        /// <param name="setModelValue"></param>
+        public LinkLabelStringBinder(TModel model, LinkLabel control, Expression<Func<TModel, string>> getModelValue, Action<TModel, string> setModelValue)
+            : base(model, control, getModelValue, setModelValue,
+                r => (r.Text ?? "").Trim(),
+                (ctrl, val) => ctrl.Text = (val ?? "").Trim())
+        {
+        }
 
         /// <summary>
-        /// Raised when the online source replies with the results of a lookup.
+        /// See base docs.
         /// </summary>
-        event EventHandler<AircraftOnlineLookupEventArgs> AircraftFetched;
+        /// <param name="eventHandler"></param>
+        protected override void DoHookControlPropertyChanged(EventHandler eventHandler)
+        {
+            Control.TextChanged += eventHandler;
+        }
 
         /// <summary>
-        /// Initialises the provider if it has not already been initialised.
+        /// See base docs.
         /// </summary>
-        void InitialiseProvider();
-
-        /// <summary>
-        /// Adds the lookup of the requested ICAO to the next batch to be sent.
-        /// </summary>
-        /// <param name="icao"></param>
-        void Lookup(string icao);
-
-        /// <summary>
-        /// Adds the lookup of multiple ICAOs to the next batch to be sent.
-        /// </summary>
-        /// <param name="icaos"></param>
-        void LookupMany(IEnumerable<string> icaos);
+        /// <param name="eventHandler"></param>
+        protected override void DoUnhookControlPropertyChanged(EventHandler eventHandler)
+        {
+            Control.TextChanged -= eventHandler;
+        }
     }
 }

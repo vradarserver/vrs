@@ -96,6 +96,11 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxSearchPictureSubFolders,      r => r.SearchPictureSubFolders,     (r,v) => r.SearchPictureSubFolders = v));
             AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxLookupAircraftDetailsOnline,  r => r.LookupAircraftDetailsOnline, (r,v) => r.LookupAircraftDetailsOnline = v));
+
+            AddControlBinder(new LabelStringBinder<SettingsView>(SettingsView, labelAircraftLookupDataProvider,     r => r.AircraftOnlineLookupDataSupplier,        (r,v) => {;}));
+            AddControlBinder(new LabelStringBinder<SettingsView>(SettingsView, labelAircraftLookupSupplierCredits,  r => r.AircraftOnlineLookupDataSupplierCredits, (r,v) => {;}));
+
+            AddControlBinder(new LinkLabelStringBinder<SettingsView>(SettingsView, linkLabelAircraftLookupSupplierUrl, r => r.AircraftOnlineLookupDataSupplierUrl, (r,v) => {;}));
         }
 
         /// <summary>
@@ -110,6 +115,16 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(folderPictures,                       Strings.PicturesFolder,                 Strings.OptionsDescribeDataSourcesPicturesFolder);
             SetInlineHelp(checkBoxSearchPictureSubFolders,      Strings.SearchPictureSubFolders,        Strings.OptionsDescribeDataSourcesSearchPictureSubFolders);
             SetInlineHelp(checkBoxLookupAircraftDetailsOnline,  Strings.LookupAircraftDetailsOnline,    Strings.OptionsDescribeDataSourcesLookupAircraftDetailsOnline);
+        }
+
+        /// <summary>
+        /// Called when the user clicks the aircraft online supplier URL.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void linkLabelAircraftLookupSupplierUrl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SettingsView.RaiseOpenUrlClicked(new EventArgs<string>(linkLabelAircraftLookupSupplierUrl.Text));
         }
     }
 }
