@@ -42,6 +42,26 @@ namespace VirtualRadar.Interface
         int MaxSecondsAfterFailedRequest { get; }
 
         /// <summary>
+        /// Gets a short name for the supplier of aircraft data being used by the provider.
+        /// </summary>
+        string DataSupplier { get; }
+
+        /// <summary>
+        /// Gets a longer string crediting the supplier of aircraft data being used by the provider.
+        /// </summary>
+        string SupplierCredits { get; }
+
+        /// <summary>
+        /// Gets the URL of the data supplier's web site.
+        /// </summary>
+        string SupplierWebSiteUrl { get; }
+
+        /// <summary>
+        /// Called when the program wants to know the data supplier details.
+        /// </summary>
+        void InitialiseSupplierDetails();
+
+        /// <summary>
         /// Periodically called to fetch aircraft details from the online service.
         /// </summary>
         /// <param name="icaos">A collection of ICAOs to fetch.</param>

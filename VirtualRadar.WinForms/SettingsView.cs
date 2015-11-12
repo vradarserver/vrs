@@ -229,6 +229,36 @@ namespace VirtualRadar.WinForms
         {
             get { return _CombinedFeed; }
         }
+
+        private string _AircraftOnlineLookupDataSupplier;
+        /// <summary>
+        /// Gets or sets the name of the aircraft online lookup data supplier.
+        /// </summary>
+        public string AircraftOnlineLookupDataSupplier
+        {
+            get { return _AircraftOnlineLookupDataSupplier; }
+            set { SetField(ref _AircraftOnlineLookupDataSupplier, value, () => AircraftOnlineLookupDataSupplier); }
+        }
+
+        private string _AircraftOnlineLookupDataSupplierCredits;
+        /// <summary>
+        /// Gets the credits for the online lookup data supplier.
+        /// </summary>
+        public string AircraftOnlineLookupDataSupplierCredits
+        {
+            get { return _AircraftOnlineLookupDataSupplierCredits; }
+            set { SetField(ref _AircraftOnlineLookupDataSupplierCredits, value, () => AircraftOnlineLookupDataSupplierCredits); }
+        }
+
+        private string _AircraftOnlineLookupDataSupplierUrl;
+        /// <summary>
+        /// Gets or sets the URL to the aircraft online lookup data supplier's web site.
+        /// </summary>
+        public string AircraftOnlineLookupDataSupplierUrl
+        {
+            get { return _AircraftOnlineLookupDataSupplierUrl; }
+            set { SetField(ref _AircraftOnlineLookupDataSupplierUrl, value, () => AircraftOnlineLookupDataSupplierUrl); }
+        }
         #endregion
 
         #region Events
@@ -364,6 +394,22 @@ namespace VirtualRadar.WinForms
         {
             EventHelper.Raise(FlightSimulatorXOnlyClicked, this, args);
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler<EventArgs<string>> OpenUrlClicked;
+
+        /// <summary>
+        /// Raises <see cref="OpenUrlClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        public void RaiseOpenUrlClicked(EventArgs<string> args)
+        {
+            if(!String.IsNullOrEmpty(args.Value)) {
+                EventHelper.Raise(OpenUrlClicked, this, args);
+            }
+        }
         #endregion
 
         #region Ctors
@@ -380,6 +426,8 @@ namespace VirtualRadar.WinForms
 
             _TreeViewSorter = new TreeViewSorter(this);
             treeViewPagePicker.TreeViewNodeSorter = _TreeViewSorter;
+
+            AircraftOnlineLookupDataSupplier = Strings.Unknown;
         }
         #endregion
 
@@ -839,6 +887,23 @@ namespace VirtualRadar.WinForms
         public void ShowTestConnectionResults(string message, string title)
         {
             MessageBox.Show(message, title);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="dataProvider"></param>
+        /// <param name="supplierCredits"></param>
+        /// <param name="supplierUrl"></param>
+        public void ShowAircraftDataLookupSettings(string dataProvider, string supplierCredits, string supplierUrl)
+        {
+            if(InvokeRequired) {
+                BeginInvoke(new MethodInvoker(() => ShowAircraftDataLookupSettings(dataProvider, supplierCredits, supplierUrl)));
+            } else {
+                AircraftOnlineLookupDataSupplier = dataProvider;
+                AircraftOnlineLookupDataSupplierCredits = supplierCredits;
+                AircraftOnlineLookupDataSupplierUrl = supplierUrl;
+            }
         }
         #endregion
 

@@ -37,6 +37,13 @@
             this.folderSilhouettes = new VirtualRadar.WinForms.Controls.FolderControl();
             this.label2 = new System.Windows.Forms.Label();
             this.checkBoxLookupAircraftDetailsOnline = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.labelAircraftLookupSupplierCredits = new System.Windows.Forms.Label();
+            this.linkLabelAircraftLookupSupplierUrl = new System.Windows.Forms.LinkLabel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.labelAircraftLookupDataProvider = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // checkBoxSearchPictureSubFolders
@@ -124,17 +131,85 @@
             // checkBoxLookupAircraftDetailsOnline
             // 
             this.checkBoxLookupAircraftDetailsOnline.AutoSize = true;
-            this.checkBoxLookupAircraftDetailsOnline.Location = new System.Drawing.Point(200, 128);
+            this.checkBoxLookupAircraftDetailsOnline.Location = new System.Drawing.Point(200, 19);
             this.checkBoxLookupAircraftDetailsOnline.Name = "checkBoxLookupAircraftDetailsOnline";
             this.checkBoxLookupAircraftDetailsOnline.Size = new System.Drawing.Size(169, 17);
             this.checkBoxLookupAircraftDetailsOnline.TabIndex = 18;
             this.checkBoxLookupAircraftDetailsOnline.Text = "::LookupAircraftDetailsOnline::";
             this.checkBoxLookupAircraftDetailsOnline.UseVisualStyleBackColor = true;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.labelAircraftLookupSupplierCredits);
+            this.groupBox1.Controls.Add(this.linkLabelAircraftLookupSupplierUrl);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.labelAircraftLookupDataProvider);
+            this.groupBox1.Controls.Add(this.checkBoxLookupAircraftDetailsOnline);
+            this.groupBox1.Location = new System.Drawing.Point(0, 128);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(705, 115);
+            this.groupBox1.TabIndex = 19;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "::AircraftDetailsOnlineLookup::";
+            // 
+            // labelAircraftLookupSupplierCredits
+            // 
+            this.labelAircraftLookupSupplierCredits.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelAircraftLookupSupplierCredits.Location = new System.Drawing.Point(197, 80);
+            this.labelAircraftLookupSupplierCredits.Margin = new System.Windows.Forms.Padding(3);
+            this.labelAircraftLookupSupplierCredits.Name = "labelAircraftLookupSupplierCredits";
+            this.labelAircraftLookupSupplierCredits.Size = new System.Drawing.Size(502, 32);
+            this.labelAircraftLookupSupplierCredits.TabIndex = 22;
+            this.labelAircraftLookupSupplierCredits.Text = "Line1\r\nLine2";
+            // 
+            // linkLabelAircraftLookupSupplierUrl
+            // 
+            this.linkLabelAircraftLookupSupplierUrl.AutoSize = true;
+            this.linkLabelAircraftLookupSupplierUrl.Location = new System.Drawing.Point(197, 61);
+            this.linkLabelAircraftLookupSupplierUrl.Margin = new System.Windows.Forms.Padding(3);
+            this.linkLabelAircraftLookupSupplierUrl.Name = "linkLabelAircraftLookupSupplierUrl";
+            this.linkLabelAircraftLookupSupplierUrl.Size = new System.Drawing.Size(19, 13);
+            this.linkLabelAircraftLookupSupplierUrl.TabIndex = 21;
+            this.linkLabelAircraftLookupSupplierUrl.TabStop = true;
+            this.linkLabelAircraftLookupSupplierUrl.Text = "<>";
+            this.linkLabelAircraftLookupSupplierUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelAircraftLookupSupplierUrl_LinkClicked);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 42);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(84, 13);
+            this.label6.TabIndex = 20;
+            this.label6.Text = "::DataProvider:::";
+            // 
+            // labelAircraftLookupDataProvider
+            // 
+            this.labelAircraftLookupDataProvider.AutoSize = true;
+            this.labelAircraftLookupDataProvider.Location = new System.Drawing.Point(197, 42);
+            this.labelAircraftLookupDataProvider.Margin = new System.Windows.Forms.Padding(3);
+            this.labelAircraftLookupDataProvider.Name = "labelAircraftLookupDataProvider";
+            this.labelAircraftLookupDataProvider.Size = new System.Drawing.Size(65, 13);
+            this.labelAircraftLookupDataProvider.TabIndex = 19;
+            this.labelAircraftLookupDataProvider.Text = "::Unknown::";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 61);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(76, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "::WebSiteUrl:::";
+            // 
             // PageDataSources
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.checkBoxLookupAircraftDetailsOnline);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBoxSearchPictureSubFolders);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.folderFlags);
@@ -145,7 +220,9 @@
             this.Controls.Add(this.folderSilhouettes);
             this.Controls.Add(this.label2);
             this.Name = "PageDataSources";
-            this.Size = new System.Drawing.Size(705, 155);
+            this.Size = new System.Drawing.Size(705, 249);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -163,5 +240,11 @@
         private Controls.FolderControl folderSilhouettes;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox checkBoxLookupAircraftDetailsOnline;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label labelAircraftLookupDataProvider;
+        private System.Windows.Forms.LinkLabel linkLabelAircraftLookupSupplierUrl;
+        private System.Windows.Forms.Label labelAircraftLookupSupplierCredits;
+        private System.Windows.Forms.Label label5;
     }
 }

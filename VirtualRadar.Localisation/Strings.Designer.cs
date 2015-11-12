@@ -331,6 +331,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aircraft details online lookup.
+        /// </summary>
+        public static string AircraftDetailsOnlineLookup {
+            get {
+                return ResourceManager.GetString("AircraftDetailsOnlineLookup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aircraft List (JSON).
         /// </summary>
         public static string AircraftListJson {
@@ -1148,6 +1157,15 @@ namespace VirtualRadar.Localisation {
         public static string DataFeedStatus {
             get {
                 return ResourceManager.GetString("DataFeedStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data provider.
+        /// </summary>
+        public static string DataProvider {
+            get {
+                return ResourceManager.GetString("DataProvider", resourceCulture);
             }
         }
         
@@ -6807,6 +6825,15 @@ namespace VirtualRadar.Localisation {
         public static string WebSiteReceiverRequired {
             get {
                 return ResourceManager.GetString("WebSiteReceiverRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web site URL.
+        /// </summary>
+        public static string WebSiteUrl {
+            get {
+                return ResourceManager.GetString("WebSiteUrl", resourceCulture);
             }
         }
         

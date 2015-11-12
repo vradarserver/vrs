@@ -26,6 +26,8 @@ using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using System.ComponentModel;
 using VirtualRadar.Interface.WebServer;
+using System.Threading;
+using System.Diagnostics;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -248,6 +250,7 @@ namespace VirtualRadar.Library.Presenter
             _View.UpdateReceiverLocationsFromBaseStationDatabaseClicked += View_UpdateReceiverLocationsFromBaseStationDatabaseClicked;
             _View.UseIcaoRawDecodingSettingsClicked += View_UseIcaoRawDecodingSettingsClicked;
             _View.UseRecommendedRawDecodingSettingsClicked += View_UseRecommendedRawDecodingSettingsClicked;
+            _View.OpenUrlClicked += View_OpenUrlClicked;
 
             var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
             var config = configStorage.Load();
@@ -266,6 +269,8 @@ namespace VirtualRadar.Library.Presenter
             _View.Users.ListChanged += Users_ListChanged;
 
             CopyConfigurationToView(config);
+
+            ThreadPool.QueueUserWorkItem(FetchAircraftOnlineLookupDetails);
         }
 
         /// <summary>
@@ -284,6 +289,33 @@ namespace VirtualRadar.Library.Presenter
                 _View.Users.AddRange(allUsers);
             } finally {
                 _ValueChangedValidationDisabled = disableValidation;
+            }
+        }
+
+        /// <summary>
+        /// Fetches online lookup details on a background thread.
+        /// </summary>
+        /// <param name="state"></param>
+        private void FetchAircraftOnlineLookupDetails(object state)
+        {
+            try {
+                try {
+                    var lookup = Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton;
+                    lookup.InitialiseProvider();
+                    if(lookup.Provider != null) {
+                        _View.ShowAircraftDataLookupSettings(
+                            lookup.Provider.DataSupplier,
+                            lookup.Provider.SupplierCredits,
+                            lookup.Provider.SupplierWebSiteUrl
+                        );
+                    }
+                } catch(ThreadAbortException) {
+                } catch(Exception ex) {
+                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    log.WriteLine("Caught exception while fetching online lookup provider details: {0}", ex);
+                }
+            } catch {
+                // Do not let exceptions bubble out of this method
             }
         }
         #endregion
@@ -1696,6 +1728,16 @@ namespace VirtualRadar.Library.Presenter
         private void View_UseRecommendedRawDecodingSettingsClicked(object sender, EventArgs args)
         {
             UseRecommendedRawDecodingSettings();
+        }
+
+        /// <summary>
+        /// Raised when the user wants to open a URL.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void View_OpenUrlClicked(object sender, EventArgs<string> args)
+        {
+            Process.Start(args.Value);
         }
         #endregion
 

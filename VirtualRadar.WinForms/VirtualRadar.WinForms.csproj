@@ -255,6 +255,7 @@
     <Compile Include="PortableBinding\FolderStringBinder.cs" />
     <Compile Include="PortableBinding\ItemDescription.cs" />
     <Compile Include="PortableBinding\ItemDescriptionList.cs" />
+    <Compile Include="PortableBinding\LinkLabelStringBinder.cs" />
     <Compile Include="PortableBinding\LabelStringBinder.cs" />
     <Compile Include="PortableBinding\MapValuesBinder.cs" />
     <Compile Include="PortableBinding\MasterListToListBinder.cs" />
