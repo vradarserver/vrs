@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @license Copyright © 2015 onwards, Andrew Whewell
  * All rights reserved.
  *
@@ -9,134 +9,139 @@
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @fileoverview The JavaScript for the DatabaseEditor index page.
- */
-
-(function(VRS, $, undefined)
-{
-    VRS.DatabaseEditorIndexPageHandler = function(translations)
-    {
-        // DOM elements
-        var _CriteriaPanel = $('#criteria-panel');
-        var _RecordPanel = $('#record-panel');
-        var _SearchButton = $('#search');
-        var _SearchError = $('#search-error');
-        var _SaveButton = $('#save');
-        var _SaveError = $('#save-error');
-        var _SaveSuccess = $('#save-success');
-
-        // Models
-        var _SearchModel = new VRS.DatabaseEditorSearchModel();
-        var _RecordModel;
-
-        // Model mapping
-        var _RecordModelMapping = {
-            'ICAOTypeCode': { create: function(options) { return ko.observable(options.data).extend({ uppercase: true }); } },
-            'OperatorIcao': { create: function(options) { return ko.observable(options.data).extend({ uppercase: true }); } },
-            'Registration': { create: function(options) { return ko.observable(options.data).extend({ uppercase: true }); } }
-        };
-
-        /**
-         * Initialises the page.
-         */
-        this.initialise = function() {
-            _RecordPanel.hide();
-            _SearchError.hide();
-            _SaveSuccess.hide();
-
-            $('input').on('input change', function() { _SaveSuccess.hide(); });
-            $('textarea').on('input propertychange', function() { _SaveSuccess.hide(); });
-
-            _SearchButton.on('click', SearchButton_Clicked);
-            _SaveButton.on('click', SaveButton_Clicked);
-
-            ko.applyBindings(_SearchModel, _CriteriaPanel[0]);
-
-            var pageUrl = $.url();
-            _SearchModel.icao(pageUrl.param('icao') || '');
-            if(_SearchModel.icao().length == 6) {
-                SearchButton_Clicked();
+/// <reference path="../script-DatabaseEditor/typings/jquery/jquery.d.ts" />
+/// <reference path="../script-DatabaseEditor/typings/knockout/knockout.d.ts" />
+/// <reference path="../script-DatabaseEditor/typings/knockout.mapping/knockout.mapping.d.ts" />
+/// <reference path="../script-DatabaseEditor/typings/purl/purl-jquery.d.ts" />
+/// <reference path="../script-DatabaseEditor/typings/vrs/string.d.ts" />
+/// <reference path="../script-DatabaseEditor/typings/vrs/utility.d.ts" />
+var DatabaseEditor;
+(function (DatabaseEditor) {
+    var Index;
+    (function (Index) {
+        var Translations = (function () {
+            function Translations() {
             }
-        };
-
-        /**
-         * Called when the search button is clicked.
-         */
-        function SearchButton_Clicked()
-        {
-            _SearchError.hide();
-            _RecordPanel.hide();
-            _SaveError.hide();
-            _SaveSuccess.hide();
-
-            VRS.pageHelper.showModalWaitAnimation(true);
-
-            $.ajax({
-                url: 'SingleAircraftSearch.json',
-                cache: false,
-                complete: function() {
-                    VRS.pageHelper.showModalWaitAnimation(false);
-                },
-                data: {
-                    icao: _SearchModel.icao()
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    _SearchError.text(VRS.stringUtility.format(translations.xhrFailedFormat, errorThrown));
-                    _SearchError.show();
-                },
-                success: function(data) {
-                    if(data.Exception !== null) {
-                        _SearchError.text(VRS.stringUtility.format(translations.serverReportedExceptionFormat, data.Exception));
-                        _SearchError.show();
-                    } else if(data.Aircraft === null) {
-                        _SearchError.text(translations.noDatabaseRecord);
-                        _SearchError.show();
-                    } else {
-                        if(_RecordModel) {
-                            ko.mapping.fromJS(data.Aircraft, _RecordModelMapping, _RecordModel);
-                        } else {
-                            _RecordModel = ko.mapping.fromJS(data.Aircraft, _RecordModelMapping);
-                            ko.applyBindings(_RecordModel, _RecordPanel[0]);
+            return Translations;
+        })();
+        Index.Translations = Translations;
+        var PageHandler = (function () {
+            function PageHandler(translations) {
+                this._CriteriaPanel = $('#criteria-panel');
+                this._RecordPanel = $('#record-panel');
+                this._SearchButton = $('#search');
+                this._SearchError = $('#search-error');
+                this._SaveButton = $('#save');
+                this._SaveError = $('#save-error');
+                this._SaveSuccess = $('#save-success');
+                this._SearchModel = new SearchModel();
+                var self = this;
+                this._Translations = translations;
+                this._RecordPanel.hide();
+                this._SearchError.hide();
+                this._SaveSuccess.hide();
+                $('input').on('input change', function () { self._SaveSuccess.hide(); });
+                $('textarea').on('input propertychange', function () { self._SaveSuccess.hide(); });
+                this._SearchButton.on('click', function () { self.SearchButton_Clicked(); });
+                this._SaveButton.on('click', function () { self.SaveButton_Clicked(); });
+                ko.applyBindings(this._SearchModel, this._CriteriaPanel[0]);
+                var pageUrl = $.url();
+                this._SearchModel.icao(pageUrl.param('icao') || '');
+                if (this._SearchModel.icao().length == 6) {
+                    this.SearchButton_Clicked();
+                }
+            }
+            PageHandler.prototype.SearchButton_Clicked = function () {
+                var self = this;
+                this._SearchError.hide();
+                this._RecordPanel.hide();
+                this._SaveError.hide();
+                this._SaveSuccess.hide();
+                VRS.pageHelper.showModalWaitAnimation(true);
+                $.ajax({
+                    url: 'SingleAircraftSearch.json',
+                    cache: false,
+                    complete: function () {
+                        VRS.pageHelper.showModalWaitAnimation(false);
+                    },
+                    data: {
+                        icao: this._SearchModel.icao()
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        self._SearchError.text(VRS.stringUtility.format(self._Translations.xhrFailedFormat, errorThrown));
+                        self._SearchError.show();
+                    },
+                    success: function (data) {
+                        if (data.Exception !== null) {
+                            self._SearchError.text(VRS.stringUtility.format(self._Translations.serverReportedExceptionFormat, data.Exception));
+                            self._SearchError.show();
                         }
-                        _RecordPanel.show();
+                        else if (data.Aircraft === null) {
+                            self._SearchError.text(self._Translations.noDatabaseRecord);
+                            self._SearchError.show();
+                        }
+                        else {
+                            if (self._RecordModel) {
+                                ko.mapping.fromJS(data.Aircraft, RecordModel.mapping, self._RecordModel);
+                            }
+                            else {
+                                self._RecordModel = ko.mapping.fromJS(data.Aircraft, RecordModel.mapping);
+                                ko.applyBindings(self._RecordModel, self._RecordPanel[0]);
+                            }
+                            self._RecordPanel.show();
+                        }
                     }
-                }
-            });
-        }
-
-        /**
-         * Called when the save button is clicked.
-         */
-        function SaveButton_Clicked()
-        {
-            VRS.pageHelper.showModalWaitAnimation(true);
-            var data = ko.mapping.toJS(_RecordModel);
-
-            $.ajax({
-                url: 'SingleAircraftSave.json',
-                cache: false,
-                method: 'POST',
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                complete: function() {
-                    VRS.pageHelper.showModalWaitAnimation(false);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    _SaveError.text(VRS.stringUtility.format(translations.xhrFailedFormat, errorThrown));
-                    _SaveError.show();
-                },
-                success: function(data) {
-                    if(data.Exception !== null) {
-                        _SaveError.text(VRS.stringUtility.format(translations.serverReportedExceptionFormat, data.Exception));
-                        _SaveError.show();
-                    } else {
-                        ko.mapping.fromJS(data.Aircraft, _RecordModelMapping, _RecordModel);
-                        _SaveSuccess.show();
-                        _SaveError.hide();
+                });
+            };
+            PageHandler.prototype.SaveButton_Clicked = function () {
+                var self = this;
+                VRS.pageHelper.showModalWaitAnimation(true);
+                var data = ko.mapping.toJS(this._RecordModel);
+                $.ajax({
+                    url: 'SingleAircraftSave.json',
+                    cache: false,
+                    method: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    complete: function () {
+                        VRS.pageHelper.showModalWaitAnimation(false);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        self._SaveError.text(VRS.stringUtility.format(self._Translations.xhrFailedFormat, errorThrown));
+                        self._SaveError.show();
+                    },
+                    success: function (data) {
+                        if (data.Exception !== null) {
+                            self._SaveError.text(VRS.stringUtility.format(self._Translations.serverReportedExceptionFormat, data.Exception));
+                            self._SaveError.show();
+                        }
+                        else {
+                            ko.mapping.fromJS(data.Aircraft, RecordModel.mapping, self._RecordModel);
+                            self._SaveSuccess.show();
+                            self._SaveError.hide();
+                        }
                     }
-                }
-            });
-        }
-    };
-}(window.VRS = window.VRS || {}, jQuery));
+                });
+            };
+            return PageHandler;
+        })();
+        Index.PageHandler = PageHandler;
+        var SearchModel = (function () {
+            function SearchModel() {
+                this.icao = ko.observable();
+            }
+            return SearchModel;
+        })();
+        var RecordModel = (function () {
+            function RecordModel() {
+            }
+            RecordModel.mapping = {
+                'ICAOTypeCode': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } },
+                'OperatorIcao': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } },
+                'Registration': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } }
+            };
+            return RecordModel;
+        })();
+    })(Index = DatabaseEditor.Index || (DatabaseEditor.Index = {}));
+})(DatabaseEditor || (DatabaseEditor = {}));
+//# sourceMappingURL=index.js.map
