@@ -37,6 +37,7 @@
         <script src="../script/vrs/utility.js" type="text/javascript"></script>
 
         <!-- Database Editor modules -->
+        <script src="utility.js" type="text/javascript"></script>
         <script src="index.js" type="text/javascript"></script>
 
         <!-- [[ BUNDLE END ]] -->
@@ -47,83 +48,105 @@
                 ::PluginName::
             </h1>
 
-            <div id="criteria-panel" class="panel panel-default">
+            <div id="criteria-panel" class="panel panel-default" data-site-form-options='{ "labelWidth": "col-sm-3", "fieldWidth": "col-sm-9" }'>
                 <div class="panel-body">
-                    <form id="criteria-form">
+                    <div class="form-horizontal">
                         <div class="form-group">
                             <label for="icao">::ICAO::</label>
                             <input  id="icao" data-bind="textInput: icao" type="text" class="form-control" placeholder="::ICAO::" />
                         </div>
-                        <div class="links">
-                            <a href="http://www.airframes.org/" target="airframes_org">http://www.airframes.org/</a>
+                        <div class="row">
+                            <div class="links col-sm-offset-3 col-sm-9">
+                                <a href="http://www.airframes.org/" target="airframes_org">http://www.airframes.org/</a>
+                            </div>
                         </div>
-                        <button id="search" type="button" class="btn btn-success">::Search::</button>
-                    </form>
-                    <div id="search-error" class="alert alert-danger text-center" role="alert"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button id="search" type="button" class="btn btn-success">::Search::</button>
+                        </div>
+                        <div class="col-sm-9">
+                            <div id="search-error" class="alert alert-danger text-center" role="alert"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="record-panel">
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" data-site-form-options='{ "labelWidth": "col-sm-3", "fieldWidth": "col-sm-9" }'>
                     <div class="panel-body">
-                        <div class="checkbox">
-                            <label>
-                                <input id="interested" data-bind="checked: Interested" type="checkbox" /> ::Interesting::
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="registration">::Reg::</label>
-                            <input  id="registration" data-bind="textInput: Registration, valueUpdate:'afterkeydown'" type="text" maxlength="20" class="form-control" placeholder="::Reg::" autocorrect="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="modelIcao">::ModelIcao::</label>
-                            <input  id="modelIcao" data-bind="textInput: ICAOTypeCode, valueUpdate:'afterkeydown'" type="text" maxlength="10" class="form-control" placeholder="::ModelIcao::" autocorrect="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="model">::Model::</label>
-                            <input  id="model" data-bind="textInput: Type" type="text" maxlength="40" class="form-control" placeholder="::Model::" autocorrect="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="operatorIcao">::OperatorIcao::</label>
-                            <input  id="operatorIcao" data-bind="textInput: OperatorFlagCode, valueUpdate:'afterkeydown'" type="text" maxlength="20" class="form-control" placeholder="::OperatorIcao::" autocorrect="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="operator">::Operator::</label>
-                            <input  id="operator" data-bind="textInput: RegisteredOwners" type="text" maxlength="100" class="form-control" placeholder="::Operator::" autocorrect="off" />
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="interested" data-bind="checked: Interested" type="checkbox" /> ::Interesting::
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="registration">::Reg::</label>
+                                <input  id="registration" data-bind="textInput: Registration, valueUpdate:'afterkeydown'" type="text" maxlength="20" class="form-control" placeholder="::Reg::" autocorrect="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="modelIcao">::ModelIcao::</label>
+                                <input  id="modelIcao" data-bind="textInput: ICAOTypeCode, valueUpdate:'afterkeydown'" type="text" maxlength="10" class="form-control" placeholder="::ModelIcao::" autocorrect="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="model">::Model::</label>
+                                <input  id="model" data-bind="textInput: Type" type="text" maxlength="40" class="form-control" placeholder="::Model::" autocorrect="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="operatorIcao">::OperatorIcao::</label>
+                                <input  id="operatorIcao" data-bind="textInput: OperatorFlagCode, valueUpdate:'afterkeydown'" type="text" maxlength="20" class="form-control" placeholder="::OperatorIcao::" autocorrect="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="operator">::Operator::</label>
+                                <input  id="operator" data-bind="textInput: RegisteredOwners" type="text" maxlength="100" class="form-control" placeholder="::Operator::" autocorrect="off" />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="panel panel-info">
+                <div class="panel panel-info" data-site-form-options='{ "labelWidth": "col-sm-3", "fieldWidth": "col-sm-9" }'>
                     <div class="panel-body">
-                        <div class="form-group">
-                            <label for="serial">::SerialNumber::</label>
-                            <input  id="serial" data-bind="textInput: SerialNo" type="text" maxlength="30" class="form-control" placeholder="::SerialNumber::" autocorrect="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="manufacturer">::Manufacturer::</label>
-                            <input  id="manufacturer" data-bind="textInput: Manufacturer" type="text" maxlength="60" class="form-control" placeholder="::Manufacturer::" autocorrect="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="year-built">::YearBuilt::</label>
-                            <input  id="year-built" data-bind="textInput: YearBuilt" type="text" maxlength="4" class="form-control" placeholder="::YearBuilt::" autocorrect="off" inputmode="numeric" />
-                        </div>
-                        <div class="form-group">
-                            <label for="tag">::Tag::</label>
-                            <input  id="tag" data-bind="textInput: UserTag" type="text" maxlength="5" class="form-control" placeholder="::Tag::" />
-                        </div>
-                        <div class="form-group">
-                            <label   for="userNotes">::Notes::</label>
-                            <textarea id="userNotes" data-bind="textInput: UserNotes" maxlength="300" class="form-control" placeholder="::Notes::"></textarea>
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="serial">::SerialNumber::</label>
+                                <input  id="serial" data-bind="textInput: SerialNo" type="text" maxlength="30" class="form-control" placeholder="::SerialNumber::" autocorrect="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="manufacturer">::Manufacturer::</label>
+                                <input  id="manufacturer" data-bind="textInput: Manufacturer" type="text" maxlength="60" class="form-control" placeholder="::Manufacturer::" autocorrect="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="year-built">::YearBuilt::</label>
+                                <input  id="year-built" data-bind="textInput: YearBuilt" type="text" maxlength="4" class="form-control" placeholder="::YearBuilt::" autocorrect="off" inputmode="numeric" />
+                            </div>
+                            <div class="form-group">
+                                <label for="tag">::Tag::</label>
+                                <input  id="tag" data-bind="textInput: UserTag" type="text" maxlength="5" class="form-control" placeholder="::Tag::" />
+                            </div>
+                            <div class="form-group">
+                                <label   for="userNotes">::Notes::</label>
+                                <textarea id="userNotes" data-bind="textInput: UserNotes" maxlength="300" class="form-control" placeholder="::Notes::"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <button id="save" type="button" class="btn btn-primary">::Save::</button>
-                        <div id="save-error" class="alert alert-danger text-center"></div>
-                        <div id="save-success" class="alert alert-success text-center">::Saved::</div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <button id="save-bottom" type="button" class="save btn btn-primary">::Save::</button>
+                            </div>
+                            <div class="col-sm-9">
+                                <div id="save-error-bottom" class="save-error result bg-danger"></div>
+                                <div id="save-success-bottom" class="save-success result bg-success">::Saved::</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

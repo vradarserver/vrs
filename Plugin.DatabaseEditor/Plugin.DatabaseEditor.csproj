@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Web\DatabaseEditor\index.ts" />
+    <TypeScriptCompile Include="Web\DatabaseEditor\utility.ts" />
     <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout.mapping\knockout.mapping.d.ts" />
     <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout\knockout.d.ts" />
@@ -150,7 +151,10 @@
     <Content Include="Web\css-DatabaseEditor\database-editor.css" />
     <Content Include="Web\DatabaseEditor\index.html" />
     <Content Include="Web\DatabaseEditor\index.js">
-        <DependentUpon>index.ts</DependentUpon>
+      <DependentUpon>index.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\DatabaseEditor\utility.js">
+      <DependentUpon>utility.ts</DependentUpon>
     </Content>
     <Content Include="Web\script-DatabaseEditor\bootstrap-collapsible-panel.js" />
     <Content Include="Web\script-DatabaseEditor\bootstrap.js" />
@@ -164,7 +168,10 @@
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="Web\DatabaseEditor\index.js.map">
-        <DependentUpon>index.ts</DependentUpon>
+      <DependentUpon>index.ts</DependentUpon>
+    </None>
+    <None Include="Web\DatabaseEditor\utility.js.map">
+      <DependentUpon>utility.ts</DependentUpon>
     </None>
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />

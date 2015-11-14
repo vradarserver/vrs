@@ -9,12 +9,6 @@
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/// <reference path="../script-DatabaseEditor/typings/jquery/jquery.d.ts" />
-/// <reference path="../script-DatabaseEditor/typings/knockout/knockout.d.ts" />
-/// <reference path="../script-DatabaseEditor/typings/knockout.mapping/knockout.mapping.d.ts" />
-/// <reference path="../script-DatabaseEditor/typings/purl/purl-jquery.d.ts" />
-/// <reference path="../script-DatabaseEditor/typings/vrs/string.d.ts" />
-/// <reference path="../script-DatabaseEditor/typings/vrs/utility.d.ts" />
 var DatabaseEditor;
 (function (DatabaseEditor) {
     var Index;
@@ -31,15 +25,16 @@ var DatabaseEditor;
                 this._RecordPanel = $('#record-panel');
                 this._SearchButton = $('#search');
                 this._SearchError = $('#search-error');
-                this._SaveButton = $('#save');
-                this._SaveError = $('#save-error');
-                this._SaveSuccess = $('#save-success');
+                this._SaveButton = $('.save');
+                this._SaveError = $('.save-error');
+                this._SaveSuccess = $('.save-success');
                 this._SearchModel = new SearchModel();
                 var self = this;
                 this._Translations = translations;
                 this._RecordPanel.hide();
                 this._SearchError.hide();
                 this._SaveSuccess.hide();
+                DatabaseEditor.BootstapUtility.formatHorizontalFormInputs($('body'));
                 $('input').on('input change', function () { self._SaveSuccess.hide(); });
                 $('textarea').on('input propertychange', function () { self._SaveSuccess.hide(); });
                 this._SearchButton.on('click', function () { self.SearchButton_Clicked(); });
