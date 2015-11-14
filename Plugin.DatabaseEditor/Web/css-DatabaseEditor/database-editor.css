@@ -19,8 +19,9 @@ body.wait #modalWait {
     margin-bottom: 20px;
 }
 
-#search-error,
-#save-error,
-#save-success {
-    margin-top: 20px;
+.result {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 6px 12px;
+    margin: 0;
 }
