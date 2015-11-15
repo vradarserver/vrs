@@ -50,6 +50,7 @@ namespace VirtualRadar.Interface
             if(handler != null) {
                 var args = buildArgsCallback();
                 var handlerParams = new object[] { sender, args };
+                var exceptions = new List<Exception>();
 
                 var invocationList = handler.GetInvocationList();
                 for(var i = 0;i < invocationList.Length;++i) {
@@ -63,10 +64,23 @@ namespace VirtualRadar.Interface
                             if(exceptionCallback != null) {
                                 exceptionCallback(ex);
                             }
-                        } catch {
+                        } catch(Exception unhandled) {
+                            exceptions.Add(unhandled);
                             ; // Don't let exceptions in the callback stop the event handlers being called
                         }
                     }
+                }
+
+                if(exceptions.Count > 0) {
+                    throw new EventHelperException(
+                        String.Format("{0} exception{1} thrown by event handler{2} for {3}: {4}",
+                            exceptions.Count,
+                            exceptions.Count == 1 ? "" : "s",
+                            invocationList.Length == 1 ? "" : "s",
+                            handler.Method == null ? "<no name>" : handler.Method.Name,
+                            String.Join(", ", exceptions.Select(r => r.Message).Distinct().DefaultIfEmpty("").ToArray())
+                        ), exceptions
+                    );
                 }
             }
         }
