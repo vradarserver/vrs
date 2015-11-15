@@ -31,6 +31,13 @@ namespace VirtualRadar.Library
         /// </summary>
         class ServerSettings
         {
+            /// <summary>
+            /// The URL to fetch details from. This has to be called with a post whose body contains a single field called
+            /// icaos, which is a hyphen-separated string of ICAOs. This replies with a JSON file containing all of the aircraft
+            /// that could be found. We need to infer the missing ICAOs ourselves.
+            /// </summary>
+            public string LookupByIcaoUrl { get; set; }
+
             public string DataSupplier { get; set; }
 
             public string SupplierCredits { get; set; }
@@ -43,13 +50,6 @@ namespace VirtualRadar.Library
 
             public int MaxBatchSize { get; set; }
         }
-
-        /// <summary>
-        /// The URL to fetch details from. This has to be called with a post whose body contains a single field called
-        /// icaos, which is a hyphen-separated string of ICAOs. This replies with a JSON file containing all of the aircraft
-        /// that could be found. We need to infer the missing ICAOs ourselves.
-        /// </summary>
-        private static readonly string ServiceUrl = "http://sdm.virtualradarserver.co.uk/Aircraft/GetAircraftByIcaos";
 
         /// <summary>
         /// The URL to fetch lookup settings from. This returns a single JSON object as outlined in <see cref="ServerSettings"/>.
@@ -118,7 +118,7 @@ namespace VirtualRadar.Library
             var formContent = String.Format("icaos={0}", HttpUtility.UrlEncode(String.Join("-", icaos)));
             var formBytes = Encoding.UTF8.GetBytes(formContent);
 
-            var request = (HttpWebRequest)HttpWebRequest.Create(ServiceUrl);
+            var request = (HttpWebRequest)HttpWebRequest.Create(_ServerSettings.LookupByIcaoUrl);
             request.Method = "POST";
             request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             request.ContentType = "application/x-www-form-urlencoded";
