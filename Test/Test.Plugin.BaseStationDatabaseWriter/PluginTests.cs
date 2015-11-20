@@ -1360,14 +1360,20 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _BaseStationDatabase.Setup(d => d.GetAircraftByCode("Z")).Returns((BaseStationAircraft)null);
 
+            var countStartTransactions = 0;
+            var countEndTransactions = 0;
+            _BaseStationDatabase.Setup(d => d.StartTransaction()).Callback(() => {
+                ++countStartTransactions;
+            });
             _BaseStationDatabase.Setup(d => d.EndTransaction()).Callback(() => {
+                ++countEndTransactions;
                 _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             });
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback(() => {
                 _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Once());
             });
             _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback(() => {
-                _BaseStationDatabase.Verify(d => d.StartTransaction(), Times.Once());
+                _BaseStationDatabase.Verify(d => d.StartTransaction(), Times.AtLeastOnce());
             });
 
             _Plugin.Startup(_StartupParameters);
@@ -1375,7 +1381,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "Z", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir }));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.EndTransaction(), Times.Once());
+            _BaseStationDatabase.Verify(d => d.EndTransaction(), Times.AtLeastOnce());
+            Assert.AreEqual(countStartTransactions, countEndTransactions);
         }
 
         [TestMethod]
