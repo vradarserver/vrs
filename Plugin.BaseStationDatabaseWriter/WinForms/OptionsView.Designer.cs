@@ -37,6 +37,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.fileNameDatabase = new VirtualRadar.WinForms.Controls.FileNameControl();
             this.comboBoxReceiverId = new System.Windows.Forms.ComboBox();
+            this.checkBoxWriteOnlineLookupsToDatabase = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -53,10 +54,10 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(377, 139);
+            this.buttonOK.Location = new System.Drawing.Point(377, 168);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 8;
+            this.buttonOK.TabIndex = 9;
             this.buttonOK.Text = "::OK::";
             this.buttonOK.UseVisualStyleBackColor = true;
             // 
@@ -64,30 +65,30 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(458, 139);
+            this.buttonCancel.Location = new System.Drawing.Point(458, 168);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 9;
+            this.buttonCancel.TabIndex = 10;
             this.buttonCancel.Text = "::Cancel::";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 90);
+            this.label1.Location = new System.Drawing.Point(9, 112);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(112, 13);
-            this.label1.TabIndex = 4;
+            this.label1.TabIndex = 5;
             this.label1.Text = "::DatabaseFileName:::";
             // 
             // linkLabelUseDefaultFileName
             // 
             this.linkLabelUseDefaultFileName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabelUseDefaultFileName.Location = new System.Drawing.Point(150, 111);
+            this.linkLabelUseDefaultFileName.Location = new System.Drawing.Point(147, 133);
             this.linkLabelUseDefaultFileName.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.linkLabelUseDefaultFileName.Name = "linkLabelUseDefaultFileName";
             this.linkLabelUseDefaultFileName.Size = new System.Drawing.Size(349, 13);
-            this.linkLabelUseDefaultFileName.TabIndex = 6;
+            this.linkLabelUseDefaultFileName.TabIndex = 7;
             this.linkLabelUseDefaultFileName.TabStop = true;
             this.linkLabelUseDefaultFileName.Text = "::UseDefaultFileName::";
             this.linkLabelUseDefaultFileName.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -96,10 +97,10 @@
             // buttonCreateDatabase
             // 
             this.buttonCreateDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCreateDatabase.Location = new System.Drawing.Point(148, 139);
+            this.buttonCreateDatabase.Location = new System.Drawing.Point(148, 168);
             this.buttonCreateDatabase.Name = "buttonCreateDatabase";
             this.buttonCreateDatabase.Size = new System.Drawing.Size(147, 23);
-            this.buttonCreateDatabase.TabIndex = 7;
+            this.buttonCreateDatabase.TabIndex = 8;
             this.buttonCreateDatabase.Text = "::CreateDatabase::";
             this.buttonCreateDatabase.UseVisualStyleBackColor = true;
             this.buttonCreateDatabase.Click += new System.EventHandler(this.buttonCreateDatabase_Click);
@@ -117,10 +118,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 65);
+            this.label2.Location = new System.Drawing.Point(9, 87);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(65, 13);
-            this.label2.TabIndex = 2;
+            this.label2.TabIndex = 3;
             this.label2.Text = "::Receiver:::";
             // 
             // fileNameDatabase
@@ -130,20 +131,30 @@
             this.fileNameDatabase.BrowserDefaultExt = ".sqb";
             this.fileNameDatabase.BrowserFilter = "SQLite database files (*.sqb)|*.sqb|All files (*.*)|*.*";
             this.fileNameDatabase.BrowserTitle = "";
-            this.fileNameDatabase.Location = new System.Drawing.Point(148, 88);
+            this.fileNameDatabase.Location = new System.Drawing.Point(145, 110);
             this.fileNameDatabase.Name = "fileNameDatabase";
             this.fileNameDatabase.Size = new System.Drawing.Size(385, 20);
-            this.fileNameDatabase.TabIndex = 5;
+            this.fileNameDatabase.TabIndex = 6;
             // 
             // comboBoxReceiverId
             // 
             this.comboBoxReceiverId.DisplayMember = "Name";
             this.comboBoxReceiverId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxReceiverId.Location = new System.Drawing.Point(148, 60);
+            this.comboBoxReceiverId.Location = new System.Drawing.Point(145, 82);
             this.comboBoxReceiverId.Name = "comboBoxReceiverId";
             this.comboBoxReceiverId.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxReceiverId.TabIndex = 3;
+            this.comboBoxReceiverId.TabIndex = 4;
             this.comboBoxReceiverId.ValueMember = "Value";
+            // 
+            // checkBoxWriteOnlineLookupsToDatabase
+            // 
+            this.checkBoxWriteOnlineLookupsToDatabase.AutoSize = true;
+            this.checkBoxWriteOnlineLookupsToDatabase.Location = new System.Drawing.Point(148, 59);
+            this.checkBoxWriteOnlineLookupsToDatabase.Name = "checkBoxWriteOnlineLookupsToDatabase";
+            this.checkBoxWriteOnlineLookupsToDatabase.Size = new System.Drawing.Size(193, 17);
+            this.checkBoxWriteOnlineLookupsToDatabase.TabIndex = 2;
+            this.checkBoxWriteOnlineLookupsToDatabase.Text = "::WriteOnlineLookupsToDatabase::";
+            this.checkBoxWriteOnlineLookupsToDatabase.UseVisualStyleBackColor = true;
             // 
             // OptionsView
             // 
@@ -151,7 +162,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(545, 174);
+            this.ClientSize = new System.Drawing.Size(545, 203);
+            this.Controls.Add(this.checkBoxWriteOnlineLookupsToDatabase);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.fileNameDatabase);
             this.Controls.Add(this.checkBoxOnlyUpdateDatabasesCreatedByPlugin);
@@ -186,5 +198,6 @@
         private VirtualRadar.WinForms.Controls.FileNameControl fileNameDatabase;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxReceiverId;
+        private System.Windows.Forms.CheckBox checkBoxWriteOnlineLookupsToDatabase;
     }
 }

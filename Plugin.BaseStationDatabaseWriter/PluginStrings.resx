@@ -192,4 +192,7 @@
   <data name="DatabaseLocked" xml:space="preserve">
     <value>The database is currently locked by another program. Some flights may not be recorded.</value>
   </data>
+  <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Save online lookups in database</value>
+  </data>
 </root>

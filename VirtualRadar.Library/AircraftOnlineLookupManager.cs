@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Database;
 
 namespace VirtualRadar.Library
 {
@@ -192,12 +193,14 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         /// <param name="icao"></param>
+        /// <param name="baseStationAircraft"></param>
+        /// <param name="searchedForBaseStationAircraft"></param>
         /// <returns></returns>
-        public AircraftOnlineLookupDetail Lookup(string icao)
+        public AircraftOnlineLookupDetail Lookup(string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft)
         {
             Initialise();
 
-            var result = FetchAircraftDetailsFromCache(icao);
+            var result = FetchAircraftDetailsFromCache(icao, baseStationAircraft, searchedForBaseStationAircraft);
             if(RecordNeedsRefresh(result)) {
                 _AircraftOnlineLookup.Lookup(icao);
             }
@@ -209,13 +212,14 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         /// <param name="icaos"></param>
+        /// <param name="baseStationAircraft"></param>
         /// <returns></returns>
-        public Dictionary<string, AircraftOnlineLookupDetail> LookupMany(IEnumerable<string> icaos)
+        public Dictionary<string, AircraftOnlineLookupDetail> LookupMany(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft)
         {
             Initialise();
 
             var uniqueIcaos = icaos.Where(r => r != null && r.Length == 6).Select(r => r.ToUpper()).Distinct().ToArray();
-            var result = FetchManyAircraftDetailsFromCache(uniqueIcaos);
+            var result = FetchManyAircraftDetailsFromCache(uniqueIcaos, baseStationAircraft);
 
             var refreshIcaos = result.Where(r => RecordNeedsRefresh(r.Value)).Select(r => r.Key).ToArray();
             if(refreshIcaos.Length > 0) {
@@ -226,18 +230,37 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="registration"></param>
+        /// <param name="lastUpdatedUtc"></param>
+        /// <returns></returns>
+        public bool RecordNeedsRefresh(string registration, DateTime lastUpdatedUtc)
+        {
+            Initialise();
+
+            var now = _Clock.UtcNow;
+            var result =          String.IsNullOrEmpty(registration) && lastUpdatedUtc.AddDays(1) <= now;
+            if(!result) result = !String.IsNullOrEmpty(registration) && lastUpdatedUtc.AddDays(28) <= now;
+
+            return result;
+        }
+
+        /// <summary>
         /// Fetches an aircraft from the cache.
         /// </summary>
         /// <param name="icao"></param>
+        /// <param name="baseStationAircraft"></param>
+        /// <param name="searchedForBaseStationAircraft"></param>
         /// <returns></returns>
-        private AircraftOnlineLookupDetail FetchAircraftDetailsFromCache(string icao)
+        private AircraftOnlineLookupDetail FetchAircraftDetailsFromCache(string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft)
         {
             AircraftOnlineLookupDetail result = null;
 
             var cacheEntries = _CacheEntries;
-            foreach(var cacheEntry in cacheEntries.Where(r => r.Cache.Enabled)) {
-                result = cacheEntry.Cache.Load(icao);
-                if(result != null) break;
+            var cacheEntry = cacheEntries.FirstOrDefault(r => r.Cache.Enabled);
+            if(cacheEntry != null) {
+                result = cacheEntry.Cache.Load(icao, baseStationAircraft, searchedForBaseStationAircraft);
             }
 
             return result;
@@ -247,8 +270,9 @@ namespace VirtualRadar.Library
         /// Fetches many aircraft from the cache.
         /// </summary>
         /// <param name="icaos"></param>
+        /// <param name="baseStationAircraft"></param>
         /// <returns></returns>
-        private Dictionary<string, AircraftOnlineLookupDetail> FetchManyAircraftDetailsFromCache(IEnumerable<string> icaos)
+        private Dictionary<string, AircraftOnlineLookupDetail> FetchManyAircraftDetailsFromCache(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft)
         {
             var result = new Dictionary<string, AircraftOnlineLookupDetail>();
 
@@ -258,14 +282,12 @@ namespace VirtualRadar.Library
             }
 
             var cacheEntries = _CacheEntries;
-            foreach(var cacheEntry in cacheEntries.Where(r => r.Cache.Enabled)) {
-                var cacheResults = cacheEntry.Cache.LoadMany(remainingIcaos);
+            var cacheEntry = cacheEntries.FirstOrDefault(r => r.Cache.Enabled);
+            if(cacheEntry != null) {
+                var cacheResults = cacheEntry.Cache.LoadMany(remainingIcaos, baseStationAircraft);
                 foreach(var kvp in cacheResults.Where(r => r.Value != null)) {
                     result.Add(kvp.Key, kvp.Value);
                     remainingIcaos.Remove(kvp.Key);
-                }
-                if(remainingIcaos.Count == 0) {
-                    break;
                 }
             }
 
@@ -285,10 +307,8 @@ namespace VirtualRadar.Library
         {
             var result = record == null;
 
-            if(!result) {
-                var now = _Clock.UtcNow;
-                result =              String.IsNullOrEmpty(record.Registration) && record.UpdatedUtc != null && record.UpdatedUtc.Value.AddDays(1) <= now;
-                if(!result) result = !String.IsNullOrEmpty(record.Registration) && record.UpdatedUtc != null && record.UpdatedUtc.Value.AddDays(28) <= now;
+            if(!result && record.UpdatedUtc != null) {
+                result = RecordNeedsRefresh(record.Registration, record.UpdatedUtc.Value);
             }
 
             return result;

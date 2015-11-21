@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,22 +13,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Database;
 
-namespace VirtualRadar.Library
+namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
     /// <summary>
-    /// The default implementation of <see cref="IClock"/>.
+    /// The interface for the online lookup cache implemented by the plugin to write aircraft
+    /// details to BaseStation.sqb.
     /// </summary>
-    class Clock : IClock
+    public interface IOnlineLookupCache : IAircraftOnlineLookupCache
     {
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Adds a setter to the property.
         /// </summary>
-        public DateTime UtcNow { get { return DateTime.UtcNow; } }
+        new bool Enabled { get; set; }
 
         /// <summary>
-        /// See interface docs.
+        /// Gets or sets the database to use.
         /// </summary>
-        public DateTime LocalNow { get { return DateTime.Now; } }
+        IBaseStationDatabase Database { get; set; }
     }
 }

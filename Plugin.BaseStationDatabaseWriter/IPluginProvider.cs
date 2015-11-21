@@ -37,6 +37,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         IOptionsView CreateOptionsView();
 
         /// <summary>
+        /// Creates an object that caches online lookup records to BaseStation.sqb.
+        /// </summary>
+        /// <returns></returns>
+        IOnlineLookupCache CreateOnlineLookupCache();
+
+        /// <summary>
         /// Returns true if the file exists.
         /// </summary>
         /// <param name="fileName"></param>

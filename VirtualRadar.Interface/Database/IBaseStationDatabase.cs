@@ -287,6 +287,18 @@ namespace VirtualRadar.Interface.Database
         void InsertAircraft(BaseStationAircraft aircraft);
 
         /// <summary>
+        /// Fetches an aircraft by its ICAO code. If there is no record for the aircraft then the <paramref name="createNewAircraftFunc"/>
+        /// method is called to build a new record, and that is inserted.
+        /// </summary>
+        /// <param name="icao24"></param>
+        /// <param name="createNewAircraftFunc"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// A lock is held over both the fetch and the insert, this is an atomic operation.
+        /// </remarks>
+        BaseStationAircraft GetOrInsertAircraftByCode(string icao24, Func<string, BaseStationAircraft> createNewAircraftFunc);
+
+        /// <summary>
         /// Updates an existing aircraft record.
         /// </summary>
         /// <param name="aircraft"></param>
@@ -298,6 +310,43 @@ namespace VirtualRadar.Interface.Database
         /// <param name="aircraftId"></param>
         /// <param name="modeSCountry"></param>
         void UpdateAircraftModeSCountry(int aircraftId, string modeSCountry);
+
+        /// <summary>
+        /// Records an empty aircraft record. If the record does not exist it is created with a created and updated time, otherwise
+        /// if it exists and has no registration the updated time is set to the current time. If it exists and has a registration then
+        /// the function has no effect.
+        /// </summary>
+        /// <param name="icao"></param>
+        void RecordEmptyAircraft(string icao);
+
+        /// <summary>
+        /// Does the same as <see cref="RecordEmptyAircraft"/> but for many ICAOs simultaneously.
+        /// </summary>
+        /// <param name="icaos"></param>
+        void RecordManyEmptyAircraft(IEnumerable<string> icaos);
+
+        /// <summary>
+        /// Creates or updates an aircraft record.
+        /// </summary>
+        /// <param name="icao">The ICAO of the aircraft to create or update.</param>
+        /// <param name="fillAircraft">
+        /// A callback that is passed the existing aircraft record or, if there is no record for the record, a partially-filled
+        /// record. The callback can either return the record (optionally modified) or return null. If it returns null then the
+        /// record is not inserted / changed, otherwise the record returned is written back to the database.
+        /// </param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The callback is called from within a lock, be careful not to do anything that will cause a deadlock.
+        /// </remarks>
+        BaseStationAircraft UpsertAircraftByCode(string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft);
+
+        /// <summary>
+        /// Does the same as <see cref="UpsertAircraftByCode"/> but for many ICAOs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        /// <param name="fillAircraft"></param>
+        /// <returns></returns>
+        BaseStationAircraft[] UpsertManyAircraftByCodes(IEnumerable<string> icaos, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft);
 
         /// <summary>
         /// Deletes an existing aircraft record.

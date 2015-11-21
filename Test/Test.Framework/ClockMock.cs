@@ -28,6 +28,11 @@ namespace Test.Framework
         public DateTime UtcNowValue { get; set; }
 
         /// <summary>
+        /// Gets or sets the value of the LocalNow property.
+        /// </summary>
+        public DateTime LocalNowValue { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ClockMock() : base()
@@ -37,17 +42,22 @@ namespace Test.Framework
 
             UtcNowValue = DateTime.UtcNow;
             Setup(r => r.UtcNow).Returns(() => { return UtcNowValue; });
+
+            LocalNowValue = UtcNowValue.AddHours(1);
+            Setup(r => r.LocalNow).Returns(() => { return LocalNowValue; });
         }
 
         /// <summary>
-        /// Advances <see cref="UtcNowValue"/> by so-many milliseconds.
+        /// Advances <see cref="UtcNowValue"/> and <see cref="LocalNowValue"/> by so-many milliseconds.
         /// </summary>
         /// <param name="milliseconds"></param>
-        /// <returns></returns>
+        /// <returns>The new <see cref="UtcNowValue"/> value.</returns>
         public DateTime AddMilliseconds(int milliseconds)
         {
             var result = UtcNowValue.AddMilliseconds(milliseconds);
             UtcNowValue = result;
+
+            LocalNowValue = LocalNowValue.AddMilliseconds(milliseconds);
 
             return result;
         }

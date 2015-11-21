@@ -18,7 +18,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
     /// <summary>
     /// Holds the options for the plugin.
     /// </summary>
-    class Options
+    public class Options
     {
         /// <summary>
         /// Gets or sets a value indicating that the plugin is to record information about received aircraft in the BaseStation database.
@@ -35,5 +35,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// update databases that it knows it created.
         /// </summary>
         public bool AllowUpdateOfOtherDatabases { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that aircraft details downloaded from the Internet should be saved to BaseStation.sqb.
+        /// </summary>
+        public bool SaveDownloadedAircraftDetails { get; set; }
     }
 }

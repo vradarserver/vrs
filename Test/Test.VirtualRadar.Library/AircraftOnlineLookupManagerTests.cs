@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Database;
 
 namespace Test.VirtualRadar.Library
 {
@@ -37,12 +38,14 @@ namespace Test.VirtualRadar.Library
                 get { return false; }
             }
 
-            public AircraftOnlineLookupDetail Load(string icao)
+            public bool IsWriteOnly { get; set; }
+
+            public AircraftOnlineLookupDetail Load(string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft)
             {
                 return null;
             }
 
-            public Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos)
+            public Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft)
             {
                 return new Dictionary<string,AircraftOnlineLookupDetail>();
             }
@@ -134,21 +137,21 @@ namespace Test.VirtualRadar.Library
 
             _Manager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>();
             _Manager.RegisterCache(_Cache1.Object, 1, false);
-            _Manager.RegisterCache(_Cache2.Object, 2, false);       // <-- this has a higher priority and should take precedence
+            _Manager.RegisterCache(_Cache2.Object, 2, false);   // <-- this has a higher priority and should take precedence
         }
 
         private void SetupCache(int cacheNumber, Mock<IAircraftOnlineLookupCache> cache, List<string> knownIcaos)
         {
             cache.SetupGet(r => r.Enabled).Returns(true);
 
-            cache.Setup(r => r.Load(It.IsAny<string>())).Returns((string icao) => {
+            cache.Setup(r => r.Load(It.IsAny<string>(), It.IsAny<BaseStationAircraft>(), It.IsAny<bool>())).Returns((string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft) => {
                 _LookupCacheUsed.Add(cacheNumber);
                 AircraftOnlineLookupDetail result = null;
                 if(knownIcaos.Contains(icao)) result = CreateMockAircraftOnlineLookupDetail(icao);
                 return result;
             });
 
-            cache.Setup(r => r.LoadMany(It.IsAny<IEnumerable<string>>())).Returns((IEnumerable<string> icaos) => {
+            cache.Setup(r => r.LoadMany(It.IsAny<IEnumerable<string>>(), It.IsAny<IDictionary<string, BaseStationAircraft>>())).Returns((IEnumerable<string> icaos, IDictionary<string,BaseStationAircraft> databaseAircraft) => {
                 _LookupCacheUsed.Add(cacheNumber);
                 var result = new Dictionary<string, AircraftOnlineLookupDetail>();
                 foreach(var icao in icaos) {
@@ -305,27 +308,39 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_Lookup_Fetches_Icao_From_Cache()
         {
-            _Cache1Icaos.Add("ABC123");
+            _Cache2Icaos.Add("ABC123");
 
-            var result = _Manager.Lookup("ABC123");
+            var result = _Manager.Lookup("ABC123", null, false);
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void AircraftOnlineLookupManager_Lookup_Fetches_Icao_From_Second_Cache_If_Missing_From_First()
+        public void AircraftOnlineLookupManager_Lookup_Passes_Through_BaseStationAircraft_To_Cache()
         {
-            _Cache2Icaos.Add("ABC123");
+            var aircraft = new BaseStationAircraft();
 
-            var result = _Manager.Lookup("ABC123");
-            Assert.IsNotNull(result);
+            _Manager.Lookup("ABC123", aircraft, true);
+            _Manager.Lookup("XYZ987", aircraft, false);
+
+            _Cache2.Verify(r => r.Load("ABC123", aircraft, true), Times.Once());
+            _Cache2.Verify(r => r.Load("XYZ987", aircraft, false), Times.Once());
+        }
+
+        [TestMethod]
+        public void AircraftOnlineLookupManager_Lookup_Does_Not_Fetch_Icao_From_Second_Cache_If_Missing_From_First()
+        {
+            _Cache1Icaos.Add("ABC123");
+
+            var result = _Manager.Lookup("ABC123", null, false);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
         public void AircraftOnlineLookupManager_Lookup_Does_Not_Lookup_Aircraft_If_Found()
         {
-            _Cache1Icaos.Add("ABC123");
+            _Cache2Icaos.Add("ABC123");
 
-            var result = _Manager.Lookup("ABC123");
+            var result = _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(0, _LookupUsed.Count);
         }
@@ -338,9 +353,9 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(1);
             };
 
-            _Cache1Icaos.Add("ABC123");
+            _Cache2Icaos.Add("ABC123");
 
-            var result = _Manager.Lookup("ABC123");
+            var result = _Manager.Lookup("ABC123", null, false);
             Assert.IsNotNull(result);
             Assert.AreEqual(0, _LookupUsed.Count);
 
@@ -349,7 +364,7 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-1);
             };
 
-            result = _Manager.Lookup("ABC123");
+            result = _Manager.Lookup("ABC123", null, false);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, _LookupUsed.Count);
@@ -363,9 +378,9 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(1);
             };
 
-            _Cache1Icaos.Add("ABC123");
+            _Cache2Icaos.Add("ABC123");
 
-            var result = _Manager.Lookup("ABC123");
+            var result = _Manager.Lookup("ABC123", null, false);
             Assert.IsNotNull(result);
             Assert.AreEqual(0, _LookupUsed.Count);
 
@@ -373,7 +388,7 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-28);
             };
 
-            result = _Manager.Lookup("ABC123");
+            result = _Manager.Lookup("ABC123", null, false);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, _LookupUsed.Count);
@@ -383,7 +398,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_Lookup_Looks_Up_Missing_Aircraft()
         {
-            var result = _Manager.Lookup("ABC123");
+            var result = _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(1, _LookupUsed.Count);
             Assert.AreEqual("ABC123", _LookupUsed[0]);
@@ -393,7 +408,7 @@ namespace Test.VirtualRadar.Library
         public void AircraftOnlineLookupManager_Lookup_Saves_Results_Of_Successful_Lookup()
         {
             _LookupIcaos.Add("ABC123");
-            var result = _Manager.Lookup("ABC123");
+            var result = _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(1, _SavedDetails.Count);
             Assert.AreEqual(0, _RecordedMissingIcaos.Count);
@@ -403,7 +418,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_Lookup_Saves_Results_Of_Missing_Lookup()
         {
-            var result = _Manager.Lookup("ABC123");
+            var result = _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(0, _SavedDetails.Count);
             Assert.AreEqual(1, _RecordedMissingIcaos.Count);
@@ -418,7 +433,7 @@ namespace Test.VirtualRadar.Library
             _Cache1.SetupGet(r => r.Enabled).Returns(false);
             _Cache2.SetupGet(r => r.Enabled).Returns(false);
 
-            Assert.IsNull(_Manager.Lookup("ABC123"));
+            Assert.IsNull(_Manager.Lookup("ABC123", null, false));
         }
 
         [TestMethod]
@@ -427,7 +442,7 @@ namespace Test.VirtualRadar.Library
             _Cache1.SetupGet(r => r.Enabled).Returns(false);
             _Cache2.SetupGet(r => r.Enabled).Returns(false);
 
-            _Manager.Lookup("ABC123");
+            _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(0, _SaveCacheUsed.Count);
         }
@@ -438,7 +453,7 @@ namespace Test.VirtualRadar.Library
             _Cache1Icaos.Add("ABC123");
             _Cache2Icaos.Add("ABC123");
 
-            _Manager.Lookup("ABC123");
+            _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(1, _LookupCacheUsed.Count);
             Assert.AreEqual(2, _LookupCacheUsed[0]);
@@ -447,7 +462,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_Lookup_Saves_To_Higher_Priority_Caches_Before_Lower()
         {
-            _Manager.Lookup("ABC123");
+            _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(1, _SaveCacheUsed.Count);
             Assert.AreEqual(2, _SaveCacheUsed[0]);
@@ -457,7 +472,7 @@ namespace Test.VirtualRadar.Library
         public void AircraftOnlineLookupManager_Lookup_Raises_AircraftFetched_When_Aircraft_Looked_Up()
         {
             _Manager.AircraftFetched += _FetchedRecorder.Handler;
-            _Manager.Lookup("ABC123");
+            _Manager.Lookup("ABC123", null, false);
             Assert.AreEqual(1, _FetchedRecorder.CallCount);
         }
 
@@ -468,7 +483,7 @@ namespace Test.VirtualRadar.Library
             _SaveCallback = () => { eventCountInSave = _FetchedRecorder.CallCount; };
 
             _Manager.AircraftFetched += _FetchedRecorder.Handler;
-            _Manager.Lookup("ABC123");
+            _Manager.Lookup("ABC123", null, false);
 
             Assert.AreEqual(0, eventCountInSave);
         }
@@ -478,42 +493,52 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_LookupMany_Fetches_Icaos_From_Cache()
         {
-            _Cache1Icaos.Add("ABC123");
-            _Cache1Icaos.Add("123456");
-
-            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" });
-            Assert.IsTrue(result.ContainsKey("ABC123"));
-            Assert.IsTrue(result.ContainsKey("123456"));
-        }
-
-        [TestMethod]
-        public void AircraftOnlineLookupManager_LookupMany_Fetches_Icaos_From_Second_Cache_If_Missing_From_First()
-        {
             _Cache2Icaos.Add("ABC123");
             _Cache2Icaos.Add("123456");
 
-            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" });
+            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" }, null);
             Assert.IsTrue(result.ContainsKey("ABC123"));
             Assert.IsTrue(result.ContainsKey("123456"));
         }
 
         [TestMethod]
-        public void AircraftOnlineLookupManager_LookupMany_Can_Fetch_Icaos_From_Both_Caches()
+        public void AircraftOnlineLookupManager_LookupMany_Passes_DatabaseAircraft_To_Cache()
+        {
+            var dictionary = new Dictionary<string, BaseStationAircraft>();
+
+            _Manager.LookupMany(new string[] { "ABC123" }, dictionary);
+
+            _Cache2.Verify(r => r.LoadMany(It.IsAny<IEnumerable<string>>(), dictionary), Times.Once());
+        }
+
+        [TestMethod]
+        public void AircraftOnlineLookupManager_LookupMany_Does_Not_Fetch_Icaos_From_Second_Cache_If_Missing_From_First()
+        {
+            _Cache1Icaos.Add("ABC123");
+            _Cache1Icaos.Add("123456");
+
+            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" }, null);
+            Assert.IsNull(result["ABC123"]);
+            Assert.IsNull(result["123456"]);
+        }
+
+        [TestMethod]
+        public void AircraftOnlineLookupManager_LookupMany_Only_Fetches_Icaos_From_One_Cache()
         {
             _Cache1Icaos.Add("ABC123");
             _Cache2Icaos.Add("123456");
 
-            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" });
+            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" }, null);
             Assert.IsTrue(result.ContainsKey("ABC123"));
             Assert.IsTrue(result.ContainsKey("123456"));
-            Assert.IsNotNull(result["ABC123"]);
+            Assert.IsNull(result["ABC123"]);
             Assert.IsNotNull(result["123456"]);
         }
 
         [TestMethod]
         public void AircraftOnlineLookupManager_LookupMany_Returns_Null_Entries_For_Missing_Icaos()
         {
-            var result = _Manager.LookupMany(new string[] { "ABC123", });
+            var result = _Manager.LookupMany(new string[] { "ABC123", }, null);
             Assert.IsTrue(result.ContainsKey("ABC123"));
             Assert.IsNull(result["ABC123"]);
         }
@@ -521,9 +546,9 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_LookupMany_Does_Not_Lookup_Aircraft_If_Found()
         {
-            _Cache1Icaos.Add("ABC123");
+            _Cache2Icaos.Add("ABC123");
 
-            var result = _Manager.LookupMany(new string[] { "ABC123" });
+            var result = _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(0, _LookupUsed.Count);
         }
@@ -536,9 +561,9 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(1);
             };
 
-            _Cache1Icaos.Add("ABC123");
+            _Cache2Icaos.Add("ABC123");
 
-            var result = _Manager.LookupMany(new string[] { "ABC123" });
+            var result = _Manager.LookupMany(new string[] { "ABC123" }, null);
             Assert.IsTrue(result.ContainsKey("ABC123"));
             Assert.AreEqual(0, _LookupUsed.Count);
 
@@ -547,7 +572,7 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-1);
             };
 
-            result = _Manager.LookupMany(new string[] { "ABC123" });
+            result = _Manager.LookupMany(new string[] { "ABC123" }, null);
             Assert.IsTrue(result.ContainsKey("ABC123"));
             Assert.AreEqual(1, _LookupUsed.Count);
             Assert.AreEqual("ABC123", _LookupUsed[0]);
@@ -560,9 +585,9 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(1);
             };
 
-            _Cache1Icaos.Add("ABC123");
+            _Cache2Icaos.Add("ABC123");
 
-            var result = _Manager.LookupMany(new string[] { "ABC123" });
+            var result = _Manager.LookupMany(new string[] { "ABC123" }, null);
             Assert.IsTrue(result.ContainsKey("ABC123"));
             Assert.AreEqual(0, _LookupUsed.Count);
 
@@ -570,7 +595,7 @@ namespace Test.VirtualRadar.Library
                 record.UpdatedUtc = _Clock.UtcNowValue.AddDays(-28);
             };
 
-            result = _Manager.LookupMany(new string[] { "ABC123" });
+            result = _Manager.LookupMany(new string[] { "ABC123" }, null);
             Assert.IsTrue(result.ContainsKey("ABC123"));
             Assert.AreEqual(1, _LookupUsed.Count);
             Assert.AreEqual("ABC123", _LookupUsed[0]);
@@ -579,7 +604,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_LookupMany_Looks_Up_Missing_Aircraft()
         {
-            var result = _Manager.LookupMany(new string[] { "ABC123" });
+            var result = _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(1, _LookupUsed.Count);
             Assert.AreEqual("ABC123", _LookupUsed[0]);
@@ -588,8 +613,8 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_LookupMany_Looks_Up_Missing_Aircraft_But_Not_Found_Aircraft()
         {
-            _Cache1Icaos.Add("123456");
-            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" });
+            _Cache2Icaos.Add("123456");
+            var result = _Manager.LookupMany(new string[] { "ABC123", "123456" }, null);
 
             Assert.AreEqual(2, result.Count);
             Assert.IsNull(result["ABC123"]);
@@ -603,7 +628,7 @@ namespace Test.VirtualRadar.Library
         public void AircraftOnlineLookupManager_LookupMany_Saves_Results_Of_Successful_Lookup()
         {
             _LookupIcaos.Add("ABC123");
-            _Manager.LookupMany(new string[] { "ABC123" });
+            _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(1, _SavedDetails.Count);
             Assert.AreEqual(0, _RecordedMissingIcaos.Count);
@@ -613,7 +638,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_LookupMany_Saves_Results_Of_Missing_Lookup()
         {
-            _Manager.LookupMany(new string[] { "ABC123" });
+            _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(0, _SavedDetails.Count);
             Assert.AreEqual(1, _RecordedMissingIcaos.Count);
@@ -628,7 +653,7 @@ namespace Test.VirtualRadar.Library
             _Cache1.SetupGet(r => r.Enabled).Returns(false);
             _Cache2.SetupGet(r => r.Enabled).Returns(false);
 
-            var result = _Manager.LookupMany(new string[] { "ABC123" });
+            var result = _Manager.LookupMany(new string[] { "ABC123" }, null);
             Assert.AreEqual(1, result.Count);
             Assert.IsNull(result["ABC123"]);
         }
@@ -639,7 +664,7 @@ namespace Test.VirtualRadar.Library
             _Cache1.SetupGet(r => r.Enabled).Returns(false);
             _Cache2.SetupGet(r => r.Enabled).Returns(false);
 
-            _Manager.LookupMany(new string[] { "ABC123" });
+            _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(0, _SaveCacheUsed.Count);
         }
@@ -650,7 +675,7 @@ namespace Test.VirtualRadar.Library
             _Cache1Icaos.Add("ABC123");
             _Cache2Icaos.Add("ABC123");
 
-            _Manager.LookupMany(new string[] { "ABC123" });
+            _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(1, _LookupCacheUsed.Count);
             Assert.AreEqual(2, _LookupCacheUsed[0]);
@@ -659,7 +684,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_LookupMany_Saves_To_Higher_Priority_Caches_Before_Lower()
         {
-            _Manager.LookupMany(new string[] { "ABC123" });
+            _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(1, _SaveCacheUsed.Count);
             Assert.AreEqual(2, _SaveCacheUsed[0]);
@@ -669,7 +694,7 @@ namespace Test.VirtualRadar.Library
         public void AircraftOnlineLookupManager_LookupMany_Raises_AircraftFetched_When_Aircraft_Looked_Up()
         {
             _Manager.AircraftFetched += _FetchedRecorder.Handler;
-            _Manager.LookupMany(new string[] { "ABC123" });
+            _Manager.LookupMany(new string[] { "ABC123" }, null);
             Assert.AreEqual(1, _FetchedRecorder.CallCount);
         }
 
@@ -680,9 +705,52 @@ namespace Test.VirtualRadar.Library
             _SaveCallback = () => { eventCountInSave = _FetchedRecorder.CallCount; };
 
             _Manager.AircraftFetched += _FetchedRecorder.Handler;
-            _Manager.LookupMany(new string[] { "ABC123" });
+            _Manager.LookupMany(new string[] { "ABC123" }, null);
 
             Assert.AreEqual(0, eventCountInSave);
+        }
+        #endregion
+
+        #region RecordNeedsRefresh
+        class RecordNeedsRefresh
+        {
+            public string Registration      { get; set; }
+            public DateTime LastUpdatedUtc  { get; set; }
+            public bool ExpectedResult      { get; set; }
+
+            public RecordNeedsRefresh(string registration, DateTime lastUpdatedUtc, bool expectedResult)
+            {
+                Registration = registration;
+                LastUpdatedUtc = lastUpdatedUtc;
+                ExpectedResult = expectedResult;
+            }
+
+            public override string ToString()
+            {
+                return String.Format("Registration = {0}, LastUpdatedUtc = {1}, ExpectedResult = {2}", Registration, LastUpdatedUtc, ExpectedResult);
+            }
+        }
+
+        [TestMethod]
+        public void AircraftOnlineLookupManager_RecordNeedsRefresh_Returns_Correct_Value()
+        {
+            foreach(var testParams in new RecordNeedsRefresh[] {
+                // Missing aircraft details are refreshed after 24 hours have elapsed
+                new RecordNeedsRefresh(null, _Clock.UtcNowValue, false),
+                new RecordNeedsRefresh("",   _Clock.UtcNowValue, false),
+                new RecordNeedsRefresh(null, _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(1), false),
+                new RecordNeedsRefresh("",   _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(1), false),
+                new RecordNeedsRefresh(null, _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(-2), true),
+                new RecordNeedsRefresh("",   _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(-2), true),
+
+                // Known aircraft details are refreshed after 28 days
+                new RecordNeedsRefresh("A",  _Clock.UtcNowValue, false),
+                new RecordNeedsRefresh("A",  _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(1), false),
+                new RecordNeedsRefresh("A",  _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(-2), true),
+            }) {
+                var result = _Manager.RecordNeedsRefresh(testParams.Registration, testParams.LastUpdatedUtc);
+                Assert.AreEqual(testParams.ExpectedResult, result, "Got {0} for {1}", result, testParams);
+            }
         }
         #endregion
     }

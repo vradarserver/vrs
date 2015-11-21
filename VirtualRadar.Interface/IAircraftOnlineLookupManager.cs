@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.Database;
 
 namespace VirtualRadar.Interface
 {
@@ -77,15 +78,26 @@ namespace VirtualRadar.Interface
         /// are in.
         /// </summary>
         /// <param name="icao"></param>
+        /// <param name="baseStationAircraft">Passed through to cache. Not used by the manager.</param>
+        /// <param name="searchedForBaseStationAircraft">Passed through to cache. Not used by the manager.</param>
         /// <returns></returns>
-        AircraftOnlineLookupDetail Lookup(string icao);
+        AircraftOnlineLookupDetail Lookup(string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft);
 
         /// <summary>
         /// Requests the lookup of many ICAOs. All ICAOs that are in the cache are returned immediately, the rest
         /// are passed to the online lookup service and returned via the <see cref="AircraftFetched"/> event.
         /// </summary>
         /// <param name="icaos"></param>
+        /// <param name="baseStationAircraft">Passed through to cache. Not used by the manager.</param>
         /// <returns></returns>
-        Dictionary<string, AircraftOnlineLookupDetail> LookupMany(IEnumerable<string> icaos);
+        Dictionary<string, AircraftOnlineLookupDetail> LookupMany(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft);
+
+        /// <summary>
+        /// Returns true if the details passed across indicate that the aircraft that they belong to needs refreshing.
+        /// </summary>
+        /// <param name="registration"></param>
+        /// <param name="lastUpdatedUtc"></param>
+        /// <returns></returns>
+        bool RecordNeedsRefresh(string registration, DateTime lastUpdatedUtc);
     }
 }
