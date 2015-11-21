@@ -218,7 +218,7 @@ namespace VirtualRadar.Library
         protected override AircraftDetail DoFetchAircraft(AircraftFetcher<string, AircraftDetail>.FetchedDetail fetchedDetail)
         {
             var databaseAircraft = _AutoConfigDatabase.Database.GetAircraftByCode(fetchedDetail.Aircraft.Icao24);
-            var onlineAircraft = NeedsOnlineLookup(databaseAircraft) ? _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24) : null;
+            var onlineAircraft = NeedsOnlineLookup(databaseAircraft) ? _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24, databaseAircraft, searchedForBaseStationAircraft: true) : null;
             return ApplyDatabaseRecord(fetchedDetail.Detail, databaseAircraft, onlineAircraft, fetchedDetail.Aircraft, fetchedDetail.IsFirstFetch);
         }
 
@@ -245,7 +245,7 @@ namespace VirtualRadar.Library
                 if(!aircraft.TryGetValue(icao24, out databaseAircraft)) {
                     aircraftAndFlightCounts.TryGetValue(icao24, out databaseAircraftAndFlights);
                 }
-                var onlineAircraft = NeedsOnlineLookup(databaseAircraft) ? _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24) : null;
+                var onlineAircraft = NeedsOnlineLookup(databaseAircraft) ? _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24, databaseAircraft, searchedForBaseStationAircraft: true) : null;
 
                 kvp.Detail = ApplyDatabaseRecord(
                     fetchedDetail.Detail,
@@ -266,9 +266,15 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="aircraft"></param>
         /// <returns></returns>
-        private static bool NeedsOnlineLookup(BaseStationAircraft aircraft)
+        private bool NeedsOnlineLookup(BaseStationAircraft aircraft)
         {
-            return aircraft == null || String.IsNullOrEmpty(aircraft.Registration);
+            var result = aircraft == null;
+            if(!result) {
+                var lastUpdatedUtc = aircraft.LastModified.Year < 2 ? aircraft.LastModified : aircraft.LastModified.ToUniversalTime();
+                result = _AircraftOnlineLookupManager.RecordNeedsRefresh(aircraft.Registration, lastUpdatedUtc);
+            }
+
+            return result;
         }
 
         /// <summary>

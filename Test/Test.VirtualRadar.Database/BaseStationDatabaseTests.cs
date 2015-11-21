@@ -49,12 +49,16 @@ namespace Test.VirtualRadar.Database
         private readonly string[] _Cultures = new string[] { "en-GB", "de-DE", "fr-FR", "it-IT", "el-GR", "ru-RU" };
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
         private Mock<ICallsignParser> _CallsignParser;
+        private ClockMock _Clock;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _OriginalClassFactory = Factory.TakeSnapshot();
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
+
+            _Clock = new ClockMock();
+            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
 
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _Configuration = new Configuration();
@@ -1134,6 +1138,98 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
+        #region GetOrInsertAircraftByCode
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
+        {
+            _Database.GetOrInsertAircraftByCode("123456", (icao) => new BaseStationAircraft() { ModeS = icao, });
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Returns_Record_If_It_Exists()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
+
+            var result = _Database.GetOrInsertAircraftByCode("123456", (icao) => { throw new NotImplementedException(); });
+
+            Assert.AreNotEqual(0, result.AircraftID);
+            Assert.AreEqual("123456", result.ModeS);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
+        {
+            _Database.WriteSupportEnabled = true;
+            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+
+            _Database.GetOrInsertAircraftByCode("123456", (icao) => new BaseStationAircraft() { ModeS = icao, });
+            Assert.AreEqual(null, _Database.GetAircraftByCode("123456"));
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Does_Nothing_If_File_Not_Configured()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.FileName = null;
+
+            _Database.GetOrInsertAircraftByCode("123456", (icao) => new BaseStationAircraft() { ModeS = icao, });
+            Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
+
+            _Database.GetOrInsertAircraftByCode("X", (icao) => new BaseStationAircraft() { ModeS = icao, FirstCreated = time1, LastModified = time2, });
+            var readBack = _Database.GetAircraftByCode("X");
+
+            Assert.AreEqual(TruncateDate(time1), readBack.FirstCreated);
+            Assert.AreEqual(TruncateDate(time2), readBack.LastModified);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "GetAircraftBy$")]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var aircraft = LoadAircraftFromSpreadsheet(worksheet);
+
+            _Database.GetOrInsertAircraftByCode(aircraft.ModeS, (icao) => aircraft);
+            Assert.AreNotEqual(0, aircraft.AircraftID);
+
+            var readBack = _Database.GetAircraftById(aircraft.AircraftID);
+            AssertAircraftAreEqual(aircraft, readBack);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "GetAircraftBy$")]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    try {
+                        BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region UpdateAircraft
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -1292,6 +1388,439 @@ namespace Test.VirtualRadar.Database
 
             readBack = _Database.GetAircraftById(id);
             AssertAircraftAreEqual(update, readBack, id);
+        }
+        #endregion
+
+        #region RecordEmptyAircraft
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BaseStationDatabase_RecordEmptyAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.RecordEmptyAircraft("123456");
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_RecordEmptyAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.RecordEmptyAircraft("123456");
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("123456", aircraft.ModeS);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_RecordEmptyAircraft_Updates_Existing_Empty_Records()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.RecordEmptyAircraft("123456");
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordEmptyAircraft("123456");
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_RecordEmptyAircraft_Ignores_Existing_Records_With_Registrations()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue });
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordEmptyAircraft("123456");
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual("A",                       aircraft.Registration);
+            Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(createdDate), aircraft.LastModified);
+        }
+        #endregion
+
+        #region RecordManyEmptyAircraft
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BaseStationDatabase_RecordManyEmptyAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.RecordManyEmptyAircraft(new string[] { "A", "B" });
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_RecordManyEmptyAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.RecordManyEmptyAircraft(new string[] { "A", "B" });
+
+            var aircraft = _Database.GetAircraftByCode("A");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("A", aircraft.ModeS);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+
+            aircraft = _Database.GetAircraftByCode("B");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("B", aircraft.ModeS);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_RecordManyEmptyAircraft_Updates_Existing_Empty_Records()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.RecordManyEmptyAircraft(new string[] { "123456" });
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordManyEmptyAircraft(new string[] { "123456" });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_RecordManyEmptyAircraft_Ignores_Existing_Records_With_Registrations()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue });
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordManyEmptyAircraft(new string[] { "123456" });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual("A",                       aircraft.Registration);
+            Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(createdDate), aircraft.LastModified);
+        }
+        #endregion
+
+        #region UpsertAircraftByCode
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BaseStationDatabase_UpsertAircraftByCode_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.UpsertAircraftByCode("123456", r => r);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Calls_Callback_For_New_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var callbackCalled = false;
+            _Database.UpsertAircraftByCode("123456", (aircraft) => {
+                callbackCalled = true;
+                Assert.IsNotNull(aircraft);
+                Assert.AreEqual("123456", aircraft.ModeS);
+                Assert.IsNull(aircraft.Registration);
+                Assert.AreEqual(_Clock.LocalNowValue, aircraft.FirstCreated);
+                Assert.AreEqual(_Clock.LocalNowValue, aircraft.LastModified);
+                return aircraft;
+            });
+
+            Assert.IsTrue(callbackCalled);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Inserts_New_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.UpsertAircraftByCode("123456", r => r);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Inserts_Whatever_The_Callback_Returns()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.UpsertAircraftByCode("123456", r => new BaseStationAircraft() {
+                ModeS = "ABC",
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNull(aircraft);
+
+            aircraft = _Database.GetAircraftByCode("ABC");
+            Assert.IsNotNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Does_Not_Insert_Aircraft_When_Callback_Returns_Null()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.UpsertAircraftByCode("123456", r => null);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Calls_Callback_For_Existing_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            var originalTime = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+
+            var callbackCalled = false;
+            _Database.UpsertAircraftByCode("123456", (aircraft) => {
+                callbackCalled = true;
+                Assert.IsNotNull(aircraft);
+                Assert.AreEqual("123456", aircraft.ModeS);
+                Assert.AreEqual("ABC", aircraft.Registration);
+                Assert.AreEqual(TruncateDate(originalTime), aircraft.FirstCreated);
+                Assert.AreEqual(TruncateDate(originalTime), aircraft.LastModified);
+                return aircraft;
+            });
+
+            Assert.IsTrue(callbackCalled);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Updates_Existing_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            _Database.UpsertAircraftByCode("123456", r => {
+                r.Registration = "XYZ";
+                return r;
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("XYZ", aircraft.Registration);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Updates_Existing_Aircraft_With_Whatever_Callback_Returns()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            _Database.UpsertAircraftByCode("123456", r => {
+                r.ModeS = "ABC";
+                return r;
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNull(aircraft);
+
+            aircraft = _Database.GetAircraftByCode("ABC");
+            Assert.IsNotNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Does_Not_Update_If_Callback_Returns_Null()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            _Database.UpsertAircraftByCode("123456", r => {
+                r.Registration = "XYZ";
+                return null;
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual("ABC", aircraft.Registration);
+        }
+        #endregion
+
+        #region UpsertManyAircraftByCodes
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.UpsertManyAircraftByCodes(new string[] { "A" }, r => r);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Calls_Callback_For_New_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var callbackCount = 0;
+            _Database.UpsertManyAircraftByCodes(new string[] { "A", "B" }, (aircraft) => {
+                ++callbackCount;
+                Assert.IsNotNull(aircraft);
+                Assert.IsTrue(aircraft.ModeS == "A" || aircraft.ModeS == "B");
+                Assert.IsNull(aircraft.Registration);
+                Assert.AreEqual(_Clock.LocalNowValue, aircraft.FirstCreated);
+                Assert.AreEqual(_Clock.LocalNowValue, aircraft.LastModified);
+                return aircraft;
+            });
+
+            Assert.AreEqual(2, callbackCount);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Inserts_New_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "A", "B" }, r => r);
+
+            var aircraft = _Database.GetAircraftByCode("A");
+            Assert.IsNotNull(aircraft);
+
+            aircraft = _Database.GetAircraftByCode("B");
+            Assert.IsNotNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Inserts_Whatever_The_Callback_Returns()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => new BaseStationAircraft() {
+                ModeS = "ABC",
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNull(aircraft);
+
+            aircraft = _Database.GetAircraftByCode("ABC");
+            Assert.IsNotNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Does_Not_Insert_Aircraft_When_Callback_Returns_Null()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => null);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Calls_Callback_For_Existing_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            var originalTime = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+
+            var callbackCalled = false;
+            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, (aircraft) => {
+                callbackCalled = true;
+                Assert.IsNotNull(aircraft);
+                Assert.AreEqual("123456", aircraft.ModeS);
+                Assert.AreEqual("ABC", aircraft.Registration);
+                Assert.AreEqual(TruncateDate(originalTime), aircraft.FirstCreated);
+                Assert.AreEqual(TruncateDate(originalTime), aircraft.LastModified);
+                return aircraft;
+            });
+
+            Assert.IsTrue(callbackCalled);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Updates_Existing_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => {
+                r.Registration = "XYZ";
+                return r;
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("XYZ", aircraft.Registration);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Updates_Existing_Aircraft_With_Whatever_Callback_Returns()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => {
+                r.ModeS = "ABC";
+                return r;
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNull(aircraft);
+
+            aircraft = _Database.GetAircraftByCode("ABC");
+            Assert.IsNotNull(aircraft);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Does_Not_Update_If_Callback_Returns_Null()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS = "123456",
+                Registration = "ABC",
+                FirstCreated = _Clock.LocalNowValue,
+                LastModified = _Clock.LocalNowValue,
+            });
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => {
+                r.Registration = "XYZ";
+                return null;
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual("ABC", aircraft.Registration);
         }
         #endregion
 

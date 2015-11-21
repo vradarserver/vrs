@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.Database;
 
 namespace VirtualRadar.Interface
 {
@@ -37,17 +38,21 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Fetches an aircraft's details from the cache.
         /// </summary>
-        /// <param name="icao"></param>
+        /// <param name="icao">The ICAO of the aircraft to lookup.</param>
+        /// <param name="baseStationAircraft">If BaseStation.sqb has been searched for an aircraft then this is the record that was returned, otherwise it's null.</param>
+        /// <param name="searchedForBaseStationAircraft">True if <paramref name="baseStationAircraft"/> is the result of a search on BaseStation.sqb, false if the caller didn't search BaseStation.sqb.</param>
         /// <returns>Null if there are no details for the ICAO in the cache, otherwise returns the cached details.</returns>
-        AircraftOnlineLookupDetail Load(string icao);
+        AircraftOnlineLookupDetail Load(string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft);
 
         /// <summary>
         /// Loads multiple records from the cache simultaneously.
         /// </summary>
         /// <param name="icaos"></param>
+        /// <param name="baseStationAircraft">If BaseStation.sqb has been searched for an aircraft then these are the
+        /// records that were returned, indexed by upper-case ICAO. Otherwise it's null.</param>
         /// <returns>A dictionary of ICAOs to cached records. If there is no record for a particular ICAO in the cache
         /// then the dictionary value for the ICAO is null.</returns>
-        Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos);
+        Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft);
 
         /// <summary>
         /// Saves an aircraft's details in the cache.

@@ -41,6 +41,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         int ReceiverId { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the downloaded aircraft details should be saved to BaseStation.sqb.
+        /// </summary>
+        bool SaveDownloadedAircraftDetails { get; set; }
+
+        /// <summary>
         /// Displays the view and returns a value indicating that the view's contents were saved by the user.
         /// </summary>
         /// <returns></returns>

@@ -24,5 +24,10 @@ namespace VirtualRadar.Interface
         /// Gets the current date and time at UTC.
         /// </summary>
         DateTime UtcNow { get; }
+
+        /// <summary>
+        /// Gets the current local date and time.
+        /// </summary>
+        DateTime LocalNow { get; }
     }
 }

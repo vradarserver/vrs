@@ -75,6 +75,11 @@ namespace VirtualRadar.Database.BaseStation
         /// True if the object has been disposed.
         /// </summary>
         private bool _Disposed;
+
+        /// <summary>
+        /// The object that handles the time for us.
+        /// </summary>
+        private IClock _Clock;
         #endregion
 
         #region Properties
@@ -201,8 +206,6 @@ namespace VirtualRadar.Database.BaseStation
         public Database()
         {
             Provider = new DefaultProvider();
-            _ConfigurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
-            _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
         }
 
         /// <summary>
@@ -252,7 +255,22 @@ namespace VirtualRadar.Database.BaseStation
         }
         #endregion
 
-        #region OpenConnection, CloseConnection, TestConnection
+        #region Initialise, OpenConnection, CloseConnection, TestConnection
+        /// <summary>
+        /// Does first-time initialisation.
+        /// </summary>
+        private void Initialise()
+        {
+            if(_ConfigurationStorage == null) {
+                _ConfigurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            }
+
+            if(_Clock == null) {
+                _Clock = Factory.Singleton.Resolve<IClock>();
+            }
+        }
+
         /// <summary>
         /// Closes the connection and disposes of it if open.
         /// </summary>
@@ -271,6 +289,8 @@ namespace VirtualRadar.Database.BaseStation
         /// </summary>
         private void OpenConnection(string fileName = null, bool? writeSupportEnabled = null)
         {
+            Initialise();
+
             lock(_ConnectionLock) {
                 if(_Connection == null && !_Disposed) {
                     bool inCreateMode = fileName != null && writeSupportEnabled.GetValueOrDefault();
@@ -657,6 +677,31 @@ namespace VirtualRadar.Database.BaseStation
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="icao24"></param>
+        /// <param name="createNewAircraftFunc"></param>
+        /// <returns></returns>
+        public BaseStationAircraft GetOrInsertAircraftByCode(string icao24, Func<string, BaseStationAircraft> createNewAircraftFunc)
+        {
+            if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
+
+            BaseStationAircraft result = null;
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) {
+                    result = Aircraft_GetByIcao(icao24);
+                    if(result == null) {
+                        result = createNewAircraftFunc(icao24);
+                        Aircraft_Insert(result);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="aircraft"></param>
         public void UpdateAircraft(BaseStationAircraft aircraft)
         {
@@ -687,6 +732,164 @@ namespace VirtualRadar.Database.BaseStation
                     Aircraft_UpdateModeSCountry(aircraftId, modeSCountry);
                 }
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        public void RecordEmptyAircraft(string icao)
+        {
+            if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot record empty aircraft when write support is disabled");
+
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) {
+                    var localNow = _Clock.LocalNow;
+
+                    var aircraft = Aircraft_GetByIcao(icao);
+                    RecordEmptyAircraft(aircraft, icao, localNow);
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        public void RecordManyEmptyAircraft(IEnumerable<string> icaos)
+        {
+            if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot record empty aircraft when write support is disabled");
+
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) {
+                    var localNow = _Clock.LocalNow;
+                    Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
+                    var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => normaliseIcao(r.ModeS), r => r);
+
+                    _TransactionHelper.StartTransaction(_Connection);
+                    try {
+                        foreach(var icao in icaos) {
+                            BaseStationAircraft aircraft;
+                            allAircraft.TryGetValue(normaliseIcao(icao), out aircraft);
+                            RecordEmptyAircraft(aircraft, icao, localNow);
+                        }
+                        _TransactionHelper.EndTransaction();
+                    } catch {
+                        _TransactionHelper.RollbackTransaction();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private void RecordEmptyAircraft(BaseStationAircraft aircraft, string icao, DateTime localNow)
+        {
+            if(aircraft != null) {
+                if(String.IsNullOrEmpty(aircraft.Registration)) {
+                    aircraft.LastModified = localNow;
+                    Aircraft_Update(aircraft);
+                }
+            } else {
+                aircraft = new BaseStationAircraft() {
+                    ModeS = icao,
+                    FirstCreated = localNow,
+                    LastModified = localNow,
+                };
+                Aircraft_Insert(aircraft);
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="fillAircraft"></param>
+        /// <returns></returns>
+        public BaseStationAircraft UpsertAircraftByCode(string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        {
+            if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
+
+            BaseStationAircraft result = null;
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) {
+                    var localNow = _Clock.LocalNow;
+
+                    result = Aircraft_GetByIcao(icao);
+                    result = UpsertAircraftByCode(result, icao, fillAircraft);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        /// <param name="fillAircraft"></param>
+        /// <returns></returns>
+        public BaseStationAircraft[] UpsertManyAircraftByCodes(IEnumerable<string> icaos, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        {
+            if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
+
+            var result = new List<BaseStationAircraft>();
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) {
+                    var localNow = _Clock.LocalNow;
+                    Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
+                    var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => normaliseIcao(r.ModeS), r => r);
+
+                    _TransactionHelper.StartTransaction(_Connection);
+                    try {
+                        foreach(var icao in icaos) {
+                            BaseStationAircraft aircraft;
+                            allAircraft.TryGetValue(normaliseIcao(icao), out aircraft);
+                            aircraft = UpsertAircraftByCode(aircraft, icao, fillAircraft);
+                            if(aircraft != null) result.Add(aircraft);
+                        }
+                        _TransactionHelper.EndTransaction();
+                    } catch {
+                        _TransactionHelper.RollbackTransaction();
+                        throw;
+                    }
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        /// <summary>
+        /// Does the work for the UpsertAircraftByCode methods.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <param name="icao"></param>
+        /// <param name="fillAircraft"></param>
+        /// <returns></returns>
+        private BaseStationAircraft UpsertAircraftByCode(BaseStationAircraft aircraft, string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        {
+            var isNewAircraft = aircraft == null;
+            if(isNewAircraft) {
+                aircraft = new BaseStationAircraft() {
+                    ModeS = icao,
+                    FirstCreated = _Clock.LocalNow,
+                    LastModified = _Clock.LocalNow,
+                };
+            }
+
+            aircraft = fillAircraft(aircraft);
+            if(aircraft != null) {
+                if(isNewAircraft) {
+                    Aircraft_Insert(aircraft);
+                } else {
+                    Aircraft_Update(aircraft);
+                }
+            }
+
+            return aircraft;
         }
 
         /// <summary>

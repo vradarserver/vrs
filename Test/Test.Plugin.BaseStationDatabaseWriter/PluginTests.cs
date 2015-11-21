@@ -26,6 +26,7 @@ using VirtualRadar.Interface.StandingData;
 using PluginNS = VirtualRadar.Plugin.BaseStationDatabaseWriter;
 using VirtualRadar.Plugin.BaseStationDatabaseWriter;
 using VirtualRadar.Interface.SQLite;
+using Newtonsoft.Json;
 
 namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
@@ -58,6 +59,9 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         private Mock<IFeedManager> _FeedManger;
         private Mock<IListener> _Listener;
         private Mock<ISQLiteException> _SqliteException;
+        private Mock<IOnlineLookupCache> _OnlineLookupCache;
+        private Options _Options;
+        private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
 
         [TestInitialize]
         public void TestInitialise()
@@ -69,6 +73,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _PluginSettingsStorage.Setup(s => s.Load()).Returns(_PluginSettings);
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
+            _Options = new Options();
 
             _Feeds = new List<Mock<IFeed>>();
             _Listeners = new List<Mock<IListener>>();
@@ -99,6 +104,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _StatusChangedEvent = new EventRecorder<EventArgs>();
 
+            _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
+
             _Plugin = new PluginNS.Plugin();
             _Provider = new Mock<PluginNS.IPluginProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
@@ -107,6 +114,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _OptionsView = new Mock<PluginNS.IOptionsView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _OptionsView.Setup(r => r.DisplayView()).Returns(true);
             _Provider.Setup(p => p.CreateOptionsView()).Returns(_OptionsView.Object);
+            _OnlineLookupCache = TestUtilities.CreateMockImplementation<IOnlineLookupCache>();
+            _Provider.Setup(r => r.CreateOnlineLookupCache()).Returns(_OnlineLookupCache.Object);
             _Plugin.Provider = _Provider.Object;
 
             SetReceiverIdOption(1);
@@ -119,9 +128,22 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Factory.RestoreSnapshot(_ClassFactorySnapshot);
         }
 
-        void SetEnabledOption(bool enabled)                     { _PluginSettings.Write(_Plugin, "Enabled", enabled); }
-        void SetAllowUpdateOfOtherDatabasesOption(bool value)   { _PluginSettings.Write(_Plugin, "AllowUpdateOfOtherDatabases", value); }
-        void SetReceiverIdOption(int value)                     { _PluginSettings.Write(_Plugin, "ReceiverId", value); }
+        void SetEnabledOption(bool enabled)                     { _Options.Enabled = enabled; RecordSettings(); }
+        void SetAllowUpdateOfOtherDatabasesOption(bool value)   { _Options.AllowUpdateOfOtherDatabases = value; RecordSettings(); }
+        void SetReceiverIdOption(int value)                     { _Options.ReceiverId = value; RecordSettings(); }
+        void SetOnlineCacheEnabled(bool enabled)                { _Options.SaveDownloadedAircraftDetails = enabled; RecordSettings(); }
+
+        void RecordSettings()
+        {
+            // Record the old settings in _PluginSettings
+            _PluginSettings.Write(_Plugin, "Enabled",                       _Options.Enabled);
+            _PluginSettings.Write(_Plugin, "AllowUpdateOfOtherDatabases",   _Options.AllowUpdateOfOtherDatabases);
+            _PluginSettings.Write(_Plugin, "ReceiverId",                    _Options.ReceiverId);
+
+            // Record the new method of storing settings in _PluginSettings
+            var jsonText = JsonConvert.SerializeObject(_Options);
+            _PluginSettings.Write(_Plugin, "Options", jsonText);
+        }
 
         void SetConfigurationBaseStationDatabaseFileName(string fileName)
         {
@@ -188,6 +210,34 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Startup_Enables_Online_Cache_If_Option_Enabled()
+        {
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(true);
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(true, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Registers_Online_Cache()
+        {
+            _Plugin.Startup(_StartupParameters);
+
+            _AircraftOnlineLookupManager.Verify(r => r.RegisterCache(_OnlineLookupCache.Object, 100, false), Times.Once());
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Sets_Database_On_Online_Cache()
+        {
+            _OnlineLookupCache.Object.Database = null;
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.IsNotNull(_OnlineLookupCache.Object.Database);
+        }
+
+        [TestMethod]
         public void Plugin_Startup_Does_Not_Enable_Write_Support_On_Database_If_Option_Disabled()
         {
             SetEnabledOption(false);
@@ -209,6 +259,25 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Startup_Disables_Online_Cache_If_Plugin_Disabled()
+        {
+            SetEnabledOption(false);
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Disables_Online_Cache_If_Caching_Is_Disabled()
+        {
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(false);
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
         public void Plugin_Startup_Sets_Correct_Status_If_ReceiverId_Not_Specified()
         {
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
@@ -226,6 +295,17 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Startup_Disables_Online_Cache_If_ReceiverId_Not_Specified()
+        {
+            SetEnabledOption(true);
+            SetReceiverIdOption(0);
+            SetOnlineCacheEnabled(true);
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
         public void Plugin_Startup_Sets_Correct_Status_If_ReceiverId_Is_Invalid()
         {
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
@@ -240,6 +320,17 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             Assert.AreEqual(1, _StatusChangedEvent.CallCount);
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Disables_Online_Cache_If_ReceiverId_Is_Invalid()
+        {
+            SetEnabledOption(true);
+            SetReceiverIdOption(100);
+            SetOnlineCacheEnabled(true);
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
         }
 
         [TestMethod]
@@ -289,6 +380,18 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Startup_Disables_Cache_If_Database_Is_Null()
+        {
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(true);
+            _BaseStationDatabase.Object.FileName = null;
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
         public void Plugin_Startup_Sets_Status_If_Database_Does_Not_Exist()
         {
             SetEnabledOption(true);
@@ -302,6 +405,19 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
             Assert.AreEqual(@"'c:\folder\database.sqb' does not exist", _Plugin.StatusDescription);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Disables_Cache_If_Database_Does_Not_Exist()
+        {
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(true);
+            _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
+            _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(false);
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
         }
 
         [TestMethod]
@@ -322,6 +438,20 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Startup_Disables_Cache_If_Database_Does_Not_Exist_But_Is_Zero_Length()
+        {
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(true);
+            _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
+            _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(true);
+            _Provider.Setup(p => p.FileSize(@"c:\folder\database.sqb")).Returns(0L);
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
         public void Plugin_Startup_Sets_Status_If_Failed_To_Start_Session()
         {
             var exception = new InvalidOperationException();
@@ -335,6 +465,19 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
             Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
             Assert.AreEqual(String.Format("Exception caught when starting session: {0}", exception.Message), _Plugin.StatusDescription);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Disables_Cache_If_Failed_To_Start_Session()
+        {
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(true);
+            var exception = new InvalidOperationException();
+            _BaseStationDatabase.Setup(d => d.InsertSession(It.IsAny<BaseStationSession>())).Callback(() => { throw exception; });
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
         }
 
         [TestMethod]
@@ -384,6 +527,18 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             Assert.AreEqual("Enabled but not updating database", _Plugin.Status);
             Assert.AreEqual("Settings prevent update of databases not created by plugin", _Plugin.StatusDescription);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Disables_Cache_If_Database_Not_Created_By_Plugin()
+        {
+            SetDBHistory(false);
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(true);
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
         }
 
         [TestMethod]
@@ -471,6 +626,18 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Shutdown_Disables_Online_Cache()
+        {
+            SetEnabledOption(true);
+            SetOnlineCacheEnabled(true);
+
+            _Plugin.Startup(_StartupParameters);
+            _Plugin.Shutdown();
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
         public void Plugin_Shutdown_Sets_Status()
         {
             SetEnabledOption(true);
@@ -538,6 +705,21 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Shutdown_Exceptions_Raised_During_Session_Shutdown_Still_Disable_Online_Cache()
+        {
+            var exception = new InvalidOperationException();
+            _BaseStationDatabase.Setup(d => d.UpdateSession(It.IsAny<BaseStationSession>())).Callback(() => { throw exception; });
+
+            SetOnlineCacheEnabled(true);
+            SetEnabledOption(true);
+            _Plugin.Startup(_StartupParameters);
+            _Plugin.Shutdown();
+            _Plugin.Shutdown();
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
         public void Plugin_Shutdown_Does_Nothing_If_Plugin_Disabled()
         {
             SetEnabledOption(false);
@@ -553,6 +735,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         [TestMethod]
         public void Plugin_ShowWinFormsOptionsUI_Displays_View_To_User()
         {
+            _Plugin.Startup(_StartupParameters);
             _Plugin.ShowWinFormsOptionsUI();
 
             _OptionsView.Verify(v => v.DisplayView(), Times.Once());
@@ -580,6 +763,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(worksheet.Bool("Enabled"));
             SetAllowUpdateOfOtherDatabasesOption(worksheet.Bool("AllowUpdateOfOtherDatabases"));
             SetReceiverIdOption(worksheet.Int("ReceiverId"));
+            SetOnlineCacheEnabled(worksheet.Bool("SaveDownloadedAircraftDetails"));
             _Configuration.BaseStationSettings.DatabaseFileName = worksheet.EString("DatabaseFileName");
 
             _OptionsView.Setup(v => v.DisplayView()).Callback(() => {
@@ -587,6 +771,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _OptionsView.VerifySet(v => v.AllowUpdateOfOtherDatabases = worksheet.Bool("AllowUpdateOfOtherDatabases"), Times.Once());
                 _OptionsView.VerifySet(v => v.DatabaseFileName = worksheet.EString("DatabaseFileName"), Times.Once());
                 _OptionsView.VerifySet(v => v.ReceiverId = worksheet.Int("ReceiverId"), Times.Once());
+                _OptionsView.VerifySet(v => v.SaveDownloadedAircraftDetails = worksheet.Bool("SaveDownloadedAircraftDetails"), Times.Once());
             });
 
             _Plugin.Startup(_StartupParameters);
@@ -606,11 +791,16 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _OptionsView.Setup(v => v.AllowUpdateOfOtherDatabases).Returns(worksheet.Bool("AllowUpdateOfOtherDatabases"));
             _OptionsView.Setup(v => v.DatabaseFileName).Returns(worksheet.EString("DatabaseFileName"));
             _OptionsView.Setup(v => v.ReceiverId).Returns(worksheet.Int("ReceiverId"));
+            _OptionsView.Setup(v => v.SaveDownloadedAircraftDetails).Returns(worksheet.Bool("SaveDownloadedAircraftDetails"));
 
             _PluginSettingsStorage.Setup(s => s.Save(It.IsAny<PluginSettings>())).Callback((PluginSettings settings) => {
-                Assert.AreEqual(worksheet.Bool("Enabled"), settings.ReadBool(_Plugin, "Enabled"));
-                Assert.AreEqual(worksheet.Bool("AllowUpdateOfOtherDatabases"), settings.ReadBool(_Plugin, "AllowUpdateOfOtherDatabases"));
-                Assert.AreEqual(worksheet.Int("ReceiverId"), settings.ReadInt(_Plugin, "ReceiverId"));
+                var jsonText = JsonConvert.SerializeObject(new Options() {
+                    Enabled =                       worksheet.Bool("Enabled"),
+                    AllowUpdateOfOtherDatabases =   worksheet.Bool("AllowUpdateOfOtherDatabases"),
+                    ReceiverId =                    worksheet.Int("ReceiverId"),
+                    SaveDownloadedAircraftDetails = worksheet.Bool("SaveDownloadedAircraftDetails"),
+                });
+                Assert.AreEqual(jsonText, settings.ReadString(_Plugin, "Options"));
             });
 
             _ConfigurationStorage.Setup(s => s.Save(It.IsAny<Configuration>())).Callback((Configuration configuration) => {
@@ -657,6 +847,20 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_ShowWinFormsOptionsUI_Disabling_Plugin_Disables_Online_Cache()
+        {
+            _OptionsView.Setup(v => v.PluginEnabled).Returns(false);
+
+            SetOnlineCacheEnabled(true);
+            SetEnabledOption(true);
+            _Plugin.Startup(_StartupParameters);
+
+            _Plugin.ShowWinFormsOptionsUI();
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
         public void Plugin_ShowWinFormsOptionsUI_Disabling_Plugin_Flushes_All_Tracked_Flights_To_Disk()
         {
             SetEnabledOption(true);
@@ -699,6 +903,34 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.ShowWinFormsOptionsUI();
             _BaseStationDatabase.Verify(d => d.UpdateSession(It.IsAny<BaseStationSession>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void Plugin_ShowWinFormsOptionsUI_Enabling_Plugin_And_Disabling_Cache_Disables_Cache()
+        {
+            _OptionsView.Setup(v => v.SaveDownloadedAircraftDetails).Returns(false);
+
+            SetOnlineCacheEnabled(true);
+            SetEnabledOption(true);
+            _Plugin.Startup(_StartupParameters);
+
+            _Plugin.ShowWinFormsOptionsUI();
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
+        public void Plugin_ShowWinFormsOptionsUI_Enabling_Cache_Enables_Cache()
+        {
+            _OptionsView.Setup(v => v.SaveDownloadedAircraftDetails).Returns(true);
+
+            SetOnlineCacheEnabled(false);
+            SetEnabledOption(true);
+            _Plugin.Startup(_StartupParameters);
+
+            _Plugin.ShowWinFormsOptionsUI();
+
+            Assert.AreEqual(true, _OnlineLookupCache.Object.Enabled);
         }
         #endregion
 
@@ -1109,8 +1341,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             BaseStationAircraft aircraft = null;
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
-            _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft a) => { aircraft = a; });
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+                                .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
+                                    aircraft = callback(icao);
+                                    return aircraft;
+                                });
 
             var codeBlock = new CodeBlock() { Country = "Elbonia" };
             _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(codeBlock);
@@ -1121,7 +1356,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Once());
+            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode(It.IsAny<string>(), It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
             Assert.AreEqual(0, aircraft.AircraftID);
             Assert.AreEqual("X", aircraft.ModeS);
             Assert.AreEqual("Elbonia", aircraft.ModeSCountry);
@@ -1165,10 +1400,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             bool sawInsertOfNull = false;
             _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
-            _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft aircraft) => {
-                sawInsertOfNull = aircraft.ModeSCountry == null;
-            });
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+                                .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
+                                    var result = callback(icao);
+                                    sawInsertOfNull = result.ModeSCountry == null;
+                                    return result;
+                                });
 
             _Plugin.Startup(_StartupParameters);
 
@@ -1188,10 +1425,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(new CodeBlock() {
                 Country = "Unknown or unassigned country",
             });
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
-            _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft aircraft) => {
-                sawInsertOfNull = aircraft.ModeSCountry == null;
-            });
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+                                .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
+                                    var result = callback(icao);
+                                    sawInsertOfNull = result.ModeSCountry == null;
+                                    return result;
+                                });
 
             _Plugin.Startup(_StartupParameters);
 
@@ -1208,10 +1447,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
-            _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft aircraft) => {
-                aircraft.AircraftID = 100;
-            });
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+                                .Returns(new BaseStationAircraft() { AircraftID = 100, ModeS = "X", });
 
             _Plugin.Startup(_StartupParameters);
 
@@ -1358,7 +1595,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         public void Plugin_Aircraft_And_Flight_Records_Inserted_Within_Transaction()
         {
             SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("Z")).Returns((BaseStationAircraft)null);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("Z", It.IsAny<Func<string, BaseStationAircraft>>()))
+                                .Callback(() => {
+                                    _BaseStationDatabase.Verify(d => d.StartTransaction(), Times.AtLeastOnce());
+                                })
+                                .Returns(new BaseStationAircraft());
 
             var countStartTransactions = 0;
             var countEndTransactions = 0;
@@ -1370,10 +1611,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             });
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback(() => {
-                _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Once());
-            });
-            _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback(() => {
-                _BaseStationDatabase.Verify(d => d.StartTransaction(), Times.AtLeastOnce());
+                _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("Z", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
             });
 
             _Plugin.Startup(_StartupParameters);
@@ -1409,7 +1647,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             BaseStationFlight flight = null;
             BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "X" };
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight f) => { flight = f; });
 
             _Plugin.Startup(_StartupParameters);
@@ -1428,7 +1666,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             BaseStationAircraft aircraft = new BaseStationAircraft();
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
 
             _Plugin.Startup(_StartupParameters);
 
@@ -1441,8 +1679,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageY));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.GetAircraftByCode("X"), Times.Once());
-            _BaseStationDatabase.Verify(d => d.GetAircraftByCode("Y"), Times.Once());
+            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
+            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("Y", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
         }
 
         [TestMethod]
@@ -1527,8 +1765,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var exception = new InvalidOperationException();
             SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
-            _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback(() => { throw exception; });
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+                                .Callback(() => {  throw exception; });
 
             _Plugin.Startup(_StartupParameters);
 

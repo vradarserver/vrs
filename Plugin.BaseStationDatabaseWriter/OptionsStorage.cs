@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
+using Newtonsoft.Json;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
@@ -23,6 +25,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
     class OptionsStorage
     {
         // Field names in the configuration file
+        private const string OptionsField = "Options";
+
+        // Old field names from when the options were saved field-by-field
         private const string EnabledField = "Enabled";
         private const string AllowUpdateOfOtherDatabasesField = "AllowUpdateOfOtherDatabases";
         private const string ReceiverId = "ReceiverId";
@@ -37,11 +42,19 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
             var pluginSettings = storage.Load();
 
-            return new Options() {
-                Enabled = pluginSettings.ReadBool(plugin, EnabledField).GetValueOrDefault(),
-                AllowUpdateOfOtherDatabases = pluginSettings.ReadBool(plugin, AllowUpdateOfOtherDatabasesField).GetValueOrDefault(),
-                ReceiverId = pluginSettings.ReadInt(plugin, ReceiverId).GetValueOrDefault(),
-            };
+            var jsonText = pluginSettings.ReadString(plugin, OptionsField);
+            var result = String.IsNullOrEmpty(jsonText) ? null : JsonConvert.DeserializeObject<Options>(jsonText);
+
+            if(result == null) {
+                // Support reading old format options from plugin settings
+                result = new Options() {
+                    Enabled = pluginSettings.ReadBool(plugin, EnabledField).GetValueOrDefault(),
+                    AllowUpdateOfOtherDatabases = pluginSettings.ReadBool(plugin, AllowUpdateOfOtherDatabasesField).GetValueOrDefault(),
+                    ReceiverId = pluginSettings.ReadInt(plugin, ReceiverId).GetValueOrDefault(),
+                };
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -54,9 +67,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
 
             var pluginSettings = storage.Load();
-            pluginSettings.Write(plugin, EnabledField, options.Enabled);
-            pluginSettings.Write(plugin, AllowUpdateOfOtherDatabasesField, options.AllowUpdateOfOtherDatabases);
-            pluginSettings.Write(plugin, ReceiverId, options.ReceiverId);
+            pluginSettings.Write(plugin, OptionsField, JsonConvert.SerializeObject(options));
 
             storage.Save(pluginSettings);
         }

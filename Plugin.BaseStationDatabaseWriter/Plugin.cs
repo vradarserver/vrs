@@ -39,11 +39,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         class DefaultProvider : IPluginProvider
         {
-            public DateTime UtcNow                      { get { return DateTime.UtcNow; } }
-            public DateTime LocalNow                    { get { return DateTime.Now; } }
-            public IOptionsView CreateOptionsView()     { return new WinForms.OptionsView(); }
-            public bool FileExists(string fileName)     { return File.Exists(fileName); }
-            public long FileSize(string fileName)       { return new FileInfo(fileName).Length; }
+            public DateTime UtcNow                                  { get { return DateTime.UtcNow; } }
+            public DateTime LocalNow                                { get { return DateTime.Now; } }
+            public IOptionsView CreateOptionsView()                 { return new WinForms.OptionsView(); }
+            public IOnlineLookupCache CreateOnlineLookupCache()     { return new OnlineLookupCache(); }
+            public bool FileExists(string fileName)                 { return File.Exists(fileName); }
+            public long FileSize(string fileName)                   { return new FileInfo(fileName).Length; }
         }
         #endregion
 
@@ -106,6 +107,13 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// and we don't want to clog up other things using the service.
         /// </summary>
         private IHeartbeatService _HeartbeatService;
+
+        /// <summary>
+        /// The aircraft online details object that caches records to BaseStation.sqb. All we do is register
+        /// the cache and control its Enabled property. We do not write records to it, the aircraft online lookup manager
+        /// does that.
+        /// </summary>
+        private IOnlineLookupCache _OnlineLookupCache;
         #endregion
 
         #region Properties
@@ -229,7 +237,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
                 feedManager.FeedsChanged += FeedManager_FeedsChanged;
 
+                _OnlineLookupCache = Provider.CreateOnlineLookupCache();
+                _OnlineLookupCache.Database = _Database;
                 StartSession();
+
+                var onlineLookupManager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
+                onlineLookupManager.RegisterCache(_OnlineLookupCache, 100, letManagerControlLifetime: false);
 
                 // If we process messages on the same thread as the listener raises the message received event on then we
                 // will be running on the same thread as the aircraft list. Our processing can take some time, particularly if many
@@ -262,7 +275,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         public void Shutdown()
         {
-            if(_BackgroundThreadMessageQueue != null) _BackgroundThreadMessageQueue.Dispose();
+            if(_OnlineLookupCache != null)              _OnlineLookupCache.Enabled = false;
+            if(_BackgroundThreadMessageQueue != null)   _BackgroundThreadMessageQueue.Dispose();
             if(_HeartbeatService != null) {
                 _HeartbeatService.SlowTick -= Heartbeat_SlowTick;
                 _HeartbeatService.Dispose();
@@ -282,15 +296,17 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var configuration = configurationStorage.Load();
 
                 view.PluginEnabled = _Options.Enabled;
-                view.AllowUpdateOfOtherDatabases = _Options.AllowUpdateOfOtherDatabases;
-                view.DatabaseFileName = configuration.BaseStationSettings.DatabaseFileName;
-                view.ReceiverId = _Options.ReceiverId;
+                view.AllowUpdateOfOtherDatabases =      _Options.AllowUpdateOfOtherDatabases;
+                view.DatabaseFileName =                 configuration.BaseStationSettings.DatabaseFileName;
+                view.ReceiverId =                       _Options.ReceiverId;
+                view.SaveDownloadedAircraftDetails =    _Options.SaveDownloadedAircraftDetails;
 
                 if(view.DisplayView()) {
                     lock(_SyncLock) {
-                        _Options.Enabled = view.PluginEnabled;
-                        _Options.AllowUpdateOfOtherDatabases = view.AllowUpdateOfOtherDatabases;
-                        _Options.ReceiverId = view.ReceiverId;
+                        _Options.Enabled =                          view.PluginEnabled;
+                        _Options.AllowUpdateOfOtherDatabases =      view.AllowUpdateOfOtherDatabases;
+                        _Options.ReceiverId =                       view.ReceiverId;
+                        _Options.SaveDownloadedAircraftDetails =    view.SaveDownloadedAircraftDetails;
                         var optionsStorage = new OptionsStorage();
                         optionsStorage.Save(this, _Options);
 
@@ -302,6 +318,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         if(_Session != null && !optionsPermit) EndSession();
                         StartSession();
                         HookFeed();
+
+                        if(!_Options.SaveDownloadedAircraftDetails) _OnlineLookupCache.Enabled = false;
+                        else                                        _OnlineLookupCache.Enabled = _Session != null;
                     }
                 }
             }
@@ -391,6 +410,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                                 StartTime = Provider.LocalNow,
                             };
                             _Database.InsertSession(_Session);
+
+                            _OnlineLookupCache.Enabled = _Session != null && _Options.SaveDownloadedAircraftDetails;
                         } catch(ThreadAbortException) {
                         } catch(Exception ex) {
                             AbandonSession(ex, PluginStrings.ExceptionCaughtWhenStartingSession);
@@ -424,6 +445,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on closing session: {0}", ex.ToString());
                     } finally {
                         _Session = null;
+                        _OnlineLookupCache.Enabled = false;
                     }
                 }
             }
@@ -563,12 +585,14 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _Database.StartTransaction();
                 try {
                     var aircraft = FetchOrCreateAircraft(flightRecords.Aircraft.FirstCreated, flightRecords.Aircraft.ModeS);
-                    var flight = CreateFlight(flightRecords.Flight.StartTime, aircraft.AircraftID, flightRecords.Flight.Callsign);
-                    _Database.EndTransaction();
+                    if(aircraft != null) {
+                        var flight = CreateFlight(flightRecords.Flight.StartTime, aircraft.AircraftID, flightRecords.Flight.Callsign);
+                        _Database.EndTransaction();
 
-                    lock(_SyncLock) {
-                        flightRecords.Aircraft = aircraft;
-                        flightRecords.Flight = ApplyFlightDetails(flightRecords.Flight, flight);
+                        lock(_SyncLock) {
+                            flightRecords.Aircraft = aircraft;
+                            flightRecords.Flight = ApplyFlightDetails(flightRecords.Flight, flight);
+                        }
                     }
                 } catch {
                     _Database.RollbackTransaction();
@@ -643,18 +667,17 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <returns></returns>
         private BaseStationAircraft FetchOrCreateAircraft(DateTime now, string icao24)
         {
-            var result = _Database.GetAircraftByCode(icao24);
-            if(result == null) {
-                var codeBlock = _StandingDataManager.FindCodeBlock(icao24);
-                result = new BaseStationAircraft() {
+            var codeBlock = _StandingDataManager.FindCodeBlock(icao24);
+            var result = _Database.GetOrInsertAircraftByCode(icao24, (useIcao) => {
+                var aircraft = new BaseStationAircraft() {
                     AircraftID = 0,
-                    ModeS = icao24,
+                    ModeS = useIcao,
                     FirstCreated = now,
                     LastModified = now,
                     ModeSCountry = codeBlock == null || codeBlock.Country == null || codeBlock.Country.StartsWith("Unknown ", StringComparison.InvariantCultureIgnoreCase) ? null : codeBlock.Country,
                 };
-                _Database.InsertAircraft(result);
-            }
+                return aircraft;
+            });
 
             return result;
         }

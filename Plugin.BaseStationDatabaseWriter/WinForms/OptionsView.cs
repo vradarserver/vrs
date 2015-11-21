@@ -74,6 +74,16 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
             set { SetField(ref _DatabaseFileName, value, () => DatabaseFileName); }
         }
 
+        private bool _SaveDownloadedAircraftDetails;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool SaveDownloadedAircraftDetails
+        {
+            get { return _SaveDownloadedAircraftDetails; }
+            set { SetField(ref _SaveDownloadedAircraftDetails, value, () => SaveDownloadedAircraftDetails); }
+        }
+
         private int _ReceiverId;
         /// <summary>
         /// See interface docs.
@@ -152,6 +162,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
 
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxEnabled,                             r => r.PluginEnabled,                   (r,v) => r.PluginEnabled = v));
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,  r => !r.AllowUpdateOfOtherDatabases,    (r,v) => r.AllowUpdateOfOtherDatabases = !v) { ModelPropertyName = PropertyHelper.ExtractName<OptionsView>(r => r.AllowUpdateOfOtherDatabases) });
+                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxWriteOnlineLookupsToDatabase,        r => r.SaveDownloadedAircraftDetails,   (r,v) => r.SaveDownloadedAircraftDetails = v));
 
                 AddControlBinder(new FileNameStringBinder<OptionsView>(this, fileNameDatabase, r => r.DatabaseFileName, (r,v) => r.DatabaseFileName = v));
 

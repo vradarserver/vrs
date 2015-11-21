@@ -19,6 +19,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
 using Dapper;
+using VirtualRadar.Interface.Database;
 
 namespace VirtualRadar.Database.AircraftOnlineLookupCache
 {
@@ -116,8 +117,10 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// See interface docs.
         /// </summary>
         /// <param name="icao"></param>
+        /// <param name="baseStationAircraft">Unused.</param>
+        /// <param name="searchedForBaseStationAircraft">Unused.</param>
         /// <returns></returns>
-        public AircraftOnlineLookupDetail Load(string icao)
+        public AircraftOnlineLookupDetail Load(string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft)
         {
             lock(_SyncLock) {
                 using(var connection = CreateOpenConnection()) {
@@ -132,8 +135,9 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// See interface docs.
         /// </summary>
         /// <param name="icaos"></param>
+        /// <param name="baseStationAircraft">Unused.</param>
         /// <returns></returns>
-        public Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos)
+        public Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft)
         {
             AircraftOnlineLookupDetail[] details = null;
             var filteredIcaos = icaos.Where(r => !String.IsNullOrEmpty(r)).Select(r => r.ToUpper().Trim()).Distinct().ToArray();
