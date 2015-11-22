@@ -12,8 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
@@ -23,6 +25,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
     class OnlineLookupCache : IOnlineLookupCache
     {
         /// <summary>
+        /// The object that can look up Mode-S countries for us.
+        /// </summary>
+        private IStandingDataManager _StandingDataManager;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public bool Enabled { get; set; }
@@ -31,6 +38,14 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// See interface docs.
         /// </summary>
         public IBaseStationDatabase Database { get; set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public OnlineLookupCache()
+        {
+            _StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+        }
 
         /// <summary>
         /// See interface docs.
@@ -79,7 +94,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 AircraftDetailId =  baseStationAircraft.AircraftID,
                 Icao =              baseStationAircraft.ModeS,
                 Registration =      baseStationAircraft.Registration,
-                Country =           baseStationAircraft.Country,                // not Mode-S country
+                Country =           !String.IsNullOrEmpty(baseStationAircraft.Country) ? baseStationAircraft.Country : baseStationAircraft.ModeSCountry,
                 Manufacturer =      baseStationAircraft.Manufacturer,
                 Model =             baseStationAircraft.Type,
                 ModelIcao =         baseStationAircraft.ICAOTypeCode,
@@ -184,8 +199,14 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <returns></returns>
         private BaseStationAircraft PopulateBaseStationAircraftRecord(AircraftOnlineLookupDetail lookupDetail, BaseStationAircraft baseStationAircraft, DateTime localNow)
         {
+            var codeBlock = _StandingDataManager.FindCodeBlock(lookupDetail.Icao);
+            if(codeBlock != null && codeBlock.Country != null && codeBlock.Country.StartsWith("Unknown ")) {
+                codeBlock = null;
+            }
+
             baseStationAircraft.Registration =      lookupDetail.Registration;
             baseStationAircraft.Country =           lookupDetail.Country;               // If it's coming from SDM then this is also the Mode-S country, but we might not be saving SDM aircraft records...
+            baseStationAircraft.ModeSCountry =      codeBlock == null ? null : codeBlock.Country;
             baseStationAircraft.Manufacturer =      lookupDetail.Manufacturer;
             baseStationAircraft.Type =              lookupDetail.Model;
             baseStationAircraft.ICAOTypeCode =      lookupDetail.ModelIcao;
