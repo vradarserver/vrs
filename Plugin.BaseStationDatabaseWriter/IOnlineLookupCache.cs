@@ -32,5 +32,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// Gets or sets the database to use.
         /// </summary>
         IBaseStationDatabase Database { get; set; }
+
+        /// <summary>
+        /// Raised when <see cref="Enabled"/> is changed.
+        /// </summary>
+        event EventHandler EnabledChanged;
     }
 }

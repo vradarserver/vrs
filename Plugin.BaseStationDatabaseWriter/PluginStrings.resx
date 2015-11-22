@@ -195,4 +195,7 @@
   <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
     <value>Save online lookups in database</value>
   </data>
+  <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Saving online lookups</value>
+  </data>
 </root>
