@@ -307,28 +307,12 @@
                     var listItem = $('<li/>')
                         .appendTo(list);
 
-                    var jqIcon = menuItem.getJQueryIcon();
-                    var vrsIcon = menuItem.getVrsIcon();
-                    var iconImage = menuItem.getLabelImageUrl();
-                    var showIcon = jqIcon || vrsIcon || !iconImage;
-                    var imageElement;
-                    if(showIcon) {
-                        imageElement = $('<span/>').addClass(jqIcon  ? 'dl-icon ui-icon ui-icon-' + jqIcon :
-                                                             vrsIcon ? 'dl-icon colourButton vrsIcon vrsIcon-' + vrsIcon
-                                                                     : 'dl-noicon');
-                    } else {
-                        imageElement = menuItem.getLabelImageElement().addClass('dl-iconImage');
-                        var labelImageClasses = menuItem.getLabelImageClasses();
-                        if(labelImageClasses) imageElement.addClass(labelImageClasses);
-                    }
-                    if(isDisabled) imageElement.addClass('dl-disabled');
-
+                    var imageElement = self._buildMenuItemImageElement(state, menuItem);
                     var link = $('<a/>')
                         .attr('href', '#')
                         .append(imageElement)
-                        .appendTo(listItem),
-                    text = $('<span/>')
-                        .text(menuItem.getLabelText())
+                        .appendTo(listItem);
+                    var text = self._buildMenuItemTextElement(state, menuItem)
                         .appendTo(link);
 
                     if(isDisabled) listItem.addClass('dl-disabled');
@@ -344,6 +328,49 @@
                     previousListItem = listItem;
                 }
             });
+        },
+
+        _buildMenuItemImageElement: function(state, menuItem)
+        {
+            var isDisabled = menuItem.isDisabled();
+            var jqIcon = menuItem.getJQueryIcon();
+            var vrsIcon = menuItem.getVrsIcon();
+            var iconImage = menuItem.getLabelImageUrl();
+            var showIcon = jqIcon || vrsIcon || !iconImage;
+            var imageElement;
+            if(showIcon) {
+                imageElement = $('<span/>').addClass(jqIcon  ? 'dl-icon ui-icon ui-icon-' + jqIcon :
+                                                     vrsIcon ? 'dl-icon colourButton vrsIcon vrsIcon-' + vrsIcon
+                                                             : 'dl-noicon');
+            } else {
+                imageElement = menuItem.getLabelImageElement().addClass('dl-iconImage');
+                var labelImageClasses = menuItem.getLabelImageClasses();
+                if(labelImageClasses) imageElement.addClass(labelImageClasses);
+            }
+            if(isDisabled) imageElement.addClass('dl-disabled');
+
+            return imageElement;
+        },
+
+        _buildMenuItemTextElement: function(state, menuItem)
+        {
+            var textElement = $('<span/>')
+                .text(menuItem.getLabelText());
+
+            return textElement;
+        },
+
+        _refreshMenuItem: function(state, menuItem)
+        {
+            var newImage = this._buildMenuItemImageElement(state, menuItem);
+            var newText  = this._buildMenuItemTextElement(state, menuItem);
+
+            var elements = state.menuItemElements[menuItem.name];
+            elements.image.replaceWith(newImage);
+            elements.text.replaceWith(newText);
+
+            elements.image = newImage;
+            elements.text = newText;
         },
 
         /**
@@ -462,6 +489,7 @@
                 if(stopPropagation) this._destroyMenu(state);
                 if(menuItem.clickCallback) menuItem.clickCallback(menuItem);
                 if(menuItem.subItemsNormalised.length > 0) this._refreshChildItems(state, menuItem);
+                if(!stopPropagation) this._refreshMenuItem(state, menuItem);
             }
         },
 

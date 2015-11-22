@@ -427,30 +427,26 @@
                     result.subItems.push(subMenu);
                 }
 
+                var onDisplay = [];
                 $.each(pageSettings.polarPlotter.getAltitudeRangeConfigs(), function(/** number */ altIdx, /** VRS_POLAR_PLOT_CONFIG */ altitudeRange) {
                     if(altIdx === 1) subMenu.subItems.push(null);
+                    var isChecked = pageSettings.polarPlotter.isOnDisplay(feed.id, altitudeRange.low, altitudeRange.high);
                     subMenu.subItems.push(new VRS.MenuItem({
                         name: subMenu.name + '-' + altIdx,
                         labelKey: function() { return pageSettings.polarPlotter.getSliceRangeDescription(altitudeRange.low, altitudeRange.high); },
                         checked: function() {
-                            return pageSettings.polarPlotter.isOnDisplay(feed.id, altitudeRange.low, altitudeRange.high);
+                            return isChecked;
                         },
                         clickCallback: function() {
-                            pageSettings.polarPlotter.fetchAndToggleByIdentifiers([{
+                            isChecked = pageSettings.polarPlotter.fetchAndToggleByIdentifiers([{
                                 feedId: feed.id,
                                 lowAlt: altitudeRange.low,
                                 highAlt: altitudeRange.high
                             }]);
-                        }
+                        },
+                        noAutoClose: true
                     }));
                 });
-
-                subMenu.subItems.push(null);
-                subMenu.subItems.push(new VRS.MenuItem({
-                    name: subMenu.name + '-removeAll',
-                    labelKey: 'RemoveAll',
-                    clickCallback: function() { pageSettings.polarPlotter.removeAllSlicesForFeed(feed.id); }
-                }));
             });
 
             if(countFeeds > 1) {
@@ -478,7 +474,8 @@
                 checked: function() { return pageSettings.aircraftPlotter.getMovingMap(); },
                 clickCallback: function() {
                     pageSettings.aircraftPlotter.setMovingMap(!pageSettings.aircraftPlotter.getMovingMap());
-                }
+                },
+                noAutoClose: true
             });
         };
 
@@ -496,7 +493,8 @@
                 clickCallback: function() {
                     pageSettings.aircraftPlotterOptions.setShowRangeCircles(!pageSettings.aircraftPlotterOptions.getShowRangeCircles());
                     pageSettings.aircraftPlotterOptions.saveState();
-                }
+                },
+                noAutoClose: true
             });
         };
 
@@ -516,7 +514,8 @@
                 },
                 clickCallback: function() {
                     pageSettings.aircraftListFetcher.setPaused(!pageSettings.aircraftListFetcher.getPaused());
-                }
+                },
+                noAutoClose: true
             });
         };
 
