@@ -198,4 +198,7 @@
   <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
     <value>Saving online lookups</value>
   </data>
+  <data name="WriteOnlineLookupsNotice" xml:space="preserve">
+    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new and existing aircraft records that are more than 28 days old.</value>
+  </data>
 </root>
