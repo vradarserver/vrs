@@ -812,14 +812,20 @@ namespace VirtualRadar.Database.BaseStation
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
 
             BaseStationAircraft result = null;
+            bool updated = false;
+
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
                     var localNow = _Clock.LocalNow;
 
                     result = Aircraft_GetByIcao(icao);
-                    result = UpsertAircraftByCode(result, icao, fillAircraft);
+                    result = UpsertAircraftByCode(result, icao, fillAircraft, ref updated);
                 }
+            }
+
+            if(updated) {
+                OnAircraftUpdated(new EventArgs<BaseStationAircraft>(result));
             }
 
             return result;
@@ -836,6 +842,8 @@ namespace VirtualRadar.Database.BaseStation
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
 
             var result = new List<BaseStationAircraft>();
+            var updated = new List<bool>();
+
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
@@ -846,10 +854,14 @@ namespace VirtualRadar.Database.BaseStation
                     _TransactionHelper.StartTransaction(_Connection);
                     try {
                         foreach(var icao in icaos) {
+                            bool thisUpdated = false;
                             BaseStationAircraft aircraft;
                             allAircraft.TryGetValue(normaliseIcao(icao), out aircraft);
-                            aircraft = UpsertAircraftByCode(aircraft, icao, fillAircraft);
-                            if(aircraft != null) result.Add(aircraft);
+                            aircraft = UpsertAircraftByCode(aircraft, icao, fillAircraft, ref thisUpdated);
+                            if(aircraft != null) {
+                                result.Add(aircraft);
+                                updated.Add(thisUpdated);
+                            }
                         }
                         _TransactionHelper.EndTransaction();
                     } catch {
@@ -857,6 +869,10 @@ namespace VirtualRadar.Database.BaseStation
                         throw;
                     }
                 }
+            }
+
+            for(int i = 0;i < result.Count;++i) {
+                if(updated[i]) OnAircraftUpdated(new EventArgs<BaseStationAircraft>(result[i]));
             }
 
             return result.ToArray();
@@ -868,9 +884,12 @@ namespace VirtualRadar.Database.BaseStation
         /// <param name="aircraft"></param>
         /// <param name="icao"></param>
         /// <param name="fillAircraft"></param>
+        /// <param name="updated"></param>
         /// <returns></returns>
-        private BaseStationAircraft UpsertAircraftByCode(BaseStationAircraft aircraft, string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        private BaseStationAircraft UpsertAircraftByCode(BaseStationAircraft aircraft, string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft, ref bool updated)
         {
+            updated = false;
+
             var isNewAircraft = aircraft == null;
             if(isNewAircraft) {
                 aircraft = new BaseStationAircraft() {
@@ -886,6 +905,7 @@ namespace VirtualRadar.Database.BaseStation
                     Aircraft_Insert(aircraft);
                 } else {
                     Aircraft_Update(aircraft);
+                    updated = true;
                 }
             }
 
