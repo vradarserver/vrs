@@ -511,6 +511,21 @@
         };
 
         /**
+         * Returns true if the altitude range passed across represents all altitudes.
+         * @param {number} lowAltitude
+         * @param {number} highAltitude
+         * @returns {boolean}
+         */
+        this.isAllAltitudes = function(lowAltitude, highAltitude)
+        {
+            var range = that.getNormalisedRange(lowAltitude, highAltitude, -1, -1);
+            lowAltitude = range.lowAlt;
+            highAltitude = range.highAlt;
+
+            return lowAltitude === -1 && highAltitude === -1;
+        };
+
+        /**
          * Returns the AltitudeRangeColour object for the low and high altitude passed across. The altitudes are normalised
          * to -1 before they're used in the search.
          * @param {number} lowAltitude
@@ -703,6 +718,8 @@
         {
             var notOnDisplay = that.removeByIdentifiers(plotIdentifiers);
             that.fetchAndDisplayByIdentifiers(notOnDisplay);
+
+            return notOnDisplay.length > 0;
         };
 
         /**
