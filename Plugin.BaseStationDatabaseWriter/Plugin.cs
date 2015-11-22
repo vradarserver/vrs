@@ -239,6 +239,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
                 _OnlineLookupCache = Provider.CreateOnlineLookupCache();
                 _OnlineLookupCache.Database = _Database;
+                _OnlineLookupCache.EnabledChanged += OnlineLookupCache_EnabledChanged;
                 StartSession();
 
                 var onlineLookupManager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
@@ -941,6 +942,18 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             UnhookFeed();
             StartSession();
             HookFeed();
+        }
+
+        /// <summary>
+        /// Called when the online cache changes status.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void OnlineLookupCache_EnabledChanged(object sender, EventArgs args)
+        {
+            if(String.IsNullOrEmpty(StatusDescription) || StatusDescription == PluginStrings.WritingOnlineLookupsToDatabase) {
+                StatusDescription = _OnlineLookupCache.Enabled ? PluginStrings.WritingOnlineLookupsToDatabase : null;
+            }
         }
         #endregion
     }

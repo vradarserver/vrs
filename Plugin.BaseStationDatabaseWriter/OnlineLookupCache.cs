@@ -29,15 +29,39 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         private IStandingDataManager _StandingDataManager;
 
+        private bool _Enabled;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled
+        {
+            get { return _Enabled; }
+            set {
+                if(value != _Enabled) {
+                    _Enabled = value;
+                    OnEnabledChanged(EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public IBaseStationDatabase Database { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler EnabledChanged;
+
+        /// <summary>
+        /// Raises <see cref="EnabledChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnEnabledChanged(EventArgs args)
+        {
+            EventHelper.Raise(EnabledChanged, this, args);
+        }
 
         /// <summary>
         /// Creates a new object.
