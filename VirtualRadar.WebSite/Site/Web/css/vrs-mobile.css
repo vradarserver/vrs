@@ -14,3 +14,7 @@
 .ui-dialog * {
     -webkit-transform: translate3d(0, 0, 0);
 }
+.mapButton {
+    padding-top:    11px;
+    padding-bottom: 11px;
+}

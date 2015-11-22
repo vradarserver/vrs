@@ -227,7 +227,7 @@
                                 menu:                   pageSettings.settingsMenu,
                                 showButtonTrigger:      false,
                                 triggerElement:         pageSettings.mapButton,
-                                alignment:              VRS.Alignment.Right
+                                alignment:              objSettings.settingsMenuAlignment
                             }));
                         pageSettings.menuPlugin = VRS.jQueryUIHelper.getMenuPlugin(pageSettings.mapJQ);
                     }
