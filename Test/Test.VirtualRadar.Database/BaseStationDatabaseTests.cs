@@ -1661,6 +1661,37 @@ namespace Test.VirtualRadar.Database
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.AreEqual("ABC", aircraft.Registration);
         }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Raises_AircraftUpdated_On_Update()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "ABC" });
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertAircraftByCode("123456", r => {
+                r.Registration = "XYZ";
+                return r;
+            });
+
+            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
+            Assert.AreEqual("123456", _AircraftUpdatedEvent.Args.Value.ModeS);
+            Assert.AreEqual("XYZ", _AircraftUpdatedEvent.Args.Value.Registration);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertAircraftByCode_Does_Not_Raise_AircraftUpdated_On_Insert()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertAircraftByCode("123456", r => {
+                r.Registration = "XYZ";
+                return r;
+            });
+
+            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
+        }
         #endregion
 
         #region UpsertManyAircraftByCodes
@@ -1821,6 +1852,40 @@ namespace Test.VirtualRadar.Database
 
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.AreEqual("ABC", aircraft.Registration);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Raises_AircraftUpdated_On_Update()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "===" });
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "AAAAAA", "BBBBBB", }, r => {
+                r.Registration = r.ModeS == "AAAAAA" ? "111" : "222";
+                return r;
+            });
+
+            Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
+            Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
+            Assert.AreEqual("222", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "BBBBBB").Value.Registration);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_UpsertManyAircraftByCodes_Does_Not_Raise_AircraftUpdated_On_Insert()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertManyAircraftByCodes(new string[] { "AAAAAA", "BBBBBB", }, r => {
+                r.Registration = r.ModeS == "AAAAAA" ? "111" : "222";
+                return r;
+            });
+
+            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
+            Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
         }
         #endregion
 
