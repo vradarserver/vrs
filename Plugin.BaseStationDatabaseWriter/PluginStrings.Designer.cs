@@ -286,6 +286,15 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new and existing aircraft records that are more than 28 days old..
+        /// </summary>
+        public static string WriteOnlineLookupsNotice {
+            get {
+                return ResourceManager.GetString("WriteOnlineLookupsNotice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save online lookups in database.
         /// </summary>
         public static string WriteOnlineLookupsToDatabase {
