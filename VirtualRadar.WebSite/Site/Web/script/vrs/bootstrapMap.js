@@ -25,7 +25,7 @@
      * @param {Object}             [objSettings.mapSettings]            Optional settings to send to vrs.vrsMap.open.
      * @param {bool}               [objSettings.suppressTitleUpdate]    True if we don't want the page title to show the count of aircraft.
      * @param {VRS.MapPosition}    [objSettings.settingsPosition]       Where to draw the settings button. Defaults to top-right.
-     * @param {VRS.Alignment}      [objSettings.settingsMenuAlignment]  The alignment of the settings menu. Defaults to VRS.Alignment.Right.
+     * @param {VRS.Alignment}      [objSettings.settingsMenuAlignment]  The alignment of the settings menu. Defaults to VRS.Alignment.Left.
      * @param {bool}               [objSettings.showOptionsInPage]      True if options are to be shown in a separate page, false if they're to be shown in a dialog. Default false.
      * @param {string}             [objSettings.reportUrl]              The base URL for reports.
      */
@@ -36,8 +36,8 @@
         objSettings = $.extend({
             dispatcherName:         'VRS.BootstrapMap',
             suppressTitleUpdate:    false,
-            settingsPosition:       VRS.MapPosition.TopRight,
-            settingsMenuAlignment:  VRS.Alignment.Right,
+            settingsPosition:       VRS.MapPosition.TopLeft,
+            settingsMenuAlignment:  VRS.Alignment.Left,
             showOptionsInPage:      false
         }, objSettings);
         VRS.Bootstrap.call(this, objSettings);

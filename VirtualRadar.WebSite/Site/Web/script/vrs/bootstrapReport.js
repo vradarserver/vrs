@@ -24,7 +24,7 @@
      * @param {string}              objSettings.configPrefix            MANDATORY - the configuration prefix to use.
      * @param {boolean=}            objSettings.suppressTitleUpdate     True if the page title should be left alone, false if it can be modified.
      * @param {VRS.MapPosition}    [objSettings.settingsPosition]       Where to draw the settings button. Defaults to top-right.
-     * @param {VRS.Alignment}      [objSettings.settingsMenuAlignment]  The alignment of the settings menu. Defaults to VRS.Alignment.Right.
+     * @param {VRS.Alignment}      [objSettings.settingsMenuAlignment]  The alignment of the settings menu. Defaults to VRS.Alignment.Left.
      */
     VRS.BootstrapReport = function(objSettings)
     {
@@ -33,8 +33,8 @@
         objSettings = $.extend({
             dispatcherName:         'VRS.BootstrapReport',
             suppressTitleUpdate:    false,
-            settingsPosition:       VRS.MapPosition.TopRight,
-            settingsMenuAlignment:  VRS.Alignment.Right
+            settingsPosition:       VRS.MapPosition.TopLeft,
+            settingsMenuAlignment:  VRS.Alignment.Left
         }, objSettings);
         VRS.Bootstrap.call(this, objSettings);
         var base = this.getBase();
