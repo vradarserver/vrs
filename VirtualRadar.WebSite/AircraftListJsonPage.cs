@@ -160,16 +160,56 @@ namespace VirtualRadar.WebSite
             }
             if(result.SortBy.Count == 0) result.SortBy.Add(new KeyValuePair<string,bool>(AircraftComparerColumn.FirstSeen, false));
 
-            var previousAircraftIds = args.Request.Headers["X-VirtualRadarServer-AircraftIds"];
+            if((args.Request.HttpMethod ?? "").ToUpper() == "POST") {
+                ExtractPreviousAircraftIdsFromPostBody(args.Request, result.PreviousAircraft);
+            } else {
+                ExtractPreviousAircraftIdsFromHeader(args.Request, result.PreviousAircraft);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Extracts the identifiers for the aircraft known to the site from the post body.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ids"></param>
+        private void ExtractPreviousAircraftIdsFromPostBody(IRequest request, List<int> ids)
+        {
+            var icaos = request.FormValues["icaos"];
+            if(!String.IsNullOrEmpty(icaos)) {
+                foreach(var icao in icaos.Split('-')) {
+                    try {
+                        var id = Convert.ToInt32(icao, 16);
+                        if(id >= 0x000000 && id <= 0xffffff) {
+                            ids.Add(id);
+                        }
+                    } catch {
+                        // Ignore garbage that comes in on the post
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extracts the identifiers for the aircraft known to the site from the header.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ids"></param>
+        /// <remarks>
+        /// This method is defunct, the site stopped using it after version 2.2. However I'm keeping the
+        /// interface intact because I'd published it on the site and third parties might be making use of it.
+        /// </remarks>
+        private void ExtractPreviousAircraftIdsFromHeader(IRequest request, List<int> ids)
+        {
+            var previousAircraftIds = request.Headers["X-VirtualRadarServer-AircraftIds"];
             if(!String.IsNullOrEmpty(previousAircraftIds)) {
                 var decodedPreviousAircraftIds = HttpUtility.UrlDecode(previousAircraftIds);
                 foreach(var chunk in decodedPreviousAircraftIds.Split(',')) {
                     int id;
-                    if(int.TryParse(chunk, out id)) result.PreviousAircraft.Add(id);
+                    if(int.TryParse(chunk, out id)) ids.Add(id);
                 }
             }
-
-            return result;
         }
 
         /// <summary>

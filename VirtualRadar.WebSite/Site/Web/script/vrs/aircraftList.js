@@ -251,10 +251,11 @@
 
         /**
          * Raises the FetchingList event.
-         * @param {*} xhrParams  The object holding the URL query string parameters to pass to the server.
-         * @param {*} xhrHeaders The object holding the HTML headers to pass to the server.
+         * @param {*} xhrParams     The object holding the URL query string parameters to pass to the server.
+         * @param {*} xhrHeaders    The object holding the HTML headers to pass to the server.
+         * @param {*} xhrPostBody   The object holding the post body to pass to the server.
          */
-        this.raiseFetchingList = function(xhrParams, xhrHeaders) { _Dispatcher.raise(_Events.fetchingList, [ xhrParams, xhrHeaders ]); };
+        this.raiseFetchingList = function(xhrParams, xhrHeaders, xhrPostBody) { _Dispatcher.raise(_Events.fetchingList, [ xhrParams, xhrHeaders, xhrPostBody ]); };
 
         /**
          * Unhooks an event that was hooked on the object.
@@ -263,7 +264,7 @@
         this.unhook = function(hookResult) { _Dispatcher.unhook(hookResult); };
         //endregion
 
-        //region -- foreachAircraft, findAircraftById, getAllAircraftIdsString
+        //region -- foreachAircraft, findAircraftById, getAllAircraftIdsString, getAllAircraftIcaosString
         /**
          * Loops through every aircraft passing each in turn to a callback.
          * @param {function(VRS.Aircraft)} callback
@@ -304,6 +305,21 @@
             _Aircraft.foreachAircraft(function(aircraft) {
                 if(result) result += ',';
                 result += aircraft.id;
+            });
+
+            return result;
+        };
+
+        /**
+         * Returns the ICAO of every aircraft being tracked as a hyphen-delimited string.
+         * @returns {string}
+         */
+        this.getAllAircraftIcaosString = function()
+        {
+            var result = '';
+            _Aircraft.foreachAircraft(function(aircraft) {
+                if(result) result += '-';
+                result += aircraft.icao.val;
             });
 
             return result;

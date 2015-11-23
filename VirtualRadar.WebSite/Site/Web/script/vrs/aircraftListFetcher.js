@@ -542,13 +542,23 @@
             }
 
             var headers = { };
-            if(!getFreshList) headers['X-VirtualRadarServer-AircraftIds'] = settings.aircraftList.getAllAircraftIdsString();
 
-            settings.aircraftList.raiseFetchingList(params, headers);
+            var postBody = { };
+            if(!getFreshList) {
+                postBody.icaos = settings.aircraftList.getAllAircraftIcaosString();
+            }
 
+            settings.aircraftList.raiseFetchingList(params, headers, postBody);
+
+            var url = VRS.browserHelper.formUrl(
+                settings.fetchFsxList ? VRS.globalOptions.aircraftListFlightSimUrl : VRS.globalOptions.aircraftListUrl,
+                params,
+                false
+            );
             $.ajax({
-                url:      settings.fetchFsxList ? VRS.globalOptions.aircraftListFlightSimUrl : VRS.globalOptions.aircraftListUrl,
-                data:     params,
+                url:      url,
+                data:     postBody,
+                method:   'POST',
                 dataType: VRS.globalOptions.aircraftListDataType,
                 headers:  headers,
                 timeout:  VRS.globalOptions.aircraftListTimeout,
