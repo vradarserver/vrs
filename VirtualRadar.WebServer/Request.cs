@@ -161,7 +161,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         private void ExtractFormValues()
         {
-            var contentType = _Request.ContentType;
+            var contentType = _Request.ContentType ?? "";
             var parameterIndex = contentType.IndexOf(';');
             var parameter = parameterIndex == -1 ? "" : contentType.Substring(parameterIndex + 1).Trim();
             if(parameterIndex != -1) contentType = contentType.Substring(0, parameterIndex).Trim();
