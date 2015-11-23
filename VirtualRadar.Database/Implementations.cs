@@ -33,7 +33,6 @@ namespace VirtualRadar.Database
             factory.Register<IAutoConfigBaseStationDatabase, BaseStation.AutoConfigBaseStationDatabase>();
             factory.Register<IBackgroundDataDownloader, StandingData.BackgroundDataDownloader>();
             factory.Register<IBaseStationDatabase, BaseStation.Database>();
-            factory.Register<IBasicAircraftLookupDatabase, BasicAircraft.BasicAircraftLookupDatabase>();
             factory.Register<ICallsignRouteFetcher, StandingData.CallsignRouteFetcher>();
             factory.Register<ILogDatabase, Log.Database>();
             factory.Register<IStandaloneAircraftOnlineLookupCache, AircraftOnlineLookupCache.StandaloneAircraftOnlineLookupCache>();

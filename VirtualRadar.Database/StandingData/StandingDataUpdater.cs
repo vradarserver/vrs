@@ -129,21 +129,6 @@ namespace VirtualRadar.Database.StandingData
         private const string DatabaseUrl = "http://www.virtualradarserver.co.uk/Files/StandingData.sqb.gz";
 
         /// <summary>
-        /// The filename of the Basic Aircraft Lookup database.
-        /// </summary>
-        private const string BasicAircraftLookupFileName = "BasicAircraftLookup.sqb";
-
-        /// <summary>
-        /// The temporary file for the Basic Aircraft Lookup database.
-        /// </summary>
-        private const string BasicAircraftLookupTempName = BasicAircraftLookupFileName + ".tmp";
-
-        /// <summary>
-        /// The URL of the Basic Aircraft Lookup database.
-        /// </summary>
-        private const string BasicAircraftLookupUrl = "http://www.virtualradarserver.co.uk/Files/BasicAircraftLookup.sqb.gz";
-
-        /// <summary>
         /// The name of the file that describes the dates and state of the other files.
         /// </summary>
         public const string StateFileName = "FlightNumberCoverage.csv";
@@ -213,8 +198,6 @@ namespace VirtualRadar.Database.StandingData
                         var stateTempName = Path.Combine(folder, StateTempName);
                         var databaseFileName = Path.Combine(folder, DatabaseFileName);
                         var databaseTempName = Path.Combine(folder, DatabaseTempName);
-                        var basicLookupFileName = Path.Combine(folder, BasicAircraftLookupFileName);
-                        var basicLookupTempName = Path.Combine(folder, BasicAircraftLookupTempName);
 
                         string[] stateLines = Provider.DownloadLines(StateFileUrl);
                         string[] remoteStateChunks = stateLines[1].Split(new char[] { ',' });
@@ -232,20 +215,6 @@ namespace VirtualRadar.Database.StandingData
                                 Provider.MoveFile(databaseTempName, databaseFileName);
                             }
                             standingDataManager.Load();
-                        }
-
-                        string remoteBasicLookupChecksum = remoteStateChunks.Length > 8 ? remoteStateChunks[8] : "MISSING-REMOTE";
-                        string localBasicLookupChecksum = localStateChunks.Length > 8 ? localStateChunks[8] : "MISSING-LOCAL";
-                        if(remoteBasicLookupChecksum != localBasicLookupChecksum || !Provider.FileExists(basicLookupFileName)) {
-                            updateState = true;
-                            Provider.DownloadAndDecompressFile(BasicAircraftLookupUrl, basicLookupTempName);
-
-                            var basicAircraftLookup = Factory.Singleton.Resolve<IBasicAircraftLookupDatabase>().Singleton;
-                            lock(basicAircraftLookup.Lock) {
-                                basicAircraftLookup.PrepareForUpdate();
-                                Provider.MoveFile(basicLookupTempName, basicLookupFileName);
-                            }
-                            basicAircraftLookup.FinishedUpdate();
                         }
 
                         if(updateState) {

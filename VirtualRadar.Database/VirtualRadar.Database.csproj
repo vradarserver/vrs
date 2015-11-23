@@ -65,9 +65,6 @@
     </Compile>
     <Compile Include="CriteriaAndProperties.cs" />
     <Compile Include="BaseStation\Database.cs" />
-    <Compile Include="BasicAircraft\BasicAircraftTable.cs" />
-    <Compile Include="BasicAircraft\BasicModelTable.cs" />
-    <Compile Include="BasicAircraft\BasicOperatorTable.cs" />
     <Compile Include="DynamicSqlBuilder.cs" />
     <Compile Include="Log\Commands.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -84,7 +81,6 @@
     <Compile Include="SqlMapper.cs" />
     <Compile Include="SqlPreparedCommand.cs" />
     <Compile Include="StandingData\BackgroundDataDownloader.cs" />
-    <Compile Include="BasicAircraft\BasicAircraftLookupDatabase.cs" />
     <Compile Include="StandingData\CallsignRouteFetcher.cs" />
     <Compile Include="StandingData\StandingDataManager.cs" />
     <Compile Include="StandingData\StandingDataUpdater.cs" />
