@@ -271,7 +271,7 @@ namespace VirtualRadar.Library
             var result = aircraft == null;
             if(!result) {
                 var lastUpdatedUtc = aircraft.LastModified.Year < 2 ? aircraft.LastModified : aircraft.LastModified.ToUniversalTime();
-                result = _AircraftOnlineLookupManager.RecordNeedsRefresh(aircraft.Registration, lastUpdatedUtc);
+                result = _AircraftOnlineLookupManager.RecordNeedsRefresh(aircraft.Registration, aircraft.Manufacturer, aircraft.Type, aircraft.RegisteredOwners, lastUpdatedUtc);
             }
 
             return result;
