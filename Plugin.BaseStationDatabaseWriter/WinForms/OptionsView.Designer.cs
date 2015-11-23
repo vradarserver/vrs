@@ -58,7 +58,7 @@
             this.buttonOK.Location = new System.Drawing.Point(377, 230);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 9;
+            this.buttonOK.TabIndex = 10;
             this.buttonOK.Text = "::OK::";
             this.buttonOK.UseVisualStyleBackColor = true;
             // 
@@ -69,7 +69,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(458, 230);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 10;
+            this.buttonCancel.TabIndex = 11;
             this.buttonCancel.Text = "::Cancel::";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -79,17 +79,17 @@
             this.label1.Location = new System.Drawing.Point(12, 89);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(112, 13);
-            this.label1.TabIndex = 5;
+            this.label1.TabIndex = 4;
             this.label1.Text = "::DatabaseFileName:::";
             // 
             // linkLabelUseDefaultFileName
             // 
             this.linkLabelUseDefaultFileName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabelUseDefaultFileName.Location = new System.Drawing.Point(150, 110);
+            this.linkLabelUseDefaultFileName.Location = new System.Drawing.Point(148, 110);
             this.linkLabelUseDefaultFileName.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.linkLabelUseDefaultFileName.Name = "linkLabelUseDefaultFileName";
-            this.linkLabelUseDefaultFileName.Size = new System.Drawing.Size(349, 13);
-            this.linkLabelUseDefaultFileName.TabIndex = 7;
+            this.linkLabelUseDefaultFileName.Size = new System.Drawing.Size(351, 13);
+            this.linkLabelUseDefaultFileName.TabIndex = 6;
             this.linkLabelUseDefaultFileName.TabStop = true;
             this.linkLabelUseDefaultFileName.Text = "::UseDefaultFileName::";
             this.linkLabelUseDefaultFileName.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -101,7 +101,7 @@
             this.buttonCreateDatabase.Location = new System.Drawing.Point(148, 230);
             this.buttonCreateDatabase.Name = "buttonCreateDatabase";
             this.buttonCreateDatabase.Size = new System.Drawing.Size(147, 23);
-            this.buttonCreateDatabase.TabIndex = 8;
+            this.buttonCreateDatabase.TabIndex = 9;
             this.buttonCreateDatabase.Text = "::CreateDatabase::";
             this.buttonCreateDatabase.UseVisualStyleBackColor = true;
             this.buttonCreateDatabase.Click += new System.EventHandler(this.buttonCreateDatabase_Click);
@@ -122,7 +122,7 @@
             this.label2.Location = new System.Drawing.Point(12, 64);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(65, 13);
-            this.label2.TabIndex = 3;
+            this.label2.TabIndex = 2;
             this.label2.Text = "::Receiver:::";
             // 
             // fileNameDatabase
@@ -135,7 +135,7 @@
             this.fileNameDatabase.Location = new System.Drawing.Point(148, 87);
             this.fileNameDatabase.Name = "fileNameDatabase";
             this.fileNameDatabase.Size = new System.Drawing.Size(385, 20);
-            this.fileNameDatabase.TabIndex = 6;
+            this.fileNameDatabase.TabIndex = 5;
             // 
             // comboBoxReceiverId
             // 
@@ -144,7 +144,7 @@
             this.comboBoxReceiverId.Location = new System.Drawing.Point(148, 59);
             this.comboBoxReceiverId.Name = "comboBoxReceiverId";
             this.comboBoxReceiverId.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxReceiverId.TabIndex = 4;
+            this.comboBoxReceiverId.TabIndex = 3;
             this.comboBoxReceiverId.ValueMember = "Value";
             // 
             // checkBoxWriteOnlineLookupsToDatabase
@@ -153,7 +153,7 @@
             this.checkBoxWriteOnlineLookupsToDatabase.Location = new System.Drawing.Point(148, 129);
             this.checkBoxWriteOnlineLookupsToDatabase.Name = "checkBoxWriteOnlineLookupsToDatabase";
             this.checkBoxWriteOnlineLookupsToDatabase.Size = new System.Drawing.Size(193, 17);
-            this.checkBoxWriteOnlineLookupsToDatabase.TabIndex = 2;
+            this.checkBoxWriteOnlineLookupsToDatabase.TabIndex = 7;
             this.checkBoxWriteOnlineLookupsToDatabase.Text = "::WriteOnlineLookupsToDatabase::";
             this.checkBoxWriteOnlineLookupsToDatabase.UseVisualStyleBackColor = true;
             // 
@@ -165,7 +165,7 @@
             this.label3.Location = new System.Drawing.Point(148, 153);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(385, 74);
-            this.label3.TabIndex = 11;
+            this.label3.TabIndex = 8;
             this.label3.Text = "::WriteOnlineLookupsNotice::";
             // 
             // OptionsView
