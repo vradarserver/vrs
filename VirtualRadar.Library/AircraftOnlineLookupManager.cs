@@ -233,15 +233,22 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         /// <param name="registration"></param>
+        /// <param name="manufacturer"></param>
+        /// <param name="model"></param>
+        /// <param name="operatorName"></param>
         /// <param name="lastUpdatedUtc"></param>
         /// <returns></returns>
-        public bool RecordNeedsRefresh(string registration, DateTime lastUpdatedUtc)
+        public bool RecordNeedsRefresh(string registration, string manufacturer, string model, string operatorName, DateTime lastUpdatedUtc)
         {
             Initialise();
 
             var now = _Clock.UtcNow;
-            var result =          String.IsNullOrEmpty(registration) && lastUpdatedUtc.AddDays(1) <= now;
-            if(!result) result = !String.IsNullOrEmpty(registration) && lastUpdatedUtc.AddDays(28) <= now;
+            var detailsPresent = !String.IsNullOrEmpty(registration) ||
+                                 !String.IsNullOrEmpty(manufacturer) ||
+                                 !String.IsNullOrEmpty(model) ||
+                                 !String.IsNullOrEmpty(operatorName);
+            var result =          !detailsPresent && lastUpdatedUtc.AddDays(1) <= now;
+            if(!result) result =   detailsPresent && lastUpdatedUtc.AddDays(28) <= now;
 
             return result;
         }
@@ -308,7 +315,7 @@ namespace VirtualRadar.Library
             var result = record == null;
 
             if(!result && record.UpdatedUtc != null) {
-                result = RecordNeedsRefresh(record.Registration, record.UpdatedUtc.Value);
+                result = RecordNeedsRefresh(record.Registration, record.Manufacturer, record.Model, record.Operator, record.UpdatedUtc.Value);
             }
 
             return result;

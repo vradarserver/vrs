@@ -714,20 +714,20 @@ namespace Test.VirtualRadar.Library
         #region RecordNeedsRefresh
         class RecordNeedsRefresh
         {
-            public string Registration      { get; set; }
+            public string Value      { get; set; }
             public DateTime LastUpdatedUtc  { get; set; }
             public bool ExpectedResult      { get; set; }
 
-            public RecordNeedsRefresh(string registration, DateTime lastUpdatedUtc, bool expectedResult)
+            public RecordNeedsRefresh(string value, DateTime lastUpdatedUtc, bool expectedResult)
             {
-                Registration = registration;
+                Value = value;
                 LastUpdatedUtc = lastUpdatedUtc;
                 ExpectedResult = expectedResult;
             }
 
             public override string ToString()
             {
-                return String.Format("Registration = {0}, LastUpdatedUtc = {1}, ExpectedResult = {2}", Registration, LastUpdatedUtc, ExpectedResult);
+                return String.Format("Value = {0}, LastUpdatedUtc = {1}, ExpectedResult = {2}", Value, LastUpdatedUtc, ExpectedResult);
             }
         }
 
@@ -748,8 +748,15 @@ namespace Test.VirtualRadar.Library
                 new RecordNeedsRefresh("A",  _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(1), false),
                 new RecordNeedsRefresh("A",  _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(-2), true),
             }) {
-                var result = _Manager.RecordNeedsRefresh(testParams.Registration, testParams.LastUpdatedUtc);
-                Assert.AreEqual(testParams.ExpectedResult, result, "Got {0} for {1}", result, testParams);
+                foreach(var propertyName in new string[] { "Registration", "Manufacturer", "Model", "Operator" }) {
+                    var registration = propertyName == "Registration" ? testParams.Value : null;
+                    var manufacturer = propertyName == "Manufacturer" ? testParams.Value : null;
+                    var model        = propertyName == "Model"        ? testParams.Value : null;
+                    var operatorName = propertyName == "Operator"     ? testParams.Value : null;
+
+                    var result = _Manager.RecordNeedsRefresh(registration, manufacturer, model, operatorName, testParams.LastUpdatedUtc);
+                    Assert.AreEqual(testParams.ExpectedResult, result, "Got {0} for {1} (passing {2})", result, testParams, propertyName);
+                }
             }
         }
         #endregion

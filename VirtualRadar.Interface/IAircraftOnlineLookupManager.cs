@@ -96,8 +96,11 @@ namespace VirtualRadar.Interface
         /// Returns true if the details passed across indicate that the aircraft that they belong to needs refreshing.
         /// </summary>
         /// <param name="registration"></param>
+        /// <param name="manufacturer"></param>
+        /// <param name="model"></param>
+        /// <param name="operatorName"></param>
         /// <param name="lastUpdatedUtc"></param>
         /// <returns></returns>
-        bool RecordNeedsRefresh(string registration, DateTime lastUpdatedUtc);
+        bool RecordNeedsRefresh(string registration, string manufacturer, string model, string operatorName, DateTime lastUpdatedUtc);
     }
 }
