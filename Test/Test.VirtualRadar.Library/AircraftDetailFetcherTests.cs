@@ -39,7 +39,6 @@ namespace Test.VirtualRadar.Library
         private Mock<IAircraft> _Aircraft;
         private Mock<IHeartbeatService> _Heartbeat;
         private Mock<IAutoConfigBaseStationDatabase> _AutoConfigDatabase;
-        private Mock<IBasicAircraftLookupDatabase> _BasicAircraftLookupDatabase;
         private Mock<IBaseStationDatabase> _Database;
         private BaseStationAircraftAndFlightsCount _DatabaseAircraftAndFlights;
         private BaseStationAircraft _DatabaseAircraft;
@@ -87,7 +86,6 @@ namespace Test.VirtualRadar.Library
             _AutoConfigDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();
             _Database = TestUtilities.CreateMockInstance<IBaseStationDatabase>();
             _AutoConfigDatabase.Setup(r => r.Database).Returns(_Database.Object);
-            _BasicAircraftLookupDatabase = TestUtilities.CreateMockSingleton<IBasicAircraftLookupDatabase>();
             _DatabaseAircraftAndFlights = null;
             _GetManyAircraftAndFlightsByCodes = new List<string>();
             _GetManyAircraftByCodes = new List<string>();

@@ -41,16 +41,6 @@ namespace VirtualRadar.Interface
         public AircraftOnlineLookupDetail OnlineAircraft { get; set; }
 
         /// <summary>
-        /// Gets or sets the basic model record. This can be null if no record has yet been fetched.
-        /// </summary>
-        public BasicModel BasicModel { get; set; }
-
-        /// <summary>
-        /// Gets or sets the basic operator record. This can be null if no record has yet been fetched.
-        /// </summary>
-        public BasicOperator BasicOperator { get; set; }
-
-        /// <summary>
         /// Gets or sets information about the picture associated with the aircraft. This can be null if
         /// no picture has been found for the aircraft (yet).
         /// </summary>
