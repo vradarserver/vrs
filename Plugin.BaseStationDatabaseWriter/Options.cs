@@ -40,5 +40,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// Gets or sets a value indicating that aircraft details downloaded from the Internet should be saved to BaseStation.sqb.
         /// </summary>
         public bool SaveDownloadedAircraftDetails { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the cache should be saving both new / missing and out-of-date aircraft.
+        /// </summary>
+        public bool RefreshOutOfDateAircraft { get; set; }
     }
 }

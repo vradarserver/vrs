@@ -38,6 +38,11 @@ namespace Test.VirtualRadar.Library
                 get { return false; }
             }
 
+            public bool RefreshOutOfDateAircraft
+            {
+                get { return false; }
+            }
+
             public bool IsWriteOnly { get; set; }
 
             public AircraftOnlineLookupDetail Load(string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft)
@@ -143,6 +148,7 @@ namespace Test.VirtualRadar.Library
         private void SetupCache(int cacheNumber, Mock<IAircraftOnlineLookupCache> cache, List<string> knownIcaos)
         {
             cache.SetupGet(r => r.Enabled).Returns(true);
+            cache.SetupGet(r => r.RefreshOutOfDateAircraft).Returns(true);
 
             cache.Setup(r => r.Load(It.IsAny<string>(), It.IsAny<BaseStationAircraft>(), It.IsAny<bool>())).Returns((string icao, BaseStationAircraft baseStationAircraft, bool searchedForBaseStationAircraft) => {
                 _LookupCacheUsed.Add(cacheNumber);
@@ -758,6 +764,44 @@ namespace Test.VirtualRadar.Library
                     Assert.AreEqual(testParams.ExpectedResult, result, "Got {0} for {1} (passing {2})", result, testParams, propertyName);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AircraftOnlineLookupManager_RecordNeedsRefresh_Honours_Cache_RefreshOutOfDateAircraft_Flag()
+        {
+            _Cache2.Setup(r => r.RefreshOutOfDateAircraft).Returns(false);
+
+            foreach(var testParams in new RecordNeedsRefresh[] {
+                new RecordNeedsRefresh(null, _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(1), false),
+                new RecordNeedsRefresh("",   _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(1), false),
+                new RecordNeedsRefresh(null, _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(-2), true),
+                new RecordNeedsRefresh("",   _Clock.UtcNowValue.AddDays(-1).AddMilliseconds(-2), true),
+
+                new RecordNeedsRefresh("A",  _Clock.UtcNowValue, false),
+                new RecordNeedsRefresh("A",  _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(1), false),
+                new RecordNeedsRefresh("A",  _Clock.UtcNowValue.AddDays(-28).AddMilliseconds(-2), false),
+            }) {
+                foreach(var propertyName in new string[] { "Registration", "Manufacturer", "Model", "Operator" }) {
+                    var registration = propertyName == "Registration" ? testParams.Value : null;
+                    var manufacturer = propertyName == "Manufacturer" ? testParams.Value : null;
+                    var model        = propertyName == "Model"        ? testParams.Value : null;
+                    var operatorName = propertyName == "Operator"     ? testParams.Value : null;
+
+                    var result = _Manager.RecordNeedsRefresh(registration, manufacturer, model, operatorName, testParams.LastUpdatedUtc);
+                    Assert.AreEqual(testParams.ExpectedResult, result, "Got {0} for {1} (passing {2})", result, testParams, propertyName);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void AircraftOnlineLookupManager_RecordNeedsRefresh_Honours_Cache_Enabled_Flag()
+        {
+            _Cache2.Setup(r => r.Enabled).Returns(false);
+            _Cache2.Setup(r => r.RefreshOutOfDateAircraft).Returns(false);
+
+            var result = _Manager.RecordNeedsRefresh("A", null, null, null, _Clock.UtcNowValue.AddDays(-1000));
+
+            Assert.AreEqual(true, result);
         }
         #endregion
     }

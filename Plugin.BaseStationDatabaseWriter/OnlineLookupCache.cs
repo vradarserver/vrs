@@ -47,6 +47,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public bool RefreshOutOfDateAircraft { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public IBaseStationDatabase Database { get; set; }
 
         /// <summary>

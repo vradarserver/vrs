@@ -239,6 +239,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
                 _OnlineLookupCache = Provider.CreateOnlineLookupCache();
                 _OnlineLookupCache.Database = _Database;
+                _OnlineLookupCache.RefreshOutOfDateAircraft = _Options.RefreshOutOfDateAircraft;
                 _OnlineLookupCache.EnabledChanged += OnlineLookupCache_EnabledChanged;
                 StartSession();
 
@@ -301,6 +302,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 view.DatabaseFileName =                 configuration.BaseStationSettings.DatabaseFileName;
                 view.ReceiverId =                       _Options.ReceiverId;
                 view.SaveDownloadedAircraftDetails =    _Options.SaveDownloadedAircraftDetails;
+                view.RefreshOutOfDateAircraft =         _Options.RefreshOutOfDateAircraft;
 
                 if(view.DisplayView()) {
                     lock(_SyncLock) {
@@ -308,6 +310,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         _Options.AllowUpdateOfOtherDatabases =      view.AllowUpdateOfOtherDatabases;
                         _Options.ReceiverId =                       view.ReceiverId;
                         _Options.SaveDownloadedAircraftDetails =    view.SaveDownloadedAircraftDetails;
+                        _Options.RefreshOutOfDateAircraft =         view.RefreshOutOfDateAircraft;
+
                         var optionsStorage = new OptionsStorage();
                         optionsStorage.Save(this, _Options);
 
@@ -320,6 +324,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         StartSession();
                         HookFeed();
 
+                        _OnlineLookupCache.RefreshOutOfDateAircraft = _Options.RefreshOutOfDateAircraft;
                         if(!_Options.SaveDownloadedAircraftDetails) _OnlineLookupCache.Enabled = false;
                         else                                        _OnlineLookupCache.Enabled = _Session != null;
                     }

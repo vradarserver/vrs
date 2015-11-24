@@ -268,6 +268,15 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overwrite details on existing aircraft.
+        /// </summary>
+        public static string UpdateExistingAircraft {
+            get {
+                return ResourceManager.GetString("UpdateExistingAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings prevent update of databases not created by plugin.
         /// </summary>
         public static string UpdatingDatabasesNotCreatedByPluginForbidden {
@@ -288,9 +297,18 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter {
         /// <summary>
         ///   Looks up a localized string similar to Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new and existing aircraft records that are more than 28 days old..
         /// </summary>
-        public static string WriteOnlineLookupsNotice {
+        public static string WriteOnlineLookupsNoticeAllAircraft {
             get {
-                return ResourceManager.GetString("WriteOnlineLookupsNotice", resourceCulture);
+                return ResourceManager.GetString("WriteOnlineLookupsNoticeAllAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new aircraft records..
+        /// </summary>
+        public static string WriteOnlineLookupsNoticeJustNew {
+            get {
+                return ResourceManager.GetString("WriteOnlineLookupsNoticeJustNew", resourceCulture);
             }
         }
         

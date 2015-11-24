@@ -36,6 +36,12 @@ namespace VirtualRadar.Interface
         bool Enabled { get; }
 
         /// <summary>
+        /// Gets a value indicating that the aircraft manager should refresh out-of-date aircraft records as well as missing / new
+        /// aircraft.
+        /// </summary>
+        bool RefreshOutOfDateAircraft { get; }
+
+        /// <summary>
         /// Fetches an aircraft's details from the cache.
         /// </summary>
         /// <param name="icao">The ICAO of the aircraft to lookup.</param>

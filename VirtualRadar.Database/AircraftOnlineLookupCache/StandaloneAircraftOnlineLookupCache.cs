@@ -51,6 +51,11 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         public bool Enabled { get { return true; } }
 
         /// <summary>
+        /// See interface docs. The standalone cache always asks for refreshes of out-of-date aircraft.
+        /// </summary>
+        public bool RefreshOutOfDateAircraft { get { return true; } }
+
+        /// <summary>
         /// Returns an open connection to the database.
         /// </summary>
         /// <returns></returns>
