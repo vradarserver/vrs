@@ -29,6 +29,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         new bool Enabled { get; set; }
 
         /// <summary>
+        /// See interface docs. Adds a setter to the property.
+        /// </summary>
+        new bool RefreshOutOfDateAircraft { get; set; }
+
+        /// <summary>
         /// Gets or sets the database to use.
         /// </summary>
         IBaseStationDatabase Database { get; set; }

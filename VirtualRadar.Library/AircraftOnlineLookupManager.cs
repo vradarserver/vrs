@@ -242,13 +242,18 @@ namespace VirtualRadar.Library
         {
             Initialise();
 
-            var now = _Clock.UtcNow;
-            var detailsPresent = !String.IsNullOrEmpty(registration) ||
-                                 !String.IsNullOrEmpty(manufacturer) ||
-                                 !String.IsNullOrEmpty(model) ||
-                                 !String.IsNullOrEmpty(operatorName);
-            var result =          !detailsPresent && lastUpdatedUtc.AddDays(1) <= now;
-            if(!result) result =   detailsPresent && lastUpdatedUtc.AddDays(28) <= now;
+            var result = false;
+            var cacheEntries = _CacheEntries;
+            var cache = cacheEntries.FirstOrDefault(r => r.Cache.Enabled);
+            if(cache != null) {
+                var now = _Clock.UtcNow;
+                var detailsPresent = !String.IsNullOrEmpty(registration) ||
+                                     !String.IsNullOrEmpty(manufacturer) ||
+                                     !String.IsNullOrEmpty(model) ||
+                                     !String.IsNullOrEmpty(operatorName);
+                result =              !detailsPresent && lastUpdatedUtc.AddDays(1) <= now;
+                if(!result) result =   detailsPresent && cache.Cache.RefreshOutOfDateAircraft && lastUpdatedUtc.AddDays(28) <= now;
+            }
 
             return result;
         }

@@ -46,6 +46,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         bool SaveDownloadedAircraftDetails { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that details for out-of-date aircraft should be fetched and saved to the database.
+        /// </summary>
+        bool RefreshOutOfDateAircraft { get; set; }
+
+        /// <summary>
         /// Displays the view and returns a value indicating that the view's contents were saved by the user.
         /// </summary>
         /// <returns></returns>

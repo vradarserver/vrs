@@ -84,6 +84,16 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
             set { SetField(ref _SaveDownloadedAircraftDetails, value, () => SaveDownloadedAircraftDetails); }
         }
 
+        private bool _RefreshOutOfDateAircraft;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool RefreshOutOfDateAircraft
+        {
+            get { return _RefreshOutOfDateAircraft; }
+            set { SetField(ref _RefreshOutOfDateAircraft, value, () => RefreshOutOfDateAircraft); }
+        }
+
         private int _ReceiverId;
         /// <summary>
         /// See interface docs.
@@ -106,6 +116,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
             EventHelper.Raise(PropertyChanged, this, args);
+
+            if(args.PropertyName == PropertyHelper.ExtractName<OptionsView>(r => r.RefreshOutOfDateAircraft)) {
+                RefreshWriteNotice();
+            }
         }
 
         /// <summary>
@@ -153,6 +167,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
             if(!DesignMode) {
                 PluginLocalise.Form(this);
                 fileNameDatabase.BrowserTitle = PluginStrings.SelectDatabaseFile;
+         
+                RefreshWriteNotice();
                 
                 var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                 var config = configurationStorage.Load();
@@ -161,8 +177,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
                            .ToArray();
 
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxEnabled,                             r => r.PluginEnabled,                   (r,v) => r.PluginEnabled = v));
-                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,  r => !r.AllowUpdateOfOtherDatabases,    (r,v) => r.AllowUpdateOfOtherDatabases = !v) { ModelPropertyName = PropertyHelper.ExtractName<OptionsView>(r => r.AllowUpdateOfOtherDatabases) });
-                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxWriteOnlineLookupsToDatabase,        r => r.SaveDownloadedAircraftDetails,   (r,v) => r.SaveDownloadedAircraftDetails = v));
+                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,  r => !r.AllowUpdateOfOtherDatabases,    (r,v) => r.AllowUpdateOfOtherDatabases = !v)    { ModelPropertyName = PropertyHelper.ExtractName<OptionsView>(r => r.AllowUpdateOfOtherDatabases) });
+                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxWriteOnlineLookupsToDatabase,        r => r.SaveDownloadedAircraftDetails,   (r,v) => r.SaveDownloadedAircraftDetails = v)   { UpdateMode = DataSourceUpdateMode.OnPropertyChanged, });
+                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxRefreshOutOfDateAircraft,            r => r.RefreshOutOfDateAircraft,        (r,v) => r.RefreshOutOfDateAircraft = v)        { UpdateMode = DataSourceUpdateMode.OnPropertyChanged, });
 
                 AddControlBinder(new FileNameStringBinder<OptionsView>(this, fileNameDatabase, r => r.DatabaseFileName, (r,v) => r.DatabaseFileName = v));
 
@@ -183,6 +200,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         private void AllowUpdateOfOtherDatabases_Parse(object sender, ConvertEventArgs args)
         {
             args.Value = !((bool)args.Value);
+        }
+
+        private void RefreshWriteNotice()
+        {
+            labelWriteOnlineLookupsNotice.Text = RefreshOutOfDateAircraft ? PluginStrings.WriteOnlineLookupsNoticeAllAircraft : PluginStrings.WriteOnlineLookupsNoticeJustNew;
         }
 
         private void linkLabelUseDefaultFileName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

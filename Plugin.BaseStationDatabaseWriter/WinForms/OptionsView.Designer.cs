@@ -38,7 +38,8 @@
             this.fileNameDatabase = new VirtualRadar.WinForms.Controls.FileNameControl();
             this.comboBoxReceiverId = new System.Windows.Forms.ComboBox();
             this.checkBoxWriteOnlineLookupsToDatabase = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.labelWriteOnlineLookupsNotice = new System.Windows.Forms.Label();
+            this.checkBoxRefreshOutOfDateAircraft = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -55,10 +56,10 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(377, 230);
+            this.buttonOK.Location = new System.Drawing.Point(377, 236);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 10;
+            this.buttonOK.TabIndex = 11;
             this.buttonOK.Text = "::OK::";
             this.buttonOK.UseVisualStyleBackColor = true;
             // 
@@ -66,10 +67,10 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(458, 230);
+            this.buttonCancel.Location = new System.Drawing.Point(458, 236);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 11;
+            this.buttonCancel.TabIndex = 12;
             this.buttonCancel.Text = "::Cancel::";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -98,10 +99,10 @@
             // buttonCreateDatabase
             // 
             this.buttonCreateDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCreateDatabase.Location = new System.Drawing.Point(148, 230);
+            this.buttonCreateDatabase.Location = new System.Drawing.Point(148, 236);
             this.buttonCreateDatabase.Name = "buttonCreateDatabase";
             this.buttonCreateDatabase.Size = new System.Drawing.Size(147, 23);
-            this.buttonCreateDatabase.TabIndex = 9;
+            this.buttonCreateDatabase.TabIndex = 10;
             this.buttonCreateDatabase.Text = "::CreateDatabase::";
             this.buttonCreateDatabase.UseVisualStyleBackColor = true;
             this.buttonCreateDatabase.Click += new System.EventHandler(this.buttonCreateDatabase_Click);
@@ -157,16 +158,26 @@
             this.checkBoxWriteOnlineLookupsToDatabase.Text = "::WriteOnlineLookupsToDatabase::";
             this.checkBoxWriteOnlineLookupsToDatabase.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // labelWriteOnlineLookupsNotice
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.labelWriteOnlineLookupsNotice.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.Location = new System.Drawing.Point(148, 153);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(385, 74);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "::WriteOnlineLookupsNotice::";
+            this.labelWriteOnlineLookupsNotice.Location = new System.Drawing.Point(148, 172);
+            this.labelWriteOnlineLookupsNotice.Name = "labelWriteOnlineLookupsNotice";
+            this.labelWriteOnlineLookupsNotice.Size = new System.Drawing.Size(385, 61);
+            this.labelWriteOnlineLookupsNotice.TabIndex = 9;
+            this.labelWriteOnlineLookupsNotice.Text = "::WriteOnlineLookupsNoticeAllAircraft::";
+            // 
+            // checkBoxRefreshOutOfDateAircraft
+            // 
+            this.checkBoxRefreshOutOfDateAircraft.AutoSize = true;
+            this.checkBoxRefreshOutOfDateAircraft.Location = new System.Drawing.Point(148, 152);
+            this.checkBoxRefreshOutOfDateAircraft.Name = "checkBoxRefreshOutOfDateAircraft";
+            this.checkBoxRefreshOutOfDateAircraft.Size = new System.Drawing.Size(142, 17);
+            this.checkBoxRefreshOutOfDateAircraft.TabIndex = 8;
+            this.checkBoxRefreshOutOfDateAircraft.Text = "::UpdateExistingAircraft::";
+            this.checkBoxRefreshOutOfDateAircraft.UseVisualStyleBackColor = true;
             // 
             // OptionsView
             // 
@@ -174,8 +185,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(545, 265);
-            this.Controls.Add(this.label3);
+            this.ClientSize = new System.Drawing.Size(545, 271);
+            this.Controls.Add(this.checkBoxRefreshOutOfDateAircraft);
+            this.Controls.Add(this.labelWriteOnlineLookupsNotice);
             this.Controls.Add(this.checkBoxWriteOnlineLookupsToDatabase);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.fileNameDatabase);
@@ -212,6 +224,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxReceiverId;
         private System.Windows.Forms.CheckBox checkBoxWriteOnlineLookupsToDatabase;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label labelWriteOnlineLookupsNotice;
+        private System.Windows.Forms.CheckBox checkBoxRefreshOutOfDateAircraft;
     }
 }

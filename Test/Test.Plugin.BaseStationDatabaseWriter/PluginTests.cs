@@ -132,6 +132,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         void SetAllowUpdateOfOtherDatabasesOption(bool value)   { _Options.AllowUpdateOfOtherDatabases = value; RecordSettings(); }
         void SetReceiverIdOption(int value)                     { _Options.ReceiverId = value; RecordSettings(); }
         void SetOnlineCacheEnabled(bool enabled)                { _Options.SaveDownloadedAircraftDetails = enabled; RecordSettings(); }
+        void SetRefreshOutOfDateAircraft(bool refresh)          { _Options.RefreshOutOfDateAircraft = refresh; RecordSettings(); }
 
         void RecordSettings()
         {
@@ -235,6 +236,26 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             Assert.IsNotNull(_OnlineLookupCache.Object.Database);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Sets_RefreshOutOfDateAircraft_On_Online_Cache()
+        {
+            SetRefreshOutOfDateAircraft(true);
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(true, _OnlineLookupCache.Object.RefreshOutOfDateAircraft);
+        }
+
+        [TestMethod]
+        public void Plugin_Startup_Clears_RefreshOutOfDateAircraft_On_Online_Cache()
+        {
+            SetRefreshOutOfDateAircraft(false);
+
+            _Plugin.Startup(_StartupParameters);
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.RefreshOutOfDateAircraft);
         }
 
         [TestMethod]
@@ -764,6 +785,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetAllowUpdateOfOtherDatabasesOption(worksheet.Bool("AllowUpdateOfOtherDatabases"));
             SetReceiverIdOption(worksheet.Int("ReceiverId"));
             SetOnlineCacheEnabled(worksheet.Bool("SaveDownloadedAircraftDetails"));
+            SetRefreshOutOfDateAircraft(worksheet.Bool("RefreshOutOfDateAircraft"));
             _Configuration.BaseStationSettings.DatabaseFileName = worksheet.EString("DatabaseFileName");
 
             _OptionsView.Setup(v => v.DisplayView()).Callback(() => {
@@ -772,6 +794,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _OptionsView.VerifySet(v => v.DatabaseFileName = worksheet.EString("DatabaseFileName"), Times.Once());
                 _OptionsView.VerifySet(v => v.ReceiverId = worksheet.Int("ReceiverId"), Times.Once());
                 _OptionsView.VerifySet(v => v.SaveDownloadedAircraftDetails = worksheet.Bool("SaveDownloadedAircraftDetails"), Times.Once());
+                _OptionsView.VerifySet(v => v.RefreshOutOfDateAircraft = worksheet.Bool("RefreshOutOfDateAircraft"), Times.Once());
             });
 
             _Plugin.Startup(_StartupParameters);
@@ -792,6 +815,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _OptionsView.Setup(v => v.DatabaseFileName).Returns(worksheet.EString("DatabaseFileName"));
             _OptionsView.Setup(v => v.ReceiverId).Returns(worksheet.Int("ReceiverId"));
             _OptionsView.Setup(v => v.SaveDownloadedAircraftDetails).Returns(worksheet.Bool("SaveDownloadedAircraftDetails"));
+            _OptionsView.Setup(v => v.RefreshOutOfDateAircraft).Returns(worksheet.Bool("RefreshOutOfDateAircraft"));
 
             _PluginSettingsStorage.Setup(s => s.Save(It.IsAny<PluginSettings>())).Callback((PluginSettings settings) => {
                 var jsonText = JsonConvert.SerializeObject(new Options() {
@@ -799,6 +823,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                     AllowUpdateOfOtherDatabases =   worksheet.Bool("AllowUpdateOfOtherDatabases"),
                     ReceiverId =                    worksheet.Int("ReceiverId"),
                     SaveDownloadedAircraftDetails = worksheet.Bool("SaveDownloadedAircraftDetails"),
+                    RefreshOutOfDateAircraft =      worksheet.Bool("RefreshOutOfDateAircraft"),
                 });
                 Assert.AreEqual(jsonText, settings.ReadString(_Plugin, "Options"));
             });
@@ -858,6 +883,32 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.ShowWinFormsOptionsUI();
 
             Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
+        }
+
+        [TestMethod]
+        public void Plugin_ShowWinFormsOptionsUI_Sets_RefreshOutOfDateAircraft_On_Online_Cache()
+        {
+            _OptionsView.Setup(v => v.RefreshOutOfDateAircraft).Returns(true);
+
+            SetRefreshOutOfDateAircraft(false);
+            _Plugin.Startup(_StartupParameters);
+
+            _Plugin.ShowWinFormsOptionsUI();
+
+            Assert.AreEqual(true, _OnlineLookupCache.Object.RefreshOutOfDateAircraft);
+        }
+
+        [TestMethod]
+        public void Plugin_ShowWinFormsOptionsUI_Clears_RefreshOutOfDateAircraft_On_Online_Cache()
+        {
+            _OptionsView.Setup(v => v.RefreshOutOfDateAircraft).Returns(false);
+
+            SetRefreshOutOfDateAircraft(true);
+            _Plugin.Startup(_StartupParameters);
+
+            _Plugin.ShowWinFormsOptionsUI();
+
+            Assert.AreEqual(false, _OnlineLookupCache.Object.RefreshOutOfDateAircraft);
         }
 
         [TestMethod]
