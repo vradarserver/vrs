@@ -741,6 +741,13 @@ namespace VirtualRadar.WinForms
                 dialog.ShowDialog(this);
             }
         }
+
+        private void menuAircraftOnlineDetailLookupLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using(var dialog = new AircraftOnlineLookupLogView()) {
+                dialog.ShowDialog(this);
+            }
+        }
         #endregion
     }
 }

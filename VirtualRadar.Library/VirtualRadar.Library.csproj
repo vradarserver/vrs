@@ -74,6 +74,7 @@
     <Compile Include="AircraftComparer.cs" />
     <Compile Include="AircraftDetailFetcher.cs" />
     <Compile Include="AircraftOnlineLookup.cs" />
+    <Compile Include="AircraftOnlineLookupLog.cs" />
     <Compile Include="AircraftOnlineLookupManager.cs" />
     <Compile Include="AircraftPictureManager.cs" />
     <Compile Include="AircraftSanityChecker.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Presenter\BackgroundThreadQueuesPresenter.cs" />
     <Compile Include="Presenter\CidrEditPresenter.cs" />
     <Compile Include="Presenter\ConnectorActivityLogPresenter.cs" />
+    <Compile Include="Presenter\AircraftOnlineLookupLogPresenter.cs" />
     <Compile Include="Presenter\SettingsPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
     <Compile Include="Presenter\ViewDtoHelper.cs" />

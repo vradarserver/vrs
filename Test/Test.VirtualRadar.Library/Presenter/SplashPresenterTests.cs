@@ -67,6 +67,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IUserManager> _UserManager;
         private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
         private Mock<IStandaloneAircraftOnlineLookupCache> _StandaloneAircraftOnlineLookupCache;
+        private Mock<IAircraftOnlineLookupLog> _AircraftOnlineLookupLog;
 
         private EventRecorder<EventArgs<Exception>> _BackgroundExceptionEvent;
 
@@ -103,6 +104,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
             _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
             _StandaloneAircraftOnlineLookupCache = TestUtilities.CreateMockImplementation<IStandaloneAircraftOnlineLookupCache>();
+            _AircraftOnlineLookupLog = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupLog>();
 
             _BackgroundExceptionEvent = new EventRecorder<EventArgs<Exception>>();
 
@@ -903,6 +905,15 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.StartApplication();
 
             _AircraftOnlineLookupManager.Verify(s => s.RegisterCache(_StandaloneAircraftOnlineLookupCache.Object, 0, true), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Initialises_AircraftDetailOnlineLookupLog()
+        {
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _AircraftOnlineLookupLog.Verify(r => r.Initialise(), Times.Once());
         }
         #endregion
 

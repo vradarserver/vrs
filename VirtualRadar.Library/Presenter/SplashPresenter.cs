@@ -322,6 +322,9 @@ namespace VirtualRadar.Library.Presenter
             var standaloneCache = Factory.Singleton.Resolve<IStandaloneAircraftOnlineLookupCache>();
 
             manager.RegisterCache(standaloneCache, 0, true);
+
+            var log = Factory.Singleton.Resolve<IAircraftOnlineLookupLog>().Singleton;
+            log.Initialise();
         }
 
         private void StartPlugins(IWebSite webSite)
