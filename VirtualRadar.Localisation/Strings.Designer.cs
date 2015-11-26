@@ -331,6 +331,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aircraft Detail Online Lookup Log.
+        /// </summary>
+        public static string AircraftDetailOnlineLookupLog {
+            get {
+                return ResourceManager.GetString("AircraftDetailOnlineLookupLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aircraft details online lookup.
         /// </summary>
         public static string AircraftDetailsOnlineLookup {
@@ -1121,6 +1130,15 @@ namespace VirtualRadar.Localisation {
         public static string CountPluginsCouldNotBeLoaded {
             get {
                 return ResourceManager.GetString("CountPluginsCouldNotBeLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country.
+        /// </summary>
+        public static string Country {
+            get {
+                return ResourceManager.GetString("Country", resourceCulture);
             }
         }
         
@@ -2444,6 +2462,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manufacturer.
+        /// </summary>
+        public static string Manufacturer {
+            get {
+                return ResourceManager.GetString("Manufacturer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max airborne speed.
         /// </summary>
         public static string MaxAirborneSpeed {
@@ -2476,6 +2503,15 @@ namespace VirtualRadar.Localisation {
         public static string menuAbout {
             get {
                 return ResourceManager.GetString("menuAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft Online Lookup Log.
+        /// </summary>
+        public static string menuAircraftOnlineDetailLookupLog {
+            get {
+                return ResourceManager.GetString("menuAircraftOnlineDetailLookupLog", resourceCulture);
             }
         }
         
@@ -2872,6 +2908,15 @@ namespace VirtualRadar.Localisation {
         public static string MobileVersionOld {
             get {
                 return ResourceManager.GetString("MobileVersionOld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model.
+        /// </summary>
+        public static string Model {
+            get {
+                return ResourceManager.GetString("Model", resourceCulture);
             }
         }
         
@@ -5495,6 +5540,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Serial.
+        /// </summary>
+        public static string Serial {
+            get {
+                return ResourceManager.GetString("Serial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Baud rate.
         /// </summary>
         public static string SerialBaudRate {
@@ -6861,6 +6915,15 @@ namespace VirtualRadar.Localisation {
         public static string Wizard {
             get {
                 return ResourceManager.GetString("Wizard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        public static string Year {
+            get {
+                return ResourceManager.GetString("Year", resourceCulture);
             }
         }
         

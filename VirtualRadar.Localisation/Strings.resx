@@ -2546,4 +2546,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="WebSiteUrl" xml:space="preserve">
     <value>Web site URL</value>
   </data>
+  <data name="AircraftDetailOnlineLookupLog" xml:space="preserve">
+    <value>Aircraft Detail Online Lookup Log</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <value>Serial</value>
+    <comment>As in a serial number, not a serial port</comment>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="menuAircraftOnlineDetailLookupLog" xml:space="preserve">
+    <value>Aircraft Online Lookup Log</value>
+  </data>
 </root>

@@ -57,6 +57,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Network.ISerialConnector, Network.SerialConnector>();
             factory.Register<VirtualRadar.Interface.Network.ITcpConnectionStateService, Network.TcpConnectionStateService>();
             factory.Register<VirtualRadar.Interface.Presenter.IAboutPresenter, Presenter.AboutPresenter>();
+            factory.Register<VirtualRadar.Interface.Presenter.IAircraftOnlineLookupLogPresenter, Presenter.AircraftOnlineLookupLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IBackgroundThreadQueuesPresenter, Presenter.BackgroundThreadQueuesPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ICidrEditPresenter, Presenter.CidrEditPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionClientLogPresenter, Presenter.ConnectionClientLogPresenter>();
@@ -84,6 +85,7 @@ namespace VirtualRadar.Library
             factory.Register<IAircraftComparer, AircraftComparer>();
             factory.Register<IAircraftDetailFetcher, AircraftDetailFetcher>();
             factory.Register<IAircraftOnlineLookup, AircraftOnlineLookup>();
+            factory.Register<IAircraftOnlineLookupLog, AircraftOnlineLookupLog>();
             factory.Register<IAircraftOnlineLookupManager, AircraftOnlineLookupManager>();
             factory.Register<IAircraftOnlineLookupProvider, AircraftOnlineLookupProvider>();
             factory.Register<IAircraftPictureManager, AircraftPictureManager>();

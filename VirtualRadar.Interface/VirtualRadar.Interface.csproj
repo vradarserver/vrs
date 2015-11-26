@@ -99,11 +99,14 @@
     <Compile Include="AircraftFetcher.cs" />
     <Compile Include="AircraftOnlineLookupDetail.cs" />
     <Compile Include="AircraftOnlineLookupEventArgs.cs" />
+    <Compile Include="AircraftOnlineLookupLogEntry.cs" />
     <Compile Include="AirportDataThumbnailJson.cs" />
     <Compile Include="AirportDataThumbnailsJson.cs" />
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
     <Compile Include="EventHelperException.cs" />
+    <Compile Include="IAircraftOnlineLookupLog.cs" />
+    <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
     <Compile Include="QueueRepository.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
@@ -128,6 +131,7 @@
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />
     <Compile Include="WebSite\IWebSiteGraphics.cs" />
     <Compile Include="ITimer.cs" />

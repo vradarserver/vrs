@@ -52,6 +52,8 @@
             this.menuHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCheckForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuDiagnosticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuShowQueuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripDropDownButtonInvalidPluginCount = new System.Windows.Forms.ToolStripDropDownButton();
@@ -65,8 +67,7 @@
             this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuDiagnosticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuShowQueuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAircraftOnlineDetailLookupLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.splitContainerInner.Panel1.SuspendLayout();
@@ -251,6 +252,22 @@
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(207, 6);
             // 
+            // menuDiagnosticsToolStripMenuItem
+            // 
+            this.menuDiagnosticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuShowQueuesToolStripMenuItem,
+            this.menuAircraftOnlineDetailLookupLogToolStripMenuItem});
+            this.menuDiagnosticsToolStripMenuItem.Name = "menuDiagnosticsToolStripMenuItem";
+            this.menuDiagnosticsToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.menuDiagnosticsToolStripMenuItem.Text = "::menuDiagnostics::";
+            // 
+            // menuShowQueuesToolStripMenuItem
+            // 
+            this.menuShowQueuesToolStripMenuItem.Name = "menuShowQueuesToolStripMenuItem";
+            this.menuShowQueuesToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.menuShowQueuesToolStripMenuItem.Text = "::menuShowQueues::";
+            this.menuShowQueuesToolStripMenuItem.Click += new System.EventHandler(this.menuShowQueuesToolStripMenuItem_Click);
+            // 
             // menuAboutToolStripMenuItem
             // 
             this.menuAboutToolStripMenuItem.Name = "menuAboutToolStripMenuItem";
@@ -399,20 +416,12 @@
             this.exitToolStripMenuItem.Text = "::menuExit::";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // menuDiagnosticsToolStripMenuItem
+            // menuAircraftOnlineDetailLookupLogToolStripMenuItem
             // 
-            this.menuDiagnosticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuShowQueuesToolStripMenuItem});
-            this.menuDiagnosticsToolStripMenuItem.Name = "menuDiagnosticsToolStripMenuItem";
-            this.menuDiagnosticsToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.menuDiagnosticsToolStripMenuItem.Text = "::menuDiagnostics::";
-            // 
-            // menuShowQueuesToolStripMenuItem
-            // 
-            this.menuShowQueuesToolStripMenuItem.Name = "menuShowQueuesToolStripMenuItem";
-            this.menuShowQueuesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.menuShowQueuesToolStripMenuItem.Text = "::menuShowQueues::";
-            this.menuShowQueuesToolStripMenuItem.Click += new System.EventHandler(this.menuShowQueuesToolStripMenuItem_Click);
+            this.menuAircraftOnlineDetailLookupLogToolStripMenuItem.Name = "menuAircraftOnlineDetailLookupLogToolStripMenuItem";
+            this.menuAircraftOnlineDetailLookupLogToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.menuAircraftOnlineDetailLookupLogToolStripMenuItem.Text = "::menuAircraftOnlineDetailLookupLog::";
+            this.menuAircraftOnlineDetailLookupLogToolStripMenuItem.Click += new System.EventHandler(this.menuAircraftOnlineDetailLookupLogToolStripMenuItem_Click);
             // 
             // MainView
             // 
@@ -483,5 +492,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem menuDiagnosticsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuShowQueuesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuAircraftOnlineDetailLookupLogToolStripMenuItem;
     }
 }
