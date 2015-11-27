@@ -738,7 +738,7 @@ namespace VirtualRadar.Database.BaseStation
         /// See interface docs.
         /// </summary>
         /// <param name="icao"></param>
-        public void RecordEmptyAircraft(string icao)
+        public void RecordMissingAircraft(string icao)
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot record empty aircraft when write support is disabled");
 
@@ -757,7 +757,7 @@ namespace VirtualRadar.Database.BaseStation
         /// See interface docs.
         /// </summary>
         /// <param name="icaos"></param>
-        public void RecordManyEmptyAircraft(IEnumerable<string> icaos)
+        public void RecordManyMissingAircraft(IEnumerable<string> icaos)
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot record empty aircraft when write support is disabled");
 
@@ -786,14 +786,21 @@ namespace VirtualRadar.Database.BaseStation
 
         private void RecordEmptyAircraft(BaseStationAircraft aircraft, string icao, DateTime localNow)
         {
+            const string missingMarker = "Missing";
+
             if(aircraft != null) {
-                if(String.IsNullOrEmpty(aircraft.Registration)) {
+                if(String.IsNullOrEmpty(aircraft.Registration) &&
+                   String.IsNullOrEmpty(aircraft.Manufacturer) &&
+                   String.IsNullOrEmpty(aircraft.Type) &&
+                   String.IsNullOrEmpty(aircraft.RegisteredOwners)) {
                     aircraft.LastModified = localNow;
+                    aircraft.UserString1 = missingMarker;
                     Aircraft_Update(aircraft);
                 }
             } else {
                 aircraft = new BaseStationAircraft() {
                     ModeS = icao,
+                    UserString1 = missingMarker,
                     FirstCreated = localNow,
                     LastModified = localNow,
                 };
@@ -1006,6 +1013,7 @@ namespace VirtualRadar.Database.BaseStation
                 @totalHours         = aircraft.TotalHours,
                 @type               = aircraft.Type,
                 @userNotes          = aircraft.UserNotes,
+                @userString1        = aircraft.UserString1,
                 @userTag            = aircraft.UserTag,
                 @yearBuilt          = aircraft.YearBuilt,
             }, transaction: _TransactionHelper.Transaction);
@@ -1049,6 +1057,7 @@ namespace VirtualRadar.Database.BaseStation
                 @totalHours         = aircraft.TotalHours,
                 @type               = aircraft.Type,
                 @userNotes          = aircraft.UserNotes,
+                @userString1        = aircraft.UserString1,
                 @userTag            = aircraft.UserTag,
                 @yearBuilt          = aircraft.YearBuilt,
                 @aircraftID         = aircraft.AircraftID,

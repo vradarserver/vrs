@@ -218,7 +218,7 @@ namespace VirtualRadar.Library
         protected override AircraftDetail DoFetchAircraft(AircraftFetcher<string, AircraftDetail>.FetchedDetail fetchedDetail)
         {
             var databaseAircraft = _AutoConfigDatabase.Database.GetAircraftByCode(fetchedDetail.Aircraft.Icao24);
-            var onlineAircraft = NeedsOnlineLookup(databaseAircraft) ? _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24, databaseAircraft, searchedForBaseStationAircraft: true) : null;
+            var onlineAircraft = _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24, databaseAircraft, searchedForBaseStationAircraft: true);
             return ApplyDatabaseRecord(fetchedDetail.Detail, databaseAircraft, onlineAircraft, fetchedDetail.Aircraft, fetchedDetail.IsFirstFetch);
         }
 
@@ -236,6 +236,15 @@ namespace VirtualRadar.Library
             var aircraftAndFlightCounts = _AutoConfigDatabase.Database.GetManyAircraftAndFlightsCountByCode(newIcaos);
             var aircraft = _AutoConfigDatabase.Database.GetManyAircraftByCode(existingIcaos);
 
+            var combinedAircraft = new Dictionary<string, BaseStationAircraft>();
+            foreach(var kvp in aircraftAndFlightCounts) {
+                combinedAircraft.Add(kvp.Key, kvp.Value);
+            }
+            foreach(var kvp in aircraft) {
+                combinedAircraft.Add(kvp.Key, kvp.Value);
+            }
+            var allOnlineAircraft = _AircraftOnlineLookupManager.LookupMany(allIcaos, combinedAircraft);
+
             foreach(var kvp in fetchedDetails) {
                 var icao24 = kvp.Key;
                 var fetchedDetail = kvp;
@@ -245,7 +254,8 @@ namespace VirtualRadar.Library
                 if(!aircraft.TryGetValue(icao24, out databaseAircraft)) {
                     aircraftAndFlightCounts.TryGetValue(icao24, out databaseAircraftAndFlights);
                 }
-                var onlineAircraft = NeedsOnlineLookup(databaseAircraft) ? _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24, databaseAircraft, searchedForBaseStationAircraft: true) : null;
+                AircraftOnlineLookupDetail onlineAircraft;
+                allOnlineAircraft.TryGetValue(icao24, out onlineAircraft);
 
                 kvp.Detail = ApplyDatabaseRecord(
                     fetchedDetail.Detail,
@@ -259,22 +269,6 @@ namespace VirtualRadar.Library
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Returns true if the aircraft details from the database are inadequate and we need to perform an online lookup for it.
-        /// </summary>
-        /// <param name="aircraft"></param>
-        /// <returns></returns>
-        private bool NeedsOnlineLookup(BaseStationAircraft aircraft)
-        {
-            var result = aircraft == null;
-            if(!result) {
-                var lastUpdatedUtc = aircraft.LastModified.Year < 2 ? aircraft.LastModified : aircraft.LastModified.ToUniversalTime();
-                result = _AircraftOnlineLookupManager.RecordNeedsRefresh(aircraft.Registration, aircraft.Manufacturer, aircraft.Type, aircraft.RegisteredOwners, lastUpdatedUtc);
-            }
-
-            return result;
         }
 
         /// <summary>

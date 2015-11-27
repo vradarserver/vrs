@@ -312,18 +312,22 @@ namespace VirtualRadar.Interface.Database
         void UpdateAircraftModeSCountry(int aircraftId, string modeSCountry);
 
         /// <summary>
-        /// Records an empty aircraft record. If the record does not exist it is created with a created and updated time, otherwise
-        /// if it exists and has no registration the updated time is set to the current time. If it exists and has a registration then
-        /// the function has no effect.
+        /// Records a missing aircraft record.
         /// </summary>
         /// <param name="icao"></param>
-        void RecordEmptyAircraft(string icao);
+        /// <remarks>
+        /// An aircraft is missing if it has no registration, no manufacturer, no model, no operator and the UserString1 is set to 'Missing'.
+        /// If the aircraft record does not exist then it is created with the created and updated times set, along with the UserString1. If
+        /// it exists and has the correct values for a missing aircraft (except for UserString1, that can be anything) then this method updates
+        /// the time and forces UserString1 to Missing. Otherwise the method does nothing.
+        /// </remarks>
+        void RecordMissingAircraft(string icao);
 
         /// <summary>
-        /// Does the same as <see cref="RecordEmptyAircraft"/> but for many ICAOs simultaneously.
+        /// Does the same as <see cref="RecordMissingAircraft"/> but for many ICAOs simultaneously.
         /// </summary>
         /// <param name="icaos"></param>
-        void RecordManyEmptyAircraft(IEnumerable<string> icaos);
+        void RecordManyMissingAircraft(IEnumerable<string> icaos);
 
         /// <summary>
         /// Creates or updates an aircraft record.

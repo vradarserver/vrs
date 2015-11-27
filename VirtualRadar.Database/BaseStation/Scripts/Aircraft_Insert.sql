@@ -32,6 +32,7 @@ INSERT INTO [Aircraft] (
    ,[TotalHours]
    ,[Type]
    ,[UserNotes]
+   ,[UserString1]
    ,[UserTag]
    ,[YearBuilt]
 ) VALUES (
@@ -67,6 +68,7 @@ INSERT INTO [Aircraft] (
    ,@totalHours
    ,@type
    ,@userNotes
+   ,@userString1
    ,@userTag
    ,@yearBuilt
 );
