@@ -32,6 +32,7 @@ UPDATE [Aircraft]
       ,[TotalHours]         = @totalHours
       ,[Type]               = @type
       ,[UserNotes]          = @userNotes
+      ,[UserString1]        = @userString1
       ,[UserTag]            = @userTag
       ,[YearBuilt]          = @yearBuilt
  WHERE [AircraftID]         = @aircraftID;

@@ -196,6 +196,11 @@ namespace VirtualRadar.Interface.Database
         public string YearBuilt { get; set; }
 
         /// <summary>
+        /// Gets or sets the user string 1 field.
+        /// </summary>
+        public string UserString1 { get; set; }
+
+        /// <summary>
         /// See base docs.
         /// </summary>
         /// <param name="obj"></param>
@@ -239,6 +244,7 @@ namespace VirtualRadar.Interface.Database
                          TotalHours == other.TotalHours &&
                          Type == other.Type &&
                          UserNotes == other.UserNotes &&
+                         UserString1 == other.UserString1 &&
                          UserTag == other.UserTag &&
                          YearBuilt == other.YearBuilt;
             }

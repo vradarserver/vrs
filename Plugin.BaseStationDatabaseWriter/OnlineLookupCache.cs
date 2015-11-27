@@ -119,7 +119,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <returns></returns>
         private AircraftOnlineLookupDetail Convert(BaseStationAircraft baseStationAircraft)
         {
-            return baseStationAircraft == null ? null : new AircraftOnlineLookupDetail() {
+            return IsEmptyButNotMissing(baseStationAircraft) ? null : new AircraftOnlineLookupDetail() {
                 AircraftDetailId =  baseStationAircraft.AircraftID,
                 Icao =              baseStationAircraft.ModeS,
                 Registration =      baseStationAircraft.Registration,
@@ -134,6 +134,20 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 CreatedUtc =        ConvertToUtc(baseStationAircraft.FirstCreated),
                 UpdatedUtc =        ConvertToUtc(baseStationAircraft.LastModified),
             };
+        }
+
+        private bool IsEmptyButNotMissing(BaseStationAircraft baseStationAircraft)
+        {
+            var result = baseStationAircraft == null;
+            if(!result) {
+                result = String.IsNullOrEmpty(baseStationAircraft.Registration) &&
+                         String.IsNullOrEmpty(baseStationAircraft.Manufacturer) &&
+                         String.IsNullOrEmpty(baseStationAircraft.Type) &&
+                         String.IsNullOrEmpty(baseStationAircraft.OperatorFlagCode) &&
+                         baseStationAircraft.UserString1 != "Missing";
+            }
+
+            return result;
         }
 
         private int? ConvertYearBuilt(string yearBuiltText)
@@ -163,7 +177,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var database = Database;
             if(database != null && Enabled) {
-                database.RecordEmptyAircraft(icao);
+                database.RecordMissingAircraft(icao);
             }
         }
 
@@ -175,7 +189,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var database = Database;
             if(database != null && Enabled) {
-                database.RecordManyEmptyAircraft(icaos);
+                database.RecordManyMissingAircraft(icaos);
             }
         }
 
@@ -243,6 +257,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             baseStationAircraft.OperatorFlagCode =  lookupDetail.OperatorIcao;
             baseStationAircraft.SerialNo =          lookupDetail.Serial;
             baseStationAircraft.YearBuilt =         lookupDetail.YearBuilt == null ? null : lookupDetail.YearBuilt.Value.ToString();
+            baseStationAircraft.UserString1 =       baseStationAircraft.UserString1 == "Missing" ? null : baseStationAircraft.UserString1;
             baseStationAircraft.LastModified =      localNow;                           // BaseStation needs local dates, not UTC
 
             return baseStationAircraft;

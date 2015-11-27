@@ -221,6 +221,7 @@ namespace Test.VirtualRadar.Database
             result.PictureUrl3 = worksheet.EString(ordinal++);
             result.TotalHours = worksheet.EString(ordinal++);
             result.UserNotes = worksheet.EString(ordinal++);
+            result.UserString1 = worksheet.EString(ordinal++);
             result.UserTag = worksheet.EString(ordinal++);
             result.YearBuilt = worksheet.EString(ordinal++);
 
@@ -1391,37 +1392,42 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
-        #region RecordEmptyAircraft
+        #region RecordMissingAircraft
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_RecordEmptyAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        public void BaseStationDatabase_RecordMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
         {
-            _Database.RecordEmptyAircraft("123456");
+            _Database.RecordMissingAircraft("123456");
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordEmptyAircraft_Creates_Almost_Empty_Aircraft_Record()
+        public void BaseStationDatabase_RecordMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
         {
             _Database.WriteSupportEnabled = true;
 
-            _Database.RecordEmptyAircraft("123456");
+            _Database.RecordMissingAircraft("123456");
 
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.IsNotNull(aircraft);
             Assert.AreEqual("123456", aircraft.ModeS);
+            Assert.AreEqual("Missing", aircraft.UserString1);
             Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
             Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+            Assert.IsNull(aircraft.Registration);
+            Assert.IsNull(aircraft.Manufacturer);
+            Assert.IsNull(aircraft.Type);
+            Assert.IsNull(aircraft.RegisteredOwners);
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordEmptyAircraft_Updates_Existing_Empty_Records()
+        public void BaseStationDatabase_RecordMissingAircraft_Updates_Existing_Empty_Records()
         {
             _Database.WriteSupportEnabled = true;
-            _Database.RecordEmptyAircraft("123456");
+            _Database.RecordMissingAircraft("123456");
 
             var createdDate = _Clock.LocalNowValue;
             _Clock.AddMilliseconds(60000);
-            _Database.RecordEmptyAircraft("123456");
+            _Database.RecordMissingAircraft("123456");
 
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
@@ -1429,59 +1435,89 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordEmptyAircraft_Ignores_Existing_Records_With_Registrations()
+        public void BaseStationDatabase_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
         {
             _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue });
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, });
 
             var createdDate = _Clock.LocalNowValue;
             _Clock.AddMilliseconds(60000);
-            _Database.RecordEmptyAircraft("123456");
+            _Database.RecordMissingAircraft("123456");
 
             var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.AreEqual("A",                       aircraft.Registration);
-            Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(createdDate), aircraft.LastModified);
+            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+            Assert.AreEqual("Missing",                          aircraft.UserString1);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_RecordMissingAircraft_Ignores_Existing_Records_With_Values()
+        {
+            foreach(var property in new String[] { "Registration", "Manufacturer", "Model", "Operator" }) {
+                TestCleanup();
+                TestInitialise();
+
+                _Database.WriteSupportEnabled = true;
+                var aircraft = new BaseStationAircraft() { ModeS = "123456", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, };
+                switch(property) {
+                    case "Registration":    aircraft.Registration = "A"; break;
+                    case "Manufacturer":    aircraft.Manufacturer = "A"; break;
+                    case "Model":           aircraft.Type = "A"; break;
+                    case "Operator":        aircraft.RegisteredOwners = "A"; break;
+                    default:                throw new NotImplementedException();
+                }
+                _Database.InsertAircraft(aircraft);
+
+                var createdDate = _Clock.LocalNowValue;
+                _Clock.AddMilliseconds(60000);
+                _Database.RecordMissingAircraft("123456");
+
+                aircraft = _Database.GetAircraftByCode("123456");
+                Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
+                Assert.AreEqual(TruncateDate(createdDate), aircraft.LastModified);
+            }
         }
         #endregion
 
-        #region RecordManyEmptyAircraft
+        #region RecordManyMissingAircraft
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_RecordManyEmptyAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        public void BaseStationDatabase_RecordManyMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
         {
-            _Database.RecordManyEmptyAircraft(new string[] { "A", "B" });
+            _Database.RecordManyMissingAircraft(new string[] { "A", "B" });
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordManyEmptyAircraft_Creates_Almost_Empty_Aircraft_Record()
+        public void BaseStationDatabase_RecordManyMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
         {
             _Database.WriteSupportEnabled = true;
 
-            _Database.RecordManyEmptyAircraft(new string[] { "A", "B" });
+            _Database.RecordManyMissingAircraft(new string[] { "A", "B" });
 
             var aircraft = _Database.GetAircraftByCode("A");
             Assert.IsNotNull(aircraft);
             Assert.AreEqual("A", aircraft.ModeS);
             Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
             Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+            Assert.AreEqual("Missing", aircraft.UserString1);
 
             aircraft = _Database.GetAircraftByCode("B");
             Assert.IsNotNull(aircraft);
             Assert.AreEqual("B", aircraft.ModeS);
             Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
             Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+            Assert.AreEqual("Missing", aircraft.UserString1);
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordManyEmptyAircraft_Updates_Existing_Empty_Records()
+        public void BaseStationDatabase_RecordManyMissingAircraft_Updates_Existing_Empty_Records()
         {
             _Database.WriteSupportEnabled = true;
-            _Database.RecordManyEmptyAircraft(new string[] { "123456" });
+            _Database.RecordManyMissingAircraft(new string[] { "123456" });
 
             var createdDate = _Clock.LocalNowValue;
             _Clock.AddMilliseconds(60000);
-            _Database.RecordManyEmptyAircraft(new string[] { "123456" });
+            _Database.RecordManyMissingAircraft(new string[] { "123456" });
 
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
@@ -1489,14 +1525,14 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordManyEmptyAircraft_Ignores_Existing_Records_With_Registrations()
+        public void BaseStationDatabase_RecordManyMissingAircraft_Ignores_Existing_Records_With_Registrations()
         {
             _Database.WriteSupportEnabled = true;
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue });
 
             var createdDate = _Clock.LocalNowValue;
             _Clock.AddMilliseconds(60000);
-            _Database.RecordManyEmptyAircraft(new string[] { "123456" });
+            _Database.RecordManyMissingAircraft(new string[] { "123456" });
 
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.AreEqual("A",                       aircraft.Registration);
@@ -4717,6 +4753,7 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(expected.PictureUrl3, actual.PictureUrl3);
             Assert.AreEqual(expected.TotalHours, actual.TotalHours);
             Assert.AreEqual(expected.UserNotes, actual.UserNotes);
+            Assert.AreEqual(expected.UserString1, actual.UserString1);
             Assert.AreEqual(expected.UserTag, actual.UserTag);
             Assert.AreEqual(expected.YearBuilt, actual.YearBuilt);
         }

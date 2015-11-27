@@ -61,6 +61,7 @@ namespace Test.VirtualRadar.Interface.Database
             TestUtilities.TestProperty(baseStationAircraft, r => r.TotalHours, null, "Jjk");
             TestUtilities.TestProperty(baseStationAircraft, r => r.Type, null, "Jjk");
             TestUtilities.TestProperty(baseStationAircraft, r => r.UserNotes, null, "Jjk");
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserString1, null, "Abc");
             TestUtilities.TestProperty(baseStationAircraft, r => r.UserTag, null, "Abc");
             TestUtilities.TestProperty(baseStationAircraft, r => r.YearBuilt, null, "Jjk");
         }
