@@ -16,6 +16,7 @@ using VirtualRadar.Interface;
 using System.IO;
 using InterfaceFactory;
 using VirtualRadar.Interop;
+using System.Threading;
 
 namespace VirtualRadar.Library
 {
@@ -116,6 +117,11 @@ namespace VirtualRadar.Library
             {
                 return Name ?? "<null>";
             }
+
+            public CachedFileInfo DeepCopy()
+            {
+                return new CachedFileInfo(Name, LastWriteTimeUtc);
+            }
         }
         #endregion
 
@@ -158,6 +164,55 @@ namespace VirtualRadar.Library
             {
                 return String.Format("{0} ({1} files)", FullPath, Files.Count);
             }
+
+            public CachedFolderInfo DeepCopy()
+            {
+                var result = new CachedFolderInfo(FullPath);
+                foreach(var kvp in Files) {
+                    result.Files.Add(kvp.Key, kvp.Value.DeepCopy());
+                }
+                foreach(var subFolder in SubFolders) {
+                    result.SubFolders.Add(subFolder.DeepCopy());
+                }
+
+                return result;
+            }
+        }
+        #endregion
+
+        #region Class - CacheState
+        /// <summary>
+        /// Holds the state of the cache.
+        /// </summary>
+        class CacheState
+        {
+            /// <summary>
+            /// Gets or sets a value indicating that sub-folders have been cached.
+            /// </summary>
+            public bool CachedSubFolders { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating the time of the last fetch.
+            /// </summary>
+            public DateTime LastFetchTime { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating that the cache is currently being refreshed.
+            /// </summary>
+            public bool Refreshing { get; set; }
+
+            /// <summary>
+            /// Creates a copy of the state.
+            /// </summary>
+            /// <returns></returns>
+            public CacheState DeepCopy()
+            {
+                return new CacheState() {
+                    CachedSubFolders =  CachedSubFolders,
+                    LastFetchTime =     LastFetchTime,
+                    Refreshing =        Refreshing,
+                };
+            }
         }
         #endregion
 
@@ -178,14 +233,19 @@ namespace VirtualRadar.Library
         private Dictionary<string, CachedFolderInfo> _Cache = new Dictionary<string, CachedFolderInfo>();
 
         /// <summary>
-        /// True if sub-folders have been cached, false if they have not.
+        /// Records the current state of the cache.
         /// </summary>
-        private bool _CachedSubFolders;
+        private CacheState _CacheState = new CacheState();
 
         /// <summary>
-        /// The date and time of the last fetch as at UTC.
+        /// True if the object has been disposed.
         /// </summary>
-        private DateTime _LastFetchTime;
+        private bool _Disposed;
+
+        /// <summary>
+        /// True if the heartbeat timer has been hooked.
+        /// </summary>
+        private bool _HookedHeartbeat;
         #endregion
 
         #region Properties
@@ -243,11 +303,14 @@ namespace VirtualRadar.Library
         /// <param name="args"></param>
         protected virtual void OnCacheChanged(EventArgs args)
         {
-            EventHelper.Raise(CacheChanged, this, args);
+            EventHelper.Raise(CacheChanged, this, args, ex => {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine("Caught exception in CacheChanged event handler (folder is {0}): {1}", Folder, ex.ToString());
+            });
         }
         #endregion
 
-        #region Constructor
+        #region Constructor, Finaliser
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -255,7 +318,40 @@ namespace VirtualRadar.Library
         {
             Provider = new DefaultProvider();
             _Clock = Factory.Singleton.Resolve<IClock>();
-            Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += HeartbeatService_SlowTick;
+        }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~DirectoryCache()
+        {
+            Dispose(false);
+        }
+        #endregion
+
+        #region Dispose
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing && !_Disposed) {
+                _Disposed = true;
+                if(_HookedHeartbeat) {
+                    _HookedHeartbeat = false;
+                    Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick -= HeartbeatService_SlowTick;
+                }
+            }
         }
         #endregion
 
@@ -281,17 +377,7 @@ namespace VirtualRadar.Library
         }
         #endregion
 
-        #region GetFullPath, Add, Remove, BeginRefresh
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public bool FileExists(string fileName)
-        {
-            return false; // deprecated, will be getting rid of this soon.
-        }
-
+        #region GetFullPath, BeginRefresh
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -300,85 +386,18 @@ namespace VirtualRadar.Library
         public string GetFullPath(string fileName)
         {
             string result = null;
+            var cache = _Cache;
 
-            if(!String.IsNullOrEmpty(fileName)) {
+            if(!String.IsNullOrEmpty(fileName) && _Cache != null) {
                 var normalisedFileName = NormaliseFileName(fileName);
-                lock(_SyncLock) {
-                    foreach(var kvp in _Cache) {
-                        var folderInfo = kvp.Value;
-                        CachedFileInfo fileInfo;
-                        if(folderInfo.Files.TryGetValue(normalisedFileName, out fileInfo)) {
-                            result = Path.Combine(folderInfo.FullPath, fileInfo.Name);
-                            break;
-                        }
+                foreach(var kvp in cache) {
+                    var folderInfo = kvp.Value;
+                    CachedFileInfo fileInfo;
+                    if(folderInfo.Files.TryGetValue(normalisedFileName, out fileInfo)) {
+                        result = Path.Combine(folderInfo.FullPath, fileInfo.Name);
+                        break;
                     }
                 }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="fileName"></param>
-        public void Add(string fileName)
-        {
-            AddRemoveFile(fileName, true);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="fileName"></param>
-        public void Remove(string fileName)
-        {
-            AddRemoveFile(fileName, false);
-        }
-
-        /// <summary>
-        /// Does the work of adding or removing a file from the cache.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="adding"></param>
-        private void AddRemoveFile(string fileName, bool adding)
-        {
-            lock(_SyncLock) {
-                if(!String.IsNullOrEmpty(fileName)) {
-                    var folder = Path.GetDirectoryName(fileName);
-                    if(IsChildOfRoot(folder) && Provider.FolderExists(folder)) {
-                        var normalisedFolder = NormaliseFolder(folder);
-                        CachedFolderInfo folderInfo;
-                        if(!_Cache.TryGetValue(normalisedFolder, out folderInfo)) {
-                            folderInfo = new CachedFolderInfo(folder);
-                            _Cache.Add(normalisedFolder, folderInfo);
-                        }
-
-                        var normalisedFileName = NormaliseFileName(Path.GetFileName(fileName));
-                        var fileWasCached = folderInfo.Files.ContainsKey(normalisedFileName);
-
-                        var raiseCacheChanged = false;
-                        if(adding && !fileWasCached) {
-                            raiseCacheChanged = RefreshFilesInFolder(folderInfo, raiseCacheChanged);
-                        } else if(!adding && fileWasCached) {
-                            raiseCacheChanged = RefreshFilesInFolder(folderInfo, raiseCacheChanged);
-                        }
-
-                        if(raiseCacheChanged) OnCacheChanged(EventArgs.Empty);
-                    }
-                }
-            }
-        }
-
-        private bool IsChildOfRoot(string folder)
-        {
-            var result = false;
-            if(!String.IsNullOrEmpty(folder) && !String.IsNullOrEmpty(Folder)) {
-                var rootAndSlash = NormaliseFolder(Folder, true);
-                var folderAndSlash = NormaliseFolder(folder, true);
-
-                if(!CacheSubFolders) result = folderAndSlash == rootAndSlash;
-                else                 result = folderAndSlash.StartsWith(rootAndSlash);
             }
 
             return result;
@@ -396,55 +415,112 @@ namespace VirtualRadar.Library
             backgroundWorker.DoWork += BackgroundWorker_DoWork;
             backgroundWorker.StartWork(folder);
         }
+
+        /// <summary>
+        /// Called on a background thread.
+        /// </summary>
+        /// <param name="state"></param>
+        private void BackgroundWorker_DoWork(object sender, EventArgs args)
+        {
+            var cacheChanged = LoadFiles();
+
+            lock(_SyncLock) {
+                if(!_HookedHeartbeat) {
+                    _HookedHeartbeat = true;
+                    Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += HeartbeatService_SlowTick;
+                }
+            }
+
+            if(cacheChanged) {
+                OnCacheChanged(EventArgs.Empty);
+            }
+        }
         #endregion
 
         #region LoadFiles
         /// <summary>
-        /// Reloads the cache. Assumes that the caller has locked <see cref="_SyncLock"/>.
+        /// Reloads the cache.
         /// </summary>
-        private void LoadFiles(string folder)
+        private bool LoadFiles()
         {
-            try {
-                bool raiseCacheChanged = false;
+            bool raiseCacheChanged = false;
 
-                if(folder == null || !Provider.FolderExists(folder)) {
-                    raiseCacheChanged = _Cache.Count > 0;
-                    _Cache.Clear();
-                } else {
-                    if(_CachedSubFolders != CacheSubFolders) {
-                        raiseCacheChanged = _Cache.Count > 0;
-                        _Cache.Clear();
+            var doLoadFiles = false;
+            string folder;
+            Dictionary<string, CachedFolderInfo> newCache;
+            CacheState newCacheState;
+            bool cacheSubFolders;
+            IDirectoryCacheProvider provider;
+            lock(_SyncLock) {
+                doLoadFiles = !_CacheState.Refreshing;
+                newCache = DeepCopyCache();
+                newCacheState = _CacheState.DeepCopy();
+                folder = Folder;
+                cacheSubFolders = CacheSubFolders;
+                provider = Provider;
+
+                _CacheState.Refreshing = true;
+            }
+
+            if(doLoadFiles) {
+                try {
+                    if(folder == null || !Provider.FolderExists(folder)) {
+                        raiseCacheChanged = newCache.Count > 0;
+                        newCache.Clear();
+                    } else {
+                        if(newCacheState.CachedSubFolders != cacheSubFolders) {
+                            raiseCacheChanged = newCache.Count > 0;
+                            newCache.Clear();
+                        }
+
+                        raiseCacheChanged = RefreshFolderCache(newCache, folder, provider, raiseCacheChanged, cacheSubFolders);
+                        newCacheState.CachedSubFolders = cacheSubFolders;
                     }
 
-                    raiseCacheChanged = RefreshFolderCache(folder, raiseCacheChanged);
-                    _CachedSubFolders = CacheSubFolders;
+                    newCacheState.LastFetchTime = _Clock.UtcNow;
+                } catch(Exception ex) {
+                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while reading filenames from {0}: {1}", folder, ex.ToString());
+                } finally {
+                    lock(_SyncLock) {
+                        _Cache = newCache;
+                        _CacheState = newCacheState;
+                        _CacheState.Refreshing = false;
+                    }
                 }
-
-                if(raiseCacheChanged) OnCacheChanged(EventArgs.Empty);
-
-                _LastFetchTime = _Clock.UtcNow;
-            } catch(Exception ex) {
-                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while reading filenames from {0}: {1}", folder, ex.ToString());
             }
-        }
-
-        private bool RefreshFolderCache(string folder, bool raiseCacheChanged)
-        {
-            var normalisedFolder = NormaliseFolder(folder);
-
-            CachedFolderInfo folderInfo;
-            if(!_Cache.TryGetValue(normalisedFolder, out folderInfo)) {
-                folderInfo = new CachedFolderInfo(folder);
-                _Cache.Add(normalisedFolder, folderInfo);
-            }
-
-            raiseCacheChanged = RefreshFilesInFolder(folderInfo, raiseCacheChanged);
-            if(CacheSubFolders) raiseCacheChanged = RefreshSubFolders(folderInfo, raiseCacheChanged);
 
             return raiseCacheChanged;
         }
 
-        private bool RefreshFilesInFolder(CachedFolderInfo folderInfo, bool raiseCacheChanged)
+        private Dictionary<string, CachedFolderInfo> DeepCopyCache()
+        {
+            lock(_SyncLock) {
+                var result = new Dictionary<string, CachedFolderInfo>();
+                foreach(var kvp in _Cache) {
+                    result.Add(kvp.Key, kvp.Value.DeepCopy());
+                }
+
+                return result;
+            }
+        }
+
+        private static bool RefreshFolderCache(Dictionary<string, CachedFolderInfo> cache, string folder, IDirectoryCacheProvider provider, bool raiseCacheChanged, bool cacheSubFolders)
+        {
+            var normalisedFolder = NormaliseFolder(folder);
+
+            CachedFolderInfo folderInfo;
+            if(!cache.TryGetValue(normalisedFolder, out folderInfo)) {
+                folderInfo = new CachedFolderInfo(folder);
+                cache.Add(normalisedFolder, folderInfo);
+            }
+
+            raiseCacheChanged = RefreshFilesInFolder(folderInfo, provider, raiseCacheChanged);
+            if(cacheSubFolders) raiseCacheChanged = RefreshSubFolders(cache, folderInfo, provider, raiseCacheChanged, cacheSubFolders);
+
+            return raiseCacheChanged;
+        }
+
+        private static bool RefreshFilesInFolder(CachedFolderInfo folderInfo, IDirectoryCacheProvider provider, bool raiseCacheChanged)
         {
             Dictionary<string, CachedFileInfo> files = folderInfo.Files;
 
@@ -457,7 +533,7 @@ namespace VirtualRadar.Library
             }
 
             files.Clear();
-            var directoryEntries = Provider.GetFilesInFolder(folderInfo.FullPath).ToList();
+            var directoryEntries = provider.GetFilesInFolder(folderInfo.FullPath).ToList();
             foreach(var file in directoryEntries) {
                 var fileInfo = new CachedFileInfo(file.Name, file.LastWriteTimeUtc);
                 files.Add(fileInfo.NormalisedName, fileInfo);
@@ -476,7 +552,7 @@ namespace VirtualRadar.Library
             return raiseCacheChanged;
         }
 
-        private bool RefreshSubFolders(CachedFolderInfo folderInfo, bool raiseCacheChanged)
+        private static bool RefreshSubFolders(Dictionary<string, CachedFolderInfo> cache, CachedFolderInfo folderInfo, IDirectoryCacheProvider provider, bool raiseCacheChanged, bool cacheSubFolders)
         {
             var cachedSubFolders = folderInfo.SubFolders;
             var subFolders = new List<CachedFolderInfo>();
@@ -486,21 +562,21 @@ namespace VirtualRadar.Library
                 deletedSubFolders.Add(name, name);
             }
 
-            var subFolderNames = Provider.GetSubFoldersInFolder(folderInfo.FullPath).ToList();
+            var subFolderNames = provider.GetSubFoldersInFolder(folderInfo.FullPath).ToList();
             foreach(var subFolderName in subFolderNames) {
                 var fullPath = Path.Combine(folderInfo.FullPath, subFolderName);
                 var normalisedSubFolder = NormaliseFolder(fullPath);
                 if(deletedSubFolders.ContainsKey(normalisedSubFolder)) deletedSubFolders.Remove(normalisedSubFolder);
 
-                raiseCacheChanged = RefreshFolderCache(fullPath, raiseCacheChanged);
+                raiseCacheChanged = RefreshFolderCache(cache, fullPath, provider, raiseCacheChanged, cacheSubFolders);
 
-                var subFolderInfo = _Cache[normalisedSubFolder];
+                var subFolderInfo = cache[normalisedSubFolder];
                 subFolders.Add(subFolderInfo);
             }
 
             foreach(var deletedSubFolder in deletedSubFolders.Keys) {
-                var deletedEntry = _Cache[deletedSubFolder];
-                _Cache.Remove(deletedSubFolder);
+                var deletedEntry = cache[deletedSubFolder];
+                cache.Remove(deletedSubFolder);
                 if(deletedEntry.Files.Count > 0) raiseCacheChanged = true;
             }
 
@@ -546,27 +622,16 @@ namespace VirtualRadar.Library
 
         #region Events consumed
         /// <summary>
-        /// Called on a background thread by the background worker service.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void BackgroundWorker_DoWork(object sender, EventArgs args)
-        {
-            var folder = (string)((IBackgroundWorker)sender).State;
-            lock(_SyncLock) {
-                if(_Folder == folder) LoadFiles(folder);
-            }
-        }
-
-        /// <summary>
         /// Called on a background thread by the heartbeat service.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void HeartbeatService_SlowTick(object sender, EventArgs args)
         {
-            if(_LastFetchTime.AddSeconds(60) <= _Clock.UtcNow) {
-                lock(_SyncLock) LoadFiles(Folder);
+            var cacheState = _CacheState;
+
+            if(cacheState.LastFetchTime.AddSeconds(60) <= _Clock.UtcNow) {
+                BeginRefresh();
             }
         }
         #endregion

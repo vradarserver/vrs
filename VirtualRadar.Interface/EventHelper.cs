@@ -63,6 +63,8 @@ namespace VirtualRadar.Interface
                         try {
                             if(exceptionCallback != null) {
                                 exceptionCallback(ex);
+                            } else {
+                                exceptions.Add(ex);
                             }
                         } catch(Exception unhandled) {
                             exceptions.Add(unhandled);

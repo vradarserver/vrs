@@ -46,7 +46,7 @@ namespace VirtualRadar.Interface
     /// the name of a file in the cache, and the renamed file has the same modified time as the cached file, and the old file
     /// is replaced with a new file that has the same modified time as the old file, then the rename will not be detected.
     /// </para></remarks>
-    public interface IDirectoryCache
+    public interface IDirectoryCache : IDisposable
     {
         /// <summary>
         /// Gets or sets the object that abstracts away the environment for testing.
@@ -94,32 +94,6 @@ namespace VirtualRadar.Interface
         /// the folder tree then one of the instances is returned, but it is not defined as to which is returned.
         /// </remarks>
         string GetFullPath(string fileName);
-
-        /// <summary>
-        /// Takes the full path to the file and adds it to the cache if it is not already in there.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <remarks>
-        /// Intended for use by plugins that want to force an immediate load of the file into the cache. The function
-        /// will not return until the filename is in the cache. It may block if the cache is being modified / interrogated
-        /// on another thread. If the file already exists then the function does nothing. If null or an empty string
-        /// is passed then it does nothing. If the file does not start with <see cref="Folder"/> (case-insensitive)
-        /// then it does nothing.
-        /// </remarks>
-        void Add(string fileName);
-
-        /// <summary>
-        /// Takes the full path to the file and removes it from the cache if it exists.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <remarks>
-        /// Intended for use by plugins that want to force an immediate removal of the file from the cache. The function
-        /// will not return until the filename has been removed from the cache. It may block if the cache is being modified
-        /// / interrogated on another thread. If the file is not in the cache then the function does nothing. If null or an
-        /// empty string is passed then it does nothing. If the file does not start with <see cref="Folder"/>
-        /// (case-insensitive) then it does nothing.
-        /// </remarks>
-        void Remove(string fileName);
 
         /// <summary>
         /// Starts an immediate refresh of the cache.
