@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 
@@ -27,12 +28,20 @@ namespace VirtualRadar.Interface
         /// <param name="eventHandler"></param>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        /// <param name="exceptionCallback"></param>
+        /// <param name="exceptionCallback">
+        /// Called whenever an exception is raised. If this is supplied then <paramref name="throwEventHelperException"/> has no effect,
+        /// all handlers will be called and this function won't let exceptions thrown by the handlers bubble (unless the callback
+        /// throws an exception, in which case an EventHelperException that wraps the exception(s) will be thrown).</param>
+        /// <param name="throwEventHelperException">
+        /// True if exceptions thrown by event handlers should be wrapped into a single EventHelperException, false if the first
+        /// exception thrown by an event handler should be rethrown. If this is false then the first event handler that throws
+        /// an exception will stop all other event handlers from being called.
+        /// </param>
         /// <typeparam name="TEventArgs"></typeparam>
-        public static void Raise<TEventArgs>(Delegate eventHandler, object sender, TEventArgs args = null, Action<Exception> exceptionCallback = null)
+        public static void Raise<TEventArgs>(Delegate eventHandler, object sender, TEventArgs args = null, Action<Exception> exceptionCallback = null, bool throwEventHelperException = false)
             where TEventArgs: EventArgs
         {
-            Raise(eventHandler, sender, () => args, exceptionCallback);
+            Raise(eventHandler, sender, () => args, exceptionCallback, throwEventHelperException);
         }
 
         /// <summary>
@@ -41,9 +50,17 @@ namespace VirtualRadar.Interface
         /// <param name="eventHandler"></param>
         /// <param name="sender"></param>
         /// <param name="buildArgsCallback"></param>
-        /// <param name="exceptionCallback"></param>
+        /// <param name="exceptionCallback">
+        /// Called whenever an exception is raised. If this is supplied then <paramref name="throwEventHelperException"/> has no effect,
+        /// all handlers will be called and this function won't let exceptions thrown by the handlers bubble (unless the callback
+        /// throws an exception, in which case an EventHelperException that wraps the exception(s) will be thrown).</param>
+        /// <param name="throwEventHelperException">
+        /// True if exceptions thrown by event handlers should be wrapped into a single EventHelperException, false if the first
+        /// exception thrown by an event handler should be rethrown. If this is false then the first event handler that throws
+        /// an exception will stop all other event handlers from being called.
+        /// </param>
         /// <typeparam name="TEventArgs"></typeparam>
-        public static void Raise<TEventArgs>(Delegate eventHandler, object sender, Func<TEventArgs> buildArgsCallback, Action<Exception> exceptionCallback = null)
+        public static void Raise<TEventArgs>(Delegate eventHandler, object sender, Func<TEventArgs> buildArgsCallback, Action<Exception> exceptionCallback = null, bool throwEventHelperException = false)
             where TEventArgs: EventArgs
         {
             var handler = eventHandler as Delegate;
@@ -59,16 +76,35 @@ namespace VirtualRadar.Interface
                         eventHandlerMethod.DynamicInvoke(handlerParams);
                     } catch(ThreadAbortException) {
                         ;
-                    } catch(Exception ex) {
-                        try {
-                            if(exceptionCallback != null) {
-                                exceptionCallback(ex);
+                    } catch(TargetInvocationException ex) {
+                        Exception realException = ex.InnerException;
+
+                        if(exceptionCallback == null) {
+                            if(throwEventHelperException) {
+                                exceptions.Add(realException);
                             } else {
-                                exceptions.Add(ex);
+                                Rethrow(realException);
                             }
-                        } catch(Exception unhandled) {
-                            exceptions.Add(unhandled);
-                            ; // Don't let exceptions in the callback stop the event handlers being called
+                        } else {
+                            try {
+                                exceptionCallback(realException);
+                            } catch(Exception callbackException) {
+                                exceptions.Add(callbackException);
+                            }
+                        }
+                    } catch(Exception ex) {
+                        if(exceptionCallback == null) {
+                            if(throwEventHelperException) {
+                                exceptions.Add(ex);
+                            } else {
+                                throw;
+                            }
+                        } else {
+                            try {
+                                exceptionCallback(ex);
+                            } catch(Exception callbackException) {
+                                exceptions.Add(callbackException);
+                            }
                         }
                     }
                 }
@@ -85,6 +121,20 @@ namespace VirtualRadar.Interface
                     );
                 }
             }
+        }
+
+        /// <summary>
+        /// Rethrows an exception without losing stack information.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <remarks>
+        /// Copied from http://stackoverflow.com/questions/4555599/how-to-rethrow-the-inner-exception-of-a-targetinvocationexception-without-losing.
+        /// </remarks>
+        public static void Rethrow(Exception ex)
+        {
+            // Note from the OP that this has been replaced with an official API, ExceptionDispatchInfo, in .NET 4.5
+            typeof(Exception).GetMethod("PrepForRemoting", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(ex, new object[0]);
+            throw ex;
         }
     }
 }
