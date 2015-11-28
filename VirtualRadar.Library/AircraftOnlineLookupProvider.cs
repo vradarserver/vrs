@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Web;
 using InterfaceFactory;
 using Newtonsoft.Json;
@@ -54,7 +55,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// The URL to fetch lookup settings from. This returns a single JSON object as outlined in <see cref="ServerSettings"/>.
         /// </summary>
-        private static readonly string SettingsUrl = "http://sdm.virtualradarserver.co.uk/Aircraft/GetAircraftLookupSettings";
+        private static readonly string SettingsUrl = "http://sdm.virtualradarserver.co.uk/Aircraft/GetAircraftLookupSettings?language={0}";
 
         /// <summary>
         /// The server settings last fetched by the provider.
@@ -150,7 +151,8 @@ namespace VirtualRadar.Library
         private void FetchSettings()
         {
             if(_ServerSettings == null || _ServerSettingsFetchedUtc.AddHours(1) <= DateTime.UtcNow) {
-                var request = (HttpWebRequest)HttpWebRequest.Create(SettingsUrl);
+                var url = String.Format(SettingsUrl, Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
+                var request = (HttpWebRequest)HttpWebRequest.Create(url);
                 request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
 
                 using(var response = request.GetResponse()) {
