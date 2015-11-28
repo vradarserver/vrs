@@ -226,7 +226,7 @@
             if(language === _LoadedLanguage) {
                 if(successCallback) successCallback();
             } else {
-                var url = 'script/i18n/strings.' + language + '.js';
+                var url = 'script/i18n/strings.' + language.toLowerCase() + '.js';
                 VRS.scriptManager.loadScript({ url: url, success: function() {
                     _LoadedLanguage = language;
                     if(successCallback) successCallback();
