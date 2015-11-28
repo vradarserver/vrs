@@ -449,7 +449,7 @@
         type:                       VRS.FilterPropertyType.EnumMatch,
         createValueCondition:       function() { return new VRS.OneValueCondition(VRS.FilterCondition.Equals); },
         getConditions:              function() { return [
-            { condition: VRS.FilterCondition.Equals, reverseCondition: false, labelKey: 'Equals' },
+            { condition: VRS.FilterCondition.Equals, reverseCondition: false, labelKey: 'Equal' },
             { condition: VRS.FilterCondition.Equals, reverseCondition: true,  labelKey: 'NotEquals' }
         ]},
         useSingleValueEquals:       true,
@@ -563,7 +563,7 @@
         type:                       VRS.FilterPropertyType.OnOff,
         createValueCondition:       function() { return new VRS.OneValueCondition(VRS.FilterCondition.Equals, false, true); },        // Preset the option to true.
         getConditions:              function() { return [
-            { condition: VRS.FilterCondition.Equals, reverseCondition: false, labelKey: 'Equals' }
+            { condition: VRS.FilterCondition.Equals, reverseCondition: false, labelKey: 'Equal' }
         ]},
         useSingleValueEquals:       true,
         createOptionFieldsCallback: function(/** string */ labelKey, /** VRS.OneValueCondition */ oneValueCondition, /** VRS.FilterPropertyHandler */ handler, /** function() */ saveState) { return [
@@ -608,7 +608,7 @@
         getConditions:              function() { return [
             { condition: VRS.FilterCondition.Contains, reverseCondition: false, labelKey: 'Contains' },
             { condition: VRS.FilterCondition.Contains, reverseCondition: true,  labelKey: 'NotContains' },
-            { condition: VRS.FilterCondition.Equals,   reverseCondition: false, labelKey: 'Equals' },
+            { condition: VRS.FilterCondition.Equals,   reverseCondition: false, labelKey: 'Equal' },
             { condition: VRS.FilterCondition.Equals,   reverseCondition: true,  labelKey: 'NotEquals' },
             { condition: VRS.FilterCondition.Starts,   reverseCondition: false, labelKey: 'StartsWith' },
             { condition: VRS.FilterCondition.Starts,   reverseCondition: true,  labelKey: 'NotStartsWith' },
