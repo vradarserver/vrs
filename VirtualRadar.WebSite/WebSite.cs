@@ -208,6 +208,11 @@ namespace VirtualRadar.WebSite
         private List<HtmlContentInjector> _HtmlContentInjectors = new List<HtmlContentInjector>();
 
         /// <summary>
+        /// The list of JavaScript injectors.
+        /// </summary>
+        private List<JavaScriptInjector> _JavaScriptInjectors = new List<JavaScriptInjector>();
+
+        /// <summary>
         /// A list of objects that can supply content for us.
         /// </summary>
         private List<Page> _Pages = new List<Page>();
@@ -352,6 +357,8 @@ namespace VirtualRadar.WebSite
                 _Pages.Add(new AirportDataProxyPage(this));
                 _Pages.Add(new PolarPlotJsonPage(this));
                 _Pages.Add(new DirectoryEntryJsonPage(this));
+
+                _JavaScriptInjectors.Add(new WebSiteStringsInjector());
 
                 foreach(var page in _Pages) {
                     page.Provider = Provider;
@@ -524,7 +531,7 @@ namespace VirtualRadar.WebSite
         }
         #endregion
 
-        #region BundleHtml, MinifyJavaScript, MinifyCss
+        #region BundleHtml, InjectIntoJavaScript, MinifyJavaScript, MinifyCss
         /// <summary>
         /// Bundles multiple JavaScript loads in the HTML into a single JavaScript load.
         /// </summary>
@@ -537,6 +544,18 @@ namespace VirtualRadar.WebSite
             textContent.Content = result;
 
             return result;
+        }
+
+        /// <summary>
+        /// Injects content into the JavaScript file passed across.
+        /// </summary>
+        /// <param name="requestPathAndFile"></param>
+        /// <param name="textContent"></param>
+        internal void InjectIntoJavaScript(string requestPathAndFile, TextContent textContent)
+        {
+            foreach(var injector in _JavaScriptInjectors) {
+                injector.InjectIntoContent(requestPathAndFile, textContent);
+            }
         }
 
         /// <summary>

@@ -1,0 +1,2264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+    <comment></comment>
+  </data>
+  <data name="AddCondition" xml:space="preserve">
+    <value>Add Condition</value>
+    <comment></comment>
+  </data>
+  <data name="AddCriteria" xml:space="preserve">
+    <value>Add Criteria</value>
+    <comment></comment>
+  </data>
+  <data name="AddFilter" xml:space="preserve">
+    <value>Add Filter</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB" xml:space="preserve">
+    <value>ADS-B</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB0" xml:space="preserve">
+    <value>ADS-B v0</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB1" xml:space="preserve">
+    <value>ADS-B v1</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB2" xml:space="preserve">
+    <value>ADS-B v2</value>
+    <comment></comment>
+  </data>
+  <data name="AircraftNotTransmittingCallsign" xml:space="preserve">
+    <value>Aircraft is not transmitting its callsign</value>
+    <comment></comment>
+  </data>
+  <data name="AircraftClass" xml:space="preserve">
+    <value>Aircraft Class</value>
+    <comment></comment>
+  </data>
+  <data name="Airport" xml:space="preserve">
+    <value>Airport</value>
+    <comment></comment>
+  </data>
+  <data name="AirportDataThumbnails" xml:space="preserve">
+    <value>Thumbnails (airport-data.com)</value>
+    <comment></comment>
+  </data>
+  <data name="AllAltitudes" xml:space="preserve">
+    <value>All altitudes</value>
+    <comment></comment>
+  </data>
+  <data name="AllRows" xml:space="preserve">
+    <value>All rows</value>
+    <comment></comment>
+  </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Altitude</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeAndSpeedGraph" xml:space="preserve">
+    <value>Altitude &amp; Speed Graph</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeAndVerticalSpeed" xml:space="preserve">
+    <value>Altitude &amp; VSI</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeGraph" xml:space="preserve">
+    <value>Altitude Graph</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeType" xml:space="preserve">
+    <value>Altitude Type</value>
+    <comment></comment>
+  </data>
+  <data name="AllAircraft" xml:space="preserve">
+    <value>List all</value>
+    <comment></comment>
+  </data>
+  <data name="Amphibian" xml:space="preserve">
+    <value>Amphibian</value>
+    <comment></comment>
+  </data>
+  <data name="AnnounceSelected" xml:space="preserve">
+    <value>Announce details of selected aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>Ascending</value>
+    <comment></comment>
+  </data>
+  <data name="AutoSelectAircraft" xml:space="preserve">
+    <value>Auto-select aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="AverageSignalLevel" xml:space="preserve">
+    <value>Avg. Signal Level</value>
+    <comment></comment>
+  </data>
+  <data name="Barometric" xml:space="preserve">
+    <value>Barometric</value>
+    <comment></comment>
+  </data>
+  <data name="Bearing" xml:space="preserve">
+    <value>Bearing</value>
+    <comment></comment>
+  </data>
+  <data name="Between" xml:space="preserve">
+    <value>Between</value>
+    <comment></comment>
+  </data>
+  <data name="Callsign" xml:space="preserve">
+    <value>Callsign</value>
+    <comment></comment>
+  </data>
+  <data name="CallsignAndShortRoute" xml:space="preserve">
+    <value>Callsign &amp; Route</value>
+    <comment></comment>
+  </data>
+  <data name="CallsignMayNotBeCorrect" xml:space="preserve">
+    <value>Callsign may not be correct</value>
+    <comment></comment>
+  </data>
+  <data name="CentreOnSelectedAircraft" xml:space="preserve">
+    <value>Show on map</value>
+    <comment></comment>
+  </data>
+  <data name="Civil" xml:space="preserve">
+    <value>Civil</value>
+    <comment></comment>
+  </data>
+  <data name="CivilOrMilitary" xml:space="preserve">
+    <value>Civil / Military</value>
+    <comment></comment>
+  </data>
+  <data name="ClosestToCurrentLocation" xml:space="preserve">
+    <value>Closest to</value>
+    <comment></comment>
+  </data>
+  <data name="CofACategory" xml:space="preserve">
+    <value>C/A Category</value>
+    <comment>certificate of airworthiness category</comment>
+  </data>
+  <data name="CofAExpiry" xml:space="preserve">
+    <value>C/A Expiry</value>
+    <comment>certificate of airworthiness expiry</comment>
+  </data>
+  <data name="Columns" xml:space="preserve">
+    <value>Columns</value>
+    <comment></comment>
+  </data>
+  <data name="Contains" xml:space="preserve">
+    <value>Contains</value>
+    <comment></comment>
+  </data>
+  <data name="CountAdsb" xml:space="preserve">
+    <value>ADS-B Count</value>
+    <comment></comment>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Country</value>
+    <comment></comment>
+  </data>
+  <data name="CountModeS" xml:space="preserve">
+    <value>Mode-S Count</value>
+    <comment></comment>
+  </data>
+  <data name="CountPositions" xml:space="preserve">
+    <value>Position Count</value>
+    <comment></comment>
+  </data>
+  <data name="Criteria" xml:space="preserve">
+    <value>Criteria</value>
+    <comment></comment>
+  </data>
+  <data name="CurrentLocationInstruction" xml:space="preserve">
+    <value>To set your current location click &quot;Set current location&quot; and drag the marker.</value>
+    <comment></comment>
+  </data>
+  <data name="CurrentRegDate" xml:space="preserve">
+    <value>Current Reg. Date</value>
+    <comment></comment>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+    <comment></comment>
+  </data>
+  <data name="DateTimeShort" xml:space="preserve">
+    <value>{0} {1}</value>
+    <comment>Where &quot;{0}&quot; is a date, e.g. 10/10/2013; and &quot;{1}&quot; is a time, e.g. 17:41:32.</comment>
+  </data>
+  <data name="DefaultSetting" xml:space="preserve">
+    <value>&lt; Default ></value>
+    <comment></comment>
+  </data>
+  <data name="DegreesAbbreviation" xml:space="preserve">
+    <value>{0}°</value>
+    <comment></comment>
+  </data>
+  <data name="DeRegDate" xml:space="preserve">
+    <value>De-reg. Date</value>
+    <comment></comment>
+  </data>
+  <data name="DesktopPage" xml:space="preserve">
+    <value>Desktop Page</value>
+    <comment></comment>
+  </data>
+  <data name="DesktopReportPage" xml:space="preserve">
+    <value>Desktop Report Page</value>
+    <comment></comment>
+  </data>
+  <data name="DetailItems" xml:space="preserve">
+    <value>Aircraft Detail Items</value>
+    <comment></comment>
+  </data>
+  <data name="DetailPanel" xml:space="preserve">
+    <value>Detail Panel</value>
+    <comment></comment>
+  </data>
+  <data name="DisableAutoSelect" xml:space="preserve">
+    <value>Disable auto-select</value>
+    <comment></comment>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distance</value>
+    <comment></comment>
+  </data>
+  <data name="Distances" xml:space="preserve">
+    <value>Distances</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportAutoSelect" xml:space="preserve">
+    <value>Do not import auto-select settings</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportCurrentLocation" xml:space="preserve">
+    <value>Do not import current location</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportRequestFeedId" xml:space="preserve">
+    <value>Do not import request feed ID</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportLanguageSettings" xml:space="preserve">
+    <value>Do not import language settings</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportSplitters" xml:space="preserve">
+    <value>Do not import splitters</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotShow" xml:space="preserve">
+    <value>Do not show</value>
+    <comment></comment>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duration</value>
+    <comment></comment>
+  </data>
+  <data name="Electric" xml:space="preserve">
+    <value>Electric</value>
+    <comment></comment>
+  </data>
+  <data name="EnableAutoSelect" xml:space="preserve">
+    <value>Enable auto-select</value>
+    <comment></comment>
+  </data>
+  <data name="EnableFilters" xml:space="preserve">
+    <value>Enable filters</value>
+    <comment></comment>
+  </data>
+  <data name="EnableInfoWindow" xml:space="preserve">
+    <value>Enable info window</value>
+    <comment></comment>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>End</value>
+    <comment></comment>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>End Time</value>
+    <comment></comment>
+  </data>
+  <data name="EndsWith" xml:space="preserve">
+    <value>Ends With</value>
+    <comment></comment>
+  </data>
+  <data name="Engines" xml:space="preserve">
+    <value>Engines</value>
+    <comment></comment>
+  </data>
+  <data name="EngineType" xml:space="preserve">
+    <value>Engine Type</value>
+    <comment></comment>
+  </data>
+  <data name="Equal" xml:space="preserve">
+    <value>Is</value>
+    <comment></comment>
+  </data>
+  <data name="EraseBeforeImport" xml:space="preserve">
+    <value>Erase all settings before import</value>
+    <comment></comment>
+  </data>
+  <data name="ExportSettings" xml:space="preserve">
+    <value>Export Settings</value>
+    <comment></comment>
+  </data>
+  <data name="Feet" xml:space="preserve">
+    <value>Feet</value>
+    <comment></comment>
+  </data>
+  <data name="FeetAbbreviation" xml:space="preserve">
+    <value>{0} ft</value>
+    <comment></comment>
+  </data>
+  <data name="FeetPerMinuteAbbreviation" xml:space="preserve">
+    <value>{0} ft/m</value>
+    <comment></comment>
+  </data>
+  <data name="FeetPerSecondAbbreviation" xml:space="preserve">
+    <value>{0} ft/s</value>
+    <comment></comment>
+  </data>
+  <data name="FetchPage" xml:space="preserve">
+    <value>Fetch</value>
+    <comment></comment>
+  </data>
+  <data name="FillOpacity" xml:space="preserve">
+    <value>Fill opacity</value>
+    <comment></comment>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filters</value>
+    <comment></comment>
+  </data>
+  <data name="FindAllPermutationsOfCallsign" xml:space="preserve">
+    <value>Find all permutations of callsign</value>
+    <comment></comment>
+  </data>
+  <data name="First" xml:space="preserve">
+    <value>First</value>
+    <comment></comment>
+  </data>
+  <data name="FirstAltitude" xml:space="preserve">
+    <value>First Altitude</value>
+    <comment></comment>
+  </data>
+  <data name="FirstHeading" xml:space="preserve">
+    <value>First Heading</value>
+    <comment></comment>
+  </data>
+  <data name="FirstFlightLevel" xml:space="preserve">
+    <value>First FL</value>
+    <comment></comment>
+  </data>
+  <data name="FirstLatitude" xml:space="preserve">
+    <value>First Latitude</value>
+    <comment></comment>
+  </data>
+  <data name="FirstLongitude" xml:space="preserve">
+    <value>First Longitude</value>
+    <comment></comment>
+  </data>
+  <data name="FirstOnGround" xml:space="preserve">
+    <value>First On Ground</value>
+    <comment></comment>
+  </data>
+  <data name="FirstRegDate" xml:space="preserve">
+    <value>First Reg.Date</value>
+    <comment></comment>
+  </data>
+  <data name="FirstSpeed" xml:space="preserve">
+    <value>First Speed</value>
+    <comment></comment>
+  </data>
+  <data name="FirstSquawk" xml:space="preserve">
+    <value>First Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="FirstVerticalSpeed" xml:space="preserve">
+    <value>First Vertical Speed</value>
+    <comment></comment>
+  </data>
+  <data name="FlightDetailShort" xml:space="preserve">
+    <value>Detail</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevel" xml:space="preserve">
+    <value>Flight Level</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelAbbreviation" xml:space="preserve">
+    <value>FL{0}</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelAndVerticalSpeed" xml:space="preserve">
+    <value>FL &amp; VSI</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelHeightUnit" xml:space="preserve">
+    <value>Flight level height unit</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelTransitionAltitude" xml:space="preserve">
+    <value>Flight level transition altitude</value>
+    <comment></comment>
+  </data>
+  <data name="FlightsCount" xml:space="preserve">
+    <value>Flights Count</value>
+    <comment></comment>
+  </data>
+  <data name="FlightsListShort" xml:space="preserve">
+    <value>Flights</value>
+    <comment></comment>
+  </data>
+  <data name="FlightSimPage" xml:space="preserve">
+    <value>Flight Sim Page</value>
+    <comment></comment>
+  </data>
+  <data name="FlightSimTitle" xml:space="preserve">
+    <value>Virtual Radar - FSX</value>
+    <comment></comment>
+  </data>
+  <data name="ForcePhoneOff" xml:space="preserve">
+    <value>Is not phone</value>
+    <comment>As in &quot;force the page to ignore the fact that this is a smart phone&quot;</comment>
+  </data>
+  <data name="ForcePhoneOn" xml:space="preserve">
+    <value>Is phone</value>
+    <comment>As in &quot;force the page to pretend that this is a smart phone&quot;</comment>
+  </data>
+  <data name="ForceTabletOff" xml:space="preserve">
+    <value>Is not tablet</value>
+    <comment>As in &quot;force the page to ignore the fact that this is a tablet PC&quot;</comment>
+  </data>
+  <data name="ForceTabletOn" xml:space="preserve">
+    <value>Is tablet</value>
+    <comment>As in &quot;force the page to use the settings for a tablet PC&quot;</comment>
+  </data>
+  <data name="FromAltitude" xml:space="preserve">
+    <value>From {0}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToAltitude" xml:space="preserve">
+    <value>{0} to {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToDate" xml:space="preserve">
+    <value>{0} to {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToFlightLevel" xml:space="preserve">
+    <value>{0} to {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToSpeed" xml:space="preserve">
+    <value>{0} to {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToSquawk" xml:space="preserve">
+    <value>{0} to {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FurthestFromCurrentLocation" xml:space="preserve">
+    <value>Furthest from current location</value>
+    <comment></comment>
+  </data>
+  <data name="GenericName" xml:space="preserve">
+    <value>Generic Name</value>
+    <comment></comment>
+  </data>
+  <data name="Geometric" xml:space="preserve">
+    <value>Geometric</value>
+    <comment></comment>
+  </data>
+  <data name="GeometricAltitudeIndicator" xml:space="preserve">
+    <value>GPS</value>
+    <comment>A ** SHORT ** indication that the reported altitude is geometric (i.e. usually coming from a GPS unit) as opposed to barometric (i.e. coming off one or more pressure sensors).</comment>
+  </data>
+  <data name="GoogleMapsCouldNotBeLoaded" xml:space="preserve">
+    <value>Google Maps could not be loaded</value>
+    <comment></comment>
+  </data>
+  <data name="GotoCurrentLocation" xml:space="preserve">
+    <value>Go to current location</value>
+    <comment></comment>
+  </data>
+  <data name="GotoSelectedAircraft" xml:space="preserve">
+    <value>Go to selected aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="GroundAbbreviation" xml:space="preserve">
+    <value>GND</value>
+    <comment></comment>
+  </data>
+  <data name="Ground" xml:space="preserve">
+    <value>Ground</value>
+    <comment></comment>
+  </data>
+  <data name="GroundTrack" xml:space="preserve">
+    <value>Ground track</value>
+    <comment></comment>
+  </data>
+  <data name="GroundVehicle" xml:space="preserve">
+    <value>Ground Vehicle</value>
+    <comment></comment>
+  </data>
+  <data name="Gyrocopter" xml:space="preserve">
+    <value>Gyrocopter</value>
+    <comment></comment>
+  </data>
+  <data name="HadAlert" xml:space="preserve">
+    <value>Had Alert</value>
+    <comment></comment>
+  </data>
+  <data name="HadEmergency" xml:space="preserve">
+    <value>Had Emergency</value>
+    <comment></comment>
+  </data>
+  <data name="HadSPI" xml:space="preserve">
+    <value>Had Ident</value>
+    <comment>SPI is the name of a pulse in Mode-S, used when ATC has asked for ident from aircraft.</comment>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Heading</value>
+    <comment></comment>
+  </data>
+  <data name="HeadingType" xml:space="preserve">
+    <value>Heading Type</value>
+    <comment></comment>
+  </data>
+  <data name="Heights" xml:space="preserve">
+    <value>Heights</value>
+    <comment></comment>
+  </data>
+  <data name="Helicopter" xml:space="preserve">
+    <value>Helicopter</value>
+    <comment></comment>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+    <comment></comment>
+  </data>
+  <data name="HideAircraftNotOnMap" xml:space="preserve">
+    <value>Hide aircraft not on map</value>
+    <comment></comment>
+  </data>
+  <data name="HideEmptyPinTextLines" xml:space="preserve">
+    <value>Hide empty label lines</value>
+    <comment></comment>
+  </data>
+  <data name="HideNoPosition" xml:space="preserve">
+    <value>Has position</value>
+    <comment></comment>
+  </data>
+  <data name="HighContrastMap" xml:space="preserve">
+    <value>Contrast</value>
+    <comment>&lt;-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room</comment>
+  </data>
+  <data name="Icao" xml:space="preserve">
+    <value>ICAO</value>
+    <comment></comment>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+    <comment></comment>
+  </data>
+  <data name="ImportFailedTitle" xml:space="preserve">
+    <value>Import Settings Failed</value>
+    <comment></comment>
+  </data>
+  <data name="ImportFailedBody" xml:space="preserve">
+    <value>Could not import your settings. The reported error was: {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ImportSettings" xml:space="preserve">
+    <value>Import Settings</value>
+    <comment></comment>
+  </data>
+  <data name="Index" xml:space="preserve">
+    <value>Index</value>
+    <comment></comment>
+  </data>
+  <data name="IndicatedAirSpeed" xml:space="preserve">
+    <value>Indicated</value>
+    <comment></comment>
+  </data>
+  <data name="IndicatedAirSpeedShort" xml:space="preserve">
+    <value>IAS</value>
+    <comment>&lt;-- please try to keep this short, an abbreviation if possible</comment>
+  </data>
+  <data name="Interesting" xml:space="preserve">
+    <value>Interesting</value>
+    <comment></comment>
+  </data>
+  <data name="IntervalSeconds" xml:space="preserve">
+    <value>Update interval (secs)</value>
+    <comment></comment>
+  </data>
+  <data name="IsMilitary" xml:space="preserve">
+    <value>Military</value>
+    <comment></comment>
+  </data>
+  <data name="Jet" xml:space="preserve">
+    <value>Jet</value>
+    <comment></comment>
+  </data>
+  <data name="JustPositions" xml:space="preserve">
+    <value>Positions</value>
+    <comment></comment>
+  </data>
+  <data name="KilometreAbbreviation" xml:space="preserve">
+    <value>{0} km</value>
+    <comment></comment>
+  </data>
+  <data name="Kilometres" xml:space="preserve">
+    <value>Kilometres</value>
+    <comment></comment>
+  </data>
+  <data name="KilometresPerHour" xml:space="preserve">
+    <value>Kilometres/Hour</value>
+    <comment></comment>
+  </data>
+  <data name="KilometresPerHourAbbreviation" xml:space="preserve">
+    <value>{0} km/h</value>
+    <comment></comment>
+  </data>
+  <data name="Knots" xml:space="preserve">
+    <value>Knots</value>
+    <comment></comment>
+  </data>
+  <data name="KnotsAbbreviation" xml:space="preserve">
+    <value>{0} kts</value>
+    <comment></comment>
+  </data>
+  <data name="LandPlane" xml:space="preserve">
+    <value>Landplane</value>
+    <comment></comment>
+  </data>
+  <data name="Last" xml:space="preserve">
+    <value>Last</value>
+    <comment></comment>
+  </data>
+  <data name="LastAltitude" xml:space="preserve">
+    <value>Last Altitude</value>
+    <comment></comment>
+  </data>
+  <data name="LastFlightLevel" xml:space="preserve">
+    <value>Last FL</value>
+    <comment></comment>
+  </data>
+  <data name="LastHeading" xml:space="preserve">
+    <value>Last Heading</value>
+    <comment></comment>
+  </data>
+  <data name="LastOnGround" xml:space="preserve">
+    <value>Last On Ground</value>
+    <comment></comment>
+  </data>
+  <data name="LastLatitude" xml:space="preserve">
+    <value>Last Latitude</value>
+    <comment></comment>
+  </data>
+  <data name="LastLongitude" xml:space="preserve">
+    <value>Last Longitude</value>
+    <comment></comment>
+  </data>
+  <data name="LastSpeed" xml:space="preserve">
+    <value>Last Speed</value>
+    <comment></comment>
+  </data>
+  <data name="LastSquawk" xml:space="preserve">
+    <value>Last Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="LastVerticalSpeed" xml:space="preserve">
+    <value>Last Vertical Speed</value>
+    <comment></comment>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitude</value>
+    <comment></comment>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>Layout</value>
+    <comment></comment>
+  </data>
+  <data name="Layout1" xml:space="preserve">
+    <value>Classic</value>
+    <comment></comment>
+  </data>
+  <data name="Layout2" xml:space="preserve">
+    <value>Tall Detail, Map Top</value>
+    <comment></comment>
+  </data>
+  <data name="Layout3" xml:space="preserve">
+    <value>Tall Detail, Map Bottom</value>
+    <comment></comment>
+  </data>
+  <data name="Layout4" xml:space="preserve">
+    <value>Tall List, Map Top</value>
+    <comment></comment>
+  </data>
+  <data name="Layout5" xml:space="preserve">
+    <value>Tall List, Map Bottom</value>
+    <comment></comment>
+  </data>
+  <data name="Layout6" xml:space="preserve">
+    <value>List Left, Detail Right, No Map</value>
+    <comment></comment>
+  </data>
+  <data name="ListAircraftClass" xml:space="preserve">
+    <value>A/C Class</value>
+    <comment></comment>
+  </data>
+  <data name="ListAirportDataThumbnails" xml:space="preserve">
+    <value>Thumbnails (airport-data.com)</value>
+    <comment></comment>
+  </data>
+  <data name="ListAltitude" xml:space="preserve">
+    <value>Altitude</value>
+    <comment></comment>
+  </data>
+  <data name="ListAltitudeType" xml:space="preserve">
+    <value>Alt. Type</value>
+    <comment></comment>
+  </data>
+  <data name="ListAltitudeAndVerticalSpeed" xml:space="preserve">
+    <value>Alt &amp; VSI</value>
+    <comment></comment>
+  </data>
+  <data name="ListAverageSignalLevel" xml:space="preserve">
+    <value>Avg. Sig</value>
+    <comment></comment>
+  </data>
+  <data name="ListBearing" xml:space="preserve">
+    <value>Brng.</value>
+    <comment></comment>
+  </data>
+  <data name="ListCallsign" xml:space="preserve">
+    <value>Callsign</value>
+    <comment></comment>
+  </data>
+  <data name="ListCivOrMil" xml:space="preserve">
+    <value>Civ/Mil</value>
+    <comment></comment>
+  </data>
+  <data name="ListCofACategory" xml:space="preserve">
+    <value>C/A Cat.</value>
+    <comment>Certificate of airworthiness category</comment>
+  </data>
+  <data name="ListCofAExpiry" xml:space="preserve">
+    <value>C/A Expiry</value>
+    <comment>Certificate of airworthiness expiry</comment>
+  </data>
+  <data name="ListCountAdsb" xml:space="preserve">
+    <value>ADS-B Msgs.</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountMessages" xml:space="preserve">
+    <value>Msgs.</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountModeS" xml:space="preserve">
+    <value>Mode-S Msgs.</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountPositions" xml:space="preserve">
+    <value>Posn. Msgs.</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountry" xml:space="preserve">
+    <value>Country</value>
+    <comment></comment>
+  </data>
+  <data name="ListCurrentRegDate" xml:space="preserve">
+    <value>Current Reg.</value>
+    <comment>Date of current registration</comment>
+  </data>
+  <data name="ListDeRegDate" xml:space="preserve">
+    <value>De-reg Date</value>
+    <comment>as in the date it was taken off the register</comment>
+  </data>
+  <data name="ListDistance" xml:space="preserve">
+    <value>Distance</value>
+    <comment></comment>
+  </data>
+  <data name="ListDuration" xml:space="preserve">
+    <value>Duration</value>
+    <comment></comment>
+  </data>
+  <data name="ListEndTime" xml:space="preserve">
+    <value>Last Message</value>
+    <comment>As in the date and time of the last message.</comment>
+  </data>
+  <data name="ListEngines" xml:space="preserve">
+    <value>Engines</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstAltitude" xml:space="preserve">
+    <value>From Alt.</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstFlightLevel" xml:space="preserve">
+    <value>From FL</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstHeading" xml:space="preserve">
+    <value>From Hdg.</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstLatitude" xml:space="preserve">
+    <value>From Lat.</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstLongitude" xml:space="preserve">
+    <value>From Lng.</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstOnGround" xml:space="preserve">
+    <value>From On Gnd.</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstRegDate" xml:space="preserve">
+    <value>First Reg.</value>
+    <comment>Date of first registration</comment>
+  </data>
+  <data name="ListFirstSpeed" xml:space="preserve">
+    <value>From Speed</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstSquawk" xml:space="preserve">
+    <value>From Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstVerticalSpeed" xml:space="preserve">
+    <value>From VSI</value>
+    <comment></comment>
+  </data>
+  <data name="ListFlightLevel" xml:space="preserve">
+    <value>FL</value>
+    <comment></comment>
+  </data>
+  <data name="ListFlightLevelAndVerticalSpeed" xml:space="preserve">
+    <value>FL &amp; VSI</value>
+    <comment></comment>
+  </data>
+  <data name="ListFlightsCount" xml:space="preserve">
+    <value>Seen</value>
+    <comment></comment>
+  </data>
+  <data name="ListGenericName" xml:space="preserve">
+    <value>Generic Name</value>
+    <comment></comment>
+  </data>
+  <data name="ListHadAlert" xml:space="preserve">
+    <value>Alert</value>
+    <comment></comment>
+  </data>
+  <data name="ListHadEmergency" xml:space="preserve">
+    <value>Emergency</value>
+    <comment></comment>
+  </data>
+  <data name="ListHadSPI" xml:space="preserve">
+    <value>SPI</value>
+    <comment>Name of a pulse in Mode-S, may not need translation. Used when ATC has asked for ident from aircraft.</comment>
+  </data>
+  <data name="ListHeading" xml:space="preserve">
+    <value>Hdg.</value>
+    <comment></comment>
+  </data>
+  <data name="ListHeadingType" xml:space="preserve">
+    <value>Hdg. Type</value>
+    <comment></comment>
+  </data>
+  <data name="ListIcao" xml:space="preserve">
+    <value>ICAO</value>
+    <comment></comment>
+  </data>
+  <data name="ListInteresting" xml:space="preserve">
+    <value>Interesting</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastAltitude" xml:space="preserve">
+    <value>To Alt.</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastFlightLevel" xml:space="preserve">
+    <value>To FL</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastHeading" xml:space="preserve">
+    <value>To Hdg.</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastLatitude" xml:space="preserve">
+    <value>To Lat.</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastLongitude" xml:space="preserve">
+    <value>To Lng.</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastOnGround" xml:space="preserve">
+    <value>To On Gnd.</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastSpeed" xml:space="preserve">
+    <value>To Speed</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastSquawk" xml:space="preserve">
+    <value>To Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastVerticalSpeed" xml:space="preserve">
+    <value>To VSI</value>
+    <comment></comment>
+  </data>
+  <data name="ListLatitude" xml:space="preserve">
+    <value>Lat.</value>
+    <comment></comment>
+  </data>
+  <data name="ListLongitude" xml:space="preserve">
+    <value>Lng.</value>
+    <comment></comment>
+  </data>
+  <data name="ListNotes" xml:space="preserve">
+    <value>Notes</value>
+    <comment></comment>
+  </data>
+  <data name="ListManufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+    <comment></comment>
+  </data>
+  <data name="ListMaxTakeoffWeight" xml:space="preserve">
+    <value>Max T/O Weight</value>
+    <comment></comment>
+  </data>
+  <data name="ListMlat" xml:space="preserve">
+    <value>MLAT</value>
+    <comment>Abbreviation of Multilateration</comment>
+  </data>
+  <data name="ListModel" xml:space="preserve">
+    <value>Model</value>
+    <comment></comment>
+  </data>
+  <data name="ListModelIcao" xml:space="preserve">
+    <value>Type</value>
+    <comment></comment>
+  </data>
+  <data name="ListModeSCountry" xml:space="preserve">
+    <value>Mode-S Country</value>
+    <comment></comment>
+  </data>
+  <data name="ListModelSilhouette" xml:space="preserve">
+    <value>Silhouette</value>
+    <comment></comment>
+  </data>
+  <data name="ListModelSilhouetteAndOpFlag" xml:space="preserve">
+    <value>Flags</value>
+    <comment></comment>
+  </data>
+  <data name="ListOperator" xml:space="preserve">
+    <value>Operator</value>
+    <comment></comment>
+  </data>
+  <data name="ListOperatorFlag" xml:space="preserve">
+    <value>Flag</value>
+    <comment></comment>
+  </data>
+  <data name="ListOperatorIcao" xml:space="preserve">
+    <value>Op. Code</value>
+    <comment></comment>
+  </data>
+  <data name="ListOwnershipStatus" xml:space="preserve">
+    <value>Ownership Status</value>
+    <comment></comment>
+  </data>
+  <data name="ListPicture" xml:space="preserve">
+    <value>Picture</value>
+    <comment></comment>
+  </data>
+  <data name="ListPopularName" xml:space="preserve">
+    <value>Popular Name</value>
+    <comment></comment>
+  </data>
+  <data name="ListPreviousId" xml:space="preserve">
+    <value>Previous ID</value>
+    <comment></comment>
+  </data>
+  <data name="ListReceiver" xml:space="preserve">
+    <value>Receiver</value>
+    <comment></comment>
+  </data>
+  <data name="ListRegistration" xml:space="preserve">
+    <value>Reg.</value>
+    <comment></comment>
+  </data>
+  <data name="ListRowNumber" xml:space="preserve">
+    <value>Row</value>
+    <comment></comment>
+  </data>
+  <data name="ListRoute" xml:space="preserve">
+    <value>Route</value>
+    <comment></comment>
+  </data>
+  <data name="ListSerialNumber" xml:space="preserve">
+    <value>Serial</value>
+    <comment></comment>
+  </data>
+  <data name="ListSignalLevel" xml:space="preserve">
+    <value>Sig</value>
+    <comment></comment>
+  </data>
+  <data name="ListSpecies" xml:space="preserve">
+    <value>Species</value>
+    <comment></comment>
+  </data>
+  <data name="ListSpeed" xml:space="preserve">
+    <value>Speed</value>
+    <comment></comment>
+  </data>
+  <data name="ListSpeedType" xml:space="preserve">
+    <value>Speed Type</value>
+    <comment></comment>
+  </data>
+  <data name="ListSquawk" xml:space="preserve">
+    <value>Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="ListStartTime" xml:space="preserve">
+    <value>Seen</value>
+    <comment></comment>
+  </data>
+  <data name="ListStatus" xml:space="preserve">
+    <value>Status</value>
+    <comment></comment>
+  </data>
+  <data name="ListTargetAltitude" xml:space="preserve">
+    <value>A/P Alt.</value>
+    <comment></comment>
+  </data>
+  <data name="ListTargetHeading" xml:space="preserve">
+    <value>A/P Hdg.</value>
+    <comment></comment>
+  </data>
+  <data name="ListTisb" xml:space="preserve">
+    <value>TIS-B</value>
+    <comment></comment>
+  </data>
+  <data name="ListTotalHours" xml:space="preserve">
+    <value>Total Hours</value>
+    <comment></comment>
+  </data>
+  <data name="ListTransponderType" xml:space="preserve">
+    <value>Transponder</value>
+    <comment></comment>
+  </data>
+  <data name="ListTransponderTypeFlag" xml:space="preserve">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="ListUserTag" xml:space="preserve">
+    <value>Tag</value>
+    <comment></comment>
+  </data>
+  <data name="ListVerticalSpeed" xml:space="preserve">
+    <value>V.Speed</value>
+    <comment></comment>
+  </data>
+  <data name="ListVerticalSpeedType" xml:space="preserve">
+    <value>V.Speed Type</value>
+    <comment></comment>
+  </data>
+  <data name="ListWtc" xml:space="preserve">
+    <value>WTC</value>
+    <comment></comment>
+  </data>
+  <data name="ListYearBuilt" xml:space="preserve">
+    <value>Built</value>
+    <comment></comment>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitude</value>
+    <comment></comment>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+    <comment></comment>
+  </data>
+  <data name="Map" xml:space="preserve">
+    <value>Map</value>
+    <comment></comment>
+  </data>
+  <data name="MaxTakeoffWeight" xml:space="preserve">
+    <value>MaxTakeoffWeight</value>
+    <comment></comment>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+    <comment></comment>
+  </data>
+  <data name="MenuBack" xml:space="preserve">
+    <value>back</value>
+    <comment></comment>
+  </data>
+  <data name="MessageCount" xml:space="preserve">
+    <value>Message Count</value>
+    <comment></comment>
+  </data>
+  <data name="MetreAbbreviation" xml:space="preserve">
+    <value>{0} m</value>
+    <comment></comment>
+  </data>
+  <data name="MetrePerSecondAbbreviation" xml:space="preserve">
+    <value>{0} m/sec</value>
+    <comment></comment>
+  </data>
+  <data name="MetrePerMinuteAbbreviation" xml:space="preserve">
+    <value>{0} m/min</value>
+    <comment></comment>
+  </data>
+  <data name="Metres" xml:space="preserve">
+    <value>Metres</value>
+    <comment></comment>
+  </data>
+  <data name="MilesPerHour" xml:space="preserve">
+    <value>Miles/Hour</value>
+    <comment></comment>
+  </data>
+  <data name="MilesPerHourAbbreviation" xml:space="preserve">
+    <value>{0} mph</value>
+    <comment></comment>
+  </data>
+  <data name="Military" xml:space="preserve">
+    <value>Military</value>
+    <comment></comment>
+  </data>
+  <data name="Mlat" xml:space="preserve">
+    <value>MLAT</value>
+    <comment>An abbreviation of Multilateration</comment>
+  </data>
+  <data name="MobilePage" xml:space="preserve">
+    <value>Mobile Page</value>
+    <comment></comment>
+  </data>
+  <data name="MobileReportPage" xml:space="preserve">
+    <value>Mobile Report Page</value>
+    <comment></comment>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+    <comment></comment>
+  </data>
+  <data name="ModelIcao" xml:space="preserve">
+    <value>Model Code</value>
+    <comment></comment>
+  </data>
+  <data name="ModeS" xml:space="preserve">
+    <value>Mode-S</value>
+    <comment></comment>
+  </data>
+  <data name="ModeSCountry" xml:space="preserve">
+    <value>Mode-S Country</value>
+    <comment></comment>
+  </data>
+  <data name="MovingMap" xml:space="preserve">
+    <value>Moving Map</value>
+    <comment></comment>
+  </data>
+  <data name="MuteOff" xml:space="preserve">
+    <value>Mute Off</value>
+    <comment></comment>
+  </data>
+  <data name="MuteOn" xml:space="preserve">
+    <value>Mute</value>
+    <comment></comment>
+  </data>
+  <data name="NauticalMileAbbreviation" xml:space="preserve">
+    <value>{0} nmi</value>
+    <comment></comment>
+  </data>
+  <data name="NauticalMiles" xml:space="preserve">
+    <value>Nautical Miles</value>
+    <comment></comment>
+  </data>
+  <data name="Neither" xml:space="preserve">
+    <value>Neither</value>
+    <comment></comment>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+    <comment></comment>
+  </data>
+  <data name="NoLocalStorage" xml:space="preserve">
+    <value>This browser does not support local storage. Your configuration settings will not be saved.\n\nIf you are browsing in &quot;Private Mode&quot; then try switching if off. Private Mode will disable local storage on some browsers.</value>
+    <comment></comment>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+    <comment></comment>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Notes</value>
+    <comment></comment>
+  </data>
+  <data name="NoSettingsFound" xml:space="preserve">
+    <value>No settings found</value>
+    <comment></comment>
+  </data>
+  <data name="NotBetween" xml:space="preserve">
+    <value>Is Not Between</value>
+    <comment></comment>
+  </data>
+  <data name="NotContains" xml:space="preserve">
+    <value>Does Not Contain</value>
+    <comment></comment>
+  </data>
+  <data name="NotEndsWith" xml:space="preserve">
+    <value>Does Not End With</value>
+    <comment></comment>
+  </data>
+  <data name="NotEquals" xml:space="preserve">
+    <value>Is Not</value>
+    <comment></comment>
+  </data>
+  <data name="NotStartsWith" xml:space="preserve">
+    <value>Does Not Start With</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarAction" xml:space="preserve">
+    <value>When aircraft go out of range:</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarActionWait" xml:space="preserve">
+    <value>Deselect the aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarActionEnableAutoSelect" xml:space="preserve">
+    <value>Enable auto-select</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarActionNothing" xml:space="preserve">
+    <value>Do nothing</value>
+    <comment></comment>
+  </data>
+  <data name="OfPages" xml:space="preserve">
+    <value>of {0:N0}</value>
+    <comment>As in &quot;1 of 10&quot; pages</comment>
+  </data>
+  <data name="OnlyAircraftOnMap" xml:space="preserve">
+    <value>List only visible</value>
+    <comment></comment>
+  </data>
+  <data name="OnlyAutoSelected" xml:space="preserve">
+    <value>Only announce details of auto-selected aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="OnlyUsePre22Icons" xml:space="preserve">
+    <value>Only show old style aircraft markers</value>
+    <comment></comment>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operator</value>
+    <comment></comment>
+  </data>
+  <data name="OperatorCode" xml:space="preserve">
+    <value>Operator Code</value>
+    <comment></comment>
+  </data>
+  <data name="OperatorFlag" xml:space="preserve">
+    <value>Operator Flag</value>
+    <comment></comment>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Options</value>
+    <comment></comment>
+  </data>
+  <data name="OverwriteExistingSettings" xml:space="preserve">
+    <value>Overwrite existing settings</value>
+    <comment></comment>
+  </data>
+  <data name="OwnershipStatus" xml:space="preserve">
+    <value>Ownership Status</value>
+    <comment></comment>
+  </data>
+  <data name="PageAircraft" xml:space="preserve">
+    <value>Aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="AircraftDetailShort" xml:space="preserve">
+    <value>Detail</value>
+    <comment></comment>
+  </data>
+  <data name="PageFirst" xml:space="preserve">
+    <value>First</value>
+    <comment></comment>
+  </data>
+  <data name="PageGeneral" xml:space="preserve">
+    <value>General</value>
+    <comment></comment>
+  </data>
+  <data name="PageLast" xml:space="preserve">
+    <value>Last</value>
+    <comment></comment>
+  </data>
+  <data name="PageList" xml:space="preserve">
+    <value>List</value>
+    <comment></comment>
+  </data>
+  <data name="PageListShort" xml:space="preserve">
+    <value>List</value>
+    <comment></comment>
+  </data>
+  <data name="PageMapShort" xml:space="preserve">
+    <value>Map</value>
+    <comment></comment>
+  </data>
+  <data name="PageNext" xml:space="preserve">
+    <value>Next</value>
+    <comment></comment>
+  </data>
+  <data name="PagePrevious" xml:space="preserve">
+    <value>Previous</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAircraftDisplay" xml:space="preserve">
+    <value>Aircraft Display</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAircraftTrails" xml:space="preserve">
+    <value>Aircraft Trails</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAudio" xml:space="preserve">
+    <value>Audio</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAutoSelect" xml:space="preserve">
+    <value>Auto-selection</value>
+    <comment></comment>
+  </data>
+  <data name="PaneCurrentLocation" xml:space="preserve">
+    <value>Current Location</value>
+    <comment></comment>
+  </data>
+  <data name="PaneDataFeed" xml:space="preserve">
+    <value>Data Feed</value>
+    <comment></comment>
+  </data>
+  <data name="PaneDetailSettings" xml:space="preserve">
+    <value>Aircraft Details</value>
+    <comment></comment>
+  </data>
+  <data name="PaneInfoWindow" xml:space="preserve">
+    <value>Aircraft Info Window</value>
+    <comment></comment>
+  </data>
+  <data name="PaneListSettings" xml:space="preserve">
+    <value>List Settings</value>
+    <comment></comment>
+  </data>
+  <data name="PaneManyAircraft" xml:space="preserve">
+    <value>Multiple Aircraft Reports</value>
+    <comment></comment>
+  </data>
+  <data name="PanePermanentLink" xml:space="preserve">
+    <value>Permanent Link</value>
+    <comment></comment>
+  </data>
+  <data name="PaneRangeCircles" xml:space="preserve">
+    <value>Range Circles</value>
+    <comment></comment>
+  </data>
+  <data name="PaneReceiverRange" xml:space="preserve">
+    <value>Receiver Range</value>
+    <comment></comment>
+  </data>
+  <data name="PaneSingleAircraft" xml:space="preserve">
+    <value>Single Aircraft Reports</value>
+    <comment></comment>
+  </data>
+  <data name="PaneSortAircraftList" xml:space="preserve">
+    <value>Sort Aircraft List</value>
+    <comment></comment>
+  </data>
+  <data name="PaneSortReport" xml:space="preserve">
+    <value>Sort Report</value>
+    <comment></comment>
+  </data>
+  <data name="PaneUnits" xml:space="preserve">
+    <value>Units</value>
+    <comment></comment>
+  </data>
+  <data name="Pause" xml:space="preserve">
+    <value>Pause</value>
+    <comment></comment>
+  </data>
+  <data name="PinTextNumber" xml:space="preserve">
+    <value>Aircraft label line {0}</value>
+    <comment></comment>
+  </data>
+  <data name="PopularName" xml:space="preserve">
+    <value>Popular Name</value>
+    <comment></comment>
+  </data>
+  <data name="PositionAndAltitude" xml:space="preserve">
+    <value>Position and altitude</value>
+    <comment></comment>
+  </data>
+  <data name="PositionAndSpeed" xml:space="preserve">
+    <value>Position and speed</value>
+    <comment></comment>
+  </data>
+  <data name="Picture" xml:space="preserve">
+    <value>Picture</value>
+    <comment></comment>
+  </data>
+  <data name="PictureOrThumbnails" xml:space="preserve">
+    <value>Picture or Thumbnails</value>
+    <comment></comment>
+  </data>
+  <data name="PinTextLines" xml:space="preserve">
+    <value>Number of label lines</value>
+    <comment></comment>
+  </data>
+  <data name="Piston" xml:space="preserve">
+    <value>Piston</value>
+    <comment></comment>
+  </data>
+  <data name="Pixels" xml:space="preserve">
+    <value>pixels</value>
+    <comment></comment>
+  </data>
+  <data name="PoweredByVRS" xml:space="preserve">
+    <value>Powered by Virtual Radar Server</value>
+    <comment></comment>
+  </data>
+  <data name="PreviousId" xml:space="preserve">
+    <value>Previous ID</value>
+    <comment></comment>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantity</value>
+    <comment></comment>
+  </data>
+  <data name="RadioMast" xml:space="preserve">
+    <value>Radio Mast</value>
+    <comment></comment>
+  </data>
+  <data name="RangeCircleEvenColour" xml:space="preserve">
+    <value>Even circle colour</value>
+    <comment></comment>
+  </data>
+  <data name="RangeCircleOddColour" xml:space="preserve">
+    <value>Odd circle colour</value>
+    <comment></comment>
+  </data>
+  <data name="RangeCircles" xml:space="preserve">
+    <value>Range Circles</value>
+    <comment></comment>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>Receiver</value>
+    <comment></comment>
+  </data>
+  <data name="ReceiverRange" xml:space="preserve">
+    <value>Receiver Range</value>
+    <comment></comment>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+    <comment></comment>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Registration</value>
+    <comment></comment>
+  </data>
+  <data name="RegistrationAndIcao" xml:space="preserve">
+    <value>Reg. &amp; Icao</value>
+    <comment></comment>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+    <comment></comment>
+  </data>
+  <data name="RemoveAll" xml:space="preserve">
+    <value>Remove All</value>
+    <comment></comment>
+  </data>
+  <data name="ReportCallsignInvalid" xml:space="preserve">
+    <value>Callsign Report</value>
+    <comment></comment>
+  </data>
+  <data name="ReportCallsignValid" xml:space="preserve">
+    <value>Callsign Report for {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ReportEmpty" xml:space="preserve">
+    <value>No records were found for the criteria supplied</value>
+    <comment></comment>
+  </data>
+  <data name="ReportFreeForm" xml:space="preserve">
+    <value>Free-form Report</value>
+    <comment></comment>
+  </data>
+  <data name="ReportIcaoInvalid" xml:space="preserve">
+    <value>ICAO Report</value>
+    <comment></comment>
+  </data>
+  <data name="ReportIcaoValid" xml:space="preserve">
+    <value>ICAO Report for {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ReportRegistrationInvalid" xml:space="preserve">
+    <value>Registration Report</value>
+    <comment></comment>
+  </data>
+  <data name="ReportRegistrationValid" xml:space="preserve">
+    <value>Registration Report for {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ReportTodaysFlights" xml:space="preserve">
+    <value>Today\&#39;s Flights</value>
+    <comment></comment>
+  </data>
+  <data name="ReportYesterdaysFlights" xml:space="preserve">
+    <value>Yesterday\&#39;s Flights</value>
+    <comment></comment>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reports</value>
+    <comment></comment>
+  </data>
+  <data name="ReportsAreDisabled" xml:space="preserve">
+    <value>Server permissions prohibit the running of reports</value>
+    <comment></comment>
+  </data>
+  <data name="Resume" xml:space="preserve">
+    <value>Resume</value>
+    <comment></comment>
+  </data>
+  <data name="Reversing" xml:space="preserve">
+    <value>Reversing</value>
+    <comment></comment>
+  </data>
+  <data name="ReversingShort" xml:space="preserve">
+    <value>REV</value>
+    <comment></comment>
+  </data>
+  <data name="Route" xml:space="preserve">
+    <value>Route</value>
+    <comment></comment>
+  </data>
+  <data name="RouteShort" xml:space="preserve">
+    <value>Route (short)</value>
+    <comment></comment>
+  </data>
+  <data name="RouteFull" xml:space="preserve">
+    <value>Route (full)</value>
+    <comment></comment>
+  </data>
+  <data name="RouteNotKnown" xml:space="preserve">
+    <value>Route not known</value>
+    <comment></comment>
+  </data>
+  <data name="RowNumber" xml:space="preserve">
+    <value>Row Number</value>
+    <comment></comment>
+  </data>
+  <data name="Rows" xml:space="preserve">
+    <value>Rows</value>
+    <comment></comment>
+  </data>
+  <data name="RunReport" xml:space="preserve">
+    <value>Run Report</value>
+    <comment></comment>
+  </data>
+  <data name="SeaPlane" xml:space="preserve">
+    <value>Seaplane</value>
+    <comment></comment>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Select</value>
+    <comment></comment>
+  </data>
+  <data name="SeparateTwoValues" xml:space="preserve">
+    <value> and </value>
+    <comment></comment>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Serial</value>
+    <comment></comment>
+  </data>
+  <data name="ServerFetchFailedTitle" xml:space="preserve">
+    <value>Fetch Failed</value>
+    <comment></comment>
+  </data>
+  <data name="ServerFetchFailedBody" xml:space="preserve">
+    <value>Could not fetch from the server. The error is &quot;{0}&quot; and the status is &quot;{1}&quot;.</value>
+    <comment></comment>
+  </data>
+  <data name="ServerFetchTimedOut" xml:space="preserve">
+    <value>The request has timed out.</value>
+    <comment></comment>
+  </data>
+  <data name="ServerReportExceptionBody" xml:space="preserve">
+    <value>The server encountered an exception while generating the report. The exception was &quot;{0}&quot;</value>
+    <comment></comment>
+  </data>
+  <data name="ServerReportExceptionTitle" xml:space="preserve">
+    <value>Server Exception</value>
+    <comment></comment>
+  </data>
+  <data name="SetCurrentLocation" xml:space="preserve">
+    <value>Set current location</value>
+    <comment></comment>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+    <comment></comment>
+  </data>
+  <data name="SettingsPage" xml:space="preserve">
+    <value>Settings Page</value>
+    <comment></comment>
+  </data>
+  <data name="Shortcuts" xml:space="preserve">
+    <value>Shortcuts</value>
+    <comment></comment>
+  </data>
+  <data name="ShowAltitudeStalk" xml:space="preserve">
+    <value>Show altitude stalk</value>
+    <comment></comment>
+  </data>
+  <data name="ShowAltitudeType" xml:space="preserve">
+    <value>Show altitude type</value>
+    <comment></comment>
+  </data>
+  <data name="ShowCurrentLocation" xml:space="preserve">
+    <value>Show current location</value>
+    <comment></comment>
+  </data>
+  <data name="ShowDetail" xml:space="preserve">
+    <value>Show detail</value>
+    <comment></comment>
+  </data>
+  <data name="ShowForAllAircraft" xml:space="preserve">
+    <value>Show for all aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="ShowEmergencySquawks" xml:space="preserve">
+    <value>Show emergency squawks</value>
+    <comment>Followed by &quot;first / last / neither&quot;</comment>
+  </data>
+  <data name="ShowEmptyValues" xml:space="preserve">
+    <value>Show empty values</value>
+    <comment></comment>
+  </data>
+  <data name="ShowForSelectedOnly" xml:space="preserve">
+    <value>Show just for the selected aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="ShowInterestingAircraft" xml:space="preserve">
+    <value>Show interesting aircraft</value>
+    <comment>Followed by &quot;first / last / neither&quot;</comment>
+  </data>
+  <data name="ShowRangeCircles" xml:space="preserve">
+    <value>Show range circles</value>
+    <comment></comment>
+  </data>
+  <data name="ShowShortTrails" xml:space="preserve">
+    <value>Show short trails</value>
+    <comment></comment>
+  </data>
+  <data name="ShowSpeedType" xml:space="preserve">
+    <value>Show speed type</value>
+    <comment></comment>
+  </data>
+  <data name="ShowTrackType" xml:space="preserve">
+    <value>Show heading type</value>
+    <comment></comment>
+  </data>
+  <data name="ShowUnits" xml:space="preserve">
+    <value>Show units</value>
+    <comment></comment>
+  </data>
+  <data name="ShowVerticalSpeedType" xml:space="preserve">
+    <value>Show vertical speed type</value>
+    <comment></comment>
+  </data>
+  <data name="ShowVsiInSeconds" xml:space="preserve">
+    <value>Show vertical speed per second</value>
+    <comment></comment>
+  </data>
+  <data name="SignalLevel" xml:space="preserve">
+    <value>Signal Level</value>
+    <comment></comment>
+  </data>
+  <data name="Silhouette" xml:space="preserve">
+    <value>Silhouette</value>
+    <comment></comment>
+  </data>
+  <data name="SilhouetteAndOpFlag" xml:space="preserve">
+    <value>Sil. &amp; Op. Flag</value>
+    <comment></comment>
+  </data>
+  <data name="SiteTimedOut" xml:space="preserve">
+    <value>The site has been paused due to inactivity. Close this message box to resume updates.</value>
+    <comment></comment>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Sort by</value>
+    <comment></comment>
+  </data>
+  <data name="Species" xml:space="preserve">
+    <value>Species</value>
+    <comment></comment>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>Speed</value>
+    <comment></comment>
+  </data>
+  <data name="SpeedGraph" xml:space="preserve">
+    <value>Speed Graph</value>
+    <comment></comment>
+  </data>
+  <data name="Speeds" xml:space="preserve">
+    <value>Speeds</value>
+    <comment></comment>
+  </data>
+  <data name="SpeedType" xml:space="preserve">
+    <value>Speed Type</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk" xml:space="preserve">
+    <value>Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7000" xml:space="preserve">
+    <value>No squawk assigned</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7500" xml:space="preserve">
+    <value>Aircraft hijacking</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7600" xml:space="preserve">
+    <value>Radio failure</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7700" xml:space="preserve">
+    <value>General emergency</value>
+    <comment></comment>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+    <comment></comment>
+  </data>
+  <data name="StartsWith" xml:space="preserve">
+    <value>Starts With</value>
+    <comment></comment>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>Start Time</value>
+    <comment></comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+    <comment></comment>
+  </data>
+  <data name="StatuteMileAbbreviation" xml:space="preserve">
+    <value>{0} mi</value>
+    <comment></comment>
+  </data>
+  <data name="StatuteMiles" xml:space="preserve">
+    <value>Statute Miles</value>
+    <comment></comment>
+  </data>
+  <data name="StorageEngine" xml:space="preserve">
+    <value>Storage engine</value>
+    <comment></comment>
+  </data>
+  <data name="StorageSize" xml:space="preserve">
+    <value>Storage size</value>
+    <comment></comment>
+  </data>
+  <data name="StrokeOpacity" xml:space="preserve">
+    <value>Stroke opacity</value>
+    <comment></comment>
+  </data>
+  <data name="SubmitRoute" xml:space="preserve">
+    <value>Submit route</value>
+    <comment></comment>
+  </data>
+  <data name="SubmitRouteCorrection" xml:space="preserve">
+    <value>Submit route correction</value>
+    <comment></comment>
+  </data>
+  <data name="SuppressAltitudeStalkWhenZoomedOut" xml:space="preserve">
+    <value>Suppress altitude stalk when zoomed out</value>
+    <comment></comment>
+  </data>
+  <data name="TargetAltitude" xml:space="preserve">
+    <value>Target Altitude</value>
+    <comment></comment>
+  </data>
+  <data name="TargetHeading" xml:space="preserve">
+    <value>Target Heading</value>
+    <comment></comment>
+  </data>
+  <data name="ThenBy" xml:space="preserve">
+    <value>then by</value>
+    <comment></comment>
+  </data>
+  <data name="Tiltwing" xml:space="preserve">
+    <value>Tiltwing</value>
+    <comment></comment>
+  </data>
+  <data name="TimeTracked" xml:space="preserve">
+    <value>Time Tracked</value>
+    <comment></comment>
+  </data>
+  <data name="Tisb" xml:space="preserve">
+    <value>TIS-B</value>
+    <comment></comment>
+  </data>
+  <data name="TitleAircraftDetail" xml:space="preserve">
+    <value>Aircraft Detail</value>
+    <comment></comment>
+  </data>
+  <data name="TitleAircraftList" xml:space="preserve">
+    <value>Aircraft List</value>
+    <comment></comment>
+  </data>
+  <data name="TitleFlightDetail" xml:space="preserve">
+    <value>Detail</value>
+    <comment></comment>
+  </data>
+  <data name="TitleFlightsList" xml:space="preserve">
+    <value>Flights</value>
+    <comment></comment>
+  </data>
+  <data name="ToAltitude" xml:space="preserve">
+    <value>To {0}</value>
+    <comment></comment>
+  </data>
+  <data name="TitleSiteTimedOut" xml:space="preserve">
+    <value>Timed Out</value>
+    <comment></comment>
+  </data>
+  <data name="TotalHours" xml:space="preserve">
+    <value>Total Hours</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingCountAircraft" xml:space="preserve">
+    <value>Tracking {0:N0} aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingCountAircraftOutOf" xml:space="preserve">
+    <value>Tracking {0:N0} aircraft (out of {1:N0})</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingOneAircraft" xml:space="preserve">
+    <value>Tracking 1 aircraft</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingOneAircraftOutOf" xml:space="preserve">
+    <value>Tracking 1 aircraft (out of {0:N0})</value>
+    <comment></comment>
+  </data>
+  <data name="TransponderType" xml:space="preserve">
+    <value>Transponder</value>
+    <comment></comment>
+  </data>
+  <data name="TransponderTypeFlag" xml:space="preserve">
+    <value>Transponder Flag</value>
+    <comment></comment>
+  </data>
+  <data name="TrueAirSpeed" xml:space="preserve">
+    <value>True</value>
+    <comment></comment>
+  </data>
+  <data name="TrueAirSpeedShort" xml:space="preserve">
+    <value>TAS</value>
+    <comment>Keep this one short, an abbreviation if possible.</comment>
+  </data>
+  <data name="TrueHeading" xml:space="preserve">
+    <value>True heading</value>
+    <comment></comment>
+  </data>
+  <data name="TrueHeadingShort" xml:space="preserve">
+    <value>True</value>
+    <comment></comment>
+  </data>
+  <data name="Turbo" xml:space="preserve">
+    <value>Turbo</value>
+    <comment></comment>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+    <comment></comment>
+  </data>
+  <data name="UseBrowserLocation" xml:space="preserve">
+    <value>Use GPS location</value>
+    <comment></comment>
+  </data>
+  <data name="UseRelativeDates" xml:space="preserve">
+    <value>Use relative dates</value>
+    <comment></comment>
+  </data>
+  <data name="UserTag" xml:space="preserve">
+    <value>User Tag</value>
+    <comment></comment>
+  </data>
+  <data name="VerticalSpeed" xml:space="preserve">
+    <value>Vertical Speed</value>
+    <comment></comment>
+  </data>
+  <data name="VerticalSpeedType" xml:space="preserve">
+    <value>Vertical Speed Type</value>
+    <comment></comment>
+  </data>
+  <data name="VirtualRadar" xml:space="preserve">
+    <value>Virtual Radar</value>
+    <comment></comment>
+  </data>
+  <data name="Volume25" xml:space="preserve">
+    <value>Volume 25%</value>
+    <comment></comment>
+  </data>
+  <data name="Volume50" xml:space="preserve">
+    <value>Volume 50%</value>
+    <comment></comment>
+  </data>
+  <data name="Volume75" xml:space="preserve">
+    <value>Volume 75%</value>
+    <comment></comment>
+  </data>
+  <data name="Volume100" xml:space="preserve">
+    <value>Volume 100%</value>
+    <comment></comment>
+  </data>
+  <data name="VrsVersion" xml:space="preserve">
+    <value>Version {0}</value>
+    <comment></comment>
+  </data>
+  <data name="WakeTurbulenceCategory" xml:space="preserve">
+    <value>Wake Turbulence</value>
+    <comment></comment>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+    <comment></comment>
+  </data>
+  <data name="WorkingInOfflineMode" xml:space="preserve">
+    <value>Working in offline mode</value>
+    <comment></comment>
+  </data>
+  <data name="WtcLight" xml:space="preserve">
+    <value>Light</value>
+    <comment></comment>
+  </data>
+  <data name="WtcMedium" xml:space="preserve">
+    <value>Medium</value>
+    <comment></comment>
+  </data>
+  <data name="WtcHeavy" xml:space="preserve">
+    <value>Heavy</value>
+    <comment></comment>
+  </data>
+  <data name="YearBuilt" xml:space="preserve">
+    <value>Year Built</value>
+    <comment></comment>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+    <comment></comment>
+  </data>
+  <data name="DateClose" xml:space="preserve">
+    <value>Done</value>
+    <comment>Keep this short</comment>
+  </data>
+  <data name="DateCurrent" xml:space="preserve">
+    <value>Today</value>
+    <comment>Keep this short</comment>
+  </data>
+  <data name="DateNext" xml:space="preserve">
+    <value>Next</value>
+    <comment>Keep this short</comment>
+  </data>
+  <data name="DatePrevious" xml:space="preserve">
+    <value>Prev</value>
+    <comment>Keep this short</comment>
+  </data>
+  <data name="DateWeekAbbr" xml:space="preserve">
+    <value>Wk</value>
+    <comment>Keep this very short</comment>
+  </data>
+  <data name="DateYearSuffix" xml:space="preserve">
+    <value></value>
+    <comment>This is displayed after the year</comment>
+  </data>
+  <data name="SayCallsign" xml:space="preserve">
+    <value>Call sign {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayHyphen" xml:space="preserve">
+    <value>hyphen</value>
+    <comment></comment>
+  </data>
+  <data name="SayIcao" xml:space="preserve">
+    <value>eye co {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayModelIcao" xml:space="preserve">
+    <value>Type {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayOperator" xml:space="preserve">
+    <value>Operated by {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayRegistration" xml:space="preserve">
+    <value>Registration {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayRouteNotKnown" xml:space="preserve">
+    <value>Route not known.</value>
+    <comment></comment>
+  </data>
+  <data name="SayFromTo" xml:space="preserve">
+    <value>Travelling from {0} to {1}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayFromToVia" xml:space="preserve">
+    <value>Travelling from {0} via {1} to {2}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayAlpha" xml:space="preserve">
+    <value>alfuh</value>
+    <comment></comment>
+  </data>
+  <data name="SayBravo" xml:space="preserve">
+    <value>bravo</value>
+    <comment></comment>
+  </data>
+  <data name="SayCharlie" xml:space="preserve">
+    <value>charlie</value>
+    <comment></comment>
+  </data>
+  <data name="SayDelta" xml:space="preserve">
+    <value>delta</value>
+    <comment></comment>
+  </data>
+  <data name="SayEcho" xml:space="preserve">
+    <value>echo</value>
+    <comment></comment>
+  </data>
+  <data name="SayFoxtrot" xml:space="preserve">
+    <value>foxed-rot</value>
+    <comment></comment>
+  </data>
+  <data name="SayGolf" xml:space="preserve">
+    <value>golf</value>
+    <comment></comment>
+  </data>
+  <data name="SayHotel" xml:space="preserve">
+    <value>hotel</value>
+    <comment></comment>
+  </data>
+  <data name="SayIndia" xml:space="preserve">
+    <value>india</value>
+    <comment></comment>
+  </data>
+  <data name="SayJuliet" xml:space="preserve">
+    <value>juliet</value>
+    <comment></comment>
+  </data>
+  <data name="SayKilo" xml:space="preserve">
+    <value>key-low</value>
+    <comment></comment>
+  </data>
+  <data name="SayLima" xml:space="preserve">
+    <value>leamah</value>
+    <comment></comment>
+  </data>
+  <data name="SayMike" xml:space="preserve">
+    <value>mike</value>
+    <comment></comment>
+  </data>
+  <data name="SayNovember" xml:space="preserve">
+    <value>november</value>
+    <comment></comment>
+  </data>
+  <data name="SayOscar" xml:space="preserve">
+    <value>oscar</value>
+    <comment></comment>
+  </data>
+  <data name="SayPapa" xml:space="preserve">
+    <value>papa</value>
+    <comment></comment>
+  </data>
+  <data name="SayQuebec" xml:space="preserve">
+    <value>quebec</value>
+    <comment></comment>
+  </data>
+  <data name="SayRomeo" xml:space="preserve">
+    <value>romeo</value>
+    <comment></comment>
+  </data>
+  <data name="SaySierra" xml:space="preserve">
+    <value>sierra</value>
+    <comment></comment>
+  </data>
+  <data name="SayTango" xml:space="preserve">
+    <value>tango</value>
+    <comment></comment>
+  </data>
+  <data name="SayUniform" xml:space="preserve">
+    <value>uniform</value>
+    <comment></comment>
+  </data>
+  <data name="SayVictor" xml:space="preserve">
+    <value>victor</value>
+    <comment></comment>
+  </data>
+  <data name="SayWhiskey" xml:space="preserve">
+    <value>whiskey</value>
+    <comment></comment>
+  </data>
+  <data name="SayXRay" xml:space="preserve">
+    <value>x-ray</value>
+    <comment></comment>
+  </data>
+  <data name="SayYankee" xml:space="preserve">
+    <value>yankee</value>
+    <comment></comment>
+  </data>
+  <data name="SayZulu" xml:space="preserve">
+    <value>zulu</value>
+    <comment></comment>
+  </data>
+</root>
