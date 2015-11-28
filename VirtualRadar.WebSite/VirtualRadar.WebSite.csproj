@@ -74,6 +74,7 @@
     <Compile Include="HtmlLocaliser.cs" />
     <Compile Include="ImagePage.cs" />
     <Compile Include="Implementations.cs" />
+    <Compile Include="JavaScriptInjector.cs" />
     <Compile Include="Minifier.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Page.cs" />
@@ -98,6 +99,37 @@
     <Compile Include="WebSiteExtender.cs" />
     <Compile Include="WebSiteGraphics.cs" />
     <Compile Include="WebSiteProvider.cs" />
+    <Compile Include="WebSiteStrings.de-DE.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebSiteStrings.de-DE.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSiteStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebSiteStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSiteStrings.fr-FR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebSiteStrings.fr-FR.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSiteStrings.pt-BR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebSiteStrings.pt-BR.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSiteStrings.ru-RU.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebSiteStrings.ru-RU.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSiteStrings.zh-CN.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebSiteStrings.zh-CN.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSiteStringsInjector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -437,6 +469,31 @@
     <Content Include="Site\Web\script\vrs\utility.js" />
     <Content Include="Site\Web\settings.html" />
     <Content Include="Site\XHR.js" />
+    <EmbeddedResource Include="WebSiteStrings.de-DE.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebSiteStrings.de-DE.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSiteStrings.fr-FR.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebSiteStrings.fr-FR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSiteStrings.pt-BR.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebSiteStrings.pt-BR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSiteStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebSiteStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSiteStrings.ru-RU.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebSiteStrings.ru-RU.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSiteStrings.zh-CN.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebSiteStrings.zh-CN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

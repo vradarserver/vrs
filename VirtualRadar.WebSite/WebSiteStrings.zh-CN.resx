@@ -1,0 +1,2264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Add" xml:space="preserve">
+    <value>添加</value>
+    <comment></comment>
+  </data>
+  <data name="AddCondition" xml:space="preserve">
+    <value>添加条件</value>
+    <comment></comment>
+  </data>
+  <data name="AddCriteria" xml:space="preserve">
+    <value>添加规则</value>
+    <comment></comment>
+  </data>
+  <data name="AddFilter" xml:space="preserve">
+    <value>添加过滤器</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB" xml:space="preserve">
+    <value>ADS-B</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB0" xml:space="preserve">
+    <value>ADS-B v0</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB1" xml:space="preserve">
+    <value>ADS-B v1</value>
+    <comment></comment>
+  </data>
+  <data name="ADSB2" xml:space="preserve">
+    <value>ADS-B v2</value>
+    <comment></comment>
+  </data>
+  <data name="AircraftNotTransmittingCallsign" xml:space="preserve">
+    <value>航空器没有传输其航班号</value>
+    <comment></comment>
+  </data>
+  <data name="AircraftClass" xml:space="preserve">
+    <value>航空器类型</value>
+    <comment></comment>
+  </data>
+  <data name="Airport" xml:space="preserve">
+    <value>机场</value>
+    <comment></comment>
+  </data>
+  <data name="AirportDataThumbnails" xml:space="preserve">
+    <value>缩略图 (来自airport-data.com)</value>
+    <comment></comment>
+  </data>
+  <data name="AllAltitudes" xml:space="preserve">
+    <value>所有高度</value>
+    <comment></comment>
+  </data>
+  <data name="AllRows" xml:space="preserve">
+    <value>所有行</value>
+    <comment></comment>
+  </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>高度</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeAndSpeedGraph" xml:space="preserve">
+    <value>高度&amp;速度图</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeAndVerticalSpeed" xml:space="preserve">
+    <value>高度&amp;垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeGraph" xml:space="preserve">
+    <value>高度图</value>
+    <comment></comment>
+  </data>
+  <data name="AltitudeType" xml:space="preserve">
+    <value>高度类型</value>
+    <comment></comment>
+  </data>
+  <data name="AllAircraft" xml:space="preserve">
+    <value>所有航空器</value>
+    <comment></comment>
+  </data>
+  <data name="Amphibian" xml:space="preserve">
+    <value>两栖飞机</value>
+    <comment></comment>
+  </data>
+  <data name="AnnounceSelected" xml:space="preserve">
+    <value>通知所有已选择航空器</value>
+    <comment></comment>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>升序</value>
+    <comment></comment>
+  </data>
+  <data name="AutoSelectAircraft" xml:space="preserve">
+    <value>自动选择航空器</value>
+    <comment></comment>
+  </data>
+  <data name="AverageSignalLevel" xml:space="preserve">
+    <value>平均信号电平</value>
+    <comment></comment>
+  </data>
+  <data name="Barometric" xml:space="preserve">
+    <value>气压</value>
+    <comment></comment>
+  </data>
+  <data name="Bearing" xml:space="preserve">
+    <value>方位</value>
+    <comment></comment>
+  </data>
+  <data name="Between" xml:space="preserve">
+    <value>在范围内</value>
+    <comment></comment>
+  </data>
+  <data name="Callsign" xml:space="preserve">
+    <value>航班号</value>
+    <comment></comment>
+  </data>
+  <data name="CallsignAndShortRoute" xml:space="preserve">
+    <value>航班号&amp;短路线</value>
+    <comment></comment>
+  </data>
+  <data name="CallsignMayNotBeCorrect" xml:space="preserve">
+    <value>可能不正确的航班号</value>
+    <comment></comment>
+  </data>
+  <data name="CentreOnSelectedAircraft" xml:space="preserve">
+    <value>在地图上显示航空器</value>
+    <comment></comment>
+  </data>
+  <data name="Civil" xml:space="preserve">
+    <value>民航</value>
+    <comment></comment>
+  </data>
+  <data name="CivilOrMilitary" xml:space="preserve">
+    <value>民航/军航</value>
+    <comment></comment>
+  </data>
+  <data name="ClosestToCurrentLocation" xml:space="preserve">
+    <value>距离当前最近</value>
+    <comment></comment>
+  </data>
+  <data name="CofACategory" xml:space="preserve">
+    <value>C/A(适航证) 类别</value>
+    <comment></comment>
+  </data>
+  <data name="CofAExpiry" xml:space="preserve">
+    <value>C/A(适航证) 期限</value>
+    <comment></comment>
+  </data>
+  <data name="Columns" xml:space="preserve">
+    <value>列</value>
+    <comment></comment>
+  </data>
+  <data name="Contains" xml:space="preserve">
+    <value>包含</value>
+    <comment></comment>
+  </data>
+  <data name="CountAdsb" xml:space="preserve">
+    <value>ADS-B计数</value>
+    <comment></comment>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>国家</value>
+    <comment></comment>
+  </data>
+  <data name="CountModeS" xml:space="preserve">
+    <value>Mode-S计数</value>
+    <comment></comment>
+  </data>
+  <data name="CountPositions" xml:space="preserve">
+    <value>坐标计数</value>
+    <comment></comment>
+  </data>
+  <data name="Criteria" xml:space="preserve">
+    <value>规则</value>
+    <comment></comment>
+  </data>
+  <data name="CurrentLocationInstruction" xml:space="preserve">
+    <value>设置你的当前坐标请单击 &quot;设置当前坐标&quot; 并拖拽标记.</value>
+    <comment></comment>
+  </data>
+  <data name="CurrentRegDate" xml:space="preserve">
+    <value>有效注册日期</value>
+    <comment></comment>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>日期</value>
+    <comment></comment>
+  </data>
+  <data name="DateTimeShort" xml:space="preserve">
+    <value>{0} {1}</value>
+    <comment></comment>
+  </data>
+  <data name="DefaultSetting" xml:space="preserve">
+    <value>&lt; 默认 ></value>
+    <comment></comment>
+  </data>
+  <data name="DegreesAbbreviation" xml:space="preserve">
+    <value>{0}°</value>
+    <comment></comment>
+  </data>
+  <data name="DeRegDate" xml:space="preserve">
+    <value>注销日期</value>
+    <comment></comment>
+  </data>
+  <data name="DesktopPage" xml:space="preserve">
+    <value>桌面版页面</value>
+    <comment></comment>
+  </data>
+  <data name="DesktopReportPage" xml:space="preserve">
+    <value>桌面版报告页面</value>
+    <comment></comment>
+  </data>
+  <data name="DetailItems" xml:space="preserve">
+    <value>航空器详细项</value>
+    <comment></comment>
+  </data>
+  <data name="DetailPanel" xml:space="preserve">
+    <value>详情面板</value>
+    <comment></comment>
+  </data>
+  <data name="DisableAutoSelect" xml:space="preserve">
+    <value>禁止自动选择</value>
+    <comment></comment>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>距离</value>
+    <comment></comment>
+  </data>
+  <data name="Distances" xml:space="preserve">
+    <value>距离</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportAutoSelect" xml:space="preserve">
+    <value>不导入自动选择设置</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportCurrentLocation" xml:space="preserve">
+    <value>不导入当前位置</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportRequestFeedId" xml:space="preserve">
+    <value>不导入请求源ID</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportLanguageSettings" xml:space="preserve">
+    <value>不导入语言设置</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotImportSplitters" xml:space="preserve">
+    <value>不导入分隔符</value>
+    <comment></comment>
+  </data>
+  <data name="DoNotShow" xml:space="preserve">
+    <value>不显示</value>
+    <comment></comment>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>持续时间</value>
+    <comment></comment>
+  </data>
+  <data name="Electric" xml:space="preserve">
+    <value>电力引擎</value>
+    <comment></comment>
+  </data>
+  <data name="EnableAutoSelect" xml:space="preserve">
+    <value>开启自动选择</value>
+    <comment></comment>
+  </data>
+  <data name="EnableFilters" xml:space="preserve">
+    <value>启用过滤器</value>
+    <comment></comment>
+  </data>
+  <data name="EnableInfoWindow" xml:space="preserve">
+    <value>启用信息窗口</value>
+    <comment></comment>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>结束</value>
+    <comment></comment>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>结束时间</value>
+    <comment></comment>
+  </data>
+  <data name="EndsWith" xml:space="preserve">
+    <value>结束:</value>
+    <comment></comment>
+  </data>
+  <data name="Engines" xml:space="preserve">
+    <value>引擎</value>
+    <comment></comment>
+  </data>
+  <data name="EngineType" xml:space="preserve">
+    <value>引擎类型</value>
+    <comment></comment>
+  </data>
+  <data name="Equal" xml:space="preserve">
+    <value>匹配</value>
+    <comment></comment>
+  </data>
+  <data name="EraseBeforeImport" xml:space="preserve">
+    <value>清除所有之前导入设置</value>
+    <comment></comment>
+  </data>
+  <data name="ExportSettings" xml:space="preserve">
+    <value>导出设置</value>
+    <comment></comment>
+  </data>
+  <data name="Feet" xml:space="preserve">
+    <value>英尺</value>
+    <comment></comment>
+  </data>
+  <data name="FeetAbbreviation" xml:space="preserve">
+    <value>{0} ft</value>
+    <comment></comment>
+  </data>
+  <data name="FeetPerMinuteAbbreviation" xml:space="preserve">
+    <value>{0} ft/m</value>
+    <comment></comment>
+  </data>
+  <data name="FeetPerSecondAbbreviation" xml:space="preserve">
+    <value>{0} ft/s</value>
+    <comment></comment>
+  </data>
+  <data name="FetchPage" xml:space="preserve">
+    <value>获取</value>
+    <comment></comment>
+  </data>
+  <data name="FillOpacity" xml:space="preserve">
+    <value>填充透明度</value>
+    <comment></comment>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>过滤器</value>
+    <comment></comment>
+  </data>
+  <data name="FindAllPermutationsOfCallsign" xml:space="preserve">
+    <value>查询航班号的所有排列</value>
+    <comment></comment>
+  </data>
+  <data name="First" xml:space="preserve">
+    <value>初始</value>
+    <comment></comment>
+  </data>
+  <data name="FirstAltitude" xml:space="preserve">
+    <value>初始高度</value>
+    <comment></comment>
+  </data>
+  <data name="FirstHeading" xml:space="preserve">
+    <value>初始航向</value>
+    <comment></comment>
+  </data>
+  <data name="FirstFlightLevel" xml:space="preserve">
+    <value>初始飞行高度层</value>
+    <comment></comment>
+  </data>
+  <data name="FirstLatitude" xml:space="preserve">
+    <value>初始纬度</value>
+    <comment></comment>
+  </data>
+  <data name="FirstLongitude" xml:space="preserve">
+    <value>初始经度</value>
+    <comment></comment>
+  </data>
+  <data name="FirstOnGround" xml:space="preserve">
+    <value>初始地面坐标</value>
+    <comment></comment>
+  </data>
+  <data name="FirstRegDate" xml:space="preserve">
+    <value>初始注册日期</value>
+    <comment></comment>
+  </data>
+  <data name="FirstSpeed" xml:space="preserve">
+    <value>初始速度</value>
+    <comment></comment>
+  </data>
+  <data name="FirstSquawk" xml:space="preserve">
+    <value>初始Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="FirstVerticalSpeed" xml:space="preserve">
+    <value>初始垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="FlightDetailShort" xml:space="preserve">
+    <value>详情</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevel" xml:space="preserve">
+    <value>飞行高度层</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelAbbreviation" xml:space="preserve">
+    <value>FL{0}</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelAndVerticalSpeed" xml:space="preserve">
+    <value>FL &amp; VSI</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelHeightUnit" xml:space="preserve">
+    <value>飞行高度层高度单位</value>
+    <comment></comment>
+  </data>
+  <data name="FlightLevelTransitionAltitude" xml:space="preserve">
+    <value>飞行高度层过渡高度</value>
+    <comment></comment>
+  </data>
+  <data name="FlightsCount" xml:space="preserve">
+    <value>观测次数</value>
+    <comment></comment>
+  </data>
+  <data name="FlightsListShort" xml:space="preserve">
+    <value>航班</value>
+    <comment></comment>
+  </data>
+  <data name="FlightSimPage" xml:space="preserve">
+    <value>飞行模拟版页面</value>
+    <comment></comment>
+  </data>
+  <data name="FlightSimTitle" xml:space="preserve">
+    <value>Virtual Radar Server</value>
+    <comment></comment>
+  </data>
+  <data name="ForcePhoneOff" xml:space="preserve">
+    <value>非移动设备</value>
+    <comment></comment>
+  </data>
+  <data name="ForcePhoneOn" xml:space="preserve">
+    <value>移动设备</value>
+    <comment></comment>
+  </data>
+  <data name="ForceTabletOff" xml:space="preserve">
+    <value>非平板设备</value>
+    <comment></comment>
+  </data>
+  <data name="ForceTabletOn" xml:space="preserve">
+    <value>平板设备</value>
+    <comment></comment>
+  </data>
+  <data name="FromAltitude" xml:space="preserve">
+    <value>起始 {0}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToAltitude" xml:space="preserve">
+    <value>{0} 至 {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToDate" xml:space="preserve">
+    <value>{0} 至 {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToFlightLevel" xml:space="preserve">
+    <value>{0} 至 {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToSpeed" xml:space="preserve">
+    <value>{0} 至 {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FromToSquawk" xml:space="preserve">
+    <value>{0} 至 {1}</value>
+    <comment></comment>
+  </data>
+  <data name="FurthestFromCurrentLocation" xml:space="preserve">
+    <value>距离当前最远</value>
+    <comment></comment>
+  </data>
+  <data name="GenericName" xml:space="preserve">
+    <value>通用名</value>
+    <comment></comment>
+  </data>
+  <data name="Geometric" xml:space="preserve">
+    <value>几何</value>
+    <comment></comment>
+  </data>
+  <data name="GeometricAltitudeIndicator" xml:space="preserve">
+    <value>GPS</value>
+    <comment></comment>
+  </data>
+  <data name="GoogleMapsCouldNotBeLoaded" xml:space="preserve">
+    <value>地图无法加载</value>
+    <comment></comment>
+  </data>
+  <data name="GotoCurrentLocation" xml:space="preserve">
+    <value>转到当前坐标</value>
+    <comment></comment>
+  </data>
+  <data name="GotoSelectedAircraft" xml:space="preserve">
+    <value>转到已选择航空器</value>
+    <comment></comment>
+  </data>
+  <data name="GroundAbbreviation" xml:space="preserve">
+    <value>GND</value>
+    <comment></comment>
+  </data>
+  <data name="Ground" xml:space="preserve">
+    <value>地面</value>
+    <comment></comment>
+  </data>
+  <data name="GroundTrack" xml:space="preserve">
+    <value>地面轨迹</value>
+    <comment></comment>
+  </data>
+  <data name="GroundVehicle" xml:space="preserve">
+    <value>地面车辆</value>
+    <comment></comment>
+  </data>
+  <data name="Gyrocopter" xml:space="preserve">
+    <value>螺旋桨飞机</value>
+    <comment></comment>
+  </data>
+  <data name="HadAlert" xml:space="preserve">
+    <value>警报</value>
+    <comment></comment>
+  </data>
+  <data name="HadEmergency" xml:space="preserve">
+    <value>紧急</value>
+    <comment></comment>
+  </data>
+  <data name="HadSPI" xml:space="preserve">
+    <value>SPI</value>
+    <comment></comment>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>航向</value>
+    <comment></comment>
+  </data>
+  <data name="HeadingType" xml:space="preserve">
+    <value>航向类型</value>
+    <comment></comment>
+  </data>
+  <data name="Heights" xml:space="preserve">
+    <value>高度</value>
+    <comment></comment>
+  </data>
+  <data name="Helicopter" xml:space="preserve">
+    <value>直升飞机</value>
+    <comment></comment>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>帮助</value>
+    <comment></comment>
+  </data>
+  <data name="HideAircraftNotOnMap" xml:space="preserve">
+    <value>在地图上隐藏航空器</value>
+    <comment></comment>
+  </data>
+  <data name="HideEmptyPinTextLines" xml:space="preserve">
+    <value>隐藏空标签行</value>
+    <comment></comment>
+  </data>
+  <data name="HideNoPosition" xml:space="preserve">
+    <value>存在坐标</value>
+    <comment></comment>
+  </data>
+  <data name="HighContrastMap" xml:space="preserve">
+    <value>对比</value>
+    <comment></comment>
+  </data>
+  <data name="Icao" xml:space="preserve">
+    <value>ICAO代码</value>
+    <comment></comment>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>导出</value>
+    <comment></comment>
+  </data>
+  <data name="ImportFailedTitle" xml:space="preserve">
+    <value>导入设置失败</value>
+    <comment></comment>
+  </data>
+  <data name="ImportFailedBody" xml:space="preserve">
+    <value>不能导入您的设置. 报告的错误是: {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ImportSettings" xml:space="preserve">
+    <value>导入设置</value>
+    <comment></comment>
+  </data>
+  <data name="Index" xml:space="preserve">
+    <value>索引</value>
+    <comment></comment>
+  </data>
+  <data name="IndicatedAirSpeed" xml:space="preserve">
+    <value>空速</value>
+    <comment></comment>
+  </data>
+  <data name="IndicatedAirSpeedShort" xml:space="preserve">
+    <value>空速</value>
+    <comment></comment>
+  </data>
+  <data name="Interesting" xml:space="preserve">
+    <value>关注</value>
+    <comment></comment>
+  </data>
+  <data name="IntervalSeconds" xml:space="preserve">
+    <value>更新间隔(秒)</value>
+    <comment></comment>
+  </data>
+  <data name="IsMilitary" xml:space="preserve">
+    <value>军航</value>
+    <comment></comment>
+  </data>
+  <data name="Jet" xml:space="preserve">
+    <value>喷气引擎</value>
+    <comment></comment>
+  </data>
+  <data name="JustPositions" xml:space="preserve">
+    <value>坐标</value>
+    <comment></comment>
+  </data>
+  <data name="KilometreAbbreviation" xml:space="preserve">
+    <value>{0} km</value>
+    <comment></comment>
+  </data>
+  <data name="Kilometres" xml:space="preserve">
+    <value>公里</value>
+    <comment></comment>
+  </data>
+  <data name="KilometresPerHour" xml:space="preserve">
+    <value>公里/小时</value>
+    <comment></comment>
+  </data>
+  <data name="KilometresPerHourAbbreviation" xml:space="preserve">
+    <value>{0} km/h</value>
+    <comment></comment>
+  </data>
+  <data name="Knots" xml:space="preserve">
+    <value>节</value>
+    <comment></comment>
+  </data>
+  <data name="KnotsAbbreviation" xml:space="preserve">
+    <value>{0} kts</value>
+    <comment></comment>
+  </data>
+  <data name="LandPlane" xml:space="preserve">
+    <value>陆上飞机</value>
+    <comment></comment>
+  </data>
+  <data name="Last" xml:space="preserve">
+    <value>最后</value>
+    <comment></comment>
+  </data>
+  <data name="LastAltitude" xml:space="preserve">
+    <value>最后高度</value>
+    <comment></comment>
+  </data>
+  <data name="LastFlightLevel" xml:space="preserve">
+    <value>最后飞行高度层</value>
+    <comment></comment>
+  </data>
+  <data name="LastHeading" xml:space="preserve">
+    <value>最后航向</value>
+    <comment></comment>
+  </data>
+  <data name="LastOnGround" xml:space="preserve">
+    <value>最后地面坐标</value>
+    <comment></comment>
+  </data>
+  <data name="LastLatitude" xml:space="preserve">
+    <value>最后纬度</value>
+    <comment></comment>
+  </data>
+  <data name="LastLongitude" xml:space="preserve">
+    <value>最后经度</value>
+    <comment></comment>
+  </data>
+  <data name="LastSpeed" xml:space="preserve">
+    <value>最后速度</value>
+    <comment></comment>
+  </data>
+  <data name="LastSquawk" xml:space="preserve">
+    <value>最后Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="LastVerticalSpeed" xml:space="preserve">
+    <value>最后垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>纬度</value>
+    <comment></comment>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>布局</value>
+    <comment></comment>
+  </data>
+  <data name="Layout1" xml:space="preserve">
+    <value>经典</value>
+    <comment></comment>
+  </data>
+  <data name="Layout2" xml:space="preserve">
+    <value>高详情, 地图在上</value>
+    <comment></comment>
+  </data>
+  <data name="Layout3" xml:space="preserve">
+    <value>高详情, 地图在下</value>
+    <comment></comment>
+  </data>
+  <data name="Layout4" xml:space="preserve">
+    <value>高列表, 地图在上</value>
+    <comment></comment>
+  </data>
+  <data name="Layout5" xml:space="preserve">
+    <value>高列表, 地图在下</value>
+    <comment></comment>
+  </data>
+  <data name="Layout6" xml:space="preserve">
+    <value>高详情和列表</value>
+    <comment></comment>
+  </data>
+  <data name="ListAircraftClass" xml:space="preserve">
+    <value>A/C(适航证) 类型</value>
+    <comment></comment>
+  </data>
+  <data name="ListAirportDataThumbnails" xml:space="preserve">
+    <value>缩略图 (来自airport-data.com)</value>
+    <comment></comment>
+  </data>
+  <data name="ListAltitude" xml:space="preserve">
+    <value>高度</value>
+    <comment></comment>
+  </data>
+  <data name="ListAltitudeType" xml:space="preserve">
+    <value>高度类型</value>
+    <comment></comment>
+  </data>
+  <data name="ListAltitudeAndVerticalSpeed" xml:space="preserve">
+    <value>高度&amp;垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="ListAverageSignalLevel" xml:space="preserve">
+    <value>平均信号电平</value>
+    <comment></comment>
+  </data>
+  <data name="ListBearing" xml:space="preserve">
+    <value>方位</value>
+    <comment></comment>
+  </data>
+  <data name="ListCallsign" xml:space="preserve">
+    <value>航班号</value>
+    <comment></comment>
+  </data>
+  <data name="ListCivOrMil" xml:space="preserve">
+    <value>民航/军航</value>
+    <comment></comment>
+  </data>
+  <data name="ListCofACategory" xml:space="preserve">
+    <value>C/A(适航证) 类别</value>
+    <comment></comment>
+  </data>
+  <data name="ListCofAExpiry" xml:space="preserve">
+    <value>C/A(适航证) 期限</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountAdsb" xml:space="preserve">
+    <value>ADS-B 消息</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountMessages" xml:space="preserve">
+    <value>消息</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountModeS" xml:space="preserve">
+    <value>Mode-S 消息</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountPositions" xml:space="preserve">
+    <value>位置消息</value>
+    <comment></comment>
+  </data>
+  <data name="ListCountry" xml:space="preserve">
+    <value>国家</value>
+    <comment></comment>
+  </data>
+  <data name="ListCurrentRegDate" xml:space="preserve">
+    <value>当前注册日期</value>
+    <comment></comment>
+  </data>
+  <data name="ListDeRegDate" xml:space="preserve">
+    <value>取消注册日期</value>
+    <comment></comment>
+  </data>
+  <data name="ListDistance" xml:space="preserve">
+    <value>距离</value>
+    <comment></comment>
+  </data>
+  <data name="ListDuration" xml:space="preserve">
+    <value>持续时间</value>
+    <comment></comment>
+  </data>
+  <data name="ListEndTime" xml:space="preserve">
+    <value>最后消息</value>
+    <comment></comment>
+  </data>
+  <data name="ListEngines" xml:space="preserve">
+    <value>引擎</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstAltitude" xml:space="preserve">
+    <value>最初高度</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstFlightLevel" xml:space="preserve">
+    <value>最初飞行高度层</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstHeading" xml:space="preserve">
+    <value>最初航向</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstLatitude" xml:space="preserve">
+    <value>最初纬度</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstLongitude" xml:space="preserve">
+    <value>最初经度</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstOnGround" xml:space="preserve">
+    <value>最初地面坐标</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstRegDate" xml:space="preserve">
+    <value>最初注册</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstSpeed" xml:space="preserve">
+    <value>最初速度</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstSquawk" xml:space="preserve">
+    <value>最初Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="ListFirstVerticalSpeed" xml:space="preserve">
+    <value>最初垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="ListFlightLevel" xml:space="preserve">
+    <value>飞行高度层</value>
+    <comment></comment>
+  </data>
+  <data name="ListFlightLevelAndVerticalSpeed" xml:space="preserve">
+    <value>FL &amp; VSI</value>
+    <comment></comment>
+  </data>
+  <data name="ListFlightsCount" xml:space="preserve">
+    <value>观测次数</value>
+    <comment></comment>
+  </data>
+  <data name="ListGenericName" xml:space="preserve">
+    <value>通用名</value>
+    <comment></comment>
+  </data>
+  <data name="ListHadAlert" xml:space="preserve">
+    <value>警报</value>
+    <comment></comment>
+  </data>
+  <data name="ListHadEmergency" xml:space="preserve">
+    <value>遇险</value>
+    <comment></comment>
+  </data>
+  <data name="ListHadSPI" xml:space="preserve">
+    <value>SPI</value>
+    <comment></comment>
+  </data>
+  <data name="ListHeading" xml:space="preserve">
+    <value>航向</value>
+    <comment></comment>
+  </data>
+  <data name="ListHeadingType" xml:space="preserve">
+    <value>高度类型</value>
+    <comment></comment>
+  </data>
+  <data name="ListIcao" xml:space="preserve">
+    <value>ICAO代码</value>
+    <comment></comment>
+  </data>
+  <data name="ListInteresting" xml:space="preserve">
+    <value>关注</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastAltitude" xml:space="preserve">
+    <value>最后高度</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastFlightLevel" xml:space="preserve">
+    <value>最后飞行高度层</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastHeading" xml:space="preserve">
+    <value>最后航向</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastLatitude" xml:space="preserve">
+    <value>最后纬度</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastLongitude" xml:space="preserve">
+    <value>最后经度</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastOnGround" xml:space="preserve">
+    <value>最后地面坐标</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastSpeed" xml:space="preserve">
+    <value>最后速度</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastSquawk" xml:space="preserve">
+    <value>最后Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="ListLastVerticalSpeed" xml:space="preserve">
+    <value>最后垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="ListLatitude" xml:space="preserve">
+    <value>纬度</value>
+    <comment></comment>
+  </data>
+  <data name="ListLongitude" xml:space="preserve">
+    <value>经度</value>
+    <comment></comment>
+  </data>
+  <data name="ListNotes" xml:space="preserve">
+    <value>注意</value>
+    <comment></comment>
+  </data>
+  <data name="ListManufacturer" xml:space="preserve">
+    <value>制造商</value>
+    <comment></comment>
+  </data>
+  <data name="ListMaxTakeoffWeight" xml:space="preserve">
+    <value>最大起飞重量</value>
+    <comment></comment>
+  </data>
+  <data name="ListMlat" xml:space="preserve">
+    <value>MLAT</value>
+    <comment></comment>
+  </data>
+  <data name="ListModel" xml:space="preserve">
+    <value>机型</value>
+    <comment></comment>
+  </data>
+  <data name="ListModelIcao" xml:space="preserve">
+    <value>机型</value>
+    <comment></comment>
+  </data>
+  <data name="ListModeSCountry" xml:space="preserve">
+    <value>Mode-S国家</value>
+    <comment></comment>
+  </data>
+  <data name="ListModelSilhouette" xml:space="preserve">
+    <value>轮廓</value>
+    <comment></comment>
+  </data>
+  <data name="ListModelSilhouetteAndOpFlag" xml:space="preserve">
+    <value>标志</value>
+    <comment></comment>
+  </data>
+  <data name="ListOperator" xml:space="preserve">
+    <value>航空公司</value>
+    <comment></comment>
+  </data>
+  <data name="ListOperatorFlag" xml:space="preserve">
+    <value>标志</value>
+    <comment></comment>
+  </data>
+  <data name="ListOperatorIcao" xml:space="preserve">
+    <value>航空公司ICAO代码</value>
+    <comment></comment>
+  </data>
+  <data name="ListOwnershipStatus" xml:space="preserve">
+    <value>所属状态</value>
+    <comment></comment>
+  </data>
+  <data name="ListPicture" xml:space="preserve">
+    <value>图片</value>
+    <comment></comment>
+  </data>
+  <data name="ListPopularName" xml:space="preserve">
+    <value>昵称</value>
+    <comment></comment>
+  </data>
+  <data name="ListPreviousId" xml:space="preserve">
+    <value>前一ID</value>
+    <comment></comment>
+  </data>
+  <data name="ListReceiver" xml:space="preserve">
+    <value>接收器</value>
+    <comment></comment>
+  </data>
+  <data name="ListRegistration" xml:space="preserve">
+    <value>注册号</value>
+    <comment></comment>
+  </data>
+  <data name="ListRowNumber" xml:space="preserve">
+    <value>行号</value>
+    <comment></comment>
+  </data>
+  <data name="ListRoute" xml:space="preserve">
+    <value>路线</value>
+    <comment></comment>
+  </data>
+  <data name="ListSerialNumber" xml:space="preserve">
+    <value>序号</value>
+    <comment></comment>
+  </data>
+  <data name="ListSignalLevel" xml:space="preserve">
+    <value>信号</value>
+    <comment></comment>
+  </data>
+  <data name="ListSpecies" xml:space="preserve">
+    <value>类型</value>
+    <comment></comment>
+  </data>
+  <data name="ListSpeed" xml:space="preserve">
+    <value>速度</value>
+    <comment></comment>
+  </data>
+  <data name="ListSpeedType" xml:space="preserve">
+    <value>速度类型</value>
+    <comment></comment>
+  </data>
+  <data name="ListSquawk" xml:space="preserve">
+    <value>Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="ListStartTime" xml:space="preserve">
+    <value>开始时间</value>
+    <comment></comment>
+  </data>
+  <data name="ListStatus" xml:space="preserve">
+    <value>状态</value>
+    <comment></comment>
+  </data>
+  <data name="ListTargetAltitude" xml:space="preserve">
+    <value>A/P 高度</value>
+    <comment></comment>
+  </data>
+  <data name="ListTargetHeading" xml:space="preserve">
+    <value>A/P 航向</value>
+    <comment></comment>
+  </data>
+  <data name="ListTisb" xml:space="preserve">
+    <value>TIS-B</value>
+    <comment></comment>
+  </data>
+  <data name="ListTotalHours" xml:space="preserve">
+    <value>小时总计</value>
+    <comment></comment>
+  </data>
+  <data name="ListTransponderType" xml:space="preserve">
+    <value>应答机</value>
+    <comment></comment>
+  </data>
+  <data name="ListTransponderTypeFlag" xml:space="preserve">
+    <value>应答机类型标志</value>
+    <comment></comment>
+  </data>
+  <data name="ListUserTag" xml:space="preserve">
+    <value>标签</value>
+    <comment></comment>
+  </data>
+  <data name="ListVerticalSpeed" xml:space="preserve">
+    <value>垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="ListVerticalSpeedType" xml:space="preserve">
+    <value>垂直速度类型</value>
+    <comment></comment>
+  </data>
+  <data name="ListWtc" xml:space="preserve">
+    <value>WTC</value>
+    <comment></comment>
+  </data>
+  <data name="ListYearBuilt" xml:space="preserve">
+    <value>出厂</value>
+    <comment></comment>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>经度</value>
+    <comment></comment>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>制造商</value>
+    <comment></comment>
+  </data>
+  <data name="Map" xml:space="preserve">
+    <value>地图</value>
+    <comment></comment>
+  </data>
+  <data name="MaxTakeoffWeight" xml:space="preserve">
+    <value>最大起飞重量</value>
+    <comment></comment>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>菜单</value>
+    <comment></comment>
+  </data>
+  <data name="MenuBack" xml:space="preserve">
+    <value>返回</value>
+    <comment></comment>
+  </data>
+  <data name="MessageCount" xml:space="preserve">
+    <value>消息计数</value>
+    <comment></comment>
+  </data>
+  <data name="MetreAbbreviation" xml:space="preserve">
+    <value>{0} m</value>
+    <comment></comment>
+  </data>
+  <data name="MetrePerSecondAbbreviation" xml:space="preserve">
+    <value>{0} m/sec</value>
+    <comment></comment>
+  </data>
+  <data name="MetrePerMinuteAbbreviation" xml:space="preserve">
+    <value>{0} m/min</value>
+    <comment></comment>
+  </data>
+  <data name="Metres" xml:space="preserve">
+    <value>米</value>
+    <comment></comment>
+  </data>
+  <data name="MilesPerHour" xml:space="preserve">
+    <value>英里/小时</value>
+    <comment></comment>
+  </data>
+  <data name="MilesPerHourAbbreviation" xml:space="preserve">
+    <value>{0} mph</value>
+    <comment></comment>
+  </data>
+  <data name="Military" xml:space="preserve">
+    <value>军航</value>
+    <comment></comment>
+  </data>
+  <data name="Mlat" xml:space="preserve">
+    <value>MLAT</value>
+    <comment></comment>
+  </data>
+  <data name="MobilePage" xml:space="preserve">
+    <value>移动版页面</value>
+    <comment></comment>
+  </data>
+  <data name="MobileReportPage" xml:space="preserve">
+    <value>移动版报告页面</value>
+    <comment></comment>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>机型</value>
+    <comment></comment>
+  </data>
+  <data name="ModelIcao" xml:space="preserve">
+    <value>机型代码</value>
+    <comment></comment>
+  </data>
+  <data name="ModeS" xml:space="preserve">
+    <value>Mode-S</value>
+    <comment></comment>
+  </data>
+  <data name="ModeSCountry" xml:space="preserve">
+    <value>Mode-S国家</value>
+    <comment></comment>
+  </data>
+  <data name="MovingMap" xml:space="preserve">
+    <value>移动地图</value>
+    <comment></comment>
+  </data>
+  <data name="MuteOff" xml:space="preserve">
+    <value>关闭静音</value>
+    <comment></comment>
+  </data>
+  <data name="MuteOn" xml:space="preserve">
+    <value>开启静音</value>
+    <comment></comment>
+  </data>
+  <data name="NauticalMileAbbreviation" xml:space="preserve">
+    <value>{0} nmi</value>
+    <comment></comment>
+  </data>
+  <data name="NauticalMiles" xml:space="preserve">
+    <value>海里</value>
+    <comment></comment>
+  </data>
+  <data name="Neither" xml:space="preserve">
+    <value>都不</value>
+    <comment></comment>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+    <comment></comment>
+  </data>
+  <data name="NoLocalStorage" xml:space="preserve">
+    <value>该浏览器不支持本地存储. 您的配置信息将不能保存.\n\n如果您在&quot;私人模式&quot;访问请尝试转换关闭状态. 私人模式在某些浏览器上不能进行本地存储.</value>
+    <comment></comment>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>无</value>
+    <comment></comment>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>注意</value>
+    <comment></comment>
+  </data>
+  <data name="NoSettingsFound" xml:space="preserve">
+    <value>设置未找到</value>
+    <comment></comment>
+  </data>
+  <data name="NotBetween" xml:space="preserve">
+    <value>范围之外</value>
+    <comment></comment>
+  </data>
+  <data name="NotContains" xml:space="preserve">
+    <value>不包含</value>
+    <comment></comment>
+  </data>
+  <data name="NotEndsWith" xml:space="preserve">
+    <value>不以结尾</value>
+    <comment></comment>
+  </data>
+  <data name="NotEquals" xml:space="preserve">
+    <value>不匹配</value>
+    <comment></comment>
+  </data>
+  <data name="NotStartsWith" xml:space="preserve">
+    <value>不以开始</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarAction" xml:space="preserve">
+    <value>当航空器超出范围:</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarActionWait" xml:space="preserve">
+    <value>取消选择航空器</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarActionEnableAutoSelect" xml:space="preserve">
+    <value>启用自动选择</value>
+    <comment></comment>
+  </data>
+  <data name="OffRadarActionNothing" xml:space="preserve">
+    <value>无</value>
+    <comment></comment>
+  </data>
+  <data name="OfPages" xml:space="preserve">
+    <value>: {0:N0}</value>
+    <comment></comment>
+  </data>
+  <data name="OnlyAircraftOnMap" xml:space="preserve">
+    <value>仅列出可见</value>
+    <comment></comment>
+  </data>
+  <data name="OnlyAutoSelected" xml:space="preserve">
+    <value>仅通知自动选择航班详细</value>
+    <comment></comment>
+  </data>
+  <data name="OnlyUsePre22Icons" xml:space="preserve">
+    <value>仅显示旧风格航空器标记</value>
+    <comment></comment>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>航空公司</value>
+    <comment></comment>
+  </data>
+  <data name="OperatorCode" xml:space="preserve">
+    <value>航空公司代码</value>
+    <comment></comment>
+  </data>
+  <data name="OperatorFlag" xml:space="preserve">
+    <value>航空公司标志</value>
+    <comment></comment>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>选项</value>
+    <comment></comment>
+  </data>
+  <data name="OverwriteExistingSettings" xml:space="preserve">
+    <value>覆盖已存在设置</value>
+    <comment></comment>
+  </data>
+  <data name="OwnershipStatus" xml:space="preserve">
+    <value>所属状态</value>
+    <comment></comment>
+  </data>
+  <data name="PageAircraft" xml:space="preserve">
+    <value>航空器</value>
+    <comment></comment>
+  </data>
+  <data name="AircraftDetailShort" xml:space="preserve">
+    <value>详情</value>
+    <comment></comment>
+  </data>
+  <data name="PageFirst" xml:space="preserve">
+    <value>首页</value>
+    <comment></comment>
+  </data>
+  <data name="PageGeneral" xml:space="preserve">
+    <value>通用</value>
+    <comment></comment>
+  </data>
+  <data name="PageLast" xml:space="preserve">
+    <value>末页</value>
+    <comment></comment>
+  </data>
+  <data name="PageList" xml:space="preserve">
+    <value>列表</value>
+    <comment></comment>
+  </data>
+  <data name="PageListShort" xml:space="preserve">
+    <value>列表</value>
+    <comment></comment>
+  </data>
+  <data name="PageMapShort" xml:space="preserve">
+    <value>地图</value>
+    <comment></comment>
+  </data>
+  <data name="PageNext" xml:space="preserve">
+    <value>后一页</value>
+    <comment></comment>
+  </data>
+  <data name="PagePrevious" xml:space="preserve">
+    <value>前一页</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAircraftDisplay" xml:space="preserve">
+    <value>航空器显示</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAircraftTrails" xml:space="preserve">
+    <value>航空器轨迹</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAudio" xml:space="preserve">
+    <value>声音</value>
+    <comment></comment>
+  </data>
+  <data name="PaneAutoSelect" xml:space="preserve">
+    <value>自动选择</value>
+    <comment></comment>
+  </data>
+  <data name="PaneCurrentLocation" xml:space="preserve">
+    <value>当前坐标</value>
+    <comment></comment>
+  </data>
+  <data name="PaneDataFeed" xml:space="preserve">
+    <value>数据提供</value>
+    <comment></comment>
+  </data>
+  <data name="PaneDetailSettings" xml:space="preserve">
+    <value>航空器详情</value>
+    <comment></comment>
+  </data>
+  <data name="PaneInfoWindow" xml:space="preserve">
+    <value>航空器信息窗口</value>
+    <comment></comment>
+  </data>
+  <data name="PaneListSettings" xml:space="preserve">
+    <value>列表设置</value>
+    <comment></comment>
+  </data>
+  <data name="PaneManyAircraft" xml:space="preserve">
+    <value>多航空器报告</value>
+    <comment></comment>
+  </data>
+  <data name="PanePermanentLink" xml:space="preserve">
+    <value>永久链接</value>
+    <comment></comment>
+  </data>
+  <data name="PaneRangeCircles" xml:space="preserve">
+    <value>范围环</value>
+    <comment></comment>
+  </data>
+  <data name="PaneReceiverRange" xml:space="preserve">
+    <value>接收器范围</value>
+    <comment></comment>
+  </data>
+  <data name="PaneSingleAircraft" xml:space="preserve">
+    <value>单航空器报告</value>
+    <comment></comment>
+  </data>
+  <data name="PaneSortAircraftList" xml:space="preserve">
+    <value>排序航空器列表</value>
+    <comment></comment>
+  </data>
+  <data name="PaneSortReport" xml:space="preserve">
+    <value>排序报告</value>
+    <comment></comment>
+  </data>
+  <data name="PaneUnits" xml:space="preserve">
+    <value>单位</value>
+    <comment></comment>
+  </data>
+  <data name="Pause" xml:space="preserve">
+    <value>暂停</value>
+    <comment></comment>
+  </data>
+  <data name="PinTextNumber" xml:space="preserve">
+    <value>航空器标签行 {0}</value>
+    <comment></comment>
+  </data>
+  <data name="PopularName" xml:space="preserve">
+    <value>昵称</value>
+    <comment></comment>
+  </data>
+  <data name="PositionAndAltitude" xml:space="preserve">
+    <value>坐标和高度</value>
+    <comment></comment>
+  </data>
+  <data name="PositionAndSpeed" xml:space="preserve">
+    <value>坐标和速度</value>
+    <comment></comment>
+  </data>
+  <data name="Picture" xml:space="preserve">
+    <value>图片</value>
+    <comment></comment>
+  </data>
+  <data name="PictureOrThumbnails" xml:space="preserve">
+    <value>图片或缩略图</value>
+    <comment></comment>
+  </data>
+  <data name="PinTextLines" xml:space="preserve">
+    <value>标签行数</value>
+    <comment></comment>
+  </data>
+  <data name="Piston" xml:space="preserve">
+    <value>活塞引擎</value>
+    <comment></comment>
+  </data>
+  <data name="Pixels" xml:space="preserve">
+    <value>像素</value>
+    <comment></comment>
+  </data>
+  <data name="PoweredByVRS" xml:space="preserve">
+    <value>Virtual Radar Server提供技术支持</value>
+    <comment></comment>
+  </data>
+  <data name="PreviousId" xml:space="preserve">
+    <value>前一ID</value>
+    <comment></comment>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>数量</value>
+    <comment></comment>
+  </data>
+  <data name="RadioMast" xml:space="preserve">
+    <value>天线</value>
+    <comment></comment>
+  </data>
+  <data name="RangeCircleEvenColour" xml:space="preserve">
+    <value>偶数环颜色</value>
+    <comment></comment>
+  </data>
+  <data name="RangeCircleOddColour" xml:space="preserve">
+    <value>奇数环颜色</value>
+    <comment></comment>
+  </data>
+  <data name="RangeCircles" xml:space="preserve">
+    <value>覆盖范围</value>
+    <comment></comment>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>接收器</value>
+    <comment></comment>
+  </data>
+  <data name="ReceiverRange" xml:space="preserve">
+    <value>接收器范围</value>
+    <comment></comment>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>刷新</value>
+    <comment></comment>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>注册号</value>
+    <comment></comment>
+  </data>
+  <data name="RegistrationAndIcao" xml:space="preserve">
+    <value>注册号和ICAO代码</value>
+    <comment></comment>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>删除</value>
+    <comment></comment>
+  </data>
+  <data name="RemoveAll" xml:space="preserve">
+    <value>删除所有</value>
+    <comment></comment>
+  </data>
+  <data name="ReportCallsignInvalid" xml:space="preserve">
+    <value>航班号报告</value>
+    <comment></comment>
+  </data>
+  <data name="ReportCallsignValid" xml:space="preserve">
+    <value>航班号报告: {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ReportEmpty" xml:space="preserve">
+    <value>没有找到符合该规则的记录</value>
+    <comment></comment>
+  </data>
+  <data name="ReportFreeForm" xml:space="preserve">
+    <value>自定义报告</value>
+    <comment></comment>
+  </data>
+  <data name="ReportIcaoInvalid" xml:space="preserve">
+    <value>ICAO代码报告</value>
+    <comment></comment>
+  </data>
+  <data name="ReportIcaoValid" xml:space="preserve">
+    <value>ICAO代码报告: {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ReportRegistrationInvalid" xml:space="preserve">
+    <value>注册号报告</value>
+    <comment></comment>
+  </data>
+  <data name="ReportRegistrationValid" xml:space="preserve">
+    <value>注册号报告: {0}</value>
+    <comment></comment>
+  </data>
+  <data name="ReportTodaysFlights" xml:space="preserve">
+    <value>当日航班</value>
+    <comment></comment>
+  </data>
+  <data name="ReportYesterdaysFlights" xml:space="preserve">
+    <value>昨日航班</value>
+    <comment></comment>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>报告</value>
+    <comment></comment>
+  </data>
+  <data name="ReportsAreDisabled" xml:space="preserve">
+    <value>服务器权限禁止运行报告</value>
+    <comment></comment>
+  </data>
+  <data name="Resume" xml:space="preserve">
+    <value>恢复</value>
+    <comment></comment>
+  </data>
+  <data name="Reversing" xml:space="preserve">
+    <value>反向</value>
+    <comment></comment>
+  </data>
+  <data name="ReversingShort" xml:space="preserve">
+    <value>反向</value>
+    <comment></comment>
+  </data>
+  <data name="Route" xml:space="preserve">
+    <value>路线</value>
+    <comment></comment>
+  </data>
+  <data name="RouteShort" xml:space="preserve">
+    <value>路线 (短)</value>
+    <comment></comment>
+  </data>
+  <data name="RouteFull" xml:space="preserve">
+    <value>路线 (全)</value>
+    <comment></comment>
+  </data>
+  <data name="RouteNotKnown" xml:space="preserve">
+    <value>路线未知</value>
+    <comment></comment>
+  </data>
+  <data name="RowNumber" xml:space="preserve">
+    <value>行号</value>
+    <comment></comment>
+  </data>
+  <data name="Rows" xml:space="preserve">
+    <value>行数</value>
+    <comment></comment>
+  </data>
+  <data name="RunReport" xml:space="preserve">
+    <value>生成报告</value>
+    <comment></comment>
+  </data>
+  <data name="SeaPlane" xml:space="preserve">
+    <value>水上飞机</value>
+    <comment></comment>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>选择</value>
+    <comment></comment>
+  </data>
+  <data name="SeparateTwoValues" xml:space="preserve">
+    <value> 和 </value>
+    <comment></comment>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>序号</value>
+    <comment></comment>
+  </data>
+  <data name="ServerFetchFailedTitle" xml:space="preserve">
+    <value>获取失败</value>
+    <comment></comment>
+  </data>
+  <data name="ServerFetchFailedBody" xml:space="preserve">
+    <value>无法从服务器获取. 错误 &quot;{0}&quot; 状态 &quot;{1}&quot;.</value>
+    <comment></comment>
+  </data>
+  <data name="ServerFetchTimedOut" xml:space="preserve">
+    <value>请求超时.</value>
+    <comment></comment>
+  </data>
+  <data name="ServerReportExceptionBody" xml:space="preserve">
+    <value>在生成报告时服务器遇到异常. 异常 &quot;{0}&quot;</value>
+    <comment></comment>
+  </data>
+  <data name="ServerReportExceptionTitle" xml:space="preserve">
+    <value>服务器异常</value>
+    <comment></comment>
+  </data>
+  <data name="SetCurrentLocation" xml:space="preserve">
+    <value>设置当前坐标</value>
+    <comment></comment>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>设置</value>
+    <comment></comment>
+  </data>
+  <data name="SettingsPage" xml:space="preserve">
+    <value>设置</value>
+    <comment></comment>
+  </data>
+  <data name="Shortcuts" xml:space="preserve">
+    <value>快捷操作</value>
+    <comment></comment>
+  </data>
+  <data name="ShowAltitudeStalk" xml:space="preserve">
+    <value>显示高度线</value>
+    <comment></comment>
+  </data>
+  <data name="ShowAltitudeType" xml:space="preserve">
+    <value>显示高度类型</value>
+    <comment></comment>
+  </data>
+  <data name="ShowCurrentLocation" xml:space="preserve">
+    <value>显示当前坐标</value>
+    <comment></comment>
+  </data>
+  <data name="ShowDetail" xml:space="preserve">
+    <value>显示详情</value>
+    <comment></comment>
+  </data>
+  <data name="ShowForAllAircraft" xml:space="preserve">
+    <value>显示所有航空器</value>
+    <comment></comment>
+  </data>
+  <data name="ShowEmergencySquawks" xml:space="preserve">
+    <value>显示紧急squawks</value>
+    <comment></comment>
+  </data>
+  <data name="ShowEmptyValues" xml:space="preserve">
+    <value>显示空值</value>
+    <comment></comment>
+  </data>
+  <data name="ShowForSelectedOnly" xml:space="preserve">
+    <value>仅显示选择的航空器</value>
+    <comment></comment>
+  </data>
+  <data name="ShowInterestingAircraft" xml:space="preserve">
+    <value>显示关注的航空器</value>
+    <comment></comment>
+  </data>
+  <data name="ShowRangeCircles" xml:space="preserve">
+    <value>显示范围环</value>
+    <comment></comment>
+  </data>
+  <data name="ShowShortTrails" xml:space="preserve">
+    <value>显示短轨迹</value>
+    <comment></comment>
+  </data>
+  <data name="ShowSpeedType" xml:space="preserve">
+    <value>显示速度类型</value>
+    <comment></comment>
+  </data>
+  <data name="ShowTrackType" xml:space="preserve">
+    <value>显示航向类型</value>
+    <comment></comment>
+  </data>
+  <data name="ShowUnits" xml:space="preserve">
+    <value>显示单位</value>
+    <comment></comment>
+  </data>
+  <data name="ShowVerticalSpeedType" xml:space="preserve">
+    <value>显示垂直速度类型</value>
+    <comment></comment>
+  </data>
+  <data name="ShowVsiInSeconds" xml:space="preserve">
+    <value>显示每秒垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="SignalLevel" xml:space="preserve">
+    <value>信号电平</value>
+    <comment></comment>
+  </data>
+  <data name="Silhouette" xml:space="preserve">
+    <value>轮廓</value>
+    <comment></comment>
+  </data>
+  <data name="SilhouetteAndOpFlag" xml:space="preserve">
+    <value>轮廓和标志</value>
+    <comment></comment>
+  </data>
+  <data name="SiteTimedOut" xml:space="preserve">
+    <value>在非交互期间该站点暂停. 关闭消息框恢复更新.</value>
+    <comment></comment>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>排序</value>
+    <comment></comment>
+  </data>
+  <data name="Species" xml:space="preserve">
+    <value>类型</value>
+    <comment></comment>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>速度</value>
+    <comment></comment>
+  </data>
+  <data name="SpeedGraph" xml:space="preserve">
+    <value>速度图</value>
+    <comment></comment>
+  </data>
+  <data name="Speeds" xml:space="preserve">
+    <value>速度</value>
+    <comment></comment>
+  </data>
+  <data name="SpeedType" xml:space="preserve">
+    <value>速度类型</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk" xml:space="preserve">
+    <value>Squawk</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7000" xml:space="preserve">
+    <value>无squawk分配</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7500" xml:space="preserve">
+    <value>航空器劫持</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7600" xml:space="preserve">
+    <value>无限的故障</value>
+    <comment></comment>
+  </data>
+  <data name="Squawk7700" xml:space="preserve">
+    <value>一般紧急</value>
+    <comment></comment>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>开始</value>
+    <comment></comment>
+  </data>
+  <data name="StartsWith" xml:space="preserve">
+    <value>开始:</value>
+    <comment></comment>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>开始时间</value>
+    <comment></comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状态</value>
+    <comment></comment>
+  </data>
+  <data name="StatuteMileAbbreviation" xml:space="preserve">
+    <value>{0} mi</value>
+    <comment></comment>
+  </data>
+  <data name="StatuteMiles" xml:space="preserve">
+    <value>法定英里</value>
+    <comment></comment>
+  </data>
+  <data name="StorageEngine" xml:space="preserve">
+    <value>存储引擎</value>
+    <comment></comment>
+  </data>
+  <data name="StorageSize" xml:space="preserve">
+    <value>存储大小</value>
+    <comment></comment>
+  </data>
+  <data name="StrokeOpacity" xml:space="preserve">
+    <value>路线透明度</value>
+    <comment></comment>
+  </data>
+  <data name="SubmitRoute" xml:space="preserve">
+    <value>提交路线</value>
+    <comment></comment>
+  </data>
+  <data name="SubmitRouteCorrection" xml:space="preserve">
+    <value>提交路线修正</value>
+    <comment></comment>
+  </data>
+  <data name="SuppressAltitudeStalkWhenZoomedOut" xml:space="preserve">
+    <value>放大超出范围时限制高度线</value>
+    <comment></comment>
+  </data>
+  <data name="TargetAltitude" xml:space="preserve">
+    <value>目标高度</value>
+    <comment></comment>
+  </data>
+  <data name="TargetHeading" xml:space="preserve">
+    <value>目标航向</value>
+    <comment></comment>
+  </data>
+  <data name="ThenBy" xml:space="preserve">
+    <value>依据</value>
+    <comment></comment>
+  </data>
+  <data name="Tiltwing" xml:space="preserve">
+    <value>倾斜翼飞机</value>
+    <comment></comment>
+  </data>
+  <data name="TimeTracked" xml:space="preserve">
+    <value>跟踪持续</value>
+    <comment></comment>
+  </data>
+  <data name="Tisb" xml:space="preserve">
+    <value>TIS-B</value>
+    <comment></comment>
+  </data>
+  <data name="TitleAircraftDetail" xml:space="preserve">
+    <value>航空器详情</value>
+    <comment></comment>
+  </data>
+  <data name="TitleAircraftList" xml:space="preserve">
+    <value>航空器列表</value>
+    <comment></comment>
+  </data>
+  <data name="TitleFlightDetail" xml:space="preserve">
+    <value>详情</value>
+    <comment></comment>
+  </data>
+  <data name="TitleFlightsList" xml:space="preserve">
+    <value>航班</value>
+    <comment></comment>
+  </data>
+  <data name="ToAltitude" xml:space="preserve">
+    <value>至 {0}</value>
+    <comment></comment>
+  </data>
+  <data name="TitleSiteTimedOut" xml:space="preserve">
+    <value>超时</value>
+    <comment></comment>
+  </data>
+  <data name="TotalHours" xml:space="preserve">
+    <value>小时总计</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingCountAircraft" xml:space="preserve">
+    <value>跟踪 {0:N0} 航空器</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingCountAircraftOutOf" xml:space="preserve">
+    <value>跟踪 {0:N0} 航空器 (越界 {1:N0})</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingOneAircraft" xml:space="preserve">
+    <value>跟踪 1 航空器</value>
+    <comment></comment>
+  </data>
+  <data name="TrackingOneAircraftOutOf" xml:space="preserve">
+    <value>跟踪 1 航空器 (越界 {0:N0})</value>
+    <comment></comment>
+  </data>
+  <data name="TransponderType" xml:space="preserve">
+    <value>应答机</value>
+    <comment></comment>
+  </data>
+  <data name="TransponderTypeFlag" xml:space="preserve">
+    <value>应答机标志</value>
+    <comment></comment>
+  </data>
+  <data name="TrueAirSpeed" xml:space="preserve">
+    <value>实速</value>
+    <comment></comment>
+  </data>
+  <data name="TrueAirSpeedShort" xml:space="preserve">
+    <value>实速</value>
+    <comment></comment>
+  </data>
+  <data name="TrueHeading" xml:space="preserve">
+    <value>实际航向</value>
+    <comment></comment>
+  </data>
+  <data name="TrueHeadingShort" xml:space="preserve">
+    <value>实向</value>
+    <comment></comment>
+  </data>
+  <data name="Turbo" xml:space="preserve">
+    <value>涡轮增压引擎</value>
+    <comment></comment>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>未知</value>
+    <comment></comment>
+  </data>
+  <data name="UseBrowserLocation" xml:space="preserve">
+    <value>使用GPS定位</value>
+    <comment></comment>
+  </data>
+  <data name="UseRelativeDates" xml:space="preserve">
+    <value>使用相对日期</value>
+    <comment></comment>
+  </data>
+  <data name="UserTag" xml:space="preserve">
+    <value>使用标签</value>
+    <comment></comment>
+  </data>
+  <data name="VerticalSpeed" xml:space="preserve">
+    <value>垂直速度</value>
+    <comment></comment>
+  </data>
+  <data name="VerticalSpeedType" xml:space="preserve">
+    <value>垂直速度类型</value>
+    <comment></comment>
+  </data>
+  <data name="VirtualRadar" xml:space="preserve">
+    <value>Virtual Radar Server</value>
+    <comment></comment>
+  </data>
+  <data name="Volume25" xml:space="preserve">
+    <value>音量 25%</value>
+    <comment></comment>
+  </data>
+  <data name="Volume50" xml:space="preserve">
+    <value>音量 50%</value>
+    <comment></comment>
+  </data>
+  <data name="Volume75" xml:space="preserve">
+    <value>音量 75%</value>
+    <comment></comment>
+  </data>
+  <data name="Volume100" xml:space="preserve">
+    <value>音量 100%</value>
+    <comment></comment>
+  </data>
+  <data name="VrsVersion" xml:space="preserve">
+    <value>版本 {0}</value>
+    <comment></comment>
+  </data>
+  <data name="WakeTurbulenceCategory" xml:space="preserve">
+    <value>尾流</value>
+    <comment></comment>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
+    <comment></comment>
+  </data>
+  <data name="WorkingInOfflineMode" xml:space="preserve">
+    <value>脱机工作</value>
+    <comment></comment>
+  </data>
+  <data name="WtcLight" xml:space="preserve">
+    <value>轻微</value>
+    <comment></comment>
+  </data>
+  <data name="WtcMedium" xml:space="preserve">
+    <value>中等</value>
+    <comment></comment>
+  </data>
+  <data name="WtcHeavy" xml:space="preserve">
+    <value>严重</value>
+    <comment></comment>
+  </data>
+  <data name="YearBuilt" xml:space="preserve">
+    <value>出厂年份</value>
+    <comment></comment>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+    <comment></comment>
+  </data>
+  <data name="DateClose" xml:space="preserve">
+    <value>完成</value>
+    <comment></comment>
+  </data>
+  <data name="DateCurrent" xml:space="preserve">
+    <value>今天</value>
+    <comment></comment>
+  </data>
+  <data name="DateNext" xml:space="preserve">
+    <value>后一天</value>
+    <comment></comment>
+  </data>
+  <data name="DatePrevious" xml:space="preserve">
+    <value>前一天</value>
+    <comment></comment>
+  </data>
+  <data name="DateWeekAbbr" xml:space="preserve">
+    <value>周</value>
+    <comment></comment>
+  </data>
+  <data name="DateYearSuffix" xml:space="preserve">
+    <value>年</value>
+    <comment></comment>
+  </data>
+  <data name="SayCallsign" xml:space="preserve">
+    <value>航班号 {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayHyphen" xml:space="preserve">
+    <value>杠</value>
+    <comment></comment>
+  </data>
+  <data name="SayIcao" xml:space="preserve">
+    <value>ICOA代码 {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayModelIcao" xml:space="preserve">
+    <value>机型 {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayOperator" xml:space="preserve">
+    <value>航空公司 {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayRegistration" xml:space="preserve">
+    <value>注册号 {0}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayRouteNotKnown" xml:space="preserve">
+    <value>路线未知.</value>
+    <comment></comment>
+  </data>
+  <data name="SayFromTo" xml:space="preserve">
+    <value>行程从 {0} 至 {1}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayFromToVia" xml:space="preserve">
+    <value>行程从 {0} 经过 {1} 至 {2}.</value>
+    <comment></comment>
+  </data>
+  <data name="SayAlpha" xml:space="preserve">
+    <value>alfuh</value>
+    <comment></comment>
+  </data>
+  <data name="SayBravo" xml:space="preserve">
+    <value>bravo</value>
+    <comment></comment>
+  </data>
+  <data name="SayCharlie" xml:space="preserve">
+    <value>charlie</value>
+    <comment></comment>
+  </data>
+  <data name="SayDelta" xml:space="preserve">
+    <value>delta</value>
+    <comment></comment>
+  </data>
+  <data name="SayEcho" xml:space="preserve">
+    <value>echo</value>
+    <comment></comment>
+  </data>
+  <data name="SayFoxtrot" xml:space="preserve">
+    <value>foxed-rot</value>
+    <comment></comment>
+  </data>
+  <data name="SayGolf" xml:space="preserve">
+    <value>golf</value>
+    <comment></comment>
+  </data>
+  <data name="SayHotel" xml:space="preserve">
+    <value>hotel</value>
+    <comment></comment>
+  </data>
+  <data name="SayIndia" xml:space="preserve">
+    <value>india</value>
+    <comment></comment>
+  </data>
+  <data name="SayJuliet" xml:space="preserve">
+    <value>juliet</value>
+    <comment></comment>
+  </data>
+  <data name="SayKilo" xml:space="preserve">
+    <value>key-low</value>
+    <comment></comment>
+  </data>
+  <data name="SayLima" xml:space="preserve">
+    <value>leamah</value>
+    <comment></comment>
+  </data>
+  <data name="SayMike" xml:space="preserve">
+    <value>mike</value>
+    <comment></comment>
+  </data>
+  <data name="SayNovember" xml:space="preserve">
+    <value>november</value>
+    <comment></comment>
+  </data>
+  <data name="SayOscar" xml:space="preserve">
+    <value>oscar</value>
+    <comment></comment>
+  </data>
+  <data name="SayPapa" xml:space="preserve">
+    <value>papa</value>
+    <comment></comment>
+  </data>
+  <data name="SayQuebec" xml:space="preserve">
+    <value>quebec</value>
+    <comment></comment>
+  </data>
+  <data name="SayRomeo" xml:space="preserve">
+    <value>romeo</value>
+    <comment></comment>
+  </data>
+  <data name="SaySierra" xml:space="preserve">
+    <value>sierra</value>
+    <comment></comment>
+  </data>
+  <data name="SayTango" xml:space="preserve">
+    <value>tango</value>
+    <comment></comment>
+  </data>
+  <data name="SayUniform" xml:space="preserve">
+    <value>uniform</value>
+    <comment></comment>
+  </data>
+  <data name="SayVictor" xml:space="preserve">
+    <value>victor</value>
+    <comment></comment>
+  </data>
+  <data name="SayWhiskey" xml:space="preserve">
+    <value>whiskey</value>
+    <comment></comment>
+  </data>
+  <data name="SayXRay" xml:space="preserve">
+    <value>x-ray</value>
+    <comment></comment>
+  </data>
+  <data name="SayYankee" xml:space="preserve">
+    <value>yankee</value>
+    <comment></comment>
+  </data>
+  <data name="SayZulu" xml:space="preserve">
+    <value>zulu</value>
+    <comment></comment>
+  </data>
+</root>

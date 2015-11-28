@@ -326,6 +326,7 @@ namespace VirtualRadar.WebSite
                             });
                         } else if(".js".Equals(extension, StringComparison.OrdinalIgnoreCase)) {
                             ModifyAndSendContent(args, requestFile.FileName, extension, r => {
+                                _WebSite.InjectIntoJavaScript(args.PathAndFile, r);
                                 _WebSite.MinifyJavaScript(r);
                             });
                         } else if(".css".Equals(extension, StringComparison.OrdinalIgnoreCase)) {
