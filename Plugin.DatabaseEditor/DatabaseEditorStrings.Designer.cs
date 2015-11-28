@@ -124,15 +124,6 @@ namespace VirtualRadar.Plugin.DatabaseEditor {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only allow administrators.
-        /// </summary>
-        public static string OnlyAllowAdministrators {
-            get {
-                return ResourceManager.GetString("OnlyAllowAdministrators", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Operator ICAO.
         /// </summary>
         public static string OperatorIcao {
