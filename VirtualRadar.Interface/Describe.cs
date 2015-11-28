@@ -382,7 +382,7 @@ namespace VirtualRadar.Interface
 
                 for(var ex = exception;ex != null;ex = ex.InnerException) {
                     if(buffer.Length > 0) buffer.AppendFormat("-- INNER EXCEPTION --{0}", newLine);
-                    buffer.AppendFormat("{0}{1}", ex.Message, newLine);
+                    buffer.AppendFormat("{0}: {1}{2}", ex.GetType().FullName, ex.Message, newLine);
 
                     var socketException = ex as SocketException;
                     if(socketException != null) {

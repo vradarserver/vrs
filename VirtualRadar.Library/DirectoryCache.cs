@@ -246,6 +246,11 @@ namespace VirtualRadar.Library
         /// True if the heartbeat timer has been hooked.
         /// </summary>
         private bool _HookedHeartbeat;
+
+        /// <summary>
+        /// The wait handle that is nonsignalled while a refresh is running.
+        /// </summary>
+        private EventWaitHandle _RefreshWaitHandle = new EventWaitHandle(true, EventResetMode.ManualReset);
         #endregion
 
         #region Properties
@@ -389,6 +394,8 @@ namespace VirtualRadar.Library
             var cache = _Cache;
 
             if(!String.IsNullOrEmpty(fileName) && _Cache != null) {
+                WaitForFirstRefreshToFinish();
+
                 var normalisedFileName = NormaliseFileName(fileName);
                 foreach(var kvp in cache) {
                     var folderInfo = kvp.Value;
@@ -404,12 +411,36 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
+        /// Blocks the thread until the first refresh has finished.
+        /// </summary>
+        private void WaitForFirstRefreshToFinish()
+        {
+            var state = _CacheState;
+
+            var firstPass = true;
+            while(state.LastFetchTime == default(DateTime)) {
+                if(!firstPass) {
+                    Thread.Sleep(1);
+                } else {
+                    BeginRefresh();
+                    firstPass = false;
+                }
+                _RefreshWaitHandle.WaitOne(1000);
+
+                state = _CacheState;
+            }
+        }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public void BeginRefresh()
         {
             string folder;
-            lock(_SyncLock) folder = _Folder;
+            WaitHandle result;
+            lock(_SyncLock) {
+                folder = _Folder;
+            }
 
             var backgroundWorker = Factory.Singleton.Resolve<IBackgroundWorker>();
             backgroundWorker.DoWork += BackgroundWorker_DoWork;
@@ -464,6 +495,8 @@ namespace VirtualRadar.Library
 
             if(doLoadFiles) {
                 try {
+                    _RefreshWaitHandle.Reset();
+
                     if(folder == null || !Provider.FolderExists(folder)) {
                         raiseCacheChanged = newCache.Count > 0;
                         newCache.Clear();
@@ -486,6 +519,7 @@ namespace VirtualRadar.Library
                         _CacheState = newCacheState;
                         _CacheState.Refreshing = false;
                     }
+                    _RefreshWaitHandle.Set();
                 }
             }
 
