@@ -22,7 +22,7 @@ namespace VirtualRadar.Interface
     public interface IAutoConfigPictureFolderCache : ISingleton<IAutoConfigPictureFolderCache>
     {
         /// <summary>
-        /// Gets or sets the directory cache that is keeping track of files in the picture folder.
+        /// Gets the directory cache that is keeping track of files in the picture folder.
         /// </summary>
         IDirectoryCache DirectoryCache { get; }
 
