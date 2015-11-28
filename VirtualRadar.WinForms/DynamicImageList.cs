@@ -29,6 +29,16 @@ namespace VirtualRadar.WinForms
         private ImageList _ImageList;
 
         /// <summary>
+        /// A list of original image references for images that went into the image list.
+        /// </summary>
+        /// <remarks>
+        /// We need this so that we can compare the original images against incoming images to see if
+        /// they are the same reference. Referential equality is good enough for us, the images are
+        /// all coming from resources.
+        /// </remarks>
+        private List<Image> _ImageReferences = new List<Image>();
+
+        /// <summary>
         /// Gets the image list being wrapped by the class.
         /// </summary>
         public ImageList ImageList
@@ -83,6 +93,8 @@ namespace VirtualRadar.WinForms
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
+                _ImageReferences.Clear();
+
                 if(_ImageList != null) _ImageList.Dispose();
                 _ImageList = null;
             }
@@ -101,6 +113,7 @@ namespace VirtualRadar.WinForms
             if(result == -1) {
                 result = ImageList.Images.Count;
                 ImageList.Images.Add(image);
+                _ImageReferences.Add(image);
             }
 
             return result;
@@ -118,9 +131,9 @@ namespace VirtualRadar.WinForms
         {
             int result = -1;
 
-            for(var i = 0;i < ImageList.Images.Count;++i) {
-                var existingImage = ImageList.Images[i];
-                if(existingImage == image) {
+            for(var i = 0;i < _ImageReferences.Count;++i) {
+                var existingImage = _ImageReferences[i];
+                if(Object.ReferenceEquals(existingImage, image)) {
                     result = i;
                     break;
                 }
