@@ -44,7 +44,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         protected string FormatJavaScriptStringLiteral(string text)
         {
-            return text == null ? "null" : String.Format("'{0}'", text.Replace("'", "\'"));
+            return text == null ? "null" : String.Format("'{0}'", text.Replace("'", "\\'"));
         }
     }
 }
