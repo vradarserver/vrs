@@ -138,9 +138,6 @@
   <data name="Notes" xml:space="preserve">
     <value>Notizen</value>
   </data>
-  <data name="OnlyAllowAdministrators" xml:space="preserve">
-    <value>Nur Administratoren erlauben</value>
-  </data>
   <data name="OperatorIcao" xml:space="preserve">
     <value>Betreiber ICAO</value>
   </data>

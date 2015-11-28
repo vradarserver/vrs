@@ -138,9 +138,6 @@
   <data name="Notes" xml:space="preserve">
     <value>备注</value>
   </data>
-  <data name="OnlyAllowAdministrators" xml:space="preserve">
-    <value>仅允许管理员</value>
-  </data>
   <data name="OperatorIcao" xml:space="preserve">
     <value>航空公司ICAO</value>
   </data>
