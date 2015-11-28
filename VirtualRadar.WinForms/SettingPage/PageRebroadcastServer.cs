@@ -36,10 +36,12 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public class Summary : PageSummary
         {
+            private static Image _PageIcon = Images.Rebroadcast16x16;
+
             /// <summary>
             /// See base docs.
             /// </summary>
-            public override Image PageIcon { get { return Images.Rebroadcast16x16; } }
+            public override Image PageIcon { get { return _PageIcon; } }
 
             /// <summary>
             /// See base docs.
