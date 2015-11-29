@@ -312,13 +312,6 @@ namespace VirtualRadar
             if(!isThreadAbort) {
                 var message = Describe.ExceptionMultiLine(ex, "\r\n");
 
-                try {
-                    var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
-                    if(!applicationInformation.Headless) {
-                        Clipboard.SetText(message);
-                    }
-                } catch { }
-
                 ILog log = null;
                 try {
                     log = Factory.Singleton.Resolve<ILog>().Singleton;
