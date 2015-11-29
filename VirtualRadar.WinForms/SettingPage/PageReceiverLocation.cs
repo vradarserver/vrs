@@ -128,11 +128,6 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new NumericDoubleBinder<ReceiverLocation>(ReceiverLocation, numericLatitude,   r => r.Latitude,    (r,v) => r.Latitude = v)    { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new NumericDoubleBinder<ReceiverLocation>(ReceiverLocation, numericLongitude,  r => r.Longitude,   (r,v) => r.Longitude = v)   { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-
-            AddControlBinder(new MapValuesBinder<ReceiverLocation>(ReceiverLocation, bindingMap,
-                r => r.Latitude,    (r,v) => r.Latitude = v,
-                r => r.Longitude,   (r,v) => r.Longitude = v
-            ));
         }
 
         /// <summary>

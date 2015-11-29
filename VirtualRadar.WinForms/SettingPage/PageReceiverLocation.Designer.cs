@@ -33,7 +33,6 @@
             this.numericLongitude = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.bindingMap = new VirtualRadar.WinForms.Controls.MapControl();
             ((System.ComponentModel.ISupportInitialize)(this.numericLatitude)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericLongitude)).BeginInit();
             this.SuspendLayout();
@@ -112,20 +111,9 @@
             this.label3.TabIndex = 4;
             this.label3.Text = "::Longitude:::";
             // 
-            // bindingMap
-            // 
-            this.bindingMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindingMap.Location = new System.Drawing.Point(0, 79);
-            this.bindingMap.Name = "bindingMap";
-            this.bindingMap.Size = new System.Drawing.Size(636, 296);
-            this.bindingMap.TabIndex = 6;
-            // 
             // PageReceiverLocation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Controls.Add(this.bindingMap);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericLongitude);
@@ -133,7 +121,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxName);
             this.Name = "PageReceiverLocation";
-            this.Size = new System.Drawing.Size(636, 375);
+            this.Size = new System.Drawing.Size(636, 78);
             ((System.ComponentModel.ISupportInitialize)(this.numericLatitude)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericLongitude)).EndInit();
             this.ResumeLayout(false);
@@ -149,6 +137,5 @@
         private System.Windows.Forms.NumericUpDown numericLongitude;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
-        private Controls.MapControl bindingMap;
     }
 }
