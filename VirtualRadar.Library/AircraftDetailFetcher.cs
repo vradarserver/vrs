@@ -184,7 +184,8 @@ namespace VirtualRadar.Library
             _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
             if(_PictureLookupThread == null) {
-                _PictureLookupThread = new BackgroundThreadQueue<LookupPictureDetail>("PictureLookup");
+                _PictureLookupThread = new BackgroundThreadQueue<LookupPictureDetail>("PictureLookup", BackgroundThreadQueueMechanism.ThreadPool);
+                _PictureLookupThread.MaximumParallelThreads = 10;
                 _PictureLookupThread.StartBackgroundThread(PictureLookupThread_ProcessLookup, PictureLookupThread_ProcessException);
             }
 
@@ -541,8 +542,9 @@ namespace VirtualRadar.Library
         /// <param name="lookupPictureDetail"></param>
         private void PictureLookupThread_ProcessLookup(LookupPictureDetail lookupPictureDetail)
         {
-            lookupPictureDetail.Result = _PictureManager.FindPicture(_PictureFolderCache, lookupPictureDetail.Icao, lookupPictureDetail.Registration, lookupPictureDetail.PictureDetail);
+            var lookupResult = _PictureManager.FindPicture(_PictureFolderCache, lookupPictureDetail.Icao, lookupPictureDetail.Registration, lookupPictureDetail.PictureDetail);
             lock(_PictureLookupResultsSyncLock) {
+                lookupPictureDetail.Result = lookupResult;
                 _PictureLookupResults.Add(lookupPictureDetail);
             }
         }
@@ -554,10 +556,14 @@ namespace VirtualRadar.Library
         private void PictureLookupThread_ProcessException(Exception ex)
         {
             if(!_LoggedPictureLookupException) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                if(log != null) {
-                    _LoggedPictureLookupException = true;
-                    log.WriteLine("Caught exception during fetch of aircraft picture: {0}", ex.ToString());
+                lock(_PictureLookupResultsSyncLock) {
+                    if(!_LoggedPictureLookupException) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        if(log != null) {
+                            _LoggedPictureLookupException = true;
+                            log.WriteLine("Caught exception during fetch of aircraft picture: {0}", ex.ToString());
+                        }
+                    }
                 }
             }
         }

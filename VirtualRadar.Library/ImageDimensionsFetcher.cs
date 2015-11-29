@@ -71,11 +71,6 @@ namespace VirtualRadar.Library
         };
 
         /// <summary>
-        /// The object that blocks access to the object while dimensions are being fetched.
-        /// </summary>
-        private object _SyncLock = new object();
-
-        /// <summary>
         /// An array of the known magic numbers in descending order of prefix length.
         /// </summary>
         private static readonly MagicNumber[] _MagicNumbersSorted = new MagicNumber[] {
@@ -87,17 +82,8 @@ namespace VirtualRadar.Library
             new MagicNumber(FileType.Jpeg,          new byte[] { 0xff, 0xd8, }),
         };
 
-        /// <summary>
-        /// A buffer of bytes that save us reallocating byte buffers when reading from the file. The size is at least
-        /// as large as the largest integer that needs to be read from the file.
-        /// </summary>
-        private byte[] _IntegerBuffer = new byte[8];
-
-        // A large buffer of bytes that remains allocated once taken.
-        private byte[] _BigBuffer = null;
-        
-        // The number of bytes to allocate to a big buffer.
-        private const int BigBufferSize = 128;
+        // The number of bytes to allocate to a buffer.
+        private const int BufferSize = 128;
 
         /// <summary>
         /// See interface docs.
@@ -130,12 +116,11 @@ namespace VirtualRadar.Library
             var filePrefix = new byte[longestPrefix];
             var bytesRead = stream.Read(filePrefix, 0, filePrefix.Length);
             var magicNumber = _MagicNumbersSorted.FirstOrDefault(r => r.MatchesFilePrefix(filePrefix, bytesRead));
+            var buffer = new byte[BufferSize];
 
             var result = Size.Empty;
             if(magicNumber != null) {
-                lock(_SyncLock) {
-                    result = DecodeFileFormat(stream, magicNumber);
-                }
+                result = DecodeFileFormat(stream, magicNumber, buffer);
             }
             if(result.IsEmpty) {
                 result = LoadImageAndReadDimensions(stream);
@@ -165,17 +150,18 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="magicNumber"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private Size DecodeFileFormat(Stream stream, MagicNumber magicNumber)
+        private Size DecodeFileFormat(Stream stream, MagicNumber magicNumber, byte[] buffer)
         {
             var result = Size.Empty;
 
             switch(magicNumber.FileType) {
-                case FileType.WindowsBitmap:    result = DecodeWindowsBitmap(stream); break;
-                case FileType.OS2Bitmap:        result = DecodeOS2Bitmap(stream); break;
-                case FileType.Gif:              result = DecodeGif(stream); break;
-                case FileType.Jpeg:             result = DecodeJpeg(stream, result); break;
-                case FileType.Png:              result = DecodePng(stream); break;
+                case FileType.WindowsBitmap:    result = DecodeWindowsBitmap(stream, buffer); break;
+                case FileType.OS2Bitmap:        result = DecodeOS2Bitmap(stream, buffer); break;
+                case FileType.Gif:              result = DecodeGif(stream, buffer); break;
+                case FileType.Jpeg:             result = DecodeJpeg(stream, result, buffer); break;
+                case FileType.Png:              result = DecodePng(stream, buffer); break;
                 default:                        throw new NotImplementedException();
             }
 
@@ -186,14 +172,15 @@ namespace VirtualRadar.Library
         /// Extracts the dimensions of an image from a Windows BMP format file.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private Size DecodeWindowsBitmap(Stream stream)
+        private Size DecodeWindowsBitmap(Stream stream, byte[] buffer)
         {
             // Using file format information from http://en.wikipedia.org/wiki/BMP_file_format
 
             stream.Seek(18, SeekOrigin.Begin);
-            var width = ReadLittleEndianInt32(stream);
-            var height = ReadLittleEndianInt32(stream);
+            var width = ReadLittleEndianInt32(stream, buffer);
+            var height = ReadLittleEndianInt32(stream, buffer);
             var result = new Size(width, height);
 
             return result;
@@ -203,14 +190,15 @@ namespace VirtualRadar.Library
         /// Extracts the dimensions of an image from an OS/2 BMP format file.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private Size DecodeOS2Bitmap(Stream stream)
+        private Size DecodeOS2Bitmap(Stream stream, byte[] buffer)
         {
             // Using file format information from http://en.wikipedia.org/wiki/BMP_file_format
 
             stream.Seek(18, SeekOrigin.Begin);
-            var width = ReadLittleEndianInt16(stream);
-            var height = ReadLittleEndianInt16(stream);
+            var width = ReadLittleEndianInt16(stream, buffer);
+            var height = ReadLittleEndianInt16(stream, buffer);
             var result = new Size(width, height);
 
             return result;
@@ -220,14 +208,15 @@ namespace VirtualRadar.Library
         /// Extracts the dimensions of an image from a GIF format file.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private Size DecodeGif(Stream stream)
+        private Size DecodeGif(Stream stream, byte[] buffer)
         {
             // Using file format information from http://en.wikipedia.org/wiki/GIF#File_format
 
             stream.Seek(6, SeekOrigin.Begin);
-            var width = ReadLittleEndianInt16(stream);
-            var height = ReadLittleEndianInt16(stream);
+            var width = ReadLittleEndianInt16(stream, buffer);
+            var height = ReadLittleEndianInt16(stream, buffer);
             var result = new Size(width, height);
 
             return result;
@@ -238,8 +227,9 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="errorSize"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private Size DecodeJpeg(Stream stream, Size errorSize)
+        private Size DecodeJpeg(Stream stream, Size errorSize, byte[] buffer)
         {
             // Using the file format information from http://en.wikipedia.org/wiki/JPEG#Syntax_and_structure
             // ... and http://lad.dsc.ufcg.edu.br/multimidia/jpegmarker.pdf (SOF layout)
@@ -252,12 +242,12 @@ namespace VirtualRadar.Library
             stream.Seek(2, SeekOrigin.Begin);
             var finished = false;
             while(!finished) {
-                var segmentMarkerPosition = FindJpegSegmentStart(stream);
+                var segmentMarkerPosition = FindJpegSegmentStart(stream, buffer);
                 finished = segmentMarkerPosition == -1;
                 if(!finished) {
                     var frameType = stream.ReadByte();
                     var segmentPayloadStart = stream.Position;
-                    var segmentLength = ReadBigEndianInt16(stream);
+                    var segmentLength = ReadBigEndianInt16(stream, buffer);
 
                     // Reset the segment length if the segment has no payload (i.e. it's followed immediately by another segment marker)
                     if(segmentLength >= 0xFF00) segmentLength = 0;
@@ -268,8 +258,8 @@ namespace VirtualRadar.Library
                         case 0xC2:
                         case 0xC3:
                             stream.ReadByte();      // sample position
-                            var height = ReadBigEndianInt16(stream);
-                            var width = ReadBigEndianInt16(stream);
+                            var height = ReadBigEndianInt16(stream, buffer);
+                            var width = ReadBigEndianInt16(stream, buffer);
                             result = new Size(width, height);
                             finished = true;
                             break;
@@ -291,19 +281,19 @@ namespace VirtualRadar.Library
         /// returns the stream position, or returns -1 if no more segments could be found.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private long FindJpegSegmentStart(Stream stream)
+        private long FindJpegSegmentStart(Stream stream, byte[] buffer)
         {
             long result = -1;
-            
-            AllocateBigBuffer();
+
             var finished = false;
             while(!finished) {
                 var bufferPosition = stream.Position;
-                var bytesRead = stream.Read(_BigBuffer, 0, _BigBuffer.Length);
+                var bytesRead = stream.Read(buffer, 0, buffer.Length);
                 finished = bytesRead == -1;
                 for(var i = 0;!finished && i < bytesRead;++i) {
-                    if(_BigBuffer[i] == 0xFF) {
+                    if(buffer[i] == 0xFF) {
                         result = bufferPosition + i + 1;
                         stream.Seek(result, SeekOrigin.Begin);
                         finished = true;
@@ -318,37 +308,30 @@ namespace VirtualRadar.Library
         /// Extracts the dimensions of an image from a PNG format file.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private Size DecodePng(Stream stream)
+        private Size DecodePng(Stream stream, byte[] buffer)
         {
             // Using file format information from http://www.libpng.org/pub/png/spec/1.0/PNG-Contents.html
 
             stream.Seek(16, SeekOrigin.Begin);
-            var width = ReadBigEndianInt32(stream);
-            var height = ReadBigEndianInt32(stream);
+            var width = ReadBigEndianInt32(stream, buffer);
+            var height = ReadBigEndianInt32(stream, buffer);
             var result = new Size(width, height);
 
             return result;
         }
 
         /// <summary>
-        /// Allocates the big buffer if it hasn't already been allocated.
-        /// </summary>
-        private void AllocateBigBuffer()
-        {
-            if(_BigBuffer == null) {
-                _BigBuffer = new byte[BigBufferSize];
-            }
-        }
-
-        /// <summary>
-        /// Reads a number of bytes into the _IntegerBuffer buffer.
+        /// Reads a number of bytes into the buffer and returns them.
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="length"></param>
-        private void ReadIntegerBytes(Stream stream, int length)
+        /// <param name="buffer"></param>
+        private void ReadIntegerBytes(Stream stream, int length, byte[] buffer)
         {
-            var bytesRead = stream.Read(_IntegerBuffer, 0, length);
+            if(length > buffer.Length) throw new InvalidOperationException(String.Format("The buffer is {0} bytes long, needs to be at least {1} bytes", buffer.Length, length));
+            var bytesRead = stream.Read(buffer, 0, length);
             if(bytesRead != length) throw new IOException(String.Format("Could not read {0} bytes from the stream", length));
         }
 
@@ -356,38 +339,41 @@ namespace VirtualRadar.Library
         /// Reads a big-endian two byte integer.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private int ReadBigEndianInt16(Stream stream)
+        private int ReadBigEndianInt16(Stream stream, byte[] buffer)
         {
-            ReadIntegerBytes(stream, 2);
-            return (((int)_IntegerBuffer[0]) << 8) +
-                   (int)_IntegerBuffer[1];
+            ReadIntegerBytes(stream, 2, buffer);
+            return (((int)buffer[0]) << 8) +
+                   (int)buffer[1];
         }
 
         /// <summary>
         /// Reads a little-endian two byte integer.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private int ReadLittleEndianInt16(Stream stream)
+        private int ReadLittleEndianInt16(Stream stream, byte[] buffer)
         {
-            ReadIntegerBytes(stream, 2);
-            return (((int)_IntegerBuffer[1]) << 8) +
-                   (int)_IntegerBuffer[0];
+            ReadIntegerBytes(stream, 2, buffer);
+            return (((int)buffer[1]) << 8) +
+                   (int)buffer[0];
         }
 
         /// <summary>
         /// Reads a big-endian four byte integer.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        private int ReadBigEndianInt32(Stream stream)
+        private int ReadBigEndianInt32(Stream stream, byte[] buffer)
         {
-            ReadIntegerBytes(stream, 4);
-            return (((int)_IntegerBuffer[0]) << 24) +
-                   (((int)_IntegerBuffer[1]) << 16) +
-                   (((int)_IntegerBuffer[2]) << 8) +
-                   (int)_IntegerBuffer[3];
+            ReadIntegerBytes(stream, 4, buffer);
+            return (((int)buffer[0]) << 24) +
+                   (((int)buffer[1]) << 16) +
+                   (((int)buffer[2]) << 8) +
+                   (int)buffer[3];
         }
 
         /// <summary>
@@ -395,13 +381,13 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        private int ReadLittleEndianInt32(Stream stream)
+        private int ReadLittleEndianInt32(Stream stream, byte[] buffer)
         {
-            ReadIntegerBytes(stream, 4);
-            return (((int)_IntegerBuffer[3]) << 24) +
-                   (((int)_IntegerBuffer[2]) << 16) +
-                   (((int)_IntegerBuffer[1]) << 8) +
-                   (int)_IntegerBuffer[0];
+            ReadIntegerBytes(stream, 4, buffer);
+            return (((int)buffer[3]) << 24) +
+                   (((int)buffer[2]) << 16) +
+                   (((int)buffer[1]) << 8) +
+                   (int)buffer[0];
         }
     }
 }
