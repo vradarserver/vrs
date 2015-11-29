@@ -393,7 +393,7 @@ namespace VirtualRadar.Library
             string result = null;
             var cache = _Cache;
 
-            if(!String.IsNullOrEmpty(fileName) && _Cache != null) {
+            if(!String.IsNullOrEmpty(fileName) && cache != null) {
                 WaitForFirstRefreshToFinish();
 
                 var normalisedFileName = NormaliseFileName(fileName);
@@ -436,15 +436,9 @@ namespace VirtualRadar.Library
         /// </summary>
         public void BeginRefresh()
         {
-            string folder;
-            WaitHandle result;
-            lock(_SyncLock) {
-                folder = _Folder;
-            }
-
             var backgroundWorker = Factory.Singleton.Resolve<IBackgroundWorker>();
             backgroundWorker.DoWork += BackgroundWorker_DoWork;
-            backgroundWorker.StartWork(folder);
+            backgroundWorker.StartWork(null);
         }
 
         /// <summary>

@@ -74,15 +74,9 @@ namespace VirtualRadar.Interface
         private Action<Exception> _ProcessException;
 
         /// <summary>
-        /// If true then all multi-threading is disabled and items are dequeued as soon as they are queued.
+        /// The mechanism that the queue uses to process items.
         /// </summary>
-        private bool _ForceOntoSingleThread;
-
-        /// <summary>
-        /// If true then the thread surrenders its time slice when there is no work to do. If false then it
-        /// waits on _Signal, which the push methods set.
-        /// </summary>
-        private bool _SurrenderTimeSlice;
+        private BackgroundThreadQueueMechanism _Mechanism;
 
         /// <summary>
         /// If true then something has called Stop(). Once a background thread queue has been stopped it cannot
@@ -103,7 +97,7 @@ namespace VirtualRadar.Interface
         {
             get {
                 var result = 0;
-                if(!_ForceOntoSingleThread && _BackgroundThread != null) {
+                if(_Mechanism != BackgroundThreadQueueMechanism.SingleThread && _BackgroundThread != null) {
                     lock(_SyncLock) {
                         result = _Queue.Count;
                     }
@@ -122,7 +116,7 @@ namespace VirtualRadar.Interface
         /// Creates a new object.
         /// </summary>
         /// <param name="queueName"></param>
-        public BackgroundThreadQueue(string queueName) : this(queueName, surrenderTimeSliceOnEmptyQueue: true)
+        public BackgroundThreadQueue(string queueName) : this(queueName, BackgroundThreadQueueMechanism.Queue)
         {
         }
 
@@ -130,15 +124,20 @@ namespace VirtualRadar.Interface
         /// Creates a new object.
         /// </summary>
         /// <param name="queueName"></param>
-        /// <param name="surrenderTimeSliceOnEmptyQueue"></param>
-        public BackgroundThreadQueue(string queueName, bool surrenderTimeSliceOnEmptyQueue)
+        /// <param name="mechanism"></param>
+        public BackgroundThreadQueue(string queueName, BackgroundThreadQueueMechanism mechanism)
         {
             var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
-            if(runtimeEnvironment.IsMono) surrenderTimeSliceOnEmptyQueue = false;
+
+            if(mechanism == BackgroundThreadQueueMechanism.QueueWithNoBlock) {
+                if(runtimeEnvironment.IsMono) mechanism = BackgroundThreadQueueMechanism.Queue;
+            }
+            if(runtimeEnvironment.IsTest) {
+                mechanism = BackgroundThreadQueueMechanism.SingleThread;
+            }
 
             _QueueName = queueName;
-            _ForceOntoSingleThread = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
-            _SurrenderTimeSlice = surrenderTimeSliceOnEmptyQueue;
+            _Mechanism = mechanism;
 
             QueueRepository.AddQueue(this);
         }
@@ -191,9 +190,16 @@ namespace VirtualRadar.Interface
             _ProcessObject = processObject;
             _ProcessException = processException;
 
-            if(!_ForceOntoSingleThread) {
-                _BackgroundThread = new Thread(BackgroundThreadMethod) { Name = _QueueName };
-                _BackgroundThread.Start();
+            switch(_Mechanism) {
+                case BackgroundThreadQueueMechanism.Queue:
+                case BackgroundThreadQueueMechanism.QueueWithNoBlock:
+                    _BackgroundThread = new Thread(BackgroundThreadMethod) { Name = _QueueName };
+                    _BackgroundThread.Start();
+                    break;
+                case BackgroundThreadQueueMechanism.SingleThread:
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
         }
 
@@ -230,8 +236,11 @@ namespace VirtualRadar.Interface
 
                         if(itemFromQueue != null) _ProcessObject(itemFromQueue);
                         else {
-                            if(_SurrenderTimeSlice) Thread.Sleep(1);
-                            else                    _Signal.WaitOne();
+                            switch(_Mechanism) {
+                                case BackgroundThreadQueueMechanism.Queue:              _Signal.WaitOne(); break;
+                                case BackgroundThreadQueueMechanism.QueueWithNoBlock:   Thread.Sleep(1); break;
+                                default:                                                throw new NotImplementedException();
+                            }
                         }
                     } catch(Exception ex) {
                         if(!(ex is ThreadAbortException)) {
@@ -256,15 +265,23 @@ namespace VirtualRadar.Interface
         public void Enqueue(T item)
         {
             if(!_Stopped) {
-                if(_ForceOntoSingleThread) ProcessItemInSingleThreadMode(item);
-                else {
-                    if(_BackgroundThread != null) {
-                        lock(_SyncLock) {
-                            _Queue.Enqueue(item);
-                            if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
+                switch(_Mechanism) {
+                    case BackgroundThreadQueueMechanism.Queue:
+                    case BackgroundThreadQueueMechanism.QueueWithNoBlock:
+                        if(_BackgroundThread != null) {
+                            lock(_SyncLock) {
+                                _Queue.Enqueue(item);
+                                if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
+                            }
+
+                            if(_Mechanism == BackgroundThreadQueueMechanism.Queue) {
+                                _Signal.Set();
+                            }
                         }
-                        if(!_SurrenderTimeSlice) _Signal.Set();
-                    }
+                        break;
+                    case BackgroundThreadQueueMechanism.SingleThread:
+                        ProcessItemInSingleThreadMode(item);
+                        break;
                 }
             }
         }
@@ -276,19 +293,27 @@ namespace VirtualRadar.Interface
         public void EnqueueRange(IEnumerable<T> items)
         {
             if(!_Stopped) {
-                if(_ForceOntoSingleThread) {
-                    foreach(var item in items) {
-                        ProcessItemInSingleThreadMode(item);
-                    }
-                } else if(_BackgroundThread != null) {
-                    lock(_SyncLock) {
-                        foreach(var item in items) {
-                            _Queue.Enqueue(item);
+                switch(_Mechanism) {
+                    case BackgroundThreadQueueMechanism.Queue:
+                    case BackgroundThreadQueueMechanism.QueueWithNoBlock:
+                        lock(_SyncLock) {
+                            foreach(var item in items) {
+                                _Queue.Enqueue(item);
+                            }
+                            if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
                         }
-                        if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
-                    }
 
-                    if(!_SurrenderTimeSlice) _Signal.Set();
+                        if(_Mechanism == BackgroundThreadQueueMechanism.Queue) {
+                            _Signal.Set();
+                        }
+                        break;
+                    case BackgroundThreadQueueMechanism.SingleThread:
+                        foreach(var item in items) {
+                            ProcessItemInSingleThreadMode(item);
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException();
                 }
             }
         }

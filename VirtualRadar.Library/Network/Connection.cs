@@ -189,7 +189,7 @@ namespace VirtualRadar.Library.Network
             lock(_SyncLock) {
                 operationQueueName = String.Format("ConnectionOpQueue-{0}-{1}", _Connector.Name ?? "unnamed", ++_ConnectionCount);
             }
-            _OperationQueue = new BackgroundThreadQueue<ReadWriteOperation>(operationQueueName, surrenderTimeSliceOnEmptyQueue: true);
+            _OperationQueue = new BackgroundThreadQueue<ReadWriteOperation>(operationQueueName, BackgroundThreadQueueMechanism.QueueWithNoBlock);
             _OperationQueue.StartBackgroundThread(OperationQueue_ProcessOperation, OperationQueue_ProcessException);
 
             ConnectionStatus = initialStatus;

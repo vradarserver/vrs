@@ -184,7 +184,7 @@ namespace VirtualRadar.Library
             _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
             if(_PictureLookupThread == null) {
-                _PictureLookupThread = new BackgroundThreadQueue<LookupPictureDetail>("PictureLookup", false);
+                _PictureLookupThread = new BackgroundThreadQueue<LookupPictureDetail>("PictureLookup");
                 _PictureLookupThread.StartBackgroundThread(PictureLookupThread_ProcessLookup, PictureLookupThread_ProcessException);
             }
 
