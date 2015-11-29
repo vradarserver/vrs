@@ -1320,8 +1320,8 @@
         {
             var url = VRS.globalOptions.mapGoogleMapUseHttps ? VRS.globalOptions.mapGoogleMapHttpsUrl : VRS.globalOptions.mapGoogleMapHttpUrl;
             var params = {
-                v:      this.options.version,
-                sensor: this.options.sensor
+                // Note that Google Maps no longer requires the sensor flag and will report a warning if it is used
+                v: this.options.version
             };
             if(this.options.key)                  params.key = this.options.key;
             if(this.options.libraries.length > 0) params.libraries = this.options.libraries.join(',');
