@@ -93,11 +93,6 @@
     <Compile Include="ConnectorActivityLogView.Designer.cs">
       <DependentUpon>ConnectorActivityLogView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ControlResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\AccessControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -154,12 +149,6 @@
     <Compile Include="Controls\ListCheckedEventArgs.cs" />
     <Compile Include="Controls\ListViewPlus.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\MapControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\MapControl.Designer.cs">
-      <DependentUpon>MapControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\MasterListView.cs">
       <SubType>UserControl</SubType>
@@ -263,7 +252,6 @@
     <Compile Include="PortableBinding\ItemDescriptionList.cs" />
     <Compile Include="PortableBinding\LinkLabelStringBinder.cs" />
     <Compile Include="PortableBinding\LabelStringBinder.cs" />
-    <Compile Include="PortableBinding\MapValuesBinder.cs" />
     <Compile Include="PortableBinding\MasterListToListBinder.cs" />
     <Compile Include="PortableBinding\MasterListToSubsetBinder.cs" />
     <Compile Include="PortableBinding\NumericDoubleBinder.cs" />
@@ -509,10 +497,6 @@
     <EmbeddedResource Include="ConnectorActivityLogView.resx">
       <DependentUpon>ConnectorActivityLogView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ControlResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\AccessControl.resx">
       <DependentUpon>AccessControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -536,9 +520,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InvalidPluginsControl.resx">
       <DependentUpon>InvalidPluginsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\MapControl.resx">
-      <DependentUpon>MapControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MasterListView.resx">
       <DependentUpon>MasterListView.cs</DependentUpon>
@@ -697,7 +678,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Controls\MapControl.html" />
     <Content Include="PortableBinding\_README.txt" />
   </ItemGroup>
   <ItemGroup />
