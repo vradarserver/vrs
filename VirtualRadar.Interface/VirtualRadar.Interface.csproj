@@ -104,6 +104,7 @@
     <Compile Include="AirportDataThumbnailsJson.cs" />
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
+    <Compile Include="BackgroundThreadQueueMechanism.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
