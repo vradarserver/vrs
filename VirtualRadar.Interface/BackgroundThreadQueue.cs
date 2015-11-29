@@ -65,11 +65,13 @@ namespace VirtualRadar.Interface
 
         /// <summary>
         /// The delegate called on the background thread with the object that has been popped from the queue.
+        /// In ThreadPool mode this can be called in parallel, in all other modes it's called in series.
         /// </summary>
         private Action<T> _ProcessObject;
 
         /// <summary>
-        /// The delegate that is called on the background thread when it catches an exception.
+        /// The delegate that is called on the background thread when it catches an exception. In ThreadPool
+        /// mode this can be called in parallel, in all other modes it is called in series.
         /// </summary>
         private Action<Exception> _ProcessException;
 
@@ -86,9 +88,34 @@ namespace VirtualRadar.Interface
         private bool _Stopped;
 
         /// <summary>
+        /// The semaphore used by the thread pool mechanism to control how many parallel tasks to queue up simultaneously.
+        /// </summary>
+        private Semaphore _ParallelThreadSemaphore;
+
+        /// <summary>
+        /// The maximum number of parallel threads to allow. This needs to be established before <see cref="StartBackgroundThread"/>
+        /// is called because it controls the creation of <see cref="_ParallelThreadSemaphore"/>.
+        /// </summary>
+        private int _MaximumParallelThreads = -1;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public string Name { get { return _QueueName; } }
+
+        /// <summary>
+        /// Gets or sets the maximum number of parallel threads used when the mechanism is <see cref="BackgroundThreadQueueMechanism.ThreadPool"/>.
+        /// Has no effect with other mechanisms, or if the queue has already been started.
+        /// </summary>
+        public int MaximumParallelThreads
+        {
+            get { return _MaximumParallelThreads; }
+            set {
+                if(_BackgroundThread == null) {
+                    _MaximumParallelThreads = value;
+                }
+            }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -178,8 +205,14 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Creates and starts the background thread that will pop objects from the queue and process them.
         /// </summary>
-        /// <param name="processObject">A delegate that will be called on a background thread with each object popped from the queue.</param>
-        /// <param name="processException">A delegate called on a background thread with the details of an exception that was caught during processObject's execution.</param>
+        /// <param name="processObject">
+        /// A delegate that will be called on a background thread with each object popped from the queue. In ThreadPool mode this can be
+        /// called in parallel, in all other modes it is called in series.
+        /// </param>
+        /// <param name="processException">
+        /// A delegate called on a background thread with the details of an exception that was caught during processObject's execution.
+        /// In ThreadPool mode this can be called in parallel, in all other modes it is called in series.
+        /// </param>
         public void StartBackgroundThread(Action<T> processObject, Action<Exception> processException)
         {
             if(processObject == null) throw new ArgumentNullException("processObject");
@@ -198,6 +231,11 @@ namespace VirtualRadar.Interface
                     break;
                 case BackgroundThreadQueueMechanism.SingleThread:
                     break;
+                case BackgroundThreadQueueMechanism.ThreadPool:
+                    if(_MaximumParallelThreads > 0) {
+                        _ParallelThreadSemaphore = new Semaphore(_MaximumParallelThreads, _MaximumParallelThreads);
+                    }
+                    goto case BackgroundThreadQueueMechanism.Queue;
                 default:
                     throw new NotImplementedException();
             }
@@ -234,11 +272,23 @@ namespace VirtualRadar.Interface
                             }
                         }
 
-                        if(itemFromQueue != null) _ProcessObject(itemFromQueue);
-                        else {
+                        if(itemFromQueue != null) {
+                            switch(_Mechanism) {
+                                case BackgroundThreadQueueMechanism.Queue:
+                                case BackgroundThreadQueueMechanism.QueueWithNoBlock:
+                                    _ProcessObject(itemFromQueue);
+                                    break;
+                                case BackgroundThreadQueueMechanism.ThreadPool:
+                                    EnqueueCallToProcessObjectToThreadPool(itemFromQueue);
+                                    break;
+                                default:
+                                    throw new NotImplementedException();
+                            }
+                        } else {
                             switch(_Mechanism) {
                                 case BackgroundThreadQueueMechanism.Queue:              _Signal.WaitOne(); break;
                                 case BackgroundThreadQueueMechanism.QueueWithNoBlock:   Thread.Sleep(1); break;
+                                case BackgroundThreadQueueMechanism.ThreadPool:         _Signal.WaitOne(); break;
                                 default:                                                throw new NotImplementedException();
                             }
                         }
@@ -268,13 +318,14 @@ namespace VirtualRadar.Interface
                 switch(_Mechanism) {
                     case BackgroundThreadQueueMechanism.Queue:
                     case BackgroundThreadQueueMechanism.QueueWithNoBlock:
+                    case BackgroundThreadQueueMechanism.ThreadPool:
                         if(_BackgroundThread != null) {
                             lock(_SyncLock) {
                                 _Queue.Enqueue(item);
                                 if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
                             }
 
-                            if(_Mechanism == BackgroundThreadQueueMechanism.Queue) {
+                            if(_Mechanism != BackgroundThreadQueueMechanism.QueueWithNoBlock) {
                                 _Signal.Set();
                             }
                         }
@@ -282,6 +333,8 @@ namespace VirtualRadar.Interface
                     case BackgroundThreadQueueMechanism.SingleThread:
                         ProcessItemInSingleThreadMode(item);
                         break;
+                    default:
+                        throw new NotImplementedException();
                 }
             }
         }
@@ -296,6 +349,7 @@ namespace VirtualRadar.Interface
                 switch(_Mechanism) {
                     case BackgroundThreadQueueMechanism.Queue:
                     case BackgroundThreadQueueMechanism.QueueWithNoBlock:
+                    case BackgroundThreadQueueMechanism.ThreadPool:
                         lock(_SyncLock) {
                             foreach(var item in items) {
                                 _Queue.Enqueue(item);
@@ -303,7 +357,7 @@ namespace VirtualRadar.Interface
                             if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
                         }
 
-                        if(_Mechanism == BackgroundThreadQueueMechanism.Queue) {
+                        if(_Mechanism != BackgroundThreadQueueMechanism.QueueWithNoBlock) {
                             _Signal.Set();
                         }
                         break;
@@ -341,6 +395,47 @@ namespace VirtualRadar.Interface
             } catch(Exception ex) {
                 if(!(ex is ThreadAbortException)) {
                     _ProcessException(ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Queues up a call to _ProcessObject via the ThreadPool.
+        /// </summary>
+        /// <param name="itemFromQueue"></param>
+        private void EnqueueCallToProcessObjectToThreadPool(T itemFromQueue)
+        {
+            if(_ParallelThreadSemaphore != null) {
+                _ParallelThreadSemaphore.WaitOne();
+            }
+            ThreadPool.QueueUserWorkItem(CallProcessObjectFromThreadPool, itemFromQueue);
+        }
+
+        /// <summary>
+        /// Calls _ProcessObject from a ThreadPool thread.
+        /// </summary>
+        /// <param name="state"></param>
+        private void CallProcessObjectFromThreadPool(object state)
+        {
+            try {
+                try {
+                    if(!_Stopped) {
+                        _ProcessObject(state as T);
+                    }
+                } catch(ThreadAbortException) {
+                } catch(Exception ex) {
+                    _ProcessException(ex);
+                } finally {
+                    if(_ParallelThreadSemaphore != null) {
+                        _ParallelThreadSemaphore.Release();
+                    }
+                }
+            } catch(ThreadAbortException) {
+            } catch(Exception ex) {
+                try {
+                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    log.WriteLine("Caught exception in CallProcessObjectFromThreadPool for queue {0}: {1}", _QueueName, ex);
+                } catch {
                 }
             }
         }

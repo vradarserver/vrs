@@ -37,5 +37,12 @@ namespace VirtualRadar.Interface
         /// Forces all items to be processed on the thread that adds them. This is forced on internally during unit tests.
         /// </summary>
         SingleThread,
+
+        /// <summary>
+        /// Items are sent to the ThreadPool for processing, so they are processed in parallel. Stopping the queue will
+        /// not stop processing of items that are queued on the ThreadPool. The creator of the queue can control how
+        /// many items are processed in parallel.
+        /// </summary>
+        ThreadPool,
     }
 }
