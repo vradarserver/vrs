@@ -21,9 +21,6 @@ namespace VirtualRadar.Library
     /// <summary>
     /// See interface docs.
     /// </summary>
-    /// <summary>
-    /// See interface docs.
-    /// </summary>
     class ImageDimensionsFetcher : IImageDimensionsFetcher
     {
         /// <summary>
