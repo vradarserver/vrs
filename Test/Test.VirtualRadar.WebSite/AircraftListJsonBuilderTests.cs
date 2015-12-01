@@ -1330,6 +1330,76 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
+        public void AircraftListJsonBuilder_Sends_All_Latitude_Longitude_And_PositionIsMlat_When_One_Changes_And_OnlySendMessageFields_Is_Set()
+        {
+            for(var i = 0;i < 3;++i) {
+                TestCleanup();
+                TestInitialise();
+
+                AddBlankAircraft(1);
+                var aircraft = Mock.Get(_AircraftLists[0][0]);
+                aircraft.Object.UniqueId = 7;
+                aircraft.Object.DataVersion = 1;
+                aircraft.Object.FirstSeen = new DateTime(2000, 1, 1);
+                aircraft.Object.Latitude = 10;
+                aircraft.Object.Longitude = 20;
+                aircraft.Object.PositionIsMlat = true;
+                aircraft.Setup(r => r.LatitudeChanged).Returns(1);
+                aircraft.Setup(r => r.LongitudeChanged).Returns(1);
+                aircraft.Setup(r => r.PositionIsMlatChanged).Returns(1);
+
+                aircraft.Object.DataVersion = 2;
+                switch(i) {
+                    case 0:     aircraft.Object.Latitude = 7; aircraft.Setup(r => r.LatitudeChanged).Returns(2); break;
+                    case 1:     aircraft.Object.Longitude = 7; aircraft.Setup(r => r.LongitudeChanged).Returns(2); break;
+                    case 2:     aircraft.Object.PositionIsMlat = false; aircraft.Setup(r => r.PositionIsMlatChanged).Returns(2); break;
+                    default:    throw new NotImplementedException();
+                }
+
+                _Args.OnlyIncludeMessageFields = true;
+                _Args.PreviousDataVersion = 1;
+                _Args.PreviousAircraft.Add(7);
+                var json = _Builder.Build(_Args).Aircraft[0];
+
+                Assert.AreEqual(i == 0 ? 7 : 10, json.Latitude);
+                Assert.AreEqual(i == 1 ? 7 : 20, json.Longitude);
+                Assert.AreEqual(i == 2 ? false : true, json.PositionIsMlat);
+            }
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Sends_No_Coordinate_If_Nothing_Changes_And_OnlySendMessageFields_Is_Set()
+        {
+            for(var i = 0;i < 3;++i) {
+                TestCleanup();
+                TestInitialise();
+
+                AddBlankAircraft(1);
+                var aircraft = Mock.Get(_AircraftLists[0][0]);
+                aircraft.Object.UniqueId = 7;
+                aircraft.Object.DataVersion = 1;
+                aircraft.Object.FirstSeen = new DateTime(2000, 1, 1);
+                aircraft.Object.Latitude = 10;
+                aircraft.Object.Longitude = 20;
+                aircraft.Object.PositionIsMlat = true;
+                aircraft.Setup(r => r.LatitudeChanged).Returns(1);
+                aircraft.Setup(r => r.LongitudeChanged).Returns(1);
+                aircraft.Setup(r => r.PositionIsMlatChanged).Returns(1);
+
+                aircraft.Object.DataVersion = 2;
+
+                _Args.OnlyIncludeMessageFields = true;
+                _Args.PreviousDataVersion = 1;
+                _Args.PreviousAircraft.Add(7);
+                var json = _Builder.Build(_Args).Aircraft[0];
+
+                Assert.IsNull(json.Latitude);
+                Assert.IsNull(json.Longitude);
+                Assert.IsNull(json.PositionIsMlat);
+            }
+        }
+
+        [TestMethod]
         public void AircraftListJsonBuilder_Does_Not_Include_Unchanged_Aircraft_If_IgnoreUnchanged_Is_Set()
         {
             AddBlankAircraft(2);

@@ -333,7 +333,13 @@ namespace VirtualRadar.WebSite
                 if(firstTimeSeen || aircraftSnapshot.VerticalRateChanged > args.PreviousDataVersion)                    aircraftJson.VerticalRate = aircraftSnapshot.VerticalRate;
                 if(firstTimeSeen || aircraftSnapshot.VerticalRateTypeChanged > args.PreviousDataVersion)                aircraftJson.VerticalRateType = (int)aircraftSnapshot.VerticalRateType;
 
-                if(!args.OnlyIncludeMessageFields) {
+                if(args.OnlyIncludeMessageFields) {
+                    if(aircraftJson.Latitude != null || aircraftJson.Longitude != null || aircraftJson.PositionIsMlat != null) {
+                        if(aircraftJson.Latitude == null)       aircraftJson.Latitude       = Round.Coordinate(aircraftSnapshot.Latitude);
+                        if(aircraftJson.Longitude == null)      aircraftJson.Longitude      = Round.Coordinate(aircraftSnapshot.Longitude);
+                        if(aircraftJson.PositionIsMlat == null) aircraftJson.PositionIsMlat = aircraftSnapshot.PositionIsMlat;
+                    }
+                } else if(!args.OnlyIncludeMessageFields) {
                     if(firstTimeSeen || aircraftSnapshot.ConstructionNumberChanged > args.PreviousDataVersion)          aircraftJson.ConstructionNumber = aircraftSnapshot.ConstructionNumber;
                     if(firstTimeSeen || aircraftSnapshot.CountMessagesReceivedChanged > args.PreviousDataVersion)       aircraftJson.CountMessagesReceived = aircraftSnapshot.CountMessagesReceived;
                     if(firstTimeSeen || aircraftSnapshot.DestinationChanged > args.PreviousDataVersion)                 aircraftJson.Destination = aircraftSnapshot.Destination;
