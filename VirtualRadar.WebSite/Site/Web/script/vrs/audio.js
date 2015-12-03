@@ -29,6 +29,7 @@
     {
         //region -- Fields
         var that = this;
+        var _PausePhrase = ' ';
 
         /**
          * True if the browser supports audio, false if it does not. Undefined if it has not yet been tested.
@@ -548,7 +549,7 @@
                     case 'Z':   ch = VRS.$$.SayZulu; break;
                     case '-':   ch = VRS.$$.SayHyphen; break;
                 }
-                if(ch !== ' ') result += ch + '...';
+                if(ch !== ' ') result += ch + _PausePhrase;
             }
 
             return result;
@@ -591,7 +592,7 @@
                 var ch = text[c];
                 if(ch === '-') ch = 'hyphen';
                 if(ch === 'Z') ch = 'ZED';
-                if(ch !== ' ') result += ch + '...';
+                if(ch !== ' ') result += ch + _PausePhrase;
             }
 
             return result;
