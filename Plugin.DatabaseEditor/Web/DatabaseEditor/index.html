@@ -48,12 +48,17 @@
                 ::PluginName::
             </h1>
 
-            <div id="criteria-panel" class="panel panel-default" data-site-form-options='{ "labelWidth": "col-sm-3", "fieldWidth": "col-sm-9" }'>
+            <div id="criteria-panel" class="panel panel-default">
                 <div class="panel-body">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label for="icao">::ICAO::</label>
-                            <input  id="icao" data-bind="textInput: icao" type="text" class="form-control" placeholder="::ICAO::" />
+                            <label for="icao" class="col-sm-3">::ICAO::</label>
+                            <div class="col-sm-7">
+                                <input id="icao" data-bind="textInput: icao" type="text" class="form-control" placeholder="::ICAO::" />
+                            </div>
+                            <div class="col-sm-2">
+                                <button id="search" type="button" class="btn btn-success">::Search::</button>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="links col-sm-offset-3 col-sm-9">
@@ -62,10 +67,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-3">
-                            <button id="search" type="button" class="btn btn-success">::Search::</button>
-                        </div>
-                        <div class="col-sm-9">
+                        <div class="col-sm-offset-3 col-sm-9">
                             <div id="search-error" class="alert alert-danger text-center" role="alert"></div>
                         </div>
                     </div>
