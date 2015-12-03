@@ -789,14 +789,14 @@ namespace VirtualRadar.Database.BaseStation
             const string missingMarker = "Missing";
 
             if(aircraft != null) {
+                aircraft.LastModified = localNow;
                 if(String.IsNullOrEmpty(aircraft.Registration) &&
                    String.IsNullOrEmpty(aircraft.Manufacturer) &&
                    String.IsNullOrEmpty(aircraft.Type) &&
                    String.IsNullOrEmpty(aircraft.RegisteredOwners)) {
-                    aircraft.LastModified = localNow;
                     aircraft.UserString1 = missingMarker;
-                    Aircraft_Update(aircraft);
                 }
+                Aircraft_Update(aircraft);
             } else {
                 aircraft = new BaseStationAircraft() {
                     ModeS = icao,

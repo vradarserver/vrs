@@ -1451,14 +1451,14 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordMissingAircraft_Ignores_Existing_Records_With_Values()
+        public void BaseStationDatabase_RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values()
         {
             foreach(var property in new String[] { "Registration", "Manufacturer", "Model", "Operator" }) {
                 TestCleanup();
                 TestInitialise();
 
                 _Database.WriteSupportEnabled = true;
-                var aircraft = new BaseStationAircraft() { ModeS = "123456", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, };
+                var aircraft = new BaseStationAircraft() { ModeS = "123456", UserString1 = "something", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, };
                 switch(property) {
                     case "Registration":    aircraft.Registration = "A"; break;
                     case "Manufacturer":    aircraft.Manufacturer = "A"; break;
@@ -1474,7 +1474,8 @@ namespace Test.VirtualRadar.Database
 
                 aircraft = _Database.GetAircraftByCode("123456");
                 Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
-                Assert.AreEqual(TruncateDate(createdDate), aircraft.LastModified);
+                Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+                Assert.AreEqual("something", aircraft.UserString1);
             }
         }
         #endregion
@@ -1525,7 +1526,7 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void BaseStationDatabase_RecordManyMissingAircraft_Ignores_Existing_Records_With_Registrations()
+        public void BaseStationDatabase_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()
         {
             _Database.WriteSupportEnabled = true;
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue });
@@ -1537,7 +1538,7 @@ namespace Test.VirtualRadar.Database
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.AreEqual("A",                       aircraft.Registration);
             Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(createdDate), aircraft.LastModified);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
         }
         #endregion
 
