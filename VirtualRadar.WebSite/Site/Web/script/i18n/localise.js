@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @license Copyright © 2013 onwards, Andrew Whewell
  * All rights reserved.
  *
@@ -12,533 +12,401 @@
 /**
  * @fileoverview Declares everything about the locale handling in VRS.
  */
-
-(function(VRS, $, undefined)
-{
-    //region CultureInfo
-    VRS.CultureInfo = function(locale, settings)
+var VRS;
+(function (VRS) {
     /**
      * Describes some basic information about a culture.
-     * @param {string}       locale                         The name of the locale (e.g. en-GB).
-     * @param {object}       settings
-     * @param {string}      [settings.forceCultureName]     The culture name to use if locale is not appropriate.
-     * @param {string}       settings.language              The ISO-2 code for the language.
-     * @param {string}      [settings.flagImage]            The URL of the flag image for the culture.
-     * @param {string}      [settings.countryFlag]          The country flag name for the locale.
-     * @param {VRS_SIZE=}   [settings.flagSize]             The dimensions of the flag image.
-     * @param {string}       settings.englishName           The English name of the culture.
-     * @param {string}      [settings.nativeName]           The native language name of the culture.
-     * @param {boolean}     [settings.topLevel]             True if this is a top-level language description.
-     * @param {string}      [settings.groupLanguage]        The language to use when grouping localisations together.
-     * @constructor
      */
-    {
-        var that = this;
-
-        this.locale = locale;
-        this.cultureName = settings.forceCultureName || locale;
-        this.language = settings.language;
-        this.flagImage = settings.flagImage || ('images/regions/' + (settings.countryFlag ? settings.countryFlag : settings.language) + '.bmp');
-        this.flagSize = settings.flagSize || { width: 20, height: 16 };
-        this.englishName = settings.englishName;
-        this.nativeName = settings.nativeName || this.englishName;
-        this.topLevel = settings.topLevel !== undefined ? settings.topLevel : false;
-        this.groupLanguage = settings.groupLanguage || settings.language;
-
-        this.getFlagImageHtml = function()
-        {
+    var CultureInfo = (function () {
+        function CultureInfo(locale, settings) {
+            this.locale = locale;
+            this.cultureName = settings.forceCultureName || locale;
+            this.language = settings.language;
+            this.flagImage = settings.flagImage || ('images/regions/' + (settings.countryFlag ? settings.countryFlag : settings.language) + '.bmp');
+            this.flagSize = settings.flagSize || { width: 20, height: 16 };
+            this.englishName = settings.englishName;
+            this.nativeName = settings.nativeName || this.englishName;
+            this.topLevel = settings.topLevel !== undefined ? settings.topLevel : false;
+            this.groupLanguage = settings.groupLanguage || settings.language;
+        }
+        CultureInfo.prototype.getFlagImageHtml = function () {
             var result = '';
-            if(that.flagImage && that.flagSize) {
-                result = '<img src="' + that.flagImage + '" width="' + that.flagSize.width + 'px" height="' + that.flagSize.height + 'px" alt="' + that.nativeName + '" />';
+            if (this.flagImage && this.flagSize) {
+                result = '<img src="' + this.flagImage + '" width="' + this.flagSize.width + 'px" height="' + this.flagSize.height + 'px" alt="' + this.nativeName + '" />';
             }
-
             return result;
         };
-    };
-    //endregion
-
-    //region Localise
+        return CultureInfo;
+    })();
+    VRS.CultureInfo = CultureInfo;
     /**
      * The class that handles the selection and loading of locales for VRS.
-     * @constructor
      */
-    VRS.Localise = function()
-    {
-        //region -- Fields
-        var that = this;
-
-        /**
-         * The currently loaded language file substring (e.g. strings.en.js would be 'en').
-         * @type {string}
-         * @private
-         */
-        var _LoadedLanguage;
-        /**
-         * An associative array of region names (e.g. en-GB) and an object describing the settings associated with that region.
-         * @type {Object.<string, VRS.CultureInfo>}
-         * @private
-         */
-        var _CultureInfos = {};
-        /**
-         * An associative array of loaded Globalize files indexed by region name (e.g. en-GB).
-         * @type {Object.<string, bool>}
-         * @private
-         */
-        var _LoadedGlobalizations = {};
-        /**
-         * The event dispatcher.
-         * @type {VRS.EventHandler}
-         * @private
-         */
-        var _Dispatcher = new VRS.EventHandler({
-            name: 'VRS.Localise'
-        });
-        /**
-         * An associative array of event names.
-         * @type {Object.<string>}
-         * @private
-         */
-        var _Events = {
-            localeChanged: 'localeChanged'
-        };
-        //endregion
-
-        //region -- Properties
-        /**
-         * The currently selected locale.
-         * @type {string}
-         * @private
-         */
-        var _Locale = '';
+    var Localise = (function () {
+        function Localise() {
+            /**
+             * An associative array of region names (e.g. en-GB) and an object describing the settings associated with that region.
+             */
+            this._CultureInfos = {};
+            /**
+             * An associative array of loaded Globalize files indexed by region name (e.g. en-GB).
+             * @type {Object.<string, bool>}
+             * @private
+             */
+            this._LoadedGlobalizations = {};
+            /**
+             * The event dispatcher.
+             */
+            this._Dispatcher = new VRS.EventHandler({
+                name: 'VRS.Localise'
+            });
+            /**
+             * A collection of event names.
+             */
+            this._Events = {
+                localeChanged: 'localeChanged'
+            };
+            /**
+             * The currently selected locale.
+             */
+            this._Locale = '';
+        }
         /**
          * Gets the currently selected locale. Locales are full .NET region codes, e.g. 'en-GB' for British English.
-         * @returns {string}
          */
-        this.getLocale = function() { return _Locale; };
+        Localise.prototype.getLocale = function () {
+            return this._Locale;
+        };
         /**
          * Sets the locale by region code.
          * @param {string}      value               The code of the language to load.
          * @param {function}    successCallback     Function called if the language is loaded successfully, or is already loaded.
          */
-        this.setLocale = function(value, successCallback) {
-            if(value === _Locale) {
-                if(successCallback) successCallback();
-            } else {
-                _Locale = value;
-                var cultureInfo = _CultureInfos[_Locale];
-                if(cultureInfo) {
+        Localise.prototype.setLocale = function (value, successCallback) {
+            if (value === this._Locale) {
+                if (successCallback)
+                    successCallback();
+            }
+            else {
+                this._Locale = value;
+                var cultureInfo = this._CultureInfos[this._Locale];
+                if (cultureInfo) {
+                    var self = this;
                     // English is the base language, if other language files don't supply a string then the English version should be used instead.
-                    loadLanguage('en', function() {
-                        loadLanguage(cultureInfo.language, function() {
-                            loadCulture(cultureInfo.cultureName, function() {
+                    this.loadLanguage('en', function () {
+                        self.loadLanguage(cultureInfo.language, function () {
+                            self.loadCulture(cultureInfo.cultureName, function () {
                                 Globalize.culture(cultureInfo.cultureName);
-                                _Dispatcher.raise(_Events.localeChanged);
-
-                                if(successCallback) successCallback();
+                                self._Dispatcher.raise(self._Events.localeChanged);
+                                if (successCallback)
+                                    successCallback();
                             });
                         });
                     });
                 }
             }
         };
-        //endregion
-
-        //region -- Events exposed
         /**
          * Hooks the event raised after the locale has changed.
-         * @param callback
-         * @param [forceThis]
-         * @returns {{}}
          */
-        this.hookLocaleChanged = function(callback, forceThis) { return _Dispatcher.hook(_Events.localeChanged, callback, forceThis); };
-
+        Localise.prototype.hookLocaleChanged = function (callback, forceThis) {
+            return this._Dispatcher.hook(this._Events.localeChanged, callback, forceThis);
+        };
         /**
          * Unhooks any event hooked on this object.
-         * @param hookResult
-         * @returns {*}
          */
-        this.unhook = function(hookResult) { return _Dispatcher.unhook(hookResult); };
-        //endregion
-
-        //region -- saveState, loadState, applyState, loadAndApplyState
+        Localise.prototype.unhook = function (hookResult) {
+            this._Dispatcher.unhook(hookResult);
+        };
         /**
          * Saves the current state of the object.
          */
-        this.saveState = function()
-        {
-            var settings = createSettings();
+        Localise.prototype.saveState = function () {
+            var settings = this.createSettings();
             VRS.configStorage.saveWithoutPrefix('Localise', settings);
         };
-
         /**
          * Loads the saved state of the object.
-         * @returns {{}}
          */
-        this.loadState = function()
-        {
+        Localise.prototype.loadState = function () {
             var savedSettings = VRS.configStorage.loadWithoutPrefix('Localise', {});
-            var result = $.extend(createSettings(), savedSettings);
-            if(!result.locale || !_CultureInfos[result.locale]) result.locale = guessBrowserLocale();
-
+            var result = $.extend(this.createSettings(), savedSettings);
+            if (!result.locale || !this._CultureInfos[result.locale])
+                result.locale = this.guessBrowserLocale();
             return result;
         };
-
         /**
          * Applies a saved state to the object.
-         * @param {*}           config
-         * @param {function}    successCallback
          */
-        this.applyState = function(config, successCallback)
-        {
+        Localise.prototype.applyState = function (config, successCallback) {
             config = config || {};
             this.setLocale(config.locale || 'en', successCallback);
         };
-
         /**
          * Loads and then applies the saved state to the object.
-         * @param {function()}  successCallback
          */
-        this.loadAndApplyState = function(successCallback)
-        {
+        Localise.prototype.loadAndApplyState = function (successCallback) {
             this.applyState(this.loadState(), successCallback);
         };
-
         /**
          * Creates the saved state object.
-         * @returns {{locale: string}}
          */
-        function createSettings()
-        {
+        Localise.prototype.createSettings = function () {
             return {
-                locale: _Locale
+                locale: this._Locale
             };
-        }
-        //endregion
-
-        //region -- loadLanguage, loadCulture
+        };
         /**
          * Loads a language script (i.e. translations of text) from the server.
-         * @param {string}      language            The ISO-2 code(e.g. 'en') for the language to load.
-         * @param {function}    successCallback     The function to call after the language has been loaded
          */
-        function loadLanguage(language, successCallback)
-        {
-            if(language === _LoadedLanguage) {
-                if(successCallback) successCallback();
-            } else {
-                var url = 'script/i18n/strings.' + language.toLowerCase() + '.js';
-                VRS.scriptManager.loadScript({ url: url, success: function() {
-                    _LoadedLanguage = language;
-                    if(successCallback) successCallback();
-                }});
+        Localise.prototype.loadLanguage = function (language, successCallback) {
+            var self = this;
+            if (language === this._LoadedLanguage) {
+                if (successCallback)
+                    successCallback();
             }
-        }
-
+            else {
+                var url = 'script/i18n/strings.' + language.toLowerCase() + '.js';
+                VRS.scriptManager.loadScript({ url: url, success: function () {
+                        self._LoadedLanguage = language;
+                        if (successCallback)
+                            successCallback();
+                    } });
+            }
+        };
         /**
          * Loads a culture script (i.e. number and date formatting) from the server.
-         * @param {string}      cultureName     The name of the culture (e.g. 'en-GB') to load from the server.
-         * @param {function}    successCallback The function to call once the script has been loaded.
          */
-        function loadCulture(cultureName, successCallback)
-        {
-            if(_LoadedGlobalizations[cultureName]) {
-                if(successCallback) successCallback();
-            } else {
-                var url = 'script/i18n/globalize/globalize.culture.' + cultureName + '.js';
-                VRS.scriptManager.loadScript({ url: url, success: function() {
-                    _LoadedGlobalizations[cultureName] = true;
-                    if(successCallback) successCallback();
-                }});
+        Localise.prototype.loadCulture = function (cultureName, successCallback) {
+            var self = this;
+            if (this._LoadedGlobalizations[cultureName]) {
+                if (successCallback)
+                    successCallback();
             }
-        }
-        //endregion
-
-        //region -- guessBrowserLocale
+            else {
+                var url = 'script/i18n/globalize/globalize.culture.' + cultureName + '.js';
+                VRS.scriptManager.loadScript({ url: url, success: function () {
+                        self._LoadedGlobalizations[cultureName] = true;
+                        if (successCallback)
+                            successCallback();
+                    } });
+            }
+        };
         /**
          * Returns a best-guess at the current region code for the browser or en-GB if either no code could be reliably figured out or
          * if we don't have any information about the region.
-         * @returns {string}
          */
-        function guessBrowserLocale()
-        {
+        Localise.prototype.guessBrowserLocale = function () {
             var result = navigator.userLanguage || navigator.systemLanguage || navigator.browserLanguage || navigator.language;
-            if(!result) result = 'en-GB';
-            if(!_CultureInfos[result]) {
+            if (!result)
+                result = 'en-GB';
+            if (!this._CultureInfos[result]) {
                 // If we know the base language (e.g. the 'en' in 'en-??') then use it
                 var hyphenPos = result.indexOf('-');
                 var language = hyphenPos === -1 ? null : result.substr(0, hyphenPos);
-                if(language && _CultureInfos[language]) result = language;
-                else result = 'en-GB';
+                if (language && this._CultureInfos[language])
+                    result = language;
+                else
+                    result = 'en-GB';
             }
-
             return result;
-        }
-        //endregion
-
-        //region -- addCultureInfo, getCultureInfo, removeCultureInfo, getCultureInfos
+        };
         /**
          * Adds culture information to the object.
-         * @param {string} cultureName The region code to add (e.g. en-GB).
-         * @param {{}} info Information about the culture.
-         * @param {string} [info.forceCultureName]              The culture name to use if locale is not appropriate.
-         * @param {string} info.language                        The ISO-2 code for the language.
-         * @param {string} [info.flagImage]                     The URL of the flag image for the culture.
-         * @param {{width: Number, height: Number}} [info.flagSize] The dimensions of the flag image.
-         * @param {string} info.englishName                     The English name of the culture.
-         * @param {string} [info.nativeName]                    The native language name of the culture.
          */
-        this.addCultureInfo = function(cultureName, info)
-        {
-            if(!_CultureInfos[cultureName]) _CultureInfos[cultureName] = new VRS.CultureInfo(cultureName, info);
+        Localise.prototype.addCultureInfo = function (cultureName, settings) {
+            if (!this._CultureInfos[cultureName])
+                this._CultureInfos[cultureName] = new VRS.CultureInfo(cultureName, settings);
         };
-
         /**
          * Returns the currently selected culture's information or the information about any known culture.
-         * @param {string} [cultureName]    If supplied then the culture with the matching name (e.g. en-GB) is returned.
-         * @returns {VRS.CultureInfo}
          */
-        this.getCultureInfo = function(cultureName)
-        {
-            return _CultureInfos[cultureName || _Locale];
+        Localise.prototype.getCultureInfo = function (cultureName) {
+            return this._CultureInfos[cultureName || this._Locale];
         };
-
         /**
          * Removes the information about a culture.
-         * @param {string} cultureName The name (e.g. en-GB) of the culture to remove.
          */
-        this.removeCultureInfo = function(cultureName)
-        {
-            if(_CultureInfos[cultureName]) delete _CultureInfos[cultureName];
+        Localise.prototype.removeCultureInfo = function (cultureName) {
+            if (this._CultureInfos[cultureName])
+                delete this._CultureInfos[cultureName];
         };
-
         /**
          * Returns an array of every known culture.
-         * @returns {VRS.CultureInfo[]}
          */
-        this.getCultureInfos = function()
-        {
+        Localise.prototype.getCultureInfos = function () {
             var result = [];
-
-            for(var locale in _CultureInfos) {
-                var cultureInfo = _CultureInfos[locale];
-                if(cultureInfo instanceof VRS.CultureInfo) result.push(cultureInfo);
+            for (var locale in this._CultureInfos) {
+                var cultureInfo = this._CultureInfos[locale];
+                if (cultureInfo instanceof VRS.CultureInfo)
+                    result.push(cultureInfo);
             }
-
             return result;
         };
-
         /**
          * Returns an array of arrays of cultures, grouped by language.
-         * @param {boolean} [sortByNativeName]          True if the arrays should be sorted by native name before returning.
-         * @returns {Array.<Array.<VRS.CultureInfo>>}
          */
-        this.getCultureInfosGroupedByLanguage = function(sortByNativeName)
-        {
+        Localise.prototype.getCultureInfosGroupedByLanguage = function (sortByNativeName) {
             var result = [];
-
-            $.each(that.getCultureInfos(), function(/** Number */ idx, /** VRS.CultureInfo */ cultureInfo) {
+            $.each(this.getCultureInfos(), function (idx, cultureInfo) {
                 var language = cultureInfo.groupLanguage;
-                var innerArray = VRS.arrayHelper.findFirst(result, function(r) { return r[0].groupLanguage === language; }, null);
-                if(!innerArray) {
+                var innerArray = VRS.arrayHelper.findFirst(result, function (r) { return r[0].groupLanguage === language; }, null);
+                if (!innerArray) {
                     innerArray = [];
                     result.push(innerArray);
                 }
                 innerArray.push(cultureInfo);
             });
-
-            if(sortByNativeName) {
-                $.each(result, function(/** Number */idx, /** Array.<VRS.CultureInfo> */ cultureArray) {
-                    cultureArray.sort(function(/** VRS.CultureInfo */ lhs, /** VRS.CultureInfo */ rhs) {
+            if (sortByNativeName) {
+                $.each(result, function (idx, cultureArray) {
+                    cultureArray.sort(function (lhs, rhs) {
                         return lhs.nativeName.localeCompare(rhs.nativeName);
                     });
                 });
-                result.sort(function(/** Array.<VRS.CultureInfo> */ lhs, /** Array.<VRS.CultureInfo> */ rhs) {
+                result.sort(function (lhs, rhs) {
                     return lhs[0].nativeName.localeCompare(rhs[0].nativeName);
                 });
             }
-
             return result;
         };
-        //endregion
-
-        //region -- getRawGlobalizeData
+        ;
         /**
          * Returns the raw culture object for the current locale. Throws an exception if fails.
-         * @returns {*}
          */
-        function getRawGlobalizeData()
-        {
+        Localise.prototype.getRawGlobalizeData = function () {
             var result = Globalize.findClosestCulture();
-            if(!result) throw 'Could not find the current Globalize culture';
-
+            if (!result)
+                throw 'Could not find the current Globalize culture';
             return result;
-        }
-        //endregion
-
-        //region -- getText
-        /**
-         * Either returns the translated text associated with the text key passed across or, if the parameter is a function, calls that to obtain the translated text.
-         * @param {string|function():string} keyOrFormatFunction The index into VRS.$$ or the function to call to obtain the translated text.
-         * @returns {string} The translated text.
-         */
-        this.getText = function(keyOrFormatFunction)
-        {
-            if(keyOrFormatFunction instanceof Function) return keyOrFormatFunction();
+        };
+        Localise.prototype.getText = function (keyOrFormatFunction) {
+            if (keyOrFormatFunction instanceof Function)
+                return keyOrFormatFunction();
             return VRS.$$[keyOrFormatFunction];
         };
-        //endregion
-
-        //region -- localiseDatePicker, getDatePickerOptions
         /**
          * Configures the date picker with the current locale's date formatting styles.
-         * @param {jQuery} datePickerJQ     A jQuery element that has a date picker attached.
          */
-        this.localiseDatePicker = function(datePickerJQ)
-        {
-            var options = that.getDatePickerOptions();
+        Localise.prototype.localiseDatePicker = function (datePickerJQ) {
+            var options = this.getDatePickerOptions();
             datePickerJQ.datepicker('option', options);
         };
-
         /**
          * Returns an object containing jQueryUI datepicker options that match the current locale. The jQuery UI
          * datepicker does have its own localisation support but (a) it involves loading more JS modules for it, (b) it
          * duplicates some information in Globalization's culture files and (c) it is not guaranteed to be consistent
          * with the date formats in Globalization. I don't want to have a mixture of different localisation mechanisms
          * if I can help it.
-         * @returns {Object}
          */
-        this.getDatePickerOptions = function()
-        {
-            var culture = getRawGlobalizeData();
+        Localise.prototype.getDatePickerOptions = function () {
+            var culture = this.getRawGlobalizeData();
             var calendar = culture.calendars.standard;
             var months = VRS.$$.DateUseGenetiveMonths && calendar.monthsGenitive ? calendar.monthsGenitive : calendar.months;
-
             var shortYear = calendar.shortYearCutoff;
-            if(Object.prototype.toString.call(shortYear) !== '[object String]') shortYear %= 100;
-
+            if (Object.prototype.toString.call(shortYear) !== '[object String]')
+                shortYear %= 100;
             var monthYearPattern = calendar.patterns['Y'] || 'MMMM yyyy';
             var showMonthAfterYear = monthYearPattern[0] === 'y';
-
             return {
-                closeText:          VRS.$$.DateClose,
-                currentText:        VRS.$$.DateCurrent,
-                dateFormat:         dotNetDateFormatToJQueryDateFormat(calendar.patterns['d']),
-                dayNames:           calendar.days.names,
-                dayNamesMin:        calendar.days.namesShort,
-                dayNamesShort:      calendar.days.namesAbbr,
-                firstDay:           calendar.firstDay,
-                isRTL:              culture.isRTL,
-                shortYearCutoff:    shortYear,
+                closeText: VRS.$$.DateClose,
+                currentText: VRS.$$.DateCurrent,
+                dateFormat: this.dotNetDateFormatToJQueryDateFormat(calendar.patterns['d']),
+                dayNames: calendar.days.names,
+                dayNamesMin: calendar.days.namesShort,
+                dayNamesShort: calendar.days.namesAbbr,
+                firstDay: calendar.firstDay,
+                isRTL: culture.isRTL,
+                shortYearCutoff: shortYear,
                 showMonthAfterYear: showMonthAfterYear,
-                monthNames:         months.names,
-                monthNamesShort:    months.namesAbbr,
-                nextText:           VRS.$$.DateNext,
-                prevText:           VRS.$$.DatePrevious,
-                weekHeader:         VRS.$$.DateWeekAbbr,
-                yearSuffix:         VRS.$$.DateYearSuffix
+                monthNames: months.names,
+                monthNamesShort: months.namesAbbr,
+                nextText: VRS.$$.DateNext,
+                prevText: VRS.$$.DatePrevious,
+                weekHeader: VRS.$$.DateWeekAbbr,
+                yearSuffix: VRS.$$.DateYearSuffix
             };
         };
-
         /**
          * Takes a format in .NET format and returns the equivalent date format in JQuery UI's date picker format.
-         * @param {string} dateFormat
-         * @returns {string}
          */
-        function dotNetDateFormatToJQueryDateFormat(dateFormat)
-        {
+        Localise.prototype.dotNetDateFormatToJQueryDateFormat = function (dateFormat) {
             // We're a little hampered here by not having look behind in regex, hence the ugly switching to known text.
             // As these are date formats coming out of Globalize files it's very unlikely that these marker strings
             // will appear in the Globalization formats.
             var fullMonthMarker = 'FMONTH';
             var shortMonthMarker = 'SMONTH';
             var fullYearMarker = 'FYEAR';
-
             return dateFormat
-                .replace('dddd',            'DD')
-                .replace('ddd',             'D')
-                .replace('MMMM',            fullMonthMarker)
-                .replace('MMM',             shortMonthMarker)
-                .replace('MM',              'mm')
-                .replace('M',               'm')
-                .replace(fullMonthMarker,   'MM')
-                .replace(shortMonthMarker,  'M')
-                .replace('yyyy',            fullYearMarker)
-                .replace('yy',              'y')
-                .replace(fullYearMarker,    'yy');
-        }
-        //endregion
-
-        //region -- setLocaleInBackground
+                .replace('dddd', 'DD')
+                .replace('ddd', 'D')
+                .replace('MMMM', fullMonthMarker)
+                .replace('MMM', shortMonthMarker)
+                .replace('MM', 'mm')
+                .replace('M', 'm')
+                .replace(fullMonthMarker, 'MM')
+                .replace(shortMonthMarker, 'M')
+                .replace('yyyy', fullYearMarker)
+                .replace('yy', 'y')
+                .replace(fullYearMarker, 'yy');
+        };
         /**
          * Sets the locale in the background. The loading of globalization files from the server takes a while, if it's
          * performed on a UI action like a button click it can feel unresponsive. This method wraps that in a function
          * that is called from a timer on a short delay and optionally adds a modal wait animation so that the UI can
          * be made to feel more responsive.
-         * @param {string}          locale                  The locale to select.
-         * @param {boolean}        [showModalWait]          True if the modal wait animation is to play while the locale is loaded. Defaults to true.
-         * @param {function()}     [localeLoadedCallback]   An optional method that is called once the locale has been loaded and any modal wait animation removed.
          */
-        this.setLocaleInBackground = function(locale, showModalWait, localeLoadedCallback)
-        {
-            var self = this;
-            if(showModalWait === undefined) showModalWait = true;
-            if(showModalWait) VRS.pageHelper.showModalWaitAnimation(true);
-            self.setLocale(locale, function() {
-                if(showModalWait) VRS.pageHelper.showModalWaitAnimation(false);
-                if(localeLoadedCallback) localeLoadedCallback();
+        Localise.prototype.setLocaleInBackground = function (locale, showModalWait, localeLoadedCallback) {
+            if (showModalWait === void 0) { showModalWait = true; }
+            if (showModalWait)
+                VRS.pageHelper.showModalWaitAnimation(true);
+            this.setLocale(locale, function () {
+                if (showModalWait)
+                    VRS.pageHelper.showModalWaitAnimation(false);
+                if (localeLoadedCallback)
+                    localeLoadedCallback();
             });
         };
-        //endregion
-    };
-    //endregion
-
-    //region Pre-builts
+        return Localise;
+    })();
+    VRS.Localise = Localise;
     /**
      * The singleton instance of VRS.Localise.
-     * @type {VRS.Localise}
      */
     VRS.globalisation = new VRS.Localise();
-
     // English
-    VRS.globalisation.addCultureInfo('en',      { language: 'en',                    englishName: 'English', forceCultureName: 'en-GB', topLevel: true });  // Globalize uses American settings for the default 'en' language. This is a British program :P
-    VRS.globalisation.addCultureInfo('en-029',  { language: 'en',                    englishName: 'English (Caribbean)' });
-    VRS.globalisation.addCultureInfo('en-AU',   { language: 'en', countryFlag: 'au', englishName: 'English (Australia)' });
-    VRS.globalisation.addCultureInfo('en-BZ',   { language: 'en', countryFlag: 'bz', englishName: 'English (Belize)' });
-    VRS.globalisation.addCultureInfo('en-CA',   { language: 'en', countryFlag: 'ca', englishName: 'English (Canada)' });
-    VRS.globalisation.addCultureInfo('en-GB',   { language: 'en',                    englishName: 'English (United Kingdom)' });
-    VRS.globalisation.addCultureInfo('en-IE',   { language: 'en', countryFlag: 'ie', englishName: 'English (Ireland)' });
-    VRS.globalisation.addCultureInfo('en-IN',   { language: 'en', countryFlag: 'in', englishName: 'English (India)' });
-    VRS.globalisation.addCultureInfo('en-JM',   { language: 'en', countryFlag: 'jm', englishName: 'English (Jamaica)' });
-    VRS.globalisation.addCultureInfo('en-MY',   { language: 'en', countryFlag: 'my', englishName: 'English (Malaysia)' });
-    VRS.globalisation.addCultureInfo('en-NZ',   { language: 'en', countryFlag: 'nz', englishName: 'English (New Zealand)' });
-    VRS.globalisation.addCultureInfo('en-SG',   { language: 'en', countryFlag: 'sg', englishName: 'English (Singapore)' });
-    VRS.globalisation.addCultureInfo('en-TT',   { language: 'en', countryFlag: 'tt', englishName: 'English (Trinidad and Tobago)', nativeName: 'English (Trinidad y Tobago)' });
-    VRS.globalisation.addCultureInfo('en-US',   { language: 'en', countryFlag: 'us', englishName: 'English (United States)' });
-    VRS.globalisation.addCultureInfo('en-ZA',   { language: 'en', countryFlag: 'za', englishName: 'English (South Africa)' });
-
+    VRS.globalisation.addCultureInfo('en', { language: 'en', englishName: 'English', forceCultureName: 'en-GB', topLevel: true }); // Globalize uses American settings for the default 'en' language. This is a British program :P
+    VRS.globalisation.addCultureInfo('en-029', { language: 'en', englishName: 'English (Caribbean)' });
+    VRS.globalisation.addCultureInfo('en-AU', { language: 'en', countryFlag: 'au', englishName: 'English (Australia)' });
+    VRS.globalisation.addCultureInfo('en-BZ', { language: 'en', countryFlag: 'bz', englishName: 'English (Belize)' });
+    VRS.globalisation.addCultureInfo('en-CA', { language: 'en', countryFlag: 'ca', englishName: 'English (Canada)' });
+    VRS.globalisation.addCultureInfo('en-GB', { language: 'en', englishName: 'English (United Kingdom)' });
+    VRS.globalisation.addCultureInfo('en-IE', { language: 'en', countryFlag: 'ie', englishName: 'English (Ireland)' });
+    VRS.globalisation.addCultureInfo('en-IN', { language: 'en', countryFlag: 'in', englishName: 'English (India)' });
+    VRS.globalisation.addCultureInfo('en-JM', { language: 'en', countryFlag: 'jm', englishName: 'English (Jamaica)' });
+    VRS.globalisation.addCultureInfo('en-MY', { language: 'en', countryFlag: 'my', englishName: 'English (Malaysia)' });
+    VRS.globalisation.addCultureInfo('en-NZ', { language: 'en', countryFlag: 'nz', englishName: 'English (New Zealand)' });
+    VRS.globalisation.addCultureInfo('en-SG', { language: 'en', countryFlag: 'sg', englishName: 'English (Singapore)' });
+    VRS.globalisation.addCultureInfo('en-TT', { language: 'en', countryFlag: 'tt', englishName: 'English (Trinidad and Tobago)', nativeName: 'English (Trinidad y Tobago)' });
+    VRS.globalisation.addCultureInfo('en-US', { language: 'en', countryFlag: 'us', englishName: 'English (United States)' });
+    VRS.globalisation.addCultureInfo('en-ZA', { language: 'en', countryFlag: 'za', englishName: 'English (South Africa)' });
     // German
-    VRS.globalisation.addCultureInfo('de',    { language: 'de',                    englishName: 'German',           nativeName: 'Deutsch', topLevel: true });
+    VRS.globalisation.addCultureInfo('de', { language: 'de', englishName: 'German', nativeName: 'Deutsch', topLevel: true });
     VRS.globalisation.addCultureInfo('de-DE', { language: 'de', countryFlag: 'de', englishName: 'German (Germany)', nativeName: 'Deutsch (Deutschland)' });
-
     // French
-    VRS.globalisation.addCultureInfo('fr',    { language: 'fr',                    englishName: 'French',                  nativeName: 'Français', topLevel: true });
-    VRS.globalisation.addCultureInfo('fr-BE', { language: 'fr', countryFlag: 'be', englishName: 'French (Belgium)',        nativeName: 'Français (Belgique)' });
-    VRS.globalisation.addCultureInfo('fr-CA', { language: 'fr', countryFlag: 'ca', englishName: 'French (Canada)',         nativeName: 'Français (Canada)' });
-    VRS.globalisation.addCultureInfo('fr-CH', { language: 'fr', countryFlag: 'ch', englishName: 'French (Switzerland)',    nativeName: 'Français (Suisse)' });
-    VRS.globalisation.addCultureInfo('fr-FR', { language: 'fr',                    englishName: 'French (France)',         nativeName: 'Français (France)' });
-    VRS.globalisation.addCultureInfo('fr-LU', { language: 'fr', countryFlag: 'lu', englishName: 'French (Luxembourg)',     nativeName: 'Français (Luxembourg)' });
-    VRS.globalisation.addCultureInfo('fr-MC', { language: 'fr', countryFlag: 'mc', englishName: 'French (Monaco)',         nativeName: 'Français (Principauté de Monaco)' });
-
+    VRS.globalisation.addCultureInfo('fr', { language: 'fr', englishName: 'French', nativeName: 'Français', topLevel: true });
+    VRS.globalisation.addCultureInfo('fr-BE', { language: 'fr', countryFlag: 'be', englishName: 'French (Belgium)', nativeName: 'Français (Belgique)' });
+    VRS.globalisation.addCultureInfo('fr-CA', { language: 'fr', countryFlag: 'ca', englishName: 'French (Canada)', nativeName: 'Français (Canada)' });
+    VRS.globalisation.addCultureInfo('fr-CH', { language: 'fr', countryFlag: 'ch', englishName: 'French (Switzerland)', nativeName: 'Français (Suisse)' });
+    VRS.globalisation.addCultureInfo('fr-FR', { language: 'fr', englishName: 'French (France)', nativeName: 'Français (France)' });
+    VRS.globalisation.addCultureInfo('fr-LU', { language: 'fr', countryFlag: 'lu', englishName: 'French (Luxembourg)', nativeName: 'Français (Luxembourg)' });
+    VRS.globalisation.addCultureInfo('fr-MC', { language: 'fr', countryFlag: 'mc', englishName: 'French (Monaco)', nativeName: 'Français (Principauté de Monaco)' });
     // Russian
-    VRS.globalisation.addCultureInfo('ru',    { language: 'ru', englishName: 'Russian',                 nativeName: 'Русский', topLevel: true });
-    VRS.globalisation.addCultureInfo('ru-RU', { language: 'ru', englishName: 'Russian (Russia)',        nativeName: 'Русский (Россия)' });
-
+    VRS.globalisation.addCultureInfo('ru', { language: 'ru', englishName: 'Russian', nativeName: 'Русский', topLevel: true });
+    VRS.globalisation.addCultureInfo('ru-RU', { language: 'ru', englishName: 'Russian (Russia)', nativeName: 'Русский (Россия)' });
     // Chinese
-    VRS.globalisation.addCultureInfo('zh',    { language: 'zh', englishName: 'Chinese',                 nativeName: '中文', topLevel: true });
-    VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)',         nativeName: '中文 (中国)' });
-
+    VRS.globalisation.addCultureInfo('zh', { language: 'zh', englishName: 'Chinese', nativeName: '中文', topLevel: true });
+    VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)', nativeName: '中文 (中国)' });
     // Portuguese
-    VRS.globalisation.addCultureInfo('pt-BR',   { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)',  countryFlag: 'br', topLevel: true });
-
-    //endregion
-}(window.VRS = window.VRS || {}, jQuery));
+    VRS.globalisation.addCultureInfo('pt-BR', { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)', countryFlag: 'br', topLevel: true });
+})(VRS || (VRS = {}));
+//# sourceMappingURL=localise.js.map
