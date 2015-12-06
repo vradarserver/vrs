@@ -139,19 +139,19 @@
     <value>Адрес</value>
   </data>
   <data name="DirectoryAlreadyInUse" xml:space="preserve">
-    <value>{0} - уже корневая директория сайта</value>
+    <value>{0} - корневая директория сайта</value>
   </data>
   <data name="Disabled" xml:space="preserve">
-    <value>Выключено</value>
+    <value>Отключен</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>Включено</value>
+    <value>Включить</value>
   </data>
   <data name="EnabledNoSiteRoot" xml:space="preserve">
-    <value>Включено, не указана корневая директория сайта</value>
+    <value>Включен, не указана корневая директория сайта</value>
   </data>
   <data name="EnabledWithSiteRoot" xml:space="preserve">
-    <value>Включено, пользовательский контент из {0}</value>
+    <value>Включен, пользовательский контент из {0}</value>
   </data>
   <data name="ErrorCheckingFolder" xml:space="preserve">
     <value>Возникла ошибка во время проверки директории {0}</value>
