@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @license Copyright © 2013 onwards, Andrew Whewell
  * All rights reserved.
  *
@@ -12,117 +12,135 @@
 /**
  * @fileoverview Code to load script at run-time.
  */
-var VRS;
-(function (VRS) {
-    VRS.globalOptions = VRS.globalOptions || {};
-    VRS.globalOptions.scriptManagerTimeout = VRS.globalOptions.scriptManagerTimeout || 30000; // The timeout in milliseconds on script loads.
+
+namespace VRS
+{
+    export var globalOptions = VRS.globalOptions || {};
+    VRS.globalOptions.scriptManagerTimeout = VRS.globalOptions.scriptManagerTimeout || 30000;           // The timeout in milliseconds on script loads.
+
     /**
      * Holds unique identifiers for all of the scripts known to the VRS.ScriptManager class.
      */
-    VRS.scriptKey = {
+    export var scriptKey = {
         GoogleMaps: 'googleMap'
     };
+
+    /**
+     * The definition of the options object that can be passed to ScriptManager.loadScript
+     */
+    export interface LoadScript_Options
+    {
+        key?:       string;
+        url?:       string;
+        params?:    any;
+        queue?:     boolean;
+        success?:   () => void;
+        error?:     (xhr?: JQueryXHR, status?: string, error?: string) => void;
+        timeout?:   number;
+    }
+
     /**
      * The class that manages the loading of remote scripts at run-time.
      */
-    var ScriptManager = (function () {
-        function ScriptManager() {
-            /**
-             * An associative array of loaded scripts indexed by a unique key, with the value being true if the script is loading / has loaded or false if it has not.
-             */
-            this._LoadedScripts = {};
-            /**
-             * The queue of scripts to load in sequence.
-             * @type {VRS_LOADSCRIPT_OPTIONS[]}
-             * @private
-             */
-            this._Queue = [];
-        }
+    export class ScriptManager
+    {
+        /**
+         * An associative array of loaded scripts indexed by a unique key, with the value being true if the script is loading / has loaded or false if it has not.
+         */
+        private _LoadedScripts: { [scriptKey: string]: boolean } = {};
+
+        /**
+         * The queue of scripts to load in sequence.
+         * @type {VRS_LOADSCRIPT_OPTIONS[]}
+         * @private
+         */
+        private _Queue: LoadScript_Options[] = [];
+
         /**
          * Loads a script if it has not already been loaded.
          */
-        ScriptManager.prototype.loadScript = function (options) {
-            options = $.extend({
-                key: null,
-                params: {},
-                queue: false,
-                success: $.noop,
-                error: null,
-                timeout: VRS.globalOptions.scriptManagerTimeout
+        loadScript(options: LoadScript_Options)
+        {
+            options = $.extend(<LoadScript_Options>{
+                key:        null,
+                params:     {},
+                queue:      false,
+                success:    $.noop,
+                error:      null,
+                timeout:    VRS.globalOptions.scriptManagerTimeout
             }, options);
-            if (!options.queue) {
+
+            if(!options.queue) {
                 this.doLoadScript(options);
-            }
-            else {
+            } else {
                 this._Queue.push(options);
-                if (this._Queue.length === 1)
-                    this.doProcessQueue();
+                if(this._Queue.length === 1) this.doProcessQueue();
             }
-        };
+        }
+
         /**
          * Processes outstanding queue entries.
          */
-        ScriptManager.prototype.doProcessQueue = function () {
+        private doProcessQueue()
+        {
             var self = this;
-            if (this._Queue.length) {
+            if(this._Queue.length) {
                 var queueEntry = this._Queue[0];
-                this.doLoadScript(queueEntry, function () {
+                this.doLoadScript(queueEntry, function() {
                     self._Queue.splice(0, 1);
                     self.doProcessQueue();
                 });
             }
-        };
+        }
+
         /**
          * Loads a script.
          */
-        ScriptManager.prototype.doLoadScript = function (options, onCompletion) {
+        private doLoadScript(options: LoadScript_Options, onCompletion?: () => void)
+        {
             var self = this;
-            var callSuccess = function () {
+            var callSuccess = function() {
                 options.success();
-                if (onCompletion)
-                    onCompletion();
+                if(onCompletion) onCompletion();
             };
-            if (options.key && this._LoadedScripts[options.key]) {
+
+            if(options.key && this._LoadedScripts[options.key]) {
                 callSuccess();
-            }
-            else {
-                if (options.key !== VRS.scriptKey.GoogleMaps) {
+            } else {
+                if(options.key !== VRS.scriptKey.GoogleMaps) {
                     $.ajax({
                         url: options.url,
                         data: options.params,
-                        success: function () {
-                            if (options.key)
-                                self._LoadedScripts[options.key] = true;
+                        success: function() {
+                            if(options.key) self._LoadedScripts[options.key] = true;
                             callSuccess();
                         },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            if (!options.error)
-                                throw 'Could not load the script "' + (options.key || '') + '" from "' + options.url + '". Status: ' + (textStatus || '') + '. Error: ' + (errorThrown || '');
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            if(!options.error) throw 'Could not load the script "' + (options.key || '') + '" from "' + options.url + '". Status: ' + (textStatus || '') + '. Error: ' + (errorThrown || '');
                             options.error(jqXHR, textStatus, errorThrown);
-                            if (onCompletion)
-                                onCompletion();
+                            if(onCompletion) onCompletion();
                         },
                         dataType: 'script',
                         timeout: VRS.globalOptions.scriptManagerTimeout
                     });
-                }
-                else {
+                } else {
                     var callbackName = 'googleMapCallback_' + $.now();
                     options.params = $.extend({}, options.params, { callback: callbackName });
-                    var timeoutId = setTimeout(function () {
+
+                    var timeoutId = setTimeout(function() {
                         timeoutId = 0;
                         VRS.pageHelper.showMessageBox('Google Maps', 'Could not load Google Maps within ' + options.timeout + 'ms');
-                        if (options.error) {
+                        if(options.error) {
                             options.error(null, 'Timed out', 'Timed out');
-                            if (onCompletion)
-                                onCompletion();
+                            if(onCompletion) onCompletion();
                         }
                     }, options.timeout);
-                    window[callbackName] = function () {
-                        if (timeoutId)
-                            clearTimeout(timeoutId);
+
+                    window[callbackName] = function() {
+                        if(timeoutId) clearTimeout(timeoutId);
                         callSuccess();
                     };
+
                     var fullUrl = options.url + '?' + $.param(options.params);
                     var script = $('<script/>')
                         .attr('type', 'text/javascript')
@@ -130,13 +148,11 @@ var VRS;
                     $(document).find('head').last().append(script);
                 }
             }
-        };
-        return ScriptManager;
-    })();
-    VRS.ScriptManager = ScriptManager;
+        }
+    }
+
     /**
      * Pre-builts
      */
-    VRS.scriptManager = new VRS.ScriptManager();
-})(VRS || (VRS = {}));
-//# sourceMappingURL=scriptManager.js.map
+    export var scriptManager = new VRS.ScriptManager();
+} 

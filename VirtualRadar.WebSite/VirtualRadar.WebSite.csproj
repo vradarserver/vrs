@@ -420,7 +420,12 @@
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.en-ZA.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.ru-RU.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.ru.js" />
-    <Content Include="Site\Web\script\i18n\localise.js" />
+    <Content Include="Site\Web\script\i18n\localise.js">
+        <DependentUpon>localise.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\i18n\localise.js.map">
+        <DependentUpon>localise.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\i18n\strings.en.js" />
     <Content Include="Site\Web\script\i18n\strings.ru.js" />
     <Content Include="Site\Web\script\jquery-ui.js" />
@@ -456,18 +461,48 @@
     <Content Include="Site\Web\script\vrs\aircraftPlotter.js" />
     <Content Include="Site\Web\script\vrs\aircraftRenderer.js" />
     <Content Include="Site\Web\script\vrs\bootstrapMapDesktop.js" />
-    <Content Include="Site\Web\script\vrs\configStorage.js" />
+    <Content Include="Site\Web\script\vrs\configStorage.js">
+        <DependentUpon>configStorage.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\configStorage.js.map">
+        <DependentUpon>configStorage.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\currentLocation.js" />
-    <Content Include="Site\Web\script\vrs\enums.js" />
-    <Content Include="Site\Web\script\vrs\event.js" />
+    <Content Include="Site\Web\script\vrs\enums.js">
+        <DependentUpon>enums.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\enums.js.map">
+        <DependentUpon>enums.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\event.js">
+      <DependentUpon>event.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\event.js.map">
+      <DependentUpon>event.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\layoutManager.js" />
     <Content Include="Site\Web\script\vrs\menuUI.js" />
     <Content Include="Site\Web\script\vrs\optionsUI.js" />
-    <Content Include="Site\Web\script\vrs\scriptManager.js" />
-    <Content Include="Site\Web\script\vrs\string.js" />
+    <Content Include="Site\Web\script\vrs\scriptManager.js">
+        <DependentUpon>scriptManager.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\scriptManager.js.map">
+        <DependentUpon>scriptManager.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\string.js">
+      <DependentUpon>string.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\string.js.map">
+      <DependentUpon>string.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\titleUpdater.js" />
     <Content Include="Site\Web\script\vrs\unitDisplayPreferences.js" />
-    <Content Include="Site\Web\script\vrs\utility.js" />
+    <Content Include="Site\Web\script\vrs\utility.js">
+      <DependentUpon>utility.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\utility.js.map">
+      <DependentUpon>utility.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\settings.html" />
     <Content Include="Site\XHR.js" />
     <EmbeddedResource Include="WebSiteStrings.de-DE.resx">
@@ -486,6 +521,7 @@
     <EmbeddedResource Include="WebSiteStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="WebSiteStrings.ru-RU.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -509,10 +545,44 @@
     <None Include="Site\Web\fonts\icomoon.eot" />
     <None Include="Site\Web\fonts\icomoon.ttf" />
     <None Include="Site\Web\fonts\icomoon.woff" />
+    <None Include="Site\_external\translations.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations.d.ts</LastGenOutput>
+    </None>
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuild.sh" />
   </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\configStorage.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\enums.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\event.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\scriptManager.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\string.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\utility.ts" />
+    <TypeScriptCompile Include="Site\_external\globalise.d.ts" />
+    <TypeScriptCompile Include="Site\_external\google.maps.d.ts" />
+    <TypeScriptCompile Include="Site\_external\jquery-json.d.ts" />
+    <TypeScriptCompile Include="Site\_external\jquery.d.ts" />
+    <TypeScriptCompile Include="Site\_external\jquery.ui.datetimepicker.d.ts" />
+    <TypeScriptCompile Include="Site\_external\jqueryui.d.ts" />
+    <TypeScriptCompile Include="Site\_external\jstorage.d.ts" />
+    <TypeScriptCompile Include="Site\_external\purl-jquery.d.ts" />
+    <TypeScriptCompile Include="Site\_external\purl.d.ts" />
+    <TypeScriptCompile Include="Site\_external\translations.d.ts">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>translations.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Site\_external\typedefs.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>
     <PostBuildEvent Condition="'$(OS)' != 'Unix'">"$(ProjectDir)_PostBuild.bat" "$(ProjectDir)Site\Web" "$(SolutionDir)VirtualRadar\$(OutDir)Web"</PostBuildEvent>
