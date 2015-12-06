@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -119,2146 +119,2138 @@
   </resheader>
   <data name="Add" xml:space="preserve">
     <value>Добавить</value>
-    <comment></comment>
+    
   </data>
   <data name="AddCondition" xml:space="preserve">
     <value>Добавить условие</value>
-    <comment></comment>
+    
   </data>
   <data name="AddCriteria" xml:space="preserve">
     <value>Добавить критерий</value>
-    <comment></comment>
+    
   </data>
   <data name="AddFilter" xml:space="preserve">
     <value>Добавить фильтр</value>
-    <comment></comment>
+    
   </data>
   <data name="ADSB" xml:space="preserve">
     <value>ADS-B</value>
-    <comment></comment>
+    
   </data>
   <data name="ADSB0" xml:space="preserve">
     <value>ADS-B v0</value>
-    <comment></comment>
+    
   </data>
   <data name="ADSB1" xml:space="preserve">
     <value>ADS-B v1</value>
-    <comment></comment>
+    
   </data>
   <data name="ADSB2" xml:space="preserve">
     <value>ADS-B v2</value>
-    <comment></comment>
+    
   </data>
   <data name="AircraftNotTransmittingCallsign" xml:space="preserve">
     <value>Самолет не передает свой позывной</value>
-    <comment></comment>
+    
   </data>
   <data name="AircraftClass" xml:space="preserve">
     <value>Класс самолета</value>
-    <comment></comment>
+    
   </data>
   <data name="Airport" xml:space="preserve">
     <value>Аэропорт</value>
-    <comment></comment>
+    
   </data>
   <data name="AirportDataThumbnails" xml:space="preserve">
     <value>Миниатюры (airport-data.com)</value>
-    <comment></comment>
+    
   </data>
   <data name="AllAltitudes" xml:space="preserve">
     <value>Для всех высот</value>
-    <comment></comment>
+    
   </data>
   <data name="AllRows" xml:space="preserve">
     <value>Все строки</value>
-    <comment></comment>
+    
   </data>
   <data name="Altitude" xml:space="preserve">
     <value>Высота</value>
-    <comment></comment>
+    
   </data>
   <data name="AltitudeAndSpeedGraph" xml:space="preserve">
     <value>График Высота/Скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="AltitudeAndVerticalSpeed" xml:space="preserve">
     <value>Высота и верт.скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="AltitudeGraph" xml:space="preserve">
     <value>График высоты</value>
-    <comment></comment>
+    
   </data>
   <data name="AltitudeType" xml:space="preserve">
     <value>Вид высоты</value>
-    <comment></comment>
+    
   </data>
   <data name="AllAircraft" xml:space="preserve">
     <value>Все</value>
-    <comment></comment>
+    
   </data>
   <data name="Amphibian" xml:space="preserve">
     <value>Амфибия</value>
-    <comment></comment>
+    
   </data>
   <data name="AnnounceSelected" xml:space="preserve">
     <value>Сообщить детали для выбранного самолета (англ.)</value>
-    <comment></comment>
+    
   </data>
   <data name="Ascending" xml:space="preserve">
     <value>по возрастанию</value>
-    <comment></comment>
+    
   </data>
   <data name="AutoSelectAircraft" xml:space="preserve">
     <value>Включить автоматический выбор</value>
-    <comment></comment>
+    
   </data>
   <data name="AverageSignalLevel" xml:space="preserve">
     <value>Средний уровень сигнала</value>
-    <comment></comment>
+    
   </data>
   <data name="Barometric" xml:space="preserve">
     <value>Барометрическая</value>
-    <comment></comment>
+    
   </data>
   <data name="Bearing" xml:space="preserve">
     <value>Азимут</value>
-    <comment></comment>
+    
   </data>
   <data name="Between" xml:space="preserve">
     <value>в диапазоне от</value>
-    <comment></comment>
+    
   </data>
   <data name="Callsign" xml:space="preserve">
     <value>Позывной</value>
-    <comment></comment>
+    
   </data>
   <data name="CallsignAndShortRoute" xml:space="preserve">
     <value>Позывной/Маршрут</value>
-    <comment></comment>
+    
   </data>
   <data name="CallsignMayNotBeCorrect" xml:space="preserve">
     <value>Позывной может быть ошибочным</value>
-    <comment></comment>
+    
   </data>
   <data name="CentreOnSelectedAircraft" xml:space="preserve">
     <value>Показать на карте</value>
-    <comment></comment>
+    
   </data>
   <data name="Civil" xml:space="preserve">
     <value>Гражданский</value>
-    <comment></comment>
+    
   </data>
   <data name="CivilOrMilitary" xml:space="preserve">
     <value>Гражданский/Военный</value>
-    <comment></comment>
+    
   </data>
   <data name="ClosestToCurrentLocation" xml:space="preserve">
     <value>Ближайший</value>
-    <comment></comment>
+    
   </data>
   <data name="CofACategory" xml:space="preserve">
     <value>Категория сертификата летной годности</value>
-    <comment></comment>
+    <comment>certificate of airworthiness category</comment>
   </data>
   <data name="CofAExpiry" xml:space="preserve">
     <value>Окончание срока действия сертификата летной годности</value>
-    <comment></comment>
+    <comment>certificate of airworthiness expiry</comment>
   </data>
   <data name="Columns" xml:space="preserve">
     <value>Столбцы</value>
-    <comment></comment>
+    
   </data>
   <data name="Contains" xml:space="preserve">
     <value>содержит</value>
-    <comment></comment>
+    
   </data>
   <data name="CountAdsb" xml:space="preserve">
     <value>Счетчик сообщений ADS-B</value>
-    <comment></comment>
+    
   </data>
   <data name="Country" xml:space="preserve">
     <value>Страна регистрации</value>
-    <comment></comment>
+    
   </data>
   <data name="CountModeS" xml:space="preserve">
-    <value>Счетчик сообщений Mode-S</value>
-    <comment></comment>
+    <value>Счетчик сообщений Mode S</value>
+    
   </data>
   <data name="CountPositions" xml:space="preserve">
     <value>Количество сообщений о местоположении</value>
-    <comment></comment>
+    
   </data>
   <data name="Criteria" xml:space="preserve">
     <value>Критерии</value>
-    <comment></comment>
+    
   </data>
   <data name="CurrentLocationInstruction" xml:space="preserve">
-    <value>Отметьте &quot;Установить текущую позицию на карте&quot; и перетащите маркер</value>
-    <comment></comment>
+    <value>Отметьте "Установить текущую позицию на карте" и перетащите маркер</value>
+    
   </data>
   <data name="CurrentRegDate" xml:space="preserve">
     <value>Дата действующей регистрации</value>
-    <comment></comment>
+    
   </data>
   <data name="Date" xml:space="preserve">
     <value>Дата</value>
-    <comment></comment>
+    
   </data>
   <data name="DateTimeShort" xml:space="preserve">
     <value>{0} {1}</value>
-    <comment></comment>
+    <comment>Where "{0}" is a date, e.g. 10/10/2013; and "{1}" is a time, e.g. 17:41:32.</comment>
   </data>
   <data name="DefaultSetting" xml:space="preserve">
-    <value>&lt; По умолчанию ></value>
-    <comment></comment>
+    <value>&lt; По умолчанию &gt;</value>
+    
   </data>
   <data name="DegreesAbbreviation" xml:space="preserve">
     <value>{0}°</value>
-    <comment></comment>
+    
   </data>
   <data name="DeRegDate" xml:space="preserve">
     <value>Дата исключения из реестра</value>
-    <comment></comment>
+    
   </data>
   <data name="DesktopPage" xml:space="preserve">
     <value>Для настольного компьютера</value>
-    <comment></comment>
+    
   </data>
   <data name="DesktopReportPage" xml:space="preserve">
     <value>Отчет для настольного компьютера</value>
-    <comment></comment>
+    
   </data>
   <data name="DetailItems" xml:space="preserve">
     <value>Подробные данные о самолете</value>
-    <comment></comment>
+    
   </data>
   <data name="DetailPanel" xml:space="preserve">
     <value>Формуляр</value>
-    <comment></comment>
+    
   </data>
   <data name="DisableAutoSelect" xml:space="preserve">
     <value>Отключить автоматический выбор</value>
-    <comment></comment>
+    
   </data>
   <data name="Distance" xml:space="preserve">
     <value>Расстояние</value>
-    <comment></comment>
+    
   </data>
   <data name="Distances" xml:space="preserve">
     <value>Расстояние</value>
-    <comment></comment>
+    
   </data>
   <data name="DoNotImportAutoSelect" xml:space="preserve">
     <value>Не импортировать настройки автоматического выбора</value>
-    <comment></comment>
+    
   </data>
   <data name="DoNotImportCurrentLocation" xml:space="preserve">
     <value>Не импортировать текущее местоположение</value>
-    <comment></comment>
+    
   </data>
   <data name="DoNotImportRequestFeedId" xml:space="preserve">
     <value>Не импортировать запрос ID канала</value>
-    <comment></comment>
+    
   </data>
   <data name="DoNotImportLanguageSettings" xml:space="preserve">
     <value>Не импортировать настройки языка</value>
-    <comment></comment>
+    
   </data>
   <data name="DoNotImportSplitters" xml:space="preserve">
     <value>Не импортировать сплиттеры</value>
-    <comment></comment>
+    
   </data>
   <data name="DoNotShow" xml:space="preserve">
     <value>Не показывать</value>
-    <comment></comment>
+    
   </data>
   <data name="Duration" xml:space="preserve">
     <value>Длительность</value>
-    <comment></comment>
+    
   </data>
   <data name="Electric" xml:space="preserve">
     <value>Электрический</value>
-    <comment></comment>
+    
   </data>
   <data name="EnableAutoSelect" xml:space="preserve">
     <value>Включить автоматический выбор</value>
-    <comment></comment>
+    
   </data>
   <data name="EnableFilters" xml:space="preserve">
     <value>Включить фильтры</value>
-    <comment></comment>
+    
   </data>
   <data name="EnableInfoWindow" xml:space="preserve">
     <value>Включить информационное окно</value>
-    <comment></comment>
+    
   </data>
   <data name="End" xml:space="preserve">
     <value>Стоп</value>
-    <comment></comment>
+    
   </data>
   <data name="EndTime" xml:space="preserve">
     <value>Время окончания</value>
-    <comment></comment>
+    
   </data>
   <data name="EndsWith" xml:space="preserve">
     <value>заканчивается на</value>
-    <comment></comment>
+    
   </data>
   <data name="Engines" xml:space="preserve">
     <value>Количество и тип двигателей</value>
-    <comment></comment>
+    
   </data>
   <data name="EngineType" xml:space="preserve">
     <value>Тип двигателя</value>
-    <comment></comment>
+    
   </data>
   <data name="Equal" xml:space="preserve">
     <value>совпадает с</value>
-    <comment></comment>
+    
   </data>
   <data name="EraseBeforeImport" xml:space="preserve">
     <value>Удалить все настройки перед импортом</value>
-    <comment></comment>
+    
   </data>
   <data name="ExportSettings" xml:space="preserve">
     <value>Экспортировать настройки</value>
-    <comment></comment>
+    
   </data>
   <data name="Feet" xml:space="preserve">
     <value>Футы</value>
-    <comment></comment>
+    
   </data>
   <data name="FeetAbbreviation" xml:space="preserve">
     <value>{0} фт</value>
-    <comment></comment>
+    
   </data>
   <data name="FeetPerMinuteAbbreviation" xml:space="preserve">
     <value>{0} фт/мин</value>
-    <comment></comment>
+    
   </data>
   <data name="FeetPerSecondAbbreviation" xml:space="preserve">
     <value>{0} фт/с</value>
-    <comment></comment>
+    
   </data>
   <data name="FetchPage" xml:space="preserve">
     <value>Обновить</value>
-    <comment></comment>
+    
   </data>
   <data name="FillOpacity" xml:space="preserve">
     <value>Непрозрачность заливки</value>
-    <comment></comment>
+    
   </data>
   <data name="Filters" xml:space="preserve">
     <value>Фильтры</value>
-    <comment></comment>
+    
   </data>
   <data name="FindAllPermutationsOfCallsign" xml:space="preserve">
     <value>Найти все изменения позывного</value>
-    <comment></comment>
+    
   </data>
   <data name="First" xml:space="preserve">
     <value>Начальный</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstAltitude" xml:space="preserve">
     <value>Начальная высота</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstHeading" xml:space="preserve">
     <value>Начальный курс</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstFlightLevel" xml:space="preserve">
     <value>Начальный FL</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstLatitude" xml:space="preserve">
     <value>Начальная широта</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstLongitude" xml:space="preserve">
     <value>Начальная долгота</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstOnGround" xml:space="preserve">
     <value>Начальный On Ground</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstRegDate" xml:space="preserve">
     <value>Дата первой регистрации</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstSpeed" xml:space="preserve">
     <value>Начальная скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstSquawk" xml:space="preserve">
     <value>Начальный сквок</value>
-    <comment></comment>
+    
   </data>
   <data name="FirstVerticalSpeed" xml:space="preserve">
     <value>Начальная верт.скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightDetailShort" xml:space="preserve">
     <value>Формуляр</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightLevel" xml:space="preserve">
     <value>Эшелон</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightLevelAbbreviation" xml:space="preserve">
     <value>FL{0}</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightLevelAndVerticalSpeed" xml:space="preserve">
     <value>FL &amp; Верт.скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightLevelHeightUnit" xml:space="preserve">
     <value>Единица измерения номера эшелона, в сотнях</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightLevelTransitionAltitude" xml:space="preserve">
     <value>Высота эшелона перехода</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightsCount" xml:space="preserve">
     <value>Количество наблюдений</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightsListShort" xml:space="preserve">
     <value>Полеты</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightSimPage" xml:space="preserve">
     <value>Flight Sim Страница</value>
-    <comment></comment>
+    
   </data>
   <data name="FlightSimTitle" xml:space="preserve">
     <value>Virtual Radar - FSX</value>
-    <comment></comment>
+    
   </data>
   <data name="ForcePhoneOff" xml:space="preserve">
     <value>Не учитывать смартфон</value>
-    <comment></comment>
+    <comment>As in "force the page to ignore the fact that this is a smart phone"</comment>
   </data>
   <data name="ForcePhoneOn" xml:space="preserve">
     <value>Учитывать смартфон</value>
-    <comment></comment>
+    <comment>As in "force the page to pretend that this is a smart phone"</comment>
   </data>
   <data name="ForceTabletOff" xml:space="preserve">
     <value>Не учитывать планшет</value>
-    <comment></comment>
+    <comment>As in "force the page to ignore the fact that this is a tablet PC"</comment>
   </data>
   <data name="ForceTabletOn" xml:space="preserve">
     <value>Учитывать планшет</value>
-    <comment></comment>
+    <comment>As in "force the page to use the settings for a tablet PC"</comment>
   </data>
   <data name="FromAltitude" xml:space="preserve">
     <value>От {0}</value>
-    <comment></comment>
+    
   </data>
   <data name="FromToAltitude" xml:space="preserve">
     <value>{0} до {1}</value>
-    <comment></comment>
+    
   </data>
   <data name="FromToDate" xml:space="preserve">
     <value>{0} до {1}</value>
-    <comment></comment>
+    
   </data>
   <data name="FromToFlightLevel" xml:space="preserve">
     <value>{0} до {1}</value>
-    <comment></comment>
+    
   </data>
   <data name="FromToSpeed" xml:space="preserve">
     <value>{0} до {1}</value>
-    <comment></comment>
+    
   </data>
   <data name="FromToSquawk" xml:space="preserve">
     <value>{0} до {1}</value>
-    <comment></comment>
+    
   </data>
   <data name="FurthestFromCurrentLocation" xml:space="preserve">
     <value>Наиболее удаленный</value>
-    <comment></comment>
+    
   </data>
   <data name="GenericName" xml:space="preserve">
     <value>Общее название</value>
-    <comment></comment>
+    
   </data>
   <data name="Geometric" xml:space="preserve">
     <value>Истинная</value>
-    <comment></comment>
+    
   </data>
   <data name="GeometricAltitudeIndicator" xml:space="preserve">
     <value>GPS</value>
-    <comment></comment>
+    <comment>A ** SHORT ** indication that the reported altitude is geometric (i.e. usually coming from a GPS unit) as opposed to barometric (i.e. coming off one or more pressure sensors).</comment>
   </data>
   <data name="GoogleMapsCouldNotBeLoaded" xml:space="preserve">
     <value>Карта Google не может быть загружена</value>
-    <comment></comment>
+    
   </data>
   <data name="GotoCurrentLocation" xml:space="preserve">
     <value>Приемник в центре</value>
-    <comment></comment>
+    
   </data>
   <data name="GotoSelectedAircraft" xml:space="preserve">
     <value>Самолет в центре</value>
-    <comment></comment>
+    
   </data>
   <data name="GroundAbbreviation" xml:space="preserve">
     <value>GND</value>
-    <comment></comment>
+    
   </data>
   <data name="Ground" xml:space="preserve">
     <value>Путевая</value>
-    <comment></comment>
+    
   </data>
   <data name="GroundTrack" xml:space="preserve">
     <value>Истинный</value>
-    <comment></comment>
+    
   </data>
   <data name="GroundVehicle" xml:space="preserve">
     <value>Наземный транспорт</value>
-    <comment></comment>
+    
   </data>
   <data name="Gyrocopter" xml:space="preserve">
     <value>Автожир</value>
-    <comment></comment>
+    
   </data>
   <data name="HadAlert" xml:space="preserve">
     <value>Изменение сквока</value>
-    <comment></comment>
+    
   </data>
   <data name="HadEmergency" xml:space="preserve">
     <value>Сигнал бедствия</value>
-    <comment></comment>
+    
   </data>
   <data name="HadSPI" xml:space="preserve">
     <value>Запрос опознавания SPI</value>
-    <comment></comment>
+    <comment>SPI is the name of a pulse in Mode-S, used when ATC has asked for ident from aircraft.</comment>
   </data>
   <data name="Heading" xml:space="preserve">
     <value>Курс</value>
-    <comment></comment>
+    
   </data>
   <data name="HeadingType" xml:space="preserve">
     <value>Тип курса</value>
-    <comment></comment>
+    
   </data>
   <data name="Heights" xml:space="preserve">
     <value>Высота</value>
-    <comment></comment>
+    
   </data>
   <data name="Helicopter" xml:space="preserve">
     <value>Вертолет</value>
-    <comment></comment>
+    
   </data>
   <data name="Help" xml:space="preserve">
     <value>Помощь</value>
-    <comment></comment>
+    
   </data>
   <data name="HideAircraftNotOnMap" xml:space="preserve">
     <value>Скрыть самолеты вне окна карты</value>
-    <comment></comment>
+    
   </data>
   <data name="HideEmptyPinTextLines" xml:space="preserve">
     <value>Скрыть пустые строки у меток</value>
-    <comment></comment>
+    
   </data>
   <data name="HideNoPosition" xml:space="preserve">
     <value>Скрыть самолеты, не передающие позицию</value>
-    <comment></comment>
+    
   </data>
   <data name="HighContrastMap" xml:space="preserve">
     <value>Контраст</value>
-    <comment></comment>
+    <comment>&lt;-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room</comment>
   </data>
   <data name="Icao" xml:space="preserve">
     <value>ICAO адрес</value>
-    <comment></comment>
+    
   </data>
   <data name="Import" xml:space="preserve">
     <value>Импорт</value>
-    <comment></comment>
+    
   </data>
   <data name="ImportFailedTitle" xml:space="preserve">
     <value>Ошибка импортирования настроек</value>
-    <comment></comment>
+    
   </data>
   <data name="ImportFailedBody" xml:space="preserve">
     <value>Не удалось импортировать настройки. Ошибка: {0}</value>
-    <comment></comment>
+    
   </data>
   <data name="ImportSettings" xml:space="preserve">
     <value>Импорт настроек</value>
-    <comment></comment>
+    
   </data>
   <data name="Index" xml:space="preserve">
     <value>Индекс</value>
-    <comment></comment>
+    
   </data>
   <data name="IndicatedAirSpeed" xml:space="preserve">
     <value>Приборная</value>
-    <comment></comment>
+    
   </data>
   <data name="IndicatedAirSpeedShort" xml:space="preserve">
     <value>IAS</value>
-    <comment></comment>
+    <comment>&lt;-- please try to keep this short, an abbreviation if possible</comment>
   </data>
   <data name="Interesting" xml:space="preserve">
     <value>Интересующий</value>
-    <comment></comment>
+    
   </data>
   <data name="IntervalSeconds" xml:space="preserve">
-    <value>Период обновления (с)</value>
-    <comment></comment>
+    <value>Интервал обновления, с</value>
+    
   </data>
   <data name="IsMilitary" xml:space="preserve">
     <value>Военный</value>
-    <comment></comment>
+    
   </data>
   <data name="Jet" xml:space="preserve">
     <value>Газотурбинный</value>
-    <comment></comment>
+    
   </data>
   <data name="JustPositions" xml:space="preserve">
     <value>Монохромная</value>
-    <comment></comment>
+    
   </data>
   <data name="KilometreAbbreviation" xml:space="preserve">
     <value>{0} км</value>
-    <comment></comment>
+    
   </data>
   <data name="Kilometres" xml:space="preserve">
     <value>Километры</value>
-    <comment></comment>
+    
   </data>
   <data name="KilometresPerHour" xml:space="preserve">
     <value>Километры/Час</value>
-    <comment></comment>
+    
   </data>
   <data name="KilometresPerHourAbbreviation" xml:space="preserve">
     <value>{0} км/ч</value>
-    <comment></comment>
+    
   </data>
   <data name="Knots" xml:space="preserve">
     <value>Узлы</value>
-    <comment></comment>
+    
   </data>
   <data name="KnotsAbbreviation" xml:space="preserve">
     <value>{0} уз.</value>
-    <comment></comment>
+    
   </data>
   <data name="LandPlane" xml:space="preserve">
     <value>Сухопутный</value>
-    <comment></comment>
+    
   </data>
   <data name="Last" xml:space="preserve">
     <value>Конечный</value>
-    <comment></comment>
+    
   </data>
   <data name="LastAltitude" xml:space="preserve">
     <value>Конечная высота</value>
-    <comment></comment>
+    
   </data>
   <data name="LastFlightLevel" xml:space="preserve">
     <value>Конечный FL</value>
-    <comment></comment>
+    
   </data>
   <data name="LastHeading" xml:space="preserve">
     <value>Конечный курс</value>
-    <comment></comment>
+    
   </data>
   <data name="LastOnGround" xml:space="preserve">
     <value>Конечный On Ground</value>
-    <comment></comment>
+    
   </data>
   <data name="LastLatitude" xml:space="preserve">
     <value>Конечная широта</value>
-    <comment></comment>
+    
   </data>
   <data name="LastLongitude" xml:space="preserve">
     <value>Конечная долгота</value>
-    <comment></comment>
+    
   </data>
   <data name="LastSpeed" xml:space="preserve">
     <value>Конечная скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="LastSquawk" xml:space="preserve">
     <value>Конечный сквок</value>
-    <comment></comment>
+    
   </data>
   <data name="LastVerticalSpeed" xml:space="preserve">
     <value>Конечная верт.скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="Latitude" xml:space="preserve">
     <value>Широта</value>
-    <comment></comment>
+    
   </data>
   <data name="Layout" xml:space="preserve">
     <value>Компоновка экрана</value>
-    <comment></comment>
+    
   </data>
   <data name="Layout1" xml:space="preserve">
     <value>Классическая</value>
-    <comment></comment>
+    
   </data>
   <data name="Layout2" xml:space="preserve">
     <value>Формуляр вертикально, карта вверху</value>
-    <comment></comment>
+    
   </data>
   <data name="Layout3" xml:space="preserve">
     <value>Формуляр вертикально, карта внизу</value>
-    <comment></comment>
+    
   </data>
   <data name="Layout4" xml:space="preserve">
     <value>Список вертикально, карта вверху</value>
-    <comment></comment>
+    
   </data>
   <data name="Layout5" xml:space="preserve">
     <value>Список вертикально, карта внизу</value>
-    <comment></comment>
+    
   </data>
   <data name="Layout6" xml:space="preserve">
     <value>Формуляр и список вертикально</value>
-    <comment></comment>
+    
   </data>
   <data name="ListAircraftClass" xml:space="preserve">
     <value>Класс</value>
-    <comment></comment>
+    
   </data>
   <data name="ListAirportDataThumbnails" xml:space="preserve">
     <value>Миниатюры (airport-data.com)</value>
-    <comment></comment>
+    
   </data>
   <data name="ListAltitude" xml:space="preserve">
     <value>Высота</value>
-    <comment></comment>
+    
   </data>
   <data name="ListAltitudeType" xml:space="preserve">
     <value>Вид высоты</value>
-    <comment></comment>
+    
   </data>
   <data name="ListAltitudeAndVerticalSpeed" xml:space="preserve">
     <value>Выс./в.скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListAverageSignalLevel" xml:space="preserve">
     <value>Ср.сигн.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListBearing" xml:space="preserve">
     <value>Азимут</value>
-    <comment></comment>
+    
   </data>
   <data name="ListCallsign" xml:space="preserve">
     <value>Позывн.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListCivOrMil" xml:space="preserve">
     <value>Назначение</value>
-    <comment></comment>
+    
   </data>
   <data name="ListCofACategory" xml:space="preserve">
     <value>Кат. СЛГ</value>
-    <comment></comment>
+    <comment>Certificate of airworthiness category</comment>
   </data>
   <data name="ListCofAExpiry" xml:space="preserve">
     <value>Срок СЛГ</value>
-    <comment></comment>
+    <comment>Certificate of airworthiness expiry</comment>
   </data>
   <data name="ListCountAdsb" xml:space="preserve">
     <value>ADS-B</value>
-    <comment></comment>
+    
   </data>
   <data name="ListCountMessages" xml:space="preserve">
     <value>Сообщ.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListCountModeS" xml:space="preserve">
-    <value>Mode-S</value>
-    <comment></comment>
+    <value>Mode S</value>
+    
   </data>
   <data name="ListCountPositions" xml:space="preserve">
     <value>С коорд.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListCountry" xml:space="preserve">
     <value>Страна рег.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListCurrentRegDate" xml:space="preserve">
     <value>Регистр.</value>
-    <comment></comment>
+    <comment>Date of current registration</comment>
   </data>
   <data name="ListDeRegDate" xml:space="preserve">
     <value>Исключ.</value>
-    <comment></comment>
+    <comment>as in the date it was taken off the register</comment>
   </data>
   <data name="ListDistance" xml:space="preserve">
     <value>Расстояние</value>
-    <comment></comment>
+    
   </data>
   <data name="ListDuration" xml:space="preserve">
     <value>Длит.набл.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListEndTime" xml:space="preserve">
     <value>Крайнее</value>
-    <comment></comment>
+    <comment>As in the date and time of the last message.</comment>
   </data>
   <data name="ListEngines" xml:space="preserve">
     <value>Колич./Тип дв.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstAltitude" xml:space="preserve">
     <value>От выс.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstFlightLevel" xml:space="preserve">
     <value>С FL</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstHeading" xml:space="preserve">
     <value>С курсом</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstLatitude" xml:space="preserve">
     <value>От шир.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstLongitude" xml:space="preserve">
     <value>От долг.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstOnGround" xml:space="preserve">
     <value>На земле</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstRegDate" xml:space="preserve">
     <value>Перв.рег.</value>
-    <comment></comment>
+    <comment>Date of first registration</comment>
   </data>
   <data name="ListFirstSpeed" xml:space="preserve">
     <value>С скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstSquawk" xml:space="preserve">
     <value>Со cквоком</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFirstVerticalSpeed" xml:space="preserve">
     <value>С верт.скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFlightLevel" xml:space="preserve">
     <value>Эшелон</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFlightLevelAndVerticalSpeed" xml:space="preserve">
     <value>FL &amp; Верт.скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListFlightsCount" xml:space="preserve">
     <value>Набл.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListGenericName" xml:space="preserve">
     <value>Общ.назв.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListHadAlert" xml:space="preserve">
     <value>Тревожная сигнализация</value>
-    <comment></comment>
+    
   </data>
   <data name="ListHadEmergency" xml:space="preserve">
     <value>Аварийная обстановка</value>
-    <comment></comment>
+    
   </data>
   <data name="ListHadSPI" xml:space="preserve">
     <value>Условие SPI</value>
-    <comment></comment>
+    <comment>Name of a pulse in Mode-S, may not need translation. Used when ATC has asked for ident from aircraft.</comment>
   </data>
   <data name="ListHeading" xml:space="preserve">
     <value>Курс</value>
-    <comment></comment>
+    
   </data>
   <data name="ListHeadingType" xml:space="preserve">
     <value>Тип курса</value>
-    <comment></comment>
+    
   </data>
   <data name="ListIcao" xml:space="preserve">
     <value>ICAO</value>
-    <comment></comment>
+    
   </data>
   <data name="ListInteresting" xml:space="preserve">
     <value>Интерес</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastAltitude" xml:space="preserve">
     <value>До выс.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastFlightLevel" xml:space="preserve">
     <value>До FL</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastHeading" xml:space="preserve">
     <value>На курс</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastLatitude" xml:space="preserve">
     <value>До шир.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastLongitude" xml:space="preserve">
     <value>До длг.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastOnGround" xml:space="preserve">
     <value>До GND</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastSpeed" xml:space="preserve">
     <value>До скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastSquawk" xml:space="preserve">
     <value>До cквока</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLastVerticalSpeed" xml:space="preserve">
     <value>До верт.выс.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLatitude" xml:space="preserve">
     <value>Широта</value>
-    <comment></comment>
+    
   </data>
   <data name="ListLongitude" xml:space="preserve">
     <value>Долгота</value>
-    <comment></comment>
+    
   </data>
   <data name="ListNotes" xml:space="preserve">
     <value>Прим.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListManufacturer" xml:space="preserve">
     <value>Изготов.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListMaxTakeoffWeight" xml:space="preserve">
     <value>Макс.взлт.масса</value>
-    <comment></comment>
+    
   </data>
   <data name="ListMlat" xml:space="preserve">
     <value>MLAT</value>
-    <comment></comment>
+    <comment>Abbreviation of Multilateration</comment>
   </data>
   <data name="ListModel" xml:space="preserve">
     <value>Модель самолета</value>
-    <comment></comment>
+    
   </data>
   <data name="ListModelIcao" xml:space="preserve">
     <value>Тип</value>
-    <comment></comment>
+    
   </data>
   <data name="ListModeSCountry" xml:space="preserve">
     <value>Страна</value>
-    <comment></comment>
+    
   </data>
   <data name="ListModelSilhouette" xml:space="preserve">
     <value>Силуэт</value>
-    <comment></comment>
+    
   </data>
   <data name="ListModelSilhouetteAndOpFlag" xml:space="preserve">
     <value>Силуэт/Лого</value>
-    <comment></comment>
+    
   </data>
   <data name="ListOperator" xml:space="preserve">
     <value>Оператор</value>
-    <comment></comment>
+    
   </data>
   <data name="ListOperatorFlag" xml:space="preserve">
     <value>Логотип</value>
-    <comment></comment>
+    
   </data>
   <data name="ListOperatorIcao" xml:space="preserve">
     <value>Код а/к</value>
-    <comment></comment>
+    
   </data>
   <data name="ListOwnershipStatus" xml:space="preserve">
     <value>Стат.влад.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListPicture" xml:space="preserve">
     <value>Изображ.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListPopularName" xml:space="preserve">
     <value>Прозвище</value>
-    <comment></comment>
+    
   </data>
   <data name="ListPreviousId" xml:space="preserve">
     <value>Пред.№</value>
-    <comment></comment>
+    
   </data>
   <data name="ListReceiver" xml:space="preserve">
     <value>Приемник</value>
-    <comment></comment>
+    
   </data>
   <data name="ListRegistration" xml:space="preserve">
     <value>Регистр.</value>
-    <comment></comment>
-  </data>
-  <data name="ListRowNumber" xml:space="preserve">
-    <value></value>
-    <comment></comment>
+    
   </data>
   <data name="ListRoute" xml:space="preserve">
     <value>Маршрут</value>
-    <comment></comment>
+    
   </data>
   <data name="ListSerialNumber" xml:space="preserve">
     <value>Зав.№</value>
-    <comment></comment>
+    
   </data>
   <data name="ListSignalLevel" xml:space="preserve">
     <value>Мгн.сигн.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListSpecies" xml:space="preserve">
     <value>Тип</value>
-    <comment></comment>
+    
   </data>
   <data name="ListSpeed" xml:space="preserve">
     <value>Скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListSpeedType" xml:space="preserve">
     <value>Тип скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListSquawk" xml:space="preserve">
     <value>Сквок</value>
-    <comment></comment>
+    
   </data>
   <data name="ListStartTime" xml:space="preserve">
     <value>Перв.сообщ.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListStatus" xml:space="preserve">
     <value>Статус</value>
-    <comment></comment>
+    
   </data>
   <data name="ListTargetAltitude" xml:space="preserve">
     <value>Выс. AП</value>
-    <comment></comment>
+    
   </data>
   <data name="ListTargetHeading" xml:space="preserve">
     <value>Курс АП</value>
-    <comment></comment>
+    
   </data>
   <data name="ListTisb" xml:space="preserve">
     <value>TIS-B</value>
-    <comment></comment>
+    
   </data>
   <data name="ListTotalHours" xml:space="preserve">
     <value>Общ.налет</value>
-    <comment></comment>
+    
   </data>
   <data name="ListTransponderType" xml:space="preserve">
     <value>Трансп.</value>
-    <comment></comment>
-  </data>
-  <data name="ListTransponderTypeFlag" xml:space="preserve">
-    <value></value>
-    <comment></comment>
+    
   </data>
   <data name="ListUserTag" xml:space="preserve">
     <value>Тэг</value>
-    <comment></comment>
+    
   </data>
   <data name="ListVerticalSpeed" xml:space="preserve">
     <value>В/скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListVerticalSpeedType" xml:space="preserve">
     <value>Тип в/скор.</value>
-    <comment></comment>
+    
   </data>
   <data name="ListWtc" xml:space="preserve">
     <value>МВМ</value>
-    <comment></comment>
+    
   </data>
   <data name="ListYearBuilt" xml:space="preserve">
     <value>Дата произв.</value>
-    <comment></comment>
+    
   </data>
   <data name="Longitude" xml:space="preserve">
     <value>Долгота</value>
-    <comment></comment>
+    
   </data>
   <data name="Manufacturer" xml:space="preserve">
     <value>Изготовитель</value>
-    <comment></comment>
+    
   </data>
   <data name="Map" xml:space="preserve">
     <value>Карта</value>
-    <comment></comment>
+    
   </data>
   <data name="MaxTakeoffWeight" xml:space="preserve">
     <value>Макс.взлт.масса</value>
-    <comment></comment>
+    
   </data>
   <data name="Menu" xml:space="preserve">
     <value>Меню</value>
-    <comment></comment>
+    
   </data>
   <data name="MenuBack" xml:space="preserve">
     <value>назад</value>
-    <comment></comment>
+    
   </data>
   <data name="MessageCount" xml:space="preserve">
     <value>Количество сообщений</value>
-    <comment></comment>
+    
   </data>
   <data name="MetreAbbreviation" xml:space="preserve">
     <value>{0} м</value>
-    <comment></comment>
+    
   </data>
   <data name="MetrePerSecondAbbreviation" xml:space="preserve">
     <value>{0} м/с</value>
-    <comment></comment>
+    
   </data>
   <data name="MetrePerMinuteAbbreviation" xml:space="preserve">
     <value>{0} м/мин</value>
-    <comment></comment>
+    
   </data>
   <data name="Metres" xml:space="preserve">
     <value>Метры</value>
-    <comment></comment>
+    
   </data>
   <data name="MilesPerHour" xml:space="preserve">
     <value>Мили/час</value>
-    <comment></comment>
+    
   </data>
   <data name="MilesPerHourAbbreviation" xml:space="preserve">
     <value>{0} ми/ч</value>
-    <comment></comment>
+    
   </data>
   <data name="Military" xml:space="preserve">
     <value>Военный</value>
-    <comment></comment>
+    
   </data>
   <data name="Mlat" xml:space="preserve">
     <value>MLAT</value>
-    <comment></comment>
+    <comment>An abbreviation of Multilateration</comment>
   </data>
   <data name="MobilePage" xml:space="preserve">
     <value>Для мобильного компьютера</value>
-    <comment></comment>
+    
   </data>
   <data name="MobileReportPage" xml:space="preserve">
     <value>Страница мобильного отчета</value>
-    <comment></comment>
+    
   </data>
   <data name="Model" xml:space="preserve">
     <value>Модель</value>
-    <comment></comment>
+    
   </data>
   <data name="ModelIcao" xml:space="preserve">
     <value>Код типа</value>
-    <comment></comment>
+    
   </data>
   <data name="ModeS" xml:space="preserve">
     <value>Mode S</value>
-    <comment></comment>
+    
   </data>
   <data name="ModeSCountry" xml:space="preserve">
     <value>Страна</value>
-    <comment></comment>
+    
   </data>
   <data name="MovingMap" xml:space="preserve">
     <value>Перемещение карты</value>
-    <comment></comment>
+    
   </data>
   <data name="MuteOff" xml:space="preserve">
     <value>Выкл.звук</value>
-    <comment></comment>
+    
   </data>
   <data name="MuteOn" xml:space="preserve">
     <value>Вкл.звук</value>
-    <comment></comment>
+    
   </data>
   <data name="NauticalMileAbbreviation" xml:space="preserve">
     <value>{0} м.миль</value>
-    <comment></comment>
+    
   </data>
   <data name="NauticalMiles" xml:space="preserve">
     <value>Морские мили</value>
-    <comment></comment>
+    
   </data>
   <data name="Neither" xml:space="preserve">
     <value>Никакой</value>
-    <comment></comment>
+    
   </data>
   <data name="No" xml:space="preserve">
     <value>Нет</value>
-    <comment></comment>
+    
   </data>
   <data name="NoLocalStorage" xml:space="preserve">
-    <value>Ваш браузер не поддерживает локальное сохранение. Параметры конфигурации не будут сохранены.\n\nЕсли вы просматриваете в &quot;Private Mode&quot;, то попробуйте переключиться. &quot;Private Mode&quot; отключает локальное сохранение в некоторых браузерах</value>
-    <comment></comment>
+    <value>Ваш браузер не поддерживает локальное сохранение. Параметры конфигурации не будут сохранены.\n\nЕсли вы просматриваете в "Private Mode", то попробуйте переключиться. "Private Mode" отключает локальное сохранение в некоторых браузерах</value>
+    
   </data>
   <data name="None" xml:space="preserve">
     <value>Нет</value>
-    <comment></comment>
+    
   </data>
   <data name="Notes" xml:space="preserve">
     <value>Прим.</value>
-    <comment></comment>
+    
   </data>
   <data name="NoSettingsFound" xml:space="preserve">
     <value>Параметр не найден</value>
-    <comment></comment>
+    
   </data>
   <data name="NotBetween" xml:space="preserve">
     <value>вне диапазона от</value>
-    <comment></comment>
+    
   </data>
   <data name="NotContains" xml:space="preserve">
     <value>не содержит</value>
-    <comment></comment>
+    
   </data>
   <data name="NotEndsWith" xml:space="preserve">
     <value>не заканчивается на</value>
-    <comment></comment>
+    
   </data>
   <data name="NotEquals" xml:space="preserve">
     <value>не совпадает с</value>
-    <comment></comment>
+    
   </data>
   <data name="NotStartsWith" xml:space="preserve">
     <value>не начинается с</value>
-    <comment></comment>
+    
   </data>
   <data name="OffRadarAction" xml:space="preserve">
     <value>Когда самолет выходит из зоны:</value>
-    <comment></comment>
+    
   </data>
   <data name="OffRadarActionWait" xml:space="preserve">
     <value>Снять выделение</value>
-    <comment></comment>
+    
   </data>
   <data name="OffRadarActionEnableAutoSelect" xml:space="preserve">
     <value>Включить автоматический выбор</value>
-    <comment></comment>
+    
   </data>
   <data name="OffRadarActionNothing" xml:space="preserve">
     <value>Ничего не делать</value>
-    <comment></comment>
+    
   </data>
   <data name="OfPages" xml:space="preserve">
     <value>по {0:N0}</value>
-    <comment></comment>
+    <comment>As in "1 of 10" pages</comment>
   </data>
   <data name="OnlyAircraftOnMap" xml:space="preserve">
     <value>Только в окне карты</value>
-    <comment></comment>
+    
   </data>
   <data name="OnlyAutoSelected" xml:space="preserve">
     <value>Только для авто выбранных самолетов</value>
-    <comment></comment>
+    
   </data>
   <data name="OnlyUsePre22Icons" xml:space="preserve">
     <value>Использовать старый стиль метки</value>
-    <comment></comment>
+    
   </data>
   <data name="Operator" xml:space="preserve">
     <value>Оператор</value>
-    <comment></comment>
+    
   </data>
   <data name="OperatorCode" xml:space="preserve">
     <value>Код авиакомпании</value>
-    <comment></comment>
+    
   </data>
   <data name="OperatorFlag" xml:space="preserve">
     <value>Логотип авиакомпании</value>
-    <comment></comment>
+    
   </data>
   <data name="Options" xml:space="preserve">
     <value>Настройки</value>
-    <comment></comment>
+    
   </data>
   <data name="OverwriteExistingSettings" xml:space="preserve">
     <value>Заменить существующие настройки</value>
-    <comment></comment>
+    
   </data>
   <data name="OwnershipStatus" xml:space="preserve">
     <value>Статус владельца</value>
-    <comment></comment>
+    
   </data>
   <data name="PageAircraft" xml:space="preserve">
     <value>Самолет</value>
-    <comment></comment>
+    
   </data>
   <data name="AircraftDetailShort" xml:space="preserve">
     <value>Формуляр</value>
-    <comment></comment>
+    
   </data>
   <data name="PageFirst" xml:space="preserve">
     <value>Первая</value>
-    <comment></comment>
+    
   </data>
   <data name="PageGeneral" xml:space="preserve">
     <value>Общие</value>
-    <comment></comment>
+    
   </data>
   <data name="PageLast" xml:space="preserve">
     <value>Последняя</value>
-    <comment></comment>
+    
   </data>
   <data name="PageList" xml:space="preserve">
     <value>Список</value>
-    <comment></comment>
+    
   </data>
   <data name="PageListShort" xml:space="preserve">
     <value>Список</value>
-    <comment></comment>
+    
   </data>
   <data name="PageMapShort" xml:space="preserve">
     <value>Карта</value>
-    <comment></comment>
+    
   </data>
   <data name="PageNext" xml:space="preserve">
     <value>Следующая</value>
-    <comment></comment>
+    
   </data>
   <data name="PagePrevious" xml:space="preserve">
     <value>Предыдущая</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneAircraftDisplay" xml:space="preserve">
     <value>Отображение метки</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneAircraftTrails" xml:space="preserve">
     <value>Траектория полета на карте</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneAudio" xml:space="preserve">
     <value>Звук</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneAutoSelect" xml:space="preserve">
     <value>Автоматический выбор</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneCurrentLocation" xml:space="preserve">
     <value>Текущее местоположение</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneDataFeed" xml:space="preserve">
     <value>Источник данных</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneDetailSettings" xml:space="preserve">
     <value>Сведения в формуляре</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneInfoWindow" xml:space="preserve">
     <value>Информационное окно самолета</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneListSettings" xml:space="preserve">
     <value>Отображаемые сведения</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneManyAircraft" xml:space="preserve">
     <value>Общий отчет по самолетам</value>
-    <comment></comment>
+    
   </data>
   <data name="PanePermanentLink" xml:space="preserve">
     <value>Постоянная ссылка</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneRangeCircles" xml:space="preserve">
     <value>Круговая шкала дальности</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneReceiverRange" xml:space="preserve">
     <value>Диаграмма зоны приема</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneSingleAircraft" xml:space="preserve">
     <value>Отчет по конкретному самолету</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneSortAircraftList" xml:space="preserve">
     <value>Сортировка самолетов</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneSortReport" xml:space="preserve">
     <value>Сортировка отчетов</value>
-    <comment></comment>
+    
   </data>
   <data name="PaneUnits" xml:space="preserve">
     <value>Единицы измерения</value>
-    <comment></comment>
+    
   </data>
   <data name="Pause" xml:space="preserve">
     <value>Пауза</value>
-    <comment></comment>
+    
   </data>
   <data name="PinTextNumber" xml:space="preserve">
     <value>{0}-я строка метки</value>
-    <comment></comment>
+    
   </data>
   <data name="PopularName" xml:space="preserve">
     <value>Популярное название</value>
-    <comment></comment>
+    
   </data>
   <data name="PositionAndAltitude" xml:space="preserve">
     <value>Цветовая градация высоты</value>
-    <comment></comment>
+    
   </data>
   <data name="PositionAndSpeed" xml:space="preserve">
     <value>Цветовая градация скорости</value>
-    <comment></comment>
+    
   </data>
   <data name="Picture" xml:space="preserve">
     <value>Изображение</value>
-    <comment></comment>
+    
   </data>
   <data name="PictureOrThumbnails" xml:space="preserve">
     <value>Изображения или миниатюры</value>
-    <comment></comment>
+    
   </data>
   <data name="PinTextLines" xml:space="preserve">
     <value>Количество строк у меток</value>
-    <comment></comment>
+    
   </data>
   <data name="Piston" xml:space="preserve">
     <value>Поршневой</value>
-    <comment></comment>
+    
   </data>
   <data name="Pixels" xml:space="preserve">
     <value>пикс.</value>
-    <comment></comment>
+    
   </data>
   <data name="PoweredByVRS" xml:space="preserve">
     <value>Создано в Virtual Radar Server</value>
-    <comment></comment>
+    
   </data>
   <data name="PreviousId" xml:space="preserve">
     <value>Предыдущий №</value>
-    <comment></comment>
+    
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>Количество</value>
-    <comment></comment>
+    
   </data>
   <data name="RadioMast" xml:space="preserve">
     <value>Радиомачта</value>
-    <comment></comment>
+    
   </data>
   <data name="RangeCircleEvenColour" xml:space="preserve">
     <value>Цвет и толщина четных</value>
-    <comment></comment>
+    
   </data>
   <data name="RangeCircleOddColour" xml:space="preserve">
     <value>Цвет и толщина нечетных</value>
-    <comment></comment>
+    
   </data>
   <data name="RangeCircles" xml:space="preserve">
     <value>Круговая шкала дальности</value>
-    <comment></comment>
+    
   </data>
   <data name="Receiver" xml:space="preserve">
     <value>Приемник</value>
-    <comment></comment>
+    
   </data>
   <data name="ReceiverRange" xml:space="preserve">
     <value>Диаграмма зоны приема</value>
-    <comment></comment>
+    
   </data>
   <data name="Refresh" xml:space="preserve">
     <value>Обновить</value>
-    <comment></comment>
+    
   </data>
   <data name="Registration" xml:space="preserve">
     <value>Регистр. номер</value>
-    <comment></comment>
+    
   </data>
   <data name="RegistrationAndIcao" xml:space="preserve">
     <value>Рег./ICAO</value>
-    <comment></comment>
+    
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Удалить</value>
-    <comment></comment>
+    
   </data>
   <data name="RemoveAll" xml:space="preserve">
     <value>Удалить все</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportCallsignInvalid" xml:space="preserve">
     <value>Отчет по позывным</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportCallsignValid" xml:space="preserve">
     <value>Отчет по позывному {0}</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportEmpty" xml:space="preserve">
     <value>Не было найдено записей для заданного критерия</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportFreeForm" xml:space="preserve">
     <value>Произвольный отчет</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportIcaoInvalid" xml:space="preserve">
     <value>Отчет по ICAO адресам</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportIcaoValid" xml:space="preserve">
     <value>Отчет по ICAO адресу {0}</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportRegistrationInvalid" xml:space="preserve">
     <value>Отчет по рег. номеру</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportRegistrationValid" xml:space="preserve">
     <value>Отчет по рег. номеру {0}</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportTodaysFlights" xml:space="preserve">
     <value>За текущие сутки</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportYesterdaysFlights" xml:space="preserve">
     <value>За предыдущие сутки</value>
-    <comment></comment>
+    
   </data>
   <data name="Reports" xml:space="preserve">
     <value>Отчеты</value>
-    <comment></comment>
+    
   </data>
   <data name="ReportsAreDisabled" xml:space="preserve">
     <value>Настройки сервера запрещают создание отчетов</value>
-    <comment></comment>
+    
   </data>
   <data name="Resume" xml:space="preserve">
     <value>Возобновить</value>
-    <comment></comment>
+    
   </data>
   <data name="Reversing" xml:space="preserve">
     <value>Реверсивный</value>
-    <comment></comment>
+    
   </data>
   <data name="ReversingShort" xml:space="preserve">
     <value>РЕВ</value>
-    <comment></comment>
+    
   </data>
   <data name="Route" xml:space="preserve">
     <value>Маршрут</value>
-    <comment></comment>
+    
   </data>
   <data name="RouteShort" xml:space="preserve">
     <value>Маршрут (кратко)</value>
-    <comment></comment>
+    
   </data>
   <data name="RouteFull" xml:space="preserve">
     <value>Маршрут (подробно)</value>
-    <comment></comment>
+    
   </data>
   <data name="RouteNotKnown" xml:space="preserve">
     <value>Маршрут не известен</value>
-    <comment></comment>
+    
   </data>
   <data name="RowNumber" xml:space="preserve">
     <value>Номер строки</value>
-    <comment></comment>
+    
   </data>
   <data name="Rows" xml:space="preserve">
     <value>Количество строк</value>
-    <comment></comment>
+    
   </data>
   <data name="RunReport" xml:space="preserve">
     <value>Сформировать отчет</value>
-    <comment></comment>
+    
   </data>
   <data name="SeaPlane" xml:space="preserve">
     <value>Гидросамолет</value>
-    <comment></comment>
+    
   </data>
   <data name="Select" xml:space="preserve">
     <value>Выбор</value>
-    <comment></comment>
+    
   </data>
   <data name="SeparateTwoValues" xml:space="preserve">
     <value> до: </value>
-    <comment></comment>
+    
   </data>
   <data name="SerialNumber" xml:space="preserve">
     <value>Заводской номер</value>
-    <comment></comment>
+    
   </data>
   <data name="ServerFetchFailedTitle" xml:space="preserve">
     <value>Ошибка запроса</value>
-    <comment></comment>
+    
   </data>
   <data name="ServerFetchFailedBody" xml:space="preserve">
-    <value>Не удалось получить с сервера. Ошибка &quot;{0}&quot; со статусом &quot;{1}&quot;.</value>
-    <comment></comment>
+    <value>Не удалось получить с сервера. Ошибка "{0}" со статусом "{1}".</value>
+    
   </data>
   <data name="ServerFetchTimedOut" xml:space="preserve">
     <value>Истекло время запроса.</value>
-    <comment></comment>
+    
   </data>
   <data name="ServerReportExceptionBody" xml:space="preserve">
-    <value>На сервере получено исключение при формировании отчета. Исключение &quot;{0}&quot;</value>
-    <comment></comment>
+    <value>На сервере получено исключение при формировании отчета. Исключение "{0}"</value>
+    
   </data>
   <data name="ServerReportExceptionTitle" xml:space="preserve">
     <value>Получено исключение сервера</value>
-    <comment></comment>
+    
   </data>
   <data name="SetCurrentLocation" xml:space="preserve">
     <value>Установить текущую позицию на карте</value>
-    <comment></comment>
+    
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Настройки</value>
-    <comment></comment>
+    
   </data>
   <data name="SettingsPage" xml:space="preserve">
     <value>Настройки</value>
-    <comment></comment>
+    
   </data>
   <data name="Shortcuts" xml:space="preserve">
     <value>Ярлыки выбора</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowAltitudeStalk" xml:space="preserve">
     <value>Показывать линию высоты</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowAltitudeType" xml:space="preserve">
     <value>Показывать вид высоты</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowCurrentLocation" xml:space="preserve">
     <value>Показывать текущее местоположение</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowDetail" xml:space="preserve">
     <value>Показать формуляр</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowForAllAircraft" xml:space="preserve">
     <value>Для всех</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowEmergencySquawks" xml:space="preserve">
     <value>Показывать аварийные сквоки</value>
-    <comment></comment>
+    <comment>Followed by "first / last / neither"</comment>
   </data>
   <data name="ShowEmptyValues" xml:space="preserve">
     <value>Показывать пустые значения</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowForSelectedOnly" xml:space="preserve">
     <value>Для выбранного самолета</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowInterestingAircraft" xml:space="preserve">
     <value>Показывать интересующие самолеты</value>
-    <comment></comment>
+    <comment>Followed by "first / last / neither"</comment>
   </data>
   <data name="ShowRangeCircles" xml:space="preserve">
     <value>Показывать шкалу</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowShortTrails" xml:space="preserve">
     <value>Показывать короткий след</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowSpeedType" xml:space="preserve">
     <value>Показывать тип скорости</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowTrackType" xml:space="preserve">
     <value>Показывать тип курса</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowUnits" xml:space="preserve">
     <value>Показывать единицы измерения</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowVerticalSpeedType" xml:space="preserve">
     <value>Показывать тип вертикальной скорости</value>
-    <comment></comment>
+    
   </data>
   <data name="ShowVsiInSeconds" xml:space="preserve">
     <value>Показывать вертикальную скорость в м/с</value>
-    <comment></comment>
+    
   </data>
   <data name="SignalLevel" xml:space="preserve">
     <value>Мгновенный уровень сигнала</value>
-    <comment></comment>
+    
   </data>
   <data name="Silhouette" xml:space="preserve">
     <value>Силуэт</value>
-    <comment></comment>
+    
   </data>
   <data name="SilhouetteAndOpFlag" xml:space="preserve">
     <value>Силуэт/Лого</value>
-    <comment></comment>
+    
   </data>
   <data name="SiteTimedOut" xml:space="preserve">
-    <value>Вывод на экран был приостановлен в виду не активности. Закрыть окно для возобновления</value>
-    <comment></comment>
+    <value>Вывод на экран был приостановлен в виду неактивности. Закрыть окно для возобновления</value>
+    
   </data>
   <data name="SortBy" xml:space="preserve">
     <value>сначала по</value>
-    <comment></comment>
+    
   </data>
   <data name="Species" xml:space="preserve">
     <value>Тип</value>
-    <comment></comment>
+    
   </data>
   <data name="Speed" xml:space="preserve">
     <value>Скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="SpeedGraph" xml:space="preserve">
     <value>График скорости</value>
-    <comment></comment>
+    
   </data>
   <data name="Speeds" xml:space="preserve">
     <value>Скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="SpeedType" xml:space="preserve">
     <value>Тип скорости</value>
-    <comment></comment>
+    
   </data>
   <data name="Squawk" xml:space="preserve">
     <value>Сквок</value>
-    <comment></comment>
+    
   </data>
   <data name="Squawk7000" xml:space="preserve">
     <value>Полет по ПВП в неконтролируемом ВП</value>
-    <comment></comment>
+    
   </data>
   <data name="Squawk7500" xml:space="preserve">
     <value>Захват самолета</value>
-    <comment></comment>
+    
   </data>
   <data name="Squawk7600" xml:space="preserve">
     <value>Потеря связи</value>
-    <comment></comment>
+    
   </data>
   <data name="Squawk7700" xml:space="preserve">
     <value>Авария или нештатная ситуация</value>
-    <comment></comment>
+    
   </data>
   <data name="Start" xml:space="preserve">
     <value>Старт</value>
-    <comment></comment>
+    
   </data>
   <data name="StartsWith" xml:space="preserve">
     <value>начинается с</value>
-    <comment></comment>
+    
   </data>
   <data name="StartTime" xml:space="preserve">
     <value>Время старта</value>
-    <comment></comment>
+    
   </data>
   <data name="Status" xml:space="preserve">
     <value>Статус</value>
-    <comment></comment>
+    
   </data>
   <data name="StatuteMileAbbreviation" xml:space="preserve">
     <value>{0} ми</value>
-    <comment></comment>
+    
   </data>
   <data name="StatuteMiles" xml:space="preserve">
     <value>Сухопутные мили</value>
-    <comment></comment>
+    
   </data>
   <data name="StorageEngine" xml:space="preserve">
     <value>Подсистема хранилища</value>
-    <comment></comment>
+    
   </data>
   <data name="StorageSize" xml:space="preserve">
     <value>Размер хранилища</value>
-    <comment></comment>
+    
   </data>
   <data name="StrokeOpacity" xml:space="preserve">
     <value>Непрозрачность контура</value>
-    <comment></comment>
+    
   </data>
   <data name="SubmitRoute" xml:space="preserve">
     <value>Добавить маршрут данного рейса в базу</value>
-    <comment></comment>
+    
   </data>
   <data name="SubmitRouteCorrection" xml:space="preserve">
     <value>Внести изменения в маршрут данного рейса</value>
-    <comment></comment>
+    
   </data>
   <data name="SuppressAltitudeStalkWhenZoomedOut" xml:space="preserve">
     <value>Убирать линию высоты при мелком масштабе</value>
-    <comment></comment>
+    
   </data>
   <data name="TargetAltitude" xml:space="preserve">
     <value>Заданная высота</value>
-    <comment></comment>
+    
   </data>
   <data name="TargetHeading" xml:space="preserve">
     <value>Заданный курс</value>
-    <comment></comment>
+    
   </data>
   <data name="ThenBy" xml:space="preserve">
     <value>затем по</value>
-    <comment></comment>
+    
   </data>
   <data name="Tiltwing" xml:space="preserve">
     <value>C поворотным крылом</value>
-    <comment></comment>
+    
   </data>
   <data name="TimeTracked" xml:space="preserve">
     <value>Длительность отслеживания</value>
-    <comment></comment>
+    
   </data>
   <data name="Tisb" xml:space="preserve">
     <value>TIS-B</value>
-    <comment></comment>
+    
   </data>
   <data name="TitleAircraftDetail" xml:space="preserve">
     <value>Формуляр</value>
-    <comment></comment>
+    
   </data>
   <data name="TitleAircraftList" xml:space="preserve">
     <value>Список</value>
-    <comment></comment>
+    
   </data>
   <data name="TitleFlightDetail" xml:space="preserve">
     <value>Формуляр</value>
-    <comment></comment>
+    
   </data>
   <data name="TitleFlightsList" xml:space="preserve">
     <value>Полеты</value>
-    <comment></comment>
+    
   </data>
   <data name="ToAltitude" xml:space="preserve">
     <value>До {0}</value>
-    <comment></comment>
+    
   </data>
   <data name="TitleSiteTimedOut" xml:space="preserve">
     <value>Тайм-аут</value>
-    <comment></comment>
+    
   </data>
   <data name="TotalHours" xml:space="preserve">
     <value>Общее количество часов</value>
-    <comment></comment>
+    
   </data>
   <data name="TrackingCountAircraft" xml:space="preserve">
     <value>Отслеживается: {0:N0}</value>
-    <comment></comment>
+    
   </data>
   <data name="TrackingCountAircraftOutOf" xml:space="preserve">
     <value>Отслеживается: {0:N0} (из {1:N0})</value>
-    <comment></comment>
+    
   </data>
   <data name="TrackingOneAircraft" xml:space="preserve">
     <value>Отслеживается: 1</value>
-    <comment></comment>
+    
   </data>
   <data name="TrackingOneAircraftOutOf" xml:space="preserve">
     <value>Отслеживается: 1 (из {0:N0})</value>
-    <comment></comment>
+    
   </data>
   <data name="TransponderType" xml:space="preserve">
     <value>Транспондер</value>
-    <comment></comment>
+    
   </data>
   <data name="TransponderTypeFlag" xml:space="preserve">
     <value>Тип транспондера</value>
-    <comment></comment>
+    
   </data>
   <data name="TrueAirSpeed" xml:space="preserve">
     <value>Истинная</value>
-    <comment></comment>
+    
   </data>
   <data name="TrueAirSpeedShort" xml:space="preserve">
     <value>TAS</value>
-    <comment></comment>
+    <comment>Keep this one short, an abbreviation if possible.</comment>
   </data>
   <data name="TrueHeading" xml:space="preserve">
     <value>Истинный курс</value>
-    <comment></comment>
+    
   </data>
   <data name="TrueHeadingShort" xml:space="preserve">
     <value>Истин.</value>
-    <comment></comment>
+    
   </data>
   <data name="Turbo" xml:space="preserve">
     <value>Турбовинтовой</value>
-    <comment></comment>
+    
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>Неизвестный</value>
-    <comment></comment>
+    
   </data>
   <data name="UseBrowserLocation" xml:space="preserve">
     <value>Использовать GPS местоположение</value>
-    <comment></comment>
+    
   </data>
   <data name="UseRelativeDates" xml:space="preserve">
     <value>Использовать относительные данные</value>
-    <comment></comment>
+    
   </data>
   <data name="UserTag" xml:space="preserve">
     <value>Пользовательский тэг</value>
-    <comment></comment>
+    
   </data>
   <data name="VerticalSpeed" xml:space="preserve">
     <value>Верт.скорость</value>
-    <comment></comment>
+    
   </data>
   <data name="VerticalSpeedType" xml:space="preserve">
     <value>Тип верт.скорости</value>
-    <comment></comment>
+    
   </data>
   <data name="VirtualRadar" xml:space="preserve">
     <value>Виртуальный Радар</value>
-    <comment></comment>
+    
   </data>
   <data name="Volume25" xml:space="preserve">
     <value>Громкость 25%</value>
-    <comment></comment>
+    
   </data>
   <data name="Volume50" xml:space="preserve">
     <value>Громкость 50%</value>
-    <comment></comment>
+    
   </data>
   <data name="Volume75" xml:space="preserve">
     <value>Громкость 75%</value>
-    <comment></comment>
+    
   </data>
   <data name="Volume100" xml:space="preserve">
     <value>Громкость 100%</value>
-    <comment></comment>
+    
   </data>
   <data name="VrsVersion" xml:space="preserve">
     <value>Версия {0}</value>
-    <comment></comment>
+    
   </data>
   <data name="WakeTurbulenceCategory" xml:space="preserve">
     <value>Категория турбулентности в следе</value>
-    <comment></comment>
+    
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Предупреждающий сигнал</value>
-    <comment></comment>
+    
   </data>
   <data name="WorkingInOfflineMode" xml:space="preserve">
     <value>работа в автономном режиме</value>
-    <comment></comment>
+    
   </data>
   <data name="WtcLight" xml:space="preserve">
     <value>Легкий</value>
-    <comment></comment>
+    
   </data>
   <data name="WtcMedium" xml:space="preserve">
     <value>Средний</value>
-    <comment></comment>
+    
   </data>
   <data name="WtcHeavy" xml:space="preserve">
     <value>Тяжелый</value>
-    <comment></comment>
+    
   </data>
   <data name="YearBuilt" xml:space="preserve">
     <value>Год выпуска</value>
-    <comment></comment>
+    
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Да</value>
-    <comment></comment>
+    
   </data>
   <data name="DateClose" xml:space="preserve">
     <value>Выполнено</value>
-    <comment></comment>
+    <comment>Keep this short</comment>
   </data>
   <data name="DateCurrent" xml:space="preserve">
     <value>Сегодня</value>
-    <comment></comment>
+    <comment>Keep this short</comment>
   </data>
   <data name="DateNext" xml:space="preserve">
     <value>Завтра</value>
-    <comment></comment>
+    <comment>Keep this short</comment>
   </data>
   <data name="DatePrevious" xml:space="preserve">
     <value>Вчера</value>
-    <comment></comment>
+    <comment>Keep this short</comment>
   </data>
   <data name="DateWeekAbbr" xml:space="preserve">
     <value>Нед</value>
-    <comment></comment>
+    <comment>Keep this very short</comment>
   </data>
   <data name="DateYearSuffix" xml:space="preserve">
     <value>г.</value>
-    <comment></comment>
+    <comment>This is displayed after the year</comment>
   </data>
   <data name="SayCallsign" xml:space="preserve">
     <value>Call sign {0}.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayHyphen" xml:space="preserve">
     <value>hyphen</value>
-    <comment></comment>
+    
   </data>
   <data name="SayIcao" xml:space="preserve">
     <value>eye co {0}.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayModelIcao" xml:space="preserve">
     <value>Type {0}.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayOperator" xml:space="preserve">
     <value>Operated by {0}.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayRegistration" xml:space="preserve">
     <value>Registration {0}.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayRouteNotKnown" xml:space="preserve">
     <value>Route not known.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayFromTo" xml:space="preserve">
     <value>Travelling from {0} to {1}.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayFromToVia" xml:space="preserve">
     <value>Travelling from {0} via {1} to {2}.</value>
-    <comment></comment>
+    
   </data>
   <data name="SayAlpha" xml:space="preserve">
     <value>alfuh</value>
-    <comment></comment>
+    
   </data>
   <data name="SayBravo" xml:space="preserve">
     <value>bravo</value>
-    <comment></comment>
+    
   </data>
   <data name="SayCharlie" xml:space="preserve">
     <value>charlie</value>
-    <comment></comment>
+    
   </data>
   <data name="SayDelta" xml:space="preserve">
     <value>delta</value>
-    <comment></comment>
+    
   </data>
   <data name="SayEcho" xml:space="preserve">
     <value>echo</value>
-    <comment></comment>
+    
   </data>
   <data name="SayFoxtrot" xml:space="preserve">
     <value>foxed-rot</value>
-    <comment></comment>
+    
   </data>
   <data name="SayGolf" xml:space="preserve">
     <value>golf</value>
-    <comment></comment>
+    
   </data>
   <data name="SayHotel" xml:space="preserve">
     <value>hotel</value>
-    <comment></comment>
+    
   </data>
   <data name="SayIndia" xml:space="preserve">
     <value>india</value>
-    <comment></comment>
+    
   </data>
   <data name="SayJuliet" xml:space="preserve">
     <value>juliet</value>
-    <comment></comment>
+    
   </data>
   <data name="SayKilo" xml:space="preserve">
     <value>key-low</value>
-    <comment></comment>
+    
   </data>
   <data name="SayLima" xml:space="preserve">
     <value>leamah</value>
-    <comment></comment>
+    
   </data>
   <data name="SayMike" xml:space="preserve">
     <value>mike</value>
-    <comment></comment>
+    
   </data>
   <data name="SayNovember" xml:space="preserve">
     <value>november</value>
-    <comment></comment>
+    
   </data>
   <data name="SayOscar" xml:space="preserve">
     <value>oscar</value>
-    <comment></comment>
+    
   </data>
   <data name="SayPapa" xml:space="preserve">
     <value>papa</value>
-    <comment></comment>
+    
   </data>
   <data name="SayQuebec" xml:space="preserve">
     <value>quebec</value>
-    <comment></comment>
+    
   </data>
   <data name="SayRomeo" xml:space="preserve">
     <value>romeo</value>
-    <comment></comment>
+    
   </data>
   <data name="SaySierra" xml:space="preserve">
     <value>sierra</value>
-    <comment></comment>
+    
   </data>
   <data name="SayTango" xml:space="preserve">
     <value>tango</value>
-    <comment></comment>
+    
   </data>
   <data name="SayUniform" xml:space="preserve">
     <value>uniform</value>
-    <comment></comment>
+    
   </data>
   <data name="SayVictor" xml:space="preserve">
     <value>victor</value>
-    <comment></comment>
+    
   </data>
   <data name="SayWhiskey" xml:space="preserve">
     <value>whiskey</value>
-    <comment></comment>
+    
   </data>
   <data name="SayXRay" xml:space="preserve">
     <value>x-ray</value>
-    <comment></comment>
+    
   </data>
   <data name="SayYankee" xml:space="preserve">
     <value>yankee</value>
-    <comment></comment>
+    
   </data>
   <data name="SayZulu" xml:space="preserve">
     <value>zulu</value>
-    <comment></comment>
+    
   </data>
 </root>

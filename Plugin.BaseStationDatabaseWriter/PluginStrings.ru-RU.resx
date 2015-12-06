@@ -110,19 +110,19 @@
     <value>Файл базы данных</value>
   </data>
   <data name="Disabled" xml:space="preserve">
-    <value>Отключено</value>
+    <value>Отключен</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>&amp;Включено</value>
+    <value>&amp;Включен</value>
   </data>
   <data name="EnabledAndUpdatingSomething" xml:space="preserve">
     <value>Включен, обновляется файл базы данных {0}</value>
   </data>
   <data name="EnabledNoDatabase" xml:space="preserve">
-    <value>Включено, база данных не выбрана</value>
+    <value>Включен, база данных не выбрана</value>
   </data>
   <data name="EnabledNotUpdating" xml:space="preserve">
-    <value>Включено, но не обновляет базу данных</value>
+    <value>Включен, но не обновляет базу данных</value>
   </data>
   <data name="ExceptionCaught" xml:space="preserve">
     <value>Получено исключение: {0}</value>
@@ -158,10 +158,10 @@
     <value>Использовать имя файла по умолчанию</value>
   </data>
   <data name="EnabledBadReceiver" xml:space="preserve">
-    <value>Включено, приемник не доступен или ошибочный</value>
+    <value>Включен, приемник не доступен или ошибочный</value>
   </data>
   <data name="EnabledNoReceiver" xml:space="preserve">
-    <value>Включено, преимник не указан</value>
+    <value>Включен, приемник не указан</value>
   </data>
   <data name="Receiver" xml:space="preserve">
     <value>Приемник</value>
@@ -170,6 +170,21 @@
     <value>Получено исключение при обработке сообщения: {0}</value>
   </data>
   <data name="DatabaseLocked" xml:space="preserve">
-    <value>База данных в настоящее время заблокирована другой программой.  Некоторые полеты не могут быть записаны. </value>
+    <value>База данных в настоящее время заблокирована другой программой.  Некоторые полеты могут быть не записаны.</value>
+  </data>
+  <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Сохранять результаты онлайн поиска в базе данных</value>
+  </data>
+  <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Сохранение результатов онлайн поиска</value>
+  </data>
+  <data name="WriteOnlineLookupsNoticeAllAircraft" xml:space="preserve">
+    <value>Сохранение результатов онлайн поиска обновит регистрацию, страну, серийный номер, год выпуска, производителя, тип и оператора для новых и существующих записей самолетов, которым более 28 дней.</value>
+  </data>
+  <data name="UpdateExistingAircraft" xml:space="preserve">
+    <value>Перезаписывать сведения для существующих самолетов</value>
+  </data>
+  <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
+    <value>Сохранение результатов онлайн поиска обновит регистрацию, страну, серийный номер, год выпуска, производителя, тип и оператора для новых записей самолетов.</value>
   </data>
 </root>

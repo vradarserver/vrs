@@ -130,12 +130,11 @@
 
 Гражданские и военные коды регистрационной принадлежности любезно получены из файла countries.dat, поддерживающегося пользователем Kinetic-форума 'SabreJV' и опубликованного пользователем Kinetic-форума 'Bones'. 
 
-Русский перевод Сергея Серова /Sergsero и друзей.
-
-Brazilian Portuguese translation by Alan Farley
-Chinese translation by Vincent Deng
-French translation by Francois /F5ANN.
-German translation by Annette Shaupp.</value>
+Русский перевод Сергея Серова /Sergsero
+Бразильский/Португальский перевод Алан Фарли
+Китайский перевод Винсент Дэн
+Французский перевод Франсуа /F5ANN
+Немецкий перевод Аннет Шаупп</value>
     <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
   <data name="BaseStationStatus" xml:space="preserve">
@@ -347,7 +346,7 @@ German translation by Annette Shaupp.</value>
     <comment>Number of seconds between each update of the map</comment>
   </data>
   <data name="InitialZoom" xml:space="preserve">
-    <value>Детализация по умолчанию</value>
+    <value>Уровень масштабирования по умолчанию</value>
     <comment>Default level of zoom on Google map</comment>
   </data>
   <data name="LastRequest" xml:space="preserve">
@@ -391,10 +390,10 @@ German translation by Annette Shaupp.</value>
     <value>Старт</value>
   </data>
   <data name="TakeWebServerOffline" xml:space="preserve">
-    <value>Перевести в Offline</value>
+    <value>Перевести в оффлайн</value>
   </data>
   <data name="TakeWebServerOnline" xml:space="preserve">
-    <value>Перевести в Online</value>
+    <value>Перевести в онлайн</value>
   </data>
   <data name="TheseSettingsOnlyAffectInternetBrowsers" xml:space="preserve">
     <value>Эти настройки действуют только при подключении через Интернет</value>
@@ -406,13 +405,13 @@ German translation by Annette Shaupp.</value>
     <value>Имя пользователя</value>
   </data>
   <data name="WebServerOffline" xml:space="preserve">
-    <value>Веб-сервер Offline</value>
+    <value>Веб-сервер оффлайн</value>
   </data>
   <data name="WebServerOnline" xml:space="preserve">
-    <value>Веб-сервер Online</value>
+    <value>Веб-сервер онлайн</value>
   </data>
   <data name="WebServerStatus" xml:space="preserve">
-    <value>Состояние веб-сервера</value>
+    <value>Состояние ВЕБ-сервера</value>
   </data>
   <data name="ADSBAircraft" xml:space="preserve">
     <value>Самолет с ADS-B</value>
@@ -1644,7 +1643,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Принято сообщений</value>
   </data>
   <data name="ModeS" xml:space="preserve">
-    <value>Mode-S</value>
+    <value>Mode S</value>
   </data>
   <data name="NoAdsbPayload" xml:space="preserve">
     <value>Не ADS-B типа</value>
@@ -1680,7 +1679,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Исключено настройкой</value>
   </data>
   <data name="AcronymKilobytePerSecond" xml:space="preserve">
-    <value>кбит/с</value>
+    <value>кБайт/с</value>
   </data>
   <data name="AutoReconnectAtStartup" xml:space="preserve">
     <value>Восстанавливать соединение при запуске</value>
@@ -1701,13 +1700,13 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Тайм-аут отслеживания не может быть больше 3600 с (1 ч)</value>
   </data>
   <data name="AcceptIcaoInNonPICount" xml:space="preserve">
-    <value>Количество сообщений Mode-S</value>
+    <value>Количество сообщений Mode S</value>
   </data>
   <data name="AcceptIcaoInNonPICountOutOfBounds" xml:space="preserve">
-    <value>Значение количества Mode-S сообщений должно быть от 0 до 100</value>
+    <value>Значение количества Mode S сообщений должно быть от 0 до 100</value>
   </data>
   <data name="AcceptIcaoInNonPISeconds" xml:space="preserve">
-    <value>Интервал приема Mode-S, с</value>
+    <value>Интервал приема Mode S, с</value>
   </data>
   <data name="AcceptIcaoInNonPISecondsOutOfBounds" xml:space="preserve">
     <value>Значение интервала времени приема Mode-S сообщений должно быть от 1 до 30</value>
@@ -2173,7 +2172,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>СОМ порт не существует</value>
   </data>
   <data name="IgnoreModeS" xml:space="preserve">
-    <value>Игнорировать Mode-S</value>
+    <value>Игнорировать Mode S</value>
   </data>
   <data name="IdleTimeout" xml:space="preserve">
     <value>Таймаут простоя</value>
@@ -2247,7 +2246,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <comment>\r\n is a newline in the message dialog, keep those intact</comment>
   </data>
   <data name="OptionsDescribeDirectoryEntryKey" xml:space="preserve">
-    <value>Используется, чтобы подтвердить, что сайт, который вы добавили в публичный каталог сайтов Virtual Radar Server, принадлежит вам. Вы можете добавить ваш сайт в каталог, перейдя на сайт маршрутов  (http://sdm.virtualradarserver.co.uk), создать там учетную запись и заполнить сведения о своем сайте в разделе Account. Скопируйте ключ в это поле.\r\n\r\nЕсли Вы не хотите, чтобы ваш сайт был добавлен в публичный каталог, оставьте это поле пустым.</value>
+    <value>Используется, чтобы подтвердить, что сайт, который вы добавили в публичный каталог сайтов Virtual Radar Server, принадлежит вам. Вы можете добавить ваш сайт в каталог, перейдя на сайт маршрутов (http://sdm.virtualradarserver.co.uk), создать там учетную запись и заполнить сведения о своем сайте в разделе Account. Скопируйте ключ в это поле.\r\n\r\nЕсли Вы не хотите, чтобы ваш сайт был добавлен в публичный каталог, оставьте это поле пустым.</value>
   </data>
   <data name="Cidr" xml:space="preserve">
     <value>CIDR</value>
@@ -2429,10 +2428,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>В сообщениях с PI=0</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0" xml:space="preserve">
-    <value>"Да", чтобы игнорировать неназначеные странам ICAO адреса в сообщении, которое не содержит поле четности и имеет допустимый ICAO.</value>
+    <value>"Да", чтобы игнорировать неприсвоенные странам ICAO адреса в сообщении, которое не содержит поле четности и имеет допустимый ICAO.</value>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0" xml:space="preserve">
-    <value>"Да", чтобы игнорировать неназначеные странам ICAO адреса в сообщении, которое содержит поле четности и имеет допустимый ICAO.</value>
+    <value>"Да", чтобы игнорировать неприсвоенные странам ICAO адреса в сообщении, которое содержит поле четности и имеет допустимый ICAO.</value>
   </data>
   <data name="SavingPolarPlots" xml:space="preserve">
     <value>Сохранить диаграммы зон приема</value>
@@ -2549,10 +2548,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Обычный</value>
   </data>
   <data name="OptionDescribeReceiverUsageHideFromWebSite" xml:space="preserve">
-    <value>Этот приемник не будет виден на ВЕБ-сайте, но он может иметь созданные для него ретранслирующие  серверы и может быть объединен с другими каналами.</value>
+    <value>Этот приемник не будет виден на ВЕБ-сайте, но он может иметь созданные для него ретранслирующие серверы и может быть объединен с другими каналами.</value>
   </data>
   <data name="OptionDescribeReceiverUsageMergeOnly" xml:space="preserve">
-    <value>Этот приемник не будет виден на ВЕБ-сайте. Только некоторые форматы ретранслирующего сервера могут быть использованы для него. Тем не менее, он может быть объединен с другими каналами и  будет потреблять меньше ресурсов, чем обычные или скрытые приемники.</value>
+    <value>Этот приемник не будет виден на ВЕБ-сайте. Только некоторые форматы ретранслирующего сервера могут быть использованы для него. Тем не менее, он может быть объединен с другими каналами и будет потреблять меньше ресурсов, чем обычные или скрытые приемники.</value>
   </data>
   <data name="OptionDescribeReceiverUsageNormal" xml:space="preserve">
     <value>Этот приемник будет виден на ВЕБ-сайте, может иметь созданные для него ретранслирующие серверы и быть объединен с другими потоками.</value>
@@ -2570,12 +2569,68 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>BaseStation + MLAT</value>
   </data>
   <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
-    <value>"Да", если сообщения о местоположении из этого канала должны рассматриваться как рассчитанные местоположения MLAT. Требуется только для MLAT каналов, которые не определить, как сообщения с расчетными местоположениями.</value>
+    <value>"Да", если сообщения о местоположении из этого канала должны рассматриваться как рассчитанные местоположения MLAT. Требуется только для МЛАТ каналов, которые не определить, как сообщения с расчетными местоположениями.</value>
   </data>
   <data name="OptionsDescribeRawFeedSuppressTisbMessages" xml:space="preserve">
     <value>"Да", чтобы не использовать TIS-B сообщения для отслеживания самолетов.</value>
   </data>
   <data name="SuppressTisbMessages" xml:space="preserve">
     <value>Не использовать TIS-B сообщения</value>
+  </data>
+  <data name="BackgroundThreadQueues" xml:space="preserve">
+    <value>Очереди</value>
+  </data>
+  <data name="menuDiagnostics" xml:space="preserve">
+    <value>&amp;Диагностика</value>
+  </data>
+  <data name="menuShowQueues" xml:space="preserve">
+    <value>Показать &amp;Очереди...</value>
+  </data>
+  <data name="Peak" xml:space="preserve">
+    <comment>As in the largest number of something, the maximum</comment>
+    <value>Пик</value>
+  </data>
+  <data name="LookupAircraftDetailsOnline" xml:space="preserve">
+    <value>Поиск онлайн сведений о самолете</value>
+  </data>
+  <data name="Serial" xml:space="preserve">
+    <comment>As in a serial number, not a serial port</comment>
+    <value>Серийный</value>
+  </data>
+  <data name="OptionsDescribeDataSourcesLookupAircraftDetailsOnline" xml:space="preserve">
+    <value>"Да", если отсутствующие сведения о самолете следует получать из онлайновых интернет источников и кэшировать локально, "Нет", чтобы использовать только файл BaseStation.sqb в качестве источника данных.</value>
+  </data>
+  <data name="ShuttingDownOnlineLookupManager" xml:space="preserve">
+    <value>Отключение менеджера онлайн поиска</value>
+  </data>
+  <data name="SplashScreenStartingOnlineLookupManager" xml:space="preserve">
+    <value>Инициализация менеджера онлайн поиска</value>
+  </data>
+  <data name="DataProvider" xml:space="preserve">
+    <value>Поставщик данных</value>
+  </data>
+  <data name="AircraftDetailsOnlineLookup" xml:space="preserve">
+    <value>Онлайн поиск сведений о самолете</value>
+  </data>
+  <data name="WebSiteUrl" xml:space="preserve">
+    <value>URL ВЕБ-сайта</value>
+  </data>
+  <data name="AircraftDetailOnlineLookupLog" xml:space="preserve">
+    <value>Журнал онлайн поиска сведений о самолете</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Страна</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Производитель</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Модель</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Год</value>
+  </data>
+  <data name="menuAircraftOnlineDetailLookupLog" xml:space="preserve">
+    <value>Журнал онлайн поиска самолетов</value>
   </data>
 </root>
