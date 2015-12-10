@@ -70,6 +70,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Web Admin.
+        /// </summary>
+        public static string PluginName {
+            get {
+                return ResourceManager.GetString("PluginName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string WA_Home {

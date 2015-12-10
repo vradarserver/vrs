@@ -135,7 +135,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Name { get { return "Database Writer"; } }
+        public string Name { get { return PluginStrings.PluginName; } }
 
         /// <summary>
         /// See interface docs.

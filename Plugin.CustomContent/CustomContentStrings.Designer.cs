@@ -295,6 +295,15 @@ namespace VirtualRadar.Plugin.CustomContent {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Content.
+        /// </summary>
+        public static string PluginName {
+            get {
+                return ResourceManager.GetString("PluginName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replace / add site content.
         /// </summary>
         public static string ReplaceAndAddSiteContent {
