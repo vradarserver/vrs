@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @license Copyright © 2013 onwards, Andrew Whewell
  * All rights reserved.
  *
@@ -12,123 +12,114 @@
 /**
  * @fileoverview Manages fetching and exposing the server's configuration.
  */
-
-(function(VRS, $, /** object= */ undefined)
-{
-    //region Global options
+var VRS;
+(function (VRS) {
+    /*
+     * Global options
+     */
     VRS.globalOptions = VRS.globalOptions || {};
-    VRS.globalOptions.serverConfigUrl = VRS.globalOptions.serverConfigUrl || 'ServerConfig.json';       // The URL to fetch the server configuration from.
-    VRS.globalOptions.serverConfigDataType = VRS.globalOptions.serverConfigDataType || 'json';          // The type of call to make when fetching the server configuration.
-    VRS.globalOptions.serverConfigTimeout = VRS.globalOptions.serverConfigTimeout || 10000;             // The number of milliseconds to wait before timing out a fetch of server configuration.
-    VRS.globalOptions.serverConfigRetryInterval = VRS.globalOptions.serverConfigRetryInterval || 5000;  // The number of milliseconds to wait before retrying a fetch of server configuration.
-    VRS.globalOptions.serverConfigOverwrite = VRS.globalOptions.serverConfigOverwrite !== undefined ? VRS.globalOptions.serverConfigOverwrite : false;                              // Whether to overwrite the existing configuration with the configuration stored on the server.
-    VRS.globalOptions.serverConfigResetBeforeImport = VRS.globalOptions.serverConfigResetBeforeImport !== undefined ? VRS.globalOptions.serverConfigResetBeforeImport : false;      // Whether to erase the existing configuration before importing the configuration stored on the server.
-    VRS.globalOptions.serverConfigIgnoreSplitters = VRS.globalOptions.serverConfigIgnoreSplitters !== undefined ? VRS.globalOptions.serverConfigIgnoreSplitters : false;            // Whether to ignore the splitter settings when importing the configuration stored on the server.
-    VRS.globalOptions.serverConfigIgnoreLanguage = VRS.globalOptions.serverConfigIgnoreLanguage !== undefined ? VRS.globalOptions.serverConfigIgnoreLanguage : true;                // Whether to ignore the language settings when importing the configuration stored on the server.
+    VRS.globalOptions.serverConfigUrl = VRS.globalOptions.serverConfigUrl || 'ServerConfig.json'; // The URL to fetch the server configuration from.
+    VRS.globalOptions.serverConfigDataType = VRS.globalOptions.serverConfigDataType || 'json'; // The type of call to make when fetching the server configuration.
+    VRS.globalOptions.serverConfigTimeout = VRS.globalOptions.serverConfigTimeout || 10000; // The number of milliseconds to wait before timing out a fetch of server configuration.
+    VRS.globalOptions.serverConfigRetryInterval = VRS.globalOptions.serverConfigRetryInterval || 5000; // The number of milliseconds to wait before retrying a fetch of server configuration.
+    VRS.globalOptions.serverConfigOverwrite = VRS.globalOptions.serverConfigOverwrite !== undefined ? VRS.globalOptions.serverConfigOverwrite : false; // Whether to overwrite the existing configuration with the configuration stored on the server.
+    VRS.globalOptions.serverConfigResetBeforeImport = VRS.globalOptions.serverConfigResetBeforeImport !== undefined ? VRS.globalOptions.serverConfigResetBeforeImport : false; // Whether to erase the existing configuration before importing the configuration stored on the server.
+    VRS.globalOptions.serverConfigIgnoreSplitters = VRS.globalOptions.serverConfigIgnoreSplitters !== undefined ? VRS.globalOptions.serverConfigIgnoreSplitters : false; // Whether to ignore the splitter settings when importing the configuration stored on the server.
+    VRS.globalOptions.serverConfigIgnoreLanguage = VRS.globalOptions.serverConfigIgnoreLanguage !== undefined ? VRS.globalOptions.serverConfigIgnoreLanguage : true; // Whether to ignore the language settings when importing the configuration stored on the server.
     VRS.globalOptions.serverConfigIgnoreRequestFeedId = VRS.globalOptions.serverConfigIgnoreRequestFeedId !== undefined ? VRS.globalOptions.serverConfigIgnoreRequestFeedId : true; // Whether to ignore the feed ID to fetch when importing the configuration stored on the server.
-    //endregion
-
-    //region ServerConfiguration
-    VRS.ServerConfiguration = function()
-    {
-        //region -- Fields
-        var that = this;
-        //endregion
-
-        //region -- Properties
-        /** @type {VRS_SERVER_CONFIG} @private */
-        var _ServerConfig = null;
-
+    var ServerConfiguration = (function () {
+        function ServerConfiguration() {
+            this._ServerConfig = null;
+        }
         /**
          * Gets the current configuration on the server.
-         * @returns {VRS_SERVER_CONFIG}
          */
-        this.get = function() { return _ServerConfig; };
-
+        ServerConfiguration.prototype.get = function () {
+            return this._ServerConfig;
+        };
         /**
          * Returns true if the configuration allows for the playing of audio.
-         * @returns {boolean}
          */
-        this.audioEnabled = function() { return _ServerConfig && !_ServerConfig.IsMono && _ServerConfig.IsAudioEnabled && (_ServerConfig.IsLocalAddress || _ServerConfig.InternetClientsCanPlayAudio); };
-
+        ServerConfiguration.prototype.audioEnabled = function () {
+            return this._ServerConfig &&
+                !this._ServerConfig.IsMono &&
+                this._ServerConfig.IsAudioEnabled &&
+                (this._ServerConfig.IsLocalAddress || this._ServerConfig.InternetClientsCanPlayAudio);
+        };
         /**
          * Returns true if the configuration allows for the viewing of aircraft pictures.
-         * @returns {boolean}
          */
-        this.picturesEnabled = function() { return _ServerConfig && (_ServerConfig.IsLocalAddress || _ServerConfig.InternetClientsCanSeeAircraftPictures); };
-
+        ServerConfiguration.prototype.picturesEnabled = function () {
+            return this._ServerConfig && (this._ServerConfig.IsLocalAddress || this._ServerConfig.InternetClientsCanSeeAircraftPictures);
+        };
         /**
          * Returns true if the configuration allows for the display of pin text on aircraft markers.
-         * @returns {boolean}
          */
-        this.pinTextEnabled = function() { return _ServerConfig && (_ServerConfig.IsLocalAddress || _ServerConfig.InternetClientCanShowPinText); };
-
+        ServerConfiguration.prototype.pinTextEnabled = function () {
+            return this._ServerConfig && (this._ServerConfig.IsLocalAddress || this._ServerConfig.InternetClientCanShowPinText);
+        };
         /**
          * Returns true if the configuration allows for the running of reports.
-         * @returns {boolean}
          */
-        this.reportsEnabled = function() { return _ServerConfig && (_ServerConfig.IsLocalAddress || _ServerConfig.InternetClientCanRunReports); };
-
+        ServerConfiguration.prototype.reportsEnabled = function () {
+            return this._ServerConfig && (this._ServerConfig.IsLocalAddress || this._ServerConfig.InternetClientCanRunReports);
+        };
         /**
          * Returns true if the configuration allows for the submission of routes.
-         * @returns {boolean}
          */
-        this.routeSubmissionEnabled = function() { return _ServerConfig && (_ServerConfig.IsLocalAddress || _ServerConfig.InternetClientsCanSubmitRoutes); };
-
+        ServerConfiguration.prototype.routeSubmissionEnabled = function () {
+            return this._ServerConfig && (this._ServerConfig.IsLocalAddress || this._ServerConfig.InternetClientsCanSubmitRoutes);
+        };
         /**
          * Returns true if the configuration allows for the display of polar plots.
-         * @returns {boolean}
          */
-        this.polarPlotsEnabled = function() { return _ServerConfig && (_ServerConfig.IsLocalAddress || _ServerConfig.InternetClientsCanSeePolarPlots); };
-        //endregion
-
-        //region -- fetch
+        ServerConfiguration.prototype.polarPlotsEnabled = function () {
+            return this._ServerConfig && (this._ServerConfig.IsLocalAddress || this._ServerConfig.InternetClientsCanSeePolarPlots);
+        };
         /**
          * Fetches the configuration from the server. If this fails then it will retry perpetually. Once it finally
          * receives a reply it calls the callback passed across. The callback is mandatory.
-         * @param {function()} successCallback
          */
-        this.fetch = function(successCallback)
-        {
-            if(!successCallback) throw 'You must supply a method to call once the configuration has been fetched';
-
+        ServerConfiguration.prototype.fetch = function (successCallback) {
+            var self = this;
+            if (!successCallback)
+                throw 'You must supply a method to call once the configuration has been fetched';
             $.ajax({
-                url:        VRS.globalOptions.serverConfigUrl,
-                dataType:   VRS.globalOptions.serverConfigDataType,
-                timeout:    VRS.globalOptions.serverConfigTimeout,
-                success:    function(data) {
-                                _ServerConfig = data;
-
-                                if(_ServerConfig.InitialSettings && VRS.configStorage && !VRS.configStorage.getHasSettings()) {
-                                    VRS.configStorage.importSettings(_ServerConfig.InitialSettings, {
-                                        overwrite:              VRS.globalOptions.serverConfigOverwrite,
-                                        resetBeforeImport:      VRS.globalOptions.serverConfigResetBeforeImport,
-                                        ignoreSplitters:        VRS.globalOptions.serverConfigIgnoreSplitters,
-                                        ignoreLanguage:         VRS.globalOptions.serverConfigIgnoreLanguage,
-                                        ignoreRequestFeedId:    VRS.globalOptions.serverConfigIgnoreRequestFeedId
-                                    });
-                                }
-
-                                VRS.globalDispatch.raise(VRS.globalEvent.serverConfigChanged, [ _ServerConfig ]);
-                                successCallback();
-                            },
-                failure:    function(jqXHR, textStatus, errorThrown) { fetchFailed(successCallback); }
+                url: VRS.globalOptions.serverConfigUrl,
+                dataType: VRS.globalOptions.serverConfigDataType,
+                timeout: VRS.globalOptions.serverConfigTimeout,
+                success: function (data) {
+                    self._ServerConfig = data;
+                    if (self._ServerConfig.InitialSettings && VRS.configStorage && !VRS.configStorage.getHasSettings()) {
+                        VRS.configStorage.importSettings(self._ServerConfig.InitialSettings, {
+                            overwrite: VRS.globalOptions.serverConfigOverwrite,
+                            resetBeforeImport: VRS.globalOptions.serverConfigResetBeforeImport,
+                            ignoreSplitters: VRS.globalOptions.serverConfigIgnoreSplitters,
+                            ignoreLanguage: VRS.globalOptions.serverConfigIgnoreLanguage,
+                            ignoreRequestFeedId: VRS.globalOptions.serverConfigIgnoreRequestFeedId
+                        });
+                    }
+                    VRS.globalDispatch.raise(VRS.globalEvent.serverConfigChanged, [self._ServerConfig]);
+                    successCallback();
+                },
+                error: function (jqXHR, textStatus, errorThrown) { self.fetchFailed(successCallback); }
             });
         };
-
         /**
          * Called when the fetch fails. Waits for a bit and then tries again.
-         * @param {function()} successCallback
          */
-        function fetchFailed(successCallback)
-        {
-            setTimeout(function() { that.fetch(successCallback); }, VRS.globalOptions.serverConfigRetryInterval);
-        }
-        //endregion
-    };
-    //endregion
-
-    //region Pre-builts
+        ServerConfiguration.prototype.fetchFailed = function (successCallback) {
+            var self = this;
+            setTimeout(function () {
+                self.fetch(successCallback);
+            }, VRS.globalOptions.serverConfigRetryInterval);
+        };
+        return ServerConfiguration;
+    })();
+    VRS.ServerConfiguration = ServerConfiguration;
+    /*
+     * Prebuilts
+     */
     VRS.serverConfig = new VRS.ServerConfiguration();
-    //endregion
-}(window.VRS = window.VRS || {}, jQuery));
+})(VRS || (VRS = {}));
+//# sourceMappingURL=serverConfiguration.js.map

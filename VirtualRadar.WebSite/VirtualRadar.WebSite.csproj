@@ -382,7 +382,12 @@
     <Content Include="Site\Web\script\vrs\report.js" />
     <Content Include="Site\Web\script\vrs\reportRenderer.js" />
     <Content Include="Site\Web\script\vrs\reportFilter.js" />
-    <Content Include="Site\Web\script\vrs\serverConfiguration.js" />
+    <Content Include="Site\Web\script\vrs\serverConfiguration.js">
+        <DependentUpon>serverConfiguration.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\serverConfiguration.js.map">
+        <DependentUpon>serverConfiguration.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\timeoutManager.js" />
     <Content Include="Site\Web\zz-norel-marker-contact-sheet.html" />
     <Content Include="Site\Web\zz-norel-test.html" />
@@ -421,10 +426,10 @@
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.ru-RU.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.ru.js" />
     <Content Include="Site\Web\script\i18n\localise.js">
-        <DependentUpon>localise.ts</DependentUpon>
+      <DependentUpon>localise.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\i18n\localise.js.map">
-        <DependentUpon>localise.ts</DependentUpon>
+      <DependentUpon>localise.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\i18n\strings.en.js" />
     <Content Include="Site\Web\script\i18n\strings.ru.js" />
@@ -462,17 +467,17 @@
     <Content Include="Site\Web\script\vrs\aircraftRenderer.js" />
     <Content Include="Site\Web\script\vrs\bootstrapMapDesktop.js" />
     <Content Include="Site\Web\script\vrs\configStorage.js">
-        <DependentUpon>configStorage.ts</DependentUpon>
+      <DependentUpon>configStorage.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\configStorage.js.map">
-        <DependentUpon>configStorage.ts</DependentUpon>
+      <DependentUpon>configStorage.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\currentLocation.js" />
     <Content Include="Site\Web\script\vrs\enums.js">
-        <DependentUpon>enums.ts</DependentUpon>
+      <DependentUpon>enums.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\enums.js.map">
-        <DependentUpon>enums.ts</DependentUpon>
+      <DependentUpon>enums.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\event.js">
       <DependentUpon>event.ts</DependentUpon>
@@ -484,10 +489,10 @@
     <Content Include="Site\Web\script\vrs\menuUI.js" />
     <Content Include="Site\Web\script\vrs\optionsUI.js" />
     <Content Include="Site\Web\script\vrs\scriptManager.js">
-        <DependentUpon>scriptManager.ts</DependentUpon>
+      <DependentUpon>scriptManager.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\scriptManager.js.map">
-        <DependentUpon>scriptManager.ts</DependentUpon>
+      <DependentUpon>scriptManager.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\string.js">
       <DependentUpon>string.ts</DependentUpon>
@@ -558,6 +563,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\enums.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\event.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\scriptManager.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\serverConfiguration.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\string.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\utility.ts" />
     <TypeScriptCompile Include="Site\_external\globalise.d.ts" />
