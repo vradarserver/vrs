@@ -102,7 +102,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Name { get { return "Custom Content"; } }
+        public string Name { get { return CustomContentStrings.PluginName; } }
 
         /// <summary>
         /// See interface docs.

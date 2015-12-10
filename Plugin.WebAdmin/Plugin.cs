@@ -74,7 +74,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Name { get { return "Web Admin Pages"; } }
+        public string Name { get { return WebAdminStrings.PluginName; } }
 
         /// <summary>
         /// See interface docs.

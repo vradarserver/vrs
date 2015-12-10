@@ -232,6 +232,15 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Database Writer.
+        /// </summary>
+        public static string PluginName {
+            get {
+                return ResourceManager.GetString("PluginName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Receiver.
         /// </summary>
         public static string Receiver {

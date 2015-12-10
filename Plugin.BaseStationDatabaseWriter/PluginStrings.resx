@@ -207,4 +207,7 @@
   <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
     <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new aircraft records.</value>
   </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Database Writer</value>
+  </data>
 </root>

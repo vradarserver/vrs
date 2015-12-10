@@ -215,4 +215,7 @@
   <data name="ResourceImagesFolder" xml:space="preserve">
     <value>Resource images folder</value>
   </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Custom Content</value>
+  </data>
 </root>

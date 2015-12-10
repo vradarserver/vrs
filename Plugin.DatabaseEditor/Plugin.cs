@@ -225,10 +225,12 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _WebSiteExtender.Enabled = options.Enabled;
             _WebSiteExtender.RestrictAccessToFolder(ProtectedFolder, options.Access);
 
-            if(!options.Enabled) {
-                Status = DatabaseEditorStrings.StatusDisabled;
-            } else {
-                Status = Strings.Enabled;
+            using(new CultureSwitcher()) {
+                if(!options.Enabled) {
+                    Status = DatabaseEditorStrings.StatusDisabled;
+                } else {
+                    Status = Strings.Enabled;
+                }
             }
 
             UpdateStatusTotals();
@@ -239,7 +241,9 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         private void UpdateStatusTotals()
         {
-            StatusDescription = String.Format(DatabaseEditorStrings.StatusStatistics, _SearchCount, _UpdateCount);
+            using(new CultureSwitcher()) {
+                StatusDescription = String.Format(DatabaseEditorStrings.StatusStatistics, _SearchCount, _UpdateCount);
+            }
         }
         #endregion
 
