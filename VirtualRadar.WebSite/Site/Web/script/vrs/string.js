@@ -1,56 +1,8 @@
-/**
- * @license Copyright © 2013 onwards, Andrew Whewell
- * All rights reserved.
- *
- * Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- *    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Portions Copyright (c) 2009, CodePlex Foundation
- * All rights reserved.
- *
- * CodePlex license:
- * Redistribution and use in source and binary forms, with or without modification, are permitted
- * provided that the following conditions are met:
- *
- * *   Redistributions of source code must retain the above copyright notice, this list of conditions
- * and the following disclaimer.
- *
- * *   Redistributions in binary form must reproduce the above copyright notice, this list of conditions
- * and the following disclaimer in the documentation and/or other materials provided with the distribution.
- *
- * *   Neither the name of CodePlex Foundation nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/**
- * @fileoverview String utility methods.
- */
 var VRS;
 (function (VRS) {
-    /**
-     * Methods for working with strings.
-     *
-     * The format() code was copied from http://stackoverflow.com/questions/2534803/string-format-in-javascript
-     * which in turn was extracted from MicrosoftAjax.js by Sky Sanders on 28th March 2010.
-     */
     var StringUtility = (function () {
         function StringUtility() {
         }
-        /**
-         * Returns true if the text contains the hasText string.
-         */
         StringUtility.prototype.contains = function (text, hasText, ignoreCase) {
             if (ignoreCase === void 0) { ignoreCase = false; }
             var result = !!(text && hasText);
@@ -62,9 +14,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns true if the lhs is equals to the rhs.
-         */
         StringUtility.prototype.equals = function (lhs, rhs, ignoreCase) {
             if (ignoreCase === void 0) { ignoreCase = false; }
             var result = false;
@@ -74,19 +23,11 @@ var VRS;
                 result = rhs && (!ignoreCase ? lhs === rhs : lhs.toUpperCase() === rhs.toUpperCase());
             return result;
         };
-        /**
-         * Calls the allowCharacter callback for each character in the text and returns the string formed from those
-         * characters that the callback returns true for.
-         */
         StringUtility.prototype.filter = function (text, allowCharacter) {
             return this.filterReplace(text, function (ch) {
                 return allowCharacter(ch) ? ch : null;
             });
         };
-        /**
-         * Calls the replaceCharacter callback for each character in the text and returns the string formed from the
-         * strings that the callback returns.
-         */
         StringUtility.prototype.filterReplace = function (text, replaceCharacter) {
             var result = text;
             if (result) {
@@ -110,12 +51,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns the text with chevrons and ampersands escaped out for display in HTML.
-         *
-         * The aim of this function is to make the text HTML-safe in one pass - it is not to convert
-         * every possible HTML character to escape codes.
-         */
         StringUtility.prototype.htmlEscape = function (text) {
             return this.filterReplace(text, function (ch) {
                 switch (ch) {
@@ -126,12 +61,6 @@ var VRS;
                 }
             });
         };
-        /**
-         * Formats a .NET style format string and arguments.
-         * @param {string} text The formatting string.
-         * @param {...} args The arguments to the formatting string.
-         * @returns {string} The formatted string.
-         */
         StringUtility.prototype.format = function (text) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
@@ -139,20 +68,13 @@ var VRS;
             }
             return this.toFormattedString(false, arguments);
         };
-        /**
-         * Replaces .NET style substitution markers with the arguments passed across.
-         * This was copied from http://stackoverflow.com/questions/2534803/string-format-in-javascript
-         * which in turn was extracted from MicrosoftAjax.js.
-         */
         StringUtility.prototype.toFormattedString = function (useLocale, args) {
             var result = '';
             var format = args[0];
             for (var i = 0;;) {
-                // Find the next opening or closing brace
                 var open = format.indexOf('{', i);
                 var close = format.indexOf('}', i);
                 if ((open < 0) && (close < 0)) {
-                    // Not found: copy the end of the string and break
                     result += format.slice(i);
                     break;
                 }
@@ -163,10 +85,8 @@ var VRS;
                     i = close + 2;
                     continue;
                 }
-                // Copy the string before the brace
                 result += format.slice(i, open);
                 i = open + 1;
-                // Check for double braces (which display as one and are not arguments)
                 if (format.charAt(i) === '{') {
                     result += '{';
                     i++;
@@ -174,20 +94,16 @@ var VRS;
                 }
                 if (close < 0)
                     throw new Error('format stringFormatBraceMismatch');
-                // Find the closing brace
-                // Get the string between the braces, and split it around the ':' (if any)
                 var brace = format.substring(i, close);
                 var colonIndex = brace.indexOf(':');
                 var argNumber = parseInt((colonIndex < 0) ? brace : brace.substring(0, colonIndex), 10) + 1;
                 if (isNaN(argNumber))
                     throw new Error('format stringFormatInvalid');
                 var argFormat = (colonIndex < 0) ? '' : brace.substring(colonIndex + 1);
-                /** @type {VRS_FORMAT_ARG} */
                 var arg = args[argNumber];
                 if (typeof (arg) === "undefined" || arg === null) {
                     arg = '';
                 }
-                // If it has a toFormattedString method, call it.  Otherwise, call toString()
                 if (arg.toFormattedString)
                     result += arg.toFormattedString(argFormat);
                 else if (useLocale && arg.localeFormat)
@@ -206,7 +122,6 @@ var VRS;
             if (isNaN(value))
                 value = 0;
             var result;
-            // Test for the most common case where only simple (or no) formatting is required.
             if (value >= 0) {
                 if (format === undefined || format === null)
                     return value.toString();
@@ -214,14 +129,14 @@ var VRS;
                     result = value.toString();
                     if (result.length < format) {
                         while (result.length < format)
-                            result = '0' + result; // This is ugly but very quick.
+                            result = '0' + result;
                     }
                     return result;
                 }
             }
             var culture = Globalize.culture();
             var leadingZeros = 0;
-            var decimalPlaces = -1; // -1 indicates that we just display the natural decimals from a toString() call
+            var decimalPlaces = -1;
             var showSeparators = false;
             var decimalPosn = 0;
             if (format) {
@@ -298,9 +213,6 @@ var VRS;
             }
             return result || '';
         };
-        /**
-         * Returns the index of the first character that is not the character passed across.
-         */
         StringUtility.prototype.indexNotOf = function (text, character) {
             if (!character || character.length !== 1)
                 throw 'A single character must be supplied';
@@ -316,38 +228,22 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns true if the text is in upper-case.
-         */
         StringUtility.prototype.isUpperCase = function (text) {
             return text && text.toUpperCase() == text;
         };
-        /**
-         * Returns a string consisting of the sequence repeated count times.
-         */
         StringUtility.prototype.repeatedSequence = function (sequence, count) {
-            // As ugly as this looks it's a lot quicker than other methods like new Array(count+1).join(sequence)
             var result = '';
             for (var i = 0; i < count; ++i) {
                 result += sequence;
             }
             return result;
         };
-        /**
-         * Returns the text padded with a string for length characters.
-         */
         StringUtility.prototype.padLeft = function (text, ch, length) {
             return this.doPad(text, ch, length, false);
         };
-        /**
-         * Returns the text padded with a string for length characters.
-         */
         StringUtility.prototype.padRight = function (text, ch, length) {
             return this.doPad(text, ch, length, true);
         };
-        /**
-         * Does the work for padLeft and padRight.
-         */
         StringUtility.prototype.doPad = function (text, ch, length, toRight) {
             if (text === null || text === undefined)
                 text = '';
@@ -356,24 +252,15 @@ var VRS;
                 toRight ? text + this.repeatedSequence(ch, requiredCount)
                     : this.repeatedSequence(ch, requiredCount) + text;
         };
-        /**
-         * Returns true if the text begins with the withText string.
-         */
         StringUtility.prototype.startsWith = function (text, withText, ignoreCase) {
             if (ignoreCase === void 0) { ignoreCase = false; }
             return this.startsOrEndsWith(text, withText, ignoreCase, true);
         };
-        /**
-         * Returns true if the text ends with the withText string.
-         */
         StringUtility.prototype.endsWith = function (text, withText, ignoreCase) {
             if (ignoreCase === void 0) { ignoreCase = false; }
             return this.startsOrEndsWith(text, withText, ignoreCase, false);
         };
         ;
-        /**
-         * Returns true if the text starts or ends with the withText string.
-         */
         StringUtility.prototype.startsOrEndsWith = function (text, withText, ignoreCase, fromStart) {
             var length = withText ? withText.length : 0;
             var result = !!(text && length && text.length >= length);
@@ -390,10 +277,6 @@ var VRS;
         return StringUtility;
     })();
     VRS.StringUtility = StringUtility;
-    /**
-     * Pre-built instances of StringUtility. The code historically expects to be able to use these,
-     * can't replace them with static methods.
-     */
     VRS.stringUtility = new VRS.StringUtility();
 })(VRS || (VRS = {}));
 //# sourceMappingURL=string.js.map

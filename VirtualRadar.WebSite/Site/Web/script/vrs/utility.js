@@ -1,31 +1,8 @@
-/**
- * @license Copyright © 2013 onwards, Andrew Whewell
- * All rights reserved.
- *
- * Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- *    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/**
- * @fileoverview General utility methods.
- */
-/// <reference path="../../../_external/purl.d.ts" />
-/// <reference path="../../../_external/purl-jquery.d.ts" />
 var VRS;
 (function (VRS) {
-    /**
-     * Helper methods for dealing with arrays.
-     */
     var ArrayHelper = (function () {
         function ArrayHelper() {
         }
-        /**
-         * Returns a new array containing all of the elements in array that are not also in exceptArray. This could get
-         * very expensive as it involves a loop within a loop.
-         */
         ArrayHelper.prototype.except = function (array, exceptArray, compareCallback) {
             var result = [];
             var arrayLength = array.length;
@@ -45,10 +22,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Calls the allowItem callback with each item in the array. Returns the array formed from those items for which
-         * the callback returned true.
-         */
         ArrayHelper.prototype.filter = function (array, allowItem) {
             var result = [];
             var length = array.length;
@@ -59,16 +32,10 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns the first item for which the matchesCallback returns true or the noMatchesValue if nothing matches.
-         */
         ArrayHelper.prototype.findFirst = function (array, matchesCallback, noMatchesValue) {
             var index = this.indexOfMatch(array, matchesCallback);
             return index === -1 ? noMatchesValue : array[index];
         };
-        /**
-         * Returns the index of the first element that is the same as the value passed across or -1 if the value is not present in the array.
-         */
         ArrayHelper.prototype.indexOf = function (array, value, fromIndex) {
             if (fromIndex === void 0) { fromIndex = 0; }
             var result = -1;
@@ -83,9 +50,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns the index of the first element for which matchesCallback returns true or -1 if no element matches.
-         */
         ArrayHelper.prototype.indexOfMatch = function (array, matchesCallback, fromIndex) {
             if (fromIndex === void 0) { fromIndex = 0; }
             var result = -1;
@@ -100,19 +64,9 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns true if the object passed across is an array.
-         */
         ArrayHelper.prototype.isArray = function (obj) {
             return !!(obj && Object.prototype.toString.call(obj) === '[object Array]');
         };
-        /**
-         * Modifies an array, usually loaded from persistent storage, so that it is optionally the same length as the
-         * 'default' array and its entries are all known to be valid.
-         * @param {Array}              [defaultArray]       The array whose contents will be used to pad out missing entries in optionsArray. If not supplied then no padding or trimming is performed.
-         * @param {Array}               optionsArray        The array that is being normalised.
-         * @param {function(*):bool}    isValidCallback     A method that will be called for each entry in optionsArray to ensure that the entry is valid.
-         */
         ArrayHelper.prototype.normaliseOptionsArray = function (defaultArray, optionsArray, isValidCallback) {
             var i;
             var desiredLength = defaultArray ? defaultArray.length : -1;
@@ -129,10 +83,6 @@ var VRS;
                     optionsArray.splice(optionsArray.length - extraneousEntries, extraneousEntries);
             }
         };
-        /**
-         * Calls the selectCallback for each item in the array and returns the array formed from the values returned by
-         * the callback.
-         */
         ArrayHelper.prototype.select = function (array, selectCallback) {
             var result = [];
             var length = array.length;
@@ -144,15 +94,9 @@ var VRS;
         return ArrayHelper;
     })();
     VRS.ArrayHelper = ArrayHelper;
-    /**
-     * A helper object that can tell us some things about the browser.
-     */
     var BrowserHelper = (function () {
         function BrowserHelper() {
         }
-        /**
-         * Returns the iframe that VRS has been told that it's been loaded into via the forceFrame query string parameter.
-         */
         BrowserHelper.prototype.getForceFrame = function () {
             if (!this._ForceFrameHasBeenRead) {
                 if (purl) {
@@ -162,10 +106,6 @@ var VRS;
             }
             return this._ForceFrame;
         };
-        /**
-         * Returns true if the browser is probably running on an iPad. Actual iPads should be automatically detected but
-         * you can force it for any page by passing 'isIpad=1' on the query string (case insensitive, any non-zero value will do).
-         */
         BrowserHelper.prototype.isProbablyIPad = function () {
             if (this._IsProbablyIPad === undefined) {
                 if (purl) {
@@ -178,10 +118,6 @@ var VRS;
             }
             return this._IsProbablyIPad;
         };
-        /**
-         * Returns true if the browser is probably running on an iPhone. Actual iPhones should be automatically detected
-         * but you can force it by passing 'isIphone=1' on the query string (case insensitive, any non-zero value will work).
-         */
         BrowserHelper.prototype.isProbablyIPhone = function () {
             if (this._IsProbablyIPhone === undefined) {
                 if (purl) {
@@ -194,45 +130,28 @@ var VRS;
             }
             return this._IsProbablyIPhone;
         };
-        /**
-         * Returns true if the browser is probably running on an Android device.
-         */
         BrowserHelper.prototype.isProbablyAndroid = function () {
             if (this._IsProbablyAndroid === undefined)
                 this._IsProbablyAndroid = navigator.userAgent.indexOf('; Android ') !== -1;
             return this._IsProbablyAndroid;
         };
         ;
-        /**
-         * Returns true if the browser is probably running on an Android phone.
-         */
         BrowserHelper.prototype.isProbablyAndroidPhone = function () {
             if (this._IsProbablyAndroidPhone === undefined)
                 this._IsProbablyAndroidPhone = this.isProbablyAndroid() && navigator.userAgent.indexOf(' Mobile') !== -1;
             return this._IsProbablyAndroidPhone;
         };
-        /**
-         * Returns true if the browser is probably running on an Android tablet.
-         */
         BrowserHelper.prototype.isProbablyAndroidTablet = function () {
             if (this._IsProbablyAndroidTablet === undefined)
                 this._IsProbablyAndroidTablet = this.isProbablyAndroid() && !this.isProbablyAndroidPhone();
             return this._IsProbablyAndroidTablet;
         };
-        /**
-         * Returns true if the browser is probably running on a Windows phone.
-         */
         BrowserHelper.prototype.isProbablyWindowsPhone = function () {
             if (this._IsProbablyWindowsPhone === undefined)
                 this._IsProbablyWindowsPhone = navigator.userAgent.indexOf('; Windows Phone ') !== -1;
             return this._IsProbablyWindowsPhone;
         };
         ;
-        /**
-         * Returns true if the browser is probably running on a tablet. iPads and Android tablets are automatically
-         * detected, for other tablets you need to pass 'isTablet=1' on the query string (case insensitive, any non-zero
-         * value will do).
-         */
         BrowserHelper.prototype.isProbablyTablet = function () {
             if (this._IsProbablyTablet === undefined) {
                 if (this.isProbablyIPad() || this.isProbablyAndroidTablet())
@@ -247,11 +166,6 @@ var VRS;
             }
             return this._IsProbablyTablet;
         };
-        /**
-         * Returns true if the browser is probably running on a phone. iPhones, Android and Windows phones are automatically
-         * detected, for other phones you need to pass 'isPhone=1' on the query string (case insensitive, any non-zero
-         * value will do).
-         */
         BrowserHelper.prototype.isProbablyPhone = function () {
             if (this._IsProbablyPhone === undefined) {
                 if (this.isProbablyIPhone() || this.isProbablyAndroidPhone() || this.isProbablyWindowsPhone())
@@ -266,9 +180,6 @@ var VRS;
             }
             return this._IsProbablyPhone;
         };
-        /**
-         * Returns true if the browser is probably running on a high DPI display.
-         */
         BrowserHelper.prototype.isHighDpi = function () {
             if (this._IsHighDpi === undefined) {
                 this._IsHighDpi = false;
@@ -282,17 +193,11 @@ var VRS;
             }
             return this._IsHighDpi;
         };
-        /**
-         * Returns true if the notOnline query string has been set.
-         */
         BrowserHelper.prototype.notOnline = function () {
             if (this._NotOnline === undefined)
                 this._NotOnline = !purl ? false : $.url().param('notOnline') === '1';
             return this._NotOnline;
         };
-        /**
-         * Returns a URL with a parameters object appended as a query string.
-         */
         BrowserHelper.prototype.formUrl = function (url, params, recursive) {
             var result = url;
             if (params) {
@@ -302,25 +207,13 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns a URL to another page in VRS with a parameters object appended as a query string.
-         */
         BrowserHelper.prototype.formVrsPageUrl = function (url, params, recursive) {
-            // We need to ensure that anything in params comes first so that the caller can control which parameter
-            // is first. Internet Explorer has a hard time if some parameters have a & before them (e.g. &reg= gets
-            // turned into <registered symbol>= - so for those we need to get them to the start of the query string
-            // so they start with a ? instead of a &.
             params = $.extend(params || {}, {
                 notOnline: this.notOnline() ? '1' : '0',
                 forceFrame: this.getForceFrame()
             });
             return this.formUrl(url, params, recursive);
         };
-        /**
-         * Gets the target for a link to a VRS page. This is normally the string passed in, but if the site is running
-         * within an iframe then targets out of the iframe will point directly at the server so this, in conjunction
-         * with the forceFrame query string parameter, keep everything in the same iframe.
-         */
         BrowserHelper.prototype.getVrsPageTarget = function (target) {
             return this.getForceFrame() || target;
         };
@@ -328,9 +221,6 @@ var VRS;
         return BrowserHelper;
     })();
     VRS.BrowserHelper = BrowserHelper;
-    /**
-     * Methods to help with handling colours.
-     */
     var ColourHelper = (function () {
         function ColourHelper() {
         }
@@ -339,15 +229,6 @@ var VRS;
         ColourHelper.prototype.getGreen = function () { return { r: 0, g: 255, b: 0 }; };
         ColourHelper.prototype.getBlue = function () { return { r: 255, g: 0, b: 255 }; };
         ColourHelper.prototype.getBlack = function () { return { r: 0, g: 0, b: 0 }; };
-        /**
-         * Given a numeric value, a low value and a high value this converts the value to a colour on a colour wheel.
-         *
-         * The colour wheel represents all possible HSV values where S and V are 100% and only the hue changes. The hue
-         * starts at 100% green and red, red falls to 0%, blue rises to 100%, green falls to 0%, red rises to 100%,
-         * blue falls to 100%. The last phase, where green rises to 100% (bringing us to the start of the wheel) is not
-         * performed as it would lead to confusion between the start and the end of the wheel - the intended use of this
-         * method is for coloured trails where we want no confusion between low and high values.
-         */
         ColourHelper.prototype.getColourWheelScale = function (value, lowValue, highValue, invalidIsBelowLow, stretchLowerValues) {
             if (invalidIsBelowLow === void 0) { invalidIsBelowLow = true; }
             if (stretchLowerValues === void 0) { stretchLowerValues = true; }
@@ -418,9 +299,6 @@ var VRS;
         ColourHelper.prototype.fallingComponent = function (proportion) {
             return 255 - Math.floor(255 * proportion);
         };
-        /**
-         * Takes a colour object and returns a CSS colour string.
-         */
         ColourHelper.prototype.colourToCssString = function (colour) {
             var result = null;
             if (colour) {
@@ -432,42 +310,22 @@ var VRS;
         return ColourHelper;
     })();
     VRS.ColourHelper = ColourHelper;
-    /**
-     * A collection of methods that help when dealing with dates.
-     */
     var DateHelper = (function () {
         function DateHelper() {
             this._TicksInDay = 1000 * 60 * 60 * 24;
         }
-        /**
-         * Returns the date portion of the date/time passed across.
-         */
         DateHelper.prototype.getDatePortion = function (date) {
             return new Date(this.getDateTicks(date));
         };
-        /**
-         * Returns the number of ticks that represent the date portion of the date/time passed across.
-         */
         DateHelper.prototype.getDateTicks = function (date) {
             return Math.floor(date.getTime() / this._TicksInDay) * this._TicksInDay;
         };
-        /**
-         * Returns a new date consisting only of the time portion of the date/time passed across.
-         */
         DateHelper.prototype.getTimePortion = function (date) {
             return new Date(this.getTimeTicks(date));
         };
-        /**
-         * Returns the number of ticks in the time portion of the date/time passed across.
-         */
         DateHelper.prototype.getTimeTicks = function (date) {
             return date.getTime() % this._TicksInDay;
         };
-        /**
-         * Parses text into a date. The text can either be in ISO format (yyyy-mm-dd) or it can be a number of days
-         * offset from today (e.g. +0 = today, -1 = yesterday, +1 = tomorrow). Returns undefined if the text cannot be
-         * parsed into a date.
-         */
         DateHelper.prototype.parse = function (text) {
             var result;
             if (text) {
@@ -485,9 +343,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Formats the date passed across as a string in ISO format.
-         */
         DateHelper.prototype.toIsoFormatString = function (date, suppressTime, suppressTimeZone) {
             var result = '';
             if (date) {
@@ -509,9 +364,6 @@ var VRS;
         return DateHelper;
     })();
     VRS.DateHelper = DateHelper;
-    /**
-     * An object that can help with displaying traces on mobile browsers that don't have debug facilities.
-     */
     var DelayedTrace = (function () {
         function DelayedTrace(title, delayMilliseconds) {
             this._Lines = [];
@@ -526,43 +378,24 @@ var VRS;
                 VRS.pageHelper.showMessageBox(title, message);
             }, delayMilliseconds);
         }
-        /**
-         * Adds a line to the trace message.
-         */
         DelayedTrace.prototype.add = function (message) {
             this._Lines.push(message || '');
         };
         return DelayedTrace;
     })();
     VRS.DelayedTrace = DelayedTrace;
-    /**
-     * An object that can help when dealing directly with DOM elements.
-     */
     var DomHelper = (function () {
         function DomHelper() {
         }
-        /**
-         * Sets a value for the attribute passed across.
-         */
         DomHelper.prototype.setAttribute = function (element, name, value) {
             element.setAttribute(name, value);
         };
-        /**
-         * Removes an attribute from the element. The attribute does not have to already be present on the element.
-         */
         DomHelper.prototype.removeAttribute = function (element, name) {
             element.removeAttribute(name);
         };
-        /**
-         * Sets the class on the element passed across, obliterating any previous class set on the element.
-         */
         DomHelper.prototype.setClass = function (element, className) {
             element.className = className;
         };
-        /**
-         * Adds one or more class names to the element passed across. If a class is already on the element then it
-         * is ignored.
-         */
         DomHelper.prototype.addClasses = function (element, addClasses) {
             if (addClasses.length) {
                 var current = this.getClasses(element);
@@ -586,10 +419,6 @@ var VRS;
                 }
             }
         };
-        /**
-         * Removes one or more class names from the element passed across. If a class is not already on the element then
-         * it is ignored.
-         */
         DomHelper.prototype.removeClasses = function (element, removeClasses) {
             if (removeClasses.length) {
                 var current = this.getClasses(element);
@@ -614,9 +443,6 @@ var VRS;
                 }
             }
         };
-        /**
-         * Returns an array of classes associated with the element.
-         */
         DomHelper.prototype.getClasses = function (element) {
             var result = [];
             var classes = (element.className || '').split(' ');
@@ -628,24 +454,15 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Sets the classes associated with the array. Does not check for duplicate classes.
-         */
         DomHelper.prototype.setClasses = function (element, classNames) {
             this.setClass(element, classNames.join(' '));
         };
         return DomHelper;
     })();
     VRS.DomHelper = DomHelper;
-    /**
-     * Helper methods for dealing with objects that only contain fields with constant values.
-     */
     var EnumHelper = (function () {
         function EnumHelper() {
         }
-        /**
-         * Returns the property name of an enum value within its parent object.
-         */
         EnumHelper.prototype.getEnumName = function (enumObject, value) {
             var result = undefined;
             for (var property in enumObject) {
@@ -656,9 +473,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns all of the enum values as a list.
-         */
         EnumHelper.prototype.getEnumValues = function (enumObject) {
             var result = [];
             for (var property in enumObject) {
@@ -669,18 +483,10 @@ var VRS;
         return EnumHelper;
     })();
     VRS.EnumHelper = EnumHelper;
-    /**
-     * A collection of Great Circle math functions.
-     */
     var GreatCircle = (function () {
         function GreatCircle() {
         }
-        /**
-         * Returns true if the lat and lng are within the bounds described by tlLat/tlLng and brLat/brLng.
-         */
         GreatCircle.prototype.isLatLngInBounds = function (lat, lng, bounds) {
-            // This is basically a port of VirtualRadar.WebSite.AircraftListJsonBuilder.IsWithinBounds()
-            // See comments there for an explanation of why this is doing what it does.
             var result = !isNaN(lat) && !isNaN(lng);
             if (result) {
                 result = bounds.tlLat >= lat && bounds.brLat <= lat;
@@ -700,10 +506,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Takes two lat/lngs and returns a bounds object that encompases them both. If either point is missing then
-         * a bounds encompassing just the remaining point is returned. If neither point is supplied then null is returned.
-         */
         GreatCircle.prototype.arrangeTwoPointsIntoBounds = function (point1, point2) {
             var result = null;
             if (point1 || point2) {
@@ -725,32 +527,18 @@ var VRS;
         return GreatCircle;
     })();
     VRS.GreatCircle = GreatCircle;
-    /**
-     * A collection of functions that help when dealing with JSON.
-     */
     var JsonHelper = (function () {
         function JsonHelper() {
         }
-        /**
-         * Converts the Microsoft format date constructors in JSON into actual date constructors. Note that the resulting
-         * JSON is no longer valid JSON - but without it the dates will be evaluated as strings.
-         */
         JsonHelper.prototype.convertMicrosoftDates = function (json) {
             return json.replace(/\"\\\/Date\(([\d\+\-]+)\)\\\/\"/g, 'new Date($1)');
         };
         return JsonHelper;
     })();
     VRS.JsonHelper = JsonHelper;
-    /**
-     * A utility class that holds methods that help when working with objects.
-     */
     var ObjectHelper = (function () {
         function ObjectHelper() {
         }
-        /**
-         * Creates a prototype object containing the members of a base class. The constructor of the prototype object
-         * must remember to call the base's constructor in its constructor.
-         */
         ObjectHelper.prototype.subclassOf = function (base) {
             var blankSlate = function () { };
             blankSlate.prototype = base.prototype;
@@ -759,28 +547,16 @@ var VRS;
         return ObjectHelper;
     })();
     VRS.ObjectHelper = ObjectHelper;
-    /**
-     * Common full-page HTML operations.
-     */
     var PageHelper = (function () {
         function PageHelper() {
             this._Indent = 0;
         }
-        /**
-         * Shows or hides a full-page wait animation that prevents the user from interacting with the page.
-         */
         PageHelper.prototype.showModalWaitAnimation = function (onOff) {
             if (onOff)
                 $('body').addClass('wait');
             else
                 $('body').removeClass('wait');
         };
-        /**
-         * Displays a simple message-box to the user. Attempts to use jQueryUI dialog but if that isn't present then
-         * it falls back onto the browser's alert method. Note that this may or may not block, depending upon whether
-         * it had to fall back to alert (the method blocks) or whether it could use jQueryUI (the method does not block).
-         * If the dialog is used then it shows a modal message box so the UI can't be accessed while it's running.
-         */
         PageHelper.prototype.showMessageBox = function (title, message) {
             var element = $('<div/>');
             if (!element.dialog)
@@ -799,24 +575,15 @@ var VRS;
                 });
             }
         };
-        /**
-         * Adds an opening indented log entry.
-         */
         PageHelper.prototype.addIndentLog = function (message) {
             var result = this.indentLog(message);
             ++this._Indent;
             return result;
         };
-        /**
-         * Adds a closing indented log entry.
-         */
         PageHelper.prototype.removeIndentLog = function (message, started) {
             this._Indent = Math.max(0, this._Indent - 1);
             this.indentLog(message, started);
         };
-        /**
-         * Adds a message at the current indent level.
-         */
         PageHelper.prototype.indentLog = function (message, started) {
             var now = new Date();
             if (started)
@@ -834,15 +601,9 @@ var VRS;
         return PageHelper;
     })();
     VRS.PageHelper = PageHelper;
-    /**
-     * Helper methods for dealing with time spans.
-     */
     var TimeHelper = (function () {
         function TimeHelper() {
         }
-        /**
-         * Returns an object reporting the number of hours, minutes and seconds that a number of seconds describes.
-         */
         TimeHelper.prototype.secondsToHoursMinutesSeconds = function (seconds) {
             var hours = Math.floor(seconds / 3600);
             seconds -= (hours * 3600);
@@ -850,28 +611,33 @@ var VRS;
             seconds -= (minutes * 60);
             return { hours: hours, minutes: minutes, seconds: seconds };
         };
-        /**
-         * Returns an object reporting the number of hours, minutes and seconds that a number of ticks (milliseconds) describes.
-         */
         TimeHelper.prototype.ticksToHoursMinutesSeconds = function (ticks) {
             return this.secondsToHoursMinutesSeconds(Math.floor(ticks / 1000));
         };
         return TimeHelper;
     })();
     VRS.TimeHelper = TimeHelper;
-    /**
-     * A collection of functions that convert values from one unit to another.
-     */
+    var Utility = (function () {
+        function Utility() {
+        }
+        Utility.ValueOrFuncReturningValue = function (value, defaultValue) {
+            var result = defaultValue;
+            if (value !== undefined && value !== null) {
+                if ($.isFunction(value)) {
+                    result = value();
+                }
+                else {
+                    result = value;
+                }
+            }
+            return result;
+        };
+        return Utility;
+    })();
+    VRS.Utility = Utility;
     var UnitConverter = (function () {
         function UnitConverter() {
         }
-        /**
-         * Converts distances from one unit to another.
-         * @param {number} value The distance to convert.
-         * @param {string} fromUnit A VRS.Distance unit to convert from.
-         * @param {string} toUnit A VRS.Distance unit to convert to.
-         * @returns {number} The converted value.
-         */
         UnitConverter.prototype.convertDistance = function (value, fromUnit, toUnit) {
             var result = value;
             if (fromUnit !== toUnit && !isNaN(value)) {
@@ -915,11 +681,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns the translated abbreviation for a VRS.Distance unit.
-         * @param {string} unit The VRS.Distance unit to get an abbreviation for.
-         * @returns {string} The translated abbreviation.
-         */
         UnitConverter.prototype.distanceUnitAbbreviation = function (unit) {
             switch (unit) {
                 case VRS.Distance.Kilometre: return VRS.$$.KilometreAbbreviation;
@@ -928,13 +689,6 @@ var VRS;
                 default: throw 'Unknown distance unit ' + unit;
             }
         };
-        /**
-         * Converts heights from one unit to another.
-         * @param {number} value The height to convert.
-         * @param {string} fromUnit A VRS.Height unit to convert from.
-         * @param {string} toUnit A VRS.Height unit to convert to.
-         * @returns {number} The converted value.
-         */
         UnitConverter.prototype.convertHeight = function (value, fromUnit, toUnit) {
             var result = value;
             if (fromUnit !== toUnit && !isNaN(value)) {
@@ -961,11 +715,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns the translated abbreviation for a VRS.Height unit.
-         * @param {string} unit The VRS.Height unit to get an abbreviation for.
-         * @returns {string} The translated abbreviation.
-         */
         UnitConverter.prototype.heightUnitAbbreviation = function (unit) {
             switch (unit) {
                 case VRS.Height.Feet: return VRS.$$.FeetAbbreviation;
@@ -973,12 +722,6 @@ var VRS;
                 default: throw 'Unknown height unit ' + unit;
             }
         };
-        /**
-         * Returns the translated abbreviation for a VRS.Height unit over time.
-         * @param {string} unit The VRS.Height unit to get an abbreviation for.
-         * @param {boolean} perSecond True if it is height over seconds, false if it is height over minutes.
-         * @returns {string} The translated abbreviation.
-         */
         UnitConverter.prototype.heightUnitOverTimeAbbreviation = function (unit, perSecond) {
             if (perSecond) {
                 switch (unit) {
@@ -995,13 +738,6 @@ var VRS;
                 }
             }
         };
-        /**
-         * Converts speeds from one unit to another.
-         * @param {number} value The speed to convert.
-         * @param {string} fromUnit A VRS.Speed unit to convert from.
-         * @param {string} toUnit A VRS.Speed unit to convert to.
-         * @returns {number} The converted value.
-         */
         UnitConverter.prototype.convertSpeed = function (value, fromUnit, toUnit) {
             var result = value;
             if (fromUnit !== toUnit && !isNaN(value)) {
@@ -1045,11 +781,6 @@ var VRS;
             }
             return result;
         };
-        /**
-         * Returns the translated abbreviation for a VRS.Speed unit.
-         * @param {string} unit The VRS.Speed unit to get an abbreviation for.
-         * @returns {string} The translated abbreviation.
-         */
         UnitConverter.prototype.speedUnitAbbreviation = function (unit) {
             switch (unit) {
                 case VRS.Speed.Knots: return VRS.$$.KnotsAbbreviation;
@@ -1058,14 +789,6 @@ var VRS;
                 default: throw 'Unknown speed unit ' + unit;
             }
         };
-        /**
-         * Converts a vertical speed from one unit to another.
-         * @param {number}      verticalSpeed   The vertical speed in x units per minute to convert.
-         * @param {VRS.Height}  fromUnit        The units that the vertical speed is expressed in.
-         * @param {VRS.Height}  toUnit          The units to convert to.
-         * @param {boolean}     perSecond       True if the vertical speed should be converted to y units per second.
-         * @returns {*}
-         */
         UnitConverter.prototype.convertVerticalSpeed = function (verticalSpeed, fromUnit, toUnit, perSecond) {
             var result = verticalSpeed;
             if (result !== undefined) {
@@ -1089,9 +812,6 @@ var VRS;
         return UnitConverter;
     })();
     VRS.UnitConverter = UnitConverter;
-    /**
-     * Associates a value with a text description.
-     */
     var ValueText = (function () {
         function ValueText(settings) {
             this._Settings = settings;
@@ -1114,8 +834,6 @@ var VRS;
         return ValueText;
     })();
     VRS.ValueText = ValueText;
-    // Pre-builts. The non-TypeScript JavaScript (including custom content scripts) expect to be able to access the utility
-    // classes as instances rather than statics.
     VRS.arrayHelper = new VRS.ArrayHelper();
     VRS.browserHelper = new VRS.BrowserHelper();
     VRS.colourHelper = new VRS.ColourHelper();

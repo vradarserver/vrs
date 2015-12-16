@@ -332,7 +332,7 @@ namespace VRS
         /**
          * Returns a URL with a parameters object appended as a query string.
          */
-        formUrl(url: string, params: string, recursive: boolean) : string
+        formUrl(url: string, params: Object, recursive: boolean) : string
         {
             var result = url;
             if(params) {
@@ -919,6 +919,31 @@ namespace VRS
     }
 
     /**
+     * A dumping ground for miscellaneous utility methods.
+     */
+    export class Utility
+    {
+        /**
+         * Given a value that is either a function that returns the value, or the value itself, either
+         * returns the value or returns the result of calling the function. If the value is undefined
+         * or null then the default value is returned (which, by default, is undefined).
+         */
+        public static ValueOrFuncReturningValue<T>(value: T | VoidFuncReturning<T>, defaultValue?: T) : T
+        {
+            var result = defaultValue;
+            if(value !== undefined && value !== null) {
+                if($.isFunction(value)) {
+                    result = (<()=>T>value)();
+                } else {
+                    result = <T>value;
+                }
+            }
+
+            return result;
+        }
+    }
+
+    /**
      * A collection of functions that convert values from one unit to another.
      */
     export class UnitConverter
@@ -1156,7 +1181,7 @@ namespace VRS
         value:      any;
         text?:      string;
         textKey?:   string;
-        selected:   boolean;
+        selected?:  boolean;
     }
 
     /**

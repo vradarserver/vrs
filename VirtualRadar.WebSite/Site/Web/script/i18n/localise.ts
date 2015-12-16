@@ -391,12 +391,10 @@ namespace VRS
         /**
          * Either returns the translated text associated with the text key passed across or, if the parameter is a function, calls that to obtain the translated text.
          */
-        getText(key: string) : string;
-        getText(formatMethod: () => string) : string;
-        getText(keyOrFormatFunction)
+        getText(keyOrFormatFunction: string | VoidFuncReturning<string>)
         {
             if(keyOrFormatFunction instanceof Function) return keyOrFormatFunction();
-            return VRS.$$[keyOrFormatFunction];
+            return VRS.$$[<string>keyOrFormatFunction];
         }
 
         /**

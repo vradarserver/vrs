@@ -25,6 +25,7 @@ namespace VRS
     VRS.globalOptions.aircraftPictureSizeIPhoneDetail = VRS.globalOptions.aircraftPictureSizeIPhoneDetail || { width: 260 };        // The dimensions for iPhone detail pictures.
     VRS.globalOptions.aircraftPictureSizeList = VRS.globalOptions.aircraftPictureSizeList || { width: 60, height: 40 };             // The dimensions for pictures in the list, set to null to have them sized to whatever the server returns.
 
+    export type AircraftFilterPropertyEnum = string;
     /**
      * An enumeration of the different properties that can be compared against a filter by an AircraftFilter.
      * If 3rd party code adds to this list then they should not use 3 letter codes, they are reserved for VRS use.
@@ -49,6 +50,7 @@ namespace VRS
         Wtc:            'wtc'
     };
 
+    export type AircraftListSortableFieldEnum = string;
     /**
      * An enumeration of the different fields that the aircraft list can be sorted on.
      * If 3rd party code adds to this list then they should not use 3 letter codes, they are reserved for VRS use.
@@ -92,6 +94,7 @@ namespace VRS
         YearBuilt:          'yrb'
     };
 
+    export type AircraftListSourceEnum = number;
     /**
      * An enumeration of the different sources of aircraft list data.
      */
@@ -102,6 +105,7 @@ namespace VRS
         FlightSimulatorX:   3
     };
 
+    export type AircraftPictureServerSize = string;
     /**
      * An enumeration of the different picture sizes understood by the server.
      */
@@ -113,6 +117,7 @@ namespace VRS
         Original:           'Full'              // Do not resize the aircraft picture
     };
 
+    export type AlignmentEnum = string;
     /**
      * An enumeration of the different horizontal alignments.
      */
@@ -122,6 +127,7 @@ namespace VRS
         Right:          'r'
     };
 
+    export type AltitudeTypeEnum = number;
     /**
      * An enumeration of the different altitude types.
      */
@@ -130,6 +136,7 @@ namespace VRS
         Geometric:      1
     };
 
+    export type DisplayUnitDependencyEnum = string;
     /**
      * An enumeration of the different kinds of display units that an element may be using.
      */
@@ -144,6 +151,7 @@ namespace VRS
         Angle:                  'h'
     };
 
+    export type DistanceEnum = string;
     /**
      * An enumeration of the different units that distances can be displayed in.
      */
@@ -153,6 +161,7 @@ namespace VRS
         NauticalMile:   'nm'
     };
 
+    export type EngineTypeEnum = number;
     /**
      * An enumeration of the different engine types sent by the server.
      */
@@ -164,6 +173,7 @@ namespace VRS
         Electric:       4
     };
 
+    export type EnginePlacementEnum = number;
     /**
      * An enumeration of the different engine placements sent by the server.
      */
@@ -176,6 +186,7 @@ namespace VRS
         WingMounted:    5
     };
 
+    export type FilterConditionEnum = string;
     /**
      * An enumeration of the different filter conditions.
      */
@@ -187,6 +198,7 @@ namespace VRS
         Ends:           'end'
     };
 
+    export type FilterPropertyTypeEnum = string;
     /**
      * An enumeration of the different types of properties that filters can deal with.
      */
@@ -199,6 +211,7 @@ namespace VRS
         TextListMatch:  'f'         // As per TextMatch but the value is a list of strings and the condition is true if any string matches
     };
 
+    export type HeightEnum = string;
     /**
      * An enumeration of the different units that altitudes can be displayed in.
      */
@@ -207,6 +220,7 @@ namespace VRS
         Feet:   'f'
     };
 
+    export type InputWidthEnum = string;
     /**
      * An enumeration of the different input widths that the CSS supports.
      */
@@ -220,6 +234,7 @@ namespace VRS
         Long:       'long'          // A large input field
     };
 
+    export type LabelWidthEnum = number;
     //region LabelWidth
     /**
      * An enumeration of the different label widths that the CSS supports.
@@ -230,6 +245,7 @@ namespace VRS
         Long:           2           // Suitable for long labels
     };
 
+    export type LinkSiteEnum = string;
     /**
      * An enumeration of different sites that can have links formed from an aircraft's details.
      */
@@ -241,6 +257,7 @@ namespace VRS
         StandingDataMaintenance:    'sdm'
     };
 
+    export type MapControlStyleEnum = string;
     /**
      * An enumeration of the different control styles on a map.
      */
@@ -250,6 +267,7 @@ namespace VRS
         HorizontalBar:              'c'
     };
 
+    export type MapPositionEnum = string;
     /**
      * The location at which controls can be added to the map.
      */
@@ -268,6 +286,7 @@ namespace VRS
         TopRight:       'tr'
     };
 
+    export type MapTypeEnum = string;
     /**
      * The different map types known to the map plugin. Third parties adding to this list should not use single-character
      * codes, they are reserved for use by VRS.
@@ -280,6 +299,7 @@ namespace VRS
         HighContrast:   'o'         // <-- note that this is referenced BY VALUE in VRS.globalOptions.mapGoogleMapStyles
     };
 
+    export type MobilePageNameEnum = string;
     /**
      * The names for the pages on the mobile site. These need to be unique.
      */
@@ -290,6 +310,7 @@ namespace VRS
         Options:        'options'
     };
 
+    export type OffRadarActionEnum = string;
     /**
      * An enumeration of different actions that can be taken when an aircraft goes off-radar.
      */
@@ -299,6 +320,7 @@ namespace VRS
         EnableAutoSelect:   'eas'
     };
 
+    export type RenderPropertyEnum = string;
     /**
      * An enumeration of the different properties that can be rendered for an aircraft.
      * If 3rd party code adds to this list then they should not use 3 letter codes. Those are reserved for VRS use.
@@ -366,6 +388,7 @@ namespace VRS
         YearBuilt:                      'yrb'
     };
 
+    export type RenderSurfaceBitFlags = number;
     /**
      * A set of bitflags indicating the different areas that a RenderProperty can be rendered on.
      */
@@ -377,6 +400,7 @@ namespace VRS
         InfoWindow:     0x00000010          // The property is being rendered into the mobile map info window
     };
 
+    export type ReportAircraftPropertyEnum = string;
     /**
      * An enumeration of all of the properties that can be shown for an aircraft in a report. These must be unique both
      * within this enum and within ReportFlightProperty - to make this easier all of these values are 3 characters
@@ -418,6 +442,7 @@ namespace VRS
         YearBuilt:              'yrb'
     };
 
+    export type ReportFilterPropertyEnum = string;
     /**
      * An enumeration of the different criteria in a report.
      */
@@ -437,6 +462,7 @@ namespace VRS
         WakeTurbulenceCategory: 'wtc'
     };
 
+    export type ReportFlightPropertyEnum = string;
     /**
      * An enumeration of the different columns that can be shown for a flight. Each must be unique both within this enum
      * and within VRS.ReportAircraftProperty - to make this easier all of these values are 4 characters
@@ -481,6 +507,7 @@ namespace VRS
         StartTime:              'stim'
     };
 
+    export type ReportSortColumnEnum = string;
     /**
      * An enumeration of the columns that reports can be sorted on.
      */
@@ -498,6 +525,7 @@ namespace VRS
         Registration:           'reg'
     };
 
+    export type ReportSurfaceBitFlags = number;
     /**
      * A set of bitflags indicating the different areas that a ReportProperty can be rendered on.
      */
@@ -507,6 +535,7 @@ namespace VRS
         DetailBody:     0x00000004          // The property is being rendered into the body portion of the detail panel
     };
 
+    export type SortSpecialEnum = number;
     /**
      * An enumeration of the different special positions an element can appear at within a sorted list.
      */
@@ -516,6 +545,7 @@ namespace VRS
         Last:           2
     };
 
+    export type SpeciesEnum = number;
     /**
      * An enumeration of the different species types sent by the server.
      */
@@ -531,6 +561,7 @@ namespace VRS
         Tower:          8
     };
 
+    export type SpeedEnum = string;
     /**
      * An enumeration of the different units that speeds can be displayed in.
      */
@@ -540,6 +571,7 @@ namespace VRS
         KilometresPerHour:  'km'
     };
 
+    export type SpeedTypeEnum = number;
     /**
      * An enumeration of the different types of speed that can be transmitted by the aircraft.
      */
@@ -550,6 +582,7 @@ namespace VRS
         TrueAirSpeed:       3
     };
 
+    export type TrailDisplayEnum = string
     /**
      * An enumeration of the different kinds of trail display settings.
      */
@@ -559,6 +592,7 @@ namespace VRS
         AllAircraft:    'c'
     };
 
+    export type TrailTypeEnum = string;
     /**
      * An enumeration of the different kinds of trail that can be displayed.
      */
@@ -571,6 +605,7 @@ namespace VRS
         FullSpeed:      'f'             // Full trail, colour indicates speed
     };
 
+    export type TransponderTypeEnum = number;
     /**
      * An enumeration of the different types of transponder carried by aircraft.
      */
@@ -583,6 +618,7 @@ namespace VRS
         Adsb2:          5               // Mode-S transponder with ADS-B, certain that it is version 2
     };
 
+    export type WakeTurbulenceCategoryEnum = number;
     /**
      * An enumeration of the different kind of wake turbulence categories (roughly equivalent to size / weight) sent by the server.
      */
