@@ -549,8 +549,8 @@ declare namespace VRS
 
         sayStopovers(stopovers: string[]) : string;
         formatHoursMinutesSeconds(hours: number, minutes: number, seconds: number, showZeroHours?: boolean) : string;
-        formatEngines(countEngines: number, engineType: string) : string;
-        formatWakeTurbulenceCategory(category: string, ignoreNone: boolean, expandedDescription: boolean) : string;
+        formatEngines(countEngines: string, engineType: number) : string;
+        formatWakeTurbulenceCategory(category: number, ignoreNone: boolean, expandedDescription: boolean) : string;
         formatRoute(from: string, to: string, via: string[]) : string;
         translateCountry(englishCountry: string) : string;
     }
