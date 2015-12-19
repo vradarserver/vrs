@@ -532,8 +532,18 @@
     <Content Include="Site\Web\script\vrs\aircraftListFetcher.js.map">
       <DependentUpon>aircraftListFetcher.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\aircraftListFilter.js" />
-    <Content Include="Site\Web\script\vrs\aircraftListSorter.js" />
+    <Content Include="Site\Web\script\vrs\aircraftListFilter.js">
+      <DependentUpon>aircraftListFilter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\aircraftListFilter.js.map">
+      <DependentUpon>aircraftListFilter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\aircraftListSorter.js">
+      <DependentUpon>aircraftListSorter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\aircraftListSorter.js.map">
+      <DependentUpon>aircraftListSorter.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\aircraftPlotter.js" />
     <Content Include="Site\Web\script\vrs\aircraftRenderer.js" />
     <Content Include="Site\Web\script\vrs\bootstrapMapDesktop.js" />
@@ -659,6 +669,8 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftFilter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftList.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFetcher.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFilter.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListSorter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\airportDataApi.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\configStorage.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\currentLocation.ts" />
