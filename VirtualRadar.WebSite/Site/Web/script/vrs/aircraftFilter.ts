@@ -311,7 +311,7 @@ namespace VRS
         /**
          * Takes an aircraft and a list of filters and returns true if the aircraft passes them.
          */
-        aircraftPasses(aircraft: Aircraft, aircraftFilters: AircraftFilter[], options: Filter_Options) : boolean
+        aircraftPasses(aircraft: Aircraft, aircraftFilters: AircraftFilter[], options?: Filter_Options) : boolean
         {
             var result = true;
             options = options || {};
