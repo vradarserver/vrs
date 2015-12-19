@@ -53,7 +53,6 @@ namespace VRS
      */
     export class CurrentLocation implements ISelfPersist<CurrentLocation_SaveState>
     {
-        // Events
         private _Dispatcher = new VRS.EventHandler({
             name: 'VRS.CurrentLocation'
         });
@@ -61,40 +60,23 @@ namespace VRS
             currentLocationChanged: 'currentLocationChanged'
         };
 
-        /**
-         * The map marker used to manually set the user's current location.
-         */
-        private _SetCurrentLocationMarker: IMapMarker = null;
-
-        /**
-         * The map marker used to display the current location.
-         */
-        private _CurrentLocationMarker: IMapMarker = null;
-
-        /**
-         * The position at which the current location marker has been plotted.
-         */
-        private _PlottedCurrentLocation: ILatLng = null;
-
-        /**
-         * The map to display the location pin on. This might not be the same as the map for approximate location.
-         */
-        private _MapForDisplay: JQuery = undefined;
-
-        /**
-         * A direct reference to the map plugin for the approximate location map.
-         */
-        private _MapForApproximateLocationPlugin: IMap = null;
-
-        /**
-         * The hook result from the "map for approximate location"'s centre changed event.
-         */
-        private _MapForApproximateLocationCentreChangedHookResult: IEventHandleJQueryUI = null;
-
-        /**
-         * The hook result from the map marker dragged event.
-         */
-        private _MapMarkerDraggedHookResult: IEventHandleJQueryUI = null;
+        private _SetCurrentLocationMarker: IMapMarker = null;                                   // The map marker used to manually set the user's current location.
+        private _CurrentLocationMarker: IMapMarker = null;                                      // The map marker used to display the current location.
+        private _PlottedCurrentLocation: ILatLng = null;                                        // The position at which the current location marker has been plotted.
+        private _MapForDisplay: JQuery = undefined;                                             // The map to display the location pin on. This might not be the same as the map for approximate location.
+        private _MapForApproximateLocationPlugin: IMap = null;                                  // A direct reference to the map plugin for the approximate location map.
+        private _MapForApproximateLocationCentreChangedHookResult: IEventHandleJQueryUI = null; // The hook result from the "map for approximate location"'s centre changed event.
+        private _MapMarkerDraggedHookResult: IEventHandleJQueryUI = null;                       // The hook result from the map marker dragged event.
+        private _Name: string;
+        private _CurrentLocation: ILatLng = VRS.globalOptions.currentLocationFixed;
+        private _GeoLocationAvailable: boolean;
+        private _LastBrowserLocation: ILatLng = null;
+        private _GeoLocationHandlersInstalled = false;
+        private _UseBrowserLocation: boolean = VRS.globalOptions.currentLocationUseBrowserLocation;
+        private _UserSuppliedCurrentLocation: ILatLng = null;
+        private _MapCentreLocation: ILatLng = null;
+        private _MapForApproximateLocation: JQuery = null;
+        private _ShowCurrentLocationOnMap: boolean = VRS.globalOptions.currentLocationShowOnMap;
 
         constructor(settings?: CurrentLocation_Settings)
         {
@@ -108,27 +90,22 @@ namespace VRS
             this.setMapForApproximateLocation(settings.mapForApproximateLocation);
         }
 
-        private _Name: string;
         /**
          * Gets the name of the object.
          */
-        getName() : string
+        getName = () : string =>
         {
             return this._Name;
         }
 
-        private _CurrentLocation: ILatLng = VRS.globalOptions.currentLocationFixed;
         /**
          * Gets the current location.
          */
-        getCurrentLocation() : ILatLng
+        getCurrentLocation = () : ILatLng =>
         {
             return this._CurrentLocation;
         }
-        /**
-         * Sets the current location.
-         */
-        setCurrentLocation(value: ILatLng)
+        setCurrentLocation = (value: ILatLng) =>
         {
             if(value && this._CurrentLocation !== value) {
                 this._CurrentLocation = value;
@@ -137,80 +114,79 @@ namespace VRS
             }
         }
 
-        private _GeoLocationAvailable: boolean;
         /**
          * Gets a value indicating whether we're allowed to use the browser's current location.
          */
-        getGeoLocationAvailable() : boolean
+        getGeoLocationAvailable = () : boolean =>
         {
             return VRS.globalOptions.currentLocationUseGeoLocation && this._GeoLocationAvailable;
         }
 
-        private _LastBrowserLocation: ILatLng = null;
         /**
          * Gets the last reported browser location. This can be null if the browser has never reported a position.
          */
-        getLastBrowserLocation() : ILatLng
+        getLastBrowserLocation = () : ILatLng =>
         {
             return this._LastBrowserLocation;
         }
 
-        private _GeoLocationHandlersInstalled = false;
-        private _UseBrowserLocation: boolean = VRS.globalOptions.currentLocationUseBrowserLocation;
         /**
          * Gets a value indicating that the user wants the current location to be supplied by the browser. This overrides
          * all other options.
          */
-        getUseBrowserLocation() : boolean
+        getUseBrowserLocation = () : boolean =>
         {
             return this._UseBrowserLocation;
         }
-        setUseBrowserLocation(value: boolean)
+        setUseBrowserLocation = (value: boolean) =>
         {
             this._UseBrowserLocation = value;
             if(!this._UseBrowserLocation || !this.getGeoLocationAvailable()) {
                 if(this.getUserHasAssignedCurrentLocation()) this.setCurrentLocation(this._UserSuppliedCurrentLocation);
                 else                                         this.setCurrentLocation(this._MapCentreLocation);
             } else {
-                if(!this._GeoLocationHandlersInstalled) {
+                if(this._GeoLocationHandlersInstalled) {
+                    if(this.getBrowserIsSupplyingLocation()) {
+                        this.setCurrentLocation(this._LastBrowserLocation);
+                    }
+                } else {
                     this._GeoLocationHandlersInstalled = true;
-
-                    var usePosition = function(position) {
-                        this._LastBrowserLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
-                        if(this.getBrowserIsSupplyingLocation()) this.setCurrentLocation(this._LastBrowserLocation);
-                    };
-
-                    var self = this;
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        usePosition(position);
+                    navigator.geolocation.getCurrentPosition((position: Position) => {
+                        this.useBrowserPosition(position);
                         navigator.geolocation.watchPosition(
-                            usePosition,
-                            function(error) {
-                                self._LastBrowserLocation = null;
+                            this.useBrowserPosition,
+                            () => {
+                                this._LastBrowserLocation = null
                             }
                         );
                     });
                 }
             }
         }
+        private useBrowserPosition = (position: Position) =>
+        {
+            this._LastBrowserLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+            if(this.getBrowserIsSupplyingLocation()) {
+                this.setCurrentLocation(this._LastBrowserLocation);
+            }
+        }
 
         /**
          * Gets a value indicating that the browser is supplying the current location.
          */
-        getBrowserIsSupplyingLocation() : boolean
+        getBrowserIsSupplyingLocation = () : boolean =>
         {
             return !!(this._UseBrowserLocation && this._LastBrowserLocation);
         }
 
-        private _UserSuppliedCurrentLocation: ILatLng = null;
         /**
          * Gets the current location supplied by the user.
          */
-        getUserSuppliedCurrentLocation() : ILatLng
+        getUserSuppliedCurrentLocation = () : ILatLng =>
         {
             return this._UserSuppliedCurrentLocation;
         }
-        setUserSuppliedCurrentLocation(value: ILatLng)
+        setUserSuppliedCurrentLocation = (value: ILatLng) =>
         {
             if(value && value !== this._UserSuppliedCurrentLocation) {
                 this._UserSuppliedCurrentLocation = value;
@@ -221,20 +197,19 @@ namespace VRS
         /**
          * Gets a value indicating that the user has supplied a current location.
          */
-        getUserHasAssignedCurrentLocation() : boolean
+        getUserHasAssignedCurrentLocation = () : boolean =>
         {
             return this._UserSuppliedCurrentLocation !== null;
         }
 
-        private _MapCentreLocation: ILatLng = null;
         /**
          * Gets the centre location from the map that is currently supplying approximate locations.
          */
-        getMapCentreLocation() : ILatLng
+        getMapCentreLocation = () : ILatLng =>
         {
             return this._MapCentreLocation;
         }
-        setMapCentreLocation(value: ILatLng)
+        setMapCentreLocation = (value: ILatLng) =>
         {
             if(value && value !== this._MapCentreLocation) {
                 this._MapCentreLocation = value;
@@ -247,20 +222,19 @@ namespace VRS
         /**
          * Returns true if the current location is the map centre.
          */
-        getMapIsSupplyingLocation() : boolean
+        getMapIsSupplyingLocation = () : boolean =>
         {
             return !this.getUserHasAssignedCurrentLocation() && !this.getBrowserIsSupplyingLocation();
         }
 
-        private _MapForApproximateLocation: JQuery = null;
         /**
          * Gets the JQuery element that holds the map that is being used for approximate locations.
          */
-        getMapForApproximateLocation() : JQuery
+        getMapForApproximateLocation = () : JQuery =>
         {
             return this._MapForApproximateLocation;
         }
-        setMapForApproximateLocation(value: JQuery)
+        setMapForApproximateLocation = (value: JQuery) =>
         {
             if(this._MapForApproximateLocationCentreChangedHookResult) {
                 this._MapForApproximateLocationPlugin.unhook(this._MapForApproximateLocationCentreChangedHookResult);
@@ -295,23 +269,22 @@ namespace VRS
         /**
          * Gets a value indicating that the current location marker is currently being displayed on the map.
          */
-        getIsSetCurrentLocationMarkerDisplayed() : boolean
+        getIsSetCurrentLocationMarkerDisplayed = () : boolean =>
         {
             return !!(this._SetCurrentLocationMarker);
         }
-        setIsSetCurrentLocationMarkerDisplayed(value: boolean)
+        setIsSetCurrentLocationMarkerDisplayed = (value: boolean) =>
         {
             if(value !== this.getIsSetCurrentLocationMarkerDisplayed()) {
                 this.showOrHideSetCurrentLocationMarker(value);
             }
         }
 
-        private _ShowCurrentLocationOnMap: boolean = VRS.globalOptions.currentLocationShowOnMap;
-        getShowCurrentLocationOnMap() : boolean
+        getShowCurrentLocationOnMap = () : boolean =>
         {
             return this._ShowCurrentLocationOnMap;
         }
-        setShowCurrentLocationOnMap(value: boolean)
+        setShowCurrentLocationOnMap = (value: boolean) =>
         {
             if(this._ShowCurrentLocationOnMap !== value) {
                 this._ShowCurrentLocationOnMap = value;
@@ -322,7 +295,7 @@ namespace VRS
         /**
          * Hooks an event that is raised when the current location is changed.
          */
-        hookCurrentLocationChanged(callback: () => void, forceThis?: Object) : IEventHandle
+        hookCurrentLocationChanged = (callback: () => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.currentLocationChanged, callback, forceThis);
         }
@@ -330,7 +303,7 @@ namespace VRS
         /**
          * Unhooks an event from the object.
          */
-        unhook(hookResult: IEventHandle)
+        unhook = (hookResult: IEventHandle) =>
         {
             this._Dispatcher.unhook(hookResult);
         }
@@ -338,7 +311,7 @@ namespace VRS
         /**
          * Releases the resources held by the object.
          */
-        dispose()
+        dispose = () =>
         {
             this.destroyCurrentLocationMarker();
             this.showOrHideSetCurrentLocationMarker(false);
@@ -353,7 +326,7 @@ namespace VRS
         /**
          * Saves the current state of the object.
          */
-        saveState()
+        saveState = () =>
         {
             VRS.configStorage.save(this.persistenceKey(), this.createSettings());
         }
@@ -361,7 +334,7 @@ namespace VRS
         /**
          * Returns the previously saved state or the current state if no state has been saved.
          */
-        loadState() : CurrentLocation_SaveState
+        loadState = () : CurrentLocation_SaveState =>
         {
             var savedSettings = VRS.configStorage.load(this.persistenceKey(), {});
             return $.extend(this.createSettings(), savedSettings);
@@ -370,7 +343,7 @@ namespace VRS
         /**
          * Applies the previously saved state to the object.
          */
-        applyState(settings: CurrentLocation_SaveState)
+        applyState = (settings: CurrentLocation_SaveState) =>
         {
             this.setUserSuppliedCurrentLocation(settings.userSuppliedLocation);
             this.setUseBrowserLocation(settings.useBrowserLocation);
@@ -380,7 +353,7 @@ namespace VRS
         /**
          * Loads and applies the previously saved state to the object.
          */
-        loadAndApplyState()
+        loadAndApplyState = () =>
         {
             this.applyState(this.loadState());
         }
@@ -407,13 +380,9 @@ namespace VRS
 
         /**
          * Returns the option pane that allows the object to be configured.
-         * @param {number} displayOrder
-         * @param {jQuery} mapForLocationDisplay
-         * @returns {VRS.OptionPane}
          */
-        createOptionPane(displayOrder: number, mapForLocationDisplay: JQuery) : OptionPane
+        createOptionPane = (displayOrder: number, mapForLocationDisplay: JQuery) : OptionPane =>
         {
-            var self = this;
             var pane = new VRS.OptionPane({
                 name:           'vrsCurrentLocation' + this.getName(),
                 titleKey:       'PaneCurrentLocation',
@@ -456,8 +425,8 @@ namespace VRS
 
             pane.addField(new VRS.OptionFieldLabel({
                 name:           'currentLocationValue',
-                labelKey:       function() {
-                    var location = self.getCurrentLocation();
+                labelKey:       () => {
+                    var location = this.getCurrentLocation();
                     var lat = location && location.lat !== undefined ? VRS.stringUtility.formatNumber(location.lat, 'N5') : '';
                     var lng = location && location.lng !== undefined ? VRS.stringUtility.formatNumber(location.lng, 'N5') : '';
                     return lat && lng ? ' (' + lat + ' / ' + lng + ')' : '';
@@ -470,7 +439,7 @@ namespace VRS
         /**
          * Sets the current location to the map centre.
          */
-        private determineLocationFromMap()
+        private determineLocationFromMap = () =>
         {
             if(this._MapForApproximateLocationPlugin) {
                 var centre = this._MapForApproximateLocationPlugin.getCenter();
@@ -481,7 +450,7 @@ namespace VRS
         /**
          * Hides or shows the current location based on the setting of isMarkerDisplayed.
          */
-        private showOrHideSetCurrentLocationMarker(showMarker: boolean)
+        private showOrHideSetCurrentLocationMarker = (showMarker: boolean) =>
         {
             if(this._MapForDisplay) {
                 var plugin: IMap = VRS.jQueryUIHelper.getMapPlugin(this._MapForDisplay);
@@ -517,7 +486,7 @@ namespace VRS
         /**
          * Called when the user has finished dragging the marker representing the current location on the map.
          */
-        private setCurrentLocationMarkerDragged(event: Event, data: IMapMarkerEventArgs)
+        private setCurrentLocationMarkerDragged = (event: Event, data: IMapMarkerEventArgs) =>
         {
             if(this._SetCurrentLocationMarker && data.id === this._SetCurrentLocationMarker.id) {
                 var plugin: IMap = VRS.jQueryUIHelper.getMapPlugin(this._MapForDisplay);
@@ -529,7 +498,7 @@ namespace VRS
         /**
          * Called when the user drags the approximate location map around.
          */
-        private mapForApproximateLocationCentreChanged()
+        private mapForApproximateLocationCentreChanged = () =>
         {
             this.determineLocationFromMap();
         }
@@ -537,7 +506,7 @@ namespace VRS
         /**
          * Shows, hides or moves the current location marker on the map.
          */
-        private showCurrentLocationOnMap()
+        private showCurrentLocationOnMap = () =>
         {
             if(this._MapForApproximateLocation) {
                 var plugin = this._MapForApproximateLocationPlugin;
@@ -579,7 +548,7 @@ namespace VRS
         /**
          * Destroys the current location marker.
          */
-        private destroyCurrentLocationMarker()
+        private destroyCurrentLocationMarker = () =>
         {
             if(this._CurrentLocationMarker) {
                 var plugin = this._MapForApproximateLocationPlugin;

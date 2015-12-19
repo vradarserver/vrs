@@ -740,7 +740,7 @@ namespace VRS
         /**
          * Returns an array of all of the airport codes in the route.
          */
-        getAirportCodes(distinctOnly: boolean) : string[]
+        getAirportCodes(distinctOnly?: boolean) : string[]
         {
             distinctOnly = !!distinctOnly;
             var result = [];

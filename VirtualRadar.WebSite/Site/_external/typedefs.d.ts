@@ -716,6 +716,41 @@
     }
 
     /**
+     * The representation of a serialised filter.
+     */
+    export interface ISerialisedFilter
+    {
+        property:       any;
+        valueCondition: ISerialisedCondition;
+    }
+
+    /**
+     * The representation of a serialised condition in a filter.
+     */
+    export interface ISerialisedCondition
+    {
+        condition:    FilterConditionEnum;
+        reversed:     boolean;
+    }
+
+    /**
+     * The representation of a one-value condition in a serialised filter.
+     */
+    export interface ISerialisedOneValueCondition extends ISerialisedCondition
+    {
+        value:        any;
+    }
+
+    /**
+     * The representation of a two-value condition in a serialised filter.
+     */
+    export interface ISerialisedTwoValueCondition extends ISerialisedCondition
+    {
+        value1:       any;
+        value2:       any;
+    }
+
+    /**
      * Describes a size.
      */
     export interface ISize

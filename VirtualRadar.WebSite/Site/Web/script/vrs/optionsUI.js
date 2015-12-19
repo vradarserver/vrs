@@ -126,7 +126,7 @@ var VRS;
                 secondaryIcon: null,
                 showText: true
             }, settings);
-            this._Enabled = false;
+            this._Enabled = true;
             _super.call(this, settings);
         }
         OptionFieldButton.prototype.getPrimaryIcon = function () {
