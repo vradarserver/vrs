@@ -63,7 +63,7 @@ namespace VRS
         /**
          * A hook function that can be used to pick up changes to the value that is returned by getValue - for fields whose value may change while the configuration UI is on display.
          */
-        hookChanged?: (callback: Function, forceThis: Object) => IEventHandle | IEventHandleJQueryUI;
+        hookChanged?: (callback: Function, forceThis?: Object) => any;
 
         /**
          * An unhook function that can unhook the event hooked by hookChanged.
@@ -318,7 +318,7 @@ namespace VRS
                 secondaryIcon: null,
                 showText: true
             }, settings);
-            this._Enabled = false;
+            this._Enabled = true;
 
             super(settings);
         }
@@ -875,7 +875,7 @@ namespace VRS
         /**
          * Adds a new pane to the array at the index specified.
          */
-        addPane(pane: OptionPane, index: number)
+        addPane(pane: OptionPane, index?: number)
         {
             if(index !== undefined) {
                 this._Settings.panes.splice(index, 0, pane);
@@ -1313,7 +1313,7 @@ namespace VRS
         addPane(optionPane: OptionPane | OptionPane[])
         {
             if(!(optionPane instanceof VRS.OptionPane)) {
-                var length = optionPane.length;
+                var length = (<OptionPane[]>optionPane).length;
                 for(var i = 0;i < length;++i) {
                     this.addPane(optionPane[i]);
                 }

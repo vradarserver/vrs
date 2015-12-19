@@ -56,43 +56,33 @@ namespace VRS
         private _Dispatcher: EventHandler = new EventHandler({
             name: 'VRS.AircraftListFetcher'
         });
-
         private _Events = {
             pausedChanged:                  'pausedChanged',
             hideAircraftNotOnMapChanged:    'hideAircraftNotOnMapChanged'
         };
-
         private _Settings: AircraftListFetcher_Settings;
 
-        /**
-         * The ID of the feed used in the last request.
-         */
-        private _LastRequestFeedId: number;
+        private _LastRequestFeedId: number;                         // The ID of the feed used in the last request.
+        private _TimeoutHandle: number;                             // The handle from the currently running timeout.
+        private _ServerConfigChangedHook: IEventHandle = null;      // The hook result from the global server configuration changed event.
+        private _SiteTimedOutHook: IEventHandle = null;             // The hook result from the site time out event.
+        private _MinimumRefreshInterval: number = -1;               // The minimum number of milliseconds between refreshes.
+        private _ServerConfigDefaultRefreshInterval: number = -1;   // The default refresh interval (in milliseconds) as configured on the server.
+        private _Feeds: IReceiver[] = [];
+        private _RequestFeedId: number = VRS.globalOptions.aircraftListRequestFeedId;
+        private _IntervalMilliseconds: number = VRS.globalOptions.aircraftListFixedRefreshInterval;
+        private _Paused = true;
+        private _HideAircraftNotOnMap: boolean = VRS.globalOptions.aircraftListHideAircraftNotOnMap;
+        private _MapPlugin: IMap = null;
+        private _MapJQ: JQuery = null;
 
-        /**
-         * The handle from the currently running timeout.
+        /*
+         * The ID of the feed actually sent by the server. This will not be set until after the first reply from the
+         * server. If _RequestFeedId is null or undefined then this tells us which feed we're actually using. Note that
+         * this needn't correspond to a feed in _Feeds - sometimes the feed we're given isn't a real feed (e.g. when
+         * we're displaying a Flight Simulator X 'feed').
          */
-        private _TimeoutHandle: number;
-
-        /**
-         * The hook result from the global server configuration changed event.
-         */
-        private _ServerConfigChangedHook: IEventHandle = null;
-
-        /**
-         * The hook result from the site time out event.
-         */
-        private _SiteTimedOutHook: IEventHandle = null;
-
-        /**
-         * The minimum number of milliseconds between refreshes.
-         */
-        private _MinimumRefreshInterval: number = -1;
-
-        /**
-         * The default refresh interval (in milliseconds) as configured on the server.
-         */
-        private _ServerConfigDefaultRefreshInterval: number = -1;
+        private _ActualFeedId: number = undefined;
 
         constructor(settings: AircraftListFetcher_Settings)
         {
@@ -114,16 +104,15 @@ namespace VRS
         /**
          * Gets the name of the object for the purposes of saving state.
          */
-        getName() : string
+        getName = () =>
         {
             return this._Settings.name;
         }
 
-        private _Feeds: IReceiver[] = [];
         /**
          * Gets an array of feeds that the server is currently listening to.
          */
-        getFeeds() : IReceiver[]
+        getFeeds = () : IReceiver[] =>
         {
             return this._Feeds;
         }
@@ -132,7 +121,7 @@ namespace VRS
          * Gets a copy of the array of feeds, sorted into alphabetical order.
          * @params {boolean} [includeDefaultFeed]       True if the default feed (undefined ID and a name of Default) should be included in the list. This is always sorted to appear at the start of the list.
          */
-        getSortedFeeds(includeDefaultFeed: boolean = false) : IReceiver[]
+        getSortedFeeds = (includeDefaultFeed: boolean = false) : IReceiver[] =>
         {
             var feeds = this._Feeds.slice();
             if(includeDefaultFeed) feeds.push({ name: VRS.$$.DefaultSetting });
@@ -148,7 +137,7 @@ namespace VRS
         /**
          * Gets the feed for the ID passed across or null if no such feed exists.
          */
-        getFeed(id: number) : IReceiver
+        getFeed = (id: number) : IReceiver =>
         {
             var result = null;
             var length = this._Feeds.length;
@@ -163,11 +152,10 @@ namespace VRS
             return result;
         }
 
-        private _RequestFeedId: number = VRS.globalOptions.aircraftListRequestFeedId;
         /**
          * Gets the feed to ask the server for. Undefined if the default feed is to be used.
          */
-        getRequestFeedId() : number
+        getRequestFeedId = () : number =>
         {
             return this._RequestFeedId;
         }
@@ -175,7 +163,7 @@ namespace VRS
         /**
          * Sets the feed to ask the server for.
          */
-        setRequestFeedId(value?: number)
+        setRequestFeedId = (value?: number) =>
         {
             this._RequestFeedId = value === null ? undefined : value;
             if(this._RequestFeedId) {
@@ -185,17 +173,9 @@ namespace VRS
         }
 
         /**
-         * The ID of the feed actually sent by the server. This will not be set until after the first reply from the
-         * server. If _RequestFeedId is null or undefined then this tells us which feed we're actually using. Note that
-         * this needn't correspond to a feed in _Feeds - sometimes the feed we're given isn't a real feed (e.g. when
-         * we're displaying a Flight Simulator X 'feed').
-         */
-        private _ActualFeedId: number = undefined;
-
-        /**
          * Gets the ID of the feed last sent by the server.
          */
-        getActualFeedId()
+        getActualFeedId = () =>
         {
             return this._ActualFeedId;
         }
@@ -203,7 +183,7 @@ namespace VRS
         /**
          * Gets the feed object from _Feeds that we're reporting on, or null if none could be ascertained.
          */
-        getActualFeed() : IReceiver
+        getActualFeed = () : IReceiver =>
         {
             var result: IReceiver = null;
 
@@ -218,11 +198,10 @@ namespace VRS
             return result;
         }
 
-        private _IntervalMilliseconds: number = VRS.globalOptions.aircraftListFixedRefreshInterval;
         /**
          * Gets the interval in milliseconds between updates.
          */
-        getInterval() : number
+        getInterval = () : number =>
         {
             var result = this._IntervalMilliseconds;
             if(result === -1) {
@@ -236,7 +215,7 @@ namespace VRS
         /**
          * Sets the interval between updates.
          */
-        setInterval(value: number)
+        setInterval = (value: number) =>
         {
             if(this._IntervalMilliseconds != value) {
                 if(this._TimeoutHandle) {
@@ -248,11 +227,10 @@ namespace VRS
             }
         }
 
-        private _Paused = true;
         /**
          * Gets a value indicating whether the object is active.
          */
-        getPaused() : boolean
+        getPaused = () : boolean =>
         {
             return this._Paused;
         }
@@ -260,7 +238,7 @@ namespace VRS
         /**
          * Sets a value indicating whether the object is active.
          */
-        setPaused(value: boolean)
+        setPaused = (value: boolean) =>
         {
             if(value !== this._Paused) {
                 this._Paused = value;
@@ -279,17 +257,15 @@ namespace VRS
             }
         }
 
-        private _HideAircraftNotOnMap: boolean = VRS.globalOptions.aircraftListHideAircraftNotOnMap;
         /**
          * Gets a value indicating that we should ask the server not to send us details of aircraft that aren't visible
          * on the map.
          */
-        getHideAircraftNotOnMap() : boolean
+        getHideAircraftNotOnMap = () : boolean =>
         {
             return this._HideAircraftNotOnMap;
         }
-
-        setHideAircraftNotOnMap(value: boolean)
+        setHideAircraftNotOnMap = (value: boolean) =>
         {
             if(this._HideAircraftNotOnMap !== value) {
                 this._HideAircraftNotOnMap = value;
@@ -297,16 +273,14 @@ namespace VRS
             }
         }
 
-        private _MapPlugin: IMap = null;
-        private _MapJQ: JQuery = null;
         /**
          * Gets the map that the HideAircraftNotOnMap setting will use.
          */
-        getMapJQ() : JQuery
+        getMapJQ = () : JQuery =>
         {
             return this._MapJQ;
         }
-        setMapJQ(value: JQuery)
+        setMapJQ = (value: JQuery) =>
         {
             this._MapJQ = value;
             this._MapPlugin = this._MapJQ ? VRS.jQueryUIHelper.getMapPlugin(this._MapJQ) : null;
@@ -315,7 +289,7 @@ namespace VRS
         /**
          * Raised whenever the paused state is changed.
          */
-        hookPausedChanged(callback: () => void, forceThis?: Object) : IEventHandle
+        hookPausedChanged = (callback: () => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.pausedChanged, callback, forceThis);
         }
@@ -323,7 +297,7 @@ namespace VRS
         /**
          * Raised when the setting to hide aircraft that aren't on the map gets changed.
          */
-        hookHideAircraftNotOnMapChanged(callback: () => void, forceThis?: Object) : IEventHandle
+        hookHideAircraftNotOnMapChanged = (callback: () => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.hideAircraftNotOnMapChanged, callback, forceThis);
         }
@@ -331,7 +305,7 @@ namespace VRS
         /**
          * Unhooks an event handler.
          */
-        unhook(hookResult: IEventHandle)
+        unhook = (hookResult: IEventHandle) =>
         {
             this._Dispatcher.unhook(hookResult);
         }
@@ -339,7 +313,7 @@ namespace VRS
         /**
          * Releases resources allocated by the object.
          */
-        dispose()
+        dispose = () =>
         {
             if(this._ServerConfigChangedHook) {
                 VRS.globalDispatch.unhook(this._ServerConfigChangedHook);
@@ -354,7 +328,7 @@ namespace VRS
         /**
          * Saves the current state of the object.
          */
-        saveState()
+        saveState = () =>
         {
             VRS.configStorage.save(this.persistenceKey(), this.createSettings());
         }
@@ -362,7 +336,7 @@ namespace VRS
         /**
          * Loads the previously saved state of the object or the current state if it's never been saved.
          */
-        loadState() : AircraftListFetcher_SaveState
+        loadState = () : AircraftListFetcher_SaveState =>
         {
             var savedSettings = VRS.configStorage.load(this.persistenceKey(), {});
             var result = $.extend(this.createSettings(), savedSettings);
@@ -377,7 +351,7 @@ namespace VRS
         /**
          * Applies a previously saved state to the object.
          */
-        applyState(settings: AircraftListFetcher_SaveState)
+        applyState = (settings: AircraftListFetcher_SaveState) =>
         {
             this.setInterval(settings.interval);
             this.setHideAircraftNotOnMap(settings.hideAircraftNotOnMap);
@@ -387,7 +361,7 @@ namespace VRS
         /**
          * Loads and then applies a previousy saved state to the object.
          */
-        loadAndApplyState = function()
+        loadAndApplyState = () : void =>
         {
             this.applyState(this.loadState());
         }
@@ -395,7 +369,7 @@ namespace VRS
         /**
          * Returns the key under which the state will be saved.
          */
-        private persistenceKey() : string
+        private persistenceKey = () : string =>
         {
             return 'vrsAircraftListFetcher-' + this.getName();
         }
@@ -403,7 +377,7 @@ namespace VRS
         /**
          * Creates the saved state object.
          */
-        private createSettings() : AircraftListFetcher_SaveState
+        private createSettings = () : AircraftListFetcher_SaveState =>
         {
             return {
                 interval:               this.getInterval(),
@@ -415,7 +389,7 @@ namespace VRS
         /**
          * Creates the description of the options pane for the object.
          */
-        createOptionPane = function(displayOrder: number) : OptionPane
+        createOptionPane = (displayOrder: number) : OptionPane =>
         {
             var pane = new VRS.OptionPane({
                 name:           'vrsAircraftListFetcherPane',
@@ -469,17 +443,17 @@ namespace VRS
             return pane;
         }
 
-        private getIntervalSeconds() : number
+        private getIntervalSeconds = () : number =>
         {
             return Math.floor(this.getInterval() / 1000);
         }
 
-        private setIntervalSeconds(value: number)
+        private setIntervalSeconds = (value: number) =>
         {
             this.setInterval(value * 1000);
         }
 
-        private applyServerConfiguration()
+        private applyServerConfiguration = () =>
         {
             if(VRS.serverConfig) {
                 var config = VRS.serverConfig.get();
@@ -493,7 +467,7 @@ namespace VRS
         /**
          * Periodically fetches a new copy of the aircraft list from the server and applies it to the internal aircraft list.
          */
-        private fetch()
+        private fetch = () =>
         {
             this._TimeoutHandle = undefined;
 
@@ -565,7 +539,7 @@ namespace VRS
         /**
          * Called when the fetch succeeds. Applies the JSON from the server to the aircraft list and then starts another fetch.
          */
-        private fetchSuccess(data)
+        private fetchSuccess = (data) =>
         {
             this._TimeoutHandle = undefined;
 
@@ -596,7 +570,7 @@ namespace VRS
         /**
          * Called when the fetch fails. Starts another fetch but at a longer interval to avoid hammering the server.
          */
-        private fetchError()
+        private fetchError = () =>
         {
             this._TimeoutHandle = setTimeout($.proxy(this.fetch, this), VRS.globalOptions.aircraftListRetryInterval);
         }
@@ -604,7 +578,7 @@ namespace VRS
         /**
          * Called when the server's configuration has changed.
          */
-        private serverConfigChanged()
+        private serverConfigChanged = () =>
         {
             this.applyServerConfiguration();
         }
@@ -612,7 +586,7 @@ namespace VRS
         /**
          * Called when the site has timed out.
          */
-        private siteTimedOut()
+        private siteTimedOut = () =>
         {
             this.setPaused(true);
         }

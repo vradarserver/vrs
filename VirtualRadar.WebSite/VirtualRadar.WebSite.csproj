@@ -401,7 +401,12 @@
     <Content Include="Site\Web\script\vrs\bootstrapMap.js" />
     <Content Include="Site\Web\script\vrs\bootstrapMapMobile.js" />
     <Content Include="Site\Web\script\vrs\bootstrapReport.js" />
-    <Content Include="Site\Web\script\vrs\filter.js" />
+    <Content Include="Site\Web\script\vrs\filter.js">
+      <DependentUpon>filter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\filter.js.map">
+      <DependentUpon>filter.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\format.js">
       <DependentUpon>format.ts</DependentUpon>
     </Content>
@@ -503,8 +508,18 @@
     <Content Include="Site\Web\script\vrs\aircraft.js.map">
       <DependentUpon>aircraft.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\aircraftAutoSelect.js" />
-    <Content Include="Site\Web\script\vrs\aircraftFilter.js" />
+    <Content Include="Site\Web\script\vrs\aircraftAutoSelect.js">
+      <DependentUpon>aircraftAutoSelect.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\aircraftAutoSelect.js.map">
+      <DependentUpon>aircraftAutoSelect.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\aircraftFilter.js">
+      <DependentUpon>aircraftFilter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\aircraftFilter.js.map">
+      <DependentUpon>aircraftFilter.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\aircraftList.js">
       <DependentUpon>aircraftList.ts</DependentUpon>
     </Content>
@@ -572,7 +587,12 @@
       <DependentUpon>string.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\titleUpdater.js" />
-    <Content Include="Site\Web\script\vrs\unitDisplayPreferences.js" />
+    <Content Include="Site\Web\script\vrs\unitDisplayPreferences.js">
+      <DependentUpon>unitDisplayPreferences.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\unitDisplayPreferences.js.map">
+      <DependentUpon>unitDisplayPreferences.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\utility.js">
       <DependentUpon>utility.ts</DependentUpon>
     </Content>
@@ -635,6 +655,8 @@
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.menu.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraft.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\aircraftAutoSelect.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\aircraftFilter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftList.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFetcher.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\airportDataApi.ts" />
@@ -642,6 +664,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\currentLocation.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\enums.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\event.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\filter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\format.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\menuUI.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\optionsUI.ts" />
@@ -650,6 +673,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\serverConfiguration.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\string.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\timeoutManager.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\unitDisplayPreferences.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\utility.ts" />
     <TypeScriptCompile Include="Site\_external\globalise.d.ts" />
     <TypeScriptCompile Include="Site\_external\google.maps.d.ts" />
