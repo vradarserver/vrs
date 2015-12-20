@@ -106,15 +106,17 @@
      */
     export interface IAircraftListRequestQueryString
     {
-        ldv?:   number;
-        feed?:  number;
-        lat?:   number;
-        lng?:   number;
-        selAc?: number;
-        fNBnd?: number;
-        fEBnd?: number;
-        fSBnd?: number;
-        fWBnd?: number;
+        ldv?:           number;
+        feed?:          number;
+        lat?:           number;
+        lng?:           number;
+        selAc?:         number;
+        fNBnd?:         number;
+        fEBnd?:         number;
+        fSBnd?:         number;
+        fWBnd?:         number;
+        trFmt?:         string;
+        refreshTrails?: string;
     }
 
     /**
@@ -403,8 +405,8 @@
      */
     export interface IMapMarker
     {
-        id:     string|number;
-        tag:    any;
+        id:                 string|number;
+        tag:                any;
 
         getDraggable: () => boolean;
         setDraggable: (draggable: boolean) => void;
@@ -423,6 +425,20 @@
 
         getZIndex: () => number;
         setZIndex: (zIndex: number) => void;
+
+        /*
+         * Map marker with label fields and functions
+         */
+        isMarkerWithLabel:  boolean;
+
+        getLabelVisible: () => boolean;
+        setLabelVisible: (visible: boolean) => void;
+
+        getLabelAnchor: () => IPoint;
+        setLabelAnchor: (point: IPoint) => void;
+
+        getLabelContent: () => string;
+        setLabelContent: (content: string) => void;
     }
 
     /**

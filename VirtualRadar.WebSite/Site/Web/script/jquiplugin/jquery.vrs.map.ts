@@ -582,12 +582,28 @@ namespace VRS
         }
 
         /**
+         * Sets the label content. Only works on markers that have been created with useMarkerWithLabel.
+         */
+        getLabelContent()
+        {
+            return this.isMarkerWithLabel ? this.marker.get('labelContent') : null;
+        }
+
+        /**
          * Sets the content of a marker's label. Only works on markers that have been created with useMarkerWithLabel.
          * Note that this is not a part of the marker interface.
          */
         setLabelContent(content: string)
         {
             if(this.isMarkerWithLabel) this.marker.set('labelContent', content);
+        }
+
+        /**
+         * Gets the label anchor. Only works on markers that have been created with useMarkerWithLabel.
+         */
+        getLabelAnchor()
+        {
+            return this.isMarkerWithLabel ? VRS.googleMapUtilities.fromGooglePoint(this.marker.get('labelAnchor')) : null;
         }
 
         /**
@@ -1440,8 +1456,12 @@ namespace VRS
                     .text(VRS.$$.GoogleMapsCouldNotBeLoaded + ': ' + textStatus)
                     .appendTo(state.mapContainer);
 
-                if(self.options.afterCreate) self.options.afterCreate(this);
-                if(self.options.openOnCreate && self.options.afterOpen) self.options.afterOpen(self);
+                if(self.options.afterCreate) {
+                    self.options.afterCreate(this);
+                }
+                if(self.options.openOnCreate && self.options.afterOpen) {
+                    self.options.afterOpen(self);
+                }
             });
         }
 

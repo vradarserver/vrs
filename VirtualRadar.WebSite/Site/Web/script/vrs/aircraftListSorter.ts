@@ -653,7 +653,7 @@ namespace VRS
                     name:           'ascending' + idx.toString(),
                     labelKey:       'Ascending',
                     getValue:       () => this.getSortField(idx).ascending,
-                    setValue:       (value: boolean) {
+                    setValue:       (value: boolean) => {
                                         var setEntry = this.getSortField(idx);
                                         setEntry.ascending = value;
                                         this.setSortField(idx, setEntry);

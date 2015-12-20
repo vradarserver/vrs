@@ -307,6 +307,11 @@ namespace VRS
     }
 
     /**
+     * A type alias for the different kinds of trail arrays.
+     */
+    export type TrailArray = ArrayValue<ShortTrailValue> | ArrayValue<FullTrailValue>;
+
+    /**
      * The settings that control how Aircraft.ApplyJson applies updates.
      */
     export interface Aircraft_ApplyJsonSettings
@@ -1073,7 +1078,7 @@ namespace VRS
         /**
          * Returns an HTML IMG tag to a picture of the aircraft.
          */
-        formatPictureHtml(requestSize: ISize, allowResizeUp: boolean, linkToOriginal: boolean, blankSize: ISize) : string
+        formatPictureHtml(requestSize: ISize, allowResizeUp?: boolean, linkToOriginal?: boolean, blankSize?: ISize) : string
         {
             return VRS.format.pictureHtml(this.registration.val, this.icao.val, this.pictureWidth.val, this.pictureHeight.val, requestSize, allowResizeUp, linkToOriginal, blankSize);
         }
@@ -1089,7 +1094,7 @@ namespace VRS
         /**
          * Returns the registration formatted as a string.
          */
-        formatRegistration(onlyAlphaNumeric: boolean) : string
+        formatRegistration(onlyAlphaNumeric?: boolean) : string
         {
             return VRS.format.registration(this.registration.val, onlyAlphaNumeric);
         }
@@ -1113,7 +1118,7 @@ namespace VRS
         /**
          * Returns HTML for the short route (where only airport codes are shown and stopovers can be reduced to an asterisk).
          */
-        formatRouteShort(abbreviateStopovers: boolean, showRouteNotKnown: boolean) : string
+        formatRouteShort(abbreviateStopovers?: boolean, showRouteNotKnown?: boolean) : string
         {
             return VRS.format.routeShort(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), abbreviateStopovers, showRouteNotKnown);
         }
