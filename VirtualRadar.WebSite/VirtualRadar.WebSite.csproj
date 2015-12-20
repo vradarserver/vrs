@@ -418,8 +418,18 @@
     <Content Include="Site\Web\script\vrs\format.js.map">
       <DependentUpon>format.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\linksRenderer.js" />
-    <Content Include="Site\Web\script\vrs\pageManager.js" />
+    <Content Include="Site\Web\script\vrs\linksRenderer.js">
+      <DependentUpon>linksRenderer.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\linksRenderer.js.map">
+      <DependentUpon>linksRenderer.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\pageManager.js">
+      <DependentUpon>pageManager.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\pageManager.js.map">
+      <DependentUpon>pageManager.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\report.js" />
     <Content Include="Site\Web\script\vrs\reportRenderer.js" />
     <Content Include="Site\Web\script\vrs\reportFilter.js" />
@@ -660,7 +670,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.js">
+      <DependentUpon>jquery.vrs.aircraftLinks.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.js.map">
+      <DependentUpon>jquery.vrs.aircraftLinks.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportList.js" />
     <None Include="Site\.idea\Site.iml" />
     <None Include="Site\Web\fonts\icomoon.eot" />
@@ -676,6 +691,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.ui.widget.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.menu.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.ts" />
@@ -696,8 +712,10 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\event.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\filter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\format.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\linksRenderer.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\menuUI.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\optionsUI.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\pageManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\refreshManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\scriptManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\serverConfiguration.ts" />
