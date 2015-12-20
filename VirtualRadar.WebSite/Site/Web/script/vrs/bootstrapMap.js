@@ -253,8 +253,8 @@
             }
 
             // Create the object that calls out selected aircraft details
-            if(VRS.Audio) {
-                pageSettings.audio = new VRS.Audio();
+            if(VRS.AudioWrapper) {
+                pageSettings.audio = new VRS.AudioWrapper();
                 pageSettings.audio.loadAndApplyState();
                 pageSettings.audio.annouceSelectedAircraftOnList(pageSettings.aircraftList);
             }

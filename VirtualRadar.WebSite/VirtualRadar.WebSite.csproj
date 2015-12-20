@@ -396,7 +396,12 @@
     <Content Include="Site\Web\script\markerWithLabel.js" />
     <Content Include="Site\Web\script\purl.js" />
     <Content Include="Site\Web\desktopReport.html" />
-    <Content Include="Site\Web\script\vrs\audio.js" />
+    <Content Include="Site\Web\script\vrs\audio.js">
+      <DependentUpon>audio.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\audio.js.map">
+      <DependentUpon>audio.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\bootstrapReportDesktop.js" />
     <Content Include="Site\Web\script\vrs\bootstrapMap.js" />
     <Content Include="Site\Web\script\vrs\bootstrapMapMobile.js" />
@@ -684,6 +689,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftPlotter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftRenderer.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\airportDataApi.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\audio.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\configStorage.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\currentLocation.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\enums.ts" />
