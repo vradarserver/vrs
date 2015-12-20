@@ -345,9 +345,15 @@ var VRS;
             if (this.isMarkerWithLabel)
                 this.marker.set('labelVisible', visible);
         };
+        MapMarker.prototype.getLabelContent = function () {
+            return this.isMarkerWithLabel ? this.marker.get('labelContent') : null;
+        };
         MapMarker.prototype.setLabelContent = function (content) {
             if (this.isMarkerWithLabel)
                 this.marker.set('labelContent', content);
+        };
+        MapMarker.prototype.getLabelAnchor = function () {
+            return this.isMarkerWithLabel ? VRS.googleMapUtilities.fromGooglePoint(this.marker.get('labelAnchor')) : null;
         };
         MapMarker.prototype.setLabelAnchor = function (anchor) {
             if (this.isMarkerWithLabel)
@@ -795,10 +801,12 @@ var VRS;
                 $('<p/>')
                     .text(VRS.$$.GoogleMapsCouldNotBeLoaded + ': ' + textStatus)
                     .appendTo(state.mapContainer);
-                if (self.options.afterCreate)
+                if (self.options.afterCreate) {
                     self.options.afterCreate(this);
-                if (self.options.openOnCreate && self.options.afterOpen)
+                }
+                if (self.options.openOnCreate && self.options.afterOpen) {
                     self.options.afterOpen(self);
+                }
             });
         };
         MapPlugin.prototype._destroy = function () {
