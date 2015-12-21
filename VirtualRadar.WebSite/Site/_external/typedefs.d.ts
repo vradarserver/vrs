@@ -140,6 +140,15 @@
     }
 
     /**
+     * Describes a range of altitudes.
+     */
+    export interface IAltitudeRange
+    {
+        lowAlt: number;
+        highAlt: number;
+    }
+
+    /**
      * Describes a rectangle on the surface of the earth.
      */
     export interface IBounds
