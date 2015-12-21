@@ -945,10 +945,10 @@ namespace VRS
         hasChangedCallback:     function(aircraft) { return aircraft.latitude.chg || aircraft.longitude.chg; },
         createWidget:           function(element, options, surface) {
             if(surface === VRS.RenderSurface.DetailBody && !VRS.jQueryUIHelper.getAircraftPositionMapPlugin(element)) {
-                (<any>element).vrsAircraftPositonMap(VRS.jQueryUIHelper.getAircraftPositionMapOptions({
+                (<any>element).vrsAircraftPositonMap(VRS.jQueryUIHelper.getAircraftPositionMapOptions(<AircraftPositionMapPlugin_Options>{
                     plotterOptions:         options.plotterOptions,
                     mirrorMapJQ:            options.mirrorMapJQ,
-                    mapOptionOverrides:     {
+                    mapOptionOverrides:     <IMapOptions>{
                         draggable:          false,
                         showMapTypeControl: false
                     },

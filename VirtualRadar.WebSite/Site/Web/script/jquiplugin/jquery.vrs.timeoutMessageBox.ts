@@ -15,7 +15,7 @@
 
 namespace VRS
 {
-    interface TimeoutMessageBoxPlugin_Options extends JQueryUICustomWidget_Options
+    export interface TimeoutMessageBoxPlugin_Options extends JQueryUICustomWidget_Options
     {
         /**
          * The aircraft list fetcher that pauses when the site times out.
@@ -23,11 +23,11 @@ namespace VRS
         aircraftListFetcher: any;
     }
 
-    export var jQueryUIHelper = VRS.jQueryUIHelper || {};
-    VRS.jQueryUIHelper.getTimeoutMessageBox = function(jQueryElement) : TimeoutMessageBoxPlugin
+    export var jQueryUIHelper: JQueryUIHelper = VRS.jQueryUIHelper || {};
+    VRS.jQueryUIHelper.getTimeoutMessageBox = (jQueryElement: JQuery) : TimeoutMessageBoxPlugin =>
     {
         return <TimeoutMessageBoxPlugin>jQueryElement.data('vrsVrsTimeoutMessageBox');
-    };
+    }
 
     /**
      * The state object for the TimeoutMessageBox jQuery UI plugin.
@@ -43,7 +43,7 @@ namespace VRS
     /**
      * A plugin that displays a message box after the user has been inactive for a period of time.
      */
-    class TimeoutMessageBoxPlugin extends JQueryUICustomWidget
+    export class TimeoutMessageBoxPlugin extends JQueryUICustomWidget
     {
         options: TimeoutMessageBoxPlugin_Options =
         {
@@ -104,12 +104,11 @@ namespace VRS
     }
 
     $.widget('vrs.vrsTimeoutMessageBox', new TimeoutMessageBoxPlugin());
-
-    declare interface JQueryStatic
-    {
-        vrsTimeoutMessageBox();
-        vrsTimeoutMessageBox(options: TimeoutMessageBoxPlugin_Options);
-        vrsTimeoutMessageBox(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
-    }
 }
- 
+
+declare interface JQuery
+{
+    vrsTimeoutMessageBox();
+    vrsTimeoutMessageBox(options: VRS.TimeoutMessageBoxPlugin_Options);
+    vrsTimeoutMessageBox(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
+}

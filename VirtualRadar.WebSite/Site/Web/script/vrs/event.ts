@@ -160,11 +160,11 @@ namespace VRS
          * @param {{}} [forceThis]              The object to use as 'this' when calling the callback.
          * @returns {object}                    A handle describing the hooked function for subsequent unhooking.
          */
-        hookJQueryUIPluginEvent(pluginElement: JQuery, pluginName: string, eventName: string, callback: (eventObject: JQueryEventObject) => any, forceThis: any = null) : IEventHandleJQueryUI
+        hookJQueryUIPluginEvent(pluginElement: JQuery, pluginName: string, eventName: string, callback: Function, forceThis: any = null) : IEventHandleJQueryUI
         {
             var fullEventName = (pluginName + eventName).toLowerCase();
             if(forceThis) callback = $.proxy(callback, forceThis);
-            pluginElement.bind(fullEventName, callback);
+            pluginElement.bind(fullEventName, <(eventObject: JQueryEventObject) => void>callback);
 
             return { eventName: fullEventName };
         }

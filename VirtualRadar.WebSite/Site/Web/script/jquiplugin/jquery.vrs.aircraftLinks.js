@@ -6,12 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 var VRS;
 (function (VRS) {
     VRS.globalOptions = VRS.globalOptions || {};
-    var AircraftLinksPlugin_Options = (function () {
-        function AircraftLinksPlugin_Options() {
-        }
-        return AircraftLinksPlugin_Options;
-    })();
-    VRS.AircraftLinksPlugin_Options = AircraftLinksPlugin_Options;
     var AircraftLinksPlugin_State = (function () {
         function AircraftLinksPlugin_State() {
             this.aircraft = undefined;
@@ -33,7 +27,8 @@ var VRS;
     var AircraftLinksPlugin = (function (_super) {
         __extends(AircraftLinksPlugin, _super);
         function AircraftLinksPlugin() {
-            _super.apply(this, arguments);
+            _super.call(this);
+            this.options = VRS.jQueryUIHelper.getAircraftLinksOptions();
         }
         AircraftLinksPlugin.prototype._getState = function () {
             var result = this.element.data('aircraftLinksPluginState');
