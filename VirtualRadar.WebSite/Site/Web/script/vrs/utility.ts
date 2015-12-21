@@ -70,7 +70,7 @@ namespace VRS
         /**
          * Returns the first item for which the matchesCallback returns true or the noMatchesValue if nothing matches.
          */
-        findFirst<T>(array: T[], matchesCallback: (item: T) => boolean, noMatchesValue: T) : T
+        findFirst<T>(array: T[], matchesCallback: (item: T) => boolean, noMatchesValue?: T) : T
         {
             let index = this.indexOfMatch(array, matchesCallback);
             return index === -1 ? noMatchesValue : array[index];

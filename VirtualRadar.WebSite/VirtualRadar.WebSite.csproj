@@ -298,7 +298,12 @@
     <Content Include="Site\Web\script\vrs\bootstrap.js" />
     <Content Include="Site\Web\script\vrs\bootstrapMapFsx.js" />
     <Content Include="Site\Web\script\vrs\bootstrapReportMobile.js" />
-    <Content Include="Site\Web\script\vrs\polarPlotter.js" />
+    <Content Include="Site\Web\script\vrs\polarPlotter.js">
+      <DependentUpon>polarPlotter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\polarPlotter.js.map">
+      <DependentUpon>polarPlotter.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\refreshManager.js">
       <DependentUpon>refreshManager.ts</DependentUpon>
     </Content>
@@ -642,7 +647,12 @@
     <Content Include="Site\Web\script\vrs\string.js.map">
       <DependentUpon>string.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\titleUpdater.js" />
+    <Content Include="Site\Web\script\vrs\titleUpdater.js">
+      <DependentUpon>titleUpdater.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\titleUpdater.js.map">
+      <DependentUpon>titleUpdater.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\unitDisplayPreferences.js">
       <DependentUpon>unitDisplayPreferences.ts</DependentUpon>
     </Content>
@@ -741,11 +751,13 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\menuUI.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\optionsUI.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\pageManager.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\polarPlotter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\refreshManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\scriptManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\serverConfiguration.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\string.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\timeoutManager.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\titleUpdater.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\unitDisplayPreferences.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\utility.ts" />
     <TypeScriptCompile Include="Site\_external\globalise.d.ts" />
