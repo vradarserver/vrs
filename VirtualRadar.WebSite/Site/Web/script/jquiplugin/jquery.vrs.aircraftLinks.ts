@@ -25,7 +25,7 @@ namespace VRS
     /**
      * The options that can be passed when creating a new AircraftLinksPlugin.
      */
-    export class AircraftLinksPlugin_Options
+    export interface AircraftLinksPlugin_Options
     {
         /**
          * An array of the links to display. If null or undefined then all of the default links for an aircraft are displayed.
@@ -62,19 +62,12 @@ namespace VRS
     /*
      * jQueryUIHelper
      */
-    export var jQueryUIHelper = VRS.jQueryUIHelper || {};
-
-    VRS.jQueryUIHelper.getAircraftLinksPlugin = (jQueryElement: JQuery) : AircraftLinksPlugin =>
+    export var jQueryUIHelper: JQueryUIHelper = VRS.jQueryUIHelper || {};
+    jQueryUIHelper.getAircraftLinksPlugin = (jQueryElement: JQuery) : AircraftLinksPlugin =>
     {
         return <AircraftLinksPlugin>jQueryElement.data('vrsVrsAircraftLinks');
     }
-
-    /**
-     * Returns a set of default options for the aircraft links widget, with optional overrides.
-     * @param {VRS_OPTIONS_AIRCRAFTLINKS=} overrides
-     * @returns {VRS_OPTIONS_AIRCRAFTLINKS}
-     */
-    VRS.jQueryUIHelper.getAircraftLinksOptions = (overrides: AircraftLinksPlugin_Options) : AircraftLinksPlugin_Options =>
+    jQueryUIHelper.getAircraftLinksOptions = (overrides: AircraftLinksPlugin_Options) : AircraftLinksPlugin_Options =>
     {
         return $.extend({
             linkSites:  null
@@ -87,6 +80,12 @@ namespace VRS
     export class AircraftLinksPlugin extends JQueryUICustomWidget
     {
         options: AircraftLinksPlugin_Options;
+
+        constructor()
+        {
+            super();
+            this.options = jQueryUIHelper.getAircraftLinksOptions();
+        }
 
         _getState()
         {
@@ -240,11 +239,11 @@ namespace VRS
     }
 
     $.widget('vrs.vrsAircraftLinks', new AircraftLinksPlugin());
+}
 
-    declare interface JQueryStatic
-    {
-        vrsAircraftLinks();
-        vrsAircraftLinks(options: AircraftLinksPlugin_Options);
-        vrsAircraftLinks(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
-    }
+declare interface JQuery
+{
+    vrsAircraftLinks();
+    vrsAircraftLinks(options: VRS.AircraftLinksPlugin_Options);
+    vrsAircraftLinks(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
 }

@@ -1138,7 +1138,6 @@ namespace VRS
          * @param {VRS.Height}  fromUnit        The units that the vertical speed is expressed in.
          * @param {VRS.Height}  toUnit          The units to convert to.
          * @param {boolean}     perSecond       True if the vertical speed should be converted to y units per second.
-         * @returns {*}
          */
         convertVerticalSpeed(verticalSpeed: number, fromUnit: string, toUnit: string, perSecond: boolean) : number
         {
@@ -1156,11 +1155,8 @@ namespace VRS
          * object describing whether the value is pixels or percent, and a number indicating what that value is.
          * Percents are divided by 100 before being returned.
          * @param {String|Number} value Either the integer percentage or a string ending with '%'.
-         * @returns {IPercentValue}
          */
-        getPixelsOrPercent(value: string) : IPercentValue;
-        getPixelsOrPercent(value: number) : IPercentValue;
-        getPixelsOrPercent(value) : IPercentValue
+        getPixelsOrPercent(value: string | number) : IPercentValue
         {
             var valueAsString = String(value);
             var result = {

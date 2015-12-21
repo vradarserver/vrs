@@ -283,6 +283,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLinkLabel.js" />
+    <Content Include="Site\Web\script\jquiplugin\jqueryuihelper.js">
+      <DependentUpon>jqueryuihelper.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jqueryuihelper.js.map">
+      <DependentUpon>jqueryuihelper.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\airportDataApi.js">
       <DependentUpon>airportDataApi.ts</DependentUpon>
     </Content>
@@ -374,7 +380,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.ui.widget.js.map">
       <DependentUpon>jquery.ui.widget.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftPositionMap.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftPositionMap.js">
+      <DependentUpon>jquery.vrs.aircraftPositionMap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftPositionMap.js.map">
+      <DependentUpon>jquery.vrs.aircraftPositionMap.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.menu.js">
       <DependentUpon>jquery.vrs.menu.ts</DependentUpon>
     </Content>
@@ -513,7 +524,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.js">
+      <DependentUpon>jquery.vrs.splitter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.js.map">
+      <DependentUpon>jquery.vrs.splitter.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.js" />
     <Content Include="Site\Web\script\jstorage.js" />
     <Content Include="Site\Web\script\stacktrace.js" />
@@ -596,7 +612,12 @@
     <Content Include="Site\Web\script\vrs\event.js.map">
       <DependentUpon>event.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\layoutManager.js" />
+    <Content Include="Site\Web\script\vrs\layoutManager.js">
+      <DependentUpon>layoutManager.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\layoutManager.js.map">
+      <DependentUpon>layoutManager.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\menuUI.js">
       <DependentUpon>menuUI.ts</DependentUpon>
     </Content>
@@ -695,6 +716,9 @@
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.menu.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftPositionMap.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jqueryuihelper.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraft.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftAutoSelect.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftFilter.ts" />
@@ -712,6 +736,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\event.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\filter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\format.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\layoutManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\linksRenderer.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\menuUI.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\optionsUI.ts" />

@@ -21,16 +21,16 @@ interface JQueryUICustomWidget_Options
  */
 class JQueryUICustomWidget
 {
-    public defaultElement:      string;
-    public document:            JQuery;
-    public element:             JQuery;
-    public namespace:           string;
-    public uuid:                string;
-    public version:             string;
-    public widgetEventPrefix:   string;
-    public widgetFullName:      string;
-    public widgetName:          string;
-    public window:              JQuery;
+    protected defaultElement:      string;
+    protected document:            JQuery;
+    protected element:             JQuery;
+    protected namespace:           string;
+    protected uuid:                string;
+    protected version:             string;
+    protected widgetEventPrefix:   string;
+    protected widgetFullName:      string;
+    protected widgetName:          string;
+    protected window:              JQuery;
 
     constructor()
     {
@@ -43,8 +43,104 @@ class JQueryUICustomWidget
         });
     }
 
-    _trigger(triggerType: string, e?: Event, d?: Object)
+    protected _delay(callback: Function, milliseconds?: number) : number
     {
+        throw 'Should not see this';
+    }
+
+    protected _focusable(element: JQuery) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _getCreateEventData() : Object
+    {
+        throw 'Should not see this';
+    }
+
+    protected _getCreateOptions() : Object
+    {
+        throw 'Should not see this';
+    }
+
+    protected _hide(element: JQuery, option: Object, callback?: () => void) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _hoverable(element: JQuery) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _off(element: JQuery, eventName: string) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _on(...args: any[]) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _setOption(key: string, value: Object) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _setOptions<T>(options: T) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _show(element: JQuery, option: Object, callback?: () => void) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _super(...args: any[]) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _superApply(args: any[]) : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    protected _trigger(triggerType: string, event?: Event, data?: Object) : boolean
+    {
+        throw 'Should not see this';
+    }
+
+    destroy() : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    disable() : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    enable() : JQuery
+    {
+        throw 'Should not see this';
+    }
+
+    instance() : Object
+    {
+        throw 'Should not see this';
+    }
+
+    option(...args: any[]) : Object
+    {
+        throw 'Should not see this';
+    }
+
+    widget() : JQuery
+    {
+        throw 'Should not see this';
     }
 }
  

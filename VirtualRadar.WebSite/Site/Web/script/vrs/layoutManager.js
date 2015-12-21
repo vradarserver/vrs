@@ -1,328 +1,221 @@
-﻿/**
- * @license Copyright © 2013 onwards, Andrew Whewell
- * All rights reserved.
- *
- * Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- *    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-//noinspection JSUnusedLocalSymbols
-/**
- * @fileoverview Code that handles the laying out of the panels within splitters.
- */
-
-(function(VRS, $, /** object= */ undefined)
-{
-    //region VRS.Layout
-    /**
-     * Describes a display layout.
-     * @param {object}              settings
-     * @param {string}              settings.name           The name of the layout. Must be unique.
-     * @param {string}              settings.labelKey       The index into VRS.$$ of the text used to describe the layout.
-     * @param {VRS_LAYOUT_ARRAY}    settings.layout         The description of the layout.
-     * @param {function()}         [settings.onFocus]       Called after the user has selected the layout, but before it is shown to the user.
-     * @param {function()}         [settings.onBlur]        Called after the user has selected another layout, after this layout has been torn down but before the new layout is shown.
-     * @constructor
-     */
-    VRS.Layout = function(settings)
-    {
-        if(!settings) throw 'You must supply a settings object';
-        if(!settings.name) throw 'The layout must be named';
-        if(!settings.labelKey) throw 'The layout must have a label';
-        if(!settings.layout) throw 'The layout must declare a layout';
-        if(!(settings.layout instanceof Array) || settings.layout.length != 3) throw 'The layout must be an array of 3 elements';
-
-        this.name = settings.name;
-        this.labelKey = settings.labelKey;
-        this.layout = settings.layout;
-        this.onFocus = settings.onFocus || function() { };
-        this.onBlur = settings.onBlur || function() { };
-    };
-    //endregion
-
-    //region LayoutManager
-    /**
-     * Manages the creation and destruction of splitters, and holds onto the list of registered splitter layouts.
-     * @param {string} [name] The name to use when saving state for the layout manager.
-     * @constructor
-     */
-    VRS.LayoutManager = function(name)
-    {
-        //region -- Fields
-        /**
-         * An array of layouts registered with registerLayout().
-         * @type {Array.<VRS.Layout>}
-         * @private
-         */
-        var _Layouts = [];
-
-        /**
-         * The currently applied layout, if any.
-         * @type {{
-         * layout:                      VRS.Layout,
-         * splitterGroupPersistence:    VRS.SplitterGroupPersistence,
-         * topSplitter:                 jQuery,
-         * topSplitterIsSplitter:       bool=
-         * }}
-         */
-        var _CurrentLayout;
-        //endregion
-
-        //region -- Properties
-        var _Name = /** @type {string} */ name || 'default';
-        this.getName = function() { return _Name; };
-
-        /** @type {jQuery} @private */
-        var _SplitterParent = $('body');
-        this.getSplitterParent = function() { return _SplitterParent; };
-        this.setSplitterParent = function(/** jQuery */value) {
-            if(_CurrentLayout) throw 'You cannot change the splitter parent once a layout has been applied';
-            _SplitterParent = value;
-            _SplitterParent.css({
-                width:  '100%',
+var VRS;
+(function (VRS) {
+    var Layout = (function () {
+        function Layout(settings) {
+            if (!settings)
+                throw 'You must supply a settings object';
+            if (!settings.name)
+                throw 'The layout must be named';
+            if (!settings.labelKey)
+                throw 'The layout must have a label';
+            if (!settings.layout)
+                throw 'The layout must declare a layout';
+            if (!(settings.layout instanceof Array) || settings.layout.length != 3)
+                throw 'The layout must be an array of 3 elements';
+            settings.onFocus = settings.onFocus || $.noop;
+            settings.onBlur = settings.onBlur || $.noop;
+            this._Settings = settings;
+        }
+        Object.defineProperty(Layout.prototype, "name", {
+            get: function () {
+                return this._Settings.name;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Layout.prototype, "labelKey", {
+            get: function () {
+                return this._Settings.labelKey;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Layout.prototype, "layout", {
+            get: function () {
+                return this._Settings.layout;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Layout.prototype, "onFocus", {
+            get: function () {
+                return this._Settings.onFocus;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Layout.prototype, "onBlur", {
+            get: function () {
+                return this._Settings.onBlur;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Layout;
+    })();
+    VRS.Layout = Layout;
+    var LayoutManager = (function () {
+        function LayoutManager(name) {
+            this._Layouts = [];
+            this.saveState = function () {
+                VRS.configStorage.save(this.persistenceKey(), this.createSettings());
+            };
+            this._Name = name || 'default';
+            this._SplitterParent = $('body');
+        }
+        LayoutManager.prototype.getName = function () {
+            return this._Name;
+        };
+        LayoutManager.prototype.getSplitterParent = function () {
+            return this._SplitterParent;
+        };
+        LayoutManager.prototype.setSplitterParent = function (value) {
+            if (this._CurrentLayout)
+                throw 'You cannot change the splitter parent once a layout has been applied';
+            this._SplitterParent = value;
+            this._SplitterParent.css({
+                width: '100%',
                 height: '100%',
                 position: 'fixed',
                 top: '0,',
                 left: '0'
-            })
+            });
         };
-
-        /**
-         * Gets the name of the currently selected layout.
-         * @returns {string}
-         */
-        this.getCurrentLayout = function() { return _CurrentLayout ? _CurrentLayout.layout.name : null; };
-        //endregion
-
-        //region -- applyLayout, doApplyLayout, undoLayout
-        /**
-         * Destroys the existing layout and applies a new one.
-         * @param {VRS.Layout|string} layoutOrName
-         * @param {jQuery} [splitterParent]
-         */
-        this.applyLayout = function(layoutOrName, splitterParent)
-        {
-            var layout = /** @type {VRS.Layout} */ layoutOrName;
-            if(!(layout instanceof Array)) layout = findLayout(layoutOrName);
-            if(layout === null) throw 'Cannot find a layout with a name of ' + layoutOrName;
-
-            undoLayout();
+        LayoutManager.prototype.getCurrentLayout = function () {
+            return this._CurrentLayout ? this._CurrentLayout.layout.name : null;
+        };
+        LayoutManager.prototype.applyLayout = function (layoutOrName, splitterParent) {
+            var layout = layoutOrName;
+            if (!(layout instanceof Array)) {
+                layout = this.findLayout(layoutOrName);
+            }
+            if (layout === null) {
+                throw 'Cannot find a layout with a name of ' + layoutOrName;
+            }
+            this.undoLayout();
             layout.onFocus();
-
-            var splitterGroupPersistence = new VRS.SplitterGroupPersistence(_Name + '-' + layout.name);
-
-            _CurrentLayout = {
+            var splitterGroupPersistence = new VRS.SplitterGroupPersistence(this._Name + '-' + layout.name);
+            this._CurrentLayout = {
                 layout: layout,
                 splitterGroupPersistence: splitterGroupPersistence,
-                topSplitter: doApplyLayout(layout.layout, splitterParent, splitterGroupPersistence, true)
+                topSplitter: this.doApplyLayout(layout.layout, splitterParent, splitterGroupPersistence, true)
             };
-            _CurrentLayout.topSplitterIsSplitter = !!VRS.jQueryUIHelper.getSplitterPlugin(_CurrentLayout.topSplitter);
-
+            this._CurrentLayout.topSplitterIsSplitter = !!VRS.jQueryUIHelper.getSplitterPlugin(this._CurrentLayout.topSplitter);
             splitterGroupPersistence.setAutoSaveEnabled(true);
         };
-
-        /**
-         * Called recursively create a single splitter.
-         * @param {VRS_LAYOUT_ARRAY}                layout
-         * @param {jQuery}                          splitterParent
-         * @param {VRS.SplitterGroupPersistence}    splitterGroupPersistence
-         * @param {bool}                            isTopLevelSplitter
-         * @returns {jQuery}
-         */
-        function doApplyLayout(layout, splitterParent, splitterGroupPersistence, isTopLevelSplitter)
-        {
-            if(!(layout instanceof Array) || layout.length != 3) throw 'The layout must be an array of 3 elements';
-            if(!splitterParent) splitterParent = _SplitterParent;
-
+        LayoutManager.prototype.doApplyLayout = function (layout, splitterParent, splitterGroupPersistence, isTopLevelSplitter) {
+            if (!(layout instanceof Array) || layout.length != 3)
+                throw 'The layout must be an array of 3 elements';
+            if (!splitterParent) {
+                splitterParent = this._SplitterParent;
+            }
             var leftTop = layout[0];
             var splitterSettings = layout[1];
             var rightBottom = layout[2];
-
-            if(leftTop instanceof Array)     leftTop =     doApplyLayout(leftTop, splitterParent, splitterGroupPersistence, false);
-            if(rightBottom instanceof Array) rightBottom = doApplyLayout(rightBottom, splitterParent, splitterGroupPersistence, false);
-
+            if (leftTop instanceof Array)
+                leftTop = this.doApplyLayout(leftTop, splitterParent, splitterGroupPersistence, false);
+            if (rightBottom instanceof Array)
+                rightBottom = this.doApplyLayout(rightBottom, splitterParent, splitterGroupPersistence, false);
             var result = null;
-            if(!leftTop) result = rightBottom;
-            else if(!rightBottom) result = leftTop;
+            if (!leftTop) {
+                result = rightBottom;
+            }
+            else if (!rightBottom) {
+                result = leftTop;
+            }
             else {
                 splitterSettings.leftTopParent = leftTop.parent();
                 splitterSettings.rightBottomParent = rightBottom.parent();
                 splitterSettings.splitterGroupPersistence = splitterGroupPersistence;
                 splitterSettings.isTopLevelSplitter = isTopLevelSplitter;
-
                 result = $('<div/>')
                     .appendTo(splitterParent);
                 leftTop.appendTo(result);
                 rightBottom.appendTo(result);
                 result.vrsSplitter(splitterSettings);
             }
-
             return result;
-        }
-
-        /**
-         * Destroys the current layout.
-         */
-        function undoLayout()
-        {
-            if(_CurrentLayout) {
-                if(_CurrentLayout.splitterGroupPersistence) {
-                    _CurrentLayout.splitterGroupPersistence.dispose();
+        };
+        LayoutManager.prototype.undoLayout = function () {
+            if (this._CurrentLayout) {
+                if (this._CurrentLayout.splitterGroupPersistence) {
+                    this._CurrentLayout.splitterGroupPersistence.dispose();
                 }
-
-                if(_CurrentLayout.topSplitter && _CurrentLayout.topSplitterIsSplitter) {
-                    _CurrentLayout.topSplitter.vrsSplitter('destroy');
+                if (this._CurrentLayout.topSplitter && this._CurrentLayout.topSplitterIsSplitter) {
+                    this._CurrentLayout.topSplitter.vrsSplitter('destroy');
                 }
-
-                _CurrentLayout.layout.onBlur();
+                this._CurrentLayout.layout.onBlur();
             }
-            _CurrentLayout = null;
-        }
-        //endregion
-
-        //region -- registerLayout, removeLayoutByName, getLayouts, findLayout, findLayoutIndex
-        /**
-         * Registers a layout with the layout manager.
-         * @param {VRS.Layout} layout
-         */
-        this.registerLayout = function(layout)
-        {
-            if(!layout) throw 'You must supply a layout object';
-
-            var existingLayout = findLayout(layout.name);
-            if(existingLayout) throw 'There is already a layout called ' + layout.name;
-
-            _Layouts.push(layout);
+            this._CurrentLayout = null;
         };
-
-        //noinspection JSUnusedGlobalSymbols
-        /**
-         * Removes a registered layout.
-         * @param {string} name The name of the layout to remove.
-         */
-        this.removeLayoutByName = function(name)
-        {
-            var layoutIndex = findLayoutIndex(name);
-            if(layoutIndex !== -1) _Layouts.splice(layoutIndex, 1);
+        LayoutManager.prototype.registerLayout = function (layout) {
+            if (!layout)
+                throw 'You must supply a layout object';
+            var existingLayout = this.findLayout(layout.name);
+            if (existingLayout)
+                throw 'There is already a layout called ' + layout.name;
+            this._Layouts.push(layout);
         };
-
-        /**
-         * Returns a collection of all registered layouts.
-         * @returns {VRS_LAYOUT_LABEL[]}
-         */
-        this.getLayouts = function()
-        {
+        LayoutManager.prototype.removeLayoutByName = function (name) {
+            var layoutIndex = this.findLayoutIndex(name);
+            if (layoutIndex !== -1) {
+                this._Layouts.splice(layoutIndex, 1);
+            }
+        };
+        LayoutManager.prototype.getLayouts = function () {
             var result = [];
-
-            $.each(_Layouts, function() {
+            $.each(this._Layouts, function () {
                 result.push({
                     name: this.name,
                     labelKey: this.labelKey
                 });
             });
-
             return result;
         };
-
-        /**
-         * Returns the layout with the given name or null if no such layout exists.
-         * @param {string} name The name of the layout to find.
-         * @returns {VRS.Layout}
-         */
-        function findLayout(name)
-        {
-            var idx = findLayoutIndex(name);
-            return idx === -1 ? null : _Layouts[idx];
-        }
-
-        /**
-         * Returns the index of the layout with the given name or -1 if no such layout exists.
-         * @param {string} name The name of the layout to find.
-         * @returns {number}
-         */
-        function findLayoutIndex(name)
-        {
+        LayoutManager.prototype.findLayout = function (name) {
+            var idx = this.findLayoutIndex(name);
+            return idx === -1 ? null : this._Layouts[idx];
+        };
+        LayoutManager.prototype.findLayoutIndex = function (name) {
             var result = -1;
-            $.each(_Layouts, function(idx) {
-                if(this.name === name) result = idx;
+            $.each(this._Layouts, function (idx) {
+                if (this.name === name) {
+                    result = idx;
+                }
                 return result === -1;
             });
-
             return result;
-        }
-        //endregion
-
-        //region -- saveState, loadState, applyState, loadAndApplyState
-        /**
-         * Saves the current state of the manager.
-         */
-        this.saveState = function()
-        {
-            VRS.configStorage.save(persistenceKey(), createSettings());
         };
-
-        /**
-         * Returns the previously saved state or the current state if no state was previously saved.
-         * @returns {VRS_STATE_LAYOUTMANAGER}
-         */
-        this.loadState = function()
-        {
-            var savedSettings = VRS.configStorage.load(persistenceKey(), {});
-            var result = $.extend(createSettings(), savedSettings);
-
-            if(result.currentLayout) {
-                var existing = findLayout(result.currentLayout);
-                if(!existing) result.currentLayout = null;
+        LayoutManager.prototype.loadState = function () {
+            var savedSettings = VRS.configStorage.load(this.persistenceKey(), {});
+            var result = $.extend(this.createSettings(), savedSettings);
+            if (result.currentLayout) {
+                var existing = this.findLayout(result.currentLayout);
+                if (!existing) {
+                    result.currentLayout = null;
+                }
             }
-
             return result;
         };
-
-        /**
-         * Applies a previously saved state to the object.
-         * @param {VRS_STATE_LAYOUTMANAGER} settings
-         */
-        this.applyState = function(settings)
-        {
-            var layout = settings.currentLayout ? findLayout(settings.currentLayout) : null;
-            if(layout) this.applyLayout(layout.name);
+        LayoutManager.prototype.applyState = function (settings) {
+            var layout = settings.currentLayout ? this.findLayout(settings.currentLayout) : null;
+            if (layout)
+                this.applyLayout(layout.name);
         };
-
-        /**
-         * Loads and applies the previously saved state.
-         */
-        this.loadAndApplyState = function()
-        {
+        LayoutManager.prototype.loadAndApplyState = function () {
             this.applyState(this.loadState());
         };
-
-        /**
-         * Returns the key that the state will be saved against.
-         * @returns {string}
-         */
-        function persistenceKey()
-        {
-            return 'vrsLayoutManager-' + _Name;
-        }
-
-        /**
-         * Returns the current state of the object.
-         * @returns {VRS_STATE_LAYOUTMANAGER}
-         */
-        function createSettings()
-        {
+        LayoutManager.prototype.persistenceKey = function () {
+            return 'vrsLayoutManager-' + this._Name;
+        };
+        LayoutManager.prototype.createSettings = function () {
             return {
-                currentLayout: _CurrentLayout ? _CurrentLayout.layout.name : null
+                currentLayout: this._CurrentLayout ? this._CurrentLayout.layout.name : null
             };
-        }
-        //endregion
-    };
-    //endregion
-
-    //region Pre-builts
+        };
+        return LayoutManager;
+    })();
+    VRS.LayoutManager = LayoutManager;
     VRS.layoutManager = new VRS.LayoutManager();
-    //endregion
-}(window.VRS = window.VRS || {}, jQuery));
+})(VRS || (VRS = {}));
+//# sourceMappingURL=layoutManager.js.map

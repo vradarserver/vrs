@@ -75,13 +75,31 @@ namespace VRS
         menuContainer: JQuery = null;
     }
 
-    export var jQueryUIHelper = VRS.jQueryUIHelper || {};
-    /**
-     * Returns the menu plugin attached to the element passed across.
+    /*
+     * jQueryUIHelper methods
      */
+    export var jQueryUIHelper: JQueryUIHelper = VRS.jQueryUIHelper || {};
+
     VRS.jQueryUIHelper.getMenuPlugin = function(jQueryElement: JQuery) : MenuPlugin
     {
         return <MenuPlugin>jQueryElement.data('vrsVrsMenu');
+    }
+
+    VRS.jQueryUIHelper.getMenuOptions = function(overrides?: MenuPlugin_Options) : MenuPlugin_Options
+    {
+        return $.extend({
+            menu:                   null,
+            showButtonTrigger:      true,
+            triggerElement:         null,
+            menuContainerClasses:   null,
+            offsetX:                0,
+            offsetY:                5,
+            alignment:              VRS.Alignment.Centre,
+            cssMenuWidth:           300,
+            zIndex:                 99999,
+
+            __nop: null
+        }, overrides);
     }
 
     /**
@@ -137,29 +155,9 @@ namespace VRS
     }
 
     /**
-     * Returns the default options for a menu widget with optional overrides.
-     */
-    VRS.jQueryUIHelper.getMenuOptions = function(overrides?: MenuPlugin_Options) : MenuPlugin_Options
-    {
-        return $.extend({
-            menu:                   null,
-            showButtonTrigger:      true,
-            triggerElement:         null,
-            menuContainerClasses:   null,
-            offsetX:                0,
-            offsetY:                5,
-            alignment:              VRS.Alignment.Centre,
-            cssMenuWidth:           300,
-            zIndex:                 99999,
-
-            __nop: null
-        }, overrides);
-    }
-
-    /**
      * A widget that can render a menu structure.
      */
-    class MenuPlugin extends JQueryUICustomWidget
+    export class MenuPlugin extends JQueryUICustomWidget
     {
         options: MenuPlugin_Options;
 
@@ -538,12 +536,11 @@ namespace VRS
     }
 
     $.widget('vrs.vrsMenu', new MenuPlugin());
-
-    declare interface JQueryStatic
-    {
-        vrsMenu();
-        vrsMenu(options: MenuPlugin_Options);
-        vrsMenu(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
-    }
 }
- 
+
+declare interface JQuery
+{
+    vrsMenu();
+    vrsMenu(options: VRS.MenuPlugin_Options);
+    vrsMenu(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
+}

@@ -325,6 +325,7 @@ var VRS;
         };
         return MenuPlugin;
     })(JQueryUICustomWidget);
+    VRS.MenuPlugin = MenuPlugin;
     $.widget('vrs.vrsMenu', new MenuPlugin());
 })(VRS || (VRS = {}));
 //# sourceMappingURL=jquery.vrs.menu.js.map

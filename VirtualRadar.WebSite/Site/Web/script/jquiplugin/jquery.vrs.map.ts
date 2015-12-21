@@ -1339,20 +1339,14 @@ namespace VRS
     }
 
     /*
-     * jQueryUIHelper methods
+     * jQueryUIHelper
      */
-    export var jQueryUIHelper = VRS.jQueryUIHelper || {};
-    /**
-     * Returns the VRS.vrsMap plugin object attached to the element.
-     */
-    VRS.jQueryUIHelper.getMapPlugin = function(jQueryElement: JQuery) : IMap
+    export var jQueryUIHelper: JQueryUIHelper = VRS.jQueryUIHelper || {};
+    jQueryUIHelper.getMapPlugin = (jQueryElement: JQuery) : IMap =>
     {
         return <IMap>jQueryElement.data('vrsVrsMap');
     }
-    /**
-     * Returns the options for a vrsMap widget with optional overrides.
-     */
-    VRS.jQueryUIHelper.getMapOptions = function(overrides: IMapOptions) : IMapOptions
+    jQueryUIHelper.getMapOptions = (overrides: IMapOptions) : IMapOptions =>
     {
         return $.extend({
             // Google Map load options - THESE ONLY HAVE ANY EFFECT ON THE FIRST MAP LOADED ON A PAGE
@@ -2617,11 +2611,11 @@ namespace VRS
     }
 
     $.widget('vrs.vrsMap', new MapPlugin());
+}
 
-    declare interface JQueryStatic
-    {
-        vrsMap();
-        vrsMap(options: IMapOptions);
-        vrsMap(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
-    }
+declare interface JQuery
+{
+    vrsMap();
+    vrsMap(options: VRS.IMapOptions);
+    vrsMap(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any);
 }
