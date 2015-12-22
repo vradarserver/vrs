@@ -346,7 +346,7 @@ namespace VRS
         /**
          * Call after creating an element for a property - this lets renderers that use a jQuery widget create their widget.
          */
-        createWidgetInJQuery(jQueryElement: JQuery, surface: RenderSurfaceBitFlags, options: AircraftRenderOptions)
+        createWidgetInJQuery(jQueryElement: JQuery, surface: RenderSurfaceBitFlags, options?: AircraftRenderOptions)
         {
             if(this.isWidgetProperty()) {
                 this.createWidget(jQueryElement, options, surface);

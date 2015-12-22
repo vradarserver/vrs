@@ -280,7 +280,12 @@
     <Content Include="Site\Web\script\i18n\strings.fr.js" />
     <Content Include="Site\Web\script\i18n\strings.zh.js" />
     <Content Include="Site\Web\script\jquery.colorPicker.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js">
+      <DependentUpon>jquery.vrs.aircraftInfoWindow.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js.map">
+      <DependentUpon>jquery.vrs.aircraftInfoWindow.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLinkLabel.js" />
     <Content Include="Site\Web\script\jquiplugin\jqueryuihelper.js">
@@ -408,7 +413,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.js.map">
       <DependentUpon>jquery.vrs.timeoutMessageBox.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.js">
+      <DependentUpon>jquery.vrs.mapNextPageButton.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.js.map">
+      <DependentUpon>jquery.vrs.mapNextPageButton.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\markerWithLabel.js" />
     <Content Include="Site\Web\script\purl.js" />
     <Content Include="Site\Web\desktopReport.html" />
@@ -508,8 +518,18 @@
     <Content Include="Site\Web\script\jquery-ui.js" />
     <Content Include="Site\Web\script\jquery.js" />
     <Content Include="Site\Web\script\jquery.json.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftList.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.js">
+      <DependentUpon>jquery.vrs.aircraftDetail.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.js.map">
+      <DependentUpon>jquery.vrs.aircraftDetail.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftList.js">
+      <DependentUpon>jquery.vrs.aircraftList.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftList.js.map">
+      <DependentUpon>jquery.vrs.aircraftList.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map.js">
       <DependentUpon>jquery.vrs.map.ts</DependentUpon>
     </Content>
@@ -535,7 +555,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.js.map">
       <DependentUpon>jquery.vrs.splitter.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.js">
+      <DependentUpon>jquery.vrs.storedSettingsList.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.js.map">
+      <DependentUpon>jquery.vrs.storedSettingsList.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jstorage.js" />
     <Content Include="Site\Web\script\stacktrace.js" />
     <Content Include="Site\Web\script\vrs\aircraft.js">
@@ -722,9 +747,14 @@
   <ItemGroup>
     <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.ui.widget.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftList.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.menu.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftPositionMap.ts" />

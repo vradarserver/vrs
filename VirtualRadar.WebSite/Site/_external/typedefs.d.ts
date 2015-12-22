@@ -367,6 +367,7 @@
     {
         id:     string | number;
         tag:    any;
+        isOpen: boolean;
 
         getContent: () => Element;
         setContent: (content: Element) => void;

@@ -23,13 +23,13 @@ namespace VRS
      */
     export interface ConfigStorage_ImportOptions
     {
-        overwrite:              boolean;
-        resetBeforeImport:      boolean;
-        ignoreLanguage:         boolean;
-        ignoreSplitters:        boolean;
-        ignoreCurrentLocation:  boolean;
-        ignoreAutoSelect:       boolean;
-        ignoreRequestFeedId:    boolean;
+        overwrite?:             boolean;
+        resetBeforeImport?:     boolean;
+        ignoreLanguage?:        boolean;
+        ignoreSplitters?:       boolean;
+        ignoreCurrentLocation?: boolean;
+        ignoreAutoSelect?:      boolean;
+        ignoreRequestFeedId?:   boolean;
     }
 
     /**
@@ -344,5 +344,5 @@ namespace VRS
     /**
      * The pre-built singleton configuration storage object.
      */
-    export var configStorage = VRS.configStorage || new VRS.ConfigStorage();
+    export var configStorage: ConfigStorage = VRS.configStorage || new VRS.ConfigStorage();
 }
