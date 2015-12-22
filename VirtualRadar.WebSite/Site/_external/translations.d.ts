@@ -6,7 +6,7 @@
 
 declare namespace VRS
 {
-    export interface TranslatedStringsStatic
+    interface TranslatedStringsStatic
     {
         Add:                                string;
         AddCondition:                       string;

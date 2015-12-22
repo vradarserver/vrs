@@ -18,7 +18,7 @@
 
 declare namespace VRS
 {
-    export interface TranslatedStringsStatic
+    interface TranslatedStringsStatic
     {
 <#
 var serviceProvider = this.Host as IServiceProvider;

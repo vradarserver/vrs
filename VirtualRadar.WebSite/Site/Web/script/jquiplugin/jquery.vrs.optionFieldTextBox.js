@@ -65,11 +65,12 @@ var VRS;
     })(JQueryUICustomWidget);
     VRS.OptionFieldTextBoxPlugin = OptionFieldTextBoxPlugin;
     $.widget('vrs.vrsOptionFieldTextBox', new OptionFieldTextBoxPlugin());
-    if (VRS.optionControlTypeBroker)
+    if (VRS.optionControlTypeBroker) {
         VRS.optionControlTypeBroker.addControlTypeHandlerIfNotRegistered(VRS.optionControlTypes.textBox, function (settings) {
             return $('<input/>')
                 .appendTo(settings.fieldParentJQ)
                 .vrsOptionFieldTextBox(VRS.jQueryUIHelper.getOptionFieldTextBoxOptions(settings));
         });
+    }
 })(VRS || (VRS = {}));
 //# sourceMappingURL=jquery.vrs.optionFieldTextBox.js.map

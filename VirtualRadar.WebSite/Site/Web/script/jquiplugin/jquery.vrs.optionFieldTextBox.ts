@@ -98,7 +98,7 @@ namespace VRS
 
     $.widget('vrs.vrsOptionFieldTextBox', new OptionFieldTextBoxPlugin());
 
-    if(VRS.optionControlTypeBroker)
+    if(VRS.optionControlTypeBroker) {
         VRS.optionControlTypeBroker.addControlTypeHandlerIfNotRegistered(
             VRS.optionControlTypes.textBox,
             function(settings: OptionFieldTextBoxPlugin_Options) {
