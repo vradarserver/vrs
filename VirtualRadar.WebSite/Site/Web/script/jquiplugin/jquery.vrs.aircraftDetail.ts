@@ -742,12 +742,12 @@ namespace VRS
         {
             state.aircraftLastRendered = aircraft;
             if(!aircraft) {
-                $(':visible', state.container).hide();
-                $(':hidden', state.noAircraftContainer).show();
+                $(state.container, ':visible').hide();
+                $(state.noAircraftContainer, ':hidden').show();
                 this._renderLinks(state, null, refreshAll);
             } else {
-                $(':hidden', state.container).show();
-                $(':visible', state.noAircraftContainer).hide();
+                $(state.container, ':hidden').show();
+                $(state.noAircraftContainer, ':visible').hide();
 
                 this._renderProperties(state, aircraft, refreshAll, state.headerProperties, VRS.RenderSurface.DetailHead, displayUnit);
                 this._renderProperties(state, aircraft, refreshAll, state.bodyProperties, VRS.RenderSurface.DetailBody, displayUnit);

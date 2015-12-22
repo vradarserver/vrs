@@ -299,7 +299,7 @@ namespace VRS
 
                 if(!aircraft) {
                     if(options.autoHideNoPosition) {
-                        $(':visible', this.element).hide();
+                        $(this.element, ':visible').hide();
                     } else {
                         state.aircraftPlotter.plot();
                     }
