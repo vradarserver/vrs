@@ -253,7 +253,7 @@ var VRS;
             return this._Settings.getTarget() || null;
         };
         return OptionFieldLinkLabel;
-    })(OptionField);
+    })(OptionFieldLabel);
     VRS.OptionFieldLinkLabel = OptionFieldLinkLabel;
     var OptionFieldNumeric = (function (_super) {
         __extends(OptionFieldNumeric, _super);
@@ -689,12 +689,12 @@ var VRS;
         OptionControlTypeBroker.prototype.controlTypeHasHandler = function (controlType) {
             return !!this._ControlTypes[controlType];
         };
-        OptionControlTypeBroker.prototype.createControlTypeHandler = function (settings) {
-            var controlType = settings.field.getControlType();
+        OptionControlTypeBroker.prototype.createControlTypeHandler = function (options) {
+            var controlType = options.field.getControlType();
             var creator = this._ControlTypes[controlType];
             if (!creator)
                 throw 'There is no handler registered for ' + controlType + ' control types';
-            return creator(settings);
+            return creator(options);
         };
         return OptionControlTypeBroker;
     })();

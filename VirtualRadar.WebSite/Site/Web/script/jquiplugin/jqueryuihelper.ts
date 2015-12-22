@@ -44,6 +44,51 @@ namespace VRS
         getMenuPlugin?:  (jQueryElement: JQuery) => MenuPlugin;
         getMenuOptions?: (overrides?: MenuPlugin_Options) => MenuPlugin_Options;
 
+        getOptionDialogPlugin?:  (element: JQuery) => OptionDialog;
+        getOptionDialogOptions?: (overrides?: OptionDialog_Options) => OptionDialog_Options;
+
+        getOptionFieldButtonPlugin?:  (element: JQuery) => OptionFieldButtonPlugin;
+        getOptionFieldButtonOptions?: (overrides?: OptionFieldButtonPlugin_Options) => OptionFieldButtonPlugin_Options;
+
+        getOptionFieldCheckBoxPlugin?:  (element: JQuery) => OptionFieldCheckBoxPlugin;
+        getOptionFieldCheckBoxOptions?: (overrides?: OptionFieldCheckBoxPlugin_Options) => OptionFieldCheckBoxPlugin_Options;
+
+        getOptionFieldColourPlugin?:  (element: JQuery) => OptionFieldColourPlugin;
+        getOptionFieldColourOptions?: (overrides?: OptionFieldColourPlugin_Options) => OptionFieldColourPlugin_Options;
+
+        getOptionFieldComboBoxPlugin?:  (element: JQuery) => OptionFieldComboBoxPlugin;
+        getOptionFieldComboBoxOptions?: (overrides?: OptionFieldComboBoxPlugin_Options) => OptionFieldComboBoxPlugin_Options;
+
+        getOptionFieldDatePlugin?:  (jQueryElement: JQuery) => OptionFieldDatePlugin;
+        getOptionFieldDateOptions?: (overrides?: OptionFieldDatePlugin_Options) => OptionFieldDatePlugin_Options;
+
+        getOptionFieldLabelPlugin?:  (element: JQuery) => OptionFieldLabelPlugin;
+        getOptionFieldLabelOptions?: (overrides?: OptionFieldLabelPlugin_Options) => OptionFieldLabelPlugin_Options;
+
+        getOptionFieldLinkLabelPlugin?:  (element: JQuery) => OptionFieldLinkLabelPlugin;
+        getOptionFieldLinkLabelOptions?: (overrides?: OptionFieldLinkLabelPlugin_Options) => OptionFieldLinkLabelPlugin_Options;
+
+        getOptionFieldNumericPlugin?:  (element: JQuery) => OptionFieldNumericPlugin;
+        getOptionFieldNumericOptions?: (overrides?: OptionFieldNumeric_Options) => OptionFieldNumeric_Options;
+
+        getOptionFieldOrderedSubsetPlugin?:  (element: JQuery) => OptionFieldOrderedSubsetPlugin;
+        getOptionFieldOrderedSubsetOptions?: (overrides?: OptionFieldOrderedSubsetPlugin_Options) => OptionFieldOrderedSubsetPlugin_Options;
+
+        getOptionFieldPaneListPlugin?:  (element: JQuery) => OptionFieldPaneListPlugin;
+        getOptionFieldPaneListOptions?: (overrides?: OptionFieldPaneListPlugin_Options) => OptionFieldPaneListPlugin_Options;
+
+        getOptionFieldRadioButtonPlugin?:  (element: JQuery) => OptionFieldRadioButtonPlugin;
+        getOptionFieldRadioButtonOptions?: (overrides?: OptionFieldRadioButtonPlugin_Options) => OptionFieldRadioButtonPlugin_Options;
+
+        getOptionFieldTextBoxPlugin?:  (element: JQuery) => OptionFieldTextBoxPlugin;
+        getOptionFieldTextBoxOptions?: (overrides?: OptionFieldTextBoxPlugin_Options) => OptionFieldTextBoxPlugin_Options;
+
+        getOptionFormPlugin?:  (element: JQuery) => OptionForm;
+        getOptionFormOptions?: (overrides?: OptionForm_Options) => OptionForm_Options;
+
+        getOptionPanePlugin?:  (element: JQuery) => OptionPanePlugin;
+        getOptionPaneOptions?: (overrides?: OptionPanePlugin_Options) => OptionPanePlugin_Options;
+
         getPagePanelPlugin?:  (element: JQuery) => PagePanel;
         getPagePanelOptions?: (overrides?: PagePanel_Options) => PagePanel_Options;
 

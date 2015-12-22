@@ -286,8 +286,18 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.js.map">
       <DependentUpon>jquery.vrs.aircraftInfoWindow.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLinkLabel.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js">
+      <DependentUpon>jquery.vrs.optionFieldColour.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.js.map">
+      <DependentUpon>jquery.vrs.optionFieldColour.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLinkLabel.js">
+      <DependentUpon>jquery.vrs.optionFieldLinkLabel.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLinkLabel.js.map">
+      <DependentUpon>jquery.vrs.optionFieldLinkLabel.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jqueryuihelper.js">
       <DependentUpon>jqueryuihelper.ts</DependentUpon>
     </Content>
@@ -402,7 +412,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.menu.js.map">
       <DependentUpon>jquery.vrs.menu.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldDate.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldDate.js">
+      <DependentUpon>jquery.vrs.optionFieldDate.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldDate.js.map">
+      <DependentUpon>jquery.vrs.optionFieldDate.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.js">
       <DependentUpon>jquery.vrs.pagePanel.ts</DependentUpon>
     </Content>
@@ -541,18 +556,78 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map.js.map">
       <DependentUpon>jquery.vrs.map.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionDialog.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldButton.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldCheckBox.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldComboBox.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLabel.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldNumeric.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldOrderedSubset.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldPaneList.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldRadioButton.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldTextBox.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionDialog.js">
+      <DependentUpon>jquery.vrs.optionDialog.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionDialog.js.map">
+      <DependentUpon>jquery.vrs.optionDialog.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldButton.js">
+      <DependentUpon>jquery.vrs.optionFieldButton.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldButton.js.map">
+      <DependentUpon>jquery.vrs.optionFieldButton.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldCheckBox.js">
+      <DependentUpon>jquery.vrs.optionFieldCheckBox.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldCheckBox.js.map">
+      <DependentUpon>jquery.vrs.optionFieldCheckBox.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldComboBox.js">
+      <DependentUpon>jquery.vrs.optionFieldComboBox.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldComboBox.js.map">
+      <DependentUpon>jquery.vrs.optionFieldComboBox.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLabel.js">
+      <DependentUpon>jquery.vrs.optionFieldLabel.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLabel.js.map">
+      <DependentUpon>jquery.vrs.optionFieldLabel.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldNumeric.js">
+      <DependentUpon>jquery.vrs.optionFieldNumeric.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldNumeric.js.map">
+      <DependentUpon>jquery.vrs.optionFieldNumeric.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldOrderedSubset.js">
+      <DependentUpon>jquery.vrs.optionFieldOrderedSubset.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldOrderedSubset.js.map">
+      <DependentUpon>jquery.vrs.optionFieldOrderedSubset.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldPaneList.js">
+      <DependentUpon>jquery.vrs.optionFieldPaneList.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldPaneList.js.map">
+      <DependentUpon>jquery.vrs.optionFieldPaneList.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldRadioButton.js">
+      <DependentUpon>jquery.vrs.optionFieldRadioButton.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldRadioButton.js.map">
+      <DependentUpon>jquery.vrs.optionFieldRadioButton.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldTextBox.js">
+      <DependentUpon>jquery.vrs.optionFieldTextBox.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldTextBox.js.map">
+      <DependentUpon>jquery.vrs.optionFieldTextBox.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.js">
+      <DependentUpon>jquery.vrs.optionForm.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.js.map">
+      <DependentUpon>jquery.vrs.optionForm.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.js">
+      <DependentUpon>jquery.vrs.optionPane.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.js.map">
+      <DependentUpon>jquery.vrs.optionPane.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.js">
       <DependentUpon>jquery.vrs.selectDialog.ts</DependentUpon>
     </Content>
@@ -764,6 +839,21 @@
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.menu.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionDialog.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldButton.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldCheckBox.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldColour.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldComboBox.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldDate.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLabel.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldLinkLabel.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldNumeric.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldOrderedSubset.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldPaneList.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldRadioButton.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldTextBox.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.ts" />
@@ -807,6 +897,7 @@
     <TypeScriptCompile Include="Site\_external\google.maps.marker-with-label.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery-corrections.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery-json.d.ts" />
+    <TypeScriptCompile Include="Site\_external\jquery.colorpicker.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery.dlmenu.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery.ui.datetimepicker.d.ts" />
