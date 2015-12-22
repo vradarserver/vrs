@@ -556,7 +556,7 @@ namespace VRS
     /**
      * The settings that can be associated with a link label control.
      */
-    export class OptionFieldLinkLabel extends OptionField
+    export class OptionFieldLinkLabel extends OptionFieldLabel
     {
         protected _Settings: OptionFieldLinkLabel_Settings;
 
@@ -762,7 +762,7 @@ namespace VRS
     export class OptionFieldPaneList extends OptionField
     {
         protected _Settings: OptionFieldPaneList_Settings;
-        private _PaneListEvents: IOptionFieldPaneList_Events;
+        private _PaneListEvents: IOptionFieldPaneList_Events;       // Need to do it this way round, have to initialise the list in the ctor
 
         constructor(settings: OptionFieldPaneList_Settings)
         {
@@ -1411,9 +1411,11 @@ namespace VRS
     }
 
     /**
-     * Describes a control associated with a field.
+     * The base options that are passed to all plugins that represent the different kinds of OptionField.
+     * All plugins should extend their options from this interface. In particular they should override
+     * field with the OptionField type that they are handling.
      */
-    export interface OptionControl
+    export interface OptionControl_BaseOptions
     {
         field:              OptionField;
         fieldParentJQ:      JQuery;
@@ -1428,12 +1430,12 @@ namespace VRS
         /**
          * The associative array of control types and the method to use to create the appropriate jQuery UI plugin.
          */
-        private _ControlTypes: { [index: /*OptionControlTypesEnum - TS1.7 does not allow types as index, even if they resolve to string... */string]: (settings: OptionControl) => JQuery } = {};
+        private _ControlTypes: { [index: /*OptionControlTypesEnum - TS1.7 does not allow types as index, even if they resolve to string... */string]: (settings: OptionControl_BaseOptions) => JQuery } = {};
 
         /**
          * Adds a handler for a control type handler. Throws an exception if there is already a handler for the control type.
          */
-        addControlTypeHandler(controlType: OptionControlTypesEnum, creatorCallback: (settings: OptionControl) => JQuery)
+        addControlTypeHandler(controlType: OptionControlTypesEnum, creatorCallback: (options: OptionControl_BaseOptions) => JQuery)
         {
             if(this._ControlTypes[controlType]) throw 'There is already a handler registered for ' + controlType + ' control types';
             this._ControlTypes[controlType] = creatorCallback;
@@ -1442,7 +1444,7 @@ namespace VRS
         /**
          * Adds a handler for a control type, but only if one is not already registered. Does nothing if one is already registered.
          */
-        addControlTypeHandlerIfNotRegistered(controlType: OptionControlTypesEnum, creatorCallback: (settings: OptionControl) => JQuery)
+        addControlTypeHandlerIfNotRegistered(controlType: OptionControlTypesEnum, creatorCallback: (options: OptionControl_BaseOptions) => JQuery)
         {
             if(!this.controlTypeHasHandler(controlType)) {
                 this.addControlTypeHandler(controlType, creatorCallback);
@@ -1469,13 +1471,13 @@ namespace VRS
         /**
          * Creates the jQuery UI plugin that will manage the display and editing of an option field.
          */
-        createControlTypeHandler(settings: OptionControl) : JQuery
+        createControlTypeHandler(options: OptionControl_BaseOptions) : JQuery
         {
-            var controlType = settings.field.getControlType();
+            var controlType = options.field.getControlType();
             var creator = this._ControlTypes[controlType];
             if(!creator) throw 'There is no handler registered for ' + controlType + ' control types';
 
-            return creator(settings);
+            return creator(options);
         }
     }
 
