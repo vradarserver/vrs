@@ -403,7 +403,12 @@
       <DependentUpon>jquery.vrs.menu.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldDate.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.js">
+      <DependentUpon>jquery.vrs.pagePanel.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.js.map">
+      <DependentUpon>jquery.vrs.pagePanel.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportDetail.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportMap.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportPager.js" />
@@ -548,7 +553,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionFieldTextBox.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.js" />
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.js">
+      <DependentUpon>jquery.vrs.selectDialog.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.js.map">
+      <DependentUpon>jquery.vrs.selectDialog.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.js">
       <DependentUpon>jquery.vrs.splitter.ts</DependentUpon>
     </Content>
@@ -754,6 +764,8 @@
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.menu.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.ts" />

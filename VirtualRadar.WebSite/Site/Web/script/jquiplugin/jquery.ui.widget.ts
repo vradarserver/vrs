@@ -83,11 +83,6 @@ class JQueryUICustomWidget
         throw 'Should not see this';
     }
 
-    protected _setOption(key: string, value: Object) : JQuery
-    {
-        throw 'Should not see this';
-    }
-
     protected _setOptions<T>(options: T) : JQuery
     {
         throw 'Should not see this';

@@ -44,6 +44,12 @@ namespace VRS
         getMenuPlugin?:  (jQueryElement: JQuery) => MenuPlugin;
         getMenuOptions?: (overrides?: MenuPlugin_Options) => MenuPlugin_Options;
 
+        getPagePanelPlugin?:  (element: JQuery) => PagePanel;
+        getPagePanelOptions?: (overrides?: PagePanel_Options) => PagePanel_Options;
+
+        getSelectDialogPlugin?:  (element: JQuery) => SelectDialog;
+        getSelectDialogOptions?: (overrides?: SelectDialog_Options) => SelectDialog_Options;
+
         getSplitterPlugin?: (element: JQuery) => Splitter;
         getSplitterPanePlugin?: (element: JQuery) => SplitterPane;
 
