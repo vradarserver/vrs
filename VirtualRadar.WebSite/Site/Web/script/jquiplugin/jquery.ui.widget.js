@@ -33,9 +33,6 @@ var JQueryUICustomWidget = (function () {
         }
         throw 'Should not see this';
     };
-    JQueryUICustomWidget.prototype._setOption = function (key, value) {
-        throw 'Should not see this';
-    };
     JQueryUICustomWidget.prototype._setOptions = function (options) {
         throw 'Should not see this';
     };
