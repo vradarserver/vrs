@@ -20,11 +20,23 @@ namespace VRS
      */
     export interface JQueryUIHelper
     {
+        getAircraftDetailPlugin?:  (element: JQuery) => AircraftDetailPlugin;
+        getAircraftDetailOptions?: (overrides?: AircraftDetailPlugin_Options) => AircraftDetailPlugin_Options;
+
+        getAircraftInfoWindowPlugin?:  (element: JQuery) => AircraftInfoWindowPlugin;
+        getAircraftInfoWindowOptions?: (overrides?: AircraftInfoWindowPlugin_Options) => AircraftInfoWindowPlugin_Options;
+
         getAircraftLinksPlugin?:  (element: JQuery) => AircraftLinksPlugin;
         getAircraftLinksOptions?: (overrides?: AircraftLinksPlugin_Options) => AircraftLinksPlugin_Options;
 
+        getAircraftListPlugin?:  (element: JQuery) => AircraftListPlugin;
+        getAircraftListOptions?: (overrides?: AircraftListPlugin_Options) => AircraftListPlugin_Options;
+
         getAircraftPositionMapPlugin?:  (element: JQuery) => AircraftPositionMapPlugin;
         getAircraftPositionMapOptions?: (overrides?: AircraftPositionMapPlugin_Options) => AircraftPositionMapPlugin_Options;
+
+        getMapNextPageButtonPlugin?:  (element: JQuery) => MapNextPageButton;
+        getMapNextPageButtonOptions?: (overrides?: MapNextPageButton_Options) => MapNextPageButton_Options;
 
         getMapPlugin?:  (element: JQuery) => IMap;
         getMapOptions?: (overrides?: IMapOptions) => IMapOptions;

@@ -45,7 +45,7 @@ namespace VRS
         /**
          * Returns the list of aircraft as an unordered array.
          */
-        toList(filterCallback: (aircraft:Aircraft) => boolean) : Aircraft[]
+        toList(filterCallback?: (aircraft:Aircraft) => boolean) : Aircraft[]
         {
             var result: Aircraft[] = [];
             this.foreachAircraft(function(aircraft) {
@@ -285,7 +285,7 @@ namespace VRS
         /**
          * Returns the aircraft as an unordered array.
          */
-        toList(filterCallback: (aircraft: Aircraft) => boolean) : Aircraft[]
+        toList(filterCallback?: (aircraft: Aircraft) => boolean) : Aircraft[]
         {
             return this._Aircraft.toList(filterCallback);
         }
