@@ -147,7 +147,7 @@ var VRS;
                 state.selectedAircraft = showAsSelected ? aircraft : null;
                 if (!aircraft) {
                     if (options.autoHideNoPosition) {
-                        $(':visible', this.element).hide();
+                        $(this.element, ':visible').hide();
                     }
                     else {
                         state.aircraftPlotter.plot();

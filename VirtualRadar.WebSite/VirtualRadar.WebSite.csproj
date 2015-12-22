@@ -805,6 +805,7 @@
     <TypeScriptCompile Include="Site\_external\globalise.d.ts" />
     <TypeScriptCompile Include="Site\_external\google.maps.d.ts" />
     <TypeScriptCompile Include="Site\_external\google.maps.marker-with-label.d.ts" />
+    <TypeScriptCompile Include="Site\_external\jquery-corrections.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery-json.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery.d.ts" />
     <TypeScriptCompile Include="Site\_external\jquery.dlmenu.d.ts" />
