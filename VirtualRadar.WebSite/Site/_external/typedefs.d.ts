@@ -225,6 +225,10 @@
         hookInfoWindowClosedByUser: (callback: (event?: Event, data?: IMapInfoWindowEventArgs) => void, forceThis?: Object) => IEventHandleJQueryUI;
 
         //
+        // Lifetime control methods
+        destroy();
+
+        //
         // Basic methods
         open: (options?: IMapOpenOptions) => void;
         refreshMap: () => void;
@@ -707,13 +711,117 @@
     }
 
     /**
+     * The results of a request for a report.
+     */
+    export interface IReport
+    {
+        countRows:               number;
+        groupBy:                 ReportSortColumnEnum,
+        processingTime:          string;
+        errorText:               string;
+        silhouettesAvailable:    boolean;
+        operatorFlagsAvailable:  boolean;
+        fromDate:                string;
+        toDate:                  string;
+        aircraftList:            IReportAircraft[];
+        airports:                IReportAirport[];
+        routes:                  IReportRoute[];
+        flights:                 IReportFlight[];
+    }
+
+    /**
+     * An aircraft in the report result JSON.
+     */
+    export interface IReportAircraft
+    {
+        isUnknown:       boolean;
+        acID:            number;
+        reg:             string;
+        icao:            string;
+        acClass:         string;
+        country:         string;
+        modeSCountry:    string;
+        wtc:             WakeTurbulenceCategoryEnum;
+        engines:         string;
+        engType:         EngineTypeEnum;
+        engMount:        EnginePlacementEnum;
+        species:         SpeciesEnum;
+        genericName:     string;
+        icaoType:        string;
+        manufacturer:    string;
+        opFlag:          string;
+        ownerStatus:     string;
+        popularName:     string;
+        previousId:      string;
+        owner:           string;
+        serial:          string;
+        status:          string;
+        typ:             string;
+        deregDate:       string;
+        cofACategory:    string;
+        cofAExpiry:      string;
+        curRegDate:      string;
+        firstRegDate:    string;
+        infoUrl:         string;
+        interested:      boolean;
+        military:        boolean;
+        mtow:            string;
+        pictureUrl1:     string;
+        pictureUrl2:     string;
+        pictureUrl3:     string;
+        totalHours:      string;
+        notes:           string;
+        yearBuilt:       string;
+        hasPic:          boolean;
+        picX:            number;
+        picY:            number;
+    }
+
+    /**
      * An airport in the report result JSON.
      */
     export interface IReportAirport
     {
-        code:       string;
-        name:       string;
-        fullName:   string;
+        code?:      string;
+        name?:      string;
+        fullName?:  string;     // Added by the JSON handler
+    }
+
+    /**
+     * A flight in the report result JSON.
+     */
+    export interface IReportFlight
+    {
+        row:             number;
+        acIdx:           number;
+        call:            string;
+        rtIdx:           number;
+        start:           Date;
+        end:             Date;
+        fAlt:            number;
+        fSpd:            number;
+        fOnGnd:          boolean;
+        fLat:            number;
+        fLng:            number;
+        fSqk:            number;
+        fTrk:            number;
+        fVsi:            number;
+        hAlrt:           boolean;
+        hEmg:            boolean;
+        hSpi:            boolean;
+        lAlt:            number;
+        lSpd:            number;
+        lOnGnd:          boolean;
+        lLat:            number;
+        lLng:            number;
+        lSqk:            number;
+        lTrk:            number;
+        lVsi:            number;
+        cADSB:           number;
+        cMDS:            number;
+        cPOS:            number;
+        route:           IReportRoute;      // Added by the JSON handler
+        aircraft:        IReportAircraft;   // Added by the JSON handler
     }
 
     /**
@@ -721,12 +829,12 @@
      */
     export interface IReportRoute
     {
-        fIdx:            number;
-        sIdx:            number[];
-        tIdx:            number;
-        from:            IReportAirport;
-        via:             IReportAirport[];
-        to:              IReportAirport;
+        fIdx?:           number;
+        sIdx?:           number[];
+        tIdx?:           number;
+        from?:           IReportAirport;    // Added by the JSON handler
+        via?:            IReportAirport[];  // Added by the JSON handler
+        to?:             IReportAirport;    // Added by the JSON handler
     }
 
     /**

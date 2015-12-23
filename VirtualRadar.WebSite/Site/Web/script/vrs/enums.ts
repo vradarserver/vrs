@@ -507,6 +507,8 @@ namespace VRS
         StartTime:              'stim'
     };
 
+    export type ReportAircraftOrFlightPropertyEnum = (ReportAircraftPropertyEnum | ReportFlightPropertyEnum);
+
     export type ReportSortColumnEnum = string;
     /**
      * An enumeration of the columns that reports can be sorted on.

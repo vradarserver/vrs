@@ -424,9 +424,24 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.js.map">
       <DependentUpon>jquery.vrs.pagePanel.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportDetail.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportMap.js" />
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportPager.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportDetail.js">
+      <DependentUpon>jquery.vrs.reportDetail.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportDetail.js.map">
+      <DependentUpon>jquery.vrs.reportDetail.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportMap.js">
+      <DependentUpon>jquery.vrs.reportMap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportMap.js.map">
+      <DependentUpon>jquery.vrs.reportMap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportPager.js">
+      <DependentUpon>jquery.vrs.reportPager.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportPager.js.map">
+      <DependentUpon>jquery.vrs.reportPager.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.js">
       <DependentUpon>jquery.vrs.timeoutMessageBox.ts</DependentUpon>
     </Content>
@@ -476,9 +491,24 @@
     <Content Include="Site\Web\script\vrs\pageManager.js.map">
       <DependentUpon>pageManager.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\report.js" />
-    <Content Include="Site\Web\script\vrs\reportRenderer.js" />
-    <Content Include="Site\Web\script\vrs\reportFilter.js" />
+    <Content Include="Site\Web\script\vrs\report.js">
+      <DependentUpon>report.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\report.js.map">
+      <DependentUpon>report.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\reportRenderer.js">
+      <DependentUpon>reportRenderer.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\reportRenderer.js.map">
+      <DependentUpon>reportRenderer.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\reportFilter.js">
+      <DependentUpon>reportFilter.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\reportFilter.js.map">
+      <DependentUpon>reportFilter.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\serverConfiguration.js">
       <DependentUpon>serverConfiguration.ts</DependentUpon>
     </Content>
@@ -817,7 +847,12 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.js.map">
       <DependentUpon>jquery.vrs.aircraftLinks.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportList.js" />
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportList.js">
+      <DependentUpon>jquery.vrs.reportList.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportList.js.map">
+      <DependentUpon>jquery.vrs.reportList.ts</DependentUpon>
+    </Content>
     <None Include="Site\.idea\Site.iml" />
     <None Include="Site\Web\fonts\icomoon.eot" />
     <None Include="Site\Web\fonts\icomoon.ttf" />
@@ -855,6 +890,10 @@
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionForm.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionPane.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.pagePanel.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.reportDetail.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.reportList.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.reportMap.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.reportPager.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.selectDialog.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.storedSettingsList.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.timeoutMessageBox.ts" />
@@ -885,6 +924,9 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\pageManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\polarPlotter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\refreshManager.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\report.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\reportFilter.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\reportRenderer.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\scriptManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\serverConfiguration.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\string.ts" />
