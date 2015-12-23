@@ -797,7 +797,7 @@ namespace VRS
         /**
          * A method that returns the value being filtered.
          */
-        getValueCallback: (parameter: any) => any;
+        getValueCallback?: (parameter: any) => any;
 
         /**
          * The callback (mandatory for enum types) that returns the list of all possible enum values and their descriptions.
@@ -871,10 +871,9 @@ namespace VRS
             if(!settings.type || !VRS.enumHelper.getEnumName(VRS.FilterPropertyType, settings.type)) throw 'You must supply a property type';
             if(!settings.labelKey) throw 'You must supply a labelKey';
 
-            var self = this;
             this._Settings = $.extend({
                 inputWidth: VRS.InputWidth.Auto,
-                isServerFilter: function() { return !!self._Settings.serverFilterName; },
+                isServerFilter: () => !!this._Settings.serverFilterName,
                 normaliseValue: function(value: any) { return value; }
             }, settings);
         }

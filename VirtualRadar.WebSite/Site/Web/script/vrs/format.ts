@@ -728,7 +728,7 @@ namespace VRS
         /**
          * Returns the registration formatted as a string.
          */
-        registration(registration: string, onlyAlphaNumeric: boolean) : string
+        registration(registration: string, onlyAlphaNumeric?: boolean) : string
         {
             var result = registration ? registration : '';
             if(!!onlyAlphaNumeric) {
@@ -899,7 +899,7 @@ namespace VRS
         /**
          * Formats the aircraft species as a string.
          */
-        species(species: SpeciesEnum, ignoreNone: boolean) : string
+        species(species: SpeciesEnum, ignoreNone?: boolean) : string
         {
             if(!species && species !== 0) return '';
             switch(species) {
@@ -1100,7 +1100,7 @@ namespace VRS
         /**
          * Returns the vertical speed formatted as a string.
          */
-        verticalSpeed(verticalSpeed: number, verticalSpeedType: AltitudeTypeEnum, heightUnit: HeightEnum, perSecond: boolean, showUnit: boolean, showType: boolean) : string
+        verticalSpeed(verticalSpeed: number, verticalSpeedType: AltitudeTypeEnum, heightUnit: HeightEnum, perSecond: boolean, showUnit?: boolean, showType?: boolean) : string
         {
             var result = '';
 

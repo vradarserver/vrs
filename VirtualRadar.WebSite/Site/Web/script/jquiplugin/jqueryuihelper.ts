@@ -92,6 +92,18 @@ namespace VRS
         getPagePanelPlugin?:  (element: JQuery) => PagePanel;
         getPagePanelOptions?: (overrides?: PagePanel_Options) => PagePanel_Options;
 
+        getReportDetailPlugin?:  (element: JQuery) => ReportDetailPlugin;
+        getReportDetailOptions?: (overrides?: ReportDetailPlugin_Options) => ReportDetailPlugin_Options;
+
+        getReportListPlugin?:  (element: JQuery) => ReportListPlugin;
+        getReportListOptions?: (overrides?: ReportListPlugin_Options) => ReportListPlugin_Options;
+
+        getReportMapPlugin?:  (element: JQuery) => ReportMapPlugin;
+        getReportMapOptions?: (overrides?: ReportMapPlugin_Options) => ReportMapPlugin_Options;
+
+        getReportPagerPlugin?:  (element: JQuery) => ReportPagerPlugin;
+        getReportPagerOptions?: (overrides?: ReportPagerPlugin_Options) => ReportPagerPlugin_Options;
+
         getSelectDialogPlugin?:  (element: JQuery) => SelectDialog;
         getSelectDialogOptions?: (overrides?: SelectDialog_Options) => SelectDialog_Options;
 

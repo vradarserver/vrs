@@ -58,7 +58,7 @@ var VRS;
                 $.each(settings.filters, function (idx, serialisedFilter) {
                     var aircraftFilter = VRS.aircraftFilterHelper.createFilter(serialisedFilter.property);
                     aircraftFilter.applySerialisedObject(serialisedFilter);
-                    this._Filters.push(aircraftFilter);
+                    _this._Filters.push(aircraftFilter);
                 });
                 _this._Dispatcher.raise(_this._Events.filterChanged);
             };

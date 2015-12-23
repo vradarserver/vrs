@@ -155,8 +155,8 @@ namespace VRS
         {
             this.setEnabled(settings.enabled);
             this._Filters = [];
-            $.each(settings.filters, function(idx, serialisedFilter) {
-                var aircraftFilter = VRS.aircraftFilterHelper.createFilter(serialisedFilter.property);
+            $.each(settings.filters, (idx, serialisedFilter) => {
+                var aircraftFilter = <AircraftFilter> VRS.aircraftFilterHelper.createFilter(serialisedFilter.property);
                 aircraftFilter.applySerialisedObject(serialisedFilter);
                 this._Filters.push(aircraftFilter);
             });

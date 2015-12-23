@@ -612,6 +612,7 @@ var VRS;
     });
     var FilterPropertyHandler = (function () {
         function FilterPropertyHandler(settings) {
+            var _this = this;
             if (!settings)
                 throw 'You must supply a settings object';
             if (!settings.property || !VRS.enumHelper.getEnumName(settings.propertyEnumObject, settings.property))
@@ -620,10 +621,9 @@ var VRS;
                 throw 'You must supply a property type';
             if (!settings.labelKey)
                 throw 'You must supply a labelKey';
-            var self = this;
             this._Settings = $.extend({
                 inputWidth: VRS.InputWidth.Auto,
-                isServerFilter: function () { return !!self._Settings.serverFilterName; },
+                isServerFilter: function () { return !!_this._Settings.serverFilterName; },
                 normaliseValue: function (value) { return value; }
             }, settings);
         }
