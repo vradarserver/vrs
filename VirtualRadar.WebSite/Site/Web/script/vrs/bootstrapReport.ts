@@ -173,56 +173,71 @@ namespace VRS
                 });
 
                 // Create the report map
-                if(pageSettings.mapJQ) {
+                if(!pageSettings.mapJQ) {
+                    this.mapCreated(pageSettings);
+                } else {
                     var mapOptions: ReportMapPlugin_Options = {
                         plotterOptions:         pageSettings.plotterOptions,
                         report:                 pageSettings.report,
-                        unitDisplayPreferences: pageSettings.unitDisplayPreferences
-                    };
-                    if(pageSettings.menuJQ && pageSettings.showSettingsButton) mapOptions.mapControls = [
-                        { control: pageSettings.menuJQ, position: this._Settings.settingsPosition }
-                    ];
-                    pageSettings.mapJQ.vrsReportMap(VRS.jQueryUIHelper.getReportMapOptions(mapOptions));
-                    pageSettings.mapPlugin = pageSettings.mapJQ ? VRS.jQueryUIHelper.getReportMapPlugin(pageSettings.mapJQ) : null;
-                    if(pageSettings.mapPlugin && !pageSettings.mapPlugin.isOpen()) {
-                        pageSettings.mapPlugin = null;
-                    }
-                }
-
-                // Create the report detail panel
-                if(pageSettings.detailJQ) {
-                    pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
-                        report:                 pageSettings.report,
                         unitDisplayPreferences: pageSettings.unitDisplayPreferences,
-                        plotterOptions:         pageSettings.plotterOptions
-                    }));
-                    pageSettings.detailPlugin = VRS.jQueryUIHelper.getReportDetailPlugin(pageSettings.detailJQ);
-                }
+                        loadedCallback:         () => {
+                            pageSettings.mapPlugin = pageSettings.mapJQ ? VRS.jQueryUIHelper.getReportMapPlugin(pageSettings.mapJQ) : null;
+                            if(pageSettings.mapPlugin && !pageSettings.mapPlugin.isOpen()) {
+                                pageSettings.mapPlugin = null;
+                            }
 
-                // Create the report list panel
-                if(pageSettings.listJQ) {
-                    pageSettings.listJQ.vrsReportList(VRS.jQueryUIHelper.getReportListOptions({
-                        report:                 pageSettings.report,
-                        unitDisplayPreferences: pageSettings.unitDisplayPreferences
-                    }));
-                    pageSettings.listPlugin = VRS.jQueryUIHelper.getReportListPlugin(pageSettings.listJQ);
-                }
+                            this.mapCreated(pageSettings);
+                        }
+                    };
 
-                // Configure the layouts
-                if(pageSettings.splittersJQ) {
-                    this.initialisePageLayouts(pageSettings);
+                    if(pageSettings.menuJQ && pageSettings.showSettingsButton) {
+                        mapOptions.mapControls = [
+                            { control: pageSettings.menuJQ, position: this._Settings.settingsPosition }
+                        ];
+                    }
+                    pageSettings.mapJQ.vrsReportMap(VRS.jQueryUIHelper.getReportMapOptions(mapOptions));
                 }
-                if(pageSettings.pagesJQ) {
-                    this.initialisePageManager(pageSettings);
-                }
-
-                // Configure the settings menu
-                this.buildSettingsMenu(pageSettings, pageSettings.settingsMenu.getTopLevelMenuItems());
-
-                // Done
-                this.doEndInitialise(pageSettings);
-                pageSettings.report.fetchPage();
             });
+        }
+
+        /**
+         * Called once the map has been created and loaded.
+         */
+        private mapCreated(pageSettings: PageSettings_Report)
+        {
+            // Create the report detail panel
+            if(pageSettings.detailJQ) {
+                pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
+                    report:                 pageSettings.report,
+                    unitDisplayPreferences: pageSettings.unitDisplayPreferences,
+                    plotterOptions:         pageSettings.plotterOptions
+                }));
+                pageSettings.detailPlugin = VRS.jQueryUIHelper.getReportDetailPlugin(pageSettings.detailJQ);
+            }
+
+            // Create the report list panel
+            if(pageSettings.listJQ) {
+                pageSettings.listJQ.vrsReportList(VRS.jQueryUIHelper.getReportListOptions({
+                    report:                 pageSettings.report,
+                    unitDisplayPreferences: pageSettings.unitDisplayPreferences
+                }));
+                pageSettings.listPlugin = VRS.jQueryUIHelper.getReportListPlugin(pageSettings.listJQ);
+            }
+
+            // Configure the layouts
+            if(pageSettings.splittersJQ) {
+                this.initialisePageLayouts(pageSettings);
+            }
+            if(pageSettings.pagesJQ) {
+                this.initialisePageManager(pageSettings);
+            }
+
+            // Configure the settings menu
+            this.buildSettingsMenu(pageSettings, pageSettings.settingsMenu.getTopLevelMenuItems());
+
+            // Done
+            this.doEndInitialise(pageSettings);
+            pageSettings.report.fetchPage();
         }
 
         /**

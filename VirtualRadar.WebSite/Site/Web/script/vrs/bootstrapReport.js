@@ -49,47 +49,56 @@ var VRS;
                     trailDisplay: VRS.TrailDisplay.AllAircraft,
                     trailType: VRS.TrailType.Full
                 });
-                if (pageSettings.mapJQ) {
+                if (!pageSettings.mapJQ) {
+                    _this.mapCreated(pageSettings);
+                }
+                else {
                     var mapOptions = {
                         plotterOptions: pageSettings.plotterOptions,
                         report: pageSettings.report,
-                        unitDisplayPreferences: pageSettings.unitDisplayPreferences
+                        unitDisplayPreferences: pageSettings.unitDisplayPreferences,
+                        loadedCallback: function () {
+                            pageSettings.mapPlugin = pageSettings.mapJQ ? VRS.jQueryUIHelper.getReportMapPlugin(pageSettings.mapJQ) : null;
+                            if (pageSettings.mapPlugin && !pageSettings.mapPlugin.isOpen()) {
+                                pageSettings.mapPlugin = null;
+                            }
+                            _this.mapCreated(pageSettings);
+                        }
                     };
-                    if (pageSettings.menuJQ && pageSettings.showSettingsButton)
+                    if (pageSettings.menuJQ && pageSettings.showSettingsButton) {
                         mapOptions.mapControls = [
                             { control: pageSettings.menuJQ, position: _this._Settings.settingsPosition }
                         ];
-                    pageSettings.mapJQ.vrsReportMap(VRS.jQueryUIHelper.getReportMapOptions(mapOptions));
-                    pageSettings.mapPlugin = pageSettings.mapJQ ? VRS.jQueryUIHelper.getReportMapPlugin(pageSettings.mapJQ) : null;
-                    if (pageSettings.mapPlugin && !pageSettings.mapPlugin.isOpen()) {
-                        pageSettings.mapPlugin = null;
                     }
+                    pageSettings.mapJQ.vrsReportMap(VRS.jQueryUIHelper.getReportMapOptions(mapOptions));
                 }
-                if (pageSettings.detailJQ) {
-                    pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
-                        report: pageSettings.report,
-                        unitDisplayPreferences: pageSettings.unitDisplayPreferences,
-                        plotterOptions: pageSettings.plotterOptions
-                    }));
-                    pageSettings.detailPlugin = VRS.jQueryUIHelper.getReportDetailPlugin(pageSettings.detailJQ);
-                }
-                if (pageSettings.listJQ) {
-                    pageSettings.listJQ.vrsReportList(VRS.jQueryUIHelper.getReportListOptions({
-                        report: pageSettings.report,
-                        unitDisplayPreferences: pageSettings.unitDisplayPreferences
-                    }));
-                    pageSettings.listPlugin = VRS.jQueryUIHelper.getReportListPlugin(pageSettings.listJQ);
-                }
-                if (pageSettings.splittersJQ) {
-                    _this.initialisePageLayouts(pageSettings);
-                }
-                if (pageSettings.pagesJQ) {
-                    _this.initialisePageManager(pageSettings);
-                }
-                _this.buildSettingsMenu(pageSettings, pageSettings.settingsMenu.getTopLevelMenuItems());
-                _this.doEndInitialise(pageSettings);
-                pageSettings.report.fetchPage();
             });
+        };
+        BootstrapReport.prototype.mapCreated = function (pageSettings) {
+            if (pageSettings.detailJQ) {
+                pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
+                    report: pageSettings.report,
+                    unitDisplayPreferences: pageSettings.unitDisplayPreferences,
+                    plotterOptions: pageSettings.plotterOptions
+                }));
+                pageSettings.detailPlugin = VRS.jQueryUIHelper.getReportDetailPlugin(pageSettings.detailJQ);
+            }
+            if (pageSettings.listJQ) {
+                pageSettings.listJQ.vrsReportList(VRS.jQueryUIHelper.getReportListOptions({
+                    report: pageSettings.report,
+                    unitDisplayPreferences: pageSettings.unitDisplayPreferences
+                }));
+                pageSettings.listPlugin = VRS.jQueryUIHelper.getReportListPlugin(pageSettings.listJQ);
+            }
+            if (pageSettings.splittersJQ) {
+                this.initialisePageLayouts(pageSettings);
+            }
+            if (pageSettings.pagesJQ) {
+                this.initialisePageManager(pageSettings);
+            }
+            this.buildSettingsMenu(pageSettings, pageSettings.settingsMenu.getTopLevelMenuItems());
+            this.doEndInitialise(pageSettings);
+            pageSettings.report.fetchPage();
         };
         BootstrapReport.prototype.buildSettingsMenu = function (pageSettings, menuItems) {
             if (pageSettings.showOptionsSetting) {
