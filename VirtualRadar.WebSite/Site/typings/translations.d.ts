@@ -410,6 +410,7 @@ declare namespace VRS
         Rows:                               string;
         RunReport:                          string;
         SayAlpha:                           string;
+        SayAy:                              string;
         SayBravo:                           string;
         SayCallsign:                        string;
         SayCharlie:                         string;

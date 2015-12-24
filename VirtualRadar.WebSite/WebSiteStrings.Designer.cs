@@ -3679,6 +3679,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ey.
+        /// </summary>
+        public static string SayAy {
+            get {
+                return ResourceManager.GetString("SayAy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to bravo.
         /// </summary>
         public static string SayBravo {

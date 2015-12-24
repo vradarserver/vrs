@@ -541,9 +541,14 @@ namespace VRS
             var length = text.length;
             for(var c = 0;c < length;c++) {
                 var ch = text[c];
-                if(ch === '-') ch = VRS.$$.SayHyphen;
-                if(ch === 'Z') ch = VRS.$$.SayZed;
-                if(ch !== ' ') result += ch + this._PausePhrase;
+                switch(ch) {
+                    case '-':   ch = VRS.$$.SayHyphen; break;
+                    case 'A':   ch = VRS.$$.SayAy; break;
+                    case 'Z':   ch = VRS.$$.SayZed; break;
+                }
+                if(ch !== ' ') {
+                    result += ch + this._PausePhrase;
+                }
             }
 
             return result;
