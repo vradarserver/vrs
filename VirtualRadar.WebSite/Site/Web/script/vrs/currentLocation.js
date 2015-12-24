@@ -268,10 +268,12 @@ var VRS;
                             zIndex: 200
                         };
                         var currentLocation = _this.getUserSuppliedCurrentLocation() || _this.getCurrentLocation();
-                        if (currentLocation)
+                        if (currentLocation) {
                             markerOptions.position = currentLocation;
-                        if (VRS.globalOptions.currentLocationIconUrl)
+                        }
+                        if (VRS.globalOptions.currentLocationIconUrl) {
                             markerOptions.icon = VRS.globalOptions.currentLocationIconUrl;
+                        }
                         _this._SetCurrentLocationMarker = plugin.addMarker('setCurrentLocation', markerOptions);
                         _this._MapMarkerDraggedHookResult = plugin.hookMarkerDragged(_this.setCurrentLocationMarkerDragged);
                         if (currentLocation)

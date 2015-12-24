@@ -889,6 +889,7 @@
     <None Include="_PostBuild.sh" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Site\typings\globalOptions.d.ts" />
     <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.ui.widget.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.ts" />

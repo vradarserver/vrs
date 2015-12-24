@@ -15,7 +15,7 @@
 
 namespace VRS
 {
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.configSuppressEraseOldSiteConfig = VRS.globalOptions.configSuppressEraseOldSiteConfig !== undefined ? VRS.globalOptions.configSuppressEraseOldSiteConfig : true; // True if the old site's configuration is not to be erased by the new site. If you set this to false it could lead the new site to be slighty less efficient when sending requests to the server.
 
     /**

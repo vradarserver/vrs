@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.polarPlotEnabled = VRS.globalOptions.polarPlotEnabled !== undefined ? VRS.globalOptions.polarPlotEnabled : true;          // True if the polar plotter is enabled, false if it is not.
     VRS.globalOptions.polarPlotFetchUrl = VRS.globalOptions.polarPlotFetchUrl || 'PolarPlot.json';                                              // The URL to fetch polar plots from.
     VRS.globalOptions.polarPlotFetchTimeout = VRS.globalOptions.polarPlotFetchTimeout || 10000;                                                 // The timeout when fetching polar plots.

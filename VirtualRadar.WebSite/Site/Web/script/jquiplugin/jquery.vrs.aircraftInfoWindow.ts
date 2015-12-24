@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftInfoWindowClass = VRS.globalOptions.aircraftInfoWindowClass || 'vrsAircraftInfoWindow';       // The class for the info window panel.
     VRS.globalOptions.aircraftInfoWindowEnabled = VRS.globalOptions.aircraftInfoWindowEnabled !== undefined ? VRS.globalOptions.aircraftInfoWindowEnabled : true;   // True if the info window is enabled by default
     VRS.globalOptions.aircraftInfoWindowItems = VRS.globalOptions.aircraftInfoWindowItems || [          // The array of items that are rendered into the info window.

@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.reportPagerClass = VRS.globalOptions.reportPagerClass || 'reportPager';                                                                                       // The class to use for the report pager widget container.
     VRS.globalOptions.reportPagerSpinnerPageSize = VRS.globalOptions.reportPagerSpinnerPageSize || 5;                                                                               // The number of pages to skip when paging up and down through the page number spinner.
     VRS.globalOptions.reportPagerAllowPageSizeChange = VRS.globalOptions.reportPagerAllowPageSizeChange !== undefined ? VRS.globalOptions.reportPagerAllowPageSizeChange : true;    // True if the user can change the report page size, false if they cannot.

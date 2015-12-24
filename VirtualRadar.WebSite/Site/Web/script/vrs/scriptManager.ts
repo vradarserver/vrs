@@ -15,7 +15,7 @@
 
 namespace VRS
 {
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.scriptManagerTimeout = VRS.globalOptions.scriptManagerTimeout || 30000;           // The timeout in milliseconds on script loads.
 
     /**

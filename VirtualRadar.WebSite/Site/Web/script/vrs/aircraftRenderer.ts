@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftRendererEnableDebugProperties = VRS.globalOptions.aircraftRendererEnableDebugProperties !== undefined ? VRS.globalOptions.aircraftRendererEnableDebugProperties : false;  // True if the debug aircraft properties that expose some internal values are switched on. This needs to be changed BEFORE aircraftRenderer.js is loaded by the browser, it has no effect after.
 
     /**

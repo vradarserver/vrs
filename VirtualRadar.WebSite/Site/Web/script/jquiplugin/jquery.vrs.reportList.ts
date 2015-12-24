@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.reportListClass = VRS.globalOptions.reportListClass || 'vrsAircraftList flights';             // The CSS class to attach to the report list.
     VRS.globalOptions.reportListSingleAircraftColumns = VRS.globalOptions.reportListSingleAircraftColumns || [      // The default columns to show in the list for reports where there is only a single aircraft specified by the criteria and only one aircraft in the results.
         VRS.ReportFlightProperty.RowNumber,

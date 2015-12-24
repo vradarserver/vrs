@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.listPluginDistinguishOnGround = VRS.globalOptions.listPluginDistinguishOnGround !== undefined ? VRS.globalOptions.listPluginDistinguishOnGround : true;               // True if altitudes should, by default, distinguish between a value of 0 and aircraft that are on the ground.
     VRS.globalOptions.listPluginFlagUncertainCallsigns = VRS.globalOptions.listPluginFlagUncertainCallsigns !== undefined ? VRS.globalOptions.listPluginFlagUncertainCallsigns : true;      // True if uncertain callsigns should, by default, be flagged in the aircraft list.
     VRS.globalOptions.listPluginUserCanConfigureColumns = VRS.globalOptions.listPluginUserCanConfigureColumns !== undefined ? VRS.globalOptions.listPluginUserCanConfigureColumns : true;   // True if the user can configure the aircraft list columns.

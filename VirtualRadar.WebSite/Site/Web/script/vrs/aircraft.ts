@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.suppressTrails = VRS.globalOptions.suppressTrails || false;       // If true then position history is not stored, significantly reducing memory footprint for each aircraft but prevents trails from being shown for the aircraft
     VRS.globalOptions.aircraftHideUncertainCallsigns = VRS.globalOptions.aircraftHideUncertainCallsigns !== undefined ? VRS.globalOptions.aircraftHideUncertainCallsigns : false;   // True if callsigns that we're not 100% sure about are to be hidden from view.
     VRS.globalOptions.aircraftMaxAvgSignalLevelHistory = VRS.globalOptions.aircraftMaxAvgSignalLevelHistory !== undefined ? VRS.globalOptions.aircraftMaxAvgSignalLevelHistory : 6; // The number of signal levels to average out to determine average signal level. Don't make this more than about 10.
@@ -1078,7 +1078,7 @@ namespace VRS
         /**
          * Returns an HTML IMG tag to a picture of the aircraft.
          */
-        formatPictureHtml(requestSize: ISize, allowResizeUp?: boolean, linkToOriginal?: boolean, blankSize?: ISize) : string
+        formatPictureHtml(requestSize: ISizePartial, allowResizeUp?: boolean, linkToOriginal?: boolean, blankSize?: ISize) : string
         {
             return VRS.format.pictureHtml(this.registration.val, this.icao.val, this.pictureWidth.val, this.pictureHeight.val, requestSize, allowResizeUp, linkToOriginal, blankSize);
         }

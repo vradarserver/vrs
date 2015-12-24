@@ -19,7 +19,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.mapNextPageButtonClass = VRS.globalOptions.mapNextPageButtonClass || 'mapNextPageButton';                             // The class to use for the map next page button.
     VRS.globalOptions.mapNextPageButtonImage = VRS.globalOptions.mapNextPageButtonImage || 'images/ChevronGreenCircle.png';                 // The image for the map next page button.
     VRS.globalOptions.mapNextPageButtonSize = VRS.globalOptions.mapNextPageButtonSize || { width: 26, height: 26 };                         // The size of the image for the map next page button.

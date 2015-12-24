@@ -134,7 +134,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftMarkerPinTextWidth = VRS.globalOptions.aircraftMarkerPinTextWidth || 68;                  // The width for markers that are showing pin text.
     VRS.globalOptions.aircraftMarkerPinTextLineHeight = VRS.globalOptions.aircraftMarkerPinTextLineHeight || 12;        // The height added to each marker for each line of pin text.
     VRS.globalOptions.aircraftMarkerRotate = VRS.globalOptions.aircraftMarkerRotate !== undefined ? VRS.globalOptions.aircraftMarkerRotate : true;     // True to rotate aircraft markers to follow the aircraft heading, false otherwise.

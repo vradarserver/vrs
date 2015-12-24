@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftListUrl = VRS.globalOptions.aircraftListUrl || 'AircraftList.json';                   // The URL to fetch aircraft lists from.
     VRS.globalOptions.aircraftListFlightSimUrl = VRS.globalOptions.aircraftListFlightSimUrl || 'FlightSimList.json';// The URL to fetch the flight simulator aircraft list from.
     VRS.globalOptions.aircraftListDataType = VRS.globalOptions.aircraftListDataType || 'json';                      // The data type to use when fetching aircraft lists - use JSONP if cross-domain.

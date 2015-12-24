@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.serverConfigUrl = VRS.globalOptions.serverConfigUrl || 'ServerConfig.json';       // The URL to fetch the server configuration from.
     VRS.globalOptions.serverConfigDataType = VRS.globalOptions.serverConfigDataType || 'json';          // The type of call to make when fetching the server configuration.
     VRS.globalOptions.serverConfigTimeout = VRS.globalOptions.serverConfigTimeout || 10000;             // The number of milliseconds to wait before timing out a fetch of server configuration.

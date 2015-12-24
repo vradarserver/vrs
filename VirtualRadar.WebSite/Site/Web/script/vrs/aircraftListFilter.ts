@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftListDefaultFiltersEnabled = VRS.globalOptions.aircraftListDefaultFiltersEnabled !== undefined ? VRS.globalOptions.aircraftListDefaultFiltersEnabled : false; // True if filters are enabled by default.
     VRS.globalOptions.aircraftListFilters = VRS.globalOptions.aircraftListFilters || [];            // The list of filters that new browsers start with.
     VRS.globalOptions.aircraftListFiltersLimit = VRS.globalOptions.aircraftListFiltersLimit !== undefined ? VRS.globalOptions.aircraftListFiltersLimit : 12;    // The maximum number of filters that can be applied by the user. Set to zero to disable filters.

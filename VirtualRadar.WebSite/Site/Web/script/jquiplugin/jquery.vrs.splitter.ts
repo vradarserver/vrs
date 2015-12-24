@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.splitterBorderWidth = VRS.globalOptions.splitterBorderWidth !== undefined ? VRS.globalOptions.splitterBorderWidth : 1;    // The width in pixels of the borders around splitters.
 
     /**

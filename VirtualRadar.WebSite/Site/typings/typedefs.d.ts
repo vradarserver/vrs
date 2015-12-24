@@ -456,7 +456,7 @@
         visible?:               boolean;
         animateAdd?:            boolean;
         position?:              ILatLng;
-        icon?:                  IMapIcon;
+        icon?:                  IMapIcon | string;
         tooltip?:               string;
         zIndex?:                number;
         tag?:                   any;
@@ -862,6 +862,15 @@
     {
         width:    number;
         height:   number;
+    }
+
+    /**
+     * Describes a size where either the width or height are optional.
+     */
+    export interface ISizePartial
+    {
+        width?:   number;
+        height?:  number;
     }
 
     /**

@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.currentLocationFixed = VRS.globalOptions.currentLocationFixed || undefined;           // Set to an object of { lat: 1.234, lng: 5.678 }; to force the default current location (when the user has not assigned a location) to a fixed point rather than the server-configured initial location.
     VRS.globalOptions.currentLocationConfigurable = VRS.globalOptions.currentLocationConfigurable !== undefined ? VRS.globalOptions.currentLocationConfigurable : true; // True if the user is allowed to set their current location.
     VRS.globalOptions.currentLocationIconUrl = VRS.globalOptions.currentLocationIconUrl || null;            // The icon to display on the map for the set current location marker.
@@ -472,8 +472,12 @@ namespace VRS
                         zIndex:         200
                     };
                     var currentLocation = this.getUserSuppliedCurrentLocation() || this.getCurrentLocation();
-                    if(currentLocation) markerOptions.position = currentLocation;
-                    if(VRS.globalOptions.currentLocationIconUrl) markerOptions.icon = VRS.globalOptions.currentLocationIconUrl;
+                    if(currentLocation) {
+                        markerOptions.position = currentLocation;
+                    }
+                    if(VRS.globalOptions.currentLocationIconUrl) {
+                        markerOptions.icon = VRS.globalOptions.currentLocationIconUrl;
+                    }
 
                     this._SetCurrentLocationMarker = plugin.addMarker('setCurrentLocation', markerOptions);
                     this._MapMarkerDraggedHookResult = plugin.hookMarkerDragged(this.setCurrentLocationMarkerDragged);

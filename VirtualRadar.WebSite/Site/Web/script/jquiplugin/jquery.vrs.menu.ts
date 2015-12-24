@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.menuClass = VRS.globalOptions.menuClass || 'vrsMenu';                 // The class to use on menu placeholders.
 
     /**

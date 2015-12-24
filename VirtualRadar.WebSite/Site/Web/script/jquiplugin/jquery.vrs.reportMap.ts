@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.reportMapClass = VRS.globalOptions.reportMapClass || 'reportMap';                                                                             // The class to use for the map widget container.
     VRS.globalOptions.reportMapScrollToAircraft = VRS.globalOptions.reportMapScrollToAircraft !== undefined ? VRS.globalOptions.reportMapScrollToAircraft : true;   // True if the map should automatically scroll to show the selected aircraft's path.
     VRS.globalOptions.reportMapShowPath = VRS.globalOptions.reportMapShowPath !== undefined ? VRS.globalOptions.reportMapShowPath : true;                           // True if a line should be drawn between the start and end points of the aircraft's path.
