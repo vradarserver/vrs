@@ -119,178 +119,178 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AircraftReport_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\aircraftreport.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\aircraftreport.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Common_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\common.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\common.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="DateReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\datereportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\datereportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="DateReport_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\datereport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\datereport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Events_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\events.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\events.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="FlightReport_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\flightreport.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\flightreport.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapAircraftCollection_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapaircraftcollection.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapaircraftcollection.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapAircraftDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapAircraftListColumns_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapaircraftlistcolumns.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapaircraftlistcolumns.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapAircraftListOptions_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapaircraftlistoptions.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapaircraftlistoptions.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapAircraftList_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapaircraftlist.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapaircraftlist.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapAudio_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapaudio.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapaudio.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapAutoSelect_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapautoselect.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapautoselect.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapCurrentLocation_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapcurrentlocation.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapcurrentlocation.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapGeolocation_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapgeolocation.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapgeolocation.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapGotoCurrentLocationButton_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapgotocurrentlocationbutton.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapgotocurrentlocationbutton.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapInfoButton_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapinfobutton.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapinfobutton.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapMarkerCollection_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapmarkercollection.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapmarkercollection.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapMarker_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapmarker.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapmarker.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapMovingMapControl_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapmovingmapcontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapmovingmapcontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapOptionsUI_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapoptionsui.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapoptionsui.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapOptions_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapoptions.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapoptions.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapOutline_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapoutline.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapoutline.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapReverseGeocode_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapreversegeocode.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapreversegeocode.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapSidebar_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapsidebar.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapsidebar.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapTimeout_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemaptimeout.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemaptimeout.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMapVolumeControl_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemapvolumecontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemapvolumecontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMap_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemap.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemap.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="GoogleMap_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\googlemap.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\googlemap.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="IcaoReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\icaoreportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\icaoreportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="IcaoReport_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\icaoreport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\icaoreport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="iPhoneMapAircraftDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\iphone\iphonemapaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\iphone\iphonemapaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="iPhoneMapInfoWindow_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\iphone\iphonemapinfowindow.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\iphone\iphonemapinfowindow.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="iPhoneMapOptionsUI_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\iphone\iphonemapoptionsui.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\iphone\iphonemapoptionsui.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="iPhoneMapPages_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\iphone\iphonemappages.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\iphone\iphonemappages.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="iPhoneMapPlaneList_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\iphone\iphonemapplanelist.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\iphone\iphonemapplanelist.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="iPhoneMapStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\iphone\iphonemapstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\iphone\iphonemapstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="iPhoneMap_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\iphone\iphonemap.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\iphone\iphonemap.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="RegReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\regreportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\regreportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="RegReport_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\regreport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\regreport.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportAircraftDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportaircraftdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportAircraftFlights_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportaircraftflights.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportaircraftflights.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportCriteria_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportcriteria.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportFlightsDetail_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportflightsdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportflightsdetail.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportFlights_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportflights.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportflights.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportMap_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportmap.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportmap.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportPageControl_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportpagecontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportpagecontrol.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportPrintStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportprintstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportprintstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportRowProvider_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportrowprovider.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportrowprovider.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportScreenStylesheet_css" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\reportscreenstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\reportscreenstylesheet.css;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Report_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\reports\report.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\reports\report.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="XHR_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\xhr.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\xhr.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="AircraftList_htm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\diagnostics\aircraftlist.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\diagnostics\aircraftlist.htm;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="jQuery_1_6_4_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\jquery\jquery-1.6.4.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\jquery\jquery-1.6.4.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="jQuery_1_6_4_min_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\jquery\jquery-1.6.4.min.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\jquery\jquery-1.6.4.min.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MarkerWithLabel_min_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\googlemap\markerwithlabel.min.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\googlemap\markerwithlabel.min.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ServerConfig_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>site\serverconfig.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>OldSite\serverconfig.js;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
