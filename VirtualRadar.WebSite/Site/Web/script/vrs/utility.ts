@@ -13,10 +13,6 @@
  * @fileoverview General utility methods.
  */
 
-/// <reference path="../../../_external/purl.d.ts" />
-/// <reference path="../../../_external/purl-jquery.d.ts" />
-
-
 namespace VRS
 {
     /**
