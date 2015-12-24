@@ -70,6 +70,8 @@ namespace VRS
     VRS.globalOptions.reportDetailDistinguishOnGround = VRS.globalOptions.reportDetailDistinguishOnGround !== undefined ? VRS.globalOptions.reportDetailDistinguishOnGround : true; // True if the detail panel should show GND for aircraft that are on the ground.
     VRS.globalOptions.reportDetailUserCanConfigureColumns = VRS.globalOptions.reportDetailUserCanConfigureColumns !== undefined ? VRS.globalOptions.reportDetailUserCanConfigureColumns : true; // True if the user is allowed to configure which values are shown in the detail panel.
     VRS.globalOptions.reportDetailDefaultShowEmptyValues = VRS.globalOptions.reportDetailDefaultShowEmptyValues !== undefined ? VRS.globalOptions.reportDetailDefaultShowEmptyValues : false;   // True if empty values are to be shown.
+    VRS.globalOptions.reportDetailShowAircraftLinks = VRS.globalOptions.reportDetailShowAircraftLinks !== undefined ? VRS.globalOptions.reportDetailShowAircraftLinks : true;       // True if links should be shown for the aircraft in the aircraft detail panel
+    VRS.globalOptions.reportDetailShowSeparateRouteLink = VRS.globalOptions.reportDetailShowSeparateRouteLink !== undefined ? VRS.globalOptions.reportDetailShowSeparateRouteLink : true;  // Show a separate link to add or correct routes
 
     /**
      * The options that can be passed when creating a new ReportDetailPlugin
@@ -158,6 +160,11 @@ namespace VRS
         bodyElement: JQuery = null;
 
         /**
+         * A jQuery element for the links.
+         */
+        linksContainer: JQuery = undefined;
+
+        /**
          * The flight whose details are currently on display.
          */
         displayedFlight: IReportFlight;
@@ -168,6 +175,16 @@ namespace VRS
          * @type {Object.<VRS_REPORT_PROPERTY, jQuery>}
          */
         bodyPropertyElements: { [index: string /* ReportAircraftPropertyEnum */]: JQuery } = {};
+
+        /**
+         * A direct reference to the plugin for standard aircraft links.
+         */
+        aircraftLinksPlugin: AircraftLinksPlugin = null;
+
+        /**
+         * A direct reference to the plugin for links to the routes submission site.
+         */
+        routeLinksPlugin: AircraftLinksPlugin = null;
 
         /**
          * The hook result for the selected flight changed event.
@@ -252,6 +269,11 @@ namespace VRS
                 VRS.globalisation.unhook(state.localeChangedHookResult);
             }
             state.localeChangedHookResult = null;
+
+            if(state.aircraftLinksPlugin) {
+                state.aircraftLinksPlugin.destroy();
+            }
+            state.linksContainer.empty();
 
             state.displayedFlight = null;
 
@@ -396,6 +418,7 @@ namespace VRS
                         .appendTo(this.element);
                     this._createHeader(state, flight);
                     this._createBody(state, flight);
+                    this._createLinks(state, flight);
                 }
             }
         }
@@ -432,6 +455,15 @@ namespace VRS
                 state.headerElement.remove();
             }
             state.headerElement = null;
+
+            if(state.aircraftLinksPlugin) {
+                state.aircraftLinksPlugin.destroy();
+            }
+            if(state.linksContainer) {
+                state.linksContainer.empty();
+                state.linksContainer.remove();
+            }
+            state.linksContainer = null;
 
             if(state.containerElement) {
                 state.containerElement.remove();
@@ -539,6 +571,43 @@ namespace VRS
                     handler.createWidgetInJQueryElement(content, VRS.ReportSurface.DetailBody, options);
                     handler.renderIntoJQueryElement(content, json, options, VRS.ReportSurface.DetailBody);
                 }
+            }
+        }
+
+        /**
+         * Creates the links panel for the flight.
+         */
+        private _createLinks(state: ReportDetailPlugin_State, flight: IReportFlight)
+        {
+            if(VRS.globalOptions.reportDetailShowAircraftLinks) {
+                state.linksContainer =
+                    $('<div/>')
+                        .addClass('links')
+                        .appendTo(state.containerElement);
+
+                var aircraftLinksElement = $('<div/>')
+                    .appendTo(state.linksContainer)
+                    .vrsAircraftLinks();
+                state.aircraftLinksPlugin = VRS.jQueryUIHelper.getAircraftLinksPlugin(aircraftLinksElement);
+
+                var aircraft = Report.convertFlightToVrsAircraft(flight, true);
+                state.aircraftLinksPlugin.renderForAircraft(aircraft, true);
+
+                var routeLinks: (LinkSiteEnum | LinkRenderHandler)[] = [];
+                if(VRS.globalOptions.reportDetailShowSeparateRouteLink) {
+                    routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+                }
+
+                if(routeLinks.length > 0) {
+                    var routeLinksElement = $('<div/>')
+                        .appendTo(state.linksContainer)
+                        .vrsAircraftLinks({
+                            linkSites: routeLinks
+                        });
+                    state.routeLinksPlugin = VRS.jQueryUIHelper.getAircraftLinksPlugin(routeLinksElement);
+                    state.routeLinksPlugin.renderForAircraft(aircraft, true);
+                }
+
             }
         }
 

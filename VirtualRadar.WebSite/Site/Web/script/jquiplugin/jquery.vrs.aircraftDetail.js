@@ -384,10 +384,12 @@ var VRS;
         };
         AircraftDetailPlugin.prototype._buildLinks = function (state) {
             var options = this.options;
-            if (state.aircraftLinksPlugin)
+            if (state.aircraftLinksPlugin) {
                 state.aircraftLinksPlugin.destroy();
-            if (state.noAircraftLinksPlugin)
+            }
+            if (state.noAircraftLinksPlugin) {
                 state.noAircraftLinksPlugin.destroy();
+            }
             state.linksContainer.empty();
             state.noAircraftContainer.empty();
             var aircraftLinksElement = $('<div/>')
@@ -403,8 +405,9 @@ var VRS;
                 state.autoSelectLinkRenderHelper = new VRS.AutoSelectLinkRenderHelper(options.aircraftAutoSelect);
                 routeLinks.push(state.autoSelectLinkRenderHelper);
             }
-            if (VRS.globalOptions.detailPanelShowSeparateRouteLink)
+            if (VRS.globalOptions.detailPanelShowSeparateRouteLink) {
                 routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+            }
             if (routeLinks.length > 0) {
                 var routeLinksElement = $('<div/>')
                     .appendTo(state.linksContainer)
