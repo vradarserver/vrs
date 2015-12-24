@@ -60,6 +60,82 @@ namespace VRS
     VRS.globalOptions.detailPanelAirportDataThumbnails = VRS.globalOptions.detailPanelAirportDataThumbnails || 2;                                                                       // The number of thumbnails to fetch from www.airport-data.com.
 
     /**
+     * The options that AircraftDetailPlugin honours.
+     */
+    export interface AircraftDetailPlugin_Options
+    {
+        /**
+         * The name to use when saving and loading state.
+         */
+        name?: string;
+
+        /**
+         * The VRS.AircraftList to display aircraft details from.
+         */
+        aircraftList?: AircraftList;
+
+        /**
+         * The VRS.UnitDisplayPreferences that dictates how values are to be displayed.
+         */
+        unitDisplayPreferences: UnitDisplayPreferences;
+
+        /**
+         * The VRS.AircraftAutoSelect that, if supplied, can be configured via controls in the detail panel.
+         */
+        aircraftAutoSelect?: AircraftAutoSelect;
+
+        /**
+         * The map to centre when the 'Centre selected aircraft on map' link is clicked. If it isn't supplied then the option isn't shown.
+         */
+        mapPlugin?: IMap;
+
+        /**
+         * True if the state last saved by the user against name should be loaded and applied immediately when creating the control.
+         */
+        useSavedState?: boolean;
+
+        /**
+         * True if heights, distances and speeds should indicate their units.
+         */
+        showUnits?: boolean;
+
+        /**
+         * The items to show to the user aside from those that are always shown in the detail header.
+         */
+        items?: RenderPropertyEnum[];
+
+        /**
+         * True if a separate link to add or correct links is to be shown if the user is displaying routes. Always hidden if there are no routes on display.
+         */
+        showSeparateRouteLink?: boolean;
+
+        /**
+         * True if uncertain callsigns are to show be flagged up as such on display.
+         */
+        flagUncertainCallsigns?: boolean;
+
+        /**
+         * True if aircraft on the ground should be shown with altitudes of 'GND'.
+         */
+        distinguishOnGround?: boolean;
+
+        /**
+         * The map to pass to property renderers that display mirrored maps.
+         */
+        mirrorMapJQ?: JQuery;
+
+        /**
+         * The plotter options to pass to property renderers that employ aircraft plotters.
+         */
+        plotterOptions?: AircraftPlotterOptions;
+
+        /**
+         * The number of thumbnails to fetch from www.airport-data.com.
+         */
+        airportDataThumbnails?: number;
+    }
+
+    /**
      * Carries the state for the VRS.AircraftDetail plugin.
      */
     class AircraftDetailPlugin_State
@@ -178,6 +254,15 @@ namespace VRS
         }
     }
 
+    /**
+     * The settings saved by AircraftDetailPlugin objects.
+     */
+    export interface AircraftDetailPlugin_SaveState
+    {
+        showUnits:  boolean;
+        items:      RenderPropertyEnum[];
+    }
+
     /*
      * jQueryUIHelper methods
      */
@@ -198,91 +283,6 @@ namespace VRS
             distinguishOnGround:        VRS.globalOptions.detailPanelDistinguishOnGround,
             airportDataThumbnails:      VRS.globalOptions.detailPanelAirportDataThumbnails
         }, overrides);
-    }
-
-    /**
-     * The options that AircraftDetailPlugin honours.
-     */
-    export interface AircraftDetailPlugin_Options
-    {
-        /**
-         * The name to use when saving and loading state.
-         */
-        name?: string;
-
-        /**
-         * The VRS.AircraftList to display aircraft details from.
-         */
-        aircraftList?: AircraftList;
-
-        /**
-         * The VRS.UnitDisplayPreferences that dictates how values are to be displayed.
-         */
-        unitDisplayPreferences: UnitDisplayPreferences;
-
-        /**
-         * The VRS.AircraftAutoSelect that, if supplied, can be configured via controls in the detail panel.
-         */
-        aircraftAutoSelect?: AircraftAutoSelect;
-
-        /**
-         * The map to centre when the 'Centre selected aircraft on map' link is clicked. If it isn't supplied then the option isn't shown.
-         */
-        mapPlugin?: IMap;
-
-        /**
-         * True if the state last saved by the user against name should be loaded and applied immediately when creating the control.
-         */
-        useSavedState?: boolean;
-
-        /**
-         * True if heights, distances and speeds should indicate their units.
-         */
-        showUnits?: boolean;
-
-        /**
-         * The items to show to the user aside from those that are always shown in the detail header.
-         */
-        items?: RenderPropertyEnum[];
-
-        /**
-         * True if a separate link to add or correct links is to be shown if the user is displaying routes. Always hidden if there are no routes on display.
-         */
-        showSeparateRouteLink?: boolean;
-
-        /**
-         * True if uncertain callsigns are to show be flagged up as such on display.
-         */
-        flagUncertainCallsigns?: boolean;
-
-        /**
-         * True if aircraft on the ground should be shown with altitudes of 'GND'.
-         */
-        distinguishOnGround?: boolean;
-
-        /**
-         * The map to pass to property renderers that display mirrored maps.
-         */
-        mirrorMapJQ?: JQuery;
-
-        /**
-         * The plotter options to pass to property renderers that employ aircraft plotters.
-         */
-        plotterOptions?: AircraftPlotterOptions;
-
-        /**
-         * The number of thumbnails to fetch from www.airport-data.com.
-         */
-        airportDataThumbnails?: number;
-    }
-
-    /**
-     * The settings saved by AircraftDetailPlugin objects.
-     */
-    export interface AircraftDetailPlugin_SaveState
-    {
-        showUnits:  boolean;
-        items:      RenderPropertyEnum[];
     }
 
     /**
@@ -689,8 +689,12 @@ namespace VRS
         {
             var options = this.options;
 
-            if(state.aircraftLinksPlugin) state.aircraftLinksPlugin.destroy();
-            if(state.noAircraftLinksPlugin) state.noAircraftLinksPlugin.destroy();
+            if(state.aircraftLinksPlugin) {
+                state.aircraftLinksPlugin.destroy();
+            }
+            if(state.noAircraftLinksPlugin) {
+                state.noAircraftLinksPlugin.destroy();
+            }
             state.linksContainer.empty();
             state.noAircraftContainer.empty();
 
@@ -710,7 +714,9 @@ namespace VRS
                 state.autoSelectLinkRenderHelper = new VRS.AutoSelectLinkRenderHelper(options.aircraftAutoSelect);
                 routeLinks.push(state.autoSelectLinkRenderHelper);
             }
-            if(VRS.globalOptions.detailPanelShowSeparateRouteLink) routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+            if(VRS.globalOptions.detailPanelShowSeparateRouteLink) {
+                routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+            }
 
             if(routeLinks.length > 0) {
                 var routeLinksElement = $('<div/>')

@@ -57,13 +57,18 @@ var VRS;
     VRS.globalOptions.reportDetailDistinguishOnGround = VRS.globalOptions.reportDetailDistinguishOnGround !== undefined ? VRS.globalOptions.reportDetailDistinguishOnGround : true;
     VRS.globalOptions.reportDetailUserCanConfigureColumns = VRS.globalOptions.reportDetailUserCanConfigureColumns !== undefined ? VRS.globalOptions.reportDetailUserCanConfigureColumns : true;
     VRS.globalOptions.reportDetailDefaultShowEmptyValues = VRS.globalOptions.reportDetailDefaultShowEmptyValues !== undefined ? VRS.globalOptions.reportDetailDefaultShowEmptyValues : false;
+    VRS.globalOptions.reportDetailShowAircraftLinks = VRS.globalOptions.reportDetailShowAircraftLinks !== undefined ? VRS.globalOptions.reportDetailShowAircraftLinks : true;
+    VRS.globalOptions.reportDetailShowSeparateRouteLink = VRS.globalOptions.reportDetailShowSeparateRouteLink !== undefined ? VRS.globalOptions.reportDetailShowSeparateRouteLink : true;
     var ReportDetailPlugin_State = (function () {
         function ReportDetailPlugin_State() {
             this.suspended = false;
             this.containerElement = null;
             this.headerElement = null;
             this.bodyElement = null;
+            this.linksContainer = undefined;
             this.bodyPropertyElements = {};
+            this.aircraftLinksPlugin = null;
+            this.routeLinksPlugin = null;
             this.selectedFlightChangedHookResult = null;
             this.localeChangedHookResult = null;
         }
@@ -118,6 +123,10 @@ var VRS;
                 VRS.globalisation.unhook(state.localeChangedHookResult);
             }
             state.localeChangedHookResult = null;
+            if (state.aircraftLinksPlugin) {
+                state.aircraftLinksPlugin.destroy();
+            }
+            state.linksContainer.empty();
             state.displayedFlight = null;
             this._destroyDisplay(state);
         };
@@ -211,6 +220,7 @@ var VRS;
                         .appendTo(this.element);
                     this._createHeader(state, flight);
                     this._createBody(state, flight);
+                    this._createLinks(state, flight);
                 }
             }
         };
@@ -235,6 +245,14 @@ var VRS;
                 state.headerElement.remove();
             }
             state.headerElement = null;
+            if (state.aircraftLinksPlugin) {
+                state.aircraftLinksPlugin.destroy();
+            }
+            if (state.linksContainer) {
+                state.linksContainer.empty();
+                state.linksContainer.remove();
+            }
+            state.linksContainer = null;
             if (state.containerElement) {
                 state.containerElement.remove();
             }
@@ -316,6 +334,33 @@ var VRS;
                     var json = handler.isAircraftProperty ? flight.aircraft : flight;
                     handler.createWidgetInJQueryElement(content, VRS.ReportSurface.DetailBody, options);
                     handler.renderIntoJQueryElement(content, json, options, VRS.ReportSurface.DetailBody);
+                }
+            }
+        };
+        ReportDetailPlugin.prototype._createLinks = function (state, flight) {
+            if (VRS.globalOptions.reportDetailShowAircraftLinks) {
+                state.linksContainer =
+                    $('<div/>')
+                        .addClass('links')
+                        .appendTo(state.containerElement);
+                var aircraftLinksElement = $('<div/>')
+                    .appendTo(state.linksContainer)
+                    .vrsAircraftLinks();
+                state.aircraftLinksPlugin = VRS.jQueryUIHelper.getAircraftLinksPlugin(aircraftLinksElement);
+                var aircraft = VRS.Report.convertFlightToVrsAircraft(flight, true);
+                state.aircraftLinksPlugin.renderForAircraft(aircraft, true);
+                var routeLinks = [];
+                if (VRS.globalOptions.reportDetailShowSeparateRouteLink) {
+                    routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+                }
+                if (routeLinks.length > 0) {
+                    var routeLinksElement = $('<div/>')
+                        .appendTo(state.linksContainer)
+                        .vrsAircraftLinks({
+                        linkSites: routeLinks
+                    });
+                    state.routeLinksPlugin = VRS.jQueryUIHelper.getAircraftLinksPlugin(routeLinksElement);
+                    state.routeLinksPlugin.renderForAircraft(aircraft, true);
                 }
             }
         };
