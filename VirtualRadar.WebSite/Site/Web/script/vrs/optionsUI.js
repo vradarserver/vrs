@@ -259,6 +259,7 @@ var VRS;
         __extends(OptionFieldNumeric, _super);
         function OptionFieldNumeric(settings) {
             settings = $.extend({
+                name: null,
                 dispatcherName: 'VRS.OptionFieldNumeric',
                 controlType: VRS.optionControlTypes.numeric,
                 min: undefined,
@@ -266,7 +267,8 @@ var VRS;
                 decimals: undefined,
                 step: 1,
                 showSlider: false,
-                sliderStep: undefined
+                sliderStep: undefined,
+                allowNullValue: false
             }, settings);
             _super.call(this, settings);
         }
@@ -287,6 +289,9 @@ var VRS;
         };
         OptionFieldNumeric.prototype.getSliderStep = function () {
             return this._Settings.sliderStep === undefined ? this._Settings.step : this._Settings.sliderStep;
+        };
+        OptionFieldNumeric.prototype.getAllowNullValue = function () {
+            return this._Settings.allowNullValue;
         };
         return OptionFieldNumeric;
     })(OptionField);
