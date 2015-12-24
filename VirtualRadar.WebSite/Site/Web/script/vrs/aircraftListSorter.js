@@ -21,43 +21,12 @@ var VRS;
             if (!settings.compareCallback) {
                 settings.compareCallback = settings.getNumberCallback ? this.compareNumericValues : this.compareStringValues;
             }
-            this._Settings = settings;
+            this.Field = settings.field;
+            this.LabelKey = settings.labelKey;
+            this.GetNumberCallback = settings.getNumberCallback;
+            this.GetStringCallback = settings.getStringCallback;
+            this.CompareCallback = settings.compareCallback;
         }
-        Object.defineProperty(AircraftListSortHandler.prototype, "Field", {
-            get: function () {
-                return this._Settings.field;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(AircraftListSortHandler.prototype, "LabelKey", {
-            get: function () {
-                return this._Settings.labelKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(AircraftListSortHandler.prototype, "GetNumberCallback", {
-            get: function () {
-                return this._Settings.getNumberCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(AircraftListSortHandler.prototype, "GetStringCallback", {
-            get: function () {
-                return this._Settings.getStringCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(AircraftListSortHandler.prototype, "CompareCallback", {
-            get: function () {
-                return this._Settings.compareCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
         AircraftListSortHandler.prototype.compareNumericValues = function (lhs, rhs) {
             var lhsValue = this.GetNumberCallback(lhs);
             var rhsValue = this.GetNumberCallback(rhs);

@@ -10,6 +10,7 @@ var VRS;
     VRS.globalOptions.linkClass = VRS.globalOptions.linkClass || 'aircraftLink';
     var LinkRenderHandler = (function () {
         function LinkRenderHandler(settings) {
+            var _this = this;
             if (!settings)
                 throw 'You must supply settings';
             if (!settings.linkSite || !VRS.enumHelper.getEnumName(VRS.LinkSite, settings.linkSite))
@@ -24,67 +25,15 @@ var VRS;
                 throw 'You must supply a title';
             if (!settings.buildUrl)
                 throw 'You must supply the buildUrl callback';
-            if (!settings.target) {
-                settings.target = function (aircraft) { return settings.linkSite + '-' + aircraft.formatIcao(); };
-            }
-            this._Settings = settings;
+            this.linkSite = settings.linkSite;
+            this.displayOrder = settings.displayOrder;
+            this.canLinkAircraft = settings.canLinkAircraft;
+            this.hasChanged = settings.hasChanged;
+            this.title = settings.title;
+            this.buildUrl = settings.buildUrl;
+            this.target = settings.target || (function (aircraft) { return _this.linkSite + '-' + aircraft.formatIcao(); });
+            this.onClick = settings.onClick;
         }
-        Object.defineProperty(LinkRenderHandler.prototype, "linkSite", {
-            get: function () {
-                return this._Settings.linkSite;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinkRenderHandler.prototype, "displayOrder", {
-            get: function () {
-                return this._Settings.displayOrder;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinkRenderHandler.prototype, "canLinkAircraft", {
-            get: function () {
-                return this._Settings.canLinkAircraft;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinkRenderHandler.prototype, "hasChanged", {
-            get: function () {
-                return this._Settings.hasChanged;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinkRenderHandler.prototype, "title", {
-            get: function () {
-                return this._Settings.title;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinkRenderHandler.prototype, "buildUrl", {
-            get: function () {
-                return this._Settings.buildUrl;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinkRenderHandler.prototype, "target", {
-            get: function () {
-                return this._Settings.target;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinkRenderHandler.prototype, "onClick", {
-            get: function () {
-                return this._Settings.onClick;
-            },
-            enumerable: true,
-            configurable: true
-        });
         LinkRenderHandler.prototype.getTitle = function (aircraft) {
             if ($.isFunction(this.title)) {
                 return (this.title)(aircraft);

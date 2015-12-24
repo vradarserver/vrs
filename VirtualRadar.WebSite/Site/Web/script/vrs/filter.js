@@ -141,66 +141,15 @@ var VRS;
                 throw 'You must supply an valuePassesCallback';
             if (!settings.createOptionFieldsCallback)
                 throw 'You must supply a createOptionFieldsCallback';
-            this._Settings = $.extend({
-                passEmptyValues: function () { return false; }
-            }, settings);
+            this.type = settings.type;
+            this.getConditions = settings.getConditions;
+            this.createValueCondition = settings.createValueCondition;
+            this.createOptionFieldsCallback = settings.createOptionFieldsCallback;
+            this.valuePassesCallback = settings.valuePassesCallback;
+            this.parseString = settings.parseString;
+            this.passEmptyValues = settings.passEmptyValues || function () { return false; };
+            this.toQueryString = settings.toQueryString;
         }
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "type", {
-            get: function () {
-                return this._Settings.type;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "getConditions", {
-            get: function () {
-                return this._Settings.getConditions;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "createValueCondition", {
-            get: function () {
-                return this._Settings.createValueCondition;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "createOptionFieldsCallback", {
-            get: function () {
-                return this._Settings.createOptionFieldsCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "valuePassesCallback", {
-            get: function () {
-                return this._Settings.valuePassesCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "parseString", {
-            get: function () {
-                return this._Settings.parseString;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "passEmptyValues", {
-            get: function () {
-                return this._Settings.passEmptyValues;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyTypeHandler.prototype, "toQueryString", {
-            get: function () {
-                return this._Settings.toQueryString;
-            },
-            enumerable: true,
-            configurable: true
-        });
         FilterPropertyTypeHandler.prototype.singleValueEquals = function (value, valueCondition) {
             var filterValue = valueCondition.getValue();
             var result = filterValue === undefined;
@@ -209,7 +158,7 @@ var VRS;
                     case VRS.FilterCondition.Equals:
                         result = filterValue === value;
                         break;
-                    default: throw 'Invalid condition ' + valueCondition.getCondition() + ' for a ' + this._Settings.type + ' filter type';
+                    default: throw 'Invalid condition ' + valueCondition.getCondition() + ' for a ' + this.type + ' filter type';
                 }
                 if (valueCondition.getReverseCondition())
                     result = !result;
@@ -241,7 +190,7 @@ var VRS;
         FilterPropertyTypeHandler.prototype.getConditionComboBoxValues = function () {
             var result = [];
             var self = this;
-            $.each(this._Settings.getConditions(), function (idx, condition) {
+            $.each(this.getConditions(), function (idx, condition) {
                 result.push(new VRS.ValueText({
                     value: self.encodeConditionAndReverseCondition(condition.condition, condition.reverseCondition),
                     textKey: condition.labelKey
@@ -612,7 +561,6 @@ var VRS;
     });
     var FilterPropertyHandler = (function () {
         function FilterPropertyHandler(settings) {
-            var _this = this;
             if (!settings)
                 throw 'You must supply a settings object';
             if (!settings.property || !VRS.enumHelper.getEnumName(settings.propertyEnumObject, settings.property))
@@ -621,119 +569,24 @@ var VRS;
                 throw 'You must supply a property type';
             if (!settings.labelKey)
                 throw 'You must supply a labelKey';
-            this._Settings = $.extend({
-                inputWidth: VRS.InputWidth.Auto,
-                isServerFilter: function () { return !!_this._Settings.serverFilterName; },
-                normaliseValue: function (value) { return value; }
-            }, settings);
+            this.property = settings.property;
+            this.type = settings.type;
+            this.labelKey = settings.labelKey;
+            this.getValueCallback = settings.getValueCallback;
+            this.getEnumValues = settings.getEnumValues;
+            this.isUpperCase = settings.isUpperCase;
+            this.isLowerCase = settings.isLowerCase;
+            this.minimumValue = settings.minimumValue;
+            this.maximumValue = settings.maximumValue;
+            this.decimalPlaces = settings.decimalPlaces;
+            this.inputWidth = settings.inputWidth === undefined ? VRS.InputWidth.Auto : settings.inputWidth;
+            this.serverFilterName = settings.serverFilterName;
+            this.isServerFilter = settings.isServerFilter || function () { return !!settings.serverFilterName; };
+            this.normaliseValue = settings.normaliseValue || function (value) { return value; };
+            this.defaultCondition = settings.defaultCondition;
         }
-        Object.defineProperty(FilterPropertyHandler.prototype, "property", {
-            get: function () {
-                return this._Settings.property;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "type", {
-            get: function () {
-                return this._Settings.type;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "labelKey", {
-            get: function () {
-                return this._Settings.labelKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "getValueCallback", {
-            get: function () {
-                return this._Settings.getValueCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "getEnumValues", {
-            get: function () {
-                return this._Settings.getEnumValues;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "isUpperCase", {
-            get: function () {
-                return this._Settings.isUpperCase;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "isLowerCase", {
-            get: function () {
-                return this._Settings.isLowerCase;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "minimumValue", {
-            get: function () {
-                return this._Settings.minimumValue;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "maximumValue", {
-            get: function () {
-                return this._Settings.maximumValue;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "decimalPlaces", {
-            get: function () {
-                return this._Settings.decimalPlaces;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "inputWidth", {
-            get: function () {
-                return this._Settings.inputWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "serverFilterName", {
-            get: function () {
-                return this._Settings.serverFilterName;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "isServerFilter", {
-            get: function () {
-                return this._Settings.isServerFilter;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "normaliseValue", {
-            get: function () {
-                return this._Settings.normaliseValue;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FilterPropertyHandler.prototype, "defaultCondition", {
-            get: function () {
-                return this._Settings.defaultCondition;
-            },
-            enumerable: true,
-            configurable: true
-        });
         FilterPropertyHandler.prototype.getFilterPropertyTypeHandler = function () {
-            return VRS.filterPropertyTypeHandlers[this._Settings.type];
+            return VRS.filterPropertyTypeHandlers[this.type];
         };
         return FilterPropertyHandler;
     })();

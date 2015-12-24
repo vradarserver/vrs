@@ -2,96 +2,57 @@ var VRS;
 (function (VRS) {
     var MenuItem = (function () {
         function MenuItem(settings) {
-            this._SubItemsNormalised = [];
             if (!settings)
                 throw 'You must supply a settings object';
             if (!settings.name)
                 throw 'You must supply a unique name for the menu item';
             if (!settings.labelKey)
                 throw 'You must supply a label key';
-            this._Settings = $.extend({
-                subItems: []
-            }, settings);
+            this._Initialise = settings.initialise;
+            this._Disabled = settings.disabled;
+            this._LabelKey = settings.labelKey;
+            this._JqIcon = settings.jqIcon;
+            this._VrsIcon = settings.vrsIcon;
+            this._Checked = settings.checked;
+            this._LabelImageUrl = settings.labelImageUrl;
+            this._LabelImageClasses = settings.labelImageClasses;
+            this.name = settings.name;
+            this.clickCallback = settings.clickCallback;
+            this.subItems = settings.subItems || [];
+            this.subItemsNormalised = [];
+            this.noAutoClose = !!settings.noAutoClose;
+            this.tag = settings.tag;
+            this.suppress = settings.suppress || function () { return false; };
         }
-        Object.defineProperty(MenuItem.prototype, "name", {
-            get: function () {
-                return this._Settings.name;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MenuItem.prototype, "clickCallback", {
-            get: function () {
-                return this._Settings.clickCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MenuItem.prototype, "subItems", {
-            get: function () {
-                return this._Settings.subItems;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MenuItem.prototype, "subItemsNormalised", {
-            get: function () {
-                return this._SubItemsNormalised;
-            },
-            set: function (normalisedSubItems) {
-                this._SubItemsNormalised = normalisedSubItems || [];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MenuItem.prototype, "noAutoClose", {
-            get: function () {
-                return !!this._Settings.noAutoClose;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MenuItem.prototype, "tag", {
-            get: function () {
-                return this._Settings.tag;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MenuItem.prototype, "suppress", {
-            get: function () {
-                return this._Settings.suppress || function () { return false; };
-            },
-            enumerable: true,
-            configurable: true
-        });
         MenuItem.prototype.initialise = function () {
-            if (this._Settings.initialise)
-                this._Settings.initialise();
+            if (this._Initialise) {
+                this._Initialise();
+            }
         };
         MenuItem.prototype.isDisabled = function () {
-            return VRS.Utility.ValueOrFuncReturningValue(this._Settings.disabled, false);
+            return VRS.Utility.ValueOrFuncReturningValue(this._Disabled, false);
         };
         MenuItem.prototype.getLabelText = function () {
-            return VRS.globalisation.getText(this._Settings.labelKey);
+            return VRS.globalisation.getText(this._LabelKey);
         };
         MenuItem.prototype.getJQueryIcon = function () {
-            return VRS.Utility.ValueOrFuncReturningValue(this._Settings.jqIcon, null);
+            return VRS.Utility.ValueOrFuncReturningValue(this._JqIcon, null);
         };
         MenuItem.prototype.getVrsIcon = function () {
-            var result = VRS.Utility.ValueOrFuncReturningValue(this._Settings.vrsIcon, null);
-            if (!this._Settings.vrsIcon && this._Settings.checked !== undefined) {
-                var isChecked = VRS.Utility.ValueOrFuncReturningValue(this._Settings.checked, false);
-                if (isChecked)
+            var result = VRS.Utility.ValueOrFuncReturningValue(this._VrsIcon, null);
+            if (!this._VrsIcon && this._Checked !== undefined) {
+                var isChecked = VRS.Utility.ValueOrFuncReturningValue(this._Checked, false);
+                if (isChecked) {
                     result = 'checkmark';
+                }
             }
             return result;
         };
         MenuItem.prototype.getLabelImageUrl = function () {
-            return VRS.Utility.ValueOrFuncReturningValue(this._Settings.labelImageUrl, null);
+            return VRS.Utility.ValueOrFuncReturningValue(this._LabelImageUrl, null);
         };
         MenuItem.prototype.getLabelImageClasses = function () {
-            return VRS.Utility.ValueOrFuncReturningValue(this._Settings.labelImageClasses, null);
+            return VRS.Utility.ValueOrFuncReturningValue(this._LabelImageClasses, null);
         };
         MenuItem.prototype.getLabelImageElement = function () {
             var result = null;
@@ -99,8 +60,9 @@ var VRS;
             if (url) {
                 result = $('<img/>').attr('src', url);
                 var classes = this.getLabelImageClasses();
-                if (classes)
+                if (classes) {
                     result.addClass(classes);
+                }
             }
             return result;
         };

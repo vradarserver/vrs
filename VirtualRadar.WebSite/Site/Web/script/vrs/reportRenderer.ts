@@ -139,96 +139,55 @@ namespace VRS
      */
     export class ReportPropertyHandler
     {
-        private _Settings: ReportPropertyHandler_Settings;
-        private _IsAircraftProperty: boolean;
+        private _HasValue: (aircraftOrFlight: IReportAircraft | IReportFlight) => boolean;
+        private _CreateWidget: (element: JQuery, surface: ReportSurfaceBitFlags, options: ReportRender_Options) => void;
+        private _DestroyWidget: (element: JQuery, surface: ReportSurfaceBitFlags) => void;
+        private _RenderWidget: (element: JQuery, aircraftOrFlight: IReportAircraft | IReportFlight, options: ReportRender_Options, surface: ReportSurfaceBitFlags) => void;
+        private _ContentCallback: (aircraftOrFlight: IReportAircraft | IReportFlight, options?: ReportRender_Options, surface?: ReportSurfaceBitFlags) => string;
+        private _RenderCallback: (aircraftOrFlight: IReportAircraft | IReportFlight, options?: ReportRender_Options, surface?: ReportSurfaceBitFlags) => string;
+        private _TooltipCallback: (aircraftOrFlight: IReportAircraft | IReportFlight, options?: ReportRender_Options) => string;
+
+        // Kept as public fields for backwards compatibility
+        property:               ReportAircraftOrFlightPropertyEnum;
+        surfaces:               ReportSurfaceBitFlags;
+        labelKey:               string;
+        headingKey:             string;
+        optionsLabelKey:        string;
+        headingAlignment:       AlignmentEnum;
+        contentAlignment:       AlignmentEnum;
+        isMultiLine:            boolean;
+        fixedWidth:             (surface?: ReportSurfaceBitFlags) => string;
+        suppressLabelCallback:  (surface: ReportSurfaceBitFlags) => boolean;
+        sortColumn:             ReportSortColumnEnum;
+        groupValue:             (aircraftOrFlight: IReportAircraft | IReportFlight) => string | number;
+        isAircraftProperty:     boolean;
+        isFlightsProperty:      boolean;
 
         constructor(settings: ReportPropertyHandler_Settings)
         {
-            settings.property = settings.property;
-            settings.surfaces = settings.surfaces || (VRS.ReportSurface.List + VRS.ReportSurface.DetailBody);
-            settings.labelKey = settings.labelKey || settings.headingKey;
-            settings.headingKey = settings.headingKey || settings.labelKey;
-            settings.optionsLabelKey = settings.optionsLabelKey || settings.labelKey || settings.headingKey;
-            settings.headingAlignment = settings.headingAlignment || settings.alignment || settings.contentAlignment || VRS.Alignment.Left;
-            settings.contentAlignment = settings.contentAlignment || settings.alignment || settings.headingAlignment || VRS.Alignment.Left;
-            settings.isMultiLine = settings.isMultiLine || false;
-            settings.fixedWidth = settings.fixedWidth;
-            settings.suppressLabelCallback = settings.suppressLabelCallback || function() { return false; };
-            settings.sortColumn = settings.sortColumn;
-            settings.groupValue = settings.groupValue;
+            this.property = settings.property;
+            this.surfaces = settings.surfaces || (VRS.ReportSurface.List + VRS.ReportSurface.DetailBody);
+            this.labelKey = settings.labelKey || settings.headingKey;
+            this.headingKey = settings.headingKey || settings.labelKey;
+            this.optionsLabelKey = settings.optionsLabelKey || settings.labelKey || settings.headingKey;
+            this.headingAlignment = settings.headingAlignment || settings.alignment || settings.contentAlignment || VRS.Alignment.Left;
+            this.contentAlignment = settings.contentAlignment || settings.alignment || settings.headingAlignment || VRS.Alignment.Left;
+            this.isMultiLine = settings.isMultiLine || false;
+            this.fixedWidth = settings.fixedWidth;
+            this.suppressLabelCallback = settings.suppressLabelCallback || function() { return false; };
+            this.sortColumn = settings.sortColumn;
+            this.groupValue = settings.groupValue;
 
-            this._Settings = settings;
-            this._IsAircraftProperty = !!VRS.enumHelper.getEnumName(VRS.ReportAircraftProperty, settings.property);
-        }
+            this.isAircraftProperty = !!VRS.enumHelper.getEnumName(VRS.ReportAircraftProperty, settings.property);
+            this.isFlightsProperty = !this.isAircraftProperty;
 
-        get property()
-        {
-            return this._Settings.property;
-        }
-
-        get surfaces()
-        {
-            return this._Settings.surfaces;
-        }
-
-        get labelKey()
-        {
-            return this._Settings.labelKey;
-        }
-
-        get headingKey()
-        {
-            return this._Settings.headingKey;
-        }
-
-        get optionsLabelKey()
-        {
-            return this._Settings.optionsLabelKey;
-        }
-
-        get headingAlignment()
-        {
-            return this._Settings.headingAlignment;
-        }
-
-        get contentAlignment()
-        {
-            return this._Settings.contentAlignment;
-        }
-
-        get isMultiLine()
-        {
-            return this._Settings.isMultiLine;
-        }
-
-        get fixedWidth()
-        {
-            return this._Settings.fixedWidth;
-        }
-
-        get suppressLabelCallback()
-        {
-            return this._Settings.suppressLabelCallback;
-        }
-
-        get sortColumn()
-        {
-            return this._Settings.sortColumn;
-        }
-
-        get groupValue()
-        {
-            return this._Settings.groupValue;
-        }
-
-        get isAircraftProperty()
-        {
-            return this._IsAircraftProperty;
-        }
-
-        get isFlightsProperty()
-        {
-            return !this._IsAircraftProperty;
+            this._HasValue = settings.hasValue;
+            this._CreateWidget = settings.createWidget;
+            this._DestroyWidget = settings.destroyWidget;
+            this._RenderWidget = settings.renderWidget;
+            this._ContentCallback = settings.contentCallback;
+            this._RenderCallback = settings.renderCallback;
+            this._TooltipCallback = settings.tooltipCallback;
         }
 
         /**
@@ -236,7 +195,7 @@ namespace VRS
          */
         isSurfaceSupported(surface: ReportSurfaceBitFlags) : boolean
         {
-            return (this._Settings.surfaces & surface) !== 0;
+            return (this.surfaces & surface) !== 0;
         }
 
         /**
@@ -244,8 +203,8 @@ namespace VRS
          */
         hasValue(flightJson: IReportFlight) : boolean
         {
-            var json = this._IsAircraftProperty ? flightJson.aircraft : flightJson;
-            return this._Settings.hasValue(json);
+            var json = this.isAircraftProperty ? flightJson.aircraft : flightJson;
+            return this._HasValue(json);
         }
 
         /**
@@ -253,8 +212,8 @@ namespace VRS
          */
         createWidgetInJQueryElement(jQueryElement: JQuery, surface: ReportSurfaceBitFlags, options: ReportRender_Options)
         {
-            if(this._Settings.createWidget) {
-                this._Settings.createWidget(jQueryElement, surface, options);
+            if(this._CreateWidget) {
+                this._CreateWidget(jQueryElement, surface, options);
             }
         }
 
@@ -263,26 +222,22 @@ namespace VRS
          */
         destroyWidgetInJQueryElement(jQueryElement: JQuery, surface: ReportSurfaceBitFlags)
         {
-            if(this._Settings.destroyWidget) {
-                this._Settings.destroyWidget(jQueryElement, surface);
+            if(this._DestroyWidget) {
+                this._DestroyWidget(jQueryElement, surface);
             }
         }
 
         /**
          * Renders content into the jQuery element passed across.
-         * @param {jQuery}                      jqElement
-         * @param {VRS_JSON_REPORT_TOPLEVEL}    json
-         * @param {Object}                      options
-         * @param {VRS.ReportSurface}           surface
          */
         renderIntoJQueryElement(jqElement: JQuery, json: IReportAircraft | IReportFlight, options: ReportRender_Options, surface: ReportSurfaceBitFlags)
         {
-            if(this._Settings.contentCallback) {
-                jqElement.text(this._Settings.contentCallback(json, options, surface));
-            } else if(this._Settings.renderWidget) {
-                this._Settings.renderWidget(jqElement, json, options, surface);
+            if(this._ContentCallback) {
+                jqElement.text(this._ContentCallback(json, options, surface));
+            } else if(this._RenderWidget) {
+                this._RenderWidget(jqElement, json, options, surface);
             } else {
-                jqElement.html(this._Settings.renderCallback(json, options, surface));
+                jqElement.html(this._RenderCallback(json, options, surface));
             }
         }
 
@@ -291,8 +246,8 @@ namespace VRS
          */
         addTooltip(jqElement: JQuery, json: IReportAircraft | IReportFlight, options: ReportRender_Options)
         {
-            if(this._Settings.tooltipCallback) {
-                var text = this._Settings.tooltipCallback(json, options);
+            if(this._TooltipCallback) {
+                var text = this._TooltipCallback(json, options);
                 if(text) {
                     jqElement.attr('title', text);
                 }

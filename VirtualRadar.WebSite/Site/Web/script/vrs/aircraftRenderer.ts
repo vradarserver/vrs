@@ -164,7 +164,30 @@ namespace VRS
      */
     export class RenderPropertyHandler
     {
-        private _Settings: RenderPropertyHandler_Settings;
+        private _SuspendWidget: (element: JQuery, surface: RenderSurfaceBitFlags, suspend: boolean) => void;
+
+        // Keeping these as public fields for backwards compatibility
+        property:               RenderPropertyEnum;
+        surfaces:               RenderSurfaceBitFlags;
+        headingKey:             string;
+        labelKey:               string;
+        optionsLabelKey:        string;
+        headingAlignment:       AlignmentEnum;
+        contentAlignment:       AlignmentEnum;
+        fixedWidth:             (surface: RenderSurfaceBitFlags) => string;
+        hasChangedCallback:     (aircraft?: Aircraft) => boolean;
+        contentCallback:        (aircraft?: Aircraft, options?: AircraftRenderOptions, surface?: RenderSurfaceBitFlags) => string;
+        renderCallback:         (aircraft?: Aircraft, options?: AircraftRenderOptions, surface?: RenderSurfaceBitFlags) => string;
+        useHtmlRendering:       (aircraft?: Aircraft, options?: AircraftRenderOptions, surface?: RenderSurfaceBitFlags) => boolean;
+        usesDisplayUnit:        (displayUnitDependency: DisplayUnitDependencyEnum) => boolean;
+        tooltipChangedCallback: (aircraft?: Aircraft) => boolean;
+        tooltipCallback:        (aircraft?: Aircraft, options?: AircraftRenderOptions, surface?: RenderSurfaceBitFlags) => string;
+        suppressLabelCallback:  (surface: RenderSurfaceBitFlags) => boolean;
+        isMultiLine:            boolean;
+        sortableField:          AircraftListSortableFieldEnum;
+        createWidget:           (element?: JQuery, options?: AircraftRenderOptions, surface?: RenderSurfaceBitFlags) => void;
+        renderWidget:           (element?: JQuery, aircraft?: Aircraft, options?: AircraftRenderOptions, surface?: RenderSurfaceBitFlags) => void;
+        destroyWidget:          (element?: JQuery, surface?: RenderSurfaceBitFlags) => void;
 
         constructor(settings: RenderPropertyHandler_Settings)
         {
@@ -176,135 +199,29 @@ namespace VRS
             if(!settings.alignment) settings.alignment = VRS.Alignment.Left;
             if(!settings.tooltipChangedCallback) settings.tooltipChangedCallback = settings.hasChangedCallback;
 
-            settings.property = settings.property;
-            settings.surfaces = settings.surfaces;
-            settings.headingKey = settings.headingKey || settings.labelKey;
-            settings.labelKey = settings.labelKey || settings.headingKey;
-            settings.optionsLabelKey = settings.optionsLabelKey || settings.labelKey;
-            settings.headingAlignment = settings.headingAlignment || settings.alignment;
-            settings.contentAlignment = settings.contentAlignment || settings.alignment;
-            settings.fixedWidth = settings.fixedWidth || function() { return null; };
-            settings.hasChangedCallback = settings.hasChangedCallback;
-            settings.contentCallback = settings.contentCallback;
-            settings.renderCallback = settings.renderCallback;
-            settings.useHtmlRendering = settings.useHtmlRendering || function() { return !!settings.renderCallback; };
-            settings.usesDisplayUnit = settings.usesDisplayUnit || function() { return false; };
-            settings.tooltipChangedCallback = settings.tooltipChangedCallback;
-            settings.tooltipCallback = settings.tooltipCallback;
-            settings.suppressLabelCallback = settings.suppressLabelCallback || function() { return false; };
-            settings.isMultiLine = !!settings.isMultiLine;
-            settings.sortableField = settings.sortableField || VRS.AircraftListSortableField.None;
-            settings.createWidget = settings.createWidget;
-            settings.renderWidget = settings.renderWidget;
-            settings.destroyWidget = settings.destroyWidget;
+            this.property = settings.property;
+            this.surfaces = settings.surfaces;
+            this.headingKey = settings.headingKey || settings.labelKey;
+            this.labelKey = settings.labelKey || settings.headingKey;
+            this.optionsLabelKey = settings.optionsLabelKey || settings.labelKey;
+            this.headingAlignment = settings.headingAlignment || settings.alignment;
+            this.contentAlignment = settings.contentAlignment || settings.alignment;
+            this.fixedWidth = settings.fixedWidth || function() { return null; };
+            this.hasChangedCallback = settings.hasChangedCallback;
+            this.contentCallback = settings.contentCallback;
+            this.renderCallback = settings.renderCallback;
+            this.useHtmlRendering = settings.useHtmlRendering || function() { return !!settings.renderCallback; };
+            this.usesDisplayUnit = settings.usesDisplayUnit || function() { return false; };
+            this.tooltipChangedCallback = settings.tooltipChangedCallback;
+            this.tooltipCallback = settings.tooltipCallback;
+            this.suppressLabelCallback = settings.suppressLabelCallback || function() { return false; };
+            this.isMultiLine = !!settings.isMultiLine;
+            this.sortableField = settings.sortableField || VRS.AircraftListSortableField.None;
+            this.createWidget = settings.createWidget;
+            this.renderWidget = settings.renderWidget;
+            this.destroyWidget = settings.destroyWidget;
 
-            this._Settings = settings;
-        }
-
-
-        get property()
-        {
-            return this._Settings.property;
-        }
-
-        get surfaces()
-        {
-            return this._Settings.surfaces;
-        }
-
-        get headingKey()
-        {
-            return this._Settings.headingKey;
-        }
-
-        get labelKey()
-        {
-            return this._Settings.labelKey;
-        }
-
-        get optionsLabelKey()
-        {
-            return this._Settings.optionsLabelKey;
-        }
-
-        get headingAlignment()
-        {
-            return this._Settings.headingAlignment;
-        }
-
-        get contentAlignment()
-        {
-            return this._Settings.contentAlignment;
-        }
-
-        get fixedWidth()
-        {
-            return this._Settings.fixedWidth;
-        }
-
-        get hasChangedCallback()
-        {
-            return this._Settings.hasChangedCallback;
-        }
-
-        get contentCallback()
-        {
-            return this._Settings.contentCallback;
-        }
-
-        get renderCallback()
-        {
-            return this._Settings.renderCallback;
-        }
-
-        get useHtmlRendering()
-        {
-            return this._Settings.useHtmlRendering;
-        }
-
-        get usesDisplayUnit()
-        {
-            return this._Settings.usesDisplayUnit;
-        }
-
-        get tooltipChangedCallback()
-        {
-            return this._Settings.tooltipChangedCallback;
-        }
-
-        get tooltipCallback()
-        {
-            return this._Settings.tooltipCallback;
-        }
-
-        get suppressLabelCallback()
-        {
-            return this._Settings.suppressLabelCallback;
-        }
-
-        get isMultiLine()
-        {
-            return this._Settings.isMultiLine;
-        }
-
-        get sortableField()
-        {
-            return this._Settings.sortableField;
-        }
-
-        get createWidget()
-        {
-            return this._Settings.createWidget;
-        }
-
-        get renderWidget()
-        {
-            return this._Settings.renderWidget;
-        }
-
-        get destroyWidget()
-        {
-            return this._Settings.destroyWidget;
+            this._SuspendWidget = settings.suspendWidget;
         }
 
         /**
@@ -312,7 +229,7 @@ namespace VRS
          */
         isSurfaceSupported(surface: RenderSurfaceBitFlags) : boolean
         {
-            return (this._Settings.surfaces & surface) !== 0;
+            return (this.surfaces & surface) !== 0;
         }
 
         /**
@@ -320,7 +237,7 @@ namespace VRS
          */
         isWidgetProperty() : boolean
         {
-            return !!this._Settings.createWidget;
+            return !!this.createWidget;
         }
 
         /**
@@ -328,8 +245,8 @@ namespace VRS
          */
         suspendWidget(jQueryElement: JQuery, surface: RenderSurfaceBitFlags, onOff: boolean)
         {
-            if(this._Settings.suspendWidget) {
-                this._Settings.suspendWidget(jQueryElement, surface, onOff);
+            if(this._SuspendWidget) {
+                this._SuspendWidget(jQueryElement, surface, onOff);
             }
         }
 

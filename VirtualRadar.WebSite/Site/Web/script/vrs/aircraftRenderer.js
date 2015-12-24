@@ -18,185 +18,38 @@ var VRS;
                 settings.alignment = VRS.Alignment.Left;
             if (!settings.tooltipChangedCallback)
                 settings.tooltipChangedCallback = settings.hasChangedCallback;
-            settings.property = settings.property;
-            settings.surfaces = settings.surfaces;
-            settings.headingKey = settings.headingKey || settings.labelKey;
-            settings.labelKey = settings.labelKey || settings.headingKey;
-            settings.optionsLabelKey = settings.optionsLabelKey || settings.labelKey;
-            settings.headingAlignment = settings.headingAlignment || settings.alignment;
-            settings.contentAlignment = settings.contentAlignment || settings.alignment;
-            settings.fixedWidth = settings.fixedWidth || function () { return null; };
-            settings.hasChangedCallback = settings.hasChangedCallback;
-            settings.contentCallback = settings.contentCallback;
-            settings.renderCallback = settings.renderCallback;
-            settings.useHtmlRendering = settings.useHtmlRendering || function () { return !!settings.renderCallback; };
-            settings.usesDisplayUnit = settings.usesDisplayUnit || function () { return false; };
-            settings.tooltipChangedCallback = settings.tooltipChangedCallback;
-            settings.tooltipCallback = settings.tooltipCallback;
-            settings.suppressLabelCallback = settings.suppressLabelCallback || function () { return false; };
-            settings.isMultiLine = !!settings.isMultiLine;
-            settings.sortableField = settings.sortableField || VRS.AircraftListSortableField.None;
-            settings.createWidget = settings.createWidget;
-            settings.renderWidget = settings.renderWidget;
-            settings.destroyWidget = settings.destroyWidget;
-            this._Settings = settings;
+            this.property = settings.property;
+            this.surfaces = settings.surfaces;
+            this.headingKey = settings.headingKey || settings.labelKey;
+            this.labelKey = settings.labelKey || settings.headingKey;
+            this.optionsLabelKey = settings.optionsLabelKey || settings.labelKey;
+            this.headingAlignment = settings.headingAlignment || settings.alignment;
+            this.contentAlignment = settings.contentAlignment || settings.alignment;
+            this.fixedWidth = settings.fixedWidth || function () { return null; };
+            this.hasChangedCallback = settings.hasChangedCallback;
+            this.contentCallback = settings.contentCallback;
+            this.renderCallback = settings.renderCallback;
+            this.useHtmlRendering = settings.useHtmlRendering || function () { return !!settings.renderCallback; };
+            this.usesDisplayUnit = settings.usesDisplayUnit || function () { return false; };
+            this.tooltipChangedCallback = settings.tooltipChangedCallback;
+            this.tooltipCallback = settings.tooltipCallback;
+            this.suppressLabelCallback = settings.suppressLabelCallback || function () { return false; };
+            this.isMultiLine = !!settings.isMultiLine;
+            this.sortableField = settings.sortableField || VRS.AircraftListSortableField.None;
+            this.createWidget = settings.createWidget;
+            this.renderWidget = settings.renderWidget;
+            this.destroyWidget = settings.destroyWidget;
+            this._SuspendWidget = settings.suspendWidget;
         }
-        Object.defineProperty(RenderPropertyHandler.prototype, "property", {
-            get: function () {
-                return this._Settings.property;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "surfaces", {
-            get: function () {
-                return this._Settings.surfaces;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "headingKey", {
-            get: function () {
-                return this._Settings.headingKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "labelKey", {
-            get: function () {
-                return this._Settings.labelKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "optionsLabelKey", {
-            get: function () {
-                return this._Settings.optionsLabelKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "headingAlignment", {
-            get: function () {
-                return this._Settings.headingAlignment;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "contentAlignment", {
-            get: function () {
-                return this._Settings.contentAlignment;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "fixedWidth", {
-            get: function () {
-                return this._Settings.fixedWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "hasChangedCallback", {
-            get: function () {
-                return this._Settings.hasChangedCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "contentCallback", {
-            get: function () {
-                return this._Settings.contentCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "renderCallback", {
-            get: function () {
-                return this._Settings.renderCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "useHtmlRendering", {
-            get: function () {
-                return this._Settings.useHtmlRendering;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "usesDisplayUnit", {
-            get: function () {
-                return this._Settings.usesDisplayUnit;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "tooltipChangedCallback", {
-            get: function () {
-                return this._Settings.tooltipChangedCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "tooltipCallback", {
-            get: function () {
-                return this._Settings.tooltipCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "suppressLabelCallback", {
-            get: function () {
-                return this._Settings.suppressLabelCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "isMultiLine", {
-            get: function () {
-                return this._Settings.isMultiLine;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "sortableField", {
-            get: function () {
-                return this._Settings.sortableField;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "createWidget", {
-            get: function () {
-                return this._Settings.createWidget;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "renderWidget", {
-            get: function () {
-                return this._Settings.renderWidget;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RenderPropertyHandler.prototype, "destroyWidget", {
-            get: function () {
-                return this._Settings.destroyWidget;
-            },
-            enumerable: true,
-            configurable: true
-        });
         RenderPropertyHandler.prototype.isSurfaceSupported = function (surface) {
-            return (this._Settings.surfaces & surface) !== 0;
+            return (this.surfaces & surface) !== 0;
         };
         RenderPropertyHandler.prototype.isWidgetProperty = function () {
-            return !!this._Settings.createWidget;
+            return !!this.createWidget;
         };
         RenderPropertyHandler.prototype.suspendWidget = function (jQueryElement, surface, onOff) {
-            if (this._Settings.suspendWidget) {
-                this._Settings.suspendWidget(jQueryElement, surface, onOff);
+            if (this._SuspendWidget) {
+                this._SuspendWidget(jQueryElement, surface, onOff);
             }
         };
         RenderPropertyHandler.prototype.createWidgetInDom = function (domElement, surface, options) {
