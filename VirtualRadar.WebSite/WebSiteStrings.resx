@@ -1759,4 +1759,8 @@
     <value>ZED</value>
     <comment>How text to speech should pronounce the letter 'Z'</comment>
   </data>
+  <data name="SayAy" xml:space="preserve">
+    <value>Ey</value>
+    <comment>How text-to-speech should pronounce the letter A</comment>
+  </data>
 </root>
