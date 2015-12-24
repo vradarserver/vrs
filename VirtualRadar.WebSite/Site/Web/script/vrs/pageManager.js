@@ -2,87 +2,21 @@ var VRS;
 (function (VRS) {
     var Page = (function () {
         function Page(settings) {
-            this._Container = null;
-            this._IsVisible = true;
-            this._OriginalParent = null;
-            this._OriginalCSS = null;
+            this.container = null;
+            this.isVisible = true;
+            this.originalParent = null;
+            this.originalCss = null;
             if (!settings)
                 throw 'You must supply a settings object';
             if (!settings.name)
                 throw 'You must supply a unique name';
             if (!settings.element)
                 throw 'You must supply the top-level element';
-            settings.afterVisibleCallback = settings.afterVisibleCallback || $.noop;
-            this._Settings = settings;
+            this.name = settings.name;
+            this.element = settings.element;
+            this.visibleCallback = settings.visibleCallback || function () { };
+            this.afterVisibleCallback = settings.afterVisibleCallback || function () { };
         }
-        Object.defineProperty(Page.prototype, "name", {
-            get: function () {
-                return this._Settings.name;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Page.prototype, "element", {
-            get: function () {
-                return this._Settings.element;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Page.prototype, "visibleCallback", {
-            get: function () {
-                return this._Settings.visibleCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Page.prototype, "afterVisibleCallback", {
-            get: function () {
-                return this._Settings.afterVisibleCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Page.prototype, "container", {
-            get: function () {
-                return this._Container;
-            },
-            set: function (value) {
-                this._Container = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Page.prototype, "isVisible", {
-            get: function () {
-                return this._IsVisible;
-            },
-            set: function (value) {
-                this._IsVisible = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Page.prototype, "originalParent", {
-            get: function () {
-                return this._OriginalParent;
-            },
-            set: function (value) {
-                this._OriginalParent = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Page.prototype, "originalCss", {
-            get: function () {
-                return this._OriginalCSS;
-            },
-            set: function (value) {
-                this._OriginalCSS = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Page.prototype.dispose = function () {
             if (this.originalCss)
                 this.element.css(this.originalCss);

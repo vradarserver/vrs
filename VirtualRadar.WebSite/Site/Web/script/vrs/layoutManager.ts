@@ -74,7 +74,12 @@ namespace VRS
      */
     export class Layout
     {
-        private _Settings: Layout_Settings;
+        // Kept as public fields for backwards compatibility
+        name:       string;
+        labelKey:   string;
+        layout:     Layout_Array;
+        onFocus:    () => void;
+        onBlur:     () => void;
 
         constructor(settings: Layout_Settings)
         {
@@ -84,35 +89,11 @@ namespace VRS
             if(!settings.layout) throw 'The layout must declare a layout';
             if(!(settings.layout instanceof Array) || settings.layout.length != 3) throw 'The layout must be an array of 3 elements';
 
-            settings.onFocus = settings.onFocus || $.noop;
-            settings.onBlur = settings.onBlur || $.noop;
-
-            this._Settings = settings;
-        }
-
-        get name()
-        {
-            return this._Settings.name;
-        }
-
-        get labelKey()
-        {
-            return this._Settings.labelKey;
-        }
-
-        get layout()
-        {
-            return this._Settings.layout;
-        }
-
-        get onFocus()
-        {
-            return this._Settings.onFocus;
-        }
-
-        get onBlur()
-        {
-            return this._Settings.onBlur;
+            this.name = settings.name;
+            this.labelKey = settings.labelKey;
+            this.layout = settings.layout;
+            this.onFocus = settings.onFocus || function() { };
+            this.onBlur = settings.onBlur || function() { };
         }
     }
 

@@ -5,31 +5,11 @@ var VRS;
             this.callOnRefresh = function () {
                 this.onRefresh.call(this.onRefreshThis);
             };
-            this._Settings = settings;
+            this.targetJQ = settings.targetJQ;
+            this.onRefresh = settings.onRefresh;
+            this.onRefreshThis = settings.onRefreshThis || window;
         }
-        Object.defineProperty(RefreshTarget.prototype, "targetJQ", {
-            get: function () {
-                return this._Settings.targetJQ;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RefreshTarget.prototype, "onRefresh", {
-            get: function () {
-                return this._Settings.onRefresh;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RefreshTarget.prototype, "onRefreshThis", {
-            get: function () {
-                return this._Settings.onRefreshThis || window;
-            },
-            enumerable: true,
-            configurable: true
-        });
         RefreshTarget.prototype.dispose = function () {
-            this._Settings = null;
             this.targetJQ = null;
             this.onRefresh = null;
             this.onRefreshThis = null;
@@ -39,18 +19,10 @@ var VRS;
     VRS.RefreshTarget = RefreshTarget;
     var RefreshOwner = (function () {
         function RefreshOwner(settings) {
-            this._Settings = settings;
+            this.ownerJQ = settings.ownerJQ;
             this._Targets = settings.targets || [];
         }
-        Object.defineProperty(RefreshOwner.prototype, "ownerJQ", {
-            get: function () {
-                return this._Settings.ownerJQ;
-            },
-            enumerable: true,
-            configurable: true
-        });
         RefreshOwner.prototype.dispose = function () {
-            this._Settings = null;
             this.ownerJQ = null;
             this._Targets = [];
         };

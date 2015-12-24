@@ -96,69 +96,23 @@ namespace VRS
      */
     export class MenuItem
     {
-        private _Settings: MenuItem_Settings;
+        private _Initialise: () => void;
+        private _Disabled: boolean | VoidFuncReturning<boolean>;
+        private _LabelKey: string | VoidFuncReturning<string>;
+        private _JqIcon: string | VoidFuncReturning<string>;
+        private _VrsIcon: string | VoidFuncReturning<string>;
+        private _Checked: boolean | VoidFuncReturning<boolean>;
+        private _LabelImageUrl: string | VoidFuncReturning<string>;
+        private _LabelImageClasses: string | VoidFuncReturning<string>;
 
-        /**
-         * Gets the unique name of the menu item.
-         */
-        get name() : string
-        {
-            return this._Settings.name;
-        }
-
-        /**
-         * Gets the optional function that is called when the menu item is clicked.
-         */
-        get clickCallback() : (menuItem?: MenuItem) => void
-        {
-            return this._Settings.clickCallback;
-        }
-
-        /**
-         * Gets the array of sub-items. This should not be used by objects that build menus - use subItemsNormalised instead.
-         */
-        get subItems() : MenuItem[]
-        {
-            return this._Settings.subItems;
-        }
-
-        private _SubItemsNormalised: MenuItem[] = [];
-        /**
-         * Gets an array of normalised sub-items. VRS.Menu builds this, you can't supply it. Consumers of menus should use
-         * this instead of the subItems array.
-         */
-        get subItemsNormalised() : MenuItem[]
-        {
-            return this._SubItemsNormalised;
-        }
-        set subItemsNormalised(normalisedSubItems: MenuItem[])
-        {
-            this._SubItemsNormalised = normalisedSubItems || [];
-        }
-
-        /**
-         * Do not close the menu when the item is clicked.
-         */
-        get noAutoClose() : boolean
-        {
-            return !!this._Settings.noAutoClose;
-        }
-
-        /**
-         * Gets the optional tag associated with the menu item.
-         */
-        get tag() : any
-        {
-            return this._Settings.tag;
-        }
-
-        /**
-         * Gets a callback that returns true if the menu item should not be shown.
-         */
-        get suppress() : () => boolean
-        {
-            return this._Settings.suppress || function() { return false; };
-        }
+        // Kept as public fields for backwards compatibility
+        name:               string;
+        clickCallback:      (menuItem?: MenuItem) => void;
+        subItems:           MenuItem[];
+        subItemsNormalised: MenuItem[];
+        noAutoClose:        boolean;
+        tag:                any;
+        suppress:           () => boolean;
 
         constructor(settings: MenuItem_Settings)
         {
@@ -166,9 +120,22 @@ namespace VRS
             if(!settings.name) throw 'You must supply a unique name for the menu item';
             if(!settings.labelKey) throw 'You must supply a label key';
 
-            this._Settings = $.extend({
-                subItems: []
-            }, settings);
+            this._Initialise = settings.initialise;
+            this._Disabled = settings.disabled;
+            this._LabelKey = settings.labelKey;
+            this._JqIcon = settings.jqIcon;
+            this._VrsIcon = settings.vrsIcon;
+            this._Checked = settings.checked;
+            this._LabelImageUrl = settings.labelImageUrl;
+            this._LabelImageClasses = settings.labelImageClasses;
+
+            this.name = settings.name;
+            this.clickCallback = settings.clickCallback;
+            this.subItems = settings.subItems || [];
+            this.subItemsNormalised = [];
+            this.noAutoClose = !!settings.noAutoClose;
+            this.tag = settings.tag;
+            this.suppress = settings.suppress || function() { return false; };
         }
 
         /**
@@ -176,7 +143,9 @@ namespace VRS
          */
         initialise()
         {
-            if(this._Settings.initialise) this._Settings.initialise();
+            if(this._Initialise) {
+                this._Initialise();
+            }
         }
 
         /**
@@ -184,7 +153,7 @@ namespace VRS
          */
         isDisabled() : boolean
         {
-            return Utility.ValueOrFuncReturningValue(this._Settings.disabled, false);
+            return Utility.ValueOrFuncReturningValue(this._Disabled, false);
         }
 
         /**
@@ -192,7 +161,7 @@ namespace VRS
          */
         getLabelText()
         {
-            return VRS.globalisation.getText(this._Settings.labelKey);
+            return VRS.globalisation.getText(this._LabelKey);
         }
 
         /**
@@ -200,7 +169,7 @@ namespace VRS
          */
         getJQueryIcon() : string
         {
-            return Utility.ValueOrFuncReturningValue(this._Settings.jqIcon, null);
+            return Utility.ValueOrFuncReturningValue(this._JqIcon, null);
         }
 
         /**
@@ -208,10 +177,12 @@ namespace VRS
          */
         getVrsIcon() : string
         {
-            var result = Utility.ValueOrFuncReturningValue(this._Settings.vrsIcon, null);
-            if(!this._Settings.vrsIcon && this._Settings.checked !== undefined) {
-                var isChecked = Utility.ValueOrFuncReturningValue(this._Settings.checked, false);
-                if(isChecked) result = 'checkmark';
+            var result = Utility.ValueOrFuncReturningValue(this._VrsIcon, null);
+            if(!this._VrsIcon && this._Checked !== undefined) {
+                var isChecked = Utility.ValueOrFuncReturningValue(this._Checked, false);
+                if(isChecked) {
+                    result = 'checkmark';
+                }
             }
 
             return result;
@@ -222,7 +193,7 @@ namespace VRS
          */
         getLabelImageUrl() : string
         {
-            return Utility.ValueOrFuncReturningValue(this._Settings.labelImageUrl, null);
+            return Utility.ValueOrFuncReturningValue(this._LabelImageUrl, null);
         }
 
         /**
@@ -230,7 +201,7 @@ namespace VRS
          */
         getLabelImageClasses() : string
         {
-            return Utility.ValueOrFuncReturningValue(this._Settings.labelImageClasses, null);
+            return Utility.ValueOrFuncReturningValue(this._LabelImageClasses, null);
         }
 
         /**
@@ -245,7 +216,9 @@ namespace VRS
             if(url) {
                 result = $('<img/>').attr('src', url);
                 var classes = this.getLabelImageClasses();
-                if(classes) result.addClass(classes);
+                if(classes) {
+                    result.addClass(classes);
+                }
             }
 
             return result;

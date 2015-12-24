@@ -13,21 +13,9 @@ var VRS;
             }, settings));
             if (!settings.getValueCallback)
                 throw 'You must supply a getValueCallback';
+            this.property = settings.property;
+            this.getValueCallback = settings.getValueCallback;
         }
-        Object.defineProperty(AircraftFilterPropertyHandler.prototype, "property", {
-            get: function () {
-                return this._Settings.property;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(AircraftFilterPropertyHandler.prototype, "getValueCallback", {
-            get: function () {
-                return this._Settings.getValueCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
         return AircraftFilterPropertyHandler;
     })(VRS.FilterPropertyHandler);
     VRS.AircraftFilterPropertyHandler = AircraftFilterPropertyHandler;

@@ -292,7 +292,15 @@ namespace VRS
      */
     export class FilterPropertyTypeHandler
     {
-        private _Settings: FilterPropertyTypeHandler_Settings;
+        // Keeping these as public fields for backwards compatibility
+        type:                       FilterPropertyTypeEnum;
+        getConditions:              () => Condition[];
+        createValueCondition:       () => ValueCondition;
+        createOptionFieldsCallback: (labelKey: string, valueCondition: ValueCondition, handler: FilterPropertyHandler, saveState: () => void) => OptionField[];
+        valuePassesCallback:        (value: any, valueCondition: ValueCondition, options?: Filter_Options) => boolean;
+        parseString:                (str: string) => any;
+        passEmptyValues:            (valueCondition: ValueCondition) => boolean;
+        toQueryString:              (value: any) => string;
 
         constructor(settings: FilterPropertyTypeHandler_Settings)
         {
@@ -305,49 +313,14 @@ namespace VRS
             if(!settings.valuePassesCallback) throw 'You must supply an valuePassesCallback';
             if(!settings.createOptionFieldsCallback) throw 'You must supply a createOptionFieldsCallback';
 
-            this._Settings = $.extend({
-                passEmptyValues: function() { return false; }
-            }, settings);
-        }
-
-        get type()
-        {
-            return this._Settings.type;
-        }
-
-        get getConditions()
-        {
-            return this._Settings.getConditions;
-        }
-
-        get createValueCondition()
-        {
-            return this._Settings.createValueCondition;
-        }
-
-        get createOptionFieldsCallback()
-        {
-            return this._Settings.createOptionFieldsCallback;
-        }
-
-        get valuePassesCallback()
-        {
-            return this._Settings.valuePassesCallback;
-        }
-
-        get parseString()
-        {
-            return this._Settings.parseString;
-        }
-
-        get passEmptyValues()
-        {
-            return this._Settings.passEmptyValues;
-        }
-
-        get toQueryString()
-        {
-            return this._Settings.toQueryString;
+            this.type = settings.type;
+            this.getConditions = settings.getConditions;
+            this.createValueCondition = settings.createValueCondition;
+            this.createOptionFieldsCallback = settings.createOptionFieldsCallback;
+            this.valuePassesCallback = settings.valuePassesCallback;
+            this.parseString = settings.parseString;
+            this.passEmptyValues = settings.passEmptyValues || function() { return false; };
+            this.toQueryString = settings.toQueryString;
         }
 
         /**
@@ -360,7 +333,7 @@ namespace VRS
             if(!result) {
                 switch(valueCondition.getCondition()) {
                     case VRS.FilterCondition.Equals:  result = filterValue === value; break;
-                    default:                          throw 'Invalid condition ' + valueCondition.getCondition() + ' for a ' + this._Settings.type + ' filter type';
+                    default:                          throw 'Invalid condition ' + valueCondition.getCondition() + ' for a ' + this.type + ' filter type';
                 }
                 if(valueCondition.getReverseCondition()) result = !result;
             }
@@ -398,7 +371,7 @@ namespace VRS
         {
             var result = [];
             var self = this;
-            $.each(this._Settings.getConditions(), function(idx, condition) {
+            $.each(this.getConditions(), function(idx, condition) {
                 result.push(new VRS.ValueText({
                     value: self.encodeConditionAndReverseCondition(condition.condition, condition.reverseCondition),
                     textKey: condition.labelKey
@@ -417,8 +390,6 @@ namespace VRS
 
         /**
          * Takes a string encoded by encodeConditionAndReverseCondition and returns the original condition and reverseCondition flag.
-         * @param {string} encodedConditionAndReverse
-         * @returns {VRS_CONDITION}
          */
         decodeConditionAndReverseCondition(encodedConditionAndReverse: string) : Condition
         {
@@ -454,7 +425,6 @@ namespace VRS
     /**
      * This is the list of pre-built (and potentially 3rd party) handlers for filter property types that describe how to
      * ask for the filter parameters used to test a property of a given type.
-     * @type {Object.<VRS.FilterPropertyType, VRS.FilterPropertyTypeHandler>}
      */
     export var filterPropertyTypeHandlers: { [index: string]: FilterPropertyTypeHandler } = VRS.filterPropertyTypeHandlers || {};
 
@@ -862,7 +832,22 @@ namespace VRS
      */
     export class FilterPropertyHandler
     {
-        protected _Settings: FilterPropertyHandler_Settings;
+        // Kept as public fields for backwards compatibility
+        property:           AircraftFilterPropertyEnum | ReportFilterPropertyEnum;
+        type:               FilterPropertyTypeEnum;
+        labelKey:           string;
+        getValueCallback:   (parameter: any) => any;
+        getEnumValues:      () => ValueText[];
+        isUpperCase:        boolean;
+        isLowerCase:        boolean;
+        minimumValue:       number;
+        maximumValue:       number;
+        decimalPlaces:      number;
+        inputWidth:         InputWidthEnum;
+        serverFilterName:   string;
+        isServerFilter:     (valueCondition: ValueCondition) => boolean;
+        normaliseValue:     (value: any, unitDisplayPrefs: UnitDisplayPreferences) => any;
+        defaultCondition:   FilterConditionEnum;
 
         constructor(settings: FilterPropertyHandler_Settings)
         {
@@ -871,95 +856,29 @@ namespace VRS
             if(!settings.type || !VRS.enumHelper.getEnumName(VRS.FilterPropertyType, settings.type)) throw 'You must supply a property type';
             if(!settings.labelKey) throw 'You must supply a labelKey';
 
-            this._Settings = $.extend({
-                inputWidth: VRS.InputWidth.Auto,
-                isServerFilter: () => !!this._Settings.serverFilterName,
-                normaliseValue: function(value: any) { return value; }
-            }, settings);
-        }
-
-        get property()
-        {
-            return this._Settings.property;
-        }
-
-        get type()
-        {
-            return this._Settings.type;
-        }
-
-        get labelKey()
-        {
-            return this._Settings.labelKey;
-        }
-
-        get getValueCallback()
-        {
-            return this._Settings.getValueCallback;
-        }
-
-        get getEnumValues()
-        {
-            return this._Settings.getEnumValues;
-        }
-
-        get isUpperCase()
-        {
-            return this._Settings.isUpperCase;
-        }
-
-        get isLowerCase()
-        {
-            return this._Settings.isLowerCase;
-        }
-
-        get minimumValue()
-        {
-            return this._Settings.minimumValue;
-        }
-
-        get maximumValue()
-        {
-            return this._Settings.maximumValue;
-        }
-
-        get decimalPlaces()
-        {
-            return this._Settings.decimalPlaces;
-        }
-
-        get inputWidth()
-        {
-            return this._Settings.inputWidth;
-        }
-
-        get serverFilterName()
-        {
-            return this._Settings.serverFilterName;
-        }
-
-        get isServerFilter()
-        {
-            return this._Settings.isServerFilter;
-        }
-
-        get normaliseValue()
-        {
-            return this._Settings.normaliseValue;
-        }
-
-        get defaultCondition()
-        {
-            return this._Settings.defaultCondition;
+            this.property = settings.property;
+            this.type = settings.type;
+            this.labelKey = settings.labelKey;
+            this.getValueCallback = settings.getValueCallback;
+            this.getEnumValues = settings.getEnumValues;
+            this.isUpperCase = settings.isUpperCase;
+            this.isLowerCase = settings.isLowerCase;
+            this.minimumValue = settings.minimumValue;
+            this.maximumValue = settings.maximumValue;
+            this.decimalPlaces = settings.decimalPlaces;
+            this.inputWidth = settings.inputWidth === undefined ? VRS.InputWidth.Auto : settings.inputWidth;
+            this.serverFilterName = settings.serverFilterName;
+            this.isServerFilter = settings.isServerFilter || function() { return !!settings.serverFilterName; };
+            this.normaliseValue = settings.normaliseValue || function(value) { return value; };
+            this.defaultCondition = settings.defaultCondition;
         }
 
         /**
          * Returns the handler for the property's type.
-         * @returns {VRS.FilterPropertyTypeHandler}
          */
         getFilterPropertyTypeHandler() : FilterPropertyTypeHandler
         {
-            return filterPropertyTypeHandlers[this._Settings.type];
+            return filterPropertyTypeHandlers[this.type];
         }
     }
 

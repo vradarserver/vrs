@@ -12,45 +12,12 @@ var VRS;
                 throw 'The layout must declare a layout';
             if (!(settings.layout instanceof Array) || settings.layout.length != 3)
                 throw 'The layout must be an array of 3 elements';
-            settings.onFocus = settings.onFocus || $.noop;
-            settings.onBlur = settings.onBlur || $.noop;
-            this._Settings = settings;
+            this.name = settings.name;
+            this.labelKey = settings.labelKey;
+            this.layout = settings.layout;
+            this.onFocus = settings.onFocus || function () { };
+            this.onBlur = settings.onBlur || function () { };
         }
-        Object.defineProperty(Layout.prototype, "name", {
-            get: function () {
-                return this._Settings.name;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Layout.prototype, "labelKey", {
-            get: function () {
-                return this._Settings.labelKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Layout.prototype, "layout", {
-            get: function () {
-                return this._Settings.layout;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Layout.prototype, "onFocus", {
-            get: function () {
-                return this._Settings.onFocus;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Layout.prototype, "onBlur", {
-            get: function () {
-                return this._Settings.onBlur;
-            },
-            enumerable: true,
-            configurable: true
-        });
         return Layout;
     })();
     VRS.Layout = Layout;

@@ -38,35 +38,16 @@ namespace VRS
 
     export class RefreshTarget
     {
-        private _Settings: RefreshTarget_Settings;
-
-        /**
-         * Gets the target jQuery element.
-         */
-        get targetJQ() : JQuery
-        {
-            return this._Settings.targetJQ;
-        }
-
-        /**
-         * The function to call when it has been determined that the target needs to be refreshed.
-         */
-        get onRefresh() : () => void
-        {
-            return this._Settings.onRefresh;
-        }
-
-        /**
-         * The object to use as 'this' when calling onRefresh.
-         */
-        get onRefreshThis() : Object
-        {
-            return this._Settings.onRefreshThis || window;
-        }
+        // Kept as public fields for backwards compatibility
+        targetJQ:       JQuery;
+        onRefresh:      () => void;
+        onRefreshThis:  Object;
 
         constructor(settings: RefreshTarget_Settings)
         {
-            this._Settings = settings;
+            this.targetJQ = settings.targetJQ;
+            this.onRefresh = settings.onRefresh;
+            this.onRefreshThis = settings.onRefreshThis || window;
         }
 
         /**
@@ -74,7 +55,6 @@ namespace VRS
          */
         dispose()
         {
-            this._Settings = null;
             this.targetJQ = null;
             this.onRefresh = null;
             this.onRefreshThis = null;
@@ -111,24 +91,14 @@ namespace VRS
      */
     export class RefreshOwner
     {
-        private _Settings: RefreshOwner_Settings;
-
-        /**
-         * The owner jQuery element.
-         */
-        get ownerJQ() : JQuery
-        {
-            return this._Settings.ownerJQ;
-        }
-
-        /**
-         * An array of targets that have to be refreshed when the owner indicates that something has happened.
-         */
         private _Targets: RefreshTarget[];
+
+        // Kept as public field for backwards compatibility
+        ownerJQ: JQuery;
 
         constructor(settings: RefreshOwner_Settings)
         {
-            this._Settings = settings;
+            this.ownerJQ = settings.ownerJQ;
             this._Targets = settings.targets || [];
         }
 
@@ -137,7 +107,6 @@ namespace VRS
          */
         dispose()
         {
-            this._Settings = null;
             this.ownerJQ = null;
             this._Targets = [];
         }

@@ -75,7 +75,15 @@ namespace VRS
      */
     export class LinkRenderHandler
     {
-        private _Settings: LinkRenderHandler_Settings;
+        // Kept as public fields for backwards compatibility
+        linkSite:           LinkSiteEnum;
+        displayOrder:       number;
+        canLinkAircraft:    (aircraft: Aircraft) => boolean;
+        hasChanged:         (aircraft: Aircraft) => boolean;
+        title:              string | AircraftFuncReturningString;
+        buildUrl:           (aircraft: Aircraft) => string;
+        target:             string | AircraftFuncReturningString;
+        onClick:            (event: Event) => void;
 
         constructor(settings: LinkRenderHandler_Settings)
         {
@@ -87,51 +95,14 @@ namespace VRS
             if(!settings.title) throw 'You must supply a title';
             if(!settings.buildUrl) throw 'You must supply the buildUrl callback';
 
-            if(!settings.target) {
-                settings.target = function(aircraft) { return settings.linkSite + '-' + aircraft.formatIcao(); };
-            }
-
-            this._Settings = settings;
-        }
-
-        get linkSite()
-        {
-            return this._Settings.linkSite;
-        }
-
-        get displayOrder()
-        {
-            return this._Settings.displayOrder;
-        }
-
-        get canLinkAircraft()
-        {
-            return this._Settings.canLinkAircraft;
-        }
-
-        get hasChanged()
-        {
-            return this._Settings.hasChanged;
-        }
-
-        get title()
-        {
-            return this._Settings.title;
-        }
-
-        get buildUrl()
-        {
-            return this._Settings.buildUrl;
-        }
-
-        get target()
-        {
-            return this._Settings.target;
-        }
-
-        get onClick()
-        {
-            return this._Settings.onClick;
+            this.linkSite = settings.linkSite;
+            this.displayOrder = settings.displayOrder;
+            this.canLinkAircraft = settings.canLinkAircraft;
+            this.hasChanged = settings.hasChanged;
+            this.title = settings.title;
+            this.buildUrl = settings.buildUrl;
+            this.target = settings.target || ((aircraft: Aircraft) => this.linkSite + '-' + aircraft.formatIcao());
+            this.onClick = settings.onClick;
         }
 
         getTitle(aircraft: Aircraft) : string

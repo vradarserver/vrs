@@ -47,11 +47,15 @@ namespace VRS
      */
     export class Page
     {
-        private _Settings: Page_Settings;
-        private _Container: JQuery = null;
-        private _IsVisible = true;
-        private _OriginalParent: JQuery = null;
-        private _OriginalCSS: Object = null;
+        // Kept as public fields for backwards compatibility
+        name: string;
+        element: JQuery;
+        visibleCallback: (willBecomeVisible: boolean) => void;
+        afterVisibleCallback: () => void;
+        container: JQuery = null;
+        isVisible = true;
+        originalParent: JQuery = null;
+        originalCss: Object = null;
 
         constructor(settings: Page_Settings)
         {
@@ -59,76 +63,10 @@ namespace VRS
             if(!settings.name) throw 'You must supply a unique name';
             if(!settings.element) throw 'You must supply the top-level element';
 
-            settings.afterVisibleCallback = settings.afterVisibleCallback || $.noop;
-            this._Settings = settings;
-        }
-
-        get name()
-        {
-            return this._Settings.name;
-        }
-
-        get element()
-        {
-            return this._Settings.element;
-        }
-
-        get visibleCallback()
-        {
-            return this._Settings.visibleCallback;
-        }
-
-        get afterVisibleCallback()
-        {
-            return this._Settings.afterVisibleCallback;
-        }
-
-        /**
-         * The container that the element is wrapped with.
-         */
-        get container()
-        {
-            return this._Container;
-        }
-        set container(value: JQuery)
-        {
-            this._Container = value;
-        }
-
-        /**
-         * True if the page is visible, false if it is not.
-         */
-        get isVisible()
-        {
-            return this._IsVisible;
-        }
-        set isVisible(value: boolean)
-        {
-            this._IsVisible = value;
-        }
-
-        /**
-         * The original parent of the element.
-         */
-        get originalParent()
-        {
-            return this._OriginalParent;
-        }
-        set originalParent(value: JQuery)
-        {
-            this._OriginalParent = value;
-        }
-
-        /**
-         * For internal use. Holds the CSS on element before any modifications by the page manager.
-         */
-        get originalCss()
-        {
-            return this._OriginalCSS;
-        }
-        set originalCss(value: Object)
-        {
-            this._OriginalCSS = value;
+            this.name = settings.name;
+            this.element = settings.element;
+            this.visibleCallback = settings.visibleCallback || function() { };
+            this.afterVisibleCallback = settings.afterVisibleCallback || function() { };
         }
 
         /**

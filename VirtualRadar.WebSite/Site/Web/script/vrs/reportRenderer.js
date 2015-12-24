@@ -2,150 +2,59 @@ var VRS;
 (function (VRS) {
     var ReportPropertyHandler = (function () {
         function ReportPropertyHandler(settings) {
-            settings.property = settings.property;
-            settings.surfaces = settings.surfaces || (VRS.ReportSurface.List + VRS.ReportSurface.DetailBody);
-            settings.labelKey = settings.labelKey || settings.headingKey;
-            settings.headingKey = settings.headingKey || settings.labelKey;
-            settings.optionsLabelKey = settings.optionsLabelKey || settings.labelKey || settings.headingKey;
-            settings.headingAlignment = settings.headingAlignment || settings.alignment || settings.contentAlignment || VRS.Alignment.Left;
-            settings.contentAlignment = settings.contentAlignment || settings.alignment || settings.headingAlignment || VRS.Alignment.Left;
-            settings.isMultiLine = settings.isMultiLine || false;
-            settings.fixedWidth = settings.fixedWidth;
-            settings.suppressLabelCallback = settings.suppressLabelCallback || function () { return false; };
-            settings.sortColumn = settings.sortColumn;
-            settings.groupValue = settings.groupValue;
-            this._Settings = settings;
-            this._IsAircraftProperty = !!VRS.enumHelper.getEnumName(VRS.ReportAircraftProperty, settings.property);
+            this.property = settings.property;
+            this.surfaces = settings.surfaces || (VRS.ReportSurface.List + VRS.ReportSurface.DetailBody);
+            this.labelKey = settings.labelKey || settings.headingKey;
+            this.headingKey = settings.headingKey || settings.labelKey;
+            this.optionsLabelKey = settings.optionsLabelKey || settings.labelKey || settings.headingKey;
+            this.headingAlignment = settings.headingAlignment || settings.alignment || settings.contentAlignment || VRS.Alignment.Left;
+            this.contentAlignment = settings.contentAlignment || settings.alignment || settings.headingAlignment || VRS.Alignment.Left;
+            this.isMultiLine = settings.isMultiLine || false;
+            this.fixedWidth = settings.fixedWidth;
+            this.suppressLabelCallback = settings.suppressLabelCallback || function () { return false; };
+            this.sortColumn = settings.sortColumn;
+            this.groupValue = settings.groupValue;
+            this.isAircraftProperty = !!VRS.enumHelper.getEnumName(VRS.ReportAircraftProperty, settings.property);
+            this.isFlightsProperty = !this.isAircraftProperty;
+            this._HasValue = settings.hasValue;
+            this._CreateWidget = settings.createWidget;
+            this._DestroyWidget = settings.destroyWidget;
+            this._RenderWidget = settings.renderWidget;
+            this._ContentCallback = settings.contentCallback;
+            this._RenderCallback = settings.renderCallback;
+            this._TooltipCallback = settings.tooltipCallback;
         }
-        Object.defineProperty(ReportPropertyHandler.prototype, "property", {
-            get: function () {
-                return this._Settings.property;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "surfaces", {
-            get: function () {
-                return this._Settings.surfaces;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "labelKey", {
-            get: function () {
-                return this._Settings.labelKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "headingKey", {
-            get: function () {
-                return this._Settings.headingKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "optionsLabelKey", {
-            get: function () {
-                return this._Settings.optionsLabelKey;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "headingAlignment", {
-            get: function () {
-                return this._Settings.headingAlignment;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "contentAlignment", {
-            get: function () {
-                return this._Settings.contentAlignment;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "isMultiLine", {
-            get: function () {
-                return this._Settings.isMultiLine;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "fixedWidth", {
-            get: function () {
-                return this._Settings.fixedWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "suppressLabelCallback", {
-            get: function () {
-                return this._Settings.suppressLabelCallback;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "sortColumn", {
-            get: function () {
-                return this._Settings.sortColumn;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "groupValue", {
-            get: function () {
-                return this._Settings.groupValue;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "isAircraftProperty", {
-            get: function () {
-                return this._IsAircraftProperty;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReportPropertyHandler.prototype, "isFlightsProperty", {
-            get: function () {
-                return !this._IsAircraftProperty;
-            },
-            enumerable: true,
-            configurable: true
-        });
         ReportPropertyHandler.prototype.isSurfaceSupported = function (surface) {
-            return (this._Settings.surfaces & surface) !== 0;
+            return (this.surfaces & surface) !== 0;
         };
         ReportPropertyHandler.prototype.hasValue = function (flightJson) {
-            var json = this._IsAircraftProperty ? flightJson.aircraft : flightJson;
-            return this._Settings.hasValue(json);
+            var json = this.isAircraftProperty ? flightJson.aircraft : flightJson;
+            return this._HasValue(json);
         };
         ReportPropertyHandler.prototype.createWidgetInJQueryElement = function (jQueryElement, surface, options) {
-            if (this._Settings.createWidget) {
-                this._Settings.createWidget(jQueryElement, surface, options);
+            if (this._CreateWidget) {
+                this._CreateWidget(jQueryElement, surface, options);
             }
         };
         ReportPropertyHandler.prototype.destroyWidgetInJQueryElement = function (jQueryElement, surface) {
-            if (this._Settings.destroyWidget) {
-                this._Settings.destroyWidget(jQueryElement, surface);
+            if (this._DestroyWidget) {
+                this._DestroyWidget(jQueryElement, surface);
             }
         };
         ReportPropertyHandler.prototype.renderIntoJQueryElement = function (jqElement, json, options, surface) {
-            if (this._Settings.contentCallback) {
-                jqElement.text(this._Settings.contentCallback(json, options, surface));
+            if (this._ContentCallback) {
+                jqElement.text(this._ContentCallback(json, options, surface));
             }
-            else if (this._Settings.renderWidget) {
-                this._Settings.renderWidget(jqElement, json, options, surface);
+            else if (this._RenderWidget) {
+                this._RenderWidget(jqElement, json, options, surface);
             }
             else {
-                jqElement.html(this._Settings.renderCallback(json, options, surface));
+                jqElement.html(this._RenderCallback(json, options, surface));
             }
         };
         ReportPropertyHandler.prototype.addTooltip = function (jqElement, json, options) {
-            if (this._Settings.tooltipCallback) {
-                var text = this._Settings.tooltipCallback(json, options);
+            if (this._TooltipCallback) {
+                var text = this._TooltipCallback(json, options);
                 if (text) {
                     jqElement.attr('title', text);
                 }

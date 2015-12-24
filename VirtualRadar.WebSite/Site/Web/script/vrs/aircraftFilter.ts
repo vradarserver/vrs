@@ -37,7 +37,9 @@ namespace VRS
      */
     export class AircraftFilterPropertyHandler extends FilterPropertyHandler
     {
-        protected _Settings: AircraftFilterPropertyHandler_Settings;
+        // Keeping these as public fields for backwards compatability
+        property:           AircraftFilterPropertyEnum;
+        getValueCallback:   (aircraft: Aircraft, options?: Filter_Options) => any;
 
         constructor(settings: AircraftFilterPropertyHandler_Settings)
         {
@@ -46,16 +48,9 @@ namespace VRS
             }, settings));
 
             if(!settings.getValueCallback) throw 'You must supply a getValueCallback';
-        }
 
-        get property() : AircraftFilterPropertyEnum
-        {
-            return this._Settings.property;
-        }
-
-        get getValueCallback() : (aircraft: Aircraft, options?: Filter_Options) => any
-        {
-            return this._Settings.getValueCallback;
+            this.property = settings.property;
+            this.getValueCallback = settings.getValueCallback;
         }
     }
 

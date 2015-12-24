@@ -63,7 +63,12 @@ namespace VRS
      */
     export class AircraftListSortHandler
     {
-        private _Settings: AircraftListSortHandler_Settings;
+        // Keeping these as public fields for backwards compatability
+        Field:              AircraftListSortableFieldEnum;
+        LabelKey:           string;
+        GetNumberCallback:  (aircraft: Aircraft) => number;
+        GetStringCallback:  (aircraft: Aircraft) => string;
+        CompareCallback:    (lhs: Aircraft, rhs: Aircraft) => number;
 
         constructor(settings: AircraftListSortHandler_Settings)
         {
@@ -76,32 +81,11 @@ namespace VRS
                 settings.compareCallback = settings.getNumberCallback ? this.compareNumericValues : this.compareStringValues;
             }
 
-            this._Settings = settings;
-        }
-
-        get Field()
-        {
-            return this._Settings.field;
-        }
-
-        get LabelKey()
-        {
-            return this._Settings.labelKey;
-        }
-
-        get GetNumberCallback()
-        {
-            return this._Settings.getNumberCallback;
-        }
-
-        get GetStringCallback()
-        {
-            return this._Settings.getStringCallback;
-        }
-
-        get CompareCallback()
-        {
-            return this._Settings.compareCallback;
+            this.Field = settings.field;
+            this.LabelKey = settings.labelKey;
+            this.GetNumberCallback = settings.getNumberCallback;
+            this.GetStringCallback = settings.getStringCallback;
+            this.CompareCallback = settings.compareCallback;
         }
 
         /**
