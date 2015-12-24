@@ -532,7 +532,7 @@ namespace VRS
 
         /**
          * Returns a string that will cause the text-to-speech synthesis to spell out each character in the text
-         * rather than pronouncing the text as a word. E.G. if passed 'HI' it will say 'aitch-ey' rather than 'hi'.
+         * rather than pronouncing the text as a word. E.G. if passed 'HI' it will say 'aitch-eye' rather than 'hi'.
          */
         formatPunctuationForSpeech = (text: string) : string =>
         {
@@ -541,8 +541,8 @@ namespace VRS
             var length = text.length;
             for(var c = 0;c < length;c++) {
                 var ch = text[c];
-                if(ch === '-') ch = 'hyphen';
-                if(ch === 'Z') ch = 'ZED';
+                if(ch === '-') ch = VRS.$$.SayHyphen;
+                if(ch === 'Z') ch = VRS.$$.SayZed;
                 if(ch !== ' ') result += ch + this._PausePhrase;
             }
 
