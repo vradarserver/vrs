@@ -459,6 +459,9 @@ namespace VRS
             if(state.aircraftLinksPlugin) {
                 state.aircraftLinksPlugin.destroy();
             }
+            if(state.routeLinksPlugin) {
+                state.routeLinksPlugin.destroy();
+            }
             if(state.linksContainer) {
                 state.linksContainer.empty();
                 state.linksContainer.remove();
