@@ -805,8 +805,9 @@ var VRS;
                 value: parseInt(valueAsString),
                 isPercent: VRS.stringUtility.endsWith(valueAsString, '%', false)
             };
-            if (result.isPercent)
+            if (result.isPercent) {
                 result.value /= 100;
+            }
             return result;
         };
         return UnitConverter;

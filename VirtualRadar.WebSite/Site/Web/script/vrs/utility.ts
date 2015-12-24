@@ -173,6 +173,17 @@ namespace VRS
     {
         private _ForceFrame: string;
         private _ForceFrameHasBeenRead: boolean;
+        private _IsProbablyIPad: boolean;
+        private _IsProbablyIPhone: boolean;
+        private _IsProbablyAndroid: boolean;
+        private _IsProbablyAndroidPhone: boolean;
+        private _IsProbablyAndroidTablet: boolean;
+        private _IsProbablyWindowsPhone: boolean;
+        private _IsProbablyTablet: boolean;
+        private _IsProbablyPhone: boolean;
+        private _IsHighDpi: boolean;
+        private _NotOnline: boolean;
+
         /**
          * Returns the iframe that VRS has been told that it's been loaded into via the forceFrame query string parameter.
          */
@@ -188,7 +199,6 @@ namespace VRS
             return this._ForceFrame;
         }
 
-        private _IsProbablyIPad: boolean;
         /**
          * Returns true if the browser is probably running on an iPad. Actual iPads should be automatically detected but
          * you can force it for any page by passing 'isIpad=1' on the query string (case insensitive, any non-zero value will do).
@@ -206,7 +216,6 @@ namespace VRS
             return this._IsProbablyIPad;
         }
 
-        private _IsProbablyIPhone: boolean;
         /**
          * Returns true if the browser is probably running on an iPhone. Actual iPhones should be automatically detected
          * but you can force it by passing 'isIphone=1' on the query string (case insensitive, any non-zero value will work).
@@ -224,7 +233,6 @@ namespace VRS
             return this._IsProbablyIPhone;
         }
 
-        private _IsProbablyAndroid: boolean;
         /**
          * Returns true if the browser is probably running on an Android device.
          */
@@ -234,7 +242,6 @@ namespace VRS
             return this._IsProbablyAndroid;
         };
 
-        private _IsProbablyAndroidPhone: boolean;
         /**
          * Returns true if the browser is probably running on an Android phone.
          */
@@ -244,7 +251,6 @@ namespace VRS
             return this._IsProbablyAndroidPhone;
         }
 
-        private _IsProbablyAndroidTablet: boolean;
         /**
          * Returns true if the browser is probably running on an Android tablet.
          */
@@ -254,7 +260,6 @@ namespace VRS
             return this._IsProbablyAndroidTablet;
         }
 
-        private _IsProbablyWindowsPhone: boolean;
         /**
          * Returns true if the browser is probably running on a Windows phone.
          */
@@ -265,7 +270,6 @@ namespace VRS
         };
 
 
-        private _IsProbablyTablet: boolean;
         /**
          * Returns true if the browser is probably running on a tablet. iPads and Android tablets are automatically
          * detected, for other tablets you need to pass 'isTablet=1' on the query string (case insensitive, any non-zero
@@ -283,7 +287,6 @@ namespace VRS
             return this._IsProbablyTablet;
         }
 
-        private _IsProbablyPhone: boolean;
         /**
          * Returns true if the browser is probably running on a phone. iPhones, Android and Windows phones are automatically
          * detected, for other phones you need to pass 'isPhone=1' on the query string (case insensitive, any non-zero
@@ -301,7 +304,6 @@ namespace VRS
             return this._IsProbablyPhone;
         }
 
-        private _IsHighDpi: boolean;
         /**
          * Returns true if the browser is probably running on a high DPI display.
          */
@@ -319,7 +321,6 @@ namespace VRS
             return this._IsHighDpi;
         }
 
-        private _NotOnline: boolean;
         /**
          * Returns true if the notOnline query string has been set.
          */
@@ -372,15 +373,26 @@ namespace VRS
     }
 
     /**
+     * Describes a colour with an optional alpha.
+     */
+    export interface Colour
+    {
+        r:   number;
+        g:   number;
+        b:   number;
+        a?:  number;
+    }
+
+    /**
      * Methods to help with handling colours.
      */
     export class ColourHelper
     {
-        getWhite() : IColour    { return { r: 255, g: 255, b: 255 }; }
-        getRed() : IColour      { return { r: 255, g: 0,   b: 0   }; }
-        getGreen() : IColour    { return { r: 0,   g: 255, b: 0   }; }
-        getBlue() : IColour     { return { r: 255, g: 0,   b: 255 }; }
-        getBlack() : IColour    { return { r: 0,   g: 0,   b: 0   }; }
+        getWhite() : Colour     { return { r: 255, g: 255, b: 255 }; }
+        getRed() : Colour       { return { r: 255, g: 0,   b: 0   }; }
+        getGreen() : Colour     { return { r: 0,   g: 255, b: 0   }; }
+        getBlue() : Colour      { return { r: 255, g: 0,   b: 255 }; }
+        getBlack() : Colour     { return { r: 0,   g: 0,   b: 0   }; }
 
         /**
          * Given a numeric value, a low value and a high value this converts the value to a colour on a colour wheel.
@@ -391,9 +403,9 @@ namespace VRS
          * performed as it would lead to confusion between the start and the end of the wheel - the intended use of this
          * method is for coloured trails where we want no confusion between low and high values.
          */
-        getColourWheelScale(value: number, lowValue: number, highValue: number, invalidIsBelowLow: boolean = true, stretchLowerValues: boolean = true) : IColour
+        getColourWheelScale(value: number, lowValue: number, highValue: number, invalidIsBelowLow: boolean = true, stretchLowerValues: boolean = true) : Colour
         {
-            let result = <IColour>null;
+            let result = <Colour>null;
 
             if(value === undefined || isNaN(value)) {
                 if(invalidIsBelowLow) result = this.getWhite();
@@ -446,7 +458,7 @@ namespace VRS
         /**
          * Takes a colour object and returns a CSS colour string.
          */
-        colourToCssString(colour: IColour) : string
+        colourToCssString(colour: Colour) : string
         {
             var result = <string>null;
             if(colour) {
@@ -816,6 +828,8 @@ namespace VRS
      */
     export class PageHelper
     {
+        private _Indent = 0;
+
         /**
          * Shows or hides a full-page wait animation that prevents the user from interacting with the page.
          */
@@ -850,7 +864,6 @@ namespace VRS
             }
         }
 
-        private _Indent = 0;
         /**
          * Adds an opening indented log entry.
          */
@@ -944,18 +957,23 @@ namespace VRS
     }
 
     /**
+     * Describes a value that may or may not be a percentage.
+     */
+    export interface PercentValue
+    {
+        value:      number;
+        isPercent:  boolean;
+    }
+
+    /**
      * A collection of functions that convert values from one unit to another.
      */
     export class UnitConverter
     {
         /**
          * Converts distances from one unit to another.
-         * @param {number} value The distance to convert.
-         * @param {string} fromUnit A VRS.Distance unit to convert from.
-         * @param {string} toUnit A VRS.Distance unit to convert to.
-         * @returns {number} The converted value.
          */
-        convertDistance(value: number, fromUnit: string, toUnit: string) : number
+        convertDistance(value: number, fromUnit: DistanceEnum, toUnit: DistanceEnum) : number
         {
             var result = value;
 
@@ -992,10 +1010,8 @@ namespace VRS
 
         /**
          * Returns the translated abbreviation for a VRS.Distance unit.
-         * @param {string} unit The VRS.Distance unit to get an abbreviation for.
-         * @returns {string} The translated abbreviation.
          */
-        distanceUnitAbbreviation(unit: string) : string
+        distanceUnitAbbreviation(unit: DistanceEnum) : string
         {
             switch(unit) {
                 case VRS.Distance.Kilometre:    return VRS.$$.KilometreAbbreviation;
@@ -1007,12 +1023,8 @@ namespace VRS
 
         /**
          * Converts heights from one unit to another.
-         * @param {number} value The height to convert.
-         * @param {string} fromUnit A VRS.Height unit to convert from.
-         * @param {string} toUnit A VRS.Height unit to convert to.
-         * @returns {number} The converted value.
          */
-        convertHeight(value: number, fromUnit: string, toUnit: string) : number
+        convertHeight(value: number, fromUnit: HeightEnum, toUnit: HeightEnum) : number
         {
             var result = value;
 
@@ -1040,10 +1052,8 @@ namespace VRS
 
         /**
          * Returns the translated abbreviation for a VRS.Height unit.
-         * @param {string} unit The VRS.Height unit to get an abbreviation for.
-         * @returns {string} The translated abbreviation.
          */
-        heightUnitAbbreviation(unit: string) : string
+        heightUnitAbbreviation(unit: HeightEnum) : string
         {
             switch(unit) {
                 case VRS.Height.Feet:           return VRS.$$.FeetAbbreviation;
@@ -1054,11 +1064,8 @@ namespace VRS
 
         /**
          * Returns the translated abbreviation for a VRS.Height unit over time.
-         * @param {string} unit The VRS.Height unit to get an abbreviation for.
-         * @param {boolean} perSecond True if it is height over seconds, false if it is height over minutes.
-         * @returns {string} The translated abbreviation.
          */
-        heightUnitOverTimeAbbreviation(unit: string, perSecond: boolean) : string
+        heightUnitOverTimeAbbreviation(unit: HeightEnum, perSecond: boolean) : string
         {
             if(perSecond) {
                 switch(unit) {
@@ -1077,12 +1084,8 @@ namespace VRS
 
         /**
          * Converts speeds from one unit to another.
-         * @param {number} value The speed to convert.
-         * @param {string} fromUnit A VRS.Speed unit to convert from.
-         * @param {string} toUnit A VRS.Speed unit to convert to.
-         * @returns {number} The converted value.
          */
-        convertSpeed(value: number, fromUnit: string, toUnit: string) : number
+        convertSpeed(value: number, fromUnit: SpeedEnum, toUnit: SpeedEnum) : number
         {
             var result = value;
 
@@ -1119,10 +1122,8 @@ namespace VRS
 
         /**
          * Returns the translated abbreviation for a VRS.Speed unit.
-         * @param {string} unit The VRS.Speed unit to get an abbreviation for.
-         * @returns {string} The translated abbreviation.
          */
-        speedUnitAbbreviation(unit: string) : string
+        speedUnitAbbreviation(unit: SpeedEnum) : string
         {
             switch(unit) {
                 case VRS.Speed.Knots:               return VRS.$$.KnotsAbbreviation;
@@ -1134,12 +1135,8 @@ namespace VRS
 
         /**
          * Converts a vertical speed from one unit to another.
-         * @param {number}      verticalSpeed   The vertical speed in x units per minute to convert.
-         * @param {VRS.Height}  fromUnit        The units that the vertical speed is expressed in.
-         * @param {VRS.Height}  toUnit          The units to convert to.
-         * @param {boolean}     perSecond       True if the vertical speed should be converted to y units per second.
          */
-        convertVerticalSpeed(verticalSpeed: number, fromUnit: string, toUnit: string, perSecond: boolean) : number
+        convertVerticalSpeed(verticalSpeed: number, fromUnit: HeightEnum, toUnit: HeightEnum, perSecond: boolean) : number
         {
             var result = verticalSpeed;
             if(result !== undefined) {
@@ -1154,16 +1151,17 @@ namespace VRS
          * Accepts an integer number of pixels or a string ending with '%' and returns an
          * object describing whether the value is pixels or percent, and a number indicating what that value is.
          * Percents are divided by 100 before being returned.
-         * @param {String|Number} value Either the integer percentage or a string ending with '%'.
          */
-        getPixelsOrPercent(value: string | number) : IPercentValue
+        getPixelsOrPercent(value: string | number) : PercentValue
         {
             var valueAsString = String(value);
             var result = {
                 value: parseInt(valueAsString),
                 isPercent: VRS.stringUtility.endsWith(valueAsString, '%', false)
             };
-            if(result.isPercent) result.value /= 100;
+            if(result.isPercent) {
+                result.value /= 100;
+            }
 
             return result;
         }
@@ -1218,8 +1216,9 @@ namespace VRS
         }
     }
 
-    // Pre-builts. The non-TypeScript JavaScript (including custom content scripts) expect to be able to access the utility
-    // classes as instances rather than statics.
+    /*
+     * Pre-builts
+     */
     export var arrayHelper = new VRS.ArrayHelper();
     export var browserHelper = new VRS.BrowserHelper();
     export var colourHelper = new VRS.ColourHelper();

@@ -140,15 +140,6 @@
     }
 
     /**
-     * Describes a range of altitudes.
-     */
-    export interface IAltitudeRange
-    {
-        lowAlt: number;
-        highAlt: number;
-    }
-
-    /**
      * Describes a rectangle on the surface of the earth.
      */
     export interface IBounds
@@ -157,17 +148,6 @@
         tlLng: number;
         brLat: number;
         brLng: number;
-    }
-
-    /**
-     * Describes a colour with an optional alpha.
-     */
-    export interface IColour
-    {
-        r:   number;
-        g:   number;
-        b:   number;
-        a?:  number;
     }
 
     /**
@@ -683,15 +663,6 @@
     }
 
     /**
-     * Describes a value that may or may not be a percentage.
-     */
-    export interface IPercentValue
-    {
-        value:      number;
-        isPercent:  boolean;
-    }
-
-    /**
      * Describes a point.
      */
     export interface IPoint
@@ -902,4 +873,4 @@
         minutes:    number;
         seconds:    number;
     }
-} 
+}

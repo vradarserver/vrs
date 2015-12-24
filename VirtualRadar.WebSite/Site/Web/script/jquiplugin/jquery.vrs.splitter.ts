@@ -292,8 +292,6 @@ namespace VRS
 
         /**
          * Adds a splitter to the group of splitters whose positions will be saved.
-         * @param {jQuery} splitterElement
-         * @returns {VRS_STATE_SPLITTER}
          */
         registerSplitter(splitterElement: JQuery) : Splitter_Detail
         {
@@ -359,12 +357,12 @@ namespace VRS
         /**
          * Either a pixel value (can be a %age) or a method that takes the width of the splitter without the bar and returns a number of pixels.
          */
-        max?: IPercentValue | ((splitterWidth: number) => number);
+        max?: PercentValue | ((splitterWidth: number) => number);
 
         /**
          * Either a pixel value (can be a %age) or a method that takes the width of the splitter without the bar and returns a number of pixels.
          */
-        startSize?: IPercentValue | ((splitterWidth: number) => number);
+        startSize?: PercentValue | ((splitterWidth: number) => number);
     }
 
     /**
@@ -505,7 +503,7 @@ namespace VRS
          * @param {number}                                          availableLengthWithoutBar   The width of the parent splitter after the bar has been removed.
          * @returns {number=}                                                                   The resolved pixel width or null if there is no maximum / start width.
          */
-        _getPixelsFromMaxOrStartSize(maxOrStartSize: IPercentValue | ((size: number) => number), availableLengthWithoutBar: number) : number
+        _getPixelsFromMaxOrStartSize(maxOrStartSize: PercentValue | ((size: number) => number), availableLengthWithoutBar: number) : number
         {
             var result: number = null;
 
@@ -513,7 +511,7 @@ namespace VRS
                 if(maxOrStartSize instanceof Function) {
                     result = maxOrStartSize(availableLengthWithoutBar);
                 } else {
-                    var valuePercent = <IPercentValue>maxOrStartSize;
+                    var valuePercent = <PercentValue>maxOrStartSize;
                     result = valuePercent.value;
                     if(valuePercent.isPercent) {
                         result = Math.max(1, Math.ceil(availableLengthWithoutBar * result));
@@ -565,7 +563,7 @@ namespace VRS
         /**
          * Either an integer number of pixels or a string ending in % for a percentage. Can also be a function that is passed the available length and returns the number of pixels.
          */
-        max?: number | string | IPercentValue | ((availableLength: number) => number);
+        max?: number | string | PercentValue | ((availableLength: number) => number);
 
         /**
          * 1 if the start size applies to the first pane, 2 if it applies to the second pane.
@@ -575,7 +573,7 @@ namespace VRS
         /**
          * An integer pixels, %age of available length or function returning number of pixels when passed the available length.
          */
-        startSize?: number | string | IPercentValue | ((availableLength: number) => number);
+        startSize?: number | string | PercentValue | ((availableLength: number) => number);
 
         /**
          * The persistence object that this splitter will have its bar positions saved through.
@@ -671,8 +669,8 @@ namespace VRS
                 var pane = $(children[i]).vrsSplitterPane(<SplitterPane_Options>{
                     isVertical: options.vertical,
                     minPixels:  options.minPixels[i],
-                    max:        options.maxPane === i + 1 ? <IPercentValue>options.max : undefined,
-                    startSize:  options.startSizePane === i + 1 ? <IPercentValue>options.startSize : undefined
+                    max:        options.maxPane === i + 1 ? <PercentValue>options.max : undefined,
+                    startSize:  options.startSizePane === i + 1 ? <PercentValue>options.startSize : undefined
                 });
                 var splitterPane = VRS.jQueryUIHelper.getSplitterPanePlugin(pane);
                 var detail = new SplitterPaneDetail(splitterPane.getContainer());
@@ -781,11 +779,11 @@ namespace VRS
         /**
          * Converts a string / number / function into either a VRS_VALUE_PERCENT or a function that takes a width and returns a number of pixels.
          */
-        private convertMaxOrStartSize(paneNumber: number, maxOrStartSize: string | number | IPercentValue | ((availableLength: number) => number), description: string) : IPercentValue | ((availableLength: number) => number)
+        private convertMaxOrStartSize(paneNumber: number, maxOrStartSize: string | number | PercentValue | ((availableLength: number) => number), description: string) : PercentValue | ((availableLength: number) => number)
         {
-            var result: IPercentValue | ((availableLength: number) => number) = <any>maxOrStartSize;
+            var result: PercentValue | ((availableLength: number) => number) = <any>maxOrStartSize;
             if(paneNumber) {
-                if(!(maxOrStartSize instanceof Function) && (<IPercentValue>maxOrStartSize).isPercent === undefined) {
+                if(!(maxOrStartSize instanceof Function) && (<PercentValue>maxOrStartSize).isPercent === undefined) {
                     var valuePercent = VRS.unitConverter.getPixelsOrPercent(<string | number>maxOrStartSize);
                     if(valuePercent.isPercent && (valuePercent.value < 0.01 || valuePercent.value > 0.99)) throw description + ' percent must be between 1% and 99% inclusive';
                     result = valuePercent;

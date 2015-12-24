@@ -2,20 +2,83 @@ var VRS;
 (function (VRS) {
     var CultureInfo = (function () {
         function CultureInfo(locale, settings) {
-            this.locale = locale;
-            this.cultureName = settings.forceCultureName || locale;
-            this.language = settings.language;
-            this.flagImage = settings.flagImage || ('images/regions/' + (settings.countryFlag ? settings.countryFlag : settings.language) + '.bmp');
-            this.flagSize = settings.flagSize || { width: 20, height: 16 };
-            this.englishName = settings.englishName;
-            this.nativeName = settings.nativeName || this.englishName;
-            this.topLevel = settings.topLevel !== undefined ? settings.topLevel : false;
-            this.groupLanguage = settings.groupLanguage || settings.language;
+            this._Locale = locale;
+            this._CultureName = settings.forceCultureName || locale;
+            this._Language = settings.language;
+            this._FlagImage = settings.flagImage || ('images/regions/' + (settings.countryFlag ? settings.countryFlag : settings.language) + '.bmp');
+            this._FlagSize = settings.flagSize || { width: 20, height: 16 };
+            this._EnglishName = settings.englishName;
+            this._NativeName = settings.nativeName || this._EnglishName;
+            this._TopLevel = settings.topLevel !== undefined ? settings.topLevel : false;
+            this._GroupLanguage = settings.groupLanguage || settings.language;
         }
+        Object.defineProperty(CultureInfo.prototype, "locale", {
+            get: function () {
+                return this._Locale;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "cultureName", {
+            get: function () {
+                return this._CultureName;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "language", {
+            get: function () {
+                return this._Language;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "flagImage", {
+            get: function () {
+                return this._FlagImage;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "flagSize", {
+            get: function () {
+                return this._FlagSize;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "englishName", {
+            get: function () {
+                return this._EnglishName;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "nativeName", {
+            get: function () {
+                return this._NativeName;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "topLevel", {
+            get: function () {
+                return this._TopLevel;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CultureInfo.prototype, "groupLanguage", {
+            get: function () {
+                return this._GroupLanguage;
+            },
+            enumerable: true,
+            configurable: true
+        });
         CultureInfo.prototype.getFlagImageHtml = function () {
             var result = '';
-            if (this.flagImage && this.flagSize) {
-                result = '<img src="' + this.flagImage + '" width="' + this.flagSize.width + 'px" height="' + this.flagSize.height + 'px" alt="' + this.nativeName + '" />';
+            if (this._FlagImage && this._FlagSize) {
+                result = '<img src="' + this._FlagImage + '" width="' + this._FlagSize.width + 'px" height="' + this._FlagSize.height + 'px" alt="' + this._NativeName + '" />';
             }
             return result;
         };
@@ -24,36 +87,38 @@ var VRS;
     VRS.CultureInfo = CultureInfo;
     var Localise = (function () {
         function Localise() {
-            this._CultureInfos = {};
-            this._LoadedGlobalizations = {};
             this._Dispatcher = new VRS.EventHandler({
                 name: 'VRS.Localise'
             });
             this._Events = {
                 localeChanged: 'localeChanged'
             };
+            this._CultureInfos = {};
+            this._LoadedGlobalizations = {};
             this._Locale = '';
         }
         Localise.prototype.getLocale = function () {
             return this._Locale;
         };
         Localise.prototype.setLocale = function (value, successCallback) {
+            var _this = this;
             if (value === this._Locale) {
-                if (successCallback)
+                if (successCallback) {
                     successCallback();
+                }
             }
             else {
                 this._Locale = value;
                 var cultureInfo = this._CultureInfos[this._Locale];
                 if (cultureInfo) {
-                    var self = this;
                     this.loadLanguage('en', function () {
-                        self.loadLanguage(cultureInfo.language, function () {
-                            self.loadCulture(cultureInfo.cultureName, function () {
+                        _this.loadLanguage(cultureInfo.language, function () {
+                            _this.loadCulture(cultureInfo.cultureName, function () {
                                 Globalize.culture(cultureInfo.cultureName);
-                                self._Dispatcher.raise(self._Events.localeChanged);
-                                if (successCallback)
+                                _this._Dispatcher.raise(_this._Events.localeChanged);
+                                if (successCallback) {
                                     successCallback();
+                                }
                             });
                         });
                     });
@@ -90,32 +155,36 @@ var VRS;
             };
         };
         Localise.prototype.loadLanguage = function (language, successCallback) {
-            var self = this;
+            var _this = this;
             if (language === this._LoadedLanguage) {
-                if (successCallback)
+                if (successCallback) {
                     successCallback();
+                }
             }
             else {
                 var url = 'script/i18n/strings.' + language.toLowerCase() + '.js';
                 VRS.scriptManager.loadScript({ url: url, success: function () {
-                        self._LoadedLanguage = language;
-                        if (successCallback)
+                        _this._LoadedLanguage = language;
+                        if (successCallback) {
                             successCallback();
+                        }
                     } });
             }
         };
         Localise.prototype.loadCulture = function (cultureName, successCallback) {
-            var self = this;
+            var _this = this;
             if (this._LoadedGlobalizations[cultureName]) {
-                if (successCallback)
+                if (successCallback) {
                     successCallback();
+                }
             }
             else {
                 var url = 'script/i18n/globalize/globalize.culture.' + cultureName + '.js';
                 VRS.scriptManager.loadScript({ url: url, success: function () {
-                        self._LoadedGlobalizations[cultureName] = true;
-                        if (successCallback)
+                        _this._LoadedGlobalizations[cultureName] = true;
+                        if (successCallback) {
                             successCallback();
+                        }
                     } });
             }
         };
@@ -126,30 +195,35 @@ var VRS;
             if (!this._CultureInfos[result]) {
                 var hyphenPos = result.indexOf('-');
                 var language = hyphenPos === -1 ? null : result.substr(0, hyphenPos);
-                if (language && this._CultureInfos[language])
+                if (language && this._CultureInfos[language]) {
                     result = language;
-                else
+                }
+                else {
                     result = 'en-GB';
+                }
             }
             return result;
         };
         Localise.prototype.addCultureInfo = function (cultureName, settings) {
-            if (!this._CultureInfos[cultureName])
+            if (!this._CultureInfos[cultureName]) {
                 this._CultureInfos[cultureName] = new VRS.CultureInfo(cultureName, settings);
+            }
         };
         Localise.prototype.getCultureInfo = function (cultureName) {
             return this._CultureInfos[cultureName || this._Locale];
         };
         Localise.prototype.removeCultureInfo = function (cultureName) {
-            if (this._CultureInfos[cultureName])
+            if (this._CultureInfos[cultureName]) {
                 delete this._CultureInfos[cultureName];
+            }
         };
         Localise.prototype.getCultureInfos = function () {
             var result = [];
             for (var locale in this._CultureInfos) {
                 var cultureInfo = this._CultureInfos[locale];
-                if (cultureInfo instanceof VRS.CultureInfo)
+                if (cultureInfo instanceof VRS.CultureInfo) {
                     result.push(cultureInfo);
+                }
             }
             return result;
         };
@@ -176,7 +250,6 @@ var VRS;
             }
             return result;
         };
-        ;
         Localise.prototype.getRawGlobalizeData = function () {
             var result = Globalize.findClosestCulture();
             if (!result)
@@ -184,8 +257,9 @@ var VRS;
             return result;
         };
         Localise.prototype.getText = function (keyOrFormatFunction) {
-            if (keyOrFormatFunction instanceof Function)
+            if (keyOrFormatFunction instanceof Function) {
                 return keyOrFormatFunction();
+            }
             return VRS.$$[keyOrFormatFunction];
         };
         Localise.prototype.localiseDatePicker = function (datePickerJQ) {
