@@ -881,7 +881,7 @@
     <None Include="Site\Web\fonts\icomoon.eot" />
     <None Include="Site\Web\fonts\icomoon.ttf" />
     <None Include="Site\Web\fonts\icomoon.woff" />
-    <None Include="Site\_external\translations.tt">
+    <None Include="Site\typings\translations.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations.d.ts</LastGenOutput>
     </None>
@@ -966,25 +966,25 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\titleUpdater.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\unitDisplayPreferences.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\utility.ts" />
-    <TypeScriptCompile Include="Site\_external\globalise.d.ts" />
-    <TypeScriptCompile Include="Site\_external\google.maps.d.ts" />
-    <TypeScriptCompile Include="Site\_external\google.maps.marker-with-label.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jquery-corrections.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jquery-json.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jquery.colorpicker.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jquery.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jquery.dlmenu.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jquery.ui.datetimepicker.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jqueryui.d.ts" />
-    <TypeScriptCompile Include="Site\_external\jstorage.d.ts" />
-    <TypeScriptCompile Include="Site\_external\purl-jquery.d.ts" />
-    <TypeScriptCompile Include="Site\_external\purl.d.ts" />
-    <TypeScriptCompile Include="Site\_external\translations.d.ts">
+    <TypeScriptCompile Include="Site\typings\globalise.d.ts" />
+    <TypeScriptCompile Include="Site\typings\google.maps.d.ts" />
+    <TypeScriptCompile Include="Site\typings\google.maps.marker-with-label.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jquery-corrections.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jquery-json.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jquery.colorpicker.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jquery.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jquery.dlmenu.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jquery.ui.datetimepicker.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jqueryui.d.ts" />
+    <TypeScriptCompile Include="Site\typings\jstorage.d.ts" />
+    <TypeScriptCompile Include="Site\typings\purl-jquery.d.ts" />
+    <TypeScriptCompile Include="Site\typings\purl.d.ts" />
+    <TypeScriptCompile Include="Site\typings\translations.d.ts">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>translations.tt</DependentUpon>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="Site\_external\typedefs.d.ts" />
+    <TypeScriptCompile Include="Site\typings\typedefs.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
