@@ -548,10 +548,6 @@
     <Content Include="Site\Web\zz-norel-marker-contact-sheet.html" />
     <Content Include="Site\Web\zz-norel-test.html" />
     <Content Include="Site\Web\_WARNING.txt" />
-    <Content Include="Site\_external\_googleMaps.js" />
-    <Content Include="Site\_external\_jQuery-1-9.js" />
-    <Content Include="Site\_external\_jQuery-UI.js" />
-    <Content Include="Site\_external\_typedefs.js" />
     <EmbeddedResource Include="SiteResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SiteResources.Designer.cs</LastGenOutput>
