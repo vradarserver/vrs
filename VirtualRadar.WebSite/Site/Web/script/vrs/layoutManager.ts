@@ -20,14 +20,15 @@ namespace VRS
      */
     export interface Layout_Options
     {
-        name:            string;
-        vertical:        boolean;
-        savePane:        number;
-        collapsePane?:   number;
-        maxPane?:        number;
-        max?:            number|string;
-        startSizePane?:  number;
-        startSize?:      number|string;
+        name:           string;
+        vertical:       boolean;
+        savePane:       number;
+        collapsePane?:  number;
+        maxPane?:       number;
+        max?:           number|string;
+        startSizePane?: number;
+        startSize?:     number|string;
+        fixedPane?:     number;
     }
 
     /**

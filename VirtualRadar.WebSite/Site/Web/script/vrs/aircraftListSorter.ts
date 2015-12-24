@@ -414,7 +414,7 @@ namespace VRS
         private _ShowEmergencySquawksSortSpecial: SortSpecialEnum;  // The special sort order for emergency aircraft.
         private _ShowInterestingSortSpecial: SortSpecialEnum;       // The special sort order for interesting aircraft.
 
-        constructor(name: string)
+        constructor(name?: string)
         {
             this._Name = name || 'default';
             this._SortFields = VRS.globalOptions.aircraftListDefaultSortOrder.slice();

@@ -119,7 +119,7 @@ namespace VRS
         feedId:      number;
         lowAlt:      number;
         highAlt:     number;
-        colour:      string;
+        colour?:     string;
     }
 
     /**

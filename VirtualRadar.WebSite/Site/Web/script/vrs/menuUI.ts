@@ -58,7 +58,7 @@ namespace VRS
         /**
          * The function that is called when the menu item is clicked. Optional if subItems are supplied.
          */
-        clickCallback?: (menuItem: MenuItem) => void;
+        clickCallback?: (menuItem?: MenuItem) => void;
 
         /**
          * An optional method called just before the menu item is used.
@@ -109,7 +109,7 @@ namespace VRS
         /**
          * Gets the optional function that is called when the menu item is clicked.
          */
-        get clickCallback() : (MenuItem) => void
+        get clickCallback() : (menuItem?: MenuItem) => void
         {
             return this._Settings.clickCallback;
         }

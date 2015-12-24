@@ -1240,7 +1240,7 @@ namespace VRS
         /**
          * The initial set of panes.
          */
-        panes?: OptionPane[];
+        panes?: OptionPane[] | OptionPane[][];
     }
 
     /**

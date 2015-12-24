@@ -346,7 +346,7 @@ namespace VRS
         /**
          * Returns a URL to another page in VRS with a parameters object appended as a query string.
          */
-        formVrsPageUrl(url: string, params: string, recursive: boolean) : string
+        formVrsPageUrl(url: string, params?: Object, recursive?: boolean) : string
         {
             // We need to ensure that anything in params comes first so that the caller can control which parameter
             // is first. Internet Explorer has a hard time if some parameters have a & before them (e.g. &reg= gets
