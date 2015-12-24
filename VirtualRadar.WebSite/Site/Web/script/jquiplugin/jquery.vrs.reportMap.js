@@ -42,6 +42,7 @@ var VRS;
             scrollToAircraft: VRS.globalOptions.reportMapScrollToAircraft,
             showPath: VRS.globalOptions.reportMapShowPath,
             startSelected: VRS.globalOptions.reportMapStartSelected,
+            loadedCallback: $.noop
         }, overrides);
     };
     var ReportMapPlugin = (function (_super) {
@@ -143,6 +144,9 @@ var VRS;
                     });
                 }
                 VRS.globalisation.hookLocaleChanged(this._localeChanged, this);
+            }
+            if (options.loadedCallback) {
+                options.loadedCallback();
             }
         };
         ReportMapPlugin.prototype._buildFakeVrsAircraft = function (state) {

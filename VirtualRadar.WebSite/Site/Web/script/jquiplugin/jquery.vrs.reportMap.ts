@@ -78,6 +78,11 @@ namespace VRS
          * True if the start point should be shown in selected colours, false if the end point is shown in selected colours.
          */
         startSelected?: boolean;
+
+        /**
+         * Called once the map has been loaded.
+         */
+        loadedCallback?: () => void;
     }
 
     /**
@@ -153,7 +158,7 @@ namespace VRS
     }
     VRS.jQueryUIHelper.getReportMapOptions = function(overrides?: ReportMapPlugin_Options) : ReportMapPlugin_Options
     {
-        return $.extend({
+        return $.extend(<ReportMapPlugin_Options> {
             name:                       'default',
             report:                     null,
             plotterOptions:             null,
@@ -164,6 +169,7 @@ namespace VRS
             scrollToAircraft:           VRS.globalOptions.reportMapScrollToAircraft,
             showPath:                   VRS.globalOptions.reportMapShowPath,
             startSelected:              VRS.globalOptions.reportMapStartSelected,
+            loadedCallback:             $.noop
         }, overrides);
     }
 
@@ -300,6 +306,10 @@ namespace VRS
                 }
 
                 VRS.globalisation.hookLocaleChanged(this._localeChanged, this);
+            }
+
+            if(options.loadedCallback) {
+                options.loadedCallback();
             }
         }
 
