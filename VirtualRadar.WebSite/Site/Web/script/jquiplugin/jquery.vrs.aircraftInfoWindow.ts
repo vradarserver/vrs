@@ -39,6 +39,67 @@ namespace VRS
     VRS.globalOptions.aircraftInfoWindowEnablePanning = VRS.globalOptions.aircraftInfoWindowEnablePanning !== undefined ? VRS.globalOptions.aircraftInfoWindowEnablePanning : true;                             // True if the map should pan to the info window when it opens.
 
     /**
+     * The options that the AircraftInfoWindowPlugin honours.
+     */
+    export interface AircraftInfoWindowPlugin_Options
+    {
+        /**
+         * The name to use when storing settings.
+         */
+        name?: string;
+
+        /**
+         * The aircraft list that the plugin will listen to.
+         */
+        aircraftList?: AircraftList;
+
+        /**
+         * The object that holds onto the markers for the map we'll be using.
+         */
+        aircraftPlotter?: AircraftPlotter;
+
+        /**
+         * The unit display preferences to use when showing aircraft detail.
+         */
+        unitDisplayPreferences: UnitDisplayPreferences;
+
+        /**
+         * True if the info window is to be shown, false otherwise.
+         */
+        enabled?: boolean;
+
+        /**
+         * True if the info window should override the options with those saved by the user.
+         */
+        useStateOnOpen?: boolean;
+
+        /**
+         * The items to display in the info window.
+         */
+        items?: RenderPropertyEnum[];
+
+        /**
+         * True if units should be shown.
+         */
+        showUnits?: boolean;
+
+        /**
+         * True if uncertain callsigns are to be highlighted.
+         */
+        flagUncertainCallsigns?: boolean;
+
+        /**
+         * True if aircraft on the ground should show an altitude of GND.
+         */
+        distinguishOnGround?: boolean;
+
+        /**
+         * True if the map should pan to the info window when it opens.
+         */
+        enablePanning?: boolean;
+    }
+
+    /**
      * The state held by the AircraftInfoWindowPlugin.
      */
     class AircraftInfoWindowPlugin_State
@@ -131,6 +192,9 @@ namespace VRS
         localeChangedHookResult: IEventHandle = null;
     }
 
+    /**
+     * The settings that an AircraftInfoWindowPlugin can persist between sessions.
+     */
     export interface AircraftInfoWindowPlugin_SaveState
     {
         enabled:   boolean;
@@ -161,67 +225,6 @@ namespace VRS
             distinguishOnGround:    VRS.globalOptions.aircraftInfoWindowDistinguishOnGround,
             enablePanning:          VRS.globalOptions.aircraftInfoWindowEnablePanning
         }, overrides);
-    }
-
-    /**
-     * The options that the AircraftInfoWindowPlugin honours.
-     */
-    export interface AircraftInfoWindowPlugin_Options
-    {
-        /**
-         * The name to use when storing settings.
-         */
-        name?: string;
-
-        /**
-         * The aircraft list that the plugin will listen to.
-         */
-        aircraftList?: AircraftList;
-
-        /**
-         * The object that holds onto the markers for the map we'll be using.
-         */
-        aircraftPlotter?: AircraftPlotter;
-
-        /**
-         * The unit display preferences to use when showing aircraft detail.
-         */
-        unitDisplayPreferences: UnitDisplayPreferences;
-
-        /**
-         * True if the info window is to be shown, false otherwise.
-         */
-        enabled?: boolean;
-
-        /**
-         * True if the info window should override the options with those saved by the user.
-         */
-        useStateOnOpen?: boolean;
-
-        /**
-         * The items to display in the info window.
-         */
-        items: RenderPropertyEnum[];
-
-        /**
-         * True if units should be shown.
-         */
-        showUnits?: boolean;
-
-        /**
-         * True if uncertain callsigns are to be highlighted.
-         */
-        flagUncertainCallsigns?: boolean;
-
-        /**
-         * True if aircraft on the ground should show an altitude of GND.
-         */
-        distinguishOnGround?: boolean;
-
-        /**
-         * True if the map should pan to the info window when it opens.
-         */
-        enablePanning: boolean;
     }
 
     /**

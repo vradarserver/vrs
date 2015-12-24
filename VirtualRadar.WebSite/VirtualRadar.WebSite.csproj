@@ -310,9 +310,24 @@
     <Content Include="Site\Web\script\vrs\airportDataApi.js.map">
       <DependentUpon>airportDataApi.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\bootstrap.js" />
-    <Content Include="Site\Web\script\vrs\bootstrapMapFsx.js" />
-    <Content Include="Site\Web\script\vrs\bootstrapReportMobile.js" />
+    <Content Include="Site\Web\script\vrs\bootstrap.js">
+      <DependentUpon>bootstrap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrap.js.map">
+      <DependentUpon>bootstrap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapMapFsx.js">
+      <DependentUpon>bootstrapMapFsx.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapMapFsx.js.map">
+      <DependentUpon>bootstrapMapFsx.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapReportMobile.js">
+      <DependentUpon>bootstrapReportMobile.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapReportMobile.js.map">
+      <DependentUpon>bootstrapReportMobile.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\polarPlotter.js">
       <DependentUpon>polarPlotter.ts</DependentUpon>
     </Content>
@@ -463,10 +478,30 @@
     <Content Include="Site\Web\script\vrs\audio.js.map">
       <DependentUpon>audio.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\bootstrapReportDesktop.js" />
-    <Content Include="Site\Web\script\vrs\bootstrapMap.js" />
-    <Content Include="Site\Web\script\vrs\bootstrapMapMobile.js" />
-    <Content Include="Site\Web\script\vrs\bootstrapReport.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapReportDesktop.js">
+      <DependentUpon>bootstrapReportDesktop.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapReportDesktop.js.map">
+      <DependentUpon>bootstrapReportDesktop.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapMap.js">
+      <DependentUpon>bootstrapMap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapMap.js.map">
+      <DependentUpon>bootstrapMap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapMapMobile.js">
+      <DependentUpon>bootstrapMapMobile.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapMapMobile.js.map">
+      <DependentUpon>bootstrapMapMobile.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapReport.js">
+      <DependentUpon>bootstrapReport.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapReport.js.map">
+      <DependentUpon>bootstrapReport.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\filter.js">
       <DependentUpon>filter.ts</DependentUpon>
     </Content>
@@ -732,7 +767,12 @@
     <Content Include="Site\Web\script\vrs\aircraftRenderer.js.map">
       <DependentUpon>aircraftRenderer.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\vrs\bootstrapMapDesktop.js" />
+    <Content Include="Site\Web\script\vrs\bootstrapMapDesktop.js">
+      <DependentUpon>bootstrapMapDesktop.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\bootstrapMapDesktop.js.map">
+      <DependentUpon>bootstrapMapDesktop.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\configStorage.js">
       <DependentUpon>configStorage.ts</DependentUpon>
     </Content>
@@ -911,6 +951,14 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftRenderer.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\airportDataApi.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\audio.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrap.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrapMap.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrapMapDesktop.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrapMapFsx.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrapMapMobile.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrapReport.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrapReportDesktop.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\bootstrapReportMobile.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\configStorage.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\currentLocation.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\enums.ts" />

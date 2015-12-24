@@ -66,7 +66,7 @@ namespace VRS
         private _Volume: number = VRS.globalOptions.audioDefaultVolume;
         private _Muted = false;
 
-        constructor(name: string)
+        constructor(name?: string)
         {
             this._Name = name || 'default';
         }
