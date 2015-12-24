@@ -19,7 +19,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.reportDefaultStepSize = VRS.globalOptions.reportDefaultStepSize || 25;            // The default step to show on the page size controls.
     VRS.globalOptions.reportDefaultPageSize = VRS.globalOptions.reportDefaultPageSize || 50;            // The default page size to show. Use -1 if you want to default to showing all rows.
     VRS.globalOptions.reportUrl = VRS.globalOptions.reportUrl || 'ReportRows.json';                     // The URL to fetch when retrieving report rows.

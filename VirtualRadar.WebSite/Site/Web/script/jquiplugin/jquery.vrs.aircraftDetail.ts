@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.detailPanelDefaultShowUnits = VRS.globalOptions.detailPanelDefaultShowUnits !== undefined ? VRS.globalOptions.detailPanelDefaultShowUnits : true;     // True if the aircraft details panel should default to showing distance / speed / height units.
     if(VRS.globalOptions.isMobile) {
         VRS.globalOptions.detailPanelDefaultItems = VRS.globalOptions.detailPanelDefaultItems || [              // The default set of items to display on the detail panel.

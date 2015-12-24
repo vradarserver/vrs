@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.optionsDialogWidth = VRS.globalOptions.optionsDialogWidth !== undefined ? VRS.globalOptions.optionsDialogWidth : 600;         // The initial width of the options dialog
     VRS.globalOptions.optionsDialogHeight = VRS.globalOptions.optionsDialogHeight !== undefined ? VRS.globalOptions.optionsDialogHeight : 'auto';   // The initial height of the options dialog
     VRS.globalOptions.optionsDialogModal = VRS.globalOptions.optionsDialogModal !== undefined ? VRS.globalOptions.optionsDialogModal : true;        // True if the options dialog is modal, false otherwise
@@ -80,7 +80,7 @@ namespace VRS
                 }));
             var optionsFormPlugin = VRS.jQueryUIHelper.getOptionFormPlugin(optionsFormJQ);
 
-            this.element.dialog({
+            this.element.dialog(<JQueryUI.DialogOptions> {
                 title: VRS.$$.Options,
                 width: VRS.globalOptions.optionsDialogWidth,
                 height: VRS.globalOptions.optionsDialogHeight,

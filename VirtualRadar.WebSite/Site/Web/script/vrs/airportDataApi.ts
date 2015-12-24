@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.airportDataApiThumbnailsUrl = VRS.globalOptions.airportDataApiThumbnailsUrl || 'AirportDataThumbnails.json';  // The URL for the airport-data API thumbnails call.
     VRS.globalOptions.airportDataApiTimeout = VRS.globalOptions.airportDataApiTimeout || 10000;                                     // The timeout, in milliseconds, for airport-data API calls.
 

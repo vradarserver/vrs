@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.linkSeparator = VRS.globalOptions.linkSeparator || ' : : ';   // The separator to place between aircraft links.
     VRS.globalOptions.linkClass = VRS.globalOptions.linkClass || 'aircraftLink';    // The class to give aircraft links.
 

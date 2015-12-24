@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftAutoSelectEnabled = VRS.globalOptions.aircraftAutoSelectEnabled !== undefined ? VRS.globalOptions.aircraftAutoSelectEnabled : true;   // True if auto-select is enabled by default.
     VRS.globalOptions.aircraftAutoSelectClosest = VRS.globalOptions.aircraftAutoSelectClosest !== undefined ? VRS.globalOptions.aircraftAutoSelectClosest : true;   // True if the closest matching aircraft should be auto-selected, false if the furthest matching aircraft should be auto-selected.
     VRS.globalOptions.aircraftAutoSelectOffRadarAction = VRS.globalOptions.aircraftAutoSelectOffRadarAction || VRS.OffRadarAction.EnableAutoSelect;                 // What to do when an aircraft goes out of range of the radar.

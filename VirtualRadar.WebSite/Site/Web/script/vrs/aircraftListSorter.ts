@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    VRS.globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftListDefaultSortOrder = VRS.globalOptions.aircraftListDefaultSortOrder || [ // The default set of columns to sort by. The length of this array also determines the number of fields to allow the user to sort by.
         { field: VRS.AircraftListSortableField.TimeTracked, ascending: true },
         { field: VRS.AircraftListSortableField.None,        ascending: true },

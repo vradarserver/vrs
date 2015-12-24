@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftPositionMapClass = VRS.globalOptions.aircraftPositionMapClass || 'aircraftPosnMap';       // The class to use for the aircraft position map widget container.
 
     /**

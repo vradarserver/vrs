@@ -5,7 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var VRS;
 (function (VRS) {
-    VRS.globalOptions = VRS.globalOptions || {};
     var AircraftLinksPlugin_State = (function () {
         function AircraftLinksPlugin_State() {
             this.aircraft = undefined;

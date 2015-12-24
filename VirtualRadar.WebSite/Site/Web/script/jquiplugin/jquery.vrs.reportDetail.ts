@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.reportDetailClass = VRS.globalOptions.reportDetailClass || 'vrsAircraftDetail aircraft';      // The CSS class to attach to the report detail panel.
     VRS.globalOptions.reportDetailColumns = VRS.globalOptions.reportDetailColumns || [                              // The default columns to show in the detail panel.
         VRS.ReportAircraftProperty.Country,

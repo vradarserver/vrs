@@ -15,11 +15,6 @@
 
 namespace VRS
 {
-    /*
-     * Global options
-     */
-    export var globalOptions = VRS.globalOptions || {};
-
     export type LinkSiteEnumOrRenderHandler = LinkSiteEnum | LinkRenderHandler;
 
     /**

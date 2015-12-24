@@ -191,6 +191,8 @@ var VRS;
         GoogleMapUtilities.prototype.toGoogleIcon = function (icon) {
             if (!icon)
                 return null;
+            if (!icon.url)
+                return icon;
             var result = {};
             if (icon.anchor)
                 result.anchor = this.toGooglePoint(icon.anchor);

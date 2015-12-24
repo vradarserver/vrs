@@ -18,7 +18,7 @@ namespace VRS
     /*
      * GlobalOptions that don't have a natural home elsewhere
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftPictureSizeDesktopDetail = VRS.globalOptions.aircraftPictureSizeDesktopDetail || { width: 350 };      // The dimensions for desktop detail pictures.
     VRS.globalOptions.aircraftPictureSizeInfoWindow = VRS.globalOptions.aircraftPictureSizeInfoWindow || { width: 85, height: 40 }; // The dimensions for pictures in the info window.
     VRS.globalOptions.aircraftPictureSizeIPadDetail = VRS.globalOptions.aircraftPictureSizeIPadDetail || { width: 680 };            // The dimensions for iPad detail pictures.

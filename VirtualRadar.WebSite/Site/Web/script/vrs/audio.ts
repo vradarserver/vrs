@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.audioEnabled = VRS.globalOptions.audioEnabled !== undefined ? VRS.globalOptions.audioEnabled : true;                                                      // True if the audio features are enabled (can still be disabled on server). False if they are to be suppressed.
     VRS.globalOptions.audioAnnounceSelected = VRS.globalOptions.audioAnnounceSelected !== undefined ? VRS.globalOptions.audioAnnounceSelected : false;                          // True if details of selected aircraft should be announced.
     VRS.globalOptions.audioAnnounceOnlyAutoSelected = VRS.globalOptions.audioAnnounceOnlyAutoSelected !== undefined ? VRS.globalOptions.audioAnnounceOnlyAutoSelected : false;  // True if only auto-selected aircraft should have their details announced.

@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.mapGoogleMapHttpUrl = VRS.globalOptions.mapGoogleMapHttpUrl || 'http://maps.google.com/maps/api/js';            // The HTTP URL for Google Maps
     VRS.globalOptions.mapGoogleMapHttpsUrl = VRS.globalOptions.mapGoogleMapHttpsUrl || 'https://maps.google.com/maps/api/js';         // The HTTPS URL for Google Maps
     VRS.globalOptions.mapGoogleMapTimeout = VRS.globalOptions.mapGoogleMapTimeout || 30000;                                           // The number of milliseconds to wait before giving up and assuming that the maps aren't going to load.
@@ -276,15 +276,17 @@ namespace VRS
         /**
          * Converts from a VRS map icon to a Google icon.
          */
-        toGoogleIcon(icon: IMapIcon) : google.maps.Icon
+        toGoogleIcon(icon: IMapIcon | string) : google.maps.Icon
         {
             if(!icon) return null;
+            if(!(<IMapIcon>icon).url) return <any>icon;
+
             var result: google.maps.Icon = {};
-            if(icon.anchor)     result.anchor = this.toGooglePoint(icon.anchor);
-            if(icon.origin)     result.origin = this.toGooglePoint(icon.origin);
-            if(icon.scaledSize) result.scaledSize = this.toGoogleSize(icon.scaledSize);
-            if(icon.size)       result.size = this.toGoogleSize(icon.size);
-            if(icon.url)        result.url = icon.url;
+            if((<IMapIcon>icon).anchor)     result.anchor = this.toGooglePoint((<IMapIcon>icon).anchor);
+            if((<IMapIcon>icon).origin)     result.origin = this.toGooglePoint((<IMapIcon>icon).origin);
+            if((<IMapIcon>icon).scaledSize) result.scaledSize = this.toGoogleSize((<IMapIcon>icon).scaledSize);
+            if((<IMapIcon>icon).size)       result.size = this.toGoogleSize((<IMapIcon>icon).size);
+            if((<IMapIcon>icon).url)        result.url = (<IMapIcon>icon).url;
 
             return result;
         }

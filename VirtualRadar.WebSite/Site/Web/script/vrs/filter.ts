@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.filterLabelWidth = VRS.globalOptions.filterLabelWidth !== undefined ? VRS.globalOptions.filterLabelWidth : VRS.LabelWidth.Short;   // The default width for labels in the filter options UI.
 
     /**

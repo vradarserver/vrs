@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.reportMaximumCriteria = VRS.globalOptions.reportMaximumCriteria !== undefined ? VRS.globalOptions.reportMaximumCriteria : 15;                             // The maximum number of criteria that can be passed to a report.
     VRS.globalOptions.reportFindAllPermutationsOfCallsign = VRS.globalOptions.reportFindAllPermutationsOfCallsign !== undefined ? VRS.globalOptions.reportFindAllPermutationsOfCallsign : false;  // True if all permutations of a callsign should be found.
 

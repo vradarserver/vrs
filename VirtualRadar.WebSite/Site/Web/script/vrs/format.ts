@@ -18,7 +18,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftOperatorFlagSize = VRS.globalOptions.aircraftOperatorFlagSize || { width: 85, height: 20 };       // The dimensions of operator flags
     VRS.globalOptions.aircraftSilhouetteSize = VRS.globalOptions.aircraftSilhouetteSize || { width: 85, height: 20 };           // The dimensions of silhouette flags
     VRS.globalOptions.aircraftBearingCompassSize = VRS.globalOptions.aircraftBearingCompassSize || { width: 16, height: 16 };   // The dimensions of the bearing compass image.
@@ -635,7 +635,7 @@ namespace VRS
          * @param {VRS_SIZE=}                       blankSize                   The full dimensions of the blank image to request if the aircraft has no picture.
          * @returns {string}
          */
-        pictureHtml(registration: string, icao: string, picWidth: number, picHeight: number, requestSize: ISize, allowResizeUp?: boolean, linkToOriginal?: boolean, blankSize?: ISize) : string
+        pictureHtml(registration: string, icao: string, picWidth: number, picHeight: number, requestSize: ISizePartial, allowResizeUp?: boolean, linkToOriginal?: boolean, blankSize?: ISize) : string
         {
             var result = '';
 
@@ -671,7 +671,7 @@ namespace VRS
         /**
          * Calculates the size of image to request from the server and the size of image to use in the tag.
          */
-        private calculatedPictureSizes(isHighDpi: boolean, picWidth: number, picHeight: number, requestSize: ISize, blankSize: ISize, allowResizeUp: boolean) : ICalculatedPictureSize
+        private calculatedPictureSizes(isHighDpi: boolean, picWidth: number, picHeight: number, requestSize: ISizePartial, blankSize: ISize, allowResizeUp: boolean) : ICalculatedPictureSize
         {
             var result: ICalculatedPictureSize = {
                 tagSize: blankSize

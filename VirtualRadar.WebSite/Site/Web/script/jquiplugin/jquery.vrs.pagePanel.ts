@@ -22,7 +22,7 @@ namespace VRS
     /*
      * Global options
      */
-    export var globalOptions = VRS.globalOptions || {};
+    export var globalOptions: GlobalOptions = VRS.globalOptions || {};
     VRS.globalOptions.pagePanelClass = VRS.globalOptions.pagePanelClass || 'pagePanel';     // The class to set on page headers.
 
     /**
