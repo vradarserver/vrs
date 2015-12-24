@@ -172,6 +172,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _WebSiteExtender.WebRootSubFolder = "Web";
             _WebSiteExtender.InjectContent = @"<script src=""script-DatabaseEditor/inject.js"" type=""text/javascript"">";
             _WebSiteExtender.InjectMapPages();
+            _WebSiteExtender.InjectReportPages();
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SingleAircraftSearch.json", ProtectedFolder), SingleAircraftSearch);
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SingleAircraftSave.json", ProtectedFolder), SingleAircraftSave);
             _WebSiteExtender.Initialise(parameters);
