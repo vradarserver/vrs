@@ -1755,4 +1755,8 @@
   <data name="SayZulu" xml:space="preserve">
     <value>zulu</value>
   </data>
+  <data name="SayZed" xml:space="preserve">
+    <value>ZED</value>
+    <comment>How text to speech should pronounce the letter 'Z'</comment>
+  </data>
 </root>

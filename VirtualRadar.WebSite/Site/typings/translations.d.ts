@@ -443,6 +443,7 @@ declare namespace VRS
         SayWhiskey:                         string;
         SayXRay:                            string;
         SayYankee:                          string;
+        SayZed:                             string;
         SayZulu:                            string;
         SeaPlane:                           string;
         Select:                             string;

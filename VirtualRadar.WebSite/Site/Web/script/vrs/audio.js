@@ -410,9 +410,9 @@ var VRS;
                 for (var c = 0; c < length; c++) {
                     var ch = text[c];
                     if (ch === '-')
-                        ch = 'hyphen';
+                        ch = VRS.$$.SayHyphen;
                     if (ch === 'Z')
-                        ch = 'ZED';
+                        ch = VRS.$$.SayZed;
                     if (ch !== ' ')
                         result += ch + _this._PausePhrase;
                 }
