@@ -87,21 +87,23 @@ namespace VRS
                 }
 
                 var val = input.spinner('value');
-                if(val !== null) {
-                    var min = field.getMin();
-                    var max = field.getMax();
-                    if(min !== undefined && val < min) val = min;
-                    if(max !== undefined && val > max) val = max;
-
-                    field.setValue(val);
-                    field.saveState();
-
-                    if(state.sliderElement) {
-                        state.sliderElement.slider('value', val);
-                    }
-
-                    options.optionPageParent.raiseFieldChanged();
+                if(!val === null && !field.getAllowNullValue()) {
+                    val = 0;
                 }
+
+                var min = field.getMin();
+                var max = field.getMax();
+                if(min !== undefined && (val || 0) < min) val = min;
+                if(max !== undefined && (val || 0) > max) val = max;
+
+                field.setValue(val);
+                field.saveState();
+
+                if(state.sliderElement) {
+                    state.sliderElement.slider('value', val);
+                }
+
+                options.optionPageParent.raiseFieldChanged();
             };
 
             var spinnerOptions: JQueryUI.SpinnerOptions = {

@@ -564,7 +564,8 @@ namespace VRS
                     min:            handler.minimumValue,
                     max:            handler.maximumValue,
                     decimals:       handler.decimalPlaces,
-                    keepWithNext:   true
+                    keepWithNext:   true,
+                    allowNullValue: true
                 }),
                 new VRS.OptionFieldLabel({
                     name:           'valueSeparator',
@@ -579,7 +580,8 @@ namespace VRS
                     saveState:      saveState,
                     min:            handler.minimumValue,
                     max:            handler.maximumValue,
-                    decimals:       handler.decimalPlaces
+                    decimals:       handler.decimalPlaces,
+                    allowNullValue: true
                 })
             ];
         },

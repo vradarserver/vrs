@@ -616,6 +616,11 @@ namespace VRS
          * The increment to use when paging on the slider control. If undefined then step is used instead.
          */
         sliderStep?: number;
+
+        /**
+         * If true then nulls are not translated into zero before being passed to the setValue method.
+         */
+        allowNullValue?: boolean;
     }
 
     /**
@@ -627,7 +632,8 @@ namespace VRS
 
         constructor(settings: OptionFieldNumeric_Settings)
         {
-            settings = $.extend({
+            settings = $.extend(<OptionFieldNumeric_Settings> {
+                name: null,
                 dispatcherName: 'VRS.OptionFieldNumeric',
                 controlType: VRS.optionControlTypes.numeric,
                 min: undefined,
@@ -635,7 +641,8 @@ namespace VRS
                 decimals: undefined,
                 step: 1,
                 showSlider: false,
-                sliderStep: undefined
+                sliderStep: undefined,
+                allowNullValue: false
             }, settings);
             super(settings);
         }
@@ -668,6 +675,11 @@ namespace VRS
         getSliderStep() : number
         {
             return this._Settings.sliderStep === undefined ? this._Settings.step : this._Settings.sliderStep;
+        }
+
+        getAllowNullValue() : boolean
+        {
+            return this._Settings.allowNullValue;
         }
     }
 
