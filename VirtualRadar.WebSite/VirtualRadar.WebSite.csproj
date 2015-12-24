@@ -151,21 +151,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Site\.idea\encodings.xml" />
-    <Content Include="Site\.idea\jsLibraryMappings.xml" />
-    <Content Include="Site\.idea\misc.xml" />
-    <Content Include="Site\.idea\modules.xml" />
-    <Content Include="Site\.idea\vcs.xml" />
-    <Content Include="Site\.idea\workspace.xml" />
-    <Content Include="Site\.idea\inspectionProfiles\profiles_settings.xml" />
-    <Content Include="Site\.idea\inspectionProfiles\Project_Default.xml" />
-    <Content Include="Site\.idea\libraries\3rd_party.xml" />
-    <Content Include="Site\.idea\scopes\scope_settings.xml" />
     <Content Include="Site\Checksums.txt" />
     <Content Include="Site\Diagnostics\AircraftList.htm" />
     <Content Include="Site\Common.js" />
     <Content Include="Site\Events.js" />
-    <Content Include="Site\.idea\.name" />
     <Content Include="Site\GoogleMap\GoogleMap.htm" />
     <Content Include="Site\GoogleMap\GoogleMap.js" />
     <Content Include="Site\GoogleMap\GoogleMapAircraftCollection.js" />
@@ -893,7 +882,6 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.reportList.js.map">
       <DependentUpon>jquery.vrs.reportList.ts</DependentUpon>
     </Content>
-    <None Include="Site\.idea\Site.iml" />
     <None Include="Site\Web\fonts\icomoon.eot" />
     <None Include="Site\Web\fonts\icomoon.ttf" />
     <None Include="Site\Web\fonts\icomoon.woff" />
@@ -1009,6 +997,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TypeScriptNoEmitOnError>False</TypeScriptNoEmitOnError>
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>

@@ -52,6 +52,15 @@ namespace VRS
     }
 
     /**
+     * Describes a range of altitudes.
+     */
+    export interface AltitudeRange
+    {
+        lowAlt: number;
+        highAlt: number;
+    }
+
+    /**
      * Describes a polar plot slice - a range of altitudes and the entire polygon path of the plot for that range.
      */
     export interface PolarPlot_Slice
@@ -548,7 +557,7 @@ namespace VRS
          * Returns an object that normalises the 'open-ended' low and high altitudes to the undefined value (or to any
          * value that the caller passes across).
          */
-        getNormalisedSliceRange = (slice: PolarPlot_Slice, lowOpenEnd?: number, highOpenEnd?: number) : IAltitudeRange =>
+        getNormalisedSliceRange = (slice: PolarPlot_Slice, lowOpenEnd?: number, highOpenEnd?: number) : AltitudeRange =>
         {
             return !slice ? null : {
                 lowAlt:  slice.lowAlt < -20000000 ? lowOpenEnd : slice.lowAlt,
@@ -559,7 +568,7 @@ namespace VRS
         /**
          * Returns an object that normalises the 'open-ended' low and high altitudes to the values passed across.
          */
-        getNormalisedRange = (lowAltitude?: number, highAltitude?: number, lowOpenEnd?: number, highOpenEnd?: number) : IAltitudeRange =>
+        getNormalisedRange = (lowAltitude?: number, highAltitude?: number, lowOpenEnd?: number, highOpenEnd?: number) : AltitudeRange =>
         {
             if(lowAltitude === undefined || lowAltitude < -20000000) lowAltitude = lowOpenEnd;
             if(highAltitude === undefined || highAltitude > 20000000) highAltitude = highOpenEnd;

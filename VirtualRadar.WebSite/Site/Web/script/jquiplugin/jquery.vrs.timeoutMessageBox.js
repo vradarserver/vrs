@@ -5,16 +5,16 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var VRS;
 (function (VRS) {
-    VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
-    VRS.jQueryUIHelper.getTimeoutMessageBox = function (jQueryElement) {
-        return jQueryElement.data('vrsVrsTimeoutMessageBox');
-    };
     var TimeoutMessageBoxPlugin_State = (function () {
         function TimeoutMessageBoxPlugin_State() {
             this.SiteTimedOutHookResult = null;
         }
         return TimeoutMessageBoxPlugin_State;
     })();
+    VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
+    VRS.jQueryUIHelper.getTimeoutMessageBox = function (jQueryElement) {
+        return jQueryElement.data('vrsVrsTimeoutMessageBox');
+    };
     var TimeoutMessageBoxPlugin = (function (_super) {
         __extends(TimeoutMessageBoxPlugin, _super);
         function TimeoutMessageBoxPlugin() {

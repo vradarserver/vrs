@@ -15,18 +15,15 @@
 
 namespace VRS
 {
+    /**
+     * The options for the TimeoutMessageBoxPlugin
+     */
     export interface TimeoutMessageBoxPlugin_Options extends JQueryUICustomWidget_Options
     {
         /**
          * The aircraft list fetcher that pauses when the site times out.
          */
         aircraftListFetcher: any;
-    }
-
-    export var jQueryUIHelper: JQueryUIHelper = VRS.jQueryUIHelper || {};
-    VRS.jQueryUIHelper.getTimeoutMessageBox = (jQueryElement: JQuery) : TimeoutMessageBoxPlugin =>
-    {
-        return <TimeoutMessageBoxPlugin>jQueryElement.data('vrsVrsTimeoutMessageBox');
     }
 
     /**
@@ -40,6 +37,16 @@ namespace VRS
         SiteTimedOutHookResult: IEventHandle = null;
     }
 
+
+    /*
+     * jQueryUIHelper methods
+     */
+    export var jQueryUIHelper: JQueryUIHelper = VRS.jQueryUIHelper || {};
+    VRS.jQueryUIHelper.getTimeoutMessageBox = (jQueryElement: JQuery) : TimeoutMessageBoxPlugin =>
+    {
+        return <TimeoutMessageBoxPlugin>jQueryElement.data('vrsVrsTimeoutMessageBox');
+    }
+
     /**
      * A plugin that displays a message box after the user has been inactive for a period of time.
      */
@@ -47,7 +54,7 @@ namespace VRS
     {
         options: TimeoutMessageBoxPlugin_Options =
         {
-            aircraftListFetcher:    null
+            aircraftListFetcher: null
         }
 
         _getState() : TimeoutMessageBoxPlugin_State
