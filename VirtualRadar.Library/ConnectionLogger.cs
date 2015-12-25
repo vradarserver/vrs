@@ -157,6 +157,24 @@ namespace VirtualRadar.Library
         }
         #endregion
 
+        #region Utility methods - FormKey
+        /// <summary>
+        /// Forms a key from the IP address and the user name.
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        private static string FormKey(string ipAddress, string userName)
+        {
+            userName = (userName ?? "").Trim().ToUpper();
+
+            return String.Format("{0}{1}{2}",
+                ipAddress,
+                userName == "" ? "-" : "",
+                userName);
+        }
+        #endregion
+
         #region FlushSessionsToDatabase, RemoveOldSessions
         /// <summary>
         /// Writes the sessions in the cache out to the database.
@@ -215,10 +233,12 @@ namespace VirtualRadar.Library
             if(!String.IsNullOrEmpty(args.UserAddress) && args.BytesSent > 0L) {
                 lock(_SyncLock) {
                     try {
+                        var key = FormKey(args.UserAddress, args.UserName);
+
                         LogSession session;
-                        if(!_Sessions.TryGetValue(args.UserAddress, out session)) {
-                            session = LogDatabase.EstablishSession(args.UserAddress);
-                            _Sessions.Add(args.UserAddress, session);
+                        if(!_Sessions.TryGetValue(key, out session)) {
+                            session = LogDatabase.EstablishSession(args.UserAddress, args.UserName);
+                            _Sessions.Add(key, session);
                         }
 
                         ++session.CountRequests;

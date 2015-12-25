@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace VirtualRadar.Database
@@ -397,7 +398,7 @@ namespace VirtualRadar.Database
         }
         #endregion
 
-        #region GetTableColumns
+        #region GetTableColumns, ColumnExists
         /// <summary>
         /// Retrieves the schema for the columns in an SQLite table.
         /// </summary>
@@ -433,6 +434,20 @@ namespace VirtualRadar.Database
             }
 
             return result.ToArray();
+        }
+
+        /// <summary>
+        /// Returns true if the column exists in the table.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="tableName"></param>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public static bool ColumnExists(IDbConnection connection, IDbTransaction transaction, string tableName, string columnName)
+        {
+            var columns = GetTableColumns(connection, transaction, tableName);
+            return columns.Any(r => String.Equals(r.Name, columnName, StringComparison.OrdinalIgnoreCase));
         }
         #endregion
 

@@ -166,6 +166,10 @@ namespace VirtualRadar.Database.Log
                 _Connection.Open();
 
                 _Connection.Execute(Commands.UpdateSchema);
+
+                if(!Sql.ColumnExists(_Connection, null, "Session", "UserName")) {
+                    _Connection.Execute("ALTER TABLE [Session] ADD COLUMN [UserName] TEXT NULL;");
+                }
             }
         }
         #endregion
@@ -231,6 +235,7 @@ namespace VirtualRadar.Database.Log
         {
             session.Id = _Connection.ExecuteScalar<long>(Commands.Session_Insert, new {
                 @clientId           = session.ClientId,
+                @userName           = session.UserName,
                 @startTime          = session.StartTime,
                 @endTime            = session.EndTime,
                 @countRequests      = session.CountRequests,
@@ -246,6 +251,7 @@ namespace VirtualRadar.Database.Log
         {
             _Connection.Execute(Commands.Session_Update, new {
                 @clientId           = session.ClientId,
+                @userName           = session.UserName,
                 @startTime          = session.StartTime,
                 @endTime            = session.EndTime,
                 @countRequests      = session.CountRequests,
@@ -264,8 +270,9 @@ namespace VirtualRadar.Database.Log
         /// See interface docs.
         /// </summary>
         /// <param name="ipAddress"></param>
+        /// <param name="userName"></param>
         /// <returns></returns>
-        public LogSession EstablishSession(string ipAddress)
+        public LogSession EstablishSession(string ipAddress, string userName)
         {
             LogSession result = null;
 
@@ -280,6 +287,7 @@ namespace VirtualRadar.Database.Log
 
                 result = new LogSession() {
                     ClientId = client.Id,
+                    UserName = userName,
                     StartTime = Provider.UtcNow,
                     EndTime = Provider.UtcNow,
                 };

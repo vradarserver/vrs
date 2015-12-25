@@ -33,8 +33,9 @@ namespace VirtualRadar.Interface.Database
         /// Creates a new session record for the IP address passed across.
         /// </summary>
         /// <param name="ipAddress"></param>
+        /// <param name="userName"></param>
         /// <returns></returns>
-        LogSession EstablishSession(string ipAddress);
+        LogSession EstablishSession(string ipAddress, string userName);
 
         /// <summary>
         /// Writes the session record passed across back to the database.

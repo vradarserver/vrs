@@ -1,5 +1,6 @@
 ﻿INSERT INTO [Session] (
     [ClientId]
+   ,[UserName]
    ,[StartTime]
    ,[EndTime]
    ,[CountRequests]
@@ -10,6 +11,7 @@
    ,[AudioBytesSent]
 ) VALUES (
     @clientId
+   ,@userName
    ,@startTime
    ,@endTime
    ,@countRequests
