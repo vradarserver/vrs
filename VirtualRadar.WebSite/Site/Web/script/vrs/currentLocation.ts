@@ -41,7 +41,7 @@ namespace VRS
     /**
      * The settings that records a CurrentLocation object's state.
      */
-    interface CurrentLocation_SaveState
+    export interface CurrentLocation_SaveState
     {
         userSuppliedLocation?:  ILatLng;
         useBrowserLocation?:    boolean;

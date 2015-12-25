@@ -266,27 +266,39 @@ var VRS;
                 }
             });
         };
-        MenuPlugin.prototype.getIsOpen = function (state) {
+        MenuPlugin.prototype.getIsOpen = function () {
+            return this.doGetIsOpen();
+        };
+        MenuPlugin.prototype.doGetIsOpen = function (state) {
             state = state || this._getState();
             return !!state.menuContainer;
         };
-        MenuPlugin.prototype.toggleMenu = function (state) {
+        MenuPlugin.prototype.toggleMenu = function () {
+            this.doToggleMenu();
+        };
+        MenuPlugin.prototype.doToggleMenu = function (state) {
             state = state || this._getState();
-            if (this.getIsOpen(state)) {
-                this.closeMenu(state);
+            if (this.doGetIsOpen(state)) {
+                this.doCloseMenu(state);
             }
             else {
-                this.openMenu(state);
+                this.doOpenMenu(state);
             }
         };
-        MenuPlugin.prototype.openMenu = function (state) {
+        MenuPlugin.prototype.openMenu = function () {
+            this.doOpenMenu();
+        };
+        MenuPlugin.prototype.doOpenMenu = function (state) {
             state = state || this._getState();
             if (!state.menuContainer) {
                 this._createMenu(state);
                 state.menuContainer.dlmenu('openMenu');
             }
         };
-        MenuPlugin.prototype.closeMenu = function (state) {
+        MenuPlugin.prototype.closeMenu = function () {
+            this.doCloseMenu();
+        };
+        MenuPlugin.prototype.doCloseMenu = function (state) {
             state = state || this._getState();
             if (state.menuContainer) {
                 this._destroyMenu(state);

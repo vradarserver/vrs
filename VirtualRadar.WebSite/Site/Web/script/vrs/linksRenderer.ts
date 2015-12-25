@@ -22,8 +22,6 @@ namespace VRS
     VRS.globalOptions.linkSeparator = VRS.globalOptions.linkSeparator || ' : : ';   // The separator to place between aircraft links.
     VRS.globalOptions.linkClass = VRS.globalOptions.linkClass || 'aircraftLink';    // The class to give aircraft links.
 
-    type AircraftFuncReturningString = (aircraft: Aircraft) => string;
-
     /**
      * The settings to pass when creating a new LinkRenderHandler.
      */

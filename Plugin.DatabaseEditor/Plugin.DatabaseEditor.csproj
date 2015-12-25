@@ -133,13 +133,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="Web\DatabaseEditor\index.ts" />
     <TypeScriptCompile Include="Web\DatabaseEditor\utility.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout.mapping\knockout.mapping.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout\knockout.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\purl\purl-jquery.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\purl\purl.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\vrs\string.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\vrs\utility.d.ts" />
+    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout.mapping.d.ts" />
+    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout.d.ts" />
+    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\vrs.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="VirtualRadar.Plugin.DatabaseEditor.xml">
@@ -216,6 +212,10 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Web\script-DatabaseEditor\typings\knockout.mapping\" />
+    <Folder Include="Web\script-DatabaseEditor\typings\knockout\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />

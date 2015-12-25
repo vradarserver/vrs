@@ -57,7 +57,7 @@ namespace VRS
             aircraftListFetcher: null
         }
 
-        _getState() : TimeoutMessageBoxPlugin_State
+        private _getState() : TimeoutMessageBoxPlugin_State
         {
             var result = this.element.data('vrsTimeoutMessageBoxState');
             if(result === undefined) {
