@@ -1,5 +1,6 @@
 ﻿UPDATE [Session]
    SET [ClientId] =         @clientId
+      ,[UserName] =         IFNULL(@userName, [UserName])
       ,[StartTime] =        @startTime
       ,[EndTime] =          @endTime
       ,[CountRequests] =    @countRequests

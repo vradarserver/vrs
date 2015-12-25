@@ -93,14 +93,14 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_EstablishSession_Creates_Database_File_If_It_Does_Not_Exist()
         {
             Assert.IsFalse(File.Exists(_FullPath));
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
             Assert.IsTrue(File.Exists(_FullPath));
         }
 
         [TestMethod]
         public void LogDatabase_EstablishSession_Writes_Client_Record()
         {
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -134,8 +134,8 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_EstablishSession_Writes_Different_Client_Records_For_Different_IP_Addresses()
         {
-            _LogDatabase.EstablishSession("88.77.66.55");
-            _LogDatabase.EstablishSession("55.66.77.88");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
+            _LogDatabase.EstablishSession("55.66.77.88", null);
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -153,8 +153,8 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_EstablishSession_Does_Not_Write_Multiple_Client_Records_For_The_Same_Session()
         {
-            _LogDatabase.EstablishSession("88.77.66.55");
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
+            _LogDatabase.EstablishSession("88.77.66.55", null);
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -170,7 +170,7 @@ namespace Test.VirtualRadar.Database
             var now = new DateTime(2011, 7, 6, 5, 4, 3);
             _Provider.Setup(m => m.UtcNow).Returns(now);
 
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", "user");
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -183,6 +183,7 @@ namespace Test.VirtualRadar.Database
 
             Assert.AreNotEqual(0, session.Id);
             Assert.AreEqual(client.Id, session.Id);
+            Assert.AreEqual("user", session.UserName);
             Assert.AreEqual(0L, session.AudioBytesSent);
             Assert.AreEqual(0L, session.CountRequests);
             Assert.AreEqual(new TimeSpan(0), session.Duration);
@@ -214,8 +215,8 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_EstablishSession_Writes_Multiple_Sessions_For_Same_IP_Address()
         {
-            _LogDatabase.EstablishSession("88.77.66.55");
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
+            _LogDatabase.EstablishSession("88.77.66.55", null);
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -236,7 +237,7 @@ namespace Test.VirtualRadar.Database
             var now = new DateTime(2011, 7, 6, 5, 4, 3);
             _Provider.Setup(m => m.UtcNow).Returns(now);
 
-            var session = _LogDatabase.EstablishSession("88.77.66.55");
+            var session = _LogDatabase.EstablishSession("88.77.66.55", "user");
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -260,6 +261,7 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(fetchedSession.JsonBytesSent, session.JsonBytesSent);
             Assert.AreEqual(fetchedSession.OtherBytesSent, session.OtherBytesSent);
             Assert.AreEqual(fetchedSession.StartTime, session.StartTime);
+            Assert.AreEqual(fetchedSession.UserName, session.UserName);
         }
         #endregion
 
@@ -268,7 +270,7 @@ namespace Test.VirtualRadar.Database
         [ExpectedException(typeof(ArgumentNullException))]
         public void LogDatabase_UpdateSession_Throws_If_Passed_Null()
         {
-            var session = _LogDatabase.EstablishSession("7.6.5.4");
+            var session = _LogDatabase.EstablishSession("7.6.5.4", null);
             _LogDatabase.UpdateSession(null);
         }
 
@@ -278,7 +280,7 @@ namespace Test.VirtualRadar.Database
         {
             LogSession session;
             using(var otherConnection = Factory.Singleton.Resolve<ILogDatabase>()) {
-                session = otherConnection.EstablishSession("1.2.3.4");
+                session = otherConnection.EstablishSession("1.2.3.4", null);
             }
 
             _LogDatabase.UpdateSession(session);
@@ -292,12 +294,13 @@ namespace Test.VirtualRadar.Database
             DateTime nowPlusOne = now.AddSeconds(1);
             _Provider.Setup(m => m.UtcNow).Returns(then);
 
-            var session = _LogDatabase.EstablishSession("7.6.5.4");
+            var session = _LogDatabase.EstablishSession("7.6.5.4", null);
             var originalClientId = session.ClientId;
-            var otherClientId = _LogDatabase.EstablishSession("8.8.4.4").ClientId;
+            var otherClientId = _LogDatabase.EstablishSession("8.8.4.4", null).ClientId;
 
             session.AudioBytesSent = 1L;
             session.ClientId = otherClientId;
+            session.UserName = "user";
             session.CountRequests = 2L;
             session.EndTime = nowPlusOne;
             session.HtmlBytesSent = 3L;
@@ -332,6 +335,39 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(5L, updatedSession.JsonBytesSent);
             Assert.AreEqual(6L, updatedSession.OtherBytesSent);
             Assert.AreEqual(now, updatedSession.StartTime);
+            Assert.AreEqual("user", updatedSession.UserName);
+        }
+
+        [TestMethod]
+        public void LogDatabase_UpdateSession_Does_Not_Overwrite_Existing_UserName_With_Null()
+        {
+            var session = _LogDatabase.EstablishSession("1.2.3.4", "user");
+            session.UserName = null;
+
+            _LogDatabase.UpdateSession(session);
+
+            var clients = new List<LogClient>();
+            var sessionMap = new Dictionary<long, IList<LogSession>>();
+            _LogDatabase.FetchAll(clients, sessionMap);
+            var loadedSession = sessionMap[clients[0].Id][0];
+
+            Assert.AreEqual("user", loadedSession.UserName);
+        }
+
+        [TestMethod]
+        public void LogDatabase_UpdateSession_Will_Overwrite_Existing_UserName_With_NonNull()
+        {
+            var session = _LogDatabase.EstablishSession("1.2.3.4", "user");
+            session.UserName = "newUser";
+
+            _LogDatabase.UpdateSession(session);
+
+            var clients = new List<LogClient>();
+            var sessionMap = new Dictionary<long, IList<LogSession>>();
+            _LogDatabase.FetchAll(clients, sessionMap);
+            var loadedSession = sessionMap[clients[0].Id][0];
+
+            Assert.AreEqual("newUser", loadedSession.UserName);
         }
 
         [TestMethod]
@@ -357,7 +393,7 @@ namespace Test.VirtualRadar.Database
         [ExpectedException(typeof(ArgumentNullException))]
         public void LogDatabase_UpdateClient_Throws_If_Client_Is_Null()
         {
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
             _LogDatabase.UpdateClient(null);
         }
 
@@ -367,7 +403,7 @@ namespace Test.VirtualRadar.Database
         {
             LogClient client;
             using(var otherConnection = Factory.Singleton.Resolve<ILogDatabase>()) {
-                otherConnection.EstablishSession("1.2.3.4");
+                otherConnection.EstablishSession("1.2.3.4", null);
                 var clients = new List<LogClient>();
                 var sessionMap = new Dictionary<long, IList<LogSession>>();
                 otherConnection.FetchAll(clients, sessionMap);
@@ -380,7 +416,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_UpdateClient_Updates_Existing_Client_Records()
         {
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
 
             var clients = new List<LogClient>();
             var sessionMap = new Dictionary<long, IList<LogSession>>();
@@ -458,8 +494,8 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_FetchAll_Can_Return_List_Of_Every_Client()
         {
-            _LogDatabase.EstablishSession("1.2.3.4");
-            _LogDatabase.EstablishSession("1.0.0.1");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
+            _LogDatabase.EstablishSession("1.0.0.1", null);
 
             var clients = new List<LogClient>();
             _LogDatabase.FetchAll(clients, null);
@@ -472,7 +508,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_FetchAll_Clears_Collections_Before_Use()
         {
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
 
             var clients = new List<LogClient>();
             var sessionMap = new Dictionary<long, IList<LogSession>>();
@@ -490,13 +526,13 @@ namespace Test.VirtualRadar.Database
             var now = new DateTime(2007, 6, 5, 4, 3, 2);
 
             _Provider.Setup(m => m.UtcNow).Returns(now);
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
 
             _Provider.Setup(m => m.UtcNow).Returns(now.AddSeconds(1));
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
 
             _Provider.Setup(m => m.UtcNow).Returns(now.AddSeconds(2));
-            _LogDatabase.EstablishSession("8.7.6.5");
+            _LogDatabase.EstablishSession("8.7.6.5", null);
 
             var clients = new List<LogClient>();
             var sessionMap = new Dictionary<long, IList<LogSession>>();
@@ -542,7 +578,7 @@ namespace Test.VirtualRadar.Database
             DateTime now = new DateTime(2001, 2, 3, 4, 5, 6);
             _Provider.Setup(m => m.UtcNow).Returns(now);
 
-            _LogDatabase.EstablishSession("4.5.6.7");
+            _LogDatabase.EstablishSession("4.5.6.7", null);
 
             var sessions = new List<LogSession>();
             _LogDatabase.FetchSessions(null, sessions, now.ToLocalTime(), now.ToLocalTime());
@@ -557,13 +593,13 @@ namespace Test.VirtualRadar.Database
             var now = new DateTime(2007, 6, 5, 4, 3, 2);
 
             _Provider.Setup(m => m.UtcNow).Returns(now);
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
 
             _Provider.Setup(m => m.UtcNow).Returns(now.AddSeconds(1));
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
 
             _Provider.Setup(m => m.UtcNow).Returns(now.AddSeconds(2));
-            _LogDatabase.EstablishSession("8.7.6.5");
+            _LogDatabase.EstablishSession("8.7.6.5", null);
 
             var clients = new List<LogClient>();
             var sessions = new List<LogSession>();
@@ -597,7 +633,7 @@ namespace Test.VirtualRadar.Database
 
             _Provider.Setup(m => m.UtcNow).Returns(dateTime);
 
-            _LogDatabase.EstablishSession("1.2.3.4");
+            _LogDatabase.EstablishSession("1.2.3.4", null);
 
             var sessions = new List<LogSession>();
 
@@ -618,15 +654,15 @@ namespace Test.VirtualRadar.Database
             var after = end.AddSeconds(1);
 
             _Provider.Setup(m => m.UtcNow).Returns(before);
-            _LogDatabase.EstablishSession("1.1.1.1");
+            _LogDatabase.EstablishSession("1.1.1.1", null);
             _Provider.Setup(m => m.UtcNow).Returns(start);
-            _LogDatabase.EstablishSession("2.2.2.2");
+            _LogDatabase.EstablishSession("2.2.2.2", null);
             _Provider.Setup(m => m.UtcNow).Returns(between);
-            _LogDatabase.EstablishSession("3.3.3.3");
+            _LogDatabase.EstablishSession("3.3.3.3", null);
             _Provider.Setup(m => m.UtcNow).Returns(end);
-            _LogDatabase.EstablishSession("4.4.4.4");
+            _LogDatabase.EstablishSession("4.4.4.4", null);
             _Provider.Setup(m => m.UtcNow).Returns(after);
-            _LogDatabase.EstablishSession("5.5.5.5");
+            _LogDatabase.EstablishSession("5.5.5.5", null);
 
             var sessions = new List<LogSession>();
             _LogDatabase.FetchSessions(null, sessions, start.ToLocalTime(), end.ToLocalTime());
@@ -640,10 +676,10 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_FetchSessions_Compares_Start_And_End_Times()
         {
-            var session1 = _LogDatabase.EstablishSession("1.1.1.1");
-            var session2 = _LogDatabase.EstablishSession("1.1.1.1");
-            var session3 = _LogDatabase.EstablishSession("1.1.1.1");
-            var session4 = _LogDatabase.EstablishSession("1.1.1.1");
+            var session1 = _LogDatabase.EstablishSession("1.1.1.1", null);
+            var session2 = _LogDatabase.EstablishSession("1.1.1.1", null);
+            var session3 = _LogDatabase.EstablishSession("1.1.1.1", null);
+            var session4 = _LogDatabase.EstablishSession("1.1.1.1", null);
 
             var time1 = new DateTime(2001, 1, 1, 0, 0, 0);
             var time2 = time1.AddSeconds(1);
@@ -676,7 +712,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_Transactions_Can_Commit_Operations_To_Database()
         {
             _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
             _LogDatabase.EndTransaction();
 
             var clients = new List<LogClient>();
@@ -694,7 +730,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_Transactions_Can_Rollback_Inserts()
         {
             _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
             _LogDatabase.RollbackTransaction();
 
             var clients = new List<LogClient>();
@@ -709,7 +745,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_Transactions_Can_Be_Nested()
         {
             _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
 
             _LogDatabase.StartTransaction();
             var clients = new List<LogClient>();
@@ -730,7 +766,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_Transactions_Can_Rollback_Outer_Level_When_Inner_Level_Rollsback()
         {
             _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55");
+            _LogDatabase.EstablishSession("88.77.66.55", null);
 
             _LogDatabase.StartTransaction();
             var clients = new List<LogClient>();

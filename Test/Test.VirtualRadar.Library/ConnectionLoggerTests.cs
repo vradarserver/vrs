@@ -83,14 +83,15 @@ namespace Test.VirtualRadar.Library
         /// Raises an event on the web webServer to simulate a response to a request being sent at a given time.
         /// </summary>
         /// <param name="userAddress"></param>
+        /// <param name="userName"></param>
         /// <param name="bytesSent"></param>
         /// <param name="contentClassification"></param>
         /// <param name="timeSent"></param>
         /// <returns></returns>
-        private DateTime RaiseResponseEvent(string userAddress, long bytesSent, ContentClassification contentClassification, DateTime timeSent)
+        private DateTime RaiseResponseEvent(string userAddress, string userName, long bytesSent, ContentClassification contentClassification, DateTime timeSent)
         {
             SetUtcNow(timeSent);
-            _WebServer.Raise(s => s.ResponseSent += null, new ResponseSentEventArgs(null, null, userAddress, bytesSent, contentClassification, null, 0, 0, null));
+            _WebServer.Raise(s => s.ResponseSent += null, new ResponseSentEventArgs(null, null, userAddress, bytesSent, contentClassification, null, 0, 0, userName));
             return timeSent;
         }
 
@@ -148,15 +149,15 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void ConnectionLogger_Start_Creates_New_Session_Information_If_IP_Address_Never_Seen_Before()
+        public void ConnectionLogger_Start_Creates_New_Session_Information_If_IP_Address_And_Name_Never_Seen_Before()
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
 
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
-            RaiseResponseEvent("1.2.3.4", 7L, ContentClassification.Audio, now);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
+            RaiseResponseEvent("1.2.3.4", null, 7L, ContentClassification.Audio, now);
 
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Once());
             Assert.AreEqual(1, _LogSession.Object.CountRequests);
             Assert.AreEqual(now, _LogSession.Object.EndTime);
             Assert.AreEqual(7L, _LogSession.Object.AudioBytesSent);
@@ -168,10 +169,10 @@ namespace Test.VirtualRadar.Library
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
 
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
-            RaiseResponseEvent("1.2.3.4", 0L, ContentClassification.Other, now);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
+            RaiseResponseEvent("1.2.3.4", null, 0L, ContentClassification.Other, now);
 
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Never());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Never());
             Assert.AreEqual(0, _LogSession.Object.CountRequests);
         }
 
@@ -181,9 +182,9 @@ namespace Test.VirtualRadar.Library
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
 
-            RaiseResponseEvent(null, 7L, ContentClassification.Audio, now);
+            RaiseResponseEvent(null, null, 7L, ContentClassification.Audio, now);
 
-            _LogDatabase.Verify(d => d.EstablishSession(It.IsAny<string>()), Times.Never());
+            _LogDatabase.Verify(d => d.EstablishSession(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         }
 
         [TestMethod]
@@ -192,43 +193,51 @@ namespace Test.VirtualRadar.Library
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
 
-            RaiseResponseEvent("", 7L, ContentClassification.Audio, now);
+            RaiseResponseEvent("", null, 7L, ContentClassification.Audio, now);
 
-            _LogDatabase.Verify(d => d.EstablishSession(It.IsAny<string>()), Times.Never());
+            _LogDatabase.Verify(d => d.EstablishSession(It.IsAny<string>(), null), Times.Never());
         }
 
         [TestMethod]
-        public void ConnectionLogger_Start_Updates_Session_Information_If_IPAddress_Seen_Before()
+        public void ConnectionLogger_Start_Updates_Session_Information_If_IPAddress_And_Name_Seen_Before()
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
 
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
-            RaiseResponseEvent("1.2.3.4", 7L, ContentClassification.Audio, now);
-            now = RaiseResponseEvent("1.2.3.4", 4L, ContentClassification.Audio, now.AddSeconds(1));
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
+            RaiseResponseEvent("1.2.3.4", null, 7L, ContentClassification.Audio, now);
+            now = RaiseResponseEvent("1.2.3.4", null, 4L, ContentClassification.Audio, now.AddSeconds(1));
 
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Once());
             Assert.AreEqual(2, _LogSession.Object.CountRequests);
             Assert.AreEqual(now, _LogSession.Object.EndTime);
             Assert.AreEqual(11L, _LogSession.Object.AudioBytesSent);
         }
 
         [TestMethod]
-        public void ConnectionLogger_Start_Establishes_New_Session_For_Each_IPAddress()
+        public void ConnectionLogger_Start_Establishes_New_Session_For_Each_IPAddress_And_Name()
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
 
-            var session1 = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            var session2 = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(session1.Object);
-            _LogDatabase.Setup(d => d.EstablishSession("9.8.7.6")).Returns(session2.Object);
+            var session1  = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            var session1a = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            var session2  = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            var session2a = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(session1.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", "user")).Returns(session1a.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("9.8.7.6", null)).Returns(session2.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("9.8.7.6", "user")).Returns(session2a.Object);
 
-            RaiseResponseEvent("1.2.3.4", 7L, ContentClassification.Audio, now);
-            RaiseResponseEvent("9.8.7.6", 4L, ContentClassification.Audio, now);
+            RaiseResponseEvent("1.2.3.4", null, 7L, ContentClassification.Audio, now);
+            RaiseResponseEvent("1.2.3.4", "user", 7L, ContentClassification.Audio, now);
+            RaiseResponseEvent("9.8.7.6", null, 4L, ContentClassification.Audio, now);
+            RaiseResponseEvent("9.8.7.6", "user", 4L, ContentClassification.Audio, now);
 
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Once());
-            _LogDatabase.Verify(d => d.EstablishSession("9.8.7.6"), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("9.8.7.6", null), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", "user"), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("9.8.7.6", "user"), Times.Once());
         }
 
         [TestMethod]
@@ -241,8 +250,8 @@ namespace Test.VirtualRadar.Library
                 var now = SetUtcNow(DateTime.Now);
                 _ConnectionLogger.Start();
 
-                _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
-                RaiseResponseEvent("1.2.3.4", 100L, contentClassification, now);
+                _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
+                RaiseResponseEvent("1.2.3.4", null, 100L, contentClassification, now);
 
                 switch(contentClassification) {
                     case ContentClassification.Audio:
@@ -269,9 +278,9 @@ namespace Test.VirtualRadar.Library
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
 
-            RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now);
+            RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
 
             _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
@@ -284,7 +293,7 @@ namespace Test.VirtualRadar.Library
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
             _LogDatabase.Setup(d => d.UpdateSession(It.IsAny<LogSession>())).Callback(() => {
                 _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
             });
@@ -292,7 +301,7 @@ namespace Test.VirtualRadar.Library
                 _LogDatabase.Verify(d => d.UpdateSession(It.IsAny<LogSession>()), Times.Once());
             });
 
-            RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now);
+            RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
 
             _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
@@ -306,10 +315,10 @@ namespace Test.VirtualRadar.Library
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
             _LogDatabase.Setup(d => d.UpdateSession(It.IsAny<LogSession>())).Callback(() => { throw new InvalidOperationException(); });
 
-            RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now);
+            RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
 
             _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
@@ -326,11 +335,11 @@ namespace Test.VirtualRadar.Library
 
             var session1 = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             var session2 = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(session1.Object);
-            _LogDatabase.Setup(d => d.EstablishSession("9.8.7.6")).Returns(session2.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(session1.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("9.8.7.6", null)).Returns(session2.Object);
 
-            RaiseResponseEvent("1.2.3.4", 7L, ContentClassification.Audio, now);
-            RaiseResponseEvent("9.8.7.6", 4L, ContentClassification.Audio, now);
+            RaiseResponseEvent("1.2.3.4", null, 7L, ContentClassification.Audio, now);
+            RaiseResponseEvent("9.8.7.6", null, 4L, ContentClassification.Audio, now);
 
             now = RaiseHeartbeatEvent(now.AddMinutes(MinimumCacheMinutes));
 
@@ -358,11 +367,11 @@ namespace Test.VirtualRadar.Library
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
 
-            RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now);
+            RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
-            now = RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
+            now = RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
             RaiseHeartbeatEvent(now);
 
             _LogDatabase.Verify(d => d.StartTransaction(), Times.Exactly(2));
@@ -375,11 +384,11 @@ namespace Test.VirtualRadar.Library
         {
             var now = SetUtcNow(DateTime.Now);
             _ConnectionLogger.Start();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
 
-            RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now);
+            RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
-            now = RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes).AddSeconds(-1));
+            now = RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes).AddSeconds(-1));
             RaiseHeartbeatEvent(now);
 
             _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
@@ -396,43 +405,43 @@ namespace Test.VirtualRadar.Library
             int callCount = 0;
             var session1 = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             var session2 = new Mock<LogSession>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(() => {
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(() => {
                 return callCount++ == 0 ? session1.Object : session2.Object;
             });
-            _LogDatabase.Setup(d => d.EstablishSession("9.8.7.6")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("9.8.7.6", null)).Returns(_LogSession.Object);
 
             // 1st response to 1.2.3.4
-            RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now);
+            RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(session1.Object), Times.Once());
 
             // next response just 1 second before timeout
-            now = RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now.AddMinutes(SessionDurationMinutes).AddSeconds(-1));
+            now = RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now.AddMinutes(SessionDurationMinutes).AddSeconds(-1));
             RaiseHeartbeatEvent(now);
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(session1.Object), Times.Exactly(2));
 
             // this response is for a different IP address - if the previous request had not reset the timeout then the session for 1.2.3.4
             // would be removed from the cache here...
-            now = RaiseResponseEvent("9.8.7.6", 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
+            now = RaiseResponseEvent("9.8.7.6", null, 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
             RaiseHeartbeatEvent(now);
 
             // which means that the next response for it would establish a new session, which would be wrong
-            now = RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
+            now = RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
             RaiseHeartbeatEvent(now);
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Once());
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Once());
 
             // next response is for a different IP address and this time the timeout will have expired so it should be removed from the cache,
             // but not before the last version of it is written to the database
-            now = RaiseResponseEvent("9.8.7.6", 100L, ContentClassification.Html, now.AddMinutes(SessionDurationMinutes));
+            now = RaiseResponseEvent("9.8.7.6", null, 100L, ContentClassification.Html, now.AddMinutes(SessionDurationMinutes));
             RaiseHeartbeatEvent(now);
             _LogDatabase.Verify(d => d.UpdateSession(session1.Object), Times.Exactly(5));
 
             // which means this reponse for 1.2.3.4 will establish a new session
-            now = RaiseResponseEvent("1.2.3.4", 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
+            now = RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
             RaiseHeartbeatEvent(now);
-            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4"), Times.Exactly(2));
+            _LogDatabase.Verify(d => d.EstablishSession("1.2.3.4", null), Times.Exactly(2));
             _LogDatabase.Verify(d => d.UpdateSession(session2.Object), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(session1.Object), Times.Exactly(5));
         }
@@ -446,9 +455,9 @@ namespace Test.VirtualRadar.Library
             _ConnectionLogger.Start();
             _ConnectionLogger.ExceptionCaught += _ExceptionCaughtEvent.Handler;
             var exception = new InvalidOperationException();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Callback(() => { throw exception; });
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Callback(() => { throw exception; });
 
-            RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, DateTime.Now);
+            RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, DateTime.Now);
 
             Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
         }
@@ -459,10 +468,10 @@ namespace Test.VirtualRadar.Library
             _ConnectionLogger.Start();
             _ConnectionLogger.ExceptionCaught += _ExceptionCaughtEvent.Handler;
             var exception = new InvalidOperationException();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Callback(() => { throw exception; });
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Callback(() => { throw exception; });
 
-            var now = RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, DateTime.Now); // <-- should raise exception
-            RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, now.AddSeconds(GapBetweenExceptionsSeconds - 1));  // <-- should not raise exception
+            var now = RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, DateTime.Now); // <-- should raise exception
+            RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, now.AddSeconds(GapBetweenExceptionsSeconds - 1));  // <-- should not raise exception
 
             Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
         }
@@ -473,10 +482,10 @@ namespace Test.VirtualRadar.Library
             _ConnectionLogger.Start();
             _ConnectionLogger.ExceptionCaught += _ExceptionCaughtEvent.Handler;
             var exception = new InvalidOperationException();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Callback(() => { throw exception; });
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Callback(() => { throw exception; });
 
-            var now = RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, DateTime.Now); // <-- should raise exception
-            RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, now.AddSeconds(GapBetweenExceptionsSeconds));  // <-- should raise exception
+            var now = RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, DateTime.Now); // <-- should raise exception
+            RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, now.AddSeconds(GapBetweenExceptionsSeconds));  // <-- should raise exception
 
             Assert.AreEqual(2, _ExceptionCaughtEvent.CallCount);
         }
@@ -487,10 +496,10 @@ namespace Test.VirtualRadar.Library
             _ConnectionLogger.Start();
             _ConnectionLogger.ExceptionCaught += _ExceptionCaughtEvent.Handler;
             var exception = new InvalidOperationException();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
             _LogDatabase.Setup(d => d.UpdateSession(_LogSession.Object)).Callback(() => { throw exception; });
 
-            RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, DateTime.Now);
+            RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, DateTime.Now);
             RaiseHeartbeatEvent(DateTime.Now);
 
             Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
@@ -504,12 +513,12 @@ namespace Test.VirtualRadar.Library
             _ConnectionLogger.Start();
             _ConnectionLogger.ExceptionCaught += _ExceptionCaughtEvent.Handler;
             var exception = new InvalidOperationException();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
             _LogDatabase.Setup(d => d.UpdateSession(_LogSession.Object)).Callback(() => { throw exception; });
 
-            var now = RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, DateTime.Now);
+            var now = RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, DateTime.Now);
             RaiseHeartbeatEvent(now);   // <-- should raise exception
-            now = RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, now.AddSeconds(GapBetweenExceptionsSeconds - 1));
+            now = RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, now.AddSeconds(GapBetweenExceptionsSeconds - 1));
             RaiseHeartbeatEvent(now);   // <-- should not raise exception, would be spamming the UI with message boxes
 
             Assert.AreEqual(1, _ExceptionCaughtEvent.CallCount);
@@ -520,10 +529,10 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void ConnectionLogger_Dispose_Flushes_Sessions_Out_To_Database()
         {
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
             _ConnectionLogger.Start();
 
-            RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, DateTime.Now);
+            RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, DateTime.Now);
 
             _ConnectionLogger.Dispose();
             _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
@@ -535,12 +544,12 @@ namespace Test.VirtualRadar.Library
         public void ConnectionLogger_Dispose_Flushes_Sessions_Even_If_Dispose_Occurs_Before_Minimum_Cache_Timer_Has_Elapsed()
         {
             var now = SetUtcNow(DateTime.Now);
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4")).Returns(_LogSession.Object);
+            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
             _ConnectionLogger.Start();
 
-            RaiseResponseEvent("1.2.3.4", 1, ContentClassification.Html, now);
+            RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
-            RaiseResponseEvent("1.2.3.4", 2, ContentClassification.Html, now.AddSeconds(1));
+            RaiseResponseEvent("1.2.3.4", null, 2, ContentClassification.Html, now.AddSeconds(1));
 
             _ConnectionLogger.Dispose();
             _LogDatabase.Verify(d => d.StartTransaction(), Times.Exactly(2));

@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS [Session]
 (
     [Id]                INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
    ,[ClientId]          INTEGER NOT NULL
+   ,[UserName]          TEXT NULL
    ,[StartTime]         DATETIME
    ,[EndTime]           DATETIME
    ,[CountRequests]     INTEGER

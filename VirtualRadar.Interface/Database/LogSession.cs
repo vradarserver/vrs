@@ -31,6 +31,11 @@ namespace VirtualRadar.Interface.Database
         public long ClientId { get; set; }
 
         /// <summary>
+        /// Gets or sets the first non-null user name used in the session. Will be null if the user never logged in.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Gets or sets the time that the session was first established.
         /// </summary>
         public DateTime StartTime { get; set; }
