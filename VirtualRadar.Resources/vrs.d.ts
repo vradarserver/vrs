@@ -2477,6 +2477,7 @@ declare namespace VRS {
         Latitude: string;
         Longitude: string;
         Manufacturer: string;
+        Mlat: string;
         Model: string;
         ModelIcao: string;
         Operator: string;

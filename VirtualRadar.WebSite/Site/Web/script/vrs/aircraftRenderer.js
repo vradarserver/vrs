@@ -427,6 +427,7 @@ var VRS;
         surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,
         headingKey: 'ListMlat',
         labelKey: 'Mlat',
+        sortableField: VRS.AircraftListSortableField.Mlat,
         hasChangedCallback: function (aircraft) { return aircraft.isMlat.chg; },
         contentCallback: function (aircraft) { return aircraft.formatIsMlat(); }
     });

@@ -73,6 +73,7 @@ namespace VRS
         Latitude:           'lat',
         Longitude:          'lng',
         Manufacturer:       'man',
+        Mlat:               'mlt',
         Model:              'mod',
         ModelIcao:          'typ',
         Operator:           'opr',
