@@ -27,14 +27,25 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.buttonClose = new System.Windows.Forms.Button();
             this.splitContainerClientSessions = new System.Windows.Forms.SplitContainer();
             this.connectionClientListControl = new VirtualRadar.WinForms.Controls.ConnectionClientListControl();
             this.connectionSessionListControl = new VirtualRadar.WinForms.Controls.ConnectionSessionListControl();
-            this.buttonClose = new System.Windows.Forms.Button();
             this.splitContainerClientSessions.Panel1.SuspendLayout();
             this.splitContainerClientSessions.Panel2.SuspendLayout();
             this.splitContainerClientSessions.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // buttonClose
+            // 
+            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonClose.Location = new System.Drawing.Point(795, 561);
+            this.buttonClose.Name = "buttonClose";
+            this.buttonClose.Size = new System.Drawing.Size(75, 23);
+            this.buttonClose.TabIndex = 2;
+            this.buttonClose.Text = "::Close::";
+            this.buttonClose.UseVisualStyleBackColor = true;
             // 
             // splitContainerClientSessions
             // 
@@ -52,7 +63,7 @@
             // splitContainerClientSessions.Panel2
             // 
             this.splitContainerClientSessions.Panel2.Controls.Add(this.connectionSessionListControl);
-            this.splitContainerClientSessions.Size = new System.Drawing.Size(823, 532);
+            this.splitContainerClientSessions.Size = new System.Drawing.Size(858, 532);
             this.splitContainerClientSessions.SplitterDistance = 233;
             this.splitContainerClientSessions.TabIndex = 0;
             // 
@@ -61,7 +72,7 @@
             this.connectionClientListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.connectionClientListControl.Location = new System.Drawing.Point(0, 0);
             this.connectionClientListControl.Name = "connectionClientListControl";
-            this.connectionClientListControl.Size = new System.Drawing.Size(823, 233);
+            this.connectionClientListControl.Size = new System.Drawing.Size(858, 233);
             this.connectionClientListControl.TabIndex = 0;
             this.connectionClientListControl.SelectionChanged += new System.EventHandler(this.connectionClientListControl_SelectionChanged);
             // 
@@ -71,26 +82,15 @@
             this.connectionSessionListControl.Location = new System.Drawing.Point(0, 0);
             this.connectionSessionListControl.Name = "connectionSessionListControl";
             this.connectionSessionListControl.ShowClientDetails = false;
-            this.connectionSessionListControl.Size = new System.Drawing.Size(823, 295);
+            this.connectionSessionListControl.Size = new System.Drawing.Size(858, 295);
             this.connectionSessionListControl.TabIndex = 0;
-            // 
-            // buttonClose
-            // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point(760, 561);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(75, 23);
-            this.buttonClose.TabIndex = 2;
-            this.buttonClose.Text = "::Close::";
-            this.buttonClose.UseVisualStyleBackColor = true;
             // 
             // ConnectionClientLogView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(847, 596);
+            this.ClientSize = new System.Drawing.Size(882, 596);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.splitContainerClientSessions);
             this.HelpButton = true;

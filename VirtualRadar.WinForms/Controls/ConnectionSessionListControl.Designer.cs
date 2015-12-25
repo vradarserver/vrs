@@ -40,6 +40,7 @@
             this.columnHeaderImageBytes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderAudioBytes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderOtherBytes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderUserName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listView
@@ -48,6 +49,7 @@
             this.columnHeaderStart,
             this.columnHeaderIpAddress,
             this.columnHeaderSource,
+            this.columnHeaderUserName,
             this.columnHeaderDuration,
             this.columnHeaderRequests,
             this.columnHeaderBytesSent,
@@ -62,7 +64,7 @@
             this.listView.HideSelection = false;
             this.listView.Location = new System.Drawing.Point(0, 0);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(967, 255);
+            this.listView.Size = new System.Drawing.Size(1007, 255);
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -127,7 +129,12 @@
             // 
             this.columnHeaderOtherBytes.Text = "::Other::";
             this.columnHeaderOtherBytes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeaderOtherBytes.Width = 75;
+            this.columnHeaderOtherBytes.Width = 77;
+            // 
+            // columnHeaderUserName
+            // 
+            this.columnHeaderUserName.Text = "::User::";
+            this.columnHeaderUserName.Width = 74;
             // 
             // ConnectionSessionListControl
             // 
@@ -135,7 +142,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.listView);
             this.Name = "ConnectionSessionListControl";
-            this.Size = new System.Drawing.Size(967, 255);
+            this.Size = new System.Drawing.Size(1007, 255);
             this.ResumeLayout(false);
 
         }
@@ -154,5 +161,6 @@
         private System.Windows.Forms.ColumnHeader columnHeaderImageBytes;
         private System.Windows.Forms.ColumnHeader columnHeaderAudioBytes;
         private System.Windows.Forms.ColumnHeader columnHeaderOtherBytes;
+        private System.Windows.Forms.ColumnHeader columnHeaderUserName;
     }
 }
