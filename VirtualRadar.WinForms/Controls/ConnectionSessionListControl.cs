@@ -140,6 +140,7 @@ namespace VirtualRadar.WinForms.Controls
                             subItems.Add(client.IpAddress);
                             subItems.Add(client.IsLocal ? Strings.Local : Strings.Internet);
                         }
+                        subItems.Add(session.UserName ?? "");
                         subItems.Add(Describe.TimeSpan(session.Duration));
                         subItems.Add(String.Format("{0:N0}", session.CountRequests));
                         subItems.Add(Describe.Bytes(session.TotalBytesSent));

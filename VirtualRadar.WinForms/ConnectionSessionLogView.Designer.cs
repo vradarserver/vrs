@@ -43,7 +43,7 @@
             // 
             this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point(866, 302);
+            this.buttonClose.Location = new System.Drawing.Point(941, 302);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 6;
@@ -106,7 +106,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.connectionSessionListControl.Location = new System.Drawing.Point(12, 41);
             this.connectionSessionListControl.Name = "connectionSessionListControl";
-            this.connectionSessionListControl.Size = new System.Drawing.Size(929, 244);
+            this.connectionSessionListControl.Size = new System.Drawing.Size(1004, 244);
             this.connectionSessionListControl.TabIndex = 5;
             // 
             // ConnectionSessionLogView
@@ -115,7 +115,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(953, 337);
+            this.ClientSize = new System.Drawing.Size(1028, 337);
             this.Controls.Add(this.connectionSessionListControl);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.buttonShow);
