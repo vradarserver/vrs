@@ -1498,7 +1498,7 @@ namespace VRS
      */
     export var optionControlTypeBroker = new VRS.OptionControlTypeBroker();
 
-    type OptionControlTypesEnum = string;
+    export type OptionControlTypesEnum = string;
     /*
      * A modifiable enumeration of the different control types. 3rd parties can add their own control types to this.
      */

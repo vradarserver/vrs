@@ -298,7 +298,7 @@ namespace VRS
             this.options = VRS.jQueryUIHelper.getAircraftDetailOptions();
         }
 
-        _getState()
+        private _getState() : AircraftDetailPlugin_State
         {
             var result = this.element.data('aircraftDetailPluginState');
             if(result === undefined) {
@@ -396,7 +396,7 @@ namespace VRS
         /**
          * Destroys the elements and releases any resources held by a collection of properties.
          */
-        _destroyProperties(surface: RenderSurfaceBitFlags, properties: AircraftDetailProperty[])
+        private _destroyProperties(surface: RenderSurfaceBitFlags, properties: AircraftDetailProperty[])
         {
             var length = properties.length;
             for(var i = 0;i < length;++i) {
@@ -431,7 +431,7 @@ namespace VRS
         /**
          * Suspends or resumes widgets that have been used to render items.
          */
-        _suspendWidgets(state: AircraftDetailPlugin_State, onOff: boolean)
+        private _suspendWidgets(state: AircraftDetailPlugin_State, onOff: boolean)
         {
             this._suspendWidgetProperties(state, onOff, state.headerProperties, VRS.RenderSurface.DetailHead);
             this._suspendWidgetProperties(state, onOff, state.bodyProperties, VRS.RenderSurface.DetailBody);
@@ -440,7 +440,7 @@ namespace VRS
         /**
          * Suspends or resumes widgets used to render an array of properties.
          */
-        _suspendWidgetProperties(state: AircraftDetailPlugin_State, onOff: boolean, properties: AircraftDetailProperty[], surface: RenderSurfaceBitFlags)
+        private _suspendWidgetProperties(state: AircraftDetailPlugin_State, onOff: boolean, properties: AircraftDetailProperty[], surface: RenderSurfaceBitFlags)
         {
             var length = properties.length;
             for(var i = 0;i < length;++i) {
@@ -637,7 +637,7 @@ namespace VRS
         /**
          * Empties the body and then prepares it with elements to render into.
          */
-        _buildBody(state: AircraftDetailPlugin_State)
+        private _buildBody(state: AircraftDetailPlugin_State)
         {
             state.bodyProperties = this._destroyProperties(VRS.RenderSurface.DetailBody, state.bodyProperties);
             state.bodyContainer.empty();

@@ -375,7 +375,7 @@ namespace VRS
             minPixels: 1,
         };
 
-        _getState()
+        private _getState() : SplitterPane_State
         {
             var result = this.element.data('splitterPaneState');
             if(result === undefined) {
@@ -626,7 +626,7 @@ namespace VRS
             isTopLevelSplitter:         false,
         };
 
-        _getState()
+        private _getState() : Splitter_State
         {
             var result = this.element.data('splitterState');
             if(result === undefined) {
@@ -888,7 +888,7 @@ namespace VRS
         /**
          * Constrains the lengths of the panes to their minimums and maximums.
          */
-        _applyMinMax(state: Splitter_State, availableLength: number)
+        private _applyMinMax(state: Splitter_State, availableLength: number)
         {
             if(!state) state = this._getState();
             if(state.panes.length > 1) {

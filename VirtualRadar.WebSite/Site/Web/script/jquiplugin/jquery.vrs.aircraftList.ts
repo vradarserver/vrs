@@ -608,7 +608,7 @@ namespace VRS
         /**
          * Builds up the header row for the table.
          */
-        _buildHeader(state: AircraftListPlugin_State)
+        private _buildHeader(state: AircraftListPlugin_State)
         {
             $.each(state.headerCells, function(idx, cell) {
                 cell.off();

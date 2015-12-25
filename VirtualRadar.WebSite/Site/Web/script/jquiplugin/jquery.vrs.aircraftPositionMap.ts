@@ -156,7 +156,7 @@ namespace VRS
             this.options = VRS.jQueryUIHelper.getAircraftPositionMapOptions();
         }
 
-        _getState()
+        private _getState() : AircraftPositionMapPlugin_State
         {
             var result = this.element.data('aircraftPositionMapState');
             if(result === undefined) {
@@ -187,7 +187,7 @@ namespace VRS
         /**
          * Creates the map container and populates it with a map.
          */
-        _createMap(state: AircraftPositionMapPlugin_State)
+        private _createMap(state: AircraftPositionMapPlugin_State)
         {
             var options = this.options;
 

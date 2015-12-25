@@ -82,6 +82,7 @@
     <Content Include="Images\Edit16x16.png" />
     <Content Include="Images\Test16x16.png" />
     <Content Include="Images\Wizard16x16.png" />
+    <Content Include="vrs.d.ts-readme.txt" />
     <EmbeddedResource Include="Images\Favicon.ico" />
     <Content Include="Images\Corner_BottomLeft.png" />
     <Content Include="Images\Corner_BottomRight.png" />
@@ -159,6 +160,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vrs.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

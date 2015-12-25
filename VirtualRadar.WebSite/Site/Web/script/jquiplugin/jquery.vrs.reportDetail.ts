@@ -435,7 +435,7 @@ namespace VRS
         /**
          * Destroys the UI associated with the display.
          */
-        _destroyDisplay(state: ReportDetailPlugin_State)
+        private _destroyDisplay(state: ReportDetailPlugin_State)
         {
             for(var propertyName in state.bodyPropertyElements) {
                 var handler = VRS.reportPropertyHandlers[propertyName];

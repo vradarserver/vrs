@@ -1,9 +1,7 @@
 ﻿declare namespace VRS
 {
-    /**
-     * Describes a void function that returns a value of a given type.
-     */
     type VoidFuncReturning<T> = () => T;
+    type AircraftFuncReturningString = (aircraft: Aircraft) => string;
 
     /**
      * Describes the content of the AircraftList.json object.

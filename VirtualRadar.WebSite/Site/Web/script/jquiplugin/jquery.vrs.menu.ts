@@ -438,7 +438,11 @@ namespace VRS
         /**
          * Returns true if the menu is open.
          */
-        getIsOpen(state?: MenuPlugin_State) : boolean
+        getIsOpen() : boolean
+        {
+            return this.doGetIsOpen();
+        }
+        private doGetIsOpen(state?: MenuPlugin_State) : boolean
         {
             state = state || this._getState();
             return !!state.menuContainer;
@@ -447,21 +451,29 @@ namespace VRS
         /**
          * Opens the menu unless it's already open, in which case it closes it.
          */
-        toggleMenu(state?: MenuPlugin_State)
+        toggleMenu()
+        {
+            this.doToggleMenu();
+        }
+        private doToggleMenu(state?: MenuPlugin_State)
         {
             state = state || this._getState();
 
-            if(this.getIsOpen(state)) {
-                this.closeMenu(state);
+            if(this.doGetIsOpen(state)) {
+                this.doCloseMenu(state);
             } else {
-                this.openMenu(state);
+                this.doOpenMenu(state);
             }
         }
 
         /**
          * Opens the menu. Does nothing if it's already open.
          */
-        openMenu(state?: MenuPlugin_State)
+        openMenu()
+        {
+            this.doOpenMenu();
+        }
+        private doOpenMenu(state?: MenuPlugin_State)
         {
             state = state || this._getState();
 
@@ -474,7 +486,11 @@ namespace VRS
         /**
          * Closes the menu. Does nothing if it's already closed.
          */
-        closeMenu(state?: MenuPlugin_State)
+        closeMenu()
+        {
+            this.doCloseMenu();
+        }
+        private doCloseMenu(state?: MenuPlugin_State)
         {
             state = state || this._getState();
 

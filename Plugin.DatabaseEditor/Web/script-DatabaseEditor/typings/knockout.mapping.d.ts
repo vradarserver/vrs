@@ -3,8 +3,6 @@
 // Definitions by: Boris Yankov <https://github.com/borisyankov/>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-/// <reference path="../knockout/knockout.d.ts" />
-
 interface KnockoutMappingCreateOptions {
     data: any;
     parent: any;

@@ -373,7 +373,7 @@ namespace VRS
         /**
          * Returns an array of values that are present in the subset control.
          */
-        _getSelectedValues(state: OptionFieldOrderedSubsetPlugin_State) : any[]
+        private _getSelectedValues(state: OptionFieldOrderedSubsetPlugin_State) : any[]
         {
             var result: any[] = [];
             var items = state.sortableElement.find('> li');
