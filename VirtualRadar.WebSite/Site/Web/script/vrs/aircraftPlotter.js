@@ -209,6 +209,12 @@ var VRS;
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy && aircraft.countEngines.val !== '4'; }
         }),
         new VRS.AircraftMarker({
+            normalFileName: '4-TurboProp.png',
+            selectedFileName: '4-TurboPropSelected.png',
+            size: { width: 40, height: 40 },
+            matches: function (aircraft) { return aircraft.countEngines.val === '4' && aircraft.engineType.val === VRS.EngineType.Turbo; }
+        }),
+        new VRS.AircraftMarker({
             normalFileName: 'Airplane.png',
             selectedFileName: 'AirplaneSelected.png',
             size: { width: 35, height: 35 },

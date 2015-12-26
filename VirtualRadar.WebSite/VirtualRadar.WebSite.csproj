@@ -202,6 +202,8 @@
     <Content Include="Site\Web\images\ADSB-2.png" />
     <Content Include="Site\Web\images\ADSB.png" />
     <Content Include="Site\Web\images\location.png" />
+    <Content Include="Site\Web\images\markers\4-TurboProp.png" />
+    <Content Include="Site\Web\images\markers\4-TurboPropSelected.png" />
     <Content Include="Site\Web\images\markers\FollowMe.png" />
     <Content Include="Site\Web\images\markers\Helicopter-Selected.png" />
     <Content Include="Site\Web\images\markers\Helicopter.png" />
