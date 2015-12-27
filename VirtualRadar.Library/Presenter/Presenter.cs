@@ -304,8 +304,7 @@ namespace VirtualRadar.Library.Presenter
             var result = !String.IsNullOrEmpty(domainAddress);
             if(result) {
                 try {
-                    var addresses = Dns.GetHostAddresses(domainAddress);
-                    result = addresses != null && addresses.Length != 0;
+                    result = Uri.CheckHostName(domainAddress) != UriHostNameType.Unknown;
                 } catch {
                     result = false;
                 }
