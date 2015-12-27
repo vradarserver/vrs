@@ -115,6 +115,7 @@
         fWBnd?:         number;
         trFmt?:         string;
         refreshTrails?: string;
+        stm?:           number;
     }
 
     /**

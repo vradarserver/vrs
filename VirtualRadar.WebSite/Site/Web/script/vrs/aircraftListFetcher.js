@@ -269,6 +269,7 @@ var VRS;
                 var params = {};
                 if (!getFreshList) {
                     params.ldv = _this._Settings.aircraftList.getDataVersion();
+                    params.stm = _this._Settings.aircraftList.getServerTicks();
                 }
                 if (_this._RequestFeedId !== undefined && _this._RequestFeedId !== null) {
                     params.feed = _this._RequestFeedId;

@@ -54,7 +54,7 @@ namespace VirtualRadar.WebSite
         /// <param name="configuration"></param>
         protected override void DoLoadConfiguration(Configuration configuration)
         {
-            _ConfigurationChangedTick = Provider.UtcNow.Ticks;
+            _ConfigurationChangedTick = JavascriptHelper.ToJavascriptTicks(Provider.UtcNow.Ticks);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VirtualRadar.WebSite
             var buildArgs = ConstructBuildArgs(args, feedId, aircraftList, isFlightSimulator);
             var json = _Builder.Build(buildArgs);
 
-            if(buildArgs.PreviousDataVersion > -1 && buildArgs.PreviousDataVersion <= _ConfigurationChangedTick) {
+            if(buildArgs.ServerTimeTicks > -1 && buildArgs.ServerTimeTicks <= _ConfigurationChangedTick) {
                 json.ServerConfigChanged = true;
             }
 
@@ -135,6 +135,7 @@ namespace VirtualRadar.WebSite
                 IsFlightSimulatorList = isFlightSimulator,
                 IsInternetClient =      args.IsInternetRequest,
                 PreviousDataVersion =   QueryLong(args, "ldv", -1),
+                ServerTimeTicks =       QueryLong(args, "stm", -1),
                 ResendTrails =          QueryString(args, "refreshTrails", false) == "1",
                 SelectedAircraftId =    QueryInt(args, "selAc", -1),
                 SourceFeedId =          feedId,

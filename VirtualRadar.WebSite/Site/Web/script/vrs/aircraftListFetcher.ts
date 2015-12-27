@@ -477,6 +477,7 @@ namespace VRS
             var params: IAircraftListRequestQueryString = { };
             if(!getFreshList) {
                 params.ldv = this._Settings.aircraftList.getDataVersion();
+                params.stm = this._Settings.aircraftList.getServerTicks();
             }
             if(this._RequestFeedId !== undefined && this._RequestFeedId !== null) {
                 params.feed = this._RequestFeedId;
