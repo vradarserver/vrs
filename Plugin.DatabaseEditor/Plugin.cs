@@ -89,7 +89,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Version { get { return "2.2.1"; } }
+        public string Version { get { return "2.3.0"; } }
 
         private string _Status;
         /// <summary>
