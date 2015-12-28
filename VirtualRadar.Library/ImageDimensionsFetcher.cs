@@ -377,6 +377,7 @@ namespace VirtualRadar.Library
         /// Reads a little-endian four byte integer.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
         private int ReadLittleEndianInt32(Stream stream, byte[] buffer)
         {

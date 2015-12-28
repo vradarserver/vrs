@@ -444,7 +444,8 @@ namespace VirtualRadar.Library
         /// <summary>
         /// Called on a background thread.
         /// </summary>
-        /// <param name="state"></param>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void BackgroundWorker_DoWork(object sender, EventArgs args)
         {
             var cacheChanged = LoadFiles();

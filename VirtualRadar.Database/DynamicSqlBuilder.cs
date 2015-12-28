@@ -45,7 +45,10 @@ namespace VirtualRadar.Database
         /// </summary>
         /// <param name="criteriaText"></param>
         /// <param name="filter"></param>
+        /// <param name="parameters"></param>
         /// <param name="fieldName"></param>
+        /// <param name="startDateParameterName"></param>
+        /// <param name="endDateParameterName"></param>
         public static void AddCriteria(StringBuilder criteriaText, FilterRange<DateTime> filter, DynamicParameters parameters, string fieldName, string startDateParameterName, string endDateParameterName)
         {
             HandleDateRangeFilter(filter,

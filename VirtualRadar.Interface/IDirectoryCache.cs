@@ -68,11 +68,6 @@ namespace VirtualRadar.Interface
         /// Raised on a background after the cache has been modified in some way. It is not raised if the content of
         /// the cache did not change.
         /// </summary>
-        /// <remarks>
-        /// In particular if a background poll finds no changes to the cache then it does not raise the event. Setting
-        /// <see cref="Folder"/> or calling <see cref="Add"/> or <see cref="Remove"/> can raise this, but only if it
-        /// triggered some change in the cache.
-        /// </remarks>
         event EventHandler CacheChanged;
 
         /// <summary>

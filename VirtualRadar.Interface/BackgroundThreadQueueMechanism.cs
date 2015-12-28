@@ -16,7 +16,7 @@ using System.Text;
 namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// An enumeration of the different mechanisms that the <see cref="BackgroundThreadQueue"/> can use.
+    /// An enumeration of the different mechanisms that the BackgroundThreadQueue can use.
     /// </summary>
     public enum BackgroundThreadQueueMechanism
     {
