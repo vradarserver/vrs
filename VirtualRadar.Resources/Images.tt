@@ -5,7 +5,6 @@
 <#@ import namespace="EnvDTE" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
-
 // Copyright © 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
