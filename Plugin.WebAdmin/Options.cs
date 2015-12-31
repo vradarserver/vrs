@@ -10,7 +10,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using VirtualRadar.Interface.Settings;
 
@@ -19,27 +21,62 @@ namespace VirtualRadar.Plugin.WebAdmin
     /// <summary>
     /// A DTO that carries the options set by the user.
     /// </summary>
-    public class Options
+    public class Options : INotifyPropertyChanged
     {
+        private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating whether the plugin is active.
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled
+        {
+            get { return _Enabled; }
+            set { SetField(ref _Enabled, value, () => Enabled); }
+        }
 
-        /// <summary>
-        /// Gets or sets the username required for access to the site.
-        /// </summary>
-        public string UserName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password required for access to the site.
-        /// </summary>
-        public string Passphrase { get; set; }
-
+        private Access _Access;
         /// <summary>
         /// Gets or sets the addresses that can access the admin site.
         /// </summary>
-        public Access Access { get; set; }
+        public Access Access
+        {
+            get { return _Access; }
+            set { SetField(ref _Access, value, () => Access); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            if(PropertyChanged != null) PropertyChanged(this, args);
+        }
+
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="selectorExpression"></param>
+        /// <returns></returns>
+        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        {
+            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+
+            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
+            MemberExpression body = selectorExpression.Body as MemberExpression;
+            if(body == null) throw new ArgumentException("The body must be a member expression");
+            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
+
+            return true;
+        }
 
         /// <summary>
         /// Creates a new object.
@@ -47,6 +84,10 @@ namespace VirtualRadar.Plugin.WebAdmin
         public Options()
         {
             Enabled = true;
+            Access = new Access() {
+                DefaultAccess = DefaultAccess.Deny,
+                Addresses = { "127.0.0.1/32" },
+            };
         }
     }
 }

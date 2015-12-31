@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,48 +12,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
-using System.IO;
-using System.Xml.Serialization;
-using Newtonsoft.Json;
+using VirtualRadar.Localisation;
+using System.Windows.Forms;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
-    class OptionsStorage
+    /// <summary>
+    /// A static wrapper around a <see cref="Localiser"/> for the plugin's strings.
+    /// </summary>
+    public static class PluginLocalise
     {
-        // Field names in the configuration file
-        private const string Key = "Options";
+        /// <summary>
+        /// The object that's going to do all of the work.
+        /// </summary>
+        private static Localiser _Localiser;
 
         /// <summary>
-        /// Loads the plugin's options.
+        /// Initialises the static object.
         /// </summary>
-        /// <param name="plugin"></param>
-        /// <returns></returns>
-        public static Options Load(Plugin plugin)
+        static PluginLocalise()
         {
-            var pluginStorage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
-            var pluginSettings = pluginStorage.Load();
-
-            var jsonOptions = pluginSettings.ReadString(plugin, Key);
-            var result = String.IsNullOrEmpty(jsonOptions) ? new Options() : JsonConvert.DeserializeObject<Options>(jsonOptions);
-
-            return result;
+            _Localiser = new Localiser(typeof(VirtualRadar.Localisation.Strings));
+            _Localiser.AddResourceStrings(typeof(WebAdminStrings));
         }
 
         /// <summary>
-        /// Saves the plugin's options.
+        /// See <see cref="Localiser.Form"/>.
         /// </summary>
-        /// <param name="plugin"></param>
-        /// <param name="options"></param>
-        public static void Save(Plugin plugin, Options options)
+        /// <param name="form"></param>
+        public static void Form(Form form)
         {
-            var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
-
-            var pluginSettings = storage.Load();
-            pluginSettings.Write(plugin, Key, JsonConvert.SerializeObject(options));
-
-            storage.Save(pluginSettings);
+            _Localiser.Form(form);
         }
     }
 }

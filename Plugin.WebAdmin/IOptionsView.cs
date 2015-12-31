@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,48 +12,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
-using System.IO;
-using System.Xml.Serialization;
-using Newtonsoft.Json;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
-    class OptionsStorage
+    /// <summary>
+    /// The interface for the plugin's options screen.
+    /// </summary>
+    public interface IOptionsView : IView
     {
-        // Field names in the configuration file
-        private const string Key = "Options";
+        /// <summary>
+        /// Gets or sets the options that the user can view / edit.
+        /// </summary>
+        Options Options { get; set; }
 
         /// <summary>
-        /// Loads the plugin's options.
+        /// Gets or sets the address of the plugin's index page.
         /// </summary>
-        /// <param name="plugin"></param>
-        /// <returns></returns>
-        public static Options Load(Plugin plugin)
-        {
-            var pluginStorage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
-            var pluginSettings = pluginStorage.Load();
-
-            var jsonOptions = pluginSettings.ReadString(plugin, Key);
-            var result = String.IsNullOrEmpty(jsonOptions) ? new Options() : JsonConvert.DeserializeObject<Options>(jsonOptions);
-
-            return result;
-        }
-
-        /// <summary>
-        /// Saves the plugin's options.
-        /// </summary>
-        /// <param name="plugin"></param>
-        /// <param name="options"></param>
-        public static void Save(Plugin plugin, Options options)
-        {
-            var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
-
-            var pluginSettings = storage.Load();
-            pluginSettings.Write(plugin, Key, JsonConvert.SerializeObject(options));
-
-            storage.Save(pluginSettings);
-        }
+        string IndexPageAddress { get; set; }
     }
 }
