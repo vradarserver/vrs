@@ -40,6 +40,11 @@ namespace VirtualRadar.Plugin.WebAdmin
         private Options _Options = new Options();
 
         /// <summary>
+        /// The folder that has all of the views.
+        /// </summary>
+        private string ProtectedFolder = "WebAdmin";
+
+        /// <summary>
         /// The object that we use to extend the website.
         /// </summary>
         private IWebSiteExtender _WebSiteExtender;
@@ -162,11 +167,11 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebSiteExtender.PageHandlers.Add("/WebAdmin/webAdminStrings.js", WebAdminStringsJavaScript.SendJavaScript);
             AddJsonHandlers();
             _WebSiteExtender.Initialise(parameters);
-            _WebSiteExtender.ProtectFolder("WebAdmin");
+            _WebSiteExtender.ProtectFolder(ProtectedFolder);
 
             parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
 
-            ApplyOptions();
+            ApplyOptions(_Options);
         }
 
         private void AddView(string htmlFileName, BaseView view)
@@ -207,6 +212,16 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// </summary>
         public void ShowWinFormsOptionsUI()
         {
+            using(var dialog = new WinForms.OptionsView()) {
+                var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+                dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "WebAdmin/index.html");
+                dialog.Options = OptionsStorage.Load(this);
+
+                if(dialog.ShowDialog() == DialogResult.OK) {
+                    OptionsStorage.Save(this, dialog.Options);
+                    ApplyOptions(dialog.Options);
+                }
+            }
         }
         #endregion
 
@@ -214,9 +229,21 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// Applies the options.
         /// </summary>
-        private void ApplyOptions()
+        /// <param name="options"></param>
+        private void ApplyOptions(Options options)
         {
+            _Options = options;
             _WebSiteExtender.Enabled = _Options.Enabled;
+            _WebSiteExtender.RestrictAccessToFolder(ProtectedFolder, _Options.Access);
+
+            using(new CultureSwitcher()) {
+                if(!options.Enabled) {
+                    Status = WebAdminStrings.Disabled;
+                } else {
+                    Status = Strings.Enabled;
+                }
+            }
+
             OnStatusChanged(EventArgs.Empty);
         }
         #endregion
