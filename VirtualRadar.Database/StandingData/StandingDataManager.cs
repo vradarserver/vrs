@@ -90,7 +90,7 @@ namespace VirtualRadar.Database.StandingData
         /// <summary>
         /// The object that is used to lock _CodeBlockCache while it's being loaded.
         /// </summary>
-        private SpinLock _CodeBlockSpinLock = new SpinLock();
+        private object _CodeBlockCacheLock = new object();
 
         /// <summary>
         /// A list of every fake ground vehicle model code;
@@ -281,7 +281,7 @@ namespace VirtualRadar.Database.StandingData
                 newCache.Sort((CodeBlockBitMask lhs, CodeBlockBitMask rhs) => { return -(lhs.SignificantBitMask - rhs.SignificantBitMask); });
             }
 
-            using(var codeBlockLock = _CodeBlockSpinLock.AcquireLock()) {
+            lock(_CodeBlockCacheLock) {
                 _CodeBlockCache = newCache;
                 CodeBlocksLoaded = _CodeBlockCache.Count > 0;
             }
@@ -350,7 +350,7 @@ namespace VirtualRadar.Database.StandingData
             }
 
             if(newCodeBlocks.Count > 0) {
-                using(var codeBlockLock = _CodeBlockSpinLock.AcquireLock()) {
+                lock(_CodeBlockCacheLock) {
                     var newCache = new List<CodeBlockBitMask>(newCodeBlocks);
                     newCache.AddRange(_CodeBlockCache);
                     _CodeBlockCache = newCache;
@@ -701,11 +701,8 @@ namespace VirtualRadar.Database.StandingData
 
                 if(icaoValue != -1) {
                     List<CodeBlockBitMask> codeBlockCache;
-                    _CodeBlockSpinLock.Lock();
-                    try {
+                    lock(_CodeBlockCacheLock) {
                         codeBlockCache = _CodeBlockCache;
-                    } finally {
-                        _CodeBlockSpinLock.Unlock();
                     }
 
                     foreach(var entry in codeBlockCache) {
