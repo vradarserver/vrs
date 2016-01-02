@@ -149,7 +149,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnAircraftInformationReceived(EventArgs<ReadAircraftInformation> args)
         {
-            EventHelper.Raise(AircraftInformationReceived, this, args);
+            EventHelper.RaiseQuickly(AircraftInformationReceived, this, args);
         }
 
         /// <summary>

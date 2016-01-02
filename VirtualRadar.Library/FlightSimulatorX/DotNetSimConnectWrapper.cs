@@ -74,7 +74,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnEventObserved(SimConnectEventObservedEventArgs args)
         {
-            EventHelper.Raise(EventObserved, this, args);
+            EventHelper.RaiseQuickly(EventObserved, this, args);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="args"></param>
         private void OnObjectReceived(SimConnectObjectReceivedEventArgs args)
         {
-            EventHelper.Raise(ObjectReceived, this, args);
+            EventHelper.RaiseQuickly(ObjectReceived, this, args);
         }
 
         /// <summary>

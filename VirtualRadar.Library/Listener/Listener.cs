@@ -216,7 +216,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         private void OnRawBytesReceived(EventArgs<byte[]> args)
         {
-            EventHelper.Raise(RawBytesReceived, this, args);
+            EventHelper.RaiseQuickly(RawBytesReceived, this, args);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         private void OnModeSBytesReceived(EventArgs<ExtractedBytes> args)
         {
-            EventHelper.Raise(ModeSBytesReceived, this, args);
+            EventHelper.RaiseQuickly(ModeSBytesReceived, this, args);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         private void OnPort30003MessageReceived(BaseStationMessageEventArgs args)
         {
-            EventHelper.Raise(Port30003MessageReceived, this, () => {
+            EventHelper.RaiseQuickly(Port30003MessageReceived, this, () => {
                 args.Message.ReceiverId = ReceiverId;
                 return args;
             });
@@ -261,7 +261,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="args"></param>
         private void OnModeSMessageReceived(ModeSMessageEventArgs args)
         {
-            EventHelper.Raise(ModeSMessageReceived, this, args);
+            EventHelper.RaiseQuickly(ModeSMessageReceived, this, args);
         }
 
         /// <summary>
