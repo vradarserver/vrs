@@ -221,7 +221,7 @@ namespace VirtualRadar.Library.Listener
         public event EventHandler<BaseStationMessageEventArgs> Port30003MessageReceived;
         protected virtual void OnPort30003MessageReceived(BaseStationMessageEventArgs args)
         {
-            EventHelper.Raise(Port30003MessageReceived, this, args);
+            EventHelper.RaiseQuickly(Port30003MessageReceived, this, args);
         }
 
         /// <summary>

@@ -417,7 +417,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnAuthenticationRequired(AuthenticationRequiredEventArgs args)
         {
-            EventHelper.Raise(AuthenticationRequired, this, args);
+            EventHelper.RaiseQuickly(AuthenticationRequired, this, args);
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnBeforeRequestReceived(RequestReceivedEventArgs args)
         {
-            EventHelper.Raise(BeforeRequestReceived, this, args);
+            EventHelper.RaiseQuickly(BeforeRequestReceived, this, args);
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnRequestReceived(RequestReceivedEventArgs args)
         {
-            EventHelper.Raise(RequestReceived, this, args);
+            EventHelper.RaiseQuickly(RequestReceived, this, args);
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnAfterRequestReceived(RequestReceivedEventArgs args)
         {
-            EventHelper.Raise(AfterRequestReceived, this, args);
+            EventHelper.RaiseQuickly(AfterRequestReceived, this, args);
         }
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void OnResponseSent(ResponseSentEventArgs args)
         {
-            EventHelper.Raise(ResponseSent, this, args);
+            EventHelper.RaiseQuickly(ResponseSent, this, args);
         }
 
         /// <summary>

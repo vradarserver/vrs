@@ -61,6 +61,38 @@ namespace VirtualRadar.Interface
         private static object _CachedMethodsLock = new object();
 
         /// <summary>
+        /// Raises an event for an event handler. This is 6x to 9x faster than the Raise methods but, unlike those methods, if one of
+        /// the event handlers throws an exception then no further handlers are called.
+        /// </summary>
+        /// <typeparam name="TEventArgs"></typeparam>
+        /// <param name="eventHandler"></param>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public static void RaiseQuickly<TEventArgs>(EventHandler<TEventArgs> eventHandler, object sender, TEventArgs args)
+            where TEventArgs: EventArgs
+        {
+            if(eventHandler != null) {
+                eventHandler(sender, args);
+            }
+        }
+
+        /// <summary>
+        /// Raises an event for an event handler. This is 6x to 9x faster than the Raise methods but, unlike those methods, if one of
+        /// the event handlers throws an exception then no further handlers are called.
+        /// </summary>
+        /// <typeparam name="TEventArgs"></typeparam>
+        /// <param name="eventHandler"></param>
+        /// <param name="sender"></param>
+        /// <param name="buildArgsCallback"></param>
+        public static void RaiseQuickly<TEventArgs>(EventHandler<TEventArgs> eventHandler, object sender, Func<TEventArgs> buildArgsCallback)
+            where TEventArgs: EventArgs
+        {
+            if(eventHandler != null) {
+                eventHandler(sender, buildArgsCallback());
+            }
+        }
+
+        /// <summary>
         /// Raises an event for an event handler.
         /// </summary>
         /// <param name="eventHandler"></param>
