@@ -383,10 +383,11 @@ namespace VirtualRadar.Library.Listener
         /// <param name="rawMessageTranslator"></param>
         public void ChangeSource(IConnector connector, IMessageBytesExtractor bytesExtractor, IRawMessageTranslator rawMessageTranslator)
         {
-            lock(_SyncLock) {
-                bool changed = false;
+            var changed = false;
+            var reconnect = false;
 
-                var connected = Connector != null && Connector.EstablishingConnections;
+            lock(_SyncLock) {
+                reconnect = Connector != null && Connector.EstablishingConnections;
                 if(connector != Connector || bytesExtractor != BytesExtractor || rawMessageTranslator != RawMessageTranslator) {
                     if(RawMessageTranslator != null && RawMessageTranslator != rawMessageTranslator) RawMessageTranslator.Dispose();
 
@@ -409,11 +410,11 @@ namespace VirtualRadar.Library.Listener
 
                     changed = true;
                 }
+            }
 
-                if(changed) {
-                    OnSourceChanged(EventArgs.Empty);
-                    if(connected) Connect();
-                }
+            if(changed) {
+                OnSourceChanged(EventArgs.Empty);
+                if(reconnect) Connect();
             }
         }
 
