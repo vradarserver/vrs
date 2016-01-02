@@ -72,7 +72,7 @@ namespace VirtualRadar.Interface
         public void Lock()
         {
             while(Interlocked.Exchange(ref _Locked, 1) != 0) {
-                Thread.Sleep(0);
+                Thread.Sleep(1);
             }
         }
 
