@@ -54,6 +54,7 @@ namespace Test.VirtualRadar.WebSite
             public double? BrowserLongitude { get; set; }
             public List<int> PreviousAircraft { get; private set; }
             public long PreviousDataVersion { get; set; }
+            public long ServerTimeJavaScriptTicks { get; set; }
             public bool ResendTrails { get; set; }
             public bool SendTrail { get; set; }
             public bool ShowShortTrail { get; set; }
@@ -71,6 +72,7 @@ namespace Test.VirtualRadar.WebSite
                 Page = AircraftListPage;
                 PreviousAircraft = new List<int>();
                 PreviousDataVersion = -1L;
+                ServerTimeJavaScriptTicks = -1L;
                 SortBy = new List<KeyValuePair<string, string>>();
             }
 
@@ -84,6 +86,7 @@ namespace Test.VirtualRadar.WebSite
                     if(BrowserLatitude != null) queryValues.Add("lat", BrowserLatitude.Value.ToString(CultureInfo.InvariantCulture));
                     if(BrowserLongitude != null) queryValues.Add("lng", BrowserLongitude.Value.ToString(CultureInfo.InvariantCulture));
                     if(PreviousDataVersion > -1) queryValues.Add("ldv", PreviousDataVersion.ToString(CultureInfo.InvariantCulture));
+                    if(ServerTimeJavaScriptTicks > -1) queryValues.Add("stm", ServerTimeJavaScriptTicks.ToString(CultureInfo.InvariantCulture));
                     if(ResendTrails) queryValues.Add("refreshTrails", "1");
                     if(SelectedAircraftId != null) queryValues.Add("selAc", SelectedAircraftId.ToString());
 
@@ -1507,7 +1510,7 @@ namespace Test.VirtualRadar.WebSite
             _Provider.Setup(r => r.UtcNow).Returns(time);
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _AircraftListAddress.PreviousDataVersion = -1;
+            _AircraftListAddress.ServerTimeJavaScriptTicks = -1;
             var json = SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address);
 
             Assert.AreEqual(false, json.ServerConfigChanged);
@@ -1520,7 +1523,7 @@ namespace Test.VirtualRadar.WebSite
             _Provider.Setup(r => r.UtcNow).Returns(time);
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _AircraftListAddress.PreviousDataVersion = time.Ticks - 1;
+            _AircraftListAddress.ServerTimeJavaScriptTicks = JavascriptHelper.ToJavascriptTicks(time.Ticks) - 1;
             var json = SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address);
 
             Assert.AreEqual(true, json.ServerConfigChanged);
@@ -1533,7 +1536,7 @@ namespace Test.VirtualRadar.WebSite
             _Provider.Setup(r => r.UtcNow).Returns(time);
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _AircraftListAddress.PreviousDataVersion = time.Ticks + 1;
+            _AircraftListAddress.ServerTimeJavaScriptTicks = JavascriptHelper.ToJavascriptTicks(time.Ticks) + 1;
             var json = SendJsonRequest<AircraftListJson>(_AircraftListAddress.Address);
 
             Assert.AreEqual(false, json.ServerConfigChanged);

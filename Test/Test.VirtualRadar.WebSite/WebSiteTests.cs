@@ -17,6 +17,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using HtmlAgilityPack;
@@ -606,6 +607,12 @@ namespace Test.VirtualRadar.WebSite
                 var mimeType = MimeType.GetForExtension(Path.GetExtension(checksum.FileName));
                 var classification = MimeType.GetContentClassification(mimeType);
 
+                // We need to skip the strings.*.js files - the string injection code doesn't work when the running
+                // executable is the Visual Studio test runner
+                if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
+                    continue;
+                }
+
                 _WebServer.Raise(r => r.RequestReceived += null, args);
 
                 Assert.AreEqual(true, args.Handled, checksum.FileName);
@@ -627,6 +634,12 @@ namespace Test.VirtualRadar.WebSite
                 var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, checksum.FileName.Replace("\\", "/"), false);
                 var mimeType = MimeType.GetForExtension(Path.GetExtension(checksum.FileName));
                 var classification = MimeType.GetContentClassification(mimeType);
+
+                // We need to skip the strings.*.js files - the string injection code doesn't work when the running
+                // executable is the Visual Studio test runner
+                if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
+                    continue;
+                }
 
                 _WebServer.Raise(r => r.RequestReceived += null, args);
             }
@@ -1685,6 +1698,12 @@ namespace Test.VirtualRadar.WebSite
                 var mimeType = MimeType.GetForExtension(Path.GetExtension(checksum.FileName));
                 var classification = MimeType.GetContentClassification(mimeType);
 
+                // We need to skip the strings.*.js files - the string injection code doesn't work when the running
+                // executable is the Visual Studio test runner
+                if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
+                    continue;
+                }
+
                 _WebSite.RequestContent(args);
 
                 Assert.AreEqual(true, args.Handled, checksum.FileName);
@@ -1715,6 +1734,12 @@ namespace Test.VirtualRadar.WebSite
             foreach(var checksum in checksums) {
                 var pathAndFile = checksum.FileName.Replace("\\", "/");
                 var filePath = checksum.GetFullPathFromRoot(_WebRoot);
+
+                // We need to skip the strings.*.js files - the string injection code doesn't work when the running
+                // executable is the Visual Studio test runner
+                if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
+                    continue;
+                }
 
                 var simpleContent = _WebSite.RequestSimpleContent(pathAndFile);
 

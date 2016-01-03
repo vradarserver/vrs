@@ -75,11 +75,11 @@ namespace Test.VirtualRadar.Library
             Assert.AreNotEqual(0, emptyAudio.Length);
             Assert.IsTrue(emptyAudio.Length < 100); // Should just be a header
 
-            var letterA = _Audio.SpeechToWavBytes("A");
-            Assert.IsTrue(letterA.Length > 24000 && letterA.Length < 40000);
+            var letterB = _Audio.SpeechToWavBytes("B");
+            Assert.IsTrue(letterB.Length > 24000);
 
-            var letterAA = _Audio.SpeechToWavBytes("AA");
-            Assert.IsTrue(letterAA.Length > letterA.Length);
+            var letterBB = _Audio.SpeechToWavBytes("BB");
+            Assert.IsTrue(letterBB.Length > letterB.Length);
         }
 
         [TestMethod]
