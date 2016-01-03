@@ -234,21 +234,25 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
-        /// Creates a compiled delegate for the MethodInfo passed across. Mostly copied from
-        /// http://stackoverflow.com/questions/7083618/alternative-for-using-slow-dynamicinvoke-on-muticast-delegate
+        /// Creates a compiled delegate for the MethodInfo passed across.
         /// </summary>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// Mostly copied from
+        /// http://stackoverflow.com/questions/7083618/alternative-for-using-slow-dynamicinvoke-on-muticast-delegate
+        /// with two changes - the arguments parameter is now generic, added support for static event handlers.
+        /// </remarks>
         private static Action<object, object, TEventArgs> CompileDelegate<TEventArgs>(MethodInfo methodInfo)
             where TEventArgs: EventArgs
         {
             var instance = Expression.Parameter(typeof(object), "instance");
             var sender = Expression.Parameter(typeof(object), "sender");
             var parameter = Expression.Parameter(typeof(TEventArgs), "parameter");
-
+            
             var lambda = Expression.Lambda<Action<object, object, TEventArgs>>(
-                Expression.Call (
-                    Expression.Convert(instance, methodInfo.DeclaringType),
+                Expression.Call(
+                    methodInfo.IsStatic ? null : Expression.Convert(instance, methodInfo.DeclaringType),
                     methodInfo,
                     sender,
                     parameter
