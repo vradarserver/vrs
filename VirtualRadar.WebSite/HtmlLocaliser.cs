@@ -188,5 +188,28 @@ namespace VirtualRadar.WebSite
 
             return result;
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="resourceString"></param>
+        /// <param name="stringDelimiter"></param>
+        /// <returns></returns>
+        public string ConvertResourceStringToJavaScriptString(string resourceString, char stringDelimiter)
+        {
+            if(stringDelimiter != '\'' && stringDelimiter != '"') throw new ArgumentException("stringDelimiter must be ' or \"");
+
+            var result = resourceString;
+            if(!String.IsNullOrEmpty(result)) {
+                result = result.Replace("\r", @"\r");
+                result = result.Replace("\n", @"\n");
+                switch(stringDelimiter) {
+                    case '\'':  result = result.Replace("'", @"\'"); break;
+                    case '"':   result = result.Replace("\"", "\\\""); break;
+                }
+            }
+
+            return result;
+        }
     }
 }

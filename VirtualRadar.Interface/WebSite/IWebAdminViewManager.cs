@@ -50,6 +50,16 @@ namespace VirtualRadar.Interface.WebSite
         void RegisterTemplateFileName(string templateMarker, string templateHtmlFullPath);
 
         /// <summary>
+        /// Registers a string resources file that should be made available to JavaScript. It can be loaded via
+        /// the URL WebAdmin/Script/Strings.&lt;namespace&gt;.js. Do not use the namespace Server, that is used by the
+        /// plugin to expose the VRS's strings. Strings.js loads the web site strings and a Globalize object
+        /// for the server's language.
+        /// </summary>
+        /// <param name="stringResourcesType"></param>
+        /// <param name="namespace"></param>
+        void RegisterTranslations(Type stringResourcesType, string @namespace);
+
+        /// <summary>
         /// Registers a view with the web admin site. The view's folder must previously have been registered
         /// with a call to <see cref="RegisterWebAdminViewFolder"/>.
         /// </summary>

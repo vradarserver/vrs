@@ -59,19 +59,6 @@ namespace VirtualRadar.Plugin.WebAdmin
         private Dictionary<string, MappedView> _SharedViewInstances = new Dictionary<string,MappedView>();
 
         /// <summary>
-        /// The object that can format up responses for us.
-        /// </summary>
-        private IResponder _Responder;
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public ViewMethodMapper()
-        {
-            _Responder = Factory.Singleton.Resolve<IResponder>();
-        }
-
-        /// <summary>
         /// Records a request for a <see cref="WebAdminView"/>.
         /// </summary>
         /// <param name="webAdminView"></param>
@@ -120,8 +107,10 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// Handles a potential request for a JSON file.
         /// </summary>
+        /// <param name="args"></param>
+        /// <param name="responder"></param>
         /// <returns></returns>
-        public bool ProcessJsonRequest(RequestReceivedEventArgs args)
+        public bool ProcessJsonRequest(RequestReceivedEventArgs args, IResponder responder)
         {
             var result = false;
 
@@ -148,7 +137,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                     }
 
                     var jsonText = JsonConvert.SerializeObject(response);
-                    _Responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
+                    responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
 
                     result = true;
                 }

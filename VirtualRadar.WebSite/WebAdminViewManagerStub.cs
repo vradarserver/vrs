@@ -48,5 +48,10 @@ namespace VirtualRadar.WebSite
         {
             ;
         }
+
+        public void RegisterTranslations(Type stringResourcesType, string @namespace)
+        {
+            ;
+        }
     }
 }

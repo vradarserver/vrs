@@ -57,6 +57,11 @@ namespace VirtualRadar.Plugin.WebAdmin
         private Dictionary<Type, IHtmlLocaliser> _HtmlLocalisers;
 
         /// <summary>
+        /// A map of normalised request path and files to JavaScript translation objects.
+        /// </summary>
+        private Dictionary<string, JavaScriptTranslations> _JavaScriptTranslations;
+
+        /// <summary>
         /// The site roots for every registered web admin folder.
         /// </summary>
         private List<SiteRoot> _SiteRoots;
@@ -65,6 +70,11 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// A map of template markers to the HTML files to substitute into their place in HTML files.
         /// </summary>
         private Dictionary<string, string> _TemplateMarkerFileNames;
+
+        /// <summary>
+        /// An object that can be used to respond to requests.
+        /// </summary>
+        private IResponder _Responder;
 
         /// <summary>
         /// The lock object that controls access to the fields.
@@ -123,8 +133,10 @@ namespace VirtualRadar.Plugin.WebAdmin
             }
 
             _HtmlLocalisers = new Dictionary<Type,IHtmlLocaliser>();
+            _JavaScriptTranslations = new Dictionary<string,JavaScriptTranslations>();
             _ProtectedFolder = protectedFolder;
             _RegisteredWebAdminFolders = new HashSet<string>();
+            _Responder = Factory.Singleton.Resolve<IResponder>();
             _SiteRoots = new List<SiteRoot>();
             _TemplateMarkerFileNames = new Dictionary<string,string>();
             _ViewMethodMapper = new ViewMethodMapper();
@@ -230,16 +242,24 @@ namespace VirtualRadar.Plugin.WebAdmin
 
                 if(webAdminView.StringResources != null) {
                     if(!_HtmlLocalisers.ContainsKey(webAdminView.StringResources)) {
-                        var htmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
-                        htmlLocaliser.Initialise();
-                        htmlLocaliser.AddResourceStrings(webAdminView.StringResources);
-
-                        var newMap = CollectionHelper.ShallowCopy(_HtmlLocalisers);
-                        newMap.Add(webAdminView.StringResources, htmlLocaliser);
-                        _HtmlLocalisers = newMap;
+                        AddHtmlLocaliser(webAdminView.StringResources);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds a new HTML localiser to the collection.
+        /// </summary>
+        /// <param name="stringResources"></param>
+        private void AddHtmlLocaliser(Type stringResources)
+        {
+            var htmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            htmlLocaliser.Initialise(stringResources);
+
+            var newMap = CollectionHelper.ShallowCopy(_HtmlLocalisers);
+            newMap.Add(stringResources, htmlLocaliser);
+            _HtmlLocalisers = newMap;
         }
 
         /// <summary>
@@ -258,6 +278,41 @@ namespace VirtualRadar.Plugin.WebAdmin
                     var newMap = CollectionHelper.ShallowCopy(_TemplateMarkerFileNames);
                     newMap.Add(templateMarker, templateHtmlFullPath);
                     _TemplateMarkerFileNames = newMap;
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="stringResourcesType"></param>
+        /// <param name="namespace"></param>
+        public void RegisterTranslations(Type stringResourcesType, string @namespace)
+        {
+            if(String.IsNullOrEmpty(@namespace)) throw new InvalidOperationException("You must supply a namespace");
+        }
+
+        /// <summary>
+        /// Does the work on behalf of <see cref="RegisterTranslations"/>. Allows the namespace to be empty.
+        /// </summary>
+        /// <param name="stringResourcesType"></param>
+        /// <param name="namespace"></param>
+        /// <param name="addGlobalizeObject"></param>
+        internal void RegisterTranslations(Type stringResourcesType, string @namespace, bool addGlobalizeObject)
+        {
+            lock(_SyncLock) {
+                if(!_HtmlLocalisers.ContainsKey(stringResourcesType)) {
+                    AddHtmlLocaliser(stringResourcesType);
+                }
+
+                var htmlLocalisers = _HtmlLocalisers;
+                var pathAndFile = String.Format("/WebAdmin/script/Strings{0}.js", String.IsNullOrEmpty(@namespace) ? "" : String.Format(".{0}", @namespace));
+                pathAndFile = NormaliseFullPath(pathAndFile);
+                if(!_JavaScriptTranslations.ContainsKey(pathAndFile)) {
+                    var javaScriptTranslation = new JavaScriptTranslations(htmlLocalisers[stringResourcesType], @namespace, addGlobalizeObject);
+                    var newMap = CollectionHelper.ShallowCopy(_JavaScriptTranslations);
+                    newMap.Add(pathAndFile, javaScriptTranslation);
+                    _JavaScriptTranslations = newMap;
                 }
             }
         }
@@ -315,6 +370,8 @@ namespace VirtualRadar.Plugin.WebAdmin
                     if(webAdminView.StringResources != null && htmlLocalisers.TryGetValue(webAdminView.StringResources, out htmlLocaliser)) {
                         args.Content = htmlLocaliser.Html(args.Content, args.Encoding);
                     }
+                    args.Content = htmlLocalisers[typeof(VirtualRadar.Localisation.Strings)].Html(args.Content, args.Encoding);
+                    args.Content = htmlLocalisers[typeof(VirtualRadar.WebSite.WebSiteStrings)].Html(args.Content, args.Encoding);
 
                     foreach(var kvp in templateMarkerFileNames) {
                         args.Content = ExpandTemplateMarkerFromFile(args.Content, kvp.Key, kvp.Value);
@@ -332,8 +389,17 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <param name="args"></param>
         private void WebServer_RequestReceived(object sender, RequestReceivedEventArgs args)
         {
-            if(Enabled && _ViewMethodMapper.ProcessJsonRequest(args)) {
-                args.Handled = true;
+            if(Enabled) {
+                if(_ViewMethodMapper.ProcessJsonRequest(args, _Responder)) {
+                    args.Handled = true;
+                } else {
+                    var javaScriptTranslations = _JavaScriptTranslations;
+                    JavaScriptTranslations translations;
+                    if(javaScriptTranslations.TryGetValue(NormaliseFullPath(args.PathAndFile), out translations)) {
+                        _Responder.SendText(args.Request, args.Response, translations.JavaScript, Encoding.UTF8, MimeType.Javascript);
+                        args.Handled = true;
+                    }
+                }
             }
         }
     }
