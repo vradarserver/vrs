@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="TextContent.cs" />
     <Compile Include="TextPage.cs" />
+    <Compile Include="WebAdminViewManagerStub.cs" />
     <Compile Include="WebSite.cs" />
     <Compile Include="WebSiteExtender.cs" />
     <Compile Include="WebSiteGraphics.cs" />

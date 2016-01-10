@@ -12,69 +12,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using InterfaceFactory;
-using Newtonsoft.Json;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.Presenter;
-using VirtualRadar.Interface.View;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.Plugin.WebAdmin.View
+namespace VirtualRadar.Plugin.WebAdmin
 {
-    public class AboutView : IAboutView
+    /// <summary>
+    /// The response sent to all JSON calls on a mapped view.
+    /// </summary>
+    class JsonResponse
     {
-        IAboutPresenter _Presenter;
+        /// <summary>
+        /// This will be null if no exception was thrown during the processing of the JSON, otherwise it'll be the exception message.
+        /// </summary>
+        public string Exception { get; set; }
 
-        public string Caption { get; set; }
-
-        public string ProductName { get; set; }
-
-        public string Version { get; set; }
-
-        private DateTime _BuildDate;
-        public DateTime BuildDate
-        {
-            get { return _BuildDate; }
-            set { _BuildDate = value; FormattedBuildDate = value.ToString(); }
-        }
-
-        public string FormattedBuildDate { get; set; }
-
-        public string Copyright { get; set; }
-
-        public string Description { get; set; }
-
-        [JsonIgnore]
-        public string ConfigurationFolder { get; set; }
-
-        public bool IsMono { get; set; }
-
-        #pragma warning disable 0067
-        public event EventHandler OpenConfigurationFolderClicked;
-        #pragma warning restore 0067
-
-        public void ShowConfigurationFolderContents()
-        {
-            ;
-        }
-
-        public DialogResult ShowView()
-        {
-            _Presenter = Factory.Singleton.Resolve<IAboutPresenter>();
-            _Presenter.Initialise(this);
-
-            return DialogResult.OK;
-        }
-
-        public void Dispose()
-        {
-        }
-
-        [WebAdminMethod]
-        public IAboutView GetState()
-        {
-            return this;
-        }
+        /// <summary>
+        /// The response from the call.
+        /// </summary>
+        public object Response { get; set; }
     }
 }

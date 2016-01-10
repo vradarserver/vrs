@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2016 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,59 +10,50 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Plugin.WebAdmin.View;
+using VirtualRadar.Interface.View;
 
-namespace VirtualRadar.Plugin.WebAdmin
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// Holds all of the information necessary to map between a view interface and the web page that
-    /// represents that view.
+    /// The interface that objects which handle collections of <see cref="WebAdminView"/>s must implement.
     /// </summary>
-    class ViewMap
+    public interface IWebAdminViewManager : ISingleton<IWebAdminViewManager>
     {
         /// <summary>
-        /// Gets the filename of the view's page.
+        /// Returns true if the web admin plugin has been installed.
         /// </summary>
-        public string ViewPage { get; private set; }
+        bool WebAdminPluginInstalled { get; }
 
         /// <summary>
-        /// Gets the path and file of the view page.
+        /// Registers a folder with web admin view HTML files on behalf of a plugin.
         /// </summary>
-        public string ViewPathAndFile { get; private set; }
+        /// <param name="pluginFolder"></param>
+        /// <param name="subFolder"></param>
+        /// <remarks>
+        /// Do not put web admin views in or under the plugin's normal Web folder, keep them separate
+        /// so that they are not served if the WebAdmin plugin is not installed.
+        /// </remarks>
+        void RegisterWebAdminViewFolder(string pluginFolder, string subFolder);
 
         /// <summary>
-        /// Gets the filename of the JSON that carries the view's data to the site.
+        /// Registers a template marker and the file that contains the HTML that should be subtituted in its place
+        /// when seen within a web admin HTML file.
         /// </summary>
-        public string ViewDataPage { get; private set; }
+        /// <param name="templateMarker"></param>
+        /// <param name="templateHtmlFullPath"></param>
+        /// <remarks>
+        /// The web admin plugin reserves the @head.html@ template marker. All web admin views should include
+        /// this marker in their head tag.
+        /// </remarks>
+        void RegisterTemplateFileName(string templateMarker, string templateHtmlFullPath);
 
         /// <summary>
-        /// Gets the path and file of the view data page.
+        /// Registers a view with the web admin site. The view's folder must previously have been registered
+        /// with a call to <see cref="RegisterWebAdminViewFolder"/>.
         /// </summary>
-        public string ViewDataPathAndFile { get; private set; }
-
-        /// <summary>
-        /// Gets the view that is mapped onto the web page.
-        /// </summary>
-        public BaseView View { get; private set; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="folder"></param>
-        /// <param name="htmlFileName"></param>
-        /// <param name="view"></param>
-        public ViewMap(string folder, string htmlFileName, BaseView view)
-        {
-            ViewPage = htmlFileName;
-            ViewPathAndFile = String.Format("{0}/{1}", folder, ViewPage);
-
-            ViewDataPage = Path.ChangeExtension(ViewPage, ".json");
-            ViewDataPathAndFile = String.Format("{0}/{1}", folder, ViewDataPage);
-
-            View = view;
-        }
+        /// <param name="webAdminView"></param>
+        void AddWebAdminView(WebAdminView webAdminView);
     }
 }

@@ -74,7 +74,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Plugin.BaseStationDatabaseWriter\Plugin.BaseStationDatabaseWriter.csproj">
       <Project>{FE25F47B-7A81-4A04-8E00-99C36BCA8E03}</Project>
-      <Name>VirtualRadar.Plugin.BaseStationDatabaseWriter</Name>
+      <Name>Plugin.BaseStationDatabaseWriter</Name>
     </ProjectReference>
     <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
       <Project>{94F0A821-51BB-4381-9413-1A3FAD661D82}</Project>

@@ -5,6 +5,7 @@
         <title>::WA_Title_About:: - ::WA_Title_WebAdmin::</title>
         @head.html@
         <!-- [[ BUNDLE END ]] -->
+        <script src="script/About.js"></script>
     </head>
     <body>
         <div id="page-container">
@@ -17,17 +18,28 @@
 
                         <div class="row">
                             <label class="col-sm-2">::Version:::</label>
-                            <div class="col-sm-10"><p id="about-version"></p></div>
+                            <div class="col-sm-10">
+                                <p data-bind="text: Version"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <p data-bind="text: FormattedBuildDate"></p>
+                            </div>
                         </div>
 
                         <div class="row">
                             <label class="col-sm-2">::WA_Label_Environment:::</label>
-                            <div class="col-sm-10"><p id="about-environment"></p></div>
+                            <div class="col-sm-10">
+                                <p data-bind="text: Environment"></p>
+                            </div>
                         </div>
 
                         <div class="row">
                             <label class="col-sm-2">::WA_Label_Credits:::</label>
-                            <div class="col-sm-10"><p id="about-credits"></p></div>
+                            <div class="col-sm-10">
+                                <p data-bind="html: FormattedDescription"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -35,34 +47,7 @@
         </div>
 
         <script type="text/javascript">
-            (function(VRS, $, undefined)
-            {
-                //region AboutView
-                VRS.WebAdmin.AboutView = function(settings)
-                {
-                    VRS.WebAdmin.View.call(this, settings);
-
-                    /**
-                     * Shows the content sent from the server.
-                     * @param {VRS_WEBADMIN_VIEWDATA_ABOUT} data
-                     */
-                    this.showContent = function(data)
-                    {
-                        $('#about-version').text(data.Version);
-                        $('#about-environment').html(data.IsMono ? '::WA_Value_Mono::' : '::WA_Value_DotNet::');
-                        $('#about-credits').html(data.Description.replace(/(?:\r\n|\r|\n)/g, '<br />'));
-                    };
-                };
-                VRS.WebAdmin.AboutView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
-                //endregion
-
-                var aboutView = new VRS.WebAdmin.AboutView({
-                    pageUrl: 'About.html',
-                    jsonUrl: 'About.json',
-                    refreshPeriod: 0
-                });
-                aboutView.initialise();
-            }(window.VRS = window.VRS || {}, jQuery));
+            window.pageHandler = new VRS.WebAdmin.About.PageHandler();
         </script>
     </body>
 </html>
