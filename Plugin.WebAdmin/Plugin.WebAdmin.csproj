@@ -61,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewMethodMapper.cs" />
     <Compile Include="View\AboutView.cs" />
+    <Compile Include="View\ILogView.cs" />
     <Compile Include="View\LogView.cs" />
     <Compile Include="View\MainView.cs" />
     <Compile Include="View\BaseView.cs" />
@@ -112,6 +113,7 @@
     <TypeScriptCompile Include="Typings\typedefs.d.ts" />
     <TypeScriptCompile Include="Typings\vrs.d.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\About.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -187,6 +189,12 @@
     </Content>
     <Content Include="Web\WebAdmin\About.js.map">
       <DependentUpon>About.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Log.js">
+      <DependentUpon>Log.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Log.js.map">
+      <DependentUpon>Log.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\templates\head.html" />
   </ItemGroup>
