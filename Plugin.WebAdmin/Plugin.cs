@@ -134,13 +134,16 @@ namespace VirtualRadar.Plugin.WebAdmin
 
             var pathFromRoot = String.Format("/{0}/", ProtectedFolder);
             _WebAdminViewManager.Startup(parameters.WebSite);
+            _WebAdminViewManager.RegisterTranslations(typeof(VirtualRadar.WebSite.WebSiteStrings), "", false);
+            _WebAdminViewManager.RegisterTranslations(typeof(VirtualRadar.Localisation.Strings), "Server", false);
+            _WebAdminViewManager.RegisterTranslations(typeof(WebAdminStrings), "WebAdmin", true);
+
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html", () => new View.AboutView(), typeof(WebAdminStrings)));
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html", () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
             _WebAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
 
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = _Options.Enabled;
-            _WebSiteExtender.PageHandlers.Add("/WebAdmin/webAdminStrings.js", WebAdminStringsJavaScript.SendJavaScript);
             _WebSiteExtender.Initialise(parameters);
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
 

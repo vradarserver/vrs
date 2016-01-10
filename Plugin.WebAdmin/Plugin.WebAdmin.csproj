@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IOptionsView.cs" />
+    <Compile Include="JavaScriptTranslations.cs" />
     <Compile Include="JsonResponse.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="OptionsStorage.cs" />
@@ -93,6 +94,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ServerModels.tt</DependentUpon>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-webadmin.d.ts">
+      <DependentUpon>translations-webadmin.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-server.d.ts">
+      <DependentUpon>translations-server.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-website.d.ts">
+      <DependentUpon>translations-website.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="Typings\typedefs.d.ts" />
     <TypeScriptCompile Include="Typings\vrs.d.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\About.ts" />
@@ -110,6 +126,10 @@
       <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
       <Name>VirtualRadar.Localisation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.WebSite\VirtualRadar.WebSite.csproj">
+      <Project>{eacc3459-9586-4977-a664-ae5827699b30}</Project>
+      <Name>VirtualRadar.WebSite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
       <Project>{3a1330d8-1e7d-4c70-ba9a-39851389cfff}</Project>
       <Name>VirtualRadar.WinForms</Name>
@@ -120,6 +140,18 @@
     <None Include="Typings\ServerModels.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ServerModels.d.ts</LastGenOutput>
+    </None>
+    <None Include="Typings\translations-website.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-website.d.ts</LastGenOutput>
+    </None>
+    <None Include="Typings\translations-server.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-server.d.ts</LastGenOutput>
+    </None>
+    <None Include="Typings\translations-webadmin.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-webadmin.d.ts</LastGenOutput>
     </None>
     <Content Include="Web\script\webadmin\knockout.viewmodel.js" />
     <Content Include="VirtualRadar.Plugin.WebAdmin.xml">

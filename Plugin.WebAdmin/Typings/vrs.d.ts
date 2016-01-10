@@ -13,4 +13,3 @@
 /// <reference path="../../virtualradar.resources/vrs.d.ts" />
 /// <reference path="../../virtualradar.website/site/typings/globaloptions.d.ts" />
 /// <reference path="../../virtualradar.website/site/typings/typedefs.d.ts" />
-/// <reference path="../../virtualradar.website/site/typings/translations.d.ts" />

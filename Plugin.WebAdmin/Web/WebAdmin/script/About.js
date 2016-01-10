@@ -28,7 +28,7 @@ var VRS;
                         this._Model = ko.viewmodel.fromModel(state.Response, {
                             extend: {
                                 "{root}": function (root) {
-                                    root.Environment = ko.computed(function () { return root.IsMono() ? 'Mono' : '.NET'; });
+                                    root.Environment = ko.computed(function () { return root.IsMono() ? VRS.WebAdmin.$$.WA_Value_Mono : VRS.WebAdmin.$$.WA_Value_DotNet; });
                                     root.FormattedDescription = ko.computed(function () { return root.Description().replace(/(?:\r\n|\r|\n)/g, '<br />'); });
                                 }
                             }

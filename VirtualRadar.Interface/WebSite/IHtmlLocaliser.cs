@@ -56,5 +56,12 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="resourceString"></param>
         /// <returns></returns>
         string ConvertResourceStringToHtmlString(string resourceString);
+
+        /// <summary>
+        /// Escapes quotes in the string, converts linebreaks to \r or \n etc.
+        /// </summary>
+        /// <param name="resourceString"></param>
+        /// <returns></returns>
+        string ConvertResourceStringToJavaScriptString(string resourceString, char stringDelimiter);
     }
 }
