@@ -12,69 +12,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using InterfaceFactory;
-using Newtonsoft.Json;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.Plugin.WebAdmin.View
+namespace VirtualRadar.WebSite
 {
-    public class AboutView : IAboutView
+    /// <summary>
+    /// Default implementation, does nothing. If the WebAdmin plugin has been loaded then that will
+    /// have replaced this implementation with its own. This exists so that plugins can register views
+    /// even if the WebAdmin plugin has not been installed.
+    /// </summary>
+    class WebAdminViewManagerStub : IWebAdminViewManager
     {
-        IAboutPresenter _Presenter;
-
-        public string Caption { get; set; }
-
-        public string ProductName { get; set; }
-
-        public string Version { get; set; }
-
-        private DateTime _BuildDate;
-        public DateTime BuildDate
+        public IWebAdminViewManager Singleton
         {
-            get { return _BuildDate; }
-            set { _BuildDate = value; FormattedBuildDate = value.ToString(); }
+            get { return this; }
         }
 
-        public string FormattedBuildDate { get; set; }
+        public bool WebAdminPluginInstalled
+        {
+            get { return false; }
+        }
 
-        public string Copyright { get; set; }
-
-        public string Description { get; set; }
-
-        [JsonIgnore]
-        public string ConfigurationFolder { get; set; }
-
-        public bool IsMono { get; set; }
-
-        #pragma warning disable 0067
-        public event EventHandler OpenConfigurationFolderClicked;
-        #pragma warning restore 0067
-
-        public void ShowConfigurationFolderContents()
+        public void RegisterWebAdminViewFolder(string pluginFolder, string subFolder)
         {
             ;
         }
 
-        public DialogResult ShowView()
+        public void AddWebAdminView(WebAdminView webAdminView)
         {
-            _Presenter = Factory.Singleton.Resolve<IAboutPresenter>();
-            _Presenter.Initialise(this);
-
-            return DialogResult.OK;
+            ;
         }
 
-        public void Dispose()
+        public void RegisterTemplateFileName(string templateMarker, string templateHtmlFullPath)
         {
-        }
-
-        [WebAdminMethod]
-        public IAboutView GetState()
-        {
-            return this;
+            ;
         }
     }
 }

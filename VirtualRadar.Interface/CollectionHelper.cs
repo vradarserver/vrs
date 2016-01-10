@@ -12,69 +12,56 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using InterfaceFactory;
-using Newtonsoft.Json;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.Presenter;
-using VirtualRadar.Interface.View;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.Plugin.WebAdmin.View
+namespace VirtualRadar.Interface
 {
-    public class AboutView : IAboutView
+    /// <summary>
+    /// A static class with methods that can help when dealing with collections.
+    /// </summary>
+    public static class CollectionHelper
     {
-        IAboutPresenter _Presenter;
-
-        public string Caption { get; set; }
-
-        public string ProductName { get; set; }
-
-        public string Version { get; set; }
-
-        private DateTime _BuildDate;
-        public DateTime BuildDate
+        /// <summary>
+        /// Returns a copy of the list passed across.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static List<T> ShallowCopy<T>(List<T> list)
         {
-            get { return _BuildDate; }
-            set { _BuildDate = value; FormattedBuildDate = value.ToString(); }
+            return new List<T>(list);
         }
 
-        public string FormattedBuildDate { get; set; }
-
-        public string Copyright { get; set; }
-
-        public string Description { get; set; }
-
-        [JsonIgnore]
-        public string ConfigurationFolder { get; set; }
-
-        public bool IsMono { get; set; }
-
-        #pragma warning disable 0067
-        public event EventHandler OpenConfigurationFolderClicked;
-        #pragma warning restore 0067
-
-        public void ShowConfigurationFolderContents()
+        /// <summary>
+        /// Returns a copy of the dictionary passed across.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="dictionary"></param>
+        /// <returns></returns>
+        public static Dictionary<TKey, TValue> ShallowCopy<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
         {
-            ;
+            var result = new Dictionary<TKey, TValue>();
+            foreach(var kvp in dictionary) {
+                result.Add(kvp.Key, kvp.Value);
+            }
+
+            return result;
         }
 
-        public DialogResult ShowView()
+        /// <summary>
+        /// Returns a copy of the hashset passed across.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="hashSet"></param>
+        /// <returns></returns>
+        public static HashSet<T> ShallowCopy<T>(HashSet<T> hashSet)
         {
-            _Presenter = Factory.Singleton.Resolve<IAboutPresenter>();
-            _Presenter.Initialise(this);
+            var result = new HashSet<T>();
+            foreach(var item in hashSet) {
+                result.Add(item);
+            }
 
-            return DialogResult.OK;
-        }
-
-        public void Dispose()
-        {
-        }
-
-        [WebAdminMethod]
-        public IAboutView GetState()
-        {
-            return this;
+            return result;
         }
     }
 }

@@ -33,7 +33,6 @@ namespace VirtualRadar.Plugin.WebAdmin
     /// </summary>
     public class Plugin : IPlugin
     {
-        #region Fields
         /// <summary>
         /// The options that govern the plugin's behaviour.
         /// </summary>
@@ -50,22 +49,11 @@ namespace VirtualRadar.Plugin.WebAdmin
         private IWebSiteExtender _WebSiteExtender;
 
         /// <summary>
-        /// A localiser that can substitute strings into HTML.
+        /// The implementation of <see cref="IWebAdminViewManager"/> that we register with the system,
+        /// overriding the stub version in VirtualRadar.WebSite.
         /// </summary>
-        private IHtmlLocaliser _HtmlLocaliser;
+        private WebAdminViewManager _WebAdminViewManager;
 
-        /// <summary>
-        /// A map from a server path and file (in lower-case) to the <see cref="ViewMap"/> representing a view.
-        /// </summary>
-        private Dictionary<string, ViewMap> _PathAndFileViewMap = new Dictionary<string,ViewMap>();
-
-        /// <summary>
-        /// The full path to the head template file.
-        /// </summary>
-        private string _HeadTemplateFileName;
-        #endregion
-
-        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -89,7 +77,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Version { get { return "2.0.3"; } }
+        public string Version { get { return "2.4"; } }
 
         /// <summary>
         /// See interface docs.
@@ -100,9 +88,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// See interface docs.
         /// </summary>
         public string StatusDescription { get; private set; }
-        #endregion
 
-        #region Events
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -116,9 +102,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             EventHelper.Raise(StatusChanged, this, args);
         }
-        #endregion
 
-        #region Constructor
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -126,19 +110,20 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             Status = WebAdminStrings.Disabled;
         }
-        #endregion
 
-        #region RegisterImplementations
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="classFactory"></param>
         public void RegisterImplementations(IClassFactory classFactory)
         {
-        }
-        #endregion
+            _WebAdminViewManager = (WebAdminViewManager)(new WebAdminViewManager().Singleton);
+            _WebAdminViewManager.Initialise(ProtectedFolder);
+            _WebAdminViewManager.RegisterTemplateFileName("@head.html@", Path.GetFullPath(Path.Combine(PluginFolder, "web/webadmin/templates/head.html")));
 
-        #region Startup
+            classFactory.Register<IWebAdminViewManager, WebAdminViewManager>();
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -147,66 +132,35 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             _Options = OptionsStorage.Load(this);
 
-            _HtmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
-            _HtmlLocaliser.Initialise();
-            _HtmlLocaliser.AddResourceStrings(typeof(WebAdminStrings));
-
-            _HeadTemplateFileName = Path.Combine(parameters.PluginFolder, "Web");
-            _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "WebAdmin");
-            _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "templates");
-            _HeadTemplateFileName = Path.Combine(_HeadTemplateFileName, "head.html");
-
-            AddView("Index.html", new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList));
-            AddView("Options.html", new View.SettingsView());
-            AddView("Log.html", new View.LogView());
-            AddView("About.html", new View.AboutView());
+            var pathFromRoot = String.Format("/{0}/", ProtectedFolder);
+            _WebAdminViewManager.Startup(parameters.WebSite);
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html", () => new View.AboutView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html", () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
+            _WebAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
 
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = _Options.Enabled;
-            _WebSiteExtender.WebRootSubFolder = "Web";
             _WebSiteExtender.PageHandlers.Add("/WebAdmin/webAdminStrings.js", WebAdminStringsJavaScript.SendJavaScript);
-            AddJsonHandlers();
             _WebSiteExtender.Initialise(parameters);
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
-
-            parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
 
             ApplyOptions(_Options);
         }
 
-        private void AddView(string htmlFileName, BaseView view)
-        {
-            var viewMap = new ViewMap("/WebAdmin", htmlFileName, view);
-            _PathAndFileViewMap.Add(viewMap.ViewPathAndFile.ToLower(), viewMap);
-        }
-
-        private void AddJsonHandlers()
-        {
-            foreach(var viewMap in _PathAndFileViewMap.Values) {
-                _WebSiteExtender.PageHandlers.Add(viewMap.ViewDataPathAndFile, viewMap.View.SendData);
-            }
-        }
-        #endregion
-
-        #region GuiThreadStartup
         /// <summary>
         /// See interface docs.
         /// </summary>
         public void GuiThreadStartup()
         {
         }
-        #endregion
 
-        #region Shutdown
         /// <summary>
         /// See interface docs.
         /// </summary>
         public void Shutdown()
         {
         }
-        #endregion
 
-        #region ShowWinFormsOptionsUI
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -223,9 +177,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                 }
             }
         }
-        #endregion
 
-        #region ApplyOptions
         /// <summary>
         /// Applies the options.
         /// </summary>
@@ -235,6 +187,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             _Options = options;
             _WebSiteExtender.Enabled = _Options.Enabled;
             _WebSiteExtender.RestrictAccessToFolder(ProtectedFolder, _Options.Access);
+            _WebAdminViewManager.Enabled = _Options.Enabled;
 
             using(new CultureSwitcher()) {
                 if(!options.Enabled) {
@@ -246,43 +199,5 @@ namespace VirtualRadar.Plugin.WebAdmin
 
             OnStatusChanged(EventArgs.Empty);
         }
-        #endregion
-
-        #region ExpandTemplateMarkerFromFile
-        private string ExpandTemplateMarkerFromFile(string html, string templateMarker, string contentFileName)
-        {
-            if(html.IndexOf(templateMarker) != -1) {
-                var templateContent = File.ReadAllText(contentFileName);
-                html = html.Replace(templateMarker, templateContent);
-            }
-
-            return html;
-        }
-        #endregion
-
-        #region Events subscribed
-        /// <summary>
-        /// Called whenever the web site fetches an HTML file from disk.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void WebSite_HtmlLoadedFromFile(object sender, TextContentEventArgs e)
-        {
-            var key = e.PathAndFile.ToLower();
-            if(key.StartsWith("/webadmin/")) {
-                ViewMap viewMap;
-                if(_PathAndFileViewMap.TryGetValue(key, out viewMap)) {
-                    // Subtitute simple strings
-                    e.Content = _HtmlLocaliser.Html(e.Content, e.Encoding);
-
-                    // Substitute in the content of the head template file
-                    e.Content = ExpandTemplateMarkerFromFile(e.Content, "@head.html@", _HeadTemplateFileName);
-
-                    // Ensure that there is a presenter up and running for the page
-                    viewMap.View.ShowView();
-                }
-            }
-        }
-        #endregion
     }
 }

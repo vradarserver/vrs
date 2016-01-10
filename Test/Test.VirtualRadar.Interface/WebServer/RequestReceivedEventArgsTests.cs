@@ -82,6 +82,7 @@ namespace Test.VirtualRadar.Interface.WebServer
 
             Assert.AreEqual(worksheet.EString("WebSite"), args.WebSite);
             Assert.AreEqual(worksheet.EString("PathAndFile"), args.PathAndFile);
+            Assert.AreEqual(worksheet.EString("Path"), args.Path);
             Assert.AreEqual(worksheet.EString("File"), args.File);
             Assert.AreEqual(worksheet.EString("ProxyAddress"), args.ProxyAddress);
             Assert.AreEqual(worksheet.EString("ClientAddress"), args.ClientAddress);

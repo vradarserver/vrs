@@ -33,6 +33,7 @@ namespace VirtualRadar.WebSite
             factory.Register<IBundler, Bundler>();
             factory.Register<IHtmlLocaliser, HtmlLocaliser>();
             factory.Register<IMinifier, Minifier>();
+            factory.Register<IWebAdminViewManager, WebAdminViewManagerStub>();
             factory.Register<IWebSite, WebSite>();
             factory.Register<IWebSiteProvider, WebSiteProvider>();
             factory.Register<IWebSiteExtender, WebSiteExtender>();

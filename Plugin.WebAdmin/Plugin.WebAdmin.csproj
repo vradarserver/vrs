@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -51,12 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IOptionsView.cs" />
+    <Compile Include="JsonResponse.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="OptionsStorage.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginLocalise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewMap.cs" />
+    <Compile Include="ViewMethodMapper.cs" />
     <Compile Include="View\AboutView.cs" />
     <Compile Include="View\LogView.cs" />
     <Compile Include="View\MainView.cs" />
@@ -69,6 +71,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WebAdminStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="WebAdminViewManager.cs" />
     <Compile Include="WebValidationResult.cs" />
     <Compile Include="WebValidationResults.cs" />
     <Compile Include="WinForms\OptionsView.cs">
@@ -78,7 +81,22 @@
       <DependentUpon>OptionsView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\Enums.ts">
+      <DependentUpon>ServerModels.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\knockout.d.ts" />
+    <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />
+    <TypeScriptCompile Include="Typings\knockout.viewmodel.d.ts" />
+    <TypeScriptCompile Include="Typings\ServerModels.d.ts">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ServerModels.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\typedefs.d.ts" />
+    <TypeScriptCompile Include="Typings\vrs.d.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\script\About.ts" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
       <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
@@ -98,6 +116,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Typings\Manager.ttinclude" />
+    <None Include="Typings\ServerModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ServerModels.d.ts</LastGenOutput>
+    </None>
+    <Content Include="Web\script\webadmin\knockout.viewmodel.js" />
     <Content Include="VirtualRadar.Plugin.WebAdmin.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -126,8 +150,13 @@
     <Content Include="Web\WebAdmin\Index.html" />
     <Content Include="Web\WebAdmin\Log.html" />
     <Content Include="Web\WebAdmin\Options.html" />
+    <Content Include="Web\WebAdmin\script\About.js">
+      <DependentUpon>About.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\script\About.js.map">
+      <DependentUpon>About.ts</DependentUpon>
+    </Content>
     <Content Include="Web\WebAdmin\templates\head.html" />
-    <Content Include="Web\_external\_typedefs.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="WebAdminStrings.de-DE.resx" />
@@ -152,7 +181,15 @@
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptNoEmitOnError>False</TypeScriptNoEmitOnError>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "WebAdmin"</PostBuildEvent>
   </PropertyGroup>

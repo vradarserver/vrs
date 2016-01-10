@@ -105,6 +105,7 @@
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
+    <Compile Include="CollectionHelper.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
@@ -134,6 +135,9 @@
     <Compile Include="StandingData\EnginePlacement.cs" />
     <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />
+    <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
+    <Compile Include="WebSite\WebAdminView.cs" />
+    <Compile Include="WebSite\IWebAdminViewManager.cs" />
     <Compile Include="WebSite\IWebSiteGraphics.cs" />
     <Compile Include="ITimer.cs" />
     <Compile Include="IXmlSerialiser.cs" />

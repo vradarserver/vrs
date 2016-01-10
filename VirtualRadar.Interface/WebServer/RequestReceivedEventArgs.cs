@@ -77,6 +77,11 @@ namespace VirtualRadar.Interface.WebServer
         public string PathAndFile { get; private set; }
 
         /// <summary>
+        /// Gets the path portion of <see cref="PathAndFile"/> or '/' if the request is for a file in the root.
+        /// </summary>
+        public string Path { get; private set; }
+
+        /// <summary>
         /// Gets the file portion of <see cref="PathAndFile"/> or an empty string if there is no file portion.
         /// </summary>
         public string File { get; private set; }
@@ -203,6 +208,7 @@ namespace VirtualRadar.Interface.WebServer
         {
             WebSite = "";
             PathAndFile = "";
+            Path = "";
 
             if(!String.IsNullOrEmpty(request.RawUrl) && request.RawUrl.StartsWith(Root, StringComparison.OrdinalIgnoreCase)) {
                 WebSite = String.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, Root);
@@ -216,12 +222,18 @@ namespace VirtualRadar.Interface.WebServer
                 PathAndFile = HttpUtility.UrlDecode(path);
                 if(PathAndFile.Length == 0) PathAndFile = "/";
 
+                var pathBuffer = new StringBuilder();
                 var pathParts = path.Split('/');
                 for(var i = 0;i < pathParts.Length;++i) {
                     var chunk = HttpUtility.UrlDecode(pathParts[i]);
                     if(i + 1 == pathParts.Length) File = chunk;
-                    else if(chunk.Length > 0) PathParts.Add(chunk);
+                    else if(chunk.Length > 0) {
+                        PathParts.Add(chunk);
+                        pathBuffer.Append('/');
+                        pathBuffer.Append(chunk);
+                    }
                 }
+                Path = pathBuffer.Length == 0 ? "/" : pathBuffer.ToString();
 
                 QueryString = HttpUtility.ParseQueryString(query);
             }

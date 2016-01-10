@@ -22,21 +22,19 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Plugin.WebAdmin.View
 {
     /// <summary>
     /// The class that carries the main view's data to the site.
     /// </summary>
-    class MainView : BaseView, IMainView
+    public class MainView : IMainView
     {
-        #region Fields
         private IMainPresenter _Presenter;
         private IUniversalPlugAndPlayManager _UPnpManager;
         private ISimpleAircraftList _FlightSimulatorXAircraftList;
-        #endregion
 
-        #region Properties
         [JsonProperty("BadPlugins")]
         public int InvalidPluginCount { get; set; }
 
@@ -72,49 +70,25 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         [JsonProperty("PublicRoot")]
         public string WebServerExternalAddress { get; set; }
-        #endregion
 
-        #region Extra properties
         public ServerRequest[] Requests { get; set; }
 
         public FeedStatus[] Feeds { get; set; }
 
         public RebroadcastServerConnection[] Rebroadcasters { get; set; }
-        #endregion
 
-        #region Events exposed
         public event EventHandler CheckForNewVersion;
-        protected virtual void OnCheckForNewVersion(EventArgs args)
-        {
-            EventHelper.Raise(CheckForNewVersion, this, args);
-        }
 
         public event EventHandler<EventArgs<IFeed>> ReconnectFeed;
-        protected virtual void OnReconnectFeed(EventArgs<IFeed> args)
-        {
-            EventHelper.Raise(ReconnectFeed, this, args);
-        }
 
         public event EventHandler<EventArgs<IFeed>> ResetPolarPlot;
-        protected virtual void OnResetPolarPlot(EventArgs<IFeed> args)
-        {
-            EventHelper.Raise(ResetPolarPlot, this, args);
-        }
-
-        public event EventHandler ToggleServerStatus;
-        protected virtual void OnToggleServerStatus(EventArgs args)
-        {
-            EventHelper.Raise(ToggleServerStatus, this, args);
-        }
 
         public event EventHandler ToggleUPnpStatus;
-        protected virtual void OnToggleUPnpStatus(EventArgs args)
-        {
-            EventHelper.Raise(ToggleUPnpStatus, this, args);
-        }
-        #endregion
 
-        #region Ctors
+        #pragma warning disable 0067
+        public event EventHandler ToggleServerStatus;
+        #pragma warning restore 0067
+
         public MainView(IUniversalPlugAndPlayManager uPnpManager, ISimpleAircraftList flightSimulatorXAircraftList)
         {
             Requests = new ServerRequest[0];
@@ -124,9 +98,22 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             _UPnpManager = uPnpManager;
             _FlightSimulatorXAircraftList = flightSimulatorXAircraftList;
         }
-        #endregion
 
-        #region Form methods
+        public void Dispose()
+        {
+            ;
+        }
+
+        public void BubbleExceptionToGui(Exception ex)
+        {
+            ;
+        }
+
+        public object ShowBusy(bool isBusy, object previousState)
+        {
+            return null;
+        }
+
         public void Initialise(IUniversalPlugAndPlayManager unused1, ISimpleAircraftList unused2)
         {
             ;
@@ -149,8 +136,6 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowFeedConnectionStatus(FeedStatus feed)
         {
-            // No need to have code for this - the next update of feed counters will include the new connection
-            // status. We're not showing this stuff in real time.
             ;
         }
 
@@ -169,50 +154,51 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             ;
         }
 
-        public override DialogResult ShowView()
+        public DialogResult ShowView()
         {
-            if(!IsRunning) {
-                _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
-                _Presenter.Initialise(this);
-                _Presenter.UPnpManager = _UPnpManager;
-            }
+            _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
+            _Presenter.Initialise(this);
+            _Presenter.UPnpManager = _UPnpManager;
 
-            return base.ShowView();
-        }
-        #endregion
-
-        #region Actions and Events
-        protected override void RaiseEvent(string eventName, NameValueCollection queryString)
-        {
-            IFeed receiverFeed = null;
-
-            switch(eventName) {
-                case "toggle-upnp-status":
-                    OnToggleUPnpStatus(EventArgs.Empty);
-                    break;
-                case "reconnect-feed":
-                    receiverFeed = ExtractReceiverFeedFromQueryString(queryString);
-                    if(receiverFeed != null) OnReconnectFeed(new EventArgs<IFeed>(receiverFeed));
-                    break;
-                case "reset-polar-plot":
-                    receiverFeed = ExtractReceiverFeedFromQueryString(queryString);
-                    if(receiverFeed != null) OnResetPolarPlot(new EventArgs<IFeed>(receiverFeed));
-                    break;
-            }
+            return DialogResult.OK;
         }
 
-        protected IFeed ExtractReceiverFeedFromQueryString(NameValueCollection queryString)
+        [WebAdminMethod]
+        public IMainView GetState()
         {
-            IFeed result = null;
-
-            int feedId;
-            if(int.TryParse(queryString["feedid"], out feedId)) {
-                var feeds = _Presenter.GetReceiverFeeds();
-                result = feeds.FirstOrDefault(r => r.UniqueId == feedId);
-            }
-
-            return result;
+            return this;
         }
-        #endregion
+
+        [WebAdminMethod]
+        public void RaiseCheckForNewVersion()
+        {
+            EventHelper.Raise(CheckForNewVersion, this, EventArgs.Empty);
+        }
+
+        [WebAdminMethod]
+        public void RaiseReconnectFeed(int feedId)
+        {
+            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feed = feedManager.GetByUniqueId(feedId, false);
+            if(feed != null) {
+                EventHelper.Raise(ReconnectFeed, this, new EventArgs<IFeed>(feed));
+            }
+        }
+
+        [WebAdminMethod]
+        public void RaiseResetPolarPlot(int feedId)
+        {
+            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feed = feedManager.GetByUniqueId(feedId, false);
+            if(feed != null) {
+                EventHelper.Raise(ResetPolarPlot, this, new EventArgs<IFeed>(feed));
+            }
+        }
+
+        [WebAdminMethod]
+        public void OnToggleUPnpStatus()
+        {
+            EventHelper.Raise(ToggleUPnpStatus, this, EventArgs.Empty);
+        }
     }
 }

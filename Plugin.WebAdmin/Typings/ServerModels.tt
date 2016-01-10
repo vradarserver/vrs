@@ -1,0 +1,48 @@
+﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="$(SolutionDir)Dependencies\TypeLite.Net35.dll" #>
+<#@ assembly name="$(SolutionDir)Dependencies\Newtonsoft.Json.dll" #>
+<#@ assembly name="$(TargetDir)InterfaceFactory.dll" #>
+<#@ assembly name="$(TargetDir)VirtualRadar.Interface.dll" #>
+<#@ assembly name="$(TargetDir)$(TargetFileName)" #>
+<#@ import namespace="TypeLite" #> 
+<#@ import namespace="TypeLite.Net4" #>
+<#@ output extension=".d.ts"#>
+<#@include file="Manager.ttinclude"#>
+<# var manager = Manager.Create(Host, GenerationEnvironment); #>
+<# var ts = TypeScript.Definitions()
+        .WithReference("Enums.ts")
+        .WithTypeFormatter((type, f) => "I" + ((TypeLite.TsModels.TsClass)type).Name)
+        .WithMemberFormatter(UseJsonName)
+        .WithPropertyVisibilityFormatter(PropertyIsVisible)
+        .For<VirtualRadar.Plugin.WebAdmin.View.AboutView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
+        ;
+#>
+<# var ko = TypeScript.Definitions(new TypeLite.AlternateGenerators.TsKnockoutModelGenerator())
+        .WithTypeFormatter((type, f) => "I" + ((TypeLite.TsModels.TsClass)type).Name + "_KO")
+        .WithMemberFormatter(UseJsonName)
+        .WithPropertyVisibilityFormatter(PropertyIsVisible)
+        .For<VirtualRadar.Plugin.WebAdmin.View.AboutView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
+        ;
+#>
+<#= ts.Generate(TsGeneratorOutput.Properties) #>
+<#= ko.Generate(TsGeneratorOutput.Properties) #>
+<# manager.StartNewFile("Enums.ts"); #>
+<#= ts.Generate(TsGeneratorOutput.Enums) #>
+<# manager.EndBlock(); #>
+<# manager.Process(true); #>
+
+<#+
+string UseJsonName(TypeLite.TsModels.TsProperty identifier)
+{
+    var jsonPropertyAttribute = identifier.MemberInfo.GetCustomAttributes(false).OfType<Newtonsoft.Json.JsonPropertyAttribute>().FirstOrDefault();
+    return jsonPropertyAttribute == null ? identifier.Name : jsonPropertyAttribute.PropertyName;
+}
+
+bool PropertyIsVisible(TypeLite.TsModels.TsProperty identifier)
+{
+    var jsonIgnoreAttribute = identifier.MemberInfo.GetCustomAttributes(false).OfType<Newtonsoft.Json.JsonIgnoreAttribute>().FirstOrDefault();
+    return jsonIgnoreAttribute == null;
+}
+#>
