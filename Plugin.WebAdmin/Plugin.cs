@@ -139,6 +139,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebAdminViewManager.RegisterTranslations(typeof(WebAdminStrings), "WebAdmin", true);
 
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html", () => new View.AboutView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html", () => new View.LogView(), typeof(WebAdminStrings)));
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html", () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
             _WebAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
 

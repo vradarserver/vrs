@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2016 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,43 +10,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using InterfaceFactory;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.Plugin.WebAdmin.View
 {
-    /// <summary>
-    /// Displays the content of the VRS log to the user.
-    /// </summary>
-    public class LogView : ILogView
+    public interface ILogView : IView
     {
-        public string[] LogLines
-        {
-            get {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                return log.GetContent(0);
-            }
-        }
-
-        public DialogResult ShowView()
-        {
-            return DialogResult.OK;
-        }
-
-        public void Dispose()
-        {
-            ;
-        }
-
-        [WebAdminMethod]
-        public ILogView GetState()
-        {
-            return this;
-        }
+        string[] LogLines { get; }
     }
 }

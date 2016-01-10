@@ -12,6 +12,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         Description: string;
         IsMono: boolean;
     }
+    interface ILogView {
+        LogLines: string[];
+    }
     interface IMainView {
         BadPlugins: number;
         NewVer: boolean;
@@ -94,6 +97,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         Copyright: KnockoutObservable<string>;
         Description: KnockoutObservable<string>;
         IsMono: KnockoutObservable<boolean>;
+    }
+    interface ILogView_KO {
+        LogLines: KnockoutObservableArray<string>;
     }
     interface IMainView_KO {
         BadPlugins: KnockoutObservable<number>;

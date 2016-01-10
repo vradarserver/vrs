@@ -15,6 +15,7 @@
         .WithMemberFormatter(UseJsonName)
         .WithPropertyVisibilityFormatter(PropertyIsVisible)
         .For<VirtualRadar.Plugin.WebAdmin.View.AboutView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.LogView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
         ;
 #>
@@ -23,6 +24,7 @@
         .WithMemberFormatter(UseJsonName)
         .WithPropertyVisibilityFormatter(PropertyIsVisible)
         .For<VirtualRadar.Plugin.WebAdmin.View.AboutView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.LogView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
         ;
 #>
