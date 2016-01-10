@@ -111,7 +111,7 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="Typings\typedefs.d.ts" />
     <TypeScriptCompile Include="Typings\vrs.d.ts" />
-    <TypeScriptCompile Include="Web\WebAdmin\script\About.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\viewscript\About.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -153,28 +153,28 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations-webadmin.d.ts</LastGenOutput>
     </None>
-    <Content Include="Web\script\webadmin\knockout.viewmodel.js" />
+    <Content Include="Web\WebAdmin\script\knockout.viewmodel.js" />
     <Content Include="VirtualRadar.Plugin.WebAdmin.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Web\css\webadmin\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="Web\css\webadmin\bootstrap\css\bootstrap.css" />
-    <Content Include="Web\css\webadmin\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Web\css\webadmin\jquery.bootstrap-touchspin.css" />
-    <Content Include="Web\script\webadmin\jquery.bootstrap-touchspin.js" />
-    <Content Include="Web\css\webadmin\webadmin.css" />
-    <Content Include="Web\script\webadmin\jquiplugin\bootstrap-form.js" />
-    <Content Include="Web\script\webadmin\knockout.mapping.js" />
-    <Content Include="Web\script\webadmin\bootstrap.js" />
-    <Content Include="Web\script\webadmin\fastclick.js" />
-    <Content Include="Web\script\webadmin\jquery-ui.js" />
-    <Content Include="Web\script\webadmin\jquiplugin\bootstrap-collapsible-panel.js" />
-    <Content Include="Web\script\webadmin\jquiplugin\bootstrap-modal.js" />
-    <Content Include="Web\script\webadmin\jquiplugin\bootstrap-responsive-table.js" />
-    <Content Include="Web\script\webadmin\knockout.js" />
-    <Content Include="Web\script\webadmin\records.js" />
-    <Content Include="Web\script\webadmin\siteNavigation.js" />
-    <Content Include="Web\script\webadmin\view.js" />
+    <Content Include="Web\WebAdmin\css\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Web\WebAdmin\css\bootstrap\css\bootstrap.css" />
+    <Content Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Web\WebAdmin\css\jquery.bootstrap-touchspin.css" />
+    <Content Include="Web\WebAdmin\script\jquery.bootstrap-touchspin.js" />
+    <Content Include="Web\WebAdmin\css\webadmin.css" />
+    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-form.js" />
+    <Content Include="Web\WebAdmin\script\knockout.mapping.js" />
+    <Content Include="Web\WebAdmin\script\bootstrap.js" />
+    <Content Include="Web\WebAdmin\script\fastclick.js" />
+    <Content Include="Web\WebAdmin\script\jquery-ui.js" />
+    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-collapsible-panel.js" />
+    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-modal.js" />
+    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-responsive-table.js" />
+    <Content Include="Web\WebAdmin\script\knockout.js" />
+    <Content Include="Web\WebAdmin\script\records.js" />
+    <Content Include="Web\WebAdmin\script\siteNavigation.js" />
+    <Content Include="Web\WebAdmin\script\view.js" />
     <Content Include="Web\WebAdmin\About.html" />
     <Content Include="Web\WebAdmin\images\gear-32x32.png" />
     <Content Include="Web\WebAdmin\images\notebook-32x32.png" />
@@ -182,10 +182,10 @@
     <Content Include="Web\WebAdmin\Index.html" />
     <Content Include="Web\WebAdmin\Log.html" />
     <Content Include="Web\WebAdmin\Options.html" />
-    <Content Include="Web\WebAdmin\script\About.js">
+    <Content Include="Web\WebAdmin\viewscript\About.js">
       <DependentUpon>About.ts</DependentUpon>
     </Content>
-    <Content Include="Web\WebAdmin\script\About.js.map">
+    <Content Include="Web\WebAdmin\viewscript\About.js.map">
       <DependentUpon>About.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\templates\head.html" />
@@ -205,16 +205,20 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web\css\webadmin\bootstrap\css\bootstrap-theme.css.map" />
-    <None Include="Web\css\webadmin\bootstrap\css\bootstrap.css.map" />
-    <None Include="Web\css\webadmin\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="Web\css\webadmin\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="Web\css\webadmin\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Web\WebAdmin\css\bootstrap\css\bootstrap-theme.css.map" />
+    <None Include="Web\WebAdmin\css\bootstrap\css\bootstrap.css.map" />
+    <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Web\css\webadmin\" />
+    <Folder Include="Web\script\webadmin\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
