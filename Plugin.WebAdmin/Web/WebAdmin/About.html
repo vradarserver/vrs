@@ -5,7 +5,7 @@
         <title>::WA_Title_About:: - ::WA_Title_WebAdmin::</title>
         @head.html@
         <!-- [[ BUNDLE END ]] -->
-        <script src="viewscript/About.js"></script>
+        <script src="About.js"></script>
     </head>
     <body>
         <div id="page-container">
@@ -13,7 +13,7 @@
                 <div class="row row-offcanvas row-offcanvas-left">
                     <div class="col-xs-12 col-sm-9">
                         <h1 class="page-header">
-                            ::WA_Title_About:: ::AccessControl::
+                            ::WA_Title_About::
                         </h1>
 
                         <div class="row">
@@ -47,7 +47,9 @@
         </div>
 
         <script type="text/javascript">
-            window.pageHandler = new VRS.WebAdmin.About.PageHandler();
+            $(document).on('ready', function() {
+                window.pageHandler = new VRS.WebAdmin.About.PageHandler();
+            });
         </script>
     </body>
 </html>

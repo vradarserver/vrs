@@ -111,7 +111,7 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="Typings\typedefs.d.ts" />
     <TypeScriptCompile Include="Typings\vrs.d.ts" />
-    <TypeScriptCompile Include="Web\WebAdmin\viewscript\About.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\About.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -182,10 +182,10 @@
     <Content Include="Web\WebAdmin\Index.html" />
     <Content Include="Web\WebAdmin\Log.html" />
     <Content Include="Web\WebAdmin\Options.html" />
-    <Content Include="Web\WebAdmin\viewscript\About.js">
+    <Content Include="Web\WebAdmin\About.js">
       <DependentUpon>About.ts</DependentUpon>
     </Content>
-    <Content Include="Web\WebAdmin\viewscript\About.js.map">
+    <Content Include="Web\WebAdmin\About.js.map">
       <DependentUpon>About.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\templates\head.html" />
@@ -216,7 +216,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Web\WebAdmin\viewscript\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>

@@ -1,4 +1,4 @@
-﻿/*region Page styles */
+﻿/* Page styles */
 .page-header {
     margin-top: 0;
 }
@@ -10,9 +10,9 @@
 .clickable {
     cursor: pointer;
 }
-/*endregion */
 
-/*region Sidebar */
+
+/* Sidebar */
 #sidebar {
     height: 100%;
     padding-right: 0;
@@ -65,9 +65,9 @@
     padding-top:0;
   }
 }
-/*endregion */
 
-/*region Collapsable panels */
+
+/* Collapsable panels */
 .panel-heading a {
     text-decoration: none;
 }
@@ -80,9 +80,9 @@
 .panel-heading a.collapsed:before {
     content: '\e080';
 }
-/*endregion */
 
-/*region Forms */
+
+/* Forms */
 form button.save-top {
     margin-bottom: 1em;
 }
@@ -125,4 +125,3 @@ form h5:first-of-type {
     background: #f8f8f8;
     margin-top: -0.4em;
 }
-/*endregion*/
