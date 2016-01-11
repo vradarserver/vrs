@@ -55,19 +55,19 @@ namespace VirtualRadar.Interface.View
         /// Gets or sets the date and time of the last request made from the <see cref="RemoteEndPoint"/>.
         /// </summary>
         [DataMember]
-        public DateTime LastRequest;
+        public DateTime LastRequest { get; set; }
 
         /// <summary>
         /// Gets or sets the number of bytes sent to the <see cref="RemoteEndPoint"/>.
         /// </summary>
         [DataMember(Name="Bytes")]
-        public long BytesSent;
+        public long BytesSent { get; set; }
 
         /// <summary>
         /// Gets or sets the last URL served to the <see cref="RemoteEndPoint"/>.
         /// </summary>
         [DataMember]
-        public string LastUrl;
+        public string LastUrl { get; set; }
 
         /// <summary>
         /// See base docs.

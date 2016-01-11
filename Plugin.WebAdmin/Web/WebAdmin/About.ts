@@ -33,7 +33,7 @@
         private applyState(state: IResponse<ViewJson.IAboutView>)
         {
             if(this._Model) {
-                ko.viewmodel.updateFromModel(state.Response, this._Model);
+                ko.viewmodel.updateFromModel(this._Model, state.Response);
             } else {
                 this._Model = ko.viewmodel.fromModel(state.Response, {
                     extend: {

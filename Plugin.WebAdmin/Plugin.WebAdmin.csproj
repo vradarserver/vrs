@@ -113,7 +113,9 @@
     <TypeScriptCompile Include="Typings\typedefs.d.ts" />
     <TypeScriptCompile Include="Typings\vrs.d.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\About.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\Index.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\script\bootstrap-helper.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -170,7 +172,6 @@
     <Content Include="Web\WebAdmin\script\bootstrap.js" />
     <Content Include="Web\WebAdmin\script\fastclick.js" />
     <Content Include="Web\WebAdmin\script\jquery-ui.js" />
-    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-collapsible-panel.js" />
     <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-modal.js" />
     <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-responsive-table.js" />
     <Content Include="Web\WebAdmin\script\knockout.js" />
