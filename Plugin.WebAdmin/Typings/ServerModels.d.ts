@@ -34,22 +34,25 @@ declare module VirtualRadar.Interface.View {
     interface IServerRequest {
         RemoteEndPoint: System.Net.IIPEndPoint;
         DataVersion: number;
-        UserName: string;
-        RemoteAddress: string;
+        User: string;
+        RemoteAddr: string;
         RemotePort: number;
+        LastRequest: Date;
+        Bytes: number;
+        LastUrl: string;
     }
     interface IFeedStatus {
-        FeedId: number;
+        Id: number;
         DataVersion: number;
         Name: string;
-        IsMergedFeed: boolean;
-        HasPolarPlot: boolean;
+        Merged: boolean;
+        Polar: boolean;
         HasAircraftList: boolean;
-        ConnectionStatus: VirtualRadar.Interface.Network.ConnectionStatus;
-        ConnectionStatusDescription: string;
-        TotalMessages: number;
-        TotalBadMessages: number;
-        TotalAircraft: number;
+        Connection: VirtualRadar.Interface.Network.ConnectionStatus;
+        ConnDesc: string;
+        Msgs: number;
+        BadMsgs: number;
+        Tracked: number;
     }
 }
 declare module System.Net {
@@ -74,15 +77,15 @@ declare module System.Net {
 }
 declare module VirtualRadar.Interface {
     interface IRebroadcastServerConnection {
-        RebroadcastServerId: number;
+        Id: number;
         Name: string;
         LocalPort: number;
         EndpointIPAddress: System.Net.IIPAddress;
-        RemoteAddress: string;
-        EndpointPort: number;
-        BytesBuffered: number;
-        BytesWritten: number;
-        StaleBytesDiscarded: number;
+        RemoteAddr: string;
+        RemotePort: number;
+        Buffered: number;
+        Written: number;
+        Discarded: number;
     }
 }
 
@@ -120,22 +123,25 @@ declare module VirtualRadar.Interface.View {
     interface IServerRequest_KO {
         RemoteEndPoint: KnockoutObservable<System.Net.IIPEndPoint_KO>;
         DataVersion: KnockoutObservable<number>;
-        UserName: KnockoutObservable<string>;
-        RemoteAddress: KnockoutObservable<string>;
+        User: KnockoutObservable<string>;
+        RemoteAddr: KnockoutObservable<string>;
         RemotePort: KnockoutObservable<number>;
+        LastRequest: KnockoutObservable<Date>;
+        Bytes: KnockoutObservable<number>;
+        LastUrl: KnockoutObservable<string>;
     }
     interface IFeedStatus_KO {
-        FeedId: KnockoutObservable<number>;
+        Id: KnockoutObservable<number>;
         DataVersion: KnockoutObservable<number>;
         Name: KnockoutObservable<string>;
-        IsMergedFeed: KnockoutObservable<boolean>;
-        HasPolarPlot: KnockoutObservable<boolean>;
+        Merged: KnockoutObservable<boolean>;
+        Polar: KnockoutObservable<boolean>;
         HasAircraftList: KnockoutObservable<boolean>;
-        ConnectionStatus: KnockoutObservable<VirtualRadar.Interface.Network.ConnectionStatus>;
-        ConnectionStatusDescription: KnockoutObservable<string>;
-        TotalMessages: KnockoutObservable<number>;
-        TotalBadMessages: KnockoutObservable<number>;
-        TotalAircraft: KnockoutObservable<number>;
+        Connection: KnockoutObservable<VirtualRadar.Interface.Network.ConnectionStatus>;
+        ConnDesc: KnockoutObservable<string>;
+        Msgs: KnockoutObservable<number>;
+        BadMsgs: KnockoutObservable<number>;
+        Tracked: KnockoutObservable<number>;
     }
 }
 declare module System.Net {
@@ -160,15 +166,15 @@ declare module System.Net {
 }
 declare module VirtualRadar.Interface {
     interface IRebroadcastServerConnection_KO {
-        RebroadcastServerId: KnockoutObservable<number>;
+        Id: KnockoutObservable<number>;
         Name: KnockoutObservable<string>;
         LocalPort: KnockoutObservable<number>;
         EndpointIPAddress: KnockoutObservable<System.Net.IIPAddress_KO>;
-        RemoteAddress: KnockoutObservable<string>;
-        EndpointPort: KnockoutObservable<number>;
-        BytesBuffered: KnockoutObservable<number>;
-        BytesWritten: KnockoutObservable<number>;
-        StaleBytesDiscarded: KnockoutObservable<number>;
+        RemoteAddr: KnockoutObservable<string>;
+        RemotePort: KnockoutObservable<number>;
+        Buffered: KnockoutObservable<number>;
+        Written: KnockoutObservable<number>;
+        Discarded: KnockoutObservable<number>;
     }
 }
 

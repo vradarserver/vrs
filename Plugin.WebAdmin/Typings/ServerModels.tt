@@ -1,4 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="System.Runtime.Serialization"#>
 <#@ assembly name="$(SolutionDir)Dependencies\TypeLite.Net35.dll" #>
 <#@ assembly name="$(SolutionDir)Dependencies\Newtonsoft.Json.dll" #>
 <#@ assembly name="$(TargetDir)InterfaceFactory.dll" #>
@@ -39,7 +40,15 @@
 string UseJsonName(TypeLite.TsModels.TsProperty identifier)
 {
     var jsonPropertyAttribute = identifier.MemberInfo.GetCustomAttributes(false).OfType<Newtonsoft.Json.JsonPropertyAttribute>().FirstOrDefault();
-    return jsonPropertyAttribute == null ? identifier.Name : jsonPropertyAttribute.PropertyName;
+    var result = jsonPropertyAttribute == null ? null : jsonPropertyAttribute.PropertyName;
+    if(result == null) {
+        var dataMemberAttribute = identifier.MemberInfo.GetCustomAttributes(false).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+        if(dataMemberAttribute != null && !String.IsNullOrEmpty(dataMemberAttribute.Name)) {
+            result = dataMemberAttribute.Name;
+        }
+    }
+
+    return result ?? identifier.Name;
 }
 
 bool PropertyIsVisible(TypeLite.TsModels.TsProperty identifier)
