@@ -83,6 +83,24 @@
                             </div>
                         </div>
 
+                        <div id="feed-modal" data-bsu="modal" data-bsu-options="header-close">
+                            <div>
+                                <span data-bind="text: SelectedFeed().Name"></span>
+                            </div>
+                            <div>
+                                <p>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.resetPolarPlot, pageHandler), enable: SelectedFeed().Polar">
+                                        ::WA_Label_ResetPolarPlot::
+                                    </button>
+                                </p>
+                                <p>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.reconnectFeed, pageHandler), disable: SelectedFeed().Merged">
+                                        ::WA_Label_Reconnect::
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+
                         <div data-bsu="collapsible-panel" data-bsu-options="expanded">
                             <div>
                                 ::WA_Label_WebServer::
@@ -156,24 +174,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div id="feed-modal" data-bsu="modal" data-bsu-options="header-close">
-                <div>
-                    <span data-bind="text: SelectedFeed().Name"></span>
-                </div>
-                <div>
-                    <p>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.resetPolarPlot, pageHandler), enable: SelectedFeed().Polar">
-                            ::WA_Label_ResetPolarPlot::
-                        </button>
-                    </p>
-                    <p>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.reconnectFeed, pageHandler), disable: SelectedFeed().Merged">
-                            ::WA_Label_Reconnect::
-                        </button>
-                    </p>
                 </div>
             </div>
         </div>
