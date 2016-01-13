@@ -168,6 +168,12 @@
     <Content Include="Web\WebAdmin\css\webadmin.css" />
     <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-form.js" />
     <Content Include="Web\WebAdmin\script\bootstrap.js" />
+    <Content Include="Web\WebAdmin\script\bootstrap-helper.js">
+      <DependentUpon>bootstrap-helper.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\script\bootstrap-helper.js.map">
+      <DependentUpon>bootstrap-helper.ts</DependentUpon>
+    </Content>
     <Content Include="Web\WebAdmin\script\fastclick.js" />
     <Content Include="Web\WebAdmin\script\jquery-ui.js" />
     <Content Include="Web\WebAdmin\script\knockout.js" />
@@ -186,6 +192,12 @@
     </Content>
     <Content Include="Web\WebAdmin\About.js.map">
       <DependentUpon>About.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Index.js">
+      <DependentUpon>Index.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Index.js.map">
+      <DependentUpon>Index.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\Log.js">
       <DependentUpon>Log.ts</DependentUpon>
