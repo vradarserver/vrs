@@ -88,7 +88,6 @@
       <DependentUpon>ServerModels.tt</DependentUpon>
     </TypeScriptCompile>
     <TypeScriptCompile Include="Typings\knockout.d.ts" />
-    <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />
     <TypeScriptCompile Include="Typings\knockout.viewmodel.d.ts" />
     <TypeScriptCompile Include="Typings\ServerModels.d.ts">
       <AutoGen>True</AutoGen>
@@ -168,12 +167,9 @@
     <Content Include="Web\WebAdmin\script\jquery.bootstrap-touchspin.js" />
     <Content Include="Web\WebAdmin\css\webadmin.css" />
     <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-form.js" />
-    <Content Include="Web\WebAdmin\script\knockout.mapping.js" />
     <Content Include="Web\WebAdmin\script\bootstrap.js" />
     <Content Include="Web\WebAdmin\script\fastclick.js" />
     <Content Include="Web\WebAdmin\script\jquery-ui.js" />
-    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-modal.js" />
-    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-responsive-table.js" />
     <Content Include="Web\WebAdmin\script\knockout.js" />
     <Content Include="Web\WebAdmin\script\records.js" />
     <Content Include="Web\WebAdmin\script\siteNavigation.js" />
