@@ -47,6 +47,11 @@ namespace VirtualRadar.Plugin.WebAdmin
         private Dictionary<string, WebAdminView> _WebAdminViewMapByFullPath;
 
         /// <summary>
+        /// A list of web admin views in the order in which they were registered.
+        /// </summary>
+        private List<WebAdminView> _OrderedWebAdminViews;
+
+        /// <summary>
         /// The object that will map view methods for us.
         /// </summary>
         private ViewMethodMapper _ViewMethodMapper;
@@ -72,11 +77,6 @@ namespace VirtualRadar.Plugin.WebAdmin
         private Dictionary<string, string> _TemplateMarkerFileNames;
 
         /// <summary>
-        /// An object that can be used to respond to requests.
-        /// </summary>
-        private IResponder _Responder;
-
-        /// <summary>
         /// The lock object that controls access to the fields.
         /// </summary>
         private object _SyncLock = new object();
@@ -94,6 +94,11 @@ namespace VirtualRadar.Plugin.WebAdmin
                 return _Singleton;
             }
         }
+
+        /// <summary>
+        /// Gets an object that can be used to respond to requests.
+        /// </summary>
+        internal IResponder Responder { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -134,13 +139,15 @@ namespace VirtualRadar.Plugin.WebAdmin
 
             _HtmlLocalisers = new Dictionary<Type,IHtmlLocaliser>();
             _JavaScriptTranslations = new Dictionary<string,JavaScriptTranslations>();
+            _OrderedWebAdminViews = new List<WebAdminView>();
             _ProtectedFolder = protectedFolder;
             _RegisteredWebAdminFolders = new HashSet<string>();
-            _Responder = Factory.Singleton.Resolve<IResponder>();
             _SiteRoots = new List<SiteRoot>();
             _TemplateMarkerFileNames = new Dictionary<string,string>();
             _ViewMethodMapper = new ViewMethodMapper();
             _WebAdminViewMapByFullPath = new Dictionary<string,WebAdminView>();
+
+            Responder = Factory.Singleton.Resolve<IResponder>();
         }
 
         /// <summary>
@@ -238,6 +245,10 @@ namespace VirtualRadar.Plugin.WebAdmin
                     var newMap = CollectionHelper.ShallowCopy(_WebAdminViewMapByFullPath);
                     newMap.Add(normalisedPathAndFile, webAdminView);
                     _WebAdminViewMapByFullPath = newMap;
+
+                    var newOrder = CollectionHelper.ShallowCopy(_OrderedWebAdminViews);
+                    newOrder.Add(webAdminView);
+                    _OrderedWebAdminViews = newOrder;
                 }
 
                 if(webAdminView.StringResources != null) {
@@ -318,6 +329,28 @@ namespace VirtualRadar.Plugin.WebAdmin
         }
 
         /// <summary>
+        /// Returns the web admin views registered by the web admin plugin, in the order in
+        /// which they were registered. Omits views that have no menu name.
+        /// </summary>
+        /// <returns></returns>
+        internal WebAdminView[] GetCoreViewsForMenu()
+        {
+            var orderedViews = _OrderedWebAdminViews;
+            return orderedViews.Where(r => !String.IsNullOrEmpty(r.MenuName) && r.Plugin == null).ToArray();
+        }
+
+        /// <summary>
+        /// Returns the web admin views registered by plugins sorted into menu name order. Omits
+        /// views that have no menu name.
+        /// </summary>
+        /// <returns></returns>
+        internal WebAdminView[] GetPluginViewsForMenu()
+        {
+            var orderedViews = _OrderedWebAdminViews;
+            return orderedViews.Where(r => !String.IsNullOrEmpty(r.MenuName) && r.Plugin != null).OrderBy(r => r.MenuName).ToArray();
+        }
+
+        /// <summary>
         /// Returns a normalised path.
         /// </summary>
         /// <param name="fullPath"></param>
@@ -390,13 +423,13 @@ namespace VirtualRadar.Plugin.WebAdmin
         private void WebServer_RequestReceived(object sender, RequestReceivedEventArgs args)
         {
             if(Enabled) {
-                if(_ViewMethodMapper.ProcessJsonRequest(args, _Responder)) {
+                if(_ViewMethodMapper.ProcessJsonRequest(args, Responder)) {
                     args.Handled = true;
                 } else {
                     var javaScriptTranslations = _JavaScriptTranslations;
                     JavaScriptTranslations translations;
                     if(javaScriptTranslations.TryGetValue(NormaliseFullPath(args.PathAndFile), out translations)) {
-                        _Responder.SendText(args.Request, args.Response, translations.JavaScript, Encoding.UTF8, MimeType.Javascript);
+                        Responder.SendText(args.Request, args.Response, translations.JavaScript, Encoding.UTF8, MimeType.Javascript);
                         args.Handled = true;
                     }
                 }

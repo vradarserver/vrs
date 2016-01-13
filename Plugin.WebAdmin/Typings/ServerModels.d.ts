@@ -1,6 +1,13 @@
 ﻿ 
 /// <reference path="Enums.ts" />
 
+declare module VirtualRadar.Plugin.WebAdmin {
+    interface IJsonMenuEntry {
+        HtmlFileName: string;
+        Name: string;
+        IsPlugin: boolean;
+    }
+}
 declare module VirtualRadar.Plugin.WebAdmin.View {
     interface IAboutView {
         Caption: string;
@@ -90,6 +97,13 @@ declare module VirtualRadar.Interface {
 }
 
 
+declare module VirtualRadar.Plugin.WebAdmin {
+    interface IJsonMenuEntry_KO {
+        HtmlFileName: KnockoutObservable<string>;
+        Name: KnockoutObservable<string>;
+        IsPlugin: KnockoutObservable<boolean>;
+    }
+}
 declare module VirtualRadar.Plugin.WebAdmin.View {
     interface IAboutView_KO {
         Caption: KnockoutObservable<string>;

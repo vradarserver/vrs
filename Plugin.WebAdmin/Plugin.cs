@@ -25,6 +25,7 @@ using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Plugin.WebAdmin.View;
+using Newtonsoft.Json;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
@@ -138,15 +139,16 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebAdminViewManager.RegisterTranslations(typeof(VirtualRadar.Localisation.Strings), "Server", false);
             _WebAdminViewManager.RegisterTranslations(typeof(WebAdminStrings), "WebAdmin", true);
 
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html", () => new View.AboutView(), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html", () => new View.LogView(), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html", () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html",   WebAdminStrings.WA_Home,        () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html",     WebAdminStrings.WA_Title_Log,   () => new View.LogView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html",   WebAdminStrings.WA_Title_About, () => new View.AboutView(), typeof(WebAdminStrings)));
             _WebAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
 
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = _Options.Enabled;
-            _WebSiteExtender.Initialise(parameters);
+            _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/ViewMap.json", ProtectedFolder), WebSite_HandleViewMapJson);
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
+            _WebSiteExtender.Initialise(parameters);
 
             ApplyOptions(_Options);
         }
@@ -202,6 +204,22 @@ namespace VirtualRadar.Plugin.WebAdmin
             }
 
             OnStatusChanged(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Handles requests for the view map.
+        /// </summary>
+        /// <param name="args"></param>
+        private void WebSite_HandleViewMapJson(RequestReceivedEventArgs args)
+        {
+            var result =        _WebAdminViewManager.GetCoreViewsForMenu().Select(r => new JsonMenuEntry(r))
+                        .Concat(_WebAdminViewManager.GetPluginViewsForMenu().Select(r => new JsonMenuEntry(r)))
+                        .ToArray();
+
+            var jsonText = JsonConvert.SerializeObject(result);
+            _WebAdminViewManager.Responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
+
+            args.Handled = true;
         }
     }
 }

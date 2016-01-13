@@ -32,6 +32,22 @@ namespace VirtualRadar.Interface.WebSite
         public string PathAndFile { get; private set; }
 
         /// <summary>
+        /// Gets the HTML filename without the path.
+        /// </summary>
+        public string HtmlFileName { get; private set; }
+
+        /// <summary>
+        /// Gets the name to use for the view in the web admin's site menu. Pass a null or empty string
+        /// to prevent the view from appearing in the menu.
+        /// </summary>
+        public string MenuName { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the plugin that this view is the options screen for.
+        /// </summary>
+        public IPlugin Plugin { get; set; }
+
+        /// <summary>
         /// Gets the resources that holds the strings to substitute into the view.
         /// </summary>
         public Type StringResources { get; private set; }
@@ -41,9 +57,10 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         /// <param name="pathFromRoot"></param>
         /// <param name="htmlFileName"></param>
+        /// <param name="menuName"></param>
         /// <param name="createView"></param>
         /// <param name="stringResources"></param>
-        public WebAdminView(string pathFromRoot, string htmlFileName, Func<IView> createView, Type stringResources)
+        public WebAdminView(string pathFromRoot, string htmlFileName, string menuName, Func<IView> createView, Type stringResources)
         {
             if(String.IsNullOrEmpty(pathFromRoot) || pathFromRoot == "/") throw new InvalidOperationException("You must supply the path from root");
             if(String.IsNullOrEmpty(htmlFileName) || htmlFileName.Contains('/')) throw new InvalidOperationException("You must supply the HTML file name and it cannot contain a path");
@@ -53,6 +70,8 @@ namespace VirtualRadar.Interface.WebSite
                 pathFromRoot.EndsWith("/") ? "" : "/",
                 htmlFileName
             );
+            HtmlFileName = htmlFileName;
+            MenuName = menuName;
             _CreateView = createView;
             StringResources = stringResources;
         }
