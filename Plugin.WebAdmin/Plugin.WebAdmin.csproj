@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="IOptionsView.cs" />
     <Compile Include="JavaScriptTranslations.cs" />
+    <Compile Include="JsonMenuEntry.cs" />
     <Compile Include="JsonResponse.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="OptionsStorage.cs" />
@@ -115,6 +116,7 @@
     <TypeScriptCompile Include="Web\WebAdmin\Index.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\bootstrap-helper.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\script\menu.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -177,8 +179,13 @@
     <Content Include="Web\WebAdmin\script\fastclick.js" />
     <Content Include="Web\WebAdmin\script\jquery-ui.js" />
     <Content Include="Web\WebAdmin\script\knockout.js" />
+    <Content Include="Web\WebAdmin\script\menu.js">
+      <DependentUpon>menu.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\script\menu.js.map">
+      <DependentUpon>menu.ts</DependentUpon>
+    </Content>
     <Content Include="Web\WebAdmin\script\records.js" />
-    <Content Include="Web\WebAdmin\script\siteNavigation.js" />
     <Content Include="Web\WebAdmin\script\view.js" />
     <Content Include="Web\WebAdmin\About.html" />
     <Content Include="Web\WebAdmin\images\gear-32x32.png" />
