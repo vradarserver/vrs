@@ -4,12 +4,25 @@
 
     interface Model extends ViewJson.IMainView_KO
     {
-        HasFailedPlugins?:      KnockoutComputed<boolean>;
-        FailedPluginsMessage?:  KnockoutComputed<string>;
+        HasFailedPlugins?:              KnockoutComputed<boolean>;
+        FailedPluginsMessage?:          KnockoutComputed<string>;
+        UpnpStatus?:                    KnockoutComputed<string>;
+        UpnpButtonText?:                KnockoutComputed<string>;
+        UpnpButtonDisabled?:            KnockoutComputed<boolean>;
+
+        AddressPerspectives?:           AddressPerspective[];
+        AddressPages?:                  AddressPage[];
+        SelectedAddressPerspective?:    KnockoutObservable<AddressPerspective>;
+        SelectedAddressPage?:           KnockoutObservable<AddressPage>;
+        AddressUrl?:                    KnockoutComputed<string>;
+
+        SelectedFeed?:                  KnockoutObservable<FeedModel>;
+        SelectFeed?:                    (feed: FeedModel) => void;
     }
 
     interface FeedModel extends VirtualRadar.Interface.View.IFeedStatus_KO
     {
+        StatusClass?:       KnockoutComputed<string>;
         FormattedMsgs?:     KnockoutComputed<string>;
         FormattedBadMsgs?:  KnockoutComputed<string>;
         FormattedTracked?:  KnockoutComputed<string>;
@@ -22,9 +35,21 @@
 
     interface RebroadcastServerModel extends VirtualRadar.Interface.IRebroadcastServerConnection_KO
     {
-        FormattedBuffered:  KnockoutObservable<string>;
-        FormattedWritten:   KnockoutObservable<string>;
-        FormattedDiscarded: KnockoutObservable<string>;
+        FormattedBuffered:  KnockoutComputed<string>;
+        FormattedWritten:   KnockoutComputed<string>;
+        FormattedDiscarded: KnockoutComputed<string>;
+    }
+
+    interface AddressPerspective
+    {
+        perspective: string;
+        description: string;
+    }
+
+    interface AddressPage
+    {
+        page: string;
+        description: string;
     }
 
     export class PageHandler
@@ -50,6 +75,33 @@
             });
         }
 
+        toggleUPnpStatus()
+        {
+            $.ajax('Index/RaiseToggleUPnpStatus');
+        }
+
+        resetPolarPlot()
+        {
+            var feed = this._Model.SelectedFeed();
+            $.ajax({
+                url: 'Index/RaiseResetPolarPlot',
+                data: {
+                    feedId: feed.Id()
+                }
+            });
+        }
+
+        reconnectFeed()
+        {
+            var feed = this._Model.SelectedFeed();
+            $.ajax({
+                url: 'Index/RaiseReconnectFeed',
+                data: {
+                    feedId: feed.Id()
+                }
+            });
+        }
+
         private applyState(state: IResponse<ViewJson.IMainView>)
         {
             if(this._Model) {
@@ -57,27 +109,76 @@
             } else {
                 this._Model = ko.viewmodel.fromModel(state.Response, {
                     arrayChildId: {
-                        "{root}.Feeds":             'Id',
-                        "{root}.Requests":          'RemoteAddr',
-                        "{root}.Rebroadcasters":    'Id'
+                        '{root}.Feeds':             'Id',
+                        '{root}.Requests':          'RemoteAddr',
+                        '{root}.Rebroadcasters':    'Id'
                     },
+
                     extend: {
-                        "{root}": function(root: Model)
+                        '{root}': function(root: Model)
                         {
                             root.HasFailedPlugins = ko.computed(() => root.BadPlugins() > 0);
                             root.FailedPluginsMessage = ko.computed(() => VRS.stringUtility.format(VRS.Server.$$.CountPluginsCouldNotBeLoaded, root.BadPlugins()));
+                            root.UpnpStatus = ko.computed(() => {
+                                   return !root.Upnp() && root.UpnpOn() ? VRS.Server.$$.UPnpActiveWhileDisabled :
+                                          !root.Upnp()                  ? VRS.Server.$$.UPnpDisabled :
+                                          !root.UpnpRouter()            ? VRS.Server.$$.UPnPNotPresent :
+                                          !root.UpnpOn()                ? VRS.Server.$$.UPnpInactive :
+                                          VRS.Server.$$.UPnpActive;
+                            });
+                            root.UpnpButtonText = ko.computed(() => root.UpnpOn() ? VRS.Server.$$.TakeOffInternet : VRS.Server.$$.PutOnInternet);
+                            root.UpnpButtonDisabled = ko.computed(() => !root.UpnpRouter() || !root.Upnp());
+
+                            root.AddressPerspectives = [
+                                { perspective: 'local',     description: VRS.Server.$$.ShowLocalAddress },
+                                { perspective: 'network',   description: VRS.Server.$$.ShowNetworkAddress },
+                                { perspective: 'public',    description: VRS.Server.$$.ShowInternetAddress },
+                            ];
+                            root.AddressPages = [
+                                { page: '/',                description: VRS.Server.$$.DefaultVersion },
+                                { page: '/desktop.html',    description: VRS.Server.$$.DesktopVersion },
+                                { page: '/mobile.html',     description: VRS.Server.$$.MobileVersion },
+                                { page: '/fsx.html',        description: VRS.Server.$$.FlightSimVersion },
+                                { page: '/GoogleMap.htm',   description: VRS.Server.$$.DesktopVersionOld },
+                                { page: '/iPhoneMap.htm',   description: VRS.Server.$$.MobileVersionOld },
+                                { page: '/FlightSim.htm',   description: VRS.Server.$$.FlightSimVersionOld },
+                                { page: '/settings.html',   description: VRS.Server.$$.SettingsPage },
+                            ];
+                            root.SelectedAddressPerspective = ko.observable(root.AddressPerspectives[0]);
+                            root.SelectedAddressPage = ko.observable(root.AddressPages[0]);
+                            root.AddressUrl = ko.computed(() => {
+                                var result = '#';
+                                if(root.SelectedAddressPerspective() && root.SelectedAddressPage()) {
+                                    switch(root.SelectedAddressPerspective().perspective) {
+                                        case 'local':   result = root.LocalRoot(); break;
+                                        case 'network': result = root.LanRoot(); break;
+                                        case 'public':  result = root.PublicRoot(); break;
+                                    }
+                                    result += root.SelectedAddressPage().page;
+                                }
+                                return result;
+                            });
+
+                            root.SelectedFeed = <KnockoutObservable<FeedModel>>ko.observable({});
+                            root.SelectFeed = (feed: FeedModel) => {
+                                root.SelectedFeed(feed);
+                            }
                         },
-                        "{root}.Feeds[i]": function(feed: FeedModel)
+
+                        '{root}.Feeds[i]': function(feed: FeedModel)
                         {
                             feed.FormattedMsgs = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.Msgs()));
                             feed.FormattedBadMsgs = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.BadMsgs()));
                             feed.FormattedTracked = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.Tracked()));
+                            feed.StatusClass = ko.computed(() => feed.ConnDesc() === VRS.Server.$$.Connected ? 'bg-success' : 'bg-danger');
                         },
-                        "{root}.Requests[i]": function(request: RequestModel)
+
+                        '{root}.Requests[i]': function(request: RequestModel)
                         {
                             request.FormattedBytes = ko.computed(() => VRS.stringUtility.format('{0:N0}', request.Bytes()));
                         },
-                        "{root}.Rebroadcasters[i]": function(rebroadcast: RebroadcastServerModel)
+
+                        '{root}.Rebroadcasters[i]': function(rebroadcast: RebroadcastServerModel)
                         {
                             rebroadcast.FormattedBuffered = ko.computed(() => VRS.stringUtility.format('{0:N0}', rebroadcast.Buffered()));
                             rebroadcast.FormattedDiscarded = ko.computed(() => VRS.stringUtility.format('{0:N0}', rebroadcast.Discarded()));

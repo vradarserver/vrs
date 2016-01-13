@@ -4,9 +4,6 @@
         <meta charset="utf-8" />
         <title>::WA_Title_Main:: - ::WA_Title_WebAdmin::</title>
         @head.html@
-        <script src="../script/webadmin/jquery-ui.js" type="text/javascript"></script>
-        <script src="../script/webadmin/jquiplugin/bootstrap-modal.js" type="text/javascript"></script>
-        <script src="../script/webadmin/jquiplugin/bootstrap-responsive-table.js" type="text/javascript"></script>
         <!-- [[ BUNDLE END ]] -->
         <script src="script/Strings.Server.js"></script>
         <script src="script/bootstrap-helper.js"></script>
@@ -31,6 +28,27 @@
 
                         <div data-bsu="collapsible-panel" data-bsu-options="expanded">
                             <div>
+                                ::UNC::
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <select class="form-control" data-bind="options: AddressPerspectives, optionsText: 'description', value: SelectedAddressPerspective"></select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" data-bind="options: AddressPages, optionsText: 'description', value: SelectedAddressPage"></select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <a href="#" target="livesite" data-bind="attr: { href: AddressUrl }, text: AddressUrl"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div>
                                 ::FeedStatus::
                             </div>
                             <div>
@@ -38,6 +56,7 @@
                                     <table class="table table-striped table-condensed">
                                         <thead>
                                             <tr>
+                                                <th class="thin-column"></th>
                                                 <th>::NameTitle::</th>
                                                 <th>::WA_Title_Status::</th>
                                                 <th class="text-right">::WA_Title_Messages::</th>
@@ -47,8 +66,13 @@
                                         </thead>
                                         <tbody data-bind="foreach: Feeds">
                                             <tr>
+                                                <td class="thin-column">
+                                                    <button type="button" class="btn btn-danger" aria-label="Feed Options" data-bind="click: $root.SelectFeed" data-toggle="modal" data-target="#feed-modal">
+                                                        <span class="glyphicon glyphicon-cog"></span>
+                                                    </button>
+                                                </td>
                                                 <td data-bind="text: Name"></td>
-                                                <td data-bind="text: ConnDesc"></td>
+                                                <td data-bind="text: ConnDesc, css: StatusClass"></td>
                                                 <td data-bind="text: FormattedMsgs" class="text-right"></td>
                                                 <td data-bind="text: FormattedBadMsgs" class="text-right"></td>
                                                 <td data-bind="text: FormattedTracked" class="text-right"></td>
@@ -119,61 +143,36 @@
                             </div>
                         </div>
 
-                        <div id="panel-upnp">
-                            <div id="upnp-heading">
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div>
                                 ::WA_Title_Upnp::
                             </div>
-                            <div id="upnp-collapse">
-                                <p id="upnp-status"></p>
+                            <div>
+                                <p data-bind="text: UpnpStatus"></p>
                                 <div>
-                                    <button id="upnp-toggle" type="button" class="btn btn-primary"></button>
+                                    <button id="upnp-toggle" type="button" class="btn btn-primary"
+                                            data-bind="text: UpnpButtonText, disable: UpnpButtonDisabled, click: $.proxy(pageHandler.toggleUPnpStatus, pageHandler)"></button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div id="panel-address">
-                            <div id="address-heading">
-                                ::UNC::
-                            </div>
-                            <div id="address-collapse">
-                                <p>
-                                    <select id="address-perspective" class="ui-inline">
-                                        <option value="local">::ShowLocalAddress::</option>
-                                        <option value="network">::ShowNetworkAddress::</option>
-                                        <option value="public">::ShowInternetAddress::</option>
-                                    </select>
-                                </p>
-                                <p>
-                                    <select id="address-page">
-                                        <option value="/">::DefaultVersion::</option>
-                                        <option value="/desktop.html">::DesktopVersion::</option>
-                                        <option value="/mobile.html">::MobileVersion::</option>
-                                        <option value="/fsx.html">::FlightSimVersion::</option>
-                                        <option value="/GoogleMap.htm">::DesktopVersionOld::</option>
-                                        <option value="/iPhoneMap.htm">::MobileVersionOld::</option>
-                                        <option value="/FlightSim.htm">::FlightSimVersionOld::</option>
-                                        <option value="/settings.html">::SettingsPage::</option>
-                                    </select>
-                                </p>
-                                <p>
-                                    <a id="address-link" href="#" target="livesite"></a>
-                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="feeds-modal">
+            <div id="feed-modal" data-bsu="modal" data-bsu-options="header-close">
                 <div>
-                    Title goes here
+                    <span data-bind="text: SelectedFeed().Name"></span>
                 </div>
                 <div>
                     <p>
-                        <button id="feed-reset-polarplot" type="button" class="btn btn-danger">::WA_Label_ResetPolarPlot::</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.resetPolarPlot, pageHandler), enable: SelectedFeed().Polar">
+                            ::WA_Label_ResetPolarPlot::
+                        </button>
                     </p>
                     <p>
-                        <button id="feed-reconnect" type="button" class="btn btn-danger">::WA_Label_Reconnect::</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.reconnectFeed, pageHandler), disable: SelectedFeed().Merged">
+                            ::WA_Label_Reconnect::
+                        </button>
                     </p>
                 </div>
             </div>
@@ -183,296 +182,5 @@
             Bootstrap.Helper.decorateBootstrapElements();
             window.pageHandler = new VRS.WebAdmin.Index.PageHandler();
         </script>
-        <!--
-            (function(VRS, $, undefined)
-            {
-                //region MainView
-                VRS.WebAdmin.MainView = function(settings)
-                {
-                    VRS.WebAdmin.View.call(this, settings);
-                    var that = this;
-
-                    // Alert fields
-                    var _NewVersion = $('#newVersion');
-                    var _InvalidPlugins = $('#failedPlugins');
-                    var _InvalidPluginsCount = 0;
-
-                    // Server request fields
-                    var _RequestsTableBody = $('tbody', '#requests-table');
-
-                    // Feed fields
-                    var _FeedTable = $('#feeds-table');
-                    var _FeedsModal = $('#feeds-modal');
-                    var _Feeds = new VRS.WebAdmin.RecordCollection({
-                        getId: function(/** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ record) { return record.Id; }
-                    });
-                    var _FeedReconnect = $('#feed-reconnect');
-                    var _FeedResetPolarPlot = $('#feed-reset-polarplot');
-
-                    // Rebroadcast server fields
-                    var _RebroadcastersBody = $('tbody', '#rebroadcasters-table');
-
-                    // UPnP fields
-                    var _UPnpEnabled = false;
-                    var _UPnpRouterPresent = false;
-                    var _UPnpActive = false;
-                    var _UpnpStatus = $('#upnp-status');
-                    var _UpnpToggle = $('#upnp-toggle');
-
-                    // Address fields
-                    var _AddressLocalRoot = null;
-                    var _AddressLanRoot = null;
-                    var _AddressPublicRoot = null;
-                    var _AddressPerspective = $('#address-perspective');
-                    var _AddressPage = $('#address-page');
-                    var _AddressLink = $('#address-link');
-
-                    /**
-                     * Adds elements to the page.
-                     */
-                    this.addElements = function()
-                    {
-                        $('#panel-feeds').bootstrapCollapsiblePanel();
-                        $('#panel-requests').bootstrapCollapsiblePanel();
-                        $('#panel-rebroadcasters').bootstrapCollapsiblePanel();
-                        $('#panel-upnp').bootstrapCollapsiblePanel();
-                        $('#panel-address').bootstrapCollapsiblePanel();
-
-                        _FeedTable.bootstrapResponsiveTable({
-                            idCellIndex: 0,
-                            cellDefs: [
-                                { getText: function (r) { return r.Id; }, hasChanged: function (c, p) { return c.Id !== p.Id; } },
-                                {
-                                    addJQuery: function (/** jQuery */ cell, /** VRS_WEBADMIN_VIEWDATA_FEEDSTATUS */ feed) {
-                                        $('<button />')
-                                            .append($('<span />').attr('class', 'glyphicon glyphicon-cog'))
-                                            .attr('type', 'button')
-                                            .attr('class', 'btn btn-primary btn-xs')
-                                            .attr('data-toggle', 'modal')
-                                            .attr('data-target', '#' + _FeedsModal.attr('id'))
-                                            .attr('data-vrswa-feedid', feed.Id)
-                                            .appendTo(cell);
-                                    }, hasChanged: function () { return false; }, getClasses: function () { return 'thin-column'; }
-                                },
-                                { getText: function (r) { return r.Name; }, hasChanged: function (c, p) { return c.Name !== p.Name; } },
-                                { getText: function (r) { return r.ConnDesc; }, hasChanged: function (c, p) { return c.ConnDesc !== p.ConnDesc; } },
-                                { getText: function (r) { return VRS.stringUtility.formatNumber(r.Msgs, '0,000'); }, hasChanged: function (c, p) { return c.Msgs !== p.Msgs; }, getClasses: function () { return 'text-right'; } },
-                                { getText: function (r) { return VRS.stringUtility.formatNumber(r.BadMsgs, '0,000'); }, hasChanged: function (c, p) { return c.BadMsgs !== p.BadMsgs; }, getClasses: function () { return 'text-right'; } },
-                                { getText: function (r) { return VRS.stringUtility.formatNumber(r.Tracked, '0,000'); }, hasChanged: function (c, p) { return c.Tracked !== p.Tracked; }, getClasses: function () { return 'text-right'; } }
-                            ]
-                        });
-                        $('#requests-table').bootstrapResponsiveTable();
-                        $('#rebroadcasters-table').bootstrapResponsiveTable();
-
-                        _FeedsModal.bootstrapModal({ footerCloseText: '::Close::' });
-                    };
-
-                    /**
-                     * Hooks events
-                     */
-                    this.hookEvents = function()
-                    {
-                        _UpnpToggle.on('click', function() { that.raiseViewEventInBackground('toggle-upnp-status'); });
-                        _AddressPerspective.on('change', function() { showAddress(); });
-                        _AddressPage.on('change', function() { showAddress(); });
-                        _FeedsModal.on('show.bs.modal', function(event) { feedsModal_showClicked(event); });
-                        _FeedReconnect.on('click', function() { reconnectFeed(_FeedsModal); });
-                        _FeedResetPolarPlot.on('click', function() { resetFeedPolarPlot(_FeedsModal); });
-                    };
-
-                    /**
-                     * Performs first-time initialisation of the view.
-                     */
-                    this.initialiseContent = function()
-                    {
-                        showUpnpState();
-                    };
-
-                    /**
-                     * Shows the content sent from the server.
-                     * @param {VRS_WEBADMIN_VIEWDATA_MAIN} data
-                     */
-                    this.showContent = function(data)
-                    {
-                        _Feeds.applyUpdates(data.Feeds);
-
-                        refreshRequests(data);
-                        refreshFeeds(data);
-                        refreshRebroadcasters(data);
-                        refreshUpnp(data);
-                        refreshAddresses(data);
-                        refreshVersionCheck(data);
-                        refreshInvalidPluginsCount(data);
-                    };
-
-                    function refreshRequests(data)
-                    {
-                        _RequestsTableBody.empty();
-                        $.each(data.Requests, function(/** number */ idx, /** VRS_WEBADMIN_VIEWDATA_SERVER_REQUEST */ request) {
-                            var row = $('<tr />')
-                                .append($('<td />').text(request.RemoteAddr).addClass('thin-column'))
-                                .append($('<td />').text(request.User).addClass('thin-column'))
-                                .append($('<td />').text(VRS.stringUtility.formatNumber(request.Bytes, '0,000')).addClass('thin-column text-right'))
-                                .append($('<td />').text(request.LastUrl));
-                            _RequestsTableBody.append(row);
-                        });
-                    }
-
-                    function refreshFeeds(data)
-                    {
-                        _FeedTable.bootstrapResponsiveTable('createRowsForRecords', _Feeds);
-                    }
-
-                    function feedsModal_showClicked(/** Event */ event)
-                    {
-                        var title = '';
-                        var feedId = '';
-                        var isMerged = true;
-                        var hasPolarPlot = false;
-
-                        var triggerTarget = $(event.relatedTarget);
-                        if(triggerTarget.length !== 0) {
-                            var feedId = triggerTarget.data('vrswa-feedid');
-                            var feed = _Feeds.getCurrentRecordById(feedId);
-                            if(feed) {
-                                feedId = String(feed.Id);
-                                title = feed.Name;
-                                isMerged = feed.Merged;
-                                hasPolarPlot = feed.Polar;
-                            }
-                        }
-
-                        $('.modal-title', _FeedsModal).text(title);
-                        _FeedReconnect
-                            .data('vrswa-feedid', feedId)
-                            .prop('disabled', isMerged);
-                        _FeedResetPolarPlot
-                            .data('vrswa-feedid', feedId)
-                            .prop('disabled', !hasPolarPlot);
-                    }
-
-                    function reconnectFeed(modal)
-                    {
-                        var feedId = _FeedReconnect.data('vrswa-feedid');
-                        if(feedId) {
-                            that.raiseViewEventInBackground('reconnect-feed', { feedId: feedId });
-                            if(modal) modal.modal('hide');
-                        }
-                    }
-
-                    function resetFeedPolarPlot(modal)
-                    {
-                        var feedId = _FeedResetPolarPlot.data('vrswa-feedid');
-                        if(feedId) {
-                            that.raiseViewEventInBackground('reset-polar-plot', { feedId: feedId });
-                            if(modal) modal.modal('hide');
-                        }
-                    }
-
-                    function refreshRebroadcasters(data)
-                    {
-                        _RebroadcastersBody.empty();
-                        $.each(data.Rebroadcasters, function(/** number */ idx, /** VRS_WEBADMIN_VIEWDATA_REBROADCAST_SERVER_CONNECTION */ rebroadcaster) {
-                            var row = $('<tr />')
-                                    .append($('<td />').text(rebroadcaster.Name))
-                                    .append($('<td />').text(rebroadcaster.RemoteAddr + ':' + rebroadcaster.RemotePort))
-                                    .append($('<td />').text(rebroadcaster.LocalPort))
-                                    .append($('<td />').text(VRS.stringUtility.formatNumber(rebroadcaster.Buffered, '0,000')).addClass('text-right'))
-                                    .append($('<td />').text(VRS.stringUtility.formatNumber(rebroadcaster.Written, '0,000')).addClass('text-right'))
-                                    .append($('<td />').text(VRS.stringUtility.formatNumber(rebroadcaster.Discarded, '0,000')).addClass('text-right'));
-                            _RebroadcastersBody.append(row);
-                        });
-                    }
-
-                    function refreshUpnp(data)
-                    {
-                        if(_UPnpEnabled !== data.Upnp || _UPnpRouterPresent !== data.UpnpRouter || _UPnpActive !== data.UpnpOn) {
-                            _UPnpEnabled = data.Upnp;
-                            _UPnpRouterPresent = data.UpnpRouter;
-                            _UPnpActive = data.UpnpOn;
-                            showUpnpState();
-                        }
-                    }
-
-                    function showUpnpState()
-                    {
-                        var status = !_UPnpEnabled && _UPnpActive ? '::UPnpActiveWhileDisabled::' :
-                                     !_UPnpEnabled ? '::UPnpDisabled::' :
-                                     !_UPnpRouterPresent ? '::UPnPNotPresent::' :
-                                     !_UPnpActive ? '::UPnpInactive::' :
-                                     '::UPnpActive::';
-
-                        _UpnpStatus.html(status);
-                        _UpnpToggle.html(_UPnpActive ? '::TakeOffInternet::' : '::PutOnInternet::');
-                        _UpnpToggle.prop('disabled', !(_UPnpEnabled && _UPnpRouterPresent));
-                    }
-
-                    function refreshAddresses(data)
-                    {
-                        if(data.LocalRoot !== _AddressLocalRoot || data.LanRoot !== _AddressLanRoot || data.PublicRoot !== _AddressPublicRoot) {
-                            _AddressLocalRoot = data.LocalRoot;
-                            _AddressLanRoot = data.LanRoot;
-                            _AddressPublicRoot = data.PublicRoot;
-                            showAddress();
-                        }
-                    }
-
-                    function showAddress()
-                    {
-                        var root;
-                        switch(_AddressPerspective.val()) {
-                            case 'local':   root = _AddressLocalRoot; break;
-                            case 'network': root = _AddressLanRoot; break;
-                            case 'public':  root = _AddressPublicRoot; break;
-                        }
-
-                        var page = _AddressPage.val();
-
-                        var url = '#';
-                        var html = '::NotYetKnown::';
-                        if(root && page) {
-                            url = root + page;
-                            html = url;
-                        }
-
-                        _AddressLink.attr('href', url);
-                        _AddressLink.html(html);
-                    }
-
-                    function refreshVersionCheck(data)
-                    {
-                        var currentState = _NewVersion.is(':visible');
-                        if(currentState !== data.NewVer) {
-                            var link = $('a', _NewVersion);
-                            link.attr('href', data.NewVer ? data.NewVerUrl : '#');
-                            _NewVersion.toggle(data.NewVer);
-                        }
-                    }
-
-                    function refreshInvalidPluginsCount(data)
-                    {
-                        if(data.BadPlugins !== _InvalidPluginsCount) {
-                            _InvalidPluginsCount = data.BadPlugins;
-                            if(_InvalidPluginsCount === 0) _InvalidPlugins.hide();
-                            else {
-                                var html = VRS.stringUtility.format('::InvalidPluginsCount::', _InvalidPluginsCount);
-                                _InvalidPlugins.empty();
-                                $('<p />').html(text).appendTo(_InvalidPlugins);
-                                _InvalidPlugins.show();
-                            }
-                        }
-                    }
-                };
-                VRS.WebAdmin.MainView.prototype = VRS.objectHelper.subclassOf(VRS.WebAdmin.View);
-                //endregion
-
-                var mainView = new VRS.WebAdmin.MainView({
-                    pageUrl: 'Index.html',
-                    jsonUrl: 'Index.json'
-                });
-                mainView.initialise();
-            }(window.VRS = window.VRS || {}, jQuery));
-        </script>
-            -->
     </body>
 </html>
