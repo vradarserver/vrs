@@ -22,10 +22,11 @@
 
     interface FeedModel extends VirtualRadar.Interface.View.IFeedStatus_KO
     {
-        StatusClass?:       KnockoutComputed<string>;
-        FormattedMsgs?:     KnockoutComputed<string>;
-        FormattedBadMsgs?:  KnockoutComputed<string>;
-        FormattedTracked?:  KnockoutComputed<string>;
+        StatusClass?:               KnockoutComputed<string>;
+        FormattedMsgs?:             KnockoutComputed<string>;
+        FormattedBadMsgs?:          KnockoutComputed<string>;
+        FormattedTracked?:          KnockoutComputed<string>;
+        ConnectorActivityLogUrl?:   KnockoutComputed<string>;
     }
 
     interface RequestModel extends VirtualRadar.Interface.View.IServerRequest_KO
@@ -102,6 +103,14 @@
             });
         }
 
+        gotoConnectorActivityLog()
+        {
+            var feed = this._Model.SelectedFeed();
+            if(!feed.Merged()) {
+                window.location.href = feed.ConnectorActivityLogUrl();
+            }
+        }
+
         private applyState(state: IResponse<ViewJson.IMainView>)
         {
             if(this._Model) {
@@ -171,6 +180,7 @@
                             feed.FormattedBadMsgs = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.BadMsgs()));
                             feed.FormattedTracked = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.Tracked()));
                             feed.StatusClass = ko.computed(() => feed.ConnDesc() === VRS.Server.$$.Connected ? 'bg-success' : 'bg-danger');
+                            feed.ConnectorActivityLogUrl = ko.computed(() => feed.Merged() ? '' : 'ConnectorActivityLog.html?connectorName=' + encodeURIComponent(feed.Name()));
                         },
 
                         '{root}.Requests[i]': function(request: RequestModel)

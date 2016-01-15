@@ -6,18 +6,33 @@ var VRS;
         (function (ConnectorActivityLog) {
             var PageHandler = (function () {
                 function PageHandler() {
-                    this.refreshState();
-                }
-                PageHandler.prototype.refreshState = function () {
                     var _this = this;
+                    this.refreshState(function () {
+                        var selectConnector = $.url().param('connectorName');
+                        if (selectConnector) {
+                            var connector = VRS.arrayHelper.findFirst(_this._Model.Connectors(), function (connector) {
+                                return connector.Name() === selectConnector;
+                            });
+                            if (connector) {
+                                _this._Model.SelectedConnector(connector);
+                            }
+                        }
+                    });
+                }
+                PageHandler.prototype.refreshState = function (callback) {
+                    var _this = this;
+                    if (callback === void 0) { callback = null; }
                     $.ajax({
                         url: 'ConnectorActivityLog/GetState',
                         success: function (data) {
                             _this.applyState(data);
+                            if (callback !== null) {
+                                callback();
+                            }
                             setTimeout(function () { return _this.refreshState(); }, 1000);
                         },
                         error: function () {
-                            setTimeout(function () { return _this.refreshState(); }, 5000);
+                            setTimeout(function () { return _this.refreshState(callback); }, 5000);
                         }
                     });
                 };
