@@ -18,19 +18,32 @@
 
         constructor()
         {
-            this.refreshState();
+            this.refreshState(() => {
+                var selectConnector = $.url().param('connectorName');
+                if(selectConnector) {
+                    var connector = VRS.arrayHelper.findFirst(this._Model.Connectors(), (connector: ViewJson.IConnectorModel_KO) => {
+                        return connector.Name() === selectConnector;
+                    });
+                    if(connector) {
+                        this._Model.SelectedConnector(connector);
+                    }
+                }
+            });
         }
 
-        refreshState()
+        refreshState(callback: () => void = null)
         {
             $.ajax({
                 url: 'ConnectorActivityLog/GetState',
                 success: (data: IResponse<ViewJson.IViewModel>) => {
                     this.applyState(data);
+                    if(callback !== null) {
+                        callback();
+                    }
                     setTimeout(() => this.refreshState(), 1000);
                 },
                 error: () => {
-                    setTimeout(() => this.refreshState(), 5000);
+                    setTimeout(() => this.refreshState(callback), 5000);
                 }
             });
         }
