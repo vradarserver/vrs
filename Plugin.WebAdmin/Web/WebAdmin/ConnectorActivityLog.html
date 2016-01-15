@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>::WA_Title_About:: - ::ConnectorActivityLog::</title>
+        @head.html@
+        <!-- [[ BUNDLE END ]] -->
+        <script src="script/Strings.Server.js"></script>
+        <script src="ConnectorActivityLog.js"></script>
+    </head>
+    <body>
+        <div id="page-container">
+            <div id="content" class="container-fluid">
+                <div class="row row-offcanvas row-offcanvas-left">
+                    <div class="col-xs-12 col-sm-9">
+                        <h1 class="page-header">
+                            ::ConnectorActivityLog::
+                        </h1>
+
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="connector" class="col-sm-3">
+                                    ::Connector:::
+                                </label>
+                                <div class="col-sm-9">
+                                    <select id="connector" class="form-control" data-bind="options: Connectors, optionsText: 'Name', optionsCaption: '::AllCaps::', value: SelectedConnector"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="text-nowrap">::Time::</th>
+                                        <th>::Connector::</th>
+                                        <th>::Activity::</th>
+                                        <th>::Description::</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="foreach: Events">
+                                    <tr data-bind="visible: IsSelectedConnector">
+                                        <td data-bind="text: Time" class="text-nowrap"></td>
+                                        <td data-bind="text: ConnectorName"></td>
+                                        <td data-bind="text: Type"></td>
+                                        <td data-bind="text: Message"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $(document).on('ready', function() {
+                window.pageHandler = new VRS.WebAdmin.ConnectorActivityLog.PageHandler();
+            });
+        </script>
+    </body>
+</html>

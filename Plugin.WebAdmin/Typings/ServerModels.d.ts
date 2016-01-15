@@ -37,6 +37,22 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         Rebroadcasters: VirtualRadar.Interface.IRebroadcastServerConnection[];
     }
 }
+declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
+    interface IViewModel {
+        Connectors: VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IConnectorModel[];
+        Events: VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IEventModel[];
+    }
+    interface IConnectorModel {
+        Name: string;
+    }
+    interface IEventModel {
+        Id: number;
+        ConnectorName: string;
+        Time: string;
+        Type: string;
+        Message: string;
+    }
+}
 declare module VirtualRadar.Interface.View {
     interface IServerRequest {
         RemoteEndPoint: System.Net.IIPEndPoint;
@@ -131,6 +147,22 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         Requests: KnockoutObservableArray<VirtualRadar.Interface.View.IServerRequest_KO>;
         Feeds: KnockoutObservableArray<VirtualRadar.Interface.View.IFeedStatus_KO>;
         Rebroadcasters: KnockoutObservableArray<VirtualRadar.Interface.IRebroadcastServerConnection_KO>;
+    }
+}
+declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
+    interface IViewModel_KO {
+        Connectors: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IConnectorModel_KO>;
+        Events: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IEventModel_KO>;
+    }
+    interface IConnectorModel_KO {
+        Name: KnockoutObservable<string>;
+    }
+    interface IEventModel_KO {
+        Id: KnockoutObservable<number>;
+        ConnectorName: KnockoutObservable<string>;
+        Time: KnockoutObservable<string>;
+        Type: KnockoutObservable<string>;
+        Message: KnockoutObservable<string>;
     }
 }
 declare module VirtualRadar.Interface.View {

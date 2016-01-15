@@ -139,9 +139,10 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebAdminViewManager.RegisterTranslations(typeof(VirtualRadar.Localisation.Strings), "Server", false);
             _WebAdminViewManager.RegisterTranslations(typeof(WebAdminStrings), "WebAdmin", true);
 
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html",   WebAdminStrings.WA_Home,        () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html",     WebAdminStrings.WA_Title_Log,   () => new View.LogView(), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html",   WebAdminStrings.WA_Title_About, () => new View.AboutView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html",                   WebAdminStrings.WA_Home,        () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "ConnectorActivityLog.html",    Strings.ConnectorActivityLog,   () => new View.ConnectorActivityLogView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html",                     WebAdminStrings.WA_Title_Log,   () => new View.LogView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html",                   WebAdminStrings.WA_Title_About, () => new View.AboutView(), typeof(WebAdminStrings)));
             _WebAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
 
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();

@@ -17,6 +17,7 @@
         .WithPropertyVisibilityFormatter(PropertyIsVisible)
         .For<VirtualRadar.Plugin.WebAdmin.JsonMenuEntry>()
         .For<VirtualRadar.Plugin.WebAdmin.View.AboutView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.LogView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
         ;
@@ -27,6 +28,7 @@
         .WithPropertyVisibilityFormatter(PropertyIsVisible)
         .For<VirtualRadar.Plugin.WebAdmin.JsonMenuEntry>()
         .For<VirtualRadar.Plugin.WebAdmin.View.AboutView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.LogView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
         ;

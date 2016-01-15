@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VirtualRadar.Interface.Network
 {
@@ -20,6 +21,16 @@ namespace VirtualRadar.Interface.Network
     /// </summary>
     public class ConnectorActivityEvent
     {
+        /// <summary>
+        /// The next identifier to be assigned to a new event.
+        /// </summary>
+        private static long _NextId;
+
+        /// <summary>
+        /// Gets a unique identifier assigned to each event object created.
+        /// </summary>
+        public long Id { get; private set; }
+
         /// <summary>
         /// Gets the name of the connector.
         /// </summary>
@@ -75,6 +86,7 @@ namespace VirtualRadar.Interface.Network
         /// <param name="exception"></param>
         protected ConnectorActivityEvent(string connectorName, ConnectorActivityType type, string message, TimestampedException exception)
         {
+            Id = Interlocked.Increment(ref _NextId);
             ConnectorName = connectorName;
             Time = DateTime.UtcNow;
             Type = type;
