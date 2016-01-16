@@ -172,7 +172,6 @@
     <Content Include="VirtualRadar.Plugin.WebAdmin.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Web\WebAdmin\css\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Web\WebAdmin\css\bootstrap\css\bootstrap.css" />
     <Content Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Web\WebAdmin\css\jquery.bootstrap-touchspin.css" />
@@ -239,7 +238,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web\WebAdmin\css\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="Web\WebAdmin\css\bootstrap\css\bootstrap.css.map" />
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
