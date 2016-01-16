@@ -179,7 +179,7 @@
                             feed.FormattedMsgs = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.Msgs()));
                             feed.FormattedBadMsgs = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.BadMsgs()));
                             feed.FormattedTracked = ko.computed(() => VRS.stringUtility.format('{0:N0}', feed.Tracked()));
-                            feed.StatusClass = ko.computed(() => feed.ConnDesc() === VRS.Server.$$.Connected ? 'bg-success' : 'bg-danger');
+                            feed.StatusClass = ko.computed(() => feed.ConnDesc() === VRS.Server.$$.Connected ? '' : 'bg-danger');
                             feed.ConnectorActivityLogUrl = ko.computed(() => feed.Merged() ? '' : 'ConnectorActivityLog.html?connectorName=' + encodeURIComponent(feed.Name()));
                         },
 

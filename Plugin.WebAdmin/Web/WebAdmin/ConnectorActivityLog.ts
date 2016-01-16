@@ -19,15 +19,20 @@
         constructor()
         {
             this.refreshState(() => {
-                var selectConnector = $.url().param('connectorName');
-                if(selectConnector) {
-                    var connector = VRS.arrayHelper.findFirst(this._Model.Connectors(), (connector: ViewJson.IConnectorModel_KO) => {
-                        return connector.Name() === selectConnector;
-                    });
+                var connectorName = $.url().param('connectorName');
+                if(connectorName) {
+                    var connector = this.findConnectorByName(connectorName);
                     if(connector) {
                         this._Model.SelectedConnector(connector);
                     }
                 }
+            });
+        }
+
+        private findConnectorByName(name: string) : ViewJson.IConnectorModel_KO
+        {
+            return VRS.arrayHelper.findFirst(this._Model.Connectors(), (connector) => {
+                return connector.Name() === name;
             });
         }
 

@@ -8,17 +8,20 @@ var VRS;
                 function PageHandler() {
                     var _this = this;
                     this.refreshState(function () {
-                        var selectConnector = $.url().param('connectorName');
-                        if (selectConnector) {
-                            var connector = VRS.arrayHelper.findFirst(_this._Model.Connectors(), function (connector) {
-                                return connector.Name() === selectConnector;
-                            });
+                        var connectorName = $.url().param('connectorName');
+                        if (connectorName) {
+                            var connector = _this.findConnectorByName(connectorName);
                             if (connector) {
                                 _this._Model.SelectedConnector(connector);
                             }
                         }
                     });
                 }
+                PageHandler.prototype.findConnectorByName = function (name) {
+                    return VRS.arrayHelper.findFirst(this._Model.Connectors(), function (connector) {
+                        return connector.Name() === name;
+                    });
+                };
                 PageHandler.prototype.refreshState = function (callback) {
                     var _this = this;
                     if (callback === void 0) { callback = null; }
