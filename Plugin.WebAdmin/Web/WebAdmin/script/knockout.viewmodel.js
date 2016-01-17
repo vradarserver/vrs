@@ -4,6 +4,13 @@
 /*jshint eqnull:true, boss:true, loopfunc:true, evil:true, laxbreak:true, undef:true, unused:true, browser:true, immed:true, devel:true, sub: true, maxerr:50 */
 /*global ko:false */
 
+/*
+ * AGW - I've changed this:
+ * 2016-01-17: Fixed the bug that corrupted array order on update.
+ *
+ * Transplant the changes marked with "AGW" when taking a new version.
+ */
+
 (function () {
     //Module declarations. For increased compression with simple settings on the closure compiler,
     //the ko functions are stored in variables. These variable names will be shortened by the compiler, 
