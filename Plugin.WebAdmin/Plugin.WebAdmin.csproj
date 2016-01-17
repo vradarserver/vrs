@@ -177,9 +177,7 @@
     <Content Include="Web\WebAdmin\css\bootstrap\css\bootstrap.css" />
     <Content Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Web\WebAdmin\css\jquery.bootstrap-touchspin.css" />
-    <Content Include="Web\WebAdmin\script\jquery.bootstrap-touchspin.js" />
     <Content Include="Web\WebAdmin\css\webadmin.css" />
-    <Content Include="Web\WebAdmin\script\jquiplugin\bootstrap-form.js" />
     <Content Include="Web\WebAdmin\script\bootstrap.js" />
     <Content Include="Web\WebAdmin\script\bootstrap-helper.js">
       <DependentUpon>bootstrap-helper.ts</DependentUpon>
@@ -188,7 +186,6 @@
       <DependentUpon>bootstrap-helper.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\script\fastclick.js" />
-    <Content Include="Web\WebAdmin\script\jquery-ui.js" />
     <Content Include="Web\WebAdmin\script\knockout.js" />
     <Content Include="Web\WebAdmin\script\menu.js">
       <DependentUpon>menu.ts</DependentUpon>
