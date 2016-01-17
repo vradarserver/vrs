@@ -42,6 +42,9 @@ var VRS;
                         }
                     });
                 };
+                PageHandler.prototype.resetCounters = function () {
+                    this._ViewId.ajax({ url: 'Statistics/RaiseResetCountersClicked' });
+                };
                 PageHandler.prototype.applyState = function (state) {
                     if (this._Model) {
                         ko.viewmodel.updateFromModel(this._Model, state.Response);

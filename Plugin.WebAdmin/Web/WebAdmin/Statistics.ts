@@ -87,6 +87,11 @@
             });
         }
 
+        resetCounters()
+        {
+            this._ViewId.ajax({ url: 'Statistics/RaiseResetCountersClicked' });
+        }
+
         private applyState(state: IResponse<ViewJson.IViewModel>)
         {
             if(this._Model) {
