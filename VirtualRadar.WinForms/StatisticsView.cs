@@ -252,7 +252,7 @@ namespace VirtualRadar.WinForms
         {
             if(InvokeRequired) BeginInvoke(new MethodInvoker(() => { UpdateCounters(); }));
             else {
-                UpdateLabel(labelDuration, String.Format("{0:00}:{1:00}:{2:00}", ConnectedDuration.TotalHours, ConnectedDuration.Minutes, ConnectedDuration.Seconds));
+                UpdateLabel(labelDuration, String.Format("{0:00}:{1:00}:{2:00}", ConnectedDuration.Hours, ConnectedDuration.Minutes, ConnectedDuration.Seconds));
                 UpdateCounterLabel(labelBytesReceived, BytesReceived);
                 UpdateCounterLabel(labelBadChecksum, ReceiverBadChecksum);
                 UpdateLabel(labelThroughput, String.Format("{0:N2} {1}", ReceiverThroughput, Strings.AcronymKilobytePerSecond));
