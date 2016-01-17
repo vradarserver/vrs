@@ -329,5 +329,14 @@ namespace VirtualRadar.Plugin.WebAdmin {
                 return ResourceManager.GetString("WA_Value_Mono", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft Detail Lookup Log.
+        /// </summary>
+        public static string WS_Title_AircraftLookup_Log {
+            get {
+                return ResourceManager.GetString("WS_Title_AircraftLookup_Log", resourceCulture);
+            }
+        }
     }
 }

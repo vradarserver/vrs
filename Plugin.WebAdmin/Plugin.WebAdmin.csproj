@@ -62,6 +62,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewMethodMapper.cs" />
     <Compile Include="View\AboutView.cs" />
+    <Compile Include="View\AircraftOnlineLookupLogModels.cs" />
+    <Compile Include="View\AircraftOnlineLookupLogView.cs" />
     <Compile Include="View\ConnectorActivityLogModels.cs" />
     <Compile Include="View\ConnectorActivityLogView.cs" />
     <Compile Include="View\ILogView.cs" />
@@ -116,6 +118,7 @@
     <TypeScriptCompile Include="Typings\typedefs.d.ts" />
     <TypeScriptCompile Include="Typings\vrs.d.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\About.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\AircraftDetailLookupLog.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\ConnectorActivityLog.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Index.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
@@ -165,6 +168,13 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations-webadmin.d.ts</LastGenOutput>
     </None>
+    <Content Include="Web\WebAdmin\AircraftDetailLookupLog.html" />
+    <Content Include="Web\WebAdmin\AircraftDetailLookupLog.js">
+      <DependentUpon>AircraftDetailLookupLog.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\AircraftDetailLookupLog.js.map">
+      <DependentUpon>AircraftDetailLookupLog.ts</DependentUpon>
+    </Content>
     <Content Include="Web\WebAdmin\ConnectorActivityLog.html" />
     <Content Include="Web\WebAdmin\ConnectorActivityLog.js">
       <DependentUpon>ConnectorActivityLog.ts</DependentUpon>

@@ -8,6 +8,24 @@ declare module VirtualRadar.Plugin.WebAdmin {
         IsPlugin: boolean;
     }
 }
+declare module VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog {
+    interface IViewModel {
+        LogEntries: VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog.ILogEntry[];
+    }
+    interface ILogEntry {
+        Time: string;
+        Icao: string;
+        Registration: string;
+        Country: string;
+        Manufacturer: string;
+        Model: string;
+        ModelIcao: string;
+        Operator: string;
+        OperatorIcao: string;
+        Serial: string;
+        YearBuilt: number;
+    }
+}
 declare module VirtualRadar.Plugin.WebAdmin.View {
     interface IAboutView {
         Caption: string;
@@ -172,6 +190,24 @@ declare module VirtualRadar.Plugin.WebAdmin {
         HtmlFileName: KnockoutObservable<string>;
         Name: KnockoutObservable<string>;
         IsPlugin: KnockoutObservable<boolean>;
+    }
+}
+declare module VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog {
+    interface IViewModel_KO {
+        LogEntries: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog.ILogEntry_KO>;
+    }
+    interface ILogEntry_KO {
+        Time: KnockoutObservable<string>;
+        Icao: KnockoutObservable<string>;
+        Registration: KnockoutObservable<string>;
+        Country: KnockoutObservable<string>;
+        Manufacturer: KnockoutObservable<string>;
+        Model: KnockoutObservable<string>;
+        ModelIcao: KnockoutObservable<string>;
+        Operator: KnockoutObservable<string>;
+        OperatorIcao: KnockoutObservable<string>;
+        Serial: KnockoutObservable<string>;
+        YearBuilt: KnockoutObservable<number>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View {

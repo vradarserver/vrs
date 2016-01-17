@@ -140,11 +140,12 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebAdminViewManager.RegisterTranslations(typeof(WebAdminStrings), "WebAdmin", true);
 
             // Views that have a menu entry
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html",                   WebAdminStrings.WA_Home,            () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "ConnectorActivityLog.html",    Strings.ConnectorActivityLog,       () => new View.ConnectorActivityLogView(), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html",                     WebAdminStrings.WA_Title_Log,       () => new View.LogView(), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Queues.html",                  WebAdminStrings.WA_Title_Queues,    () => new View.QueuesView(), typeof(WebAdminStrings)));
-            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html",                   WebAdminStrings.WA_Title_About,     () => new View.AboutView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html",                   WebAdminStrings.WA_Home,                        () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html",                     WebAdminStrings.WA_Title_Log,                   () => new View.LogView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "AircraftDetailLookupLog.html", WebAdminStrings.WS_Title_AircraftLookup_Log,    () => new View.AircraftOnlineLookupLogView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "ConnectorActivityLog.html",    Strings.ConnectorActivityLog,                   () => new View.ConnectorActivityLogView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Queues.html",                  WebAdminStrings.WA_Title_Queues,                () => new View.QueuesView(), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "About.html",                   WebAdminStrings.WA_Title_About,                 () => new View.AboutView(), typeof(WebAdminStrings)));
 
             // Views that do not have a menu entry
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Statistics.html", null, () => new View.StatisticsView(), typeof(WebAdminStrings)));
