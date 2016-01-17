@@ -149,6 +149,20 @@
                     item = result.shift();
                     return recrusiveTo(item, newContext);
                 };
+
+                /*
+                 * AGW: Add splice methods
+                 */
+                result.insertAtFromModel = function(idx, item)
+                {
+                    item = recrusiveFrom(item, settings, newContext);
+                    result.splice(idx, 0, item);
+                }
+                result.removeAtToModel = function(idx, item)
+                {
+                    item = result.splice(idx, 1)[0];
+                    return recrusiveTo(item, newContext);
+                }
             }
 
         }
@@ -396,9 +410,22 @@
                         viewModelObj.splice(q, 1);
                     }
                 }
+                /*
+                 * AGW:
+                 * This is the original block. It adds new items in reverse order to the end of the array.
+                 *
                 for (p = modelObj.length - 1; p >= 0; p--) {
                     if (!foundModels[p]) {//If not found and updated in viewmodel then add to viewmodel
                         viewModelObj.pushFromModel(modelObj[p]);
+                    }
+                }
+                 */
+                /*
+                 * AGW - fix the issue of array order getting corrupted on update
+                 */
+                for (p = 0;p < modelObj.length;++p) {
+                    if (!foundModels[p]) {//If not found and updated in viewmodel then insert into viewmodel
+                        viewModelObj.insertAtFromModel(p, modelObj[p]);
                     }
                 }
             }
