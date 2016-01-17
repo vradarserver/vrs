@@ -250,6 +250,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Diagnostics - Queues.
+        /// </summary>
+        public static string WA_Title_Queues {
+            get {
+                return ResourceManager.GetString("WA_Title_Queues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sent.
         /// </summary>
         public static string WA_Title_Sent {

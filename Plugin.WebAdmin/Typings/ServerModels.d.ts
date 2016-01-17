@@ -111,8 +111,19 @@ declare module VirtualRadar.Interface {
         Discarded: number;
     }
 }
+declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
+    interface IViewModel {
+        Queues: VirtualRadar.Plugin.WebAdmin.View.Queues.IQueueModel[];
+    }
+    interface IQueueModel {
+        Name: string;
+        CountQueuedItems: number;
+        PeakQueuedItems: number;
+    }
+}
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
     interface IViewModel {
+        Name: string;
         BytesReceived: number;
         ConnectedDuration: string;
         ReceiverThroughput: number;
@@ -266,8 +277,19 @@ declare module VirtualRadar.Interface {
         Discarded: KnockoutObservable<number>;
     }
 }
+declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
+    interface IViewModel_KO {
+        Queues: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Queues.IQueueModel_KO>;
+    }
+    interface IQueueModel_KO {
+        Name: KnockoutObservable<string>;
+        CountQueuedItems: KnockoutObservable<number>;
+        PeakQueuedItems: KnockoutObservable<number>;
+    }
+}
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
     interface IViewModel_KO {
+        Name: KnockoutObservable<string>;
         BytesReceived: KnockoutObservable<number>;
         ConnectedDuration: KnockoutObservable<string>;
         ReceiverThroughput: KnockoutObservable<number>;

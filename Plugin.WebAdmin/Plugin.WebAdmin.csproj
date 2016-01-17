@@ -67,6 +67,8 @@
     <Compile Include="View\ILogView.cs" />
     <Compile Include="View\LogView.cs" />
     <Compile Include="View\MainView.cs" />
+    <Compile Include="View\QueuesModels.cs" />
+    <Compile Include="View\QueuesView.cs" />
     <Compile Include="View\StatisticsModels.cs" />
     <Compile Include="View\StatisticsView.cs" />
     <Compile Include="WebAdminStringsJavaScript.cs" />
@@ -117,6 +119,7 @@
     <TypeScriptCompile Include="Web\WebAdmin\ConnectorActivityLog.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Index.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\Queues.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\bootstrap-helper.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\menu.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\viewid.ts" />
@@ -199,29 +202,36 @@
     <Content Include="Web\WebAdmin\script\viewid.js.map">
       <DependentUpon>viewid.ts</DependentUpon>
     </Content>
-    <Content Include="Web\WebAdmin\About.html" />
     <Content Include="Web\WebAdmin\images\gear-32x32.png" />
     <Content Include="Web\WebAdmin\images\notebook-32x32.png" />
     <Content Include="Web\WebAdmin\images\receiver-32x32.png" />
-    <Content Include="Web\WebAdmin\Index.html" />
-    <Content Include="Web\WebAdmin\Log.html" />
+    <Content Include="Web\WebAdmin\About.html" />
     <Content Include="Web\WebAdmin\About.js">
       <DependentUpon>About.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\About.js.map">
       <DependentUpon>About.ts</DependentUpon>
     </Content>
+    <Content Include="Web\WebAdmin\Index.html" />
     <Content Include="Web\WebAdmin\Index.js">
       <DependentUpon>Index.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\Index.js.map">
       <DependentUpon>Index.ts</DependentUpon>
     </Content>
+    <Content Include="Web\WebAdmin\Log.html" />
     <Content Include="Web\WebAdmin\Log.js">
       <DependentUpon>Log.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\Log.js.map">
       <DependentUpon>Log.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Queues.html" />
+    <Content Include="Web\WebAdmin\Queues.js">
+      <DependentUpon>Queues.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Queues.js.map">
+      <DependentUpon>Queues.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\Statistics.html" />
     <Content Include="Web\WebAdmin\Statistics.js">
