@@ -151,6 +151,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This page has lost contact with the server and cannot continue.
+        /// </summary>
+        public static string WA_Lost_Contact {
+            get {
+                return ResourceManager.GetString("WA_Lost_Contact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scroll to end.
         /// </summary>
         public static string WA_ScrollToEnd {

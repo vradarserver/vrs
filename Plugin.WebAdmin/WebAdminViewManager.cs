@@ -410,7 +410,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                         args.Content = ExpandTemplateMarkerFromFile(args.Content, kvp.Key, kvp.Value);
                     }
 
-                    _ViewMethodMapper.ViewRequested(webAdminView);
+                    _ViewMethodMapper.ViewRequested(webAdminView, args);
                 }
             }
         }

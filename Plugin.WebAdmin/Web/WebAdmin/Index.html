@@ -89,10 +89,25 @@
                                 <span data-bind="text: SelectedFeed().Name"></span>
                             </div>
                             <div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-default" disabled="disabled" data-bind="visible: SelectedFeed().Merged">
+                                            ::StatisticsTitle:: »
+                                        </button>
+                                        <a class="btn btn-default" data-bind="attr: { href: SelectedFeed().StatisticsUrl }, hidden: SelectedFeed().Merged">
+                                            ::StatisticsTitle:: »
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-default" disabled="disabled" data-bind="visible: SelectedFeed().Merged">
+                                            ::ConnectorActivityLog:: »
+                                        </button>
+                                        <a class="btn btn-default" data-bind="attr: { href: SelectedFeed().ConnectorActivityLogUrl }, hidden: SelectedFeed().Merged">
+                                            ::ConnectorActivityLog:: »
+                                        </a>
+                                    </div>
+                                </div>
                                 <p>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.gotoConnectorActivityLog, pageHandler), disable: SelectedFeed().Merged">
-                                        ::ConnectorActivityLog:: »
-                                    </button>
                                 </p>
                                 <hr />
                                 <p>

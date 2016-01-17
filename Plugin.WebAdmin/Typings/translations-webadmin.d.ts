@@ -18,6 +18,7 @@ declare module VRS.WebAdmin
         WA_Label_ResetPolarPlot:     string;
         WA_Label_WebServer:          string;
         WA_Logout:                   string;
+        WA_Lost_Contact:             string;
         WA_ScrollToEnd:              string;
         WA_ScrollToTop:              string;
         WA_Title_About:              string;

@@ -34,15 +34,45 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// </summary>
         class MappedView
         {
-            public WebAdminView WebAdminView { get; set; }
-            public IView View { get; set; }
-            public Dictionary<string, MethodInfo> ExposedMethods { get; private set; }
+            public WebAdminView                     WebAdminView { get; private set; }
+            public IView                            View { get; private set; }
+            public string                           ViewId { get; set; }
+            public Dictionary<string, MethodInfo>   ExposedMethods { get; private set; }
+            public DateTime                         LastContactUtc { get; set; }
 
-            public MappedView()
+            public MappedView(WebAdminView webAdminView, IView view)
             {
+                WebAdminView = webAdminView;
+                View = view;
                 ExposedMethods = new Dictionary<string,MethodInfo>();
+                LastContactUtc = DateTime.UtcNow;
             }
         }
+
+        /// <summary>
+        /// The substitution marker in HTML for the generated view identifier.
+        /// </summary>
+        private const string ViewIdMarker = "@view-id@";
+
+        /// <summary>
+        /// The name of the parameter that identifies which view instance a JSON request should be passed to.
+        /// </summary>
+        private const string ViewIdParameterName = "__ViewId";
+
+        /// <summary>
+        /// The name of the fake method that browsers should periodically call to prevent their view from getting zapped.
+        /// </summary>
+        private const string ViewHeartbeatMethod = "BrowserHeartbeat";
+
+        /// <summary>
+        /// The number of seconds that have to elapse with no message from a multi-instance view before that view is disposed.
+        /// </summary>
+        private const int ViewInactivitySeconds = 120;
+
+        /// <summary>
+        /// The number of seconds to wait between each check for inactive views.
+        /// </summary>
+        private const int InactiveViewCheckIntervalSeconds = 30;
 
         /// <summary>
         /// Used to manage multi-threaded access to the fields.
@@ -59,29 +89,99 @@ namespace VirtualRadar.Plugin.WebAdmin
         private Dictionary<string, MappedView> _SharedViewInstances = new Dictionary<string,MappedView>();
 
         /// <summary>
+        /// A dictionary mapping normalised HTML path and files to an inner map of view identifiers to mapped views.
+        /// </summary>
+        private Dictionary<string, Dictionary<string, MappedView>> _MultiViewInstances = new Dictionary<string,Dictionary<string,MappedView>>();
+
+        /// <summary>
+        /// Views that are scheduled for termination.
+        /// </summary>
+        private List<MappedView> _DetentionBlockAA23 = new List<MappedView>();
+
+        /// <summary>
+        /// The date and time of the last check for inactive forms.
+        /// </summary>
+        private DateTime _LastInactiveViewCheckUtc = DateTime.UtcNow;
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public ViewMethodMapper()
+        {
+            Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
+        }
+
+        /// <summary>
         /// Records a request for a <see cref="WebAdminView"/>.
         /// </summary>
         /// <param name="webAdminView"></param>
-        public void ViewRequested(WebAdminView webAdminView)
+        /// <param name="args"></param>
+        public void ViewRequested(WebAdminView webAdminView, TextContentEventArgs args)
         {
-            MappedView mappedView;
-
             lock(_SyncLock) {
                 var pathAndFileWithoutExtension = RemoveExtension(webAdminView.PathAndFile);
                 var key = NormaliseString(pathAndFileWithoutExtension);
-                if(!_SharedViewInstances.TryGetValue(key, out mappedView)) {
-                    mappedView = new MappedView() {
-                        WebAdminView = webAdminView,
-                        View = webAdminView.CreateView(),
-                    };
-                    FindExposedMethods(mappedView.View.GetType(), mappedView.ExposedMethods);
-                    mappedView.View.ShowView();
+                var isMultiInstance = args.Content.Contains(ViewIdMarker);
 
-                    var newMap = CollectionHelper.ShallowCopy(_SharedViewInstances);
-                    newMap.Add(key, mappedView);
-                    _SharedViewInstances = newMap;
+                if(!isMultiInstance) {
+                    StartSingleViewInstance(webAdminView, key);
+                } else {
+                    var viewId = StartMultiViewInstance(webAdminView, key, args);
+                    args.Content = args.Content.Replace(ViewIdMarker, viewId);
                 }
             }
+        }
+
+        private void StartSingleViewInstance(WebAdminView webAdminView, string key)
+        {
+            MappedView mappedView;
+
+            if(!_SharedViewInstances.TryGetValue(key, out mappedView)) {
+                mappedView = CreateView(webAdminView);
+
+                var newMap = CollectionHelper.ShallowCopy(_SharedViewInstances);
+                newMap.Add(key, mappedView);
+                _SharedViewInstances = newMap;
+            }
+        }
+
+        private string StartMultiViewInstance(WebAdminView webAdminView, string key, TextContentEventArgs args)
+        {
+            Dictionary<string, MappedView> runningInstances;
+
+            if(!_MultiViewInstances.TryGetValue(key, out runningInstances)) {
+                runningInstances = new Dictionary<string,MappedView>();
+            }
+
+            string viewId;
+            do {
+                viewId = Guid.NewGuid().ToString();
+            } while(runningInstances.ContainsKey(viewId));
+
+            MappedView mappedView = CreateView(webAdminView);
+            mappedView.ViewId = viewId;
+
+            var newInnerMap = CollectionHelper.ShallowCopy(runningInstances);
+            newInnerMap.Add(viewId, mappedView);
+
+            var newOuterMap = CollectionHelper.ShallowCopy(_MultiViewInstances);
+            if(newOuterMap.ContainsKey(key)) {
+                newOuterMap[key] = newInnerMap;
+            } else {
+                newOuterMap.Add(key, newInnerMap);
+            }
+            _MultiViewInstances = newOuterMap;
+
+            return viewId;
+        }
+
+        private MappedView CreateView(WebAdminView webAdminView)
+        {
+            var result = new MappedView(webAdminView, webAdminView.CreateView());
+            FindExposedMethods(result.View.GetType(), result.ExposedMethods);
+            result.View.ShowView();
+
+            return result;
         }
 
         /// <summary>
@@ -92,13 +192,20 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <returns></returns>
         private void FindExposedMethods(Type type, Dictionary<string, MethodInfo> methodMap)
         {
+            var reservedMethodName = NormaliseString(ViewHeartbeatMethod);
+
             foreach(var method in type.GetMethods()) {
                 var webAdminMethodAttribute = method.GetCustomAttributes(inherit: true).OfType<WebAdminMethodAttribute>().SingleOrDefault();
                 if(webAdminMethodAttribute != null) {
                     var key = NormaliseString(method.Name);
-                    if(methodMap.ContainsKey(key)) {
-                        throw new NotImplementedException("Function overloading is not supported by the view mapper");
+
+                    if(key == reservedMethodName) {
+                        throw new InvalidOperationException(String.Format("Views cannot expose a method called {0}, it has been reserved for use by the mapper", reservedMethodName));
                     }
+                    if(methodMap.ContainsKey(key)) {
+                        throw new InvalidOperationException("Function overloading is not supported by the view mapper");
+                    }
+
                     methodMap.Add(key, method);
                 }
             }
@@ -114,32 +221,56 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             var result = false;
 
+            var mappedView = FindMappedView(args);
+            if(mappedView != null) {
+                mappedView.LastContactUtc = DateTime.UtcNow;
+
+                var normalisedFile = NormaliseString(args.File);
+                if(normalisedFile == NormaliseString(ViewHeartbeatMethod)) {
+                    result = true;
+                } else {
+                    MethodInfo exposedMethod;
+                    if(mappedView.ExposedMethods.TryGetValue(normalisedFile, out exposedMethod)) {
+                        var response = new JsonResponse();
+
+                        try {
+                            var parameters = MapParameters(exposedMethod, args);
+                            response.Response = exposedMethod.Invoke(mappedView.View, parameters);
+                        } catch(Exception ex) {
+                            try {
+                                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                                log.WriteLine("Caught exception during processing of request for {0}: {1}", args.Request.RawUrl, ex);
+                            } catch {}
+                            response.Exception = ex.Message;
+                            response.Response = null;
+                        }
+
+                        var jsonText = JsonConvert.SerializeObject(response);
+                        responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
+
+                        result = true;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private MappedView FindMappedView(RequestReceivedEventArgs args)
+        {
             var sharedViewInstances = _SharedViewInstances;
+            var multiViewInstances = _MultiViewInstances;
+
             var normalisedPath = NormaliseString(args.Path);
 
-            MappedView mappedView;
-            if(sharedViewInstances.TryGetValue(normalisedPath, out mappedView)) {
-                var normalisedFile = NormaliseString(args.File);
-                MethodInfo exposedMethod;
-                if(mappedView.ExposedMethods.TryGetValue(normalisedFile, out exposedMethod)) {
-                    var response = new JsonResponse();
-
-                    try {
-                        var parameters = MapParameters(exposedMethod, args);
-                        response.Response = exposedMethod.Invoke(mappedView.View, parameters);
-                    } catch(Exception ex) {
-                        try {
-                            var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                            log.WriteLine("Caught exception during processing of request for {0}: {1}", args.Request.RawUrl, ex);
-                        } catch {}
-                        response.Exception = ex.Message;
-                        response.Response = null;
+            MappedView result = null;
+            if(!sharedViewInstances.TryGetValue(normalisedPath, out result)) {
+                Dictionary<string, MappedView> viewInstances;
+                if(multiViewInstances.TryGetValue(normalisedPath, out viewInstances)) {
+                    var viewId = args.QueryString[ViewIdParameterName] ?? args.Request.FormValues[ViewIdParameterName];
+                    if(viewId != null) {
+                        viewInstances.TryGetValue(viewId, out result);
                     }
-
-                    var jsonText = JsonConvert.SerializeObject(response);
-                    responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
-
-                    result = true;
                 }
             }
 
@@ -235,6 +366,82 @@ namespace VirtualRadar.Plugin.WebAdmin
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Disposes of views that were removed in the last search for inactive views.
+        /// </summary>
+        /// <remarks>
+        /// We mark views for termination when no browser has called them in n-seconds, but we don't
+        /// dispose of them straight away because something might have called them while the removal
+        /// code is running, and we don't want to dispose of it while it's in use. They get disposed
+        /// in the next pass, and it's this function that does the disposing.
+        /// </remarks>
+        private void DisposeOfViewsFoundInLastPass()
+        {
+            foreach(var mappedView in _DetentionBlockAA23) {
+                try {
+                    mappedView.View.Dispose();
+                    System.Diagnostics.Debug.WriteLine(String.Format("View {0} terminated", mappedView.ViewId));
+                } catch {
+                    try {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception while disposing of multi-instance view {0}", mappedView.View.GetType().Name);
+                    } catch {
+                    }
+                }
+            }
+
+            _DetentionBlockAA23.Clear();
+        }
+
+        /// <summary>
+        /// Removes views that have not been called for a while.
+        /// </summary>
+        private void RemoveInactiveViews()
+        {
+            var threshold = DateTime.UtcNow.AddSeconds(-ViewInactivitySeconds);
+            if(_MultiViewInstances.Any(r => r.Value.Any(i => i.Value.LastContactUtc < threshold))) {
+                var newOuterMap = CollectionHelper.ShallowCopy(_MultiViewInstances);
+                foreach(var kvpOuter in newOuterMap.ToArray()) {
+                    var pathAndFile = kvpOuter.Key;
+                    var newInnerMap = CollectionHelper.ShallowCopy(kvpOuter.Value);
+
+                    foreach(var kvpInner in newInnerMap.Where(r => r.Value.LastContactUtc < threshold).ToArray()) {
+                        var viewId = kvpInner.Key;
+                        var mappedView = kvpInner.Value;
+
+                        newInnerMap.Remove(viewId);
+                        _DetentionBlockAA23.Add(mappedView);
+
+                        System.Diagnostics.Debug.WriteLine(String.Format("View {0} scheduled for termination", viewId));
+                    }
+
+                    if(newInnerMap.Values.Count == 0) {
+                        newOuterMap.Remove(pathAndFile);
+                    } else {
+                        newOuterMap[pathAndFile] = newInnerMap;
+                    }
+                }
+
+                _MultiViewInstances = newOuterMap;
+            }
+        }
+
+        /// <summary>
+        /// Called on every slow timer tick from the heartbeat service.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Heartbeat_SlowTick(object sender, EventArgs e)
+        {
+            if(_LastInactiveViewCheckUtc.AddSeconds(InactiveViewCheckIntervalSeconds) <= DateTime.UtcNow) {
+                lock(_SyncLock) {
+                    _LastInactiveViewCheckUtc = DateTime.UtcNow;
+                    DisposeOfViewsFoundInLastPass();
+                    RemoveInactiveViews();
+                }
+            }
         }
     }
 }
