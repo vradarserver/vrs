@@ -147,6 +147,9 @@
   <data name="WA_Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="WA_Lost_Contact" xml:space="preserve">
+    <value>This page has lost contact with the server and cannot continue</value>
+  </data>
   <data name="WA_ScrollToEnd" xml:space="preserve">
     <value>Scroll to end</value>
   </data>

@@ -67,9 +67,8 @@
     <Compile Include="View\ILogView.cs" />
     <Compile Include="View\LogView.cs" />
     <Compile Include="View\MainView.cs" />
-    <Compile Include="View\BaseView.cs" />
-    <Compile Include="View\NameValue.cs" />
-    <Compile Include="View\SettingsView.cs" />
+    <Compile Include="View\StatisticsModels.cs" />
+    <Compile Include="View\StatisticsView.cs" />
     <Compile Include="WebAdminStringsJavaScript.cs" />
     <Compile Include="WebAdminStrings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -120,6 +119,8 @@
     <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\bootstrap-helper.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\menu.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\script\viewid.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\Statistics.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
@@ -168,6 +169,7 @@
     <Content Include="Web\WebAdmin\ConnectorActivityLog.js.map">
       <DependentUpon>ConnectorActivityLog.ts</DependentUpon>
     </Content>
+    <Content Include="Web\WebAdmin\script\knockout.extensions.js" />
     <Content Include="Web\WebAdmin\script\knockout.viewmodel.js" />
     <Content Include="VirtualRadar.Plugin.WebAdmin.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -194,15 +196,18 @@
     <Content Include="Web\WebAdmin\script\menu.js.map">
       <DependentUpon>menu.ts</DependentUpon>
     </Content>
-    <Content Include="Web\WebAdmin\script\records.js" />
-    <Content Include="Web\WebAdmin\script\view.js" />
+    <Content Include="Web\WebAdmin\script\viewid.js">
+      <DependentUpon>viewid.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\script\viewid.js.map">
+      <DependentUpon>viewid.ts</DependentUpon>
+    </Content>
     <Content Include="Web\WebAdmin\About.html" />
     <Content Include="Web\WebAdmin\images\gear-32x32.png" />
     <Content Include="Web\WebAdmin\images\notebook-32x32.png" />
     <Content Include="Web\WebAdmin\images\receiver-32x32.png" />
     <Content Include="Web\WebAdmin\Index.html" />
     <Content Include="Web\WebAdmin\Log.html" />
-    <Content Include="Web\WebAdmin\Options.html" />
     <Content Include="Web\WebAdmin\About.js">
       <DependentUpon>About.ts</DependentUpon>
     </Content>
@@ -220,6 +225,13 @@
     </Content>
     <Content Include="Web\WebAdmin\Log.js.map">
       <DependentUpon>Log.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Statistics.html" />
+    <Content Include="Web\WebAdmin\Statistics.js">
+      <DependentUpon>Statistics.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Statistics.js.map">
+      <DependentUpon>Statistics.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\templates\head.html" />
   </ItemGroup>

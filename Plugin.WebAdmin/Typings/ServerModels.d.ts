@@ -111,6 +111,49 @@ declare module VirtualRadar.Interface {
         Discarded: number;
     }
 }
+declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
+    interface IViewModel {
+        BytesReceived: number;
+        ConnectedDuration: string;
+        ReceiverThroughput: number;
+        ReceiverBadChecksum: number;
+        CurrentBufferSize: number;
+        BaseStationMessages: number;
+        BadlyFormedBaseStationMessages: number;
+        BadlyFormedBaseStationMessagesRatio: number;
+        ModeSMessageCount: number;
+        ModeSNoAdsbPayload: number;
+        ModeSNoAdsbPayloadRatio: number;
+        ModeSShortFrame: number;
+        ModeSShortFrameUnusable: number;
+        ModeSShortFrameUnusableRatio: number;
+        ModeSLongFrame: number;
+        ModeSWithPI: number;
+        ModeSPIBadParity: number;
+        ModeSPIBadParityRatio: number;
+        ModeSDFCount: VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFCountModel[];
+        AdsbMessages: number;
+        AdsbRejected: number;
+        AdsbRejectedRatio: number;
+        PositionSpeedCheckExceeded: number;
+        PositionsReset: number;
+        PositionsOutOfRange: number;
+        AdsbMessageTypeCount: VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageTypeCountModel[];
+        AdsbMessageFormatCount: VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageFormatCountModel[];
+    }
+    interface IModeSDFCountModel {
+        DF: number;
+        Val: number;
+    }
+    interface IAdsbMessageTypeCountModel {
+        N: number;
+        Val: number;
+    }
+    interface IAdsbMessageFormatCountModel {
+        Fmt: string;
+        Val: number;
+    }
+}
 
 
 declare module VirtualRadar.Plugin.WebAdmin {
@@ -221,6 +264,49 @@ declare module VirtualRadar.Interface {
         Buffered: KnockoutObservable<number>;
         Written: KnockoutObservable<number>;
         Discarded: KnockoutObservable<number>;
+    }
+}
+declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
+    interface IViewModel_KO {
+        BytesReceived: KnockoutObservable<number>;
+        ConnectedDuration: KnockoutObservable<string>;
+        ReceiverThroughput: KnockoutObservable<number>;
+        ReceiverBadChecksum: KnockoutObservable<number>;
+        CurrentBufferSize: KnockoutObservable<number>;
+        BaseStationMessages: KnockoutObservable<number>;
+        BadlyFormedBaseStationMessages: KnockoutObservable<number>;
+        BadlyFormedBaseStationMessagesRatio: KnockoutObservable<number>;
+        ModeSMessageCount: KnockoutObservable<number>;
+        ModeSNoAdsbPayload: KnockoutObservable<number>;
+        ModeSNoAdsbPayloadRatio: KnockoutObservable<number>;
+        ModeSShortFrame: KnockoutObservable<number>;
+        ModeSShortFrameUnusable: KnockoutObservable<number>;
+        ModeSShortFrameUnusableRatio: KnockoutObservable<number>;
+        ModeSLongFrame: KnockoutObservable<number>;
+        ModeSWithPI: KnockoutObservable<number>;
+        ModeSPIBadParity: KnockoutObservable<number>;
+        ModeSPIBadParityRatio: KnockoutObservable<number>;
+        ModeSDFCount: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFCountModel_KO>;
+        AdsbMessages: KnockoutObservable<number>;
+        AdsbRejected: KnockoutObservable<number>;
+        AdsbRejectedRatio: KnockoutObservable<number>;
+        PositionSpeedCheckExceeded: KnockoutObservable<number>;
+        PositionsReset: KnockoutObservable<number>;
+        PositionsOutOfRange: KnockoutObservable<number>;
+        AdsbMessageTypeCount: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageTypeCountModel_KO>;
+        AdsbMessageFormatCount: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageFormatCountModel_KO>;
+    }
+    interface IModeSDFCountModel_KO {
+        DF: KnockoutObservable<number>;
+        Val: KnockoutObservable<number>;
+    }
+    interface IAdsbMessageTypeCountModel_KO {
+        N: KnockoutObservable<number>;
+        Val: KnockoutObservable<number>;
+    }
+    interface IAdsbMessageFormatCountModel_KO {
+        Fmt: KnockoutObservable<string>;
+        Val: KnockoutObservable<number>;
     }
 }
 

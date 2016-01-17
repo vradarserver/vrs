@@ -20,6 +20,7 @@
         .For<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.LogView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.Statistics.ViewModel>()
         ;
 #>
 <# var ko = TypeScript.Definitions(new TypeLite.AlternateGenerators.TsKnockoutModelGenerator())
@@ -31,6 +32,7 @@
         .For<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.LogView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.Statistics.ViewModel>()
         ;
 #>
 <#= ts.Generate(TsGeneratorOutput.Properties) #>
