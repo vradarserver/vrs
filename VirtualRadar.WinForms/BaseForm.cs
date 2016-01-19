@@ -133,7 +133,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region OnLoad
+        #region OnLoad, SafelyInvoke
         /// <summary>
         /// Called after the form has been loaded but before it is shown to the user.
         /// </summary>
@@ -152,6 +152,26 @@ namespace VirtualRadar.WinForms
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// If InvokeRequired is true then the action is called and true is returned, otherwise the action is ignored
+        /// and false is returned.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        protected bool SafelyInvoke(Action action)
+        {
+            var result = InvokeRequired;
+            if(result) {
+                try {
+                    BeginInvoke(new MethodInvoker(action));
+                } catch(InvalidOperationException) {
+                    ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
+                }
+            }
+
+            return result;
         }
         #endregion
 
