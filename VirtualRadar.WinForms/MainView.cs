@@ -74,9 +74,11 @@ namespace VirtualRadar.WinForms
             get { return _InvalidPluginCount; }
             set
             {
-                _InvalidPluginCount = value;
-                toolStripDropDownButtonInvalidPluginCount.Text = String.Format(Strings.CountPluginsCouldNotBeLoaded, value);
-                toolStripDropDownButtonInvalidPluginCount.Visible = value != 0;
+                if(!SafelyInvoke(() => InvalidPluginCount = value)) {
+                    _InvalidPluginCount = value;
+                    toolStripDropDownButtonInvalidPluginCount.Text = String.Format(Strings.CountPluginsCouldNotBeLoaded, value);
+                    toolStripDropDownButtonInvalidPluginCount.Visible = value != 0;
+                }
             }
         }
 
@@ -94,13 +96,7 @@ namespace VirtualRadar.WinForms
             get { return _NewVersionAvailable; }
             set
             {
-                if(InvokeRequired) {
-                    try {
-                        BeginInvoke(new MethodInvoker(() => { NewVersionAvailable = value; }));
-                    } catch(InvalidOperationException) {
-                        ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
-                    }
-                } else {
+                if(!SafelyInvoke(() => NewVersionAvailable = value)) {
                     _NewVersionAvailable = value;
                     toolStripDropDownButtonLaterVersionAvailable.Visible = value;
                 }
@@ -118,7 +114,11 @@ namespace VirtualRadar.WinForms
         public string RebroadcastServersConfiguration
         {
             get { return rebroadcastStatusControl.Configuration; }
-            set { rebroadcastStatusControl.Configuration = value; }
+            set {
+                if(!SafelyInvoke(() => RebroadcastServersConfiguration = value)) {
+                    rebroadcastStatusControl.Configuration = value;
+                }
+            }
         }
 
         /// <summary>
@@ -127,7 +127,11 @@ namespace VirtualRadar.WinForms
         public bool UPnpEnabled
         {
             get { return webServerStatusControl.UPnpEnabled; }
-            set { webServerStatusControl.UPnpEnabled = value; }
+            set {
+                if(!SafelyInvoke(() => UPnpEnabled = value)) {
+                    webServerStatusControl.UPnpEnabled = value;
+                }
+            }
         }
 
         /// <summary>
@@ -136,7 +140,11 @@ namespace VirtualRadar.WinForms
         public bool UPnpRouterPresent
         {
             get { return webServerStatusControl.UPnpRouterPresent; }
-            set { webServerStatusControl.UPnpRouterPresent = value; }
+            set {
+                if(!SafelyInvoke(() => UPnpRouterPresent = value)) {
+                    webServerStatusControl.UPnpRouterPresent = value;
+                }
+            }
         }
 
         /// <summary>
@@ -145,7 +153,11 @@ namespace VirtualRadar.WinForms
         public bool UPnpPortForwardingActive
         {
             get { return webServerStatusControl.UPnpPortForwardingActive; }
-            set { webServerStatusControl.UPnpPortForwardingActive = value; }
+            set {
+                if(!SafelyInvoke(() => UPnpPortForwardingActive = value)) {
+                    webServerStatusControl.UPnpPortForwardingActive = value;
+                }
+            }
         }
 
         /// <summary>
@@ -154,7 +166,11 @@ namespace VirtualRadar.WinForms
         public bool WebServerIsOnline
         {
             get { return webServerStatusControl.ServerIsListening; }
-            set { webServerStatusControl.ServerIsListening = value; }
+            set {
+                if(!SafelyInvoke(() => WebServerIsOnline = value)) {
+                    webServerStatusControl.ServerIsListening = value;
+                }
+            }
         }
 
         /// <summary>
@@ -163,7 +179,11 @@ namespace VirtualRadar.WinForms
         public string WebServerLocalAddress
         {
             get { return webServerStatusControl.LocalAddress; }
-            set { webServerStatusControl.LocalAddress = value; }
+            set {
+                if(!SafelyInvoke(() => WebServerLocalAddress = value)) {
+                    webServerStatusControl.LocalAddress = value;
+                }
+            }
         }
 
         /// <summary>
@@ -172,7 +192,11 @@ namespace VirtualRadar.WinForms
         public string WebServerNetworkAddress
         {
             get { return webServerStatusControl.NetworkAddress; }
-            set { webServerStatusControl.NetworkAddress = value; }
+            set {
+                if(!SafelyInvoke(() => WebServerNetworkAddress = value)) {
+                    webServerStatusControl.NetworkAddress = value;
+                }
+            }
         }
 
         /// <summary>
@@ -181,7 +205,11 @@ namespace VirtualRadar.WinForms
         public string WebServerExternalAddress
         {
             get { return webServerStatusControl.InternetAddress; }
-            set { webServerStatusControl.InternetAddress = value; }
+            set {
+                if(!SafelyInvoke(() => WebServerExternalAddress = value)) {
+                    webServerStatusControl.InternetAddress = value;
+                }
+            }
         }
         #endregion
 
@@ -317,14 +345,8 @@ namespace VirtualRadar.WinForms
         public void BubbleExceptionToGui(Exception ex)
         {
             if(!(ex is ThreadAbortException)) {
-                if(!InvokeRequired) {
+                if(!SafelyInvoke(() => BubbleExceptionToGui(ex))) {
                     throw new ApplicationException("Exception thrown on background thread", ex);
-                } else {
-                    try {
-                        BeginInvoke(new MethodInvoker(() => BubbleExceptionToGui(ex)));
-                    } catch(InvalidOperationException) {
-                        ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
-                    }
                 }
             }
         }
@@ -337,13 +359,7 @@ namespace VirtualRadar.WinForms
         /// <param name="serverRequests"></param>
         public void ShowServerRequests(ServerRequest[] serverRequests)
         {
-            if(InvokeRequired) {
-                try {
-                    BeginInvoke(new MethodInvoker(() => { ShowServerRequests(serverRequests); }));
-                } catch(InvalidOperationException) {
-                    ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
-                }
-            } else {
+            if(!SafelyInvoke(() => ShowServerRequests(serverRequests))) {
                 webServerStatusControl.ShowServerRequests(serverRequests);
             }
         }
@@ -433,13 +449,7 @@ namespace VirtualRadar.WinForms
         /// <param name="connections"></param>
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)
         {
-            if(InvokeRequired) {
-                try {
-                    BeginInvoke(new MethodInvoker(() => { ShowRebroadcastServerStatus(connections); }));
-                } catch(InvalidOperationException) {
-                    ;          // <-- we need this for Mono, it will throw a fit if BeginInvoke is called while a form is closing / has closed and testing IsHandleCreated doesn't seem to help
-                }
-            } else {
+            if(!SafelyInvoke(() => ShowRebroadcastServerStatus(connections))) {
                 rebroadcastStatusControl.DisplayRebroadcastServerConnections(connections);
             }
         }
