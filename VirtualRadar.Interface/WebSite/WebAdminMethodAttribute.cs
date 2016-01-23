@@ -23,6 +23,23 @@ namespace VirtualRadar.Interface.WebSite
     public class WebAdminMethodAttribute : Attribute
     {
         /// <summary>
+        /// Gets or sets a value indicating that the method should be deferred.
+        /// </summary>
+        /// <remarks><para>
+        /// Some methods may want to do something that can cause the web server to close all connections and restart
+        /// (this applies in particular to anything to do with UPnP). This can cause havoc with the WebAdmin site as
+        /// it will close the connection while the browser is waiting for a reply, which at the very least will cause
+        /// the browser to re-send the request.
+        /// </para><para>
+        /// Setting this property tells the web admin plugin that it should defer the execution of the method until
+        /// after a response has been returned for the request. The response will carry a job identifier back to the
+        /// browser and the browser is then expected to poll the server until the job has been run. Pages that use the
+        /// ajax() method in ViewId do not need to do anything, the ajax() method will handle the job polling for them.
+        /// </para>
+        /// </remarks>
+        public bool DeferExecution { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public WebAdminMethodAttribute() : base()

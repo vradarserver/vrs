@@ -16,8 +16,7 @@ var VRS;
                 }
                 PageHandler.prototype.registerFeedId = function () {
                     var _this = this;
-                    this._ViewId.ajax({
-                        url: 'Statistics/RegisterFeedId',
+                    this._ViewId.ajax('RegisterFeedId', {
                         data: {
                             feedId: this._FeedId
                         },
@@ -31,8 +30,7 @@ var VRS;
                 };
                 PageHandler.prototype.refreshState = function () {
                     var _this = this;
-                    this._ViewId.ajax({
-                        url: 'Statistics/GetState',
+                    this._ViewId.ajax('GetState', {
                         success: function (data) {
                             _this.applyState(data);
                             setTimeout(function () { return _this.refreshState(); }, 1000);
@@ -43,7 +41,7 @@ var VRS;
                     });
                 };
                 PageHandler.prototype.resetCounters = function () {
-                    this._ViewId.ajax({ url: 'Statistics/RaiseResetCountersClicked' });
+                    this._ViewId.ajax('RaiseResetCountersClicked');
                 };
                 PageHandler.prototype.applyState = function (state) {
                     if (this._Model) {

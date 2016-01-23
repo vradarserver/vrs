@@ -10,6 +10,7 @@ declare module VRS.WebAdmin
     {
         Disabled:                    string;
         PluginName:                  string;
+        WA_Exception_Reported:       string;
         WA_Home:                     string;
         WA_Label_Credits:            string;
         WA_Label_Environment:        string;
@@ -21,6 +22,7 @@ declare module VRS.WebAdmin
         WA_Lost_Contact:             string;
         WA_ScrollToEnd:              string;
         WA_ScrollToTop:              string;
+        WA_Send_Failed:              string;
         WA_Title_About:              string;
         WA_Title_Bad:                string;
         WA_Title_Buffered:           string;
@@ -29,6 +31,7 @@ declare module VRS.WebAdmin
         WA_Title_Main:               string;
         WA_Title_Messages:           string;
         WA_Title_Options:            string;
+        WA_Title_Queues:             string;
         WA_Title_Sent:               string;
         WA_Title_Status:             string;
         WA_Title_Tracking:           string;
@@ -37,6 +40,7 @@ declare module VRS.WebAdmin
         WA_Title_WebAdmin:           string;
         WA_Value_DotNet:             string;
         WA_Value_Mono:               string;
+        WS_Title_AircraftLookup_Log: string;
     }
 
     export var $$: WebAdminTranslatedStringsStatic;

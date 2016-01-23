@@ -141,6 +141,7 @@ namespace VirtualRadar.Plugin.WebAdmin
 
             // Views that have a menu entry
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Index.html",                   WebAdminStrings.WA_Home,                        () => new View.MainView(parameters.UPnpManager, parameters.FlightSimulatorAircraftList), typeof(WebAdminStrings)));
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Settings.html",                WebAdminStrings.WA_Title_Options,               () => new View.SettingsView(), typeof(WebAdminStrings)));
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Log.html",                     WebAdminStrings.WA_Title_Log,                   () => new View.LogView(), typeof(WebAdminStrings)));
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "AircraftDetailLookupLog.html", WebAdminStrings.WS_Title_AircraftLookup_Log,    () => new View.AircraftOnlineLookupLogView(), typeof(WebAdminStrings)));
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "ConnectorActivityLog.html",    Strings.ConnectorActivityLog,                   () => new View.ConnectorActivityLogView(), typeof(WebAdminStrings)));

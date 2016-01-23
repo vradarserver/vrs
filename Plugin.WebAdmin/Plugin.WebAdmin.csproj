@@ -51,6 +51,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeferredExecutionResult.cs" />
     <Compile Include="IOptionsView.cs" />
     <Compile Include="JavaScriptTranslations.cs" />
     <Compile Include="JsonMenuEntry.cs" />
@@ -71,6 +72,8 @@
     <Compile Include="View\MainView.cs" />
     <Compile Include="View\QueuesModels.cs" />
     <Compile Include="View\QueuesView.cs" />
+    <Compile Include="View\SettingsModels.cs" />
+    <Compile Include="View\SettingsView.cs" />
     <Compile Include="View\StatisticsModels.cs" />
     <Compile Include="View\StatisticsView.cs" />
     <Compile Include="WebAdminStringsJavaScript.cs" />
@@ -126,6 +129,7 @@
     <TypeScriptCompile Include="Web\WebAdmin\script\bootstrap-helper.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\menu.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\viewid.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\Settings.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Statistics.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +247,7 @@
     <Content Include="Web\WebAdmin\Queues.js.map">
       <DependentUpon>Queues.ts</DependentUpon>
     </Content>
+    <Content Include="Web\WebAdmin\Settings.html" />
     <Content Include="Web\WebAdmin\Statistics.html" />
     <Content Include="Web\WebAdmin\Statistics.js">
       <DependentUpon>Statistics.ts</DependentUpon>

@@ -6,6 +6,7 @@ var VRS;
         (function (Log) {
             var PageHandler = (function () {
                 function PageHandler() {
+                    this._ViewId = new WebAdmin.ViewId('Log');
                     this._ScrollToEnd = $('#scrollToEnd');
                     this._ScrollToTop = $('#scrollToTop');
                     this._ScrollToEnd.on('click', function () {
@@ -24,8 +25,7 @@ var VRS;
                 }
                 PageHandler.prototype.refreshState = function () {
                     var _this = this;
-                    $.ajax({
-                        url: 'Log/GetState',
+                    this._ViewId.ajax('GetState', {
                         success: function (data) {
                             _this.applyState(data);
                             _this._ScrollToEnd.show();

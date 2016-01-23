@@ -79,6 +79,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The server reported an exception, see log for details: {0}.
+        /// </summary>
+        public static string WA_Exception_Reported {
+            get {
+                return ResourceManager.GetString("WA_Exception_Reported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string WA_Home {
@@ -174,6 +183,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         public static string WA_ScrollToTop {
             get {
                 return ResourceManager.GetString("WA_ScrollToTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This page could not send a message to the server. The error was: {0}.
+        /// </summary>
+        public static string WA_Send_Failed {
+            get {
+                return ResourceManager.GetString("WA_Send_Failed", resourceCulture);
             }
         }
         

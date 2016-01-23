@@ -6,12 +6,12 @@ var VRS;
         (function (Index) {
             var PageHandler = (function () {
                 function PageHandler() {
+                    this._ViewId = new WebAdmin.ViewId('Index');
                     this.refreshState();
                 }
                 PageHandler.prototype.refreshState = function () {
                     var _this = this;
-                    $.ajax({
-                        url: 'Index/GetState',
+                    this._ViewId.ajax('GetState', {
                         success: function (data) {
                             _this.applyState(data);
                             setTimeout(function () { return _this.refreshState(); }, 1000);
@@ -22,12 +22,11 @@ var VRS;
                     });
                 };
                 PageHandler.prototype.toggleUPnpStatus = function () {
-                    $.ajax('Index/RaiseToggleUPnpStatus');
+                    this._ViewId.ajax('RaiseToggleUPnpStatus');
                 };
                 PageHandler.prototype.resetPolarPlot = function () {
                     var feed = this._Model.SelectedFeed();
-                    $.ajax({
-                        url: 'Index/RaiseResetPolarPlot',
+                    this._ViewId.ajax('RaiseResetPolarPlot', {
                         data: {
                             feedId: feed.Id()
                         }
@@ -35,8 +34,7 @@ var VRS;
                 };
                 PageHandler.prototype.reconnectFeed = function () {
                     var feed = this._Model.SelectedFeed();
-                    $.ajax({
-                        url: 'Index/RaiseReconnectFeed',
+                    this._ViewId.ajax('RaiseReconnectFeed', {
                         data: {
                             feedId: feed.Id()
                         }

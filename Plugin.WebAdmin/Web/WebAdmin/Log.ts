@@ -9,6 +9,7 @@
     export class PageHandler
     {
         private _Model: Model;
+        private _ViewId = new ViewId('Log');
         private _ScrollToEnd = $('#scrollToEnd');
         private _ScrollToTop = $('#scrollToTop');
 
@@ -33,8 +34,7 @@
 
         refreshState()
         {
-            $.ajax({
-                url: 'Log/GetState',
+            this._ViewId.ajax('GetState', {
                 success: (data: IResponse<ViewJson.ILogView>) => {
                     this.applyState(data);
                     this._ScrollToEnd.show();
