@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 {
@@ -10,15 +11,43 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
     {
         public ConfigurationModel Configuration { get; set; }
 
-        public ViewModel(Configuration configuration)
+        public ValidationResultsModel ValidationResults { get; set; }
+
+        public ViewModel()
         {
-            Configuration = new ConfigurationModel(configuration);
+            Configuration = new ConfigurationModel();
+            ValidationResults = new ValidationResultsModel(
+                (record) => record.GetType().Name,
+                (record) => {
+                    string result = "";
+
+                    var receiver = record as Receiver;
+                    if(receiver != null) result = receiver.UniqueId.ToString();
+
+                    var mergedFeed = record as MergedFeed;
+                    if(mergedFeed != null) result = mergedFeed.UniqueId.ToString();
+
+                    var rebroadcastSettings = record as RebroadcastSettings;
+                    if(rebroadcastSettings != null) result = rebroadcastSettings.UniqueId.ToString();
+
+                    var user = record as IUser;
+                    if(user != null) result = user.UniqueId;
+
+                    return result;
+                }
+            );
         }
     }
 
     public class ConfigurationModel
     {
         public int DataVersion { get; set; }
+
+        public string OnlineLookupSupplierName { get; set; }
+
+        public string OnlineLookupSupplierCredits { get; set; }
+
+        public string OnlineLookupSupplierUrl { get; set; }
 
         public BaseStationSettingsModel BaseStationSettingsModel { get; private set; }
 

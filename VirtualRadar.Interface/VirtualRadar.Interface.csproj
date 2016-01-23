@@ -135,6 +135,7 @@
     <Compile Include="StandingData\EnginePlacement.cs" />
     <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />
+    <Compile Include="View\ValidationResultModels.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />
     <Compile Include="WebSite\IWebAdminViewManager.cs" />

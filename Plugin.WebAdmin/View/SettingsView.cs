@@ -25,7 +25,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             get { return _Configuration; }
             set {
                 _Configuration = value;
-                _ViewModel = new ViewModel(value);
+                _ViewModel.Configuration.RefreshFromConfiguration(value);
             }
         }
 
@@ -59,10 +59,12 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public DialogResult ShowView()
         {
+            _ViewModel = new ViewModel();
             Users = new NotifyList<IUser>();
 
             _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
             _Presenter.Initialise(this);
+            _Presenter.ValidateView();
 
             return DialogResult.OK;
         }
@@ -84,7 +86,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowAircraftDataLookupSettings(string dataSupplier, string supplierCredits, string supplierUrl)
         {
-            ;
+            _ViewModel.Configuration.OnlineLookupSupplierName = dataSupplier;
+            _ViewModel.Configuration.OnlineLookupSupplierCredits = supplierCredits;
+            _ViewModel.Configuration.OnlineLookupSupplierUrl = supplierUrl;
         }
 
         public object ShowBusy(bool isBusy, object previousState)
@@ -94,7 +98,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowValidationResults(ValidationResults results)
         {
-            ;
+            _ViewModel.ValidationResults.RefreshFromResults(results);
         }
 
         [WebAdminMethod]
@@ -106,10 +110,16 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         [WebAdminMethod(DeferExecution=true)]
         public ViewModel RaiseSaveClicked(ConfigurationModel configurationModel)
         {
+            var originalConfiguration = _ViewModel.Configuration;
             _ViewModel.Configuration = configurationModel;
+
             _ViewModel.Configuration.CopyToConfiguration(Configuration);
+            _ViewModel.Configuration.OnlineLookupSupplierName = originalConfiguration.OnlineLookupSupplierName;
+            _ViewModel.Configuration.OnlineLookupSupplierCredits = originalConfiguration.OnlineLookupSupplierCredits;
+            _ViewModel.Configuration.OnlineLookupSupplierUrl = originalConfiguration.OnlineLookupSupplierUrl;
 
             OnSaveClicked(EventArgs.Empty);
+            _ViewModel.Configuration.RefreshFromConfiguration(Configuration);
 
             return _ViewModel;
         }

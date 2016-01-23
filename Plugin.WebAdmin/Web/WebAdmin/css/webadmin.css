@@ -64,6 +64,13 @@
   }
 }
 
+/* Forms */
+.has-feedback.has-warning .form-control-feedback.glyphicon-exclamation-sign
+{
+    color: #ffff00;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
 /* Modal alerts */
 .modal-alert {
     z-index: 9999;

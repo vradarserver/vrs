@@ -20,6 +20,7 @@ declare module VRS.WebAdmin
         WA_Label_WebServer:          string;
         WA_Logout:                   string;
         WA_Lost_Contact:             string;
+        WA_Saved:                    string;
         WA_ScrollToEnd:              string;
         WA_ScrollToTop:              string;
         WA_Send_Failed:              string;
@@ -38,6 +39,7 @@ declare module VRS.WebAdmin
         WA_Title_Upnp:               string;
         WA_Title_VirtualRadarServer: string;
         WA_Title_WebAdmin:           string;
+        WA_Validation_Failed:        string;
         WA_Value_DotNet:             string;
         WA_Value_Mono:               string;
         WS_Title_AircraftLookup_Log: string;

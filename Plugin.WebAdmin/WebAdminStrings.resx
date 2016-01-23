@@ -153,6 +153,9 @@
   <data name="WA_Lost_Contact" xml:space="preserve">
     <value>This page has lost contact with the server and cannot continue</value>
   </data>
+  <data name="WA_Saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
   <data name="WA_ScrollToEnd" xml:space="preserve">
     <value>Scroll to end</value>
   </data>
@@ -207,6 +210,9 @@
   </data>
   <data name="WA_Title_WebAdmin" xml:space="preserve">
     <value>VRS Web Admin</value>
+  </data>
+  <data name="WA_Validation_Failed" xml:space="preserve">
+    <value>Correct your errors and try again</value>
   </data>
   <data name="WA_Value_DotNet" xml:space="preserve">
     <value>.NET</value>
