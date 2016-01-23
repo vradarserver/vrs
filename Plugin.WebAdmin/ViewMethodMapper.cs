@@ -30,22 +30,77 @@ namespace VirtualRadar.Plugin.WebAdmin
     class ViewMethodMapper
     {
         /// <summary>
+        /// Describes an exposed method.
+        /// </summary>
+        class ExposedMethod
+        {
+            public WebAdminMethodAttribute WebAdminMethod { get; private set; }
+            public MethodInfo MethodInfo { get; private set; }
+
+            public ExposedMethod(WebAdminMethodAttribute attribute, MethodInfo methodInfo)
+            {
+                WebAdminMethod = attribute;
+                MethodInfo = methodInfo;
+            }
+        }
+
+        /// <summary>
         /// Describes a web admin view and the object that handles the JSON requests from the HTML.
         /// </summary>
         class MappedView
         {
-            public WebAdminView                     WebAdminView { get; private set; }
-            public IView                            View { get; private set; }
-            public string                           ViewId { get; set; }
-            public Dictionary<string, MethodInfo>   ExposedMethods { get; private set; }
-            public DateTime                         LastContactUtc { get; set; }
+            public WebAdminView                         WebAdminView { get; private set; }
+            public IView                                View { get; private set; }
+            public string                               ViewId { get; set; }
+            public Dictionary<string, ExposedMethod>    ExposedMethods { get; private set; }
+            public DateTime                             LastContactUtc { get; set; }
 
             public MappedView(WebAdminView webAdminView, IView view)
             {
                 WebAdminView = webAdminView;
                 View = view;
-                ExposedMethods = new Dictionary<string,MethodInfo>();
+                ExposedMethods = new Dictionary<string,ExposedMethod>();
                 LastContactUtc = DateTime.UtcNow;
+            }
+        }
+
+        /// <summary>
+        /// Describes a method that is to be called after the original request has had a response sent back for it.
+        /// </summary>
+        class DeferredMethod
+        {
+            public string           JobId { get; private set; }
+            public DateTime         CreatedUtc { get; private set; }
+            public long             RequestId { get; private set; }
+            public MappedView       MappedView { get; private set; }
+            public ExposedMethod    ExposedMethod { get; private set; }
+            public object[]         Parameters { get; private set; }
+
+            public DeferredMethod(long requestId, MappedView mappedView, ExposedMethod exposedMethod, object[] parameters)
+            {
+                JobId = Guid.NewGuid().ToString();
+                CreatedUtc = DateTime.UtcNow;
+                RequestId = requestId;
+                MappedView = mappedView;
+                ExposedMethod = exposedMethod;
+                Parameters = parameters;
+            }
+        }
+
+        /// <summary>
+        /// Holds the response to a deferred method.
+        /// </summary>
+        class DeferredMethodResponse
+        {
+            public DateTime CreatedUtc { get; private set; }
+            public string   JobId { get; private set; }
+            public string   JsonResponseText { get; private set; }
+
+            public DeferredMethodResponse(string jobId, string jsonResponseText)
+            {
+                CreatedUtc = DateTime.UtcNow;
+                JobId = jobId;
+                JsonResponseText = jsonResponseText;
             }
         }
 
@@ -60,9 +115,19 @@ namespace VirtualRadar.Plugin.WebAdmin
         private const string ViewIdParameterName = "__ViewId";
 
         /// <summary>
+        /// The name of the parameter that holds the deferred execution job ID.
+        /// </summary>
+        private const string JobIdParameterName = "JobId";
+
+        /// <summary>
         /// The name of the fake method that browsers should periodically call to prevent their view from getting zapped.
         /// </summary>
         private const string ViewHeartbeatMethod = "BrowserHeartbeat";
+
+        /// <summary>
+        /// The name of the fake method that browsers periodically call when they're asking for the response to a deferred execution.
+        /// </summary>
+        private const string GetDeferredResponseMethod = "GetDeferredResponse";
 
         /// <summary>
         /// The number of seconds that have to elapse with no message from a multi-instance view before that view is disposed.
@@ -73,6 +138,17 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// The number of seconds to wait between each check for inactive views.
         /// </summary>
         private const int InactiveViewCheckIntervalSeconds = 30;
+
+        /// <summary>
+        /// The number of minutes that orphaned deferred executions and results can hang around before they're removed.
+        /// </summary>
+        private const int CleanUpDeferredExecutionsIntervalMinutes = 1;
+
+        /// <summary>
+        /// The number of minutes that unclaimed deferred execution responses will be kept until they're flushed. It's a little
+        /// higher than strictly necessary so that we don't remove the results for pages that are being debugged.
+        /// </summary>
+        private const int CleanUpDeferredExecutionResponseMinutes = 5;
 
         /// <summary>
         /// Used to manage multi-threaded access to the fields.
@@ -102,6 +178,16 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// The date and time of the last check for inactive forms.
         /// </summary>
         private DateTime _LastInactiveViewCheckUtc = DateTime.UtcNow;
+
+        /// <summary>
+        /// The deferred methods waiting to be executed.
+        /// </summary>
+        private Dictionary<long, DeferredMethod> _DeferredMethods = new Dictionary<long,DeferredMethod>();
+
+        /// <summary>
+        /// The responses to deferred methods that have finished executing.
+        /// </summary>
+        private Dictionary<string, DeferredMethodResponse> _DeferredResponses = new Dictionary<string,DeferredMethodResponse>();
 
         /// <summary>
         /// Creates a new object.
@@ -189,24 +275,29 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// mean that we can't support overloading of a function, each exposed method must be unique.
         /// </summary>
         /// <param name="type"></param>
+        /// <param name="methodMap"></param>
         /// <returns></returns>
-        private void FindExposedMethods(Type type, Dictionary<string, MethodInfo> methodMap)
+        private void FindExposedMethods(Type type, Dictionary<string, ExposedMethod> methodMap)
         {
-            var reservedMethodName = NormaliseString(ViewHeartbeatMethod);
+            var reservedMethodNames = new string[] {
+                NormaliseString(ViewHeartbeatMethod),
+                NormaliseString(GetDeferredResponseMethod),
+            };
 
             foreach(var method in type.GetMethods()) {
                 var webAdminMethodAttribute = method.GetCustomAttributes(inherit: true).OfType<WebAdminMethodAttribute>().SingleOrDefault();
                 if(webAdminMethodAttribute != null) {
                     var key = NormaliseString(method.Name);
 
-                    if(key == reservedMethodName) {
-                        throw new InvalidOperationException(String.Format("Views cannot expose a method called {0}, it has been reserved for use by the mapper", reservedMethodName));
+                    if(reservedMethodNames.Contains(key)) {
+                        throw new InvalidOperationException(String.Format("Views cannot expose a method called {0}, it has been reserved for use by the mapper", method.Name));
                     }
                     if(methodMap.ContainsKey(key)) {
                         throw new InvalidOperationException("Function overloading is not supported by the view mapper");
                     }
 
-                    methodMap.Add(key, method);
+                    var exposedMethod = new ExposedMethod(webAdminMethodAttribute, method);
+                    methodMap.Add(key, exposedMethod);
                 }
             }
         }
@@ -228,14 +319,31 @@ namespace VirtualRadar.Plugin.WebAdmin
                 var normalisedFile = NormaliseString(args.File);
                 if(normalisedFile == NormaliseString(ViewHeartbeatMethod)) {
                     result = true;
+                } else if(normalisedFile == NormaliseString(GetDeferredResponseMethod)) {
+                    ProcessRequestForDeferredResponse(args, responder);
+                    result = true;
                 } else {
-                    MethodInfo exposedMethod;
+                    ExposedMethod exposedMethod;
                     if(mappedView.ExposedMethods.TryGetValue(normalisedFile, out exposedMethod)) {
                         var response = new JsonResponse();
 
                         try {
-                            var parameters = MapParameters(exposedMethod, args);
-                            response.Response = exposedMethod.Invoke(mappedView.View, parameters);
+                            var parameters = MapParameters(exposedMethod.MethodInfo, args);
+
+                            if(!exposedMethod.WebAdminMethod.DeferExecution) {
+                                response.Response = exposedMethod.MethodInfo.Invoke(mappedView.View, parameters);
+                            } else {
+                                var deferredMethod = new DeferredMethod(args.UniqueId, mappedView, exposedMethod, parameters);
+                                lock(_SyncLock) {
+                                    var newMethods = CollectionHelper.ShallowCopy(_DeferredMethods);
+                                    newMethods.Add(deferredMethod.RequestId, deferredMethod);
+                                    _DeferredMethods = newMethods;
+                                }
+
+                                response.Response = new DeferredExecutionResult() {
+                                    JobId = deferredMethod.JobId,
+                                };
+                            }
                         } catch(Exception ex) {
                             try {
                                 var log = Factory.Singleton.Resolve<ILog>().Singleton;
@@ -246,7 +354,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                         }
 
                         var jsonText = JsonConvert.SerializeObject(response);
-                        responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
+                        responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json, cacheSeconds: 0);
 
                         result = true;
                     }
@@ -254,6 +362,85 @@ namespace VirtualRadar.Plugin.WebAdmin
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Processes the deferred method for the unique ID passed across.
+        /// </summary>
+        /// <param name="requestUniqueId"></param>
+        public void ExecuteDeferredMethodForRequestId(long requestUniqueId)
+        {
+            var deferredMethods = _DeferredMethods;
+            if(deferredMethods.Count > 0) {
+                DeferredMethod deferredMethod;
+                if(deferredMethods.TryGetValue(requestUniqueId, out deferredMethod)) {
+                    lock(_SyncLock) {
+                        if(_DeferredMethods.ContainsKey(requestUniqueId)) {
+                            var newMap = CollectionHelper.ShallowCopy(_DeferredMethods);
+                            newMap.Remove(requestUniqueId);
+                            _DeferredMethods = newMap;
+                        }
+                    }
+
+                    var response = new JsonResponse();
+                    try {
+                        response.Response = deferredMethod.ExposedMethod.MethodInfo.Invoke(deferredMethod.MappedView.View, deferredMethod.Parameters);
+                    } catch(Exception ex) {
+                        try {
+                            var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                            log.WriteLine("Caught exception during processing of deferred request for {0}.{1}: {2}",
+                                deferredMethod.MappedView.View.GetType().Name,
+                                deferredMethod.ExposedMethod.MethodInfo.Name,
+                                ex
+                            );
+                        } catch {}
+                        response.Exception = ex.Message;
+                        response.Response = null;
+                    }
+
+                    var jsonText = JsonConvert.SerializeObject(response);
+                    var deferredResponse = new DeferredMethodResponse(deferredMethod.JobId, jsonText);
+                    lock(_SyncLock) {
+                        var newMap = CollectionHelper.ShallowCopy(_DeferredResponses);
+                        newMap.Add(deferredResponse.JobId, deferredResponse);
+                        _DeferredResponses = newMap;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles requests for deferred responses.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="responder"></param>
+        private void ProcessRequestForDeferredResponse(RequestReceivedEventArgs args, IResponder responder)
+        {
+            var jobId = args.QueryString[JobIdParameterName] ?? args.Request.FormValues[JobIdParameterName];
+            if(!String.IsNullOrEmpty(jobId)) {
+                string jsonText;
+
+                var deferredResponses = _DeferredResponses;
+                DeferredMethodResponse response;
+                if(!deferredResponses.TryGetValue(jobId, out response)) {
+                    var jsonResponse = new JsonResponse();
+                    jsonResponse.Response = new DeferredExecutionResult() {
+                        JobId = jobId,
+                    };
+                    jsonText = JsonConvert.SerializeObject(jsonResponse);
+                } else {
+                    lock(_SyncLock) {
+                        if(_DeferredResponses.ContainsKey(jobId)) {
+                            var newMap = CollectionHelper.ShallowCopy(_DeferredResponses);
+                            newMap.Remove(jobId);
+                            _DeferredResponses = newMap;
+                        }
+                    }
+                    jsonText = response.JsonResponseText;
+                }
+
+                responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json, cacheSeconds: 0);
+            }
         }
 
         private MappedView FindMappedView(RequestReceivedEventArgs args)
@@ -429,6 +616,48 @@ namespace VirtualRadar.Plugin.WebAdmin
         }
 
         /// <summary>
+        /// Removes deferred executions that are still waiting for a request to finish after so-many minutes have elapsed.
+        /// </summary>
+        /// <remarks>
+        /// This should not happen in real life, any deferred executions that are still queued after several minutes
+        /// have passed would indicate a bug somewhere.
+        /// </remarks>
+        private void RemoveOrpanedDeferredExecutions()
+        {
+            var threshold = DateTime.UtcNow.AddMinutes(-CleanUpDeferredExecutionsIntervalMinutes);
+            var removeList = _DeferredMethods.Where(r => r.Value.CreatedUtc <= threshold).Select(r => r.Key).ToArray();
+            if(removeList.Length > 0) {
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+
+                foreach(var removeKey in removeList) {
+                    var value = _DeferredMethods[removeKey];
+                    _DeferredMethods.Remove(removeKey);
+
+                    log.WriteLine("Removed deferred execution for {0}.{1}, waiting on request {2} for {3} minutes",
+                        value.MappedView.View.GetType().Name,
+                        value.ExposedMethod.MethodInfo.Name,
+                        value.RequestId,
+                        CleanUpDeferredExecutionsIntervalMinutes
+                    );
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes deferred execution responses that no browser has fetched. These can happen in real life, the browser
+        /// page might be closed before the response can be retrieved.
+        /// </summary>
+        private void RemoveUnclaimedDeferredExecutionResponses()
+        {
+            var threshold = DateTime.UtcNow.AddMinutes(-CleanUpDeferredExecutionResponseMinutes);
+            var removeList = _DeferredResponses.Where(r => r.Value.CreatedUtc <= threshold).Select(r => r.Key).ToArray();
+
+            foreach(var removeKey in removeList) {
+                _DeferredResponses.Remove(removeKey);
+            }
+        }
+
+        /// <summary>
         /// Called on every slow timer tick from the heartbeat service.
         /// </summary>
         /// <param name="sender"></param>
@@ -440,6 +669,8 @@ namespace VirtualRadar.Plugin.WebAdmin
                     _LastInactiveViewCheckUtc = DateTime.UtcNow;
                     DisposeOfViewsFoundInLastPass();
                     RemoveInactiveViews();
+                    RemoveOrpanedDeferredExecutions();
+                    RemoveUnclaimedDeferredExecutionResponses();
                 }
             }
         }

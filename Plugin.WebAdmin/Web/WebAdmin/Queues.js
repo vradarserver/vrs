@@ -6,12 +6,12 @@ var VRS;
         (function (Queues) {
             var PageHandler = (function () {
                 function PageHandler() {
+                    this._ViewId = new WebAdmin.ViewId('Queues');
                     this.refreshState();
                 }
                 PageHandler.prototype.refreshState = function () {
                     var _this = this;
-                    $.ajax({
-                        url: 'Queues/GetState',
+                    this._ViewId.ajax('GetState', {
                         success: function (data) {
                             _this.applyState(data);
                             setTimeout(function () { return _this.refreshState(); }, 1000);

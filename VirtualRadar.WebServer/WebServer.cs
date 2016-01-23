@@ -493,6 +493,20 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public event EventHandler<EventArgs<long>> RequestFinished;
+
+        /// <summary>
+        /// Raises <see cref="RequestFinished"/>
+        /// </summary>
+        /// <param name="args"></param>
+        private void OnRequestFinished(EventArgs<long> args)
+        {
+            EventHelper.RaiseQuickly(RequestFinished, this, args);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler<EventArgs<Exception>> ExceptionCaught;
 
         /// <summary>
@@ -553,6 +567,8 @@ namespace VirtualRadar.WebServer
         /// <param name="asyncResult"></param>
         private void GetContextHandler(IAsyncResult asyncResult)
         {
+            long requestReceivedEventArgsId = -1;
+
             if(Provider.IsListening) {
                 bool providerIsStable = true;
                 IContext context = null;
@@ -597,6 +613,8 @@ namespace VirtualRadar.WebServer
                     if(context != null) {
                         try {
                             var requestArgs = new RequestReceivedEventArgs(context.Request, context.Response, Root);
+                            requestReceivedEventArgsId = requestArgs.UniqueId;
+
                             if(IsRestricted(requestArgs)) {
                                 context.Response.StatusCode = HttpStatusCode.Forbidden;
                             } else if(Authenticated(context, requestArgs)) {
@@ -636,6 +654,15 @@ namespace VirtualRadar.WebServer
                     } catch(Exception ex) {
                         Debug.WriteLine(String.Format("WebServer.GetContextHandler caught exception while disposing of response: {0}", ex.ToString()));
                     }
+                }
+
+                try {
+                    if(requestReceivedEventArgsId != -1) {
+                        OnRequestFinished(new EventArgs<long>(requestReceivedEventArgsId));
+                    }
+                } catch(Exception ex) {
+                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    log.WriteLine("Caught exception in RequestFinished event handler: {0}", ex);
                 }
             }
         }

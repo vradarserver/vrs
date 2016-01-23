@@ -193,6 +193,12 @@ namespace VirtualRadar.Interface.WebServer
         /// Raised on a background thread when the web server responds to a request.
         /// </summary>
         event EventHandler<ResponseSentEventArgs> ResponseSent;
+
+        /// <summary>
+        /// Raised after a response has been sent and the request completely closed down. The parameter is
+        /// the UniqueId of the <see cref="ResponseSentEventArgs"/> original created for the request.
+        /// </summary>
+        event EventHandler<EventArgs<long>> RequestFinished;
         #endregion
 
         #region ResetCredentialCache

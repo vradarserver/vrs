@@ -161,6 +161,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             lock(_SyncLock) {
                 _WebSite = webSite;
                 _WebSite.WebServer.RequestReceived += WebServer_RequestReceived;
+                _WebSite.WebServer.RequestFinished += WebServer_RequestFinished;
                 _WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
 
                 EnableDisableSiteRoots();
@@ -433,6 +434,18 @@ namespace VirtualRadar.Plugin.WebAdmin
                         args.Handled = true;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Called when the web server has finished sending the response for a request.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void WebServer_RequestFinished(object sender, EventArgs<long> args)
+        {
+            if(Enabled) {
+                _ViewMethodMapper.ExecuteDeferredMethodForRequestId(args.Value);
             }
         }
     }

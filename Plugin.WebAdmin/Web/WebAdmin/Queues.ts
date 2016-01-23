@@ -15,6 +15,7 @@
     export class PageHandler
     {
         private _Model: Model;
+        private _ViewId = new ViewId('Queues');
 
         constructor()
         {
@@ -23,8 +24,7 @@
 
         refreshState()
         {
-            $.ajax({
-                url: 'Queues/GetState',
+            this._ViewId.ajax('GetState', {
                 success: (data: IResponse<ViewJson.IViewModel>) => {
                     this.applyState(data);
                     setTimeout(() => this.refreshState(), 1000);

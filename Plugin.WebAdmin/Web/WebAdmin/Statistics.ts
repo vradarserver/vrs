@@ -59,8 +59,7 @@
 
         private registerFeedId()
         {
-            this._ViewId.ajax({
-                url: 'Statistics/RegisterFeedId',
+            this._ViewId.ajax('RegisterFeedId', {
                 data: {
                     feedId: this._FeedId
                 },
@@ -75,8 +74,7 @@
 
         refreshState()
         {
-            this._ViewId.ajax({
-                url: 'Statistics/GetState',
+            this._ViewId.ajax('GetState', {
                 success: (data: IResponse<ViewJson.IViewModel>) => {
                     this.applyState(data);
                     setTimeout(() => this.refreshState(), 1000);
@@ -89,7 +87,7 @@
 
         resetCounters()
         {
-            this._ViewId.ajax({ url: 'Statistics/RaiseResetCountersClicked' });
+            this._ViewId.ajax('RaiseResetCountersClicked');
         }
 
         private applyState(state: IResponse<ViewJson.IViewModel>)

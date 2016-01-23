@@ -75,6 +75,21 @@ namespace VirtualRadar.WebServer
         /// </summary>
         /// <param name="request"></param>
         /// <param name="response"></param>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <param name="mimeType"></param>
+        /// <param name="cacheSeconds"></param>
+        public void SendText(IRequest request, IResponse response, string text, Encoding encoding, string mimeType, int cacheSeconds)
+        {
+            AddCacheHeaders(response, cacheSeconds);
+            SendText(request, response, text, encoding, mimeType);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
         /// <param name="json"></param>
         /// <param name="jsonpCallbackFunction"></param>
         /// <param name="mimeType"></param>

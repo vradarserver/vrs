@@ -139,6 +139,28 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
         PeakQueuedItems: number;
     }
 }
+declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
+    interface IViewModel {
+        Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel;
+    }
+    interface IConfigurationModel {
+        DataVersion: number;
+        BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
+    }
+    interface IBaseStationSettingsModel {
+        DatabaseFileName: string;
+        OperatorFlagsFolder: string;
+        SilhouettesFolder: string;
+        OutlinesFolder: string;
+        PicturesFolder: string;
+        SearchPictureSubFolders: boolean;
+        DisplayTimeoutSeconds: number;
+        TrackingTimeoutSeconds: number;
+        MinimiseToSystemTray: boolean;
+        AutoSavePolarPlotsMinutes: number;
+        LookupAircraftDetailsOnline: boolean;
+    }
+}
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
     interface IViewModel {
         Name: string;
@@ -321,6 +343,28 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
         Name: KnockoutObservable<string>;
         CountQueuedItems: KnockoutObservable<number>;
         PeakQueuedItems: KnockoutObservable<number>;
+    }
+}
+declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
+    interface IViewModel_KO {
+        Configuration: KnockoutObservable<VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO>;
+    }
+    interface IConfigurationModel_KO {
+        DataVersion: KnockoutObservable<number>;
+        BaseStationSettingsModel: KnockoutObservable<VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO>;
+    }
+    interface IBaseStationSettingsModel_KO {
+        DatabaseFileName: KnockoutObservable<string>;
+        OperatorFlagsFolder: KnockoutObservable<string>;
+        SilhouettesFolder: KnockoutObservable<string>;
+        OutlinesFolder: KnockoutObservable<string>;
+        PicturesFolder: KnockoutObservable<string>;
+        SearchPictureSubFolders: KnockoutObservable<boolean>;
+        DisplayTimeoutSeconds: KnockoutObservable<number>;
+        TrackingTimeoutSeconds: KnockoutObservable<number>;
+        MinimiseToSystemTray: KnockoutObservable<boolean>;
+        AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
+        LookupAircraftDetailsOnline: KnockoutObservable<boolean>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {

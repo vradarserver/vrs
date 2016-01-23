@@ -11,6 +11,7 @@
     export class PageHandler
     {
         private _Model: Model;
+        private _ViewId = new ViewId('About');
 
         constructor()
         {
@@ -19,8 +20,7 @@
 
         refreshState()
         {
-            $.ajax({
-                url: 'About/GetState',
+            this._ViewId.ajax('GetState', {
                 success: (data: IResponse<ViewJson.IAboutView>) => {
                     this.applyState(data);
                 },

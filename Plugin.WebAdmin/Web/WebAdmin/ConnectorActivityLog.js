@@ -7,6 +7,7 @@ var VRS;
             var PageHandler = (function () {
                 function PageHandler() {
                     var _this = this;
+                    this._ViewId = new WebAdmin.ViewId('ConnectorActivityLog');
                     this.refreshState(function () {
                         var connectorName = $.url().param('connectorName');
                         if (connectorName) {
@@ -25,8 +26,7 @@ var VRS;
                 PageHandler.prototype.refreshState = function (callback) {
                     var _this = this;
                     if (callback === void 0) { callback = null; }
-                    $.ajax({
-                        url: 'ConnectorActivityLog/GetState',
+                    this._ViewId.ajax('GetState', {
                         success: function (data) {
                             _this.applyState(data);
                             if (callback !== null) {

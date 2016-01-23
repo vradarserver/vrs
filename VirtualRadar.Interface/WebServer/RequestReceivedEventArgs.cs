@@ -15,6 +15,7 @@ using System.Text;
 using System.Web;
 using System.Collections.Specialized;
 using System.Net;
+using System.Threading;
 
 namespace VirtualRadar.Interface.WebServer
 {
@@ -23,6 +24,16 @@ namespace VirtualRadar.Interface.WebServer
     /// </summary>
     public class RequestReceivedEventArgs : EventArgs
     {
+        /// <summary>
+        /// The counter that is used to generate values for <see cref="UniqueId"/>.
+        /// </summary>
+        private static long _NextUniqueId;
+
+        /// <summary>
+        /// Gets a value that uniquely identifies the request.
+        /// </summary>
+        public long UniqueId { get; private set; }
+
         /// <summary>
         /// Gets details of the page requested by the user.
         /// </summary>
@@ -170,6 +181,8 @@ namespace VirtualRadar.Interface.WebServer
         /// <param name="root"></param>
         public RequestReceivedEventArgs(IRequest request, IResponse response, string root)
         {
+            UniqueId = Interlocked.Increment(ref _NextUniqueId);
+
             PathParts = new List<string>();
             PathAndFile = File = "";
 

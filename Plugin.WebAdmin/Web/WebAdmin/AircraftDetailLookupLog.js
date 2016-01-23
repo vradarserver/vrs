@@ -6,12 +6,12 @@ var VRS;
         (function (AircraftDetailLookupLog) {
             var PageHandler = (function () {
                 function PageHandler() {
+                    this._ViewId = new WebAdmin.ViewId('AircraftDetailLookupLog');
                     this.refreshState();
                 }
                 PageHandler.prototype.refreshState = function () {
                     var _this = this;
-                    $.ajax({
-                        url: 'AircraftDetailLookupLog/GetState',
+                    this._ViewId.ajax('GetState', {
                         success: function (data) {
                             _this.applyState(data);
                             setTimeout(function () { return _this.refreshState(); }, 1000);

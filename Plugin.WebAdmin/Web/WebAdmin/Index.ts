@@ -57,6 +57,7 @@
     export class PageHandler
     {
         private _Model: Model;
+        private _ViewId = new ViewId('Index');
 
         constructor()
         {
@@ -65,8 +66,7 @@
 
         refreshState()
         {
-            $.ajax({
-                url: 'Index/GetState',
+            this._ViewId.ajax('GetState', {
                 success: (data: IResponse<ViewJson.IMainView>) => {
                     this.applyState(data);
                     setTimeout(() => this.refreshState(), 1000);
@@ -79,14 +79,13 @@
 
         toggleUPnpStatus()
         {
-            $.ajax('Index/RaiseToggleUPnpStatus');
+            this._ViewId.ajax('RaiseToggleUPnpStatus');
         }
 
         resetPolarPlot()
         {
             var feed = this._Model.SelectedFeed();
-            $.ajax({
-                url: 'Index/RaiseResetPolarPlot',
+            this._ViewId.ajax('RaiseResetPolarPlot', {
                 data: {
                     feedId: feed.Id()
                 }
@@ -96,8 +95,7 @@
         reconnectFeed()
         {
             var feed = this._Model.SelectedFeed();
-            $.ajax({
-                url: 'Index/RaiseReconnectFeed',
+            this._ViewId.ajax('RaiseReconnectFeed', {
                 data: {
                     feedId: feed.Id()
                 }

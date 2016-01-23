@@ -15,6 +15,7 @@
     export class PageHandler
     {
         private _Model: Model;
+        private _ViewId = new ViewId('ConnectorActivityLog');
 
         constructor()
         {
@@ -38,8 +39,7 @@
 
         refreshState(callback: () => void = null)
         {
-            $.ajax({
-                url: 'ConnectorActivityLog/GetState',
+            this._ViewId.ajax('GetState', {
                 success: (data: IResponse<ViewJson.IViewModel>) => {
                     this.applyState(data);
                     if(callback !== null) {

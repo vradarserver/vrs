@@ -9,6 +9,7 @@
     export class PageHandler
     {
         private _Model: Model;
+        private _ViewId = new ViewId('AircraftDetailLookupLog');
 
         constructor()
         {
@@ -17,8 +18,7 @@
 
         refreshState()
         {
-            $.ajax({
-                url: 'AircraftDetailLookupLog/GetState',
+            this._ViewId.ajax('GetState', {
                 success: (data: IResponse<ViewJson.IViewModel>) => {
                     this.applyState(data);
                     setTimeout(() => this.refreshState(), 1000);

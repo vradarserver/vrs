@@ -6,12 +6,12 @@ var VRS;
         (function (About) {
             var PageHandler = (function () {
                 function PageHandler() {
+                    this._ViewId = new WebAdmin.ViewId('About');
                     this.refreshState();
                 }
                 PageHandler.prototype.refreshState = function () {
                     var _this = this;
-                    $.ajax({
-                        url: 'About/GetState',
+                    this._ViewId.ajax('GetState', {
                         success: function (data) {
                             _this.applyState(data);
                         },

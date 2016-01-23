@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>::WA_Title_Options:: - ::WA_Title_WebAdmin::</title>
+        @head.html@
+        <!-- [[ BUNDLE END ]] -->
+        <script src="script/Strings.Server.js"></script>
+        <script src="script/bootstrap-helper.js"></script>
+        <script src="Settings.js"></script>
+    </head>
+    <body>
+        <div id="page-container">
+            <div id="content" class="container-fluid">
+                <div class="row row-offcanvas row-offcanvas-left">
+                    <div class="col-xs-12 col-sm-9">
+                        <h1 class="page-header">
+                            ::WA_Title_Options::
+                        </h1>
+
+                        <div id="failure-message" class="alert alert-danger">
+                        </div>
+
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div>
+                                ::OptionsDataSourcesSheetTitle::
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-4">::DatabaseFileName:::</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" data-bind="textInput: Configuration.BaseStationSettingsModel.DatabaseFileName" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <button type="button" class="btn btn-primary" data-bind="click: $.proxy(pageHandler.save, pageHandler)">
+                            ::Save::
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $(document).on('ready', function() {
+                Bootstrap.Helper.decorateBootstrapElements();
+                window.pageHandler = new VRS.WebAdmin.Settings.PageHandler('@view-id@');
+            })
+        </script>
+    </body>
+</html>

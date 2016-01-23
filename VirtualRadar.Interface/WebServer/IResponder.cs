@@ -79,5 +79,16 @@ namespace VirtualRadar.Interface.WebServer
         /// <param name="encoding">The encoding to use when sending the text - defaults to UTF8.</param>
         /// <param name="mimeType">The <see cref="MimeType"/> to use when sending the text - defaults to MimeType.Text.</param>
         void SendText(IRequest request, IResponse response, string text, Encoding encoding, string mimeType);
+
+        /// <summary>
+        /// Configures the response object to send text back to the browser.
+        /// </summary>
+        /// <param name="request">The request object - must be supplied.</param>
+        /// <param name="response">The response object to fill in - must be supplied.</param>
+        /// <param name="text">The text to send back - defaults to an empty string.</param>
+        /// <param name="encoding">The encoding to use when sending the text - defaults to UTF8.</param>
+        /// <param name="mimeType">The <see cref="MimeType"/> to use when sending the text - defaults to MimeType.Text.</param>
+        /// <param name="cacheSeconds">The number of seconds that the browser should cache the response for. Set to 0 to tell the browser not to cache the response.</param>
+        void SendText(IRequest request, IResponse response, string text, Encoding encoding, string mimeType, int cacheSeconds);
     }
 }
