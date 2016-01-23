@@ -95,6 +95,16 @@ declare module VirtualRadar.Interface.View {
         BadMsgs: number;
         Tracked: number;
     }
+    interface IValidationResultsModel {
+        Results: VirtualRadar.Interface.View.IValidationResultModel[];
+    }
+    interface IValidationResultModel {
+        RecordName: string;
+        RecordId: string;
+        FieldName: string;
+        Message: string;
+        IsWarning: boolean;
+    }
 }
 declare module System.Net {
     interface IIPEndPoint extends System.Net.IEndPoint {
@@ -142,9 +152,13 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel;
+        ValidationResults: VirtualRadar.Interface.View.IValidationResultsModel;
     }
     interface IConfigurationModel {
         DataVersion: number;
+        OnlineLookupSupplierName: string;
+        OnlineLookupSupplierCredits: string;
+        OnlineLookupSupplierUrl: string;
         BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
     }
     interface IBaseStationSettingsModel {
@@ -301,6 +315,16 @@ declare module VirtualRadar.Interface.View {
         BadMsgs: KnockoutObservable<number>;
         Tracked: KnockoutObservable<number>;
     }
+    interface IValidationResultsModel_KO {
+        Results: KnockoutObservableArray<VirtualRadar.Interface.View.IValidationResultModel_KO>;
+    }
+    interface IValidationResultModel_KO {
+        RecordName: KnockoutObservable<string>;
+        RecordId: KnockoutObservable<string>;
+        FieldName: KnockoutObservable<string>;
+        Message: KnockoutObservable<string>;
+        IsWarning: KnockoutObservable<boolean>;
+    }
 }
 declare module System.Net {
     interface IIPEndPoint_KO extends System.Net.IEndPoint_KO {
@@ -348,9 +372,13 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel_KO {
         Configuration: KnockoutObservable<VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO>;
+        ValidationResults: KnockoutObservable<VirtualRadar.Interface.View.IValidationResultsModel_KO>;
     }
     interface IConfigurationModel_KO {
         DataVersion: KnockoutObservable<number>;
+        OnlineLookupSupplierName: KnockoutObservable<string>;
+        OnlineLookupSupplierCredits: KnockoutObservable<string>;
+        OnlineLookupSupplierUrl: KnockoutObservable<string>;
         BaseStationSettingsModel: KnockoutObservable<VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO>;
     }
     interface IBaseStationSettingsModel_KO {

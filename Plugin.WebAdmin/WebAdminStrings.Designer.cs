@@ -169,6 +169,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        public static string WA_Saved {
+            get {
+                return ResourceManager.GetString("WA_Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scroll to end.
         /// </summary>
         public static string WA_ScrollToEnd {
@@ -327,6 +336,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         public static string WA_Title_WebAdmin {
             get {
                 return ResourceManager.GetString("WA_Title_WebAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Correct your errors and try again.
+        /// </summary>
+        public static string WA_Validation_Failed {
+            get {
+                return ResourceManager.GetString("WA_Validation_Failed", resourceCulture);
             }
         }
         
