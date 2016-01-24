@@ -24,6 +24,7 @@
                                         <th>::Name::</th>
                                         <th class="text-right">::Count::</th>
                                         <th class="text-right">::Peak::</th>
+                                        <th class="text-right">::Dropped::</th>
                                     </tr>
                                 </thead>
                                 <tbody data-bind="foreach: Queues">
@@ -31,6 +32,7 @@
                                         <td data-bind="text: Name"></td>
                                         <td data-bind="text: FormattedCountQueuedItems" class="text-right"></td>
                                         <td data-bind="text: FormattedPeakQueuedItems" class="text-right"></td>
+                                        <td data-bind="text: FormattedCountDroppedItems" class="text-right"></td>
                                     </tr>
                                 </tbody>
                             </table>

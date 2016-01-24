@@ -8,8 +8,9 @@
 
     interface QueueModel extends ViewJson.IQueueModel_KO
     {
-        FormattedCountQueuedItems?: KnockoutComputed<string>;
-        FormattedPeakQueuedItems?:  KnockoutComputed<string>;
+        FormattedCountQueuedItems?:     KnockoutComputed<string>;
+        FormattedPeakQueuedItems?:      KnockoutComputed<string>;
+        FormattedCountDroppedItems?:    KnockoutComputed<string>;
     }
 
     export class PageHandler
@@ -50,6 +51,7 @@
                         {
                             model.FormattedCountQueuedItems = ko.computed(() => VRS.stringUtility.formatNumber(model.CountQueuedItems(), 'N0'));
                             model.FormattedPeakQueuedItems = ko.computed(() => VRS.stringUtility.formatNumber(model.PeakQueuedItems(), 'N0'));
+                            model.FormattedCountDroppedItems = ko.computed(() => VRS.stringUtility.formatNumber(model.CountDroppedItems(), 'N0'));
                         }
                     }
                 });

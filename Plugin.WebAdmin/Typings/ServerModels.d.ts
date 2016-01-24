@@ -147,6 +147,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
         Name: string;
         CountQueuedItems: number;
         PeakQueuedItems: number;
+        CountDroppedItems: number;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
@@ -436,6 +437,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
         Name: KnockoutObservable<string>;
         CountQueuedItems: KnockoutObservable<number>;
         PeakQueuedItems: KnockoutObservable<number>;
+        CountDroppedItems: KnockoutObservable<number>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {

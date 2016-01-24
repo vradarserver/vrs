@@ -159,6 +159,7 @@ declare module VRS.Server
         Download:                                                  string;
         DownloadData:                                              string;
         DownloadingPleaseWait:                                     string;
+        Dropped:                                                   string;
         Duration:                                                  string;
         DurationBeforeAircraftRemovedFromMapOutOfBounds:           string;
         DurationOfShortTrailsOutOfBounds:                          string;

@@ -44,6 +44,8 @@ namespace VirtualRadar.WinForms
             public int Count;
 
             public int Peak;
+
+            public long Dropped;
         }
 
         /// <summary>
@@ -66,6 +68,7 @@ namespace VirtualRadar.WinForms
                     var column = SortColumn ?? _Parent.columnHeaderName;
                     if(column == _Parent.columnHeaderCount) result = queueDetail.Count;
                     else if(column == _Parent.columnHeaderPeakCount) result = queueDetail.Peak;
+                    else if(column == _Parent.columnHeaderCountDropped) result = queueDetail.Dropped;
                 }
 
                 return result;
@@ -115,13 +118,7 @@ namespace VirtualRadar.WinForms
         /// <param name="queues"></param>
         public void RefreshDisplay(IQueue[] queues)
         {
-            if(InvokeRequired) {
-                try {
-                    BeginInvoke(new MethodInvoker(() => { RefreshDisplay(queues); }));
-                } catch(InvalidOperationException) {
-                    ; // Required for mono
-                }
-            } else {
+            if(!SafelyInvoke(() => RefreshDisplay(queues))) {
                 var queueDetails = GetQueueDetails();
                 AddOrUpdateExistingQueues(queues, queueDetails);
                 RemoveOldQueues(queueDetails);
@@ -153,7 +150,7 @@ namespace VirtualRadar.WinForms
                 } else {
                     queueDetail = new QueueDetail() {
                         Queue = queue,
-                        ListViewItem = new ListViewItem(new string[] { "", "", "", }),
+                        ListViewItem = new ListViewItem(new string[] { "", "", "", "", }),
                     };
                     queueDetail.ListViewItem.Tag = queueDetail;
                     UpdateQueueDisplay(queue, queueDetail, forceRefresh: true);
@@ -187,6 +184,7 @@ namespace VirtualRadar.WinForms
 
             var countQueuedItems = queue.CountQueuedItems;
             var peakQueuedItems = queue.PeakQueuedItems;
+            var droppedItems = queue.CountDroppedItems;
 
             if(forceRefresh || queue.Name != queueDetail.Name) {
                 item.SubItems[0].Text = queue.Name;
@@ -201,6 +199,11 @@ namespace VirtualRadar.WinForms
             if(forceRefresh || peakQueuedItems != queueDetail.Peak) {
                 item.SubItems[2].Text = peakQueuedItems.ToString("N0");
                 queueDetail.Peak = peakQueuedItems;
+            }
+
+            if(forceRefresh || droppedItems != queueDetail.Dropped) {
+                item.SubItems[3].Text = droppedItems.ToString("N0");
+                queueDetail.Dropped = droppedItems;
             }
         }
     }

@@ -34,5 +34,10 @@ namespace VirtualRadar.Interface
         /// Gets the largest number of items ever held in the queue.
         /// </summary>
         int PeakQueuedItems { get; }
+
+        /// <summary>
+        /// Gets the total number of items dropped from the queue.
+        /// </summary>
+        long CountDroppedItems { get; }
     }
 }

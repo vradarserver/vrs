@@ -140,10 +140,20 @@ namespace VirtualRadar.Interface
         public int PeakQueuedItems { get; private set; }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long CountDroppedItems { get; private set; }
+
+        /// <summary>
+        /// The maximum number of items allowed in the queue.
+        /// </summary>
+        public int MaxQueuedItems { get; private set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="queueName"></param>
-        public BackgroundThreadQueue(string queueName) : this(queueName, BackgroundThreadQueueMechanism.Queue)
+        public BackgroundThreadQueue(string queueName, int maxQueuedItems = int.MaxValue) : this(queueName, BackgroundThreadQueueMechanism.Queue, maxQueuedItems)
         {
         }
 
@@ -152,7 +162,8 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="queueName"></param>
         /// <param name="mechanism"></param>
-        public BackgroundThreadQueue(string queueName, BackgroundThreadQueueMechanism mechanism)
+        /// <param name="maxQueuedItems"></param>
+        public BackgroundThreadQueue(string queueName, BackgroundThreadQueueMechanism mechanism, int maxQueuedItems = int.MaxValue)
         {
             var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
 
@@ -165,6 +176,7 @@ namespace VirtualRadar.Interface
 
             _QueueName = queueName;
             _Mechanism = mechanism;
+            MaxQueuedItems = maxQueuedItems;
 
             QueueRepository.AddQueue(this);
         }
@@ -322,6 +334,7 @@ namespace VirtualRadar.Interface
                         if(_BackgroundThread != null) {
                             lock(_SyncLock) {
                                 _Queue.Enqueue(item);
+                                if(MaxQueuedItems < int.MaxValue) DropExcessItems();
                                 if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
                             }
 
@@ -354,6 +367,7 @@ namespace VirtualRadar.Interface
                             foreach(var item in items) {
                                 _Queue.Enqueue(item);
                             }
+                            if(MaxQueuedItems < int.MaxValue) DropExcessItems();
                             if(_Queue.Count > PeakQueuedItems) PeakQueuedItems = _Queue.Count;
                         }
 
@@ -381,6 +395,21 @@ namespace VirtualRadar.Interface
                 lock(_SyncLock) {
                     _Queue.Clear();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Drops items from the head of the queue until the number of queued items is in line
+        /// with the maximum allowed.
+        /// </summary>
+        private void DropExcessItems()
+        {
+            if(_Queue.Count > MaxQueuedItems) {
+                var removeCount = _Queue.Count - MaxQueuedItems;
+                for(var i = 0;i < removeCount;++i) {
+                    _Queue.Dequeue();
+                }
+                CountDroppedItems += removeCount;
             }
         }
 

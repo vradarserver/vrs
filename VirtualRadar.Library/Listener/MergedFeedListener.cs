@@ -284,7 +284,7 @@ namespace VirtualRadar.Library.Listener
             ConnectionStatus = ConnectionStatus.Connected;
 
             var messageQueueName = String.Format("MergedFeedListenerMessages_{0}", ++_ListenerCounter);
-            _MessageProcessingQueue = new BackgroundThreadQueue<MessageReceived>(messageQueueName);
+            _MessageProcessingQueue = new BackgroundThreadQueue<MessageReceived>(messageQueueName, 200000);
             _MessageProcessingQueue.StartBackgroundThread(ProcessReceivedMessage, HandleMessageProcessingException);
 
             var heartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
