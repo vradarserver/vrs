@@ -4,18 +4,48 @@
 
     interface Model extends ViewJson.IConfigurationModel_KO
     {
-        saveAttempted?:     KnockoutObservable<boolean>;
-        saveSuccessful?:    KnockoutObservable<boolean>;
-        savedMessage?:      KnockoutObservable<string>;
+        saveAttempted?:         KnockoutObservable<boolean>;
+        saveSuccessful?:        KnockoutObservable<boolean>;
+        savedMessage?:          KnockoutObservable<string>;
+        TestConnectionOutcome:  KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>;
 
+        SelectedReceiver?:          KnockoutObservable<ReceiverModel>;
         selectedReceiverLocation?:  KnockoutObservable<ReceiverLocationModel>;
 
+        ReceiverWrapUpValidation?:          IValidation_KC;
         ReceiverLocationWrapUpValidation?:  IValidation_KC;
+
+        ConnectionTypes?:   VirtualRadar.Interface.View.IEnumModel[];
+        DataSources?:       VirtualRadar.Interface.View.IEnumModel[];
+        DefaultAccesses?:   VirtualRadar.Interface.View.IEnumModel[];
+        Handshakes?:        VirtualRadar.Interface.View.IEnumModel[];
+        Parities?:          VirtualRadar.Interface.View.IEnumModel[];
+        ReceiverUsages?:    VirtualRadar.Interface.View.IEnumModel[];
+        StopBits?:          VirtualRadar.Interface.View.IEnumModel[];
     }
 
     interface BaseStationSettingsModel extends ViewJson.IBaseStationSettingsModel_KO
     {
         WrapUpValidation?:      IValidation_KC;
+    }
+
+    interface ReceiverModel extends ViewJson.IReceiverModel_KO
+    {
+        FormattedConnectionType?:   KnockoutComputed<string>;
+        FormattedDataSource?:       KnockoutComputed<string>;
+        FormattedHandshake?:        KnockoutComputed<string>;
+        FormattedParity?:           KnockoutComputed<string>;
+        FormattedReceiverUsage?:    KnockoutComputed<string>;
+        FormattedStopBits?:         KnockoutComputed<string>;
+        ConnectionParameters?:      KnockoutComputed<string>;
+        Location?:                  KnockoutComputed<ReceiverLocationModel>;
+        IdleTimeoutSeconds?:        KnockoutComputed<number>;
+        WrapUpValidation?:          IValidation_KC;
+
+        SelectRow?:                 (row: ReceiverModel) => void;
+        DeleteRow?:                 (row: ReceiverModel) => void;
+        ResetLocation?:             (row: ReceiverModel) => void;
+        TestConnection?:            (row: ReceiverModel) => void;
     }
 
     interface ReceiverLocationModel extends ViewJson.IReceiverLocationModel_KO
@@ -38,6 +68,12 @@
         {
             this._ViewId = new ViewId('Settings', viewId);
 
+            $('#edit-receiver').on('hidden.bs.modal', () => {
+                if(this._Model && this._Model.TestConnectionOutcome) {
+                    this._Model.TestConnectionOutcome(null);
+                }
+            });
+
             this.refreshState();
         }
 
@@ -57,26 +93,35 @@
 
         private sendAndApplyConfiguration(methodName: string, success: (state: IResponse<ViewJson.IViewModel>) => void, applyConfigurationFirst: boolean = true)
         {
+            var settings = this.buildAjaxSettingsForSendConfiguration();
+            settings.success = (data: IResponse<ViewJson.IViewModel>) => {
+                if(applyConfigurationFirst) {
+                    this.applyState(data);
+                    success(data);
+                } else {
+                    success(data);
+                    this.applyState(data);
+                }
+            };
+
+            this._ViewId.ajax(methodName, settings);
+        }
+
+        private buildAjaxSettingsForSendConfiguration() : JQueryAjaxSettings
+        {
             var configuration = ko.viewmodel.toModel(this._Model);
-            this._ViewId.ajax(methodName, {
+            var result = {
                 method: 'POST',
                 data: {
                     configurationModel: JSON.stringify(configuration)
                 },
                 dataType: 'json',
-                success: (data: IResponse<ViewJson.IViewModel>) => {
-                    if(applyConfigurationFirst) {
-                        this.applyState(data);
-                        success(data);
-                    } else {
-                        success(data);
-                        this.applyState(data);
-                    }
-                },
                 error: (jqXHR: JQueryXHR, textStatus: string, errorThrown: string) => {
                     this.showFailureMessage(VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Send_Failed, errorThrown));
                 }
-            });
+            };
+
+            return result;
         }
 
         save()
@@ -94,6 +139,30 @@
                     }
                 }
             });
+        }
+
+        createAndEditReceiver()
+        {
+            this._Model.SelectedReceiver(null);
+
+            this.sendAndApplyConfiguration('CreateNewReceiver', (state: IResponse<ViewJson.IViewModel>) => {
+                this._Model.Receivers.unshiftFromModel(state.Response.NewReceiver);
+                this._Model.SelectedReceiver(this._Model.Receivers()[0]);
+
+                $('#edit-receiver').modal('show');
+            });
+        }
+
+        testConnection(receiver: ReceiverModel)
+        {
+            this._Model.TestConnectionOutcome(null);
+            var settings = this.buildAjaxSettingsForSendConfiguration();
+            settings.data.receiverId = receiver.UniqueId();
+            settings.success = (outcome: IResponse<ViewJson.ITestConnectionOutcomeModel>) => {
+                this._Model.TestConnectionOutcome(outcome.Response);
+            };
+
+            this._ViewId.ajax('TestConnection', settings);
         }
 
         createAndEditReceiverLocation()
@@ -136,7 +205,8 @@
                 } else {
                     this._Model = ko.viewmodel.fromModel(state.Response.Configuration, {
                         arrayChildId: {
-                            '{root}.ReceiverLocations': 'UniqueId'
+                            '{root}.ReceiverLocations': 'UniqueId',
+                            '{root}.Receivers':         'UniqueId'
                         },
 
                         extend: {
@@ -146,11 +216,93 @@
                                 root.saveSuccessful = ko.observable(false);
                                 root.savedMessage = ko.observable("");
 
+                                root.ConnectionTypes =  state.Response.ConnectionTypes;
+                                root.DataSources =      state.Response.DataSources;
+                                root.DefaultAccesses =  state.Response.DefaultAccesses;
+                                root.Handshakes =       state.Response.Handshakes;
+                                root.Parities =         state.Response.Parities;
+                                root.ReceiverUsages =   state.Response.ReceiverUsages;
+                                root.StopBits =         state.Response.StopBits;
+
+                                root.TestConnectionOutcome = <KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>> ko.observable(null);
+                                root.SelectedReceiver = <KnockoutObservable<ReceiverModel>> ko.observable(null);
                                 root.selectedReceiverLocation = <KnockoutObservable<ReceiverLocationModel>> ko.observable(null);
                             },
 
-                            '{root}.BaseStationSettingsModel': (model: BaseStationSettingsModel) => {
+                            '{root}.BaseStationSettingsModel': (model: BaseStationSettingsModel) =>
+                            {
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+                            },
+
+                            '{root}.Receivers[i]': (model: ReceiverModel) =>
+                            {
+                                model.FormattedConnectionType = ko.computed(() => this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes));
+                                model.FormattedDataSource = ko.computed(() => this._ViewId.describeEnum(model.DataSource(), state.Response.DataSources));
+                                model.FormattedHandshake = ko.computed(() => this._ViewId.describeEnum(model.Handshake(), state.Response.Handshakes));
+                                model.FormattedParity = ko.computed(() => this._ViewId.describeEnum(model.Parity(), state.Response.Parities));
+                                model.FormattedReceiverUsage = ko.computed(() => this._ViewId.describeEnum(model.ReceiverUsage(), state.Response.ReceiverUsages));
+                                model.FormattedStopBits = ko.computed(() => this._ViewId.describeEnum(model.StopBits(), state.Response.StopBits));
+                                model.ConnectionParameters = ko.computed(() => {
+                                    let connectionParameters = '';
+                                    switch(model.ConnectionType()) {
+                                        case 1:     // COM
+                                            connectionParameters = VRS.stringUtility.format('{0}, {1}, {2}/{3}, {4}, {5}, "{6}", "{7}"',
+                                                model.ComPort(),
+                                                model.BaudRate(),
+                                                model.DataBits(),
+                                                this._ViewId.describeEnum(model.StopBits(), state.Response.StopBits),
+                                                this._ViewId.describeEnum(model.Parity(), state.Response.Parities),
+                                                this._ViewId.describeEnum(model.Handshake(), state.Response.Handshakes),
+                                                model.StartupText(),
+                                                model.ShutdownText()
+                                            );
+                                            break;
+                                        case 0:         // TCP
+                                            connectionParameters = VRS.stringUtility.format("{0}:{1}",
+                                                model.Address(),
+                                                model.Port()
+                                            );
+                                            break;
+                                    }
+                                    return connectionParameters;
+                                });
+
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+
+                                model.IdleTimeoutSeconds = ko.pureComputed({
+                                    read: () => {
+                                        return Math.floor(model.IdleTimeoutMilliseconds() / 1000);
+                                    },
+                                    write: (value) => {
+                                        model.IdleTimeoutMilliseconds(value * 1000);
+                                    },
+                                    owner: this
+                                });
+                                model.Location = ko.pureComputed({
+                                    read: () => {
+                                        let receiverId = model.ReceiverLocationId();
+                                        let receiver = receiverId ? VRS.arrayHelper.findFirst(this._Model.ReceiverLocations(), r => r.UniqueId() === receiverId) : null;
+                                        return <ReceiverLocationModel>receiver;
+                                    },
+                                    write: (value) => {
+                                        model.ReceiverLocationId(value ? value.UniqueId() : 0);
+                                    },
+                                    owner: this
+                                });
+
+                                model.SelectRow = (row: ReceiverModel) => {
+                                    this._Model.SelectedReceiver(row);
+                                };
+                                model.DeleteRow = (row: ReceiverModel) => {
+                                    var index = VRS.arrayHelper.indexOfMatch(this._Model.Receivers(), r => r.UniqueId == row.UniqueId);
+                                    this._Model.Receivers.splice(index, 1);
+                                };
+                                model.ResetLocation = (row: ReceiverModel) => {
+                                    row.ReceiverLocationId(0);
+                                };
+                                model.TestConnection = (row: ReceiverModel) => {
+                                    this.testConnection(row);
+                                };
                             },
 
                             '{root}.ReceiverLocations[i]': (model: ReceiverLocationModel) =>
@@ -170,6 +322,7 @@
                         }
                     });
 
+                    this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, (r) => (<ReceiverModel>r).WrapUpValidation);
                     this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, (r) => (<ReceiverLocationModel>r).WrapUpValidation);
 
                     ko.applyBindings(this._Model);

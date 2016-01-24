@@ -95,6 +95,8 @@ var Bootstrap;
                     throw 'The modal should have two or three children';
                 var options = Helper.getOptions(modal);
                 var addHeaderCloseButton = VRS.arrayHelper.indexOf(options, 'header-close') !== -1;
+                var largeModal = VRS.arrayHelper.indexOf(options, 'large') !== -1;
+                var smallModal = VRS.arrayHelper.indexOf(options, 'small') !== -1;
                 var heading = $(children[0]);
                 var body = $(children[1]);
                 var footer = children.length === 3 ? $(children[2]) : null;
@@ -115,13 +117,18 @@ var Bootstrap;
                 if (footer != null) {
                     footer.addClass('modal-footer');
                 }
+                var modalDialogClass = 'modal-dialog';
+                if (largeModal)
+                    modalDialogClass += ' modal-lg';
+                else if (smallModal)
+                    modalDialogClass += ' modal-sm';
                 modal.addClass('modal fade')
                     .attr('tabindex', '-1')
                     .attr('role', 'dialog')
                     .attr('aria-labelledby', headingId)
                     .attr('aria-hidden', 'true')
                     .wrapInner($('<div />').addClass('modal-content'))
-                    .wrapInner($('<div />').addClass('modal-dialog'));
+                    .wrapInner($('<div />').addClass(modalDialogClass));
             });
         };
         Helper.getOptions = function (element) {

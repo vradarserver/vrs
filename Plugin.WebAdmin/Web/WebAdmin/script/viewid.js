@@ -198,6 +198,10 @@ var VRS;
                 });
                 return result;
             };
+            ViewId.prototype.describeEnum = function (enumValue, enumModels) {
+                var enumModel = VRS.arrayHelper.findFirst(enumModels, function (r) { return r.Value === enumValue; });
+                return enumModel ? enumModel.Description : null;
+            };
             return ViewId;
         })();
         WebAdmin.ViewId = ViewId;

@@ -10,6 +10,7 @@ using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Localisation;
 using VirtualRadar.Plugin.WebAdmin.View.Settings;
 
 namespace VirtualRadar.Plugin.WebAdmin.View
@@ -19,6 +20,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         private ISettingsPresenter _Presenter;
         private ValidationModelHelper _ValidationHelper;
         private ViewModel _ViewModel;
+        private TestConnectionOutcomeModel _TestConnectionOutcome;
         private bool _FailedValidation;
 
         private Configuration _Configuration;
@@ -51,8 +53,13 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             EventHelper.Raise(UpdateReceiverLocationsFromBaseStationDatabaseClicked, this, args);
         }
 
-        #pragma warning disable 0067
         public event EventHandler<EventArgs<Receiver>> TestConnectionClicked;
+        private void OnTestConnectionClicked(EventArgs<Receiver> args)
+        {
+            EventHelper.Raise(TestConnectionClicked, this, args);
+        }
+
+        #pragma warning disable 0067
         public event EventHandler TestTextToSpeechSettingsClicked;
         public event EventHandler UseIcaoRawDecodingSettingsClicked;
         public event EventHandler UseRecommendedRawDecodingSettingsClicked;
@@ -85,7 +92,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowTestConnectionResults(string message, string title)
         {
-            ;
+            _TestConnectionOutcome = new TestConnectionOutcomeModel() {
+                Title = title,
+                Message = message,
+            };
         }
 
         public void ShowAircraftDataLookupSettings(string dataSupplier, string supplierCredits, string supplierUrl)
@@ -131,6 +141,49 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         }
 
         [WebAdminMethod]
+        public TestConnectionOutcomeModel TestConnection(ConfigurationModel configurationModel, int receiverId)
+        {
+            _TestConnectionOutcome = null;
+            ApplyConfigurationModelToView(configurationModel);
+
+            var receiver = Configuration.Receivers.FirstOrDefault(r => r.UniqueId == receiverId);
+            if(receiver == null) {
+                _TestConnectionOutcome = new TestConnectionOutcomeModel() {
+                    Title = "Unknown Receiver ID",
+                    Message = String.Format("There is no receiver with an ID of {0}", receiverId),
+                };
+            } else {
+                var args = new EventArgs<Receiver>(receiver);
+                try {
+                    OnTestConnectionClicked(args);
+                    if(_TestConnectionOutcome == null) {
+                        _TestConnectionOutcome = new TestConnectionOutcomeModel() {
+                            Title = "Presenter Failed",
+                            Message = "The presenter did not supply a test connection outcome",
+                        };
+                    }
+                } catch(Exception ex) {
+                    _TestConnectionOutcome = new TestConnectionOutcomeModel() {
+                        Title = Strings.Exception,
+                        Message = ex.Message,
+                    };
+                }
+            }
+
+            return _TestConnectionOutcome;
+        }
+
+        [WebAdminMethod]
+        public ViewModel CreateNewReceiver(ConfigurationModel configurationModel)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, () => {
+                var newRecord = _Presenter.CreateReceiver();
+                ValidationModelHelper.CreateEmptyViewModelValidationFields(newRecord);
+                _ViewModel.NewReceiver = new ReceiverModel(newRecord);
+            });
+        }
+
+        [WebAdminMethod]
         public ViewModel RaiseReceiverLocationsFromBaseStationDatabaseClicked(ConfigurationModel configurationModel)
         {
             return ApplyConfigurationAroundAction(configurationModel, () => OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs.Empty));
@@ -148,6 +201,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         private ViewModel ApplyConfigurationAroundAction(ConfigurationModel configurationModel, Action action)
         {
+            _ViewModel.NewReceiver = null;
             _ViewModel.NewReceiverLocation = null;
 
             _ViewModel.Outcome = null;

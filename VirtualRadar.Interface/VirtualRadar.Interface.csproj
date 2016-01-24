@@ -138,6 +138,7 @@
     <Compile Include="View\ValidationModelField.cs" />
     <Compile Include="View\ValidationModelFieldAttribute.cs" />
     <Compile Include="View\ValidationModelHelper.cs" />
+    <Compile Include="View\EnumModel.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />
     <Compile Include="WebSite\IWebAdminViewManager.cs" />
