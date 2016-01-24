@@ -44,6 +44,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public EnumModel[] StopBits { get; private set; }
 
+        public string[] ComPortNames { get; set; }
+
         public ViewModel()
         {
             Configuration = new ConfigurationModel();
@@ -55,6 +57,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             Parities = EnumModel.CreateFromEnum<Parity>(r => Describe.Parity(r));
             Handshakes = EnumModel.CreateFromEnum<Handshake>(r => Describe.Handshake(r));
             ReceiverUsages = EnumModel.CreateFromEnum<ReceiverUsage>(r => Describe.ReceiverUsage(r));
+
+            ComPortNames = new string[]{};
         }
 
         public object FindViewModelForRecord(ValidationResult validationResult)
@@ -62,6 +66,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             object result = null;
 
             if(validationResult.Record != null) {
+                var receiver = validationResult.Record as Receiver;
+                if(receiver != null) {
+                    result = Configuration.Receivers.FirstOrDefault(r => r.UniqueId == receiver.UniqueId);
+                }
+
                 var receiverLocation = validationResult.Record as ReceiverLocation;
                 if(receiverLocation != null) {
                     result = Configuration.ReceiverLocations.FirstOrDefault(r => r.UniqueId == receiverLocation.UniqueId);

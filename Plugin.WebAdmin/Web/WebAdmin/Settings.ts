@@ -15,6 +15,8 @@
         ReceiverWrapUpValidation?:          IValidation_KC;
         ReceiverLocationWrapUpValidation?:  IValidation_KC;
 
+        ComPortNames?:      string[];
+        BaudRates?:         number[];
         ConnectionTypes?:   VirtualRadar.Interface.View.IEnumModel[];
         DataSources?:       VirtualRadar.Interface.View.IEnumModel[];
         DefaultAccesses?:   VirtualRadar.Interface.View.IEnumModel[];
@@ -216,6 +218,7 @@
                                 root.saveSuccessful = ko.observable(false);
                                 root.savedMessage = ko.observable("");
 
+                                root.ComPortNames =     state.Response.ComPortNames;
                                 root.ConnectionTypes =  state.Response.ConnectionTypes;
                                 root.DataSources =      state.Response.DataSources;
                                 root.DefaultAccesses =  state.Response.DefaultAccesses;

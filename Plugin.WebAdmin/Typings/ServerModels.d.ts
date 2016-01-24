@@ -162,6 +162,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Parities: VirtualRadar.Interface.View.IEnumModel[];
         ReceiverUsages: VirtualRadar.Interface.View.IEnumModel[];
         StopBits: VirtualRadar.Interface.View.IEnumModel[];
+        ComPortNames: string[];
     }
     interface IConfigurationModel {
         DataVersion: number;
@@ -450,6 +451,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Parities: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ReceiverUsages: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        ComPortNames: KnockoutViewModelArray<string>;
     }
     interface IConfigurationModel_KO {
         DataVersion: KnockoutObservable<number>;
