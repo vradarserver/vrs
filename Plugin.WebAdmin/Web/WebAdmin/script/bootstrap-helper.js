@@ -4,8 +4,57 @@ var Bootstrap;
         function Helper() {
         }
         Helper.decorateBootstrapElements = function () {
+            Helper.decorateValidationElements();
             Helper.decorateCollapsiblePanels();
             Helper.decorateModals();
+        };
+        Helper.decorateValidationElements = function () {
+            Helper.decorateValidationFieldValidate();
+            Helper.decorateValidationIcons();
+        };
+        Helper.decorateValidationFieldValidate = function () {
+            var fieldValidates = $('[data-bsu="field-validate"]');
+            $.each(fieldValidates, function () {
+                var fieldValidate = $(this);
+                var fieldName = Helper.getFieldName(fieldValidate);
+                var fieldValidateBinding = VRS.stringUtility.format("css: {{ 'has-feedback': !{0}.IsValid(), 'has-warning': {0}.IsWarning, 'has-error': {0}.IsError }}", fieldName);
+                var visibleIfErrorBinding = VRS.stringUtility.format('visible: {0}.IsError', fieldName);
+                var visibleIfWarningBinding = VRS.stringUtility.format('visible: {0}.IsWarning', fieldName);
+                var messageBinding = VRS.stringUtility.format('visible: !{0}.IsValid(), text: {0}.Message', fieldName);
+                fieldValidate.attr('data-bind', fieldValidateBinding);
+                var input = $('input,textarea,select,:checkbox', fieldValidate);
+                $('<span />')
+                    .attr('data-bind', messageBinding)
+                    .addClass('help-block')
+                    .insertAfter(input);
+                $('<span />')
+                    .attr('data-bind', visibleIfErrorBinding)
+                    .addClass('form-control-feedback glyphicon glyphicon-minus-sign')
+                    .attr('aria-hidden', 'true')
+                    .insertAfter(input);
+                $('<span />')
+                    .attr('data-bind', visibleIfWarningBinding)
+                    .addClass('form-control-feedback glyphicon glyphicon-exclamation-sign')
+                    .attr('aria-hidden', 'true')
+                    .insertAfter(input);
+            });
+        };
+        Helper.decorateValidationIcons = function () {
+            var validateIcons = $('[data-bsu="validate-icons"]');
+            $.each(validateIcons, function () {
+                var validateIcon = $(this);
+                var fieldName = Helper.getFieldName(validateIcon);
+                var visibleIfErrorBinding = VRS.stringUtility.format('visible: {0}.IsError', fieldName);
+                var visibleIfWarningBinding = VRS.stringUtility.format('visible: {0}.IsWarning', fieldName);
+                $('<span />')
+                    .attr('data-bind', visibleIfErrorBinding)
+                    .addClass('glyphicon glyphicon-minus-sign')
+                    .appendTo(validateIcon);
+                $('<span />')
+                    .attr('data-bind', visibleIfWarningBinding)
+                    .addClass('glyphicon glyphicon-exclamation-sign')
+                    .appendTo(validateIcon);
+            });
         };
         Helper.decorateCollapsiblePanels = function () {
             var collapsiblePanels = $('[data-bsu="collapsible-panel"]');
@@ -87,6 +136,9 @@ var Bootstrap;
                 });
             }
             return result;
+        };
+        Helper.getFieldName = function (element) {
+            return element.data('bsu-field');
         };
         Helper.applyUniqueId = function (element) {
             var result = element.attr('id');

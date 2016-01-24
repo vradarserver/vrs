@@ -121,5 +121,110 @@
             });
         }
 
+        /**
+         * Creates a wrap-up validation field that reports on the state of a number of other validation fields.
+         */
+        createWrapupValidation(validationFields: VirtualRadar.Interface.View.IValidationModelField_KO[]) : IValidation_KC
+        {
+            var result = {
+                IsValid: ko.computed(() => {
+                    var isValid = true;
+                    $.each(validationFields, (idx, validationField) => {
+                        if(!validationField.IsValid()) {
+                            isValid = false;
+                        }
+                        return isValid;
+                    });
+                    return isValid;
+                }),
+                IsWarning: ko.computed(() => {
+                    var isWarning = false;
+                    $.each(validationFields, (idx, validationField) => {
+                        if(validationField.IsWarning()) {
+                            isWarning = true;
+                        }
+                        return !isWarning;
+                    });
+                    return isWarning;
+                }),
+                IsError: ko.computed(() => {
+                    var isError = false;
+                    $.each(validationFields, (idx, validationField) => {
+                        if(validationField.IsError()) {
+                            isError = true;
+                        }
+                        return !isError;
+                    });
+                    return isError;
+                })
+            };
+
+            return result;
+        }
+
+        /**
+         * Creates a wrap-up validation field that reports on the state of every element in an array that contains other wrap-up fields.
+         */
+        createArrayWrapupValidation<T>(array: KnockoutObservableArray<T>, getWrapUp: (item: T) => IValidation_KC) : IValidation_KC
+        {
+            var result = {
+                IsValid: ko.computed(() => {
+                    var isValid = true;
+                    $.each(array(), (idx, item) => {
+                        var wrapUp = getWrapUp(item);
+                        if(!wrapUp.IsValid()) {
+                            isValid = false;
+                        }
+                        return isValid;
+                    });
+                    return isValid;
+                }),
+                IsWarning: ko.computed(() => {
+                    var isWarning = false;
+                    $.each(array(), (idx, item) => {
+                        var wrapUp = getWrapUp(item);
+                        if(wrapUp.IsWarning()) {
+                            isWarning = true;
+                        }
+                        return !isWarning;
+                    });
+                    return isWarning;
+                }),
+                IsError: ko.computed(() => {
+                    var isError = false;
+                    $.each(array(), (idx, item) => {
+                        var wrapUp = getWrapUp(item);
+                        if(wrapUp.IsError()) {
+                            isError = true;
+                        }
+                        return !isError;
+                    });
+                    return isError;
+                })
+            };
+
+            return result;
+        }
+
+        /**
+         * Returns an array of all properties of the model that look like they are validation model field objects.
+         */
+        findValidationProperties(model: Object) : VirtualRadar.Interface.View.IValidationModelField_KO[]
+        {
+            var result = [];
+
+            $.each(model, (name: string, value: Object) => {
+                if(value && typeof value === 'object' &&
+                    value.hasOwnProperty('IsValid') &&
+                    value.hasOwnProperty('IsWarning') &&
+                    value.hasOwnProperty('IsError') &&
+                    value.hasOwnProperty('Message')
+                ) {
+                    result.push(value);
+                }
+            });
+
+            return result;
+        }
     }
 } 

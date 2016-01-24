@@ -123,6 +123,9 @@
   <data name="PluginName" xml:space="preserve">
     <value>Web Admin</value>
   </data>
+  <data name="WA_Conflicting_Update" xml:space="preserve">
+    <value>This screen has been changed elsewhere since you originally loaded it. Your changes were based on out-of-date information and they have not been saved.</value>
+  </data>
   <data name="WA_Exception_Reported" xml:space="preserve">
     <value>The server reported an exception, see log for details: {0}</value>
   </data>

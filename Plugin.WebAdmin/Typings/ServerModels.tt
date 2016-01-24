@@ -26,7 +26,7 @@
         .For<VirtualRadar.Plugin.WebAdmin.View.Statistics.ViewModel>()
         ;
 #>
-<# var ko = TypeScript.Definitions(new TypeLite.AlternateGenerators.TsKnockoutModelGenerator())
+<# var ko = TypeScript.Definitions(new TypeLite.AlternateGenerators.TsKnockoutViewmodelModelGenerator())
         .WithTypeFormatter((type, f) => "I" + ((TypeLite.TsModels.TsClass)type).Name + "_KO")
         .WithMemberFormatter(UseJsonName)
         .WithPropertyVisibilityFormatter(PropertyIsVisible)

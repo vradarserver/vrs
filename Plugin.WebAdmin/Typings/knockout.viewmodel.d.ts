@@ -18,6 +18,18 @@ interface KnockoutViewModelOptions
     shared?:        Object;
 }
 
+// AGW - the methods that are added to a view model observable array
+interface KnockoutViewModelArray<T> extends KnockoutObservableArray<T>
+{
+    pushFromModel:      (item: any) => void;
+    unshiftFromModel:   (item: any) => void;
+    insertAtFromModel:  (idx: number, item: any) => void;
+
+    popToModel:         (item: any) => T;
+    shiftToModel:       (item: any) => T;
+    removeAtToModel:    (idx: number, item: any) => T;
+}
+
 interface KnockoutViewModelStatic {
     toModel(viewmodel: any): any;
     fromModel(model: any, options?: KnockoutViewModelOptions): any;

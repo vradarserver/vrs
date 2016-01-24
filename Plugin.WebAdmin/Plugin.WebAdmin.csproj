@@ -93,6 +93,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Typings\bootstrap.d.ts" />
     <TypeScriptCompile Include="Typings\Enums.ts">
       <DependentUpon>ServerModels.tt</DependentUpon>
     </TypeScriptCompile>
@@ -128,7 +129,6 @@
     <TypeScriptCompile Include="Web\WebAdmin\Queues.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\bootstrap-helper.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\menu.ts" />
-    <TypeScriptCompile Include="Web\WebAdmin\script\validation.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\viewid.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Settings.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Statistics.ts" />

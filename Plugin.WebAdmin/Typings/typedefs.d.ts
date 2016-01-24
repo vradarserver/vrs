@@ -12,4 +12,11 @@ declare module VRS.WebAdmin
     {
         Response: T;
     }
+
+    interface IValidation_KC
+    {
+        IsValid:    KnockoutComputed<boolean>;
+        IsWarning:  KnockoutComputed<boolean>;
+        IsError:    KnockoutComputed<boolean>;
+    }
 } 

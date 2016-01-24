@@ -7,7 +7,6 @@
         <!-- [[ BUNDLE END ]] -->
         <script src="script/Strings.Server.js"></script>
         <script src="script/bootstrap-helper.js"></script>
-        <script src="script/validation.js"></script>
         <script src="Settings.js"></script>
     </head>
     <body>
@@ -22,40 +21,44 @@
                         <div id="failure-message" class="alert alert-danger">
                         </div>
 
-                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                        <!---->
+                        <!-- DATA SOURCES -->
+                        <!---->
+
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded" data-bind="with: $root.BaseStationSettingsModel">
                             <div>
                                 ::OptionsDataSourcesSheetTitle::
-                                <span data-vrs-val-icon="-" class="pull-right"></span>
+                                <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
                             </div>
                             <div class="form-horizontal">
-                                <div class="form-group" data-vrs-val="BaseStationDatabase">
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="DatabaseFileNameValidation">
                                     <label class="col-sm-4">::DatabaseFileName:::</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" data-bind="textInput: BaseStationSettingsModel.DatabaseFileName" />
+                                        <input type="text" class="form-control" data-bind="textInput: DatabaseFileName" />
                                     </div>
                                 </div>
-                                <div class="form-group" data-vrs-val="FlagsFolder">
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="OperatorFlagsFolderValidation">
                                     <label class="col-sm-4">::FlagsFolder:::</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" data-bind="textInput: BaseStationSettingsModel.OperatorFlagsFolder" />
+                                        <input type="text" class="form-control" data-bind="textInput: OperatorFlagsFolder" />
                                     </div>
                                 </div>
-                                <div class="form-group" data-vrs-val="SilhouettesFolder">
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="SilhouettesFolderValidation">
                                     <label class="col-sm-4">::SilhouettesFolder:::</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" data-bind="textInput: BaseStationSettingsModel.SilhouettesFolder" />
+                                        <input type="text" class="form-control" data-bind="textInput: SilhouettesFolder" />
                                     </div>
                                 </div>
-                                <div class="form-group" data-vrs-val="PicturesFolder">
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="PicturesFolderValidation">
                                     <label class="col-sm-4">::PicturesFolder:::</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" data-bind="textInput: BaseStationSettingsModel.PicturesFolder" />
+                                        <input type="text" class="form-control" data-bind="textInput: PicturesFolder" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-offset-4 col-sm-8 checkbox">
                                         <label>
-                                            <input type="checkbox" data-bind="checked: BaseStationSettingsModel.SearchPictureSubFolders" />
+                                            <input type="checkbox" data-bind="checked: SearchPictureSubFolders" />
                                             ::SearchPictureSubFolders::
                                         </label>
                                     </div>
@@ -70,7 +73,7 @@
                                 <div class="row">
                                     <div class="col-sm-offset-4 col-sm-8 checkbox">
                                         <label>
-                                            <input type="checkbox" data-bind="checked: BaseStationSettingsModel.LookupAircraftDetailsOnline" />
+                                            <input type="checkbox" data-bind="checked: LookupAircraftDetailsOnline" />
                                             ::LookupAircraftDetailsOnline::
                                         </label>
                                     </div>
@@ -80,12 +83,94 @@
                                         ::DataProvider:::
                                     </label>
                                     <div class="col-sm-8">
-                                        <span data-bind="text: OnlineLookupSupplierName"></span>
+                                        <span data-bind="text: $root.OnlineLookupSupplierName"></span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-offset-4 col-sm-8">
-                                        <span data-bind="text: OnlineLookupSupplierCredits"></span>
+                                        <span data-bind="text: $root.OnlineLookupSupplierCredits"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!---->
+                        <!-- RECEIVER LOCATION -->
+                        <!---->
+
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div>
+                                ::ReceiverLocationsTitle::
+                                <div class="pull-right" data-bsu="validate-icons" data-bsu-field="ReceiverLocationWrapUpValidation"></div>
+                            </div>
+                            <div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.updateLocationsFromBaseStation, pageHandler)">
+                                            ::UpdateFromBaseStationDatabase::
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.createAndEditReceiverLocation, pageHandler)">
+                                            ::Add::
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row table-responsive">
+                                    <table class="table table-condensed table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="thin-column"></th>
+                                                <th>::Name::</th>
+                                                <th>::Latitude::</th>
+                                                <th>::Longitude::</th>
+                                                <th class="thin-column"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: ReceiverLocations">
+                                            <tr>
+                                                <td class="thin-column">
+                                                    <div data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
+                                                </td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="text: FormattedLatitude"></td>
+                                                <td data-bind="text: FormattedLongitude"></td>
+                                                <td class="text-nowrap">
+                                                    <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-receiver-location">
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="edit-receiver-location" data-bsu="modal" data-bsu-options="header-close" data-bind="with: $root.selectedReceiverLocation()">
+                            <div>
+                                <span data-bind="text: Name"></span>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="NameValidation">
+                                    <label class="col-sm-4">::Name:::</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" data-bind="textInput: Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="LatitudeValidation">
+                                    <label class="col-sm-4">::Latitude:::</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" data-bind="textInput: Latitude" />
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="LongitudeValidation">
+                                    <label class="col-sm-4">::Longitude:::</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" data-bind="textInput: Longitude" />
                                     </div>
                                 </div>
                             </div>

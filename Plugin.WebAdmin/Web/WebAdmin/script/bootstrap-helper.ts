@@ -8,8 +8,97 @@
          */
         static decorateBootstrapElements()
         {
+            Helper.decorateValidationElements();
             Helper.decorateCollapsiblePanels();
             Helper.decorateModals();
+        }
+
+        /**
+         * Finds tags decorated with various validation tags and fleshes out the
+         * Bootstrap and knockout tags required.
+         */
+        static decorateValidationElements()
+        {
+            Helper.decorateValidationFieldValidate();
+            Helper.decorateValidationIcons();
+        }
+
+        /**
+         * Adds validation displays to input elements. Apply the tag in a parent of the input,
+         * set data-bsu-field to the full path to the ValidationFieldModel element.
+         */
+        static decorateValidationFieldValidate()
+        {
+            var fieldValidates = $('[data-bsu="field-validate"]');
+            $.each(fieldValidates, function() {
+                var fieldValidate = $(this);
+                var fieldName = Helper.getFieldName(fieldValidate);
+
+                var fieldValidateBinding = VRS.stringUtility.format(
+                    "css: {{ 'has-feedback': !{0}.IsValid(), 'has-warning': {0}.IsWarning, 'has-error': {0}.IsError }}",
+                    fieldName
+                );
+                var visibleIfErrorBinding = VRS.stringUtility.format(
+                    'visible: {0}.IsError',
+                    fieldName
+                );
+                var visibleIfWarningBinding = VRS.stringUtility.format(
+                    'visible: {0}.IsWarning',
+                    fieldName
+                );
+                var messageBinding = VRS.stringUtility.format(
+                    'visible: !{0}.IsValid(), text: {0}.Message', 
+                    fieldName
+                );
+
+                fieldValidate.attr('data-bind', fieldValidateBinding);
+
+                var input = $('input,textarea,select,:checkbox', fieldValidate);
+                $('<span />')
+                    .attr('data-bind', messageBinding)
+                    .addClass('help-block')
+                    .insertAfter(input);
+                $('<span />')
+                    .attr('data-bind', visibleIfErrorBinding)
+                    .addClass('form-control-feedback glyphicon glyphicon-minus-sign')
+                    .attr('aria-hidden', 'true')
+                    .insertAfter(input);
+                $('<span />')
+                    .attr('data-bind', visibleIfWarningBinding)
+                    .addClass('form-control-feedback glyphicon glyphicon-exclamation-sign')
+                    .attr('aria-hidden', 'true')
+                    .insertAfter(input);
+            });
+        }
+
+        /**
+         * Adds span elements to show the warning and error states. Usually associated with wrap-up validation elements.
+         */ 
+        static decorateValidationIcons()
+        {
+            var validateIcons = $('[data-bsu="validate-icons"]');
+            $.each(validateIcons, function() {
+                var validateIcon = $(this);
+                var fieldName = Helper.getFieldName(validateIcon);
+
+                var visibleIfErrorBinding = VRS.stringUtility.format(
+                    'visible: {0}.IsError',
+                    fieldName
+                );
+                var visibleIfWarningBinding = VRS.stringUtility.format(
+                    'visible: {0}.IsWarning',
+                    fieldName
+                );
+
+                $('<span />')
+                    .attr('data-bind', visibleIfErrorBinding)
+                    .addClass('glyphicon glyphicon-minus-sign')
+                    .appendTo(validateIcon);
+                $('<span />')
+                    .attr('data-bind', visibleIfWarningBinding)
+                    .addClass('glyphicon glyphicon-exclamation-sign')
+                    .appendTo(validateIcon);
+            });
         }
 
         /**
@@ -123,6 +212,11 @@
             }
 
             return result;
+        }
+
+        private static getFieldName(element: JQuery) : string
+        {
+            return element.data('bsu-field');
         }
 
         private static _UniqueId = 0;

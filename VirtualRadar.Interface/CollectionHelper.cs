@@ -63,5 +63,41 @@ namespace VirtualRadar.Interface
 
             return result;
         }
+
+        /// <summary>
+        /// Generic (and not particularly efficient) method that takes two generic collections, where the generic types
+        /// are related to each other in some way and each row has something that is unique about it, and applies add,
+        /// update and delete operations to the destination so that the content matches the source.
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TDest"></typeparam>
+        /// <param name="source">The source collection.</param>
+        /// <param name="destination">The destination collection.</param>
+        /// <param name="areIdentifiersEqual">Passed a source and destination record, returns true if they have the same identifier.</param>
+        /// <param name="createDestinationRecord">Creates a new destination record from a source record.</param>
+        /// <param name="overwriteDestinationRecord">Overwrites a destination record with values from a source record.</param>
+        public static void ApplySourceToDestination<TSource, TDest>(ICollection<TSource> source, ICollection<TDest> destination, Func<TSource, TDest, bool> areIdentifiersEqual, Func<TSource, TDest> createDestinationRecord, Action<TSource, TDest> overwriteDestinationRecord)
+        {
+            var deleteRows = destination.Where(r => !source.Any(i => areIdentifiersEqual(i, r))).ToArray();
+            foreach(var deleteRow in deleteRows) {
+                destination.Remove(deleteRow);
+            }
+
+            foreach(var sourceRow in source) {
+                var overwroteDest = false;
+                foreach(var destRow in destination) {
+                    if(areIdentifiersEqual(sourceRow, destRow)) {
+                        overwriteDestinationRecord(sourceRow, destRow);
+                        overwroteDest = true;
+                        break;
+                    }
+                }
+
+                if(!overwroteDest) {
+                    var destRow = createDestinationRecord(sourceRow);
+                    destination.Add(destRow);
+                }
+            }
+        }
     }
 }

@@ -112,6 +112,92 @@ var VRS;
                     }
                 });
             };
+            ViewId.prototype.createWrapupValidation = function (validationFields) {
+                var result = {
+                    IsValid: ko.computed(function () {
+                        var isValid = true;
+                        $.each(validationFields, function (idx, validationField) {
+                            if (!validationField.IsValid()) {
+                                isValid = false;
+                            }
+                            return isValid;
+                        });
+                        return isValid;
+                    }),
+                    IsWarning: ko.computed(function () {
+                        var isWarning = false;
+                        $.each(validationFields, function (idx, validationField) {
+                            if (validationField.IsWarning()) {
+                                isWarning = true;
+                            }
+                            return !isWarning;
+                        });
+                        return isWarning;
+                    }),
+                    IsError: ko.computed(function () {
+                        var isError = false;
+                        $.each(validationFields, function (idx, validationField) {
+                            if (validationField.IsError()) {
+                                isError = true;
+                            }
+                            return !isError;
+                        });
+                        return isError;
+                    })
+                };
+                return result;
+            };
+            ViewId.prototype.createArrayWrapupValidation = function (array, getWrapUp) {
+                var result = {
+                    IsValid: ko.computed(function () {
+                        var isValid = true;
+                        $.each(array(), function (idx, item) {
+                            var wrapUp = getWrapUp(item);
+                            if (!wrapUp.IsValid()) {
+                                isValid = false;
+                            }
+                            return isValid;
+                        });
+                        return isValid;
+                    }),
+                    IsWarning: ko.computed(function () {
+                        var isWarning = false;
+                        $.each(array(), function (idx, item) {
+                            var wrapUp = getWrapUp(item);
+                            if (wrapUp.IsWarning()) {
+                                isWarning = true;
+                            }
+                            return !isWarning;
+                        });
+                        return isWarning;
+                    }),
+                    IsError: ko.computed(function () {
+                        var isError = false;
+                        $.each(array(), function (idx, item) {
+                            var wrapUp = getWrapUp(item);
+                            if (wrapUp.IsError()) {
+                                isError = true;
+                            }
+                            return !isError;
+                        });
+                        return isError;
+                    })
+                };
+                return result;
+            };
+            ViewId.prototype.findValidationProperties = function (model) {
+                var result = [];
+                $.each(model, function (name, value) {
+                    if (value && typeof value === 'object' &&
+                        value.hasOwnProperty('IsValid') &&
+                        value.hasOwnProperty('IsWarning') &&
+                        value.hasOwnProperty('IsError') &&
+                        value.hasOwnProperty('Message')) {
+                        result.push(value);
+                    }
+                });
+                return result;
+            };
             return ViewId;
         })();
         WebAdmin.ViewId = ViewId;

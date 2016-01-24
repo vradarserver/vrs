@@ -145,10 +145,9 @@ namespace VirtualRadar.Plugin.WebAdmin
         private const int CleanUpDeferredExecutionsIntervalMinutes = 1;
 
         /// <summary>
-        /// The number of minutes that unclaimed deferred execution responses will be kept until they're flushed. It's a little
-        /// higher than strictly necessary so that we don't remove the results for pages that are being debugged.
+        /// The number of minutes that deferred execution responses will be kept until they're flushed.
         /// </summary>
-        private const int CleanUpDeferredExecutionResponseMinutes = 5;
+        private const int CleanUpDeferredExecutionResponseMinutes = 1;
 
         /// <summary>
         /// Used to manage multi-threaded access to the fields.
@@ -422,21 +421,14 @@ namespace VirtualRadar.Plugin.WebAdmin
 
                 var deferredResponses = _DeferredResponses;
                 DeferredMethodResponse response;
-                if(!deferredResponses.TryGetValue(jobId, out response)) {
+                if(deferredResponses.TryGetValue(jobId, out response)) {
+                    jsonText = response.JsonResponseText;
+                } else {
                     var jsonResponse = new JsonResponse();
                     jsonResponse.Response = new DeferredExecutionResult() {
                         JobId = jobId,
                     };
                     jsonText = JsonConvert.SerializeObject(jsonResponse);
-                } else {
-                    lock(_SyncLock) {
-                        if(_DeferredResponses.ContainsKey(jobId)) {
-                            var newMap = CollectionHelper.ShallowCopy(_DeferredResponses);
-                            newMap.Remove(jobId);
-                            _DeferredResponses = newMap;
-                        }
-                    }
-                    jsonText = response.JsonResponseText;
                 }
 
                 responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json, cacheSeconds: 0);
