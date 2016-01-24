@@ -101,6 +101,10 @@ declare module VirtualRadar.Interface.View {
         IsValid: boolean;
         Message: string;
     }
+    interface IEnumModel {
+        Value: number;
+        Description: string;
+    }
 }
 declare module System.Net {
     interface IIPEndPoint extends System.Net.IEndPoint {
@@ -149,7 +153,15 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel;
         Outcome: string;
+        NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel;
+        ConnectionTypes: VirtualRadar.Interface.View.IEnumModel[];
+        DataSources: VirtualRadar.Interface.View.IEnumModel[];
+        DefaultAccesses: VirtualRadar.Interface.View.IEnumModel[];
+        Handshakes: VirtualRadar.Interface.View.IEnumModel[];
+        Parities: VirtualRadar.Interface.View.IEnumModel[];
+        ReceiverUsages: VirtualRadar.Interface.View.IEnumModel[];
+        StopBits: VirtualRadar.Interface.View.IEnumModel[];
     }
     interface IConfigurationModel {
         DataVersion: number;
@@ -157,6 +169,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierCredits: string;
         OnlineLookupSupplierUrl: string;
         BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
+        Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
         ReceiverLocations: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel[];
     }
     interface IBaseStationSettingsModel {
@@ -175,6 +188,46 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AutoSavePolarPlotsMinutes: number;
         LookupAircraftDetailsOnline: boolean;
     }
+    interface IReceiverModel {
+        Enabled: boolean;
+        EnabledValidation: VirtualRadar.Interface.View.IValidationModelField;
+        UniqueId: number;
+        Name: string;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField;
+        DataSource: number;
+        ConnectionType: number;
+        AutoReconnectAtStartup: boolean;
+        IsPassive: boolean;
+        IsPassiveValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel;
+        Address: string;
+        AddressValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Port: number;
+        PortValidation: VirtualRadar.Interface.View.IValidationModelField;
+        UseKeepAlive: boolean;
+        UseKeepAliveValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IdleTimeoutMilliseconds: number;
+        IdleTimeoutValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Passphrase: string;
+        ComPort: string;
+        ComPortValidation: VirtualRadar.Interface.View.IValidationModelField;
+        BaudRate: number;
+        BaudRateValidation: VirtualRadar.Interface.View.IValidationModelField;
+        DataBits: number;
+        DataBitsValidation: VirtualRadar.Interface.View.IValidationModelField;
+        StopBits: number;
+        Parity: number;
+        Handshake: number;
+        StartupText: string;
+        ShutdownText: string;
+        ReceiverLocationId: number;
+        ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField;
+        ReceiverUsage: number;
+    }
+    interface IAccessModel {
+        DefaultAccess: number;
+        Addresses: string[];
+    }
     interface IReceiverLocationModel {
         UniqueId: number;
         Name: string;
@@ -184,6 +237,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Longitude: number;
         LongitudeValidation: VirtualRadar.Interface.View.IValidationModelField;
         IsBaseStationLocation: boolean;
+    }
+    interface ITestConnectionOutcomeModel {
+        Title: string;
+        Message: string;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
@@ -332,6 +389,10 @@ declare module VirtualRadar.Interface.View {
         IsValid: KnockoutObservable<boolean>;
         Message: KnockoutObservable<string>;
     }
+    interface IEnumModel_KO {
+        Value: KnockoutObservable<number>;
+        Description: KnockoutObservable<string>;
+    }
 }
 declare module System.Net {
     interface IIPEndPoint_KO extends System.Net.IEndPoint_KO {
@@ -380,7 +441,15 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel_KO {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO;
         Outcome: KnockoutObservable<string>;
+        NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO;
+        ConnectionTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        DataSources: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        DefaultAccesses: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        Handshakes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        Parities: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        ReceiverUsages: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
     }
     interface IConfigurationModel_KO {
         DataVersion: KnockoutObservable<number>;
@@ -388,6 +457,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierCredits: KnockoutObservable<string>;
         OnlineLookupSupplierUrl: KnockoutObservable<string>;
         BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
+        Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
         ReceiverLocations: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO>;
     }
     interface IBaseStationSettingsModel_KO {
@@ -406,6 +476,46 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
         LookupAircraftDetailsOnline: KnockoutObservable<boolean>;
     }
+    interface IReceiverModel_KO {
+        Enabled: KnockoutObservable<boolean>;
+        EnabledValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        UniqueId: KnockoutObservable<number>;
+        Name: KnockoutObservable<string>;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        DataSource: KnockoutObservable<number>;
+        ConnectionType: KnockoutObservable<number>;
+        AutoReconnectAtStartup: KnockoutObservable<boolean>;
+        IsPassive: KnockoutObservable<boolean>;
+        IsPassiveValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel_KO;
+        Address: KnockoutObservable<string>;
+        AddressValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Port: KnockoutObservable<number>;
+        PortValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        UseKeepAlive: KnockoutObservable<boolean>;
+        UseKeepAliveValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IdleTimeoutMilliseconds: KnockoutObservable<number>;
+        IdleTimeoutValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Passphrase: KnockoutObservable<string>;
+        ComPort: KnockoutObservable<string>;
+        ComPortValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        BaudRate: KnockoutObservable<number>;
+        BaudRateValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        DataBits: KnockoutObservable<number>;
+        DataBitsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        StopBits: KnockoutObservable<number>;
+        Parity: KnockoutObservable<number>;
+        Handshake: KnockoutObservable<number>;
+        StartupText: KnockoutObservable<string>;
+        ShutdownText: KnockoutObservable<string>;
+        ReceiverLocationId: KnockoutObservable<number>;
+        ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        ReceiverUsage: KnockoutObservable<number>;
+    }
+    interface IAccessModel_KO {
+        DefaultAccess: KnockoutObservable<number>;
+        Addresses: KnockoutViewModelArray<string>;
+    }
     interface IReceiverLocationModel_KO {
         UniqueId: KnockoutObservable<number>;
         Name: KnockoutObservable<string>;
@@ -415,6 +525,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Longitude: KnockoutObservable<number>;
         LongitudeValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         IsBaseStationLocation: KnockoutObservable<boolean>;
+    }
+    interface ITestConnectionOutcomeModel_KO {
+        Title: KnockoutObservable<string>;
+        Message: KnockoutObservable<string>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {

@@ -22,6 +22,186 @@
                         </div>
 
                         <!---->
+                        <!--Receivers-->
+                        <!---->
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div>
+                                ::Receivers::
+                                <div class="pull-right" data-bsu="validate-icons" data-bsu-field="ReceiverWrapUpValidation"></div>
+                            </div>
+                            <div>
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.createAndEditReceiver, pageHandler)">
+                                            ::Add::
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row table-responsive">
+                                    <table class="table table-condensed table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="thin-column"></th>
+                                                <th>::Enabled::</th>
+                                                <th>::Name::</th>
+                                                <th>::Format::</th>
+                                                <th>::Hidden::</th>
+                                                <th>::Location::</th>
+                                                <th>::Connection::</th>
+                                                <th>::ConnectionParameters::</th>
+                                                <th class="thin-column"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: Receivers">
+                                            <tr data-bind="css: { 'text-muted': !Enabled() }">
+                                                <td class="thin-column">
+                                                    <div data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" data-bind="checked: Enabled" />
+                                                </td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="text: FormattedDataSource"></td>
+                                                <td data-bind="text: FormattedReceiverUsage"></td>
+                                                <td data-bind="with: Location">
+                                                    <span data-bind="text: Name"></span>
+                                                </td>
+                                                <td data-bind="text: FormattedConnectionType"></td>
+                                                <td data-bind="text: ConnectionParameters"></td>
+                                                <td class="text-nowrap">
+                                                    <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-receiver">
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="edit-receiver" data-bsu="modal" data-bsu-options="header-close large" data-bind="with: $root.SelectedReceiver()">
+                            <div>
+                                <span data-bind="text: Name"></span>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="EnabledValidation">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: Enabled" />
+                                            ::Enabled::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="NameValidation">
+                                    <label class="col-sm-4">::Name:::</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" data-bind="textInput: Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4">::Format:::</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" data-bind="options: $root.DataSources, optionsText: 'Description', optionsValue: 'Value', value: DataSource"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4">::Location:::</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control" data-bind="options: $root.ReceiverLocations(), optionsText: 'Name', optionsValue: 'UniqueId', value: ReceiverLocationId, valueAllowUnset: true"></select>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-default btn-sm" data-bind="click: ResetLocation">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4">::ConnectionType:::</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" data-bind="options: $root.ConnectionTypes, optionsText: 'Description', optionsValue: 'Value', value: ConnectionType"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8">
+                                        <button type="button" class="btn btn-primary" data-bind="click: TestConnection">
+                                            ::TestConnection::
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bind="visible: $root.TestConnectionOutcome() != null, with: $root.TestConnectionOutcome">
+                                    <div class="col-sm-offset-4 col-sm-8" >
+                                        <span data-bind="text: Message"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4"></label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" data-bind="options: $root.ReceiverUsages, optionsText: 'Description', optionsValue: 'Value', value: ReceiverUsage"></select>
+                                    </div>
+                                </div>
+
+                                <div data-bind="visible: ConnectionType() == 0">
+                                    <div class="form-section">
+                                        ::Network::
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="IsPassiveValidation">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: IsPassive" />
+                                                ::PassiveReceiver::
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="AddressValidation">
+                                        <label class="col-sm-4">::UNC:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: Address" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="PortValidation">
+                                        <label class="col-sm-4">::Port:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="number" class="form-control" data-bind="textInput: Port" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::Passphrase:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: Passphrase" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="UseKeepAliveValidation">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: UseKeepAlive" />
+                                                ::UseKeepAlive::
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="IdleTimeoutValidation">
+                                        <label class="col-sm-4">::IdleTimeout:::</label>
+                                        <div class="col-sm-8">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" data-bind="textInput: IdleTimeoutSeconds" />
+                                                <span class="input-group-addon">::Seconds::</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div data-bind="visible: ConnectionType() == 1">
+                                    <div class="form-section">
+                                        ::USBOverCOM::
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!---->
                         <!-- DATA SOURCES -->
                         <!---->
 
@@ -55,7 +235,7 @@
                                         <input type="text" class="form-control" data-bind="textInput: PicturesFolder" />
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="form-group">
                                     <div class="col-sm-offset-4 col-sm-8 checkbox">
                                         <label>
                                             <input type="checkbox" data-bind="checked: SearchPictureSubFolders" />
@@ -64,13 +244,11 @@
                                     </div>
                                 </div>
 
-                                <div class="page-header">
-                                    <h3>
-                                        ::AircraftDetailsOnlineLookup::
-                                    </h3>
+                                <div class="form-section">
+                                    ::AircraftDetailsOnlineLookup::
                                 </div>
 
-                                <div class="row">
+                                <div class="form-group">
                                     <div class="col-sm-offset-4 col-sm-8 checkbox">
                                         <label>
                                             <input type="checkbox" data-bind="checked: LookupAircraftDetailsOnline" />
@@ -78,7 +256,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="form-group">
                                     <label class="col-sm-4">
                                         ::DataProvider:::
                                     </label>
@@ -86,7 +264,7 @@
                                         <span data-bind="text: $root.OnlineLookupSupplierName"></span>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="form-group">
                                     <div class="col-sm-offset-4 col-sm-8">
                                         <span data-bind="text: $root.OnlineLookupSupplierCredits"></span>
                                     </div>

@@ -23,6 +23,7 @@
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Queues.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Settings.ViewModel>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.Settings.TestConnectionOutcomeModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Statistics.ViewModel>()
         ;
 #>
@@ -38,6 +39,7 @@
         .For<VirtualRadar.Plugin.WebAdmin.View.MainView>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Queues.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Settings.ViewModel>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.Settings.TestConnectionOutcomeModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Statistics.ViewModel>()
         ;
 #>

@@ -226,5 +226,14 @@
 
             return result;
         }
+
+        /**
+         * Returns a description of an enum value.
+         */
+        describeEnum(enumValue: number, enumModels: VirtualRadar.Interface.View.IEnumModel[]) : string
+        {
+            var enumModel = VRS.arrayHelper.findFirst(enumModels, r => r.Value === enumValue);
+            return enumModel ? enumModel.Description : null;
+        }
     }
 } 

@@ -249,6 +249,12 @@
       <DependentUpon>Queues.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\Settings.html" />
+    <Content Include="Web\WebAdmin\Settings.js">
+      <DependentUpon>Settings.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\Settings.js.map">
+      <DependentUpon>Settings.ts</DependentUpon>
+    </Content>
     <Content Include="Web\WebAdmin\Statistics.html" />
     <Content Include="Web\WebAdmin\Statistics.js">
       <DependentUpon>Statistics.ts</DependentUpon>

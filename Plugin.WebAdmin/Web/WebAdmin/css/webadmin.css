@@ -65,10 +65,22 @@
 }
 
 /* Forms */
-.has-feedback.has-warning .form-control-feedback.glyphicon-exclamation-sign
-{
+.has-feedback.has-warning .form-control-feedback.glyphicon-exclamation-sign {
     color: #ffff00;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.form-section {
+    font-size: 1.4em;
+    color: #337ab7;
+    border-bottom: 1px solid #eee;
+    margin-top: 1.4em;
+    margin-right: -15px;
+    margin-left: -15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.form-section .tight-top {
+    margin-top: inherit;
 }
 
 /* Modal alerts */
