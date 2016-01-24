@@ -17,7 +17,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View
     class SettingsView : ISettingsView
     {
         private ISettingsPresenter _Presenter;
+        private ValidationModelHelper _ValidationHelper;
         private ViewModel _ViewModel;
+        private bool _FailedValidation;
 
         private Configuration _Configuration;
         public Configuration Configuration
@@ -43,23 +45,25 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             EventHelper.Raise(SaveClicked, this, args);
         }
 
-        public event EventHandler<EventArgs<Receiver>> TestConnectionClicked;
-
-        public event EventHandler TestTextToSpeechSettingsClicked;
-
         public event EventHandler UpdateReceiverLocationsFromBaseStationDatabaseClicked;
+        private void OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs args)
+        {
+            EventHelper.Raise(UpdateReceiverLocationsFromBaseStationDatabaseClicked, this, args);
+        }
 
+        #pragma warning disable 0067
+        public event EventHandler<EventArgs<Receiver>> TestConnectionClicked;
+        public event EventHandler TestTextToSpeechSettingsClicked;
         public event EventHandler UseIcaoRawDecodingSettingsClicked;
-
         public event EventHandler UseRecommendedRawDecodingSettingsClicked;
-
         public event EventHandler FlightSimulatorXOnlyClicked;
-
         public event EventHandler<EventArgs<string>> OpenUrlClicked;
+        #pragma warning restore 0067
 
         public DialogResult ShowView()
         {
             _ViewModel = new ViewModel();
+            _ValidationHelper = new ValidationModelHelper(_ViewModel.FindViewModelForRecord);
             Users = new NotifyList<IUser>();
 
             _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
@@ -98,7 +102,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowValidationResults(ValidationResults results)
         {
-            _ViewModel.ValidationResults.RefreshFromResults(results);
+            _ValidationHelper.ApplyValidationResults(results, _ViewModel);
+            _FailedValidation = results.HasErrors;
         }
 
         [WebAdminMethod]
@@ -110,18 +115,61 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         [WebAdminMethod(DeferExecution=true)]
         public ViewModel RaiseSaveClicked(ConfigurationModel configurationModel)
         {
-            var originalConfiguration = _ViewModel.Configuration;
-            _ViewModel.Configuration = configurationModel;
+            return ApplyConfigurationAroundAction(configurationModel, () => {
+                try {
+                    OnSaveClicked(EventArgs.Empty);
+                    _ViewModel.Outcome = _FailedValidation ? "FailedValidation" : "Saved";
+                } catch(ConflictingUpdateException) {
+                    var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                    var configuration = configurationStorage.Load();
+                    _ViewModel.Configuration.RefreshFromConfiguration(configuration);
+                    ApplyConfigurationModelToView(_ViewModel.Configuration);
 
-            _ViewModel.Configuration.CopyToConfiguration(Configuration);
-            _ViewModel.Configuration.OnlineLookupSupplierName = originalConfiguration.OnlineLookupSupplierName;
-            _ViewModel.Configuration.OnlineLookupSupplierCredits = originalConfiguration.OnlineLookupSupplierCredits;
-            _ViewModel.Configuration.OnlineLookupSupplierUrl = originalConfiguration.OnlineLookupSupplierUrl;
+                    _ViewModel.Outcome = "ConflictingUpdate";
+                }
+            });
+        }
 
-            OnSaveClicked(EventArgs.Empty);
+        [WebAdminMethod]
+        public ViewModel RaiseReceiverLocationsFromBaseStationDatabaseClicked(ConfigurationModel configurationModel)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, () => OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs.Empty));
+        }
+
+        [WebAdminMethod]
+        public ViewModel CreateNewReceiverLocation(ConfigurationModel configurationModel)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, () => {
+                var newRecord = _Presenter.CreateReceiverLocation();
+                ValidationModelHelper.CreateEmptyViewModelValidationFields(newRecord);
+                _ViewModel.NewReceiverLocation = new ReceiverLocationModel(newRecord);
+            });
+        }
+
+        private ViewModel ApplyConfigurationAroundAction(ConfigurationModel configurationModel, Action action)
+        {
+            _ViewModel.NewReceiverLocation = null;
+
+            _ViewModel.Outcome = null;
+            ApplyConfigurationModelToView(configurationModel);
+
+            action();
+
             _ViewModel.Configuration.RefreshFromConfiguration(Configuration);
 
             return _ViewModel;
+        }
+
+        private void ApplyConfigurationModelToView(ConfigurationModel configurationModel)
+        {
+            var originalConfiguration = _ViewModel.Configuration;
+
+            _ViewModel.Configuration = configurationModel;
+            _ViewModel.Configuration.CopyToConfiguration(Configuration);
+
+            _ViewModel.Configuration.OnlineLookupSupplierName = originalConfiguration.OnlineLookupSupplierName;
+            _ViewModel.Configuration.OnlineLookupSupplierCredits = originalConfiguration.OnlineLookupSupplierCredits;
+            _ViewModel.Configuration.OnlineLookupSupplierUrl = originalConfiguration.OnlineLookupSupplierUrl;
         }
     }
 }

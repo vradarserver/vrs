@@ -79,6 +79,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This screen has been changed elsewhere since you originally loaded it. Your changes were based on out-of-date information and they have not been saved..
+        /// </summary>
+        public static string WA_Conflicting_Update {
+            get {
+                return ResourceManager.GetString("WA_Conflicting_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The server reported an exception, see log for details: {0}.
         /// </summary>
         public static string WA_Exception_Reported {

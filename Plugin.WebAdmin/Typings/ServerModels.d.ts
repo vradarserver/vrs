@@ -95,15 +95,11 @@ declare module VirtualRadar.Interface.View {
         BadMsgs: number;
         Tracked: number;
     }
-    interface IValidationResultsModel {
-        Results: VirtualRadar.Interface.View.IValidationResultModel[];
-    }
-    interface IValidationResultModel {
-        RecordName: string;
-        RecordId: string;
-        FieldName: string;
-        Message: string;
+    interface IValidationModelField {
         IsWarning: boolean;
+        IsError: boolean;
+        IsValid: boolean;
+        Message: string;
     }
 }
 declare module System.Net {
@@ -152,7 +148,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel;
-        ValidationResults: VirtualRadar.Interface.View.IValidationResultsModel;
+        Outcome: string;
+        NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel;
     }
     interface IConfigurationModel {
         DataVersion: number;
@@ -160,19 +157,33 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierCredits: string;
         OnlineLookupSupplierUrl: string;
         BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
+        ReceiverLocations: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel[];
     }
     interface IBaseStationSettingsModel {
         DatabaseFileName: string;
+        DatabaseFileNameValidation: VirtualRadar.Interface.View.IValidationModelField;
         OperatorFlagsFolder: string;
+        OperatorFlagsFolderValidation: VirtualRadar.Interface.View.IValidationModelField;
         SilhouettesFolder: string;
-        OutlinesFolder: string;
+        SilhouettesFolderValidation: VirtualRadar.Interface.View.IValidationModelField;
         PicturesFolder: string;
+        PicturesFolderValidation: VirtualRadar.Interface.View.IValidationModelField;
         SearchPictureSubFolders: boolean;
         DisplayTimeoutSeconds: number;
         TrackingTimeoutSeconds: number;
         MinimiseToSystemTray: boolean;
         AutoSavePolarPlotsMinutes: number;
         LookupAircraftDetailsOnline: boolean;
+    }
+    interface IReceiverLocationModel {
+        UniqueId: number;
+        Name: string;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Latitude: number;
+        LatitudeValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Longitude: number;
+        LongitudeValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IsBaseStationLocation: boolean;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
@@ -230,7 +241,7 @@ declare module VirtualRadar.Plugin.WebAdmin {
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog {
     interface IViewModel_KO {
-        LogEntries: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog.ILogEntry_KO>;
+        LogEntries: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog.ILogEntry_KO>;
     }
     interface ILogEntry_KO {
         Time: KnockoutObservable<string>;
@@ -258,7 +269,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         IsMono: KnockoutObservable<boolean>;
     }
     interface ILogView_KO {
-        LogLines: KnockoutObservableArray<string>;
+        LogLines: KnockoutViewModelArray<string>;
     }
     interface IMainView_KO {
         BadPlugins: KnockoutObservable<number>;
@@ -270,15 +281,15 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         LocalRoot: KnockoutObservable<string>;
         LanRoot: KnockoutObservable<string>;
         PublicRoot: KnockoutObservable<string>;
-        Requests: KnockoutObservableArray<VirtualRadar.Interface.View.IServerRequest_KO>;
-        Feeds: KnockoutObservableArray<VirtualRadar.Interface.View.IFeedStatus_KO>;
-        Rebroadcasters: KnockoutObservableArray<VirtualRadar.Interface.IRebroadcastServerConnection_KO>;
+        Requests: KnockoutViewModelArray<VirtualRadar.Interface.View.IServerRequest_KO>;
+        Feeds: KnockoutViewModelArray<VirtualRadar.Interface.View.IFeedStatus_KO>;
+        Rebroadcasters: KnockoutViewModelArray<VirtualRadar.Interface.IRebroadcastServerConnection_KO>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
     interface IViewModel_KO {
-        Connectors: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IConnectorModel_KO>;
-        Events: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IEventModel_KO>;
+        Connectors: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IConnectorModel_KO>;
+        Events: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog.IEventModel_KO>;
     }
     interface IConnectorModel_KO {
         Name: KnockoutObservable<string>;
@@ -293,7 +304,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
 }
 declare module VirtualRadar.Interface.View {
     interface IServerRequest_KO {
-        RemoteEndPoint: KnockoutObservable<System.Net.IIPEndPoint_KO>;
+        RemoteEndPoint: System.Net.IIPEndPoint_KO;
         DataVersion: KnockoutObservable<number>;
         User: KnockoutObservable<string>;
         RemoteAddr: KnockoutObservable<string>;
@@ -315,21 +326,17 @@ declare module VirtualRadar.Interface.View {
         BadMsgs: KnockoutObservable<number>;
         Tracked: KnockoutObservable<number>;
     }
-    interface IValidationResultsModel_KO {
-        Results: KnockoutObservableArray<VirtualRadar.Interface.View.IValidationResultModel_KO>;
-    }
-    interface IValidationResultModel_KO {
-        RecordName: KnockoutObservable<string>;
-        RecordId: KnockoutObservable<string>;
-        FieldName: KnockoutObservable<string>;
-        Message: KnockoutObservable<string>;
+    interface IValidationModelField_KO {
         IsWarning: KnockoutObservable<boolean>;
+        IsError: KnockoutObservable<boolean>;
+        IsValid: KnockoutObservable<boolean>;
+        Message: KnockoutObservable<string>;
     }
 }
 declare module System.Net {
     interface IIPEndPoint_KO extends System.Net.IEndPoint_KO {
         AddressFamily: KnockoutObservable<System.Net.Sockets.AddressFamily>;
-        Address: KnockoutObservable<System.Net.IIPAddress_KO>;
+        Address: System.Net.IIPAddress_KO;
         Port: KnockoutObservable<number>;
     }
     interface IEndPoint_KO {
@@ -351,7 +358,7 @@ declare module VirtualRadar.Interface {
         Id: KnockoutObservable<number>;
         Name: KnockoutObservable<string>;
         LocalPort: KnockoutObservable<number>;
-        EndpointIPAddress: KnockoutObservable<System.Net.IIPAddress_KO>;
+        EndpointIPAddress: System.Net.IIPAddress_KO;
         RemoteAddr: KnockoutObservable<string>;
         RemotePort: KnockoutObservable<number>;
         Buffered: KnockoutObservable<number>;
@@ -361,7 +368,7 @@ declare module VirtualRadar.Interface {
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
     interface IViewModel_KO {
-        Queues: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Queues.IQueueModel_KO>;
+        Queues: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Queues.IQueueModel_KO>;
     }
     interface IQueueModel_KO {
         Name: KnockoutObservable<string>;
@@ -371,28 +378,43 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel_KO {
-        Configuration: KnockoutObservable<VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO>;
-        ValidationResults: KnockoutObservable<VirtualRadar.Interface.View.IValidationResultsModel_KO>;
+        Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO;
+        Outcome: KnockoutObservable<string>;
+        NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO;
     }
     interface IConfigurationModel_KO {
         DataVersion: KnockoutObservable<number>;
         OnlineLookupSupplierName: KnockoutObservable<string>;
         OnlineLookupSupplierCredits: KnockoutObservable<string>;
         OnlineLookupSupplierUrl: KnockoutObservable<string>;
-        BaseStationSettingsModel: KnockoutObservable<VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO>;
+        BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
+        ReceiverLocations: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO>;
     }
     interface IBaseStationSettingsModel_KO {
         DatabaseFileName: KnockoutObservable<string>;
+        DatabaseFileNameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         OperatorFlagsFolder: KnockoutObservable<string>;
+        OperatorFlagsFolderValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         SilhouettesFolder: KnockoutObservable<string>;
-        OutlinesFolder: KnockoutObservable<string>;
+        SilhouettesFolderValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         PicturesFolder: KnockoutObservable<string>;
+        PicturesFolderValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         SearchPictureSubFolders: KnockoutObservable<boolean>;
         DisplayTimeoutSeconds: KnockoutObservable<number>;
         TrackingTimeoutSeconds: KnockoutObservable<number>;
         MinimiseToSystemTray: KnockoutObservable<boolean>;
         AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
         LookupAircraftDetailsOnline: KnockoutObservable<boolean>;
+    }
+    interface IReceiverLocationModel_KO {
+        UniqueId: KnockoutObservable<number>;
+        Name: KnockoutObservable<string>;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Latitude: KnockoutObservable<number>;
+        LatitudeValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Longitude: KnockoutObservable<number>;
+        LongitudeValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IsBaseStationLocation: KnockoutObservable<boolean>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
@@ -416,15 +438,15 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
         ModeSWithPI: KnockoutObservable<number>;
         ModeSPIBadParity: KnockoutObservable<number>;
         ModeSPIBadParityRatio: KnockoutObservable<number>;
-        ModeSDFCount: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFCountModel_KO>;
+        ModeSDFCount: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFCountModel_KO>;
         AdsbMessages: KnockoutObservable<number>;
         AdsbRejected: KnockoutObservable<number>;
         AdsbRejectedRatio: KnockoutObservable<number>;
         PositionSpeedCheckExceeded: KnockoutObservable<number>;
         PositionsReset: KnockoutObservable<number>;
         PositionsOutOfRange: KnockoutObservable<number>;
-        AdsbMessageTypeCount: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageTypeCountModel_KO>;
-        AdsbMessageFormatCount: KnockoutObservableArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageFormatCountModel_KO>;
+        AdsbMessageTypeCount: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageTypeCountModel_KO>;
+        AdsbMessageFormatCount: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageFormatCountModel_KO>;
     }
     interface IModeSDFCountModel_KO {
         DF: KnockoutObservable<number>;

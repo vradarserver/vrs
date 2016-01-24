@@ -10,6 +10,7 @@ declare module VRS.WebAdmin
     {
         Disabled:                    string;
         PluginName:                  string;
+        WA_Conflicting_Update:       string;
         WA_Exception_Reported:       string;
         WA_Home:                     string;
         WA_Label_Credits:            string;
