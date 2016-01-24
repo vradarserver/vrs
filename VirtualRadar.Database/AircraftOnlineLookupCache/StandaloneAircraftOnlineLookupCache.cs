@@ -144,14 +144,19 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <returns></returns>
         public Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft)
         {
-            AircraftOnlineLookupDetail[] details = null;
             var filteredIcaos = icaos.Where(r => !String.IsNullOrEmpty(r)).Select(r => r.ToUpper().Trim()).Distinct().ToArray();
 
+            var details = new List<AircraftOnlineLookupDetail>();
             lock(_SyncLock) {
                 using(var connection = CreateOpenConnection()) {
-                    details = connection.Query<AircraftOnlineLookupDetail>("SELECT * FROM [AircraftDetail] WHERE [Icao] IN @icaos", new {
-                        icaos = icaos,
-                    }).ToArray();
+                    const int batchSize = 200;
+                    for(var i = 0;i < filteredIcaos.Length;i += batchSize) {
+                        var batchIcaos = filteredIcaos.Skip(i).Take(batchSize).ToArray();
+                        var batchDetails = connection.Query<AircraftOnlineLookupDetail>("SELECT * FROM [AircraftDetail] WHERE [Icao] IN @icaos", new {
+                            @icaos = batchIcaos,
+                        }).ToArray();
+                        details.AddRange(batchDetails);
+                    }
                 }
             }
 
