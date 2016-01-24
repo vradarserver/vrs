@@ -956,9 +956,19 @@ namespace VirtualRadar.Database.BaseStation
 
         BaseStationAircraft[] Aircraft_GetByIcaos(IEnumerable<string> icaos)
         {
-            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [ModeS] IN @icaos", new {
-                @icaos = icaos,
-            }, transaction: _TransactionHelper.Transaction).ToArray();
+            var icaosArray = icaos.ToArray();
+            var result = new List<BaseStationAircraft>();
+
+            const int batchSize = 200;
+            for(var i = 0;i < icaosArray.Length;i += batchSize) {
+                var batchIcaos = icaosArray.Skip(i).Take(batchSize).ToArray();
+                var batchResults = _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [ModeS] IN @icaos", new {
+                    @icaos = batchIcaos,
+                }, transaction: _TransactionHelper.Transaction).ToArray();
+                result.AddRange(batchResults);
+            }
+
+            return result.ToArray();
         }
 
         BaseStationAircraft Aircraft_GetById(int aircraftId)
