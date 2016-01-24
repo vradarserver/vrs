@@ -2568,4 +2568,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="menuAircraftOnlineDetailLookupLog" xml:space="preserve">
     <value>Aircraft Online Lookup Log</value>
   </data>
+  <data name="Dropped" xml:space="preserve">
+    <value>Dropped</value>
+    <comment>As in the number of items discarded from a queue</comment>
+  </data>
 </root>

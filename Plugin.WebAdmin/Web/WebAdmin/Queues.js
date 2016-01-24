@@ -34,6 +34,7 @@ var VRS;
                                 "{root}.Queues[i]": function (model) {
                                     model.FormattedCountQueuedItems = ko.computed(function () { return VRS.stringUtility.formatNumber(model.CountQueuedItems(), 'N0'); });
                                     model.FormattedPeakQueuedItems = ko.computed(function () { return VRS.stringUtility.formatNumber(model.PeakQueuedItems(), 'N0'); });
+                                    model.FormattedCountDroppedItems = ko.computed(function () { return VRS.stringUtility.formatNumber(model.CountDroppedItems(), 'N0'); });
                                 }
                             }
                         });

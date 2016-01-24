@@ -250,7 +250,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 // will be running on the same thread as the aircraft list. Our processing can take some time, particularly if many
                 // database writes have to happen simultaneously on startup, so to avoid blocking the update of the aircraft list
                 // we create a background thread and process the messages on that.
-                _BackgroundThreadMessageQueue = new BackgroundThreadQueue<BaseStationMessageEventArgs>("BaseStationDatabaseWriterMessageQueue");
+                _BackgroundThreadMessageQueue = new BackgroundThreadQueue<BaseStationMessageEventArgs>("BaseStationDatabaseWriterMessageQueue", 200000);
                 _BackgroundThreadMessageQueue.StartBackgroundThread(MessageQueue_MessageReceived, MessageQueue_ExceptionCaught);
 
                 HookFeed();

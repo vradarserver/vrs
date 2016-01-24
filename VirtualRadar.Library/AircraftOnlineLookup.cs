@@ -131,6 +131,11 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public long CountDroppedItems { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler<AircraftOnlineLookupEventArgs> AircraftFetched;
 
         /// <summary>

@@ -328,7 +328,7 @@ namespace VirtualRadar.Library.Listener
             _AdsbMessageTranslator.Statistics = Statistics;
 
             var messageQueueName = String.Format("MessageProcessingAndDispatchQueue_{0}", ++_ListenerCounter);
-            _MessageProcessingAndDispatchQueue = new BackgroundThreadQueue<MessageDispatch>(messageQueueName);
+            _MessageProcessingAndDispatchQueue = new BackgroundThreadQueue<MessageDispatch>(messageQueueName, 200000);
             _MessageProcessingAndDispatchQueue.StartBackgroundThread(ProcessAndDispatchMessageQueueItem, HandleMessageDispatchException);
         }
 

@@ -24,11 +24,14 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Queues
 
         public int PeakQueuedItems { get; private set; }
 
+        public long CountDroppedItems { get; private set; }
+
         public QueueModel(IQueue queue)
         {
             Name =              queue.Name;
             CountQueuedItems =  queue.CountQueuedItems;
             PeakQueuedItems =   queue.PeakQueuedItems;
+            CountDroppedItems = queue.CountDroppedItems;
         }
     }
 }

@@ -43,6 +43,11 @@ namespace VirtualRadar.Interface
             {
                 get { lock(EventHelper._CachedMethodsLock) { return EventHelper._CachedMethods.Count; } }
             }
+
+            public long CountDroppedItems
+            {
+                get { return 0; }
+            }
         }
 
         /// <summary>
