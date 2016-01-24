@@ -73,9 +73,7 @@
     font-size: 1.4em;
     color: #337ab7;
     border-bottom: 1px solid #eee;
-    margin-top: 1.4em;
-    margin-right: -15px;
-    margin-left: -15px;
+    margin: 1.4em -15px 0.5em -15px;
     padding-left: 15px;
     padding-right: 15px;
 }

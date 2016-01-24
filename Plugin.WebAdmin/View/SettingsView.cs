@@ -77,6 +77,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             _Presenter.Initialise(this);
             _Presenter.ValidateView();
 
+            _ViewModel.ComPortNames = _Presenter.GetSerialPortNames().ToArray();
+
             return DialogResult.OK;
         }
 
