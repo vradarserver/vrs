@@ -199,6 +199,45 @@ var VRS;
                                             var index = VRS.arrayHelper.indexOfMatch(_this._Model.MergedFeeds(), function (r) { return r.UniqueId == row.UniqueId; });
                                             _this._Model.MergedFeeds.splice(index, 1);
                                         };
+                                        model.IncludeReceiver = function (receiver) {
+                                            return ko.pureComputed({
+                                                read: function () {
+                                                    return model.ReceiverIds().indexOf(receiver.UniqueId()) !== -1;
+                                                },
+                                                write: function (value) {
+                                                    var index = model.ReceiverIds().indexOf(receiver.UniqueId());
+                                                    if (value && index === -1) {
+                                                        model.ReceiverIds.pushFromModel(receiver.UniqueId());
+                                                    }
+                                                    else if (!value && index !== -1) {
+                                                        model.ReceiverIds.removeAtToModel(index, receiver.UniqueId());
+                                                    }
+                                                },
+                                                owner: _this
+                                            });
+                                        };
+                                        model.ReceiverIsMlat = function (receiver) {
+                                            return ko.pureComputed({
+                                                read: function () {
+                                                    var flags = VRS.arrayHelper.findFirst(model.ReceiverFlags(), function (r) { return r.UniqueId() == receiver.UniqueId(); });
+                                                    return flags && flags.IsMlatFeed();
+                                                },
+                                                write: function (value) {
+                                                    var index = VRS.arrayHelper.indexOfMatch(model.ReceiverFlags(), function (r) { return r.UniqueId() == receiver.UniqueId(); });
+                                                    if (index === -1) {
+                                                        var blank = {
+                                                            UniqueId: receiver.UniqueId(),
+                                                            IsMlatFeed: false,
+                                                        };
+                                                        model.ReceiverFlags.unshiftFromModel(blank);
+                                                        index = 0;
+                                                    }
+                                                    var flags = model.ReceiverFlags()[index];
+                                                    flags.IsMlatFeed(value);
+                                                },
+                                                owner: _this
+                                            });
+                                        };
                                     },
                                     '{root}.Receivers[i]': function (model) {
                                         model.FormattedConnectionType = ko.computed(function () { return _this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes); });
