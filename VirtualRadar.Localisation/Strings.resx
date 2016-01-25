@@ -2572,4 +2572,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Dropped</value>
     <comment>As in the number of items discarded from a queue</comment>
   </data>
+  <data name="Include" xml:space="preserve">
+    <value>Include</value>
+    <comment>As in "include this item in the list"</comment>
+  </data>
 </root>

@@ -45,6 +45,8 @@
 
         SelectRow?:                 (row: MergedFeedModel) => void;
         DeleteRow?:                 (row: MergedFeedModel) => void;
+        IncludeReceiver?:           (receiver: ReceiverModel) => KnockoutComputed<boolean>;
+        ReceiverIsMlat?:            (receiver: ReceiverModel) => KnockoutComputed<boolean>;
     }
 
     interface ReceiverModel extends ViewJson.IReceiverModel_KO
@@ -299,6 +301,45 @@
                                 model.DeleteRow = (row: MergedFeedModel) => {
                                     var index = VRS.arrayHelper.indexOfMatch(this._Model.MergedFeeds(), r => r.UniqueId == row.UniqueId);
                                     this._Model.MergedFeeds.splice(index, 1);
+                                };
+
+                                model.IncludeReceiver = (receiver: ReceiverModel) => {
+                                    return ko.pureComputed({
+                                        read: () => {
+                                            return model.ReceiverIds().indexOf(receiver.UniqueId()) !== -1;
+                                        },
+                                        write: (value) => {
+                                            var index = model.ReceiverIds().indexOf(receiver.UniqueId());
+                                            if(value && index === -1) {
+                                                model.ReceiverIds.pushFromModel(receiver.UniqueId());
+                                            } else if(!value && index !== -1) {
+                                                model.ReceiverIds.removeAtToModel(index, receiver.UniqueId());
+                                            }
+                                        },
+                                        owner: this
+                                    });
+                                };
+                                model.ReceiverIsMlat = (receiver: ReceiverModel) => {
+                                    return ko.pureComputed({
+                                        read: () => {
+                                            var flags = VRS.arrayHelper.findFirst(model.ReceiverFlags(), r => r.UniqueId() == receiver.UniqueId());
+                                            return flags && flags.IsMlatFeed();
+                                        },
+                                        write: (value) => {
+                                            var index = VRS.arrayHelper.indexOfMatch(model.ReceiverFlags(), r => r.UniqueId() == receiver.UniqueId());
+                                            if(index === -1) {
+                                                var blank: ViewJson.IMergedFeedReceiverModel = {
+                                                    UniqueId: receiver.UniqueId(),
+                                                    IsMlatFeed: false,
+                                                };
+                                                model.ReceiverFlags.unshiftFromModel(blank);
+                                                index = 0;
+                                            }
+                                            var flags = model.ReceiverFlags()[index];
+                                            flags.IsMlatFeed(value);
+                                        },
+                                        owner: this
+                                    });
                                 };
                             },
 

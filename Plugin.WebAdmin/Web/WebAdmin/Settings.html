@@ -81,7 +81,7 @@
                             </div>
                         </div>
 
-                        <div id="edit-merged-feed" data-bsu="modal" data-bsu-options="header-close" data-bind="with: $root.SelectedMergedFeed()">
+                        <div id="edit-merged-feed" data-bsu="modal" data-bsu-options="header-close large" data-bind="with: $root.SelectedMergedFeed()">
                             <div>
                                 <span data-bind="text: Name"></span>
                             </div>
@@ -124,6 +124,32 @@
                                             ::HideFromWebSite::
                                         </label>
                                     </div>
+                                </div>
+
+                                <div class="form-section">
+                                    ::Receivers::
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-condensed table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="thin-column">::Include::</th>
+                                                <th>::Name::</th>
+                                                <th class="thin-column">::MLAT::</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: $root.Receivers">
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" data-bind="checked: $root.SelectedMergedFeed().IncludeReceiver($data)" />
+                                                </td>
+                                                <td data-bind="text: Name"></td>
+                                                <td>
+                                                    <input type="checkbox" data-bind="checked: $root.SelectedMergedFeed().ReceiverIsMlat($data), enable: $root.SelectedMergedFeed().IncludeReceiver($data)" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

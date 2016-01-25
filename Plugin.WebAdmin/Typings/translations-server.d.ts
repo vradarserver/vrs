@@ -216,6 +216,7 @@ declare module VRS.Server
         IgnoreModeS:                                               string;
         IgnoreUnassignedIcao:                                      string;
         Images:                                                    string;
+        Include:                                                   string;
         InitialDistanceUnits:                                      string;
         InitialHeightUnits:                                        string;
         InitialLatitude:                                           string;
