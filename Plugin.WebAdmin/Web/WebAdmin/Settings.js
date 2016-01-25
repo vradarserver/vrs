@@ -130,6 +130,42 @@ var VRS;
                         alert.hide();
                     }
                 };
+                PageHandler.prototype.feedlistChanged = function () {
+                    this.synchroniseFeeds();
+                    this.removeDeletedReceiversFromMergedFeeds();
+                };
+                PageHandler.prototype.synchroniseFeeds = function () {
+                    var allFeeds = [];
+                    $.each(this._Model.Receivers(), function (idx, feed) { return allFeeds.push({ UniqueId: feed.UniqueId, Name: feed.Name }); });
+                    $.each(this._Model.MergedFeeds(), function (idx, feed) { return allFeeds.push({ UniqueId: feed.UniqueId, Name: feed.Name }); });
+                    var feeds = this._Model.Feeds();
+                    for (var i = feeds.length - 1; i >= 0; --i) {
+                        var feed = feeds[i];
+                        if (!VRS.arrayHelper.findFirst(allFeeds, function (r) { return r.UniqueId() == feed.UniqueId(); })) {
+                            this._Model.Feeds.splice(i, 1);
+                        }
+                    }
+                    var addList = VRS.arrayHelper.except(allFeeds, feeds, function (lhs, rhs) { return lhs.UniqueId() === rhs.UniqueId(); });
+                    for (var i = 0; i < addList.length; ++i) {
+                        this._Model.Feeds.push(addList[i]);
+                    }
+                };
+                PageHandler.prototype.removeDeletedReceiversFromMergedFeeds = function () {
+                    var receiverIds = [];
+                    $.each(this._Model.Receivers(), function (idx, receiver) { return receiverIds.push(receiver.UniqueId()); });
+                    $.each(this._Model.MergedFeeds(), function (idx, mergedFeed) {
+                        for (var i = mergedFeed.ReceiverIds().length; i >= 0; --i) {
+                            var receiverId = mergedFeed.ReceiverIds()[i];
+                            if (receiverIds.indexOf(receiverId) === -1) {
+                                mergedFeed.ReceiverIds.splice(i, 1);
+                                var flagsIndex = VRS.arrayHelper.indexOfMatch(mergedFeed.ReceiverFlags(), function (r) { return r.UniqueId() === receiverId; });
+                                if (flagsIndex !== -1) {
+                                    mergedFeed.ReceiverFlags.splice(flagsIndex, 1);
+                                }
+                            }
+                        }
+                    });
+                };
                 PageHandler.prototype.applyState = function (state) {
                     var _this = this;
                     if (state.Exception) {
@@ -156,16 +192,20 @@ var VRS;
                                         root.ConnectionTypes = state.Response.ConnectionTypes;
                                         root.DataSources = state.Response.DataSources;
                                         root.DefaultAccesses = state.Response.DefaultAccesses;
+                                        root.DistanceUnits = state.Response.DistanceUnits;
                                         root.Handshakes = state.Response.Handshakes;
+                                        root.HeightUnits = state.Response.HeightUnits;
                                         root.Parities = state.Response.Parities;
+                                        root.ProxyTypes = state.Response.ProxyTypes;
                                         root.ReceiverUsages = state.Response.ReceiverUsages;
+                                        root.SpeedUnits = state.Response.SpeedUnits;
                                         root.StopBits = state.Response.StopBits;
                                         root.TestConnectionOutcome = ko.observable(null);
                                         root.SelectedMergedFeed = ko.observable(null);
                                         root.SelectedReceiver = ko.observable(null);
                                         root.selectedReceiverLocation = ko.observable(null);
                                     },
-                                    '{root}.BaseStationSettingsModel': function (model) {
+                                    '{root}.BaseStationSettings': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                     },
                                     '{root}.MergedFeeds[i]': function (model) {
@@ -310,6 +350,10 @@ var VRS;
                             this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, function (r) { return r.WrapUpValidation; });
+                            this._Model.Feeds = ko.observableArray([]);
+                            this._Model.Receivers.subscribe(this.feedlistChanged, this);
+                            this._Model.MergedFeeds.subscribe(this.feedlistChanged, this);
+                            this.synchroniseFeeds();
                             ko.applyBindings(this._Model);
                         }
                     }

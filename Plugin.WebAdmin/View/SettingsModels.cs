@@ -38,11 +38,19 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public EnumModel[] DefaultAccesses { get; private set; }
 
+        public EnumModel[] DistanceUnits { get; private set; }
+
         public EnumModel[] Handshakes { get; private set; }
+
+        public EnumModel[] HeightUnits { get; private set; }
 
         public EnumModel[] Parities { get; private set; }
 
+        public EnumModel[] ProxyTypes { get; private set; }
+
         public EnumModel[] ReceiverUsages { get; private set; }
+
+        public EnumModel[] SpeedUnits { get; private set; }
 
         public EnumModel[] StopBits { get; private set; }
 
@@ -52,13 +60,17 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             Configuration = new ConfigurationModel();
 
+            ConnectionTypes = EnumModel.CreateFromEnum<ConnectionType>(r => Describe.ConnectionType(r));
             DataSources = EnumModel.CreateFromEnum<DataSource>(r => Describe.DataSource(r));
             DefaultAccesses = EnumModel.CreateFromEnum<DefaultAccess>(r => Describe.DefaultAccess(r));
-            ConnectionTypes = EnumModel.CreateFromEnum<ConnectionType>(r => Describe.ConnectionType(r));
-            StopBits = EnumModel.CreateFromEnum<StopBits>(r => Describe.StopBits(r));
-            Parities = EnumModel.CreateFromEnum<Parity>(r => Describe.Parity(r));
+            DistanceUnits = EnumModel.CreateFromEnum<DistanceUnit>(r => Describe.DistanceUnit(r));
             Handshakes = EnumModel.CreateFromEnum<Handshake>(r => Describe.Handshake(r));
+            HeightUnits = EnumModel.CreateFromEnum<HeightUnit>(r => Describe.HeightUnit(r));
+            Parities = EnumModel.CreateFromEnum<Parity>(r => Describe.Parity(r));
+            ProxyTypes = EnumModel.CreateFromEnum<ProxyType>(r => Describe.ProxyType(r));
             ReceiverUsages = EnumModel.CreateFromEnum<ReceiverUsage>(r => Describe.ReceiverUsage(r));
+            SpeedUnits = EnumModel.CreateFromEnum<SpeedUnit>(r => Describe.SpeedUnit(r));
+            StopBits = EnumModel.CreateFromEnum<StopBits>(r => Describe.StopBits(r));
 
             ComPortNames = new string[]{};
         }
@@ -105,7 +117,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public string OnlineLookupSupplierUrl { get; set; }
 
-        public BaseStationSettingsModel BaseStationSettingsModel { get; private set; }
+        public BaseStationSettingsModel BaseStationSettings { get; private set; }
+
+        public GoogleMapSettingsModel GoogleMapSettings { get; private set; }
 
         public List<MergedFeedModel> MergedFeeds { get; private set; }
 
@@ -115,7 +129,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public ConfigurationModel()
         {
-            BaseStationSettingsModel = new BaseStationSettingsModel();
+            BaseStationSettings = new BaseStationSettingsModel();
+            GoogleMapSettings = new GoogleMapSettingsModel();
             MergedFeeds = new List<MergedFeedModel>();
             Receivers = new List<ReceiverModel>();
             ReceiverLocations = new List<ReceiverLocationModel>();
@@ -130,7 +145,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             DataVersion = configuration.DataVersion;
 
-            BaseStationSettingsModel.RefreshFromSettings(configuration.BaseStationSettings);
+            BaseStationSettings.RefreshFromSettings(configuration.BaseStationSettings);
+            GoogleMapSettings.RefreshFromSettings(configuration.GoogleMapSettings);
+
             CollectionHelper.ApplySourceToDestination(configuration.MergedFeeds, MergedFeeds,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => new MergedFeedModel(source),
@@ -155,7 +172,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             configuration.DataVersion = DataVersion;
 
-            BaseStationSettingsModel.CopyToSettings(configuration.BaseStationSettings);
+            BaseStationSettings.CopyToSettings(configuration.BaseStationSettings);
+            GoogleMapSettings.CopyToSettings(configuration.GoogleMapSettings);
+
             CollectionHelper.ApplySourceToDestination(MergedFeeds, configuration.MergedFeeds,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => source.CopyToSettings(new MergedFeed()),
@@ -277,6 +296,117 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.MinimiseToSystemTray =         MinimiseToSystemTray;
             settings.AutoSavePolarPlotsMinutes =    AutoSavePolarPlotsMinutes;
             settings.LookupAircraftDetailsOnline =  LookupAircraftDetailsOnline;
+
+            return settings;
+        }
+    }
+
+    public class GoogleMapSettingsModel
+    {
+        public string InitialSettings { get; set; }
+
+        public double InitialMapLatitude { get; set; }
+
+        public double InitialMapLongitude { get; set; }
+
+        public string InitialMapType { get; set; }
+
+        public int InitialMapZoom { get; set; }
+
+        public int InitialRefreshSeconds { get; set; }
+
+        public int MinimumRefreshSeconds { get; set; }
+
+        public int ShortTrailLengthSeconds { get; set; }
+
+        public int InitialDistanceUnit { get; set; }            // DistanceUnit
+
+        public int InitialHeightUnit { get; set; }              // HeightUnit
+
+        public int InitialSpeedUnit { get; set; }               // SpeedUnit
+
+        public bool PreferIataAirportCodes { get; set; }
+
+        public bool EnableBundling { get; set; }
+
+        public bool EnableMinifying { get; set; }
+
+        public bool EnableCompression { get; set; }
+
+        public int WebSiteReceiverId { get; set; }
+
+        [ValidationModelField(ValidationField.WebSiteReceiver)]
+        public ValidationModelField WebSiteReceiverIdValidation { get; set; }
+
+        public string DirectoryEntryKey { get; set; }
+
+        public int ClosestAircraftReceiverId { get; set; }
+
+        [ValidationModelField(ValidationField.ClosestAircraftReceiver)]
+        public ValidationModelField ClosestAircraftReceiverIdValidation { get; set; }
+
+        public int FlightSimulatorXReceiverId { get; set; }
+
+        [ValidationModelField(ValidationField.FlightSimulatorXReceiver)]
+        public ValidationModelField FlightSimulatorXReceiverIdValidation { get; set; }
+
+        public int ProxyType { get; set; }                      // ProxyType
+
+        public GoogleMapSettingsModel()
+        {
+        }
+
+        public GoogleMapSettingsModel(GoogleMapSettings settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(GoogleMapSettings settings)
+        {
+            InitialSettings =               settings.InitialSettings;
+            InitialMapLatitude =            settings.InitialMapLatitude;
+            InitialMapLongitude =           settings.InitialMapLongitude;
+            InitialMapType =                settings.InitialMapType;
+            InitialMapZoom =                settings.InitialMapZoom;
+            InitialRefreshSeconds =         settings.InitialRefreshSeconds;
+            MinimumRefreshSeconds =         settings.MinimumRefreshSeconds;
+            ShortTrailLengthSeconds =       settings.ShortTrailLengthSeconds;
+            InitialDistanceUnit =           (int)settings.InitialDistanceUnit;
+            InitialHeightUnit =             (int)settings.InitialHeightUnit;
+            InitialSpeedUnit =              (int)settings.InitialSpeedUnit;
+            PreferIataAirportCodes =        settings.PreferIataAirportCodes;
+            EnableBundling =                settings.EnableBundling;
+            EnableMinifying =               settings.EnableMinifying;
+            EnableCompression =             settings.EnableCompression;
+            WebSiteReceiverId =             settings.WebSiteReceiverId;
+            DirectoryEntryKey =             settings.DirectoryEntryKey;
+            ClosestAircraftReceiverId =     settings.ClosestAircraftReceiverId;
+            FlightSimulatorXReceiverId =    settings.FlightSimulatorXReceiverId;
+            ProxyType =                     (int)settings.ProxyType;
+        }
+
+        public GoogleMapSettings CopyToSettings(GoogleMapSettings settings)
+        {
+            settings.InitialSettings =              InitialSettings;
+            settings.InitialMapLatitude =           InitialMapLatitude;
+            settings.InitialMapLongitude =          InitialMapLongitude;
+            settings.InitialMapType =               InitialMapType;
+            settings.InitialMapZoom =               InitialMapZoom;
+            settings.InitialRefreshSeconds =        InitialRefreshSeconds;
+            settings.MinimumRefreshSeconds =        MinimumRefreshSeconds;
+            settings.ShortTrailLengthSeconds =      ShortTrailLengthSeconds;
+            settings.InitialDistanceUnit =          EnumModel.CastFromInt<DistanceUnit>(InitialDistanceUnit);
+            settings.InitialHeightUnit =            EnumModel.CastFromInt<HeightUnit>(InitialHeightUnit);
+            settings.InitialSpeedUnit =             EnumModel.CastFromInt<SpeedUnit>(InitialSpeedUnit);
+            settings.PreferIataAirportCodes =       PreferIataAirportCodes;
+            settings.EnableBundling =               EnableBundling;
+            settings.EnableMinifying =              EnableMinifying;
+            settings.EnableCompression =            EnableCompression;
+            settings.WebSiteReceiverId =            WebSiteReceiverId;
+            settings.DirectoryEntryKey =            DirectoryEntryKey;
+            settings.ClosestAircraftReceiverId =    ClosestAircraftReceiverId;
+            settings.FlightSimulatorXReceiverId =   FlightSimulatorXReceiverId;
+            settings.ProxyType =                    EnumModel.CastFromInt<ProxyType>(ProxyType);
 
             return settings;
         }

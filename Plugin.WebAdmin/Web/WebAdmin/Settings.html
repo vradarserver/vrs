@@ -26,7 +26,7 @@
                         <!-- DATA SOURCES -->
                         <!---->
 
-                        <div data-bsu="collapsible-panel" data-bsu-options="expanded" data-bind="with: $root.BaseStationSettingsModel">
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded" data-bind="with: $root.BaseStationSettings">
                             <div>
                                 ::OptionsDataSourcesSheetTitle::
                                 <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
@@ -101,7 +101,28 @@
                                 ::Receivers::
                                 <div class="pull-right" data-bsu="validate-icons" data-bsu-field="ReceiverWrapUpValidation"></div>
                             </div>
-                            <div>
+                            <div class="form-horizontal">
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="GoogleMapSettings.WebSiteReceiverIdValidation">
+                                    <label class="col-sm-4">::WebSiteReceiverId:::</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" data-bind="options: Feeds, optionsText: 'Name', optionsValue: 'UniqueId', value: GoogleMapSettings.WebSiteReceiverId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="GoogleMapSettings.ClosestAircraftReceiverIdValidation">
+                                    <label class="col-sm-4">::ClosestAircraftReceiverId:::</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" data-bind="options: Feeds, optionsText: 'Name', optionsValue: 'UniqueId', value: GoogleMapSettings.ClosestAircraftReceiverId"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="GoogleMapSettings.FlightSimulatorXReceiverIdValidation">
+                                    <label class="col-sm-4">::FlightSimulatorXReceiverId:::</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" data-bind="options: Feeds, optionsText: 'Name', optionsValue: 'UniqueId', value: GoogleMapSettings.FlightSimulatorXReceiverId"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-section"></div>
+
                                 <div class="row">
                                     <div class="col-sm-12 text-right">
                                         <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.createAndEditReceiver, pageHandler)">

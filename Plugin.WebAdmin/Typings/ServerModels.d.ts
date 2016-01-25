@@ -160,9 +160,13 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         ConnectionTypes: VirtualRadar.Interface.View.IEnumModel[];
         DataSources: VirtualRadar.Interface.View.IEnumModel[];
         DefaultAccesses: VirtualRadar.Interface.View.IEnumModel[];
+        DistanceUnits: VirtualRadar.Interface.View.IEnumModel[];
         Handshakes: VirtualRadar.Interface.View.IEnumModel[];
+        HeightUnits: VirtualRadar.Interface.View.IEnumModel[];
         Parities: VirtualRadar.Interface.View.IEnumModel[];
+        ProxyTypes: VirtualRadar.Interface.View.IEnumModel[];
         ReceiverUsages: VirtualRadar.Interface.View.IEnumModel[];
+        SpeedUnits: VirtualRadar.Interface.View.IEnumModel[];
         StopBits: VirtualRadar.Interface.View.IEnumModel[];
         ComPortNames: string[];
     }
@@ -171,7 +175,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierName: string;
         OnlineLookupSupplierCredits: string;
         OnlineLookupSupplierUrl: string;
-        BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
+        BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
+        GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel;
         MergedFeeds: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel[];
         Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
         ReceiverLocations: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel[];
@@ -191,6 +196,31 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         MinimiseToSystemTray: boolean;
         AutoSavePolarPlotsMinutes: number;
         LookupAircraftDetailsOnline: boolean;
+    }
+    interface IGoogleMapSettingsModel {
+        InitialSettings: string;
+        InitialMapLatitude: number;
+        InitialMapLongitude: number;
+        InitialMapType: string;
+        InitialMapZoom: number;
+        InitialRefreshSeconds: number;
+        MinimumRefreshSeconds: number;
+        ShortTrailLengthSeconds: number;
+        InitialDistanceUnit: number;
+        InitialHeightUnit: number;
+        InitialSpeedUnit: number;
+        PreferIataAirportCodes: boolean;
+        EnableBundling: boolean;
+        EnableMinifying: boolean;
+        EnableCompression: boolean;
+        WebSiteReceiverId: number;
+        WebSiteReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
+        DirectoryEntryKey: string;
+        ClosestAircraftReceiverId: number;
+        ClosestAircraftReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
+        FlightSimulatorXReceiverId: number;
+        FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
+        ProxyType: number;
     }
     interface IMergedFeedModel {
         Enabled: boolean;
@@ -469,9 +499,13 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         ConnectionTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         DataSources: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         DefaultAccesses: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        DistanceUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Handshakes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        HeightUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Parities: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        ProxyTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ReceiverUsages: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        SpeedUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ComPortNames: KnockoutViewModelArray<string>;
     }
@@ -480,7 +514,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierName: KnockoutObservable<string>;
         OnlineLookupSupplierCredits: KnockoutObservable<string>;
         OnlineLookupSupplierUrl: KnockoutObservable<string>;
-        BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
+        BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
+        GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel_KO;
         MergedFeeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO>;
         Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
         ReceiverLocations: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO>;
@@ -500,6 +535,31 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         MinimiseToSystemTray: KnockoutObservable<boolean>;
         AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
         LookupAircraftDetailsOnline: KnockoutObservable<boolean>;
+    }
+    interface IGoogleMapSettingsModel_KO {
+        InitialSettings: KnockoutObservable<string>;
+        InitialMapLatitude: KnockoutObservable<number>;
+        InitialMapLongitude: KnockoutObservable<number>;
+        InitialMapType: KnockoutObservable<string>;
+        InitialMapZoom: KnockoutObservable<number>;
+        InitialRefreshSeconds: KnockoutObservable<number>;
+        MinimumRefreshSeconds: KnockoutObservable<number>;
+        ShortTrailLengthSeconds: KnockoutObservable<number>;
+        InitialDistanceUnit: KnockoutObservable<number>;
+        InitialHeightUnit: KnockoutObservable<number>;
+        InitialSpeedUnit: KnockoutObservable<number>;
+        PreferIataAirportCodes: KnockoutObservable<boolean>;
+        EnableBundling: KnockoutObservable<boolean>;
+        EnableMinifying: KnockoutObservable<boolean>;
+        EnableCompression: KnockoutObservable<boolean>;
+        WebSiteReceiverId: KnockoutObservable<number>;
+        WebSiteReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        DirectoryEntryKey: KnockoutObservable<string>;
+        ClosestAircraftReceiverId: KnockoutObservable<number>;
+        ClosestAircraftReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        FlightSimulatorXReceiverId: KnockoutObservable<number>;
+        FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        ProxyType: KnockoutObservable<number>;
     }
     interface IMergedFeedModel_KO {
         Enabled: KnockoutObservable<boolean>;

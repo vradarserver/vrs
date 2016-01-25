@@ -13,6 +13,8 @@
         SelectedReceiver?:          KnockoutObservable<ReceiverModel>;
         selectedReceiverLocation?:  KnockoutObservable<ReceiverLocationModel>;
 
+        Feeds?:                 KnockoutObservableArray<FeedModel>;
+
         MergedFeedWrapUpValidation?:        IValidation_KC;
         ReceiverWrapUpValidation?:          IValidation_KC;
         ReceiverLocationWrapUpValidation?:  IValidation_KC;
@@ -22,9 +24,13 @@
         ConnectionTypes?:   VirtualRadar.Interface.View.IEnumModel[];
         DataSources?:       VirtualRadar.Interface.View.IEnumModel[];
         DefaultAccesses?:   VirtualRadar.Interface.View.IEnumModel[];
+        DistanceUnits?:     VirtualRadar.Interface.View.IEnumModel[];
         Handshakes?:        VirtualRadar.Interface.View.IEnumModel[];
+        HeightUnits?:       VirtualRadar.Interface.View.IEnumModel[];
         Parities?:          VirtualRadar.Interface.View.IEnumModel[];
+        ProxyTypes?:        VirtualRadar.Interface.View.IEnumModel[];
         ReceiverUsages?:    VirtualRadar.Interface.View.IEnumModel[];
+        SpeedUnits?:        VirtualRadar.Interface.View.IEnumModel[];
         StopBits?:          VirtualRadar.Interface.View.IEnumModel[];
     }
 
@@ -76,6 +82,12 @@
 
         SelectRow?:             (row: ReceiverLocationModel) => void;
         DeleteRow?:             (row: ReceiverLocationModel) => void;
+    }
+
+    interface FeedModel
+    {
+        UniqueId:               KnockoutObservable<number>;
+        Name:                   KnockoutObservable<string>;
     }
 
     export class PageHandler
@@ -225,6 +237,63 @@
             }
         }
 
+        /**
+         * Called when items are added to or removed from Receivers and MergedFeeds.
+         */
+        private feedlistChanged()
+        {
+            this.synchroniseFeeds();
+            this.removeDeletedReceiversFromMergedFeeds();
+        }
+
+        /**
+         * Keeps the Feeds array in sync with the content of the Receivers and MergedFeeds arrays.
+         */
+        private synchroniseFeeds()
+        {
+            var allFeeds: FeedModel[] = [];
+            $.each(this._Model.Receivers(),   (idx, feed) => allFeeds.push({ UniqueId: feed.UniqueId, Name: feed.Name }));
+            $.each(this._Model.MergedFeeds(), (idx, feed) => allFeeds.push({ UniqueId: feed.UniqueId, Name: feed.Name }));
+
+            var feeds = this._Model.Feeds();
+
+            // Delete items in Feeds that no longer appear in Receivers or MergedFeeds
+            for(let i = feeds.length - 1;i >= 0;--i) {
+                var feed = feeds[i];
+                if(!VRS.arrayHelper.findFirst(allFeeds, r => r.UniqueId() == feed.UniqueId())) {
+                    this._Model.Feeds.splice(i, 1);
+                }
+            }
+
+            // Add items to Feeds if they only appear in Receivers or MergedFeeds
+            var addList = VRS.arrayHelper.except(allFeeds, feeds, (lhs, rhs) => lhs.UniqueId() === rhs.UniqueId());
+            for(let i = 0;i < addList.length;++i) {
+                this._Model.Feeds.push(addList[i]);
+            }
+        }
+
+        /**
+         * Removes deleted receiver identifiers from merged feeds.
+         */
+        private removeDeletedReceiversFromMergedFeeds()
+        {
+            var receiverIds: number[] = [];
+            $.each(this._Model.Receivers(), (idx, receiver) => receiverIds.push(receiver.UniqueId()));
+            $.each(this._Model.MergedFeeds(), (idx, mergedFeed) => {
+                for(var i = mergedFeed.ReceiverIds().length;i >= 0;--i) {
+                    var receiverId = mergedFeed.ReceiverIds()[i];
+                    if(receiverIds.indexOf(receiverId) === -1) {
+                        mergedFeed.ReceiverIds.splice(i, 1);
+
+                        var flagsIndex = VRS.arrayHelper.indexOfMatch(mergedFeed.ReceiverFlags(), r => r.UniqueId() === receiverId);
+                        if(flagsIndex !== -1) {
+                            mergedFeed.ReceiverFlags.splice(flagsIndex, 1);
+                        }
+                    }
+                }
+            });
+        }
+
         private applyState(state: IResponse<ViewJson.IViewModel>)
         {
             if(state.Exception) {
@@ -253,9 +322,13 @@
                                 root.ConnectionTypes =  state.Response.ConnectionTypes;
                                 root.DataSources =      state.Response.DataSources;
                                 root.DefaultAccesses =  state.Response.DefaultAccesses;
+                                root.DistanceUnits =    state.Response.DistanceUnits;
                                 root.Handshakes =       state.Response.Handshakes;
+                                root.HeightUnits =      state.Response.HeightUnits;
                                 root.Parities =         state.Response.Parities;
+                                root.ProxyTypes =       state.Response.ProxyTypes;
                                 root.ReceiverUsages =   state.Response.ReceiverUsages;
+                                root.SpeedUnits =       state.Response.SpeedUnits;
                                 root.StopBits =         state.Response.StopBits;
 
                                 root.TestConnectionOutcome = <KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>> ko.observable(null);
@@ -264,7 +337,7 @@
                                 root.selectedReceiverLocation = <KnockoutObservable<ReceiverLocationModel>> ko.observable(null);
                             },
 
-                            '{root}.BaseStationSettingsModel': (model: BaseStationSettingsModel) =>
+                            '{root}.BaseStationSettings': (model: BaseStationSettingsModel) =>
                             {
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
                             },
@@ -434,6 +507,11 @@
                     this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, (r) => (<MergedFeedModel>r).WrapUpValidation);
                     this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, (r) => (<ReceiverModel>r).WrapUpValidation);
                     this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, (r) => (<ReceiverLocationModel>r).WrapUpValidation);
+
+                    this._Model.Feeds = ko.observableArray([]);
+                    this._Model.Receivers.subscribe(this.feedlistChanged, this);
+                    this._Model.MergedFeeds.subscribe(this.feedlistChanged, this);
+                    this.synchroniseFeeds();
 
                     ko.applyBindings(this._Model);
                 }
