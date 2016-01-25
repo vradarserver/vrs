@@ -80,6 +80,15 @@ var VRS;
                         }
                     });
                 };
+                PageHandler.prototype.createAndEditMergedFeed = function () {
+                    var _this = this;
+                    this._Model.SelectedMergedFeed(null);
+                    this.sendAndApplyConfiguration('CreateNewMergedFeed', function (state) {
+                        _this._Model.MergedFeeds.unshiftFromModel(state.Response.NewMergedFeed);
+                        _this._Model.SelectedMergedFeed(_this._Model.MergedFeeds()[0]);
+                        $('#edit-merged-feed').modal('show');
+                    });
+                };
                 PageHandler.prototype.createAndEditReceiver = function () {
                     var _this = this;
                     this._Model.SelectedReceiver(null);
@@ -134,6 +143,7 @@ var VRS;
                         else {
                             this._Model = ko.viewmodel.fromModel(state.Response.Configuration, {
                                 arrayChildId: {
+                                    '{root}.MergedFeeds': 'UniqueId',
                                     '{root}.ReceiverLocations': 'UniqueId',
                                     '{root}.Receivers': 'UniqueId'
                                 },
@@ -151,11 +161,44 @@ var VRS;
                                         root.ReceiverUsages = state.Response.ReceiverUsages;
                                         root.StopBits = state.Response.StopBits;
                                         root.TestConnectionOutcome = ko.observable(null);
+                                        root.SelectedMergedFeed = ko.observable(null);
                                         root.SelectedReceiver = ko.observable(null);
                                         root.selectedReceiverLocation = ko.observable(null);
                                     },
                                     '{root}.BaseStationSettingsModel': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                    },
+                                    '{root}.MergedFeeds[i]': function (model) {
+                                        model.FormattedReceiversCount = ko.computed(function () { return VRS.stringUtility.formatNumber(model.ReceiverIds().length, 'N0'); });
+                                        model.FormattedIcaoTimeout = ko.computed(function () { return VRS.stringUtility.formatNumber(model.IcaoTimeout() / 1000, 'N2'); });
+                                        model.FormattedIgnoreModeS = ko.computed(function () { return model.IgnoreAircraftWithNoPosition() ? VRS.$$.Yes : VRS.$$.No; });
+                                        model.FormattedHidden = ko.computed(function () { return model.ReceiverUsage() !== 0 ? VRS.$$.Yes : VRS.$$.No; });
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                        model.HideFromWebSite = ko.pureComputed({
+                                            read: function () {
+                                                return model.ReceiverUsage() != 0;
+                                            },
+                                            write: function (value) {
+                                                model.ReceiverUsage(value ? 1 : 0);
+                                            },
+                                            owner: _this
+                                        });
+                                        model.IcaoTimeoutSeconds = ko.pureComputed({
+                                            read: function () {
+                                                return model.IcaoTimeout() / 1000;
+                                            },
+                                            write: function (value) {
+                                                model.IcaoTimeout(value * 1000);
+                                            },
+                                            owner: _this
+                                        });
+                                        model.SelectRow = function (row) {
+                                            _this._Model.SelectedMergedFeed(row);
+                                        };
+                                        model.DeleteRow = function (row) {
+                                            var index = VRS.arrayHelper.indexOfMatch(_this._Model.MergedFeeds(), function (r) { return r.UniqueId == row.UniqueId; });
+                                            _this._Model.MergedFeeds.splice(index, 1);
+                                        };
                                     },
                                     '{root}.Receivers[i]': function (model) {
                                         model.FormattedConnectionType = ko.computed(function () { return _this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes); });
@@ -225,6 +268,7 @@ var VRS;
                                     }
                                 }
                             });
+                            this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, function (r) { return r.WrapUpValidation; });
                             ko.applyBindings(this._Model);

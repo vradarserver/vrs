@@ -9,9 +9,11 @@
         savedMessage?:          KnockoutObservable<string>;
         TestConnectionOutcome:  KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>;
 
+        SelectedMergedFeed?:        KnockoutObservable<MergedFeedModel>;
         SelectedReceiver?:          KnockoutObservable<ReceiverModel>;
         selectedReceiverLocation?:  KnockoutObservable<ReceiverLocationModel>;
 
+        MergedFeedWrapUpValidation?:        IValidation_KC;
         ReceiverWrapUpValidation?:          IValidation_KC;
         ReceiverLocationWrapUpValidation?:  IValidation_KC;
 
@@ -29,6 +31,20 @@
     interface BaseStationSettingsModel extends ViewJson.IBaseStationSettingsModel_KO
     {
         WrapUpValidation?:      IValidation_KC;
+    }
+
+    interface MergedFeedModel extends ViewJson.IMergedFeedModel_KO
+    {
+        FormattedReceiversCount?:   KnockoutComputed<string>;
+        FormattedIcaoTimeout?:      KnockoutComputed<string>;
+        FormattedIgnoreModeS?:      KnockoutComputed<string>;
+        FormattedHidden?:           KnockoutComputed<string>;
+        IcaoTimeoutSeconds?:        KnockoutComputed<number>;
+        HideFromWebSite?:           KnockoutComputed<boolean>;
+        WrapUpValidation?:          IValidation_KC;
+
+        SelectRow?:                 (row: MergedFeedModel) => void;
+        DeleteRow?:                 (row: MergedFeedModel) => void;
     }
 
     interface ReceiverModel extends ViewJson.IReceiverModel_KO
@@ -143,6 +159,18 @@
             });
         }
 
+        createAndEditMergedFeed()
+        {
+            this._Model.SelectedMergedFeed(null);
+
+            this.sendAndApplyConfiguration('CreateNewMergedFeed', (state: IResponse<ViewJson.IViewModel>) => {
+                this._Model.MergedFeeds.unshiftFromModel(state.Response.NewMergedFeed);
+                this._Model.SelectedMergedFeed(this._Model.MergedFeeds()[0]);
+
+                $('#edit-merged-feed').modal('show');
+            });
+        }
+
         createAndEditReceiver()
         {
             this._Model.SelectedReceiver(null);
@@ -207,6 +235,7 @@
                 } else {
                     this._Model = ko.viewmodel.fromModel(state.Response.Configuration, {
                         arrayChildId: {
+                            '{root}.MergedFeeds':       'UniqueId',
                             '{root}.ReceiverLocations': 'UniqueId',
                             '{root}.Receivers':         'UniqueId'
                         },
@@ -228,6 +257,7 @@
                                 root.StopBits =         state.Response.StopBits;
 
                                 root.TestConnectionOutcome = <KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>> ko.observable(null);
+                                root.SelectedMergedFeed = <KnockoutObservable<MergedFeedModel>> ko.observable(null);
                                 root.SelectedReceiver = <KnockoutObservable<ReceiverModel>> ko.observable(null);
                                 root.selectedReceiverLocation = <KnockoutObservable<ReceiverLocationModel>> ko.observable(null);
                             },
@@ -235,6 +265,41 @@
                             '{root}.BaseStationSettingsModel': (model: BaseStationSettingsModel) =>
                             {
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+                            },
+
+                            '{root}.MergedFeeds[i]': (model: MergedFeedModel) =>
+                            {
+                                model.FormattedReceiversCount = ko.computed(() => VRS.stringUtility.formatNumber(model.ReceiverIds().length, 'N0'));
+                                model.FormattedIcaoTimeout = ko.computed(() => VRS.stringUtility.formatNumber(model.IcaoTimeout() / 1000, 'N2'));
+                                model.FormattedIgnoreModeS = ko.computed(() => model.IgnoreAircraftWithNoPosition() ? VRS.$$.Yes : VRS.$$.No);
+                                model.FormattedHidden = ko.computed(() => model.ReceiverUsage() !== 0 ? VRS.$$.Yes : VRS.$$.No);
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+
+                                model.HideFromWebSite = ko.pureComputed({
+                                    read: () => {
+                                        return model.ReceiverUsage() != 0;
+                                    },
+                                    write: (value) => {
+                                        model.ReceiverUsage(value ? 1 : 0);
+                                    },
+                                    owner: this
+                                });
+                                model.IcaoTimeoutSeconds = ko.pureComputed({
+                                    read: () => {
+                                        return model.IcaoTimeout() / 1000;
+                                    },
+                                    write: (value) => {
+                                        model.IcaoTimeout(value * 1000);
+                                    },
+                                    owner: this
+                                });
+                                model.SelectRow = (row: MergedFeedModel) => {
+                                    this._Model.SelectedMergedFeed(row);
+                                };
+                                model.DeleteRow = (row: MergedFeedModel) => {
+                                    var index = VRS.arrayHelper.indexOfMatch(this._Model.MergedFeeds(), r => r.UniqueId == row.UniqueId);
+                                    this._Model.MergedFeeds.splice(index, 1);
+                                };
                             },
 
                             '{root}.Receivers[i]': (model: ReceiverModel) =>
@@ -325,6 +390,7 @@
                         }
                     });
 
+                    this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, (r) => (<MergedFeedModel>r).WrapUpValidation);
                     this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, (r) => (<ReceiverModel>r).WrapUpValidation);
                     this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, (r) => (<ReceiverLocationModel>r).WrapUpValidation);
 

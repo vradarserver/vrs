@@ -5,6 +5,7 @@
         <title>::WA_Title_Options:: - ::WA_Title_WebAdmin::</title>
         @head.html@
         <!-- [[ BUNDLE END ]] -->
+        <script src="script/Strings.js"></script>
         <script src="script/Strings.Server.js"></script>
         <script src="script/bootstrap-helper.js"></script>
         <script src="Settings.js"></script>
@@ -19,6 +20,112 @@
                         </h1>
 
                         <div id="failure-message" class="alert alert-danger">
+                        </div>
+
+                        <!---->
+                        <!-- MERGED FEED -->
+                        <!---->
+
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div>
+                                ::MergedFeeds::
+                                <div class="pull-right" data-bsu="validate-icons" data-bsu-field="MergedFeedWrapUpValidation"></div>
+                            </div>
+                            <div>
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.createAndEditMergedFeed, pageHandler)">
+                                            ::Add::
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row table-responsive">
+                                    <table class="table table-condensed table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="thin-column"></th>
+                                                <th class="thin-column">::Enabled::</th>
+                                                <th>::Name::</th>
+                                                <th>::Receivers::</th>
+                                                <th>::IcaoTimeoutTitle::</th>
+                                                <th>::IgnoreModeS::</th>
+                                                <th>::Hidden::</th>
+                                                <th class="thin-column"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: MergedFeeds">
+                                            <tr data-bind="css: { 'text-muted': !Enabled() }">
+                                                <td class="thin-column">
+                                                    <div data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" data-bind="checked: Enabled" />
+                                                </td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="text: FormattedReceiversCount"></td>
+                                                <td data-bind="text: FormattedIcaoTimeout"></td>
+                                                <td data-bind="text: FormattedIgnoreModeS"></td>
+                                                <td data-bind="text: FormattedHidden"></td>
+                                                <td class="text-nowrap">
+                                                    <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-merged-feed">
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="edit-merged-feed" data-bsu="modal" data-bsu-options="header-close" data-bind="with: $root.SelectedMergedFeed()">
+                            <div>
+                                <span data-bind="text: Name"></span>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: Enabled" />
+                                            ::Enabled::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="NameValidation">
+                                    <label class="col-sm-4">::Name:::</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" data-bind="textInput: Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="IcaoTimeoutValidation">
+                                    <label class="col-sm-4">::IcaoTimeout:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: IcaoTimeoutSeconds" />
+                                            <span class="input-group-addon">::Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: IgnoreAircraftWithNoPosition" />
+                                            ::IgnoreAircraftWithNoPosition::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: HideFromWebSite" />
+                                            ::HideFromWebSite::
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!---->

@@ -143,6 +143,26 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         }
 
         [WebAdminMethod]
+        public ViewModel CreateNewMergedFeed(ConfigurationModel configurationModel)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, () => {
+                var newRecord = _Presenter.CreateMergedFeed();
+                _ViewModel.NewMergedFeed = new MergedFeedModel(newRecord);
+                ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewMergedFeed);
+            });
+        }
+
+        [WebAdminMethod]
+        public ViewModel CreateNewReceiver(ConfigurationModel configurationModel)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, () => {
+                var newRecord = _Presenter.CreateReceiver();
+                _ViewModel.NewReceiver = new ReceiverModel(newRecord);
+                ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewReceiver);
+            });
+        }
+
+        [WebAdminMethod]
         public TestConnectionOutcomeModel TestConnection(ConfigurationModel configurationModel, int receiverId)
         {
             _TestConnectionOutcome = null;
@@ -176,16 +196,6 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         }
 
         [WebAdminMethod]
-        public ViewModel CreateNewReceiver(ConfigurationModel configurationModel)
-        {
-            return ApplyConfigurationAroundAction(configurationModel, () => {
-                var newRecord = _Presenter.CreateReceiver();
-                ValidationModelHelper.CreateEmptyViewModelValidationFields(newRecord);
-                _ViewModel.NewReceiver = new ReceiverModel(newRecord);
-            });
-        }
-
-        [WebAdminMethod]
         public ViewModel RaiseReceiverLocationsFromBaseStationDatabaseClicked(ConfigurationModel configurationModel)
         {
             return ApplyConfigurationAroundAction(configurationModel, () => OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs.Empty));
@@ -196,13 +206,14 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         {
             return ApplyConfigurationAroundAction(configurationModel, () => {
                 var newRecord = _Presenter.CreateReceiverLocation();
-                ValidationModelHelper.CreateEmptyViewModelValidationFields(newRecord);
                 _ViewModel.NewReceiverLocation = new ReceiverLocationModel(newRecord);
+                ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewReceiverLocation);
             });
         }
 
         private ViewModel ApplyConfigurationAroundAction(ConfigurationModel configurationModel, Action action)
         {
+            _ViewModel.NewMergedFeed = null;
             _ViewModel.NewReceiver = null;
             _ViewModel.NewReceiverLocation = null;
 
