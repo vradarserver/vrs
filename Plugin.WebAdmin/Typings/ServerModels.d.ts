@@ -154,6 +154,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel;
         Outcome: string;
+        NewMergedFeed: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel;
         NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel;
         ConnectionTypes: VirtualRadar.Interface.View.IEnumModel[];
@@ -171,6 +172,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierCredits: string;
         OnlineLookupSupplierUrl: string;
         BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
+        MergedFeeds: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel[];
         Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
         ReceiverLocations: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel[];
     }
@@ -189,6 +191,23 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         MinimiseToSystemTray: boolean;
         AutoSavePolarPlotsMinutes: number;
         LookupAircraftDetailsOnline: boolean;
+    }
+    interface IMergedFeedModel {
+        Enabled: boolean;
+        UniqueId: number;
+        Name: string;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField;
+        ReceiverIds: number[];
+        ReceiverIdsValidation: VirtualRadar.Interface.View.IValidationModelField;
+        ReceiverFlags: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedReceiverModel[];
+        IcaoTimeout: number;
+        IcaoTimeoutValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IgnoreAircraftWithNoPosition: boolean;
+        ReceiverUsage: VirtualRadar.Interface.Settings.ReceiverUsage;
+    }
+    interface IMergedFeedReceiverModel {
+        UniqueId: number;
+        IsMlatFeed: boolean;
     }
     interface IReceiverModel {
         Enabled: boolean;
@@ -444,6 +463,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel_KO {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO;
         Outcome: KnockoutObservable<string>;
+        NewMergedFeed: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO;
         NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO;
         ConnectionTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
@@ -461,6 +481,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierCredits: KnockoutObservable<string>;
         OnlineLookupSupplierUrl: KnockoutObservable<string>;
         BaseStationSettingsModel: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
+        MergedFeeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO>;
         Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
         ReceiverLocations: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO>;
     }
@@ -479,6 +500,23 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         MinimiseToSystemTray: KnockoutObservable<boolean>;
         AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
         LookupAircraftDetailsOnline: KnockoutObservable<boolean>;
+    }
+    interface IMergedFeedModel_KO {
+        Enabled: KnockoutObservable<boolean>;
+        UniqueId: KnockoutObservable<number>;
+        Name: KnockoutObservable<string>;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        ReceiverIds: KnockoutViewModelArray<number>;
+        ReceiverIdsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        ReceiverFlags: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedReceiverModel_KO>;
+        IcaoTimeout: KnockoutObservable<number>;
+        IcaoTimeoutValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IgnoreAircraftWithNoPosition: KnockoutObservable<boolean>;
+        ReceiverUsage: KnockoutObservable<VirtualRadar.Interface.Settings.ReceiverUsage>;
+    }
+    interface IMergedFeedReceiverModel_KO {
+        UniqueId: KnockoutObservable<number>;
+        IsMlatFeed: KnockoutObservable<boolean>;
     }
     interface IReceiverModel_KO {
         Enabled: KnockoutObservable<boolean>;

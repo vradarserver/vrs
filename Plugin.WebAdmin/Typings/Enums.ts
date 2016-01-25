@@ -43,4 +43,11 @@ module VirtualRadar.Interface.Network {
         Waiting = 5
     }
 }
+module VirtualRadar.Interface.Settings {
+    export const enum ReceiverUsage {
+        Normal = 0,
+        HideFromWebSite = 1,
+        MergeOnly = 2
+    }
+}
 

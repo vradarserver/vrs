@@ -26,6 +26,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public string Outcome { get; set; }
 
+        public MergedFeedModel NewMergedFeed { get; set; }
+
         public ReceiverModel NewReceiver { get; set; }
 
         public ReceiverLocationModel NewReceiverLocation { get; set; }
@@ -66,6 +68,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             object result = null;
 
             if(validationResult.Record != null) {
+                var mergedFeed = validationResult.Record as MergedFeed;
+                if(mergedFeed != null) {
+                    result = Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == mergedFeed.UniqueId);
+                }
+
                 var receiver = validationResult.Record as Receiver;
                 if(receiver != null) {
                     result = Configuration.Receivers.FirstOrDefault(r => r.UniqueId == receiver.UniqueId);
@@ -100,6 +107,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public BaseStationSettingsModel BaseStationSettingsModel { get; private set; }
 
+        public List<MergedFeedModel> MergedFeeds { get; private set; }
+
         public List<ReceiverModel> Receivers { get; private set; }
 
         public List<ReceiverLocationModel> ReceiverLocations { get; private set; }
@@ -107,6 +116,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         public ConfigurationModel()
         {
             BaseStationSettingsModel = new BaseStationSettingsModel();
+            MergedFeeds = new List<MergedFeedModel>();
             Receivers = new List<ReceiverModel>();
             ReceiverLocations = new List<ReceiverLocationModel>();
         }
@@ -121,6 +131,12 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             DataVersion = configuration.DataVersion;
 
             BaseStationSettingsModel.RefreshFromSettings(configuration.BaseStationSettings);
+            CollectionHelper.ApplySourceToDestination(configuration.MergedFeeds, MergedFeeds,
+                (source, dest) => source.UniqueId == dest.UniqueId,
+                (source)       => new MergedFeedModel(source),
+                (source, dest) => dest.RefreshFromSettings(source)
+            );
+            MergedFeeds.Sort((lhs, rhs) => String.Compare(lhs.Name, rhs.Name));
             CollectionHelper.ApplySourceToDestination(configuration.Receivers, Receivers,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => new ReceiverModel(source),
@@ -140,6 +156,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             configuration.DataVersion = DataVersion;
 
             BaseStationSettingsModel.CopyToSettings(configuration.BaseStationSettings);
+            CollectionHelper.ApplySourceToDestination(MergedFeeds, configuration.MergedFeeds,
+                (source, dest) => source.UniqueId == dest.UniqueId,
+                (source)       => source.CopyToSettings(new MergedFeed()),
+                (source, dest) => source.CopyToSettings(dest)
+            );
             CollectionHelper.ApplySourceToDestination(Receivers, configuration.Receivers,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => source.CopyToSettings(new Receiver()),
@@ -256,6 +277,107 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.MinimiseToSystemTray =         MinimiseToSystemTray;
             settings.AutoSavePolarPlotsMinutes =    AutoSavePolarPlotsMinutes;
             settings.LookupAircraftDetailsOnline =  LookupAircraftDetailsOnline;
+
+            return settings;
+        }
+    }
+
+    public class MergedFeedModel
+    {
+        public bool Enabled { get; set; }
+
+        public int UniqueId { get; set; }
+
+        public string Name { get; set; }
+
+        [ValidationModelField(ValidationField.Name)]
+        public ValidationModelField NameValidation { get; set; }
+
+        public List<int> ReceiverIds { get; private set; }
+
+        [ValidationModelField(ValidationField.ReceiverIds)]
+        public ValidationModelField ReceiverIdsValidation { get; set; }
+
+        public List<MergedFeedReceiverModel> ReceiverFlags { get; private set; }
+
+        public int IcaoTimeout { get; set; }
+
+        [ValidationModelField(ValidationField.IcaoTimeout)]
+        public ValidationModelField IcaoTimeoutValidation { get; set; }
+
+        public bool IgnoreAircraftWithNoPosition { get; set; }
+
+        public ReceiverUsage ReceiverUsage { get; set; }
+
+        public MergedFeedModel()
+        {
+            ReceiverIds = new List<int>();
+            ReceiverFlags = new List<MergedFeedReceiverModel>();
+        }
+
+        public MergedFeedModel(MergedFeed settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(MergedFeed settings)
+        {
+            Enabled =                       settings.Enabled;
+            UniqueId =                      settings.UniqueId;
+            Name =                          settings.Name;
+            IcaoTimeout =                   settings.IcaoTimeout;
+            IgnoreAircraftWithNoPosition =  settings.IgnoreAircraftWithNoPosition;
+            ReceiverUsage =                 settings.ReceiverUsage;
+
+            ReceiverFlags.Clear();
+            ReceiverIds.Clear();
+            ReceiverIds.AddRange(settings.ReceiverIds);
+            ReceiverFlags.AddRange(settings.ReceiverFlags.Select(r => new MergedFeedReceiverModel(r)));
+        }
+
+        public MergedFeed CopyToSettings(MergedFeed settings)
+        {
+            settings.Enabled =                      Enabled;
+            settings.UniqueId =                     UniqueId;
+            settings.Name =                         Name;
+            settings.IcaoTimeout =                  IcaoTimeout;
+            settings.IgnoreAircraftWithNoPosition = IgnoreAircraftWithNoPosition;
+            settings.ReceiverUsage =                ReceiverUsage;
+
+            settings.ReceiverFlags.Clear();
+            settings.ReceiverIds.Clear();
+            settings.ReceiverIds.AddRange(ReceiverIds);
+            settings.ReceiverFlags.AddRange(ReceiverFlags.Select(r => r.CopyToSettings(new MergedFeedReceiver())));
+
+            return settings;
+        }
+    }
+
+    public class MergedFeedReceiverModel
+    {
+        public int UniqueId { get; set; }
+
+        public bool IsMlatFeed { get; set; }
+
+        public MergedFeedReceiverModel()
+        {
+        }
+
+        public MergedFeedReceiverModel(MergedFeedReceiver settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(MergedFeedReceiver settings)
+        {
+            UniqueId =      settings.UniqueId;
+            IsMlatFeed =    settings.IsMlatFeed;
+        }
+
+        public MergedFeedReceiver CopyToSettings(MergedFeedReceiver settings)
+        {
+            settings.UniqueId =     UniqueId;
+            settings.IsMlatFeed =   IsMlatFeed;
 
             return settings;
         }
