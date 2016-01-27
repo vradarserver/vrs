@@ -155,6 +155,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel;
         Outcome: string;
         NewMergedFeed: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel;
+        NewRebroadcastServer: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel;
         NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel;
         ConnectionTypes: VirtualRadar.Interface.View.IEnumModel[];
@@ -165,6 +166,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         HeightUnits: VirtualRadar.Interface.View.IEnumModel[];
         Parities: VirtualRadar.Interface.View.IEnumModel[];
         ProxyTypes: VirtualRadar.Interface.View.IEnumModel[];
+        RebroadcastFormats: VirtualRadar.Interface.View.IEnumModel[];
         ReceiverUsages: VirtualRadar.Interface.View.IEnumModel[];
         SpeedUnits: VirtualRadar.Interface.View.IEnumModel[];
         StopBits: VirtualRadar.Interface.View.IEnumModel[];
@@ -178,6 +180,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel;
         MergedFeeds: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel[];
+        RebroadcastSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel[];
         Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
         ReceiverLocations: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel[];
     }
@@ -239,6 +242,36 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         UniqueId: number;
         IsMlatFeed: boolean;
     }
+    interface IRebroadcastServerModel {
+        UniqueId: number;
+        Name: string;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Enabled: boolean;
+        ReceiverId: number;
+        ReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Format: number;
+        FormatValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IsTransmitter: boolean;
+        IsTransmitterValidation: VirtualRadar.Interface.View.IValidationModelField;
+        TransmitAddress: string;
+        TransmitAddressValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Port: number;
+        PortValidation: VirtualRadar.Interface.View.IValidationModelField;
+        UseKeepAlive: boolean;
+        UseKeepAliveValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IdleTimeoutMilliseconds: number;
+        IdleTimeoutMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
+        StaleSeconds: number;
+        StaleSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel;
+        Passphrase: string;
+        SendIntervalMilliseconds: number;
+        SendIntervalMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
+    }
+    interface IAccessModel {
+        DefaultAccess: number;
+        Addresses: string[];
+    }
     interface IReceiverModel {
         Enabled: boolean;
         EnabledValidation: VirtualRadar.Interface.View.IValidationModelField;
@@ -274,10 +307,6 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         ReceiverLocationId: number;
         ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField;
         ReceiverUsage: number;
-    }
-    interface IAccessModel {
-        DefaultAccess: number;
-        Addresses: string[];
     }
     interface IReceiverLocationModel {
         UniqueId: number;
@@ -494,6 +523,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO;
         Outcome: KnockoutObservable<string>;
         NewMergedFeed: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO;
+        NewRebroadcastServer: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel_KO;
         NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO;
         ConnectionTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
@@ -504,6 +534,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         HeightUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Parities: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ProxyTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        RebroadcastFormats: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ReceiverUsages: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         SpeedUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
@@ -517,6 +548,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel_KO;
         MergedFeeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO>;
+        RebroadcastSettings: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel_KO>;
         Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
         ReceiverLocations: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO>;
     }
@@ -578,6 +610,36 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         UniqueId: KnockoutObservable<number>;
         IsMlatFeed: KnockoutObservable<boolean>;
     }
+    interface IRebroadcastServerModel_KO {
+        UniqueId: KnockoutObservable<number>;
+        Name: KnockoutObservable<string>;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Enabled: KnockoutObservable<boolean>;
+        ReceiverId: KnockoutObservable<number>;
+        ReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Format: KnockoutObservable<number>;
+        FormatValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IsTransmitter: KnockoutObservable<boolean>;
+        IsTransmitterValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        TransmitAddress: KnockoutObservable<string>;
+        TransmitAddressValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Port: KnockoutObservable<number>;
+        PortValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        UseKeepAlive: KnockoutObservable<boolean>;
+        UseKeepAliveValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IdleTimeoutMilliseconds: KnockoutObservable<number>;
+        IdleTimeoutMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        StaleSeconds: KnockoutObservable<number>;
+        StaleSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel_KO;
+        Passphrase: KnockoutObservable<string>;
+        SendIntervalMilliseconds: KnockoutObservable<number>;
+        SendIntervalMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+    }
+    interface IAccessModel_KO {
+        DefaultAccess: KnockoutObservable<number>;
+        Addresses: KnockoutViewModelArray<string>;
+    }
     interface IReceiverModel_KO {
         Enabled: KnockoutObservable<boolean>;
         EnabledValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
@@ -613,10 +675,6 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         ReceiverLocationId: KnockoutObservable<number>;
         ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ReceiverUsage: KnockoutObservable<number>;
-    }
-    interface IAccessModel_KO {
-        DefaultAccess: KnockoutObservable<number>;
-        Addresses: KnockoutViewModelArray<string>;
     }
     interface IReceiverLocationModel_KO {
         UniqueId: KnockoutObservable<number>;
