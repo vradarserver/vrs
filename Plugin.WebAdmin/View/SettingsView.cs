@@ -153,6 +153,16 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         }
 
         [WebAdminMethod]
+        public ViewModel CreateNewRebroadcastServer(ConfigurationModel configurationModel)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, () => {
+                var newRecord = _Presenter.CreateRebroadcastServer();
+                _ViewModel.NewRebroadcastServer = new RebroadcastServerModel(newRecord);
+                ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewRebroadcastServer);
+            });
+        }
+
+        [WebAdminMethod]
         public ViewModel CreateNewReceiver(ConfigurationModel configurationModel)
         {
             return ApplyConfigurationAroundAction(configurationModel, () => {
@@ -214,6 +224,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         private ViewModel ApplyConfigurationAroundAction(ConfigurationModel configurationModel, Action action)
         {
             _ViewModel.NewMergedFeed = null;
+            _ViewModel.NewRebroadcastServer = null;
             _ViewModel.NewReceiver = null;
             _ViewModel.NewReceiverLocation = null;
 

@@ -28,6 +28,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public MergedFeedModel NewMergedFeed { get; set; }
 
+        public RebroadcastServerModel NewRebroadcastServer { get; set; }
+
         public ReceiverModel NewReceiver { get; set; }
 
         public ReceiverLocationModel NewReceiverLocation { get; set; }
@@ -48,6 +50,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public EnumModel[] ProxyTypes { get; private set; }
 
+        public EnumModel[] RebroadcastFormats { get; private set; }
+
         public EnumModel[] ReceiverUsages { get; private set; }
 
         public EnumModel[] SpeedUnits { get; private set; }
@@ -60,17 +64,18 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             Configuration = new ConfigurationModel();
 
-            ConnectionTypes = EnumModel.CreateFromEnum<ConnectionType>(r => Describe.ConnectionType(r));
-            DataSources = EnumModel.CreateFromEnum<DataSource>(r => Describe.DataSource(r));
-            DefaultAccesses = EnumModel.CreateFromEnum<DefaultAccess>(r => Describe.DefaultAccess(r));
-            DistanceUnits = EnumModel.CreateFromEnum<DistanceUnit>(r => Describe.DistanceUnit(r));
-            Handshakes = EnumModel.CreateFromEnum<Handshake>(r => Describe.Handshake(r));
-            HeightUnits = EnumModel.CreateFromEnum<HeightUnit>(r => Describe.HeightUnit(r));
-            Parities = EnumModel.CreateFromEnum<Parity>(r => Describe.Parity(r));
-            ProxyTypes = EnumModel.CreateFromEnum<ProxyType>(r => Describe.ProxyType(r));
-            ReceiverUsages = EnumModel.CreateFromEnum<ReceiverUsage>(r => Describe.ReceiverUsage(r));
-            SpeedUnits = EnumModel.CreateFromEnum<SpeedUnit>(r => Describe.SpeedUnit(r));
-            StopBits = EnumModel.CreateFromEnum<StopBits>(r => Describe.StopBits(r));
+            ConnectionTypes =       EnumModel.CreateFromEnum<ConnectionType>(r => Describe.ConnectionType(r));
+            DataSources =           EnumModel.CreateFromEnum<DataSource>(r => Describe.DataSource(r));
+            DefaultAccesses =       EnumModel.CreateFromEnum<DefaultAccess>(r => Describe.DefaultAccess(r));
+            DistanceUnits =         EnumModel.CreateFromEnum<DistanceUnit>(r => Describe.DistanceUnit(r));
+            Handshakes =            EnumModel.CreateFromEnum<Handshake>(r => Describe.Handshake(r));
+            HeightUnits =           EnumModel.CreateFromEnum<HeightUnit>(r => Describe.HeightUnit(r));
+            Parities =              EnumModel.CreateFromEnum<Parity>(r => Describe.Parity(r));
+            ProxyTypes =            EnumModel.CreateFromEnum<ProxyType>(r => Describe.ProxyType(r));
+            RebroadcastFormats =    EnumModel.CreateFromEnum<RebroadcastFormat>(r => Describe.RebroadcastFormat(r));
+            ReceiverUsages =        EnumModel.CreateFromEnum<ReceiverUsage>(r => Describe.ReceiverUsage(r));
+            SpeedUnits =            EnumModel.CreateFromEnum<SpeedUnit>(r => Describe.SpeedUnit(r));
+            StopBits =              EnumModel.CreateFromEnum<StopBits>(r => Describe.StopBits(r));
 
             ComPortNames = new string[]{};
         }
@@ -83,6 +88,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
                 var mergedFeed = validationResult.Record as MergedFeed;
                 if(mergedFeed != null) {
                     result = Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == mergedFeed.UniqueId);
+                }
+
+                var rebroadcastSettings = validationResult.Record as RebroadcastSettings;
+                if(rebroadcastSettings != null) {
+                    result = Configuration.RebroadcastSettings.FirstOrDefault(r => r.UniqueId == rebroadcastSettings.UniqueId);
                 }
 
                 var receiver = validationResult.Record as Receiver;
@@ -123,6 +133,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public List<MergedFeedModel> MergedFeeds { get; private set; }
 
+        public List<RebroadcastServerModel> RebroadcastSettings { get; private set; }
+
         public List<ReceiverModel> Receivers { get; private set; }
 
         public List<ReceiverLocationModel> ReceiverLocations { get; private set; }
@@ -132,6 +144,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             BaseStationSettings = new BaseStationSettingsModel();
             GoogleMapSettings = new GoogleMapSettingsModel();
             MergedFeeds = new List<MergedFeedModel>();
+            RebroadcastSettings = new List<RebroadcastServerModel>();
             Receivers = new List<ReceiverModel>();
             ReceiverLocations = new List<ReceiverLocationModel>();
         }
@@ -154,6 +167,12 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
                 (source, dest) => dest.RefreshFromSettings(source)
             );
             MergedFeeds.Sort((lhs, rhs) => String.Compare(lhs.Name, rhs.Name));
+            CollectionHelper.ApplySourceToDestination(configuration.RebroadcastSettings, RebroadcastSettings,
+                (source, dest) => source.UniqueId == dest.UniqueId,
+                (source)       => new RebroadcastServerModel(source),
+                (source, dest) => dest.RefreshFromSettings(source)
+            );
+            RebroadcastSettings.Sort((lhs, rhs) => String.Compare(lhs.Name, rhs.Name));
             CollectionHelper.ApplySourceToDestination(configuration.Receivers, Receivers,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => new ReceiverModel(source),
@@ -178,6 +197,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             CollectionHelper.ApplySourceToDestination(MergedFeeds, configuration.MergedFeeds,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => source.CopyToSettings(new MergedFeed()),
+                (source, dest) => source.CopyToSettings(dest)
+            );
+            CollectionHelper.ApplySourceToDestination(RebroadcastSettings, configuration.RebroadcastSettings,
+                (source, dest) => source.UniqueId == dest.UniqueId,
+                (source)       => source.CopyToSettings(new RebroadcastSettings()),
                 (source, dest) => source.CopyToSettings(dest)
             );
             CollectionHelper.ApplySourceToDestination(Receivers, configuration.Receivers,
@@ -508,6 +532,117 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             settings.UniqueId =     UniqueId;
             settings.IsMlatFeed =   IsMlatFeed;
+
+            return settings;
+        }
+    }
+
+    public class RebroadcastServerModel
+    {
+        public int UniqueId { get; set; }
+
+        public string Name { get; set; }
+
+        [ValidationModelField(ValidationField.Name)]
+        public ValidationModelField NameValidation { get; set; }
+
+        public bool Enabled { get; set; }
+
+        public int ReceiverId { get; set; }
+
+        [ValidationModelField(ValidationField.RebroadcastReceiver)]
+        public ValidationModelField ReceiverIdValidation { get; set; }
+
+        public int Format { get; set; }                     // RebroadcastFormat
+
+        [ValidationModelField(ValidationField.Format)]
+        public ValidationModelField FormatValidation { get; set; }
+
+        public bool IsTransmitter { get; set; }
+
+        [ValidationModelField(ValidationField.IsTransmitter)]
+        public ValidationModelField IsTransmitterValidation { get; set; }
+
+        public string TransmitAddress { get; set; }
+
+        [ValidationModelField(ValidationField.BaseStationAddress)]
+        public ValidationModelField TransmitAddressValidation { get; set; }
+
+        public int Port { get; set; }
+
+        [ValidationModelField(ValidationField.RebroadcastServerPort)]
+        public ValidationModelField PortValidation { get; set; }
+
+        public bool UseKeepAlive { get; set; }
+
+        [ValidationModelField(ValidationField.UseKeepAlive)]
+        public ValidationModelField UseKeepAliveValidation { get; set; }
+
+        public int IdleTimeoutMilliseconds { get; set; }
+
+        [ValidationModelField(ValidationField.IdleTimeout)]
+        public ValidationModelField IdleTimeoutMillisecondsValidation { get; set; }
+
+        public int StaleSeconds { get; set; }
+
+        [ValidationModelField(ValidationField.StaleSeconds)]
+        public ValidationModelField StaleSecondsValidation { get; set; }
+
+        public AccessModel Access { get; set; }
+
+        public string Passphrase { get; set; }
+
+        public int SendIntervalMilliseconds { get; set; }
+
+        [ValidationModelField(ValidationField.SendInterval)]
+        public ValidationModelField SendIntervalMillisecondsValidation { get; set; }
+
+        public RebroadcastServerModel()
+        {
+            Access = new AccessModel();
+        }
+
+        public RebroadcastServerModel(RebroadcastSettings settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(RebroadcastSettings settings)
+        {
+            UniqueId =                  settings.UniqueId;
+            Name =                      settings.Name;
+            Enabled =                   settings.Enabled;
+            ReceiverId =                settings.ReceiverId;
+            Format =                    (int)settings.Format;
+            IsTransmitter =             settings.IsTransmitter;
+            TransmitAddress =           settings.TransmitAddress;
+            Port =                      settings.Port;
+            UseKeepAlive =              settings.UseKeepAlive;
+            IdleTimeoutMilliseconds =   settings.IdleTimeoutMilliseconds;
+            StaleSeconds =              settings.StaleSeconds;
+            Passphrase =                settings.Passphrase;
+            SendIntervalMilliseconds =  settings.SendIntervalMilliseconds;
+
+            Access.RefreshFromSettings(settings.Access);
+        }
+
+        public RebroadcastSettings CopyToSettings(RebroadcastSettings settings)
+        {
+            settings.UniqueId =                  UniqueId;
+            settings.Name =                      Name;
+            settings.Enabled =                   Enabled;
+            settings.ReceiverId =                ReceiverId;
+            settings.Format =                    EnumModel.CastFromInt<RebroadcastFormat>(Format);
+            settings.IsTransmitter =             IsTransmitter;
+            settings.TransmitAddress =           TransmitAddress;
+            settings.Port =                      Port;
+            settings.UseKeepAlive =              UseKeepAlive;
+            settings.IdleTimeoutMilliseconds =   IdleTimeoutMilliseconds;
+            settings.StaleSeconds =              StaleSeconds;
+            settings.Passphrase =                Passphrase;
+            settings.SendIntervalMilliseconds =  SendIntervalMilliseconds;
+
+            Access.CopyToSettings(settings.Access);
 
             return settings;
         }

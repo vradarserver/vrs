@@ -23,6 +23,66 @@
                         </div>
 
                         <!---->
+                        <!-- REBROADCAST SERVERS -->
+                        <!---->
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div>
+                                ::RebroadcastServersTitle::
+                                <div class="pull-right" data-bsu="validate-icons" data-bsu-field="RebroadcastServerWrapUpValidation"></div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.createAndEditRebroadcastServer, pageHandler)">
+                                            ::Add::
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row table-responsive">
+                                    <table class="table table-condensed table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="thin-column"></th>
+                                                <th>::Enabled::</th>
+                                                <th>::Name::</th>
+                                                <th>::Receiver::</th>
+                                                <th>::Format::</th>
+                                                <th>::UNC::</th>
+                                                <th>::Access::</th>
+                                                <th class="thin-column"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: RebroadcastSettings">
+                                            <tr data-bind="css: { 'text-muted': !Enabled() }">
+                                                <td class="thin-column">
+                                                    <div data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" data-bind="checked: Enabled" />
+                                                </td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="with: Feed">
+                                                    <span data-bind="text: Name"></span>
+                                                </td>
+                                                <td data-bind="text: FormatDescription"></td>
+                                                <td data-bind="text: FormattedAddress"></td>
+                                                <td data-bind="text: FormattedAccess"></td>
+                                                <td class="text-nowrap">
+                                                    <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-rebroadcast-server">
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!---->
                         <!-- DATA SOURCES -->
                         <!---->
 
@@ -418,7 +478,7 @@
                             </div>
                         </div>
 
-                        <div id="edit-receiver-location" data-bsu="modal" data-bsu-options="header-close" data-bind="with: $root.selectedReceiverLocation()">
+                        <div id="edit-receiver-location" data-bsu="modal" data-bsu-options="header-close" data-bind="with: $root.SelectedReceiverLocation()">
                             <div>
                                 <span data-bind="text: Name"></span>
                             </div>
@@ -588,9 +648,9 @@
                                     ::Save::
                                 </button>
                             </div>
-                            <div class="col-sm-10" data-bind="visible: saveAttempted">
+                            <div class="col-sm-10" data-bind="visible: SaveAttempted">
                                 <div class="alert alert-success">
-                                    <span data-bind="text: savedMessage"></span>
+                                    <span data-bind="text: SavedMessage"></span>
                                 </div>
                             </div>
                         </div>

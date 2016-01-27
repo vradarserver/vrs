@@ -61,20 +61,20 @@ var VRS;
                 };
                 PageHandler.prototype.save = function () {
                     var _this = this;
-                    this._Model.saveAttempted(false);
+                    this._Model.SaveAttempted(false);
                     this.sendAndApplyConfiguration('RaiseSaveClicked', function (state) {
                         if (state.Response && state.Response.Outcome) {
-                            _this._Model.saveAttempted(true);
-                            _this._Model.saveSuccessful(state.Response.Outcome === "Saved");
+                            _this._Model.SaveAttempted(true);
+                            _this._Model.SaveSuccessful(state.Response.Outcome === "Saved");
                             switch (state.Response.Outcome || "") {
                                 case "Saved":
-                                    _this._Model.savedMessage(VRS.WebAdmin.$$.WA_Saved);
+                                    _this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Saved);
                                     break;
                                 case "FailedValidation":
-                                    _this._Model.savedMessage(VRS.WebAdmin.$$.WA_Validation_Failed);
+                                    _this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Validation_Failed);
                                     break;
                                 case "ConflictingUpdate":
-                                    _this._Model.savedMessage(VRS.WebAdmin.$$.WA_Conflicting_Update);
+                                    _this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Conflicting_Update);
                                     break;
                             }
                         }
@@ -87,6 +87,15 @@ var VRS;
                         _this._Model.MergedFeeds.unshiftFromModel(state.Response.NewMergedFeed);
                         _this._Model.SelectedMergedFeed(_this._Model.MergedFeeds()[0]);
                         $('#edit-merged-feed').modal('show');
+                    });
+                };
+                PageHandler.prototype.createAndEditRebroadcastServer = function () {
+                    var _this = this;
+                    this._Model.SelectedRebroadcastServer(null);
+                    this.sendAndApplyConfiguration('CreateNewRebroadcastServer', function (state) {
+                        _this._Model.RebroadcastSettings.unshiftFromModel(state.Response.NewRebroadcastServer);
+                        _this._Model.SelectedRebroadcastServer(_this._Model.RebroadcastSettings()[0]);
+                        $('#edit-rebroadcast-server').modal('show');
                     });
                 };
                 PageHandler.prototype.createAndEditReceiver = function () {
@@ -110,10 +119,10 @@ var VRS;
                 };
                 PageHandler.prototype.createAndEditReceiverLocation = function () {
                     var _this = this;
-                    this._Model.selectedReceiverLocation(null);
+                    this._Model.SelectedReceiverLocation(null);
                     this.sendAndApplyConfiguration('CreateNewReceiverLocation', function (state) {
                         _this._Model.ReceiverLocations.unshiftFromModel(state.Response.NewReceiverLocation);
-                        _this._Model.selectedReceiverLocation(_this._Model.ReceiverLocations()[0]);
+                        _this._Model.SelectedReceiverLocation(_this._Model.ReceiverLocations()[0]);
                         $('#edit-receiver-location').modal('show');
                     });
                 };
@@ -180,14 +189,20 @@ var VRS;
                             this._Model = ko.viewmodel.fromModel(state.Response.Configuration, {
                                 arrayChildId: {
                                     '{root}.MergedFeeds': 'UniqueId',
+                                    '{root}.RebroadcastSettings': 'UniqueId',
                                     '{root}.ReceiverLocations': 'UniqueId',
                                     '{root}.Receivers': 'UniqueId'
                                 },
                                 extend: {
                                     '{root}': function (root) {
-                                        root.saveAttempted = ko.observable(false);
-                                        root.saveSuccessful = ko.observable(false);
-                                        root.savedMessage = ko.observable("");
+                                        root.SaveAttempted = ko.observable(false);
+                                        root.SaveSuccessful = ko.observable(false);
+                                        root.SavedMessage = ko.observable("");
+                                        root.TestConnectionOutcome = ko.observable(null);
+                                        root.SelectedMergedFeed = ko.observable(null);
+                                        root.SelectedRebroadcastServer = ko.observable(null);
+                                        root.SelectedReceiver = ko.observable(null);
+                                        root.SelectedReceiverLocation = ko.observable(null);
                                         root.ComPortNames = state.Response.ComPortNames;
                                         root.ConnectionTypes = state.Response.ConnectionTypes;
                                         root.DataSources = state.Response.DataSources;
@@ -197,13 +212,10 @@ var VRS;
                                         root.HeightUnits = state.Response.HeightUnits;
                                         root.Parities = state.Response.Parities;
                                         root.ProxyTypes = state.Response.ProxyTypes;
+                                        root.RebroadcastFormats = state.Response.RebroadcastFormats;
                                         root.ReceiverUsages = state.Response.ReceiverUsages;
                                         root.SpeedUnits = state.Response.SpeedUnits;
                                         root.StopBits = state.Response.StopBits;
-                                        root.TestConnectionOutcome = ko.observable(null);
-                                        root.SelectedMergedFeed = ko.observable(null);
-                                        root.SelectedReceiver = ko.observable(null);
-                                        root.selectedReceiverLocation = ko.observable(null);
                                     },
                                     '{root}.BaseStationSettings': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
@@ -279,6 +291,30 @@ var VRS;
                                             });
                                         };
                                     },
+                                    '{root}.RebroadcastSettings[i]': function (model) {
+                                        model.FormattedAccess = ko.computed(function () { return _this._ViewId.describeEnum(model.Access.DefaultAccess(), state.Response.DefaultAccesses); });
+                                        model.FormattedAddress = ko.computed(function () { return VRS.stringUtility.format('{0}:{1}', (model.TransmitAddress() ? model.TransmitAddress() : ':'), model.Port()); });
+                                        model.FormatDescription = ko.computed(function () { return _this._ViewId.describeEnum(model.Format(), state.Response.RebroadcastFormats); });
+                                        model.Feed = ko.pureComputed({
+                                            read: function () {
+                                                var feedId = model.ReceiverId();
+                                                var feed = feedId ? VRS.arrayHelper.findFirst(_this._Model.Feeds(), function (r) { return r.UniqueId() === feedId; }) : null;
+                                                return feed;
+                                            },
+                                            write: function (value) {
+                                                model.ReceiverId(value ? value.UniqueId() : 0);
+                                            },
+                                            owner: _this
+                                        });
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                        model.SelectRow = function (row) {
+                                            _this._Model.SelectedRebroadcastServer(row);
+                                        };
+                                        model.DeleteRow = function (row) {
+                                            var index = VRS.arrayHelper.indexOfMatch(_this._Model.RebroadcastSettings(), function (r) { return r.UniqueId == row.UniqueId; });
+                                            _this._Model.RebroadcastSettings.splice(index, 1);
+                                        };
+                                    },
                                     '{root}.Receivers[i]': function (model) {
                                         model.FormattedConnectionType = ko.computed(function () { return _this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes); });
                                         model.FormattedDataSource = ko.computed(function () { return _this._ViewId.describeEnum(model.DataSource(), state.Response.DataSources); });
@@ -310,9 +346,9 @@ var VRS;
                                         });
                                         model.Location = ko.pureComputed({
                                             read: function () {
-                                                var receiverId = model.ReceiverLocationId();
-                                                var receiver = receiverId ? VRS.arrayHelper.findFirst(_this._Model.ReceiverLocations(), function (r) { return r.UniqueId() === receiverId; }) : null;
-                                                return receiver;
+                                                var receiverLocationId = model.ReceiverLocationId();
+                                                var receiverLocation = receiverLocationId ? VRS.arrayHelper.findFirst(_this._Model.ReceiverLocations(), function (r) { return r.UniqueId() === receiverLocationId; }) : null;
+                                                return receiverLocation;
                                             },
                                             write: function (value) {
                                                 model.ReceiverLocationId(value ? value.UniqueId() : 0);
@@ -338,7 +374,7 @@ var VRS;
                                         model.FormattedLongitude = ko.computed(function () { return VRS.stringUtility.formatNumber(model.Longitude(), 'N6'); });
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                         model.SelectRow = function (row) {
-                                            _this._Model.selectedReceiverLocation(row);
+                                            _this._Model.SelectedReceiverLocation(row);
                                         };
                                         model.DeleteRow = function (row) {
                                             var index = VRS.arrayHelper.indexOfMatch(_this._Model.ReceiverLocations(), function (r) { return r.UniqueId == row.UniqueId; });
@@ -348,6 +384,7 @@ var VRS;
                                 }
                             });
                             this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, function (r) { return r.WrapUpValidation; });
+                            this._Model.RebroadcastServerWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.RebroadcastSettings, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, function (r) { return r.WrapUpValidation; });
                             this._Model.Feeds = ko.observableArray([]);
