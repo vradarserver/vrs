@@ -99,7 +99,9 @@ namespace VirtualRadar.Library.BaseStation
         private long _DataVersion;
 
         /// <summary>
-        /// A map of unique identifiers to aircraft objects.
+        /// A map of unique identifiers to aircraft objects. Do not reference this directly unless you have a lock on
+        /// _AircraftListLock - instead you need to take a reference to the dictionary and use that instead, without
+        /// a lock.
         /// </summary>
         private Dictionary<int, IAircraft> _AircraftMap = new Dictionary<int, IAircraft>();
 
@@ -114,9 +116,9 @@ namespace VirtualRadar.Library.BaseStation
         private ICallsignRouteFetcher _CallsignRouteFetcher;
 
         /// <summary>
-        /// The object that synchronises access to <see cref="_AircraftMap"/>.
+        /// The object that synchronises changes to <see cref="_AircraftMap"/> and <see cref="_CalculatedTrackCoordinates"/>.
         /// </summary>
-        private object _AircraftMapLock = new object();
+        private object _AircraftListLock = new object();
 
         /// <summary>
         /// The object that synchronises access to the fields that are copied from the current configuration.
@@ -141,7 +143,9 @@ namespace VirtualRadar.Library.BaseStation
 
         /// <summary>
         /// A map of aircraft identifiers to the parameters used for calculating its track. This is a parallel list to
-        /// <see cref="_AircraftMap"/> and is locked using <see cref="_AircraftMapLock"/>.
+        /// <see cref="_AircraftMap"/> and is locked using <see cref="_AircraftListLock"/>.  Do not reference this directly
+        /// unless you have a lock on _AircraftListLock - take a reference to the dictionary instead and use that (without
+        /// a lock).
         /// </summary>
         private Dictionary<int, TrackCalculationParameters> _CalculatedTrackCoordinates = new Dictionary<int,TrackCalculationParameters>();
 
@@ -184,9 +188,8 @@ namespace VirtualRadar.Library.BaseStation
         {
             get
             {
-                int result;
-                lock(_AircraftMapLock) result = _AircraftMap.Count;
-                return result;
+                var aircraftMap = _AircraftMap;
+                return aircraftMap.Count;
             }
         }
 
@@ -433,26 +436,22 @@ namespace VirtualRadar.Library.BaseStation
                         if(!isInsane) {
                             bool isNewAircraft = false;
 
-                            // This must keep the aircraft map locked until the aircraft is fully formed. This means that we have a lock within a lock,
-                            // so care must be taken to avoid deadlocks.
-                            lock(_AircraftMapLock) {
-                                IAircraft aircraft;
-                                isNewAircraft = !_AircraftMap.TryGetValue(uniqueId, out aircraft);
-                                if(isNewAircraft) {
-                                    aircraft = Factory.Singleton.Resolve<IAircraft>();
-                                    aircraft.UniqueId = uniqueId;
-                                    _AircraftMap.Add(uniqueId, aircraft);
-                                } else if(isOutOfBand) {
-                                    if(aircraft.Latitude.GetValueOrDefault() != 0 || aircraft.Longitude.GetValueOrDefault() != 0) {
-                                        if(!aircraft.PositionIsMlat.GetValueOrDefault() && aircraft.ReceiverId == aircraft.PositionReceiverId) {
-                                            aircraft = null;
-                                        }
+                            var aircraftMap = _AircraftMap;
+                            IAircraft aircraft;
+                            isNewAircraft = !aircraftMap.TryGetValue(uniqueId, out aircraft);
+                            if(isNewAircraft) {
+                                aircraft = Factory.Singleton.Resolve<IAircraft>();
+                                aircraft.UniqueId = uniqueId;
+                            } else if(isOutOfBand) {
+                                if(aircraft.Latitude.GetValueOrDefault() != 0 || aircraft.Longitude.GetValueOrDefault() != 0) {
+                                    if(!aircraft.PositionIsMlat.GetValueOrDefault() && aircraft.ReceiverId == aircraft.PositionReceiverId) {
+                                        aircraft = null;
                                     }
                                 }
+                            }
 
-                                if(aircraft != null) {
-                                    ApplyMessageToAircraft(message, aircraft, isNewAircraft, isOutOfBand);
-                                }
+                            if(aircraft != null) {
+                                ApplyMessageToAircraft(message, aircraft, isNewAircraft, isOutOfBand);
                             }
 
                             if(!isOutOfBand && altitudeCertainty == Certainty.ProbablyRight && positionCertainty == Certainty.ProbablyRight) {
@@ -461,7 +460,20 @@ namespace VirtualRadar.Library.BaseStation
                                 }
                             }
 
-                            if(isNewAircraft) OnCountChanged(EventArgs.Empty);
+                            if(isNewAircraft) {
+                                var added = false;
+                                lock(_AircraftListLock) {
+                                    if(!_AircraftMap.ContainsKey(uniqueId)) {
+                                        var newMap = CollectionHelper.ShallowCopy(_AircraftMap);
+                                        newMap.Add(uniqueId, aircraft);
+                                        _AircraftMap = newMap;
+                                        added = true;
+                                    }
+                                }
+                                if(added) {
+                                    OnCountChanged(EventArgs.Empty);
+                                }
+                            }
                         }
                     }
                 }
@@ -698,11 +710,14 @@ namespace VirtualRadar.Library.BaseStation
             if(result == 0.0 && trackNeverTransmitted) result = null;
 
             if(positionPresent && (onGround || trackNeverTransmitted)) {
+                var calculatedTrackCoordinates = _CalculatedTrackCoordinates;
                 TrackCalculationParameters calcParameters;
-                lock(_AircraftMapLock) {
-                    _CalculatedTrackCoordinates.TryGetValue(aircraft.UniqueId, out calcParameters);
-                    if(calcParameters != null && onGround && calcParameters.TrackFrozenAt.AddMinutes(30) <= _Clock.UtcNow) {
-                        _CalculatedTrackCoordinates.Remove(aircraft.UniqueId);
+                calculatedTrackCoordinates.TryGetValue(aircraft.UniqueId, out calcParameters);
+                if(calcParameters != null && onGround && calcParameters.TrackFrozenAt.AddMinutes(30) <= _Clock.UtcNow) {
+                    lock(_AircraftListLock) {
+                        var newMap = CollectionHelper.ShallowCopy(_CalculatedTrackCoordinates);
+                        newMap.Remove(aircraft.UniqueId);
+                        _CalculatedTrackCoordinates = calculatedTrackCoordinates = newMap;
                         calcParameters = null;
                     }
                 }
@@ -712,8 +727,18 @@ namespace VirtualRadar.Library.BaseStation
                 if(trackSuspect || trackFrozen) {
                     var trackCalculated = false;
                     if(calcParameters == null) {
-                        calcParameters = new TrackCalculationParameters() { LastLatitude = message.Latitude.Value, LastLongitude = message.Longitude.Value, LastTransmittedTrack = message.Track, TrackFrozen = true, TrackFrozenAt = _Clock.UtcNow };
-                        lock(_AircraftMapLock) _CalculatedTrackCoordinates.Add(aircraft.UniqueId, calcParameters);
+                        calcParameters = new TrackCalculationParameters() {
+                            LastLatitude = message.Latitude.Value,
+                            LastLongitude = message.Longitude.Value,
+                            LastTransmittedTrack = message.Track,
+                            TrackFrozen = true,
+                            TrackFrozenAt = _Clock.UtcNow
+                        };
+                        lock(_AircraftListLock) {
+                            var newMap = CollectionHelper.ShallowCopy(_CalculatedTrackCoordinates);
+                            newMap.Add(aircraft.UniqueId, calcParameters);
+                            _CalculatedTrackCoordinates = calculatedTrackCoordinates = newMap;
+                        }
                         trackCalculated = true;
                     } else if(message.Latitude != calcParameters.LastLatitude || message.Longitude != calcParameters.LastLongitude) {
                         if(trackFrozen && onGround && calcParameters.LastTransmittedTrack != message.Track) {
@@ -731,7 +756,9 @@ namespace VirtualRadar.Library.BaseStation
                             calcParameters.LastTransmittedTrack = message.Track;
                         }
                     }
-                    if(!trackCalculated && (trackSuspect || trackFrozen)) result = aircraft.Track;
+                    if(!trackCalculated && (trackSuspect || trackFrozen)) {
+                        result = aircraft.Track;
+                    }
                 }
             }
 
@@ -760,27 +787,14 @@ namespace VirtualRadar.Library.BaseStation
         }
 
         /// <summary>
-        /// Sets a valid DataVersion. Always lock the aircraft map before calling this.
+        /// Sets a valid DataVersion for an aircraft. The DataVersion should increment across all aircraft changes
+        /// in the aircraft list, not just for a single aircraft.
         /// </summary>
         /// <param name="aircraft"></param>
-        /// <remarks>
-        /// The tests call for this to be based on UtcNow, the idea being that if the webServer is quit and restarted while
-        /// a browser is connected the chances are good that the browser data version will correspond with the data versions
-        /// held by the new instance of the webServer. Not sure how useful that will be but it's not hard to do. However there
-        /// are times when we cannot use UTC - if the clock gets reset or if two messages come in on the same tick. When that
-        /// happens we just fallback to incrementing the dataversion.
-        /// </remarks>
         private void GenerateDataVersion(IAircraft aircraft)
         {
-            // This can be called on any of the threads that update the list. The _DataVersionLock value is really a property of
-            // the aircraft map - it represents the highest possible DataVersion of any aircraft within the map. The caller should
-            // have established a lock on the aircraft map before calling us to ensure that snapshots of the map are not taken until
-            // all changes that involve a new DataVersion have been applied, but just in case they don't we get it again here. If
-            // we don't, and if they forgot to acquire the lock, then we could get inconsistencies.
-            lock(_AircraftMapLock) {
-                lock(aircraft) {
-                    aircraft.DataVersion = ++_DataVersion;
-                }
+            lock(aircraft) {
+                aircraft.DataVersion = Interlocked.Increment(ref _DataVersion);
             }
         }
         #endregion
@@ -795,12 +809,11 @@ namespace VirtualRadar.Library.BaseStation
         {
             IAircraft result = null;
 
-            lock(_AircraftMapLock) {
-                IAircraft aircraft;
-                if(_AircraftMap.TryGetValue(uniqueId, out aircraft)) {
-                    lock(aircraft) {
-                        result = (IAircraft)aircraft.Clone();
-                    }
+            var aircraftMap = _AircraftMap;
+            IAircraft aircraft;
+            if(aircraftMap.TryGetValue(uniqueId, out aircraft)) {
+                lock(aircraft) {
+                    result = (IAircraft)aircraft.Clone();
                 }
             }
 
@@ -824,12 +837,11 @@ namespace VirtualRadar.Library.BaseStation
             }
 
             List<IAircraft> result = new List<IAircraft>();
-            lock(_AircraftMapLock) {
-                foreach(var aircraft in _AircraftMap.Values) {
-                    if(aircraft.LastUpdate.Ticks < hideThreshold) continue;
-                    if(aircraft.DataVersion > snapshotDataVersion) snapshotDataVersion = aircraft.DataVersion;
-                    result.Add((IAircraft)aircraft.Clone());
-                }
+            var aircraftMap = _AircraftMap;
+            foreach(var aircraft in aircraftMap.Values) {
+                if(aircraft.LastUpdate.Ticks < hideThreshold) continue;
+                if(aircraft.DataVersion > snapshotDataVersion) snapshotDataVersion = aircraft.DataVersion;
+                result.Add((IAircraft)aircraft.Clone());
             }
 
             return result;
@@ -859,14 +871,13 @@ namespace VirtualRadar.Library.BaseStation
         {
             var standingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
 
-            lock(_AircraftMapLock) {
-                foreach(var aircraft in _AircraftMap.Values) {
-                    var codeBlock = standingDataManager.FindCodeBlock(aircraft.Icao24);
-                    if(codeBlock != null && (aircraft.Icao24Country != codeBlock.Country || aircraft.IsMilitary != codeBlock.IsMilitary)) {
-                        lock(aircraft) {
-                            GenerateDataVersion(aircraft);
-                            ApplyCodeBlock(aircraft, codeBlock);
-                        }
+            var aircraftMap = _AircraftMap;
+            foreach(var aircraft in aircraftMap.Values) {
+                var codeBlock = standingDataManager.FindCodeBlock(aircraft.Icao24);
+                if(codeBlock != null && (aircraft.Icao24Country != codeBlock.Country || aircraft.IsMilitary != codeBlock.IsMilitary)) {
+                    lock(aircraft) {
+                        GenerateDataVersion(aircraft);
+                        ApplyCodeBlock(aircraft, codeBlock);
                     }
                 }
             }
@@ -879,24 +890,31 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         private void RemoveOldAircraft()
         {
+            var aircraftMap = _AircraftMap;
             var removeList = new List<int>();
+            var threshold = _Clock.UtcNow.Ticks - (_TrackingTimeoutSeconds * TicksPerSecond);
 
-            lock(_AircraftMapLock) {
-                var threshold = _Clock.UtcNow.Ticks - (_TrackingTimeoutSeconds * TicksPerSecond);
-
-                foreach(var aircraft in _AircraftMap.Values) {
-                    if(aircraft.LastUpdate.Ticks < threshold) removeList.Add(aircraft.UniqueId);
-                }
-
-                foreach(var uniqueId in removeList) {
-                    var aircraft = _AircraftMap[uniqueId];
-                    _AircraftMap.Remove(uniqueId);
-
-                    if(_CalculatedTrackCoordinates.ContainsKey(uniqueId)) _CalculatedTrackCoordinates.Remove(uniqueId);
+            foreach(var aircraft in aircraftMap.Values) {
+                if(aircraft.LastUpdate.Ticks < threshold) {
+                    removeList.Add(aircraft.UniqueId);
                 }
             }
 
-            if(removeList.Count > 0) OnCountChanged(EventArgs.Empty);
+            if(removeList.Count > 0) {
+                lock(_AircraftListLock) {
+                    foreach(var uniqueId in removeList) {
+                        if(_AircraftMap.ContainsKey(uniqueId)) {
+                            _AircraftMap.Remove(uniqueId);
+                        }
+
+                        if(_CalculatedTrackCoordinates.ContainsKey(uniqueId)) {
+                            _CalculatedTrackCoordinates.Remove(uniqueId);
+                        }
+                    }
+                }
+
+                OnCountChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -904,7 +922,7 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         private void ResetAircraftList()
         {
-            lock(_AircraftMapLock) {
+            lock(_AircraftListLock) {
                 _AircraftMap.Clear();
                 _CalculatedTrackCoordinates.Clear();
             }
@@ -926,13 +944,12 @@ namespace VirtualRadar.Library.BaseStation
                 var aircraftDetail = args.Value;
                 var uniqueId = ConvertIcaoToUniqueId(aircraftDetail.Icao24);
                 if(uniqueId != -1) {
-                    lock(_AircraftMapLock) {
-                        IAircraft aircraft;
-                        if(_AircraftMap.TryGetValue(uniqueId, out aircraft)) {
-                            lock(aircraft) {
-                                GenerateDataVersion(aircraft);
-                                ApplyAircraftDetail(aircraft, aircraftDetail);
-                            }
+                    var aircraftMap = _AircraftMap;
+                    IAircraft aircraft;
+                    if(aircraftMap.TryGetValue(uniqueId, out aircraft)) {
+                        lock(aircraft) {
+                            GenerateDataVersion(aircraft);
+                            ApplyAircraftDetail(aircraft, aircraftDetail);
                         }
                     }
                 }
@@ -956,13 +973,12 @@ namespace VirtualRadar.Library.BaseStation
                 var callsignRouteDetail = args.Value;
                 var uniqueId = ConvertIcaoToUniqueId(callsignRouteDetail.Icao24);
                 if(uniqueId != -1) {
-                    lock(_AircraftMapLock) {
-                        IAircraft aircraft;
-                        if(_AircraftMap.TryGetValue(uniqueId, out aircraft) && aircraft.Callsign == callsignRouteDetail.Callsign) {
-                            lock(aircraft) {
-                                GenerateDataVersion(aircraft);
-                                ApplyRoute(aircraft, callsignRouteDetail.Route);
-                            }
+                    var aircraftMap = _AircraftMap;
+                    IAircraft aircraft;
+                    if(aircraftMap.TryGetValue(uniqueId, out aircraft) && aircraft.Callsign == callsignRouteDetail.Callsign) {
+                        lock(aircraft) {
+                            GenerateDataVersion(aircraft);
+                            ApplyRoute(aircraft, callsignRouteDetail.Route);
                         }
                     }
                 }
@@ -980,7 +996,9 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void BaseStationListener_MessageReceived(object sender, BaseStationMessageEventArgs args)
         {
-            if(IsTracking) ProcessMessage(args.Message, args.IsOutOfBand);
+            if(IsTracking) {
+                ProcessMessage(args.Message, args.IsOutOfBand);
+            }
         }
 
         /// <summary>
@@ -1004,9 +1022,10 @@ namespace VirtualRadar.Library.BaseStation
             var key = ConvertIcaoToUniqueId(args.Value);
             _SanityChecker.ResetAircraft(key);
 
-            lock(_AircraftMapLock) {
-                IAircraft aircraft;
-                if(_AircraftMap.TryGetValue(key, out aircraft)) {
+            var aircraftMap = _AircraftMap;
+            IAircraft aircraft;
+            if(aircraftMap.TryGetValue(key, out aircraft)) {
+                lock(aircraft) {
                     aircraft.ResetCoordinates();
                 }
             }
