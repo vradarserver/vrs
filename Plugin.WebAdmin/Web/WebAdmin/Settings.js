@@ -306,6 +306,15 @@ var VRS;
                                             },
                                             owner: _this
                                         });
+                                        model.SendIntervalSeconds = ko.pureComputed({
+                                            read: function () {
+                                                return Math.floor(model.SendIntervalMilliseconds() / 1000);
+                                            },
+                                            write: function (value) {
+                                                model.SendIntervalMilliseconds(value * 1000);
+                                            },
+                                            owner: _this
+                                        });
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                         model.SelectRow = function (row) {
                                             _this._Model.SelectedRebroadcastServer(row);
