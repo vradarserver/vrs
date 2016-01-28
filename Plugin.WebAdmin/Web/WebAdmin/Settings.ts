@@ -64,7 +64,9 @@
         FormattedAddress?:          KnockoutComputed<string>;
         FormatDescription?:         KnockoutComputed<string>;
         Feed?:                      KnockoutComputed<FeedModel>;
+        SendIntervalSeconds?:       KnockoutComputed<number>;
         WrapUpValidation?:          IValidation_KC;
+
         SelectRow?:                 (row: RebroadcastServerModel) => void;
         DeleteRow?:                 (row: RebroadcastServerModel) => void;
     }
@@ -461,7 +463,18 @@
                                     },
                                     owner: this
                                 });
+                                model.SendIntervalSeconds = ko.pureComputed({
+                                    read: () => {
+                                        return Math.floor(model.SendIntervalMilliseconds() / 1000);
+                                    },
+                                    write: (value) => {
+                                        model.SendIntervalMilliseconds(value * 1000);
+                                    },
+                                    owner: this
+                                });
+
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+
                                 model.SelectRow = (row: RebroadcastServerModel) => {
                                     this._Model.SelectedRebroadcastServer(row);
                                 };
