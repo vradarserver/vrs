@@ -276,17 +276,15 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         public void RefreshFromSettings(Access settings)
         {
             DefaultAccess = (int)settings.DefaultAccess;
-            Addresses.Clear();
-            Addresses.AddRange(settings.Addresses);
+            CollectionHelper.OverwriteDestinationWithSource(settings.Addresses, Addresses);
         }
 
-        public Access CopyToSettings(Access access)
+        public Access CopyToSettings(Access settings)
         {
-            access.DefaultAccess = EnumModel.CastFromInt<DefaultAccess>(DefaultAccess);
-            access.Addresses.Clear();
-            access.Addresses.AddRange(Addresses);
+            settings.DefaultAccess = EnumModel.CastFromInt<DefaultAccess>(DefaultAccess);
+            CollectionHelper.OverwriteDestinationWithSource(Addresses, settings.Addresses);
 
-            return access;
+            return settings;
         }
     }
 
@@ -1075,7 +1073,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
     public class WebServerSettingsModel
     {
-        public bool UsersMustAuthenticate { get; private set; }
+        public bool UsersMustAuthenticate { get; set; }
 
         public List<string> BasicAuthenticationUserIds { get; private set; }
 
