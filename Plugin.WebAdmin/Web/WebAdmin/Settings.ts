@@ -681,6 +681,8 @@
                                     this._Model.SelectedUser(row);
                                 };
                                 model.DeleteRow = (row: UserModel) => {
+                                    model.IsWebSiteUser(false);
+                                    model.IsAdminUser(false);
                                     var index = VRS.arrayHelper.indexOfMatch(this._Model.Users(), r => r.UniqueId == row.UniqueId);
                                     this._Model.Users.splice(index, 1);
                                 };
