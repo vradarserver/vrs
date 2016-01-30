@@ -68,6 +68,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
         private Mock<IStandaloneAircraftOnlineLookupCache> _StandaloneAircraftOnlineLookupCache;
         private Mock<IAircraftOnlineLookupLog> _AircraftOnlineLookupLog;
+        private Mock<IUser> _User;
 
         private EventRecorder<EventArgs<Exception>> _BackgroundExceptionEvent;
 
@@ -102,9 +103,11 @@ namespace Test.VirtualRadar.Library.Presenter
             _RebroadcastServerManager = TestUtilities.CreateMockSingleton<IRebroadcastServerManager>();
             _FeedManager = TestUtilities.CreateMockSingleton<IFeedManager>();
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
+            _UserManager.Setup(r => r.GetUserByLoginName(It.IsAny<string>())).Returns((string name) => null);
             _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
             _StandaloneAircraftOnlineLookupCache = TestUtilities.CreateMockImplementation<IStandaloneAircraftOnlineLookupCache>();
             _AircraftOnlineLookupLog = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupLog>();
+            _User = TestUtilities.CreateMockImplementation<IUser>();
 
             _BackgroundExceptionEvent = new EventRecorder<EventArgs<Exception>>();
 
@@ -174,7 +177,7 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void SplashPresenter_StartApplication_Reports_Problems_With_Unknown_Command_Line_Parameters()
         {
-            foreach(string parameter in new string[] { "culture", "-culture", "workingFolder", "-workingFolder" }) {
+            foreach(string parameter in new string[] { "culture", "-culture", "workingFolder", "-workingFolder", "createAdmin", "-createAdmin" }) {
                 TestCleanup();
                 TestInitialise();
 
@@ -244,6 +247,62 @@ namespace Test.VirtualRadar.Library.Presenter
 
                 _View.Verify(v => v.ReportProblem(Strings.CoarseListenerTimeoutInvalid, Strings.BadListenerTimeout, true), Times.Never());
             }
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Creates_Admin_User_If_Requested()
+        {
+            _User.Object.UniqueId = "ID";
+            var expectedHash = new Hash("the-password");
+            _UserManager.Setup(r => r.CreateUserWithHash(It.IsAny<IUser>(), It.IsAny<Hash>())).Callback((IUser user, Hash hash) => {
+                Assert.IsTrue(expectedHash.Buffer.SequenceEqual(hash.Buffer));
+            });
+
+            _Presenter.CommandLineArgs = new string[] { "-createAdmin:the-user-name", "-password:the-password" };
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _View.Verify(v => v.ReportProblem(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never());
+
+            Assert.AreEqual(true, _User.Object.Enabled);
+            Assert.AreEqual("the-user-name", _User.Object.LoginName);
+            Assert.AreEqual("the-user-name", _User.Object.Name);
+            _UserManager.Verify(r => r.CreateUserWithHash(_User.Object, It.IsAny<Hash>()), Times.Once());
+
+            Assert.AreEqual(1, _Configuration.WebServerSettings.AdministratorUserIds.Count);
+            Assert.AreEqual("ID", _Configuration.WebServerSettings.AdministratorUserIds[0]);
+            _ConfigurationStorage.Verify(r => r.Save(_Configuration), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Does_Not_Create_Admin_User_If_Name_Missing()
+        {
+            _Presenter.CommandLineArgs = new string[] { "-createAdmin:", "-password:the-password" };
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _View.Verify(v => v.ReportProblem(It.IsAny<string>(), It.IsAny<string>(), true), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Does_Not_Create_Admin_User_If_Password_Missing()
+        {
+            _Presenter.CommandLineArgs = new string[] { "-createAdmin:the-user-name", };
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _View.Verify(v => v.ReportProblem(It.IsAny<string>(), It.IsAny<string>(), true), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Does_Not_Create_Admin_User_If_User_Already_Exists()
+        {
+            _UserManager.Setup(r => r.GetUserByLoginName("the-user-name")).Returns(_User.Object);
+            _Presenter.CommandLineArgs = new string[] { "-createAdmin:the-user-name", "-password:the-password" };
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _View.Verify(v => v.ReportProblem(It.IsAny<string>(), It.IsAny<string>(), true), Times.Once());
         }
         #endregion
 
