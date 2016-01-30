@@ -76,7 +76,6 @@
     <Compile Include="View\SettingsView.cs" />
     <Compile Include="View\StatisticsModels.cs" />
     <Compile Include="View\StatisticsView.cs" />
-    <Compile Include="WebAdminStringsJavaScript.cs" />
     <Compile Include="WebAdminStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
