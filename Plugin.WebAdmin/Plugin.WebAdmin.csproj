@@ -82,8 +82,6 @@
       <DependentUpon>WebAdminStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="WebAdminViewManager.cs" />
-    <Compile Include="WebValidationResult.cs" />
-    <Compile Include="WebValidationResults.cs" />
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
