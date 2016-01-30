@@ -42,7 +42,7 @@
 
     interface BaseStationSettingsModel extends ViewJson.IBaseStationSettingsModel_KO
     {
-        WrapUpValidation?:      IValidation_KC;
+        WrapUpValidation?: IValidation_KC;
     }
 
     interface MergedFeedModel extends ViewJson.IMergedFeedModel_KO
@@ -59,6 +59,11 @@
         DeleteRow?:                 (row: MergedFeedModel) => void;
         IncludeReceiver?:           (receiver: ReceiverModel) => KnockoutComputed<boolean>;
         ReceiverIsMlat?:            (receiver: ReceiverModel) => KnockoutComputed<boolean>;
+    }
+
+    interface RawDecodingSettingsModel extends ViewJson.IRawDecodingSettingModel_KO
+    {
+        WrapUpValidation?: IValidation_KC;
     }
 
     interface RebroadcastServerModel extends ViewJson.IRebroadcastServerModel_KO
@@ -273,6 +278,16 @@
             });
         }
 
+        useIcaoRawDecodingSettings()
+        {
+            this.sendAndApplyConfiguration('RaiseUseIcaoRawDecodingSettingsClicked', (state: IResponse<ViewJson.IViewModel>) => { });
+        }
+
+        useRecommendedRawDecodingSettings()
+        {
+            this.sendAndApplyConfiguration('RaiseUseRecommendedRawDecodingSettingsClicked', (state: IResponse<ViewJson.IViewModel>) => { });
+        }
+
         updateLocationsFromBaseStation()
         {
             this.sendAndApplyConfiguration('RaiseReceiverLocationsFromBaseStationDatabaseClicked', (state: IResponse<ViewJson.IViewModel>) => { });
@@ -471,6 +486,11 @@
                                         owner: this
                                     });
                                 };
+                            },
+
+                            '{root}.RawDecodingSettings': (model: RawDecodingSettingsModel) =>
+                            {
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
                             },
 
                             '{root}.RebroadcastSettings[i]': (model: RebroadcastServerModel) =>

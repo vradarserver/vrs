@@ -2576,4 +2576,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Include</value>
     <comment>As in "include this item in the list"</comment>
   </data>
+  <data name="KilometresOver30Seconds" xml:space="preserve">
+    <value>km / 30 seconds</value>
+  </data>
 </root>

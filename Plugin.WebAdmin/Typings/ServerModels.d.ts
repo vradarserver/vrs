@@ -181,6 +181,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierUrl: string;
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel;
+        RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel;
         MergedFeeds: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel[];
         RebroadcastSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel[];
         Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
@@ -227,6 +228,38 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         FlightSimulatorXReceiverId: number;
         FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
         ProxyType: number;
+    }
+    interface IRawDecodingSettingModel {
+        ReceiverRange: number;
+        ReceiverRangeValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IgnoreMilitaryExtendedSquitter: boolean;
+        SuppressReceiverRangeCheck: boolean;
+        UseLocalDecodeForInitialPosition: boolean;
+        AirborneGlobalPositionLimit: number;
+        AirborneGlobalPositionLimitValidation: VirtualRadar.Interface.View.IValidationModelField;
+        FastSurfaceGlobalPositionLimit: number;
+        FastSurfaceGlobalPositionLimitValidation: VirtualRadar.Interface.View.IValidationModelField;
+        SlowSurfaceGlobalPositionLimit: number;
+        SlowSurfaceGlobalPositionLimitValidation: VirtualRadar.Interface.View.IValidationModelField;
+        AcceptableAirborneSpeed: number;
+        AcceptableAirborneSpeedValidation: VirtualRadar.Interface.View.IValidationModelField;
+        AcceptableAirSurfaceTransitionSpeed: number;
+        AcceptableAirSurfaceTransitionSpeedValidation: VirtualRadar.Interface.View.IValidationModelField;
+        AcceptableSurfaceSpeed: number;
+        AcceptableSurfaceSpeedValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IgnoreCallsignsInBds20: boolean;
+        AcceptIcaoInPI0Count: number;
+        AcceptIcaoInPI0CountValidation: VirtualRadar.Interface.View.IValidationModelField;
+        AcceptIcaoInPI0Seconds: number;
+        AcceptIcaoInPI0SecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
+        AcceptIcaoInNonPICount: number;
+        AcceptIcaoInNonPICountValidation: VirtualRadar.Interface.View.IValidationModelField;
+        AcceptIcaoInNonPISeconds: number;
+        AcceptIcaoInNonPISecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
+        SuppressIcao0: boolean;
+        IgnoreInvalidCodeBlockInParityMessages: boolean;
+        IgnoreInvalidCodeBlockInOtherMessages: boolean;
+        SuppressTisbDecoding: boolean;
     }
     interface IMergedFeedModel {
         Enabled: boolean;
@@ -562,6 +595,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierUrl: KnockoutObservable<string>;
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel_KO;
+        RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel_KO;
         MergedFeeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO>;
         RebroadcastSettings: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel_KO>;
         Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
@@ -608,6 +642,38 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         FlightSimulatorXReceiverId: KnockoutObservable<number>;
         FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ProxyType: KnockoutObservable<number>;
+    }
+    interface IRawDecodingSettingModel_KO {
+        ReceiverRange: KnockoutObservable<number>;
+        ReceiverRangeValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IgnoreMilitaryExtendedSquitter: KnockoutObservable<boolean>;
+        SuppressReceiverRangeCheck: KnockoutObservable<boolean>;
+        UseLocalDecodeForInitialPosition: KnockoutObservable<boolean>;
+        AirborneGlobalPositionLimit: KnockoutObservable<number>;
+        AirborneGlobalPositionLimitValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        FastSurfaceGlobalPositionLimit: KnockoutObservable<number>;
+        FastSurfaceGlobalPositionLimitValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        SlowSurfaceGlobalPositionLimit: KnockoutObservable<number>;
+        SlowSurfaceGlobalPositionLimitValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        AcceptableAirborneSpeed: KnockoutObservable<number>;
+        AcceptableAirborneSpeedValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        AcceptableAirSurfaceTransitionSpeed: KnockoutObservable<number>;
+        AcceptableAirSurfaceTransitionSpeedValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        AcceptableSurfaceSpeed: KnockoutObservable<number>;
+        AcceptableSurfaceSpeedValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IgnoreCallsignsInBds20: KnockoutObservable<boolean>;
+        AcceptIcaoInPI0Count: KnockoutObservable<number>;
+        AcceptIcaoInPI0CountValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        AcceptIcaoInPI0Seconds: KnockoutObservable<number>;
+        AcceptIcaoInPI0SecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        AcceptIcaoInNonPICount: KnockoutObservable<number>;
+        AcceptIcaoInNonPICountValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        AcceptIcaoInNonPISeconds: KnockoutObservable<number>;
+        AcceptIcaoInNonPISecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        SuppressIcao0: KnockoutObservable<boolean>;
+        IgnoreInvalidCodeBlockInParityMessages: KnockoutObservable<boolean>;
+        IgnoreInvalidCodeBlockInOtherMessages: KnockoutObservable<boolean>;
+        SuppressTisbDecoding: KnockoutObservable<boolean>;
     }
     interface IMergedFeedModel_KO {
         Enabled: KnockoutObservable<boolean>;
