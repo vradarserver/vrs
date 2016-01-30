@@ -54,6 +54,16 @@ namespace VirtualRadar.Library.Presenter
         private ISplashView _View;
 
         /// <summary>
+        /// The username read off the -createAdmin:user command-line option.
+        /// </summary>
+        private string _CreateAdminUser;
+
+        /// <summary>
+        /// The password read off the command line.
+        /// </summary>
+        private string _Password = "";
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public ISplashPresenterProvider Provider { get; set; }
@@ -113,6 +123,10 @@ namespace VirtualRadar.Library.Presenter
             InitialiseUniversalPlugAndPlay(configuration);
             InitialiseAircraftOnlineLookupManager();
             StartPlugins(webSite);
+
+            if(!String.IsNullOrEmpty(_CreateAdminUser)) {
+                CreateAdminUser(configurationStorage, _CreateAdminUser, _Password);
+            }
         }
 
         private void ParseCommandLineParameters(IConfigurationStorage configurationStorage)
@@ -122,21 +136,54 @@ namespace VirtualRadar.Library.Presenter
             if(CommandLineArgs != null) {
                 foreach(var arg in CommandLineArgs) {
                     var caselessArg = arg.ToUpper();
-                    if(caselessArg.StartsWith("-CULTURE:"))     continue;
-                    else if(caselessArg == "-SHOWCONFIGFOLDER") continue;
-                    else if(caselessArg == "-DEFAULTFONTS")     continue;
-                    else if(caselessArg == "-NOGUI")            continue;
-                    else if(caselessArg.StartsWith("-WORKINGFOLDER:")) {
+                    if(caselessArg.StartsWith("-CULTURE:"))         continue;
+                    else if(caselessArg == "-SHOWCONFIGFOLDER")     continue;
+                    else if(caselessArg == "-DEFAULTFONTS")         continue;
+                    else if(caselessArg == "-NOGUI")                continue;
+                    else if(caselessArg.StartsWith("-CREATEADMIN:")) {
+                        _CreateAdminUser = arg.Substring(13);
+                        if(String.IsNullOrEmpty(_CreateAdminUser)) {
+                            _View.ReportProblem(Strings.CreateAdminUserMissing, Strings.UserNameMissing, true);
+                        }
+                    } else if(caselessArg.StartsWith("-PASSWORD:")) {
+                        _Password = arg.Substring(10);
+                    } else if(caselessArg.StartsWith("-WORKINGFOLDER:")) {
                         var folder = arg.Substring(15);
                         if(!Provider.FolderExists(folder)) _View.ReportProblem(String.Format(Strings.FolderDoesNotExistFull, folder), Strings.FolderDoesNotExistTitle, true);
                         else configurationStorage.Folder = folder;
                     } else if(caselessArg.StartsWith("-LISTENERTIMEOUT:")) {
                         // This was removed in 2.0.3 - coarse timeouts are now a per-receiver configuration property
+                    } else if(caselessArg == "/?" || caselessArg == "-?" || caselessArg == "--HELP") {
+                        _View.ReportProblem(Strings.CommandLineHelp, Strings.CommandLineHelpTitle, true);
                     } else {
                         _View.ReportProblem(String.Format(Strings.UnrecognisedCommandLineParameterFull, arg), Strings.UnrecognisedCommandLineParameterTitle, true);
                     }
                 }
             }
+        }
+
+        private void CreateAdminUser(IConfigurationStorage configurationStorage, string createAdminName, string password)
+        {
+            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+
+            if(String.IsNullOrEmpty(password)) {
+                _View.ReportProblem(Strings.PasswordMissingOnCommandLine, Strings.PasswordMissingTitle, true);
+            }
+            if(userManager.GetUserByLoginName(createAdminName) != null) {
+                _View.ReportProblem(Strings.CreateAdminUserAlreadyExists, Strings.UserAlreadyExists, true);
+            }
+
+            var hash = new Hash(password);
+            var user = Factory.Singleton.Resolve<IUser>();
+            user.Enabled = true;
+            user.LoginName = createAdminName;
+            user.Name = createAdminName;
+
+            userManager.CreateUserWithHash(user, hash);
+
+            var configuration = configurationStorage.Load();
+            configuration.WebServerSettings.AdministratorUserIds.Add(user.UniqueId);
+            configurationStorage.Save(configuration);
         }
 
         private void InitialiseLog(IConfigurationStorage configurationStorage)

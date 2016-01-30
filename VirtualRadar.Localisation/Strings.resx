@@ -2579,4 +2579,48 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="KilometresOver30Seconds" xml:space="preserve">
     <value>km / 30 seconds</value>
   </data>
+  <data name="CommandLineHelp" xml:space="preserve">
+    <value>-culture:xx-YY
+Set the server user interface language to the ISO code page specified (e.g. en-GB, ru-RU etc.)
+
+-showConfigFolder
+Report the location of the configuration folder that this instance is using.
+
+-defaultFonts
+Disable the replacement of Windows fonts with Arial Unicode MS when running with a non-Western code page.
+
+-noGUI
+Do not show a user interface. Under Windows this will open a separate console window for the program's console output.
+
+-createAdmin:user -password:pwd
+Creates a new administrator user. Replace "user" and "pwd" with your desired username and password.
+
+-workingFolder:folder
+Use the folder specified instead of the default configuration folder. This also allows multiple instances of VRS to be run on the same machine. Specify a different working folder for each instance.
+
+-? or /? or --help
+Show this message.</value>
+    <comment>This is a multi-line message that is displayed on the console</comment>
+  </data>
+  <data name="CommandLineHelpTitle" xml:space="preserve">
+    <value>Command Line Options</value>
+  </data>
+  <data name="CreateAdminUserAlreadyExists" xml:space="preserve">
+    <value>The user name supplied with the -createAdmin option already exists</value>
+  </data>
+  <data name="CreateAdminUserMissing" xml:space="preserve">
+    <value>You must supply a user name with the -createAdmin option. Do not put a space between the option and the name.</value>
+  </data>
+  <data name="PasswordMissingOnCommandLine" xml:space="preserve">
+    <value>You must supply a password with the -password option</value>
+  </data>
+  <data name="PasswordMissingTitle" xml:space="preserve">
+    <value>Password Missing</value>
+  </data>
+  <data name="UserAlreadyExists" xml:space="preserve">
+    <value>User Already Exists</value>
+  </data>
+  <data name="UserNameMissing" xml:space="preserve">
+    <value>User Name Missing</value>
+  </data>
 </root>

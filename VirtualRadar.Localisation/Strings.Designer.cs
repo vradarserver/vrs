@@ -846,6 +846,37 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to -culture:xx-YY
+        ///Set the server user interface language to the ISO code page specified (e.g. en-GB, ru-RU etc.)
+        ///
+        ///-showConfigFolder
+        ///Report the location of the configuration folder that this instance is using.
+        ///
+        ///-defaultFonts
+        ///Disable the replacement of Windows fonts with Arial Unicode MS when running with a non-Western code page.
+        ///
+        ///-noGUI
+        ///Do not show a user interface. Under Windows this will open a separate console window for the program&apos;s console output.
+        ///
+        ///-createAdmin:user -password:pwd
+        ///Creates a ne [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string CommandLineHelp {
+            get {
+                return ResourceManager.GetString("CommandLineHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command Line Options.
+        /// </summary>
+        public static string CommandLineHelpTitle {
+            get {
+                return ResourceManager.GetString("CommandLineHelpTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compressed VRS.
         /// </summary>
         public static string CompressedPort30003 {
@@ -1139,6 +1170,24 @@ namespace VirtualRadar.Localisation {
         public static string Country {
             get {
                 return ResourceManager.GetString("Country", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user name supplied with the -createAdmin option already exists.
+        /// </summary>
+        public static string CreateAdminUserAlreadyExists {
+            get {
+                return ResourceManager.GetString("CreateAdminUserAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must supply a user name with the -createAdmin option. Do not put a space between the option and the name..
+        /// </summary>
+        public static string CreateAdminUserMissing {
+            get {
+                return ResourceManager.GetString("CreateAdminUserMissing", resourceCulture);
             }
         }
         
@@ -4442,6 +4491,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must supply a password with the -password option.
+        /// </summary>
+        public static string PasswordMissingOnCommandLine {
+            get {
+                return ResourceManager.GetString("PasswordMissingOnCommandLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password Missing.
+        /// </summary>
+        public static string PasswordMissingTitle {
+            get {
+                return ResourceManager.GetString("PasswordMissingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peak.
         /// </summary>
         public static string Peak {
@@ -6757,6 +6824,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Already Exists.
+        /// </summary>
+        public static string UserAlreadyExists {
+            get {
+                return ResourceManager.GetString("UserAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use recommended settings.
         /// </summary>
         public static string UseRecommendedSettings {
@@ -6789,6 +6865,15 @@ namespace VirtualRadar.Localisation {
         public static string UserMustAuthenticate {
             get {
                 return ResourceManager.GetString("UserMustAuthenticate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Name Missing.
+        /// </summary>
+        public static string UserNameMissing {
+            get {
+                return ResourceManager.GetString("UserNameMissing", resourceCulture);
             }
         }
         
