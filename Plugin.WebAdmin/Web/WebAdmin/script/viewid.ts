@@ -278,9 +278,9 @@
         /**
          * Returns an array of all properties of the model that look like they are validation model field objects.
          */
-        findValidationProperties(model: Object) : VirtualRadar.Interface.View.IValidationModelField_KO[]
+        findValidationProperties(model: Object, appendToArray: VirtualRadar.Interface.View.IValidationModelField_KO[] = []) : VirtualRadar.Interface.View.IValidationModelField_KO[]
         {
-            var result = [];
+            var result = appendToArray;
 
             $.each(model, (name: string, value: Object) => {
                 if(value && typeof value === 'object' &&
@@ -289,7 +289,7 @@
                     value.hasOwnProperty('IsError') &&
                     value.hasOwnProperty('Message')
                 ) {
-                    result.push(value);
+                    result.push(<VirtualRadar.Interface.View.IValidationModelField_KO>value);
                 }
             });
 

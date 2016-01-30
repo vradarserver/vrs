@@ -45,6 +45,11 @@
         WrapUpValidation?: IValidation_KC;
     }
 
+    interface InternetClientSettingsModel extends ViewJson.IInternetClientSettingsModel_KO
+    {
+        WrapUpValidation?: IValidation_KC;
+    }
+
     interface MergedFeedModel extends ViewJson.IMergedFeedModel_KO
     {
         FormattedReceiversCount?:   KnockoutComputed<string>;
@@ -117,6 +122,12 @@
         WrapUpValidation?:          IValidation_KC;
         SelectRow?:                 (row: UserModel) => void;
         DeleteRow?:                 (row: UserModel) => void;
+    }
+
+    interface WebServerSettingsModel extends ViewJson.IWebServerSettingsModel_KO
+    {
+        WrapUpValidation?:                              IValidation_KC;
+        WebServerAndInternetClientWrapUpValidation?:    IValidation_KC;
     }
 
     interface FeedModel
@@ -416,6 +427,11 @@
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
                             },
 
+                            '{root}.InternetClientSettingsModel': (model: InternetClientSettingsModel) =>
+                            {
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+                            },
+
                             '{root}.MergedFeeds[i]': (model: MergedFeedModel) =>
                             {
                                 model.FormattedReceiversCount = ko.computed(() => VRS.stringUtility.formatNumber(model.ReceiverIds().length, 'N0'));
@@ -668,7 +684,12 @@
                                     var index = VRS.arrayHelper.indexOfMatch(this._Model.Users(), r => r.UniqueId == row.UniqueId);
                                     this._Model.Users.splice(index, 1);
                                 };
-                            }
+                            },
+
+                            '{root}.WebServerSettings': (model: WebServerSettingsModel) =>
+                            {
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+                            },
                         }
                     });
 
@@ -682,6 +703,10 @@
                     this._Model.Receivers.subscribe(this.feedlistChanged, this);
                     this._Model.MergedFeeds.subscribe(this.feedlistChanged, this);
                     this.synchroniseFeeds();
+
+                    var webServerAndInternetClientValidationFields = this._ViewId.findValidationProperties(this._Model.WebServerSettings);
+                    this._ViewId.findValidationProperties(this._Model.InternetClientSettings, webServerAndInternetClientValidationFields);
+                    (<WebServerSettingsModel>this._Model.WebServerSettings).WebServerAndInternetClientWrapUpValidation = this._ViewId.createWrapupValidation(webServerAndInternetClientValidationFields);
 
                     ko.applyBindings(this._Model);
                 }

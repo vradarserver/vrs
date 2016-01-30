@@ -237,6 +237,9 @@ var VRS;
                                     '{root}.BaseStationSettings': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                     },
+                                    '{root}.InternetClientSettingsModel': function (model) {
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                    },
                                     '{root}.MergedFeeds[i]': function (model) {
                                         model.FormattedReceiversCount = ko.computed(function () { return VRS.stringUtility.formatNumber(model.ReceiverIds().length, 'N0'); });
                                         model.FormattedIcaoTimeout = ko.computed(function () { return VRS.stringUtility.formatNumber(model.IcaoTimeout() / 1000, 'N2'); });
@@ -460,7 +463,10 @@ var VRS;
                                             var index = VRS.arrayHelper.indexOfMatch(_this._Model.Users(), function (r) { return r.UniqueId == row.UniqueId; });
                                             _this._Model.Users.splice(index, 1);
                                         };
-                                    }
+                                    },
+                                    '{root}.WebServerSettings': function (model) {
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                    },
                                 }
                             });
                             this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, function (r) { return r.WrapUpValidation; });
@@ -472,6 +478,9 @@ var VRS;
                             this._Model.Receivers.subscribe(this.feedlistChanged, this);
                             this._Model.MergedFeeds.subscribe(this.feedlistChanged, this);
                             this.synchroniseFeeds();
+                            var webServerAndInternetClientValidationFields = this._ViewId.findValidationProperties(this._Model.WebServerSettings);
+                            this._ViewId.findValidationProperties(this._Model.InternetClientSettings, webServerAndInternetClientValidationFields);
+                            this._Model.WebServerSettings.WebServerAndInternetClientWrapUpValidation = this._ViewId.createWrapupValidation(webServerAndInternetClientValidationFields);
                             ko.applyBindings(this._Model);
                         }
                     }

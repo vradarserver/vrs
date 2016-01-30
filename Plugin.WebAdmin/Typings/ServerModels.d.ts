@@ -181,6 +181,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierUrl: string;
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel;
+        InternetClientSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IInternetClientSettingsModel;
         RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel;
         WebServerSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IWebServerSettingsModel;
         MergedFeeds: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel[];
@@ -229,6 +230,17 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         FlightSimulatorXReceiverId: number;
         FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
         ProxyType: number;
+    }
+    interface IInternetClientSettingsModel {
+        CanRunReports: boolean;
+        CanShowPinText: boolean;
+        CanPlayAudio: boolean;
+        CanShowPictures: boolean;
+        TimeoutMinutes: number;
+        TimeoutMinutesValidation: VirtualRadar.Interface.View.IValidationModelField;
+        AllowInternetProximityGadgets: boolean;
+        CanSubmitRoutes: boolean;
+        CanShowPolarPlots: boolean;
     }
     interface IRawDecodingSettingModel {
         ReceiverRange: number;
@@ -606,6 +618,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         OnlineLookupSupplierUrl: KnockoutObservable<string>;
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel_KO;
+        InternetClientSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IInternetClientSettingsModel_KO;
         RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel_KO;
         WebServerSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IWebServerSettingsModel_KO;
         MergedFeeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO>;
@@ -654,6 +667,17 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         FlightSimulatorXReceiverId: KnockoutObservable<number>;
         FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ProxyType: KnockoutObservable<number>;
+    }
+    interface IInternetClientSettingsModel_KO {
+        CanRunReports: KnockoutObservable<boolean>;
+        CanShowPinText: KnockoutObservable<boolean>;
+        CanPlayAudio: KnockoutObservable<boolean>;
+        CanShowPictures: KnockoutObservable<boolean>;
+        TimeoutMinutes: KnockoutObservable<number>;
+        TimeoutMinutesValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        AllowInternetProximityGadgets: KnockoutObservable<boolean>;
+        CanSubmitRoutes: KnockoutObservable<boolean>;
+        CanShowPolarPlots: KnockoutObservable<boolean>;
     }
     interface IRawDecodingSettingModel_KO {
         ReceiverRange: KnockoutObservable<number>;

@@ -237,8 +237,9 @@ var VRS;
                 };
                 return result;
             };
-            ViewId.prototype.findValidationProperties = function (model) {
-                var result = [];
+            ViewId.prototype.findValidationProperties = function (model, appendToArray) {
+                if (appendToArray === void 0) { appendToArray = []; }
+                var result = appendToArray;
                 $.each(model, function (name, value) {
                     if (value && typeof value === 'object' &&
                         value.hasOwnProperty('IsValid') &&
