@@ -1032,6 +1032,111 @@
                         </div>
 
                         <!---->
+                        <!-- WEB SERVER SETTINGS -->
+                        <!---->
+
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded" data-bind="with: $root.WebServerSettings">
+                            <div>
+                                ::OptionsWebServerSheetTitle::
+                                <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WebServerAndInternetClientWrapUpValidation"></div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="form-section">
+                                    ::OptionsUPnPCategory::
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: EnableUPnp" />
+                                            ::EnableUPnp::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: IsOnlyInternetServerOnLan" />
+                                            ::ResetPortAssignmentsOnStartup::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: AutoStartUPnP" />
+                                            ::AutoStartUPnP::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="UPnpPortValidation">
+                                    <label class="col-sm-4">::UPnpPort:::</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" data-bind="textInput: UPnpPort" />
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    ::OptionsWebServerInternetClientsCategory::
+                                </div>
+                                <div data-bind="with: $root.InternetClientSettings">
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="TimeoutMinutesValidation">
+                                        <label class="col-sm-4">::IdleTimeout:::</label>
+                                        <div class="col-sm-8">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" data-bind="textInput: TimeoutMinutes" />
+                                                <span class="input-group-addon">::Minutes::</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: CanRunReports" />
+                                                ::InternetUsersCanRunReports::
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: CanPlayAudio" />
+                                                ::InternetUsersCanListenToAudio::
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: CanShowPictures" />
+                                                ::InternetUsersCanViewPictures::
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: CanShowPinText" />
+                                                ::InternetUserCanSeeLabels::
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: CanSubmitRoutes" />
+                                                ::InternetClientCanSubmitRoutes::
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: CanShowPolarPlots" />
+                                                ::InternetClientCanShowPolarPlots::
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: AllowInternetProximityGadgets" />
+                                                ::AllowInternetProximityGadgets::
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!---->
                         <!-- SAVE BUTTON -->
                         <!---->
 

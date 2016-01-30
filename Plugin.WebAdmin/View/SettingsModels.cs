@@ -143,6 +143,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public GoogleMapSettingsModel GoogleMapSettings { get; private set; }
 
+        public InternetClientSettingsModel InternetClientSettings { get; private set; }
+
         public RawDecodingSettingModel RawDecodingSettings { get; private set; }
 
         public WebServerSettingsModel WebServerSettings { get; private set; }
@@ -161,6 +163,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             BaseStationSettings = new BaseStationSettingsModel();
             GoogleMapSettings = new GoogleMapSettingsModel();
+            InternetClientSettings = new InternetClientSettingsModel();
             MergedFeeds = new List<MergedFeedModel>();
             RawDecodingSettings = new RawDecodingSettingModel();
             RebroadcastSettings = new List<RebroadcastServerModel>();
@@ -181,6 +184,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
             BaseStationSettings.RefreshFromSettings(configuration.BaseStationSettings);
             GoogleMapSettings.RefreshFromSettings(configuration.GoogleMapSettings);
+            InternetClientSettings.RefreshFromSettings(configuration.InternetClientSettings);
             RawDecodingSettings.RefreshFromSettings(configuration.RawDecodingSettings);
             WebServerSettings.RefreshFromSettings(configuration.WebServerSettings);
 
@@ -226,6 +230,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
             BaseStationSettings.CopyToSettings(configuration.BaseStationSettings);
             GoogleMapSettings.CopyToSettings(configuration.GoogleMapSettings);
+            InternetClientSettings.CopyToSettings(configuration.InternetClientSettings);
             RawDecodingSettings.CopyToSettings(configuration.RawDecodingSettings);
             WebServerSettings.CopyToSettings(configuration.WebServerSettings);
 
@@ -469,6 +474,63 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.ClosestAircraftReceiverId =    ClosestAircraftReceiverId;
             settings.FlightSimulatorXReceiverId =   FlightSimulatorXReceiverId;
             settings.ProxyType =                    EnumModel.CastFromInt<ProxyType>(ProxyType);
+
+            return settings;
+        }
+    }
+
+    public class InternetClientSettingsModel
+    {
+        public bool CanRunReports { get; set; }
+
+        public bool CanShowPinText { get; set; }
+
+        public bool CanPlayAudio { get; set; }
+
+        public bool CanShowPictures { get; set; }
+
+        public int TimeoutMinutes { get; set; }
+
+        [ValidationModelField(ValidationField.InternetUserIdleTimeout)]
+        public ValidationModelField TimeoutMinutesValidation { get; set; }
+
+        public bool AllowInternetProximityGadgets { get; set; }
+
+        public bool CanSubmitRoutes { get; set; }
+
+        public bool CanShowPolarPlots { get; set; }
+
+        public InternetClientSettingsModel()
+        {
+        }
+
+        public InternetClientSettingsModel(InternetClientSettings settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(InternetClientSettings settings)
+        {
+            CanRunReports =                     settings.CanRunReports;
+            CanShowPinText =                    settings.CanShowPinText;
+            CanPlayAudio =                      settings.CanPlayAudio;
+            CanShowPictures =                   settings.CanShowPictures;
+            TimeoutMinutes =                    settings.TimeoutMinutes;
+            AllowInternetProximityGadgets =     settings.AllowInternetProximityGadgets;
+            CanSubmitRoutes =                   settings.CanSubmitRoutes;
+            CanShowPolarPlots =                 settings.CanShowPolarPlots;
+        }
+
+        public InternetClientSettings CopyToSettings(InternetClientSettings settings)
+        {
+            settings.CanRunReports =                    CanRunReports;
+            settings.CanShowPinText =                   CanShowPinText;
+            settings.CanPlayAudio =                     CanPlayAudio;
+            settings.CanShowPictures =                  CanShowPictures;
+            settings.TimeoutMinutes =                   TimeoutMinutes;
+            settings.AllowInternetProximityGadgets =    AllowInternetProximityGadgets;
+            settings.CanSubmitRoutes =                  CanSubmitRoutes;
+            settings.CanShowPolarPlots =                CanShowPolarPlots;
 
             return settings;
         }
