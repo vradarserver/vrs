@@ -84,10 +84,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         public Options()
         {
             Enabled = true;
-            Access = new Access() {
-                DefaultAccess = DefaultAccess.Deny,
-                Addresses = { "127.0.0.1/32" },
-            };
+            Access = Access.CreateDenyAllButLocalMachineAndNetwork();
         }
     }
 }

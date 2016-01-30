@@ -98,7 +98,11 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.checkBoxEnabled);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "OptionsView";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "::Options::";
             this.ResumeLayout(false);
