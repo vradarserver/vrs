@@ -460,6 +460,8 @@ var VRS;
                                             _this._Model.SelectedUser(row);
                                         };
                                         model.DeleteRow = function (row) {
+                                            model.IsWebSiteUser(false);
+                                            model.IsAdminUser(false);
                                             var index = VRS.arrayHelper.indexOfMatch(_this._Model.Users(), function (r) { return r.UniqueId == row.UniqueId; });
                                             _this._Model.Users.splice(index, 1);
                                         };

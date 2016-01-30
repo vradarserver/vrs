@@ -110,32 +110,44 @@
             var collapsiblePanels = $('[data-bsu="collapsible-panel"]');
             $.each(collapsiblePanels, function() {
                 var panel = $(this);
+                var panelId = Helper.applyUniqueId(panel);
                 var children = panel.children();
                 if(children.length !== 2) throw 'The panel should have exactly two children';
 
                 var options = Helper.getOptions(panel);
                 var startCollapsed = VRS.arrayHelper.indexOf(options, 'expanded') === -1;
+                var usePanelTitle = VRS.arrayHelper.indexOf(options, 'use-title') !== -1;
+                var isInAccordion = panel.parent().hasClass('panel-group') || VRS.arrayHelper.indexOf(options, 'accordion') !== -1;
+                var accordion = !isInAccordion ? null : panel.closest('.panel-group');
+                if(!accordion) {
+                    isInAccordion = false;
+                }
+                var accordionId = isInAccordion ? Helper.applyUniqueId(accordion) : null;
 
                 var heading = $(children[0]);
                 var headingId = Helper.applyUniqueId(heading);
                 var body = $(children[1]);
                 var bodyId = Helper.applyUniqueId(body);
 
-                panel.addClass('panel panel-default').attr('role', 'tablist');
+                panel.addClass('panel panel-default');
 
+                var headerLink = $('<a />')
+                    .attr('class', startCollapsed ? 'collapsed' : '')
+                    .attr('data-toggle', 'collapse')
+                    .attr('role', 'button')
+                    .attr('href', '#' + bodyId)
+                    .attr('aria-expanded', startCollapsed ? 'false' : 'true')
+                    .attr('aria-controls', '#' + bodyId);
+                if(!isInAccordion) {
+                    headerLink.attr('data-target', '#' + bodyId);
+                } else {
+                    headerLink.attr('data-parent', '#' + accordionId);
+                }
                 heading.wrapInner(
-                    $('<h4 />').append(
-                        $('<a />')
-                        .attr('class', startCollapsed ? 'collapsed' : '')
-                        .attr('data-toggle', 'collapse')
-                        .attr('data-target', '#' + bodyId)
-                        .attr('href', '#' + bodyId)
-                    )
+                    $('<h4 />').addClass(usePanelTitle ? 'panel-title' : '').append(headerLink)
                 )
                 .addClass('panel-heading')
-                .attr('role', 'tab')
-                .attr('aria-expanded', 'true')
-                .attr('aria-controls', '#' + bodyId);
+                .attr('role', 'tab');
 
                 body.wrapInner($('<div />').addClass('panel-body'))
                     .addClass('panel-collapse collapse' + (startCollapsed ? '' : ' in'))
@@ -200,6 +212,9 @@
                     .attr('aria-hidden', 'true')
                     .wrapInner($('<div />').addClass('modal-content'))
                     .wrapInner($('<div />').addClass(modalDialogClass));
+
+                modal.detach();
+                $('body').append(modal);
             });
         }
 
