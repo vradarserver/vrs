@@ -40,6 +40,11 @@ namespace VirtualRadar.Interface.WebSite
         public bool DeferExecution { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the string parameter that should be filled with the current user's name.
+        /// </summary>
+        public string User { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public WebAdminMethodAttribute() : base()

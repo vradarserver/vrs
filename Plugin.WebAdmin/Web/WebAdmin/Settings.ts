@@ -9,6 +9,7 @@
         SavedMessage?:                      KnockoutObservable<string>;
         TestConnectionOutcome:              KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>;
 
+        CurrentUserName?:                   KnockoutObservable<string>;
         SelectedMergedFeed?:                KnockoutObservable<MergedFeedModel>;
         SelectedRebroadcastServer?:         KnockoutObservable<RebroadcastServerModel>;
         SelectedReceiver?:                  KnockoutObservable<ReceiverModel>;
@@ -104,9 +105,11 @@
 
     interface UserModel extends ViewJson.IUserModel_KO
     {
-        WrapUpValidation?:      IValidation_KC;
-        SelectRow?:             (row: UserModel) => void;
-        DeleteRow?:             (row: UserModel) => void;
+        IsCurrentUser?:             KnockoutComputed<boolean>;
+        LoginNameAndCurrentUser?:   KnockoutComputed<string>;
+        WrapUpValidation?:          IValidation_KC;
+        SelectRow?:                 (row: UserModel) => void;
+        DeleteRow?:                 (row: UserModel) => void;
     }
 
     interface FeedModel
@@ -369,6 +372,7 @@
                                 root.SavedMessage = ko.observable("");
 
                                 root.TestConnectionOutcome = <KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>> ko.observable(null);
+                                root.CurrentUserName = ko.observable(state.Response.CurrentUserName);
                                 root.SelectedMergedFeed = <KnockoutObservable<MergedFeedModel>> ko.observable(null);
                                 root.SelectedRebroadcastServer = <KnockoutObservable<RebroadcastServerModel>> ko.observable(null);
                                 root.SelectedReceiver = <KnockoutObservable<ReceiverModel>> ko.observable(null);
@@ -594,6 +598,17 @@
 
                             '{root}.Users[i]': (model: UserModel) =>
                             {
+                                model.IsCurrentUser = ko.pureComputed(() => VRS.stringUtility.equals(this._Model.CurrentUserName(), model.LoginName(), true));
+                                model.LoginNameAndCurrentUser = ko.pureComputed({
+                                    read: () => model.LoginName(),
+                                    write: (value) => {
+                                        if(model.IsCurrentUser()) {
+                                            this._Model.CurrentUserName(value);
+                                        }
+                                        model.LoginName(value);
+                                    },
+                                    owner: this
+                                });
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
 
                                 model.SelectRow = (row: UserModel) => {

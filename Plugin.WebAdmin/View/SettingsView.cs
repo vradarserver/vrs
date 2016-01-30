@@ -112,16 +112,17 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             _FailedValidation = results.HasErrors;
         }
 
-        [WebAdminMethod]
-        public ViewModel GetState()
+        [WebAdminMethod(User="user")]
+        public ViewModel GetState(string user)
         {
+            _ViewModel.CurrentUserName = user;
             return _ViewModel;
         }
 
-        [WebAdminMethod(DeferExecution=true)]
-        public ViewModel RaiseSaveClicked(ConfigurationModel configurationModel)
+        [WebAdminMethod(DeferExecution=true, User="user")]
+        public ViewModel RaiseSaveClicked(ConfigurationModel configurationModel, string user)
         {
-            return ApplyConfigurationAroundAction(configurationModel, () => {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
                 try {
                     OnSaveClicked(EventArgs.Empty);
                     _ViewModel.Outcome = _FailedValidation ? "FailedValidation" : "Saved";
@@ -136,30 +137,30 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             });
         }
 
-        [WebAdminMethod]
-        public ViewModel CreateNewMergedFeed(ConfigurationModel configurationModel)
+        [WebAdminMethod(User="user")]
+        public ViewModel CreateNewMergedFeed(ConfigurationModel configurationModel, string user)
         {
-            return ApplyConfigurationAroundAction(configurationModel, () => {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
                 var newRecord = _Presenter.CreateMergedFeed();
                 _ViewModel.NewMergedFeed = new MergedFeedModel(newRecord);
                 ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewMergedFeed);
             });
         }
 
-        [WebAdminMethod]
-        public ViewModel CreateNewRebroadcastServer(ConfigurationModel configurationModel)
+        [WebAdminMethod(User="user")]
+        public ViewModel CreateNewRebroadcastServer(ConfigurationModel configurationModel, string user)
         {
-            return ApplyConfigurationAroundAction(configurationModel, () => {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
                 var newRecord = _Presenter.CreateRebroadcastServer();
                 _ViewModel.NewRebroadcastServer = new RebroadcastServerModel(newRecord);
                 ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewRebroadcastServer);
             });
         }
 
-        [WebAdminMethod]
-        public ViewModel CreateNewReceiver(ConfigurationModel configurationModel)
+        [WebAdminMethod(User="user")]
+        public ViewModel CreateNewReceiver(ConfigurationModel configurationModel, string user)
         {
-            return ApplyConfigurationAroundAction(configurationModel, () => {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
                 var newRecord = _Presenter.CreateReceiver();
                 _ViewModel.NewReceiver = new ReceiverModel(newRecord);
                 ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewReceiver);
@@ -199,34 +200,35 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             return _TestConnectionOutcome;
         }
 
-        [WebAdminMethod]
-        public ViewModel RaiseReceiverLocationsFromBaseStationDatabaseClicked(ConfigurationModel configurationModel)
+        [WebAdminMethod(User="user")]
+        public ViewModel RaiseReceiverLocationsFromBaseStationDatabaseClicked(ConfigurationModel configurationModel, string user)
         {
-            return ApplyConfigurationAroundAction(configurationModel, () => OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs.Empty));
+            return ApplyConfigurationAroundAction(configurationModel, user, () => OnUpdateReceiverLocationsFromBaseStationDatabaseClicked(EventArgs.Empty));
         }
 
-        [WebAdminMethod]
-        public ViewModel CreateNewReceiverLocation(ConfigurationModel configurationModel)
+        [WebAdminMethod(User="user")]
+        public ViewModel CreateNewReceiverLocation(ConfigurationModel configurationModel, string user)
         {
-            return ApplyConfigurationAroundAction(configurationModel, () => {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
                 var newRecord = _Presenter.CreateReceiverLocation();
                 _ViewModel.NewReceiverLocation = new ReceiverLocationModel(newRecord);
                 ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewReceiverLocation);
             });
         }
 
-        [WebAdminMethod]
-        public ViewModel CreateNewUser(ConfigurationModel configurationModel)
+        [WebAdminMethod(User="user")]
+        public ViewModel CreateNewUser(ConfigurationModel configurationModel, string user)
         {
-            return ApplyConfigurationAroundAction(configurationModel, () => {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
                 var newRecord = _Presenter.CreateUser();
                 _ViewModel.NewUser = new UserModel(newRecord);
                 ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewUser);
             });
         }
 
-        private ViewModel ApplyConfigurationAroundAction(ConfigurationModel configurationModel, Action action)
+        private ViewModel ApplyConfigurationAroundAction(ConfigurationModel configurationModel, string user, Action action)
         {
+            _ViewModel.CurrentUserName = user;
             _ViewModel.NewMergedFeed = null;
             _ViewModel.NewRebroadcastServer = null;
             _ViewModel.NewReceiver = null;

@@ -174,6 +174,11 @@ namespace VirtualRadar.Interface.WebServer
         public ContentClassification Classification { get; set; }
 
         /// <summary>
+        /// Gets or sets the user name used to authenticate the request, if any.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="request"></param>

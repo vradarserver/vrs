@@ -24,6 +24,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 {
     public class ViewModel
     {
+        public string CurrentUserName { get; set; }
+
         public ConfigurationModel Configuration { get; set; }
 
         public string Outcome { get; set; }

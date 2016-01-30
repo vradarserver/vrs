@@ -208,6 +208,7 @@ var VRS;
                                         root.SaveSuccessful = ko.observable(false);
                                         root.SavedMessage = ko.observable("");
                                         root.TestConnectionOutcome = ko.observable(null);
+                                        root.CurrentUserName = ko.observable(state.Response.CurrentUserName);
                                         root.SelectedMergedFeed = ko.observable(null);
                                         root.SelectedRebroadcastServer = ko.observable(null);
                                         root.SelectedReceiver = ko.observable(null);
@@ -401,6 +402,17 @@ var VRS;
                                         };
                                     },
                                     '{root}.Users[i]': function (model) {
+                                        model.IsCurrentUser = ko.pureComputed(function () { return VRS.stringUtility.equals(_this._Model.CurrentUserName(), model.LoginName(), true); });
+                                        model.LoginNameAndCurrentUser = ko.pureComputed({
+                                            read: function () { return model.LoginName(); },
+                                            write: function (value) {
+                                                if (model.IsCurrentUser()) {
+                                                    _this._Model.CurrentUserName(value);
+                                                }
+                                                model.LoginName(value);
+                                            },
+                                            owner: _this
+                                        });
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                         model.SelectRow = function (row) {
                                             _this._Model.SelectedUser(row);
