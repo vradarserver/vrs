@@ -6977,6 +6977,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Web Site Admin.
+        /// </summary>
+        public static string WebSiteAdministrator {
+            get {
+                return ResourceManager.GetString("WebSiteAdministrator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Web site receiver.
         /// </summary>
         public static string WebSiteReceiverId {
@@ -7000,6 +7009,15 @@ namespace VirtualRadar.Localisation {
         public static string WebSiteUrl {
             get {
                 return ResourceManager.GetString("WebSiteUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Site User.
+        /// </summary>
+        public static string WebSiteUser {
+            get {
+                return ResourceManager.GetString("WebSiteUser", resourceCulture);
             }
         }
         

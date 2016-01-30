@@ -412,6 +412,36 @@ var VRS;
                                     },
                                     '{root}.Users[i]': function (model) {
                                         model.IsCurrentUser = ko.pureComputed(function () { return VRS.stringUtility.equals(_this._Model.CurrentUserName(), model.LoginName(), true); });
+                                        model.IsAdminUser = ko.pureComputed({
+                                            read: function () {
+                                                return VRS.arrayHelper.indexOf(_this._Model.WebServerSettings.AdministratorUserIds(), model.UniqueId()) !== -1;
+                                            },
+                                            write: function (value) {
+                                                var index = VRS.arrayHelper.indexOf(_this._Model.WebServerSettings.AdministratorUserIds(), model.UniqueId());
+                                                if (value && index === -1) {
+                                                    _this._Model.WebServerSettings.AdministratorUserIds.push(model.UniqueId());
+                                                }
+                                                else if (!value && index !== -1) {
+                                                    _this._Model.WebServerSettings.AdministratorUserIds.splice(index, 1);
+                                                }
+                                            },
+                                            owner: _this
+                                        });
+                                        model.IsWebSiteUser = ko.pureComputed({
+                                            read: function () {
+                                                return VRS.arrayHelper.indexOf(_this._Model.WebServerSettings.BasicAuthenticationUserIds(), model.UniqueId()) !== -1;
+                                            },
+                                            write: function (value) {
+                                                var index = VRS.arrayHelper.indexOf(_this._Model.WebServerSettings.BasicAuthenticationUserIds(), model.UniqueId());
+                                                if (value && index === -1) {
+                                                    _this._Model.WebServerSettings.BasicAuthenticationUserIds.push(model.UniqueId());
+                                                }
+                                                else if (!value && index !== -1) {
+                                                    _this._Model.WebServerSettings.BasicAuthenticationUserIds.splice(index, 1);
+                                                }
+                                            },
+                                            owner: _this
+                                        });
                                         model.LoginNameAndCurrentUser = ko.pureComputed({
                                             read: function () { return model.LoginName(); },
                                             write: function (value) {

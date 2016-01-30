@@ -111,6 +111,8 @@
     interface UserModel extends ViewJson.IUserModel_KO
     {
         IsCurrentUser?:             KnockoutComputed<boolean>;
+        IsWebSiteUser?:             KnockoutComputed<boolean>;
+        IsAdminUser?:               KnockoutComputed<boolean>;
         LoginNameAndCurrentUser?:   KnockoutComputed<string>;
         WrapUpValidation?:          IValidation_KC;
         SelectRow?:                 (row: UserModel) => void;
@@ -619,6 +621,34 @@
                             '{root}.Users[i]': (model: UserModel) =>
                             {
                                 model.IsCurrentUser = ko.pureComputed(() => VRS.stringUtility.equals(this._Model.CurrentUserName(), model.LoginName(), true));
+                                model.IsAdminUser = ko.pureComputed({
+                                    read: () => {
+                                        return VRS.arrayHelper.indexOf(this._Model.WebServerSettings.AdministratorUserIds(), model.UniqueId()) !== -1;
+                                    },
+                                    write: (value) => {
+                                        var index = VRS.arrayHelper.indexOf(this._Model.WebServerSettings.AdministratorUserIds(), model.UniqueId());
+                                        if(value && index === -1) {
+                                            this._Model.WebServerSettings.AdministratorUserIds.push(model.UniqueId());
+                                        } else if(!value && index !== -1) {
+                                            this._Model.WebServerSettings.AdministratorUserIds.splice(index, 1);
+                                        }
+                                    },
+                                    owner: this
+                                });
+                                model.IsWebSiteUser = ko.pureComputed({
+                                    read: () => {
+                                        return VRS.arrayHelper.indexOf(this._Model.WebServerSettings.BasicAuthenticationUserIds(), model.UniqueId()) !== -1;
+                                    },
+                                    write: (value) => {
+                                        var index = VRS.arrayHelper.indexOf(this._Model.WebServerSettings.BasicAuthenticationUserIds(), model.UniqueId());
+                                        if(value && index === -1) {
+                                            this._Model.WebServerSettings.BasicAuthenticationUserIds.push(model.UniqueId());
+                                        } else if(!value && index !== -1) {
+                                            this._Model.WebServerSettings.BasicAuthenticationUserIds.splice(index, 1);
+                                        }
+                                    },
+                                    owner: this
+                                });
                                 model.LoginNameAndCurrentUser = ko.pureComputed({
                                     read: () => model.LoginName(),
                                     write: (value) => {

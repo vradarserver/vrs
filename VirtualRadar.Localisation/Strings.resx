@@ -2623,4 +2623,10 @@ Show this message.</value>
   <data name="UserNameMissing" xml:space="preserve">
     <value>User Name Missing</value>
   </data>
+  <data name="WebSiteAdministrator" xml:space="preserve">
+    <value>Web Site Admin</value>
+  </data>
+  <data name="WebSiteUser" xml:space="preserve">
+    <value>Web Site User</value>
+  </data>
 </root>
