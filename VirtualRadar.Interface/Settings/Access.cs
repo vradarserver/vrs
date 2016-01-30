@@ -89,6 +89,36 @@ namespace VirtualRadar.Interface.Settings
         }
 
         /// <summary>
+        /// Returns an Access object that denies all access aside from the local machine.
+        /// </summary>
+        /// <returns></returns>
+        public static Access CreateDenyAllButLocalMachine()
+        {
+            return new Access() {
+                DefaultAccess = DefaultAccess.Deny,
+                Addresses = { "127.0.0.1/32" },
+            };
+        }
+
+        /// <summary>
+        /// Returns an Access object that denies all access aside from the local machine and the local network.
+        /// </summary>
+        /// <returns></returns>
+        public static Access CreateDenyAllButLocalMachineAndNetwork()
+        {
+            return new Access() {
+                DefaultAccess = DefaultAccess.Deny,
+                Addresses = {
+                    "127.0.0.1/32",
+                    "10.0.0.0/8",
+                    "169.254.0.0/16",
+                    "172.16.0.0/12",
+                    "192.168.0.0/16",
+                },
+            };
+        }
+
+        /// <summary>
         /// Returns true if the object passed across is an <see cref="Access"/> object with the
         /// same properties as this one.
         /// </summary>
