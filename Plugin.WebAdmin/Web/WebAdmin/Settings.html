@@ -750,12 +750,12 @@
                                             </tr>
                                         </thead>
                                         <tbody data-bind="foreach: Users">
-                                            <tr data-bind="css: { 'text-muted': !Enabled() }">
+                                            <tr data-bind="css: { 'text-muted': !Enabled(), 'text-primary': IsCurrentUser }">
                                                 <td class="thin-column">
                                                     <div data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
                                                 </td>
                                                 <td>
-                                                    <input type="checkbox" data-bind="checked: Enabled" />
+                                                    <input type="checkbox" data-bind="checked: Enabled, disable: IsCurrentUser" />
                                                 </td>
                                                 <td data-bind="text: LoginName"></td>
                                                 <td data-bind="text: Name"></td>
@@ -782,7 +782,7 @@
                                 <div class="form-group">
                                     <div class="col-sm-offset-4 col-sm-8 checkbox">
                                         <label>
-                                            <input type="checkbox" data-bind="checked: Enabled" />
+                                            <input type="checkbox" data-bind="checked: Enabled, disable: IsCurrentUser" />
                                             ::Enabled::
                                         </label>
                                     </div>
@@ -790,7 +790,7 @@
                                 <div class="form-group" data-bsu="field-validate" data-bsu-field="LoginNameValidation">
                                     <label class="col-sm-4">::LoginName:::</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" data-bind="textInput: LoginName" />
+                                        <input type="text" class="form-control" data-bind="textInput: LoginNameAndCurrentUser" />
                                     </div>
                                 </div>
                                 <div class="form-group" data-bsu="field-validate" data-bsu-field="UIPasswordValidation">

@@ -693,7 +693,9 @@ namespace VirtualRadar.WebServer
                         CachedCredential cachedCredential;
                         if(_AuthenticatedUserCache.TryGetValue(context.BasicUserName, out cachedCredential)) {
                             result = context.BasicPassword == cachedCredential.Password;
-                            if(result) result = !isAdministratorPath || cachedCredential.IsAdministrator;
+                            if(result) {
+                                result = !isAdministratorPath || cachedCredential.IsAdministrator;
+                            }
                         }
                     }
 
@@ -726,6 +728,11 @@ namespace VirtualRadar.WebServer
                             context.Response.AddHeader("WWW-Authenticate", String.Format(@"Basic Realm=""{0}""", Provider.ListenerRealm));
                         }
                     }
+
+                    if(result) {
+                        requestArgs.UserName = context.BasicUserName;
+                    }
+
                     break;
                 default:
                     throw new NotImplementedException();

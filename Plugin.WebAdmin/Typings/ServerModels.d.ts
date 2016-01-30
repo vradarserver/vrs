@@ -152,6 +152,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel {
+        CurrentUserName: string;
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel;
         Outcome: string;
         NewMergedFeed: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel;
@@ -532,6 +533,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Queues {
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface IViewModel_KO {
+        CurrentUserName: KnockoutObservable<string>;
         Configuration: VirtualRadar.Plugin.WebAdmin.View.Settings.IConfigurationModel_KO;
         Outcome: KnockoutObservable<string>;
         NewMergedFeed: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO;

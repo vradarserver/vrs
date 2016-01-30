@@ -327,7 +327,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                         var response = new JsonResponse();
 
                         try {
-                            var parameters = MapParameters(exposedMethod.MethodInfo, args);
+                            var parameters = MapParameters(exposedMethod, args);
 
                             if(!exposedMethod.WebAdminMethod.DeferExecution) {
                                 response.Response = exposedMethod.MethodInfo.Invoke(mappedView.View, parameters);
@@ -462,7 +462,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <param name="methodInfo"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        private object[] MapParameters(MethodInfo methodInfo, RequestReceivedEventArgs args)
+        private object[] MapParameters(ExposedMethod exposedMethod, RequestReceivedEventArgs args)
         {
             var result = new List<object>();
 
@@ -478,7 +478,15 @@ namespace VirtualRadar.Plugin.WebAdmin
                 values.Add(name, textValue);
             }
 
-            foreach(var parameterInfo in methodInfo.GetParameters()) {
+            if(!String.IsNullOrEmpty(exposedMethod.WebAdminMethod.User)) {
+                var userParameter = exposedMethod.WebAdminMethod.User;
+                if(values.ContainsKey(userParameter)) {
+                    values.Remove(userParameter);
+                }
+                values.Add(userParameter, args.UserName);
+            }
+
+            foreach(var parameterInfo in exposedMethod.MethodInfo.GetParameters()) {
                 var name = NormaliseString(parameterInfo.Name);
 
                 if(values.ContainsKey(name)) {
