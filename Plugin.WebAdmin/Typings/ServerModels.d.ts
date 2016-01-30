@@ -208,6 +208,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     }
     interface IGoogleMapSettingsModel {
         InitialSettings: string;
+        InitialSettingsValidation: VirtualRadar.Interface.View.IValidationModelField;
         InitialMapLatitude: number;
         InitialMapLongitude: number;
         InitialMapType: string;
@@ -647,6 +648,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     }
     interface IGoogleMapSettingsModel_KO {
         InitialSettings: KnockoutObservable<string>;
+        InitialSettingsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         InitialMapLatitude: KnockoutObservable<number>;
         InitialMapLongitude: KnockoutObservable<number>;
         InitialMapType: KnockoutObservable<string>;

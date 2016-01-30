@@ -1240,6 +1240,45 @@
                                 </div>
                             </div>
 
+                            <!---->
+                            <!-- WEB SITE INITIAL SETTINGS -->
+                            <!---->
+                            <div data-bsu="collapsible-panel" data-bind="with: $root.GoogleMapSettings">
+                                <div>
+                                    ::InitialSettingsTitle::
+                                    <div class="pull-right" data-bsu="validate-icons" data-bsu-field="InitialSettingsValidation"></div>
+                                </div>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::DesktopSite:::</label>
+                                        <div class="col-sm-8">
+                                            <a href="../desktop.html" target="livesite">desktop.html</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::MobileSite:::</label>
+                                        <div class="col-sm-8">
+                                            <a href="../mobile.html" target="livesite">mobile.html</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::SettingsSite:::</label>
+                                        <div class="col-sm-8">
+                                            <a href="../settings.html" target="livesite">settings.html</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::ExportedSettings:::</label>
+                                        <div class="col-sm-8" data-bsu="field-validate" data-bsu-field="InitialSettingsValidation">
+                                            <textarea class="form-control" rows="20" data-bind="value: InitialSettings"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>      <!-- panel group -->
 
                         <!---->
