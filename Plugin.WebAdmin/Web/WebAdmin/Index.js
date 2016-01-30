@@ -19,7 +19,7 @@ var VRS;
                         error: function () {
                             setTimeout(function () { return _this.refreshState(); }, 5000);
                         }
-                    });
+                    }, false);
                 };
                 PageHandler.prototype.toggleUPnpStatus = function () {
                     this._ViewId.ajax('RaiseToggleUPnpStatus');
