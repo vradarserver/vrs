@@ -14,6 +14,8 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.PortableBinding;
+using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebSite;
@@ -33,6 +35,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         public ReceiverModel NewReceiver { get; set; }
 
         public ReceiverLocationModel NewReceiverLocation { get; set; }
+
+        public UserModel NewUser { get; set; }
 
         public EnumModel[] ConnectionTypes { get; private set; }
 
@@ -104,6 +108,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
                 if(receiverLocation != null) {
                     result = Configuration.ReceiverLocations.FirstOrDefault(r => r.UniqueId == receiverLocation.UniqueId);
                 }
+
+                var user = validationResult.Record as IUser;
+                if(user != null) {
+                    result = Configuration.Users.FirstOrDefault(r => r.UniqueId == user.UniqueId);
+                }
             }
 
             return result;
@@ -139,6 +148,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public List<ReceiverLocationModel> ReceiverLocations { get; private set; }
 
+        public List<UserModel> Users { get; private set; }
+
         public ConfigurationModel()
         {
             BaseStationSettings = new BaseStationSettingsModel();
@@ -147,14 +158,15 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             RebroadcastSettings = new List<RebroadcastServerModel>();
             Receivers = new List<ReceiverModel>();
             ReceiverLocations = new List<ReceiverLocationModel>();
+            Users = new List<UserModel>();
         }
 
-        public ConfigurationModel(Configuration configuration) : this()
+        public ConfigurationModel(Configuration configuration, NotifyList<IUser> users) : this()
         {
-            RefreshFromConfiguration(configuration);
+            RefreshFromConfiguration(configuration, users);
         }
 
-        public void RefreshFromConfiguration(Configuration configuration)
+        public void RefreshFromConfiguration(Configuration configuration, NotifyList<IUser> users)
         {
             DataVersion = configuration.DataVersion;
 
@@ -167,27 +179,37 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
                 (source, dest) => dest.RefreshFromSettings(source)
             );
             MergedFeeds.Sort((lhs, rhs) => String.Compare(lhs.Name, rhs.Name));
+
             CollectionHelper.ApplySourceToDestination(configuration.RebroadcastSettings, RebroadcastSettings,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => new RebroadcastServerModel(source),
                 (source, dest) => dest.RefreshFromSettings(source)
             );
             RebroadcastSettings.Sort((lhs, rhs) => String.Compare(lhs.Name, rhs.Name));
+
             CollectionHelper.ApplySourceToDestination(configuration.Receivers, Receivers,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => new ReceiverModel(source),
                 (source, dest) => dest.RefreshFromSettings(source)
             );
             Receivers.Sort((lhs, rhs) => String.Compare(lhs.Name, rhs.Name));
+
             CollectionHelper.ApplySourceToDestination(configuration.ReceiverLocations, ReceiverLocations,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => new ReceiverLocationModel(source),
                 (source, dest) => dest.RefreshFromSettings(source)
             );
             ReceiverLocations.Sort((lhs, rhs) => String.Compare(lhs.Name, rhs.Name));
+
+            CollectionHelper.ApplySourceToDestination(users, Users,
+                (source, dest) => source.UniqueId == dest.UniqueId,
+                (source)       => new UserModel(source),
+                (source, dest) => dest.RefreshFromSettings(source)
+            );
+            Users.Sort((lhs, rhs) => String.Compare(lhs.LoginName, rhs.LoginName));
         }
 
-        public void CopyToConfiguration(Configuration configuration)
+        public void CopyToConfiguration(Configuration configuration, NotifyList<IUser> users, ISettingsPresenter presenter)
         {
             configuration.DataVersion = DataVersion;
 
@@ -212,6 +234,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             CollectionHelper.ApplySourceToDestination(ReceiverLocations, configuration.ReceiverLocations,
                 (source, dest) => source.UniqueId == dest.UniqueId,
                 (source)       => source.CopyToSettings(new ReceiverLocation()),
+                (source, dest) => source.CopyToSettings(dest)
+            );
+            CollectionHelper.ApplySourceToDestination(Users, users,
+                (source, dest) => source.UniqueId == dest.UniqueId,
+                (source)       => source.CopyToSettings(presenter.CreateUser()),
                 (source, dest) => source.CopyToSettings(dest)
             );
         }
@@ -846,6 +873,57 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.Latitude =                 Latitude;
             settings.Longitude =                Longitude;
             settings.IsBaseStationLocation =    IsBaseStationLocation;
+
+            return settings;
+        }
+    }
+
+    public class UserModel
+    {
+        public string UniqueId { get; set; }
+
+        public bool Enabled { get; set; }
+
+        public string LoginName { get; set; }
+
+        [ValidationModelField(ValidationField.LoginName)]
+        public ValidationModelField LoginNameValidation { get; set; }
+
+        public string Name { get; set; }
+
+        [ValidationModelField(ValidationField.Name)]
+        public ValidationModelField NameValidation { get; set; }
+
+        public string UIPassword { get; set; }
+
+        [ValidationModelField(ValidationField.Password)]
+        public ValidationModelField UIPasswordValidation { get; set; }
+
+        public UserModel()
+        {
+        }
+
+        public UserModel(IUser user)
+        {
+            RefreshFromSettings(user);
+        }
+
+        public void RefreshFromSettings(IUser settings)
+        {
+            UniqueId =      settings.UniqueId;
+            Enabled =       settings.Enabled;
+            LoginName =     settings.LoginName;
+            Name =          settings.Name;
+            UIPassword =    settings.UIPassword;
+        }
+
+        public IUser CopyToSettings(IUser settings)
+        {
+            settings.UniqueId =     UniqueId;
+            settings.Enabled =      Enabled;
+            settings.LoginName =    LoginName;
+            settings.Name =         Name;
+            settings.UIPassword =   UIPassword;
 
             return settings;
         }

@@ -26,7 +26,7 @@ var VRS;
                         error: function () {
                             setTimeout(function () { return _this.refreshState(); }, 5000);
                         }
-                    });
+                    }, false);
                 };
                 PageHandler.prototype.sendAndApplyConfiguration = function (methodName, success, applyConfigurationFirst) {
                     var _this = this;
@@ -126,9 +126,17 @@ var VRS;
                         $('#edit-receiver-location').modal('show');
                     });
                 };
-                PageHandler.prototype.updateLocationsFromBaseStation = function () {
-                    this.sendAndApplyConfiguration('RaiseReceiverLocationsFromBaseStationDatabaseClicked', function (state) {
+                PageHandler.prototype.createAndEditUser = function () {
+                    var _this = this;
+                    this._Model.SelectedUser(null);
+                    this.sendAndApplyConfiguration('CreateNewUser', function (state) {
+                        _this._Model.Users.unshiftFromModel(state.Response.NewUser);
+                        _this._Model.SelectedUser(_this._Model.Users()[0]);
+                        $('#edit-user').modal('show');
                     });
+                };
+                PageHandler.prototype.updateLocationsFromBaseStation = function () {
+                    this.sendAndApplyConfiguration('RaiseReceiverLocationsFromBaseStationDatabaseClicked', function (state) { });
                 };
                 PageHandler.prototype.showFailureMessage = function (message) {
                     var alert = $('#failure-message');
@@ -191,7 +199,8 @@ var VRS;
                                     '{root}.MergedFeeds': 'UniqueId',
                                     '{root}.RebroadcastSettings': 'UniqueId',
                                     '{root}.ReceiverLocations': 'UniqueId',
-                                    '{root}.Receivers': 'UniqueId'
+                                    '{root}.Receivers': 'UniqueId',
+                                    '{root}.Users': 'UniqueId'
                                 },
                                 extend: {
                                     '{root}': function (root) {
@@ -203,6 +212,7 @@ var VRS;
                                         root.SelectedRebroadcastServer = ko.observable(null);
                                         root.SelectedReceiver = ko.observable(null);
                                         root.SelectedReceiverLocation = ko.observable(null);
+                                        root.SelectedUser = ko.observable(null);
                                         root.ComPortNames = state.Response.ComPortNames;
                                         root.ConnectionTypes = state.Response.ConnectionTypes;
                                         root.DataSources = state.Response.DataSources;
@@ -389,6 +399,16 @@ var VRS;
                                             var index = VRS.arrayHelper.indexOfMatch(_this._Model.ReceiverLocations(), function (r) { return r.UniqueId == row.UniqueId; });
                                             _this._Model.ReceiverLocations.splice(index, 1);
                                         };
+                                    },
+                                    '{root}.Users[i]': function (model) {
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                        model.SelectRow = function (row) {
+                                            _this._Model.SelectedUser(row);
+                                        };
+                                        model.DeleteRow = function (row) {
+                                            var index = VRS.arrayHelper.indexOfMatch(_this._Model.Users(), function (r) { return r.UniqueId == row.UniqueId; });
+                                            _this._Model.Users.splice(index, 1);
+                                        };
                                     }
                                 }
                             });
@@ -396,6 +416,7 @@ var VRS;
                             this._Model.RebroadcastServerWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.RebroadcastSettings, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, function (r) { return r.WrapUpValidation; });
+                            this._Model.UserWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Users, function (r) { return r.WrapUpValidation; });
                             this._Model.Feeds = ko.observableArray([]);
                             this._Model.Receivers.subscribe(this.feedlistChanged, this);
                             this._Model.MergedFeeds.subscribe(this.feedlistChanged, this);

@@ -37,7 +37,7 @@ var VRS;
                         error: function () {
                             setTimeout(function () { return _this.refreshState(callback); }, 5000);
                         }
-                    });
+                    }, false);
                 };
                 PageHandler.prototype.applyState = function (state) {
                     var _this = this;

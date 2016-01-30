@@ -26,7 +26,7 @@
                 error: () => {
                     setTimeout(() => this.refreshState(), 5000);
                 }
-            });
+            }, false);
         }
 
         private applyState(state: IResponse<ViewJson.IViewModel>)

@@ -18,7 +18,7 @@ var VRS;
                         error: function () {
                             setTimeout(function () { return _this.refreshState(); }, 5000);
                         }
-                    });
+                    }, false);
                 };
                 PageHandler.prototype.applyState = function (state) {
                     if (this._Model) {

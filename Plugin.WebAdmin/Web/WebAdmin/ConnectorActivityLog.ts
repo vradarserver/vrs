@@ -50,7 +50,7 @@
                 error: () => {
                     setTimeout(() => this.refreshState(callback), 5000);
                 }
-            });
+            }, false);
         }
 
         private applyState(state: IResponse<ViewJson.IViewModel>)

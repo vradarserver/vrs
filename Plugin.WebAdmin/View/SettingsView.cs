@@ -23,15 +23,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         private TestConnectionOutcomeModel _TestConnectionOutcome;
         private bool _FailedValidation;
 
-        private Configuration _Configuration;
-        public Configuration Configuration
-        {
-            get { return _Configuration; }
-            set {
-                _Configuration = value;
-                _ViewModel.Configuration.RefreshFromConfiguration(value);
-            }
-        }
+        public Configuration Configuration { get; set; }
 
         public NotifyList<IUser> Users { get; private set; }
 
@@ -75,6 +67,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
             _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
             _Presenter.Initialise(this);
+
+            _ViewModel.Configuration.RefreshFromConfiguration(Configuration, Users);
             _Presenter.ValidateView();
 
             _ViewModel.ComPortNames = _Presenter.GetSerialPortNames().ToArray();
@@ -134,7 +128,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
                 } catch(ConflictingUpdateException) {
                     var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                     var configuration = configurationStorage.Load();
-                    _ViewModel.Configuration.RefreshFromConfiguration(configuration);
+                    _ViewModel.Configuration.RefreshFromConfiguration(configuration, Users);
                     ApplyConfigurationModelToView(_ViewModel.Configuration);
 
                     _ViewModel.Outcome = "ConflictingUpdate";
@@ -221,19 +215,30 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             });
         }
 
+        [WebAdminMethod]
+        public ViewModel CreateNewUser(ConfigurationModel configurationModel)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, () => {
+                var newRecord = _Presenter.CreateUser();
+                _ViewModel.NewUser = new UserModel(newRecord);
+                ValidationModelHelper.CreateEmptyViewModelValidationFields(_ViewModel.NewUser);
+            });
+        }
+
         private ViewModel ApplyConfigurationAroundAction(ConfigurationModel configurationModel, Action action)
         {
             _ViewModel.NewMergedFeed = null;
             _ViewModel.NewRebroadcastServer = null;
             _ViewModel.NewReceiver = null;
             _ViewModel.NewReceiverLocation = null;
+            _ViewModel.NewUser = null;
 
             _ViewModel.Outcome = null;
             ApplyConfigurationModelToView(configurationModel);
 
             action();
 
-            _ViewModel.Configuration.RefreshFromConfiguration(Configuration);
+            _ViewModel.Configuration.RefreshFromConfiguration(Configuration, Users);
 
             return _ViewModel;
         }
@@ -243,7 +248,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             var originalConfiguration = _ViewModel.Configuration;
 
             _ViewModel.Configuration = configurationModel;
-            _ViewModel.Configuration.CopyToConfiguration(Configuration);
+            _ViewModel.Configuration.CopyToConfiguration(Configuration, Users, _Presenter);
 
             _ViewModel.Configuration.OnlineLookupSupplierName = originalConfiguration.OnlineLookupSupplierName;
             _ViewModel.Configuration.OnlineLookupSupplierCredits = originalConfiguration.OnlineLookupSupplierCredits;

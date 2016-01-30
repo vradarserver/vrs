@@ -158,6 +158,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NewRebroadcastServer: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel;
         NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel;
+        NewUser: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel;
         ConnectionTypes: VirtualRadar.Interface.View.IEnumModel[];
         DataSources: VirtualRadar.Interface.View.IEnumModel[];
         DefaultAccesses: VirtualRadar.Interface.View.IEnumModel[];
@@ -183,6 +184,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         RebroadcastSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel[];
         Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
         ReceiverLocations: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel[];
+        Users: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel[];
     }
     interface IBaseStationSettingsModel {
         DatabaseFileName: string;
@@ -317,6 +319,16 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Longitude: number;
         LongitudeValidation: VirtualRadar.Interface.View.IValidationModelField;
         IsBaseStationLocation: boolean;
+    }
+    interface IUserModel {
+        UniqueId: string;
+        Enabled: boolean;
+        LoginName: string;
+        LoginNameValidation: VirtualRadar.Interface.View.IValidationModelField;
+        Name: string;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField;
+        UIPassword: string;
+        UIPasswordValidation: VirtualRadar.Interface.View.IValidationModelField;
     }
     interface ITestConnectionOutcomeModel {
         Title: string;
@@ -526,6 +538,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NewRebroadcastServer: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel_KO;
         NewReceiver: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO;
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO;
+        NewUser: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel_KO;
         ConnectionTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         DataSources: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         DefaultAccesses: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
@@ -551,6 +564,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         RebroadcastSettings: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel_KO>;
         Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
         ReceiverLocations: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO>;
+        Users: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel_KO>;
     }
     interface IBaseStationSettingsModel_KO {
         DatabaseFileName: KnockoutObservable<string>;
@@ -685,6 +699,16 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Longitude: KnockoutObservable<number>;
         LongitudeValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         IsBaseStationLocation: KnockoutObservable<boolean>;
+    }
+    interface IUserModel_KO {
+        UniqueId: KnockoutObservable<string>;
+        Enabled: KnockoutObservable<boolean>;
+        LoginName: KnockoutObservable<string>;
+        LoginNameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        Name: KnockoutObservable<string>;
+        NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        UIPassword: KnockoutObservable<string>;
+        UIPasswordValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
     }
     interface ITestConnectionOutcomeModel_KO {
         Title: KnockoutObservable<string>;

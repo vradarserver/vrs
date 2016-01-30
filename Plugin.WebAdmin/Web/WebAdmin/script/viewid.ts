@@ -4,6 +4,8 @@
     {
         private _LostContact = false;
         private _FailedAttempts = 0;
+        private _ModalOverlay: JQuery;
+        private _ShowModalOverlayTimer: number;
 
         private _Id: string;
         get Id() : string
@@ -21,6 +23,7 @@
         {
             this._ViewName = viewName;
             this._Id = viewId;
+            this._ModalOverlay = $('<div />').addClass('modal-alert').hide().appendTo('body');
 
             this.sendHeartbeat();
         }
@@ -48,46 +51,103 @@
                         } else {
                             this._LostContact = true;
 
-                            var modalBackdrop = $('<div />')
-                                .addClass('modal-alert')
-                                .appendTo($('body'));
-                            $('<div />')
-                                .addClass('alert alert-danger text-center')
-                                .text(VRS.WebAdmin.$$.WA_Lost_Contact)
-                                .appendTo(modalBackdrop);
+                            this._ModalOverlay
+                                .empty()
+                                .append($('<div />')
+                                    .addClass('alert alert-danger text-center')
+                                    .text(VRS.WebAdmin.$$.WA_Lost_Contact)
+                                )
+                                .show();
                         }
                     }
-                });
+                }, false);
             }
+        }
+
+        /**
+         * Shows or hides a modal overlay that prevents interaction with the page.
+         */
+        showModalOverlay(show: boolean)
+        {
+            if(show) {
+                this._ModalOverlay.show();
+            } else {
+                this._ModalOverlay.hide();
+            }
+        }
+
+        /**
+         * Returns true if the modal overlay that prevents interaction with the page is visible.
+         */
+        isModalOverlayVisible()
+        {
+            return this._ModalOverlay.is(':visible');
         }
 
         /**
          * Sends an AJAX request to the view. Handles deferred execution responses automatically.
          */
-        ajax(methodName: string, settings: JQueryAjaxSettings = {}) : JQueryXHR
+        ajax(methodName: string, settings: JQueryAjaxSettings = {}, showModalOverlay = true, keepOverlayWhenFinished = false) : JQueryXHR
         {
             if(!this._LostContact) {
                 if(methodName && !settings.url) {
-                    settings.url = this._ViewName + '/' + methodName;
+                    settings.url = this.buildMethodUrl(methodName);
+                }
+                this.addViewIdToSettings(settings);
+
+                if(showModalOverlay) {
+                    if(!this.isModalOverlayVisible()) {
+                        this._ShowModalOverlayTimer = setTimeout(() => {
+                            this._ShowModalOverlayTimer = undefined;
+                            this.showModalOverlay(true);
+                        }, 100);
+                    }
                 }
 
-                var data = settings.data || {};
-                if(this._Id) {
-                    data.__ViewId = this._Id;
-                }
-                settings.data = data;
+                var removeOverlay = () => {
+                    if(!keepOverlayWhenFinished) {
+                        if(this._ShowModalOverlayTimer !== undefined) {
+                            clearTimeout(this._ShowModalOverlayTimer);
+                            this._ShowModalOverlayTimer = undefined;
+                        }
+                        this.showModalOverlay(false);
+                    }
+                };
 
                 var success = settings.success || $.noop;
                 settings.success = (response: any, textStatus: string, jqXHR: JQueryXHR) => {
                     if(this.isDeferredExecutionResponse(response)) {
-                        this.fetchDeferredExecutionResponse(response.Response.JobId, success, 200);
+                        this.fetchDeferredExecutionResponse(response.Response.JobId, success, 200, removeOverlay);
                     } else {
+                        removeOverlay();
                         success(response, textStatus, jqXHR);
                     }
                 };
 
+                var error = settings.error || $.noop;
+                settings.error = (jqXHR: JQueryXHR, textStatus: string, errorThrown: string) => {
+                    if(showModalOverlay) {
+                        this.showModalOverlay(false);
+                    }
+                    error(jqXHR, textStatus, errorThrown);
+                };
+
                 return $.ajax(settings);
             }
+        }
+
+        private buildMethodUrl(methodName: string) : string
+        {
+            return this._ViewName + '/' + methodName;
+        }
+
+        private addViewIdToSettings(settings: JQueryAjaxSettings)
+        {
+            var data = settings.data || {};
+            if(this._Id) {
+                data.__ViewId = this._Id;
+            }
+            settings.data = data;
         }
 
         private isDeferredExecutionResponse(response: any)
@@ -95,30 +155,39 @@
             return response && response.Response && response.Response.DeferredExecution && response.Response.JobId;
         }
 
-        private fetchDeferredExecutionResponse(jobId: string, success: (response: any, textStatus: string, jqXHR: JQueryXHR) => void, interval: number)
+        private fetchDeferredExecutionResponse(jobId: string, success: (response: any, textStatus: string, jqXHR: JQueryXHR) => void, interval: number, removeOverlay: () => void)
         {
             if(!this._LostContact) {
-                setTimeout(() => this.sendRequestForDeferredExecutionResponse(jobId, success), interval);
+                setTimeout(() => this.sendRequestForDeferredExecutionResponse(jobId, success, removeOverlay), interval);
             }
         }
 
-        private sendRequestForDeferredExecutionResponse(jobId: string, success: (response: any, textStatus: string, jqXHR: JQueryXHR) => void)
+        private sendRequestForDeferredExecutionResponse(jobId: string, success: (response: any, textStatus: string, jqXHR: JQueryXHR) => void, removeOverlay: () => void)
         {
-            this.ajax('GetDeferredResponse', {
+            var settings: JQueryAjaxSettings = {
+                url: this.buildMethodUrl('GetDeferredResponse'),
                 data: {
                     jobId: jobId
                 },
                 success: (response: any, textStatus: string, jqXHR: JQueryXHR) => {
-                    if(this.isDeferredExecutionResponse(response)) {
-                        this.fetchDeferredExecutionResponse(jobId, success, 1000);
-                    } else {
-                        success(response, textStatus, jqXHR);   // This may need a bit of adjusting if anything's expecting to see their original XHR...
+                    if(!this._LostContact) {
+                        if(this.isDeferredExecutionResponse(response)) {
+                            this.fetchDeferredExecutionResponse(jobId, success, 1000, removeOverlay);
+                        } else {
+                            removeOverlay();
+                            success(response, textStatus, jqXHR);   // This may need a bit of adjusting if anything's expecting to see their original XHR...
+                        }
                     }
                 },
                 error: () => {
-                    this.fetchDeferredExecutionResponse(jobId, success, 5000);
+                    if(!this._LostContact) {
+                        this.fetchDeferredExecutionResponse(jobId, success, 5000, removeOverlay);
+                    }
                 }
-            });
+            };
+            this.addViewIdToSettings(settings);
+
+            $.ajax(settings);
         }
 
         /**
