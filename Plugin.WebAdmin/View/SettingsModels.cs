@@ -67,6 +67,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public string[] ComPortNames { get; set; }
 
+        public string[] VoiceNames { get; set; }
+
         public ViewModel()
         {
             Configuration = new ConfigurationModel();
@@ -85,6 +87,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             StopBits =              EnumModel.CreateFromEnum<StopBits>(r => Describe.StopBits(r));
 
             ComPortNames = new string[]{};
+            VoiceNames = new string[]{};
         }
 
         public object FindViewModelForRecord(ValidationResult validationResult)
@@ -139,13 +142,19 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public string OnlineLookupSupplierUrl { get; set; }
 
+        public AudioSettingsModel AudioSettings { get; private set; }
+
         public BaseStationSettingsModel BaseStationSettings { get; private set; }
+
+        public FlightRouteSettingsModel FlightRouteSettings { get; private set; }
 
         public GoogleMapSettingsModel GoogleMapSettings { get; private set; }
 
         public InternetClientSettingsModel InternetClientSettings { get; private set; }
 
         public RawDecodingSettingModel RawDecodingSettings { get; private set; }
+
+        public VersionCheckSettingsModel VersionCheckSettings { get; private set; }
 
         public WebServerSettingsModel WebServerSettings { get; private set; }
 
@@ -161,7 +170,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public ConfigurationModel()
         {
+            AudioSettings = new AudioSettingsModel();
             BaseStationSettings = new BaseStationSettingsModel();
+            FlightRouteSettings = new FlightRouteSettingsModel();
             GoogleMapSettings = new GoogleMapSettingsModel();
             InternetClientSettings = new InternetClientSettingsModel();
             MergedFeeds = new List<MergedFeedModel>();
@@ -170,6 +181,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             Receivers = new List<ReceiverModel>();
             ReceiverLocations = new List<ReceiverLocationModel>();
             Users = new List<UserModel>();
+            VersionCheckSettings = new VersionCheckSettingsModel();
             WebServerSettings = new WebServerSettingsModel();
         }
 
@@ -182,10 +194,13 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             DataVersion = configuration.DataVersion;
 
+            AudioSettings.RefreshFromSettings(configuration.AudioSettings);
             BaseStationSettings.RefreshFromSettings(configuration.BaseStationSettings);
+            FlightRouteSettings.RefreshFromSettings(configuration.FlightRouteSettings);
             GoogleMapSettings.RefreshFromSettings(configuration.GoogleMapSettings);
             InternetClientSettings.RefreshFromSettings(configuration.InternetClientSettings);
             RawDecodingSettings.RefreshFromSettings(configuration.RawDecodingSettings);
+            VersionCheckSettings.RefreshFromSettings(configuration.VersionCheckSettings);
             WebServerSettings.RefreshFromSettings(configuration.WebServerSettings);
 
             CollectionHelper.ApplySourceToDestination(configuration.MergedFeeds, MergedFeeds,
@@ -228,10 +243,13 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             configuration.DataVersion = DataVersion;
 
+            AudioSettings.CopyToSettings(configuration.AudioSettings);
             BaseStationSettings.CopyToSettings(configuration.BaseStationSettings);
+            FlightRouteSettings.CopyToSettings(configuration.FlightRouteSettings);
             GoogleMapSettings.CopyToSettings(configuration.GoogleMapSettings);
             InternetClientSettings.CopyToSettings(configuration.InternetClientSettings);
             RawDecodingSettings.CopyToSettings(configuration.RawDecodingSettings);
+            VersionCheckSettings.CopyToSettings(configuration.VersionCheckSettings);
             WebServerSettings.CopyToSettings(configuration.WebServerSettings);
 
             CollectionHelper.ApplySourceToDestination(MergedFeeds, configuration.MergedFeeds,
@@ -293,6 +311,43 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         }
     }
 
+    public class AudioSettingsModel
+    {
+        public bool Enabled { get; set; }
+
+        public string VoiceName { get; set; }
+
+        public int VoiceRate { get; set; }
+
+        [ValidationModelField(ValidationField.TextToSpeechSpeed)]
+        public ValidationModelField VoiceRateValidation { get; set; }
+
+        public AudioSettingsModel()
+        {
+        }
+
+        public AudioSettingsModel(AudioSettings settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(AudioSettings settings)
+        {
+            Enabled =   settings.Enabled;
+            VoiceName = settings.VoiceName;
+            VoiceRate = settings.VoiceRate;
+        }
+
+        public AudioSettings CopyToSettings(AudioSettings settings)
+        {
+            settings.Enabled =   Enabled;
+            settings.VoiceName = VoiceName;
+            settings.VoiceRate = VoiceRate;
+
+            return settings;
+        }
+    }
+
     public class BaseStationSettingsModel
     {
         public string DatabaseFileName { get; set; }
@@ -319,11 +374,20 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public int DisplayTimeoutSeconds { get; set; }
 
+        [ValidationModelField(ValidationField.DisplayTimeout)]
+        public ValidationModelField DisplayTimeoutSecondsValidation { get; set; }
+
         public int TrackingTimeoutSeconds { get; set; }
+
+        [ValidationModelField(ValidationField.TrackingTimeout)]
+        public ValidationModelField TrackingTimeoutSecondsValidation { get; set; }
 
         public bool MinimiseToSystemTray { get; set; }
 
         public int AutoSavePolarPlotsMinutes { get; set; }
+
+        [ValidationModelField(ValidationField.AutoSavePolarPlots)]
+        public ValidationModelField AutoSavePolarPlotsMinutesValidation { get; set; }
 
         public bool LookupAircraftDetailsOnline { get; set; }
 
@@ -368,6 +432,32 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         }
     }
 
+    public class FlightRouteSettingsModel
+    {
+        public bool AutoUpdateEnabled { get; set; }
+
+        public FlightRouteSettingsModel()
+        {
+        }
+
+        public FlightRouteSettingsModel(FlightRouteSettings settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(FlightRouteSettings settings)
+        {
+            AutoUpdateEnabled = settings.AutoUpdateEnabled;
+        }
+
+        public FlightRouteSettings CopyToSettings(FlightRouteSettings settings)
+        {
+            settings.AutoUpdateEnabled = AutoUpdateEnabled;
+
+            return settings;
+        }
+    }
+
     public class GoogleMapSettingsModel
     {
         public string InitialSettings { get; set; }
@@ -394,6 +484,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         public ValidationModelField MinimumRefreshSecondsValidation { get; set; }
 
         public int ShortTrailLengthSeconds { get; set; }
+
+        [ValidationModelField(ValidationField.ShortTrailLength)]
+        public ValidationModelField ShortTrailLengthSecondsValidation { get; set; }
 
         public int InitialDistanceUnit { get; set; }            // DistanceUnit
 
@@ -1137,6 +1230,39 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.LoginName =    LoginName;
             settings.Name =         Name;
             settings.UIPassword =   UIPassword;
+
+            return settings;
+        }
+    }
+
+    public class VersionCheckSettingsModel
+    {
+        public bool CheckAutomatically { get; set; }
+
+        public int CheckPeriodDays { get; set; }
+
+        [ValidationModelField(ValidationField.CheckForNewVersions)]
+        public ValidationModelField CheckPeriodDaysValidation { get; set; }
+
+        public VersionCheckSettingsModel()
+        {
+        }
+
+        public VersionCheckSettingsModel(VersionCheckSettings settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(VersionCheckSettings settings)
+        {
+            CheckAutomatically =    settings.CheckAutomatically;
+            CheckPeriodDays =       settings.CheckPeriodDays;
+        }
+
+        public VersionCheckSettings CopyToSettings(VersionCheckSettings settings)
+        {
+            settings.CheckAutomatically =   CheckAutomatically;
+            settings.CheckPeriodDays =      CheckPeriodDays;
 
             return settings;
         }

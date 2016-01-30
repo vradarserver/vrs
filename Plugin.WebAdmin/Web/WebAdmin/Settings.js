@@ -221,6 +221,7 @@ var VRS;
                                         root.SelectedReceiverLocation = ko.observable(null);
                                         root.SelectedUser = ko.observable(null);
                                         root.ComPortNames = state.Response.ComPortNames;
+                                        root.VoiceNames = state.Response.VoiceNames;
                                         root.ConnectionTypes = state.Response.ConnectionTypes;
                                         root.DataSources = state.Response.DataSources;
                                         root.DefaultAccesses = state.Response.DefaultAccesses;
@@ -233,6 +234,12 @@ var VRS;
                                         root.ReceiverUsages = state.Response.ReceiverUsages;
                                         root.SpeedUnits = state.Response.SpeedUnits;
                                         root.StopBits = state.Response.StopBits;
+                                    },
+                                    '{root}.AudioSettings': function (model) {
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                        model.SetDefaultVoice = function () {
+                                            model.VoiceName(null);
+                                        };
                                     },
                                     '{root}.BaseStationSettings': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
