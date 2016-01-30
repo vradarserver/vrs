@@ -237,6 +237,9 @@ var VRS;
                                     '{root}.BaseStationSettings': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                     },
+                                    '{root}.GoogleMapSettings': function (model) {
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                    },
                                     '{root}.InternetClientSettingsModel': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                     },

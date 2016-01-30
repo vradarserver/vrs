@@ -45,6 +45,11 @@
         WrapUpValidation?: IValidation_KC;
     }
 
+    interface GoogleMapSettingsModel extends ViewJson.IGoogleMapSettingsModel_KO
+    {
+        WrapUpValidation?: IValidation_KC;
+    }
+
     interface InternetClientSettingsModel extends ViewJson.IInternetClientSettingsModel_KO
     {
         WrapUpValidation?: IValidation_KC;
@@ -423,6 +428,11 @@
                             },
 
                             '{root}.BaseStationSettings': (model: BaseStationSettingsModel) =>
+                            {
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+                            },
+
+                            '{root}.GoogleMapSettings': (model: GoogleMapSettingsModel) =>
                             {
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
                             },

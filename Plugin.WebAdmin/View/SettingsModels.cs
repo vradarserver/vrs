@@ -382,7 +382,13 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public int InitialRefreshSeconds { get; set; }
 
+        [ValidationModelField(ValidationField.InitialGoogleMapRefreshSeconds)]
+        public ValidationModelField InitialRefreshSecondsValidation { get; set; }
+
         public int MinimumRefreshSeconds { get; set; }
+
+        [ValidationModelField(ValidationField.MinimumGoogleMapRefreshSeconds)]
+        public ValidationModelField MinimumRefreshSecondsValidation { get; set; }
 
         public int ShortTrailLengthSeconds { get; set; }
 
