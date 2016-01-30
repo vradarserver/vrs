@@ -213,7 +213,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         InitialMapType: string;
         InitialMapZoom: number;
         InitialRefreshSeconds: number;
+        InitialRefreshSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         MinimumRefreshSeconds: number;
+        MinimumRefreshSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         ShortTrailLengthSeconds: number;
         InitialDistanceUnit: number;
         InitialHeightUnit: number;
@@ -650,7 +652,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         InitialMapType: KnockoutObservable<string>;
         InitialMapZoom: KnockoutObservable<number>;
         InitialRefreshSeconds: KnockoutObservable<number>;
+        InitialRefreshSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         MinimumRefreshSeconds: KnockoutObservable<number>;
+        MinimumRefreshSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ShortTrailLengthSeconds: KnockoutObservable<number>;
         InitialDistanceUnit: KnockoutObservable<number>;
         InitialHeightUnit: KnockoutObservable<number>;
