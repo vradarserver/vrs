@@ -372,6 +372,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
     {
         public string InitialSettings { get; set; }
 
+        [ValidationModelField(ValidationField.ExportedSettings)]
+        public ValidationModelField InitialSettingsValidation { get; set; }
+
         public double InitialMapLatitude { get; set; }
 
         public double InitialMapLongitude { get; set; }
