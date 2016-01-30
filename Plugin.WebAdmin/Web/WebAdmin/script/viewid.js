@@ -9,6 +9,7 @@ var VRS;
                 this._FailedAttempts = 0;
                 this._ViewName = viewName;
                 this._Id = viewId;
+                this._ModalOverlay = $('<div />').addClass('modal-alert').hide().appendTo('body');
                 this.sendHeartbeat();
             }
             Object.defineProperty(ViewId.prototype, "Id", {
@@ -48,69 +49,120 @@ var VRS;
                             }
                             else {
                                 _this._LostContact = true;
-                                var modalBackdrop = $('<div />')
-                                    .addClass('modal-alert')
-                                    .appendTo($('body'));
-                                $('<div />')
+                                _this._ModalOverlay
+                                    .empty()
+                                    .append($('<div />')
                                     .addClass('alert alert-danger text-center')
-                                    .text(VRS.WebAdmin.$$.WA_Lost_Contact)
-                                    .appendTo(modalBackdrop);
+                                    .text(VRS.WebAdmin.$$.WA_Lost_Contact))
+                                    .show();
                             }
                         }
-                    });
+                    }, false);
                 }
             };
-            ViewId.prototype.ajax = function (methodName, settings) {
+            ViewId.prototype.showModalOverlay = function (show) {
+                if (show) {
+                    this._ModalOverlay.show();
+                }
+                else {
+                    this._ModalOverlay.hide();
+                }
+            };
+            ViewId.prototype.isModalOverlayVisible = function () {
+                return this._ModalOverlay.is(':visible');
+            };
+            ViewId.prototype.ajax = function (methodName, settings, showModalOverlay, keepOverlayWhenFinished) {
                 var _this = this;
                 if (settings === void 0) { settings = {}; }
+                if (showModalOverlay === void 0) { showModalOverlay = true; }
+                if (keepOverlayWhenFinished === void 0) { keepOverlayWhenFinished = false; }
                 if (!this._LostContact) {
                     if (methodName && !settings.url) {
-                        settings.url = this._ViewName + '/' + methodName;
+                        settings.url = this.buildMethodUrl(methodName);
                     }
-                    var data = settings.data || {};
-                    if (this._Id) {
-                        data.__ViewId = this._Id;
+                    this.addViewIdToSettings(settings);
+                    if (showModalOverlay) {
+                        if (!this.isModalOverlayVisible()) {
+                            this._ShowModalOverlayTimer = setTimeout(function () {
+                                _this._ShowModalOverlayTimer = undefined;
+                                _this.showModalOverlay(true);
+                            }, 100);
+                        }
                     }
-                    settings.data = data;
+                    var removeOverlay = function () {
+                        if (!keepOverlayWhenFinished) {
+                            if (_this._ShowModalOverlayTimer !== undefined) {
+                                clearTimeout(_this._ShowModalOverlayTimer);
+                                _this._ShowModalOverlayTimer = undefined;
+                            }
+                            _this.showModalOverlay(false);
+                        }
+                    };
                     var success = settings.success || $.noop;
                     settings.success = function (response, textStatus, jqXHR) {
                         if (_this.isDeferredExecutionResponse(response)) {
-                            _this.fetchDeferredExecutionResponse(response.Response.JobId, success, 200);
+                            _this.fetchDeferredExecutionResponse(response.Response.JobId, success, 200, removeOverlay);
                         }
                         else {
+                            removeOverlay();
                             success(response, textStatus, jqXHR);
                         }
+                    };
+                    var error = settings.error || $.noop;
+                    settings.error = function (jqXHR, textStatus, errorThrown) {
+                        if (showModalOverlay) {
+                            _this.showModalOverlay(false);
+                        }
+                        error(jqXHR, textStatus, errorThrown);
                     };
                     return $.ajax(settings);
                 }
             };
+            ViewId.prototype.buildMethodUrl = function (methodName) {
+                return this._ViewName + '/' + methodName;
+            };
+            ViewId.prototype.addViewIdToSettings = function (settings) {
+                var data = settings.data || {};
+                if (this._Id) {
+                    data.__ViewId = this._Id;
+                }
+                settings.data = data;
+            };
             ViewId.prototype.isDeferredExecutionResponse = function (response) {
                 return response && response.Response && response.Response.DeferredExecution && response.Response.JobId;
             };
-            ViewId.prototype.fetchDeferredExecutionResponse = function (jobId, success, interval) {
+            ViewId.prototype.fetchDeferredExecutionResponse = function (jobId, success, interval, removeOverlay) {
                 var _this = this;
                 if (!this._LostContact) {
-                    setTimeout(function () { return _this.sendRequestForDeferredExecutionResponse(jobId, success); }, interval);
+                    setTimeout(function () { return _this.sendRequestForDeferredExecutionResponse(jobId, success, removeOverlay); }, interval);
                 }
             };
-            ViewId.prototype.sendRequestForDeferredExecutionResponse = function (jobId, success) {
+            ViewId.prototype.sendRequestForDeferredExecutionResponse = function (jobId, success, removeOverlay) {
                 var _this = this;
-                this.ajax('GetDeferredResponse', {
+                var settings = {
+                    url: this.buildMethodUrl('GetDeferredResponse'),
                     data: {
                         jobId: jobId
                     },
                     success: function (response, textStatus, jqXHR) {
-                        if (_this.isDeferredExecutionResponse(response)) {
-                            _this.fetchDeferredExecutionResponse(jobId, success, 1000);
-                        }
-                        else {
-                            success(response, textStatus, jqXHR);
+                        if (!_this._LostContact) {
+                            if (_this.isDeferredExecutionResponse(response)) {
+                                _this.fetchDeferredExecutionResponse(jobId, success, 1000, removeOverlay);
+                            }
+                            else {
+                                removeOverlay();
+                                success(response, textStatus, jqXHR);
+                            }
                         }
                     },
                     error: function () {
-                        _this.fetchDeferredExecutionResponse(jobId, success, 5000);
+                        if (!_this._LostContact) {
+                            _this.fetchDeferredExecutionResponse(jobId, success, 5000, removeOverlay);
+                        }
                     }
-                });
+                };
+                this.addViewIdToSettings(settings);
+                $.ajax(settings);
             };
             ViewId.prototype.createWrapupValidation = function (validationFields) {
                 var result = {

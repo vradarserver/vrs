@@ -13,13 +13,15 @@
         SelectedRebroadcastServer?:         KnockoutObservable<RebroadcastServerModel>;
         SelectedReceiver?:                  KnockoutObservable<ReceiverModel>;
         SelectedReceiverLocation?:          KnockoutObservable<ReceiverLocationModel>;
-
-        Feeds?:                             KnockoutObservableArray<FeedModel>;
+        SelectedUser?:                      KnockoutObservable<UserModel>;
 
         MergedFeedWrapUpValidation?:        IValidation_KC;
         RebroadcastServerWrapUpValidation?: IValidation_KC;
         ReceiverWrapUpValidation?:          IValidation_KC;
         ReceiverLocationWrapUpValidation?:  IValidation_KC;
+        UserWrapUpValidation?:              IValidation_KC;
+
+        Feeds?:                             KnockoutObservableArray<FeedModel>;
 
         ComPortNames?:                      string[];
         BaudRates?:                         number[];
@@ -100,6 +102,13 @@
         DeleteRow?:             (row: ReceiverLocationModel) => void;
     }
 
+    interface UserModel extends ViewJson.IUserModel_KO
+    {
+        WrapUpValidation?:      IValidation_KC;
+        SelectRow?:             (row: UserModel) => void;
+        DeleteRow?:             (row: UserModel) => void;
+    }
+
     interface FeedModel
     {
         UniqueId:               KnockoutObservable<number>;
@@ -136,7 +145,7 @@
                 error: () => {
                     setTimeout(() => this.refreshState(), 5000);
                 }
-            });
+            }, false);
         }
 
         private sendAndApplyConfiguration(methodName: string, success: (state: IResponse<ViewJson.IViewModel>) => void, applyConfigurationFirst: boolean = true)
@@ -249,10 +258,21 @@
             });
         }
 
+        createAndEditUser()
+        {
+            this._Model.SelectedUser(null);
+
+            this.sendAndApplyConfiguration('CreateNewUser', (state: IResponse<ViewJson.IViewModel>) => {
+                this._Model.Users.unshiftFromModel(state.Response.NewUser);
+                this._Model.SelectedUser(this._Model.Users()[0]);
+
+                $('#edit-user').modal('show');
+            });
+        }
+
         updateLocationsFromBaseStation()
         {
-            this.sendAndApplyConfiguration('RaiseReceiverLocationsFromBaseStationDatabaseClicked', (state: IResponse<ViewJson.IViewModel>) => {
-            });
+            this.sendAndApplyConfiguration('RaiseReceiverLocationsFromBaseStationDatabaseClicked', (state: IResponse<ViewJson.IViewModel>) => { });
         }
 
         private showFailureMessage(message: string)
@@ -337,7 +357,8 @@
                             '{root}.MergedFeeds':           'UniqueId',
                             '{root}.RebroadcastSettings':   'UniqueId',
                             '{root}.ReceiverLocations':     'UniqueId',
-                            '{root}.Receivers':             'UniqueId'
+                            '{root}.Receivers':             'UniqueId',
+                            '{root}.Users':                 'UniqueId'
                         },
 
                         extend: {
@@ -352,6 +373,7 @@
                                 root.SelectedRebroadcastServer = <KnockoutObservable<RebroadcastServerModel>> ko.observable(null);
                                 root.SelectedReceiver = <KnockoutObservable<ReceiverModel>> ko.observable(null);
                                 root.SelectedReceiverLocation = <KnockoutObservable<ReceiverLocationModel>> ko.observable(null);
+                                root.SelectedUser = <KnockoutObservable<UserModel>> ko.observable(null);
 
                                 root.ComPortNames =         state.Response.ComPortNames;
                                 root.ConnectionTypes =      state.Response.ConnectionTypes;
@@ -568,6 +590,19 @@
                                     var index = VRS.arrayHelper.indexOfMatch(this._Model.ReceiverLocations(), r => r.UniqueId == row.UniqueId);
                                     this._Model.ReceiverLocations.splice(index, 1);
                                 };
+                            },
+
+                            '{root}.Users[i]': (model: UserModel) =>
+                            {
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+
+                                model.SelectRow = (row: UserModel) => {
+                                    this._Model.SelectedUser(row);
+                                };
+                                model.DeleteRow = (row: UserModel) => {
+                                    var index = VRS.arrayHelper.indexOfMatch(this._Model.Users(), r => r.UniqueId == row.UniqueId);
+                                    this._Model.Users.splice(index, 1);
+                                };
                             }
                         }
                     });
@@ -576,6 +611,7 @@
                     this._Model.RebroadcastServerWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.RebroadcastSettings, (r) => (<RebroadcastServerModel>r).WrapUpValidation);
                     this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, (r) => (<ReceiverModel>r).WrapUpValidation);
                     this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, (r) => (<ReceiverLocationModel>r).WrapUpValidation);
+                    this._Model.UserWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Users, (r) => (<UserModel>r).WrapUpValidation);
 
                     this._Model.Feeds = ko.observableArray([]);
                     this._Model.Receivers.subscribe(this.feedlistChanged, this);

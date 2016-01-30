@@ -74,7 +74,7 @@
                 error: () => {
                     setTimeout(() => this.refreshState(), 5000);
                 }
-            });
+            }, false);
         }
 
         toggleUPnpStatus()
