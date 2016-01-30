@@ -135,6 +135,12 @@ var VRS;
                         $('#edit-user').modal('show');
                     });
                 };
+                PageHandler.prototype.useIcaoRawDecodingSettings = function () {
+                    this.sendAndApplyConfiguration('RaiseUseIcaoRawDecodingSettingsClicked', function (state) { });
+                };
+                PageHandler.prototype.useRecommendedRawDecodingSettings = function () {
+                    this.sendAndApplyConfiguration('RaiseUseRecommendedRawDecodingSettingsClicked', function (state) { });
+                };
                 PageHandler.prototype.updateLocationsFromBaseStation = function () {
                     this.sendAndApplyConfiguration('RaiseReceiverLocationsFromBaseStationDatabaseClicked', function (state) { });
                 };
@@ -301,6 +307,9 @@ var VRS;
                                                 owner: _this
                                             });
                                         };
+                                    },
+                                    '{root}.RawDecodingSettings': function (model) {
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                     },
                                     '{root}.RebroadcastSettings[i]': function (model) {
                                         model.FormattedAccess = ko.computed(function () { return _this._ViewId.describeEnum(model.Access.DefaultAccess(), state.Response.DefaultAccesses); });

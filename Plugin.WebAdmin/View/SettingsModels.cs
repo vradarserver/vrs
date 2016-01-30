@@ -142,6 +142,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public GoogleMapSettingsModel GoogleMapSettings { get; private set; }
 
+        public RawDecodingSettingModel RawDecodingSettings { get; private set; }
+
         public List<MergedFeedModel> MergedFeeds { get; private set; }
 
         public List<RebroadcastServerModel> RebroadcastSettings { get; private set; }
@@ -157,6 +159,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             BaseStationSettings = new BaseStationSettingsModel();
             GoogleMapSettings = new GoogleMapSettingsModel();
             MergedFeeds = new List<MergedFeedModel>();
+            RawDecodingSettings = new RawDecodingSettingModel();
             RebroadcastSettings = new List<RebroadcastServerModel>();
             Receivers = new List<ReceiverModel>();
             ReceiverLocations = new List<ReceiverLocationModel>();
@@ -174,6 +177,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
             BaseStationSettings.RefreshFromSettings(configuration.BaseStationSettings);
             GoogleMapSettings.RefreshFromSettings(configuration.GoogleMapSettings);
+            RawDecodingSettings.RefreshFromSettings(configuration.RawDecodingSettings);
 
             CollectionHelper.ApplySourceToDestination(configuration.MergedFeeds, MergedFeeds,
                 (source, dest) => source.UniqueId == dest.UniqueId,
@@ -217,6 +221,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
             BaseStationSettings.CopyToSettings(configuration.BaseStationSettings);
             GoogleMapSettings.CopyToSettings(configuration.GoogleMapSettings);
+            RawDecodingSettings.CopyToSettings(configuration.RawDecodingSettings);
 
             CollectionHelper.ApplySourceToDestination(MergedFeeds, configuration.MergedFeeds,
                 (source, dest) => source.UniqueId == dest.UniqueId,
@@ -561,6 +566,137 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             settings.UniqueId =     UniqueId;
             settings.IsMlatFeed =   IsMlatFeed;
+
+            return settings;
+        }
+    }
+
+    public class RawDecodingSettingModel
+    {
+        public int ReceiverRange { get; set; }
+
+        [ValidationModelField(ValidationField.ReceiverRange)]
+        public ValidationModelField ReceiverRangeValidation { get; set; }
+
+        public bool IgnoreMilitaryExtendedSquitter { get; set; }
+
+        public bool SuppressReceiverRangeCheck { get; set; }
+
+        public bool UseLocalDecodeForInitialPosition { get; set; }
+
+        public int AirborneGlobalPositionLimit { get; set; }
+
+        [ValidationModelField(ValidationField.AirborneGlobalPositionLimit)]
+        public ValidationModelField AirborneGlobalPositionLimitValidation { get; set; }
+
+        public int FastSurfaceGlobalPositionLimit { get; set; }
+
+        [ValidationModelField(ValidationField.FastSurfaceGlobalPositionLimit)]
+        public ValidationModelField FastSurfaceGlobalPositionLimitValidation { get; set; }
+
+        public int SlowSurfaceGlobalPositionLimit { get; set; }
+
+        [ValidationModelField(ValidationField.SlowSurfaceGlobalPositionLimit)]
+        public ValidationModelField SlowSurfaceGlobalPositionLimitValidation { get; set; }
+
+        public double AcceptableAirborneSpeed { get; set; }
+
+        [ValidationModelField(ValidationField.AcceptableAirborneLocalPositionSpeed)]
+        public ValidationModelField AcceptableAirborneSpeedValidation { get; set; }
+
+        public double AcceptableAirSurfaceTransitionSpeed { get; set; }
+
+        [ValidationModelField(ValidationField.AcceptableTransitionLocalPositionSpeed)]
+        public ValidationModelField AcceptableAirSurfaceTransitionSpeedValidation { get; set; }
+
+        public double AcceptableSurfaceSpeed { get; set; }
+
+        [ValidationModelField(ValidationField.AcceptableSurfaceLocalPositionSpeed)]
+        public ValidationModelField AcceptableSurfaceSpeedValidation { get; set; }
+
+        public bool IgnoreCallsignsInBds20 { get; set; }
+
+        public int AcceptIcaoInPI0Count { get; set; }
+
+        [ValidationModelField(ValidationField.AcceptIcaoInPI0Count)]
+        public ValidationModelField AcceptIcaoInPI0CountValidation { get; set; }
+
+        public int AcceptIcaoInPI0Seconds { get; set; }
+
+        [ValidationModelField(ValidationField.AcceptIcaoInPI0Seconds)]
+        public ValidationModelField AcceptIcaoInPI0SecondsValidation { get; set; }
+
+        public int AcceptIcaoInNonPICount { get; set; }
+
+        [ValidationModelField(ValidationField.AcceptIcaoInNonPICount)]
+        public ValidationModelField AcceptIcaoInNonPICountValidation { get; set; }
+
+        public int AcceptIcaoInNonPISeconds { get; set; }
+
+        [ValidationModelField(ValidationField.AcceptIcaoInNonPISeconds)]
+        public ValidationModelField AcceptIcaoInNonPISecondsValidation { get; set; }
+
+        public bool SuppressIcao0 { get; set; }
+
+        public bool IgnoreInvalidCodeBlockInParityMessages { get; set; }
+
+        public bool IgnoreInvalidCodeBlockInOtherMessages { get; set; }
+
+        public bool SuppressTisbDecoding { get; set; }
+
+        public RawDecodingSettingModel()
+        {
+        }
+
+        public RawDecodingSettingModel(RawDecodingSettings settings)
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(RawDecodingSettings settings)
+        {
+            ReceiverRange =                             settings.ReceiverRange;
+            IgnoreMilitaryExtendedSquitter =            settings.IgnoreMilitaryExtendedSquitter;
+            SuppressReceiverRangeCheck =                settings.SuppressReceiverRangeCheck;
+            UseLocalDecodeForInitialPosition =          settings.UseLocalDecodeForInitialPosition;
+            AirborneGlobalPositionLimit =               settings.AirborneGlobalPositionLimit;
+            FastSurfaceGlobalPositionLimit =            settings.FastSurfaceGlobalPositionLimit;
+            SlowSurfaceGlobalPositionLimit =            settings.SlowSurfaceGlobalPositionLimit;
+            AcceptableAirborneSpeed =                   settings.AcceptableAirborneSpeed;
+            AcceptableAirSurfaceTransitionSpeed =       settings.AcceptableAirSurfaceTransitionSpeed;
+            AcceptableSurfaceSpeed =                    settings.AcceptableSurfaceSpeed;
+            IgnoreCallsignsInBds20 =                    settings.IgnoreCallsignsInBds20;
+            AcceptIcaoInPI0Count =                      settings.AcceptIcaoInPI0Count;
+            AcceptIcaoInPI0Seconds =                    settings.AcceptIcaoInPI0Seconds;
+            AcceptIcaoInNonPICount =                    settings.AcceptIcaoInNonPICount;
+            AcceptIcaoInNonPISeconds =                  settings.AcceptIcaoInNonPISeconds;
+            SuppressIcao0 =                             settings.SuppressIcao0;
+            IgnoreInvalidCodeBlockInParityMessages =    settings.IgnoreInvalidCodeBlockInParityMessages;
+            IgnoreInvalidCodeBlockInOtherMessages =     settings.IgnoreInvalidCodeBlockInOtherMessages;
+            SuppressTisbDecoding =                      settings.SuppressTisbDecoding;
+        }
+
+        public RawDecodingSettings CopyToSettings(RawDecodingSettings settings)
+        {
+            settings.ReceiverRange =                            ReceiverRange;
+            settings.IgnoreMilitaryExtendedSquitter =           IgnoreMilitaryExtendedSquitter;
+            settings.SuppressReceiverRangeCheck =               SuppressReceiverRangeCheck;
+            settings.UseLocalDecodeForInitialPosition =         UseLocalDecodeForInitialPosition;
+            settings.AirborneGlobalPositionLimit =              AirborneGlobalPositionLimit;
+            settings.FastSurfaceGlobalPositionLimit =           FastSurfaceGlobalPositionLimit;
+            settings.SlowSurfaceGlobalPositionLimit =           SlowSurfaceGlobalPositionLimit;
+            settings.AcceptableAirborneSpeed =                  AcceptableAirborneSpeed;
+            settings.AcceptableAirSurfaceTransitionSpeed =      AcceptableAirSurfaceTransitionSpeed;
+            settings.AcceptableSurfaceSpeed =                   AcceptableSurfaceSpeed;
+            settings.IgnoreCallsignsInBds20 =                   IgnoreCallsignsInBds20;
+            settings.AcceptIcaoInPI0Count =                     AcceptIcaoInPI0Count;
+            settings.AcceptIcaoInPI0Seconds =                   AcceptIcaoInPI0Seconds;
+            settings.AcceptIcaoInNonPICount =                   AcceptIcaoInNonPICount;
+            settings.AcceptIcaoInNonPISeconds =                 AcceptIcaoInNonPISeconds;
+            settings.SuppressIcao0 =                            SuppressIcao0;
+            settings.IgnoreInvalidCodeBlockInParityMessages =   IgnoreInvalidCodeBlockInParityMessages;
+            settings.IgnoreInvalidCodeBlockInOtherMessages =    IgnoreInvalidCodeBlockInOtherMessages;
+            settings.SuppressTisbDecoding =                     SuppressTisbDecoding;
 
             return settings;
         }

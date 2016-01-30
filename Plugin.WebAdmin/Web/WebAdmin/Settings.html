@@ -809,6 +809,199 @@
                         </div>
 
                         <!---->
+                        <!-- RAW DECODING SETTINGS -->
+                        <!---->
+
+                        <div data-bsu="collapsible-panel" data-bsu-options="expanded" data-bind="with: $root.RawDecodingSettings">
+                            <div>
+                                ::OptionsRawFeedSheetTitle::
+                                <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.useIcaoRawDecodingSettings, pageHandler)">
+                                            ::UseIcaoSpecificationSettings::
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.useRecommendedRawDecodingSettings, pageHandler)">
+                                            ::UseRecommendedSettings::
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    ::Range::
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="ReceiverRangeValidation">
+                                    <label class="col-sm-4">::ReceiverRange:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: ReceiverRange" />
+                                            <span class="input-group-addon">::Kilometres::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: SuppressReceiverRangeCheck" />
+                                            ::SuppressReceiverRangeCheck::
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    ::OptionsRawFeedDecoderParametersCategory::
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: IgnoreMilitaryExtendedSquitter" />
+                                            ::IgnoreMilitaryExtendedSquitter::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: UseLocalDecodeForInitialPosition" />
+                                            ::UseLocalDecodeForInitialPosition::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="AirborneGlobalPositionLimitValidation">
+                                    <label class="col-sm-4">::AirborneGlobal:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: AirborneGlobalPositionLimit" />
+                                            <span class="input-group-addon">::Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="FastSurfaceGlobalPositionLimitValidation">
+                                    <label class="col-sm-4">::FastSurfaceGlobal:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: FastSurfaceGlobalPositionLimit" />
+                                            <span class="input-group-addon">::Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="SlowSurfaceGlobalPositionLimitValidation">
+                                    <label class="col-sm-4">::SlowSurfaceGlobal:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: SlowSurfaceGlobalPositionLimit" />
+                                            <span class="input-group-addon">::Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="AcceptableAirborneSpeedValidation">
+                                    <label class="col-sm-4">::MaxAirborneSpeed:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: AcceptableAirborneSpeed" />
+                                            <span class="input-group-addon">::KilometresOver30Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="AcceptableAirSurfaceTransitionSpeedValidation">
+                                    <label class="col-sm-4">::MaxTransitionSpeed:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: AcceptableAirSurfaceTransitionSpeed" />
+                                            <span class="input-group-addon">::KilometresOver30Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-bsu="field-validate" data-bsu-field="AcceptableSurfaceSpeedValidation">
+                                    <label class="col-sm-4">::MaxSurfaceSpeed:::</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" data-bind="textInput: AcceptableSurfaceSpeed" />
+                                            <span class="input-group-addon">::KilometresOver30Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: IgnoreCallsignsInBds20" />
+                                            ::IgnoreCallsignsInBds20::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: SuppressIcao0" />
+                                            ::SuppressICAO0::
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: SuppressTisbDecoding" />
+                                            ::SuppressTisbMessages::
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    ::OptionsRawFeedAcceptIcaoAsValidCategory::
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4">::AcceptIcaoInPI0Count:::</label>
+                                    <div class="col-sm-3" data-bsu="field-validate" data-bsu-field="AcceptIcaoInPI0CountValidation">
+                                        <input type="number" class="form-control" data-bind="textInput: AcceptIcaoInPI0Count" />
+                                    </div>
+                                    <div class="col-sm-1 text-center">
+                                        /
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group" data-bsu="field-validate" data-bsu-field="AcceptIcaoInPI0SecondsValidation">
+                                            <input type="number" class="form-control" data-bind="textInput: AcceptIcaoInPI0Seconds" />
+                                            <span class="input-group-addon">::Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4">::AcceptIcaoInNonPICount:::</label>
+                                    <div class="col-sm-3" data-bsu="field-validate" data-bsu-field="AcceptIcaoInNonPICountValidation">
+                                        <input type="number" class="form-control" data-bind="textInput: AcceptIcaoInNonPICount" />
+                                    </div>
+                                    <div class="col-sm-1 text-center">
+                                        /
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group" data-bsu="field-validate" data-bsu-field="AcceptIcaoInNonPISecondsValidation">
+                                            <input type="number" class="form-control" data-bind="textInput: AcceptIcaoInNonPISeconds" />
+                                            <span class="input-group-addon">::Seconds::</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4">::IgnoreUnassignedIcao:::</label>
+                                    <div class="col-sm-4 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: IgnoreInvalidCodeBlockInParityMessages" />
+                                            ::InPI0Messages::
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-4 checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: IgnoreInvalidCodeBlockInOtherMessages" />
+                                            ::InNonPI0Messages::
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!---->
                         <!-- SAVE BUTTON -->
                         <!---->
 

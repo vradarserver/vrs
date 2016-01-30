@@ -51,10 +51,20 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             EventHelper.Raise(TestConnectionClicked, this, args);
         }
 
+        public event EventHandler UseIcaoRawDecodingSettingsClicked;
+        private void OnUseIcaoRawDecodingSettingsClicked(EventArgs args)
+        {
+            EventHelper.Raise(UseIcaoRawDecodingSettingsClicked, this, args);
+        }
+
+        public event EventHandler UseRecommendedRawDecodingSettingsClicked;
+        private void OnUseRecommendedRawDecodingSettingsClicked(EventArgs args)
+        {
+            EventHelper.Raise(UseRecommendedRawDecodingSettingsClicked, this, args);
+        }
+
         #pragma warning disable 0067
         public event EventHandler TestTextToSpeechSettingsClicked;
-        public event EventHandler UseIcaoRawDecodingSettingsClicked;
-        public event EventHandler UseRecommendedRawDecodingSettingsClicked;
         public event EventHandler FlightSimulatorXOnlyClicked;
         public event EventHandler<EventArgs<string>> OpenUrlClicked;
         #pragma warning restore 0067
@@ -134,6 +144,22 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
                     _ViewModel.Outcome = "ConflictingUpdate";
                 }
+            });
+        }
+
+        [WebAdminMethod(User="user")]
+        public ViewModel RaiseUseIcaoRawDecodingSettingsClicked(ConfigurationModel configurationModel, string user)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
+                OnUseIcaoRawDecodingSettingsClicked(EventArgs.Empty);
+            });
+        }
+
+        [WebAdminMethod(User="user")]
+        public ViewModel RaiseUseRecommendedRawDecodingSettingsClicked(ConfigurationModel configurationModel, string user)
+        {
+            return ApplyConfigurationAroundAction(configurationModel, user, () => {
+                OnUseRecommendedRawDecodingSettingsClicked(EventArgs.Empty);
             });
         }
 

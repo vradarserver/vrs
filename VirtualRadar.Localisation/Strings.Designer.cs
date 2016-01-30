@@ -2232,6 +2232,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to km / 30 seconds.
+        /// </summary>
+        public static string KilometresOver30Seconds {
+            get {
+                return ResourceManager.GetString("KilometresOver30Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kilometres per Hour.
         /// </summary>
         public static string KilometresPerHour {
