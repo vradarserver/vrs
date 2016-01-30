@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Net;
 using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.PortableBinding;
@@ -144,6 +145,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public RawDecodingSettingModel RawDecodingSettings { get; private set; }
 
+        public WebServerSettingsModel WebServerSettings { get; private set; }
+
         public List<MergedFeedModel> MergedFeeds { get; private set; }
 
         public List<RebroadcastServerModel> RebroadcastSettings { get; private set; }
@@ -164,6 +167,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             Receivers = new List<ReceiverModel>();
             ReceiverLocations = new List<ReceiverLocationModel>();
             Users = new List<UserModel>();
+            WebServerSettings = new WebServerSettingsModel();
         }
 
         public ConfigurationModel(Configuration configuration, NotifyList<IUser> users) : this()
@@ -178,6 +182,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             BaseStationSettings.RefreshFromSettings(configuration.BaseStationSettings);
             GoogleMapSettings.RefreshFromSettings(configuration.GoogleMapSettings);
             RawDecodingSettings.RefreshFromSettings(configuration.RawDecodingSettings);
+            WebServerSettings.RefreshFromSettings(configuration.WebServerSettings);
 
             CollectionHelper.ApplySourceToDestination(configuration.MergedFeeds, MergedFeeds,
                 (source, dest) => source.UniqueId == dest.UniqueId,
@@ -222,6 +227,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             BaseStationSettings.CopyToSettings(configuration.BaseStationSettings);
             GoogleMapSettings.CopyToSettings(configuration.GoogleMapSettings);
             RawDecodingSettings.CopyToSettings(configuration.RawDecodingSettings);
+            WebServerSettings.CopyToSettings(configuration.WebServerSettings);
 
             CollectionHelper.ApplySourceToDestination(MergedFeeds, configuration.MergedFeeds,
                 (source, dest) => source.UniqueId == dest.UniqueId,
@@ -989,7 +995,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
         }
 
-        public ReceiverLocationModel(ReceiverLocation settings)
+        public ReceiverLocationModel(ReceiverLocation settings) : this()
         {
             ValidationModelHelper.CreateEmptyViewModelValidationFields(this);
             RefreshFromSettings(settings);
@@ -1041,7 +1047,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
         }
 
-        public UserModel(IUser user)
+        public UserModel(IUser user) : this()
         {
             RefreshFromSettings(user);
         }
@@ -1062,6 +1068,63 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.LoginName =    LoginName;
             settings.Name =         Name;
             settings.UIPassword =   UIPassword;
+
+            return settings;
+        }
+    }
+
+    public class WebServerSettingsModel
+    {
+        public bool UsersMustAuthenticate { get; private set; }
+
+        public List<string> BasicAuthenticationUserIds { get; private set; }
+
+        public List<string> AdministratorUserIds { get; private set; }
+
+        public bool EnableUPnp { get; set; }
+
+        public int UPnpPort { get; set; }
+
+        [ValidationModelField(ValidationField.UPnpPortNumber)]
+        public ValidationModelField UPnpPortValidation { get; set; }
+
+        public bool IsOnlyInternetServerOnLan { get; set; }
+
+        public bool AutoStartUPnP { get; set; }
+
+        public WebServerSettingsModel()
+        {
+            BasicAuthenticationUserIds = new List<string>();
+            AdministratorUserIds = new List<string>();
+        }
+
+        public WebServerSettingsModel(WebServerSettings settings) : this()
+        {
+            RefreshFromSettings(settings);
+        }
+
+        public void RefreshFromSettings(WebServerSettings settings)
+        {
+            UsersMustAuthenticate =         settings.AuthenticationScheme == AuthenticationSchemes.Basic;
+            EnableUPnp =                    settings.EnableUPnp;
+            UPnpPort =                      settings.UPnpPort;
+            IsOnlyInternetServerOnLan =     settings.IsOnlyInternetServerOnLan;
+            AutoStartUPnP =                 settings.AutoStartUPnP;
+
+            CollectionHelper.OverwriteDestinationWithSource(settings.BasicAuthenticationUserIds, BasicAuthenticationUserIds);
+            CollectionHelper.OverwriteDestinationWithSource(settings.AdministratorUserIds, AdministratorUserIds);
+        }
+
+        public WebServerSettings CopyToSettings(WebServerSettings settings)
+        {
+            settings.AuthenticationScheme =         UsersMustAuthenticate ? AuthenticationSchemes.Basic : AuthenticationSchemes.Anonymous;
+            settings.EnableUPnp =                   EnableUPnp;
+            settings.UPnpPort =                     UPnpPort;
+            settings.IsOnlyInternetServerOnLan =    IsOnlyInternetServerOnLan;
+            settings.AutoStartUPnP =                AutoStartUPnP;
+
+            CollectionHelper.OverwriteDestinationWithSource(BasicAuthenticationUserIds, settings.BasicAuthenticationUserIds);
+            CollectionHelper.OverwriteDestinationWithSource(AdministratorUserIds, settings.AdministratorUserIds);
 
             return settings;
         }

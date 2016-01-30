@@ -99,5 +99,28 @@ namespace VirtualRadar.Interface
                 }
             }
         }
+
+        /// <summary>
+        /// A version of <see cref="ApplySourceToDestination"/> that is suitable for synchronising lists of values. There is no
+        /// conversion between types and the source and destination must both implement IList. Values are not compared, the
+        /// destination elements are just overwritten with the source.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        public static void OverwriteDestinationWithSource<T>(IList<T> source, IList<T> destination)
+        {
+            for(var i = 0;i < source.Count;++i) {
+                if(destination.Count <= i) {
+                    destination.Add(source[i]);
+                } else {
+                    destination[i] = source[i];
+                }
+            }
+
+            while(destination.Count > source.Count) {
+                destination.RemoveAt(source.Count);
+            }
+        }
     }
 }

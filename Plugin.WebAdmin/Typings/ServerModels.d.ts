@@ -182,6 +182,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel;
         RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel;
+        WebServerSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IWebServerSettingsModel;
         MergedFeeds: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel[];
         RebroadcastSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel[];
         Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
@@ -260,6 +261,16 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         IgnoreInvalidCodeBlockInParityMessages: boolean;
         IgnoreInvalidCodeBlockInOtherMessages: boolean;
         SuppressTisbDecoding: boolean;
+    }
+    interface IWebServerSettingsModel {
+        UsersMustAuthenticate: boolean;
+        BasicAuthenticationUserIds: string[];
+        AdministratorUserIds: string[];
+        EnableUPnp: boolean;
+        UPnpPort: number;
+        UPnpPortValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IsOnlyInternetServerOnLan: boolean;
+        AutoStartUPnP: boolean;
     }
     interface IMergedFeedModel {
         Enabled: boolean;
@@ -596,6 +607,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel_KO;
         RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel_KO;
+        WebServerSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IWebServerSettingsModel_KO;
         MergedFeeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO>;
         RebroadcastSettings: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel_KO>;
         Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
@@ -674,6 +686,16 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         IgnoreInvalidCodeBlockInParityMessages: KnockoutObservable<boolean>;
         IgnoreInvalidCodeBlockInOtherMessages: KnockoutObservable<boolean>;
         SuppressTisbDecoding: KnockoutObservable<boolean>;
+    }
+    interface IWebServerSettingsModel_KO {
+        UsersMustAuthenticate: KnockoutObservable<boolean>;
+        BasicAuthenticationUserIds: KnockoutViewModelArray<string>;
+        AdministratorUserIds: KnockoutViewModelArray<string>;
+        EnableUPnp: KnockoutObservable<boolean>;
+        UPnpPort: KnockoutObservable<number>;
+        UPnpPortValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IsOnlyInternetServerOnLan: KnockoutObservable<boolean>;
+        AutoStartUPnP: KnockoutObservable<boolean>;
     }
     interface IMergedFeedModel_KO {
         Enabled: KnockoutObservable<boolean>;
