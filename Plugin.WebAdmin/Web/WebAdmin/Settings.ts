@@ -25,6 +25,7 @@
         Feeds?:                             KnockoutObservableArray<FeedModel>;
 
         ComPortNames?:                      string[];
+        VoiceNames?:                        string[];
         BaudRates?:                         number[];
         ConnectionTypes?:                   VirtualRadar.Interface.View.IEnumModel[];
         DataSources?:                       VirtualRadar.Interface.View.IEnumModel[];
@@ -38,6 +39,12 @@
         ReceiverUsages?:                    VirtualRadar.Interface.View.IEnumModel[];
         SpeedUnits?:                        VirtualRadar.Interface.View.IEnumModel[];
         StopBits?:                          VirtualRadar.Interface.View.IEnumModel[];
+    }
+
+    interface AudioSettingsModel extends ViewJson.IAudioSettingsModel_KO
+    {
+        SetDefaultVoice?:   () => void;
+        WrapUpValidation?:  IValidation_KC;
     }
 
     interface BaseStationSettingsModel extends ViewJson.IBaseStationSettingsModel_KO
@@ -413,6 +420,7 @@
                                 root.SelectedUser = <KnockoutObservable<UserModel>> ko.observable(null);
 
                                 root.ComPortNames =         state.Response.ComPortNames;
+                                root.VoiceNames =           state.Response.VoiceNames;
                                 root.ConnectionTypes =      state.Response.ConnectionTypes;
                                 root.DataSources =          state.Response.DataSources;
                                 root.DefaultAccesses =      state.Response.DefaultAccesses;
@@ -425,6 +433,15 @@
                                 root.ReceiverUsages =       state.Response.ReceiverUsages;
                                 root.SpeedUnits =           state.Response.SpeedUnits;
                                 root.StopBits =             state.Response.StopBits;
+                            },
+
+                            '{root}.AudioSettings': (model: AudioSettingsModel) =>
+                            {
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+
+                                model.SetDefaultVoice = () => {
+                                    model.VoiceName(null);
+                                };
                             },
 
                             '{root}.BaseStationSettings': (model: BaseStationSettingsModel) =>

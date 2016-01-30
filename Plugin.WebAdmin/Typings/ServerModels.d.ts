@@ -173,22 +173,32 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         SpeedUnits: VirtualRadar.Interface.View.IEnumModel[];
         StopBits: VirtualRadar.Interface.View.IEnumModel[];
         ComPortNames: string[];
+        VoiceNames: string[];
     }
     interface IConfigurationModel {
         DataVersion: number;
         OnlineLookupSupplierName: string;
         OnlineLookupSupplierCredits: string;
         OnlineLookupSupplierUrl: string;
+        AudioSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IAudioSettingsModel;
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel;
+        FlightRouteSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IFlightRouteSettingsModel;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel;
         InternetClientSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IInternetClientSettingsModel;
         RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel;
+        VersionCheckSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IVersionCheckSettingsModel;
         WebServerSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IWebServerSettingsModel;
         MergedFeeds: VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel[];
         RebroadcastSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel[];
         Receivers: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel[];
         ReceiverLocations: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel[];
         Users: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel[];
+    }
+    interface IAudioSettingsModel {
+        Enabled: boolean;
+        VoiceName: string;
+        VoiceRate: number;
+        VoiceRateValidation: VirtualRadar.Interface.View.IValidationModelField;
     }
     interface IBaseStationSettingsModel {
         DatabaseFileName: string;
@@ -201,10 +211,16 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         PicturesFolderValidation: VirtualRadar.Interface.View.IValidationModelField;
         SearchPictureSubFolders: boolean;
         DisplayTimeoutSeconds: number;
+        DisplayTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         TrackingTimeoutSeconds: number;
+        TrackingTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         MinimiseToSystemTray: boolean;
         AutoSavePolarPlotsMinutes: number;
+        AutoSavePolarPlotsMinutesValidation: VirtualRadar.Interface.View.IValidationModelField;
         LookupAircraftDetailsOnline: boolean;
+    }
+    interface IFlightRouteSettingsModel {
+        AutoUpdateEnabled: boolean;
     }
     interface IGoogleMapSettingsModel {
         InitialSettings: string;
@@ -218,6 +234,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         MinimumRefreshSeconds: number;
         MinimumRefreshSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         ShortTrailLengthSeconds: number;
+        ShortTrailLengthSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         InitialDistanceUnit: number;
         InitialHeightUnit: number;
         InitialSpeedUnit: number;
@@ -276,6 +293,11 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         IgnoreInvalidCodeBlockInParityMessages: boolean;
         IgnoreInvalidCodeBlockInOtherMessages: boolean;
         SuppressTisbDecoding: boolean;
+    }
+    interface IVersionCheckSettingsModel {
+        CheckAutomatically: boolean;
+        CheckPeriodDays: number;
+        CheckPeriodDaysValidation: VirtualRadar.Interface.View.IValidationModelField;
     }
     interface IWebServerSettingsModel {
         UsersMustAuthenticate: boolean;
@@ -613,22 +635,32 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         SpeedUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ComPortNames: KnockoutViewModelArray<string>;
+        VoiceNames: KnockoutViewModelArray<string>;
     }
     interface IConfigurationModel_KO {
         DataVersion: KnockoutObservable<number>;
         OnlineLookupSupplierName: KnockoutObservable<string>;
         OnlineLookupSupplierCredits: KnockoutObservable<string>;
         OnlineLookupSupplierUrl: KnockoutObservable<string>;
+        AudioSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IAudioSettingsModel_KO;
         BaseStationSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IBaseStationSettingsModel_KO;
+        FlightRouteSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IFlightRouteSettingsModel_KO;
         GoogleMapSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IGoogleMapSettingsModel_KO;
         InternetClientSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IInternetClientSettingsModel_KO;
         RawDecodingSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IRawDecodingSettingModel_KO;
+        VersionCheckSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IVersionCheckSettingsModel_KO;
         WebServerSettings: VirtualRadar.Plugin.WebAdmin.View.Settings.IWebServerSettingsModel_KO;
         MergedFeeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IMergedFeedModel_KO>;
         RebroadcastSettings: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IRebroadcastServerModel_KO>;
         Receivers: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverModel_KO>;
         ReceiverLocations: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO>;
         Users: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel_KO>;
+    }
+    interface IAudioSettingsModel_KO {
+        Enabled: KnockoutObservable<boolean>;
+        VoiceName: KnockoutObservable<string>;
+        VoiceRate: KnockoutObservable<number>;
+        VoiceRateValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
     }
     interface IBaseStationSettingsModel_KO {
         DatabaseFileName: KnockoutObservable<string>;
@@ -641,10 +673,16 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         PicturesFolderValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         SearchPictureSubFolders: KnockoutObservable<boolean>;
         DisplayTimeoutSeconds: KnockoutObservable<number>;
+        DisplayTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         TrackingTimeoutSeconds: KnockoutObservable<number>;
+        TrackingTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         MinimiseToSystemTray: KnockoutObservable<boolean>;
         AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
+        AutoSavePolarPlotsMinutesValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         LookupAircraftDetailsOnline: KnockoutObservable<boolean>;
+    }
+    interface IFlightRouteSettingsModel_KO {
+        AutoUpdateEnabled: KnockoutObservable<boolean>;
     }
     interface IGoogleMapSettingsModel_KO {
         InitialSettings: KnockoutObservable<string>;
@@ -658,6 +696,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         MinimumRefreshSeconds: KnockoutObservable<number>;
         MinimumRefreshSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ShortTrailLengthSeconds: KnockoutObservable<number>;
+        ShortTrailLengthSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         InitialDistanceUnit: KnockoutObservable<number>;
         InitialHeightUnit: KnockoutObservable<number>;
         InitialSpeedUnit: KnockoutObservable<number>;
@@ -716,6 +755,11 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         IgnoreInvalidCodeBlockInParityMessages: KnockoutObservable<boolean>;
         IgnoreInvalidCodeBlockInOtherMessages: KnockoutObservable<boolean>;
         SuppressTisbDecoding: KnockoutObservable<boolean>;
+    }
+    interface IVersionCheckSettingsModel_KO {
+        CheckAutomatically: KnockoutObservable<boolean>;
+        CheckPeriodDays: KnockoutObservable<number>;
+        CheckPeriodDaysValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
     }
     interface IWebServerSettingsModel_KO {
         UsersMustAuthenticate: KnockoutObservable<boolean>;
