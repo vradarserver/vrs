@@ -302,6 +302,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         public void RegisterTranslations(Type stringResourcesType, string @namespace)
         {
             if(String.IsNullOrEmpty(@namespace)) throw new InvalidOperationException("You must supply a namespace");
+            RegisterTranslations(stringResourcesType, @namespace, false);
         }
 
         /// <summary>

@@ -78,7 +78,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Version { get { return "2.4"; } }
+        public string Version { get { return "2.3.1"; } }
 
         /// <summary>
         /// See interface docs.
@@ -120,7 +120,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             _WebAdminViewManager = (WebAdminViewManager)(new WebAdminViewManager().Singleton);
             _WebAdminViewManager.Initialise(ProtectedFolder);
-            _WebAdminViewManager.RegisterTemplateFileName("@head.html@", Path.GetFullPath(Path.Combine(PluginFolder, "web/webadmin/templates/head.html")));
+            _WebAdminViewManager.RegisterTemplateFileName("@head.html@", Path.GetFullPath(Path.Combine(PluginFolder, "Web/WebAdmin/templates/head.html")));
 
             classFactory.Register<IWebAdminViewManager, WebAdminViewManager>();
         }
@@ -183,7 +183,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             using(var dialog = new WinForms.OptionsView()) {
                 var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
-                dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "WebAdmin/index.html");
+                dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "WebAdmin/Index.html");
                 dialog.Options = OptionsStorage.Load(this);
 
                 if(dialog.ShowDialog() == DialogResult.OK) {
