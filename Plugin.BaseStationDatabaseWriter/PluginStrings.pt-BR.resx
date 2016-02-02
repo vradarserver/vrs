@@ -145,7 +145,7 @@
     <value>Ativado, mas não está atualizando o banco de dados</value>
   </data>
   <data name="ExceptionCaught" xml:space="preserve">
-    <value>erro capturado: {0}</value>
+    <value>erro detectado: {0}</value>
   </data>
   <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
     <value>Erro detectado ao fechar sessão: {0}</value>
@@ -173,7 +173,7 @@
     <value>'{0}' é zero</value>
   </data>
   <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
-    <value>Configurações impedem a atualização ddo banco de dados não criado pelo plug-in</value>
+    <value>Configurações impedem a atualização do banco de dados não criado pelo plug-in</value>
   </data>
   <data name="UseDefaultFileName" xml:space="preserve">
     <value>Usar nome padrão</value>

@@ -1,4 +1,4 @@
-// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2013 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -100,10 +100,10 @@
 
         switch(countEngines) {
             case 'C':       result = 'Coupled'; break;
-            case '1':       result = 'Single'; break;
-            case '2':       result = 'Twin'; break;
-            case '3':       result = 'Three'; break;
-            case '4':       result = 'Four'; break;
+            case '1':       result = 'Monomotor'; break;
+            case '2':       result = 'Bimotor'; break;
+            case '3':       result = 'Trimotor'; break;
+            case '4':       result = 'Quadrimotor'; break;
             case '5':       result = 'Five'; break;
             case '6':       result = 'Six'; break;
             case '7':       result = 'Seven'; break;
@@ -113,8 +113,8 @@
 
         switch(engineType) {
             case VRS.EngineType.Electric:   result += ' electrico'; break;
-            case VRS.EngineType.Jet:        result += ' jato'; break;
-            case VRS.EngineType.Piston:     result += ' pistão'; break;
+            case VRS.EngineType.Jet:        result += ' a jato'; break;
+            case VRS.EngineType.Piston:     result += ' a pistão'; break;
             case VRS.EngineType.Turbo:      result += ' turbo'; break;
         }
 
@@ -142,7 +142,7 @@
             switch(category) {
                 case VRS.WakeTurbulenceCategory.None:   if(!ignoreNone) result = 'None'; break;
                 case VRS.WakeTurbulenceCategory.Light:  result = 'Leve'; break;
-                case VRS.WakeTurbulenceCategory.Medium: result = 'Médio'; break;
+                case VRS.WakeTurbulenceCategory.Medium: result = 'Média'; break;
                 case VRS.WakeTurbulenceCategory.Heavy:  result = 'Pesado'; break;
                 default: throw 'Unknown wake turbulence category' + category;  // Do not translate this line
             }
