@@ -902,15 +902,21 @@ namespace VirtualRadar.Library.BaseStation
 
             if(removeList.Count > 0) {
                 lock(_AircraftListLock) {
+                    aircraftMap = CollectionHelper.ShallowCopy(_AircraftMap);
+                    var calculatedTrackCoordinates = CollectionHelper.ShallowCopy(_CalculatedTrackCoordinates);
+
                     foreach(var uniqueId in removeList) {
-                        if(_AircraftMap.ContainsKey(uniqueId)) {
-                            _AircraftMap.Remove(uniqueId);
+                        if(aircraftMap.ContainsKey(uniqueId)) {
+                            aircraftMap.Remove(uniqueId);
                         }
 
                         if(_CalculatedTrackCoordinates.ContainsKey(uniqueId)) {
-                            _CalculatedTrackCoordinates.Remove(uniqueId);
+                            calculatedTrackCoordinates.Remove(uniqueId);
                         }
                     }
+
+                    _AircraftMap = aircraftMap;
+                    _CalculatedTrackCoordinates = calculatedTrackCoordinates;
                 }
 
                 OnCountChanged(EventArgs.Empty);
@@ -923,8 +929,8 @@ namespace VirtualRadar.Library.BaseStation
         private void ResetAircraftList()
         {
             lock(_AircraftListLock) {
-                _AircraftMap.Clear();
-                _CalculatedTrackCoordinates.Clear();
+                _AircraftMap = new Dictionary<int,IAircraft>();
+                _CalculatedTrackCoordinates = new Dictionary<int,TrackCalculationParameters>();
             }
 
             OnCountChanged(EventArgs.Empty);
