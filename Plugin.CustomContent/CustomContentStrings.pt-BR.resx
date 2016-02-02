@@ -171,7 +171,7 @@
     <comment>The root folder for the web site</comment>
   </data>
   <data name="End" xml:space="preserve">
-    <value>End</value>
+    <value>Final</value>
     <comment>As in at the end of a file</comment>
   </data>
   <data name="ErrorCheckingFileName" xml:space="preserve">
@@ -196,7 +196,7 @@
     <value>Por favor, insira o caminho e o nome do arquivo HTML para inserir o conteúdo (por exemplo /index.html) ou * para inseir em todo o HTML</value>
   </data>
   <data name="Start" xml:space="preserve">
-    <value>Start</value>
+    <value>Inicio</value>
     <comment>As in at the beginning of a file</comment>
   </data>
   <data name="Address" xml:space="preserve">

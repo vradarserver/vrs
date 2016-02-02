@@ -335,7 +335,7 @@ Tradução russa por: Sergey Serov /sergsero and friends.</value>
     <comment>Default Google map type</comment>
   </data>
   <data name="InitialRefresh" xml:space="preserve">
-    <value>Initial refresh</value>
+    <value>Segundos entre as atualizações</value>
     <comment>Number of seconds between each update of the map</comment>
   </data>
   <data name="InitialZoom" xml:space="preserve">
@@ -432,7 +432,7 @@ Tradução russa por: Sergey Serov /sergsero and friends.</value>
     <value>Desconectando</value>
   </data>
   <data name="FlightSimulatorXIsNotInstalled" xml:space="preserve">
-    <value>Flight Simulator X não está instalado (não foi possivel carregar SimConnect)</value>
+    <value>Flight Simulator X não está instalado (não foi possivel carregar o SimConnect)</value>
     <comment>"Flight Simulator X" and "SimConnect" may not need translating</comment>
   </data>
   <data name="FlightSimulatorXShutdown" xml:space="preserve">
@@ -698,7 +698,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>Este programa não vai funcionar no sistema operacional que você está usando. Se você estiver unsado o Windows XP, instale o Service Pack 2 ou superior.</value>
   </data>
   <data name="WindowsVersionTooLowTitle" xml:space="preserve">
-    <value>HttpListener Não suportado pelo O/S</value>
+    <value>HttpListener Não suportado pelo OS</value>
     <comment>Title for an error message box</comment>
   </data>
   <data name="CannotParseRouteFile" xml:space="preserve">
@@ -1156,7 +1156,7 @@ ESTE SOFTWARE É FORNECIDO PELOS DETENTORES DE DIREITOS AUTORAIS E COLABORADORES
     <value>O número de quilómetros que um veículo sobre a superfície pode viajar em 30 segundos antes de descodificação de um local a ser considerada inválida. ICAO recomenda 1,4 km. valores altos podem indicar uma posição errada</value>
   </data>
   <data name="OptionsDescribeRawFeedAirborneGlobalPositionLimit" xml:space="preserve">
-    <value>The number of seconds that can elapse between odd/even format airborne position messages in global decoding. ICAO recommend 10 seconds. High values can cause aircraft to initially appear several hundred miles from their true location.</value>
+    <value>The number of seconds that can elapse between odd/even format airborne position messages in global decoding. A ICAO recomendam 10 segundos. Valores elevados podem fazer com que as aeronaves apareçam centenas de milhas de sua verdadeira localização.</value>
   </data>
   <data name="OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit" xml:space="preserve">
     <value>The number of seconds that can elapse between odd/even format surface position messages in global decoding for vehicles travelling over 25 knots. ICAO recommend 25 seconds. High values can cause vehicles to initially appear several hundred miles from their true location.</value>
@@ -1244,7 +1244,7 @@ ESTE SOFTWARE É FORNECIDO PELOS DETENTORES DE DIREITOS AUTORAIS E COLABORADORES
     <value>Detalhes do receptor</value>
   </data>
   <data name="OptionsRawFeedSheetTitle" xml:space="preserve">
-    <value>Raw Feed Decoding</value>
+    <value>Decoficaçãpo de Raw Feed</value>
   </data>
   <data name="OptionsUPnPCategory" xml:space="preserve">
     <value>UPnP</value>
@@ -1395,11 +1395,11 @@ ESTE SOFTWARE É FORNECIDO PELOS DETENTORES DE DIREITOS AUTORAIS E COLABORADORES
     <comment>As in the settings for serial communications</comment>
   </data>
   <data name="SerialShutdownText" xml:space="preserve">
-    <value>Shutdown command</value>
+    <value>Comando para desoncectar</value>
     <comment>Text sent to a COM device when disconnecting.</comment>
   </data>
   <data name="SerialStartupText" xml:space="preserve">
-    <value>Startup command</value>
+    <value>Comando para coenctar</value>
     <comment>Text sent to a COM device when first connected.</comment>
   </data>
   <data name="SerialStopBits" xml:space="preserve">
@@ -2030,7 +2030,7 @@ Por favor, especifique o receptor que o widget de desktop vai usar</value>
     <value>Próximo</value>
   </data>
   <data name="RecConWizConnectionTypeTitle" xml:space="preserve">
-    <value>Como é o receptor conectado?</value>
+    <value>Qual é o receptor conectado?</value>
   </data>
   <data name="RecConWizDedicatedAirNavRadarBox" xml:space="preserve">
     <value>AirNav Systems RadarBox</value>
@@ -2039,7 +2039,7 @@ Por favor, especifique o receptor que o widget de desktop vai usar</value>
     <value>Beast</value>
   </data>
   <data name="RecConWizDedicatedKinetics" xml:space="preserve">
-    <value>Kinetic Avionics SBS series or Puck</value>
+    <value>Kinetic Avionics SBS series ou Puck</value>
   </data>
   <data name="RecConWizDedicatedMicroAdsb" xml:space="preserve">
     <value>microADSB USB stick</value>
@@ -2130,7 +2130,8 @@ Por favor, especifique o receptor que o widget de desktop vai usar</value>
     <value>Ignorar Mode-S</value>
   </data>
   <data name="IdleTimeout" xml:space="preserve">
-    <value>Idle timeout</value>
+    <value>tempo esgotado
+</value>
   </data>
   <data name="PSeconds" xml:space="preserve">
     <value>(segundos)</value>
@@ -2349,7 +2350,7 @@ Por favor, especifique o receptor que o widget de desktop vai usar</value>
     <value>Sim para ignorar as aeronaves que transmitem o identificador inválido de Mode-S "000000", e não para exibi-las.</value>
   </data>
   <data name="SuppressICAO0" xml:space="preserve">
-    <value>Negar ICAO 000000</value>
+    <value>Ignorar ICAO 000000</value>
   </data>
   <data name="InternalErrorFeedIdIsNotUnique" xml:space="preserve">
     <value>Erro interno: identificador de alimentação não é exclusivo</value>
