@@ -16,6 +16,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin
@@ -166,19 +167,30 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin
         }
 
         [WebAdminMethod(DeferExecution=true)]
-        public ViewModel Save(ViewModel viewModel)
+        public SaveOutcomeModel Save(ViewModel viewModel)
         {
-            _ViewModel.CopyToView(this);
-            OnSaveClicked(EventArgs.Empty);
+            var outcome = "";
+
+            viewModel.CopyToView(this);
+            try {
+                OnSaveClicked(EventArgs.Empty);
+                outcome = "Saved";
+            } catch(ConflictingUpdateException) {
+                outcome = "ConflictingUpdate";
+                _Presenter.ReloadOptions();
+            }
             _ViewModel.RefreshFromView(this);
 
-            return _ViewModel;
+            return new SaveOutcomeModel(outcome, _ViewModel);
         }
 
         [WebAdminMethod]
         public CreateDatabaseOutcomeModel CreateDatabase(ViewModel viewModel)
         {
-            _ViewModel.CopyToView(this);
+            _CreateDatabaseOutcomeTitle = "";
+            _CreateDatabaseOutcomeMessage = "";
+
+            viewModel.CopyToView(this);
             OnCreateDatabaseClicked(EventArgs.Empty);
             _ViewModel.RefreshFromView(this);
 
@@ -188,7 +200,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin
         [WebAdminMethod]
         public ViewModel UseDefaultFileName(ViewModel viewModel)
         {
-            _ViewModel.CopyToView(this);
+            viewModel.CopyToView(this);
             OnUseDefaultFileNameClicked(EventArgs.Empty);
             _ViewModel.RefreshFromView(this);
 

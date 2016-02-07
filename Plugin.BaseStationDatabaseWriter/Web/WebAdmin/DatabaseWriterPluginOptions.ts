@@ -13,6 +13,8 @@ namespace VRS.WebAdmin.DatabaseWriterPluginOptions
         SaveAttempted?:                         KnockoutObservable<boolean>;
         SavedMessage?:                          KnockoutObservable<string>;
         OverwriteDetailsMessage?:               KnockoutComputed<string>;
+        CreateDatabaseOutcomeTitle?:            KnockoutObservable<string>;
+        CreateDatabaseOutcomeMessage?:          KnockoutObservable<string>;
     }
 
     export class PageHandler
@@ -50,6 +52,77 @@ namespace VRS.WebAdmin.DatabaseWriterPluginOptions
             }, false);
         }
 
+        useDefaultFileName()
+        {
+            var settings = this.buildAjaxSettingsForSendModel();
+            settings.success = (viewModel: IResponse<ViewJson.IViewModel>) =>
+            {
+                this.applyState(viewModel);
+            };
+            this._ViewId.ajax('UseDefaultFileName', settings);
+        }
+
+        createDatabase()
+        {
+            this._Model.CreateDatabaseOutcomeMessage('');
+            this._Model.CreateDatabaseOutcomeTitle('');
+
+            var settings = this.buildAjaxSettingsForSendModel();
+            settings.success = (outcome: IResponse<ViewJson.ICreateDatabaseOutcomeModel>) =>
+            {
+                if(outcome.Exception) {
+                    this.showFailureMessage(VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Exception_Reported, outcome.Exception));
+                } else {
+                    this.showFailureMessage(null);
+                    this._Model.CreateDatabaseOutcomeMessage(outcome.Response.Message);
+                    this._Model.CreateDatabaseOutcomeTitle(outcome.Response.Title);
+                    ko.viewmodel.updateFromModel(this._Model, outcome.Response.ViewModel);
+                    $('#create-database-outcome').modal('show');
+                }
+            };
+            this._ViewId.ajax('CreateDatabase', settings);
+        }
+
+        save()
+        {
+            this._Model.SaveAttempted(false);
+            this._Model.SavedMessage('');
+
+            var settings = this.buildAjaxSettingsForSendModel();
+            settings.success = (outcome: IResponse<ViewJson.ISaveOutcomeModel>) => {
+                if(outcome.Exception) {
+                    this.showFailureMessage(VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Exception_Reported, outcome.Exception));
+                } else {
+                    this.showFailureMessage(null);
+                    this._Model.SaveAttempted(true);
+                    switch(outcome.Response.Outcome) {
+                        case 'Saved':               this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Saved); break;
+                        case 'ConflictingUpdate':   this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Conflicting_Update); break;
+                        default:                    this._Model.SavedMessage(VRS.stringUtility.format('Unexpected response "{0}"', outcome.Response.Outcome)); break;
+                    }
+                    ko.viewmodel.updateFromModel(this._Model, outcome.Response.ViewModel);
+                }
+            };
+            this._ViewId.ajax('Save', settings);
+        }
+
+        private buildAjaxSettingsForSendModel() : JQueryAjaxSettings
+        {
+            var configuration = ko.viewmodel.toModel(this._Model);
+            var result = {
+                method: 'POST',
+                data: {
+                    viewModel: JSON.stringify(configuration)
+                },
+                dataType: 'json',
+                error: (jqXHR: JQueryXHR, textStatus: string, errorThrown: string) => {
+                    this.showFailureMessage(VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Send_Failed, errorThrown));
+                }
+            };
+
+            return result;
+        }
+
         private applyState(state: IResponse<ViewJson.IViewModel>)
         {
             if(state.Exception) {
@@ -70,6 +143,8 @@ namespace VRS.WebAdmin.DatabaseWriterPluginOptions
                             {
                                 root.SaveAttempted = ko.observable(false);
                                 root.SavedMessage = ko.observable('');
+                                root.CreateDatabaseOutcomeTitle = ko.observable('');
+                                root.CreateDatabaseOutcomeMessage = ko.observable('');
 
                                 root.OverwriteDetailsMessage = ko.computed(() => {
                                     return root.RefreshOutOfDateAircraft() ? VRS.DatabaseWriterPlugin.$$.WriteOnlineLookupsNoticeAllAircraft

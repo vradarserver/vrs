@@ -17,6 +17,7 @@
         .WithPropertyVisibilityFormatter(PropertyIsVisible)
         .For<VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.ViewModel>()
         .For<VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.CreateDatabaseOutcomeModel>()
+        .For<VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.SaveOutcomeModel>()
         ;
 #>
 <# var ko = TypeScript.Definitions(new TypeLite.AlternateGenerators.TsKnockoutViewmodelModelGenerator())
@@ -25,6 +26,7 @@
         .WithPropertyVisibilityFormatter(PropertyIsVisible)
         .For<VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.ViewModel>()
         .For<VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.CreateDatabaseOutcomeModel>()
+        .For<VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.SaveOutcomeModel>()
         ;
 #>
 /// <reference path="../../plugin.webadmin/typings/knockout.d.ts" />

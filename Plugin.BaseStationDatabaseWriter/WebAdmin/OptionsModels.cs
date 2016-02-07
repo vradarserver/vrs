@@ -72,6 +72,19 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin
         }
     }
 
+    public class SaveOutcomeModel
+    {
+        public string Outcome { get; set; }
+
+        public ViewModel ViewModel { get; set; }
+
+        public SaveOutcomeModel(string outcome, ViewModel viewModel)
+        {
+            Outcome = outcome;
+            ViewModel = viewModel;
+        }
+    }
+
     public class CreateDatabaseOutcomeModel
     {
         public string Title { get; set; }
