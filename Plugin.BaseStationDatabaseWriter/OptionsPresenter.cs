@@ -50,29 +50,34 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             _View = view;
 
+            ReloadOptions();
+
+            _View.CreateDatabaseClicked += View_CreateDatabaseClicked;
+            _View.PropertyChanged += View_PropertyChanged;
+            _View.SaveClicked += View_SaveClicked;
+            _View.UseDefaultFileNameClicked += View_UseDefaultFileNameClicked;
+        }
+
+        public void ReloadOptions()
+        {
             var optionsStorage = new OptionsStorage();
             _Options = optionsStorage.Load();
 
             var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
             _Configuration = configurationStorage.Load();
 
-            view.CombinedFeeds.Clear();
-            view.CombinedFeeds.AddRange(
+            _View.CombinedFeeds.Clear();
+            _View.CombinedFeeds.AddRange(
                 _Configuration.Receivers.Select(r =>   new CombinedFeed() { UniqueId = r.UniqueId, Name = r.Name })
                 .Concat(_Configuration.MergedFeeds.Select(r => new CombinedFeed() { UniqueId = r.UniqueId, Name = r.Name }))
             );
 
-            view.PluginEnabled =                    _Options.Enabled;
-            view.AllowUpdateOfOtherDatabases =      _Options.AllowUpdateOfOtherDatabases;
-            view.DatabaseFileName =                 _Configuration.BaseStationSettings.DatabaseFileName;
-            view.ReceiverId =                       _Options.ReceiverId;
-            view.SaveDownloadedAircraftDetails =    _Options.SaveDownloadedAircraftDetails;
-            view.RefreshOutOfDateAircraft =         _Options.RefreshOutOfDateAircraft;
-
-            _View.CreateDatabaseClicked += View_CreateDatabaseClicked;
-            _View.PropertyChanged += View_PropertyChanged;
-            _View.SaveClicked += View_SaveClicked;
-            _View.UseDefaultFileNameClicked += View_UseDefaultFileNameClicked;
+            _View.PluginEnabled =                    _Options.Enabled;
+            _View.AllowUpdateOfOtherDatabases =      _Options.AllowUpdateOfOtherDatabases;
+            _View.DatabaseFileName =                 _Configuration.BaseStationSettings.DatabaseFileName;
+            _View.ReceiverId =                       _Options.ReceiverId;
+            _View.SaveDownloadedAircraftDetails =    _Options.SaveDownloadedAircraftDetails;
+            _View.RefreshOutOfDateAircraft =         _Options.RefreshOutOfDateAircraft;
 
             RefreshWriteNotice();
         }

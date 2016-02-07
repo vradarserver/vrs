@@ -65,6 +65,14 @@
                                     <button type="button" class="btn btn-primary" data-bind="click: $.proxy(pageHandler.createDatabase, pageHandler)">
                                         ::CreateDatabase::
                                     </button>
+                                    <div id="create-database-outcome" data-bsu="modal" data-bsu-options="header-close">
+                                        <div>
+                                            <span data-bind="text: CreateDatabaseOutcomeTitle"></span>
+                                        </div>
+                                        <div>
+                                            <span data-bind="text: CreateDatabaseOutcomeMessage"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">

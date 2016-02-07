@@ -19,6 +19,10 @@ declare module VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin {
         Message: string;
         ViewModel: VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.IViewModel;
     }
+    interface ISaveOutcomeModel {
+        Outcome: string;
+        ViewModel: VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.IViewModel;
+    }
 }
 declare module VirtualRadar.Plugin.BaseStationDatabaseWriter {
     interface ICombinedFeed {
@@ -42,6 +46,10 @@ declare module VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin {
     interface ICreateDatabaseOutcomeModel_KO {
         Title: KnockoutObservable<string>;
         Message: KnockoutObservable<string>;
+        ViewModel: VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.IViewModel_KO;
+    }
+    interface ISaveOutcomeModel_KO {
+        Outcome: KnockoutObservable<string>;
         ViewModel: VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin.IViewModel_KO;
     }
 }

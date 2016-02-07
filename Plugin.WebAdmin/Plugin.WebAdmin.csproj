@@ -259,7 +259,7 @@
     <Content Include="Web\WebAdmin\Statistics.js.map">
       <DependentUpon>Statistics.ts</DependentUpon>
     </Content>
-    <Content Include="Web\WebAdmin\templates\head.html" />
+    <Content Include="Web\WebAdmin\templates\template-header-block.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="WebAdminStrings.de-DE.resx" />
