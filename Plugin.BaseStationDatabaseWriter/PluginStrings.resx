@@ -133,7 +133,7 @@
     <value>Disabled</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>&amp;Enabled</value>
+    <value>Enabled</value>
   </data>
   <data name="EnabledAndUpdatingSomething" xml:space="preserve">
     <value>Enabled, updating {0}</value>
@@ -209,5 +209,20 @@
   </data>
   <data name="PluginName" xml:space="preserve">
     <value>Database Writer</value>
+  </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Plugin: Database Writer Options</value>
+  </data>
+  <data name="CannotCreateDatabaseFileTitle" xml:space="preserve">
+    <value>Cannot Create Database File</value>
+  </data>
+  <data name="CreatedDatabaseFile" xml:space="preserve">
+    <value>Created the database file {0}</value>
+  </data>
+  <data name="CreatedDatabaseFileTitle" xml:space="preserve">
+    <value>Created Database File</value>
+  </data>
+  <data name="DatabaseFileAlreadyExists" xml:space="preserve">
+    <value>The database file already exists</value>
   </data>
 </root>

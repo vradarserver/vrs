@@ -32,17 +32,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
     /// </summary>
     public partial class OptionsView : BaseForm, IOptionsView, INotifyPropertyChanged
     {
-        #region CombinedFeed
         /// <summary>
-        /// The class that summarises receivers and merged feeds.
+        /// The object that holds the buisness logic for the view.
         /// </summary>
-        class CombinedFeed
-        {
-            public int UniqueId { get; set; }
-
-            public string Name { get; set; }
-        }
-        #endregion
+        private OptionsPresenter _Presenter;
 
         private bool _PluginEnabled;
         /// <summary>
@@ -104,6 +97,67 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
             set { SetField(ref _ReceiverId, value, () => ReceiverId); }
         }
 
+        private List<CombinedFeed> _CombinedFeeds = new List<CombinedFeed>();
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IList<CombinedFeed> CombinedFeeds
+        {
+            get { return _CombinedFeeds; }
+        }
+
+        private string _OnlineLookupWriteActionNotice;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string OnlineLookupWriteActionNotice
+        {
+            get { return _OnlineLookupWriteActionNotice; }
+            set { SetField(ref _OnlineLookupWriteActionNotice, value, () => OnlineLookupWriteActionNotice); }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler SaveClicked;
+
+        /// <summary>
+        /// Raises <see cref="SaveClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnSaveClicked(EventArgs args)
+        {
+            EventHelper.Raise(SaveClicked, this, args);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler UseDefaultFileNameClicked;
+
+        /// <summary>
+        /// Raises <see cref="UseDefaultFileNameClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnUseDefaultFileNameClicked(EventArgs args)
+        {
+            EventHelper.Raise(UseDefaultFileNameClicked, this, args);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler CreateDatabaseClicked;
+
+        /// <summary>
+        /// Raises <see cref="CreateDatabaseClicked"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnCreateDatabaseClicked(EventArgs args)
+        {
+            EventHelper.Raise(CreateDatabaseClicked, this, args);
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -116,10 +170,6 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
             EventHelper.Raise(PropertyChanged, this, args);
-
-            if(args.PropertyName == PropertyHelper.ExtractName<OptionsView>(r => r.RefreshOutOfDateAircraft)) {
-                RefreshWriteNotice();
-            }
         }
 
         /// <summary>
@@ -154,10 +204,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <returns></returns>
-        public bool DisplayView()
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        public void ShowCreateDatabaseOutcome(string message, string title)
         {
-            return ShowDialog() == DialogResult.OK;
+            MessageBox.Show(message, title);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -167,14 +218,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
             if(!DesignMode) {
                 PluginLocalise.Form(this);
                 fileNameDatabase.BrowserTitle = PluginStrings.SelectDatabaseFile;
-         
-                RefreshWriteNotice();
-                
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
-                var config = configurationStorage.Load();
-                var combinedFeed = config.Receivers.Select(r =>   new CombinedFeed() { UniqueId = r.UniqueId, Name = r.Name })
-                           .Concat(config.MergedFeeds.Select(r => new CombinedFeed() { UniqueId = r.UniqueId, Name = r.Name }))
-                           .ToArray();
+
+                _Presenter = new OptionsPresenter();
+                _Presenter.Initialise(this);
 
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxEnabled,                             r => r.PluginEnabled,                   (r,v) => r.PluginEnabled = v));
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,  r => !r.AllowUpdateOfOtherDatabases,    (r,v) => r.AllowUpdateOfOtherDatabases = !v)    { ModelPropertyName = PropertyHelper.ExtractName<OptionsView>(r => r.AllowUpdateOfOtherDatabases) });
@@ -183,12 +229,15 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
 
                 AddControlBinder(new FileNameStringBinder<OptionsView>(this, fileNameDatabase, r => r.DatabaseFileName, (r,v) => r.DatabaseFileName = v));
 
-                AddControlBinder(new ComboBoxBinder<OptionsView, CombinedFeed, int>(this, comboBoxReceiverId, combinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) {
+                AddControlBinder(new ComboBoxBinder<OptionsView, CombinedFeed, int>(this, comboBoxReceiverId, CombinedFeeds, r => r.ReceiverId, (r,v) => r.ReceiverId = v) {
                     GetListItemDescription = r => r.Name,
                     GetListItemValue = r => r.UniqueId,
                 });
 
+                AddControlBinder(new LabelStringBinder<OptionsView>(this, labelWriteOnlineLookupsNotice, r => r.OnlineLookupWriteActionNotice, (r,v) => r.OnlineLookupWriteActionNotice = v));
+
                 InitialiseControlBinders();
+                EnableDisableControls();
             }
         }
 
@@ -202,30 +251,30 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
             args.Value = !((bool)args.Value);
         }
 
-        private void RefreshWriteNotice()
+        private void EnableDisableControls()
         {
-            labelWriteOnlineLookupsNotice.Text = RefreshOutOfDateAircraft ? PluginStrings.WriteOnlineLookupsNoticeAllAircraft : PluginStrings.WriteOnlineLookupsNoticeJustNew;
+            labelWriteOnlineLookupsNotice.Enabled = checkBoxWriteOnlineLookupsToDatabase.Checked;
+            checkBoxRefreshOutOfDateAircraft.Enabled = checkBoxWriteOnlineLookupsToDatabase.Checked;
         }
 
         private void linkLabelUseDefaultFileName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
-            DatabaseFileName = Path.Combine(configurationStorage.Folder, "BaseStation.sqb");
+            OnUseDefaultFileNameClicked(EventArgs.Empty);
         }
 
         private void buttonCreateDatabase_Click(object sender, EventArgs e)
         {
-            if(!String.IsNullOrEmpty(DatabaseFileName)) {
-                bool fileExists = File.Exists(DatabaseFileName);
-                bool zeroLength = fileExists && new FileInfo(DatabaseFileName).Length == 0;
-                if(fileExists && !zeroLength)  MessageBox.Show("The database file already exists", "Cannot Create Database File");
-                else {
-                    var databaseService = Factory.Singleton.Resolve<IBaseStationDatabase>();
-                    databaseService.CreateDatabaseIfMissing(DatabaseFileName);
+            OnCreateDatabaseClicked(e);
+        }
 
-                    MessageBox.Show(String.Format("Created the database file {0}", DatabaseFileName), "Created Database File");
-                }
-            }
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+            OnSaveClicked(e);
+        }
+
+        private void checkBoxWriteOnlineLookupsToDatabase_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableDisableControls();
         }
     }
 }

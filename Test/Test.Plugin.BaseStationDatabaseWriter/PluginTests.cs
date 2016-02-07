@@ -27,6 +27,7 @@ using PluginNS = VirtualRadar.Plugin.BaseStationDatabaseWriter;
 using VirtualRadar.Plugin.BaseStationDatabaseWriter;
 using VirtualRadar.Interface.SQLite;
 using Newtonsoft.Json;
+using System.Windows.Forms;
 
 namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
@@ -62,6 +63,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         private Mock<IOnlineLookupCache> _OnlineLookupCache;
         private Options _Options;
         private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
+        private OptionsPresenter _Presenter;
+        private Action _ShowViewAction;
 
         [TestInitialize]
         public void TestInitialise()
@@ -107,12 +110,21 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
 
             _Plugin = new PluginNS.Plugin();
+            _Presenter = new OptionsPresenter();
+            _ShowViewAction = null;
             _Provider = new Mock<PluginNS.IPluginProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
             _Provider.Setup(p => p.LocalNow).Returns(new DateTime(2001, 2, 3, 4, 5, 6));
             _Provider.Setup(p => p.FileSize(It.IsAny<string>())).Returns(1000000L);
             _OptionsView = new Mock<PluginNS.IOptionsView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _OptionsView.Setup(r => r.DisplayView()).Returns(true);
+            _OptionsView.Setup(r => r.ShowView())
+                .Callback(() => {
+                    _Presenter.Initialise(_OptionsView.Object);
+                    if(_ShowViewAction != null) {
+                        _ShowViewAction();
+                    }
+                })
+                .Returns(DialogResult.OK);
             _Provider.Setup(p => p.CreateOptionsView()).Returns(_OptionsView.Object);
             _OnlineLookupCache = TestUtilities.CreateMockImplementation<IOnlineLookupCache>();
             _Provider.Setup(r => r.CreateOnlineLookupCache()).Returns(_OnlineLookupCache.Object);
@@ -759,16 +771,16 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
             _Plugin.ShowWinFormsOptionsUI();
 
-            _OptionsView.Verify(v => v.DisplayView(), Times.Once());
+            _OptionsView.Verify(v => v.ShowView(), Times.Once());
         }
 
         [TestMethod]
         public void Plugin_ShowWinFormsOptionsUI_Disposes_Of_View_After_Use()
         {
-            _OptionsView.Setup(v => v.DisplayView()).Callback(() => {
+            _ShowViewAction = () => {
                 _OptionsView.Verify(v => v.Dispose(), Times.Never());
-            });
-
+                _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
+            };
             _Plugin.ShowWinFormsOptionsUI();
 
             _OptionsView.Verify(v => v.Dispose(), Times.Once());
@@ -788,16 +800,16 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetRefreshOutOfDateAircraft(worksheet.Bool("RefreshOutOfDateAircraft"));
             _Configuration.BaseStationSettings.DatabaseFileName = worksheet.EString("DatabaseFileName");
 
-            _OptionsView.Setup(v => v.DisplayView()).Callback(() => {
+            _Plugin.Startup(_StartupParameters);
+            _ShowViewAction = () => {
                 _OptionsView.VerifySet(v => v.PluginEnabled = worksheet.Bool("Enabled"), Times.Once());
                 _OptionsView.VerifySet(v => v.AllowUpdateOfOtherDatabases = worksheet.Bool("AllowUpdateOfOtherDatabases"), Times.Once());
                 _OptionsView.VerifySet(v => v.DatabaseFileName = worksheet.EString("DatabaseFileName"), Times.Once());
                 _OptionsView.VerifySet(v => v.ReceiverId = worksheet.Int("ReceiverId"), Times.Once());
                 _OptionsView.VerifySet(v => v.SaveDownloadedAircraftDetails = worksheet.Bool("SaveDownloadedAircraftDetails"), Times.Once());
                 _OptionsView.VerifySet(v => v.RefreshOutOfDateAircraft = worksheet.Bool("RefreshOutOfDateAircraft"), Times.Once());
-            });
-
-            _Plugin.Startup(_StartupParameters);
+                _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
+            };
             _Plugin.ShowWinFormsOptionsUI();
         }
 
@@ -832,6 +844,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 Assert.AreEqual(worksheet.EString("DatabaseFileName"), configuration.BaseStationSettings.DatabaseFileName);
             });
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             _PluginSettingsStorage.Verify(s => s.Save(It.IsAny<PluginSettings>()), Times.Once());
@@ -841,7 +854,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         [TestMethod]
         public void Plugin_ShowWinFormsOptionsUI_Does_Not_Save_Changes_If_User_Cancels()
         {
-            _OptionsView.Setup(v => v.DisplayView()).Returns(false);
+            _OptionsView.Setup(v => v.ShowView()).Returns(DialogResult.Cancel);
 
             _Plugin.ShowWinFormsOptionsUI();
 
@@ -864,6 +877,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _Plugin.Startup(_StartupParameters);
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
             _BaseStationDatabase.Verify(d => d.UpdateSession(It.IsAny<BaseStationSession>()), Times.Once());
 
@@ -880,6 +894,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _Plugin.Startup(_StartupParameters);
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
@@ -893,6 +908,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetRefreshOutOfDateAircraft(false);
             _Plugin.Startup(_StartupParameters);
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             Assert.AreEqual(true, _OnlineLookupCache.Object.RefreshOutOfDateAircraft);
@@ -906,6 +922,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetRefreshOutOfDateAircraft(true);
             _Plugin.Startup(_StartupParameters);
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             Assert.AreEqual(false, _OnlineLookupCache.Object.RefreshOutOfDateAircraft);
@@ -927,6 +944,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 Assert.AreEqual(1, flight.NumModeSMsgRec);
             });
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             _BaseStationDatabase.Verify(d => d.UpdateFlight(It.IsAny<BaseStationFlight>()), Times.Once());
@@ -965,6 +983,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _Plugin.Startup(_StartupParameters);
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             Assert.AreEqual(false, _OnlineLookupCache.Object.Enabled);
@@ -979,6 +998,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _Plugin.Startup(_StartupParameters);
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             Assert.AreEqual(true, _OnlineLookupCache.Object.Enabled);
@@ -996,6 +1016,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _OptionsView.Setup(v => v.ReceiverId).Returns(2);
             _Plugin.Startup(_StartupParameters);
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             _Listener = _Listeners[1];
@@ -1176,23 +1197,27 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(false);
             _Plugin.Startup(_StartupParameters);
 
-            _OptionsView.Setup(v => v.PluginEnabled).Returns(true);
-            _OptionsView.Setup(v => v.DatabaseFileName).Returns("NEW");
             _ConfigurationStorage.Setup(c => c.Save(_Configuration)).Callback(() => {
                 _BaseStationDatabase.Raise(d => d.FileNameChanging += null, EventArgs.Empty);
+
                 Assert.AreEqual(false, _BaseStationDatabase.Object.WriteSupportEnabled);
                 _BaseStationDatabase.Verify(d => d.InsertSession(It.IsAny<BaseStationSession>()), Times.Never());
                 _BaseStationDatabase.Verify(d => d.UpdateSession(It.IsAny<BaseStationSession>()), Times.Never());
 
                 _BaseStationDatabase.Setup(d => d.FileName).Returns("NEW");
-
                 _BaseStationDatabase.Raise(d => d.FileNameChanged += null, EventArgs.Empty);
-                Assert.AreEqual(true, _BaseStationDatabase.Object.WriteSupportEnabled);
-                _BaseStationDatabase.Verify(d => d.InsertSession(It.IsAny<BaseStationSession>()), Times.Once());
             });
+
+            _ShowViewAction = () => {
+                _OptionsView.Setup(v => v.PluginEnabled).Returns(true);
+                _OptionsView.Setup(v => v.DatabaseFileName).Returns("NEW");
+                _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
+            };
 
             _Plugin.ShowWinFormsOptionsUI();
 
+            Assert.AreEqual(true, _BaseStationDatabase.Object.WriteSupportEnabled);
+            _BaseStationDatabase.Verify(d => d.InsertSession(It.IsAny<BaseStationSession>()), Times.Once());
             _ConfigurationStorage.Verify(c => c.Save(_Configuration), Times.Once());
         }
         #endregion
@@ -1294,6 +1319,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _OptionsView.Setup(v => v.DatabaseFileName).Returns(expectInsertFileName);
             SetDBHistory(worksheet.Bool("ConfigDBIsVRS"));
 
+            _ShowViewAction = () => _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             _Plugin.ShowWinFormsOptionsUI();
 
             if(worksheet.Bool("ExpectCloseOnConfig")) ++expectUpdateCallCount;

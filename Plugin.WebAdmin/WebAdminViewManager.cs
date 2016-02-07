@@ -405,6 +405,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                     if(webAdminView.StringResources != null && htmlLocalisers.TryGetValue(webAdminView.StringResources, out htmlLocaliser)) {
                         args.Content = htmlLocaliser.Html(args.Content, args.Encoding);
                     }
+                    args.Content = htmlLocalisers[typeof(WebAdminStrings)].Html(args.Content, args.Encoding);
                     args.Content = htmlLocalisers[typeof(VirtualRadar.Localisation.Strings)].Html(args.Content, args.Encoding);
                     args.Content = htmlLocalisers[typeof(VirtualRadar.WebSite.WebSiteStrings)].Html(args.Content, args.Encoding);
 

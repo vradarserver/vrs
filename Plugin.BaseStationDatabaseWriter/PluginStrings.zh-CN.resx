@@ -133,7 +133,7 @@
     <value>已禁用</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>&amp;E已启用</value>
+    <value>已启用</value>
   </data>
   <data name="EnabledAndUpdatingSomething" xml:space="preserve">
     <value>已启用, 更新中 {0}</value>

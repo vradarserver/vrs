@@ -10,15 +10,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
     /// <summary>
     /// The interface that options views have to implement.
     /// </summary>
-    public interface IOptionsView : IDisposable
+    public interface IOptionsView : IView, INotifyPropertyChanged
     {
         /// <summary>
         /// Gets or sets a value indicating that the plugin has been switched on by the user.
@@ -51,9 +53,36 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         bool RefreshOutOfDateAircraft { get; set; }
 
         /// <summary>
-        /// Displays the view and returns a value indicating that the view's contents were saved by the user.
+        /// Gets a list of combined feeds to show to the user.
         /// </summary>
-        /// <returns></returns>
-        bool DisplayView();
+        IList<CombinedFeed> CombinedFeeds { get; }
+
+        /// <summary>
+        /// Gets or sets a notice that it shown to users that describes what aircraft lookup information, if any, will be
+        /// written to BaseStation.sqb by the plugin.
+        /// </summary>
+        string OnlineLookupWriteActionNotice { get; set; }
+
+        /// <summary>
+        /// Raised when the user wants to save their changes to the options.
+        /// </summary>
+        event EventHandler SaveClicked;
+
+        /// <summary>
+        /// Raised when the user clicks the 'Use default filename' button.
+        /// </summary>
+        event EventHandler UseDefaultFileNameClicked;
+
+        /// <summary>
+        /// Raised when the user clicks the 'Create database' button.
+        /// </summary>
+        event EventHandler CreateDatabaseClicked;
+
+        /// <summary>
+        /// Reports the outcome of an attempt to create a database to the user.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        void ShowCreateDatabaseOutcome(string message, string title);
     }
 }
