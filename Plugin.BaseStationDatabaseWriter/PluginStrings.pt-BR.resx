@@ -133,7 +133,7 @@
     <value>Desativado</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>&amp;Ativado</value>
+    <value>Ativado</value>
   </data>
   <data name="EnabledAndUpdatingSomething" xml:space="preserve">
     <value>Ativado, atualizando {0}</value>

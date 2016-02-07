@@ -35,22 +35,21 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <summary>
         /// Loads the plugin's options.
         /// </summary>
-        /// <param name="plugin"></param>
         /// <returns></returns>
-        public Options Load(Plugin plugin)
+        public Options Load()
         {
             var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
             var pluginSettings = storage.Load();
 
-            var jsonText = pluginSettings.ReadString(plugin, OptionsField);
+            var jsonText = pluginSettings.ReadString(Plugin.Singleton, OptionsField);
             var result = String.IsNullOrEmpty(jsonText) ? null : JsonConvert.DeserializeObject<Options>(jsonText);
 
             if(result == null) {
                 // Support reading old format options from plugin settings
                 result = new Options() {
-                    Enabled = pluginSettings.ReadBool(plugin, EnabledField).GetValueOrDefault(),
-                    AllowUpdateOfOtherDatabases = pluginSettings.ReadBool(plugin, AllowUpdateOfOtherDatabasesField).GetValueOrDefault(),
-                    ReceiverId = pluginSettings.ReadInt(plugin, ReceiverId).GetValueOrDefault(),
+                    Enabled = pluginSettings.ReadBool(Plugin.Singleton, EnabledField).GetValueOrDefault(),
+                    AllowUpdateOfOtherDatabases = pluginSettings.ReadBool(Plugin.Singleton, AllowUpdateOfOtherDatabasesField).GetValueOrDefault(),
+                    ReceiverId = pluginSettings.ReadInt(Plugin.Singleton, ReceiverId).GetValueOrDefault(),
                 };
             }
 
@@ -60,16 +59,23 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <summary>
         /// Saves the plugin's options.
         /// </summary>
-        /// <param name="plugin"></param>
         /// <param name="options"></param>
-        public void Save(Plugin plugin, Options options)
+        public void Save(Options options)
         {
+            var currentOptions = Load();
+            if(options.DataVersion != currentOptions.DataVersion) {
+                throw new ConflictingUpdateException(String.Format("The options you are trying to save have changed since you loaded them. You are editing version {0}, the current version is {1}", options.DataVersion, currentOptions.DataVersion));
+            }
+            ++options.DataVersion;
+
             var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
 
             var pluginSettings = storage.Load();
-            pluginSettings.Write(plugin, OptionsField, JsonConvert.SerializeObject(options));
+            pluginSettings.Write(Plugin.Singleton, OptionsField, JsonConvert.SerializeObject(options));
 
             storage.Save(pluginSettings);
+
+            Plugin.Singleton.RaiseSettingsChanged(new EventArgs<Options>(options));
         }
     }
 }

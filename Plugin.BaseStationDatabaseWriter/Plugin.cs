@@ -25,6 +25,7 @@ using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
 using VirtualRadar.Interface.StandingData;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
@@ -123,6 +124,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         public IPluginProvider Provider { get; set; }
 
         /// <summary>
+        /// Gets the last initialised instance of the plugin object. At run-time only one plugin
+        /// object gets created and initialised.
+        /// </summary>
+        public static Plugin Singleton { get; private set; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public string Id { get { return "VirtualRadar.Plugin.BaseStationDatabaseWriter"; } }
@@ -192,6 +199,21 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             if(StatusChanged != null) StatusChanged(this, args);
         }
+
+        /// <summary>
+        /// Raised when <see cref="OptionsStorage"/> saves a new set of options.
+        /// </summary>
+        public event EventHandler<EventArgs<Options>> SettingsChanged;
+
+        /// <summary>
+        /// Raises <see cref="SettingsChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        internal void RaiseSettingsChanged(EventArgs<Options> args)
+        {
+            ApplyOptions(args.Value);
+            EventHelper.Raise(SettingsChanged, this, args);
+        }
         #endregion
 
         #region Constructor
@@ -223,9 +245,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <param name="parameters"></param>
         public void Startup(PluginStartupParameters parameters)
         {
+            Singleton = this;
+
             lock(_SyncLock) {
                 var optionsStorage = new OptionsStorage();
-                _Options = optionsStorage.Load(this);
+                _Options = optionsStorage.Load();
 
                 _Database = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
                 _Database.FileNameChanging += BaseStationDatabase_FileNameChanging;
@@ -268,6 +292,12 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         public void GuiThreadStartup()
         {
+            var webAdminViewManager = Factory.Singleton.Resolve<IWebAdminViewManager>().Singleton;
+            webAdminViewManager.RegisterTranslations(typeof(PluginStrings), "DatabaseWriterPlugin");
+            webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "DatabaseWriterPluginOptions.html", PluginStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(PluginStrings)) {
+                Plugin = this,
+            });
+            webAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
         }
         #endregion
 
@@ -294,40 +324,33 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         public void ShowWinFormsOptionsUI()
         {
             using(var view = Provider.CreateOptionsView()) {
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
-                var configuration = configurationStorage.Load();
+                view.ShowView();
+            }
+        }
 
-                view.PluginEnabled = _Options.Enabled;
-                view.AllowUpdateOfOtherDatabases =      _Options.AllowUpdateOfOtherDatabases;
-                view.DatabaseFileName =                 configuration.BaseStationSettings.DatabaseFileName;
-                view.ReceiverId =                       _Options.ReceiverId;
-                view.SaveDownloadedAircraftDetails =    _Options.SaveDownloadedAircraftDetails;
-                view.RefreshOutOfDateAircraft =         _Options.RefreshOutOfDateAircraft;
+        private void ApplyOptions(Options options)
+        {
+            lock(_SyncLock) {
+                UnhookFeed();
 
-                if(view.DisplayView()) {
-                    lock(_SyncLock) {
-                        _Options.Enabled =                          view.PluginEnabled;
-                        _Options.AllowUpdateOfOtherDatabases =      view.AllowUpdateOfOtherDatabases;
-                        _Options.ReceiverId =                       view.ReceiverId;
-                        _Options.SaveDownloadedAircraftDetails =    view.SaveDownloadedAircraftDetails;
-                        _Options.RefreshOutOfDateAircraft =         view.RefreshOutOfDateAircraft;
+                _Options.Enabled =                          options.Enabled;
+                _Options.AllowUpdateOfOtherDatabases =      options.AllowUpdateOfOtherDatabases;
+                _Options.ReceiverId =                       options.ReceiverId;
+                _Options.SaveDownloadedAircraftDetails =    options.SaveDownloadedAircraftDetails;
+                _Options.RefreshOutOfDateAircraft =         options.RefreshOutOfDateAircraft;
 
-                        var optionsStorage = new OptionsStorage();
-                        optionsStorage.Save(this, _Options);
+                bool optionsPermit = _Options.Enabled && (_Options.AllowUpdateOfOtherDatabases || DatabaseCreatedByPlugin());
+                if(_Session != null && !optionsPermit) {
+                    EndSession();
+                }
+                StartSession();
+                HookFeed();
 
-                        configuration.BaseStationSettings.DatabaseFileName = view.DatabaseFileName;
-                        configurationStorage.Save(configuration);
-
-                        UnhookFeed();
-                        bool optionsPermit = _Options.Enabled && (_Options.AllowUpdateOfOtherDatabases || DatabaseCreatedByPlugin());
-                        if(_Session != null && !optionsPermit) EndSession();
-                        StartSession();
-                        HookFeed();
-
-                        _OnlineLookupCache.RefreshOutOfDateAircraft = _Options.RefreshOutOfDateAircraft;
-                        if(!_Options.SaveDownloadedAircraftDetails) _OnlineLookupCache.Enabled = false;
-                        else                                        _OnlineLookupCache.Enabled = _Session != null;
-                    }
+                _OnlineLookupCache.RefreshOutOfDateAircraft = _Options.RefreshOutOfDateAircraft;
+                if(!_Options.SaveDownloadedAircraftDetails) {
+                    _OnlineLookupCache.Enabled = false;
+                } else {
+                    _OnlineLookupCache.Enabled = _Session != null;
                 }
             }
         }

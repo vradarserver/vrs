@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2016 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -16,39 +16,15 @@ using System.Text;
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
     /// <summary>
-    /// Holds the options for the plugin.
+    /// Describes a merged feed or a receiver.
     /// </summary>
-    public class Options
+    /// <remarks>
+    /// This gets used by the options screens.
+    /// </remarks>
+    public class CombinedFeed
     {
-        /// <summary>
-        /// Gets or sets the version of the options being saved.
-        /// </summary>
-        public long DataVersion { get; set; }
+        public int UniqueId { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating that the plugin is to record information about received aircraft in the BaseStation database.
-        /// </summary>
-        public bool Enabled { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ID of the receiver to maintain the database for.
-        /// </summary>
-        public int ReceiverId { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that the plugin is allowed to update databases that it did not create. By default it will only
-        /// update databases that it knows it created.
-        /// </summary>
-        public bool AllowUpdateOfOtherDatabases { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that aircraft details downloaded from the Internet should be saved to BaseStation.sqb.
-        /// </summary>
-        public bool SaveDownloadedAircraftDetails { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that the cache should be saving both new / missing and out-of-date aircraft.
-        /// </summary>
-        public bool RefreshOutOfDateAircraft { get; set; }
+        public string Name { get; set; }
     }
 }

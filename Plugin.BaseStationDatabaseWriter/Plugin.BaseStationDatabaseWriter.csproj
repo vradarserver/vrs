@@ -53,10 +53,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CombinedFeed.cs" />
     <Compile Include="OnlineLookupCache.cs" />
     <Compile Include="IOnlineLookupCache.cs" />
     <Compile Include="IPluginProvider.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="OptionsPresenter.cs" />
     <Compile Include="OptionsStorage.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginLocalise.cs" />
@@ -72,6 +74,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PluginStrings.de-DE.resx</DependentUpon>
     </Compile>
+    <Compile Include="WebAdmin\OptionsModels.cs" />
+    <Compile Include="WebAdmin\OptionsView.cs" />
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,13 +122,43 @@
       <LastGenOutput>PluginStrings.de-DE.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Typings\Manager.ttinclude" />
     <None Include="_PostBuildCopyLanguage.bat" />
     <None Include="_PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Typings\DatabaseWriterPluginModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DatabaseWriterPluginModels.d.ts</LastGenOutput>
+    </None>
+    <None Include="Typings\translations-pluginstrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-pluginstrings.d.ts</LastGenOutput>
+    </None>
     <Content Include="VirtualRadar.Plugin.BaseStationDatabaseWriter.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\WebAdmin\DatabaseWriterPluginOptions.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\DatabaseWriterPluginEnums.ts">
+      <DependentUpon>DatabaseWriterPluginModels.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\DatabaseWriterPluginModels.d.ts">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DatabaseWriterPluginModels.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-pluginstrings.d.ts">
+      <DependentUpon>translations-pluginstrings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\DatabaseWriterPluginOptions.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

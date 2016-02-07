@@ -62,6 +62,7 @@
             this.buttonOK.TabIndex = 11;
             this.buttonOK.Text = "::OK::";
             this.buttonOK.UseVisualStyleBackColor = true;
+            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             // 
             // buttonCancel
             // 
@@ -157,6 +158,7 @@
             this.checkBoxWriteOnlineLookupsToDatabase.TabIndex = 7;
             this.checkBoxWriteOnlineLookupsToDatabase.Text = "::WriteOnlineLookupsToDatabase::";
             this.checkBoxWriteOnlineLookupsToDatabase.UseVisualStyleBackColor = true;
+            this.checkBoxWriteOnlineLookupsToDatabase.CheckedChanged += new System.EventHandler(this.checkBoxWriteOnlineLookupsToDatabase_CheckedChanged);
             // 
             // labelWriteOnlineLookupsNotice
             // 
