@@ -131,4 +131,3 @@ var VRS;
         })(Index = WebAdmin.Index || (WebAdmin.Index = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=Index.js.map

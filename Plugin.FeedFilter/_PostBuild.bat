@@ -19,7 +19,7 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
 
     set SOURCEDLL=%TARGETDIR%%ASSEMBLY%.dll
     set SOURCEXML=%TARGETDIR%%ASSEMBLY%.xml
-    set SOURCEWEB=%TARGETDIR%..\..\..\Web
+    set SOURCEWEB=%TARGETDIR%..\..\Web
     set PLUGINS=%SLNDIR%VirtualRadar\bin\x86\%CONFDIR%\Plugins
     set DEST=%PLUGINS%\%PLUGINDIR%
     set WEB=%PLUGINS%\%PLUGINDIR%\Web
@@ -54,12 +54,12 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
     :WEBDONE
 
     rem You need to modify the batch by hand here to copy the languages that you have translations for
-    set COPYLANG=%TARGETDIR%..\..\..\_PostBuildCopyLanguage.bat
-    rem call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" de-DE
-    rem call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" fr-FR
-    rem call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" pt-BR
-    rem call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" ru-RU
-    rem call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" zh-CN
+    set COPYLANG=%TARGETDIR%..\..\_PostBuildCopyLanguage.bat
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" de-DE
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" fr-FR
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" pt-BR
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" ru-RU
+    call "%COPYLANG%" "%SLNDIR%" "%CONFDIR%" "%TARGETDIR%" "%ASSEMBLY%" zh-CN
 
     goto :END
 

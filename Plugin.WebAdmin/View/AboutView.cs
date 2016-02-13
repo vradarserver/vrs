@@ -50,6 +50,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public bool IsMono { get; set; }
 
+        public bool Is64BitProcess { get; set; }
+
         #pragma warning disable 0067
         public event EventHandler OpenConfigurationFolderClicked;
         #pragma warning restore 0067

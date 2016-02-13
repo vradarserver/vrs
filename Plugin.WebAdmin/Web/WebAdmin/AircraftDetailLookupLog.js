@@ -40,4 +40,3 @@ var VRS;
         })(AircraftDetailLookupLog = WebAdmin.AircraftDetailLookupLog || (WebAdmin.AircraftDetailLookupLog = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=AircraftDetailLookupLog.js.map

@@ -79,4 +79,3 @@ var VRS;
         })(ConnectorActivityLog = WebAdmin.ConnectorActivityLog || (WebAdmin.ConnectorActivityLog = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=ConnectorActivityLog.js.map

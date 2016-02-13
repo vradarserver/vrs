@@ -108,7 +108,17 @@ namespace VirtualRadar.WinForms
         public bool IsMono
         {
             get { return _IsMono; }
-            set { _IsMono = value; labelEnvironment.Text = value ? "Environment: Mono" : "Environment: .NET"; }
+            set { _IsMono = value; UpdateEnvironment(); }
+        }
+
+        private bool _Is64BitProcess;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool Is64BitProcess
+        {
+            get { return _Is64BitProcess; }
+            set { _Is64BitProcess = value; UpdateEnvironment(); }
         }
 
         /// <summary>
@@ -158,6 +168,15 @@ namespace VirtualRadar.WinForms
         public void ShowConfigurationFolderContents()
         {
             Process.Start(linkLabelWorkingFolder.Text);
+        }
+
+        /// <summary>
+        /// Updates the environment label's text.
+        /// </summary>
+        private void UpdateEnvironment()
+        {
+            var runtime = String.Format(IsMono ? Strings.EnvironmentMono : Strings.EnvironmentDotNet, Is64BitProcess ? 64 : 32);
+            labelEnvironment.Text = String.Format("{0}: {1}", Strings.Environment, runtime);
         }
 
         /// <summary>

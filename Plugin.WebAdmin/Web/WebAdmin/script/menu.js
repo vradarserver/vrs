@@ -78,4 +78,3 @@ var VRS;
         WebAdmin.menu = new Menu();
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=menu.js.map

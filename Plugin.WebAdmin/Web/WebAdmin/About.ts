@@ -39,7 +39,7 @@
                     extend: {
                         "{root}": function(root: Model)
                         {
-                            root.Environment = ko.computed(() => root.IsMono() ? VRS.WebAdmin.$$.WA_Value_Mono : VRS.WebAdmin.$$.WA_Value_DotNet);
+                            root.Environment = ko.computed(() => VRS.stringUtility.format(root.IsMono() ? VRS.Server.$$.EnvironmentMono : VRS.Server.$$.EnvironmentDotNet, root.Is64BitProcess ? '64' : '32'));
                             root.FormattedDescription = ko.computed(() => root.Description().replace(/(?:\r\n|\r|\n)/g, '<br />'));
                         }
                     }

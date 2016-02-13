@@ -35,6 +35,20 @@ namespace VirtualRadar.Library
         /// </summary>
         public bool IsMono { get { return Type.GetType("Mono.Runtime") != null; } }
 
+        private bool? _Is64BitProcess;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool Is64BitProcess
+        {
+            get {
+                if(_Is64BitProcess == null) {
+                    _Is64BitProcess = IntPtr.Size == 8;
+                }
+                return _Is64BitProcess.Value;
+            }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

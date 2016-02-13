@@ -66,6 +66,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _ApplicationInformation.Setup(m => m.BuildDate).Returns(buildDate);
             _ConfigurationStorage.Setup(m => m.Folder).Returns("The config folder");
             _RuntimeEnvironment.Setup(m => m.IsMono).Returns(true);
+            _RuntimeEnvironment.Setup(m => m.Is64BitProcess).Returns(true);
 
             _Presenter.Initialise(_View.Object);
 
@@ -77,6 +78,7 @@ namespace Test.VirtualRadar.Library.Presenter
             Assert.AreEqual("The product name", _View.Object.ProductName);
             Assert.AreEqual(buildDate, _View.Object.BuildDate);
             Assert.AreEqual(true, _View.Object.IsMono);
+            Assert.AreEqual(true, _View.Object.Is64BitProcess);
         }
 
         [TestMethod]
