@@ -27,6 +27,11 @@ namespace VirtualRadar.Interface
         bool IsMono { get; }
 
         /// <summary>
+        /// Gets a value indicating that the program is running as a 64-bit process.
+        /// </summary>
+        bool Is64BitProcess { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating that the application is running under the unit test environment.
         /// </summary>
         /// <remarks>

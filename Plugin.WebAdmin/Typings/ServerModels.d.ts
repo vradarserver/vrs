@@ -35,21 +35,26 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         FormattedBuildDate: string;
         Copyright: string;
         Description: string;
+        ConfigurationFolder: string;
         IsMono: boolean;
+        Is64BitProcess: boolean;
     }
     interface ILogView {
         LogLines: string[];
     }
     interface IMainView {
-        BadPlugins: number;
-        NewVer: boolean;
-        NewVerUrl: string;
-        Upnp: boolean;
-        UpnpRouter: boolean;
-        UpnpOn: boolean;
-        LocalRoot: string;
-        LanRoot: string;
-        PublicRoot: string;
+        InvalidPluginCount: number;
+        LogFileName: string;
+        NewVersionAvailable: boolean;
+        NewVersionDownloadUrl: string;
+        RebroadcastServersConfiguration: string;
+        UPnpEnabled: boolean;
+        UPnpRouterPresent: boolean;
+        UPnpPortForwardingActive: boolean;
+        WebServerIsOnline: boolean;
+        WebServerLocalAddress: string;
+        WebServerNetworkAddress: string;
+        WebServerExternalAddress: string;
         Requests: VirtualRadar.Interface.View.IServerRequest[];
         Feeds: VirtualRadar.Interface.View.IFeedStatus[];
         Rebroadcasters: VirtualRadar.Interface.IRebroadcastServerConnection[];
@@ -497,21 +502,26 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         FormattedBuildDate: KnockoutObservable<string>;
         Copyright: KnockoutObservable<string>;
         Description: KnockoutObservable<string>;
+        ConfigurationFolder: KnockoutObservable<string>;
         IsMono: KnockoutObservable<boolean>;
+        Is64BitProcess: KnockoutObservable<boolean>;
     }
     interface ILogView_KO {
         LogLines: KnockoutViewModelArray<string>;
     }
     interface IMainView_KO {
-        BadPlugins: KnockoutObservable<number>;
-        NewVer: KnockoutObservable<boolean>;
-        NewVerUrl: KnockoutObservable<string>;
-        Upnp: KnockoutObservable<boolean>;
-        UpnpRouter: KnockoutObservable<boolean>;
-        UpnpOn: KnockoutObservable<boolean>;
-        LocalRoot: KnockoutObservable<string>;
-        LanRoot: KnockoutObservable<string>;
-        PublicRoot: KnockoutObservable<string>;
+        InvalidPluginCount: KnockoutObservable<number>;
+        LogFileName: KnockoutObservable<string>;
+        NewVersionAvailable: KnockoutObservable<boolean>;
+        NewVersionDownloadUrl: KnockoutObservable<string>;
+        RebroadcastServersConfiguration: KnockoutObservable<string>;
+        UPnpEnabled: KnockoutObservable<boolean>;
+        UPnpRouterPresent: KnockoutObservable<boolean>;
+        UPnpPortForwardingActive: KnockoutObservable<boolean>;
+        WebServerIsOnline: KnockoutObservable<boolean>;
+        WebServerLocalAddress: KnockoutObservable<string>;
+        WebServerNetworkAddress: KnockoutObservable<string>;
+        WebServerExternalAddress: KnockoutObservable<string>;
         Requests: KnockoutViewModelArray<VirtualRadar.Interface.View.IServerRequest_KO>;
         Feeds: KnockoutViewModelArray<VirtualRadar.Interface.View.IFeedStatus_KO>;
         Rebroadcasters: KnockoutViewModelArray<VirtualRadar.Interface.IRebroadcastServerConnection_KO>;

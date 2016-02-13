@@ -94,6 +94,8 @@ declare module VRS.Server
         ClosestAircraftReceiverRequired:                           string;
         CoarseListenerTimeoutInvalid:                              string;
         CoarseListenerTimeoutUnparseable:                          string;
+        CommandLineHelp:                                           string;
+        CommandLineHelpTitle:                                      string;
         CompressedPort30003:                                       string;
         Configuration:                                             string;
         ConfigurationFolder:                                       string;
@@ -127,6 +129,8 @@ declare module VRS.Server
         Count:                                                     string;
         CountPluginsCouldNotBeLoaded:                              string;
         Country:                                                   string;
+        CreateAdminUserAlreadyExists:                              string;
+        CreateAdminUserMissing:                                    string;
         CurrentRouteData:                                          string;
         Data:                                                      string;
         DatabaseFileName:                                          string;
@@ -170,6 +174,9 @@ declare module VRS.Server
         EnableMinifying:                                           string;
         EnableUPnp:                                                string;
         EndDateCannotBeBeforeStartDate:                            string;
+        Environment:                                               string;
+        EnvironmentDotNet:                                         string;
+        EnvironmentMono:                                           string;
         Exception:                                                 string;
         Exceptions:                                                string;
         ExceptionWhenCheckingFile:                                 string;
@@ -248,6 +255,7 @@ declare module VRS.Server
         IPAddress:                                                 string;
         JustFlightSimulatorX:                                      string;
         Kilometres:                                                string;
+        KilometresOver30Seconds:                                   string;
         KilometresPerHour:                                         string;
         Km:                                                        string;
         Knots:                                                     string;
@@ -318,6 +326,7 @@ declare module VRS.Server
         MinimiseToSystemTray:                                      string;
         MinimumRefresh:                                            string;
         MinimumRefreshOutOfBounds:                                 string;
+        Minutes:                                                   string;
         Miscellaneous:                                             string;
         MissingFileName:                                           string;
         MissingFolder:                                             string;
@@ -492,6 +501,8 @@ declare module VRS.Server
         Passphrase:                                                string;
         Password:                                                  string;
         PasswordMissing:                                           string;
+        PasswordMissingOnCommandLine:                              string;
+        PasswordMissingTitle:                                      string;
         Peak:                                                      string;
         PermittedUsers:                                            string;
         PIBadParity:                                               string;
@@ -714,6 +725,7 @@ declare module VRS.Server
         TheseSettingsOnlyAffectInternetBrowsers:                   string;
         Throughput:                                                string;
         Time:                                                      string;
+        Title64Bit:                                                string;
         To:                                                        string;
         ToAddress:                                                 string;
         TotalBadMessages:                                          string;
@@ -749,10 +761,12 @@ declare module VRS.Server
         UseLocalDecodeForInitialPosition:                          string;
         UseMarkerLabels:                                           string;
         User:                                                      string;
+        UserAlreadyExists:                                         string;
         UseRecommendedSettings:                                    string;
         UserManager:                                               string;
         UserManagerName:                                           string;
         UserMustAuthenticate:                                      string;
+        UserNameMissing:                                           string;
         Users:                                                     string;
         UseSlewMethod:                                             string;
         Version:                                                   string;
@@ -764,9 +778,11 @@ declare module VRS.Server
         WebServerOffline:                                          string;
         WebServerOnline:                                           string;
         WebServerStatus:                                           string;
+        WebSiteAdministrator:                                      string;
         WebSiteReceiverId:                                         string;
         WebSiteReceiverRequired:                                   string;
         WebSiteUrl:                                                string;
+        WebSiteUser:                                               string;
         WindowsVersionTooLowFull:                                  string;
         WindowsVersionTooLowTitle:                                 string;
         Wizard:                                                    string;

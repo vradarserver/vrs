@@ -48,6 +48,7 @@ namespace VirtualRadar.Library.Presenter
             _View.ConfigurationFolder = configurationStorage.Folder;
             _View.Copyright = applicationInformation.Copyright;
             _View.Description = applicationInformation.Description;
+            _View.Is64BitProcess = runtimeEnvironment.Is64BitProcess;
             _View.IsMono = runtimeEnvironment.IsMono;
             _View.ProductName = applicationInformation.ProductName;
             _View.Version = applicationInformation.FullVersion;

@@ -2632,4 +2632,19 @@ Show this message.</value>
   <data name="WebSiteUser" xml:space="preserve">
     <value>Web Site User</value>
   </data>
+  <data name="Environment" xml:space="preserve">
+    <value>Environment</value>
+    <comment>As in the run-time environment</comment>
+  </data>
+  <data name="EnvironmentDotNet" xml:space="preserve">
+    <value>.NET {0}-bit</value>
+    <comment>As in ".NET 32-bit" or ".NET 64-bit"</comment>
+  </data>
+  <data name="EnvironmentMono" xml:space="preserve">
+    <value>Mono {0}-bit</value>
+    <comment>As in "Mono 32-bit" or "Mono 64-bit"</comment>
+  </data>
+  <data name="Title64Bit" xml:space="preserve">
+    <value>x64</value>
+  </data>
 </root>

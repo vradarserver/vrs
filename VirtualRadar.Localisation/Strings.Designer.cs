@@ -1579,6 +1579,33 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Environment.
+        /// </summary>
+        public static string Environment {
+            get {
+                return ResourceManager.GetString("Environment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .NET {0}-bit.
+        /// </summary>
+        public static string EnvironmentDotNet {
+            get {
+                return ResourceManager.GetString("EnvironmentDotNet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mono {0}-bit.
+        /// </summary>
+        public static string EnvironmentMono {
+            get {
+                return ResourceManager.GetString("EnvironmentMono", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception.
         /// </summary>
         public static string Exception {
@@ -6514,6 +6541,15 @@ namespace VirtualRadar.Localisation {
         public static string Time {
             get {
                 return ResourceManager.GetString("Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to x64.
+        /// </summary>
+        public static string Title64Bit {
+            get {
+                return ResourceManager.GetString("Title64Bit", resourceCulture);
             }
         }
         

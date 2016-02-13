@@ -62,6 +62,11 @@ namespace VirtualRadar.Interface.View
         bool IsMono { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that VRS is running as a 64-bit process.
+        /// </summary>
+        bool Is64BitProcess { get; set; }
+
+        /// <summary>
         /// Raised when the user wants to see the content of the configuration folder.
         /// </summary>
         event EventHandler OpenConfigurationFolderClicked;
