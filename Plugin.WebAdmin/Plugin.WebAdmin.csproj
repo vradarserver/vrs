@@ -69,6 +69,7 @@
     <Compile Include="View\ConnectorActivityLogView.cs" />
     <Compile Include="View\ILogView.cs" />
     <Compile Include="View\LogView.cs" />
+    <Compile Include="View\MainModels.cs" />
     <Compile Include="View\MainView.cs" />
     <Compile Include="View\QueuesModels.cs" />
     <Compile Include="View\QueuesView.cs" />

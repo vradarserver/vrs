@@ -20,13 +20,11 @@ namespace VirtualRadar.Interface.View
     /// <summary>
     /// A DTO that carries information about a feed.
     /// </summary>
-    [DataContract(Name="Feed")]
     public class FeedStatus : ICloneable
     {
         /// <summary>
         /// Gets or sets the unique ID of the feed.
         /// </summary>
-        [DataMember(Name="Id")]
         public int FeedId { get; set; }
 
         /// <summary>
@@ -37,55 +35,46 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets or sets the name of the feed.
         /// </summary>
-        [DataMember]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that this is a merged feed as opposed to a reciever.
         /// </summary>
-        [DataMember(Name="Merged")]
         public bool IsMergedFeed { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that the feed has a polar plot attached to it.
         /// </summary>
-        [DataMember(Name="Polar")]
         public bool HasPolarPlot { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that an aircraft list is tracking the aircraft on the feed.
         /// </summary>
-        [DataMember]
         public bool HasAircraftList { get; set; }
 
         /// <summary>
         /// Gets or sets the connection status.
         /// </summary>
-        [DataMember(Name="Connection")]
         public ConnectionStatus ConnectionStatus { get; set; }
 
         /// <summary>
         /// Gets or sets a description of the connection status.
         /// </summary>
-        [DataMember(Name="ConnDesc")]
         public string ConnectionStatusDescription { get; set; }
 
         /// <summary>
         /// Gets or sets the total number of messages received.
         /// </summary>
-        [DataMember(Name="Msgs")]
         public long TotalMessages { get; set; }
 
         /// <summary>
         /// Gets or sets the total number of bad messages received.
         /// </summary>
-        [DataMember(Name="BadMsgs")]
         public long TotalBadMessages { get; set; }
 
         /// <summary>
         /// Gets or sets the total number of bad messages.
         /// </summary>
-        [DataMember(Name="Tracked")]
         public int TotalAircraft { get; set; }
 
         /// <summary>

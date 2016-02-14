@@ -20,25 +20,21 @@ namespace VirtualRadar.Interface
     /// <summary>
     /// Describes a connection to a rebroadcast server.
     /// </summary>
-    [DataContract]
     public class RebroadcastServerConnection : ICloneable
     {
         /// <summary>
         /// Gets or sets the identifier of the rebroadcast server.
         /// </summary>
-        [DataMember(Name="Id")]
         public int RebroadcastServerId { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the rebroadcast server.
         /// </summary>
-        [DataMember]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the local port that the rebroadcast server listens to.
         /// </summary>
-        [DataMember]
         public int LocalPort { get; set; }
 
         /// <summary>
@@ -49,32 +45,27 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Gets the address held by <see cref="EndpointIPAddress"/>.
         /// </summary>
-        [DataMember(Name="RemoteAddr")]
         public string RemoteAddress { get { return EndpointIPAddress == null ? null : EndpointIPAddress.ToString(); } }
 
         /// <summary>
         /// Gets or sets the port that the client connected from.
         /// </summary>
-        [DataMember(Name="RemotePort")]
         public int EndpointPort { get; set; }
 
         /// <summary>
         /// Gets or sets a count of bytes currently buffered and awaiting transmission.
         /// </summary>
-        [DataMember(Name="Buffered")]
         public long BytesBuffered { get; set; }
 
         /// <summary>
         /// Gets or sets a count of bytes sent to the client.
         /// </summary>
-        [DataMember(Name="Written")]
         public long BytesWritten { get; set; }
 
         /// <summary>
         /// Gets or sets a count of bytes that were discarded from the buffer because they took
         /// too long to send.
         /// </summary>
-        [DataMember(Name="Discarded")]
         public long StaleBytesDiscarded { get; set; }
 
         /// <summary>

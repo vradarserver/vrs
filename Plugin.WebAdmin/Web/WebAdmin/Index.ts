@@ -1,8 +1,8 @@
 ﻿namespace VRS.WebAdmin.Index
 {
-    import ViewJson = VirtualRadar.Plugin.WebAdmin.View;
+    import ViewJson = VirtualRadar.Plugin.WebAdmin.View.Main;
 
-    interface Model extends ViewJson.IMainView_KO
+    interface Model extends ViewJson.IViewModel_KO
     {
         HasFailedPlugins?:              KnockoutComputed<boolean>;
         FailedPluginsMessage?:          KnockoutComputed<string>;
@@ -20,7 +20,7 @@
         SelectFeed?:                    (feed: FeedModel) => void;
     }
 
-    interface FeedModel extends VirtualRadar.Interface.View.IFeedStatus_KO
+    interface FeedModel extends ViewJson.IFeedStatusModel_KO
     {
         StatusClass?:               KnockoutComputed<string>;
         FormattedMsgs?:             KnockoutComputed<string>;
@@ -30,12 +30,12 @@
         StatisticsUrl?:             KnockoutComputed<string>;
     }
 
-    interface RequestModel extends VirtualRadar.Interface.View.IServerRequest_KO
+    interface RequestModel extends ViewJson.IServerRequestModel_KO
     {
         FormattedBytes?:    KnockoutComputed<string>;
     }
 
-    interface RebroadcastServerModel extends VirtualRadar.Interface.IRebroadcastServerConnection_KO
+    interface RebroadcastServerModel extends ViewJson.IRebroadcastServerConnectionModel_KO
     {
         FormattedBuffered:  KnockoutComputed<string>;
         FormattedWritten:   KnockoutComputed<string>;
@@ -67,7 +67,7 @@
         refreshState()
         {
             this._ViewId.ajax('GetState', {
-                success: (data: IResponse<ViewJson.IMainView>) => {
+                success: (data: IResponse<ViewJson.IViewModel>) => {
                     this.applyState(data);
                     setTimeout(() => this.refreshState(), 1000);
                 },
@@ -102,7 +102,7 @@
             });
         }
 
-        private applyState(state: IResponse<ViewJson.IMainView>)
+        private applyState(state: IResponse<ViewJson.IViewModel>)
         {
             if(this._Model) {
                 ko.viewmodel.updateFromModel(this._Model, state.Response);
