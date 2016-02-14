@@ -23,6 +23,7 @@ using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Plugin.WebAdmin.View.Main;
 
 namespace VirtualRadar.Plugin.WebAdmin.View
 {
@@ -32,50 +33,33 @@ namespace VirtualRadar.Plugin.WebAdmin.View
     public class MainView : IMainView
     {
         private IMainPresenter _Presenter;
+        private ViewModel _ViewModel;
         private IUniversalPlugAndPlayManager _UPnpManager;
         private ISimpleAircraftList _FlightSimulatorXAircraftList;
 
-        [JsonProperty("BadPlugins")]
         public int InvalidPluginCount { get; set; }
 
-        [JsonIgnore]
-        public string LogFileName { get; set; }
-
-        [JsonProperty("NewVer")]
         public bool NewVersionAvailable { get; set; }
 
-        [JsonProperty("NewVerUrl")]
         public string NewVersionDownloadUrl { get; set; }
 
-        [JsonIgnore]
-        public string RebroadcastServersConfiguration { get; set; }
-
-        [JsonProperty("Upnp")]
         public bool UPnpEnabled { get; set; }
 
-        [JsonProperty("UpnpRouter")]
         public bool UPnpRouterPresent { get; set; }
 
-        [JsonProperty("UpnpOn")]
         public bool UPnpPortForwardingActive { get; set; }
 
-        [JsonIgnore]
         public bool WebServerIsOnline { get; set; }
 
-        [JsonProperty("LocalRoot")]
         public string WebServerLocalAddress { get; set; }
 
-        [JsonProperty("LanRoot")]
         public string WebServerNetworkAddress { get; set; }
 
-        [JsonProperty("PublicRoot")]
         public string WebServerExternalAddress { get; set; }
 
-        public ServerRequest[] Requests { get; set; }
+        public string RebroadcastServersConfiguration { get; set; }
 
-        public FeedStatus[] Feeds { get; set; }
-
-        public RebroadcastServerConnection[] Rebroadcasters { get; set; }
+        public string LogFileName { get; set; }
 
         public event EventHandler CheckForNewVersion;
 
@@ -91,10 +75,6 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public MainView(IUniversalPlugAndPlayManager uPnpManager, ISimpleAircraftList flightSimulatorXAircraftList)
         {
-            Requests = new ServerRequest[0];
-            Feeds = new FeedStatus[0];
-            Rebroadcasters = new RebroadcastServerConnection[0];
-
             _UPnpManager = uPnpManager;
             _FlightSimulatorXAircraftList = flightSimulatorXAircraftList;
         }
@@ -126,12 +106,12 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowServerRequests(ServerRequest[] serverRequests)
         {
-            Requests = serverRequests.Select(r => r.Clone() as ServerRequest).OrderBy(r => r.RemoteAddress).ToArray();
+            _ViewModel.RefreshServerRequests(serverRequests);
         }
 
         public void ShowFeeds(FeedStatus[] feeds)
         {
-            Feeds = feeds.Select(r => r.Clone() as FeedStatus).OrderBy(r => r.Name).ToArray();
+            _ViewModel.RefreshFeedStatuses(feeds);
         }
 
         public void ShowFeedConnectionStatus(FeedStatus feed)
@@ -146,7 +126,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)
         {
-            Rebroadcasters = connections.OrderBy(r => r.Name).ToArray();
+            _ViewModel.RefreshRebroadcastServerConnections(connections);
         }
 
         public void ShowSettingsConfigurationUI(string openOnPageTitle, object openOnConfigurationObject)
@@ -156,6 +136,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public DialogResult ShowView()
         {
+            _ViewModel = new ViewModel(this);
+
             _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
             _Presenter.Initialise(this);
             _Presenter.UPnpManager = _UPnpManager;
@@ -164,9 +146,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         }
 
         [WebAdminMethod]
-        public IMainView GetState()
+        public ViewModel GetState()
         {
-            return this;
+            _ViewModel.RefreshFromView(this);
+            return _ViewModel;
         }
 
         [WebAdminMethod]

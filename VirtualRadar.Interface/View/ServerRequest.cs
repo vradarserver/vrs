@@ -20,8 +20,7 @@ namespace VirtualRadar.Interface.View
     /// <summary>
     /// A DTO class that carries information about a web server request.
     /// </summary>
-    [DataContract]
-    public class ServerRequest : ICloneable
+    public class ServerRequest
     {
         /// <summary>
         /// Gets or sets the remote endpoint IP address.
@@ -36,37 +35,31 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets or sets the name of the user that is making the request, if any. Null if anonymous.
         /// </summary>
-        [DataMember(Name="User")]
         public string UserName { get; set; }
 
         /// <summary>
         /// Gets the address of the machine that made the request.
         /// </summary>
-        [DataMember(Name="RemoteAddr")]
         public string RemoteAddress { get { return RemoteEndPoint == null ? null : RemoteEndPoint.Address.ToString(); } }
 
         /// <summary>
         /// Gets the port that the response is to go to.
         /// </summary>
-        [DataMember(Name="RemotePort")]
         public int RemotePort { get { return RemoteEndPoint == null ? 0 : RemoteEndPoint.Port; } }
 
         /// <summary>
         /// Gets or sets the date and time of the last request made from the <see cref="RemoteEndPoint"/>.
         /// </summary>
-        [DataMember]
         public DateTime LastRequest { get; set; }
 
         /// <summary>
         /// Gets or sets the number of bytes sent to the <see cref="RemoteEndPoint"/>.
         /// </summary>
-        [DataMember(Name="Bytes")]
         public long BytesSent { get; set; }
 
         /// <summary>
         /// Gets or sets the last URL served to the <see cref="RemoteEndPoint"/>.
         /// </summary>
-        [DataMember]
         public string LastUrl { get; set; }
 
         /// <summary>

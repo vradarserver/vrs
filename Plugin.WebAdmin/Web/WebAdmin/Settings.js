@@ -503,3 +503,4 @@ var VRS;
         })(Settings = WebAdmin.Settings || (WebAdmin.Settings = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
+//# sourceMappingURL=Settings.js.map

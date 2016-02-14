@@ -210,14 +210,6 @@ namespace Test.VirtualRadar.Interface
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void JsonSerialiser_WriteObject_Throws_If_Type_Passed_Is_Not_One_Passed_To_Initialise()
-        {
-            _JsonSerialiser.Initialise(typeof(ValueTypes));
-            _JsonSerialiser.WriteObject(_Stream, this);
-        }
-
-        [TestMethod]
         [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "JsonValueTypes$")]
         public void JsonSerialiser_WriteObject_Writes_ValueTypes_Correctly()

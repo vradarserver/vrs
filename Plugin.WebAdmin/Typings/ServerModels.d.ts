@@ -42,23 +42,6 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
     interface ILogView {
         LogLines: string[];
     }
-    interface IMainView {
-        InvalidPluginCount: number;
-        LogFileName: string;
-        NewVersionAvailable: boolean;
-        NewVersionDownloadUrl: string;
-        RebroadcastServersConfiguration: string;
-        UPnpEnabled: boolean;
-        UPnpRouterPresent: boolean;
-        UPnpPortForwardingActive: boolean;
-        WebServerIsOnline: boolean;
-        WebServerLocalAddress: string;
-        WebServerNetworkAddress: string;
-        WebServerExternalAddress: string;
-        Requests: VirtualRadar.Interface.View.IServerRequest[];
-        Feeds: VirtualRadar.Interface.View.IFeedStatus[];
-        Rebroadcasters: VirtualRadar.Interface.IRebroadcastServerConnection[];
-    }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
     interface IViewModel {
@@ -76,20 +59,29 @@ declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
         Message: string;
     }
 }
-declare module VirtualRadar.Interface.View {
-    interface IServerRequest {
-        RemoteEndPoint: System.Net.IIPEndPoint;
-        DataVersion: number;
+declare module VirtualRadar.Plugin.WebAdmin.View.Main {
+    interface IViewModel {
+        BadPlugins: number;
+        NewVer: boolean;
+        NewVerUrl: string;
+        Upnp: boolean;
+        UpnpRouter: boolean;
+        UpnpOn: boolean;
+        LocalRoot: string;
+        LanRoot: string;
+        PublicRoot: string;
+        Requests: VirtualRadar.Plugin.WebAdmin.View.Main.IServerRequestModel[];
+        Feeds: VirtualRadar.Plugin.WebAdmin.View.Main.IFeedStatusModel[];
+        Rebroadcasters: VirtualRadar.Plugin.WebAdmin.View.Main.IRebroadcastServerConnectionModel[];
+    }
+    interface IServerRequestModel {
         User: string;
         RemoteAddr: string;
-        RemotePort: number;
-        LastRequest: Date;
         Bytes: number;
         LastUrl: string;
     }
-    interface IFeedStatus {
+    interface IFeedStatusModel {
         Id: number;
-        DataVersion: number;
         Name: string;
         Merged: boolean;
         Polar: boolean;
@@ -100,43 +92,10 @@ declare module VirtualRadar.Interface.View {
         BadMsgs: number;
         Tracked: number;
     }
-    interface IValidationModelField {
-        IsWarning: boolean;
-        IsError: boolean;
-        IsValid: boolean;
-        Message: string;
-    }
-    interface IEnumModel {
-        Value: number;
-        Description: string;
-    }
-}
-declare module System.Net {
-    interface IIPEndPoint extends System.Net.IEndPoint {
-        AddressFamily: System.Net.Sockets.AddressFamily;
-        Address: System.Net.IIPAddress;
-        Port: number;
-    }
-    interface IEndPoint {
-        AddressFamily: System.Net.Sockets.AddressFamily;
-    }
-    interface IIPAddress {
-        Address: number;
-        AddressFamily: System.Net.Sockets.AddressFamily;
-        ScopeId: number;
-        IsIPv6Multicast: boolean;
-        IsIPv6LinkLocal: boolean;
-        IsIPv6SiteLocal: boolean;
-        IsIPv6Teredo: boolean;
-        IsIPv4MappedToIPv6: boolean;
-    }
-}
-declare module VirtualRadar.Interface {
-    interface IRebroadcastServerConnection {
+    interface IRebroadcastServerConnectionModel {
         Id: number;
         Name: string;
         LocalPort: number;
-        EndpointIPAddress: System.Net.IIPAddress;
         RemoteAddr: string;
         RemotePort: number;
         Buffered: number;
@@ -422,6 +381,18 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Message: string;
     }
 }
+declare module VirtualRadar.Interface.View {
+    interface IValidationModelField {
+        IsWarning: boolean;
+        IsError: boolean;
+        IsValid: boolean;
+        Message: string;
+    }
+    interface IEnumModel {
+        Value: number;
+        Description: string;
+    }
+}
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
     interface IViewModel {
         Name: string;
@@ -509,23 +480,6 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
     interface ILogView_KO {
         LogLines: KnockoutViewModelArray<string>;
     }
-    interface IMainView_KO {
-        InvalidPluginCount: KnockoutObservable<number>;
-        LogFileName: KnockoutObservable<string>;
-        NewVersionAvailable: KnockoutObservable<boolean>;
-        NewVersionDownloadUrl: KnockoutObservable<string>;
-        RebroadcastServersConfiguration: KnockoutObservable<string>;
-        UPnpEnabled: KnockoutObservable<boolean>;
-        UPnpRouterPresent: KnockoutObservable<boolean>;
-        UPnpPortForwardingActive: KnockoutObservable<boolean>;
-        WebServerIsOnline: KnockoutObservable<boolean>;
-        WebServerLocalAddress: KnockoutObservable<string>;
-        WebServerNetworkAddress: KnockoutObservable<string>;
-        WebServerExternalAddress: KnockoutObservable<string>;
-        Requests: KnockoutViewModelArray<VirtualRadar.Interface.View.IServerRequest_KO>;
-        Feeds: KnockoutViewModelArray<VirtualRadar.Interface.View.IFeedStatus_KO>;
-        Rebroadcasters: KnockoutViewModelArray<VirtualRadar.Interface.IRebroadcastServerConnection_KO>;
-    }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
     interface IViewModel_KO {
@@ -543,20 +497,29 @@ declare module VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog {
         Message: KnockoutObservable<string>;
     }
 }
-declare module VirtualRadar.Interface.View {
-    interface IServerRequest_KO {
-        RemoteEndPoint: System.Net.IIPEndPoint_KO;
-        DataVersion: KnockoutObservable<number>;
+declare module VirtualRadar.Plugin.WebAdmin.View.Main {
+    interface IViewModel_KO {
+        BadPlugins: KnockoutObservable<number>;
+        NewVer: KnockoutObservable<boolean>;
+        NewVerUrl: KnockoutObservable<string>;
+        Upnp: KnockoutObservable<boolean>;
+        UpnpRouter: KnockoutObservable<boolean>;
+        UpnpOn: KnockoutObservable<boolean>;
+        LocalRoot: KnockoutObservable<string>;
+        LanRoot: KnockoutObservable<string>;
+        PublicRoot: KnockoutObservable<string>;
+        Requests: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Main.IServerRequestModel_KO>;
+        Feeds: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Main.IFeedStatusModel_KO>;
+        Rebroadcasters: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Main.IRebroadcastServerConnectionModel_KO>;
+    }
+    interface IServerRequestModel_KO {
         User: KnockoutObservable<string>;
         RemoteAddr: KnockoutObservable<string>;
-        RemotePort: KnockoutObservable<number>;
-        LastRequest: KnockoutObservable<Date>;
         Bytes: KnockoutObservable<number>;
         LastUrl: KnockoutObservable<string>;
     }
-    interface IFeedStatus_KO {
+    interface IFeedStatusModel_KO {
         Id: KnockoutObservable<number>;
-        DataVersion: KnockoutObservable<number>;
         Name: KnockoutObservable<string>;
         Merged: KnockoutObservable<boolean>;
         Polar: KnockoutObservable<boolean>;
@@ -567,43 +530,10 @@ declare module VirtualRadar.Interface.View {
         BadMsgs: KnockoutObservable<number>;
         Tracked: KnockoutObservable<number>;
     }
-    interface IValidationModelField_KO {
-        IsWarning: KnockoutObservable<boolean>;
-        IsError: KnockoutObservable<boolean>;
-        IsValid: KnockoutObservable<boolean>;
-        Message: KnockoutObservable<string>;
-    }
-    interface IEnumModel_KO {
-        Value: KnockoutObservable<number>;
-        Description: KnockoutObservable<string>;
-    }
-}
-declare module System.Net {
-    interface IIPEndPoint_KO extends System.Net.IEndPoint_KO {
-        AddressFamily: KnockoutObservable<System.Net.Sockets.AddressFamily>;
-        Address: System.Net.IIPAddress_KO;
-        Port: KnockoutObservable<number>;
-    }
-    interface IEndPoint_KO {
-        AddressFamily: KnockoutObservable<System.Net.Sockets.AddressFamily>;
-    }
-    interface IIPAddress_KO {
-        Address: KnockoutObservable<number>;
-        AddressFamily: KnockoutObservable<System.Net.Sockets.AddressFamily>;
-        ScopeId: KnockoutObservable<number>;
-        IsIPv6Multicast: KnockoutObservable<boolean>;
-        IsIPv6LinkLocal: KnockoutObservable<boolean>;
-        IsIPv6SiteLocal: KnockoutObservable<boolean>;
-        IsIPv6Teredo: KnockoutObservable<boolean>;
-        IsIPv4MappedToIPv6: KnockoutObservable<boolean>;
-    }
-}
-declare module VirtualRadar.Interface {
-    interface IRebroadcastServerConnection_KO {
+    interface IRebroadcastServerConnectionModel_KO {
         Id: KnockoutObservable<number>;
         Name: KnockoutObservable<string>;
         LocalPort: KnockoutObservable<number>;
-        EndpointIPAddress: System.Net.IIPAddress_KO;
         RemoteAddr: KnockoutObservable<string>;
         RemotePort: KnockoutObservable<number>;
         Buffered: KnockoutObservable<number>;
@@ -887,6 +817,18 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     interface ITestConnectionOutcomeModel_KO {
         Title: KnockoutObservable<string>;
         Message: KnockoutObservable<string>;
+    }
+}
+declare module VirtualRadar.Interface.View {
+    interface IValidationModelField_KO {
+        IsWarning: KnockoutObservable<boolean>;
+        IsError: KnockoutObservable<boolean>;
+        IsValid: KnockoutObservable<boolean>;
+        Message: KnockoutObservable<string>;
+    }
+    interface IEnumModel_KO {
+        Value: KnockoutObservable<number>;
+        Description: KnockoutObservable<string>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
