@@ -238,7 +238,10 @@ namespace VirtualRadar.Interface
             switch(_Mechanism) {
                 case BackgroundThreadQueueMechanism.Queue:
                 case BackgroundThreadQueueMechanism.QueueWithNoBlock:
-                    _BackgroundThread = new Thread(BackgroundThreadMethod) { Name = _QueueName };
+                    _BackgroundThread = new Thread(BackgroundThreadMethod) {
+                        Name = _QueueName,
+                        IsBackground = true,
+                    };
                     _BackgroundThread.Start();
                     break;
                 case BackgroundThreadQueueMechanism.SingleThread:
