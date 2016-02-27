@@ -29,6 +29,7 @@ using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Localisation;
 using VirtualRadar.WinForms;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar
 {
@@ -106,6 +107,9 @@ namespace VirtualRadar
                 Console.WriteLine(folderMessage);
                 Factory.Singleton.Resolve<IMessageBox>().Show("Configuration Folder");
             }
+
+            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            receiverFormatManager.Initialise();
 
             var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
             pluginManager.LoadPlugins();

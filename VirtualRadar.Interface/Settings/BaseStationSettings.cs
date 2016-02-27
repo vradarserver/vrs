@@ -35,7 +35,7 @@ namespace VirtualRadar.Interface.Settings
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
         // Obsolete (we can't use the attribute)
-        public DataSource DataSource { get; set; }
+        public string DataSource { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.

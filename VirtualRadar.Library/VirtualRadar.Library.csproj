@@ -96,7 +96,13 @@
     <Compile Include="ImageDimensionsFetcher.cs" />
     <Compile Include="Listener\AircraftListJsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\AircraftListJsonMessageConverter.cs" />
+    <Compile Include="Listener\BeastReceiverProvider.cs" />
+    <Compile Include="Listener\AircraftListJsonReceiverProvider.cs" />
     <Compile Include="Listener\MergedFeedComponentListener.cs" />
+    <Compile Include="Listener\Port30003ReceiverProvider.cs" />
+    <Compile Include="Listener\CompressedReceiverProvider.cs" />
+    <Compile Include="Listener\ReceiverFormatManager.cs" />
+    <Compile Include="Listener\Sbs3ReceiverProvider.cs" />
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\Connector.cs" />
     <Compile Include="Network\ConnectorActivityLog.cs" />

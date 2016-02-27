@@ -125,7 +125,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel;
         NewUser: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel;
         ConnectionTypes: VirtualRadar.Interface.View.IEnumModel[];
-        DataSources: VirtualRadar.Interface.View.IEnumModel[];
+        DataSources: VirtualRadar.Interface.Listener.IReceiverFormat[];
         DefaultAccesses: VirtualRadar.Interface.View.IEnumModel[];
         DistanceUnits: VirtualRadar.Interface.View.IEnumModel[];
         Handshakes: VirtualRadar.Interface.View.IEnumModel[];
@@ -326,7 +326,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         UniqueId: number;
         Name: string;
         NameValidation: VirtualRadar.Interface.View.IValidationModelField;
-        DataSource: number;
+        DataSource: string;
         ConnectionType: number;
         AutoReconnectAtStartup: boolean;
         IsPassive: boolean;
@@ -391,6 +391,12 @@ declare module VirtualRadar.Interface.View {
     interface IEnumModel {
         Value: number;
         Description: string;
+    }
+}
+declare module VirtualRadar.Interface.Listener {
+    interface IReceiverFormat {
+        UniqueId: string;
+        ShortName: string;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
@@ -563,7 +569,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO;
         NewUser: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel_KO;
         ConnectionTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
-        DataSources: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        DataSources: KnockoutViewModelArray<VirtualRadar.Interface.Listener.IReceiverFormat_KO>;
         DefaultAccesses: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         DistanceUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Handshakes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
@@ -764,7 +770,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         UniqueId: KnockoutObservable<number>;
         Name: KnockoutObservable<string>;
         NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
-        DataSource: KnockoutObservable<number>;
+        DataSource: KnockoutObservable<string>;
         ConnectionType: KnockoutObservable<number>;
         AutoReconnectAtStartup: KnockoutObservable<boolean>;
         IsPassive: KnockoutObservable<boolean>;
@@ -829,6 +835,12 @@ declare module VirtualRadar.Interface.View {
     interface IEnumModel_KO {
         Value: KnockoutObservable<number>;
         Description: KnockoutObservable<string>;
+    }
+}
+declare module VirtualRadar.Interface.Listener {
+    interface IReceiverFormat_KO {
+        UniqueId: KnockoutObservable<string>;
+        ShortName: KnockoutObservable<string>;
     }
 }
 declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {

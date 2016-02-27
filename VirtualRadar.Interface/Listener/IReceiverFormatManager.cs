@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2016 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,53 +13,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Interface.Settings
+namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
-    /// A collection of strings describing the UniqueId values for the receiver formats
-    /// that ship with VRS.
+    /// Manages the feed formats that the program can decode.
     /// </summary>
-    public static class DataSource
+    /// <remarks>
+    /// Plugins cannot provide their own implementation of this interface, the singleton is established
+    /// before RegisterImplementations is called.
+    /// </remarks>
+    public interface IReceiverFormatManager : ISingleton<IReceiverFormatManager>
     {
         /// <summary>
-        /// Any source of port 30003 data such as BaseStation, PlanePlotter etc.
+        /// Initialises the format manager.
         /// </summary>
-        public static readonly string Port30003 = "Port30003";
+        void Initialise();
 
         /// <summary>
-        /// Raw Mode-S messages from the Kinetics Avionics SBS-3.
+        /// Registers a provider.
         /// </summary>
-        public static readonly string Sbs3 = "Sbs3";
+        /// <param name="provider"></param>
+        /// <remarks>
+        /// Plugins should register their providers in RegisterImplementations, which should be
+        /// called before VRS tries to connect to any feeds.
+        /// </remarks>
+        void RegisterProvider(IReceiverFormatProvider provider);
 
         /// <summary>
-        /// Raw messages from the Mode-S Beast.
+        /// Returns a collection of all registered receiver formats in a summarised form.
         /// </summary>
-        public static readonly string Beast = "Beast";
+        /// <returns></returns>
+        ReceiverFormat[] GetRegisteredFormats();
 
         /// <summary>
-        /// Compressed messages in VRS format.
+        /// Returns the registered provider with the identifier supplied or null if no provider has been
+        /// registered for this ID.
         /// </summary>
-        public static readonly string CompressedVRS = "CompressedVRS";
+        /// <param name="providerId"></param>
+        /// <returns></returns>
+        IReceiverFormatProvider GetProvider(string providerId);
 
         /// <summary>
-        /// The feed is sending changes to an aircraft list in JSON format.
+        /// Returns the short name associated with the unique ID passed across. If there is no
+        /// provider registered with the unique ID then a string along the lines of &quot;Unknown&quot;
+        /// is returned.
         /// </summary>
-        public static readonly string AircraftListJson = "AircraftListJson";
-
-        static string[] _AllInternalDataSources = new string[] {
-            DataSource.Port30003,
-            DataSource.Sbs3,
-            DataSource.Beast,
-            DataSource.CompressedVRS,
-            DataSource.AircraftListJson,
-        };
-        /// <summary>
-        /// Gets an array of all internal data sources. This is not used by the server, it's just to
-        /// make life easier for the unit tests.
-        /// </summary>
-        public static string[] AllInternalDataSources
-        {
-            get { return _AllInternalDataSources; }
-        }
+        /// <param name="providerId"></param>
+        /// <returns></returns>
+        string ShortName(string providerId);
     }
 }

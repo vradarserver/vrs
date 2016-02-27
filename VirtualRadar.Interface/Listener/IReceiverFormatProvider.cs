@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2016 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,53 +13,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Interface.Settings
+namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
-    /// A collection of strings describing the UniqueId values for the receiver formats
-    /// that ship with VRS.
+    /// The interface that all receiver format providers must implement.
     /// </summary>
-    public static class DataSource
+    public interface IReceiverFormatProvider
     {
         /// <summary>
-        /// Any source of port 30003 data such as BaseStation, PlanePlotter etc.
+        /// Gets the unique identifier of the format provider.
         /// </summary>
-        public static readonly string Port30003 = "Port30003";
+        /// <remarks>
+        /// These values are saved in the user's configuration, choose your ID carefully and don't change it
+        /// between releases. Do not re-use identifiers. Plugins should ensure that their unique ID cannot
+        /// clash with other plugins.
+        /// </remarks>
+        string UniqueId { get; }
 
         /// <summary>
-        /// Raw Mode-S messages from the Kinetics Avionics SBS-3.
+        /// Gets the short name for the format.
         /// </summary>
-        public static readonly string Sbs3 = "Sbs3";
+        /// <returns></returns>
+        string ShortName { get; }
 
         /// <summary>
-        /// Raw messages from the Mode-S Beast.
+        /// Gets a value indicating that the feed format holds raw messages from the aircraft that need to be decoded.
         /// </summary>
-        public static readonly string Beast = "Beast";
+        bool IsRawFormat { get; }
 
         /// <summary>
-        /// Compressed messages in VRS format.
+        /// Creates and returns a new message bytes extractor for the format.
         /// </summary>
-        public static readonly string CompressedVRS = "CompressedVRS";
+        /// <returns></returns>
+        IMessageBytesExtractor CreateMessageBytesExtractor();
 
         /// <summary>
-        /// The feed is sending changes to an aircraft list in JSON format.
+        /// Returns true if the message bytes extractor passed across is appropriate for this receiver format.
         /// </summary>
-        public static readonly string AircraftListJson = "AircraftListJson";
-
-        static string[] _AllInternalDataSources = new string[] {
-            DataSource.Port30003,
-            DataSource.Sbs3,
-            DataSource.Beast,
-            DataSource.CompressedVRS,
-            DataSource.AircraftListJson,
-        };
-        /// <summary>
-        /// Gets an array of all internal data sources. This is not used by the server, it's just to
-        /// make life easier for the unit tests.
-        /// </summary>
-        public static string[] AllInternalDataSources
-        {
-            get { return _AllInternalDataSources; }
-        }
+        /// <param name="extractor"></param>
+        /// <returns></returns>
+        bool IsUsableBytesExtractor(IMessageBytesExtractor extractor);
     }
 }

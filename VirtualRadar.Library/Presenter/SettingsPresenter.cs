@@ -28,6 +28,7 @@ using System.ComponentModel;
 using VirtualRadar.Interface.WebServer;
 using System.Threading;
 using System.Diagnostics;
+using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -168,6 +169,11 @@ namespace VirtualRadar.Library.Presenter
         private IConfigurationListener _ConfigurationListener;
 
         /// <summary>
+        /// The singleton ReceiverFormatManager that holds a list of all registered receiver formats.
+        /// </summary>
+        private IReceiverFormatManager _ReceiverFormatManager;
+
+        /// <summary>
         /// The highest unique ID across both receivers and merged feed as-at the point that
         /// editing started. We do not create a unique ID that is at or below this value when
         /// we create new receivers and merged feeds.
@@ -255,6 +261,7 @@ namespace VirtualRadar.Library.Presenter
             var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
             var config = configStorage.Load();
 
+            _ReceiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
             _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
             _View.UserManager = _UserManager.Name;
 
@@ -1208,16 +1215,9 @@ namespace VirtualRadar.Library.Presenter
                             default:                                    throw new NotImplementedException();
                         }
                     } else if(receiver != null) {
-                        var isCooked = false;
                         var hasAircraftList = receiver.ReceiverUsage != ReceiverUsage.MergeOnly;
-                        switch(receiver.DataSource) {
-                            case DataSource.Beast:              break;
-                            case DataSource.CompressedVRS:      isCooked = true; break;
-                            case DataSource.Port30003:          isCooked = true; break;
-                            case DataSource.Sbs3:               break;
-                            case DataSource.AircraftListJson:   isCooked = true; break;
-                            default:                            throw new NotImplementedException();
-                        }
+                        var receiverProvider = _ReceiverFormatManager.GetProvider(receiver.DataSource);
+                        var isCooked = receiverProvider != null && !receiverProvider.IsRawFormat;
                         switch(format) {
                             case RebroadcastFormat.Avr:                 formatIsOK = !isCooked; break;
                             case RebroadcastFormat.CompressedVRS:       formatIsOK = true; break;
