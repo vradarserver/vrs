@@ -113,6 +113,7 @@ namespace VirtualRadar.Library.Presenter
             InitialiseUserManager();
 
             var configuration = LoadConfiguration(configurationStorage);
+            FixConfigurationErrors(configurationStorage, configuration);
             Factory.Singleton.Resolve<IHeartbeatService>().Singleton.Start();
             LoadPictureFolderCache();
             TestBaseStationDatabaseConnection();
@@ -215,6 +216,23 @@ namespace VirtualRadar.Library.Presenter
             }
 
             return result;
+        }
+
+        private void FixConfigurationErrors(IConfigurationStorage configurationStorage, Configuration configuration)
+        {
+            var saveConfiguration = false;
+
+            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            foreach(var receiver in configuration.Receivers.Where(r => r.Enabled)) {
+                if(receiverFormatManager.GetProvider(receiver.DataSource) == null) {
+                    receiver.Enabled = false;
+                    saveConfiguration = true;
+                }
+            }
+
+            if(saveConfiguration) {
+                configurationStorage.Save(configuration);
+            }
         }
 
         private void InitialiseUserManager()
