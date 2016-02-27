@@ -73,6 +73,10 @@ namespace VirtualRadar.Library.Listener
         {
             Initialise();
 
+            if(provider == null || String.IsNullOrEmpty(provider.UniqueId)) {
+                throw new InvalidOperationException("You must supply a provider and the UniqueId property must return a non-null non-empty string");
+            }
+
             lock(_SyncLock) {
                 var newMap = CollectionHelper.ShallowCopy(_Providers);
                 if(newMap.ContainsKey(provider.UniqueId)) {
@@ -105,9 +109,11 @@ namespace VirtualRadar.Library.Listener
         {
             Initialise();
 
-            var map = _Providers;
-            IReceiverFormatProvider result;
-            map.TryGetValue(providerId, out result);
+            IReceiverFormatProvider result = null;
+            if(!String.IsNullOrEmpty(providerId)) {
+                var map = _Providers;
+                map.TryGetValue(providerId, out result);
+            }
 
             return result;
         }

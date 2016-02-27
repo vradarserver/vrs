@@ -327,6 +327,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Name: string;
         NameValidation: VirtualRadar.Interface.View.IValidationModelField;
         DataSource: string;
+        DataSourceValidation: VirtualRadar.Interface.View.IValidationModelField;
         ConnectionType: number;
         AutoReconnectAtStartup: boolean;
         IsPassive: boolean;
@@ -771,6 +772,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Name: KnockoutObservable<string>;
         NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         DataSource: KnockoutObservable<string>;
+        DataSourceValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ConnectionType: KnockoutObservable<number>;
         AutoReconnectAtStartup: KnockoutObservable<boolean>;
         IsPassive: KnockoutObservable<boolean>;

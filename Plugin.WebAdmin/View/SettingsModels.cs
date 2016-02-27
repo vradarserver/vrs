@@ -1001,6 +1001,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public string DataSource { get; set; }
 
+        [ValidationModelField(ValidationField.Format)]
+        public ValidationModelField DataSourceValidation { get; set; }
+
         public int ConnectionType { get; set; }             // ConnectionType
 
         public bool AutoReconnectAtStartup { get; set; }

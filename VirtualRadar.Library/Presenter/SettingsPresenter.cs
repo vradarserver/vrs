@@ -1308,6 +1308,11 @@ namespace VirtualRadar.Library.Presenter
                     });
                 }
 
+                // The receiver must have a known format
+                ConditionIsFalse(receiver.DataSource, r => _ReceiverFormatManager.GetProvider(r) == null, new Validation(ValidationField.Format, defaults) {
+                    Message = Strings.DataSourceRequired,
+                });
+
                 // If a receiver location has been supplied then it must exist
                 if(receiver.ReceiverLocationId != 0) {
                     ValueIsInList(receiver.ReceiverLocationId, _View.Configuration.ReceiverLocations.Select(r => r.UniqueId), new Validation(ValidationField.Location, defaults) {

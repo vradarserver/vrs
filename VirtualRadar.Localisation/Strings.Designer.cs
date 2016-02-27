@@ -1255,6 +1255,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must choose a feed format.
+        /// </summary>
+        public static string DataSourceRequired {
+            get {
+                return ResourceManager.GetString("DataSourceRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Days between checks.
         /// </summary>
         public static string DaysBetweenChecks {

@@ -92,6 +92,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     { ValidationField.Enabled,              page == null ? null : page.checkBoxEnabled },
                     { ValidationField.Name,                 page == null ? null : page.textBoxName },
                     { ValidationField.Location,             page == null ? null : page.comboBoxLocationId },
+                    { ValidationField.Format,               page == null ? null : page.comboBoxDataSource },
 
                     { ValidationField.IsPassive,            page == null ? null : page.checkBoxIsPassive },
                     { ValidationField.BaseStationAddress,   page == null ? null : page.textBoxAddress },

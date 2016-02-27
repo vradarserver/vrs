@@ -416,6 +416,52 @@ namespace Test.VirtualRadar.Library.Presenter
             _View.Verify(v => v.ReportProblem(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never());
             _Provider.Verify(p => p.AbortApplication(), Times.Once());
         }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Disables_Any_Receivers_With_An_Unknown_DataSource()
+        {
+            var receiver = new Receiver() {
+                DataSource = "Invalid",
+                Enabled = true,
+            };
+            _Configuration.Receivers.Add(receiver);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            Assert.AreEqual(false, receiver.Enabled);
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Saves_Configuration_For_Receivers_With_An_Unknown_DataSource()
+        {
+            var receiver = new Receiver() {
+                DataSource = "Invalid",
+                Enabled = true,
+            };
+            _Configuration.Receivers.Add(receiver);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _ConfigurationStorage.Verify(r => r.Save(_Configuration), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Does_Not_Disable_Receivers_With_A_Valid_DataSource()
+        {
+            var receiver = new Receiver() {
+                DataSource = DataSource.Port30003,
+                Enabled = true,
+            };
+            _Configuration.Receivers.Add(receiver);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            Assert.AreEqual(true, receiver.Enabled);
+            _ConfigurationStorage.Verify(r => r.Save(_Configuration), Times.Never());
+        }
         #endregion
 
         #region Heartbeat timer

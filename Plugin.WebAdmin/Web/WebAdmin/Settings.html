@@ -201,10 +201,10 @@
                                             <input type="text" class="form-control" data-bind="textInput: Name" />
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="DataSourceValidation">
                                         <label class="col-sm-4">::Format:::</label>
                                         <div class="col-sm-8">
-                                            <select class="form-control" data-bind="options: $root.DataSources, optionsText: 'ShortName', optionsValue: 'UniqueId', value: DataSource"></select>
+                                            <select class="form-control" data-bind="options: $root.DataSources, optionsText: 'ShortName', optionsValue: 'UniqueId', value: DataSource, valueAllowUnset: true"></select>
                                         </div>
                                     </div>
                                     <div class="form-group">
