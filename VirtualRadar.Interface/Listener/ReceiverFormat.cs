@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2016 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,53 +13,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Interface.Settings
+namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
-    /// A collection of strings describing the UniqueId values for the receiver formats
-    /// that ship with VRS.
+    /// Describes a registered receiver format.
     /// </summary>
-    public static class DataSource
+    public class ReceiverFormat
     {
         /// <summary>
-        /// Any source of port 30003 data such as BaseStation, PlanePlotter etc.
+        /// Gets or sets the unique ID of the receiver format.
         /// </summary>
-        public static readonly string Port30003 = "Port30003";
+        public string UniqueId { get; set; }
 
         /// <summary>
-        /// Raw Mode-S messages from the Kinetics Avionics SBS-3.
+        /// Gets or sets the name of the receiver format.
         /// </summary>
-        public static readonly string Sbs3 = "Sbs3";
+        public string ShortName { get; set; }
 
         /// <summary>
-        /// Raw messages from the Mode-S Beast.
+        /// Creates an object from an instance of a provider.
         /// </summary>
-        public static readonly string Beast = "Beast";
-
-        /// <summary>
-        /// Compressed messages in VRS format.
-        /// </summary>
-        public static readonly string CompressedVRS = "CompressedVRS";
-
-        /// <summary>
-        /// The feed is sending changes to an aircraft list in JSON format.
-        /// </summary>
-        public static readonly string AircraftListJson = "AircraftListJson";
-
-        static string[] _AllInternalDataSources = new string[] {
-            DataSource.Port30003,
-            DataSource.Sbs3,
-            DataSource.Beast,
-            DataSource.CompressedVRS,
-            DataSource.AircraftListJson,
-        };
-        /// <summary>
-        /// Gets an array of all internal data sources. This is not used by the server, it's just to
-        /// make life easier for the unit tests.
-        /// </summary>
-        public static string[] AllInternalDataSources
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        public static ReceiverFormat Create(IReceiverFormatProvider provider)
         {
-            get { return _AllInternalDataSources; }
+            return new ReceiverFormat() {
+                UniqueId =  provider.UniqueId,
+                ShortName = provider.ShortName,
+            };
         }
     }
 }

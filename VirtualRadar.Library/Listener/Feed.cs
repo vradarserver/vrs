@@ -30,7 +30,15 @@ namespace VirtualRadar.Library.Listener
     class Feed : IFeed
     {
         #region Fields
+        /// <summary>
+        /// True if the feed has been initialised.
+        /// </summary>
         private bool _Initialised;
+
+        /// <summary>
+        /// The singleton receiver format manager.
+        /// </summary>
+        private IReceiverFormatManager _ReceiverFormatManager;
         #endregion
 
         #region Properties
@@ -137,6 +145,7 @@ namespace VirtualRadar.Library.Listener
             if(configuration == null) throw new ArgumentNullException("configuration");
             if(!receiver.Enabled) throw new InvalidOperationException(String.Format("The {0} receiver has not been enabled", receiver.Name));
             var receiverLocation = configuration.ReceiverLocation(receiver.ReceiverLocationId);
+            _ReceiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
 
             Listener = Factory.Singleton.Resolve<IListener>();
             Listener.ExceptionCaught += Listener_ExceptionCaught;
@@ -452,13 +461,12 @@ namespace VirtualRadar.Library.Listener
         {
             IMessageBytesExtractor result = Listener.BytesExtractor;
 
-            switch(receiver.DataSource) {
-                case DataSource.AircraftListJson:   if(result == null || !(result is IAircraftListJsonMessageBytesExtractor)) result = Factory.Singleton.Resolve<IAircraftListJsonMessageBytesExtractor>(); break;
-                case DataSource.Beast:              if(result == null || !(result is IBeastMessageBytesExtractor)) result = Factory.Singleton.Resolve<IBeastMessageBytesExtractor>(); break;
-                case DataSource.CompressedVRS:      if(result == null || !(result is ICompressedMessageBytesExtractor)) result = Factory.Singleton.Resolve<ICompressedMessageBytesExtractor>(); break;
-                case DataSource.Port30003:          if(result == null || !(result is IPort30003MessageBytesExtractor)) result = Factory.Singleton.Resolve<IPort30003MessageBytesExtractor>(); break;
-                case DataSource.Sbs3:               if(result == null || !(result is ISbs3MessageBytesExtractor)) result = Factory.Singleton.Resolve<ISbs3MessageBytesExtractor>(); break;
-                default:                            throw new NotImplementedException();
+            var provider = _ReceiverFormatManager.GetProvider(receiver.DataSource);
+            if(provider == null) {
+                throw new InvalidOperationException(String.Format("There is no receiver format provider registered with a unique ID of {0}", receiver.DataSource));
+            }
+            if(result == null || !provider.IsUsableBytesExtractor(result)) {
+                result = provider.CreateMessageBytesExtractor();
             }
 
             return result;

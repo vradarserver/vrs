@@ -359,11 +359,14 @@ var VRS;
                                     },
                                     '{root}.Receivers[i]': function (model) {
                                         model.FormattedConnectionType = ko.computed(function () { return _this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes); });
-                                        model.FormattedDataSource = ko.computed(function () { return _this._ViewId.describeEnum(model.DataSource(), state.Response.DataSources); });
                                         model.FormattedHandshake = ko.computed(function () { return _this._ViewId.describeEnum(model.Handshake(), state.Response.Handshakes); });
                                         model.FormattedParity = ko.computed(function () { return _this._ViewId.describeEnum(model.Parity(), state.Response.Parities); });
                                         model.FormattedReceiverUsage = ko.computed(function () { return _this._ViewId.describeEnum(model.ReceiverUsage(), state.Response.ReceiverUsages); });
                                         model.FormattedStopBits = ko.computed(function () { return _this._ViewId.describeEnum(model.StopBits(), state.Response.StopBits); });
+                                        model.FormattedDataSource = ko.computed(function () {
+                                            var receiverFormat = VRS.arrayHelper.findFirst(state.Response.DataSources, function (r) { return r.UniqueId === model.DataSource(); });
+                                            return receiverFormat ? receiverFormat.ShortName : VRS.Server.$$.Unknown;
+                                        });
                                         model.ConnectionParameters = ko.computed(function () {
                                             var connectionParameters = '';
                                             switch (model.ConnectionType()) {

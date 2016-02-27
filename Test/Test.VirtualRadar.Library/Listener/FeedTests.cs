@@ -220,9 +220,9 @@ namespace Test.VirtualRadar.Library.Listener
         #endregion
 
         #region Utility methods
-        private void DoForAllSourcesAndConnectionTypes(Action<DataSource, ConnectionType, string> action)
+        private void DoForAllSourcesAndConnectionTypes(Action<string, ConnectionType, string> action)
         {
-            foreach(DataSource dataSource in Enum.GetValues(typeof(DataSource))) {
+            foreach(var dataSource in DataSource.AllInternalDataSources) {
                 foreach(ConnectionType connectionType in Enum.GetValues(typeof(ConnectionType))) {
                     TestCleanup();
                     TestInitialise();
@@ -369,13 +369,18 @@ namespace Test.VirtualRadar.Library.Listener
             DoForAllSourcesAndConnectionTypes((dataSource, connectionType, failMessage) => {
                 _Feed.Initialise(_Receiver, _Configuration);
 
-                switch(dataSource) {
-                    case DataSource.Beast:              Assert.AreSame(_BeastMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
-                    case DataSource.Port30003:          Assert.AreSame(_Port30003Extractor.Object, _Listener.Object.BytesExtractor); break;
-                    case DataSource.Sbs3:               Assert.AreSame(_Sbs3MessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
-                    case DataSource.CompressedVRS:      Assert.AreSame(_CompressedMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
-                    case DataSource.AircraftListJson:   Assert.AreSame(_AircraftListJsonMessageBytesExtractor.Object, _Listener.Object.BytesExtractor); break;
-                    default:                            throw new NotImplementedException();
+                if(dataSource == DataSource.Beast) {
+                     Assert.AreSame(_BeastMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
+                } else if(dataSource == DataSource.Port30003) {
+                    Assert.AreSame(_Port30003Extractor.Object, _Listener.Object.BytesExtractor);
+                } else if(dataSource == DataSource.Sbs3) {
+                    Assert.AreSame(_Sbs3MessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
+                } else if(dataSource == DataSource.CompressedVRS) {
+                    Assert.AreSame(_CompressedMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
+                } else if(dataSource == DataSource.AircraftListJson) {
+                    Assert.AreSame(_AircraftListJsonMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
+                } else {
+                    throw new NotImplementedException();
                 }
 
                 switch(connectionType) {
@@ -1099,8 +1104,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Feed_ApplyConfiguration_Only_Creates_New_BytesExtractor_When_DataSource_Changes()
         {
-            foreach(DataSource initialDataSource in Enum.GetValues(typeof(DataSource))) {
-                foreach(DataSource newDataSource in Enum.GetValues(typeof(DataSource))) {
+            foreach(var initialDataSource in DataSource.AllInternalDataSources) {
+                foreach(var newDataSource in DataSource.AllInternalDataSources) {
                     TestCleanup();
                     TestInitialise();
 
@@ -1126,8 +1131,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void Feed_ApplyConfiguration_Resets_Statistics_When_DataSource_Changes()
         {
-            foreach(DataSource initialDataSource in Enum.GetValues(typeof(DataSource))) {
-                foreach(DataSource newDataSource in Enum.GetValues(typeof(DataSource))) {
+            foreach(var initialDataSource in DataSource.AllInternalDataSources) {
+                foreach(var newDataSource in DataSource.AllInternalDataSources) {
                     TestCleanup();
                     TestInitialise();
 
@@ -1212,11 +1217,11 @@ namespace Test.VirtualRadar.Library.Listener
         public void Feed_ApplyConfiguration_Only_Creates_New_RawMessageTranslator_When_ConnectionType_Or_DataSource_Changes()
         {
             var connectionTypes = new ConnectionType[] { ConnectionType.COM, ConnectionType.TCP };
-            var dataSources = new DataSource[] { DataSource.Sbs3, DataSource.Beast };
+            var dataSources = new string[] { DataSource.Sbs3, DataSource.Beast };
             foreach(ConnectionType initialConnectionType in connectionTypes) {
                 foreach(ConnectionType newConnectionType in connectionTypes) {
-                    foreach(DataSource initialDataSource in dataSources) {
-                        foreach(DataSource newDataSource in dataSources) {
+                    foreach(var initialDataSource in dataSources) {
+                        foreach(var newDataSource in dataSources) {
                             foreach(var settingProperty in _RawMessageTranslatorProperties) {
                                 TestCleanup();
                                 TestInitialise();

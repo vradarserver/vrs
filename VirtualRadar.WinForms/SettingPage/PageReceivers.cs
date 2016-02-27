@@ -16,7 +16,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
@@ -113,6 +115,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.CreateBindings();
 
             var combinedFeeds = SettingsView.CombinedFeed;
+            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
             var settings = SettingsView.Configuration.GoogleMapSettings;
             AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxWebSiteReceiverId,         combinedFeeds,   r => r.WebSiteReceiverId,           (r,v) => r.WebSiteReceiverId = v)           { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
             AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxClosestAircraftReceiverId, combinedFeeds,   r => r.ClosestAircraftReceiverId,   (r,v) => r.ClosestAircraftReceiverId = v)   { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
@@ -124,7 +127,7 @@ namespace VirtualRadar.WinForms.SettingPage
 
                     e.Checked = receiver.Enabled;
                     e.ColumnTexts.Add(receiver.Name);
-                    e.ColumnTexts.Add(Describe.DataSource(receiver.DataSource));
+                    e.ColumnTexts.Add(receiverFormatManager.ShortName(receiver.DataSource));
                     e.ColumnTexts.Add(Describe.ReceiverUsage(receiver.ReceiverUsage));
                     e.ColumnTexts.Add(location == null ? "" : location.Name);
                     e.ColumnTexts.Add(Describe.ConnectionType(receiver.ConnectionType));

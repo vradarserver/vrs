@@ -28,7 +28,7 @@
         VoiceNames?:                        string[];
         BaudRates?:                         number[];
         ConnectionTypes?:                   VirtualRadar.Interface.View.IEnumModel[];
-        DataSources?:                       VirtualRadar.Interface.View.IEnumModel[];
+        DataSources?:                       VirtualRadar.Interface.Listener.IReceiverFormat[];
         DefaultAccesses?:                   VirtualRadar.Interface.View.IEnumModel[];
         DistanceUnits?:                     VirtualRadar.Interface.View.IEnumModel[];
         Handshakes?:                        VirtualRadar.Interface.View.IEnumModel[];
@@ -578,11 +578,14 @@
                             '{root}.Receivers[i]': (model: ReceiverModel) =>
                             {
                                 model.FormattedConnectionType = ko.computed(() => this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes));
-                                model.FormattedDataSource = ko.computed(() => this._ViewId.describeEnum(model.DataSource(), state.Response.DataSources));
                                 model.FormattedHandshake = ko.computed(() => this._ViewId.describeEnum(model.Handshake(), state.Response.Handshakes));
                                 model.FormattedParity = ko.computed(() => this._ViewId.describeEnum(model.Parity(), state.Response.Parities));
                                 model.FormattedReceiverUsage = ko.computed(() => this._ViewId.describeEnum(model.ReceiverUsage(), state.Response.ReceiverUsages));
                                 model.FormattedStopBits = ko.computed(() => this._ViewId.describeEnum(model.StopBits(), state.Response.StopBits));
+                                model.FormattedDataSource = ko.computed(() => {
+                                    var receiverFormat = VRS.arrayHelper.findFirst(state.Response.DataSources, r => r.UniqueId === model.DataSource());
+                                    return receiverFormat ? receiverFormat.ShortName : VRS.Server.$$.Unknown;
+                                });
                                 model.ConnectionParameters = ko.computed(() => {
                                     let connectionParameters = '';
                                     switch(model.ConnectionType()) {

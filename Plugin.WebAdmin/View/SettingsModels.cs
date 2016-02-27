@@ -14,7 +14,9 @@ using System.IO.Ports;
 using System.Linq;
 using System.Net;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.PortableBinding;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
@@ -43,7 +45,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public EnumModel[] ConnectionTypes { get; private set; }
 
-        public EnumModel[] DataSources { get; private set; }
+        public ReceiverFormat[] DataSources { get; private set; }
 
         public EnumModel[] DefaultAccesses { get; private set; }
 
@@ -73,8 +75,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             Configuration = new ConfigurationModel();
 
+            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+
             ConnectionTypes =       EnumModel.CreateFromEnum<ConnectionType>(r => Describe.ConnectionType(r));
-            DataSources =           EnumModel.CreateFromEnum<DataSource>(r => Describe.DataSource(r));
+            DataSources =           receiverFormatManager.GetRegisteredFormats();
             DefaultAccesses =       EnumModel.CreateFromEnum<DefaultAccess>(r => Describe.DefaultAccess(r));
             DistanceUnits =         EnumModel.CreateFromEnum<DistanceUnit>(r => Describe.DistanceUnit(r));
             Handshakes =            EnumModel.CreateFromEnum<Handshake>(r => Describe.Handshake(r));
@@ -995,7 +999,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         [ValidationModelField(ValidationField.Name)]
         public ValidationModelField NameValidation { get; set; }
 
-        public int DataSource { get; set; }                 // DataSource
+        public string DataSource { get; set; }
 
         public int ConnectionType { get; set; }             // ConnectionType
 
@@ -1078,7 +1082,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             Enabled =                       settings.Enabled;
             UniqueId =                      settings.UniqueId;
             Name =                          settings.Name;
-            DataSource =                    (int)settings.DataSource;
+            DataSource =                    settings.DataSource;
             ConnectionType =                (int)settings.ConnectionType;
             AutoReconnectAtStartup =        settings.AutoReconnectAtStartup;
             IsPassive =                     settings.IsPassive;
@@ -1106,7 +1110,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.Enabled =                  Enabled;
             settings.UniqueId =                 UniqueId;
             settings.Name =                     Name;
-            settings.DataSource =               EnumModel.CastFromInt<DataSource>(DataSource);
+            settings.DataSource =               DataSource;
             settings.ConnectionType =           EnumModel.CastFromInt<ConnectionType>(ConnectionType);
             settings.AutoReconnectAtStartup =   AutoReconnectAtStartup;
             settings.IsPassive =                IsPassive;

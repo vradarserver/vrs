@@ -53,11 +53,12 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _Name, value, () => Name); }
         }
 
-        private DataSource _DataSource;
+        private string _DataSource;
         /// <summary>
-        /// Gets or sets the source of data for the receiever.
+        /// Gets or sets the unique ID of the <see cref="IReceiverFormatProvider"/> that will handle
+        /// the feed from the receiever.
         /// </summary>
-        public DataSource DataSource
+        public string DataSource
         {
             get { return _DataSource; }
             set { SetField(ref _DataSource, value, () => DataSource); }
@@ -307,7 +308,7 @@ namespace VirtualRadar.Interface.Settings
         {
             Enabled = true;
             AutoReconnectAtStartup = true;
-            DataSource = DataSource.Port30003;
+            DataSource = VirtualRadar.Interface.Settings.DataSource.Port30003;
             ConnectionType = ConnectionType.TCP;
             Access = new Access();
             Address = "127.0.0.1";
