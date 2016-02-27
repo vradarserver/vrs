@@ -127,7 +127,7 @@ namespace VirtualRadar
                 }
             }
 
-            // Calling Environment.Exit rather than falling off the end of Main will ensure that background threads get shut down
+            // Calling Environment.Exit rather than falling off the end of Main will ensure that foreground threads get shut down
             Environment.Exit(0);
         }
 
