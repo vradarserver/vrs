@@ -462,6 +462,52 @@ namespace Test.VirtualRadar.Library.Presenter
             Assert.AreEqual(true, receiver.Enabled);
             _ConfigurationStorage.Verify(r => r.Save(_Configuration), Times.Never());
         }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Disables_Any_RebroadcastServers_With_An_Unknown_Format()
+        {
+            var server = new RebroadcastSettings() {
+                Format = "invalid",
+                Enabled = true,
+            };
+            _Configuration.RebroadcastSettings.Add(server);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            Assert.AreEqual(false, server.Enabled);
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Saves_Configuration_For_RebroadcastServers_With_An_Unknown_Format()
+        {
+            var server = new RebroadcastSettings() {
+                Format = "invalid",
+                Enabled = true,
+            };
+            _Configuration.RebroadcastSettings.Add(server);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _ConfigurationStorage.Verify(r => r.Save(_Configuration), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Does_Not_Disable_RebroadcastServers_With_A_Valid_Format()
+        {
+            var server = new RebroadcastSettings() {
+                Format = RebroadcastFormat.Port30003,
+                Enabled = true,
+            };
+            _Configuration.RebroadcastSettings.Add(server);
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            Assert.AreEqual(true, server.Enabled);
+            _ConfigurationStorage.Verify(r => r.Save(_Configuration), Times.Never());
+        }
         #endregion
 
         #region Heartbeat timer

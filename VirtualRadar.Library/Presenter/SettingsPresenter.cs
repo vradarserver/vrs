@@ -1212,10 +1212,14 @@ namespace VirtualRadar.Library.Presenter
                         var receiver = _View.Configuration.Receivers.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
                         var mergedFeed = _View.Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
 
-                        if(mergedFeed != null && !provider.CanRebroadcastMergedFeed) {
-                            formatIsOK = false;
-                        } else if(!provider.CanRebroadcastReceiver(receiver)) {
-                            formatIsOK = false;
+                        if(mergedFeed != null) {
+                            if(!provider.CanRebroadcastMergedFeed) {
+                                formatIsOK = false;
+                            }
+                        } else if(receiver != null) {
+                            if(!provider.CanRebroadcastReceiver(receiver)) {
+                                formatIsOK = false;
+                            }
                         }
                     }
 
