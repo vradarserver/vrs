@@ -16,7 +16,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
@@ -147,6 +149,9 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
+            var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormats = rebroadcastFormatManager.GetRegisteredFormats();
+
             AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxEnabled,          r => r.Enabled,         (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxIsTransmitter,    r => r.IsTransmitter,   (r,v) => r.IsTransmitter = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxUseKeepAlive,     r => r.UseKeepAlive,    (r,v) => r.UseKeepAlive = v)  { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
@@ -160,9 +165,8 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericSendInterval,    r => r.SendIntervalMilliseconds / 1000, (r,v) => r.SendIntervalMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<RebroadcastSettings>(r => r.SendIntervalMilliseconds) });
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,                    (r,v) => r.StaleSeconds = v));
 
-            AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>(RebroadcastSettings, comboBoxReceiver, SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
-
-            AddControlBinder(new ComboBoxEnumBinder<RebroadcastSettings, RebroadcastFormat> (RebroadcastSettings, comboBoxFormat, r => r.Format, (r,v) => r.Format = v, r => Describe.RebroadcastFormat(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged, });
+            AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>            (RebroadcastSettings, comboBoxReceiver,  SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
+            AddControlBinder(new ComboBoxBinder<RebroadcastSettings, RebroadcastFormatName, string>(RebroadcastSettings, comboBoxFormat,    rebroadcastFormats,        r => r.Format,     (r,v) => r.Format = v) { GetListItemDescription = r => r.ShortName, GetListItemValue = r => r.UniqueId, SortList = true, UpdateMode = DataSourceUpdateMode.OnPropertyChanged, });
 
             AddControlBinder(new AccessControlBinder<RebroadcastSettings>(RebroadcastSettings, accessControl, r => r.Access));
         }

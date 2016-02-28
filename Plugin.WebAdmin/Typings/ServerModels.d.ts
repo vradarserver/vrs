@@ -125,14 +125,14 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel;
         NewUser: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel;
         ConnectionTypes: VirtualRadar.Interface.View.IEnumModel[];
-        DataSources: VirtualRadar.Interface.Listener.IReceiverFormat[];
+        DataSources: VirtualRadar.Interface.Listener.IReceiverFormatName[];
         DefaultAccesses: VirtualRadar.Interface.View.IEnumModel[];
         DistanceUnits: VirtualRadar.Interface.View.IEnumModel[];
         Handshakes: VirtualRadar.Interface.View.IEnumModel[];
         HeightUnits: VirtualRadar.Interface.View.IEnumModel[];
         Parities: VirtualRadar.Interface.View.IEnumModel[];
         ProxyTypes: VirtualRadar.Interface.View.IEnumModel[];
-        RebroadcastFormats: VirtualRadar.Interface.View.IEnumModel[];
+        RebroadcastFormats: VirtualRadar.Interface.Network.IRebroadcastFormatName[];
         ReceiverUsages: VirtualRadar.Interface.View.IEnumModel[];
         SpeedUnits: VirtualRadar.Interface.View.IEnumModel[];
         StopBits: VirtualRadar.Interface.View.IEnumModel[];
@@ -297,7 +297,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Enabled: boolean;
         ReceiverId: number;
         ReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
-        Format: number;
+        Format: string;
         FormatValidation: VirtualRadar.Interface.View.IValidationModelField;
         IsTransmitter: boolean;
         IsTransmitterValidation: VirtualRadar.Interface.View.IValidationModelField;
@@ -395,7 +395,13 @@ declare module VirtualRadar.Interface.View {
     }
 }
 declare module VirtualRadar.Interface.Listener {
-    interface IReceiverFormat {
+    interface IReceiverFormatName {
+        UniqueId: string;
+        ShortName: string;
+    }
+}
+declare module VirtualRadar.Interface.Network {
+    interface IRebroadcastFormatName {
         UniqueId: string;
         ShortName: string;
     }
@@ -570,14 +576,14 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NewReceiverLocation: VirtualRadar.Plugin.WebAdmin.View.Settings.IReceiverLocationModel_KO;
         NewUser: VirtualRadar.Plugin.WebAdmin.View.Settings.IUserModel_KO;
         ConnectionTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
-        DataSources: KnockoutViewModelArray<VirtualRadar.Interface.Listener.IReceiverFormat_KO>;
+        DataSources: KnockoutViewModelArray<VirtualRadar.Interface.Listener.IReceiverFormatName_KO>;
         DefaultAccesses: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         DistanceUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Handshakes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         HeightUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Parities: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ProxyTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
-        RebroadcastFormats: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        RebroadcastFormats: KnockoutViewModelArray<VirtualRadar.Interface.Network.IRebroadcastFormatName_KO>;
         ReceiverUsages: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         SpeedUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
@@ -742,7 +748,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         Enabled: KnockoutObservable<boolean>;
         ReceiverId: KnockoutObservable<number>;
         ReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
-        Format: KnockoutObservable<number>;
+        Format: KnockoutObservable<string>;
         FormatValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         IsTransmitter: KnockoutObservable<boolean>;
         IsTransmitterValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
@@ -840,7 +846,13 @@ declare module VirtualRadar.Interface.View {
     }
 }
 declare module VirtualRadar.Interface.Listener {
-    interface IReceiverFormat_KO {
+    interface IReceiverFormatName_KO {
+        UniqueId: KnockoutObservable<string>;
+        ShortName: KnockoutObservable<string>;
+    }
+}
+declare module VirtualRadar.Interface.Network {
+    interface IRebroadcastFormatName_KO {
         UniqueId: KnockoutObservable<string>;
         ShortName: KnockoutObservable<string>;
     }

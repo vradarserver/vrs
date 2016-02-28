@@ -147,7 +147,7 @@ namespace Test.VirtualRadar.Library.Network
         {
             var server = Factory.Singleton.Resolve<IRebroadcastServer>();
             TestUtilities.TestProperty(server, r => r.Connector, null, _Connector.Object);
-            TestUtilities.TestProperty(server, r => r.Format, RebroadcastFormat.None, RebroadcastFormat.Port30003);
+            TestUtilities.TestProperty(server, r => r.Format, null, RebroadcastFormat.Port30003);
             TestUtilities.TestProperty(server, r => r.Feed, null, _Feed.Object);
             TestUtilities.TestProperty(server, r => r.Name, null, "Abc");
             TestUtilities.TestProperty(server, r => r.Online, false);
@@ -185,14 +185,14 @@ namespace Test.VirtualRadar.Library.Network
         [ExpectedException(typeof(InvalidOperationException))]
         public void RebroadcastServer_Initialise_Throws_If_Format_Is_None()
         {
-            _Server.Format = RebroadcastFormat.None;
+            _Server.Format = "";
             _Server.Initialise();
         }
 
         [TestMethod]
         public void RebroadcastServer_Initialise_Throws_If_Called_Twice()
         {
-            foreach(RebroadcastFormat format in Enum.GetValues(typeof(RebroadcastFormat))) {
+            foreach(var format in RebroadcastFormat.AllInternalFormats) {
                 TestCleanup();
                 TestInitialise();
                 _Server.Format = format;

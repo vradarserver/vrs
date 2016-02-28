@@ -315,25 +315,6 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
-        /// Returns a description of a rebroadcast format.
-        /// </summary>
-        /// <param name="rebroadcastFormat"></param>
-        /// <returns></returns>
-        public static string RebroadcastFormat(RebroadcastFormat rebroadcastFormat)
-        {
-            switch(rebroadcastFormat) {
-                case Settings.RebroadcastFormat.AircraftListJson:       return Strings.AircraftListJson;
-                case Settings.RebroadcastFormat.Avr:                    return Strings.RebroadcastFormatAvr;
-                case Settings.RebroadcastFormat.CompressedVRS:          return Strings.CompressedPort30003;
-                case Settings.RebroadcastFormat.ExtendedBaseStation:    return Strings.ExtendedBaseStation;
-                case Settings.RebroadcastFormat.None:                   return Strings.None;
-                case Settings.RebroadcastFormat.Passthrough:            return Strings.RebroadcastFormatPassthrough;
-                case Settings.RebroadcastFormat.Port30003:              return Strings.RebroadcastFormatPort30003;
-                default:                                                throw new NotImplementedException();
-            }
-        }
-
-        /// <summary>
         /// Returns a description of a connector activity type.
         /// </summary>
         /// <param name="connectorActivityType"></param>

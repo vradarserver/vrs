@@ -18,7 +18,7 @@ namespace VirtualRadar.Interface.Listener
     /// <summary>
     /// Describes a registered receiver format.
     /// </summary>
-    public class ReceiverFormat
+    public class ReceiverFormatName
     {
         /// <summary>
         /// Gets or sets the unique ID of the receiver format.
@@ -35,9 +35,9 @@ namespace VirtualRadar.Interface.Listener
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        public static ReceiverFormat Create(IReceiverFormatProvider provider)
+        public static ReceiverFormatName Create(IReceiverFormatProvider provider)
         {
-            return new ReceiverFormat() {
+            return new ReceiverFormatName() {
                 UniqueId =  provider.UniqueId,
                 ShortName = provider.ShortName,
             };

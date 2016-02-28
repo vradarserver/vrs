@@ -16,7 +16,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 using VirtualRadar.Resources;
@@ -89,6 +91,8 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
+            var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
+
             AddControlBinder(new MasterListToListBinder<Configuration, RebroadcastSettings>(SettingsView.Configuration, listRebroadcastServers, r => r.RebroadcastSettings) {
                 FetchColumns = (rebroadcastServer, e) => {
                     var receiver = SettingsView.CombinedFeed.FirstOrDefault(r => r.UniqueId == rebroadcastServer.ReceiverId);
@@ -97,7 +101,7 @@ namespace VirtualRadar.WinForms.SettingPage
                     e.Checked = rebroadcastServer.Enabled;
                     e.ColumnTexts.Add(rebroadcastServer.Name);
                     e.ColumnTexts.Add(receiver == null ? "" : receiver.Name ?? "");
-                    e.ColumnTexts.Add(Describe.RebroadcastFormat(rebroadcastServer.Format));
+                    e.ColumnTexts.Add(rebroadcastFormatManager.ShortName(rebroadcastServer.Format));
                     e.ColumnTexts.Add(portDescription);
                     e.ColumnTexts.Add(Describe.DefaultAccess(rebroadcastServer.Access.DefaultAccess));
                 },
