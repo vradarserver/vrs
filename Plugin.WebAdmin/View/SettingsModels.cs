@@ -17,6 +17,7 @@ using System.Text;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.PortableBinding;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
@@ -45,7 +46,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public EnumModel[] ConnectionTypes { get; private set; }
 
-        public ReceiverFormat[] DataSources { get; private set; }
+        public ReceiverFormatName[] DataSources { get; private set; }
 
         public EnumModel[] DefaultAccesses { get; private set; }
 
@@ -59,7 +60,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public EnumModel[] ProxyTypes { get; private set; }
 
-        public EnumModel[] RebroadcastFormats { get; private set; }
+        public RebroadcastFormatName[] RebroadcastFormats { get; private set; }
 
         public EnumModel[] ReceiverUsages { get; private set; }
 
@@ -76,6 +77,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             Configuration = new ConfigurationModel();
 
             var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
 
             ConnectionTypes =       EnumModel.CreateFromEnum<ConnectionType>(r => Describe.ConnectionType(r));
             DataSources =           receiverFormatManager.GetRegisteredFormats();
@@ -85,7 +87,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             HeightUnits =           EnumModel.CreateFromEnum<HeightUnit>(r => Describe.HeightUnit(r));
             Parities =              EnumModel.CreateFromEnum<Parity>(r => Describe.Parity(r));
             ProxyTypes =            EnumModel.CreateFromEnum<ProxyType>(r => Describe.ProxyType(r));
-            RebroadcastFormats =    EnumModel.CreateFromEnum<RebroadcastFormat>(r => Describe.RebroadcastFormat(r));
+            RebroadcastFormats =    rebroadcastFormatManager.GetRegisteredFormats();
             ReceiverUsages =        EnumModel.CreateFromEnum<ReceiverUsage>(r => Describe.ReceiverUsage(r));
             SpeedUnits =            EnumModel.CreateFromEnum<SpeedUnit>(r => Describe.SpeedUnit(r));
             StopBits =              EnumModel.CreateFromEnum<StopBits>(r => Describe.StopBits(r));
@@ -890,7 +892,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         [ValidationModelField(ValidationField.RebroadcastReceiver)]
         public ValidationModelField ReceiverIdValidation { get; set; }
 
-        public int Format { get; set; }                     // RebroadcastFormat
+        public string Format { get; set; }
 
         [ValidationModelField(ValidationField.Format)]
         public ValidationModelField FormatValidation { get; set; }
@@ -950,7 +952,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             Name =                      settings.Name;
             Enabled =                   settings.Enabled;
             ReceiverId =                settings.ReceiverId;
-            Format =                    (int)settings.Format;
+            Format =                    settings.Format;
             IsTransmitter =             settings.IsTransmitter;
             TransmitAddress =           settings.TransmitAddress;
             Port =                      settings.Port;
@@ -969,7 +971,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.Name =                      Name;
             settings.Enabled =                   Enabled;
             settings.ReceiverId =                ReceiverId;
-            settings.Format =                    EnumModel.CastFromInt<RebroadcastFormat>(Format);
+            settings.Format =                    Format;
             settings.IsTransmitter =             IsTransmitter;
             settings.TransmitAddress =           TransmitAddress;
             settings.Port =                      Port;

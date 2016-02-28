@@ -16,47 +16,59 @@ using System.Text;
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
-    /// An enumeration of the different formats that rebroadcasting can send
-    /// messages in.
+    /// A collection of strings describing the UniqueId values for the rebroadcast server formats
+    /// that ship with VRS.
     /// </summary>
-    public enum RebroadcastFormat
+    public static class RebroadcastFormat
     {
-        /// <summary>
-        /// No format has been specified.
-        /// </summary>
-        None,
-
         /// <summary>
         /// The original messages from the receiver are rebroadcast without change.
         /// </summary>
-        Passthrough,
+        public static readonly string Passthrough = "Passthrough";
 
         /// <summary>
         /// The Port30003 messages derived from the receiver's transmissions are rebroadcast.
         /// </summary>
-        Port30003,
+        public static readonly string Port30003 = "Port30003";
 
         /// <summary>
         /// The Mode-S messages are rebroadcast in either * or : AVR format, depending on
         /// whether the original Mode-S message source had parity stripped or not.
         /// </summary>
-        Avr,
+        public static readonly string Avr = "Avr";
 
         /// <summary>
         /// The Port30003 messages are compressed before broadcast.
         /// </summary>
-        CompressedVRS,
+        public static readonly string CompressedVRS = "CompressedVRS";
 
         /// <summary>
         /// Changes to the aircraft list are periodically sent as JSON. On the receiving side the
         /// JSON is translated into a set of BaseStation messages, one per aircraft.
         /// </summary>
-        AircraftListJson,
+        public static readonly string AircraftListJson = "AircraftListJson";
 
         /// <summary>
         /// Same as BaseStation except if the message is an MLAT generated message then MLAT is sent
         /// instead of MSG.
         /// </summary>
-        ExtendedBaseStation,
+        public static readonly string ExtendedBaseStation = "ExtendedBaseStation";
+
+        private static string[] _AllInternalFormats = new string[] {
+            Passthrough,
+            Port30003,
+            Avr,
+            CompressedVRS,
+            AircraftListJson,
+            ExtendedBaseStation,
+        };
+        /// <summary>
+        /// A collection of all rebroadcast server formats that ship with VRS. The server doesn't use this,
+        /// it's to help make life easier with unit testing.
+        /// </summary>
+        public static string[] AllInternalFormats
+        {
+            get { return _AllInternalFormats; }
+        }
     }
 }

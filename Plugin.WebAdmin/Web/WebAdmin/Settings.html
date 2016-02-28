@@ -671,7 +671,7 @@
                                     <div class="form-group" data-bsu="field-validate" data-bsu-field="FormatValidation">
                                         <label class="col-sm-4">::Format:::</label>
                                         <div class="col-sm-8">
-                                            <select class="form-control" data-bind="options: $root.RebroadcastFormats, optionsText: 'Description', optionsValue: 'Value', value: Format"></select>
+                                            <select class="form-control" data-bind="options: $root.RebroadcastFormats, optionsText: 'ShortName', optionsValue: 'UniqueId', value: Format, valueAllowUnset: true"></select>
                                         </div>
                                     </div>
                                     <div class="form-group" data-bsu="field-validate" data-bsu-field="SendIntervalMillisecondsValidation">

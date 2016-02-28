@@ -13,36 +13,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 using VirtualRadar.Localisation;
 
-namespace VirtualRadar.Library.Listener
+namespace VirtualRadar.Library.Network
 {
     /// <summary>
-    /// The default implementation of <see cref="IReceiverFormatManager"/>.
+    /// The default implementation of <see cref="IRebroadcastFormatManager"/>.
     /// </summary>
-    public class ReceiverFormatManager : IReceiverFormatManager
+    public class RebroadcastFormatManager : IRebroadcastFormatManager
     {
         /// <summary>
-        /// A map of receiver format identifiers to receiver format providers. Take a
+        /// A map of rebroadcast format identifiers to rebroadcast format providers. Take a
         /// reference to the map before using it.
         /// </summary>
-        private Dictionary<string, IReceiverFormatProvider> _Providers;
+        private Dictionary<string, IRebroadcastFormatProvider> _Providers;
 
         /// <summary>
         /// The lock that ensures that all writes to _Providers are single-threaded.
         /// </summary>
         private object _SyncLock;
 
-        private static IReceiverFormatManager _Singleton;
+        private static IRebroadcastFormatManager _Singleton;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IReceiverFormatManager Singleton
+        public IRebroadcastFormatManager Singleton
         {
             get {
                 if(_Singleton == null) {
-                    _Singleton = new ReceiverFormatManager();
+                    _Singleton = new RebroadcastFormatManager();
                 }
                 return _Singleton;
             }
@@ -55,13 +55,14 @@ namespace VirtualRadar.Library.Listener
         {
             if(_SyncLock == null) {
                 _SyncLock = new object();
-                _Providers = new Dictionary<string, IReceiverFormatProvider>();
+                _Providers = new Dictionary<string, IRebroadcastFormatProvider>();
 
-                RegisterProvider(new AircraftListJsonReceiverProvider());
-                RegisterProvider(new BeastReceiverProvider());
-                RegisterProvider(new CompressedReceiverProvider());
-                RegisterProvider(new Port30003ReceiverProvider());
-                RegisterProvider(new Sbs3ReceiverProvider());
+                RegisterProvider(new AircraftListJsonRebroadcastServer());
+                RegisterProvider(new AvrRebroadcastServer());
+                RegisterProvider(new CompressedVrsRebroadcastServer());
+                RegisterProvider(new PassthroughRebroadcastServer());
+                RegisterProvider(new Port30003RebroadcastServer(extendedBaseStationFormat:false));
+                RegisterProvider(new Port30003RebroadcastServer(extendedBaseStationFormat:true));
             }
         }
 
@@ -69,7 +70,7 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         /// <param name="provider"></param>
-        public void RegisterProvider(IReceiverFormatProvider provider)
+        public void RegisterProvider(IRebroadcastFormatProvider provider)
         {
             Initialise();
 
@@ -92,12 +93,12 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         /// <returns></returns>
-        public ReceiverFormatName[] GetRegisteredFormats()
+        public RebroadcastFormatName[] GetRegisteredFormats()
         {
             Initialise();
             var map = _Providers;
 
-            return map.Values.OrderBy(r => r.ShortName).Select(r => ReceiverFormatName.Create(r)).ToArray();
+            return map.Values.OrderBy(r => r.ShortName).Select(r => RebroadcastFormatName.Create(r)).ToArray();
         }
 
         /// <summary>
@@ -105,14 +106,29 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         /// <param name="providerId"></param>
         /// <returns></returns>
-        public IReceiverFormatProvider GetProvider(string providerId)
+        public IRebroadcastFormatProvider GetProvider(string providerId)
         {
             Initialise();
 
-            IReceiverFormatProvider result = null;
+            IRebroadcastFormatProvider result = null;
             if(!String.IsNullOrEmpty(providerId)) {
                 var map = _Providers;
                 map.TryGetValue(providerId, out result);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="providerId"></param>
+        /// <returns></returns>
+        public IRebroadcastFormatProvider CreateProvider(string providerId)
+        {
+            var result = GetProvider(providerId);
+            if(result != null) {
+                result = result.CreateNewInstance();
             }
 
             return result;

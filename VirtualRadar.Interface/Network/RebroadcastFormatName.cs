@@ -13,53 +13,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Interface.Listener
+namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// Manages the feed formats that the program can decode.
+    /// Links a rebroadcast server format's name to its unique ID.
     /// </summary>
-    /// <remarks>
-    /// Plugins cannot provide their own implementation of this interface, the singleton is established
-    /// before RegisterImplementations is called.
-    /// </remarks>
-    public interface IReceiverFormatManager : ISingleton<IReceiverFormatManager>
+    public class RebroadcastFormatName
     {
         /// <summary>
-        /// Initialises the format manager.
+        /// Gets or sets the rebroadcast server format unique ID.
         /// </summary>
-        void Initialise();
+        public string UniqueId { get; set; }
 
         /// <summary>
-        /// Registers a provider.
+        /// Gets or sets the rebroadcast server format's name.
+        /// </summary>
+        public string ShortName { get; set; }
+
+        /// <summary>
+        /// Creates a new <see cref="RebroadcastFormatName"/>.
         /// </summary>
         /// <param name="provider"></param>
-        /// <remarks>
-        /// Plugins should register their providers in RegisterImplementations, which should be
-        /// called before VRS tries to connect to any feeds.
-        /// </remarks>
-        void RegisterProvider(IReceiverFormatProvider provider);
-
-        /// <summary>
-        /// Returns a collection of all registered receiver formats in a summarised form.
-        /// </summary>
         /// <returns></returns>
-        ReceiverFormatName[] GetRegisteredFormats();
-
-        /// <summary>
-        /// Returns the registered provider with the identifier supplied or null if no provider has been
-        /// registered for this ID.
-        /// </summary>
-        /// <param name="providerId"></param>
-        /// <returns></returns>
-        IReceiverFormatProvider GetProvider(string providerId);
-
-        /// <summary>
-        /// Returns the short name associated with the unique ID passed across. If there is no
-        /// provider registered with the unique ID then a string along the lines of &quot;Unknown&quot;
-        /// is returned.
-        /// </summary>
-        /// <param name="providerId"></param>
-        /// <returns></returns>
-        string ShortName(string providerId);
+        public static RebroadcastFormatName Create(IRebroadcastFormatProvider provider)
+        {
+            return new RebroadcastFormatName() {
+                UniqueId =  provider.UniqueId,
+                ShortName = provider.ShortName,
+            };
+        }
     }
 }

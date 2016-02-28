@@ -125,7 +125,13 @@
     <Compile Include="Listener\FeedManager.cs" />
     <Compile Include="Listener\Feed.cs" />
     <Compile Include="Network\PassphraseAuthentication.cs" />
+    <Compile Include="Network\AvrRebroadcastServer.cs" />
+    <Compile Include="Network\CompressedVrsRebroadcastServer.cs" />
+    <Compile Include="Network\AircraftListJsonRebroadcastServer.cs" />
+    <Compile Include="Network\Port30003RebroadcastServer.cs" />
+    <Compile Include="Network\PassthroughRebroadcastServer.cs" />
     <Compile Include="Network\ReadWriteOperation.cs" />
+    <Compile Include="Network\RebroadcastFormatManager.cs" />
     <Compile Include="Network\SerialConnector.cs" />
     <Compile Include="Network\SerialConnection.cs" />
     <Compile Include="Network\SocketConnection.cs" />

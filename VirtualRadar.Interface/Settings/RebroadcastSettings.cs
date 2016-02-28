@@ -63,11 +63,11 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _ReceiverId, value, () => ReceiverId); }
         }
 
-        private RebroadcastFormat _Format;
+        private string _Format;
         /// <summary>
         /// Gets or sets the format in which to rebroadcast the receiver's messages.
         /// </summary>
-        public RebroadcastFormat Format
+        public string Format
         {
             get { return _Format; }
             set { SetField(ref _Format, value, () => Format); }

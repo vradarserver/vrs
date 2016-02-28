@@ -36,7 +36,7 @@ namespace VirtualRadar.Interface.Network
         /// <summary>
         /// Gets or sets the format that the server is going to send information in.
         /// </summary>
-        RebroadcastFormat Format { get; set; }
+        string Format { get; set; }
 
         /// <summary>
         /// Gets or sets the interval at which aircraft lists are rebroadcast.
@@ -66,6 +66,11 @@ namespace VirtualRadar.Interface.Network
         /// and create a new one after you go offline.
         /// </remarks>
         bool Online { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating that the server is online and something is connected to it.
+        /// </summary>
+        bool ConnectionEstablished { get; }
 
         /// <summary>
         /// Raised when <see cref="Online"/> changes.

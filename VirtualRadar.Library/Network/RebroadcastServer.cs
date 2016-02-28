@@ -32,106 +32,16 @@ namespace VirtualRadar.Library.Network
     /// </summary>
     sealed class RebroadcastServer : IRebroadcastServer
     {
-        #region Private Class - AircraftListJsonContractResolver
-        /// <summary>
-        /// See base docs. Suppresses JSON properties that don't need to be sent in a rebroadcast server but do need to
-        /// be sent to web sites.
-        /// </summary>
-        class AircraftListJsonContractResolver : DefaultContractResolver
-        {
-            private List<string> _AllowAircraftListJsonNames = new List<string>();
-            private List<string> _SuppressAircraftJsonNames = new List<string>();
-
-            public AircraftListJsonContractResolver() : base()
-            {
-                _AllowAircraftListJsonNames.Add(PropertyHelper.ExtractName<AircraftListJson>(r => r.Aircraft));
-
-                _SuppressAircraftJsonNames.Add(PropertyHelper.ExtractName<AircraftJson>(r => r.UniqueId));
-                _SuppressAircraftJsonNames.Add(PropertyHelper.ExtractName<AircraftJson>(r => r.HasSignalLevel));
-            }
-
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                var result = base.CreateProperty(member, memberSerialization);
-
-                if(member.DeclaringType == typeof(AircraftListJson)) {
-                    if(!_AllowAircraftListJsonNames.Contains(member.Name)) {
-                        result.ShouldSerialize = (instance) => false;
-                    }
-                } else if(member.DeclaringType == typeof(AircraftJson)) {
-                    if(_SuppressAircraftJsonNames.Contains(member.Name)) {
-                        result.ShouldSerialize = (instance) => false;
-                    }
-                }
-
-                return result;
-            }
-        }
-        #endregion
-
-        #region Fields
-        /// <summary>
-        /// True if the listener's port 30003 message events have been hooked.
-        /// </summary>
-        private bool _Hooked_Port30003_Messages;
-
-        /// <summary>
-        /// True if the listener's raw bytes events have been hooked.
-        /// </summary>
-        private bool _Hooked_Raw_Bytes;
-
-        /// <summary>
-        /// True if the listener's raw Mode-S bytes event has been hooked.
-        /// </summary>
-        private bool _Hooked_ModeS_Bytes;
-
-        /// <summary>
-        /// Gets the listener that has had its events hooked.
-        /// </summary>
-        private IListener _HookedListener;
-
-        /// <summary>
-        /// The object that can compress messages for us.
-        /// </summary>
-        private IBaseStationMessageCompressor _Compressor;
-
         /// <summary>
         /// The timer object that aircraft list rebroadcasts use.
         /// </summary>
         private ITimer _Timer;
 
         /// <summary>
-        /// The object that creates aircraft list JSON for us.
+        /// The provider that does most of the work.
         /// </summary>
-        private IAircraftListJsonBuilder _AircraftListJsonBuilder;
+        private IRebroadcastFormatProvider _Provider;
 
-        /// <summary>
-        /// The list of aircraft unique identifiers taken on the previous snapshot.
-        /// </summary>
-        private int[] _PreviousAircraftList;
-
-        /// <summary>
-        /// The last data version that was used when taking snapshots.
-        /// </summary>
-        private long _PreviousDataVersion = -1;
-
-        /// <summary>
-        /// The connector that has been hooked.
-        /// </summary>
-        private IConnector _HookedConnector;
-
-        /// <summary>
-        /// The object that suppresses properties on <see cref="AircraftListJson"/> that we're not interested in.
-        /// </summary>
-        private AircraftListJsonContractResolver _AircraftListJsonContractResolver;
-
-        /// <summary>
-        /// The serialiser settings for <see cref="AircraftListJson"/> serialisation.
-        /// </summary>
-        private JsonSerializerSettings _AircraftListJsonSerialiserSettings;
-        #endregion
-
-        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -145,7 +55,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public RebroadcastFormat Format { get; set; }
+        public string Format { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -173,16 +83,13 @@ namespace VirtualRadar.Library.Network
         }
 
         /// <summary>
-        /// Gets a value indicating that we should rebroadcast something. If the server is offline or nothing is
-        /// currently connected to it then there's no point in doing any rebroadcasting work.
+        /// See interface docs.
         /// </summary>
-        private bool ShouldRebroadcast
+        public bool ConnectionEstablished
         {
             get { return Online && Connector.HasConnection; }
         }
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -210,15 +117,12 @@ namespace VirtualRadar.Library.Network
         {
             EventHelper.Raise(OnlineChanged, this, args);
         }
-        #endregion
 
-        #region Constructor and finaliser
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public RebroadcastServer()
         {
-            _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
             SendIntervalMilliseconds = 1000;
         }
 
@@ -229,9 +133,7 @@ namespace VirtualRadar.Library.Network
         {
             Dispose(false);
         }
-        #endregion
 
-        #region Dispose
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -248,11 +150,6 @@ namespace VirtualRadar.Library.Network
         private void Dispose(bool disposing)
         {
             if(disposing) {
-                if(_Hooked_Port30003_Messages) _HookedListener.Port30003MessageReceived -= Listener_Port30003MessageReceived;
-                if(_Hooked_Raw_Bytes)          _HookedListener.RawBytesReceived -= Listener_RawBytesReceived;
-                if(_Hooked_ModeS_Bytes)        _HookedListener.ModeSBytesReceived -= Listener_ModeSBytesReceived;
-                _Hooked_Port30003_Messages = _Hooked_Raw_Bytes = false;
-
                 if(_Timer != null) {
                     var timer = _Timer;
                     _Timer = null;
@@ -260,15 +157,13 @@ namespace VirtualRadar.Library.Network
                     timer.Dispose();
                 }
 
-                if(_HookedConnector != null) {
-                    _HookedConnector.AddingConnection -= Connector_AddingConnection;
-                    _HookedConnector = null;
+                if(_Provider != null) {
+                    _Provider.UnhookFeed();
+                    _Provider = null;
                 }
             }
         }
-        #endregion
 
-        #region Initialise
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -277,69 +172,30 @@ namespace VirtualRadar.Library.Network
             if(UniqueId == 0) throw new InvalidOperationException("UniqueId must be set before calling Initialise");
             if(Feed == null) throw new InvalidOperationException("Feed must be set before calling Initialise");
             if(Connector == null) throw new InvalidOperationException("Connector must be set before calling Initialise");
-            if(Format == RebroadcastFormat.None) throw new InvalidOperationException("Format must be specified before calling Initialise");
-            if(_Hooked_Port30003_Messages || _Hooked_Raw_Bytes || _Hooked_ModeS_Bytes || _AircraftListJsonBuilder != null) throw new InvalidOperationException("Initialise has already been called");
+            if(String.IsNullOrEmpty(Format)) throw new InvalidOperationException("Format must be specified before calling Initialise");
+            if(_Provider != null) throw new InvalidOperationException("Initialise has already been called");
 
             Connector.Name = Name;
             Connector.EstablishConnection();
 
-            _HookedListener = Feed.Listener;
-            switch(Format) {
-                case RebroadcastFormat.Passthrough:
-                    _HookedListener.RawBytesReceived += Listener_RawBytesReceived;
-                    _Hooked_Raw_Bytes = true;
-                    break;
-                case RebroadcastFormat.CompressedVRS:
-                case RebroadcastFormat.ExtendedBaseStation:
-                case RebroadcastFormat.Port30003:
-                    _HookedListener.Port30003MessageReceived += Listener_Port30003MessageReceived;
-                    _Hooked_Port30003_Messages = true;
-                    break;
-                case RebroadcastFormat.Avr:
-                    _HookedListener.ModeSBytesReceived += Listener_ModeSBytesReceived;
-                    _Hooked_ModeS_Bytes = true;
-                    break;
-                case RebroadcastFormat.AircraftListJson:
-                    _AircraftListJsonBuilder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-                    var provider = Factory.Singleton.Resolve<IWebSiteProvider>();
-                    _AircraftListJsonBuilder.Initialise(provider);
+            var providerManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
+            _Provider = providerManager.CreateProvider(Format);
+            if(_Provider == null) throw new InvalidOperationException(String.Format("There is no rebroadcast format registered with a unique ID of {0}", Format));
 
-                    _AircraftListJsonContractResolver = new AircraftListJsonContractResolver();
-                    _AircraftListJsonSerialiserSettings = new JsonSerializerSettings() {
-                        ContractResolver = _AircraftListJsonContractResolver,
-                        
-                    };
+            _Provider.RebroadcastServer = this;
+            _Provider.HookFeed();
 
-                    _HookedConnector = Connector;
-                    _HookedConnector.AddingConnection += Connector_AddingConnection;
+            if(_Provider.UsesSendIntervalMilliseconds) {
+                _Timer = Factory.Singleton.Resolve<ITimer>();
+                _Timer.Elapsed += Timer_Elapsed;
+                _Timer.AutoReset = false;
+                _Timer.Enabled = true;
+                _Timer.Interval = SendIntervalMilliseconds;
 
-                    _Timer = Factory.Singleton.Resolve<ITimer>();
-                    _Timer.Elapsed += Timer_Elapsed;
-                    _Timer.AutoReset = false;
-                    _Timer.Enabled = true;
-                    _Timer.Interval = SendIntervalMilliseconds;
-
-                    _Timer.Start();
-                    break;
-                default:
-                    throw new NotImplementedException();
+                _Timer.Start();
             }
         }
-        #endregion
 
-        #region NibbleToAscii
-        /// <summary>
-        /// Returns the appropriate ASCII character for a nibble value between 0 and 15 inclusive.
-        /// </summary>
-        /// <param name="nibble"></param>
-        /// <returns></returns>
-        private byte NibbleToAscii(int nibble)
-        {
-            return (byte)((nibble < 10 ? 0x30 : 0x37) + nibble);
-        }
-        #endregion
-
-        #region GetConnections, SendToNewConnection
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -371,156 +227,6 @@ namespace VirtualRadar.Library.Network
         }
 
         /// <summary>
-        /// Sends bytes to a new connection.
-        /// </summary>
-        /// <param name="connection"></param>
-        /// <remarks>
-        /// Note that this will be called on a background thread.
-        /// </remarks>
-        private void SendToNewConnection(IConnection connection)
-        {
-            var format = Format;
-            switch(format) {
-                case RebroadcastFormat.AircraftListJson:
-                    SendAircraftList(connection);
-                    break;
-            }
-        }
-        #endregion
-
-        #region Aircraft list rebroadcasting
-        /// <summary>
-        /// Sends the aircraft list.
-        /// </summary>
-        /// <param name="connection">The connection to send to. If this is not null then it is assumed that it is a new
-        /// connection and that a full aircraft list has to be sent 'out-of-bound'. The connection is assumed to not already
-        /// be in the connector's list of established connections.</param>
-        /// <remarks>
-        /// It's possible that this could be called on the timer's thread while the manager is messing about with
-        /// our object.
-        /// </remarks>
-        private void SendAircraftList(IConnection connection = null)
-        {
-            var format = Format;
-            var feed = Feed;
-            var aircraftList = feed == null ? null : feed.AircraftList;
-            var connector = Connector;
-            var isNewConnection = connection != null;
-
-            if(aircraftList != null && Online && connector != null && (connector.HasConnection || isNewConnection)) {
-                switch(format) {
-                    case RebroadcastFormat.AircraftListJson:
-                        long timestamp, dataVersion;
-                        var snapshot = aircraftList.TakeSnapshot(out timestamp, out dataVersion);
-
-                        var args = new AircraftListJsonBuilderArgs() {
-                            AlwaysShowIcao = true,
-                            FeedsNotRequired = true,
-                            IgnoreUnchanged = true,
-                            OnlyIncludeMessageFields = true,
-                            SourceFeedId = feed.UniqueId,
-                            PreviousDataVersion = isNewConnection ? -1 : _PreviousDataVersion,
-                        };
-
-                        if(!isNewConnection) {
-                            if(_PreviousAircraftList != null) {
-                                args.PreviousAircraft.AddRange(_PreviousAircraftList);
-                            }
-                            _PreviousAircraftList = snapshot.Select(r => r.UniqueId).ToArray();
-                            _PreviousDataVersion = dataVersion;
-                        }
-
-                        var json = _AircraftListJsonBuilder.Build(args);
-                        if(json.Aircraft.Count > 0) {
-                            var jsonText = JsonConvert.SerializeObject(json, _AircraftListJsonSerialiserSettings);
-
-                            // The json text can include some entries that have ICAO codes and nothing else. When I
-                            // first wrote this I was taking them out at this point... but that is a mistake, if the
-                            // aircraft is sending messages between refreshes but not changing any message values (e.g.
-                            // test beacons that transmit a constant callsign, altitude etc. then by removing their
-                            // entry here we make the receiving end think that they've gone off the radar. We need to
-                            // send ICAOs for aircraft that aren't changing message values. This will bump the JSON
-                            // size up a bit but c'est la vie.
-
-                            var bytes = Encoding.UTF8.GetBytes(jsonText);
-                            if(connection != null) {
-                                connection.Write(bytes);
-                            } else {
-                                connector.Write(bytes);
-                            }
-                        }
-                        break;
-                    default:
-                        // Do not throw on an invalid format, it might be in the middle of being switched.
-                        break;
-                }
-            }
-        }
-        #endregion
-
-        #region Events consumed
-        /// <summary>
-        /// Raised when the listener picks up a Port 30003 format message (or derives one from a raw message).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Listener_Port30003MessageReceived(object sender, BaseStationMessageEventArgs args)
-        {
-            if(ShouldRebroadcast) {
-                byte[] bytes;
-                switch(Format) {
-                    case RebroadcastFormat.CompressedVRS:
-                        bytes = _Compressor.Compress(args.Message);
-                        break;
-                    default:
-                        var emitExtendedBaseStation = Format == RebroadcastFormat.ExtendedBaseStation;
-                        bytes = Encoding.ASCII.GetBytes(String.Concat(args.Message.ToBaseStationString(emitExtendedBaseStation), "\r\n"));
-                        break;
-                }
-                if(bytes != null && bytes.Length > 0) Connector.Write(bytes);
-            }
-        }
-
-        /// <summary>
-        /// Raised when the listener picks up raw bytes from a receiver.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Listener_RawBytesReceived(object sender, EventArgs<byte[]> args)
-        {
-            if(ShouldRebroadcast) Connector.Write(args.Value);
-        }
-
-        /// <summary>
-        /// Raised when the listener picks up Mode-S bytes from a receiver.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Listener_ModeSBytesReceived(object sender, EventArgs<ExtractedBytes> args)
-        {
-            if(ShouldRebroadcast) {
-                var extractedBytes = args.Value;
-
-                var bytes = new byte[(extractedBytes.Length * 2) + 4];
-                var di = 0;
-                bytes[di++] = extractedBytes.HasParity ? (byte)0x2a : (byte)0x3a;
-
-                var length = extractedBytes.Offset + extractedBytes.Length;
-                for(int i = extractedBytes.Offset;i < length;++i) {
-                    var sourceByte = extractedBytes.Bytes[i];
-                    bytes[di++] = NibbleToAscii((sourceByte & 0xf0) >> 4);
-                    bytes[di++] = NibbleToAscii(sourceByte & 0x0f);
-                }
-
-                bytes[di++] = (byte)0x3b;
-                bytes[di++] = (byte)0x0d;
-                bytes[di] = (byte)0x0a;
-
-                Connector.Write(bytes);
-            }
-        }
-
-        /// <summary>
         /// Raised when <see cref="_Timer"/>'s timer elapses.
         /// </summary>
         /// <param name="sender"></param>
@@ -530,7 +236,10 @@ namespace VirtualRadar.Library.Network
             var abortingThread = false;
 
             try {
-                SendAircraftList();
+                var provider = _Provider;
+                if(provider != null && provider.UsesSendIntervalMilliseconds) {
+                    provider.SendIntervalElapsed();
+                }
             } catch(ThreadAbortException) {
                 abortingThread = true;
                 // rethrow is automatic
@@ -547,16 +256,5 @@ namespace VirtualRadar.Library.Network
                 }
             }
         }
-
-        /// <summary>
-        /// Raised when <see cref="Connector"/> establishes a connection.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Connector_AddingConnection(object sender, ConnectionEventArgs args)
-        {
-            SendToNewConnection(args.Connection);
-        }
-        #endregion
     }
 }

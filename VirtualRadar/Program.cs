@@ -30,6 +30,7 @@ using VirtualRadar.Localisation;
 using VirtualRadar.WinForms;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 
 namespace VirtualRadar
 {
@@ -110,6 +111,9 @@ namespace VirtualRadar
 
             var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
             receiverFormatManager.Initialise();
+
+            var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
+            rebroadcastFormatManager.Initialise();
 
             var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
             pluginManager.LoadPlugins();

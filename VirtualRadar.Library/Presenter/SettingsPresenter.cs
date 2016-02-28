@@ -29,6 +29,7 @@ using VirtualRadar.Interface.WebServer;
 using System.Threading;
 using System.Diagnostics;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -174,6 +175,11 @@ namespace VirtualRadar.Library.Presenter
         private IReceiverFormatManager _ReceiverFormatManager;
 
         /// <summary>
+        /// The singleton RebroadcastFormatManager that holds a list of all registered rebroadcast server formats.
+        /// </summary>
+        private IRebroadcastFormatManager _RebroadcastFormatManager;
+
+        /// <summary>
         /// The highest unique ID across both receivers and merged feed as-at the point that
         /// editing started. We do not create a unique ID that is at or below this value when
         /// we create new receivers and merged feeds.
@@ -262,6 +268,7 @@ namespace VirtualRadar.Library.Presenter
             var config = configStorage.Load();
 
             _ReceiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            _RebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
             _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
             _View.UserManager = _UserManager.Name;
 
@@ -1183,50 +1190,32 @@ namespace VirtualRadar.Library.Presenter
                     IsWarning = !server.Enabled,
                 });
 
-                // The send interval must be between 1 and 30 seconds, but only if format is AircraftListJson
-                ConditionIsTrue(server, r => r.Format != RebroadcastFormat.AircraftListJson || (r.SendIntervalMilliseconds >= 1000 && r.SendIntervalMilliseconds <= 30000),
+                // The rebroadcast format must be registered
+                ConditionIsFalse(server.Format, r => _RebroadcastFormatManager.GetProvider(r) == null, new Validation(ValidationField.Format, defaults) {
+                    Message = Strings.RebroadcastFormatRequired,
+                });
+                var provider = _RebroadcastFormatManager.GetProvider(server.Format);
+
+                // The send interval must be correct
+                ConditionIsTrue(server, r => provider == null || provider.IsValidSendIntervalMilliseconds(r.SendIntervalMilliseconds),
                     new Validation(ValidationField.SendInterval, defaults) {
                         Message = Strings.RebroadcastSendIntervalOutOfBounds,
                         IsWarning = !server.Enabled,
                     }
                 );
 
-                // Format is present
-                ValueNotEqual(server.Format, RebroadcastFormat.None, new Validation(ValidationField.Format, defaults) {
-                    Message = Strings.RebroadcastFormatRequired,
-                });
-
                 // Format is valid for the receiver type
                 ConditionIsTrue(server.Format, (format) => {
                     var formatIsOK = true;
 
-                    var receiver = _View.Configuration.Receivers.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
-                    var mergedFeed = _View.Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
+                    if(provider != null) {
+                        var receiver = _View.Configuration.Receivers.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
+                        var mergedFeed = _View.Configuration.MergedFeeds.FirstOrDefault(r => r.UniqueId == server.ReceiverId);
 
-                    if(mergedFeed != null) {
-                        switch(format) {
-                            case RebroadcastFormat.Avr:                 formatIsOK = false; break;      // Cannot convert BaseStation to AVR
-                            case RebroadcastFormat.CompressedVRS:       formatIsOK = true; break;
-                            case RebroadcastFormat.ExtendedBaseStation: formatIsOK = true; break;
-                            case RebroadcastFormat.Passthrough:         formatIsOK = false; break;      // As-of time of writing Passthrough not raised for merged feed listeners
-                            case RebroadcastFormat.Port30003:           formatIsOK = true; break;
-                            case RebroadcastFormat.AircraftListJson:    formatIsOK = true; break;       // Once merge-only feeds are implemented we'll have to check that the feed has an aircraft list on it before we allow this format.
-                            case RebroadcastFormat.None:                break;
-                            default:                                    throw new NotImplementedException();
-                        }
-                    } else if(receiver != null) {
-                        var hasAircraftList = receiver.ReceiverUsage != ReceiverUsage.MergeOnly;
-                        var receiverProvider = _ReceiverFormatManager.GetProvider(receiver.DataSource);
-                        var isCooked = receiverProvider != null && !receiverProvider.IsRawFormat;
-                        switch(format) {
-                            case RebroadcastFormat.Avr:                 formatIsOK = !isCooked; break;
-                            case RebroadcastFormat.CompressedVRS:       formatIsOK = true; break;
-                            case RebroadcastFormat.ExtendedBaseStation: formatIsOK = true; break;
-                            case RebroadcastFormat.None:                break;
-                            case RebroadcastFormat.Passthrough:         formatIsOK = true; break;
-                            case RebroadcastFormat.Port30003:           formatIsOK = true; break;
-                            case RebroadcastFormat.AircraftListJson:    formatIsOK = hasAircraftList; break;
-                            default:                                    throw new NotImplementedException();
+                        if(mergedFeed != null && !provider.CanRebroadcastMergedFeed) {
+                            formatIsOK = false;
+                        } else if(!provider.CanRebroadcastReceiver(receiver)) {
+                            formatIsOK = false;
                         }
                     }
 

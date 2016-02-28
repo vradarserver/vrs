@@ -28,14 +28,14 @@
         VoiceNames?:                        string[];
         BaudRates?:                         number[];
         ConnectionTypes?:                   VirtualRadar.Interface.View.IEnumModel[];
-        DataSources?:                       VirtualRadar.Interface.Listener.IReceiverFormat[];
+        DataSources?:                       VirtualRadar.Interface.Listener.IReceiverFormatName[];
         DefaultAccesses?:                   VirtualRadar.Interface.View.IEnumModel[];
         DistanceUnits?:                     VirtualRadar.Interface.View.IEnumModel[];
         Handshakes?:                        VirtualRadar.Interface.View.IEnumModel[];
         HeightUnits?:                       VirtualRadar.Interface.View.IEnumModel[];
         Parities?:                          VirtualRadar.Interface.View.IEnumModel[];
         ProxyTypes?:                        VirtualRadar.Interface.View.IEnumModel[];
-        RebroadcastFormats?:                VirtualRadar.Interface.View.IEnumModel[];
+        RebroadcastFormats?:                VirtualRadar.Interface.Network.IRebroadcastFormatName[];
         ReceiverUsages?:                    VirtualRadar.Interface.View.IEnumModel[];
         SpeedUnits?:                        VirtualRadar.Interface.View.IEnumModel[];
         StopBits?:                          VirtualRadar.Interface.View.IEnumModel[];
@@ -542,7 +542,10 @@
                             {
                                 model.FormattedAccess = ko.computed(() => this._ViewId.describeEnum(model.Access.DefaultAccess(), state.Response.DefaultAccesses));
                                 model.FormattedAddress = ko.computed(() => VRS.stringUtility.format('{0}:{1}', (model.TransmitAddress() ? model.TransmitAddress() : ':'), model.Port()));
-                                model.FormatDescription = ko.computed(() => this._ViewId.describeEnum(model.Format(), state.Response.RebroadcastFormats));
+                                model.FormatDescription = ko.computed(() => {
+                                    var rebroadcastFormat = VRS.arrayHelper.findFirst(state.Response.RebroadcastFormats, r => r.UniqueId === model.Format());
+                                    return rebroadcastFormat ? rebroadcastFormat.ShortName : VRS.Server.$$.Unknown;
+                                });
                                 model.Feed = ko.pureComputed({
                                     read: () => {
                                         let feedId = model.ReceiverId();

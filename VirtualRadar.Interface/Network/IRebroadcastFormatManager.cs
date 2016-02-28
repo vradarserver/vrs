@@ -13,16 +13,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Interface.Listener
+namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// Manages the feed formats that the program can decode.
+    /// The singleton manager that keeps track of all registered rebroadcast server formats.
     /// </summary>
     /// <remarks>
     /// Plugins cannot provide their own implementation of this interface, the singleton is established
     /// before RegisterImplementations is called.
     /// </remarks>
-    public interface IReceiverFormatManager : ISingleton<IReceiverFormatManager>
+    public interface IRebroadcastFormatManager : ISingleton<IRebroadcastFormatManager>
     {
         /// <summary>
         /// Initialises the format manager.
@@ -37,13 +37,13 @@ namespace VirtualRadar.Interface.Listener
         /// Plugins should register their providers in RegisterImplementations, which should be
         /// called before VRS tries to connect to any feeds.
         /// </remarks>
-        void RegisterProvider(IReceiverFormatProvider provider);
+        void RegisterProvider(IRebroadcastFormatProvider provider);
 
         /// <summary>
-        /// Returns a collection of all registered receiver formats in a summarised form.
+        /// Returns a collection of all registered rebroadcast server formats in a summarised form.
         /// </summary>
         /// <returns></returns>
-        ReceiverFormatName[] GetRegisteredFormats();
+        RebroadcastFormatName[] GetRegisteredFormats();
 
         /// <summary>
         /// Returns the registered provider with the identifier supplied or null if no provider has been
@@ -51,7 +51,15 @@ namespace VirtualRadar.Interface.Listener
         /// </summary>
         /// <param name="providerId"></param>
         /// <returns></returns>
-        IReceiverFormatProvider GetProvider(string providerId);
+        IRebroadcastFormatProvider GetProvider(string providerId);
+
+        /// <summary>
+        /// Creates a new instance of the provider with the unique ID passed across. Returns null if no provider
+        /// is registered for the ID passed across.
+        /// </summary>
+        /// <param name="providerId"></param>
+        /// <returns></returns>
+        IRebroadcastFormatProvider CreateProvider(string providerId);
 
         /// <summary>
         /// Returns the short name associated with the unique ID passed across. If there is no

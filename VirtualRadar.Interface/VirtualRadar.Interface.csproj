@@ -113,7 +113,10 @@
     <Compile Include="IAircraftOnlineLookupLog.cs" />
     <Compile Include="Listener\IReceiverFormatManager.cs" />
     <Compile Include="Listener\IReceiverFormatProvider.cs" />
-    <Compile Include="Listener\ReceiverFormat.cs" />
+    <Compile Include="Listener\ReceiverFormatName.cs" />
+    <Compile Include="Network\IRebroadcastFormatManager.cs" />
+    <Compile Include="Network\IRebroadcastFormatProvider.cs" />
+    <Compile Include="Network\RebroadcastFormatName.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
     <Compile Include="QueueRepository.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />

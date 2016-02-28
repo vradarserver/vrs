@@ -30,7 +30,7 @@ namespace Test.VirtualRadar.Interface.Settings
         public static void CheckProperties(RebroadcastSettings settings)
         {
             TestUtilities.TestProperty(settings, r => r.Enabled, false);
-            TestUtilities.TestProperty(settings, r => r.Format, RebroadcastFormat.None, RebroadcastFormat.Passthrough);
+            TestUtilities.TestProperty(settings, r => r.Format, null, RebroadcastFormat.Passthrough);
             TestUtilities.TestProperty(settings, r => r.Name, null, "ABC");
             TestUtilities.TestProperty(settings, r => r.IsTransmitter, false);
             TestUtilities.TestProperty(settings, r => r.TransmitAddress, null, "www.word.up");

@@ -327,7 +327,10 @@ var VRS;
                                     '{root}.RebroadcastSettings[i]': function (model) {
                                         model.FormattedAccess = ko.computed(function () { return _this._ViewId.describeEnum(model.Access.DefaultAccess(), state.Response.DefaultAccesses); });
                                         model.FormattedAddress = ko.computed(function () { return VRS.stringUtility.format('{0}:{1}', (model.TransmitAddress() ? model.TransmitAddress() : ':'), model.Port()); });
-                                        model.FormatDescription = ko.computed(function () { return _this._ViewId.describeEnum(model.Format(), state.Response.RebroadcastFormats); });
+                                        model.FormatDescription = ko.computed(function () {
+                                            var rebroadcastFormat = VRS.arrayHelper.findFirst(state.Response.RebroadcastFormats, function (r) { return r.UniqueId === model.Format(); });
+                                            return rebroadcastFormat ? rebroadcastFormat.ShortName : VRS.Server.$$.Unknown;
+                                        });
                                         model.Feed = ko.pureComputed({
                                             read: function () {
                                                 var feedId = model.ReceiverId();
