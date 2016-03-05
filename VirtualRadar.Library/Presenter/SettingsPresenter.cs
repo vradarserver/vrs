@@ -852,7 +852,7 @@ namespace VirtualRadar.Library.Presenter
                 });
 
                 // Tracking timeout is within range
-                ValueIsInRange(settings.TrackingTimeoutSeconds, 1, 3600, new Validation(ValidationField.TrackingTimeout, defaults) {
+                ValueIsInRange(settings.TrackingTimeoutSeconds, 1, 18000, new Validation(ValidationField.TrackingTimeout, defaults) {
                     Message = Strings.TrackingTimeoutOutOfBounds,
                 });
 

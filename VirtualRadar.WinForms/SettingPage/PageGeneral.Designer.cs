@@ -48,12 +48,12 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.linkLabelDefaultVoice = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.numericAutoSavePolarPlots = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationOfShortTrails)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromTracking)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromMap)).BeginInit();
@@ -128,7 +128,7 @@
             // 
             this.numericDurationBeforeAircraftRemovedFromTracking.Location = new System.Drawing.Point(200, 117);
             this.numericDurationBeforeAircraftRemovedFromTracking.Maximum = new decimal(new int[] {
-            3600,
+            18000,
             0,
             0,
             0});
@@ -160,7 +160,7 @@
             // 
             this.numericDurationBeforeAircraftRemovedFromMap.Location = new System.Drawing.Point(200, 91);
             this.numericDurationBeforeAircraftRemovedFromMap.Maximum = new decimal(new int[] {
-            540,
+            18000,
             0,
             0,
             0});
@@ -340,33 +340,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::OptionsGeneralCategory::";
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(276, 145);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(68, 13);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "::PSeconds::";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(276, 119);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(68, 13);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "::PSeconds::";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(276, 93);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(68, 13);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "::PSeconds::";
-            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -402,6 +375,33 @@
             0,
             0,
             0});
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(276, 145);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(68, 13);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "::PSeconds::";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(276, 119);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(68, 13);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "::PSeconds::";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(276, 93);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(68, 13);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "::PSeconds::";
             // 
             // PageGeneral
             // 
