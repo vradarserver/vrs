@@ -245,7 +245,11 @@ var VRS;
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                     },
                                     '{root}.GoogleMapSettings': function (model) {
-                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model, function (name, value) {
+                                            return value !== model.ClosestAircraftReceiverIdValidation &&
+                                                value !== model.FlightSimulatorXReceiverIdValidation &&
+                                                value !== model.WebSiteReceiverIdValidation;
+                                        }));
                                     },
                                     '{root}.InternetClientSettingsModel': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
@@ -497,7 +501,7 @@ var VRS;
                             this._Model.MergedFeeds.subscribe(this.feedlistChanged, this);
                             this.synchroniseFeeds();
                             var webServerAndInternetClientValidationFields = this._ViewId.findValidationProperties(this._Model.WebServerSettings);
-                            this._ViewId.findValidationProperties(this._Model.InternetClientSettings, webServerAndInternetClientValidationFields);
+                            this._ViewId.findValidationProperties(this._Model.InternetClientSettings, null, webServerAndInternetClientValidationFields);
                             this._Model.WebServerSettings.WebServerAndInternetClientWrapUpValidation = this._ViewId.createWrapupValidation(webServerAndInternetClientValidationFields);
                             ko.applyBindings(this._Model);
                         }

@@ -265,7 +265,8 @@ var VRS;
                 };
                 return result;
             };
-            ViewId.prototype.findValidationProperties = function (model, appendToArray) {
+            ViewId.prototype.findValidationProperties = function (model, filter, appendToArray) {
+                if (filter === void 0) { filter = null; }
                 if (appendToArray === void 0) { appendToArray = []; }
                 var result = appendToArray;
                 $.each(model, function (name, value) {
@@ -274,7 +275,10 @@ var VRS;
                         value.hasOwnProperty('IsWarning') &&
                         value.hasOwnProperty('IsError') &&
                         value.hasOwnProperty('Message')) {
-                        result.push(value);
+                        var validationField = value;
+                        if (!filter || filter(name, validationField)) {
+                            result.push(validationField);
+                        }
                     }
                 });
                 return result;
