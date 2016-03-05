@@ -53,11 +53,19 @@
 
                 fieldValidate.attr('data-bind', fieldValidateBinding);
 
-                var input = $('input,textarea,select,:checkbox', fieldValidate);
+                var helpBlockControl = $('input,textarea,select,:checkbox', fieldValidate);
+                var parentInputGroup = helpBlockControl.parent('.input-group');
+                if(parentInputGroup.length > 0) {
+                    helpBlockControl = parentInputGroup;
+                }
                 $('<span />')
                     .attr('data-bind', messageBinding)
                     .addClass('help-block')
-                    .insertAfter(input);
+                    .insertAfter(helpBlockControl);
+
+                var input = $('input', fieldValidate).filter(function() {
+                    return $(this).parent('.input-group').length === 0;     // input groups and input feedback icons do not mix
+                });
                 $('<span />')
                     .attr('data-bind', visibleIfErrorBinding)
                     .addClass('form-control-feedback glyphicon glyphicon-minus-sign')
