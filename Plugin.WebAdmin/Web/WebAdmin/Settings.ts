@@ -451,7 +451,15 @@
 
                             '{root}.GoogleMapSettings': (model: GoogleMapSettingsModel) =>
                             {
-                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+                                // Some of the fields in GoogleMapSettings are actually shown in the receivers block and should be
+                                // excluded from the wrap-up
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(
+                                    this._ViewId.findValidationProperties(model, (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => {
+                                        return value !== model.ClosestAircraftReceiverIdValidation &&
+                                               value !== model.FlightSimulatorXReceiverIdValidation &&
+                                               value !== model.WebSiteReceiverIdValidation;
+                                    })
+                                );
                             },
 
                             '{root}.InternetClientSettingsModel': (model: InternetClientSettingsModel) =>
@@ -746,7 +754,7 @@
                     this.synchroniseFeeds();
 
                     var webServerAndInternetClientValidationFields = this._ViewId.findValidationProperties(this._Model.WebServerSettings);
-                    this._ViewId.findValidationProperties(this._Model.InternetClientSettings, webServerAndInternetClientValidationFields);
+                    this._ViewId.findValidationProperties(this._Model.InternetClientSettings, null, webServerAndInternetClientValidationFields);
                     (<WebServerSettingsModel>this._Model.WebServerSettings).WebServerAndInternetClientWrapUpValidation = this._ViewId.createWrapupValidation(webServerAndInternetClientValidationFields);
 
                     ko.applyBindings(this._Model);

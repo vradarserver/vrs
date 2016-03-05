@@ -304,7 +304,10 @@
         /**
          * Returns an array of all properties of the model that look like they are validation model field objects.
          */
-        findValidationProperties(model: Object, appendToArray: VirtualRadar.Interface.View.IValidationModelField_KO[] = []) : VirtualRadar.Interface.View.IValidationModelField_KO[]
+        findValidationProperties(model: Object,
+                                 filter: (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => boolean = null,
+                                 appendToArray: VirtualRadar.Interface.View.IValidationModelField_KO[] = []
+                                ) : VirtualRadar.Interface.View.IValidationModelField_KO[]
         {
             var result = appendToArray;
 
@@ -315,7 +318,10 @@
                     value.hasOwnProperty('IsError') &&
                     value.hasOwnProperty('Message')
                 ) {
-                    result.push(<VirtualRadar.Interface.View.IValidationModelField_KO>value);
+                    var validationField = <VirtualRadar.Interface.View.IValidationModelField_KO>value;
+                    if(!filter || filter(name, validationField)) {
+                        result.push(validationField);
+                    }
                 }
             });
 
