@@ -138,6 +138,7 @@ declare module VRS.Server
         DataProvider:                                              string;
         DataSource:                                                string;
         DataSourceNetworkAddressMissing:                           string;
+        DataSourceRequired:                                        string;
         DaysBetweenChecks:                                         string;
         DaysBetweenChecksOutOfBounds:                              string;
         DecoderSettings:                                           string;
@@ -177,6 +178,7 @@ declare module VRS.Server
         Environment:                                               string;
         EnvironmentDotNet:                                         string;
         EnvironmentMono:                                           string;
+        Error:                                                     string;
         Exception:                                                 string;
         Exceptions:                                                string;
         ExceptionWhenCheckingFile:                                 string;

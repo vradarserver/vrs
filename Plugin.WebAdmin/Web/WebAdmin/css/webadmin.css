@@ -80,6 +80,15 @@
 .form-section .tight-top {
     margin-top: inherit;
 }
+.help-block-icon {
+    margin-right: 1em;
+}
+.help-block-icon.error {
+    color: #ff0000;
+}
+.help-block-icon.warning {
+    color: #0000ff;
+}
 
 /* Modal alerts */
 .modal-alert {

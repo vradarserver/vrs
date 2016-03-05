@@ -1615,6 +1615,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception.
         /// </summary>
         public static string Exception {
@@ -2101,7 +2110,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The initial refresh value must be between 0 and 3600.
+        ///   Looks up a localized string similar to The initial refresh value must be between 0 and 18000.
         /// </summary>
         public static string InitialRefreshOutOfBounds {
             get {
