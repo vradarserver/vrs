@@ -38,6 +38,10 @@
                     "css: {{ 'has-feedback': !{0}.IsValid(), 'has-warning': {0}.IsWarning, 'has-error': {0}.IsError }}",
                     fieldName
                 );
+                var visibleIfInvalidBinding = VRS.stringUtility.format(
+                    'visible: !{0}.IsValid()',
+                    fieldName
+                );
                 var visibleIfErrorBinding = VRS.stringUtility.format(
                     'visible: {0}.IsError',
                     fieldName
@@ -47,7 +51,7 @@
                     fieldName
                 );
                 var messageBinding = VRS.stringUtility.format(
-                    'visible: !{0}.IsValid(), text: {0}.Message', 
+                    'text: {0}.Message', 
                     fieldName
                 );
 
@@ -58,24 +62,25 @@
                 if(parentInputGroup.length > 0) {
                     helpBlockControl = parentInputGroup;
                 }
+                var helpBlock = $('<span />')
+                    .addClass('help-block')
+                    .attr('data-bind', visibleIfInvalidBinding)
+                    .insertAfter(helpBlockControl);
                 $('<span />')
                     .attr('data-bind', messageBinding)
-                    .addClass('help-block')
-                    .insertAfter(helpBlockControl);
-
-                var input = $('input', fieldValidate).filter(function() {
-                    return $(this).parent('.input-group').length === 0;     // input groups and input feedback icons do not mix
-                });
+                    .appendTo(helpBlock);
                 $('<span />')
                     .attr('data-bind', visibleIfErrorBinding)
-                    .addClass('form-control-feedback glyphicon glyphicon-minus-sign')
+                    .addClass('help-block-icon error glyphicon glyphicon-minus-sign')
                     .attr('aria-hidden', 'true')
-                    .insertAfter(input);
+                    .attr('title', VRS.Server.$$.Error)
+                    .prependTo(helpBlock);
                 $('<span />')
                     .attr('data-bind', visibleIfWarningBinding)
-                    .addClass('form-control-feedback glyphicon glyphicon-exclamation-sign')
+                    .addClass('help-block-icon warning glyphicon glyphicon-exclamation-sign')
                     .attr('aria-hidden', 'true')
-                    .insertAfter(input);
+                    .attr('title', VRS.Server.$$.Warning)
+                    .prependTo(helpBlock);
             });
         }
 

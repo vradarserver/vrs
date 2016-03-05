@@ -1321,7 +1321,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>The initial refresh value cannot be less than the minimum refresh value</value>
   </data>
   <data name="InitialRefreshOutOfBounds" xml:space="preserve">
-    <value>The initial refresh value must be between 0 and 3600</value>
+    <value>The initial refresh value must be between 0 and 18000</value>
   </data>
   <data name="InternetUserIdleTimeoutOutOfBounds" xml:space="preserve">
     <value>The idle timeout for Internet users must be between 0 and 1440</value>
@@ -2649,5 +2649,8 @@ Show this message.</value>
   </data>
   <data name="DataSourceRequired" xml:space="preserve">
     <value>You must choose a feed format</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
   </data>
 </root>
