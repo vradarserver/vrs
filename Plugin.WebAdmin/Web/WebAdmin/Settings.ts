@@ -16,6 +16,7 @@
         SelectedReceiverLocation?:          KnockoutObservable<ReceiverLocationModel>;
         SelectedUser?:                      KnockoutObservable<UserModel>;
 
+        GeneralWrapUpValidation?:           IValidation_KC;
         MergedFeedWrapUpValidation?:        IValidation_KC;
         RebroadcastServerWrapUpValidation?: IValidation_KC;
         ReceiverWrapUpValidation?:          IValidation_KC;
@@ -446,18 +447,23 @@
 
                             '{root}.BaseStationSettings': (model: BaseStationSettingsModel) =>
                             {
-                                model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
+                                model.WrapUpValidation = this._ViewId.createWrapupValidation(
+                                    this._ViewId.findValidationProperties(model, (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => {
+                                        return value !== model.AutoSavePolarPlotsMinutesValidation &&       // Shown in General
+                                               value !== model.DisplayTimeoutSecondsValidation &&           // Shown in General
+                                               value !== model.TrackingTimeoutSecondsValidation;            // Shown in General
+                                    })
+                                );
                             },
 
                             '{root}.GoogleMapSettings': (model: GoogleMapSettingsModel) =>
                             {
-                                // Some of the fields in GoogleMapSettings are actually shown in the receivers block and should be
-                                // excluded from the wrap-up
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(
                                     this._ViewId.findValidationProperties(model, (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => {
-                                        return value !== model.ClosestAircraftReceiverIdValidation &&
-                                               value !== model.FlightSimulatorXReceiverIdValidation &&
-                                               value !== model.WebSiteReceiverIdValidation;
+                                        return value !== model.ClosestAircraftReceiverIdValidation &&       // Shown in Receivers
+                                               value !== model.FlightSimulatorXReceiverIdValidation &&      // Shown in Receivers
+                                               value !== model.ShortTrailLengthSecondsValidation &&         // Shown in General
+                                               value !== model.WebSiteReceiverIdValidation;                 // Shown in Receivers
                                     })
                                 );
                             },
@@ -736,6 +742,13 @@
                         }
                     });
 
+                    this._Model.GeneralWrapUpValidation = this._ViewId.createWrapupValidation([
+                        this._Model.VersionCheckSettings.CheckPeriodDaysValidation,
+                        this._Model.BaseStationSettings.DisplayTimeoutSecondsValidation,
+                        this._Model.BaseStationSettings.TrackingTimeoutSecondsValidation,
+                        this._Model.GoogleMapSettings.ShortTrailLengthSecondsValidation,
+                        this._Model.BaseStationSettings.AutoSavePolarPlotsMinutesValidation
+                    ]);
                     this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, (r) => (<MergedFeedModel>r).WrapUpValidation);
                     this._Model.RebroadcastServerWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.RebroadcastSettings, (r) => (<RebroadcastServerModel>r).WrapUpValidation);
                     this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(

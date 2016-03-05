@@ -242,12 +242,17 @@ var VRS;
                                         };
                                     },
                                     '{root}.BaseStationSettings': function (model) {
-                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
+                                        model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model, function (name, value) {
+                                            return value !== model.AutoSavePolarPlotsMinutesValidation &&
+                                                value !== model.DisplayTimeoutSecondsValidation &&
+                                                value !== model.TrackingTimeoutSecondsValidation;
+                                        }));
                                     },
                                     '{root}.GoogleMapSettings': function (model) {
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model, function (name, value) {
                                             return value !== model.ClosestAircraftReceiverIdValidation &&
                                                 value !== model.FlightSimulatorXReceiverIdValidation &&
+                                                value !== model.ShortTrailLengthSecondsValidation &&
                                                 value !== model.WebSiteReceiverIdValidation;
                                         }));
                                     },
@@ -491,6 +496,13 @@ var VRS;
                                     },
                                 }
                             });
+                            this._Model.GeneralWrapUpValidation = this._ViewId.createWrapupValidation([
+                                this._Model.VersionCheckSettings.CheckPeriodDaysValidation,
+                                this._Model.BaseStationSettings.DisplayTimeoutSecondsValidation,
+                                this._Model.BaseStationSettings.TrackingTimeoutSecondsValidation,
+                                this._Model.GoogleMapSettings.ShortTrailLengthSecondsValidation,
+                                this._Model.BaseStationSettings.AutoSavePolarPlotsMinutesValidation
+                            ]);
                             this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, function (r) { return r.WrapUpValidation; });
                             this._Model.RebroadcastServerWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.RebroadcastSettings, function (r) { return r.WrapUpValidation; });
                             this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, function (r) { return r.WrapUpValidation; }, this._Model.GoogleMapSettings.WebSiteReceiverIdValidation, this._Model.GoogleMapSettings.ClosestAircraftReceiverIdValidation, this._Model.GoogleMapSettings.FlightSimulatorXReceiverIdValidation);
