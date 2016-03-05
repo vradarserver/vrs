@@ -2110,7 +2110,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The initial refresh value must be between 0 and 18000.
+        ///   Looks up a localized string similar to The initial refresh value must be between 0 and 3600.
         /// </summary>
         public static string InitialRefreshOutOfBounds {
             get {
@@ -6644,7 +6644,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The tracking timeout cannot be more than 3600.
+        ///   Looks up a localized string similar to The tracking timeout cannot be more than 18000.
         /// </summary>
         public static string TrackingTimeoutOutOfBounds {
             get {

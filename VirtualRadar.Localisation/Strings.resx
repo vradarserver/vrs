@@ -1321,7 +1321,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>The initial refresh value cannot be less than the minimum refresh value</value>
   </data>
   <data name="InitialRefreshOutOfBounds" xml:space="preserve">
-    <value>The initial refresh value must be between 0 and 18000</value>
+    <value>The initial refresh value must be between 0 and 3600</value>
   </data>
   <data name="InternetUserIdleTimeoutOutOfBounds" xml:space="preserve">
     <value>The idle timeout for Internet users must be between 0 and 1440</value>
@@ -1636,7 +1636,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>The tracking timeout cannot be less than the display timeout</value>
   </data>
   <data name="TrackingTimeoutOutOfBounds" xml:space="preserve">
-    <value>The tracking timeout cannot be more than 3600</value>
+    <value>The tracking timeout cannot be more than 18000</value>
   </data>
   <data name="AcceptIcaoInNonPICount" xml:space="preserve">
     <value>Mode-S message count</value>
