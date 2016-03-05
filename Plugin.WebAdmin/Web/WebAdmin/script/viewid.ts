@@ -234,7 +234,7 @@
         /**
          * Creates a wrap-up validation field that reports on the state of every element in an array that contains other wrap-up fields.
          */
-        createArrayWrapupValidation<T>(array: KnockoutObservableArray<T>, getWrapUp: (item: T) => IValidation_KC) : IValidation_KC
+        createArrayWrapupValidation<T>(array: KnockoutObservableArray<T>, getWrapUp: (item: T) => IValidation_KC, ...includeValidations: IValidation_KC[]) : IValidation_KC
         {
             var result = {
                 IsValid: ko.computed(() => {
@@ -246,8 +246,17 @@
                         }
                         return isValid;
                     });
+                    if(isValid && includeValidations.length) {
+                        $.each(includeValidations, (idx, item) => {
+                            if(!item.IsValid()) {
+                                isValid = false;
+                            }
+                            return isValid;
+                        });
+                    }
                     return isValid;
                 }),
+
                 IsWarning: ko.computed(() => {
                     var isWarning = false;
                     $.each(array(), (idx, item) => {
@@ -257,8 +266,17 @@
                         }
                         return !isWarning;
                     });
+                    if(!isWarning && includeValidations.length) {
+                        $.each(includeValidations, (idx, item) => {
+                            if(item.IsWarning()) {
+                                isWarning = true;
+                            }
+                            return !isWarning;
+                        });
+                    }
                     return isWarning;
                 }),
+
                 IsError: ko.computed(() => {
                     var isError = false;
                     $.each(array(), (idx, item) => {
@@ -268,6 +286,14 @@
                         }
                         return !isError;
                     });
+                    if(!isError && includeValidations.length) {
+                        $.each(includeValidations, (idx, item) => {
+                            if(item.IsError()) {
+                                isError = true;
+                            }
+                            return !isError;
+                        });
+                    }
                     return isError;
                 })
             };

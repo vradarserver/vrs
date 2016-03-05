@@ -15,8 +15,8 @@ declare module VRS.WebAdmin
 
     interface IValidation_KC
     {
-        IsValid:    KnockoutComputed<boolean>;
-        IsWarning:  KnockoutComputed<boolean>;
-        IsError:    KnockoutComputed<boolean>;
+        IsValid:    () => boolean;
+        IsWarning:  () => boolean;
+        IsError:    () => boolean;
     }
 } 

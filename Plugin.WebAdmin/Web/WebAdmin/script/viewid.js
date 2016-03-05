@@ -200,6 +200,10 @@ var VRS;
                 return result;
             };
             ViewId.prototype.createArrayWrapupValidation = function (array, getWrapUp) {
+                var includeValidations = [];
+                for (var _i = 2; _i < arguments.length; _i++) {
+                    includeValidations[_i - 2] = arguments[_i];
+                }
                 var result = {
                     IsValid: ko.computed(function () {
                         var isValid = true;
@@ -210,6 +214,14 @@ var VRS;
                             }
                             return isValid;
                         });
+                        if (isValid && includeValidations.length) {
+                            $.each(includeValidations, function (idx, item) {
+                                if (!item.IsValid()) {
+                                    isValid = false;
+                                }
+                                return isValid;
+                            });
+                        }
                         return isValid;
                     }),
                     IsWarning: ko.computed(function () {
@@ -221,6 +233,14 @@ var VRS;
                             }
                             return !isWarning;
                         });
+                        if (!isWarning && includeValidations.length) {
+                            $.each(includeValidations, function (idx, item) {
+                                if (item.IsWarning()) {
+                                    isWarning = true;
+                                }
+                                return !isWarning;
+                            });
+                        }
                         return isWarning;
                     }),
                     IsError: ko.computed(function () {
@@ -232,6 +252,14 @@ var VRS;
                             }
                             return !isError;
                         });
+                        if (!isError && includeValidations.length) {
+                            $.each(includeValidations, function (idx, item) {
+                                if (item.IsError()) {
+                                    isError = true;
+                                }
+                                return !isError;
+                            });
+                        }
                         return isError;
                     })
                 };
@@ -260,4 +288,3 @@ var VRS;
         WebAdmin.ViewId = ViewId;
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=viewid.js.map

@@ -47,4 +47,3 @@ var VRS;
         })(Queues = WebAdmin.Queues || (WebAdmin.Queues = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=Queues.js.map

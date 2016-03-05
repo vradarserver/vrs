@@ -489,7 +489,7 @@ var VRS;
                             });
                             this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, function (r) { return r.WrapUpValidation; });
                             this._Model.RebroadcastServerWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.RebroadcastSettings, function (r) { return r.WrapUpValidation; });
-                            this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, function (r) { return r.WrapUpValidation; });
+                            this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, function (r) { return r.WrapUpValidation; }, this._Model.GoogleMapSettings.WebSiteReceiverIdValidation, this._Model.GoogleMapSettings.ClosestAircraftReceiverIdValidation, this._Model.GoogleMapSettings.FlightSimulatorXReceiverIdValidation);
                             this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, function (r) { return r.WrapUpValidation; });
                             this._Model.UserWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Users, function (r) { return r.WrapUpValidation; });
                             this._Model.Feeds = ko.observableArray([]);
@@ -509,4 +509,3 @@ var VRS;
         })(Settings = WebAdmin.Settings || (WebAdmin.Settings = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=Settings.js.map
