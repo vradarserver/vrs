@@ -730,7 +730,13 @@
 
                     this._Model.MergedFeedWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.MergedFeeds, (r) => (<MergedFeedModel>r).WrapUpValidation);
                     this._Model.RebroadcastServerWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.RebroadcastSettings, (r) => (<RebroadcastServerModel>r).WrapUpValidation);
-                    this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Receivers, (r) => (<ReceiverModel>r).WrapUpValidation);
+                    this._Model.ReceiverWrapUpValidation = this._ViewId.createArrayWrapupValidation(
+                        this._Model.Receivers,
+                        (r) => (<ReceiverModel>r).WrapUpValidation,
+                        this._Model.GoogleMapSettings.WebSiteReceiverIdValidation,
+                        this._Model.GoogleMapSettings.ClosestAircraftReceiverIdValidation,
+                        this._Model.GoogleMapSettings.FlightSimulatorXReceiverIdValidation
+                    );
                     this._Model.ReceiverLocationWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.ReceiverLocations, (r) => (<ReceiverLocationModel>r).WrapUpValidation);
                     this._Model.UserWrapUpValidation = this._ViewId.createArrayWrapupValidation(this._Model.Users, (r) => (<UserModel>r).WrapUpValidation);
 
