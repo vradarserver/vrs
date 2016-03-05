@@ -207,13 +207,15 @@ var VRS;
                 var result = {
                     IsValid: ko.computed(function () {
                         var isValid = true;
-                        $.each(array(), function (idx, item) {
-                            var wrapUp = getWrapUp(item);
-                            if (!wrapUp.IsValid()) {
-                                isValid = false;
-                            }
-                            return isValid;
-                        });
+                        if (array) {
+                            $.each(array(), function (idx, item) {
+                                var wrapUp = getWrapUp(item);
+                                if (!wrapUp.IsValid()) {
+                                    isValid = false;
+                                }
+                                return isValid;
+                            });
+                        }
                         if (isValid && includeValidations.length) {
                             $.each(includeValidations, function (idx, item) {
                                 if (!item.IsValid()) {
@@ -226,13 +228,15 @@ var VRS;
                     }),
                     IsWarning: ko.computed(function () {
                         var isWarning = false;
-                        $.each(array(), function (idx, item) {
-                            var wrapUp = getWrapUp(item);
-                            if (wrapUp.IsWarning()) {
-                                isWarning = true;
-                            }
-                            return !isWarning;
-                        });
+                        if (array) {
+                            $.each(array(), function (idx, item) {
+                                var wrapUp = getWrapUp(item);
+                                if (wrapUp.IsWarning()) {
+                                    isWarning = true;
+                                }
+                                return !isWarning;
+                            });
+                        }
                         if (!isWarning && includeValidations.length) {
                             $.each(includeValidations, function (idx, item) {
                                 if (item.IsWarning()) {
@@ -245,13 +249,15 @@ var VRS;
                     }),
                     IsError: ko.computed(function () {
                         var isError = false;
-                        $.each(array(), function (idx, item) {
-                            var wrapUp = getWrapUp(item);
-                            if (wrapUp.IsError()) {
-                                isError = true;
-                            }
-                            return !isError;
-                        });
+                        if (array) {
+                            $.each(array(), function (idx, item) {
+                                var wrapUp = getWrapUp(item);
+                                if (wrapUp.IsError()) {
+                                    isError = true;
+                                }
+                                return !isError;
+                            });
+                        }
                         if (!isError && includeValidations.length) {
                             $.each(includeValidations, function (idx, item) {
                                 if (item.IsError()) {

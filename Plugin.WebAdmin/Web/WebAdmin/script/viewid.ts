@@ -233,19 +233,22 @@
 
         /**
          * Creates a wrap-up validation field that reports on the state of every element in an array that contains other wrap-up fields.
+         * Can optionally also include an open list of standalone validation fields.
          */
         createArrayWrapupValidation<T>(array: KnockoutObservableArray<T>, getWrapUp: (item: T) => IValidation_KC, ...includeValidations: IValidation_KC[]) : IValidation_KC
         {
             var result = {
                 IsValid: ko.computed(() => {
                     var isValid = true;
-                    $.each(array(), (idx, item) => {
-                        var wrapUp = getWrapUp(item);
-                        if(!wrapUp.IsValid()) {
-                            isValid = false;
-                        }
-                        return isValid;
-                    });
+                    if(array) {
+                        $.each(array(), (idx, item) => {
+                            var wrapUp = getWrapUp(item);
+                            if(!wrapUp.IsValid()) {
+                                isValid = false;
+                            }
+                            return isValid;
+                        });
+                    }
                     if(isValid && includeValidations.length) {
                         $.each(includeValidations, (idx, item) => {
                             if(!item.IsValid()) {
@@ -259,13 +262,15 @@
 
                 IsWarning: ko.computed(() => {
                     var isWarning = false;
-                    $.each(array(), (idx, item) => {
-                        var wrapUp = getWrapUp(item);
-                        if(wrapUp.IsWarning()) {
-                            isWarning = true;
-                        }
-                        return !isWarning;
-                    });
+                    if(array) {
+                        $.each(array(), (idx, item) => {
+                            var wrapUp = getWrapUp(item);
+                            if(wrapUp.IsWarning()) {
+                                isWarning = true;
+                            }
+                            return !isWarning;
+                        });
+                    }
                     if(!isWarning && includeValidations.length) {
                         $.each(includeValidations, (idx, item) => {
                             if(item.IsWarning()) {
@@ -279,13 +284,15 @@
 
                 IsError: ko.computed(() => {
                     var isError = false;
-                    $.each(array(), (idx, item) => {
-                        var wrapUp = getWrapUp(item);
-                        if(wrapUp.IsError()) {
-                            isError = true;
-                        }
-                        return !isError;
-                    });
+                    if(array) {
+                        $.each(array(), (idx, item) => {
+                            var wrapUp = getWrapUp(item);
+                            if(wrapUp.IsError()) {
+                                isError = true;
+                            }
+                            return !isError;
+                        });
+                    }
                     if(!isError && includeValidations.length) {
                         $.each(includeValidations, (idx, item) => {
                             if(item.IsError()) {
