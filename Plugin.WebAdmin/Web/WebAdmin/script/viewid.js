@@ -292,3 +292,4 @@ var VRS;
         WebAdmin.ViewId = ViewId;
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
+//# sourceMappingURL=viewid.js.map

@@ -51,3 +51,4 @@ var VRS;
         })(Log = WebAdmin.Log || (WebAdmin.Log = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
+//# sourceMappingURL=Log.js.map

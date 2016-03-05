@@ -95,3 +95,4 @@ var VRS;
         })(Statistics = WebAdmin.Statistics || (WebAdmin.Statistics = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
+//# sourceMappingURL=Statistics.js.map

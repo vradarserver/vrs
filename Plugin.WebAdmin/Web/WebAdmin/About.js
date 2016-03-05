@@ -42,3 +42,4 @@ var VRS;
         })(About = WebAdmin.About || (WebAdmin.About = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
+//# sourceMappingURL=About.js.map
