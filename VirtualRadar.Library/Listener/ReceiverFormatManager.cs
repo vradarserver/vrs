@@ -62,6 +62,7 @@ namespace VirtualRadar.Library.Listener
                 RegisterProvider(new CompressedReceiverProvider());
                 RegisterProvider(new Port30003ReceiverProvider());
                 RegisterProvider(new Sbs3ReceiverProvider());
+                RegisterProvider(new PlaneFinderReceiverProvider());
             }
         }
 

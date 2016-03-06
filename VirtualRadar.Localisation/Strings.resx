@@ -2653,4 +2653,8 @@ Show this message.</value>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="PlaneFinder" xml:space="preserve">
+    <value>PlaneFinder</value>
+    <comment>PlaneFinder is the name of a web site and a receiver manufacturer</comment>
+  </data>
 </root>
