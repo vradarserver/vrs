@@ -286,7 +286,13 @@ namespace VirtualRadar.WebServer
             get
             {
                 var ipAddresses = Provider.GetHostAddresses();
-                var result = ipAddresses == null || ipAddresses.Length == 0 ? null : ipAddresses.Where(a => a.AddressFamily == AddressFamily.InterNetwork).FirstOrDefault();
+                var result = ipAddresses == null || ipAddresses.Length == 0 ? null : ipAddresses.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+                if(result != null && IPAddressHelper.IsLinkLocal(result)) {
+                    var alternate = ipAddresses.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork && !IPAddressHelper.IsLinkLocal(a));
+                    if(alternate != null) {
+                        result = alternate;
+                    }
+                }
                 return result == null ? null : result.ToString();
             }
         }
