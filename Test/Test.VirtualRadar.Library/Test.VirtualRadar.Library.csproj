@@ -85,6 +85,7 @@
     <Compile Include="Listener\MergedFeedComponentListenerTests.cs" />
     <Compile Include="Listener\MergedFeedListenerTests.cs" />
     <Compile Include="Listener\MockMessageBytesExtractor.cs" />
+    <Compile Include="Listener\PlaneFinderMessageBytesExtractorTests.cs" />
     <Compile Include="Network\MockConnector.cs" />
     <Compile Include="Listener\PolarPlotterTests.cs" />
     <Compile Include="Listener\Port30003MessageBytesExtractorTests.cs" />

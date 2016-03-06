@@ -99,6 +99,8 @@
     <Compile Include="Listener\BeastReceiverProvider.cs" />
     <Compile Include="Listener\AircraftListJsonReceiverProvider.cs" />
     <Compile Include="Listener\MergedFeedComponentListener.cs" />
+    <Compile Include="Listener\PlaneFinderMessageBytesExtractor.cs" />
+    <Compile Include="Listener\PlaneFinderReceiverProvider.cs" />
     <Compile Include="Listener\Port30003ReceiverProvider.cs" />
     <Compile Include="Listener\CompressedReceiverProvider.cs" />
     <Compile Include="Listener\ReceiverFormatManager.cs" />

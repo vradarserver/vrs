@@ -4626,6 +4626,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PlaneFinder.
+        /// </summary>
+        public static string PlaneFinder {
+            get {
+                return ResourceManager.GetString("PlaneFinder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please configure at least one receiver..
         /// </summary>
         public static string PleaseConfigureAtLeastOneReceiver {
