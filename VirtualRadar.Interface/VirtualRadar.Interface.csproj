@@ -111,6 +111,7 @@
     <Compile Include="CollectionHelper.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
+    <Compile Include="IPAddressHelper.cs" />
     <Compile Include="Listener\IPlaneFinderMessageBytesExtractor.cs" />
     <Compile Include="Listener\IReceiverFormatManager.cs" />
     <Compile Include="Listener\IReceiverFormatProvider.cs" />
