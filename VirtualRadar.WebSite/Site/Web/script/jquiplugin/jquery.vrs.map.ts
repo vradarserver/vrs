@@ -1353,7 +1353,7 @@ namespace VRS
         return $.extend({
             // Google Map load options - THESE ONLY HAVE ANY EFFECT ON THE FIRST MAP LOADED ON A PAGE
             key:                null,                                   // If supplied then the Google Maps script is loaded with this API key. API keys are optional for v3 of Google Maps.
-            version:            '3.22',                                 // The version of Google Maps to load.
+            version:            '3.23',                                 // The version of Google Maps to load.
             sensor:             false,                                  // True if the location-aware stuff is to be turned on.
             libraries:          [],                                     // The optional libraries to load.
             loadMarkerWithLabel:false,                                  // Loads the marker-with-labels library after loading Google Maps. Has no effect with other map providers.
