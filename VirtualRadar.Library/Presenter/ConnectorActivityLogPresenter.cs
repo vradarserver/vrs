@@ -104,7 +104,9 @@ namespace VirtualRadar.Library.Presenter
                     Describe.ConnectorActivityType(activity.Type),
                     activity.Message
                 );
-                if(activity.Exception != null) line = String.Format("{0} || {1}", Describe.ExceptionSingleLineFull(activity.Exception.Exception));
+                if(activity.Exception != null) {
+                    line = String.Format("{0}{1}{2}", line, Environment.NewLine, Describe.ExceptionSingleLineFull(activity.Exception.Exception));
+                }
 
                 buffer.AppendLine(line);
             }
