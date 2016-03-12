@@ -355,7 +355,19 @@ namespace VirtualRadar.WinForms.Controls
         /// </summary>
         private void BrowseAddress()
         {
-            if(IsAddressValid) Process.Start(Address);
+            if(IsAddressValid) {
+                try {
+                    Process.Start(Address);
+                } catch(Exception ex) {
+                    try {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception when trying to start the default browser: {0}", ex.ToString());
+                    } catch {
+                    }
+
+                    MessageBox.Show(String.Format(Strings.CannotStartDefaultBrowser, ex.Message), Strings.CannotStartDefaultBrowserTitle);
+                }
+            }
         }
 
         /// <summary>

@@ -2657,4 +2657,10 @@ Show this message.</value>
     <value>PlaneFinder</value>
     <comment>PlaneFinder is the name of a web site and a receiver manufacturer</comment>
   </data>
+  <data name="CannotStartDefaultBrowser" xml:space="preserve">
+    <value>Could not start the default browser, do you have one registered? The exception was "{0}".</value>
+  </data>
+  <data name="CannotStartDefaultBrowserTitle" xml:space="preserve">
+    <value>Cannot Start Default Browser</value>
+  </data>
 </root>

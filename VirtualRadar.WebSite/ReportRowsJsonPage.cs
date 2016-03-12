@@ -535,7 +535,7 @@ namespace VirtualRadar.WebSite
                 } catch(Exception ex) {
                     try {
                         var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                        log.WriteLine("Caught exception when fetching picture for {0}/{1} for a report: {2}", aircraft.ModeS, aircraft.Registration, ex);
+                        log.WriteLine("Caught exception when fetching picture for {0}/{1} for a report: {2}", aircraft.ModeS, aircraft.Registration, ex.ToString());
                     } catch {
                     }
                 }
