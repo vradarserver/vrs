@@ -738,6 +738,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not start the default browser, do you have one registered? The exception was &quot;{0}&quot;..
+        /// </summary>
+        public static string CannotStartDefaultBrowser {
+            get {
+                return ResourceManager.GetString("CannotStartDefaultBrowser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot Start Default Browser.
+        /// </summary>
+        public static string CannotStartDefaultBrowserTitle {
+            get {
+                return ResourceManager.GetString("CannotStartDefaultBrowserTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot start the web server on port {0}.
         /// </summary>
         public static string CannotStartWebServerFull {
