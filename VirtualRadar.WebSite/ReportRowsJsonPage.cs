@@ -525,11 +525,19 @@ namespace VirtualRadar.WebSite
             };
 
             if(!args.IsInternetRequest || _InternetClientCanSeePictures) {
-                var pictureDetails = _PictureManager.FindPicture(_PictureFolderCache, aircraft.ModeS, aircraft.Registration);
-                if(pictureDetails != null) {
-                    result.HasPicture = true;
-                    result.PictureWidth = pictureDetails.Width;
-                    result.PictureHeight = pictureDetails.Height;
+                try {
+                    var pictureDetails = _PictureManager.FindPicture(_PictureFolderCache, aircraft.ModeS, aircraft.Registration);
+                    if(pictureDetails != null) {
+                        result.HasPicture = true;
+                        result.PictureWidth = pictureDetails.Width;
+                        result.PictureHeight = pictureDetails.Height;
+                    }
+                } catch(Exception ex) {
+                    try {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception when fetching picture for {0}/{1} for a report: {2}", aircraft.ModeS, aircraft.Registration, ex);
+                    } catch {
+                    }
                 }
             }
 
