@@ -142,6 +142,33 @@ namespace VirtualRadar.Library
         /// </summary>
         public long AltitudeTypeChanged { get; set; }
 
+        private int? _CorrectedAltitude;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int? CorrectedAltitude { get { return _CorrectedAltitude; } set { if(value != _CorrectedAltitude) { _CorrectedAltitude = value; CorrectedAltitudeChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long CorrectedAltitudeChanged { get; private set; }
+
+        private float? _AirPressureInHg;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public float? AirPressureInHg { get { return _AirPressureInHg; } set { if(value != _AirPressureInHg) { _AirPressureInHg = value; AirPressureInHgChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long AirPressureInHgChanged { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime? AirPressureLookedUpUtc { get; set; }
+
         private int? _TargetAltitude;
         /// <summary>
         /// See interface docs.
@@ -716,11 +743,14 @@ namespace VirtualRadar.Library
             Aircraft result = new Aircraft();
 
             lock(this) {
+                result.AirPressureInHg = AirPressureInHg;
+                result.AirPressureLookedUpUtc = AirPressureLookedUpUtc;
                 result.Altitude = Altitude;
                 result.AltitudeType = AltitudeType;
                 result.Callsign = Callsign;
                 result.CallsignIsSuspect = CallsignIsSuspect;
                 result.ConstructionNumber = ConstructionNumber;
+                result.CorrectedAltitude = CorrectedAltitude;
                 result.CountMessagesReceived = CountMessagesReceived;
                 result.FirstCoordinateChanged = FirstCoordinateChanged;
                 result.LastCoordinateChanged = LastCoordinateChanged;
@@ -781,11 +811,13 @@ namespace VirtualRadar.Library
                     result.Stopovers.Add(stopover);
                 }
 
+                result.AirPressureInHgChanged = AirPressureInHgChanged;
                 result.AltitudeChanged = AltitudeChanged;
                 result.AltitudeTypeChanged = AltitudeTypeChanged;
                 result.CallsignChanged = CallsignChanged;
                 result.CallsignIsSuspectChanged = CallsignIsSuspectChanged;
                 result.ConstructionNumberChanged = ConstructionNumberChanged;
+                result.CorrectedAltitudeChanged = CorrectedAltitudeChanged;
                 result.CountMessagesReceivedChanged = CountMessagesReceivedChanged;
                 result.DestinationChanged = DestinationChanged;
                 result.EmergencyChanged = EmergencyChanged;

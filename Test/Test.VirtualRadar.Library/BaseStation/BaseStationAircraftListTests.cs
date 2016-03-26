@@ -71,6 +71,9 @@ namespace Test.VirtualRadar.Library.BaseStation
         private Mock<IAircraftSanityChecker> _SanityChecker;
         private Certainty _SaneAltitude;
         private Certainty _SanePosition;
+        private Mock<IAirPressureManager> _AirPressureManager;
+        private Mock<IAirPressureLookup> _AirPressureLookup;
+        private AirPressure _AirPressure;
 
         [TestInitialize]
         public void TestInitialise()
@@ -149,6 +152,12 @@ namespace Test.VirtualRadar.Library.BaseStation
             _SanityChecker.Setup(r => r.CheckPosition(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<double>(), It.IsAny<double>())).Returns((int id, DateTime date, double lat, double lng) => {
                 return _SanePosition;
             });
+
+            _AirPressure = new AirPressure();
+            _AirPressureLookup = TestUtilities.CreateMockInstance<IAirPressureLookup>();
+            _AirPressureLookup.Setup(r => r.FindClosest(It.IsAny<double>(), It.IsAny<double>())).Returns(_AirPressure);
+            _AirPressureManager = TestUtilities.CreateMockSingleton<IAirPressureManager>();
+            _AirPressureManager.SetupGet(r => r.Lookup).Returns(_AirPressureLookup.Object);
         }
 
         [TestCleanup]

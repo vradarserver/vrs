@@ -31,7 +31,7 @@
                             <!-- DATA SOURCES -->
                             <!---->
 
-                            <div data-bsu="collapsible-panel" data-bsu-options="" data-bind="with: $root.BaseStationSettings">
+                            <div data-bsu="collapsible-panel" data-bsu-options="expanded" data-bind="with: $root.BaseStationSettings">
                                 <div>
                                     ::OptionsDataSourcesSheetTitle::
                                     <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
@@ -69,6 +69,14 @@
                                             </label>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: DownloadGlobalAirPressureReadings" />
+                                                ::DownloadGlobalAirPressureReadings::
+                                            </label>
+                                        </div>
+                                    </div>
 
                                     <div class="form-section">
                                         ::AircraftDetailsOnlineLookup::
@@ -102,7 +110,7 @@
                             <!-- RECEIVERS -->
                             <!---->
 
-                            <div data-bsu="collapsible-panel" data-bsu-options="expanded">
+                            <div data-bsu="collapsible-panel" data-bsu-options="">
                                 <div>
                                     ::Receivers::
                                     <div class="pull-right" data-bsu="validate-icons" data-bsu-field="ReceiverWrapUpValidation"></div>

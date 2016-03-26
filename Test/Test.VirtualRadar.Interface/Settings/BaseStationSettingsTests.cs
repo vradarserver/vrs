@@ -61,13 +61,13 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.ComPort, null, "ABC");
             TestUtilities.TestProperty(settings, r => r.BaudRate, 115200, 2400);
             TestUtilities.TestProperty(settings, r => r.DataBits, 8, 7);
+            TestUtilities.TestProperty(settings, r => r.DownloadGlobalAirPressureReadings, true);
             TestUtilities.TestProperty(settings, r => r.StopBits, StopBits.One, StopBits.None);
             TestUtilities.TestProperty(settings, r => r.Parity, Parity.None, Parity.Odd);
             TestUtilities.TestProperty(settings, r => r.Handshake, Handshake.None, Handshake.XOnXOff);
             TestUtilities.TestProperty(settings, r => r.StartupText, "#43-02\\r", "anything");
             TestUtilities.TestProperty(settings, r => r.ShutdownText, "#43-00\\r", "anything");
             TestUtilities.TestProperty(settings, r => r.ConnectionType, ConnectionType.TCP, ConnectionType.COM);
-            TestUtilities.TestProperty(settings, r => r.DataSource, DataSource.Port30003, DataSource.Sbs3);
             TestUtilities.TestProperty(settings, r => r.DatabaseFileName, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Kinetic\BaseStation\BaseStation.sqb").ToUpperInvariant(), "Zz", true);
             TestUtilities.TestProperty(settings, r => r.OperatorFlagsFolder, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Kinetic\BaseStation\OperatorFlags").ToUpperInvariant(), "Zz", true);
             TestUtilities.TestProperty(settings, r => r.SilhouettesFolder, null, "Ab");
@@ -91,7 +91,6 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(_Implementation, r => r.Address, "127.0.0.1", "Ab");
             TestUtilities.TestProperty(_Implementation, r => r.ConnectionType, ConnectionType.TCP, ConnectionType.COM);
             TestUtilities.TestProperty(_Implementation, r => r.Port, 30003, 65535);
-            TestUtilities.TestProperty(_Implementation, r => r.DataSource, DataSource.Port30003, DataSource.Sbs3);
             TestUtilities.TestProperty(_Implementation, r => r.DatabaseFileName, null, "Zz", true);
             TestUtilities.TestProperty(_Implementation, r => r.OperatorFlagsFolder, null, "Zz", true);
             TestUtilities.TestProperty(_Implementation, r => r.SilhouettesFolder, null, "Ab");

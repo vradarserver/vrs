@@ -209,6 +209,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(3600, readBack.BaseStationSettings.TrackingTimeoutSeconds);
                         Assert.AreEqual(true, readBack.BaseStationSettings.MinimiseToSystemTray);
                         Assert.AreEqual(true, readBack.BaseStationSettings.SearchPictureSubFolders);
+                        Assert.AreEqual(false, readBack.BaseStationSettings.DownloadGlobalAirPressureReadings);
                         break;
                     case "FlightRouteSettings":
                         Assert.AreEqual(true, readBack.FlightRouteSettings.AutoUpdateEnabled);
@@ -481,6 +482,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                         MinimiseToSystemTray = true,
                                                         SearchPictureSubFolders = true,
                                                         AutoSavePolarPlotsMinutes = 100,
+                                                        DownloadGlobalAirPressureReadings = false,
                                                     }; break;
                     case "FlightRouteSettings":     result.FlightRouteSettings = new FlightRouteSettings() {
                                                         AutoUpdateEnabled = true,

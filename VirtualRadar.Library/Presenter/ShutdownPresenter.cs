@@ -74,6 +74,7 @@ namespace VirtualRadar.Library.Presenter
             };
 
             isolatedShutdown("ShutdownAircraftOnlineLookupManager", ShutdownAircraftOnlineLookupManager);  // Do this first so if the database writer was caching it won't temporarily fall back to the standalone cache during rest of shutdown
+            isolatedShutdown("ShutdownAirPressureManager",          ShutdownAirPressureManager);
             isolatedShutdown("ShutdownPlugins",                     ShutdownPlugins);
             isolatedShutdown("ShutdownConnectionLogger",            ShutdownConnectionLogger);
             isolatedShutdown("ShutdownUPnpManager",                 ShutdownUPnpManager);
@@ -90,6 +91,12 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.ShuttingDownOnlineLookupManager);
             Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton.Dispose();
+        }
+
+        private void ShutdownAirPressureManager()
+        {
+            _View.ReportProgress(Strings.ShuttingDownAirPressureManager);
+            Factory.Singleton.Resolve<IAirPressureManager>().Singleton.Stop();
         }
 
         private void ShutdownRebroadcastServers()

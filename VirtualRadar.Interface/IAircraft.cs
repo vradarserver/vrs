@@ -109,6 +109,34 @@ namespace VirtualRadar.Interface
         long AltitudeTypeChanged { get; set; }
 
         /// <summary>
+        /// Gets or sets the corrected altitude, assuming that <see cref="Altitude"/> is a pressure altitude. This
+        /// should always be the same as <see cref="Altitude"/> if the air pressure download is switched off, or the
+        /// server is unreachable.
+        /// </summary>
+        int? CorrectedAltitude { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="CorrectedAltitude"/> was last changed.
+        /// </summary>
+        long CorrectedAltitudeChanged { get; }
+
+        /// <summary>
+        /// Gets or sets the pressure setting that <see cref="CorrectedAltitude"/> was based on. This will be null
+        /// if air pressure downloads are switched off or the server is unavailable.
+        /// </summary>
+        float? AirPressureInHg { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="AirPressureInHg"/> was last changed.
+        /// </summary>
+        long AirPressureInHgChanged { get; }
+
+        /// <summary>
+        /// Gets or sets the time that the air pressure setting was looked up.
+        /// </summary>
+        DateTime? AirPressureLookedUpUtc { get; set; }
+
+        /// <summary>
         /// Gets or sets the altitude (in feet) that the aircraft's autopilot / FMS etc. is set to.
         /// </summary>
         int? TargetAltitude { get; set; }

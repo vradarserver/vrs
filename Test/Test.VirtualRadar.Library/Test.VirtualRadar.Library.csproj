@@ -63,6 +63,7 @@
     <Compile Include="AircraftOnlineLookupTests.cs" />
     <Compile Include="AircraftSanityCheckerTests.cs" />
     <Compile Include="AircraftTests.cs" />
+    <Compile Include="AirPressureLookupTests.cs" />
     <Compile Include="AssemblyInitialise.cs" />
     <Compile Include="AudioTests.cs" />
     <Compile Include="AutoConfigPictureFolderCacheTests.cs" />

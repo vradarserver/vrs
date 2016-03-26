@@ -69,6 +69,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IStandaloneAircraftOnlineLookupCache> _StandaloneAircraftOnlineLookupCache;
         private Mock<IAircraftOnlineLookupLog> _AircraftOnlineLookupLog;
         private Mock<IUser> _User;
+        private Mock<IAirPressureManager> _AirPressureManager;
 
         private EventRecorder<EventArgs<Exception>> _BackgroundExceptionEvent;
 
@@ -108,6 +109,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _StandaloneAircraftOnlineLookupCache = TestUtilities.CreateMockImplementation<IStandaloneAircraftOnlineLookupCache>();
             _AircraftOnlineLookupLog = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupLog>();
             _User = TestUtilities.CreateMockImplementation<IUser>();
+            _AirPressureManager = TestUtilities.CreateMockSingleton<IAirPressureManager>();
 
             _BackgroundExceptionEvent = new EventRecorder<EventArgs<Exception>>();
 
@@ -734,6 +736,23 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.StartApplication();
 
             _BackgroundDataDownloader.Verify(b => b.Start(), Times.Once());
+        }
+        #endregion
+
+        #region AirPressureManager
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Initialises_AirPressureManager()
+        {
+            string currentSection = null;
+            _View.Setup(v => v.ReportProgress(It.IsAny<string>())).Callback((string section) => { currentSection = section; });
+            _AirPressureManager.Setup(m => m.Start()).Callback(() => {
+                Assert.AreEqual(Strings.SplashScreenInitialisingAirPressureManager, currentSection);
+            });
+
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _AirPressureManager.Verify(r => r.Start(), Times.Once());
         }
         #endregion
 

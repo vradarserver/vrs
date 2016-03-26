@@ -182,6 +182,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AutoSavePolarPlotsMinutes: number;
         AutoSavePolarPlotsMinutesValidation: VirtualRadar.Interface.View.IValidationModelField;
         LookupAircraftDetailsOnline: boolean;
+        DownloadGlobalAirPressureReadings: boolean;
     }
     interface IFlightRouteSettingsModel {
         AutoUpdateEnabled: boolean;
@@ -633,6 +634,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
         AutoSavePolarPlotsMinutesValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         LookupAircraftDetailsOnline: KnockoutObservable<boolean>;
+        DownloadGlobalAirPressureReadings: KnockoutObservable<boolean>;
     }
     interface IFlightRouteSettingsModel_KO {
         AutoUpdateEnabled: KnockoutObservable<boolean>;
