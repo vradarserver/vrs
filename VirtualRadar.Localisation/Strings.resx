@@ -2654,7 +2654,7 @@ Show this message.</value>
     <value>Error</value>
   </data>
   <data name="PlaneFinder" xml:space="preserve">
-    <value>PlaneFinder</value>
+    <value>Plane Finder Radar</value>
     <comment>PlaneFinder is the name of a web site and a receiver manufacturer</comment>
   </data>
   <data name="CannotStartDefaultBrowser" xml:space="preserve">
