@@ -482,8 +482,8 @@
     <value>Geometric</value>
   </data>
   <data name="GeometricAltitudeIndicator" xml:space="preserve">
-    <value>GPS</value>
-    <comment>A ** SHORT ** indication that the reported altitude is geometric (i.e. usually coming from a GPS unit) as opposed to barometric (i.e. coming off one or more pressure sensors).</comment>
+    <value>amsl</value>
+    <comment>A ** SHORT ** indication that the reported altitude is geometric as opposed to barometric. AMSL is above mean sea level</comment>
   </data>
   <data name="GoogleMapsCouldNotBeLoaded" xml:space="preserve">
     <value>Google Maps could not be loaded</value>
@@ -1785,5 +1785,20 @@
   </data>
   <data name="Pressures" xml:space="preserve">
     <value>Pressures</value>
+  </data>
+  <data name="GeometricAltitude" xml:space="preserve">
+    <value>Altitude (AMSL)</value>
+  </data>
+  <data name="ListGeometricAltitude" xml:space="preserve">
+    <value>Altitude (AMSL)</value>
+  </data>
+  <data name="ListPressureAltitude" xml:space="preserve">
+    <value>Altitude (ISA)</value>
+  </data>
+  <data name="PressureAltitude" xml:space="preserve">
+    <value>Altitude (Pressure)</value>
+  </data>
+  <data name="UsePressureAltitude" xml:space="preserve">
+    <value>Use pressure altitude</value>
   </data>
 </root>

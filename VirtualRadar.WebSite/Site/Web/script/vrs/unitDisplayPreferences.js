@@ -15,6 +15,7 @@ var VRS;
     VRS.globalOptions.unitDisplayVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType !== undefined ? VRS.globalOptions.unitDisplayVerticalSpeedType : false;
     VRS.globalOptions.unitDisplaySpeedType = VRS.globalOptions.unitDisplaySpeedType !== undefined ? VRS.globalOptions.unitDisplaySpeedType : true;
     VRS.globalOptions.unitDisplayTrackType = VRS.globalOptions.unitDisplayTrackType !== undefined ? VRS.globalOptions.unitDisplayTrackType : false;
+    VRS.globalOptions.unitDisplayUsePressureAltitude = VRS.globalOptions.unitDisplayUsePressureAltitude !== undefined ? VRS.globalOptions.unitDisplayUsePressureAltitude : true;
     var UnitDisplayPreferences = (function () {
         function UnitDisplayPreferences(name) {
             var _this = this;
@@ -34,7 +35,8 @@ var VRS;
                 showAltitudeTypeChanged: 'showAltTypeChanged',
                 showVerticalSpeedTypeChanged: 'showVsiTypeChanged',
                 showSpeedTypeChanged: 'showSpeedTypeChanged',
-                showTrackTypeChanged: 'showTrackTypeChanged'
+                showTrackTypeChanged: 'showTrackTypeChanged',
+                usePressureAltitudeChanged: 'usePressureAltitudeChanged'
             };
             this.getName = function () {
                 return _this._Name;
@@ -129,6 +131,16 @@ var VRS;
                     _this._Dispatcher.raise(_this._Events.unitChanged, [VRS.DisplayUnitDependency.Angle]);
                 }
             };
+            this.getUsePressureAltitude = function () {
+                return _this._UsePressureAltitude;
+            };
+            this.setUsePressureAltitude = function (value) {
+                if (_this._UsePressureAltitude !== value) {
+                    _this._UsePressureAltitude = value;
+                    _this._Dispatcher.raise(_this._Events.usePressureAltitudeChanged);
+                    _this._Dispatcher.raise(_this._Events.unitChanged, [VRS.DisplayUnitDependency.Height]);
+                }
+            };
             this.getFlightLevelTransitionAltitude = function () {
                 return _this._FlightLevelTransitionAltitude;
             };
@@ -195,6 +207,9 @@ var VRS;
             this.hookFlightLevelHeightUnitChanged = function (callback, forceThis) {
                 return _this._Dispatcher.hook(_this._Events.flHeightUnitChanged, callback, forceThis);
             };
+            this.hookUsePressureAltitudeChanged = function (callback, forceThis) {
+                return _this._Dispatcher.hook(_this._Events.usePressureAltitudeChanged, callback, forceThis);
+            };
             this.hookUnitChanged = function (callback, forceThis) {
                 return _this._Dispatcher.hook(_this._Events.unitChanged, callback, forceThis);
             };
@@ -246,6 +261,13 @@ var VRS;
                         labelKey: 'ShowTrackType',
                         getValue: _this.getShowTrackType,
                         setValue: _this.setShowTrackType,
+                        saveState: _this.saveState
+                    }));
+                    pane.addField(new VRS.OptionFieldCheckBox({
+                        name: 'usePressureAltitude',
+                        labelKey: 'UsePressureAltitude',
+                        getValue: _this.getUsePressureAltitude,
+                        setValue: _this.setUsePressureAltitude,
                         saveState: _this.saveState
                     }));
                     pane.addField(new VRS.OptionFieldComboBox({
@@ -331,6 +353,7 @@ var VRS;
                 _this.setShowVerticalSpeedType(settings.showVsiType);
                 _this.setShowSpeedType(settings.showSpeedType);
                 _this.setShowTrackType(settings.showTrackType);
+                _this.setUsePressureAltitude(settings.usePressureAltitude);
             };
             this.loadAndApplyState = function () {
                 _this.applyState(_this.loadState());
@@ -351,7 +374,8 @@ var VRS;
                     showAltType: _this.getShowAltitudeType(),
                     showVsiType: _this.getShowVerticalSpeedType(),
                     showSpeedType: _this.getShowSpeedType(),
-                    showTrackType: _this.getShowTrackType()
+                    showTrackType: _this.getShowTrackType(),
+                    usePressureAltitude: _this.getUsePressureAltitude()
                 };
             };
             this._Name = name || 'vrsUnitDisplayPreferences';
@@ -364,6 +388,7 @@ var VRS;
             this._ShowVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType;
             this._ShowSpeedType = VRS.globalOptions.unitDisplaySpeedType;
             this._ShowTrackType = VRS.globalOptions.unitDisplayTrackType;
+            this._UsePressureAltitude = VRS.globalOptions.unitDisplayUsePressureAltitude;
             this._FlightLevelTransitionAltitude = VRS.globalOptions.unitDisplayFLTransitionAltitude;
             this._FlightLevelTransitionHeightUnit = VRS.globalOptions.unitDisplayFLTransitionHeightUnit;
             this._FlightLevelHeightUnit = VRS.globalOptions.unitDisplayFLHeightUnit;

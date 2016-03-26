@@ -295,5 +295,6 @@
         unitDisplayVerticalSpeedType?: boolean;
         unitDisplaySpeedType?: boolean;
         unitDisplayTrackType?: boolean;
+        unitDisplayUsePressureAltitude?: boolean;
     }
 }

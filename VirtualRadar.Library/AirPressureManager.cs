@@ -167,7 +167,11 @@ namespace VirtualRadar.Library
             AirPressure[] airPressures = null;
             try {
                 airPressures = Downloader.Fetch();
-                _LastSuccessfulDownloadUtc = _Clock.UtcNow;
+                if(airPressures.Length == 0) {
+                    airPressures = null;
+                } else {
+                    _LastSuccessfulDownloadUtc = _Clock.UtcNow;
+                }
             } catch(System.Net.WebException) {
                 airPressures = null;
             }

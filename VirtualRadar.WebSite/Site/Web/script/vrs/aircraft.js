@@ -475,6 +475,12 @@ var VRS;
                 addAirportCode(this.to.getAirportCode());
             return result;
         };
+        Aircraft.prototype.getMixedAltitude = function (usePressureAltitude) {
+            return usePressureAltitude ? this.altitude.val : this.geometricAltitude.val;
+        };
+        Aircraft.prototype.hasMixedAltitudeChanged = function (usePressureAltitude) {
+            return usePressureAltitude ? this.altitude.chg : this.geometricAltitude.chg;
+        };
         Aircraft.prototype.isAircraftSpecies = function () {
             return this.species.val !== VRS.Species.GroundVehicle && this.species.val !== VRS.Species.Tower;
         };
@@ -486,14 +492,13 @@ var VRS;
             return result;
         };
         Aircraft.prototype.convertAltitude = function (toUnit) {
-            var result = this.altitude.val;
-            if (result !== undefined && toUnit !== VRS.Height.Feet) {
-                result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, toUnit);
-            }
-            return result;
+            return this.convertMixedAltitude(true, toUnit);
         };
         Aircraft.prototype.convertGeometricAltitude = function (toUnit) {
-            var result = this.geometricAltitude.val;
+            return this.convertMixedAltitude(false, toUnit);
+        };
+        Aircraft.prototype.convertMixedAltitude = function (usePressureAltitude, toUnit) {
+            var result = usePressureAltitude ? this.altitude.val : this.geometricAltitude.val;
             if (result !== undefined && toUnit !== VRS.Height.Feet) {
                 result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, toUnit);
             }
@@ -533,7 +538,15 @@ var VRS;
             return VRS.format.airportDataThumbnails(this.airportDataThumbnails.val, showLinkToSite);
         };
         Aircraft.prototype.formatAltitude = function (heightUnit, distinguishOnGround, showUnits, showType) {
-            return VRS.format.altitude(this.altitude.val, this.altitudeType.val, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
+            return VRS.format.altitude(this.altitude.val, VRS.AltitudeType.Barometric, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
+        };
+        Aircraft.prototype.formatGeometricAltitude = function (heightUnit, distinguishOnGround, showUnits, showType) {
+            return VRS.format.altitude(this.geometricAltitude.val, VRS.AltitudeType.Geometric, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
+        };
+        Aircraft.prototype.formatMixedAltitude = function (usePressureAltitude, heightUnit, distinguishOnGround, showUnits, showType) {
+            var value = usePressureAltitude ? this.altitude.val : this.geometricAltitude.val;
+            var valueType = usePressureAltitude ? VRS.AltitudeType.Barometric : VRS.AltitudeType.Geometric;
+            return VRS.format.altitude(value, valueType, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
         };
         Aircraft.prototype.formatAltitudeType = function () {
             return VRS.format.altitudeType(this.altitudeType.val);
@@ -569,7 +582,7 @@ var VRS;
             return VRS.format.engines(this.countEngines.val, this.engineType.val);
         };
         Aircraft.prototype.formatFlightLevel = function (transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType) {
-            return VRS.format.flightLevel(this.altitude.val, this.altitudeType.val, this.isOnGround.val, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType);
+            return VRS.format.flightLevel(this.altitude.val, this.geometricAltitude.val, this.altitudeType.val, this.isOnGround.val, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType);
         };
         Aircraft.prototype.formatHeading = function (showUnit, showType) {
             return VRS.format.heading(this.heading.val, this.headingIsTrue.val, showUnit, showType);

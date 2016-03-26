@@ -82,6 +82,16 @@ namespace VirtualRadar.Library.BaseStation
         private const long TicksPerSecond = 10000000L;
 
         /// <summary>
+        /// The number of seconds to wait before retrying a failed air pressure lookup.
+        /// </summary>
+        private const int SecondsBeforeRetryAirPressureLookup = 5;
+
+        /// <summary>
+        /// The number of seconds to wait before refreshing a successful air pressure lookup.
+        /// </summary>
+        private const int SecondsBeforeRefreshAirPressureLookup = 120;
+
+        /// <summary>
         /// The object that abstracts away the clock for us.
         /// </summary>
         private IClock _Clock;
@@ -526,6 +536,7 @@ namespace VirtualRadar.Library.BaseStation
                     aircraft.PositionIsMlat = message.IsMlat || isOutOfBand;
 
                     aircraft.UpdateCoordinates(now, _ShortTrailLengthSeconds);
+                    RefreshAircraftAirPressure(aircraft, now);
                 }
 
                 if(!isOutOfBand || isNewAircraft) {                 // new aircraft should never be out-of-band, but if they are then we need to treat them normally
@@ -561,7 +572,6 @@ namespace VirtualRadar.Library.BaseStation
 
                     if(message.Altitude != null) {
                         aircraft.Altitude = message.Altitude;
-                        RefreshAircraftAirPressure(aircraft, now);
                         switch(aircraft.AltitudeType) {
                             case AltitudeType.Barometric:
                                 if(aircraft.AirPressureInHg == null) {
@@ -639,7 +649,8 @@ namespace VirtualRadar.Library.BaseStation
         private void RefreshAircraftAirPressure(IAircraft aircraft, DateTime now)
         {
             if(aircraft.Latitude != null && aircraft.Longitude != null) {
-                var thresholdSeconds = aircraft.AirPressureInHg == null ? 5 : 5 * 60;
+                var thresholdSeconds = aircraft.AirPressureInHg == null ? SecondsBeforeRetryAirPressureLookup
+                                                                        : SecondsBeforeRefreshAirPressureLookup;
                 if(aircraft.AirPressureLookedUpUtc == null || aircraft.AirPressureLookedUpUtc.Value.AddSeconds(thresholdSeconds) <= now) {
                     aircraft.AirPressureLookedUpUtc = now;
                     var airPressure = _AirPressureManager.Lookup.FindClosest(aircraft.Latitude.Value, aircraft.Longitude.Value);

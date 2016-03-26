@@ -27,17 +27,17 @@ var VRS;
             this.GetStringCallback = settings.getStringCallback;
             this.CompareCallback = settings.compareCallback;
         }
-        AircraftListSortHandler.prototype.compareNumericValues = function (lhs, rhs) {
-            var lhsValue = this.GetNumberCallback(lhs);
-            var rhsValue = this.GetNumberCallback(rhs);
+        AircraftListSortHandler.prototype.compareNumericValues = function (lhs, rhs, unitDisplayPreferences) {
+            var lhsValue = this.GetNumberCallback(lhs, unitDisplayPreferences);
+            var rhsValue = this.GetNumberCallback(rhs, unitDisplayPreferences);
             if (!lhsValue && lhsValue !== 0)
                 return rhsValue === undefined ? 0 : -1;
             if (!rhsValue && rhsValue !== 0)
                 return 1;
             return lhsValue - rhsValue;
         };
-        AircraftListSortHandler.prototype.compareStringValues = function (lhs, rhs) {
-            return (this.GetStringCallback(lhs) || '').localeCompare(this.GetStringCallback(rhs) || '');
+        AircraftListSortHandler.prototype.compareStringValues = function (lhs, rhs, unitDisplayPreferences) {
+            return (this.GetStringCallback(lhs, unitDisplayPreferences) || '').localeCompare(this.GetStringCallback(rhs, unitDisplayPreferences) || '');
         };
         return AircraftListSortHandler;
     })();
@@ -46,7 +46,17 @@ var VRS;
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Altitude] = new VRS.AircraftListSortHandler({
         field: VRS.AircraftListSortableField.Altitude,
         labelKey: 'Altitude',
-        getNumberCallback: function (aircraft) { return aircraft.altitude.val; }
+        getNumberCallback: function (aircraft, unitDisplayPreferences) { return aircraft.getMixedAltitude(unitDisplayPreferences.getUsePressureAltitude()); }
+    });
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AltitudeBarometric] = new VRS.AircraftListSortHandler({
+        field: VRS.AircraftListSortableField.AltitudeBarometric,
+        labelKey: 'PressureAltitude',
+        getNumberCallback: function (aircraft, unitDisplayPreferences) { return aircraft.altitude.val; }
+    });
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AltitudeGeometric] = new VRS.AircraftListSortHandler({
+        field: VRS.AircraftListSortableField.AltitudeGeometric,
+        labelKey: 'GeometricAltitude',
+        getNumberCallback: function (aircraft, unitDisplayPreferences) { return aircraft.geometricAltitude.val; }
     });
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AltitudeType] = new VRS.AircraftListSortHandler({
         field: VRS.AircraftListSortableField.AltitudeType,
@@ -426,7 +436,7 @@ var VRS;
                 }));
                 return pane;
             };
-            this.sortAircraftArray = function (array) {
+            this.sortAircraftArray = function (array, unitDisplayPreferences) {
                 var i = 0;
                 var handlers = [];
                 switch (_this._ShowEmergencySquawksSortSpecial) {
@@ -459,7 +469,7 @@ var VRS;
                     array.sort(function (lhs, rhs) {
                         for (i = 0; i < length; ++i) {
                             var handler = handlers[i];
-                            var result = handler.handler.CompareCallback(lhs, rhs);
+                            var result = handler.handler.CompareCallback(lhs, rhs, unitDisplayPreferences);
                             if (result != 0) {
                                 if (!handler.ascending)
                                     result = -result;

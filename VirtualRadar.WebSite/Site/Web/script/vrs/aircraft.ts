@@ -771,6 +771,25 @@ namespace VRS
         }
 
         /**
+         * Returns either the pressure or geometric altitude, depending on the "UsePressureAltitude"
+         * switch in unit display preferences.
+         */
+        getMixedAltitude(usePressureAltitude: boolean) : number
+        {
+            return usePressureAltitude ? this.altitude.val : this.geometricAltitude.val;
+        }
+
+        /**
+         * Returns the value changed flag for either the pressure or geometric altitude, depending
+         * on the "UsePressureAltitude" switch in unit display preferences.
+         * @param usePressureAltitude
+         */
+        hasMixedAltitudeChanged(usePressureAltitude: boolean) : boolean
+        {
+            return usePressureAltitude ? this.altitude.chg : this.geometricAltitude.chg;
+        }
+
+        /**
          * Returns true if the aircraft is some kind of aircraft, false if it is a ground vehicle or radio mast.
          */
         isAircraftSpecies() : boolean
@@ -795,11 +814,7 @@ namespace VRS
          */
         convertAltitude(toUnit: HeightEnum) : number
         {
-            var result = this.altitude.val;
-            if(result !== undefined && toUnit !== VRS.Height.Feet) {
-                result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, toUnit);
-            }
-            return result;
+            return this.convertMixedAltitude(true, toUnit);
         }
 
         /**
@@ -807,7 +822,15 @@ namespace VRS
          */
         convertGeometricAltitude(toUnit: HeightEnum) : number
         {
-            var result = this.geometricAltitude.val;
+            return this.convertMixedAltitude(false, toUnit);
+        }
+
+        /**
+         * Returns either the pressure or geometric altitude converted from feet to the unit passed across.
+         */
+        convertMixedAltitude(usePressureAltitude: boolean, toUnit: HeightEnum) : number
+        {
+            var result = usePressureAltitude ? this.altitude.val : this.geometricAltitude.val;
             if(result !== undefined && toUnit !== VRS.Height.Feet) {
                 result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, toUnit);
             }
@@ -872,11 +895,29 @@ namespace VRS
         }
 
         /**
-         * Formats the altitude as a string.
+         * Formats the pressure altitude as a string.
          */
         formatAltitude(heightUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean) : string
         {
-            return VRS.format.altitude(this.altitude.val, this.altitudeType.val, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
+            return VRS.format.altitude(this.altitude.val, VRS.AltitudeType.Barometric, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
+        }
+
+        /**
+         * Formats the geometric altitude as a string.
+         */
+        formatGeometricAltitude(heightUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean) : string
+        {
+            return VRS.format.altitude(this.geometricAltitude.val, VRS.AltitudeType.Geometric, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
+        }
+
+        /**
+         * Formats either the pressure or geometric altitude as a string.
+         */
+        formatMixedAltitude(usePressureAltitude: boolean, heightUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean) : string
+        {
+            var value = usePressureAltitude ? this.altitude.val : this.geometricAltitude.val;
+            var valueType = usePressureAltitude ? VRS.AltitudeType.Barometric : VRS.AltitudeType.Geometric;
+            return VRS.format.altitude(value, valueType, this.isOnGround.val, heightUnit, distinguishOnGround, showUnits, showType);
         }
 
         /**
@@ -972,7 +1013,7 @@ namespace VRS
          */
         formatFlightLevel(transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean) : string
         {
-            return VRS.format.flightLevel(this.altitude.val, this.altitudeType.val, this.isOnGround.val, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType);
+            return VRS.format.flightLevel(this.altitude.val, this.geometricAltitude.val, this.altitudeType.val, this.isOnGround.val, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType);
         }
 
         /**

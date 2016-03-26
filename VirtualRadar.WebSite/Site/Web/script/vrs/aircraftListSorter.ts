@@ -45,17 +45,17 @@ namespace VRS
         /**
          * A function that returns a numeric value from an aircraft. If supplied then the sort order is based on the returned value.
          */
-        getNumberCallback?: (aircraft: Aircraft) => number;
+        getNumberCallback?: (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => number;
 
         /**
          * A function that returns a string value from an aircraft. If supplied then the sort order is based on the returned string.
          */
-        getStringCallback?: (aircraft: Aircraft) => string;
+        getStringCallback?: (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => string;
 
         /**
          * A function that takes two aircraft and returns an integer describing their relative sort order.
          */
-        compareCallback?: (lhs: Aircraft, rhs: Aircraft) => number;
+        compareCallback?: (lhs: Aircraft, rhs: Aircraft, unitDisplayPreferences: UnitDisplayPreferences) => number;
     }
 
     /**
@@ -66,9 +66,9 @@ namespace VRS
         // Keeping these as public fields for backwards compatability
         Field:              AircraftListSortableFieldEnum;
         LabelKey:           string;
-        GetNumberCallback:  (aircraft: Aircraft) => number;
-        GetStringCallback:  (aircraft: Aircraft) => string;
-        CompareCallback:    (lhs: Aircraft, rhs: Aircraft) => number;
+        GetNumberCallback:  (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => number;
+        GetStringCallback:  (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => string;
+        CompareCallback:    (lhs: Aircraft, rhs: Aircraft, unitDisplayPreferences: UnitDisplayPreferences) => number;
 
         constructor(settings: AircraftListSortHandler_Settings)
         {
@@ -91,10 +91,10 @@ namespace VRS
         /**
          * Returns the relative sort order of two aircraft based on a numeric value held by each.
          */
-        private compareNumericValues(lhs: Aircraft, rhs: Aircraft) : number
+        private compareNumericValues(lhs: Aircraft, rhs: Aircraft, unitDisplayPreferences: UnitDisplayPreferences) : number
         {
-            var lhsValue = this.GetNumberCallback(lhs);
-            var rhsValue = this.GetNumberCallback(rhs);
+            var lhsValue = this.GetNumberCallback(lhs, unitDisplayPreferences);
+            var rhsValue = this.GetNumberCallback(rhs, unitDisplayPreferences);
             if(!lhsValue && lhsValue !== 0) return rhsValue === undefined ? 0 : -1;
             if(!rhsValue && rhsValue !== 0) return 1;
             return lhsValue - rhsValue;
@@ -103,9 +103,9 @@ namespace VRS
         /**
          * Returns the relative sort order of two aircraft based on a string value held by each.
          */
-        private compareStringValues(lhs: Aircraft, rhs: Aircraft) : number
+        private compareStringValues(lhs: Aircraft, rhs: Aircraft, unitDisplayPreferences: UnitDisplayPreferences) : number
         {
-            return (this.GetStringCallback(lhs) || '').localeCompare(this.GetStringCallback(rhs) || '');
+            return (this.GetStringCallback(lhs, unitDisplayPreferences) || '').localeCompare(this.GetStringCallback(rhs, unitDisplayPreferences) || '');
         }
     }
 
@@ -117,7 +117,19 @@ namespace VRS
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Altitude] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.Altitude,
         labelKey:           'Altitude',
-        getNumberCallback:  function(aircraft) { return aircraft.altitude.val; }
+        getNumberCallback:  function(aircraft, unitDisplayPreferences) { return aircraft.getMixedAltitude(unitDisplayPreferences.getUsePressureAltitude()); }
+    });
+
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AltitudeBarometric] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.AltitudeBarometric,
+        labelKey:           'PressureAltitude',
+        getNumberCallback:  function(aircraft, unitDisplayPreferences) { return aircraft.altitude.val; }
+    });
+
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AltitudeGeometric] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.AltitudeGeometric,
+        labelKey:           'GeometricAltitude',
+        getNumberCallback:  function(aircraft, unitDisplayPreferences) { return aircraft.geometricAltitude.val; }
     });
 
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.AltitudeType] = new VRS.AircraftListSortHandler({
@@ -690,7 +702,7 @@ namespace VRS
         /**
          * Changes the order of the elements in the array passed across so that the aircraft follow the configured sort order.
          */
-        sortAircraftArray = (array: Aircraft[]) =>
+        sortAircraftArray = (array: Aircraft[], unitDisplayPreferences: UnitDisplayPreferences) =>
         {
             var i = 0;
             var handlers = [];
@@ -719,7 +731,7 @@ namespace VRS
                 array.sort(function(lhs, rhs) {
                     for(i = 0;i < length;++i) {
                         var handler = handlers[i];
-                        var result = handler.handler.CompareCallback(lhs, rhs);
+                        var result = handler.handler.CompareCallback(lhs, rhs, unitDisplayPreferences);
                         if(result != 0) {
                             if(!handler.ascending) result = -result;
                             break;

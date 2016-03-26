@@ -676,6 +676,7 @@ namespace VRS
         hasValue:           function(json: IReportFlight) { return json.fAlt !== undefined; },
         contentCallback:    function(json: IReportFlight, options: ReportRender_Options) { return VRS.format.flightLevel(
             json.fAlt,
+            json.fAlt,
             VRS.AltitudeType.Barometric,
             json.fOnGnd,
             options.unitDisplayPreferences.getFlightLevelTransitionAltitude(),
@@ -820,6 +821,7 @@ namespace VRS
         alignment:          VRS.Alignment.Right,
         hasValue:           function(json: IReportFlight) { return json.lAlt !== undefined; },
         contentCallback:    function(json: IReportFlight, options: ReportRender_Options) { return VRS.format.flightLevel(
+            json.lAlt,
             json.lAlt,
             VRS.AltitudeType.Barometric,
             json.fOnGnd,

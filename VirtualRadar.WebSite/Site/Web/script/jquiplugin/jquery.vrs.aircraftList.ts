@@ -713,7 +713,7 @@ namespace VRS
         {
             var aircraftList = this.options.aircraftList.toList();
             var options = this.options;
-            if(options.sorter) options.sorter.sortAircraftArray(aircraftList);
+            if(options.sorter) options.sorter.sortAircraftArray(aircraftList, options.unitDisplayPreferences);
             var columns = this.options.columns;
             var columnCount = columns.length;
             var tbody = state.tableBody;

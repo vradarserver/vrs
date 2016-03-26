@@ -21,6 +21,7 @@ declare namespace VRS
         AircraftNotTransmittingCallsign:    string;
         Airport:                            string;
         AirportDataThumbnails:              string;
+        AirPressure:                        string;
         AllAircraft:                        string;
         AllAltitudes:                       string;
         AllRows:                            string;
@@ -134,6 +135,7 @@ declare namespace VRS
         FurthestFromCurrentLocation:        string;
         GenericName:                        string;
         Geometric:                          string;
+        GeometricAltitude:                  string;
         GeometricAltitudeIndicator:         string;
         GoogleMapsCouldNotBeLoaded:         string;
         GotoCurrentLocation:                string;
@@ -197,6 +199,7 @@ declare namespace VRS
         Layout6:                            string;
         ListAircraftClass:                  string;
         ListAirportDataThumbnails:          string;
+        ListAirPressure:                    string;
         ListAltitude:                       string;
         ListAltitudeAndVerticalSpeed:       string;
         ListAltitudeType:                   string;
@@ -231,6 +234,7 @@ declare namespace VRS
         ListFlightLevelAndVerticalSpeed:    string;
         ListFlightsCount:                   string;
         ListGenericName:                    string;
+        ListGeometricAltitude:              string;
         ListHadAlert:                       string;
         ListHadEmergency:                   string;
         ListHadSPI:                         string;
@@ -264,6 +268,7 @@ declare namespace VRS
         ListOwnershipStatus:                string;
         ListPicture:                        string;
         ListPopularName:                    string;
+        ListPressureAltitude:               string;
         ListPreviousId:                     string;
         ListReceiver:                       string;
         ListRegistration:                   string;
@@ -378,6 +383,8 @@ declare namespace VRS
         PositionAndAltitude:                string;
         PositionAndSpeed:                   string;
         PoweredByVRS:                       string;
+        PressureAltitude:                   string;
+        Pressures:                          string;
         PreviousId:                         string;
         Quantity:                           string;
         RadioMast:                          string;
@@ -532,6 +539,7 @@ declare namespace VRS
         Turbo:                              string;
         Unknown:                            string;
         UseBrowserLocation:                 string;
+        UsePressureAltitude:                string;
         UseRelativeDates:                   string;
         UserTag:                            string;
         VerticalSpeed:                      string;

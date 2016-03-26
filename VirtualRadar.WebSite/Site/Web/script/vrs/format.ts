@@ -308,19 +308,18 @@ namespace VRS
         /**
          * Formats the flight level as a string.
          */
-        flightLevel(altitude: number, altitudeType: AltitudeTypeEnum, isOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean) : string
+        flightLevel(pressureAltitude: number, geometricAltitude: number, altitudeType: AltitudeTypeEnum, isOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean) : string
         {
             var result = '';
-            if(altitude || altitude === 0) {
+            if(pressureAltitude || pressureAltitude === 0) {
                 if(distinguishOnGround && isOnGround) result = VRS.$$.GroundAbbreviation;
                 else {
                     var transitionAltitudeFeet = VRS.unitConverter.convertHeight(transitionAltitude, transitionAltitudeUnit, VRS.Height.Feet);
-                    if(altitude < transitionAltitudeFeet) {
-                        result = this.altitude(altitude, altitudeType, isOnGround, altitudeUnit, distinguishOnGround, showUnits, showType);
+                    if(geometricAltitude < transitionAltitudeFeet) {
+                        result = this.altitude(geometricAltitude, VRS.AltitudeType.Geometric, isOnGround, altitudeUnit, distinguishOnGround, showUnits, showType);
                     } else {
-                        altitude = VRS.unitConverter.convertHeight(altitude, VRS.Height.Feet, flightLevelAltitudeUnit);
-                        result = VRS.stringUtility.format(VRS.$$.FlightLevelAbbreviation, Math.max(0, Math.round(altitude / 100)));
-                        if(showType && altitudeType === VRS.AltitudeType.Geometric) result += ' ' + VRS.$$.GeometricAltitudeIndicator;
+                        pressureAltitude = VRS.unitConverter.convertHeight(pressureAltitude, VRS.Height.Feet, flightLevelAltitudeUnit);
+                        result = VRS.stringUtility.format(VRS.$$.FlightLevelAbbreviation, Math.max(0, Math.round(pressureAltitude / 100)));
                     }
                 }
             }
@@ -332,10 +331,10 @@ namespace VRS
          * Formats a range of flight levels as a string.
          * @returns {string}
          */
-        flightLevelFromTo(firstAltitude: number, firstIsOnGround: boolean, lastAltitude: number, lastIsOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean) : string
+        flightLevelFromTo(firstPressureAltitude: number, firstIsOnGround: boolean, lastPressureAltitude: number, lastIsOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean) : string
         {
-            var first = this.flightLevel(firstAltitude, VRS.AltitudeType.Barometric, firstIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
-            var last = this.flightLevel(lastAltitude, VRS.AltitudeType.Barometric, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
+            var first = this.flightLevel(firstPressureAltitude, firstPressureAltitude, VRS.AltitudeType.Barometric, firstIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
+            var last = this.flightLevel(lastPressureAltitude, lastPressureAltitude, VRS.AltitudeType.Barometric, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
             return this.formatFromTo(first, last, VRS.$$.FromToFlightLevel);
         }
 

@@ -58,6 +58,8 @@ namespace VRS
     export var AircraftListSortableField = {
         None:               '---',
         Altitude:           'alt',
+        AltitudeBarometric: 'alb',
+        AltitudeGeometric:  'alg',
         AltitudeType:       'aty',
         AirPressure:        'apr',
         AverageSignalLevel: 'avs',
@@ -323,13 +325,13 @@ namespace VRS
         EnableAutoSelect:   'eas'
     };
 
-    export type PressureEnum = number;
+    export type PressureEnum = string;
     /**
      * An enumeration of the different pressure units that the site can deal with.
      */
     export var Pressure = {
-        InHg:               0,
-        Millibar:           1
+        InHg:               '0',
+        Millibar:           '1'
     };
 
     export type RenderPropertyEnum = string;
@@ -342,9 +344,11 @@ namespace VRS
         AirportDataThumbnails:          'adt',
         AirPressure:                    'apr',
         Altitude:                       'alt',
-//        AltitudeAndSpeedGraph:          'als',
+        AltitudeBarometric:             'alb',
+        AltitudeGeometric:              'alg',
+//        AltitudeAndSpeedGraph:          'grs',
         AltitudeAndVerticalSpeed:       'alv',
-//        AltitudeGraph:                  'alg',
+//        AltitudeGraph:                  'gra',
         AltitudeType:                   'aty',
         AverageSignalLevel:             'avs',
         Bearing:                        'bng',
