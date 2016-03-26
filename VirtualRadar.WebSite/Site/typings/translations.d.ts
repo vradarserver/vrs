@@ -542,6 +542,7 @@ declare namespace VRS
         UsePressureAltitude:                string;
         UseRelativeDates:                   string;
         UserTag:                            string;
+        UseShortLabels:                     string;
         VerticalSpeed:                      string;
         VerticalSpeedType:                  string;
         VirtualRadar:                       string;
