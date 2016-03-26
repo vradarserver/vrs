@@ -122,10 +122,12 @@ declare namespace VRS {
         mirrorMapJQ?: JQuery;
         plotterOptions?: AircraftPlotterOptions;
         airportDataThumbnails?: number;
+        useShortLabels?: boolean;
     }
     interface AircraftDetailPlugin_SaveState {
         showUnits: boolean;
         items: RenderPropertyEnum[];
+        useShortLabels: boolean;
     }
     var jQueryUIHelper: JQueryUIHelper;
     class AircraftDetailPlugin extends JQueryUICustomWidget implements ISelfPersist<AircraftDetailPlugin_SaveState> {
@@ -1287,6 +1289,8 @@ declare namespace VRS {
         icaoInvalid: BoolValue;
         registration: StringValue;
         altitude: NumberValue;
+        geometricAltitude: NumberValue;
+        airPressureInHg: NumberValue;
         altitudeType: Value<AltitudeTypeEnum>;
         targetAltitude: NumberValue;
         callsign: StringValue;
@@ -1352,15 +1356,23 @@ declare namespace VRS {
         hasRouteChanged(): boolean;
         getViaAirports(): string[];
         getAirportCodes(distinctOnly?: boolean): string[];
+        getMixedAltitude(usePressureAltitude: boolean): number;
+        hasMixedAltitudeChanged(usePressureAltitude: boolean): boolean;
         isAircraftSpecies(): boolean;
         convertSpeed(toUnit: SpeedEnum): number;
         convertAltitude(toUnit: HeightEnum): number;
+        convertGeometricAltitude(toUnit: HeightEnum): number;
+        convertMixedAltitude(usePressureAltitude: boolean, toUnit: HeightEnum): number;
+        convertAirPressure(toUnit: PressureEnum): number;
         convertDistanceFromHere(toUnit: DistanceEnum): number;
         convertVerticalSpeed(toUnit: HeightEnum, perSecond: boolean): number;
         fetchAirportDataThumbnails(numThumbnails?: number): void;
         formatAirportDataThumbnails(showLinkToSite?: boolean): string;
         formatAltitude(heightUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean): string;
+        formatGeometricAltitude(heightUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean): string;
+        formatMixedAltitude(usePressureAltitude: boolean, heightUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean): string;
         formatAltitudeType(): string;
+        formatAirPressureInHg(pressureUnit: PressureEnum, showUnits: boolean): string;
         formatAverageSignalLevel(): string;
         formatBearingFromHere(showUnits: boolean): string;
         formatBearingFromHereImage(): string;
@@ -1659,19 +1671,19 @@ declare namespace VRS {
     interface AircraftListSortHandler_Settings {
         field?: AircraftListSortableFieldEnum;
         labelKey?: string;
-        getNumberCallback?: (aircraft: Aircraft) => number;
-        getStringCallback?: (aircraft: Aircraft) => string;
-        compareCallback?: (lhs: Aircraft, rhs: Aircraft) => number;
+        getNumberCallback?: (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => number;
+        getStringCallback?: (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => string;
+        compareCallback?: (lhs: Aircraft, rhs: Aircraft, unitDisplayPreferences: UnitDisplayPreferences) => number;
     }
     class AircraftListSortHandler {
         Field: AircraftListSortableFieldEnum;
         LabelKey: string;
-        GetNumberCallback: (aircraft: Aircraft) => number;
-        GetStringCallback: (aircraft: Aircraft) => string;
-        CompareCallback: (lhs: Aircraft, rhs: Aircraft) => number;
+        GetNumberCallback: (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => number;
+        GetStringCallback: (aircraft: Aircraft, unitDisplayPreferences?: UnitDisplayPreferences) => string;
+        CompareCallback: (lhs: Aircraft, rhs: Aircraft, unitDisplayPreferences: UnitDisplayPreferences) => number;
         constructor(settings: AircraftListSortHandler_Settings);
-        private compareNumericValues(lhs, rhs);
-        private compareStringValues(lhs, rhs);
+        private compareNumericValues(lhs, rhs, unitDisplayPreferences);
+        private compareStringValues(lhs, rhs, unitDisplayPreferences);
     }
     var aircraftListSortHandlers: {
         [index: string]: AircraftListSortHandler;
@@ -1719,7 +1731,7 @@ declare namespace VRS {
         private createSettings();
         createOptionPane: (displayOrder: number) => OptionPane;
         private buildSortSpecialValueTexts();
-        sortAircraftArray: (array: Aircraft[]) => void;
+        sortAircraftArray: (array: Aircraft[], unitDisplayPreferences: UnitDisplayPreferences) => void;
     }
 }
 declare namespace VRS {
@@ -2462,7 +2474,10 @@ declare namespace VRS {
     var AircraftListSortableField: {
         None: string;
         Altitude: string;
+        AltitudeBarometric: string;
+        AltitudeGeometric: string;
         AltitudeType: string;
+        AirPressure: string;
         AverageSignalLevel: string;
         Bearing: string;
         Callsign: string;
@@ -2534,6 +2549,7 @@ declare namespace VRS {
         FLTransitionHeightUnit: string;
         FLHeightUnit: string;
         Angle: string;
+        Pressure: string;
     };
     type DistanceEnum = string;
     var Distance: {
@@ -2646,11 +2662,19 @@ declare namespace VRS {
         WaitForReturn: string;
         EnableAutoSelect: string;
     };
+    type PressureEnum = string;
+    var Pressure: {
+        InHg: string;
+        Millibar: string;
+    };
     type RenderPropertyEnum = string;
     var RenderProperty: {
         None: string;
         AirportDataThumbnails: string;
+        AirPressure: string;
         Altitude: string;
+        AltitudeBarometric: string;
+        AltitudeGeometric: string;
         AltitudeAndVerticalSpeed: string;
         AltitudeType: string;
         AverageSignalLevel: string;
@@ -3131,8 +3155,8 @@ declare namespace VRS {
         endDateTime(startDate: Date, endDate: Date, showFullDate: boolean, alwaysShowEndDate: boolean): string;
         engines(countEngines: string, engineType: EngineTypeEnum): string;
         firstRegistrationDate(firstRegDate: string): string;
-        flightLevel(altitude: number, altitudeType: AltitudeTypeEnum, isOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean): string;
-        flightLevelFromTo(firstAltitude: number, firstIsOnGround: boolean, lastAltitude: number, lastIsOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean): string;
+        flightLevel(pressureAltitude: number, geometricAltitude: number, altitudeType: AltitudeTypeEnum, isOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean, showType: boolean): string;
+        flightLevelFromTo(firstPressureAltitude: number, firstIsOnGround: boolean, lastPressureAltitude: number, lastIsOnGround: boolean, transitionAltitude: number, transitionAltitudeUnit: HeightEnum, flightLevelAltitudeUnit: HeightEnum, altitudeUnit: HeightEnum, distinguishOnGround: boolean, showUnits: boolean): string;
         genericName(genericName: string): string;
         hadAlert(hadAlert: boolean): string;
         hadEmergency(hadEmergency: boolean): string;
@@ -3164,6 +3188,7 @@ declare namespace VRS {
         pictureHtml(registration: string, icao: string, picWidth: number, picHeight: number, requestSize: ISizePartial, allowResizeUp?: boolean, linkToOriginal?: boolean, blankSize?: ISize): string;
         private calculatedPictureSizes(isHighDpi, picWidth, picHeight, requestSize, blankSize, allowResizeUp);
         popularName(popularName: string): string;
+        pressure(value: number, unit: PressureEnum, showUnit: boolean): string;
         previousId(previousId: string): string;
         receiver(receiverId: number, aircraftListFetcher: AircraftListFetcher): string;
         registration(registration: string, onlyAlphaNumeric?: boolean): string;
@@ -4199,6 +4224,7 @@ declare namespace VRS {
         distanceUnit: DistanceEnum;
         heightUnit: HeightEnum;
         speedUnit: SpeedEnum;
+        pressureUnit: PressureEnum;
         vsiPerSecond: boolean;
         flTransitionAlt: number;
         flTransitionUnit: HeightEnum;
@@ -4207,6 +4233,7 @@ declare namespace VRS {
         showVsiType: boolean;
         showSpeedType: boolean;
         showTrackType: boolean;
+        usePressureAltitude: boolean;
     }
     class UnitDisplayPreferences implements ISelfPersist<UnitDisplayPreferences_SaveState> {
         private _Dispatcher;
@@ -4215,11 +4242,13 @@ declare namespace VRS {
         private _DistanceUnit;
         private _HeightUnit;
         private _SpeedUnit;
+        private _PressureUnit;
         private _ShowVerticalSpeedPerSecond;
         private _ShowAltitudeType;
         private _ShowVerticalSpeedType;
         private _ShowSpeedType;
         private _ShowTrackType;
+        private _UsePressureAltitude;
         private _FlightLevelTransitionAltitude;
         private _FlightLevelTransitionHeightUnit;
         private _FlightLevelHeightUnit;
@@ -4231,6 +4260,8 @@ declare namespace VRS {
         setHeightUnit: (value: string) => void;
         getSpeedUnit: () => string;
         setSpeedUnit: (value: string) => void;
+        getPressureUnit: () => string;
+        setPressureUnit: (value: string) => void;
         getShowVerticalSpeedPerSecond: () => boolean;
         setShowVerticalSpeedPerSecond: (value: boolean) => void;
         getShowAltitudeType: () => boolean;
@@ -4241,6 +4272,8 @@ declare namespace VRS {
         setShowSpeedType: (value: boolean) => void;
         getShowTrackType: () => boolean;
         setShowTrackType: (value: boolean) => void;
+        getUsePressureAltitude: () => boolean;
+        setUsePressureAltitude: (value: boolean) => void;
         getFlightLevelTransitionAltitude: () => number;
         setFlightLevelTransitionAltitude: (value: number) => void;
         getFlightLevelTransitionHeightUnit: () => string;
@@ -4250,9 +4283,11 @@ declare namespace VRS {
         static getAltitudeUnitValues(): ValueText[];
         static getDistanceUnitValues(): ValueText[];
         static getSpeedUnitValues(): ValueText[];
+        static getPressureUnitValues(): ValueText[];
         hookDistanceUnitChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookHeightUnitChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookSpeedUnitChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
+        hookPressureUnitChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookShowVerticalSpeedPerSecondChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookShowAltitudeTypeChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookShowVerticalSpeedTypeChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
@@ -4261,6 +4296,7 @@ declare namespace VRS {
         hookFlightLevelTransitionAltitudeChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookFlightLevelTransitionHeightUnitChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookFlightLevelHeightUnitChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
+        hookUsePressureAltitudeChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         hookUnitChanged: (callback: (dependency?: string) => void, forceThis?: Object) => IEventHandle;
         unhook: (hookResult: IEventHandle) => void;
         createOptionPane: (displayOrder: number) => OptionPane;
@@ -4392,6 +4428,8 @@ declare namespace VRS {
         heightUnitOverTimeAbbreviation(unit: HeightEnum, perSecond: boolean): string;
         convertSpeed(value: number, fromUnit: SpeedEnum, toUnit: SpeedEnum): number;
         speedUnitAbbreviation(unit: SpeedEnum): string;
+        convertPressure(value: number, fromUnit: PressureEnum, toUnit: PressureEnum): number;
+        pressureUnitAbbreviation(unit: PressureEnum): string;
         convertVerticalSpeed(verticalSpeed: number, fromUnit: HeightEnum, toUnit: HeightEnum, perSecond: boolean): number;
         getPixelsOrPercent(value: string | number): PercentValue;
     }
