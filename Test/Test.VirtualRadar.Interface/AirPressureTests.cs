@@ -57,7 +57,7 @@ namespace Test.VirtualRadar.Interface
         }
 
         [TestMethod]
-        public void AirPressure_CorrectedAltitudeToPressureAltitude_Returns_Correct_Values()
+        public void AirPressure_GeometricAltitudeToPressureAltitude_Returns_Correct_Values()
         {
             var testValues = new List<ConvertParameters>() {
                 new ConvertParameters(null, null, 29.00F),
@@ -70,10 +70,10 @@ namespace Test.VirtualRadar.Interface
                 foreach(var testValue in testValues) {
                     int? actual;
                     if(useStaticVersion) {
-                        actual = AirPressure.CorrectedAltitudeToPressureAltitude(testValue.InputAltitude, testValue.PressureInHg);
+                        actual = AirPressure.GeometricAltitudeToPressureAltitude(testValue.InputAltitude, testValue.PressureInHg);
                     } else {
                         var airPressure = new AirPressure() { PressureInHg = testValue.PressureInHg };
-                        actual = airPressure.CorrectedAltitudeToPressureAltitude(testValue.InputAltitude);
+                        actual = airPressure.GeometricAltitudeToPressureAltitude(testValue.InputAltitude);
                     }
                     Assert.AreEqual(testValue.ExpectedAltitude, actual, "Altitude: {0}, Pressure: {1}", testValue.InputAltitude, testValue.PressureInHg);
                 }
@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Interface
         }
 
         [TestMethod]
-        public void AirPressure_PressureAltitudeToCorrectedAltitude_Returns_Correct_Values()
+        public void AirPressure_PressureAltitudeToGeometricAltitude_Returns_Correct_Values()
         {
             var testValues = new List<ConvertParameters>() {
                 new ConvertParameters(null, null, 29.00F),
@@ -94,14 +94,28 @@ namespace Test.VirtualRadar.Interface
                 foreach(var testValue in testValues) {
                     int? actual;
                     if(useStaticVersion) {
-                        actual = AirPressure.PressureAltitudeToCorrectedAltitude(testValue.InputAltitude, testValue.PressureInHg);
+                        actual = AirPressure.PressureAltitudeToGeometricAltitude(testValue.InputAltitude, testValue.PressureInHg);
                     } else {
                         var airPressure = new AirPressure() { PressureInHg = testValue.PressureInHg };
-                        actual = airPressure.PressureAltitudeToCorrectedAltitude(testValue.InputAltitude);
+                        actual = airPressure.PressureAltitudeToGeometricAltitude(testValue.InputAltitude);
                     }
                     Assert.AreEqual(testValue.ExpectedAltitude, actual, "Altitude: {0}, Pressure: {1}", testValue.InputAltitude, testValue.PressureInHg);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AirPressure_MillibarsToInHg_Returns_Correct_Values()
+        {
+            Assert.AreEqual((float?)null, AirPressure.MillibarsToInHg(null));
+            Assert.AreEqual(29.5301F, AirPressure.MillibarsToInHg(1000F));
+        }
+
+        [TestMethod]
+        public void AirPressure_InHgToMillibars_Returns_Correct_Values()
+        {
+            Assert.AreEqual((float?)null, AirPressure.InHgToMillibars(null));
+            Assert.AreEqual(1000F, AirPressure.InHgToMillibars(29.5301F));
         }
     }
 }

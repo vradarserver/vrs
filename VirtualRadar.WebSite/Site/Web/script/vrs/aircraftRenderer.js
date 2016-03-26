@@ -121,6 +121,19 @@ var VRS;
     })();
     VRS.RenderPropertyHandler = RenderPropertyHandler;
     VRS.renderPropertyHandlers = VRS.renderPropertyHandlers || {};
+    VRS.renderPropertyHandlers[VRS.RenderProperty.AirPressure] = new VRS.RenderPropertyHandler({
+        property: VRS.RenderProperty.AirPressure,
+        surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey: 'ListAirPressure',
+        labelKey: 'AirPressure',
+        sortableField: VRS.AircraftListSortableField.AirPressure,
+        alignment: VRS.Alignment.Right,
+        hasChangedCallback: function (aircraft) { return aircraft.airPressureInHg.chg; },
+        contentCallback: function (aircraft, options) {
+            return aircraft.formatAirPressureInHg(options.unitDisplayPreferences.getPressureUnit(), options.showUnits);
+        },
+        usesDisplayUnit: function (displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Pressure; }
+    });
     VRS.renderPropertyHandlers[VRS.RenderProperty.AirportDataThumbnails] = new VRS.RenderPropertyHandler({
         property: VRS.RenderProperty.AirportDataThumbnails,
         surfaces: VRS.RenderSurface.DetailBody,

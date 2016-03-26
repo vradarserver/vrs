@@ -16,6 +16,7 @@ using System.Text;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Test.Framework;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.WebSite;
@@ -173,6 +174,49 @@ namespace Test.VirtualRadar.Library.Listener
             var compressedMessage = compressor.Compress(message);
             Assert.IsNotNull(compressedMessage);
             Assert.AreNotEqual(0, compressedMessage.Length);
+        }
+
+        [TestMethod]
+        public void AircraftListJsonMessageConverter_Deals_Correctly_With_Altitude_Types_From_Current_Versions_Of_VRS()
+        {
+            var json = new AircraftJson() { Icao24 = "ABCDEF", Altitude = 100, GeometricAltitude = 200 };
+            _AircraftListJson.Aircraft.Add(json);
+
+            // If the altitude type is Barometric then JSON Altitude should be copied into Altitude
+            json.AltitudeType = (int)AltitudeType.Barometric;
+            var message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+            Assert.AreEqual(100, message.Altitude);
+
+            // If the altitude type is Geometric then the JSON Altitude may have been calculated - the GeometricAltitude
+            // should be used instead.
+            json.AltitudeType = (int)AltitudeType.Geometric;
+            message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+            Assert.AreEqual(200, message.Altitude);
+        }
+
+        [TestMethod]
+        public void AircraftListJsonMessageConverter_Deals_Correctly_With_Altitude_Types_From_Older_Versions_Of_VRS()
+        {
+            // If the Geometric altitude is null then the feed is coming from an older version of VRS
+            // that didn't send Geometric, Altitude and AltitudeType as a set. In that case we always
+            // use Altitude regardless of altitude type
+
+            var json = new AircraftJson() { Icao24 = "ABCDEF", Altitude = 100 };
+            _AircraftListJson.Aircraft.Add(json);
+
+            // If altitude type is missing then use altitude...
+            var message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+            Assert.AreEqual(100, message.Altitude);
+
+            // If altitude type is barometric then use altitude...
+            json.AltitudeType = (int)AltitudeType.Barometric;
+            message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+            Assert.AreEqual(100, message.Altitude);
+
+            // ... and if altitude type is geometric then use altitude
+            json.AltitudeType = (int)AltitudeType.Geometric;
+            message = _Converter.ConvertIntoBaseStationMessages(_AircraftListJson).Single();
+            Assert.AreEqual(100, message.Altitude);
         }
     }
 }

@@ -1130,6 +1130,42 @@ namespace VRS
         }
 
         /**
+         * Converts a pressure value from one unit to another.
+         */
+        convertPressure(value: number, fromUnit: PressureEnum, toUnit: PressureEnum) : number
+        {
+            var result = value;
+            if(fromUnit !== toUnit && !isNaN(value)) {
+                switch(fromUnit) {
+                    case VRS.Pressure.InHg:
+                        switch(toUnit) {
+                            case VRS.Pressure.Millibar: result /= 0.0295301; break;
+                            default:                    throw 'Unknown pressure unit ' + toUnit;
+                        }
+                        break;
+                    case VRS.Pressure.Millibar:
+                        switch(toUnit) {
+                            case VRS.Pressure.InHg:     result *= 0.0295301; break;
+                            default:                    throw 'Unknown pressure unit ' + toUnit;
+                        }
+                    default:
+                        throw 'Unknown pressure unit ' + fromUnit;
+                }
+            }
+
+            return result;
+        }
+
+        pressureUnitAbbreviation(unit: PressureEnum) : string
+        {
+            switch(unit) {
+                case VRS.Pressure.InHg:     return VRS.$$.InHgAbbreviation;
+                case VRS.Pressure.Millibar: return VRS.$$.MillibarAbbreviation;
+                default:                    throw 'Unknown pressure unit ' + unit;
+            }
+        }
+
+        /**
          * Converts a vertical speed from one unit to another.
          */
         convertVerticalSpeed(verticalSpeed: number, fromUnit: HeightEnum, toUnit: HeightEnum, perSecond: boolean) : number

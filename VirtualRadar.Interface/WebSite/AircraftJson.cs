@@ -84,10 +84,22 @@ namespace VirtualRadar.Interface.WebSite
         public long? CountMessagesReceived { get; set; }
 
         /// <summary>
-        /// Gets or sets the aircraft's altitude in feet.
+        /// Gets or sets the aircraft's pressure altitude in feet.
         /// </summary>
         [DataMember(Name="Alt", IsRequired=false, EmitDefaultValue=false)]
         public int? Altitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets the aircraft's geometric altitude in feet.
+        /// </summary>
+        [DataMember(Name="GAlt", IsRequired=false, EmitDefaultValue=false)]
+        public int? GeometricAltitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets the aircraft's air pressure setting in inches of mercury.
+        /// </summary>
+        [DataMember(Name="InHg", IsRequired=false, EmitDefaultValue=false)]
+        public float? AirPressureInHg { get; set; }
 
         /// <summary>
         /// Gets or sets the type of altitude transmitted by the aircraft.

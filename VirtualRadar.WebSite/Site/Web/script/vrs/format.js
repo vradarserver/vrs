@@ -398,6 +398,25 @@ var VRS;
         Format.prototype.popularName = function (popularName) {
             return popularName || '';
         };
+        Format.prototype.pressure = function (value, unit, showUnit) {
+            var result = '';
+            value = VRS.unitConverter.convertPressure(value, VRS.Pressure.InHg, unit);
+            if (value || value === 0) {
+                switch (unit) {
+                    case VRS.Pressure.InHg:
+                        result = VRS.stringUtility.formatNumber(value, '0.00');
+                        break;
+                    case VRS.Pressure.Millibar:
+                        result = VRS.stringUtility.formatNumber(value, '0');
+                        break;
+                    default: throw 'Unknown pressure unit ' + unit;
+                }
+                if (showUnit && result) {
+                    result = VRS.stringUtility.format(VRS.unitConverter.pressureUnitAbbreviation(unit), result);
+                }
+            }
+            return result;
+        };
         Format.prototype.previousId = function (previousId) {
             return previousId || '';
         };

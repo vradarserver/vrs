@@ -5,6 +5,7 @@ var VRS;
     VRS.globalOptions.unitDisplayHeight = VRS.globalOptions.unitDisplayHeight || VRS.Height.Feet;
     VRS.globalOptions.unitDisplaySpeed = VRS.globalOptions.unitDisplaySpeed || VRS.Speed.Knots;
     VRS.globalOptions.unitDisplayDistance = VRS.globalOptions.unitDisplayDistance || VRS.Distance.Kilometre;
+    VRS.globalOptions.unitDisplayPressure = VRS.globalOptions.unitDisplayPressure || VRS.Pressure.InHg;
     VRS.globalOptions.unitDisplayVsiPerSecond = VRS.globalOptions.unitDisplayVsiPerSecond !== undefined ? VRS.globalOptions.unitDisplayVsiPerSecond : VRS.isFlightSim;
     VRS.globalOptions.unitDisplayFLTransitionAltitude = VRS.globalOptions.unitDisplayFLTransitionAltitude || 18000;
     VRS.globalOptions.unitDisplayFLTransitionHeightUnit = VRS.globalOptions.unitDisplayFLTransitionHeightUnit || VRS.Height.Feet;
@@ -25,6 +26,7 @@ var VRS;
                 distanceUnitChanged: 'distanceUnitChanged',
                 heightUnitChanged: 'heightUnitChanged',
                 speedUnitChanged: 'speedUnitChanged',
+                pressureUnitChanged: 'pressureUnitChanged',
                 showVsiInSecondsChanged: 'showVsiSecondsChanged',
                 flAltitudeChanged: 'flAltitudeChanged',
                 flTransUnitChanged: 'flTransUnitChanged',
@@ -65,6 +67,16 @@ var VRS;
                     _this._SpeedUnit = value;
                     _this._Dispatcher.raise(_this._Events.speedUnitChanged);
                     _this._Dispatcher.raise(_this._Events.unitChanged, [VRS.DisplayUnitDependency.Speed]);
+                }
+            };
+            this.getPressureUnit = function () {
+                return _this._PressureUnit;
+            };
+            this.setPressureUnit = function (value) {
+                if (_this._PressureUnit !== value) {
+                    _this._PressureUnit = value;
+                    _this._Dispatcher.raise(_this._Events.pressureUnitChanged);
+                    _this._Dispatcher.raise(_this._Events.unitChanged, [VRS.DisplayUnitDependency.Pressure]);
                 }
             };
             this.getShowVerticalSpeedPerSecond = function () {
@@ -156,6 +168,9 @@ var VRS;
             this.hookSpeedUnitChanged = function (callback, forceThis) {
                 return _this._Dispatcher.hook(_this._Events.speedUnitChanged, callback, forceThis);
             };
+            this.hookPressureUnitChanged = function (callback, forceThis) {
+                return _this._Dispatcher.hook(_this._Events.pressureUnitChanged, callback, forceThis);
+            };
             this.hookShowVerticalSpeedPerSecondChanged = function (callback, forceThis) {
                 return _this._Dispatcher.hook(_this._Events.showVsiInSecondsChanged, callback, forceThis);
             };
@@ -196,6 +211,7 @@ var VRS;
                 var distanceUnitValues = UnitDisplayPreferences.getDistanceUnitValues();
                 var altitudeUnitValues = UnitDisplayPreferences.getAltitudeUnitValues();
                 var speedUnitValues = UnitDisplayPreferences.getSpeedUnitValues();
+                var pressureUnitValues = UnitDisplayPreferences.getPressureUnitValues();
                 if (VRS.globalOptions.unitDisplayAllowConfiguration) {
                     pane.addField(new VRS.OptionFieldCheckBox({
                         name: 'showVsiInSeconds',
@@ -256,6 +272,14 @@ var VRS;
                         saveState: _this.saveState,
                         values: speedUnitValues
                     }));
+                    pane.addField(new VRS.OptionFieldComboBox({
+                        name: 'pressureUnit',
+                        labelKey: 'Pressures',
+                        getValue: _this.getPressureUnit,
+                        setValue: _this.setPressureUnit,
+                        saveState: _this.saveState,
+                        values: pressureUnitValues
+                    }));
                     pane.addField(new VRS.OptionFieldNumeric({
                         name: 'flTransAltitude',
                         labelKey: 'FlightLevelTransitionAltitude',
@@ -298,6 +322,7 @@ var VRS;
                 _this.setDistanceUnit(settings.distanceUnit);
                 _this.setHeightUnit(settings.heightUnit);
                 _this.setSpeedUnit(settings.speedUnit);
+                _this.setPressureUnit(settings.pressureUnit);
                 _this.setShowVerticalSpeedPerSecond(settings.vsiPerSecond);
                 _this.setFlightLevelTransitionAltitude(settings.flTransitionAlt);
                 _this.setFlightLevelTransitionHeightUnit(settings.flTransitionUnit);
@@ -318,6 +343,7 @@ var VRS;
                     distanceUnit: _this.getDistanceUnit(),
                     heightUnit: _this.getHeightUnit(),
                     speedUnit: _this.getSpeedUnit(),
+                    pressureUnit: _this.getPressureUnit(),
                     vsiPerSecond: _this.getShowVerticalSpeedPerSecond(),
                     flTransitionAlt: _this.getFlightLevelTransitionAltitude(),
                     flTransitionUnit: _this.getFlightLevelTransitionHeightUnit(),
@@ -332,6 +358,7 @@ var VRS;
             this._DistanceUnit = VRS.globalOptions.unitDisplayDistance;
             this._HeightUnit = VRS.globalOptions.unitDisplayHeight;
             this._SpeedUnit = VRS.globalOptions.unitDisplaySpeed;
+            this._PressureUnit = VRS.globalOptions.unitDisplayPressure;
             this._ShowVerticalSpeedPerSecond = VRS.globalOptions.unitDisplayVsiPerSecond;
             this._ShowAltitudeType = VRS.globalOptions.unitDisplayAltitudeType;
             this._ShowVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType;
@@ -367,6 +394,12 @@ var VRS;
                 new VRS.ValueText({ value: VRS.Speed.KilometresPerHour, textKey: 'KilometresPerHour' }),
                 new VRS.ValueText({ value: VRS.Speed.Knots, textKey: 'Knots' }),
                 new VRS.ValueText({ value: VRS.Speed.MilesPerHour, textKey: 'MilesPerHour' })
+            ];
+        };
+        UnitDisplayPreferences.getPressureUnitValues = function () {
+            return [
+                new VRS.ValueText({ value: VRS.Pressure.InHg, textKey: 'InHgDescription' }),
+                new VRS.ValueText({ value: VRS.Pressure.Millibar, textKey: 'MillibarDescription' })
             ];
         };
         return UnitDisplayPreferences;

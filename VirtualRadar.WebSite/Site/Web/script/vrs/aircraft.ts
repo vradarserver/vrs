@@ -366,8 +366,10 @@ namespace VRS
         icao:                   StringValue =                       new StringValue();
         icaoInvalid:            BoolValue =                         new BoolValue();
         registration:           StringValue =                       new StringValue();
-        altitude:               NumberValue =                       new NumberValue();
-        altitudeType:           Value<AltitudeTypeEnum> =           new Value<AltitudeTypeEnum>();
+        altitude:               NumberValue =                       new NumberValue();                  // Pressure altitude
+        geometricAltitude:      NumberValue =                       new NumberValue();                  // Geometric altitude
+        airPressureInHg:        NumberValue =                       new NumberValue();                  // Air pressure in inches of mercury either transmitted by the aircraft or, failing that, from the closest weather station
+        altitudeType:           Value<AltitudeTypeEnum> =           new Value<AltitudeTypeEnum>();      // The altitude field that was transmitted by the aircraft
         targetAltitude:         NumberValue =                       new NumberValue();
         callsign:               StringValue =                       new StringValue();
         callsignSuspect:        BoolValue =                         new BoolValue();
@@ -440,6 +442,8 @@ namespace VRS
             this.setValue(this.icaoInvalid,          aircraftJson.Bad);
             this.setValue(this.registration,         aircraftJson.Reg);
             this.setValue(this.altitude,             aircraftJson.Alt);
+            this.setValue(this.geometricAltitude,    aircraftJson.GAlt);
+            this.setValue(this.airPressureInHg,      aircraftJson.InHg);
             this.setValue(this.altitudeType,         aircraftJson.AltT);
             this.setValue(this.targetAltitude,       aircraftJson.TAlt);
             this.setValue(this.callsign,             aircraftJson.Call);
@@ -787,13 +791,37 @@ namespace VRS
         }
 
         /**
-         * Returns the altitude converted from feet (as sent by the server) to the unit passed across.
+         * Returns the pressure altitude converted from feet (as sent by the server) to the unit passed across.
          */
         convertAltitude(toUnit: HeightEnum) : number
         {
             var result = this.altitude.val;
             if(result !== undefined && toUnit !== VRS.Height.Feet) {
                 result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, toUnit);
+            }
+            return result;
+        }
+
+        /**
+         * Returns the geometric altitude converted from feet to the unit passed across.
+         */
+        convertGeometricAltitude(toUnit: HeightEnum) : number
+        {
+            var result = this.geometricAltitude.val;
+            if(result !== undefined && toUnit !== VRS.Height.Feet) {
+                result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, toUnit);
+            }
+            return result;
+        }
+
+        /**
+         * Returns the air pressure converted from inches of mercury to the unit passed across.
+         */
+        convertAirPressure(toUnit: PressureEnum) : number
+        {
+            var result = this.airPressureInHg.val;
+            if(result !== undefined && toUnit !== VRS.Pressure.InHg) {
+                result = VRS.unitConverter.convertPressure(result, VRS.Pressure.InHg, toUnit);
             }
             return result;
         }
@@ -857,6 +885,14 @@ namespace VRS
         formatAltitudeType() : string
         {
             return VRS.format.altitudeType(this.altitudeType.val);
+        }
+
+        /**
+         * Formats the air pressure as a string.
+         */
+        formatAirPressureInHg(pressureUnit: PressureEnum, showUnits: boolean) : string
+        {
+            return VRS.format.pressure(this.airPressureInHg.val, pressureUnit, showUnits);
         }
 
         /**

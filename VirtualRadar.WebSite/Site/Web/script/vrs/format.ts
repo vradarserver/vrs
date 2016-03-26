@@ -704,6 +704,27 @@ namespace VRS
         }
 
         /**
+         * Formats the pressure for display.
+         */
+        pressure(value: number, unit: PressureEnum, showUnit: boolean) : string
+        {
+            var result = '';
+            value = VRS.unitConverter.convertPressure(value, VRS.Pressure.InHg, unit);
+            if(value || value === 0) {
+                switch(unit) {
+                    case VRS.Pressure.InHg:         result = VRS.stringUtility.formatNumber(value, '0.00'); break;
+                    case VRS.Pressure.Millibar:     result = VRS.stringUtility.formatNumber(value, '0'); break;
+                    default:                        throw 'Unknown pressure unit ' + unit;
+                }
+                if(showUnit && result) {
+                    result = VRS.stringUtility.format(VRS.unitConverter.pressureUnitAbbreviation(unit), result);
+                }
+            }
+
+            return result;
+        }
+
+        /**
          * Formats the previous ID for display.
          */
         previousId(previousId: string) : string

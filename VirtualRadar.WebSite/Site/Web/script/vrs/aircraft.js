@@ -150,6 +150,8 @@ var VRS;
             this.icaoInvalid = new BoolValue();
             this.registration = new StringValue();
             this.altitude = new NumberValue();
+            this.geometricAltitude = new NumberValue();
+            this.airPressureInHg = new NumberValue();
             this.altitudeType = new Value();
             this.targetAltitude = new NumberValue();
             this.callsign = new StringValue();
@@ -216,6 +218,8 @@ var VRS;
             this.setValue(this.icaoInvalid, aircraftJson.Bad);
             this.setValue(this.registration, aircraftJson.Reg);
             this.setValue(this.altitude, aircraftJson.Alt);
+            this.setValue(this.geometricAltitude, aircraftJson.GAlt);
+            this.setValue(this.airPressureInHg, aircraftJson.InHg);
             this.setValue(this.altitudeType, aircraftJson.AltT);
             this.setValue(this.targetAltitude, aircraftJson.TAlt);
             this.setValue(this.callsign, aircraftJson.Call);
@@ -488,6 +492,20 @@ var VRS;
             }
             return result;
         };
+        Aircraft.prototype.convertGeometricAltitude = function (toUnit) {
+            var result = this.geometricAltitude.val;
+            if (result !== undefined && toUnit !== VRS.Height.Feet) {
+                result = VRS.unitConverter.convertHeight(result, VRS.Height.Feet, toUnit);
+            }
+            return result;
+        };
+        Aircraft.prototype.convertAirPressure = function (toUnit) {
+            var result = this.airPressureInHg.val;
+            if (result !== undefined && toUnit !== VRS.Pressure.InHg) {
+                result = VRS.unitConverter.convertPressure(result, VRS.Pressure.InHg, toUnit);
+            }
+            return result;
+        };
         Aircraft.prototype.convertDistanceFromHere = function (toUnit) {
             var result = this.distanceFromHereKm.val;
             if (result !== undefined && toUnit !== VRS.Distance.Kilometre) {
@@ -519,6 +537,9 @@ var VRS;
         };
         Aircraft.prototype.formatAltitudeType = function () {
             return VRS.format.altitudeType(this.altitudeType.val);
+        };
+        Aircraft.prototype.formatAirPressureInHg = function (pressureUnit, showUnits) {
+            return VRS.format.pressure(this.airPressureInHg.val, pressureUnit, showUnits);
         };
         Aircraft.prototype.formatAverageSignalLevel = function () {
             return VRS.format.averageSignalLevel(this.averageSignalLevel.val);

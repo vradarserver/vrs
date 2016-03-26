@@ -28,6 +28,7 @@ namespace Test.VirtualRadar.Interface.BaseStation
             var message = new BaseStationSupplementaryMessage();
 
             TestUtilities.TestProperty(message, m => m.AltitudeIsGeometric, null, false);
+            TestUtilities.TestProperty(message, m => m.PressureSettingMb, null, 1.2F);
             TestUtilities.TestProperty(message, m => m.CallsignIsSuspect, null, false);
             TestUtilities.TestProperty(message, m => m.SpeedType, null, SpeedType.TrueAirSpeed);
             TestUtilities.TestProperty(message, m => m.TargetAltitude, null, 100);
@@ -35,6 +36,21 @@ namespace Test.VirtualRadar.Interface.BaseStation
             TestUtilities.TestProperty(message, m => m.TrackIsHeading, null, false);
             TestUtilities.TestProperty(message, m => m.TransponderType, null, TransponderType.Adsb2);
             TestUtilities.TestProperty(message, m => m.VerticalRateIsGeometric, null, false);
+        }
+
+        [TestMethod]
+        public void BaseStationSupplementaryMessage_PressureSettingInHg_Returns_Correct_Values()
+        {
+            var message = new BaseStationSupplementaryMessage();
+
+            message.PressureSettingMb = null;
+            Assert.AreEqual(null, message.PressureSettingInHg);
+
+            message.PressureSettingMb = 0;  // indicates that pressure setting is outside bounds
+            Assert.AreEqual(null, message.PressureSettingInHg);
+
+            message.PressureSettingMb = 1013.25F;
+            Assert.AreEqual(29.92, (double)message.PressureSettingInHg, 0.01);
         }
     }
 }

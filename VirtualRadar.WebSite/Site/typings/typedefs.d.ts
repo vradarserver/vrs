@@ -36,6 +36,8 @@
         Bad:            boolean;
         Reg:            string;
         Alt:            number;
+        GAlt:           number;
+        InHg:           number;
         AltT:           number;
         TAlt:           number;
         Call:           string;

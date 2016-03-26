@@ -285,6 +285,7 @@
         unitDisplayHeight?: HeightEnum;
         unitDisplaySpeed?: SpeedEnum;
         unitDisplayDistance?: DistanceEnum;
+        unitDisplayPressure?: PressureEnum;
         unitDisplayVsiPerSecond?: boolean;
         unitDisplayFLTransitionAltitude?: number;
         unitDisplayFLTransitionHeightUnit?: HeightEnum;

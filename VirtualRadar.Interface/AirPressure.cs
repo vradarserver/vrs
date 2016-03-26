@@ -27,6 +27,11 @@ namespace VirtualRadar.Interface
         public static readonly float StandardPressureInHg = 29.92F;
 
         /// <summary>
+        /// The number of inches of mercury in one millibar.
+        /// </summary>
+        public static readonly float OneMillibarToInHg = 0.0295301F;
+
+        /// <summary>
         /// Gets or sets the air pressure in inches of mercury.
         /// </summary>
         [JsonProperty(PropertyName = "InHg")]
@@ -62,50 +67,49 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
-        /// Takes a natural altitude and returns the pressure altitude for a given air pressure reading.
+        /// Takes a geometric altitude and returns the pressure altitude for a given air pressure reading.
         /// </summary>
-        /// <param name="correctedAltitude"></param>
+        /// <param name="geometricAltitude"></param>
         /// <returns></returns>
-        public int? CorrectedAltitudeToPressureAltitude(int? correctedAltitude)
+        public int? GeometricAltitudeToPressureAltitude(int? geometricAltitude)
         {
-            return CorrectedAltitudeToPressureAltitude(correctedAltitude, PressureInHg);
+            return GeometricAltitudeToPressureAltitude(geometricAltitude, PressureInHg);
         }
 
         /// <summary>
-        /// Takes a natural altitude and air pressure reading and returns the pressure altitude for a given air pressure reading.
+        /// Takes a geometric altitude and air pressure reading and returns the pressure altitude for a given air pressure reading.
         /// </summary>
-        /// <param name="correctedAltitude"></param>
+        /// <param name="geometricAltitude"></param>
         /// <param name="airPressureInHg"></param>
         /// <returns></returns>
-        public static int? CorrectedAltitudeToPressureAltitude(int? correctedAltitude, float airPressureInHg)
+        public static int? GeometricAltitudeToPressureAltitude(int? geometricAltitude, float airPressureInHg)
         {
-            var result = correctedAltitude;
+            var result = geometricAltitude;
 
             if(result != null && airPressureInHg > 0 && airPressureInHg != StandardPressureInHg) {
-                result = (int)(0.5F + (correctedAltitude + 1000 * (StandardPressureInHg - airPressureInHg)));
+                result = (int)(0.5F + (geometricAltitude + 1000 * (StandardPressureInHg - airPressureInHg)));
             }
 
             return result;
         }
 
         /// <summary>
-        /// Takes a pressure altitude and returns the corrected altitude.
+        /// Takes a pressure altitude and returns the geometric altitude.
         /// </summary>
         /// <param name="pressureAltitude"></param>
         /// <returns></returns>
-        public int? PressureAltitudeToCorrectedAltitude(int? pressureAltitude)
+        public int? PressureAltitudeToGeometricAltitude(int? pressureAltitude)
         {
-            return PressureAltitudeToCorrectedAltitude(pressureAltitude, PressureInHg);
+            return PressureAltitudeToGeometricAltitude(pressureAltitude, PressureInHg);
         }
 
         /// <summary>
-        /// Takes a pressure altitude and returns an altitude that has been corrected for the
-        /// pressure reading.
+        /// Takes a pressure altitude and pressure setting, and returns the geometric altitude.
         /// </summary>
         /// <param name="pressureAltitude"></param>
         /// <param name="airPressureInHg"></param>
         /// <returns></returns>
-        public static int? PressureAltitudeToCorrectedAltitude(int? pressureAltitude, float airPressureInHg)
+        public static int? PressureAltitudeToGeometricAltitude(int? pressureAltitude, float airPressureInHg)
         {
             var result = pressureAltitude;
 
@@ -114,6 +118,26 @@ namespace VirtualRadar.Interface
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Converts pressure settings in millibars to inches of mercury.
+        /// </summary>
+        /// <param name="millibars"></param>
+        /// <returns></returns>
+        public static float? MillibarsToInHg(float? millibars)
+        {
+            return millibars == null ? (float?)null : millibars * OneMillibarToInHg;
+        }
+
+        /// <summary>
+        /// Converts pressure settings in inches of mercury to millibars.
+        /// </summary>
+        /// <param name="inHg"></param>
+        /// <returns></returns>
+        public static float? InHgToMillibars(float? inHg)
+        {
+            return inHg == null ? (float?)null : inHg / OneMillibarToInHg;
         }
     }
 }

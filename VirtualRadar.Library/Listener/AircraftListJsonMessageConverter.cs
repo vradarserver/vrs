@@ -41,7 +41,6 @@ namespace VirtualRadar.Library.Listener
                     StatusCode = BaseStationStatusCode.None,
                 };
 
-                if(json.Altitude != null)       message.Altitude = json.Altitude;
                 if(json.Callsign != null)       message.Callsign = json.Callsign;
                 if(json.Emergency != null)      message.Emergency = json.Emergency;
                 if(json.GroundSpeed != null)    message.GroundSpeed = json.GroundSpeed;
@@ -70,6 +69,27 @@ namespace VirtualRadar.Library.Listener
                 if(json.TrackIsHeading != null)     AddSupplementaryValue(message, r => r.TrackIsHeading = json.TrackIsHeading);
                 if(json.TransponderType != null)    AddSupplementaryValue(message, r => r.TransponderType = (TransponderType)json.TransponderType);
                 if(json.VerticalRateType != null)   AddSupplementaryValue(message, r => r.VerticalRateIsGeometric = json.VerticalRateType == 1);
+                if(json.AirPressureInHg != null)    AddSupplementaryValue(message, r => r.PressureSettingMb = AirPressure.InHgToMillibars(json.AirPressureInHg));
+
+                if(json.Altitude != null) {
+                    // When pressure altitude calculations were introduced the sending side was modified to
+                    // send Altitude, GeometricAltitude and AltitudeType as a set. However, before that was
+                    // introduced they'd only be sent if they changed.
+                    if(json.GeometricAltitude == null || json.AltitudeType == null) {
+                        message.Altitude = json.Altitude;
+                    } else {
+                        switch(json.AltitudeType) {
+                            case (int)AltitudeType.Barometric:
+                                message.Altitude = json.Altitude;
+                                break;
+                            case (int)AltitudeType.Geometric:
+                                message.Altitude = json.GeometricAltitude;
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+                    }
+                }
 
                 result.Add(message);
             }
