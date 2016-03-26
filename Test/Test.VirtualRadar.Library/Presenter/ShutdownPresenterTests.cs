@@ -50,6 +50,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IUserManager> _UserManager;
         private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
         private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
+        private Mock<IAirPressureManager> _AirPressureManager;
 
         [TestInitialize]
         public void TestInitialise()
@@ -69,6 +70,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
             _SavedPolarPlotStorage = TestUtilities.CreateMockSingleton<ISavedPolarPlotStorage>();
             _AircraftOnlineLookupManager = TestUtilities.CreateMockSingleton<IAircraftOnlineLookupManager>();
+            _AirPressureManager = TestUtilities.CreateMockSingleton<IAirPressureManager>();
 
             // This version of ILog should cause code that catches & logs exceptions to throw on the log write. Without this
             // the Asserts can go unnoticed.
@@ -273,6 +275,15 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.ShutdownApplication();
 
             _UserManager.Verify(r => r.Shutdown(), Times.Once());
+        }
+
+        [TestMethod]
+        public void ShutdownPresenter_ShutdownApplication_Shuts_Down_AirPressureManager()
+        {
+            _Presenter.Initialise(_View.Object);
+            _Presenter.ShutdownApplication();
+
+            _AirPressureManager.Verify(r => r.Stop(), Times.Once());
         }
         #endregion
     }

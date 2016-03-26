@@ -2663,4 +2663,16 @@ Show this message.</value>
   <data name="CannotStartDefaultBrowserTitle" xml:space="preserve">
     <value>Cannot Start Default Browser</value>
   </data>
+  <data name="DownloadGlobalAirPressureReadings" xml:space="preserve">
+    <value>Download air pressure readings</value>
+  </data>
+  <data name="OptionsDescribeDownloadGlobalAirPressureReadings" xml:space="preserve">
+    <value>Yes to periodically download air pressure settings from the Internet, no to disable the downloads. Air pressure readings are used to convert from the pressure altitudes reported by the aircraft to the actual altitude.</value>
+  </data>
+  <data name="SplashScreenInitialisingAirPressureManager" xml:space="preserve">
+    <value>Initialising air pressure manager</value>
+  </data>
+  <data name="ShuttingDownAirPressureManager" xml:space="preserve">
+    <value>Shutting down air pressure manager</value>
+  </data>
 </root>

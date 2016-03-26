@@ -80,6 +80,9 @@
     <Compile Include="AircraftSanityChecker.cs" />
     <Compile Include="AircraftOnlineLookupProvider.cs" />
     <Compile Include="AirportDataDotCom.cs" />
+    <Compile Include="AirPressureDownloader.cs" />
+    <Compile Include="AirPressureLookup.cs" />
+    <Compile Include="AirPressureManager.cs" />
     <Compile Include="Audio.cs" />
     <Compile Include="AutoConfigPictureFolderCache.cs" />
     <Compile Include="BackgroundWorker.cs" />
@@ -198,6 +201,10 @@
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
       <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
       <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ThirdParty\KdTreeLib\KdTreeLib.csproj">
+      <Project>{68c8066d-7844-41c2-993d-3160798164d1}</Project>
+      <Name>KdTreeLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>

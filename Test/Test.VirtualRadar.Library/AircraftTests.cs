@@ -49,11 +49,13 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void Aircraft_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
+            Assert.AreEqual(0, _Aircraft.AirPressureInHgChanged);
             Assert.AreEqual(0, _Aircraft.AltitudeChanged);
             Assert.AreEqual(0, _Aircraft.AltitudeTypeChanged);
             Assert.AreEqual(0, _Aircraft.CallsignChanged);
             Assert.AreEqual(0, _Aircraft.CallsignIsSuspectChanged);
             Assert.AreEqual(0, _Aircraft.ConstructionNumberChanged);
+            Assert.AreEqual(0, _Aircraft.CorrectedAltitudeChanged);
             Assert.AreEqual(0, _Aircraft.CountMessagesReceivedChanged);
             Assert.AreEqual(0, _Aircraft.DestinationChanged);
             Assert.AreEqual(0, _Aircraft.EmergencyChanged);
@@ -105,10 +107,13 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.ShortCoordinates.Count);
             Assert.AreEqual(0, _Aircraft.Stopovers.Count);
 
+            TestUtilities.TestProperty(_Aircraft, r => r.AirPressureInHg, null, 1.2F);
+            TestUtilities.TestProperty(_Aircraft, r => r.AirPressureLookedUpUtc, null, DateTime.UtcNow);
             TestUtilities.TestProperty(_Aircraft, r => r.Altitude, null, 1);
             TestUtilities.TestProperty(_Aircraft, r => r.AltitudeType, AltitudeType.Barometric, AltitudeType.Geometric);
             TestUtilities.TestProperty(_Aircraft, r => r.Callsign, null, "ABC123");
             TestUtilities.TestProperty(_Aircraft, r => r.CallsignIsSuspect, false);
+            TestUtilities.TestProperty(_Aircraft, r => r.CorrectedAltitude, null, 100);
             TestUtilities.TestProperty(_Aircraft, r => r.ConstructionNumber, null, "GB");
             TestUtilities.TestProperty(_Aircraft, r => r.CountMessagesReceived, 0L, 12L);
             TestUtilities.TestProperty(_Aircraft, r => r.DataVersion, 0L, 12023L);
@@ -411,6 +416,11 @@ namespace Test.VirtualRadar.Library
                             case "IsTisbChanged":                   value = _Aircraft.IsTisbChanged; break;
                             case "YearBuilt":                       value = _Aircraft.YearBuilt = stringValue; break;
                             case "YearBuiltChanged":                value = _Aircraft.YearBuiltChanged; break;
+                            case "CorrectedAltitude":               value = _Aircraft.CorrectedAltitude = intValue; break;
+                            case "CorrectedAltitudeChanged":        value = _Aircraft.CorrectedAltitudeChanged; break;
+                            case "AirPressureInHg":                 value = _Aircraft.AirPressureInHg = floatValue; break;
+                            case "AirPressureInHgChanged":          value = _Aircraft.AirPressureInHgChanged; break;
+                            case "AirPressureLookedUpUtc":          value = _Aircraft.AirPressureLookedUpUtc = dateTimeValue; break;
                             default:                                throw new NotImplementedException();
                         }
 

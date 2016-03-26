@@ -38,11 +38,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.checkBoxLookupAircraftDetailsOnline = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.labelAircraftLookupSupplierCredits = new System.Windows.Forms.Label();
             this.linkLabelAircraftLookupSupplierUrl = new System.Windows.Forms.LinkLabel();
             this.label6 = new System.Windows.Forms.Label();
             this.labelAircraftLookupDataProvider = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.checkBoxDownloadWeather = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,7 +53,7 @@
             this.checkBoxSearchPictureSubFolders.Location = new System.Drawing.Point(200, 105);
             this.checkBoxSearchPictureSubFolders.Name = "checkBoxSearchPictureSubFolders";
             this.checkBoxSearchPictureSubFolders.Size = new System.Drawing.Size(158, 17);
-            this.checkBoxSearchPictureSubFolders.TabIndex = 17;
+            this.checkBoxSearchPictureSubFolders.TabIndex = 8;
             this.checkBoxSearchPictureSubFolders.Text = "::SearchPictureSubFolders::";
             this.checkBoxSearchPictureSubFolders.UseVisualStyleBackColor = true;
             // 
@@ -62,7 +63,7 @@
             this.label4.Location = new System.Drawing.Point(0, 84);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(89, 13);
-            this.label4.TabIndex = 16;
+            this.label4.TabIndex = 6;
             this.label4.Text = "::PicturesFolder:::";
             // 
             // folderFlags
@@ -72,7 +73,7 @@
             this.folderFlags.Location = new System.Drawing.Point(200, 27);
             this.folderFlags.Name = "folderFlags";
             this.folderFlags.Size = new System.Drawing.Size(505, 20);
-            this.folderFlags.TabIndex = 11;
+            this.folderFlags.TabIndex = 3;
             // 
             // folderPictures
             // 
@@ -81,7 +82,7 @@
             this.folderPictures.Location = new System.Drawing.Point(200, 79);
             this.folderPictures.Name = "folderPictures";
             this.folderPictures.Size = new System.Drawing.Size(505, 20);
-            this.folderPictures.TabIndex = 15;
+            this.folderPictures.TabIndex = 7;
             // 
             // fileDatabaseFileName
             // 
@@ -90,7 +91,7 @@
             this.fileDatabaseFileName.Location = new System.Drawing.Point(200, 0);
             this.fileDatabaseFileName.Name = "fileDatabaseFileName";
             this.fileDatabaseFileName.Size = new System.Drawing.Size(505, 20);
-            this.fileDatabaseFileName.TabIndex = 9;
+            this.fileDatabaseFileName.TabIndex = 1;
             // 
             // label3
             // 
@@ -98,7 +99,7 @@
             this.label3.Location = new System.Drawing.Point(0, 58);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(103, 13);
-            this.label3.TabIndex = 14;
+            this.label3.TabIndex = 4;
             this.label3.Text = "::SilhouettesFolder:::";
             // 
             // label1
@@ -107,7 +108,7 @@
             this.label1.Location = new System.Drawing.Point(0, 5);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(112, 13);
-            this.label1.TabIndex = 10;
+            this.label1.TabIndex = 0;
             this.label1.Text = "::DatabaseFileName:::";
             // 
             // folderSilhouettes
@@ -117,7 +118,7 @@
             this.folderSilhouettes.Location = new System.Drawing.Point(200, 53);
             this.folderSilhouettes.Name = "folderSilhouettes";
             this.folderSilhouettes.Size = new System.Drawing.Size(505, 20);
-            this.folderSilhouettes.TabIndex = 13;
+            this.folderSilhouettes.TabIndex = 5;
             // 
             // label2
             // 
@@ -125,7 +126,7 @@
             this.label2.Location = new System.Drawing.Point(0, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
-            this.label2.TabIndex = 12;
+            this.label2.TabIndex = 2;
             this.label2.Text = "::FlagsFolder:::";
             // 
             // checkBoxLookupAircraftDetailsOnline
@@ -134,7 +135,7 @@
             this.checkBoxLookupAircraftDetailsOnline.Location = new System.Drawing.Point(200, 19);
             this.checkBoxLookupAircraftDetailsOnline.Name = "checkBoxLookupAircraftDetailsOnline";
             this.checkBoxLookupAircraftDetailsOnline.Size = new System.Drawing.Size(169, 17);
-            this.checkBoxLookupAircraftDetailsOnline.TabIndex = 18;
+            this.checkBoxLookupAircraftDetailsOnline.TabIndex = 0;
             this.checkBoxLookupAircraftDetailsOnline.Text = "::LookupAircraftDetailsOnline::";
             this.checkBoxLookupAircraftDetailsOnline.UseVisualStyleBackColor = true;
             // 
@@ -148,12 +149,21 @@
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.labelAircraftLookupDataProvider);
             this.groupBox1.Controls.Add(this.checkBoxLookupAircraftDetailsOnline);
-            this.groupBox1.Location = new System.Drawing.Point(0, 128);
+            this.groupBox1.Location = new System.Drawing.Point(0, 151);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(705, 115);
-            this.groupBox1.TabIndex = 19;
+            this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::AircraftDetailsOnlineLookup::";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 61);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(76, 13);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "::WebSiteUrl:::";
             // 
             // labelAircraftLookupSupplierCredits
             // 
@@ -163,7 +173,7 @@
             this.labelAircraftLookupSupplierCredits.Margin = new System.Windows.Forms.Padding(3);
             this.labelAircraftLookupSupplierCredits.Name = "labelAircraftLookupSupplierCredits";
             this.labelAircraftLookupSupplierCredits.Size = new System.Drawing.Size(502, 32);
-            this.labelAircraftLookupSupplierCredits.TabIndex = 22;
+            this.labelAircraftLookupSupplierCredits.TabIndex = 5;
             this.labelAircraftLookupSupplierCredits.Text = "Line1\r\nLine2";
             // 
             // linkLabelAircraftLookupSupplierUrl
@@ -173,7 +183,7 @@
             this.linkLabelAircraftLookupSupplierUrl.Margin = new System.Windows.Forms.Padding(3);
             this.linkLabelAircraftLookupSupplierUrl.Name = "linkLabelAircraftLookupSupplierUrl";
             this.linkLabelAircraftLookupSupplierUrl.Size = new System.Drawing.Size(19, 13);
-            this.linkLabelAircraftLookupSupplierUrl.TabIndex = 21;
+            this.linkLabelAircraftLookupSupplierUrl.TabIndex = 4;
             this.linkLabelAircraftLookupSupplierUrl.TabStop = true;
             this.linkLabelAircraftLookupSupplierUrl.Text = "<>";
             this.linkLabelAircraftLookupSupplierUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelAircraftLookupSupplierUrl_LinkClicked);
@@ -184,7 +194,7 @@
             this.label6.Location = new System.Drawing.Point(6, 42);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(84, 13);
-            this.label6.TabIndex = 20;
+            this.label6.TabIndex = 1;
             this.label6.Text = "::DataProvider:::";
             // 
             // labelAircraftLookupDataProvider
@@ -194,21 +204,23 @@
             this.labelAircraftLookupDataProvider.Margin = new System.Windows.Forms.Padding(3);
             this.labelAircraftLookupDataProvider.Name = "labelAircraftLookupDataProvider";
             this.labelAircraftLookupDataProvider.Size = new System.Drawing.Size(65, 13);
-            this.labelAircraftLookupDataProvider.TabIndex = 19;
+            this.labelAircraftLookupDataProvider.TabIndex = 2;
             this.labelAircraftLookupDataProvider.Text = "::Unknown::";
             // 
-            // label5
+            // checkBoxDownloadWeather
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 61);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(76, 13);
-            this.label5.TabIndex = 23;
-            this.label5.Text = "::WebSiteUrl:::";
+            this.checkBoxDownloadWeather.AutoSize = true;
+            this.checkBoxDownloadWeather.Location = new System.Drawing.Point(200, 128);
+            this.checkBoxDownloadWeather.Name = "checkBoxDownloadWeather";
+            this.checkBoxDownloadWeather.Size = new System.Drawing.Size(214, 17);
+            this.checkBoxDownloadWeather.TabIndex = 9;
+            this.checkBoxDownloadWeather.Text = "::DownloadGlobalAirPressureReadings::";
+            this.checkBoxDownloadWeather.UseVisualStyleBackColor = true;
             // 
             // PageDataSources
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.checkBoxDownloadWeather);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBoxSearchPictureSubFolders);
             this.Controls.Add(this.label4);
@@ -220,7 +232,7 @@
             this.Controls.Add(this.folderSilhouettes);
             this.Controls.Add(this.label2);
             this.Name = "PageDataSources";
-            this.Size = new System.Drawing.Size(705, 249);
+            this.Size = new System.Drawing.Size(705, 271);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -246,5 +258,6 @@
         private System.Windows.Forms.LinkLabel linkLabelAircraftLookupSupplierUrl;
         private System.Windows.Forms.Label labelAircraftLookupSupplierCredits;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox checkBoxDownloadWeather;
     }
 }

@@ -116,6 +116,11 @@ namespace VirtualRadar.Library.BaseStation
         private ICallsignRouteFetcher _CallsignRouteFetcher;
 
         /// <summary>
+        /// The object that handles air pressure lookups.
+        /// </summary>
+        private IAirPressureManager _AirPressureManager;
+
+        /// <summary>
         /// The object that synchronises changes to <see cref="_AircraftMap"/> and <see cref="_CalculatedTrackCoordinates"/>.
         /// </summary>
         private object _AircraftListLock = new object();
@@ -340,6 +345,7 @@ namespace VirtualRadar.Library.BaseStation
                 _AircraftDetailFetcher.Fetched += AircraftDetailFetcher_Fetched;
                 _CallsignRouteFetcher = Factory.Singleton.Resolve<ICallsignRouteFetcher>().Singleton;
                 _CallsignRouteFetcher.Fetched += CallsignRouteFetcher_Fetched;
+                _AirPressureManager = Factory.Singleton.Resolve<IAirPressureManager>().Singleton;
 
                 _Started = true;
             }
@@ -530,7 +536,6 @@ namespace VirtualRadar.Library.BaseStation
                     if(aircraft.Icao24 == null) aircraft.Icao24 = message.Icao24;
 
                     if(!String.IsNullOrEmpty(message.Callsign)) aircraft.Callsign = message.Callsign;
-                    if(message.Altitude != null) aircraft.Altitude = message.Altitude;
                     if(message.GroundSpeed != null) aircraft.GroundSpeed = message.GroundSpeed;
                     if(message.VerticalRate != null) aircraft.VerticalRate = message.VerticalRate;
                     if(message.OnGround != null) aircraft.OnGround = message.OnGround;
@@ -552,6 +557,16 @@ namespace VirtualRadar.Library.BaseStation
                     var supplementaryMessage = message != null && message.Supplementary != null ? message.Supplementary : null;
                     if(supplementaryMessage != null) {
                         ApplySupplementaryMessage(aircraft, supplementaryMessage);
+                    }
+
+                    if(message.Altitude != null) {
+                        aircraft.Altitude = message.Altitude;
+                        RefreshAircraftAirPressure(aircraft, now);
+                        if(aircraft.AirPressureInHg != null && aircraft.AltitudeType == AltitudeType.Barometric) {
+                            aircraft.CorrectedAltitude = AirPressure.PressureAltitudeToCorrectedAltitude(aircraft.Altitude, aircraft.AirPressureInHg.Value);
+                        } else {
+                            aircraft.CorrectedAltitude = aircraft.Altitude;
+                        }
                     }
 
                     var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);
@@ -599,6 +614,20 @@ namespace VirtualRadar.Library.BaseStation
                             aircraft.TransponderType = TransponderType.Adsb;
                         }
                         break;
+                }
+            }
+        }
+
+        private void RefreshAircraftAirPressure(IAircraft aircraft, DateTime now)
+        {
+            if(aircraft.Latitude != null && aircraft.Longitude != null) {
+                var thresholdSeconds = aircraft.AirPressureInHg == null ? 5 : 5 * 60;
+                if(aircraft.AirPressureLookedUpUtc == null || aircraft.AirPressureLookedUpUtc.Value.AddSeconds(thresholdSeconds) <= now) {
+                    aircraft.AirPressureLookedUpUtc = now;
+                    var airPressure = _AirPressureManager.Lookup.FindClosest(aircraft.Latitude.Value, aircraft.Longitude.Value);
+                    if(airPressure != null) {
+                        aircraft.AirPressureInHg = airPressure.PressureInHg;
+                    }
                 }
             }
         }

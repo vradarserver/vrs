@@ -74,6 +74,7 @@
     <Compile Include="AircraftDetailTests.cs" />
     <Compile Include="AirportDataThumbnailJsonTests.cs" />
     <Compile Include="AirportDataThumbnailsJsonTests.cs" />
+    <Compile Include="AirPressureTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageEventArgsTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageHelperTests.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessageTests.cs" />

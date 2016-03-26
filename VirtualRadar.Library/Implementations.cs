@@ -94,6 +94,9 @@ namespace VirtualRadar.Library
             factory.Register<IAircraftPictureManager, AircraftPictureManager>();
             factory.Register<IAircraftSanityChecker, AircraftSanityChecker>();
             factory.Register<IAirportDataDotCom, AirportDataDotCom>();
+            factory.Register<IAirPressureDownloader, AirPressureDownloader>();
+            factory.Register<IAirPressureLookup, AirPressureLookup>();
+            factory.Register<IAirPressureManager, AirPressureManager>();
             factory.Register<IAudio, Audio>();
             factory.Register<IAutoConfigPictureFolderCache, AutoConfigPictureFolderCache>();
             factory.Register<IBackgroundWorker, BackgroundWorker>();

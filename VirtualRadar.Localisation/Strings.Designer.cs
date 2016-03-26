@@ -1498,6 +1498,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download air pressure readings.
+        /// </summary>
+        public static string DownloadGlobalAirPressureReadings {
+            get {
+                return ResourceManager.GetString("DownloadGlobalAirPressureReadings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloading, please wait.
         /// </summary>
         public static string DownloadingPleaseWait {
@@ -3596,6 +3605,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeDirectoryEntryKey {
             get {
                 return ResourceManager.GetString("OptionsDescribeDirectoryEntryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to periodically download air pressure settings from the Internet, no to disable the downloads. Air pressure readings are used to convert from the pressure altitudes reported by the aircraft to the actual altitude..
+        /// </summary>
+        public static string OptionsDescribeDownloadGlobalAirPressureReadings {
+            get {
+                return ResourceManager.GetString("OptionsDescribeDownloadGlobalAirPressureReadings", resourceCulture);
             }
         }
         
@@ -6057,6 +6075,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shutting down air pressure manager.
+        /// </summary>
+        public static string ShuttingDownAirPressureManager {
+            get {
+                return ResourceManager.GetString("ShuttingDownAirPressureManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shutting down aircraft list.
         /// </summary>
         public static string ShuttingDownBaseStationAircraftList {
@@ -6233,6 +6260,15 @@ namespace VirtualRadar.Localisation {
         public static string SplashScreenInitialisingAircraftList {
             get {
                 return ResourceManager.GetString("SplashScreenInitialisingAircraftList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialising air pressure manager.
+        /// </summary>
+        public static string SplashScreenInitialisingAirPressureManager {
+            get {
+                return ResourceManager.GetString("SplashScreenInitialisingAirPressureManager", resourceCulture);
             }
         }
         

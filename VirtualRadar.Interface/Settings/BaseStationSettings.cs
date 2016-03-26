@@ -229,6 +229,17 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _LookupAircraftDetailsOnline, value, () => LookupAircraftDetailsOnline); }
         }
 
+        private bool _DownloadGlobalAirPressureReadings;
+        /// <summary>
+        /// Gets or sets a value indicating that global air pressure readings should be downloaded so that
+        /// true altitudes can be calculated for aircraft that report pressure altitudes.
+        /// </summary>
+        public bool DownloadGlobalAirPressureReadings
+        {
+            get { return _DownloadGlobalAirPressureReadings; }
+            set { SetField(ref _DownloadGlobalAirPressureReadings, value, () => DownloadGlobalAirPressureReadings); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -291,6 +302,7 @@ namespace VirtualRadar.Interface.Settings
             DisplayTimeoutSeconds = 30;
             TrackingTimeoutSeconds = 600;
             LookupAircraftDetailsOnline = true;
+            DownloadGlobalAirPressureReadings = true;
         }
     }
 }

@@ -118,6 +118,7 @@ namespace VirtualRadar.Library.Presenter
             LoadPictureFolderCache();
             TestBaseStationDatabaseConnection();
             LoadStandingData();
+            StartAirPressureManager();
             StartFeedManager(configuration);
             var webSite = StartWebSite();
             StartRebroadcastServers();
@@ -303,6 +304,14 @@ namespace VirtualRadar.Library.Presenter
             }
 
             Factory.Singleton.Resolve<IBackgroundDataDownloader>().Singleton.Start();
+        }
+
+        private void StartAirPressureManager()
+        {
+            _View.ReportProgress(Strings.SplashScreenInitialisingAirPressureManager);
+
+            var airPressureManager = Factory.Singleton.Resolve<IAirPressureManager>().Singleton;
+            airPressureManager.Start();
         }
 
         private void StartFeedManager(Configuration configuration)

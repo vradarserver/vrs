@@ -397,6 +397,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public bool LookupAircraftDetailsOnline { get; set; }
 
+        public bool DownloadGlobalAirPressureReadings { get; set; }
+
         public BaseStationSettingsModel()
         {
         }
@@ -409,30 +411,32 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public void RefreshFromSettings(BaseStationSettings settings)
         {
-            DatabaseFileName =              settings.DatabaseFileName;
-            OperatorFlagsFolder =           settings.OperatorFlagsFolder;
-            SilhouettesFolder =             settings.SilhouettesFolder;
-            PicturesFolder =                settings.PicturesFolder;
-            SearchPictureSubFolders =       settings.SearchPictureSubFolders;
-            DisplayTimeoutSeconds =         settings.DisplayTimeoutSeconds;
-            TrackingTimeoutSeconds =        settings.TrackingTimeoutSeconds;
-            MinimiseToSystemTray =          settings.MinimiseToSystemTray;
-            AutoSavePolarPlotsMinutes =     settings.AutoSavePolarPlotsMinutes;
-            LookupAircraftDetailsOnline =   settings.LookupAircraftDetailsOnline;
+            DatabaseFileName =                  settings.DatabaseFileName;
+            OperatorFlagsFolder =               settings.OperatorFlagsFolder;
+            SilhouettesFolder =                 settings.SilhouettesFolder;
+            PicturesFolder =                    settings.PicturesFolder;
+            SearchPictureSubFolders =           settings.SearchPictureSubFolders;
+            DisplayTimeoutSeconds =             settings.DisplayTimeoutSeconds;
+            TrackingTimeoutSeconds =            settings.TrackingTimeoutSeconds;
+            MinimiseToSystemTray =              settings.MinimiseToSystemTray;
+            AutoSavePolarPlotsMinutes =         settings.AutoSavePolarPlotsMinutes;
+            LookupAircraftDetailsOnline =       settings.LookupAircraftDetailsOnline;
+            DownloadGlobalAirPressureReadings = settings.DownloadGlobalAirPressureReadings;
         }
 
         public BaseStationSettings CopyToSettings(BaseStationSettings settings)
         {
-            settings.DatabaseFileName =             DatabaseFileName;
-            settings.OperatorFlagsFolder =          OperatorFlagsFolder;
-            settings.SilhouettesFolder =            SilhouettesFolder;
-            settings.PicturesFolder =               PicturesFolder;
-            settings.SearchPictureSubFolders =      SearchPictureSubFolders;
-            settings.DisplayTimeoutSeconds =        DisplayTimeoutSeconds;
-            settings.TrackingTimeoutSeconds =       TrackingTimeoutSeconds;
-            settings.MinimiseToSystemTray =         MinimiseToSystemTray;
-            settings.AutoSavePolarPlotsMinutes =    AutoSavePolarPlotsMinutes;
-            settings.LookupAircraftDetailsOnline =  LookupAircraftDetailsOnline;
+            settings.DatabaseFileName =                     DatabaseFileName;
+            settings.OperatorFlagsFolder =                  OperatorFlagsFolder;
+            settings.SilhouettesFolder =                    SilhouettesFolder;
+            settings.PicturesFolder =                       PicturesFolder;
+            settings.SearchPictureSubFolders =              SearchPictureSubFolders;
+            settings.DisplayTimeoutSeconds =                DisplayTimeoutSeconds;
+            settings.TrackingTimeoutSeconds =               TrackingTimeoutSeconds;
+            settings.MinimiseToSystemTray =                 MinimiseToSystemTray;
+            settings.AutoSavePolarPlotsMinutes =            AutoSavePolarPlotsMinutes;
+            settings.LookupAircraftDetailsOnline =          LookupAircraftDetailsOnline;
+            settings.DownloadGlobalAirPressureReadings =    DownloadGlobalAirPressureReadings;
 
             return settings;
         }
