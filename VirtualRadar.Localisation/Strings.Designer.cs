@@ -4662,7 +4662,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PlaneFinder.
+        ///   Looks up a localized string similar to Plane Finder Radar.
         /// </summary>
         public static string PlaneFinder {
             get {
