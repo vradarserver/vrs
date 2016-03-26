@@ -789,6 +789,38 @@ var VRS;
                 default: throw 'Unknown speed unit ' + unit;
             }
         };
+        UnitConverter.prototype.convertPressure = function (value, fromUnit, toUnit) {
+            var result = value;
+            if (fromUnit !== toUnit && !isNaN(value)) {
+                switch (fromUnit) {
+                    case VRS.Pressure.InHg:
+                        switch (toUnit) {
+                            case VRS.Pressure.Millibar:
+                                result /= 0.0295301;
+                                break;
+                            default: throw 'Unknown pressure unit ' + toUnit;
+                        }
+                        break;
+                    case VRS.Pressure.Millibar:
+                        switch (toUnit) {
+                            case VRS.Pressure.InHg:
+                                result *= 0.0295301;
+                                break;
+                            default: throw 'Unknown pressure unit ' + toUnit;
+                        }
+                    default:
+                        throw 'Unknown pressure unit ' + fromUnit;
+                }
+            }
+            return result;
+        };
+        UnitConverter.prototype.pressureUnitAbbreviation = function (unit) {
+            switch (unit) {
+                case VRS.Pressure.InHg: return VRS.$$.InHgAbbreviation;
+                case VRS.Pressure.Millibar: return VRS.$$.MillibarAbbreviation;
+                default: throw 'Unknown pressure unit ' + unit;
+            }
+        };
         UnitConverter.prototype.convertVerticalSpeed = function (verticalSpeed, fromUnit, toUnit, perSecond) {
             var result = verticalSpeed;
             if (result !== undefined) {

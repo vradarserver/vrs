@@ -556,16 +556,28 @@ namespace VirtualRadar.Library.BaseStation
 
                     var supplementaryMessage = message != null && message.Supplementary != null ? message.Supplementary : null;
                     if(supplementaryMessage != null) {
-                        ApplySupplementaryMessage(aircraft, supplementaryMessage);
+                        ApplySupplementaryMessage(aircraft, supplementaryMessage, now);
                     }
 
                     if(message.Altitude != null) {
                         aircraft.Altitude = message.Altitude;
                         RefreshAircraftAirPressure(aircraft, now);
-                        if(aircraft.AirPressureInHg != null && aircraft.AltitudeType == AltitudeType.Barometric) {
-                            aircraft.CorrectedAltitude = AirPressure.PressureAltitudeToCorrectedAltitude(aircraft.Altitude, aircraft.AirPressureInHg.Value);
-                        } else {
-                            aircraft.CorrectedAltitude = aircraft.Altitude;
+                        switch(aircraft.AltitudeType) {
+                            case AltitudeType.Barometric:
+                                if(aircraft.AirPressureInHg == null) {
+                                    aircraft.GeometricAltitude = aircraft.Altitude;
+                                } else {
+                                    aircraft.GeometricAltitude = AirPressure.PressureAltitudeToGeometricAltitude(aircraft.Altitude, aircraft.AirPressureInHg.Value);
+                                }
+                                break;
+                            case AltitudeType.Geometric:
+                                aircraft.GeometricAltitude = aircraft.Altitude;
+                                if(aircraft.AirPressureInHg != null) {
+                                    aircraft.Altitude = AirPressure.GeometricAltitudeToPressureAltitude(aircraft.GeometricAltitude, aircraft.AirPressureInHg.Value);
+                                }
+                                break;
+                            default:
+                                throw new NotImplementedException();
                         }
                     }
 
@@ -584,7 +596,7 @@ namespace VirtualRadar.Library.BaseStation
             }
         }
 
-        private static void ApplySupplementaryMessage(IAircraft aircraft, BaseStationSupplementaryMessage supplementaryMessage)
+        private static void ApplySupplementaryMessage(IAircraft aircraft, BaseStationSupplementaryMessage supplementaryMessage, DateTime now)
         {
             if(supplementaryMessage.AltitudeIsGeometric != null) aircraft.AltitudeType = supplementaryMessage.AltitudeIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
             if(supplementaryMessage.VerticalRateIsGeometric != null) aircraft.VerticalRateType = supplementaryMessage.VerticalRateIsGeometric.Value ? AltitudeType.Geometric : AltitudeType.Barometric;
@@ -593,6 +605,12 @@ namespace VirtualRadar.Library.BaseStation
             if(supplementaryMessage.TrackIsHeading != null) aircraft.TrackIsHeading = supplementaryMessage.TrackIsHeading.Value;
             if(supplementaryMessage.TargetAltitude != null) aircraft.TargetAltitude = supplementaryMessage.TargetAltitude.Value;
             if(supplementaryMessage.TargetHeading != null) aircraft.TargetTrack = supplementaryMessage.TargetHeading.Value;
+
+            var pressureSetting = supplementaryMessage.PressureSettingInHg;
+            if(pressureSetting != null) {
+                aircraft.AirPressureInHg = pressureSetting;
+                aircraft.AirPressureLookedUpUtc = now.AddHours(1);      // Don't use downloaded air pressure for this aircraft for at least an hour
+            }
 
             if(supplementaryMessage.TransponderType != null) {
                 switch(supplementaryMessage.TransponderType.Value) {

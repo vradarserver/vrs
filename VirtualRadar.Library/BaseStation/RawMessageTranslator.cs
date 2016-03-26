@@ -814,6 +814,7 @@ namespace VirtualRadar.Library.BaseStation
                 supplementary.TransponderType = TransponderType.Adsb2;
                 if(tss2.SelectedAltitude != null) supplementary.TargetAltitude = tss2.SelectedAltitude;
                 if(tss2.SelectedHeading != null) supplementary.TargetHeading = (float)tss2.SelectedHeading;
+                if(tss2.BarometricPressureSetting != null) supplementary.PressureSettingMb = tss2.BarometricPressureSetting;
             }
         }
 

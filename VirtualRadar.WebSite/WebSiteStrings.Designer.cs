@@ -178,6 +178,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Air Pressure.
+        /// </summary>
+        public static string AirPressure {
+            get {
+                return ResourceManager.GetString("AirPressure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List all.
         /// </summary>
         public static string AllAircraft {
@@ -1456,6 +1465,24 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} inHg.
+        /// </summary>
+        public static string InHgAbbreviation {
+            get {
+                return ResourceManager.GetString("InHgAbbreviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inches of Mercury.
+        /// </summary>
+        public static string InHgDescription {
+            get {
+                return ResourceManager.GetString("InHgDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Interesting.
         /// </summary>
         public static string Interesting {
@@ -1740,6 +1767,15 @@ namespace VirtualRadar.WebSite {
         public static string ListAirportDataThumbnails {
             get {
                 return ResourceManager.GetString("ListAirportDataThumbnails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pressure.
+        /// </summary>
+        public static string ListAirPressure {
+            get {
+                return ResourceManager.GetString("ListAirPressure", resourceCulture);
             }
         }
         
@@ -2689,6 +2725,24 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} mb.
+        /// </summary>
+        public static string MillibarAbbreviation {
+            get {
+                return ResourceManager.GetString("MillibarAbbreviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Millibars.
+        /// </summary>
+        public static string MillibarDescription {
+            get {
+                return ResourceManager.GetString("MillibarDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MLAT.
         /// </summary>
         public static string Mlat {
@@ -3351,6 +3405,15 @@ namespace VirtualRadar.WebSite {
         public static string PoweredByVRS {
             get {
                 return ResourceManager.GetString("PoweredByVRS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pressures.
+        /// </summary>
+        public static string Pressures {
+            get {
+                return ResourceManager.GetString("Pressures", resourceCulture);
             }
         }
         

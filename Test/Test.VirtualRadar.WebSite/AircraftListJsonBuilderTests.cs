@@ -1315,6 +1315,8 @@ namespace Test.VirtualRadar.WebSite
                     case "CallsignIsSuspect":
                     case "TransponderType":
                     case "IsTisb":
+                    case "AirPressureInHg":
+                    case "GeometricAltitude":
                         Assert.IsFalse(isEmpty, property.Name);
                         break;
                     // These are properties that get filled in whether we like it or not
@@ -1365,6 +1367,45 @@ namespace Test.VirtualRadar.WebSite
                 Assert.AreEqual(i == 1 ? 7 : 20, json.Longitude);
                 Assert.AreEqual(i == 2 ? false : true, json.PositionIsMlat);
             }
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Sends_Altitude_GeometricAltitude_And_AltitudeType_As_A_Set()
+        {
+            AddBlankAircraft(1);
+            var aircraft = Mock.Get(_AircraftLists[0][0]);
+            aircraft.Object.UniqueId = 7;
+            aircraft.Object.DataVersion = 1;
+            _Args.OnlyIncludeMessageFields = true;
+            _Args.PreviousAircraft.Add(7);
+
+            aircraft.Object.Altitude = 100;
+            aircraft.Object.GeometricAltitude = 200;
+            aircraft.Object.AltitudeType = AltitudeType.Barometric;
+
+            _Args.PreviousDataVersion = 1;
+            aircraft.Object.DataVersion = 2;
+            aircraft.SetupGet(r => r.AltitudeChanged).Returns(2);
+            var json = _Builder.Build(_Args).Aircraft[0];
+            Assert.IsNotNull(json.Altitude);
+            Assert.IsNotNull(json.AltitudeType);
+            Assert.IsNotNull(json.GeometricAltitude);
+
+            _Args.PreviousDataVersion = 2;
+            aircraft.Object.DataVersion = 3;
+            aircraft.SetupGet(r => r.GeometricAltitudeChanged).Returns(3);
+            json = _Builder.Build(_Args).Aircraft[0];
+            Assert.IsNotNull(json.Altitude);
+            Assert.IsNotNull(json.AltitudeType);
+            Assert.IsNotNull(json.GeometricAltitude);
+
+            _Args.PreviousDataVersion = 3;
+            aircraft.Object.DataVersion = 4;
+            aircraft.SetupGet(r => r.AltitudeTypeChanged).Returns(4);
+            json = _Builder.Build(_Args).Aircraft[0];
+            Assert.IsNotNull(json.Altitude);
+            Assert.IsNotNull(json.AltitudeType);
+            Assert.IsNotNull(json.GeometricAltitude);
         }
 
         [TestMethod]

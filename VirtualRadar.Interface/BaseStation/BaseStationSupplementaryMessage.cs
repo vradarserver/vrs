@@ -95,5 +95,19 @@ namespace VirtualRadar.Interface.BaseStation
         /// Gets or sets the target heading from the aircraft's auto-pilot / FMS etc.
         /// </summary>
         public float? TargetHeading { get; set; }
+
+        /// <summary>
+        /// Gets or sets the barometric pressure setting in millibars. A value of zero indicates that the pressure setting
+        /// was outside the bounds supported by the message type.
+        /// </summary>
+        public float? PressureSettingMb { get; set; }
+
+        /// <summary>
+        /// Gets the barometric pressure setting in inches of mercury.
+        /// </summary>
+        public float? PressureSettingInHg
+        {
+            get { return PressureSettingMb.GetValueOrDefault() == 0 ? (float?)null : AirPressure.MillibarsToInHg(PressureSettingMb); }
+        }
     }
 }

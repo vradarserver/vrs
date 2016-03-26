@@ -23,6 +23,7 @@ namespace VRS
     VRS.globalOptions.unitDisplayHeight = VRS.globalOptions.unitDisplayHeight || VRS.Height.Feet;                                   // The default unit for altitudes.
     VRS.globalOptions.unitDisplaySpeed = VRS.globalOptions.unitDisplaySpeed || VRS.Speed.Knots;                                     // The default unit for speeds.
     VRS.globalOptions.unitDisplayDistance = VRS.globalOptions.unitDisplayDistance || VRS.Distance.Kilometre;                        // The default unit for distances.
+    VRS.globalOptions.unitDisplayPressure = VRS.globalOptions.unitDisplayPressure || VRS.Pressure.InHg;                             // The default unit for pressures.
     VRS.globalOptions.unitDisplayVsiPerSecond = VRS.globalOptions.unitDisplayVsiPerSecond !== undefined ? VRS.globalOptions.unitDisplayVsiPerSecond : VRS.isFlightSim;          // True if vertical speeds are to be shown per second rather than per minute.
     VRS.globalOptions.unitDisplayFLTransitionAltitude = VRS.globalOptions.unitDisplayFLTransitionAltitude || 18000;                 // The default flight level transition altitude.
     VRS.globalOptions.unitDisplayFLTransitionHeightUnit = VRS.globalOptions.unitDisplayFLTransitionHeightUnit || VRS.Height.Feet;   // The units that FLTransitionAltitude is in.
@@ -41,6 +42,7 @@ namespace VRS
         distanceUnit:       DistanceEnum;
         heightUnit:         HeightEnum;
         speedUnit:          SpeedEnum;
+        pressureUnit:       PressureEnum;
         vsiPerSecond:       boolean;
         flTransitionAlt:    number;
         flTransitionUnit:   HeightEnum;
@@ -64,6 +66,7 @@ namespace VRS
             distanceUnitChanged:            'distanceUnitChanged',
             heightUnitChanged:              'heightUnitChanged',
             speedUnitChanged:               'speedUnitChanged',
+            pressureUnitChanged:            'pressureUnitChanged',
             showVsiInSecondsChanged:        'showVsiSecondsChanged',
             flAltitudeChanged:              'flAltitudeChanged',
             flTransUnitChanged:             'flTransUnitChanged',
@@ -78,6 +81,7 @@ namespace VRS
         private _DistanceUnit: DistanceEnum;
         private _HeightUnit: HeightEnum;
         private _SpeedUnit: SpeedEnum;
+        private _PressureUnit: PressureEnum;
         private _ShowVerticalSpeedPerSecond: boolean;
         private _ShowAltitudeType: boolean;
         private _ShowVerticalSpeedType: boolean;
@@ -93,6 +97,7 @@ namespace VRS
             this._DistanceUnit = VRS.globalOptions.unitDisplayDistance;
             this._HeightUnit = VRS.globalOptions.unitDisplayHeight;
             this._SpeedUnit = VRS.globalOptions.unitDisplaySpeed;
+            this._PressureUnit = VRS.globalOptions.unitDisplayPressure;
             this._ShowVerticalSpeedPerSecond = VRS.globalOptions.unitDisplayVsiPerSecond;
             this._ShowAltitudeType = VRS.globalOptions.unitDisplayAltitudeType;
             this._ShowVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType;
@@ -153,6 +158,19 @@ namespace VRS
                 this._SpeedUnit = value;
                 this._Dispatcher.raise(this._Events.speedUnitChanged);
                 this._Dispatcher.raise(this._Events.unitChanged, [ VRS.DisplayUnitDependency.Speed ]);
+            }
+        }
+
+        getPressureUnit = () : PressureEnum =>
+        {
+            return this._PressureUnit;
+        }
+        setPressureUnit = (value: PressureEnum) =>
+        {
+            if(this._PressureUnit !== value) {
+                this._PressureUnit = value;
+                this._Dispatcher.raise(this._Events.pressureUnitChanged);
+                this._Dispatcher.raise(this._Events.unitChanged, [ VRS.DisplayUnitDependency.Pressure ]);
             }
         }
 
@@ -295,6 +313,17 @@ namespace VRS
             ];
         }
 
+        /**
+         * Returns an array of every possible pressure unit value and their text keys.
+         */
+        static getPressureUnitValues() : ValueText[]
+        {
+            return [
+                new VRS.ValueText({ value: VRS.Pressure.InHg,       textKey: 'InHgDescription' }),
+                new VRS.ValueText({ value: VRS.Pressure.Millibar,   textKey: 'MillibarDescription' })
+            ];
+        }
+
         hookDistanceUnitChanged = (callback: (dependency?: DisplayUnitDependencyEnum) => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.distanceUnitChanged, callback, forceThis);
@@ -308,6 +337,11 @@ namespace VRS
         hookSpeedUnitChanged = (callback: (dependency?: DisplayUnitDependencyEnum) => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.speedUnitChanged, callback, forceThis);
+        }
+
+        hookPressureUnitChanged = (callback: (dependency?: DisplayUnitDependencyEnum) => void, forceThis?: Object) : IEventHandle =>
+        {
+            return this._Dispatcher.hook(this._Events.pressureUnitChanged, callback, forceThis);
         }
 
         hookShowVerticalSpeedPerSecondChanged = (callback: (dependency?: DisplayUnitDependencyEnum) => void, forceThis?: Object) : IEventHandle =>
@@ -378,6 +412,7 @@ namespace VRS
             var distanceUnitValues = UnitDisplayPreferences.getDistanceUnitValues();
             var altitudeUnitValues = UnitDisplayPreferences.getAltitudeUnitValues();
             var speedUnitValues = UnitDisplayPreferences.getSpeedUnitValues();
+            var pressureUnitValues = UnitDisplayPreferences.getPressureUnitValues();
 
             if(VRS.globalOptions.unitDisplayAllowConfiguration) {
                 pane.addField(new VRS.OptionFieldCheckBox({
@@ -447,6 +482,15 @@ namespace VRS
                     values:         speedUnitValues
                 }));
 
+                pane.addField(new VRS.OptionFieldComboBox({
+                    name:           'pressureUnit',
+                    labelKey:       'Pressures',
+                    getValue:       this.getPressureUnit,
+                    setValue:       this.setPressureUnit,
+                    saveState:      this.saveState,
+                    values:         pressureUnitValues
+                }));
+
                 pane.addField(new VRS.OptionFieldNumeric({
                     name:           'flTransAltitude',
                     labelKey:       'FlightLevelTransitionAltitude',
@@ -507,6 +551,7 @@ namespace VRS
             this.setDistanceUnit(settings.distanceUnit);
             this.setHeightUnit(settings.heightUnit);
             this.setSpeedUnit(settings.speedUnit);
+            this.setPressureUnit(settings.pressureUnit);
             this.setShowVerticalSpeedPerSecond(settings.vsiPerSecond);
             this.setFlightLevelTransitionAltitude(settings.flTransitionAlt);
             this.setFlightLevelTransitionHeightUnit(settings.flTransitionUnit);
@@ -542,6 +587,7 @@ namespace VRS
                 distanceUnit:       this.getDistanceUnit(),
                 heightUnit:         this.getHeightUnit(),
                 speedUnit:          this.getSpeedUnit(),
+                pressureUnit:       this.getPressureUnit(),
                 vsiPerSecond:       this.getShowVerticalSpeedPerSecond(),
                 flTransitionAlt:    this.getFlightLevelTransitionAltitude(),
                 flTransitionUnit:   this.getFlightLevelTransitionHeightUnit(),

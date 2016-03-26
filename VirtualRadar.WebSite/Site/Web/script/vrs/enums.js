@@ -29,6 +29,7 @@ var VRS;
         None: '---',
         Altitude: 'alt',
         AltitudeType: 'aty',
+        AirPressure: 'apr',
         AverageSignalLevel: 'avs',
         Bearing: 'bng',
         Callsign: 'csn',
@@ -94,7 +95,8 @@ var VRS;
         FLTransitionAltitude: 'e',
         FLTransitionHeightUnit: 'f',
         FLHeightUnit: 'g',
-        Angle: 'h'
+        Angle: 'h',
+        Pressure: 'i'
     };
     VRS.Distance = {
         Kilometre: 'km',
@@ -193,9 +195,14 @@ var VRS;
         WaitForReturn: 'wfr',
         EnableAutoSelect: 'eas'
     };
+    VRS.Pressure = {
+        InHg: 0,
+        Millibar: 1
+    };
     VRS.RenderProperty = {
         None: '---',
         AirportDataThumbnails: 'adt',
+        AirPressure: 'apr',
         Altitude: 'alt',
         AltitudeAndVerticalSpeed: 'alv',
         AltitudeType: 'aty',

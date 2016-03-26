@@ -1,3 +1,6 @@
+/// <reference path="../../typings/webadmin.d.ts" />
+/// <reference path="../../typings/DatabaseWriterPluginModels.d.ts" />
+/// <reference path="../../typings/translations-pluginstrings.d.ts" />
 var VRS;
 (function (VRS) {
     var WebAdmin;
@@ -148,4 +151,3 @@ var VRS;
         })(DatabaseWriterPluginOptions = WebAdmin.DatabaseWriterPluginOptions || (WebAdmin.DatabaseWriterPluginOptions = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
-//# sourceMappingURL=DatabaseWriterPluginOptions.js.map

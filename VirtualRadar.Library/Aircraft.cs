@@ -146,12 +146,12 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int? CorrectedAltitude { get { return _CorrectedAltitude; } set { if(value != _CorrectedAltitude) { _CorrectedAltitude = value; CorrectedAltitudeChanged = DataVersion; } } }
+        public int? GeometricAltitude { get { return _CorrectedAltitude; } set { if(value != _CorrectedAltitude) { _CorrectedAltitude = value; GeometricAltitudeChanged = DataVersion; } } }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public long CorrectedAltitudeChanged { get; private set; }
+        public long GeometricAltitudeChanged { get; private set; }
 
         private float? _AirPressureInHg;
         /// <summary>
@@ -750,7 +750,7 @@ namespace VirtualRadar.Library
                 result.Callsign = Callsign;
                 result.CallsignIsSuspect = CallsignIsSuspect;
                 result.ConstructionNumber = ConstructionNumber;
-                result.CorrectedAltitude = CorrectedAltitude;
+                result.GeometricAltitude = GeometricAltitude;
                 result.CountMessagesReceived = CountMessagesReceived;
                 result.FirstCoordinateChanged = FirstCoordinateChanged;
                 result.LastCoordinateChanged = LastCoordinateChanged;
@@ -817,7 +817,7 @@ namespace VirtualRadar.Library
                 result.CallsignChanged = CallsignChanged;
                 result.CallsignIsSuspectChanged = CallsignIsSuspectChanged;
                 result.ConstructionNumberChanged = ConstructionNumberChanged;
-                result.CorrectedAltitudeChanged = CorrectedAltitudeChanged;
+                result.GeometricAltitudeChanged = GeometricAltitudeChanged;
                 result.CountMessagesReceivedChanged = CountMessagesReceivedChanged;
                 result.DestinationChanged = DestinationChanged;
                 result.EmergencyChanged = EmergencyChanged;

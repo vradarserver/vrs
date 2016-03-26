@@ -59,6 +59,7 @@ namespace VRS
         None:               '---',
         Altitude:           'alt',
         AltitudeType:       'aty',
+        AirPressure:        'apr',
         AverageSignalLevel: 'avs',
         Bearing:            'bng',
         Callsign:           'csn',
@@ -149,7 +150,8 @@ namespace VRS
         FLTransitionAltitude:   'e',
         FLTransitionHeightUnit: 'f',
         FLHeightUnit:           'g',
-        Angle:                  'h'
+        Angle:                  'h',
+        Pressure:               'i'
     };
 
     export type DistanceEnum = string;
@@ -321,6 +323,15 @@ namespace VRS
         EnableAutoSelect:   'eas'
     };
 
+    export type PressureEnum = number;
+    /**
+     * An enumeration of the different pressure units that the site can deal with.
+     */
+    export var Pressure = {
+        InHg:               0,
+        Millibar:           1
+    };
+
     export type RenderPropertyEnum = string;
     /**
      * An enumeration of the different properties that can be rendered for an aircraft.
@@ -329,6 +340,7 @@ namespace VRS
     export var RenderProperty = {
         None:                           '---',
         AirportDataThumbnails:          'adt',
+        AirPressure:                    'apr',
         Altitude:                       'alt',
 //        AltitudeAndSpeedGraph:          'als',
         AltitudeAndVerticalSpeed:       'alv',

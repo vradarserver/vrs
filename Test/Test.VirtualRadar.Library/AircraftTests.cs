@@ -55,7 +55,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.CallsignChanged);
             Assert.AreEqual(0, _Aircraft.CallsignIsSuspectChanged);
             Assert.AreEqual(0, _Aircraft.ConstructionNumberChanged);
-            Assert.AreEqual(0, _Aircraft.CorrectedAltitudeChanged);
+            Assert.AreEqual(0, _Aircraft.GeometricAltitudeChanged);
             Assert.AreEqual(0, _Aircraft.CountMessagesReceivedChanged);
             Assert.AreEqual(0, _Aircraft.DestinationChanged);
             Assert.AreEqual(0, _Aircraft.EmergencyChanged);
@@ -113,7 +113,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.AltitudeType, AltitudeType.Barometric, AltitudeType.Geometric);
             TestUtilities.TestProperty(_Aircraft, r => r.Callsign, null, "ABC123");
             TestUtilities.TestProperty(_Aircraft, r => r.CallsignIsSuspect, false);
-            TestUtilities.TestProperty(_Aircraft, r => r.CorrectedAltitude, null, 100);
+            TestUtilities.TestProperty(_Aircraft, r => r.GeometricAltitude, null, 100);
             TestUtilities.TestProperty(_Aircraft, r => r.ConstructionNumber, null, "GB");
             TestUtilities.TestProperty(_Aircraft, r => r.CountMessagesReceived, 0L, 12L);
             TestUtilities.TestProperty(_Aircraft, r => r.DataVersion, 0L, 12023L);
@@ -416,8 +416,8 @@ namespace Test.VirtualRadar.Library
                             case "IsTisbChanged":                   value = _Aircraft.IsTisbChanged; break;
                             case "YearBuilt":                       value = _Aircraft.YearBuilt = stringValue; break;
                             case "YearBuiltChanged":                value = _Aircraft.YearBuiltChanged; break;
-                            case "CorrectedAltitude":               value = _Aircraft.CorrectedAltitude = intValue; break;
-                            case "CorrectedAltitudeChanged":        value = _Aircraft.CorrectedAltitudeChanged; break;
+                            case "GeometricAltitude":               value = _Aircraft.GeometricAltitude = intValue; break;
+                            case "GeometricAltitudeChanged":        value = _Aircraft.GeometricAltitudeChanged; break;
                             case "AirPressureInHg":                 value = _Aircraft.AirPressureInHg = floatValue; break;
                             case "AirPressureInHgChanged":          value = _Aircraft.AirPressureInHgChanged; break;
                             case "AirPressureLookedUpUtc":          value = _Aircraft.AirPressureLookedUpUtc = dateTimeValue; break;

@@ -163,6 +163,8 @@ declare namespace VRS
         Index:                              string;
         IndicatedAirSpeed:                  string;
         IndicatedAirSpeedShort:             string;
+        InHgAbbreviation:                   string;
+        InHgDescription:                    string;
         Interesting:                        string;
         IntervalSeconds:                    string;
         IsMilitary:                         string;
@@ -300,6 +302,8 @@ declare namespace VRS
         MilesPerHour:                       string;
         MilesPerHourAbbreviation:           string;
         Military:                           string;
+        MillibarAbbreviation:               string;
+        MillibarDescription:                string;
         Mlat:                               string;
         MobilePage:                         string;
         MobileReportPage:                   string;

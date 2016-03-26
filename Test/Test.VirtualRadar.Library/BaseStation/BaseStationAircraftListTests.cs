@@ -1208,6 +1208,82 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
         #endregion
 
+        #region Altitude handled correctly
+        [TestMethod]
+        public void BaseStationAircraftList_Altitude_Pressure_Altitude_Handled_Correctly_When_No_Air_Pressure_Available()
+        {
+            _AircraftList.Start();
+
+            _AirPressureLookup.Setup(r => r.FindClosest(It.IsAny<double>(), It.IsAny<double>())).Returns((AirPressure)null);
+            _BaseStationMessage.Latitude = 1;
+            _BaseStationMessage.Longitude = 1;
+            _BaseStationMessage.Altitude = 500;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(500, aircraft.Altitude);
+            Assert.AreEqual(AltitudeType.Barometric, aircraft.AltitudeType);
+            Assert.AreEqual(500, aircraft.GeometricAltitude);
+            Assert.AreEqual(null, aircraft.AirPressureInHg);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Altitude_Pressure_Altitude_Handled_Correctly_When_Air_Pressure_Available()
+        {
+            _AircraftList.Start();
+
+            _AirPressure.PressureInHg = 29.32F;
+            _BaseStationMessage.Latitude = 1;
+            _BaseStationMessage.Longitude = 1;
+            _BaseStationMessage.Altitude = 1100;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(1100, aircraft.Altitude);
+            Assert.AreEqual(AltitudeType.Barometric, aircraft.AltitudeType);
+            Assert.AreEqual(500, aircraft.GeometricAltitude);
+            Assert.AreEqual(29.32F, aircraft.AirPressureInHg);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Altitude_Geometric_Altitude_Handled_Correctly_When_No_Air_Pressure_Available()
+        {
+            _AircraftList.Start();
+
+            _AirPressureLookup.Setup(r => r.FindClosest(It.IsAny<double>(), It.IsAny<double>())).Returns((AirPressure)null);
+            _BaseStationMessage.Latitude = 1;
+            _BaseStationMessage.Longitude = 1;
+            _BaseStationMessage.Altitude = 1100;
+            _BaseStationMessage.Supplementary = new BaseStationSupplementaryMessage() { AltitudeIsGeometric = true };
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(1100, aircraft.Altitude);
+            Assert.AreEqual(AltitudeType.Geometric, aircraft.AltitudeType);
+            Assert.AreEqual(1100, aircraft.GeometricAltitude);
+            Assert.AreEqual(null, aircraft.AirPressureInHg);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_Altitude_Geometric_Altitude_Handled_Correctly_When_Air_Pressure_Available()
+        {
+            _AircraftList.Start();
+
+            _AirPressure.PressureInHg = 29.32F;
+            _BaseStationMessage.Latitude = 1;
+            _BaseStationMessage.Longitude = 1;
+            _BaseStationMessage.Altitude = 500;
+            _BaseStationMessage.Supplementary = new BaseStationSupplementaryMessage() { AltitudeIsGeometric = true };
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(1100, aircraft.Altitude);
+            Assert.AreEqual(AltitudeType.Geometric, aircraft.AltitudeType);
+            Assert.AreEqual(500, aircraft.GeometricAltitude);
+            Assert.AreEqual(29.32F, aircraft.AirPressureInHg);
+        }
+        #endregion
+
         #region Emergency derived from squawk
         [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Message_Emergency_Is_Ignored()

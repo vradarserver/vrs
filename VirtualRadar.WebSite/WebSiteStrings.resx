@@ -1763,4 +1763,27 @@
     <value>Ey</value>
     <comment>How text-to-speech should pronounce the letter A</comment>
   </data>
+  <data name="AirPressure" xml:space="preserve">
+    <value>Air Pressure</value>
+  </data>
+  <data name="InHgAbbreviation" xml:space="preserve">
+    <value>{0} inHg</value>
+    <comment>Unit of measurement - inches of mercury</comment>
+  </data>
+  <data name="InHgDescription" xml:space="preserve">
+    <value>Inches of Mercury</value>
+  </data>
+  <data name="ListAirPressure" xml:space="preserve">
+    <value>Pressure</value>
+  </data>
+  <data name="MillibarAbbreviation" xml:space="preserve">
+    <value>{0} mb</value>
+    <comment>Unit of measurement - millibars</comment>
+  </data>
+  <data name="MillibarDescription" xml:space="preserve">
+    <value>Millibars</value>
+  </data>
+  <data name="Pressures" xml:space="preserve">
+    <value>Pressures</value>
+  </data>
 </root>

@@ -310,12 +310,14 @@ namespace VirtualRadar.WebSite
                 var firstTimeSeen = previousAircraft != null ? !previousAircraft.Contains(aircraftSnapshot.UniqueId)
                                                              : !previousAircraftSet.Contains(aircraftSnapshot.UniqueId);
 
+                if(firstTimeSeen || aircraftSnapshot.AirPressureInHgChanged > args.PreviousDataVersion)                 aircraftJson.AirPressureInHg = aircraftSnapshot.AirPressureInHg;
                 if(firstTimeSeen || aircraftSnapshot.AltitudeChanged > args.PreviousDataVersion)                        aircraftJson.Altitude = aircraftSnapshot.Altitude;
                 if(firstTimeSeen || aircraftSnapshot.AltitudeTypeChanged > args.PreviousDataVersion)                    aircraftJson.AltitudeType = (int)aircraftSnapshot.AltitudeType;
                 if(firstTimeSeen || aircraftSnapshot.CallsignChanged > args.PreviousDataVersion)                        aircraftJson.Callsign = aircraftSnapshot.Callsign;
                 if(firstTimeSeen || aircraftSnapshot.CallsignIsSuspectChanged > args.PreviousDataVersion)               aircraftJson.CallsignIsSuspect = aircraftSnapshot.CallsignIsSuspect;
                 if(firstTimeSeen || aircraftSnapshot.GroundSpeedChanged > args.PreviousDataVersion)                     aircraftJson.GroundSpeed = Round.GroundSpeed(aircraftSnapshot.GroundSpeed);
                 if(firstTimeSeen || aircraftSnapshot.EmergencyChanged > args.PreviousDataVersion)                       aircraftJson.Emergency = aircraftSnapshot.Emergency;
+                if(firstTimeSeen || aircraftSnapshot.GeometricAltitudeChanged > args.PreviousDataVersion)               aircraftJson.GeometricAltitude = aircraftSnapshot.GeometricAltitude;
                 if(firstTimeSeen || args.AlwaysShowIcao || aircraftSnapshot.Icao24Changed > args.PreviousDataVersion)   aircraftJson.Icao24 = aircraftSnapshot.Icao24;
                 if(firstTimeSeen || aircraftSnapshot.IsTisbChanged > args.PreviousDataVersion)                          aircraftJson.IsTisb = aircraftSnapshot.IsTisb;
                 if(firstTimeSeen || aircraftSnapshot.LatitudeChanged > args.PreviousDataVersion)                        aircraftJson.Latitude = Round.Coordinate(aircraftSnapshot.Latitude);
@@ -338,6 +340,11 @@ namespace VirtualRadar.WebSite
                         if(aircraftJson.Latitude == null)       aircraftJson.Latitude       = Round.Coordinate(aircraftSnapshot.Latitude);
                         if(aircraftJson.Longitude == null)      aircraftJson.Longitude      = Round.Coordinate(aircraftSnapshot.Longitude);
                         if(aircraftJson.PositionIsMlat == null) aircraftJson.PositionIsMlat = aircraftSnapshot.PositionIsMlat;
+                    }
+                    if(aircraftJson.Altitude != null || aircraftJson.GeometricAltitude != null || aircraftJson.AltitudeType != null) {
+                        if(aircraftJson.Altitude == null)               aircraftJson.Altitude           = aircraftSnapshot.Altitude;
+                        if(aircraftJson.AltitudeType == null)           aircraftJson.AltitudeType       = (int)aircraftSnapshot.AltitudeType;
+                        if(aircraftJson.GeometricAltitude == null)      aircraftJson.GeometricAltitude  = aircraftSnapshot.GeometricAltitude;
                     }
                 } else if(!args.OnlyIncludeMessageFields) {
                     if(firstTimeSeen || aircraftSnapshot.ConstructionNumberChanged > args.PreviousDataVersion)          aircraftJson.ConstructionNumber = aircraftSnapshot.ConstructionNumber;

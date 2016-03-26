@@ -2095,6 +2095,25 @@ namespace Test.VirtualRadar.Library.BaseStation
                 Assert.AreEqual(100.23F, message.Supplementary.TargetHeading);
             }
         }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_TargetStateAndStatus_Fills_PressureSetting_For_ADSB_2_Messages()
+        {
+            foreach(var adsbMessage in CreateAdsbMessagesForExtendedSquitters()) {
+                adsbMessage.TargetStateAndStatus = new TargetStateAndStatusMessage() {
+                    TargetStateAndStatusType = TargetStateAndStatusType.Version2,
+                    Version2 = new TargetStateAndStatusVersion2() {
+                        BarometricPressureSetting = 1000,
+                    }
+                };
+
+                var message = _Translator.Translate(_NowUtc, adsbMessage.ModeSMessage, adsbMessage);
+
+                Assert.IsNotNull(message);
+                Assert.IsNotNull(message.Supplementary);
+                Assert.AreEqual(1000F, message.Supplementary.PressureSettingMb);
+            }
+        }
         #endregion
     }
 }

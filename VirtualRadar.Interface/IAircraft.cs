@@ -89,7 +89,9 @@ namespace VirtualRadar.Interface
         long CallsignChanged { get; }
 
         /// <summary>
-        /// Gets or sets the altitde (in feet) that the aircraft last reported.
+        /// Gets or sets the pressure altitde (in feet) that the aircraft last reported. If the aircraft is
+        /// transmitting geometric altitude and the air pressure is known then this will be the calculated
+        /// pressure altitude.
         /// </summary>
         int? Altitude { get; set; }
 
@@ -109,20 +111,20 @@ namespace VirtualRadar.Interface
         long AltitudeTypeChanged { get; set; }
 
         /// <summary>
-        /// Gets or sets the corrected altitude, assuming that <see cref="Altitude"/> is a pressure altitude. This
-        /// should always be the same as <see cref="Altitude"/> if the air pressure download is switched off, or the
-        /// server is unreachable.
+        /// Gets or sets the geometric altitude, i.e. how far the aircraft is above sea level. If the aircraft is
+        /// transmitting barometric altitudes and the air pressure is known then this is the calculated geometric
+        /// altitude.
         /// </summary>
-        int? CorrectedAltitude { get; set; }
+        int? GeometricAltitude { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="DataVersion"/> that was current when <see cref="CorrectedAltitude"/> was last changed.
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="GeometricAltitude"/> was last changed.
         /// </summary>
-        long CorrectedAltitudeChanged { get; }
+        long GeometricAltitudeChanged { get; }
 
         /// <summary>
-        /// Gets or sets the pressure setting that <see cref="CorrectedAltitude"/> was based on. This will be null
-        /// if air pressure downloads are switched off or the server is unavailable.
+        /// Gets or sets the pressure setting for the aircraft. This will be null if air pressure downloads are switched
+        /// off, or the server is unavailable, or no air pressures have been downloaded yet.
         /// </summary>
         float? AirPressureInHg { get; set; }
 
