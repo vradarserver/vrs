@@ -159,9 +159,35 @@ var VRS;
         labelKey: 'Altitude',
         sortableField: VRS.AircraftListSortableField.Altitude,
         alignment: VRS.Alignment.Right,
+        hasChangedCallback: function (aircraft) { return aircraft.altitude.chg || aircraft.geometricAltitude.chg || aircraft.isOnGround.chg; },
+        contentCallback: function (aircraft, options) {
+            return aircraft.formatMixedAltitude(options.unitDisplayPreferences.getUsePressureAltitude(), options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, options.unitDisplayPreferences.getShowAltitudeType());
+        },
+        usesDisplayUnit: function (displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Height; }
+    });
+    VRS.renderPropertyHandlers[VRS.RenderProperty.AltitudeBarometric] = new VRS.RenderPropertyHandler({
+        property: VRS.RenderProperty.AltitudeBarometric,
+        surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey: 'ListPressureAltitude',
+        labelKey: 'PressureAltitude',
+        sortableField: VRS.AircraftListSortableField.AltitudeBarometric,
+        alignment: VRS.Alignment.Right,
         hasChangedCallback: function (aircraft) { return aircraft.altitude.chg || aircraft.isOnGround.chg; },
         contentCallback: function (aircraft, options) {
             return aircraft.formatAltitude(options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, options.unitDisplayPreferences.getShowAltitudeType());
+        },
+        usesDisplayUnit: function (displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Height; }
+    });
+    VRS.renderPropertyHandlers[VRS.RenderProperty.AltitudeGeometric] = new VRS.RenderPropertyHandler({
+        property: VRS.RenderProperty.AltitudeGeometric,
+        surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey: 'ListGeometricAltitude',
+        labelKey: 'GeometricAltitude',
+        sortableField: VRS.AircraftListSortableField.AltitudeGeometric,
+        alignment: VRS.Alignment.Right,
+        hasChangedCallback: function (aircraft) { return aircraft.geometricAltitude.chg || aircraft.isOnGround.chg; },
+        contentCallback: function (aircraft, options) {
+            return aircraft.formatGeometricAltitude(options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, options.unitDisplayPreferences.getShowAltitudeType());
         },
         usesDisplayUnit: function (displayUnitDependency) { return displayUnitDependency === VRS.DisplayUnitDependency.Height; }
     });

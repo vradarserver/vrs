@@ -1204,7 +1204,16 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GPS.
+        ///   Looks up a localized string similar to Altitude (AMSL).
+        /// </summary>
+        public static string GeometricAltitude {
+            get {
+                return ResourceManager.GetString("GeometricAltitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to amsl.
         /// </summary>
         public static string GeometricAltitudeIndicator {
             get {
@@ -2086,6 +2095,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Altitude (AMSL).
+        /// </summary>
+        public static string ListGeometricAltitude {
+            get {
+                return ResourceManager.GetString("ListGeometricAltitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alert.
         /// </summary>
         public static string ListHadAlert {
@@ -2379,6 +2397,15 @@ namespace VirtualRadar.WebSite {
         public static string ListPopularName {
             get {
                 return ResourceManager.GetString("ListPopularName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Altitude (ISA).
+        /// </summary>
+        public static string ListPressureAltitude {
+            get {
+                return ResourceManager.GetString("ListPressureAltitude", resourceCulture);
             }
         }
         
@@ -3405,6 +3432,15 @@ namespace VirtualRadar.WebSite {
         public static string PoweredByVRS {
             get {
                 return ResourceManager.GetString("PoweredByVRS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Altitude (Pressure).
+        /// </summary>
+        public static string PressureAltitude {
+            get {
+                return ResourceManager.GetString("PressureAltitude", resourceCulture);
             }
         }
         
@@ -4800,6 +4836,15 @@ namespace VirtualRadar.WebSite {
         public static string UseBrowserLocation {
             get {
                 return ResourceManager.GetString("UseBrowserLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use pressure altitude.
+        /// </summary>
+        public static string UsePressureAltitude {
+            get {
+                return ResourceManager.GetString("UsePressureAltitude", resourceCulture);
             }
         }
         

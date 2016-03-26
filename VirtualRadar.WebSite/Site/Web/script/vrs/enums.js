@@ -28,6 +28,8 @@ var VRS;
     VRS.AircraftListSortableField = {
         None: '---',
         Altitude: 'alt',
+        AltitudeBarometric: 'alb',
+        AltitudeGeometric: 'alg',
         AltitudeType: 'aty',
         AirPressure: 'apr',
         AverageSignalLevel: 'avs',
@@ -196,14 +198,16 @@ var VRS;
         EnableAutoSelect: 'eas'
     };
     VRS.Pressure = {
-        InHg: 0,
-        Millibar: 1
+        InHg: '0',
+        Millibar: '1'
     };
     VRS.RenderProperty = {
         None: '---',
         AirportDataThumbnails: 'adt',
         AirPressure: 'apr',
         Altitude: 'alt',
+        AltitudeBarometric: 'alb',
+        AltitudeGeometric: 'alg',
         AltitudeAndVerticalSpeed: 'alv',
         AltitudeType: 'aty',
         AverageSignalLevel: 'avs',

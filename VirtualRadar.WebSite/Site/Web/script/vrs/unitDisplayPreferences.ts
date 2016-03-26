@@ -33,24 +33,26 @@ namespace VRS
     VRS.globalOptions.unitDisplayVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType !== undefined ? VRS.globalOptions.unitDisplayVerticalSpeedType : false; // True if vertical speed types are to be shown by default.
     VRS.globalOptions.unitDisplaySpeedType = VRS.globalOptions.unitDisplaySpeedType !== undefined ? VRS.globalOptions.unitDisplaySpeedType : true;                          // True if speed types are to be shown by default.
     VRS.globalOptions.unitDisplayTrackType = VRS.globalOptions.unitDisplayTrackType !== undefined ? VRS.globalOptions.unitDisplayTrackType : false;                         // True if track types are to be shown by default.
+    VRS.globalOptions.unitDisplayUsePressureAltitude = VRS.globalOptions.unitDisplayUsePressureAltitude !== undefined ? VRS.globalOptions.unitDisplayUsePressureAltitude : true;    // True to use pressure altitudes when we have a choice between pressure and geometric altitudes.
 
     /**
      * The state object that instances of UnitDisplayPreferences save between sessions.
      */
     export interface UnitDisplayPreferences_SaveState
     {
-        distanceUnit:       DistanceEnum;
-        heightUnit:         HeightEnum;
-        speedUnit:          SpeedEnum;
-        pressureUnit:       PressureEnum;
-        vsiPerSecond:       boolean;
-        flTransitionAlt:    number;
-        flTransitionUnit:   HeightEnum;
-        flHeightUnit:       HeightEnum;
-        showAltType:        boolean;
-        showVsiType:        boolean;
-        showSpeedType:      boolean;
-        showTrackType:      boolean;
+        distanceUnit:           DistanceEnum;
+        heightUnit:             HeightEnum;
+        speedUnit:              SpeedEnum;
+        pressureUnit:           PressureEnum;
+        vsiPerSecond:           boolean;
+        flTransitionAlt:        number;
+        flTransitionUnit:       HeightEnum;
+        flHeightUnit:           HeightEnum;
+        showAltType:            boolean;
+        showVsiType:            boolean;
+        showSpeedType:          boolean;
+        showTrackType:          boolean;
+        usePressureAltitude:    boolean;
     }
 
     /**
@@ -74,7 +76,8 @@ namespace VRS
             showAltitudeTypeChanged:        'showAltTypeChanged',
             showVerticalSpeedTypeChanged:   'showVsiTypeChanged',
             showSpeedTypeChanged:           'showSpeedTypeChanged',
-            showTrackTypeChanged:           'showTrackTypeChanged'
+            showTrackTypeChanged:           'showTrackTypeChanged',
+            usePressureAltitudeChanged:     'usePressureAltitudeChanged'
         }
 
         private _Name: string;
@@ -87,6 +90,7 @@ namespace VRS
         private _ShowVerticalSpeedType: boolean;
         private _ShowSpeedType: boolean;
         private _ShowTrackType: boolean;
+        private _UsePressureAltitude: boolean;
         private _FlightLevelTransitionAltitude: number;
         private _FlightLevelTransitionHeightUnit: HeightEnum;
         private _FlightLevelHeightUnit: HeightEnum;
@@ -103,6 +107,7 @@ namespace VRS
             this._ShowVerticalSpeedType = VRS.globalOptions.unitDisplayVerticalSpeedType;
             this._ShowSpeedType = VRS.globalOptions.unitDisplaySpeedType;
             this._ShowTrackType = VRS.globalOptions.unitDisplayTrackType;
+            this._UsePressureAltitude = VRS.globalOptions.unitDisplayUsePressureAltitude;
             this._FlightLevelTransitionAltitude = VRS.globalOptions.unitDisplayFLTransitionAltitude;
             this._FlightLevelTransitionHeightUnit = VRS.globalOptions.unitDisplayFLTransitionHeightUnit;
             this._FlightLevelHeightUnit = VRS.globalOptions.unitDisplayFLHeightUnit;
@@ -236,6 +241,19 @@ namespace VRS
                 this._ShowTrackType = value;
                 this._Dispatcher.raise(this._Events.showTrackTypeChanged);
                 this._Dispatcher.raise(this._Events.unitChanged, [ VRS.DisplayUnitDependency.Angle ]);
+            }
+        }
+
+        getUsePressureAltitude = () : boolean =>
+        {
+            return this._UsePressureAltitude;
+        }
+        setUsePressureAltitude = (value: boolean) =>
+        {
+            if(this._UsePressureAltitude !== value) {
+                this._UsePressureAltitude = value;
+                this._Dispatcher.raise(this._Events.usePressureAltitudeChanged);
+                this._Dispatcher.raise(this._Events.unitChanged, [ VRS.DisplayUnitDependency.Height ]);
             }
         }
 
@@ -384,6 +402,11 @@ namespace VRS
             return this._Dispatcher.hook(this._Events.flHeightUnitChanged, callback, forceThis);
         }
 
+        hookUsePressureAltitudeChanged = (callback: (dependency?: DisplayUnitDependencyEnum) => void, forceThis?: Object) : IEventHandle =>
+        {
+            return this._Dispatcher.hook(this._Events.usePressureAltitudeChanged, callback, forceThis);
+        }
+
         /**
          * Raised when any of the units have been changed.
          */
@@ -452,6 +475,14 @@ namespace VRS
                     labelKey:       'ShowTrackType',
                     getValue:       this.getShowTrackType,
                     setValue:       this.setShowTrackType,
+                    saveState:      this.saveState
+                }));
+
+                pane.addField(new VRS.OptionFieldCheckBox({
+                    name:           'usePressureAltitude',
+                    labelKey:       'UsePressureAltitude',
+                    getValue:       this.getUsePressureAltitude,
+                    setValue:       this.setUsePressureAltitude,
                     saveState:      this.saveState
                 }));
 
@@ -560,6 +591,7 @@ namespace VRS
             this.setShowVerticalSpeedType(settings.showVsiType);
             this.setShowSpeedType(settings.showSpeedType);
             this.setShowTrackType(settings.showTrackType);
+            this.setUsePressureAltitude(settings.usePressureAltitude);
         }
 
         /**
@@ -584,18 +616,19 @@ namespace VRS
         private createSettings = () : UnitDisplayPreferences_SaveState =>
         {
             return {
-                distanceUnit:       this.getDistanceUnit(),
-                heightUnit:         this.getHeightUnit(),
-                speedUnit:          this.getSpeedUnit(),
-                pressureUnit:       this.getPressureUnit(),
-                vsiPerSecond:       this.getShowVerticalSpeedPerSecond(),
-                flTransitionAlt:    this.getFlightLevelTransitionAltitude(),
-                flTransitionUnit:   this.getFlightLevelTransitionHeightUnit(),
-                flHeightUnit:       this.getFlightLevelHeightUnit(),
-                showAltType:        this.getShowAltitudeType(),
-                showVsiType:        this.getShowVerticalSpeedType(),
-                showSpeedType:      this.getShowSpeedType(),
-                showTrackType:      this.getShowTrackType()
+                distanceUnit:           this.getDistanceUnit(),
+                heightUnit:             this.getHeightUnit(),
+                speedUnit:              this.getSpeedUnit(),
+                pressureUnit:           this.getPressureUnit(),
+                vsiPerSecond:           this.getShowVerticalSpeedPerSecond(),
+                flTransitionAlt:        this.getFlightLevelTransitionAltitude(),
+                flTransitionUnit:       this.getFlightLevelTransitionHeightUnit(),
+                flHeightUnit:           this.getFlightLevelHeightUnit(),
+                showAltType:            this.getShowAltitudeType(),
+                showVsiType:            this.getShowVerticalSpeedType(),
+                showSpeedType:          this.getShowSpeedType(),
+                showTrackType:          this.getShowTrackType(),
+                usePressureAltitude:    this.getUsePressureAltitude()
             };
         }
     }

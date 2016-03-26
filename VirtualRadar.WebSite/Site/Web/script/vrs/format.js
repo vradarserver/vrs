@@ -172,29 +172,27 @@ var VRS;
         Format.prototype.firstRegistrationDate = function (firstRegDate) {
             return firstRegDate || '';
         };
-        Format.prototype.flightLevel = function (altitude, altitudeType, isOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType) {
+        Format.prototype.flightLevel = function (pressureAltitude, geometricAltitude, altitudeType, isOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, showType) {
             var result = '';
-            if (altitude || altitude === 0) {
+            if (pressureAltitude || pressureAltitude === 0) {
                 if (distinguishOnGround && isOnGround)
                     result = VRS.$$.GroundAbbreviation;
                 else {
                     var transitionAltitudeFeet = VRS.unitConverter.convertHeight(transitionAltitude, transitionAltitudeUnit, VRS.Height.Feet);
-                    if (altitude < transitionAltitudeFeet) {
-                        result = this.altitude(altitude, altitudeType, isOnGround, altitudeUnit, distinguishOnGround, showUnits, showType);
+                    if (geometricAltitude < transitionAltitudeFeet) {
+                        result = this.altitude(geometricAltitude, VRS.AltitudeType.Geometric, isOnGround, altitudeUnit, distinguishOnGround, showUnits, showType);
                     }
                     else {
-                        altitude = VRS.unitConverter.convertHeight(altitude, VRS.Height.Feet, flightLevelAltitudeUnit);
-                        result = VRS.stringUtility.format(VRS.$$.FlightLevelAbbreviation, Math.max(0, Math.round(altitude / 100)));
-                        if (showType && altitudeType === VRS.AltitudeType.Geometric)
-                            result += ' ' + VRS.$$.GeometricAltitudeIndicator;
+                        pressureAltitude = VRS.unitConverter.convertHeight(pressureAltitude, VRS.Height.Feet, flightLevelAltitudeUnit);
+                        result = VRS.stringUtility.format(VRS.$$.FlightLevelAbbreviation, Math.max(0, Math.round(pressureAltitude / 100)));
                     }
                 }
             }
             return result;
         };
-        Format.prototype.flightLevelFromTo = function (firstAltitude, firstIsOnGround, lastAltitude, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits) {
-            var first = this.flightLevel(firstAltitude, VRS.AltitudeType.Barometric, firstIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
-            var last = this.flightLevel(lastAltitude, VRS.AltitudeType.Barometric, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
+        Format.prototype.flightLevelFromTo = function (firstPressureAltitude, firstIsOnGround, lastPressureAltitude, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits) {
+            var first = this.flightLevel(firstPressureAltitude, firstPressureAltitude, VRS.AltitudeType.Barometric, firstIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
+            var last = this.flightLevel(lastPressureAltitude, lastPressureAltitude, VRS.AltitudeType.Barometric, lastIsOnGround, transitionAltitude, transitionAltitudeUnit, flightLevelAltitudeUnit, altitudeUnit, distinguishOnGround, showUnits, false);
             return this.formatFromTo(first, last, VRS.$$.FromToFlightLevel);
         };
         Format.prototype.genericName = function (genericName) {

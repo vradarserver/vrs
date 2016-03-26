@@ -419,7 +419,7 @@ var VRS;
         alignment: VRS.Alignment.Right,
         hasValue: function (json) { return json.fAlt !== undefined; },
         contentCallback: function (json, options) {
-            return VRS.format.flightLevel(json.fAlt, VRS.AltitudeType.Barometric, json.fOnGnd, options.unitDisplayPreferences.getFlightLevelTransitionAltitude(), options.unitDisplayPreferences.getFlightLevelTransitionHeightUnit(), options.unitDisplayPreferences.getFlightLevelHeightUnit(), options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false);
+            return VRS.format.flightLevel(json.fAlt, json.fAlt, VRS.AltitudeType.Barometric, json.fOnGnd, options.unitDisplayPreferences.getFlightLevelTransitionAltitude(), options.unitDisplayPreferences.getFlightLevelTransitionHeightUnit(), options.unitDisplayPreferences.getFlightLevelHeightUnit(), options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false);
         }
     });
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.FirstHeading] = new VRS.ReportPropertyHandler({
@@ -527,7 +527,7 @@ var VRS;
         alignment: VRS.Alignment.Right,
         hasValue: function (json) { return json.lAlt !== undefined; },
         contentCallback: function (json, options) {
-            return VRS.format.flightLevel(json.lAlt, VRS.AltitudeType.Barometric, json.fOnGnd, options.unitDisplayPreferences.getFlightLevelTransitionAltitude(), options.unitDisplayPreferences.getFlightLevelTransitionHeightUnit(), options.unitDisplayPreferences.getFlightLevelHeightUnit(), options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false);
+            return VRS.format.flightLevel(json.lAlt, json.lAlt, VRS.AltitudeType.Barometric, json.fOnGnd, options.unitDisplayPreferences.getFlightLevelTransitionAltitude(), options.unitDisplayPreferences.getFlightLevelTransitionHeightUnit(), options.unitDisplayPreferences.getFlightLevelHeightUnit(), options.unitDisplayPreferences.getHeightUnit(), options.distinguishOnGround, options.showUnits, false);
         }
     });
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.LastHeading] = new VRS.ReportPropertyHandler({
