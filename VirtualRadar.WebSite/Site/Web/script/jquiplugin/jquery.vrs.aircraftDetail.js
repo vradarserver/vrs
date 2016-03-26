@@ -46,6 +46,7 @@ var VRS;
     VRS.globalOptions.detailPanelFlagUncertainCallsigns = VRS.globalOptions.detailPanelFlagUncertainCallsigns !== undefined ? VRS.globalOptions.detailPanelFlagUncertainCallsigns : true;
     VRS.globalOptions.detailPanelDistinguishOnGround = VRS.globalOptions.detailPanelDistinguishOnGround !== undefined ? VRS.globalOptions.detailPanelDistinguishOnGround : true;
     VRS.globalOptions.detailPanelAirportDataThumbnails = VRS.globalOptions.detailPanelAirportDataThumbnails || 2;
+    VRS.globalOptions.detailPanelUseShortLabels = VRS.globalOptions.detailPanelUseShortLabels !== undefined ? VRS.globalOptions.detailPanelUseShortLabels : false;
     var AircraftDetailPlugin_State = (function () {
         function AircraftDetailPlugin_State() {
             this.suspended = false;
@@ -100,7 +101,9 @@ var VRS;
             showSeparateRouteLink: VRS.globalOptions.detailPanelShowSeparateRouteLink,
             flagUncertainCallsigns: VRS.globalOptions.detailPanelFlagUncertainCallsigns,
             distinguishOnGround: VRS.globalOptions.detailPanelDistinguishOnGround,
-            airportDataThumbnails: VRS.globalOptions.detailPanelAirportDataThumbnails
+            airportDataThumbnails: VRS.globalOptions.detailPanelAirportDataThumbnails,
+            useShortLabels: VRS.globalOptions.detailPanelUseShortLabels,
+            unitDisplayPreferences: undefined
         }, overrides);
     };
     var AircraftDetailPlugin = (function (_super) {
@@ -242,6 +245,7 @@ var VRS;
         AircraftDetailPlugin.prototype.applyState = function (settings) {
             this.options.showUnits = settings.showUnits;
             this.options.items = settings.items;
+            this.options.useShortLabels = !!settings.useShortLabels;
         };
         AircraftDetailPlugin.prototype.loadAndApplyState = function () {
             this.applyState(this.loadState());
@@ -252,7 +256,8 @@ var VRS;
         AircraftDetailPlugin.prototype._createSettings = function () {
             return {
                 showUnits: this.options.showUnits,
-                items: this.options.items
+                items: this.options.items,
+                useShortLabels: this.options.useShortLabels
             };
         };
         AircraftDetailPlugin.prototype.createOptionPane = function (displayOrder) {
@@ -271,6 +276,17 @@ var VRS;
                         getValue: function () { return options.showUnits; },
                         setValue: function (value) {
                             options.showUnits = value;
+                            _this._buildContent(_this._getState());
+                            _this._reRenderAircraft(_this._getState());
+                        },
+                        saveState: function () { return _this.saveState(); }
+                    }),
+                    new VRS.OptionFieldCheckBox({
+                        name: 'useShortLabels',
+                        labelKey: 'UseShortLabels',
+                        getValue: function () { return options.useShortLabels; },
+                        setValue: function (value) {
+                            options.useShortLabels = value;
                             _this._buildContent(_this._getState());
                             _this._reRenderAircraft(_this._getState());
                         },
@@ -364,7 +380,7 @@ var VRS;
                     $('<div/>')
                         .addClass('label')
                         .append($('<span/>')
-                        .text(VRS.globalisation.getText(handler.labelKey) + ':'))
+                        .text(VRS.globalisation.getText(options.useShortLabels ? handler.headingKey : handler.labelKey) + ':'))
                         .appendTo(listItem);
                 }
                 var content = $('<div/>')

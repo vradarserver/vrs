@@ -1801,4 +1801,7 @@
   <data name="UsePressureAltitude" xml:space="preserve">
     <value>Use pressure altitude</value>
   </data>
+  <data name="UseShortLabels" xml:space="preserve">
+    <value>Use short labels</value>
+  </data>
 </root>

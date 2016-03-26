@@ -58,6 +58,7 @@ namespace VRS
     VRS.globalOptions.detailPanelFlagUncertainCallsigns = VRS.globalOptions.detailPanelFlagUncertainCallsigns !== undefined ? VRS.globalOptions.detailPanelFlagUncertainCallsigns : true; // True if uncertain callsigns are to be flagged up on the detail panel.
     VRS.globalOptions.detailPanelDistinguishOnGround = VRS.globalOptions.detailPanelDistinguishOnGround !== undefined ? VRS.globalOptions.detailPanelDistinguishOnGround : true;        // True if altitudes should show 'GND' when the aircraft is on the ground.
     VRS.globalOptions.detailPanelAirportDataThumbnails = VRS.globalOptions.detailPanelAirportDataThumbnails || 2;                                                                       // The number of thumbnails to fetch from www.airport-data.com.
+    VRS.globalOptions.detailPanelUseShortLabels = VRS.globalOptions.detailPanelUseShortLabels !== undefined ? VRS.globalOptions.detailPanelUseShortLabels : false;                      // Use list labels instead of full labels.
 
     /**
      * The options that AircraftDetailPlugin honours.
@@ -133,6 +134,11 @@ namespace VRS
          * The number of thumbnails to fetch from www.airport-data.com.
          */
         airportDataThumbnails?: number;
+
+        /**
+         * True to show short labels, null or false to show long labels.
+         */
+        useShortLabels?: boolean;
     }
 
     /**
@@ -259,8 +265,9 @@ namespace VRS
      */
     export interface AircraftDetailPlugin_SaveState
     {
-        showUnits:  boolean;
-        items:      RenderPropertyEnum[];
+        showUnits:      boolean;
+        items:          RenderPropertyEnum[];
+        useShortLabels: boolean;
     }
 
     /*
@@ -273,7 +280,7 @@ namespace VRS
     }
     VRS.jQueryUIHelper.getAircraftDetailOptions = function(overrides?: AircraftDetailPlugin_Options) : AircraftDetailPlugin_Options
     {
-        return $.extend({
+        return $.extend(<AircraftDetailPlugin_Options>{
             name:                       'default',
             useSavedState:              true,
             showUnits:                  VRS.globalOptions.detailPanelDefaultShowUnits,
@@ -281,7 +288,9 @@ namespace VRS
             showSeparateRouteLink:      VRS.globalOptions.detailPanelShowSeparateRouteLink,
             flagUncertainCallsigns:     VRS.globalOptions.detailPanelFlagUncertainCallsigns,
             distinguishOnGround:        VRS.globalOptions.detailPanelDistinguishOnGround,
-            airportDataThumbnails:      VRS.globalOptions.detailPanelAirportDataThumbnails
+            airportDataThumbnails:      VRS.globalOptions.detailPanelAirportDataThumbnails,
+            useShortLabels:             VRS.globalOptions.detailPanelUseShortLabels,
+            unitDisplayPreferences:     undefined
         }, overrides);
     }
 
@@ -476,6 +485,7 @@ namespace VRS
         {
             this.options.showUnits = settings.showUnits;
             this.options.items = settings.items;
+            this.options.useShortLabels = !!settings.useShortLabels;
         }
 
         /**
@@ -500,8 +510,9 @@ namespace VRS
         private _createSettings() : AircraftDetailPlugin_SaveState
         {
             return {
-                showUnits: this.options.showUnits,
-                items: this.options.items
+                showUnits:      this.options.showUnits,
+                items:          this.options.items,
+                useShortLabels: this.options.useShortLabels
             };
         }
 
@@ -527,6 +538,18 @@ namespace VRS
                             options.showUnits = value;
                             this._buildContent(this._getState());
                             this._reRenderAircraft(this._getState())
+                        },
+                        saveState:      () => this.saveState()
+                    }),
+
+                    new VRS.OptionFieldCheckBox({
+                        name:           'useShortLabels',
+                        labelKey:       'UseShortLabels',
+                        getValue:       () => options.useShortLabels,
+                        setValue:       (value) => {
+                            options.useShortLabels = value;
+                            this._buildContent(this._getState());
+                            this._reRenderAircraft(this._getState());
                         },
                         saveState:      () => this.saveState()
                     })
@@ -661,7 +684,7 @@ namespace VRS
                     $('<div/>')
                         .addClass('label')
                         .append($('<span/>')
-                            .text(VRS.globalisation.getText(handler.labelKey) + ':')
+                            .text(VRS.globalisation.getText(options.useShortLabels ? handler.headingKey : handler.labelKey) + ':')
                         )
                         .appendTo(listItem);
                 }

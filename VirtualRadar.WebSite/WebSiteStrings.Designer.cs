@@ -4867,6 +4867,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use short labels.
+        /// </summary>
+        public static string UseShortLabels {
+            get {
+                return ResourceManager.GetString("UseShortLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vertical Speed.
         /// </summary>
         public static string VerticalSpeed {

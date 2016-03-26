@@ -140,6 +140,7 @@
         detailPanelFlagUncertainCallsigns?: boolean;
         detailPanelDistinguishOnGround?: boolean;
         detailPanelAirportDataThumbnails?: number;
+        detailPanelUseShortLabels?: boolean;
 
         // jquery.vrs.aircraftInfoWindow
         aircraftInfoWindowClass?: string;
