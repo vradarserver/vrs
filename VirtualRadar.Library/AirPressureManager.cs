@@ -54,6 +54,11 @@ namespace VirtualRadar.Library
         /// </summary>
         private IClock _Clock;
 
+        /// <summary>
+        /// The object that will run lookups in the background for us.
+        /// </summary>
+        private IBackgroundWorker _BackgroundWorker;
+
         private static IAirPressureManager _Singleton;
         /// <summary>
         /// See interface docs.
@@ -112,6 +117,10 @@ namespace VirtualRadar.Library
                 Enabled = _SharedConfiguration.Get().BaseStationSettings.DownloadGlobalAirPressureReadings;
                 _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
 
+                if(_BackgroundWorker == null) {
+                    _BackgroundWorker = Factory.Singleton.Resolve<IBackgroundWorker>();
+                    _BackgroundWorker.DoWork += BackgroundWorker_DoWork;
+                }
 
                 _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
                 _HeartbeatService.SlowTick += HeartbeatService_SlowTick;
@@ -141,7 +150,7 @@ namespace VirtualRadar.Library
         /// is no longer queued.
         /// </summary>
         /// <param name="state"></param>
-        private void DownloadAirPressuresOnBackgroundThread(object state)
+        private void DownloadAirPressuresOnBackgroundThread(object state = null)
         {
             // Under no circumstances should an exception be allowed to bubble up out of this
             try {
@@ -203,10 +212,19 @@ namespace VirtualRadar.Library
                 var threshold = _LastSuccessfulDownloadUtc.AddMinutes(Downloader.IntervalMinutes);
                 if(_Clock.UtcNow >= threshold) {
                     _DownloadQueued = true;
-                    ThreadPool.QueueUserWorkItem(DownloadAirPressuresOnBackgroundThread);
+                    _BackgroundWorker.StartWork(null);
                 }
             }
         }
 
+        /// <summary>
+        /// Called when the background worker queue starts.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void BackgroundWorker_DoWork(object sender, EventArgs args)
+        {
+            DownloadAirPressuresOnBackgroundThread();
+        }
     }
 }
