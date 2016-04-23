@@ -32,6 +32,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
     /// </summary>
     public class MainView : IMainView
     {
+        private object _SyncLock = new object();
         private IMainPresenter _Presenter;
         private ViewModel _ViewModel;
         private IUniversalPlugAndPlayManager _UPnpManager;
@@ -106,12 +107,16 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void ShowServerRequests(ServerRequest[] serverRequests)
         {
-            _ViewModel.RefreshServerRequests(serverRequests);
+            lock(_SyncLock) {
+                _ViewModel.RefreshServerRequests(serverRequests);
+            }
         }
 
         public void ShowFeeds(FeedStatus[] feeds)
         {
-            _ViewModel.RefreshFeedStatuses(feeds);
+            lock(_SyncLock) {
+                _ViewModel.RefreshFeedStatuses(feeds);
+            }
         }
 
         public void ShowFeedConnectionStatus(FeedStatus feed)
@@ -121,12 +126,16 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public void UpdateFeedCounters(FeedStatus[] feeds)
         {
-            ShowFeeds(feeds);
+            lock(_SyncLock) {
+                ShowFeeds(feeds);
+            }
         }
 
         public void ShowRebroadcastServerStatus(IList<RebroadcastServerConnection> connections)
         {
-            _ViewModel.RefreshRebroadcastServerConnections(connections);
+            lock(_SyncLock) {
+                _ViewModel.RefreshRebroadcastServerConnections(connections);
+            }
         }
 
         public void ShowSettingsConfigurationUI(string openOnPageTitle, object openOnConfigurationObject)
@@ -148,7 +157,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         [WebAdminMethod]
         public ViewModel GetState()
         {
-            _ViewModel.RefreshFromView(this);
+            lock(_SyncLock) {
+                _ViewModel.RefreshFromView(this);
+            }
             return _ViewModel;
         }
 
