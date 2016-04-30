@@ -401,6 +401,10 @@ namespace VirtualRadar.Plugin.WebAdmin
             if(htmlLocalisers != null && webAdminViewMap != null && templateMarkerFileNames != null) {
                 WebAdminView webAdminView;
                 if(webAdminViewMap.TryGetValue(normalisedPathAndFile, out webAdminView)) {
+                    foreach(var kvp in templateMarkerFileNames) {
+                        args.Content = ExpandTemplateMarkerFromFile(args.Content, kvp.Key, kvp.Value);
+                    }
+
                     IHtmlLocaliser htmlLocaliser;
                     if(webAdminView.StringResources != null && htmlLocalisers.TryGetValue(webAdminView.StringResources, out htmlLocaliser)) {
                         args.Content = htmlLocaliser.Html(args.Content, args.Encoding);
@@ -408,10 +412,6 @@ namespace VirtualRadar.Plugin.WebAdmin
                     args.Content = htmlLocalisers[typeof(WebAdminStrings)].Html(args.Content, args.Encoding);
                     args.Content = htmlLocalisers[typeof(VirtualRadar.Localisation.Strings)].Html(args.Content, args.Encoding);
                     args.Content = htmlLocalisers[typeof(VirtualRadar.WebSite.WebSiteStrings)].Html(args.Content, args.Encoding);
-
-                    foreach(var kvp in templateMarkerFileNames) {
-                        args.Content = ExpandTemplateMarkerFromFile(args.Content, kvp.Key, kvp.Value);
-                    }
 
                     _ViewMethodMapper.ViewRequested(webAdminView, args);
                 }

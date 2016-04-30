@@ -8,6 +8,7 @@ var VRS;
                 function PageHandler(viewId) {
                     var _this = this;
                     this._SaveAttempted = false;
+                    this._AccessEditor = new WebAdmin.AccessEditor();
                     this._ViewId = new WebAdmin.ViewId('Settings', viewId);
                     $('#edit-receiver').on('hidden.bs.modal', function () {
                         if (_this._Model && _this._Model.TestConnectionOutcome) {
@@ -204,8 +205,10 @@ var VRS;
                                 arrayChildId: {
                                     '{root}.MergedFeeds': 'UniqueId',
                                     '{root}.RebroadcastSettings': 'UniqueId',
+                                    '{root}.RebroadcastSettings[i].Access.Addresses': 'Cidr',
                                     '{root}.ReceiverLocations': 'UniqueId',
                                     '{root}.Receivers': 'UniqueId',
+                                    '{root}.Receivers[i].Access.Addresses': 'Cidr',
                                     '{root}.Users': 'UniqueId'
                                 },
                                 extend: {
@@ -369,6 +372,12 @@ var VRS;
                                             _this._Model.RebroadcastSettings.splice(index, 1);
                                         };
                                     },
+                                    '{root}.RebroadcastSettings[i].Access': function (model) {
+                                        _this._AccessEditor.BuildAccessModel(model);
+                                    },
+                                    '{root}.RebroadcastSettings[i].Access.Addresses[i]': function (model) {
+                                        _this._AccessEditor.BuildAccessCidrModel(model);
+                                    },
                                     '{root}.Receivers[i]': function (model) {
                                         model.FormattedConnectionType = ko.computed(function () { return _this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes); });
                                         model.FormattedHandshake = ko.computed(function () { return _this._ViewId.describeEnum(model.Handshake(), state.Response.Handshakes); });
@@ -425,6 +434,12 @@ var VRS;
                                         model.TestConnection = function (row) {
                                             _this.testConnection(row);
                                         };
+                                    },
+                                    '{root}.Receivers[i].Access': function (model) {
+                                        _this._AccessEditor.BuildAccessModel(model);
+                                    },
+                                    '{root}.Receivers[i].Access.Addresses[i]': function (model) {
+                                        _this._AccessEditor.BuildAccessCidrModel(model);
                                     },
                                     '{root}.ReceiverLocations[i]': function (model) {
                                         model.FormattedLatitude = ko.computed(function () { return VRS.stringUtility.formatNumber(model.Latitude(), 'N6'); });

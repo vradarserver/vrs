@@ -125,6 +125,7 @@
     <TypeScriptCompile Include="Web\WebAdmin\Index.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Queues.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\script\access-editor.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\bootstrap-helper.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\menu.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\script\viewid.ts" />
@@ -194,6 +195,12 @@
     <Content Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Web\WebAdmin\css\jquery.bootstrap-touchspin.css" />
     <Content Include="Web\WebAdmin\css\webadmin.css" />
+    <Content Include="Web\WebAdmin\script\access-editor.js">
+      <DependentUpon>access-editor.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\script\access-editor.js.map">
+      <DependentUpon>access-editor.ts</DependentUpon>
+    </Content>
     <Content Include="Web\WebAdmin\script\bootstrap.js" />
     <Content Include="Web\WebAdmin\script\bootstrap-helper.js">
       <DependentUpon>bootstrap-helper.ts</DependentUpon>
@@ -260,6 +267,7 @@
     <Content Include="Web\WebAdmin\Statistics.js.map">
       <DependentUpon>Statistics.ts</DependentUpon>
     </Content>
+    <Content Include="Web\WebAdmin\templates\template-access-editor-block.html" />
     <Content Include="Web\WebAdmin\templates\template-header-block.html" />
   </ItemGroup>
   <ItemGroup>
