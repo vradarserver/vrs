@@ -154,6 +154,7 @@
         private _Model: Model;
         private _ViewId: ViewId;
         private _SaveAttempted = false;
+        private _AccessEditor = new AccessEditor();
 
         constructor(viewId: string)
         {
@@ -398,11 +399,13 @@
                 } else {
                     this._Model = ko.viewmodel.fromModel(state.Response.Configuration, {
                         arrayChildId: {
-                            '{root}.MergedFeeds':           'UniqueId',
-                            '{root}.RebroadcastSettings':   'UniqueId',
-                            '{root}.ReceiverLocations':     'UniqueId',
-                            '{root}.Receivers':             'UniqueId',
-                            '{root}.Users':                 'UniqueId'
+                            '{root}.MergedFeeds':                               'UniqueId',
+                            '{root}.RebroadcastSettings':                       'UniqueId',
+                            '{root}.RebroadcastSettings[i].Access.Addresses':   'Cidr',
+                            '{root}.ReceiverLocations':                         'UniqueId',
+                            '{root}.Receivers':                                 'UniqueId',
+                            '{root}.Receivers[i].Access.Addresses':             'Cidr',
+                            '{root}.Users':                                     'UniqueId'
                         },
 
                         extend: {
@@ -592,6 +595,13 @@
                                 };
                             },
 
+                            '{root}.RebroadcastSettings[i].Access': (model: AccessModel) => {
+                                this._AccessEditor.BuildAccessModel(model);
+                            },
+                            '{root}.RebroadcastSettings[i].Access.Addresses[i]': (model: AccessCidrModel) => {
+                                this._AccessEditor.BuildAccessCidrModel(model);
+                            },
+
                             '{root}.Receivers[i]': (model: ReceiverModel) =>
                             {
                                 model.FormattedConnectionType = ko.computed(() => this._ViewId.describeEnum(model.ConnectionType(), state.Response.ConnectionTypes));
@@ -664,6 +674,13 @@
                                 model.TestConnection = (row: ReceiverModel) => {
                                     this.testConnection(row);
                                 };
+                            },
+
+                            '{root}.Receivers[i].Access': (model: AccessModel) => {
+                                this._AccessEditor.BuildAccessModel(model);
+                            },
+                            '{root}.Receivers[i].Access.Addresses[i]': (model: AccessCidrModel) => {
+                                this._AccessEditor.BuildAccessCidrModel(model);
                             },
 
                             '{root}.ReceiverLocations[i]': (model: ReceiverLocationModel) =>

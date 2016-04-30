@@ -319,7 +319,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     }
     interface IAccessModel {
         DefaultAccess: number;
-        Addresses: string[];
+        Addresses: VirtualRadar.Plugin.WebAdmin.View.Settings.ICidrModel[];
+    }
+    interface ICidrModel {
+        Cidr: string;
     }
     interface IReceiverModel {
         Enabled: boolean;
@@ -771,7 +774,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
     }
     interface IAccessModel_KO {
         DefaultAccess: KnockoutObservable<number>;
-        Addresses: KnockoutViewModelArray<string>;
+        Addresses: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.ICidrModel_KO>;
+    }
+    interface ICidrModel_KO {
+        Cidr: KnockoutObservable<string>;
     }
     interface IReceiverModel_KO {
         Enabled: KnockoutObservable<boolean>;

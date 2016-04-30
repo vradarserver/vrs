@@ -8,6 +8,7 @@
         <script src="script/Strings.js"></script>
         <script src="script/Strings.Server.js"></script>
         <script src="script/bootstrap-helper.js"></script>
+        <script src="script/access-editor.js"></script>
         <script src="Settings.js"></script>
     </head>
     <body>
@@ -27,90 +28,12 @@
                         <div id="failure-message" class="alert alert-danger"></div>
 
                         <div class="panel-group" role="tablist" aria-multiselectable="true">
-                            <!---->
-                            <!-- DATA SOURCES -->
-                            <!---->
-
-                            <div data-bsu="collapsible-panel" data-bsu-options="expanded" data-bind="with: $root.BaseStationSettings">
-                                <div>
-                                    ::OptionsDataSourcesSheetTitle::
-                                    <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
-                                </div>
-                                <div class="form-horizontal">
-                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="DatabaseFileNameValidation">
-                                        <label class="col-sm-4">::DatabaseFileName:::</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" data-bind="textInput: DatabaseFileName" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="OperatorFlagsFolderValidation">
-                                        <label class="col-sm-4">::FlagsFolder:::</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" data-bind="textInput: OperatorFlagsFolder" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="SilhouettesFolderValidation">
-                                        <label class="col-sm-4">::SilhouettesFolder:::</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" data-bind="textInput: SilhouettesFolder" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="PicturesFolderValidation">
-                                        <label class="col-sm-4">::PicturesFolder:::</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" data-bind="textInput: PicturesFolder" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
-                                            <label>
-                                                <input type="checkbox" data-bind="checked: SearchPictureSubFolders" />
-                                                ::SearchPictureSubFolders::
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
-                                            <label>
-                                                <input type="checkbox" data-bind="checked: DownloadGlobalAirPressureReadings" />
-                                                ::DownloadGlobalAirPressureReadings::
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-section">
-                                        ::AircraftDetailsOnlineLookup::
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
-                                            <label>
-                                                <input type="checkbox" data-bind="checked: LookupAircraftDetailsOnline" />
-                                                ::LookupAircraftDetailsOnline::
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-4">
-                                            ::DataProvider:::
-                                        </label>
-                                        <div class="col-sm-8">
-                                            <span data-bind="text: $root.OnlineLookupSupplierName"></span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-4 col-sm-8">
-                                            <span data-bind="text: $root.OnlineLookupSupplierCredits"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <!---->
                             <!-- RECEIVERS -->
                             <!---->
 
-                            <div data-bsu="collapsible-panel" data-bsu-options="">
+                            <div data-bsu="collapsible-panel" data-bsu-options="expanded">
                                 <div>
                                     ::Receivers::
                                     <div class="pull-right" data-bsu="validate-icons" data-bsu-field="ReceiverWrapUpValidation"></div>
@@ -240,7 +163,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group" data-bind="visible: $root.TestConnectionOutcome() != null, with: $root.TestConnectionOutcome">
-                                        <div class="col-sm-offset-4 col-sm-8" >
+                                        <div class="col-sm-offset-4 col-sm-8">
                                             <span data-bind="text: Message"></span>
                                         </div>
                                     </div>
@@ -298,6 +221,10 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <fieldset data-bind="enable: IsPassive, with: Access">
+                                            @access-editor.html@
+                                        </fieldset>
                                     </div>
 
                                     <div data-bind="visible: ConnectionType() == 1">
@@ -371,6 +298,86 @@
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" data-bind="textInput: ShutdownText" />
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!---->
+                            <!-- DATA SOURCES -->
+                            <!---->
+
+                            <div data-bsu="collapsible-panel" data-bsu-options="" data-bind="with: $root.BaseStationSettings">
+                                <div>
+                                    ::OptionsDataSourcesSheetTitle::
+                                    <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
+                                </div>
+                                <div class="form-horizontal">
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="DatabaseFileNameValidation">
+                                        <label class="col-sm-4">::DatabaseFileName:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: DatabaseFileName" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="OperatorFlagsFolderValidation">
+                                        <label class="col-sm-4">::FlagsFolder:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: OperatorFlagsFolder" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="SilhouettesFolderValidation">
+                                        <label class="col-sm-4">::SilhouettesFolder:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: SilhouettesFolder" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="PicturesFolderValidation">
+                                        <label class="col-sm-4">::PicturesFolder:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: PicturesFolder" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: SearchPictureSubFolders" />
+                                                ::SearchPictureSubFolders::
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: DownloadGlobalAirPressureReadings" />
+                                                ::DownloadGlobalAirPressureReadings::
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        ::AircraftDetailsOnlineLookup::
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: LookupAircraftDetailsOnline" />
+                                                ::LookupAircraftDetailsOnline::
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">
+                                            ::DataProvider:::
+                                        </label>
+                                        <div class="col-sm-8">
+                                            <span data-bind="text: $root.OnlineLookupSupplierName"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8">
+                                            <span data-bind="text: $root.OnlineLookupSupplierCredits"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -726,6 +733,10 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <fieldset data-bind="enable: !IsTransmitter(), with: Access">
+                                        @access-editor.html@
+                                    </fieldset>
                                 </div>
                             </div>
 

@@ -1,0 +1,57 @@
+﻿<div class="form-section">
+    ::Access::
+</div>
+<div class="form-group">
+    <label class="col-sm-4">::DefaultAccess:::</label>
+    <div class="col-sm-8">
+        <select class="form-control" data-bind="options: $root.DefaultAccesses, optionsText: 'Description', optionsValue: 'Value', value: DefaultAccess"></select>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-5">
+        <input type="text" class="form-control" data-bind="textInput: EditAddress" />
+    </div>
+    <div class="col-sm-3">
+        <button class="btn btn-success" data-bind="enable: EditIsValid, click: SaveEdit">
+            <span data-bind="text: EditLabel"></span>
+        </button>
+        <button class="btn btn-danger" data-bind="visible: !!EditExisting(), click: ResetEdit">
+            ::Cancel::
+        </button>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-4">
+        <span data-bind="text: CidrTableLabel"></span>:
+    </label>
+    <div class="col-sm-8">
+        <div class="table-responsive">
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th>::Cidr::</th>
+                        <th>::FromAddress::</th>
+                        <th>::ToAddress::</th>
+                        <th class="thin-column"></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: Addresses">
+                    <tr>
+                        <td data-bind="text: Cidr"></td>
+                        <td data-bind="text: FromAddress"></td>
+                        <td data-bind="text: ToAddress"></td>
+                        <td class="text-nowrap">
+                            <button type="button" class="btn btn-success" data-bind="click: $parent.EditCidr">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger" data-bind="click: $parent.DeleteCidr">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
