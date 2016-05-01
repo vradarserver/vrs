@@ -141,7 +141,7 @@ namespace VRS
 
         private _PlotsOnDisplay: PolarPlot_FeedSlice[] = [];      // The slices being shown on display
         private _PolarPlot: PolarPlot_AllFeedSlices = null;       // The last set of polar plots fetched from the server
-        private  _AltitudeRangeConfigs: PolarPlot_AltitudeRangeConfig[] = VRS.globalOptions.polarPlotAltitudeConfigs.slice();
+        private _AltitudeRangeConfigs: PolarPlot_AltitudeRangeConfig[] = VRS.globalOptions.polarPlotAltitudeConfigs.slice();
         private _StrokeOpacity: number = VRS.globalOptions.polarPlotStrokeOpacity;
         private _FillOpacity: number = VRS.globalOptions.polarPlotFillOpacity;
 
