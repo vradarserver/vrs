@@ -2198,7 +2198,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             for(int i = 0;i < worksheet.Int("Count");++i) {
                 var message = new BaseStationMessage() { Icao24 = "Z", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-                var args = new BaseStationMessageEventArgs(message, isOutOfBand: isMlat);
+                var args = new BaseStationMessageEventArgs(message, isOutOfBand: isMlat, isSatcomFeed: false);
 
                 var valueText = worksheet.EString(String.Format("MsgValue{0}", i + 1));
                 messageProperty.SetValue(message, TestUtilities.ChangeType(valueText, messageProperty.PropertyType, CultureInfo.InvariantCulture), null);

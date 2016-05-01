@@ -154,7 +154,7 @@ namespace VirtualRadar.Library.Listener
 
             var startAircraftList = receiver.ReceiverUsage != ReceiverUsage.MergeOnly;
 
-            DoCommonInitialise(receiver.UniqueId, receiver.Name, receiver.ReceiverUsage, startAircraftList: startAircraftList);
+            DoCommonInitialise(receiver.UniqueId, receiver.Name, receiver.IsSatcomFeed, receiver.ReceiverUsage, startAircraftList: startAircraftList);
             ConfigurePolarPlotter(receiverLocation, nameChanged: false);
         }
 
@@ -180,7 +180,7 @@ namespace VirtualRadar.Library.Listener
             mergedFeedListener.IgnoreAircraftWithNoPosition = mergedFeed.IgnoreAircraftWithNoPosition;
             mergedFeedListener.SetListeners(mergedListeners);
 
-            DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name, mergedFeed.ReceiverUsage, startAircraftList: true);
+            DoCommonInitialise(mergedFeed.UniqueId, mergedFeed.Name, false, mergedFeed.ReceiverUsage, startAircraftList: true);
         }
 
         private static List<IMergedFeedComponentListener> GetListenersFromMergeFeeds(MergedFeed mergedFeed, IEnumerable<IFeed> mergeFeeds)
@@ -207,9 +207,10 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         /// <param name="uniqueId"></param>
         /// <param name="name"></param>
+        /// <param name="isSatcomFeed"></param>
         /// <param name="receiverUsage"></param>
         /// <param name="startAircraftList"></param>
-        private void DoCommonInitialise(int uniqueId, string name, ReceiverUsage receiverUsage, bool startAircraftList)
+        private void DoCommonInitialise(int uniqueId, string name, bool isSatcomFeed, ReceiverUsage receiverUsage, bool startAircraftList)
         {
             _Initialised = true;
             UniqueId = uniqueId;
@@ -217,6 +218,7 @@ namespace VirtualRadar.Library.Listener
 
             Listener.ReceiverId = uniqueId;
             Listener.ReceiverName = Name;
+            Listener.IsSatcomFeed = isSatcomFeed;
 
             AircraftList = Factory.Singleton.Resolve<IBaseStationAircraftList>();
             AircraftList.ExceptionCaught += AircraftList_ExceptionCaught;
@@ -271,6 +273,9 @@ namespace VirtualRadar.Library.Listener
                 Listener.ChangeSource(connector, bytesExtractor, rawMessageTranslator);
                 if(Listener.Statistics != null) Listener.Statistics.ResetMessageCounters();
             }
+
+            Listener.ReceiverName = receiver.Name;
+            Listener.IsSatcomFeed = receiver.IsSatcomFeed;
 
             SetIsVisible(receiver.ReceiverUsage);
         }

@@ -1506,6 +1506,35 @@ namespace Test.VirtualRadar.WebSite
                 }
             }
         }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Does_Not_Set_PositionIsStale_On_Satcom_Aircraft()
+        {
+            var now = DateTime.UtcNow;
+            var boostSeconds = 60;
+
+            _Provider.SetupGet(r => r.UtcNow).Returns(now);
+            _Configuration.BaseStationSettings.DisplayTimeoutSeconds = 30;
+            AddBlankAircraft(1);
+            var aircraft = Mock.Get(_AircraftLists[0][0]);
+            aircraft.SetupGet(r => r.Latitude).Returns(1.0);
+            aircraft.SetupGet(r => r.Longitude).Returns(1.0);
+            aircraft.SetupGet(r => r.PositionTime).Returns(now);
+            aircraft.SetupGet(r => r.LastSatcomUpdate).Returns(DateTime.MinValue.AddMilliseconds(1));
+
+            now = now.AddSeconds(_Configuration.BaseStationSettings.DisplayTimeoutSeconds + boostSeconds + 1);
+            _Provider.SetupGet(r => r.UtcNow).Returns(now);
+
+            var json = _Builder.Build(_Args);
+            var jsonAircraft = json.Aircraft[0];
+
+            // By this point the setup should be the same as for the "after" position in the
+            // AircraftListJsonBuilder_Sets_PositionIsStale_To_Either_True_Or_Null test. The only difference
+            // is the setting of a LastSatcomUpdate value, which indicates that the aircraft can't have its
+            // display timed out.
+
+            Assert.AreEqual(null, jsonAircraft.PositionIsStale);
+        }
         #endregion
 
         #region Sorting of list

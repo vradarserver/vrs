@@ -149,12 +149,22 @@ namespace VirtualRadar.Library.BaseStation
         /// The number of seconds that has to elapse since the last message for an aircraft before <see cref="TakeSnapshot"/>
         /// suppresses it from the returned list.
         /// </summary>
-        private int _SnapshotTimeoutSeconds;
+        private int _SnapshotTimeoutSecondsModeS;
 
         /// <summary>
-        /// The number of seconds that has to elapse before old aircraft are removed from the list.
+        /// The number of minutes that have to elapse before SatCom aircraft are suppressed by <see cref="TakeSnapshot"/>.
         /// </summary>
-        private int _TrackingTimeoutSeconds;
+        private int _SnapshotTimeoutMinutesSatcom;
+
+        /// <summary>
+        /// The number of seconds that has to elapse after the last Mode-S message before old aircraft are removed from the list.
+        /// </summary>
+        private int _TrackingTimeoutSecondsModeS;
+
+        /// <summary>
+        /// The number of seconds that has to elapse after the last SatCom message before old aircraft are removed from the list.
+        /// </summary>
+        private int _TrackingTimeoutMinutesSatcom;
 
         /// <summary>
         /// A map of aircraft identifiers to the parameters used for calculating its track. This is a parallel list to
@@ -416,8 +426,10 @@ namespace VirtualRadar.Library.BaseStation
 
             lock(_ConfigurationLock) {
                 _ShortTrailLengthSeconds = configuration.GoogleMapSettings.ShortTrailLengthSeconds;
-                _SnapshotTimeoutSeconds = configuration.BaseStationSettings.DisplayTimeoutSeconds;
-                _TrackingTimeoutSeconds = configuration.BaseStationSettings.TrackingTimeoutSeconds;
+                _SnapshotTimeoutSecondsModeS = configuration.BaseStationSettings.DisplayTimeoutSeconds;
+                _SnapshotTimeoutMinutesSatcom = configuration.BaseStationSettings.SatcomDisplayTimeoutMinutes;
+                _TrackingTimeoutSecondsModeS = configuration.BaseStationSettings.TrackingTimeoutSeconds;
+                _TrackingTimeoutMinutesSatcom = configuration.BaseStationSettings.SatcomTrackingTimeoutMinutes;
                 _PreferIataAirportCodes = configuration.GoogleMapSettings.PreferIataAirportCodes;
             }
         }
@@ -430,7 +442,8 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         /// <param name="message"></param>
         /// <param name="isOutOfBand"></param>
-        private void ProcessMessage(BaseStationMessage message, bool isOutOfBand)
+        /// <param name="isSatcomFeed"></param>
+        private void ProcessMessage(BaseStationMessage message, bool isOutOfBand, bool isSatcomFeed)
         {
             try {
                 if(message.MessageType == BaseStationMessageType.Transmission) {
@@ -467,7 +480,7 @@ namespace VirtualRadar.Library.BaseStation
                             }
 
                             if(aircraft != null) {
-                                ApplyMessageToAircraft(message, aircraft, isNewAircraft, isOutOfBand);
+                                ApplyMessageToAircraft(message, aircraft, isNewAircraft, isOutOfBand, isSatcomFeed);
                             }
 
                             if(!isOutOfBand && altitudeCertainty == Certainty.ProbablyRight && positionCertainty == Certainty.ProbablyRight) {
@@ -499,7 +512,7 @@ namespace VirtualRadar.Library.BaseStation
             }
         }
 
-        private void ApplyMessageToAircraft(BaseStationMessage message, IAircraft aircraft, bool isNewAircraft, bool isOutOfBand)
+        private void ApplyMessageToAircraft(BaseStationMessage message, IAircraft aircraft, bool isNewAircraft, bool isOutOfBand, bool isSatcomFeed)
         {
             var now = _Clock.UtcNow;
 
@@ -525,7 +538,13 @@ namespace VirtualRadar.Library.BaseStation
                     aircraft.FirstSeen = now;
                     aircraft.TransponderType = TransponderType.ModeS;
                 }
+
                 aircraft.LastUpdate = now;
+                if(isSatcomFeed) {
+                    aircraft.LastSatcomUpdate = now;
+                } else {
+                    aircraft.LastModeSUpdate = now;
+                }
 
                 if(track != null) aircraft.Track = track;
                 if(message.Track != null && message.Track != 0.0) aircraft.IsTransmittingTrack = true;
@@ -889,16 +908,22 @@ namespace VirtualRadar.Library.BaseStation
             snapshotTimeStamp = _Clock.UtcNow.Ticks;
             snapshotDataVersion = -1L;
 
-            long hideThreshold;
+            long modeSThreshold;
+            long satcomThreshold;
             lock(_ConfigurationLock) {
-                hideThreshold = snapshotTimeStamp - (_SnapshotTimeoutSeconds * TicksPerSecond);
+                modeSThreshold = snapshotTimeStamp - (_SnapshotTimeoutSecondsModeS * TicksPerSecond);
+                satcomThreshold = snapshotTimeStamp - (_SnapshotTimeoutMinutesSatcom * TicksPerSecond * 60L);
             }
 
             List<IAircraft> result = new List<IAircraft>();
             var aircraftMap = _AircraftMap;
             foreach(var aircraft in aircraftMap.Values) {
-                if(aircraft.LastUpdate.Ticks < hideThreshold) continue;
-                if(aircraft.DataVersion > snapshotDataVersion) snapshotDataVersion = aircraft.DataVersion;
+                if(aircraft.LastModeSUpdate.Ticks < modeSThreshold && aircraft.LastSatcomUpdate.Ticks < satcomThreshold) {
+                    continue;
+                }
+                if(aircraft.DataVersion > snapshotDataVersion) {
+                    snapshotDataVersion = aircraft.DataVersion;
+                }
                 result.Add((IAircraft)aircraft.Clone());
             }
 
@@ -950,10 +975,12 @@ namespace VirtualRadar.Library.BaseStation
         {
             var aircraftMap = _AircraftMap;
             var removeList = new List<int>();
-            var threshold = _Clock.UtcNow.Ticks - (_TrackingTimeoutSeconds * TicksPerSecond);
+            var now = _Clock.UtcNow;
+            var modeSThreshold = now.Ticks - (_TrackingTimeoutSecondsModeS * TicksPerSecond);
+            var satcomThreshold = now.Ticks - (_TrackingTimeoutMinutesSatcom * TicksPerSecond * 60L);
 
             foreach(var aircraft in aircraftMap.Values) {
-                if(aircraft.LastUpdate.Ticks < threshold) {
+                if(aircraft.LastModeSUpdate.Ticks < modeSThreshold && aircraft.LastSatcomUpdate.Ticks < satcomThreshold) {
                     removeList.Add(aircraft.UniqueId);
                 }
             }
@@ -1061,7 +1088,7 @@ namespace VirtualRadar.Library.BaseStation
         private void BaseStationListener_MessageReceived(object sender, BaseStationMessageEventArgs args)
         {
             if(IsTracking) {
-                ProcessMessage(args.Message, args.IsOutOfBand);
+                ProcessMessage(args.Message, args.IsOutOfBand, args.IsSatcomFeed);
             }
         }
 
@@ -1117,7 +1144,7 @@ namespace VirtualRadar.Library.BaseStation
             // Remove old aircraft once every ten minutes. We don't have test coverage for this because we cannot
             // observe the effect - taking a snapshot of the aircraft list also removes old aircraft. This is just
             // a failsafe to prevent a buildup of objects when no-one is using the website.
-            if(_LastRemoveOldAircraftTime.AddSeconds(_TrackingTimeoutSeconds) <= now) {
+            if(_LastRemoveOldAircraftTime.AddSeconds(_TrackingTimeoutSecondsModeS) <= now) {
                 _LastRemoveOldAircraftTime = now;
                 RemoveOldAircraft();
             }

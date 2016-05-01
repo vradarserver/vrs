@@ -35,14 +35,23 @@ namespace Test.VirtualRadar.Interface.BaseStation
             BaseStationMessageEventArgs args = new BaseStationMessageEventArgs(message);
             Assert.AreSame(message, args.Message);
             Assert.AreEqual(false, args.IsOutOfBand);
+            Assert.AreEqual(false, args.IsSatcomFeed);
 
-            var args2 = new BaseStationMessageEventArgs(message, true);
+
+            var args2 = new BaseStationMessageEventArgs(message, true, false);
             Assert.AreSame(message, args2.Message);
             Assert.AreEqual(true, args2.IsOutOfBand);
+            Assert.AreEqual(false, args2.IsSatcomFeed);
 
-            var args3 = new BaseStationMessageEventArgs(message, false);
+            var args3 = new BaseStationMessageEventArgs(message, false, true);
             Assert.AreSame(message, args3.Message);
             Assert.AreEqual(false, args3.IsOutOfBand);
+            Assert.AreEqual(true, args3.IsSatcomFeed);
+
+            var args4 = new BaseStationMessageEventArgs(message, true, true);
+            Assert.AreSame(message, args4.Message);
+            Assert.AreEqual(true, args4.IsOutOfBand);
+            Assert.AreEqual(true, args4.IsSatcomFeed);
         }
     }
 }

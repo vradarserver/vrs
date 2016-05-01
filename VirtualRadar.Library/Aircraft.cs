@@ -406,6 +406,16 @@ namespace VirtualRadar.Library
         /// </summary>
         public DateTime LastUpdate { get; set; }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime LastModeSUpdate { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime LastSatcomUpdate { get; set; }
+
         private string _Type;
         /// <summary>
         /// See interface docs.
@@ -772,6 +782,8 @@ namespace VirtualRadar.Library
                 result.IsTisb = IsTisb;
                 result.IsTransmittingTrack = IsTransmittingTrack;
                 result.LastUpdate = LastUpdate;
+                result.LastModeSUpdate = LastModeSUpdate;
+                result.LastSatcomUpdate = LastSatcomUpdate;
                 result.LatestCoordinateTime = LatestCoordinateTime;
                 result.Latitude = Latitude;
                 result.Longitude = Longitude;

@@ -35,6 +35,11 @@ namespace VirtualRadar.Interface.Listener
         string ReceiverName { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that this is a satcom feed.
+        /// </summary>
+        bool IsSatcomFeed { get; set; }
+
+        /// <summary>
         /// Gets the statistics for the listener.
         /// </summary>
         IStatistics Statistics { get; }

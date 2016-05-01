@@ -337,7 +337,20 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Gets or sets the time of the last message received from the aircraft.
         /// </summary>
+        /// <remarks>
+        /// This is always set regardless of the type of feed that the aircraft message came in on.
+        /// </remarks>
         DateTime LastUpdate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time of the last message received from a Mode-S feed for the aircraft.
+        /// </summary>
+        DateTime LastModeSUpdate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time of the last message received from a SatCom feed for the aircraft.
+        /// </summary>
+        DateTime LastSatcomUpdate { get; set; }
 
         /// <summary>
         /// Gets or sets the number of messages received for the aircraft.

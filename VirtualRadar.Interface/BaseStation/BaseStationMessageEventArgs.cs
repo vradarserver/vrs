@@ -35,6 +35,11 @@ namespace VirtualRadar.Interface.BaseStation
         public bool IsOutOfBand { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating that the message was received on a feed that is flagged as a SatCom feed.
+        /// </summary>
+        public bool IsSatcomFeed { get; private set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="message"></param>
@@ -48,9 +53,11 @@ namespace VirtualRadar.Interface.BaseStation
         /// </summary>
         /// <param name="message"></param>
         /// <param name="isOutOfBand"></param>
-        public BaseStationMessageEventArgs(BaseStationMessage message, bool isOutOfBand) : this(message)
+        /// <param name="isSatcomFeed"></param>
+        public BaseStationMessageEventArgs(BaseStationMessage message, bool isOutOfBand, bool isSatcomFeed) : this(message)
         {
             IsOutOfBand = isOutOfBand;
+            IsSatcomFeed = isSatcomFeed;
         }
     }
 }

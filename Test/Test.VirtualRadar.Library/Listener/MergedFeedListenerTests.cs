@@ -160,6 +160,36 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
+        public void MergedFeedListener_SetListener_Passes_Through_True_IsSatcomFeed_From_Nominated_Receiver()
+        {
+            _MergedFeed.IsSatcomFeed = false;
+            _Listener1.Object.IsSatcomFeed = true;
+            _MergedFeed.SetListeners(_Components);
+            _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
+
+            var args = new BaseStationMessageEventArgs(new BaseStationMessage());
+            _Listener1.Raise(r => r.Port30003MessageReceived += null, args);
+
+            Assert.AreEqual(1, _BaseStationMessageEventRecorder.CallCount);
+            Assert.AreEqual(true, _BaseStationMessageEventRecorder.Args.IsSatcomFeed);
+        }
+
+        [TestMethod]
+        public void MergedFeedListener_SetListener_Passes_Through_False_IsSatcomFeed_From_Nominated_Receiver()
+        {
+            _MergedFeed.IsSatcomFeed = false;
+            _Listener1.Object.IsSatcomFeed = false;
+            _MergedFeed.SetListeners(_Components);
+            _MergedFeed.Port30003MessageReceived += _BaseStationMessageEventRecorder.Handler;
+
+            var args = new BaseStationMessageEventArgs(new BaseStationMessage());
+            _Listener1.Raise(r => r.Port30003MessageReceived += null, args);
+
+            Assert.AreEqual(1, _BaseStationMessageEventRecorder.CallCount);
+            Assert.AreEqual(false, _BaseStationMessageEventRecorder.Args.IsSatcomFeed);
+        }
+
+        [TestMethod]
         public void MergedFeedListener_SetListener_PositionReset_Events_On_Listeners_Passed_Through()
         {
             _MergedFeed.SetListeners(_Components);

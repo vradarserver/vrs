@@ -58,6 +58,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         private Airport _JohnFKennedy;
         private Airport _Boston;
         private BaseStationMessageEventArgs _BaseStationMessageEventArgs;
+        private BaseStationMessageEventArgs _SatcomBaseStationMessageEventArgs;
         private BaseStationMessageEventArgs _OobBaseStationMessageEventArgs;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtEvent;
         private EventRecorder<EventArgs> _CountChangedEvent;
@@ -105,7 +106,8 @@ namespace Test.VirtualRadar.Library.BaseStation
             _BaseStationMessage.MessageType = BaseStationMessageType.Transmission;
             _BaseStationMessage.Icao24 = "4008F6";
             _BaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessage);
-            _OobBaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessage, isOutOfBand: true);
+            _SatcomBaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessage, isOutOfBand: false, isSatcomFeed: true);
+            _OobBaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessage, isOutOfBand: true, isSatcomFeed: false);
 
             _CallsignRouteFetcher = TestUtilities.CreateMockSingleton<ICallsignRouteFetcher>();
             _CallsignRouteDetail = new CallsignRouteDetail();
@@ -537,7 +539,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
-        public void BaseStationAircraftList_TakeSnapshot_Does_Not_Show_Aircraft_Past_The_Hide_Threshold()
+        public void BaseStationAircraftList_TakeSnapshot_Does_Not_Show_ModeS_Aircraft_Past_The_ModeS_Hide_Threshold()
         {
             _Configuration.BaseStationSettings.DisplayTimeoutSeconds = 10;
             var time = DateTime.Now;
@@ -557,7 +559,27 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
-        public void BaseStationAircraftList_TakeSnapshot_Takes_Account_Of_Changes_To_Hide_Threshold()
+        public void BaseStationAircraftList_TakeSnapshot_Does_Not_Show_Satcom_Aircraft_Past_The_Satcom_Hide_Threshold()
+        {
+            _Configuration.BaseStationSettings.SatcomDisplayTimeoutMinutes = 5;
+            var time = DateTime.Now;
+
+            _AircraftList.Start();
+
+            _Clock.UtcNowValue = time;
+            _BaseStationMessage.Icao24 = "1";
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _SatcomBaseStationMessageEventArgs);
+
+            _Clock.UtcNowValue = _Clock.UtcNowValue.AddMinutes(5);
+            long o1, o2;
+            Assert.AreEqual(1, _AircraftList.TakeSnapshot(out o1, out o2).Count);
+
+            _Clock.UtcNowValue = _Clock.UtcNowValue.AddMilliseconds(1);
+            Assert.AreEqual(0, _AircraftList.TakeSnapshot(out o1, out o2).Count);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_TakeSnapshot_Takes_Account_Of_Changes_To_ModeS_Hide_Threshold()
         {
             _Configuration.BaseStationSettings.DisplayTimeoutSeconds = 10;
             var time = DateTime.Now;
@@ -572,6 +594,26 @@ namespace Test.VirtualRadar.Library.BaseStation
             _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
 
             _Clock.UtcNowValue = time.AddSeconds(9).AddMilliseconds(1);
+            long o1, o2;
+            Assert.AreEqual(0, _AircraftList.TakeSnapshot(out o1, out o2).Count);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_TakeSnapshot_Takes_Account_Of_Changes_To_Satcom_Hide_Threshold()
+        {
+            _Configuration.BaseStationSettings.SatcomDisplayTimeoutMinutes = 5;
+            var time = DateTime.Now;
+
+            _AircraftList.Start();
+
+            _Clock.UtcNowValue = time;
+            _BaseStationMessage.Icao24 = "1";
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _SatcomBaseStationMessageEventArgs);
+
+            _Configuration.BaseStationSettings.SatcomDisplayTimeoutMinutes = 4;
+            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+
+            _Clock.UtcNowValue = time.AddMinutes(4).AddMilliseconds(1);
             long o1, o2;
             Assert.AreEqual(0, _AircraftList.TakeSnapshot(out o1, out o2).Count);
         }
@@ -831,6 +873,32 @@ namespace Test.VirtualRadar.Library.BaseStation
             _Clock.UtcNowValue = messageTime2;
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
             Assert.AreEqual(messageTime2, _AircraftList.FindAircraft(0x4008f6).LastUpdate);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Updates_LastModeSUpdate_Time()
+        {
+            _AircraftList.Start();
+
+            var messageTime1 = new DateTime(2001, 1, 1, 10, 20, 21);
+            _Clock.UtcNowValue = messageTime1;
+            _BaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessageEventArgs.Message, isOutOfBand: false, isSatcomFeed: false);
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+            Assert.AreEqual(messageTime1, _AircraftList.FindAircraft(0x4008f6).LastModeSUpdate);
+            Assert.AreEqual(DateTime.MinValue, _AircraftList.FindAircraft(0x4008f6).LastSatcomUpdate);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Updates_LastSatcomUpdate_Time()
+        {
+            _AircraftList.Start();
+
+            var messageTime1 = new DateTime(2001, 1, 1, 10, 20, 21);
+            _Clock.UtcNowValue = messageTime1;
+            _BaseStationMessageEventArgs = new BaseStationMessageEventArgs(_BaseStationMessageEventArgs.Message, isOutOfBand: false, isSatcomFeed: true);
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+            Assert.AreEqual(messageTime1, _AircraftList.FindAircraft(0x4008f6).LastSatcomUpdate);
+            Assert.AreEqual(DateTime.MinValue, _AircraftList.FindAircraft(0x4008f6).LastModeSUpdate);
         }
 
         [TestMethod]
@@ -1165,6 +1233,7 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             if(!ignoreThisRow) {
                 var aircraftProperty = typeof(IAircraft).GetProperty(worksheet.String("AircraftColumn"));
+                Assert.IsNotNull(aircraftProperty, "Could not find property {0}", worksheet.String("AircraftColumn"));
 
                 var culture = new CultureInfo("en-GB");
                 var messageValue = TestUtilities.ChangeType(worksheet.EString("MessageValue"), messageProperty.PropertyType, culture);
