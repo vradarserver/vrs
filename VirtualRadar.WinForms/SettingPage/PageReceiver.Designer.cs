@@ -76,6 +76,7 @@
             this.radioButtonUsageHideFromWebSite = new System.Windows.Forms.RadioButton();
             this.radioButtonUsageMergeOnly = new System.Windows.Forms.RadioButton();
             this.radioButtonPanelUsage = new VirtualRadar.WinForms.Controls.RadioButtonPanel();
+            this.checkBoxIsSatcomFeed = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
@@ -110,7 +111,7 @@
             this.buttonTestConnection.Location = new System.Drawing.Point(477, 107);
             this.buttonTestConnection.Name = "buttonTestConnection";
             this.buttonTestConnection.Size = new System.Drawing.Size(156, 23);
-            this.buttonTestConnection.TabIndex = 11;
+            this.buttonTestConnection.TabIndex = 12;
             this.buttonTestConnection.Text = "::TestConnection::";
             this.buttonTestConnection.UseVisualStyleBackColor = true;
             this.buttonTestConnection.Click += new System.EventHandler(this.buttonTestConnection_Click);
@@ -140,7 +141,7 @@
             this.label3.Location = new System.Drawing.Point(0, 86);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 6;
+            this.label3.TabIndex = 7;
             this.label3.Text = "::Location:::";
             // 
             // textBoxAddress
@@ -232,7 +233,7 @@
             this.label1.Location = new System.Drawing.Point(0, 112);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 9;
+            this.label1.TabIndex = 10;
             this.label1.Text = "::ConnectionType:::";
             // 
             // comboBoxConnectionType
@@ -242,7 +243,7 @@
             this.comboBoxConnectionType.Location = new System.Drawing.Point(200, 109);
             this.comboBoxConnectionType.Name = "comboBoxConnectionType";
             this.comboBoxConnectionType.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxConnectionType.TabIndex = 10;
+            this.comboBoxConnectionType.TabIndex = 11;
             // 
             // comboBoxSerialParity
             // 
@@ -316,7 +317,7 @@
             this.buttonClearLocationId.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.buttonClearLocationId.Name = "buttonClearLocationId";
             this.buttonClearLocationId.Size = new System.Drawing.Size(21, 21);
-            this.buttonClearLocationId.TabIndex = 8;
+            this.buttonClearLocationId.TabIndex = 9;
             this.buttonClearLocationId.UseVisualStyleBackColor = true;
             this.buttonClearLocationId.Click += new System.EventHandler(this.buttonClearLocationId_Click);
             // 
@@ -327,7 +328,7 @@
             this.comboBoxLocationId.Location = new System.Drawing.Point(200, 82);
             this.comboBoxLocationId.Name = "comboBoxLocationId";
             this.comboBoxLocationId.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxLocationId.TabIndex = 7;
+            this.comboBoxLocationId.TabIndex = 8;
             // 
             // comboBoxSerialBaudRate
             // 
@@ -556,7 +557,7 @@
             this.radioButtonUsageNormal.Location = new System.Drawing.Point(0, 0);
             this.radioButtonUsageNormal.Name = "radioButtonUsageNormal";
             this.radioButtonUsageNormal.Size = new System.Drawing.Size(70, 17);
-            this.radioButtonUsageNormal.TabIndex = 14;
+            this.radioButtonUsageNormal.TabIndex = 0;
             this.radioButtonUsageNormal.TabStop = true;
             this.radioButtonUsageNormal.Tag = "0";
             this.radioButtonUsageNormal.Text = "::Normal::";
@@ -568,7 +569,7 @@
             this.radioButtonUsageHideFromWebSite.Location = new System.Drawing.Point(0, 24);
             this.radioButtonUsageHideFromWebSite.Name = "radioButtonUsageHideFromWebSite";
             this.radioButtonUsageHideFromWebSite.Size = new System.Drawing.Size(123, 17);
-            this.radioButtonUsageHideFromWebSite.TabIndex = 15;
+            this.radioButtonUsageHideFromWebSite.TabIndex = 1;
             this.radioButtonUsageHideFromWebSite.TabStop = true;
             this.radioButtonUsageHideFromWebSite.Tag = "1";
             this.radioButtonUsageHideFromWebSite.Text = "::HideFromWebSite::";
@@ -580,7 +581,7 @@
             this.radioButtonUsageMergeOnly.Location = new System.Drawing.Point(0, 47);
             this.radioButtonUsageMergeOnly.Name = "radioButtonUsageMergeOnly";
             this.radioButtonUsageMergeOnly.Size = new System.Drawing.Size(88, 17);
-            this.radioButtonUsageMergeOnly.TabIndex = 16;
+            this.radioButtonUsageMergeOnly.TabIndex = 2;
             this.radioButtonUsageMergeOnly.TabStop = true;
             this.radioButtonUsageMergeOnly.Tag = "2";
             this.radioButtonUsageMergeOnly.Text = "::MergeOnly::";
@@ -598,9 +599,20 @@
             this.radioButtonPanelUsage.Size = new System.Drawing.Size(433, 65);
             this.radioButtonPanelUsage.TabIndex = 14;
             // 
+            // checkBoxIsSatcomFeed
+            // 
+            this.checkBoxIsSatcomFeed.AutoSize = true;
+            this.checkBoxIsSatcomFeed.Location = new System.Drawing.Point(356, 57);
+            this.checkBoxIsSatcomFeed.Name = "checkBoxIsSatcomFeed";
+            this.checkBoxIsSatcomFeed.Size = new System.Drawing.Size(106, 17);
+            this.checkBoxIsSatcomFeed.TabIndex = 6;
+            this.checkBoxIsSatcomFeed.Text = "::IsSatcomFeed::";
+            this.checkBoxIsSatcomFeed.UseVisualStyleBackColor = true;
+            // 
             // PageReceiver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.Controls.Add(this.checkBoxIsSatcomFeed);
             this.Controls.Add(this.radioButtonPanelUsage);
             this.Controls.Add(this.panelConnectionTypeSettings);
             this.Controls.Add(this.buttonTestConnection);
@@ -682,5 +694,6 @@
         private System.Windows.Forms.RadioButton radioButtonUsageHideFromWebSite;
         private System.Windows.Forms.RadioButton radioButtonUsageMergeOnly;
         private VirtualRadar.WinForms.Controls.RadioButtonPanel radioButtonPanelUsage;
+        private System.Windows.Forms.CheckBox checkBoxIsSatcomFeed;
     }
 }

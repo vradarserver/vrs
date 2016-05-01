@@ -82,6 +82,8 @@ declare module VRS.Server
         CannotOpenDatabaseWantToAutoFix:                           string;
         CannotParseRouteFile:                                      string;
         CannotResolveAddress:                                      string;
+        CannotStartDefaultBrowser:                                 string;
+        CannotStartDefaultBrowserTitle:                            string;
         CannotStartWebServerFull:                                  string;
         CannotStartWebServerTitle:                                 string;
         CaughtExceptionInReverseDNS:                               string;
@@ -163,6 +165,7 @@ declare module VRS.Server
         DotNetVersionTooLowTitle:                                  string;
         Download:                                                  string;
         DownloadData:                                              string;
+        DownloadGlobalAirPressureReadings:                         string;
         DownloadingPleaseWait:                                     string;
         Dropped:                                                   string;
         Duration:                                                  string;
@@ -255,6 +258,7 @@ declare module VRS.Server
         InvalidPlugins:                                            string;
         InvalidPluginsCount:                                       string;
         IPAddress:                                                 string;
+        IsSatcomFeed:                                              string;
         JustFlightSimulatorX:                                      string;
         Kilometres:                                                string;
         KilometresOver30Seconds:                                   string;
@@ -396,6 +400,7 @@ declare module VRS.Server
         OptionsDescribeDataSourcesUseKeepAlive:                    string;
         OptionsDescribeDefaultAccess:                              string;
         OptionsDescribeDirectoryEntryKey:                          string;
+        OptionsDescribeDownloadGlobalAirPressureReadings:          string;
         OptionsDescribeEnableBundling:                             string;
         OptionsDescribeEnableCompression:                          string;
         OptionsDescribeEnableMinifying:                            string;
@@ -408,12 +413,15 @@ declare module VRS.Server
         OptionsDescribeGeneralDownloadFlightRoutes:                string;
         OptionsDescribeGeneralReadingSpeed:                        string;
         OptionsDescribeGeneralRebroadcastServers:                  string;
+        OptionsDescribeGeneralSatcomDisplayTimeout:                string;
+        OptionsDescribeGeneralSatcomTrackingTimeout:               string;
         OptionsDescribeGeneralShortTrailLengthSeconds:             string;
         OptionsDescribeGeneralTextToSpeechVoice:                   string;
         OptionsDescribeGeneralTrackingTimeoutSeconds:              string;
         OptionsDescribeIcaoTimeout:                                string;
         OptionsDescribeIgnoreAircraftWithNoPosition:               string;
         OptionsDescribeIsMlatFeed:                                 string;
+        OptionsDescribeIsSatcomFeed:                               string;
         OptionsDescribeLoginName:                                  string;
         OptionsDescribeMergedFeedEnabled:                          string;
         OptionsDescribeMergedFeedName:                             string;
@@ -512,6 +520,7 @@ declare module VRS.Server
         PIPresent:                                                 string;
         PKilometres:                                               string;
         PKilometresOver30Seconds:                                  string;
+        PlaneFinder:                                               string;
         PleaseConfigureAtLeastOneReceiver:                         string;
         PleaseEnableAtLeastOneReceiver:                            string;
         PleaseEnterNameForLocation:                                string;
@@ -610,7 +619,9 @@ declare module VRS.Server
         Reg:                                                       string;
         Remove:                                                    string;
         RemoveFromDisplay:                                         string;
+        RemoveFromDisplaySatcom:                                   string;
         RemoveFromTracking:                                        string;
+        RemoveFromTrackingSatcom:                                  string;
         Requests:                                                  string;
         Reset:                                                     string;
         ResetCounters:                                             string;
@@ -622,6 +633,8 @@ declare module VRS.Server
         RouteFileStatus:                                           string;
         RouteStateFileContentInvalid:                              string;
         RouteStateFileInvalid:                                     string;
+        SatcomTrackingTimeoutLessThanDisplayTimeout:               string;
+        SatcomTrackingTimeoutOutOfBounds:                          string;
         Save:                                                      string;
         SavingPolarPlots:                                          string;
         SBS3ModeSFeed:                                             string;
@@ -668,6 +681,7 @@ declare module VRS.Server
         ShowLocalAddress:                                          string;
         ShowNetworkAddress:                                        string;
         ShuttingDown:                                              string;
+        ShuttingDownAirPressureManager:                            string;
         ShuttingDownBaseStationAircraftList:                       string;
         ShuttingDownBaseStationDatabase:                           string;
         ShuttingDownBaseStationListener:                           string;
@@ -688,6 +702,7 @@ declare module VRS.Server
         SpeedChecksExceeded:                                       string;
         SplashScreenConnectingToBaseStation:                       string;
         SplashScreenInitialisingAircraftList:                      string;
+        SplashScreenInitialisingAirPressureManager:                string;
         SplashScreenInitialisingBaseStationListener:               string;
         SplashScreenInitialisingConnectionLogger:                  string;
         SplashScreenInitialisingLog:                               string;

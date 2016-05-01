@@ -861,6 +861,16 @@ namespace VirtualRadar.Library.Presenter
                     Message = Strings.TrackingTimeoutLessThanDisplayTimeout,
                 });
 
+                // Satcom tracking timeout is within range
+                ValueIsInRange(settings.SatcomTrackingTimeoutMinutes, 1, 1440, new Validation(ValidationField.SatcomTrackingTimeout, defaults) {
+                    Message = Strings.SatcomTrackingTimeoutOutOfBounds,
+                });
+
+                // Satcom display timeout is within range
+                ValueIsInRange(settings.SatcomDisplayTimeoutMinutes, 1, settings.SatcomTrackingTimeoutMinutes, new Validation(ValidationField.SatcomDisplayTimeout, defaults) {
+                    Message = Strings.SatcomTrackingTimeoutLessThanDisplayTimeout,
+                });
+
                 // Autosave polar plots is within range
                 ConditionIsTrue(settings.AutoSavePolarPlotsMinutes, r => r >= 0, new Validation(ValidationField.AutoSavePolarPlots, defaults) {
                     Message = Strings.AutoSavePolarPlotsOutOfBounds,

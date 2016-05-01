@@ -210,6 +210,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(true, readBack.BaseStationSettings.MinimiseToSystemTray);
                         Assert.AreEqual(true, readBack.BaseStationSettings.SearchPictureSubFolders);
                         Assert.AreEqual(false, readBack.BaseStationSettings.DownloadGlobalAirPressureReadings);
+                        Assert.AreEqual(300, readBack.BaseStationSettings.SatcomDisplayTimeoutMinutes);
+                        Assert.AreEqual(400, readBack.BaseStationSettings.SatcomTrackingTimeoutMinutes);
                         break;
                     case "FlightRouteSettings":
                         Assert.AreEqual(true, readBack.FlightRouteSettings.AutoUpdateEnabled);
@@ -370,6 +372,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(1, receiver.ReceiverLocationId);
                         Assert.AreEqual(null, receiver.Passphrase);
                         Assert.AreEqual(ReceiverUsage.Normal, receiver.ReceiverUsage);
+                        Assert.AreEqual(true, receiver.IsSatcomFeed);
 
                         receiver = readBack.Receivers[1];
                         Assert.AreEqual(false, receiver.Enabled);
@@ -394,6 +397,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(2, receiver.ReceiverLocationId);
                         Assert.AreEqual("Two", receiver.Passphrase);
                         Assert.AreEqual(ReceiverUsage.MergeOnly, receiver.ReceiverUsage);
+                        Assert.AreEqual(false, receiver.IsSatcomFeed);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.Receivers[0].Access.Addresses.Count);
@@ -483,6 +487,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                         SearchPictureSubFolders = true,
                                                         AutoSavePolarPlotsMinutes = 100,
                                                         DownloadGlobalAirPressureReadings = false,
+                                                        SatcomDisplayTimeoutMinutes = 300,
+                                                        SatcomTrackingTimeoutMinutes = 400,
                                                     }; break;
                     case "FlightRouteSettings":     result.FlightRouteSettings = new FlightRouteSettings() {
                                                         AutoUpdateEnabled = true,
@@ -659,6 +665,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             },
                                                             Passphrase = null,
                                                             ReceiverUsage = ReceiverUsage.Normal,
+                                                            IsSatcomFeed = true,
                                                         },
                                                         new Receiver() {
                                                             Enabled = false,
@@ -689,6 +696,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                             },
                                                             Passphrase = "Two",
                                                             ReceiverUsage = ReceiverUsage.MergeOnly,
+                                                            IsSatcomFeed = false,
                                                         },
                                                     });
                                                     break;

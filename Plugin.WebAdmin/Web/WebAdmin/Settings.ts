@@ -454,7 +454,9 @@
                                     this._ViewId.findValidationProperties(model, (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => {
                                         return value !== model.AutoSavePolarPlotsMinutesValidation &&       // Shown in General
                                                value !== model.DisplayTimeoutSecondsValidation &&           // Shown in General
-                                               value !== model.TrackingTimeoutSecondsValidation;            // Shown in General
+                                               value !== model.TrackingTimeoutSecondsValidation &&          // Shown in General
+                                               value !== model.SatcomDisplayTimeoutMinutesValidation &&     // Shown in General
+                                               value !== model.SatcomTrackingTimeoutMinutesValidation;      // Shown in General
                                     })
                                 );
                             },
@@ -763,6 +765,8 @@
                         this._Model.VersionCheckSettings.CheckPeriodDaysValidation,
                         this._Model.BaseStationSettings.DisplayTimeoutSecondsValidation,
                         this._Model.BaseStationSettings.TrackingTimeoutSecondsValidation,
+                        this._Model.BaseStationSettings.SatcomDisplayTimeoutMinutesValidation,
+                        this._Model.BaseStationSettings.SatcomTrackingTimeoutMinutesValidation,
                         this._Model.GoogleMapSettings.ShortTrailLengthSecondsValidation,
                         this._Model.BaseStationSettings.AutoSavePolarPlotsMinutesValidation
                     ]);

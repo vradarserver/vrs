@@ -248,7 +248,9 @@ var VRS;
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model, function (name, value) {
                                             return value !== model.AutoSavePolarPlotsMinutesValidation &&
                                                 value !== model.DisplayTimeoutSecondsValidation &&
-                                                value !== model.TrackingTimeoutSecondsValidation;
+                                                value !== model.TrackingTimeoutSecondsValidation &&
+                                                value !== model.SatcomDisplayTimeoutMinutesValidation &&
+                                                value !== model.SatcomTrackingTimeoutMinutesValidation;
                                         }));
                                     },
                                     '{root}.GoogleMapSettings': function (model) {
@@ -515,6 +517,8 @@ var VRS;
                                 this._Model.VersionCheckSettings.CheckPeriodDaysValidation,
                                 this._Model.BaseStationSettings.DisplayTimeoutSecondsValidation,
                                 this._Model.BaseStationSettings.TrackingTimeoutSecondsValidation,
+                                this._Model.BaseStationSettings.SatcomDisplayTimeoutMinutesValidation,
+                                this._Model.BaseStationSettings.SatcomTrackingTimeoutMinutesValidation,
                                 this._Model.GoogleMapSettings.ShortTrailLengthSecondsValidation,
                                 this._Model.BaseStationSettings.AutoSavePolarPlotsMinutesValidation
                             ]);
