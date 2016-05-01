@@ -189,6 +189,26 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _TrackingTimeoutSeconds, value, () => TrackingTimeoutSeconds); }
         }
 
+        private int _SatcomDisplayTimeoutMinutes;
+        /// <summary>
+        /// Gets or sets the number of minutes that aircraft on a satellite feed should remain on display after their last transmission.
+        /// </summary>
+        public int SatcomDisplayTimeoutMinutes
+        {
+            get { return _SatcomDisplayTimeoutMinutes; }
+            set { SetField(ref _SatcomDisplayTimeoutMinutes, value, () => SatcomDisplayTimeoutMinutes); }
+        }
+
+        private int _SatcomTrackingTimeoutMinutes;
+        /// <summary>
+        /// Gets or sets the number of minutes that aircraft on a satellite feed should remain in the aircraft list after their last transmission.
+        /// </summary>
+        public int SatcomTrackingTimeoutMinutes
+        {
+            get { return _SatcomTrackingTimeoutMinutes; }
+            set { SetField(ref _SatcomTrackingTimeoutMinutes, value, () => SatcomTrackingTimeoutMinutes); }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating that badly formatted messages on the feed should be ignored rather than triggering a disconnection
         /// from the feed.
@@ -301,6 +321,8 @@ namespace VirtualRadar.Interface.Settings
             AutoSavePolarPlotsMinutes = 60;
             DisplayTimeoutSeconds = 30;
             TrackingTimeoutSeconds = 600;
+            SatcomDisplayTimeoutMinutes = 60;
+            SatcomTrackingTimeoutMinutes = 120;
             LookupAircraftDetailsOnline = true;
             DownloadGlobalAirPressureReadings = true;
         }

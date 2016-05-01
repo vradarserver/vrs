@@ -166,6 +166,16 @@ namespace VirtualRadar.Interface.View
         TrackingTimeout,
 
         /// <summary>
+        /// The number of seconds after loss of signal before a satellite feed aircraft is removed from the map.
+        /// </summary>
+        SatcomDisplayTimeout,
+
+        /// <summary>
+        /// The number of seconds after loss of signal before a satellite feed aircraft is removed from the aircraft list.
+        /// </summary>
+        SatcomTrackingTimeout,
+
+        /// <summary>
         /// The number of seconds a short trail lasts for.
         /// </summary>
         ShortTrailLength,

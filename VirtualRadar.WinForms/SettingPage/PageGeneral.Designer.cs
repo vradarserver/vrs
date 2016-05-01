@@ -48,6 +48,12 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.linkLabelDefaultVoice = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.numericRemoveFromTrackingSatcom = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.numericRemoveFromDisplaySatcom = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.numericAutoSavePolarPlots = new System.Windows.Forms.NumericUpDown();
@@ -61,6 +67,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericDaysBetweenChecks)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericRemoveFromTrackingSatcom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericRemoveFromDisplaySatcom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericAutoSavePolarPlots)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,7 +84,7 @@
             // checkBoxMinimiseToSystemTray
             // 
             this.checkBoxMinimiseToSystemTray.AutoSize = true;
-            this.checkBoxMinimiseToSystemTray.Location = new System.Drawing.Point(200, 195);
+            this.checkBoxMinimiseToSystemTray.Location = new System.Drawing.Point(200, 247);
             this.checkBoxMinimiseToSystemTray.Name = "checkBoxMinimiseToSystemTray";
             this.checkBoxMinimiseToSystemTray.Size = new System.Drawing.Size(146, 17);
             this.checkBoxMinimiseToSystemTray.TabIndex = 16;
@@ -86,15 +94,15 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 145);
+            this.label4.Location = new System.Drawing.Point(6, 197);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(107, 13);
-            this.label4.TabIndex = 10;
+            this.label4.TabIndex = 12;
             this.label4.Text = "::ShortTrailDuration:::";
             // 
             // numericDurationOfShortTrails
             // 
-            this.numericDurationOfShortTrails.Location = new System.Drawing.Point(200, 143);
+            this.numericDurationOfShortTrails.Location = new System.Drawing.Point(200, 195);
             this.numericDurationOfShortTrails.Maximum = new decimal(new int[] {
             1800,
             0,
@@ -107,7 +115,7 @@
             0});
             this.numericDurationOfShortTrails.Name = "numericDurationOfShortTrails";
             this.numericDurationOfShortTrails.Size = new System.Drawing.Size(70, 20);
-            this.numericDurationOfShortTrails.TabIndex = 11;
+            this.numericDurationOfShortTrails.TabIndex = 13;
             this.numericDurationOfShortTrails.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericDurationOfShortTrails.Value = new decimal(new int[] {
             5,
@@ -121,7 +129,7 @@
             this.label3.Location = new System.Drawing.Point(6, 119);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(127, 13);
-            this.label3.TabIndex = 7;
+            this.label3.TabIndex = 6;
             this.label3.Text = "::RemoveFromTracking:::";
             // 
             // numericDurationBeforeAircraftRemovedFromTracking
@@ -139,7 +147,7 @@
             0});
             this.numericDurationBeforeAircraftRemovedFromTracking.Name = "numericDurationBeforeAircraftRemovedFromTracking";
             this.numericDurationBeforeAircraftRemovedFromTracking.Size = new System.Drawing.Size(70, 20);
-            this.numericDurationBeforeAircraftRemovedFromTracking.TabIndex = 8;
+            this.numericDurationBeforeAircraftRemovedFromTracking.TabIndex = 7;
             this.numericDurationBeforeAircraftRemovedFromTracking.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericDurationBeforeAircraftRemovedFromTracking.Value = new decimal(new int[] {
             5,
@@ -294,7 +302,7 @@
             this.groupBox2.Controls.Add(this.comboBoxTextToSpeechVoice);
             this.groupBox2.Controls.Add(this.checkBoxAudioEnabled);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(0, 227);
+            this.groupBox2.Location = new System.Drawing.Point(0, 281);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(636, 99);
             this.groupBox2.TabIndex = 1;
@@ -316,6 +324,12 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.label15);
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Controls.Add(this.label12);
+            this.groupBox1.Controls.Add(this.numericRemoveFromTrackingSatcom);
+            this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.numericRemoveFromDisplaySatcom);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.numericAutoSavePolarPlots);
@@ -335,15 +349,97 @@
             this.groupBox1.Controls.Add(this.checkBoxCheckForNewVersions);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(636, 221);
+            this.groupBox1.Size = new System.Drawing.Size(636, 275);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::OptionsGeneralCategory::";
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(276, 171);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(63, 13);
+            this.label15.TabIndex = 18;
+            this.label15.Text = "::PMinutes::";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(276, 145);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(63, 13);
+            this.label14.TabIndex = 17;
+            this.label14.Text = "::PMinutes::";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 171);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(163, 13);
+            this.label12.TabIndex = 10;
+            this.label12.Text = "::RemoveFromTrackingSatcom:::";
+            // 
+            // numericRemoveFromTrackingSatcom
+            // 
+            this.numericRemoveFromTrackingSatcom.Location = new System.Drawing.Point(200, 169);
+            this.numericRemoveFromTrackingSatcom.Maximum = new decimal(new int[] {
+            1440,
+            0,
+            0,
+            0});
+            this.numericRemoveFromTrackingSatcom.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericRemoveFromTrackingSatcom.Name = "numericRemoveFromTrackingSatcom";
+            this.numericRemoveFromTrackingSatcom.Size = new System.Drawing.Size(70, 20);
+            this.numericRemoveFromTrackingSatcom.TabIndex = 11;
+            this.numericRemoveFromTrackingSatcom.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericRemoveFromTrackingSatcom.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 145);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(155, 13);
+            this.label13.TabIndex = 8;
+            this.label13.Text = "::RemoveFromDisplaySatcom:::";
+            // 
+            // numericRemoveFromDisplaySatcom
+            // 
+            this.numericRemoveFromDisplaySatcom.Location = new System.Drawing.Point(200, 143);
+            this.numericRemoveFromDisplaySatcom.Maximum = new decimal(new int[] {
+            1440,
+            0,
+            0,
+            0});
+            this.numericRemoveFromDisplaySatcom.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericRemoveFromDisplaySatcom.Name = "numericRemoveFromDisplaySatcom";
+            this.numericRemoveFromDisplaySatcom.Size = new System.Drawing.Size(70, 20);
+            this.numericRemoveFromDisplaySatcom.TabIndex = 9;
+            this.numericRemoveFromDisplaySatcom.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericRemoveFromDisplaySatcom.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(276, 171);
+            this.label10.Location = new System.Drawing.Point(276, 223);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(63, 13);
             this.label10.TabIndex = 15;
@@ -352,15 +448,15 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 171);
+            this.label11.Location = new System.Drawing.Point(6, 223);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(116, 13);
-            this.label11.TabIndex = 13;
+            this.label11.TabIndex = 14;
             this.label11.Text = "::AutoSavePolarPlots:::";
             // 
             // numericAutoSavePolarPlots
             // 
-            this.numericAutoSavePolarPlots.Location = new System.Drawing.Point(200, 169);
+            this.numericAutoSavePolarPlots.Location = new System.Drawing.Point(200, 221);
             this.numericAutoSavePolarPlots.Maximum = new decimal(new int[] {
             43200,
             0,
@@ -368,7 +464,7 @@
             0});
             this.numericAutoSavePolarPlots.Name = "numericAutoSavePolarPlots";
             this.numericAutoSavePolarPlots.Size = new System.Drawing.Size(70, 20);
-            this.numericAutoSavePolarPlots.TabIndex = 14;
+            this.numericAutoSavePolarPlots.TabIndex = 15;
             this.numericAutoSavePolarPlots.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericAutoSavePolarPlots.Value = new decimal(new int[] {
             5,
@@ -379,7 +475,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(276, 145);
+            this.label9.Location = new System.Drawing.Point(276, 197);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(68, 13);
             this.label9.TabIndex = 12;
@@ -409,7 +505,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "PageGeneral";
-            this.Size = new System.Drawing.Size(636, 328);
+            this.Size = new System.Drawing.Size(636, 383);
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationOfShortTrails)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromTracking)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericDurationBeforeAircraftRemovedFromMap)).EndInit();
@@ -419,6 +515,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericRemoveFromTrackingSatcom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericRemoveFromDisplaySatcom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericAutoSavePolarPlots)).EndInit();
             this.ResumeLayout(false);
 
@@ -452,5 +550,11 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown numericAutoSavePolarPlots;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown numericRemoveFromTrackingSatcom;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown numericRemoveFromDisplaySatcom;
     }
 }

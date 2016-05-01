@@ -79,6 +79,8 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.MinimiseToSystemTray, false);
             TestUtilities.TestProperty(settings, r => r.SearchPictureSubFolders, false);
             TestUtilities.TestProperty(settings, r => r.LookupAircraftDetailsOnline, true);
+            TestUtilities.TestProperty(settings, r => r.SatcomDisplayTimeoutMinutes, 60, 480);
+            TestUtilities.TestProperty(settings, r => r.SatcomTrackingTimeoutMinutes, 120, 1440);
         }
 
         [TestMethod]

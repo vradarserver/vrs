@@ -407,6 +407,16 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         [ValidationModelField(ValidationField.TrackingTimeout)]
         public ValidationModelField TrackingTimeoutSecondsValidation { get; set; }
 
+        public int SatcomDisplayTimeoutMinutes { get; set; }
+
+        [ValidationModelField(ValidationField.SatcomDisplayTimeout)]
+        public ValidationModelField SatcomDisplayTimeoutMinutesValidation { get; set; }
+
+        public int SatcomTrackingTimeoutMinutes { get; set; }
+
+        [ValidationModelField(ValidationField.SatcomTrackingTimeout)]
+        public ValidationModelField SatcomTrackingTimeoutMinutesValidation { get; set; }
+
         public bool MinimiseToSystemTray { get; set; }
 
         public int AutoSavePolarPlotsMinutes { get; set; }
@@ -437,6 +447,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             SearchPictureSubFolders =           settings.SearchPictureSubFolders;
             DisplayTimeoutSeconds =             settings.DisplayTimeoutSeconds;
             TrackingTimeoutSeconds =            settings.TrackingTimeoutSeconds;
+            SatcomDisplayTimeoutMinutes =       settings.SatcomDisplayTimeoutMinutes;
+            SatcomTrackingTimeoutMinutes =      settings.SatcomTrackingTimeoutMinutes;
             MinimiseToSystemTray =              settings.MinimiseToSystemTray;
             AutoSavePolarPlotsMinutes =         settings.AutoSavePolarPlotsMinutes;
             LookupAircraftDetailsOnline =       settings.LookupAircraftDetailsOnline;
@@ -452,6 +464,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.SearchPictureSubFolders =              SearchPictureSubFolders;
             settings.DisplayTimeoutSeconds =                DisplayTimeoutSeconds;
             settings.TrackingTimeoutSeconds =               TrackingTimeoutSeconds;
+            settings.SatcomDisplayTimeoutMinutes =          SatcomDisplayTimeoutMinutes;
+            settings.SatcomTrackingTimeoutMinutes =         SatcomTrackingTimeoutMinutes;
             settings.MinimiseToSystemTray =                 MinimiseToSystemTray;
             settings.AutoSavePolarPlotsMinutes =            AutoSavePolarPlotsMinutes;
             settings.LookupAircraftDetailsOnline =          LookupAircraftDetailsOnline;
@@ -1029,6 +1043,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         [ValidationModelField(ValidationField.Format)]
         public ValidationModelField DataSourceValidation { get; set; }
 
+        public bool IsSatcomFeed { get; set; }
+        
         public int ConnectionType { get; set; }             // ConnectionType
 
         public bool AutoReconnectAtStartup { get; set; }
@@ -1111,6 +1127,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             UniqueId =                      settings.UniqueId;
             Name =                          settings.Name;
             DataSource =                    settings.DataSource;
+            IsSatcomFeed =                  settings.IsSatcomFeed;
             ConnectionType =                (int)settings.ConnectionType;
             AutoReconnectAtStartup =        settings.AutoReconnectAtStartup;
             IsPassive =                     settings.IsPassive;
@@ -1139,6 +1156,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.UniqueId =                 UniqueId;
             settings.Name =                     Name;
             settings.DataSource =               DataSource;
+            settings.IsSatcomFeed =             IsSatcomFeed;
             settings.ConnectionType =           EnumModel.CastFromInt<ConnectionType>(ConnectionType);
             settings.AutoReconnectAtStartup =   AutoReconnectAtStartup;
             settings.IsPassive =                IsPassive;

@@ -178,6 +178,7 @@ namespace VirtualRadar.WinForms.SettingPage
             var receiverFormats = receiverFormatManager.GetRegisteredFormats();
 
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled,         r => r.Enabled,         (r,v) => r.Enabled = v)         { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+            AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxIsSatcomFeed,    r => r.IsSatcomFeed,    (r,v) => r.IsSatcomFeed = v));
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxIsPassive,       r => r.IsPassive,       (r,v) => r.IsPassive = v)       { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxUseKeepAlive,    r => r.UseKeepAlive,    (r,v) => r.UseKeepAlive = v)    { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
@@ -216,6 +217,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(textBoxName,                      Strings.Name,                   Strings.OptionsDescribeReceiverName);
             SetInlineHelp(comboBoxLocationId,               Strings.ReceiverLocation,       Strings.OptionsDescribeRawFeedReceiverLocation);
             SetInlineHelp(comboBoxDataSource,               Strings.DataSource,             Strings.OptionsDescribeDataSourcesDataSource);
+            SetInlineHelp(checkBoxIsSatcomFeed,             Strings.IsSatcomFeed,           Strings.OptionsDescribeIsSatcomFeed);
             SetInlineHelp(comboBoxConnectionType,           Strings.ConnectionType,         Strings.OptionsDescribeDataSourcesConnectionType);
             SetInlineHelp(radioButtonUsageNormal,           Strings.Normal,                 Strings.OptionDescribeReceiverUsageNormal);
             SetInlineHelp(radioButtonUsageHideFromWebSite,  Strings.HideFromWebSite,        Strings.OptionDescribeReceiverUsageHideFromWebSite);

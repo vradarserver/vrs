@@ -2335,6 +2335,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Is SatCom ACARS feed.
+        /// </summary>
+        public static string IsSatcomFeed {
+            get {
+                return ResourceManager.GetString("IsSatcomFeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight Simulator X Only.
         /// </summary>
         public static string JustFlightSimulatorX {
@@ -3726,6 +3735,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of minutes that aircraft on a satellite feed remain on the map after the last transmission is received..
+        /// </summary>
+        public static string OptionsDescribeGeneralSatcomDisplayTimeout {
+            get {
+                return ResourceManager.GetString("OptionsDescribeGeneralSatcomDisplayTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of minutes that aircraft of a satellite feed continue to be tracked after their last transmission..
+        /// </summary>
+        public static string OptionsDescribeGeneralSatcomTrackingTimeout {
+            get {
+                return ResourceManager.GetString("OptionsDescribeGeneralSatcomTrackingTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to How many seconds of movement will be shown when the user views short trails on the web site..
         /// </summary>
         public static string OptionsDescribeGeneralShortTrailLengthSeconds {
@@ -3776,6 +3803,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeIsMlatFeed {
             get {
                 return ResourceManager.GetString("OptionsDescribeIsMlatFeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes if this receiver is fetching data from a SatCom ACARS feed, such as the feed sent by JAERO. No if this is a regular ADS-B / Mode-S feed..
+        /// </summary>
+        public static string OptionsDescribeIsSatcomFeed {
+            get {
+                return ResourceManager.GetString("OptionsDescribeIsSatcomFeed", resourceCulture);
             }
         }
         
@@ -5553,11 +5589,29 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JAERO display timeout.
+        /// </summary>
+        public static string RemoveFromDisplaySatcom {
+            get {
+                return ResourceManager.GetString("RemoveFromDisplaySatcom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove from tracking.
         /// </summary>
         public static string RemoveFromTracking {
             get {
                 return ResourceManager.GetString("RemoveFromTracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JAERO tracking timeout.
+        /// </summary>
+        public static string RemoveFromTrackingSatcom {
+            get {
+                return ResourceManager.GetString("RemoveFromTrackingSatcom", resourceCulture);
             }
         }
         
@@ -5657,6 +5711,24 @@ namespace VirtualRadar.Localisation {
         public static string RouteStateFileInvalid {
             get {
                 return ResourceManager.GetString("RouteStateFileInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The JAERO tracking timeout cannot be less than the display timeout.
+        /// </summary>
+        public static string SatcomTrackingTimeoutLessThanDisplayTimeout {
+            get {
+                return ResourceManager.GetString("SatcomTrackingTimeoutLessThanDisplayTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The JAERO tracking timeout cannot be more than 1440 minutes.
+        /// </summary>
+        public static string SatcomTrackingTimeoutOutOfBounds {
+            get {
+                return ResourceManager.GetString("SatcomTrackingTimeoutOutOfBounds", resourceCulture);
             }
         }
         

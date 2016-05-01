@@ -2675,4 +2675,30 @@ Show this message.</value>
   <data name="ShuttingDownAirPressureManager" xml:space="preserve">
     <value>Shutting down air pressure manager</value>
   </data>
+  <data name="IsSatcomFeed" xml:space="preserve">
+    <value>Is SatCom ACARS feed</value>
+  </data>
+  <data name="OptionsDescribeGeneralSatcomDisplayTimeout" xml:space="preserve">
+    <value>The number of minutes that aircraft on a satellite feed remain on the map after the last transmission is received.</value>
+  </data>
+  <data name="OptionsDescribeGeneralSatcomTrackingTimeout" xml:space="preserve">
+    <value>The number of minutes that aircraft of a satellite feed continue to be tracked after their last transmission.</value>
+  </data>
+  <data name="OptionsDescribeIsSatcomFeed" xml:space="preserve">
+    <value>Yes if this receiver is fetching data from a SatCom ACARS feed, such as the feed sent by JAERO. No if this is a regular ADS-B / Mode-S feed.</value>
+  </data>
+  <data name="RemoveFromDisplaySatcom" xml:space="preserve">
+    <value>JAERO display timeout</value>
+    <comment>JAERO is the name of a program</comment>
+  </data>
+  <data name="RemoveFromTrackingSatcom" xml:space="preserve">
+    <value>JAERO tracking timeout</value>
+    <comment>JAERO is the name of a program</comment>
+  </data>
+  <data name="SatcomTrackingTimeoutLessThanDisplayTimeout" xml:space="preserve">
+    <value>The JAERO tracking timeout cannot be less than the display timeout</value>
+  </data>
+  <data name="SatcomTrackingTimeoutOutOfBounds" xml:space="preserve">
+    <value>The JAERO tracking timeout cannot be more than 1440 minutes</value>
+  </data>
 </root>

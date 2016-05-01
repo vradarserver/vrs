@@ -178,6 +178,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         DisplayTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         TrackingTimeoutSeconds: number;
         TrackingTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
+        SatcomDisplayTimeoutMinutes: number;
+        SatcomDisplayTimeoutMinutesValidation: VirtualRadar.Interface.View.IValidationModelField;
+        SatcomTrackingTimeoutMinutes: number;
+        SatcomTrackingTimeoutMinutesValidation: VirtualRadar.Interface.View.IValidationModelField;
         MinimiseToSystemTray: boolean;
         AutoSavePolarPlotsMinutes: number;
         AutoSavePolarPlotsMinutesValidation: VirtualRadar.Interface.View.IValidationModelField;
@@ -332,6 +336,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NameValidation: VirtualRadar.Interface.View.IValidationModelField;
         DataSource: string;
         DataSourceValidation: VirtualRadar.Interface.View.IValidationModelField;
+        IsSatcomFeed: boolean;
         ConnectionType: number;
         AutoReconnectAtStartup: boolean;
         IsPassive: boolean;
@@ -633,6 +638,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         DisplayTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         TrackingTimeoutSeconds: KnockoutObservable<number>;
         TrackingTimeoutSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        SatcomDisplayTimeoutMinutes: KnockoutObservable<number>;
+        SatcomDisplayTimeoutMinutesValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        SatcomTrackingTimeoutMinutes: KnockoutObservable<number>;
+        SatcomTrackingTimeoutMinutesValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         MinimiseToSystemTray: KnockoutObservable<boolean>;
         AutoSavePolarPlotsMinutes: KnockoutObservable<number>;
         AutoSavePolarPlotsMinutesValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
@@ -787,6 +796,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         NameValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         DataSource: KnockoutObservable<string>;
         DataSourceValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
+        IsSatcomFeed: KnockoutObservable<boolean>;
         ConnectionType: KnockoutObservable<number>;
         AutoReconnectAtStartup: KnockoutObservable<boolean>;
         IsPassive: KnockoutObservable<boolean>;

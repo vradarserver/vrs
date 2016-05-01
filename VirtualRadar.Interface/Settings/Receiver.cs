@@ -84,6 +84,20 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _AutoReconnectAtStartup, value, () => AutoReconnectAtStartup); }
         }
 
+        private bool _IsSatcomFeed;
+        /// <summary>
+        /// Gets or sets a value indicating that the feed is coming off a satellite.
+        /// </summary>
+        /// <remarks>
+        /// Aero Satcom feeds have much longer intervals between transmissions so they are subject to a
+        /// separate set of display and tracking timeouts.
+        /// </remarks>
+        public bool IsSatcomFeed
+        {
+            get { return _IsSatcomFeed; }
+            set { SetField(ref _IsSatcomFeed, value, () => IsSatcomFeed); }
+        }
+
         private bool _IsPassive;
         /// <summary>
         /// Gets or sets a value indicating that the receiver will not connect to the source but will instead
