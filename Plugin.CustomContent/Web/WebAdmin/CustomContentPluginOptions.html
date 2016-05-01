@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>::PluginName:: - ::WA_Title_WebAdmin::</title>
+        @head.html@
+        <!-- [[ BUNDLE END ]] -->
+        <script src="script/Strings.js"></script>
+        <script src="script/Strings.Server.js"></script>
+        <script src="script/Strings.CustomContentPlugin.js"></script>
+        <script src="script/bootstrap-helper.js"></script>
+        <script src="CustomContentPluginOptions.js"></script>
+    </head>
+    <body>
+        <div id="page-container">
+            <div id="content" class="container-fluid">
+                <div class="row row-offcanvas row-offcanvas-left">
+                    <div class="col-xs-12 col-sm-9">
+                        <h1 class="page-header">
+                            ::OptionsViewTitle::
+                        </h1>
+
+                        <div id="failure-message" class="alert alert-danger"></div>
+
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                    <label>
+                                        <input type="checkbox" data-bind="checked: Enabled" />
+                                        ::Enabled::
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                ::InjectHtml::
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-12 text-right">
+                                    <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.createAndEditInjectSettings, pageHandler)">
+                                        ::Add::
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row table-responsive">
+                                <table class="table table-condensed table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="thin-column"></th>
+                                            <th class="thin-column">::Enabled::</th>
+                                            <th>::Inject::</th>
+                                            <th class="thin-column">::At::</th>
+                                            <th class="thin-column">::Of::</th>
+                                            <th>::Address::</th>
+                                            <th class="thin-column"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: InjectSettings">
+                                        <tr data-bind="css: { 'text-muted': !Enabled() }">
+                                            <td class="thin-column">
+                                                <div data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" data-bind="checked: Enabled" />
+                                            </td>
+                                            <td data-bind="text: File"></td>
+                                            <td data-bind="text: FormattedStart"></td>
+                                            <td data-bind="text: FormattedInjectionLocation"></td>
+                                            <td data-bind="text: PathAndFile"></td>
+                                            <td class="text-nowrap">
+                                                <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-inject-settings">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </button>
+                                                <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div id="edit-inject-settings" data-bsu="modal" data-bsu-options="header-close" data-bind="with: $root.SelectedInjectSettings()">
+                                <div>
+                                    ::InjectHtml::
+                                </div>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: Enabled" />
+                                                ::Enabled::
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="FileValidation">
+                                        <label class="col-sm-4">::InjectFile:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: File" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">
+                                            ::At::
+                                        </label>
+                                        <div class="col-sm-4">
+                                            <input type="radio" name="at-group" value="start" data-bind="checked: StartAsStringValue" />
+                                            ::Start::
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="radio" name="at-group" value="end" data-bind="checked: StartAsStringValue" />
+                                            ::End::
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::Of:::</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" data-bind="options: $root.InjectionLocations, optionsText: 'Description', optionsValue: 'Value', value: InjectionLocation"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" data-bsu="field-validate" data-bsu-field="PathAndFileValidation">
+                                        <label class="col-sm-4">::Address:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: PathAndFile" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                ::ReplaceAndAddSiteContent::
+                            </div>
+                            <div class="form-group" data-bsu="field-validate" data-bsu-field="SiteRootFolderValidation">
+                                <label class="col-sm-4">::SiteRootLabel:::</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" data-bind="textInput: SiteRootFolder" />
+                                </div>
+                            </div>
+                            <div class="form-group" data-bsu="field-validate" data-bsu-field="ResourceImagesFolderValidation">
+                                <label class="col-sm-4">::ResourceImagesFolder:::</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" data-bind="textInput: ResourceImagesFolder" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-primary" data-bind="click: $.proxy(pageHandler.save, pageHandler)">
+                                    ::Save::
+                                </button>
+                            </div>
+                            <div class="col-sm-10" data-bind="visible: SaveAttempted">
+                                <div class="alert alert-success">
+                                    <span data-bind="text: SavedMessage"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+                $(document).on('ready', function () {
+                    Bootstrap.Helper.decorateBootstrapElements();
+                    window.pageHandler = new VRS.WebAdmin.CustomContentPluginOptions.PageHandler();
+                })
+        </script>
+    </body>
+</html>

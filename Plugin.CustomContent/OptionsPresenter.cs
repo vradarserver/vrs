@@ -83,7 +83,7 @@ namespace VirtualRadar.Plugin.CustomContent
                     if(String.IsNullOrEmpty(_View.InjectPathAndFile)) results.Results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileRequired));
                     else if(_View.InjectPathAndFile != "*") {
                         if(_View.InjectPathAndFile[0] != '/') results.Results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileMissingRoot));
-                        else if(!_View.InjectPathAndFile.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && !_View.InjectPathAndFile.EndsWith(".htm")) {
+                        else if(!_View.InjectPathAndFile.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && !_View.InjectPathAndFile.EndsWith(".htm", StringComparison.OrdinalIgnoreCase)) {
                             results.Results.Add(new ValidationResult(ValidationField.PathAndFile, CustomContentStrings.PathAndFileMissingExtension));
                         }
                     }

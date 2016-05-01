@@ -288,6 +288,17 @@ namespace TypeLite {
             return this;
         }
 
+        /// <summary>
+        /// Suppresses the generation of TypeScript for an entire module.
+        /// </summary>
+        /// <param name="moduleName"></param>
+        /// <returns></returns>
+        public TypeScriptFluent SuppressModuleGeneration(string moduleName)
+        {
+            _scriptGenerator.SuppressModule(moduleName);
+            return this;
+        }
+
 		/// <summary>
 		/// Generates TypeScript definitions for types included in this model builder.
 		/// </summary>

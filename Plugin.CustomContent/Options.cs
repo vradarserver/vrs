@@ -21,6 +21,11 @@ namespace VirtualRadar.Plugin.CustomContent
     public class Options
     {
         /// <summary>
+        /// Gets or sets a value indicating the version of the saved options.
+        /// </summary>
+        public long DataVersion { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the custom content plugin is active.
         /// </summary>
         public bool Enabled { get; set; }

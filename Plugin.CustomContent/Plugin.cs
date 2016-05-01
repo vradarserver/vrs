@@ -63,24 +63,9 @@ namespace VirtualRadar.Plugin.CustomContent
 
         #region Fields
         /// <summary>
-        /// The options that govern the plugin's behaviour.
-        /// </summary>
-        private Options _Options = new Options();
-
-        /// <summary>
         /// The content injectors that we've created and added to the web site.
         /// </summary>
         private List<CustomHtmlContentInjector> _ContentInjectors = new List<CustomHtmlContentInjector>();
-
-        /// <summary>
-        /// The web site that's currently in use.
-        /// </summary>
-        private IWebSite _WebSite;
-
-        /// <summary>
-        /// The site root that will be added to the web site.
-        /// </summary>
-        private SiteRoot _SiteRoot = new SiteRoot() { Priority = -2000000000 };
 
         /// <summary>
         /// The object that manages the switching in and out of custom resources for us.
@@ -89,6 +74,30 @@ namespace VirtualRadar.Plugin.CustomContent
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Gets the last initialised instance of the plugin object. At run-time only one plugin
+        /// object gets created and initialised.
+        /// </summary>
+        public static Plugin Singleton { get; private set; }
+
+        private IWebSite _WebSite;
+        /// <summary>
+        /// Gets the web site that's currently in use.
+        /// </summary>
+        public IWebSite WebSite
+        {
+            get { return _WebSite; }
+        }
+
+        private SiteRoot _SiteRoot = new SiteRoot() { Priority = -2000000000 };
+        /// <summary>
+        /// Gets the site root that will be added to the web site.
+        /// </summary>
+        public SiteRoot SiteRoot
+        {
+            get { return _SiteRoot; }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -139,6 +148,21 @@ namespace VirtualRadar.Plugin.CustomContent
         {
             EventHelper.Raise(StatusChanged, this, args);
         }
+
+        /// <summary>
+        /// Raised when <see cref="OptionsStorage"/> saves a new set of options.
+        /// </summary>
+        public event EventHandler<EventArgs<Options>> SettingsChanged;
+
+        /// <summary>
+        /// Raises <see cref="SettingsChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        internal void RaiseSettingsChanged(EventArgs<Options> args)
+        {
+            ApplyOptions(args.Value);
+            EventHelper.Raise(SettingsChanged, this, args);
+        }
         #endregion
 
         #region Constructor
@@ -170,10 +194,11 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <param name="parameters"></param>
         public void Startup(PluginStartupParameters parameters)
         {
+            Singleton = this;
             _WebSite = parameters.WebSite;
 
-            _Options = OptionsStorage.Load(this);
-            ApplyOptions();
+            var options = OptionsStorage.Load(this);
+            ApplyOptions(options);
 
             var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
             heartbeat.SlowTick += Heartbeat_SlowTick;
@@ -186,6 +211,12 @@ namespace VirtualRadar.Plugin.CustomContent
         /// </summary>
         public void GuiThreadStartup()
         {
+            var webAdminViewManager = Factory.Singleton.Resolve<IWebAdminViewManager>().Singleton;
+            webAdminViewManager.RegisterTranslations(typeof(CustomContentStrings), "CustomContentPlugin");
+            webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "CustomContentPluginOptions.html", CustomContentStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(CustomContentStrings)) {
+                Plugin = this,
+            });
+            webAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
         }
         #endregion
 
@@ -206,25 +237,25 @@ namespace VirtualRadar.Plugin.CustomContent
         public void ShowWinFormsOptionsUI()
         {
             using(var view = Factory.Singleton.Resolve<IOptionsView>()) {
+                var options = OptionsStorage.Load(this);
+
                 view.WebSite = _WebSite;
                 view.SiteRoot = _SiteRoot;
-                view.InjectSettings.AddRange(_Options.InjectSettings.Select(r => (InjectSettings)r.Clone()));
-                view.PluginEnabled = _Options.Enabled;
-                view.SiteRootFolder = _Options.SiteRootFolder;
-                view.ResourceImagesFolder = _Options.ResourceImagesFolder;
-                view.DefaultInjectionFilesFolder = _Options.DefaultInjectionFilesFolder;
+                view.InjectSettings.AddRange(options.InjectSettings.Select(r => (InjectSettings)r.Clone()));
+                view.PluginEnabled = options.Enabled;
+                view.SiteRootFolder = options.SiteRootFolder;
+                view.ResourceImagesFolder = options.ResourceImagesFolder;
+                view.DefaultInjectionFilesFolder = options.DefaultInjectionFilesFolder;
 
                 if(view.DisplayView()) {
-                    _Options.InjectSettings.Clear();
-                    _Options.InjectSettings.AddRange(view.InjectSettings);
-                    _Options.Enabled = view.PluginEnabled;
-                    _Options.SiteRootFolder = view.SiteRootFolder;
-                    _Options.ResourceImagesFolder = view.ResourceImagesFolder;
-                    _Options.DefaultInjectionFilesFolder = view.DefaultInjectionFilesFolder;
+                    options.InjectSettings.Clear();
+                    options.InjectSettings.AddRange(view.InjectSettings);
+                    options.Enabled = view.PluginEnabled;
+                    options.SiteRootFolder = view.SiteRootFolder;
+                    options.ResourceImagesFolder = view.ResourceImagesFolder;
+                    options.DefaultInjectionFilesFolder = view.DefaultInjectionFilesFolder;
 
-                    OptionsStorage.Save(this, _Options);
-
-                    ApplyOptions();
+                    OptionsStorage.Save(this, options);
                 }
             }
         }
@@ -234,21 +265,21 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <summary>
         /// Applies the options.
         /// </summary>
-        private void ApplyOptions()
+        private void ApplyOptions(Options options)
         {
             if(_WebSite != null) {
-                if(!_Options.Enabled) {
+                if(!options.Enabled) {
                     DisableSiteRoot();
                 } else {
-                    EnableSiteRoot(_Options.SiteRootFolder);
+                    EnableSiteRoot(options.SiteRootFolder);
                 }
 
-                if(!_Options.Enabled || String.IsNullOrEmpty(_Options.ResourceImagesFolder)) {
+                if(!options.Enabled || String.IsNullOrEmpty(options.ResourceImagesFolder)) {
                     _CustomResourceImageManager.Enabled = false;
                     _CustomResourceImageManager.ResourceImagesFolder = null;
                     _CustomResourceImageManager.UnloadCustomImages();
                 } else {
-                    _CustomResourceImageManager.ResourceImagesFolder = _Options.ResourceImagesFolder;
+                    _CustomResourceImageManager.ResourceImagesFolder = options.ResourceImagesFolder;
                     _CustomResourceImageManager.Enabled = true;
                     _CustomResourceImageManager.LoadCustomImages(blockThread: true);
                 }
@@ -257,9 +288,9 @@ namespace VirtualRadar.Plugin.CustomContent
                     _WebSite.RemoveHtmlContentInjector(existingInjector);
                 }
                 _ContentInjectors.Clear();
-                if(_Options.Enabled) {
+                if(options.Enabled) {
                     int priority = 1;
-                    foreach(var injectSettings in _Options.InjectSettings.Where(r => r.Enabled)) {
+                    foreach(var injectSettings in options.InjectSettings.Where(r => r.Enabled)) {
                         var injector = new CustomHtmlContentInjector() {
                             AtStart = injectSettings.Start,
                             Element = injectSettings.InjectionLocation.ToString().ToLower(),
@@ -272,10 +303,10 @@ namespace VirtualRadar.Plugin.CustomContent
                     }
                 }
 
-                if(!_Options.Enabled) Status = CustomContentStrings.Disabled;
+                if(!options.Enabled) Status = CustomContentStrings.Disabled;
                 else {
-                    if(String.IsNullOrEmpty(_Options.SiteRootFolder)) Status = CustomContentStrings.EnabledNoSiteRoot;
-                    else Status = String.Format(CustomContentStrings.EnabledWithSiteRoot, _Options.SiteRootFolder);
+                    if(String.IsNullOrEmpty(options.SiteRootFolder)) Status = CustomContentStrings.EnabledNoSiteRoot;
+                    else Status = String.Format(CustomContentStrings.EnabledWithSiteRoot, options.SiteRootFolder);
                 }
             }
 

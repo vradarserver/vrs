@@ -16,6 +16,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
 using System.IO;
 using System.Xml.Serialization;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Plugin.CustomContent
 {
@@ -57,6 +58,12 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <param name="options"></param>
         public static void Save(Plugin plugin, Options options)
         {
+            var currentOptions = Load(plugin);
+            if(options.DataVersion != currentOptions.DataVersion) {
+                throw new ConflictingUpdateException(String.Format("The options you are trying to save have changed since you loaded them. You are editing version {0}, the current version is {1}", options.DataVersion, currentOptions.DataVersion));
+            }
+            ++options.DataVersion;
+
             using(var stream = new MemoryStream()) {
                 var serialiser = new XmlSerializer(typeof(Options));
                 serialiser.Serialize(stream, options);
@@ -66,6 +73,8 @@ namespace VirtualRadar.Plugin.CustomContent
                 pluginSettings.Write(plugin, Key, Encoding.UTF8.GetString(stream.ToArray()));
                 pluginStorage.Save(pluginSettings);
             }
+
+            Plugin.Singleton.RaiseSettingsChanged(new EventArgs<Options>(options));
         }
     }
 }
