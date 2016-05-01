@@ -109,6 +109,15 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public bool IsSatcomFeed
+        {
+            get { return _Original.IsSatcomFeed; }
+            set { _Original.IsSatcomFeed = value; }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public IStatistics Statistics
         {
             get { return _Original.Statistics; }

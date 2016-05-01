@@ -709,6 +709,44 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
+        public void Listener_Connect_Does_Not_Set_OutOfBand_On_Port30003Messages()
+        {
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(false, _Port30003MessageReceivedEvent.Args.IsOutOfBand);
+        }
+
+        [TestMethod]
+        public void Listener_Connect_Copies_True_IsSatcomFeed_To_Port30003Messages()
+        {
+            _Listener.IsSatcomFeed = true;
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(true, _Port30003MessageReceivedEvent.Args.IsSatcomFeed);
+        }
+
+        [TestMethod]
+        public void Listener_Connect_Copies_False_IsSatcomFeed_To_Port30003Messages()
+        {
+            _Listener.IsSatcomFeed = false;
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.Port30003, "A");
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(false, _Port30003MessageReceivedEvent.Args.IsSatcomFeed);
+        }
+
+        [TestMethod]
         public void Listener_Connect_Does_Not_Raise_Port30003MessageReceived_When_Translator_Returns_Null()
         {
             _Connector.ConfigureForConnect();

@@ -134,6 +134,8 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.IsTransmittingTrack, false);
             TestUtilities.TestProperty(_Aircraft, r => r.LastCoordinateChanged, 0L, 123L);
             TestUtilities.TestProperty(_Aircraft, r => r.LastUpdate, DateTime.MinValue, DateTime.Now);
+            TestUtilities.TestProperty(_Aircraft, r => r.LastModeSUpdate, DateTime.MinValue, DateTime.Now.AddSeconds(1));
+            TestUtilities.TestProperty(_Aircraft, r => r.LastSatcomUpdate, DateTime.MinValue, DateTime.Now.AddSeconds(2));
             TestUtilities.TestProperty(_Aircraft, r => r.LatestCoordinateTime, DateTime.MinValue, DateTime.Now);
             TestUtilities.TestProperty(_Aircraft, r => r.Latitude, null, 8.3213);
             TestUtilities.TestProperty(_Aircraft, r => r.Longitude, null, 12.3231);
@@ -346,6 +348,8 @@ namespace Test.VirtualRadar.Library
                             case "FlightsCount":                    value = _Aircraft.FlightsCount = intValue; break;
                             case "FlightsCountChanged":             value = _Aircraft.FlightsCountChanged; break;
                             case "LastUpdate":                      value = _Aircraft.LastUpdate = dateTimeValue; break;
+                            case "LastModeSUpdate":                 value = _Aircraft.LastModeSUpdate = dateTimeValue; break;
+                            case "LastSatcomUpdate":                value = _Aircraft.LastSatcomUpdate = dateTimeValue; break;
                             case "Type":                            value = _Aircraft.Type = stringValue; break;
                             case "TypeChanged":                     value = _Aircraft.TypeChanged; break;
                             case "Manufacturer":                    value = _Aircraft.Manufacturer = stringValue; break;

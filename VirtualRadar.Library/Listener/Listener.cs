@@ -152,6 +152,11 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public bool IsSatcomFeed { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public IConnector Connector { get; private set; }
 
         /// <summary>
@@ -568,7 +573,9 @@ namespace VirtualRadar.Library.Listener
                 if(translatedMessage != null) {
                     ++TotalMessages;
                     if(Statistics != null) Statistics.Lock(r => ++r.BaseStationMessagesReceived);
-                    _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = new BaseStationMessageEventArgs(translatedMessage) });
+                    _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() {
+                        Port30003MessageEventArgs = new BaseStationMessageEventArgs(translatedMessage, isOutOfBand: false, isSatcomFeed: IsSatcomFeed)
+                    });
                 }
             } catch(Exception) {
                 ++TotalBadMessages;

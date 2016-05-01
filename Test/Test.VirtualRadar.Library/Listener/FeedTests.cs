@@ -97,6 +97,7 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IBeastMessageBytesExtractor> _BeastMessageBytesExtractor;
         private Mock<ICompressedMessageBytesExtractor> _CompressedMessageBytesExtractor;
         private Mock<IAircraftListJsonMessageBytesExtractor> _AircraftListJsonMessageBytesExtractor;
+        private Mock<IPlaneFinderMessageBytesExtractor> _PlaneFinderMessageBytesExtractor;
         private Mock<IRawMessageTranslator> _RawMessageTranslator;
         private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
         private SavedPolarPlot _SavedPolarPlot;
@@ -152,7 +153,7 @@ namespace Test.VirtualRadar.Library.Listener
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Feed = Factory.Singleton.Resolve<IFeed>();
-            _Receiver = new Receiver() { UniqueId = 1, Name = "A", ReceiverLocationId = 1 };
+            _Receiver = new Receiver() { UniqueId = 1, Name = "A", ReceiverLocationId = 1, IsSatcomFeed = true, };
             _RawDecodingSettings = new RawDecodingSettings();
 
             _Configuration = new Configuration();
@@ -251,6 +252,7 @@ namespace Test.VirtualRadar.Library.Listener
             _BeastMessageBytesExtractor = TestUtilities.CreateMockImplementation<IBeastMessageBytesExtractor>();
             _CompressedMessageBytesExtractor = TestUtilities.CreateMockImplementation<ICompressedMessageBytesExtractor>();
             _AircraftListJsonMessageBytesExtractor = TestUtilities.CreateMockImplementation<IAircraftListJsonMessageBytesExtractor>();
+            _PlaneFinderMessageBytesExtractor = TestUtilities.CreateMockImplementation<IPlaneFinderMessageBytesExtractor>();
 
             _RawMessageTranslator = TestUtilities.CreateMockImplementation<IRawMessageTranslator>();
             _RawMessageTranslator.Object.ReceiverLocation = null;
@@ -340,6 +342,7 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.AreEqual(1234, _Feed.Listener.ReceiverId);
             Assert.IsTrue(_Feed.Listener.IgnoreBadMessages);
             Assert.AreEqual("A", _Feed.Listener.ReceiverName);
+            Assert.AreEqual(true, _Feed.Listener.IsSatcomFeed);
         }
 
         [TestMethod]
@@ -379,6 +382,8 @@ namespace Test.VirtualRadar.Library.Listener
                     Assert.AreSame(_CompressedMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
                 } else if(dataSource == DataSource.AircraftListJson) {
                     Assert.AreSame(_AircraftListJsonMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
+                } else if(dataSource == DataSource.PlaneFinder) {
+                    Assert.AreSame(_PlaneFinderMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
                 } else {
                     throw new NotImplementedException();
                 }
@@ -752,6 +757,7 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.AreEqual(1234, _MergedFeedListener.Object.IcaoTimeout);
             Assert.AreEqual(9988, _MergedFeedListener.Object.ReceiverId);
             Assert.AreEqual("M1", _MergedFeedListener.Object.ReceiverName);
+            Assert.AreEqual(false, _MergedFeedListener.Object.IsSatcomFeed);
         }
 
         [TestMethod]
@@ -953,6 +959,17 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
             Assert.AreEqual("My New Name", _Feed.Name);
+            Assert.AreEqual("My New Name", _Feed.Listener.ReceiverName);
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Picks_Up_IsSatcomFeed_Change()
+        {
+            _Feed.Initialise(_Receiver, _Configuration);
+            _Receiver.IsSatcomFeed = false;
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            Assert.AreEqual(false, _Feed.Listener.IsSatcomFeed);
         }
 
         [TestMethod]

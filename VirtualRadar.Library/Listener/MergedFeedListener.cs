@@ -157,6 +157,11 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public string ReceiverName { get; set; }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsSatcomFeed { get; set; }
+
         private List<IMergedFeedComponentListener> _Listeners = new List<IMergedFeedComponentListener>();
         /// <summary>
         /// See interface docs.
@@ -531,7 +536,7 @@ namespace VirtualRadar.Library.Listener
             var filterOutcome = FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition, message.IsMlat);
 
             if(filterOutcome != FilterMessageOutcome.Failed) {
-                var args = new BaseStationMessageEventArgs(message, isOutOfBand: filterOutcome == FilterMessageOutcome.OutOfBand);
+                var args = new BaseStationMessageEventArgs(message, isOutOfBand: filterOutcome == FilterMessageOutcome.OutOfBand, isSatcomFeed: messageReceived.Listener.IsSatcomFeed);
                 OnPort30003MessageReceived(args);
                 ++TotalMessages;
             }
