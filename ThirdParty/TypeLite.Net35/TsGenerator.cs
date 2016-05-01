@@ -22,6 +22,7 @@ namespace TypeLite {
         protected HashSet<TsClass> _generatedClasses;
         protected HashSet<TsEnum> _generatedEnums;
         protected List<string> _references;
+        protected List<string> _suppressModules;        // AGW
 
         /// <summary>
         /// Gets collection of formatters for individual TsTypes
@@ -76,6 +77,9 @@ namespace TypeLite {
 
             this.IndentationString = "    ";
             this.GenerateConstEnums = true;
+
+            // AGW
+            _suppressModules = new List<string>();
         }
 
         public bool DefaultTypeVisibilityFormatter(TsClass tsClass, string typeName) {
@@ -185,6 +189,19 @@ namespace TypeLite {
         }
 
         /// <summary>
+        /// Suppresses an entire module from the output. References can still be made to the module,
+        /// it's just assumed that the module's content has been declared elsewhere.
+        /// </summary>
+        /// <param name="moduleName"></param>
+        // AGW
+        public void SuppressModule(string moduleName)
+        {
+            if(!_suppressModules.Contains(moduleName)) {
+                _suppressModules.Add(moduleName);
+            }
+        }
+
+        /// <summary>
         /// Generates TypeScript definitions for properties and enums in the model.
         /// </summary>
         /// <param name="model">The code model with classes to generate definitions for.</param>
@@ -243,45 +260,48 @@ namespace TypeLite {
             }
 
             var moduleName = GetModuleName(module);
-            var generateModuleHeader = moduleName != string.Empty;
+            var suppressModule = _suppressModules.Contains(moduleName);     // AGW
+            if(!suppressModule) {                                           // AGW
+                var generateModuleHeader = moduleName != string.Empty;
 
-            if (generateModuleHeader) {
-                if (generatorOutput != TsGeneratorOutput.Enums &&
-                    (generatorOutput & TsGeneratorOutput.Constants) != TsGeneratorOutput.Constants) {
-                    sb.Append("declare ");
-                }
-
-                sb.AppendLine(string.Format("module {0} {{", moduleName));
-            }
-
-            using (sb.IncreaseIndentation()) {
-                if ((generatorOutput & TsGeneratorOutput.Enums) == TsGeneratorOutput.Enums) {
-                    foreach (var enumModel in enums) {
-                        this.AppendEnumDefinition(enumModel, sb, generatorOutput);
+                if (generateModuleHeader) {
+                    if (generatorOutput != TsGeneratorOutput.Enums &&
+                        (generatorOutput & TsGeneratorOutput.Constants) != TsGeneratorOutput.Constants) {
+                        sb.Append("declare ");
                     }
+
+                    sb.AppendLine(string.Format("module {0} {{", moduleName));
                 }
 
-                if (((generatorOutput & TsGeneratorOutput.Properties) == TsGeneratorOutput.Properties)
-                    || (generatorOutput & TsGeneratorOutput.Fields) == TsGeneratorOutput.Fields) {
-                    foreach (var classModel in classes) {
-
-                        this.AppendClassDefinition(classModel, sb, generatorOutput);
-                    }
-                }
-
-                if ((generatorOutput & TsGeneratorOutput.Constants) == TsGeneratorOutput.Constants) {
-                    foreach (var classModel in classes) {
-                        if (classModel.IsIgnored) {
-                            continue;
+                using (sb.IncreaseIndentation()) {
+                    if ((generatorOutput & TsGeneratorOutput.Enums) == TsGeneratorOutput.Enums) {
+                        foreach (var enumModel in enums) {
+                            this.AppendEnumDefinition(enumModel, sb, generatorOutput);
                         }
+                    }
 
-                        this.AppendConstantModule(classModel, sb);
+                    if (((generatorOutput & TsGeneratorOutput.Properties) == TsGeneratorOutput.Properties)
+                        || (generatorOutput & TsGeneratorOutput.Fields) == TsGeneratorOutput.Fields) {
+                        foreach (var classModel in classes) {
+
+                            this.AppendClassDefinition(classModel, sb, generatorOutput);
+                        }
+                    }
+
+                    if ((generatorOutput & TsGeneratorOutput.Constants) == TsGeneratorOutput.Constants) {
+                        foreach (var classModel in classes) {
+                            if (classModel.IsIgnored) {
+                                continue;
+                            }
+
+                            this.AppendConstantModule(classModel, sb);
+                        }
                     }
                 }
-            }
-            if (generateModuleHeader) {
-                sb.AppendLine("}");
-            }
+                if (generateModuleHeader) {
+                    sb.AppendLine("}");
+                }
+            } // AGW
         }
 
         /// <summary>

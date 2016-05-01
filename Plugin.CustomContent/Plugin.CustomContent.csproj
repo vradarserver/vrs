@@ -1,5 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -53,6 +70,7 @@
       <DependentUpon>CustomContentStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="CustomResourceImageManager.cs" />
+    <Compile Include="Describe.cs" />
     <Compile Include="InjectionLocation.cs" />
     <Compile Include="InjectSettings.cs" />
     <Compile Include="IOptionsPresenter.cs" />
@@ -60,8 +78,12 @@
     <Compile Include="Options.cs" />
     <Compile Include="OptionsPresenter.cs" />
     <Compile Include="OptionsStorage.cs" />
+    <Compile Include="OptionsValidator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebAdmin\IOptionsView.cs" />
+    <Compile Include="WebAdmin\OptionsModels.cs" />
+    <Compile Include="WebAdmin\OptionsView.cs" />
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,6 +128,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Typings\translations-customcontentstrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-customcontentstrings.d.ts</LastGenOutput>
+    </None>
+    <None Include="Typings\CustomContentPluginModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CustomContentPluginModels.d.ts</LastGenOutput>
+    </None>
+    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js.map">
+      <DependentUpon>CustomContentPluginOptions.ts</DependentUpon>
+    </Content>
+    <None Include="Typings\Manager.ttinclude" />
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
@@ -113,6 +147,30 @@
     <Content Include="VirtualRadar.Plugin.CustomContent.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\WebAdmin\CustomContentPluginOptions.html" />
+    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js">
+      <DependentUpon>CustomContentPluginOptions.ts</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\CustomContentPluginEnums.ts">
+      <DependentUpon>CustomContentPluginModels.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\CustomContentPluginModels.d.ts">
+      <DependentUpon>CustomContentPluginModels.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-customcontentstrings.d.ts">
+      <DependentUpon>translations-customcontentstrings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\CustomContentPluginOptions.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

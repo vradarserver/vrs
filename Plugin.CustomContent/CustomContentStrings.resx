@@ -218,4 +218,16 @@
   <data name="PluginName" xml:space="preserve">
     <value>Custom Content</value>
   </data>
+  <data name="Body" xml:space="preserve">
+    <value>Body</value>
+  </data>
+  <data name="Head" xml:space="preserve">
+    <value>Head</value>
+  </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Plugin: Custom Content Options</value>
+  </data>
+  <data name="OptionsViewTitle" xml:space="preserve">
+    <value>Custom Content Options</value>
+  </data>
 </root>

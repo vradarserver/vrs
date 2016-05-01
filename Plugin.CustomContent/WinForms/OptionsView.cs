@@ -242,7 +242,7 @@ namespace VirtualRadar.Plugin.CustomContent.WinForms
                     }
                 });
 
-                FillDropDownWithValues<InjectionLocation>(comboBoxInjectOf, Enum.GetValues(typeof(InjectionLocation)).OfType<InjectionLocation>(), r => r.ToString().ToUpper());
+                FillDropDownWithValues<InjectionLocation>(comboBoxInjectOf, Enum.GetValues(typeof(InjectionLocation)).OfType<InjectionLocation>(), r => Describe.InjectionLocation(r));
 
                 _ValueChangedHelper.HookValueChanged(new Control[] {
                     checkBoxInjectEnabled,
