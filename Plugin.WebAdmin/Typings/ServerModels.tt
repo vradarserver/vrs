@@ -1,6 +1,6 @@
 ﻿<#@ template debug="false" hostspecific="True" language="C#" #>
 <#@ assembly name="System.Runtime.Serialization"#>
-<#@ assembly name="$(SolutionDir)Dependencies\TypeLite.Net35.dll" #>
+<#@ assembly name="$(SolutionDir)ThirdParty\TypeLite.Net35\bin\$(ConfigurationName)\TypeLite.Net35.dll" #>
 <#@ assembly name="$(SolutionDir)Dependencies\Newtonsoft.Json.dll" #>
 <#@ assembly name="$(TargetDir)InterfaceFactory.dll" #>
 <#@ assembly name="$(TargetDir)VirtualRadar.Interface.dll" #>
