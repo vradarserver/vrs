@@ -19,16 +19,16 @@ namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
     /// The interface for an object that can turn an <see cref="AircraftListJson"/> into a collection
-    /// of <see cref="BaseStationMessage"/> objects.
+    /// of <see cref="BaseStationMessageEventArgs"/> objects.
     /// </summary>
     public interface IAircraftListJsonMessageConverter
     {
         /// <summary>
-        /// Returns a collection of <see cref="BaseStationMessage"/> objects, one for each aircraft
+        /// Returns a collection of <see cref="BaseStationMessageEventArgs"/> objects, one for each aircraft
         /// in the aircraft list of the <see cref="AircraftListJson"/> passed across.
         /// </summary>
         /// <param name="aircraftListJson"></param>
         /// <returns></returns>
-        IEnumerable<BaseStationMessage>ConvertIntoBaseStationMessages(AircraftListJson aircraftListJson);
+        IEnumerable<BaseStationMessageEventArgs>ConvertIntoBaseStationMessageEventArgs(AircraftListJson aircraftListJson);
     }
 }

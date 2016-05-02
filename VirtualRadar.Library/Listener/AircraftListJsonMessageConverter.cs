@@ -30,9 +30,9 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         /// <param name="aircraftListJson"></param>
         /// <returns></returns>
-        public IEnumerable<BaseStationMessage> ConvertIntoBaseStationMessages(AircraftListJson aircraftListJson)
+        public IEnumerable<BaseStationMessageEventArgs> ConvertIntoBaseStationMessageEventArgs(AircraftListJson aircraftListJson)
         {
-            var result = new List<BaseStationMessage>();
+            var result = new List<BaseStationMessageEventArgs>();
 
             foreach(var json in aircraftListJson.Aircraft) {
                 var message = new BaseStationMessage() {
@@ -91,7 +91,8 @@ namespace VirtualRadar.Library.Listener
                     }
                 }
 
-                result.Add(message);
+                var eventArgs = new BaseStationMessageEventArgs(message, isOutOfBand: false, isSatcomFeed: json.IsSatcomFeed);
+                result.Add(eventArgs);
             }
 
             return result;

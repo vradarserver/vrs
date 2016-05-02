@@ -300,6 +300,7 @@ namespace VirtualRadar.WebSite
 
                 var aircraftJson = new AircraftJson() {
                     UniqueId = aircraftSnapshot.UniqueId,
+                    IsSatcomFeed = aircraftSnapshot.LastSatcomUpdate != DateTime.MinValue,
                 };
                 if(!args.OnlyIncludeMessageFields) {
                     aircraftJson.BearingFromHere = GreatCircleMaths.Bearing(args.BrowserLatitude, args.BrowserLongitude, aircraftSnapshot.Latitude, aircraftSnapshot.Longitude, null, false, true);

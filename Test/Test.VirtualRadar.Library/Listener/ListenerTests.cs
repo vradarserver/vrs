@@ -110,7 +110,7 @@ namespace Test.VirtualRadar.Library.Listener
             _ModeSTranslator.Setup(r => r.Translate(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool>())).Returns(_ModeSMessage);
             _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Returns(_Port30003Message);
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns(_Port30003Message);
-            _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessages(It.IsAny<AircraftListJson>())).Returns(new List<BaseStationMessage>() { _Port30003Message });
+            _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>())).Returns(new List<BaseStationMessageEventArgs>() { new BaseStationMessageEventArgs(_Port30003Message) });
 
             _Listener = Factory.Singleton.Resolve<IListener>();
             _Connector = new MockConnector<IConnector, IConnection>();
@@ -213,7 +213,7 @@ namespace Test.VirtualRadar.Library.Listener
                 case TranslatorType.Port30003:          _Port30003Translator.Setup(r => r.Translate(It.IsAny<string>(), It.IsAny<int?>())).Throws(exception); break;
                 case TranslatorType.Raw:                _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Throws(exception); break;
                 case TranslatorType.Compressed:         _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Throws(exception); break;
-                case TranslatorType.AircraftListJson:   _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessages(It.IsAny<AircraftListJson>())).Throws(exception); break;
+                case TranslatorType.AircraftListJson:   _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>())).Throws(exception); break;
                 default:
                     throw new NotImplementedException();
             }
@@ -1399,7 +1399,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             ChangeSourceAndConnect();
 
-            _JsonConverter.Verify(r => r.ConvertIntoBaseStationMessages(It.IsAny<AircraftListJson>()), Times.Once());
+            _JsonConverter.Verify(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>()), Times.Once());
         }
 
         [TestMethod]
@@ -1467,7 +1467,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Increments_TotalBadMessages_When_Bad_AircraftListJson_Message_Received()
         {
             RemoveDefaultExceptionCaughtHandler();
-            _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessages(It.IsAny<AircraftListJson>())).Callback(() => { throw new InvalidCastException(); });
+            _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>())).Callback(() => { throw new InvalidCastException(); });
             _Connector.ConfigureForConnect();
             var text = @"{""acList"":[]}";
             _Connector.ConfigureForReadStream(text);
@@ -1484,7 +1484,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void Listener_Connect_Updates_Statistics_When_Bad_AircraftListJson_Message_Received()
         {
             RemoveDefaultExceptionCaughtHandler();
-            _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessages(It.IsAny<AircraftListJson>())).Callback(() => { throw new InvalidCastException(); });
+            _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>())).Callback(() => { throw new InvalidCastException(); });
             _Connector.ConfigureForConnect();
             var text = @"{""acList"":[]}";
             _Connector.ConfigureForReadStream(text);
