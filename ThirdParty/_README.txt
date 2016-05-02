@@ -2,6 +2,14 @@ This folder contains the source for third-party libraries and utilities that I c
 directly use because either they do not target .NET 3.5 or I needed to make changes to
 them.
 
+ChecksumFiles
+=============
+This isn't a third party utility, it's just a command-line program that gets run as a
+pre-build step for VirtualRadar.WebSite.dll. It creates checksums for all of the web site
+files, these get written to a text file that is then added to the DLL's resources and used
+to check at run-time that the files have not been modified.
+
+
 KdTreeLib
 =========
 Home page: https://github.com/codeandcats/KdTree
