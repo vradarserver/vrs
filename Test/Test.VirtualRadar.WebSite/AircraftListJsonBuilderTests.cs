@@ -1264,6 +1264,7 @@ namespace Test.VirtualRadar.WebSite
                 else if(property.PropertyType == typeof(ICollection<string>))       aircraft.Object.Stopovers.Add("A");
                 else throw new NotImplementedException(String.Format("Need to add code to set dummy values for {0} properties", property.PropertyType.Name));
             }
+            aircraft.Object.LastSatcomUpdate = DateTime.UtcNow;
 
             _Args.OnlyIncludeMessageFields = true;
             var json = _Builder.Build(_Args).Aircraft[0];
@@ -1317,6 +1318,7 @@ namespace Test.VirtualRadar.WebSite
                     case "IsTisb":
                     case "AirPressureInHg":
                     case "GeometricAltitude":
+                    case "IsSatcomFeed":
                         Assert.IsFalse(isEmpty, property.Name);
                         break;
                     // These are properties that get filled in whether we like it or not

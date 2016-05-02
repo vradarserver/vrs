@@ -623,9 +623,9 @@ namespace VirtualRadar.Library.Listener
                 var jsonText = Encoding.UTF8.GetString(extractedBytes.Bytes, extractedBytes.Offset, extractedBytes.Length);
                 var json = JsonConvert.DeserializeObject<AircraftListJson>(jsonText, _AircraftListJsonSerialiserSettings);
                 var totalMessages = 0;
-                foreach(var message in _AircraftListJsonMessageConverter.ConvertIntoBaseStationMessages(json)) {
+                foreach(var eventArgs in _AircraftListJsonMessageConverter.ConvertIntoBaseStationMessageEventArgs(json)) {
                     ++totalMessages;
-                    _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = new BaseStationMessageEventArgs(message) });
+                    _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = eventArgs });
                 }
 
                 if(totalMessages != 0) {
