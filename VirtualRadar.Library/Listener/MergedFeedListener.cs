@@ -437,9 +437,10 @@ namespace VirtualRadar.Library.Listener
         /// <param name="listener"></param>
         /// <param name="icao"></param>
         /// <param name="hasPosition"></param>
+        /// <param name="hasTrack"></param>
         /// <param name="positionIsMlat"></param>
         /// <returns></returns>
-        private FilterMessageOutcome FilterMessageFromListener(DateTime receivedUtc, IListener listener, string icao, bool hasPosition, bool positionIsMlat)
+        private FilterMessageOutcome FilterMessageFromListener(DateTime receivedUtc, IListener listener, string icao, bool hasPosition, bool hasTrack, bool positionIsMlat)
         {
             var result = FilterMessageOutcome.Failed;
             icao = icao ?? "";
@@ -468,7 +469,7 @@ namespace VirtualRadar.Library.Listener
                             }
                         }
 
-                        if(result == FilterMessageOutcome.Failed && hasPosition && (positionIsMlat || component.IsMlatFeed)) {
+                        if(result == FilterMessageOutcome.Failed && (hasPosition || hasTrack) && (positionIsMlat || component.IsMlatFeed)) {
                             result = FilterMessageOutcome.OutOfBand;
                         }
 
@@ -533,7 +534,8 @@ namespace VirtualRadar.Library.Listener
         {
             var message = messageReceived.MessageArgs.Message;
             var hasNoPosition = message.Latitude.GetValueOrDefault() == 0.0 && message.Longitude.GetValueOrDefault() == 0.0;
-            var filterOutcome = FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition, message.IsMlat);
+            var hasTrack = message.Track != null;
+            var filterOutcome = FilterMessageFromListener(messageReceived.ReceivedUtc, messageReceived.Listener, message.Icao24, !hasNoPosition, hasTrack, message.IsMlat);
 
             if(filterOutcome != FilterMessageOutcome.Failed) {
                 var args = new BaseStationMessageEventArgs(message, isOutOfBand: filterOutcome == FilterMessageOutcome.OutOfBand, isSatcomFeed: messageReceived.Listener.IsSatcomFeed);
@@ -561,7 +563,7 @@ namespace VirtualRadar.Library.Listener
         {
             try {
                 var listener = (IListener)sender;
-                if(FilterMessageFromListener(_Clock.UtcNow, listener, args.Value, false, false) != FilterMessageOutcome.Failed) OnPositionReset(args);
+                if(FilterMessageFromListener(_Clock.UtcNow, listener, args.Value, false, false, false) != FilterMessageOutcome.Failed) OnPositionReset(args);
             } catch(Exception ex) {
                 OnExceptionCaught(new EventArgs<Exception>(ex));
             }
