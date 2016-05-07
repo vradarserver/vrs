@@ -71,6 +71,7 @@
 }
 
 .dl-menuopen {
+    z-index: 1;         /* Need this for FF46 */
     border: 1px solid #888;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
 }
