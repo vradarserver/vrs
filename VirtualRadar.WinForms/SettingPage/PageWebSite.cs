@@ -76,6 +76,7 @@ namespace VirtualRadar.WinForms.SettingPage
                 SetValidationFields(new Dictionary<ValidationField,Control>() {
                     { ValidationField.InitialGoogleMapRefreshSeconds, page == null ? null : page.numericInitialRefresh },
                     { ValidationField.MinimumGoogleMapRefreshSeconds, page == null ? null : page.numericMinimumRefresh },
+                    { ValidationField.AllowCorsDomains,               page == null ? null : page.textBoxAllowCorsDomains },
                 });
             }
         }
@@ -95,6 +96,7 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void InitialiseControls()
         {
             base.InitialiseControls();
+            EnableDisableControls();
         }
 
         /// <summary>
@@ -109,8 +111,10 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableBundling,            r => r.EnableBundling,          (r,v) => r.EnableBundling = v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableMinifying,           r => r.EnableMinifying,         (r,v) => r.EnableMinifying = v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableCompression,         r => r.EnableCompression,       (r,v) => r.EnableCompression = v));
+            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableCorsSupport,         r => r.EnableCorsSupport,       (r,v) => r.EnableCorsSupport = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxDirectoryEntryKey, r => r.DirectoryEntryKey, (r,v) => r.DirectoryEntryKey = v));
+            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxAllowCorsDomains,  r => r.AllowCorsDomains,  (r,v) => r.AllowCorsDomains = v));
 
             AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericInitialRefresh,   r => r.InitialRefreshSeconds,   (r,v) => r.InitialRefreshSeconds = v));
             AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericMinimumRefresh,   r => r.MinimumRefreshSeconds,   (r,v) => r.MinimumRefreshSeconds = v));
@@ -133,6 +137,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(comboBoxInitialHeightUnits,       Strings.InitialHeightUnits,     Strings.OptionsDescribeWebSiteInitialHeightUnit);
             SetInlineHelp(comboBoxInitialSpeedUnits,        Strings.InitialSpeedUnits,      Strings.OptionsDescribeWebSiteInitialSpeedUnit);
             SetInlineHelp(checkBoxPreferIataAirportCodes,   Strings.PreferIataAirportCodes, Strings.OptionsDescribeWebSitePreferIataAirportCodes);
+            SetInlineHelp(checkBoxEnableCorsSupport,        Strings.EnableCorsSupport,      Strings.OptionsDescribeWebSiteEnableCorsSupport);
 
             SetInlineHelp(comboBoxProxyType,                Strings.ProxyType,          Strings.OptionsDescribeProxyType);
             SetInlineHelp(checkBoxEnableBundling,           Strings.EnableBundling,     Strings.OptionsDescribeEnableBundling);
@@ -140,6 +145,31 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxEnableCompression,        Strings.EnableCompression,  Strings.OptionsDescribeEnableCompression);
 
             SetInlineHelp(textBoxDirectoryEntryKey,         Strings.DirectoryEntryKey,  Strings.OptionsDescribeDirectoryEntryKey);
+            SetInlineHelp(textBoxAllowCorsDomains,          Strings.AllowedCorsDomains, Strings.OptionsDescribeWebSiteAllowCorsDomains);
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="args"></param>
+        internal override void ConfigurationChanged(ConfigurationListenerEventArgs args)
+        {
+            base.ConfigurationChanged(args);
+            if(SettingsView != null && IsHandleCreated) {
+                if(args.Group == ConfigurationListenerGroup.GoogleMapSettings) {
+                    if(args.PropertyName == PropertyHelper.ExtractName<GoogleMapSettings>(r => r.EnableCorsSupport)) {
+                        EnableDisableControls();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Enables or disables controls on the form.
+        /// </summary>
+        private void EnableDisableControls()
+        {
+            textBoxAllowCorsDomains.Enabled = SettingsView.Configuration.GoogleMapSettings.EnableCorsSupport;
         }
     }
 }

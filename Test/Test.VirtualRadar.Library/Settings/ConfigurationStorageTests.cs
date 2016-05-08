@@ -250,6 +250,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(789, readBack.GoogleMapSettings.FlightSimulatorXReceiverId);
                         Assert.AreEqual(ProxyType.Reverse, readBack.GoogleMapSettings.ProxyType);
                         Assert.AreEqual("ABC123-456", readBack.GoogleMapSettings.DirectoryEntryKey);
+                        Assert.AreEqual(true, readBack.GoogleMapSettings.EnableCorsSupport);
+                        Assert.AreEqual("ABC.COM", readBack.GoogleMapSettings.AllowCorsDomains);
                         break;
                     case "VersionCheckSettings":
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
@@ -528,6 +530,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                         FlightSimulatorXReceiverId = 789,
                                                         ProxyType = ProxyType.Reverse,
                                                         DirectoryEntryKey = "ABC123-456",
+                                                        EnableCorsSupport = true,
+                                                        AllowCorsDomains = "ABC.COM",
                                                     }; break;
                     case "VersionCheckSettings":    result.VersionCheckSettings = new VersionCheckSettings() {
                                                         CheckAutomatically = false,

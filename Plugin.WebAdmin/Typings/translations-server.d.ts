@@ -43,6 +43,8 @@ declare module VRS.Server
         AircraftListJson:                                          string;
         AllCaps:                                                   string;
         AllowAccess:                                               string;
+        AllowCorsDomainsRequired:                                  string;
+        AllowedCorsDomains:                                        string;
         AllowInternetProximityGadgets:                             string;
         AllowTheseAddresses:                                       string;
         AnotherInstanceRunningFull:                                string;
@@ -174,6 +176,7 @@ declare module VRS.Server
         Edit:                                                      string;
         EnableBundling:                                            string;
         EnableCompression:                                         string;
+        EnableCorsSupport:                                         string;
         Enabled:                                                   string;
         EnableMinifying:                                           string;
         EnableUPnp:                                                string;
@@ -483,6 +486,8 @@ declare module VRS.Server
         OptionsDescribeWebServerPermittedUsers:                    string;
         OptionsDescribeWebServerUPnpPort:                          string;
         OptionsDescribeWebServerUserMustAuthenticate:              string;
+        OptionsDescribeWebSiteAllowCorsDomains:                    string;
+        OptionsDescribeWebSiteEnableCorsSupport:                   string;
         OptionsDescribeWebSiteInitialDistanceUnit:                 string;
         OptionsDescribeWebSiteInitialGoogleMapLatitude:            string;
         OptionsDescribeWebSiteInitialGoogleMapLongitude:           string;

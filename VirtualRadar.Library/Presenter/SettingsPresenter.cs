@@ -985,6 +985,13 @@ namespace VirtualRadar.Library.Presenter
                 ValueIsInRange(settings.ShortTrailLengthSeconds, 1, 1800, new Validation(ValidationField.ShortTrailLength, defaults) {
                     Message = Strings.DurationOfShortTrailsOutOfBounds,
                 });
+
+                // CORS domains have been supplied if CORS support is enabled
+                if(settings.EnableCorsSupport) {
+                    StringIsNotEmpty(settings.AllowCorsDomains, new Validation(ValidationField.AllowCorsDomains, defaults) {
+                        Message = Strings.AllowCorsDomainsRequired,
+                    });
+                }
             }
         }
         #endregion

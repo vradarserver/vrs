@@ -2701,4 +2701,22 @@ Show this message.</value>
   <data name="SatcomTrackingTimeoutOutOfBounds" xml:space="preserve">
     <value>The JAERO tracking timeout cannot be more than 1440 minutes</value>
   </data>
+  <data name="AllowCorsDomainsRequired" xml:space="preserve">
+    <value>You must supply a semicolon separated list of allowed CORS domains</value>
+    <comment>CORS is the name of a web standard</comment>
+  </data>
+  <data name="AllowedCorsDomains" xml:space="preserve">
+    <value>Allowed CORS domains</value>
+    <comment>CORS is the name of a web standard</comment>
+  </data>
+  <data name="EnableCorsSupport" xml:space="preserve">
+    <value>Enable CORS support</value>
+    <comment>CORS is the name of a web standard</comment>
+  </data>
+  <data name="OptionsDescribeWebSiteAllowCorsDomains" xml:space="preserve">
+    <value>A semicolon separated list of domains that can request content via CORS.</value>
+  </data>
+  <data name="OptionsDescribeWebSiteEnableCorsSupport" xml:space="preserve">
+    <value>Yes to enable CORS support, no to ignore CORS requests and omit CORS headers from responses.</value>
+  </data>
 </root>

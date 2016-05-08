@@ -58,6 +58,8 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.FlightSimulatorXReceiverId, assumeInitialConfig ? 1 : 0, 789);
             TestUtilities.TestProperty(settings, r => r.ProxyType, ProxyType.Unknown, ProxyType.Forward);
             TestUtilities.TestProperty(settings, r => r.DirectoryEntryKey, null, "ABC123");
+            TestUtilities.TestProperty(settings, r => r.EnableCorsSupport, false);
+            TestUtilities.TestProperty(settings, r => r.AllowCorsDomains, null, "a.b.com");
         }
     }
 }

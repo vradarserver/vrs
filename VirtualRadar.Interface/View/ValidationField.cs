@@ -324,5 +324,10 @@ namespace VirtualRadar.Interface.View
         /// The interval between sends.
         /// </summary>
         SendInterval,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        AllowCorsDomains,
     }
 }

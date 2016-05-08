@@ -84,6 +84,10 @@ namespace VirtualRadar.WebSite
 
             public string UserHostName { get { return "FAKE.HOST.NAME"; } }
 
+            public bool IsValidCorsRequest { get; set; }
+
+            public string CorsOrigin { get { return ""; } }
+
             public SimpleRequest(string root, string pathAndFile)
             {
                 RawUrl = String.Format("{0}{1}", root, pathAndFile);
@@ -223,6 +227,11 @@ namespace VirtualRadar.WebSite
         private AircraftListJsonPage _AircraftListJsonPage;
 
         /// <summary>
+        /// The page that deals with identifying CORS requests, validating them and handling CORS options requests.
+        /// </summary>
+        private CorsPreflightPage _CorsPreflightPage;
+
+        /// <summary>
         /// The page that deals with serving requests from the file system.
         /// </summary>
         private FileSystemPage _FileSystemPage;
@@ -308,6 +317,7 @@ namespace VirtualRadar.WebSite
 
             _AircraftListJsonPage = new AircraftListJsonPage(this);
             _ClosestAircraftJsonPage = new ClosestAircraftJsonPage(this);
+            _CorsPreflightPage = new CorsPreflightPage(this);
             _FileSystemPage = new FileSystemPage(this);
             _ImagePage = new ImagePage(this);
             _ReportRowsJsonPage = new ReportRowsJsonPage(this);
@@ -345,6 +355,7 @@ namespace VirtualRadar.WebSite
                 _Minifier = Factory.Singleton.Resolve<IMinifier>();
                 _Minifier.Initialise();
 
+                _Pages.Add(_CorsPreflightPage);
                 _Pages.Add(_FileSystemPage);
                 _Pages.Add(new TextPage(this));
                 _Pages.Add(_AircraftListJsonPage);

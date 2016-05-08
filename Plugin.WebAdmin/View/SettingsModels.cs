@@ -564,6 +564,13 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public int ProxyType { get; set; }                      // ProxyType
 
+        public bool EnableCorsSupport { get; set; }
+
+        public string AllowCorsDomains { get; set; }
+
+        [ValidationModelField(ValidationField.AllowCorsDomains)]
+        public ValidationModelField AllowCorsDomainsValidation { get; set; }
+
         public GoogleMapSettingsModel()
         {
         }
@@ -595,6 +602,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             ClosestAircraftReceiverId =     settings.ClosestAircraftReceiverId;
             FlightSimulatorXReceiverId =    settings.FlightSimulatorXReceiverId;
             ProxyType =                     (int)settings.ProxyType;
+            EnableCorsSupport =             settings.EnableCorsSupport;
+            AllowCorsDomains =              settings.AllowCorsDomains;
         }
 
         public GoogleMapSettings CopyToSettings(GoogleMapSettings settings)
@@ -619,6 +628,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.ClosestAircraftReceiverId =    ClosestAircraftReceiverId;
             settings.FlightSimulatorXReceiverId =   FlightSimulatorXReceiverId;
             settings.ProxyType =                    EnumModel.CastFromInt<ProxyType>(ProxyType);
+            settings.EnableCorsSupport =            EnableCorsSupport;
+            settings.AllowCorsDomains =             AllowCorsDomains;
 
             return settings;
         }

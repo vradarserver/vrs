@@ -24,6 +24,18 @@ namespace VirtualRadar.Interface.WebServer
     public interface IResponder
     {
         /// <summary>
+        /// Adds CORS headers to a successful response.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <remarks>
+        /// All of the responder's Send methods are expected to call this when setting headers. The function
+        /// has been exposed so that custom responses can also set the headers without having to call a Send
+        /// method.
+        /// </remarks>
+        void AddCorsHeaders(IRequest request, IResponse response);
+
+        /// <summary>
         /// Returns a response indicating that the request is not authorised.
         /// </summary>
         /// <param name="response"></param>
