@@ -41,6 +41,18 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        public void AddCorsHeaders(IRequest request, IResponse response)
+        {
+            if(request.IsValidCorsRequest) {
+                response.AddHeader("Access-Control-Allow-Origin", request.CorsOrigin);
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="response"></param>
         public void Forbidden(IResponse response)
         {
@@ -63,6 +75,7 @@ namespace VirtualRadar.WebServer
             if(encoding == null) encoding = Encoding.UTF8;
             var bytes = encoding.GetBytes(text ?? "");
 
+            AddCorsHeaders(request, response);
             response.EnableCompression(request);
             response.StatusCode = HttpStatusCode.OK;
             response.MimeType = mimeType ?? MimeType.Text;

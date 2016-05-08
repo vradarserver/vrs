@@ -103,6 +103,17 @@ namespace VirtualRadar.Interface.WebServer
         string UserHostName { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the web site has detected a valid CORS request and wants the response to
+        /// include the correct headers if the request is successful.
+        /// </summary>
+        bool IsValidCorsRequest { get; set; }
+
+        /// <summary>
+        /// Gets the CORS origin.
+        /// </summary>
+        string CorsOrigin { get; }
+
+        /// <summary>
         /// Returns the body as a single string.
         /// </summary>
         /// <param name="encoding"></param>

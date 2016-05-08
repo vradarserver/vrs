@@ -219,6 +219,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         FlightSimulatorXReceiverId: number;
         FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField;
         ProxyType: number;
+        EnableCorsSupport: boolean;
+        AllowCorsDomains: string;
+        AllowCorsDomainsValidation: VirtualRadar.Interface.View.IValidationModelField;
     }
     interface IInternetClientSettingsModel {
         CanRunReports: boolean;
@@ -679,6 +682,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         FlightSimulatorXReceiverId: KnockoutObservable<number>;
         FlightSimulatorXReceiverIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ProxyType: KnockoutObservable<number>;
+        EnableCorsSupport: KnockoutObservable<boolean>;
+        AllowCorsDomains: KnockoutObservable<string>;
+        AllowCorsDomainsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
     }
     interface IInternetClientSettingsModel_KO {
         CanRunReports: KnockoutObservable<boolean>;

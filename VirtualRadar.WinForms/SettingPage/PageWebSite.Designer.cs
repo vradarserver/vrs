@@ -50,6 +50,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxDirectoryEntryKey = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.checkBoxEnableCorsSupport = new System.Windows.Forms.CheckBox();
+            this.textBoxAllowCorsDomains = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericMinimumRefresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericInitialRefresh)).BeginInit();
@@ -162,6 +165,9 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.textBoxAllowCorsDomains);
+            this.groupBox2.Controls.Add(this.checkBoxEnableCorsSupport);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.checkBoxEnableCompression);
             this.groupBox2.Controls.Add(this.comboBoxProxyType);
@@ -169,7 +175,7 @@
             this.groupBox2.Controls.Add(this.checkBoxEnableBundling);
             this.groupBox2.Location = new System.Drawing.Point(0, 183);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(636, 118);
+            this.groupBox2.Size = new System.Drawing.Size(636, 168);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "::OptionsWebSiteCustomisationCategory::";
@@ -274,20 +280,49 @@
             // 
             this.textBoxDirectoryEntryKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxDirectoryEntryKey.Location = new System.Drawing.Point(200, 308);
+            this.textBoxDirectoryEntryKey.Location = new System.Drawing.Point(200, 357);
             this.textBoxDirectoryEntryKey.MaxLength = 60;
             this.textBoxDirectoryEntryKey.Name = "textBoxDirectoryEntryKey";
             this.textBoxDirectoryEntryKey.Size = new System.Drawing.Size(436, 20);
-            this.textBoxDirectoryEntryKey.TabIndex = 2;
+            this.textBoxDirectoryEntryKey.TabIndex = 3;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 311);
+            this.label8.Location = new System.Drawing.Point(3, 360);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(106, 13);
-            this.label8.TabIndex = 5;
+            this.label8.TabIndex = 2;
             this.label8.Text = "::DirectoryEntryKey:::";
+            // 
+            // checkBoxEnableCorsSupport
+            // 
+            this.checkBoxEnableCorsSupport.AutoSize = true;
+            this.checkBoxEnableCorsSupport.Location = new System.Drawing.Point(200, 115);
+            this.checkBoxEnableCorsSupport.Name = "checkBoxEnableCorsSupport";
+            this.checkBoxEnableCorsSupport.Size = new System.Drawing.Size(129, 17);
+            this.checkBoxEnableCorsSupport.TabIndex = 5;
+            this.checkBoxEnableCorsSupport.Text = "::EnableCorsSupport::";
+            this.checkBoxEnableCorsSupport.UseVisualStyleBackColor = true;
+            // 
+            // textBoxAllowCorsDomains
+            // 
+            this.textBoxAllowCorsDomains.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxAllowCorsDomains.Location = new System.Drawing.Point(200, 138);
+            this.textBoxAllowCorsDomains.MaxLength = 60;
+            this.textBoxAllowCorsDomains.Name = "textBoxAllowCorsDomains";
+            this.textBoxAllowCorsDomains.Size = new System.Drawing.Size(436, 20);
+            this.textBoxAllowCorsDomains.TabIndex = 7;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 141);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(121, 13);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "::AllowedCorsDomains:::";
             // 
             // PageWebSite
             // 
@@ -297,7 +332,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "PageWebSite";
-            this.Size = new System.Drawing.Size(636, 332);
+            this.Size = new System.Drawing.Size(636, 382);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericMinimumRefresh)).EndInit();
@@ -333,5 +368,8 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxDirectoryEntryKey;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.CheckBox checkBoxEnableCorsSupport;
+        private System.Windows.Forms.TextBox textBoxAllowCorsDomains;
+        private System.Windows.Forms.Label label10;
     }
 }

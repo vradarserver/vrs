@@ -147,6 +147,19 @@ namespace VirtualRadar.WebServer
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsValidCorsRequest { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string CorsOrigin
+        {
+            get { return (_Request.Headers["Origin"] ?? "").Trim(); }
+        }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="request"></param>

@@ -376,6 +376,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must supply a semicolon separated list of allowed CORS domains.
+        /// </summary>
+        public static string AllowCorsDomainsRequired {
+            get {
+                return ResourceManager.GetString("AllowCorsDomainsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed CORS domains.
+        /// </summary>
+        public static string AllowedCorsDomains {
+            get {
+                return ResourceManager.GetString("AllowedCorsDomains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow Internet proximity gadgets.
         /// </summary>
         public static string AllowInternetProximityGadgets {
@@ -1575,6 +1593,15 @@ namespace VirtualRadar.Localisation {
         public static string EnableCompression {
             get {
                 return ResourceManager.GetString("EnableCompression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable CORS support.
+        /// </summary>
+        public static string EnableCorsSupport {
+            get {
+                return ResourceManager.GetString("EnableCorsSupport", resourceCulture);
             }
         }
         
@@ -4361,6 +4388,24 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeWebServerUserMustAuthenticate {
             get {
                 return ResourceManager.GetString("OptionsDescribeWebServerUserMustAuthenticate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A semicolon separated list of domains that can request content via CORS..
+        /// </summary>
+        public static string OptionsDescribeWebSiteAllowCorsDomains {
+            get {
+                return ResourceManager.GetString("OptionsDescribeWebSiteAllowCorsDomains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to enable CORS support, no to ignore CORS requests and omit CORS headers from responses..
+        /// </summary>
+        public static string OptionsDescribeWebSiteEnableCorsSupport {
+            get {
+                return ResourceManager.GetString("OptionsDescribeWebSiteEnableCorsSupport", resourceCulture);
             }
         }
         

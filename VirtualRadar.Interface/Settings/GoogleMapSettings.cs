@@ -234,6 +234,26 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _ProxyType, value, () => ProxyType); }
         }
 
+        private bool _EnableCorsSupport;
+        /// <summary>
+        /// Gets or sets a value indicating that the web site should respond to the CORS OPTIONS request.
+        /// </summary>
+        public bool EnableCorsSupport
+        {
+            get { return _EnableCorsSupport; }
+            set { SetField(ref _EnableCorsSupport, value, () => EnableCorsSupport); }
+        }
+
+        private string _AllowCorsDomains;
+        /// <summary>
+        /// Gets or sets a semi-colon separated list of domains that can access the server's content via CORS.
+        /// </summary>
+        public string AllowCorsDomains
+        {
+            get { return _AllowCorsDomains; }
+            set { SetField(ref _AllowCorsDomains, value, () => AllowCorsDomains); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
