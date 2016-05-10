@@ -363,6 +363,47 @@ var VRS;
         };
         return MapMarker;
     })();
+    var MapMarkerClusterer = (function () {
+        function MapMarkerClusterer(nativeMarkerClusterer) {
+            this.nativeMarkerClusterer = nativeMarkerClusterer;
+        }
+        MapMarkerClusterer.prototype.getNative = function () {
+            return this.nativeMarkerClusterer;
+        };
+        MapMarkerClusterer.prototype.getNativeType = function () {
+            return 'GoogleMaps';
+        };
+        MapMarkerClusterer.prototype.getMaxZoom = function () {
+            return this.nativeMarkerClusterer.getMaxZoom();
+        };
+        MapMarkerClusterer.prototype.setMaxZoom = function (maxZoom) {
+            this.nativeMarkerClusterer.setMaxZoom(maxZoom);
+        };
+        MapMarkerClusterer.prototype.addMarker = function (marker, noRepaint) {
+            this.nativeMarkerClusterer.addMarker(marker.marker, noRepaint);
+        };
+        MapMarkerClusterer.prototype.addMarkers = function (markers, noRepaint) {
+            this.nativeMarkerClusterer.addMarkers(this.castArrayOfMarkers(markers), noRepaint);
+        };
+        MapMarkerClusterer.prototype.removeMarker = function (marker, noRepaint) {
+            this.nativeMarkerClusterer.removeMarker(marker.marker, noRepaint, true);
+        };
+        MapMarkerClusterer.prototype.removeMarkers = function (markers, noRepaint) {
+            this.nativeMarkerClusterer.removeMarkers(this.castArrayOfMarkers(markers), noRepaint, true);
+        };
+        MapMarkerClusterer.prototype.repaint = function () {
+            this.nativeMarkerClusterer.repaint();
+        };
+        MapMarkerClusterer.prototype.castArrayOfMarkers = function (markers) {
+            var result = [];
+            var length = markers ? markers.length : 0;
+            for (var i = 0; i < length; ++i) {
+                result.push(markers[i].marker);
+            }
+            return result;
+        };
+        return MapMarkerClusterer;
+    })();
     var MapPolygon = (function () {
         function MapPolygon(id, nativePolygon, tag, options) {
             this.id = id;
@@ -733,6 +774,7 @@ var VRS;
             sensor: false,
             libraries: [],
             loadMarkerWithLabel: false,
+            loadMarkerCluster: false,
             openOnCreate: true,
             waitUntilReady: true,
             zoom: 12,
@@ -837,12 +879,24 @@ var VRS;
             else {
                 var callback = successCallback;
                 if (this.options.loadMarkerWithLabel) {
+                    var chainCallbackMarkerWithLabel = callback;
                     callback = function () {
                         VRS.scriptManager.loadScript({
                             key: 'markerWithLabel',
                             url: 'script/markerWithLabel.js',
                             queue: true,
-                            success: successCallback
+                            success: chainCallbackMarkerWithLabel
+                        });
+                    };
+                }
+                if (this.options.loadMarkerCluster) {
+                    var chainCallbackMarkerCluster = callback;
+                    callback = function () {
+                        VRS.scriptManager.loadScript({
+                            key: 'markerCluster',
+                            url: 'script/markercluster.js',
+                            queue: true,
+                            success: chainCallbackMarkerCluster
                         });
                     };
                 }
@@ -1254,6 +1308,16 @@ var VRS;
             if (marker) {
                 state.map.setCenter(marker.marker.getPosition());
             }
+        };
+        MapPlugin.prototype.createMapMarkerClusterer = function (settings) {
+            var result = null;
+            var state = this._getState();
+            if (state.map) {
+                settings = $.extend({}, settings);
+                var clusterer = new MarkerClusterer(state.map, [], settings);
+                result = new MapMarkerClusterer(clusterer);
+            }
+            return result;
         };
         MapPlugin.prototype.addPolyline = function (id, userOptions) {
             var result;

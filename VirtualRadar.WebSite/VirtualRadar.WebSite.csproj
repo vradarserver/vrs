@@ -292,6 +292,7 @@
     <Content Include="Site\Web\script\jquiplugin\jqueryuihelper.js.map">
       <DependentUpon>jqueryuihelper.ts</DependentUpon>
     </Content>
+    <Content Include="Site\Web\script\markercluster.js" />
     <Content Include="Site\Web\script\vrs\airportDataApi.js">
       <DependentUpon>airportDataApi.ts</DependentUpon>
     </Content>
@@ -889,6 +890,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Site\typings\globalOptions.d.ts" />
+    <TypeScriptCompile Include="Site\typings\markerclustererplus.d.ts" />
     <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.ui.widget.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.ts" />

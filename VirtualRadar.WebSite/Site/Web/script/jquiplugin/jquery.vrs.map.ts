@@ -107,6 +107,7 @@ namespace VRS
         }
     ];
 
+
     /**
      * An object that can convert to and from VRS map objects and Google map object.
      */
@@ -458,7 +459,7 @@ namespace VRS
          * Creates a new object.
          * @param {string|number}       id                  The identifier of the marker
          * @param {google.maps.Marker}  nativeMarker        The native map marker handle to wrap.
-         * @param {bool}                isMarkerWithLabel   Indicates that the native marker is a Google Maps MarkerWithLabel.
+         * @param {boolean}             isMarkerWithLabel   Indicates that the native marker is a Google Maps MarkerWithLabel.
          * @param {*}                   tag                 An object to carry around with the marker. No meaning is attached to the tag.
         */
         constructor(id: string|number, nativeMarker: google.maps.Marker, isMarkerWithLabel: boolean, tag: any)
@@ -615,6 +616,73 @@ namespace VRS
         setLabelAnchor(anchor: IPoint)
         {
             if(this.isMarkerWithLabel) this.marker.set('labelAnchor', VRS.googleMapUtilities.toGooglePoint(anchor));
+        }
+    }
+
+    /**
+     * An object that can cluster map markers together.
+     */
+    class MapMarkerClusterer implements IMapMarkerClusterer
+    {
+        constructor(private nativeMarkerClusterer: MarkerClusterer)
+        {
+        }
+
+        getNative()
+        {
+            return this.nativeMarkerClusterer;
+        }
+
+        getNativeType()
+        {
+            return 'GoogleMaps';
+        }
+
+        getMaxZoom()
+        {
+            return this.nativeMarkerClusterer.getMaxZoom();
+        }
+
+        setMaxZoom(maxZoom: number)
+        {
+            this.nativeMarkerClusterer.setMaxZoom(maxZoom);
+        }
+
+        addMarker(marker: IMapMarker, noRepaint?: boolean)
+        {
+            this.nativeMarkerClusterer.addMarker((<MapMarker>marker).marker, noRepaint);
+        }
+
+        addMarkers(markers: IMapMarker[], noRepaint?: boolean)
+        {
+            this.nativeMarkerClusterer.addMarkers(this.castArrayOfMarkers(markers), noRepaint);
+        }
+
+        removeMarker(marker: IMapMarker, noRepaint?: boolean)
+        {
+            this.nativeMarkerClusterer.removeMarker((<MapMarker>marker).marker, noRepaint, true);
+        }
+
+        removeMarkers(markers: IMapMarker[], noRepaint?: boolean)
+        {
+            this.nativeMarkerClusterer.removeMarkers(this.castArrayOfMarkers(markers), noRepaint, true);
+        }
+
+        repaint()
+        {
+            this.nativeMarkerClusterer.repaint();
+        }
+
+        private castArrayOfMarkers(markers: IMapMarker[]) : google.maps.Marker[]
+        {
+            var result: google.maps.Marker[] = [];
+
+            var length = markers ? markers.length : 0;
+            for(var i = 0;i < length;++i) {
+                result.push((<MapMarker>markers[i]).marker);
+            }
+
+            return result;
         }
     }
 
@@ -1356,7 +1424,8 @@ namespace VRS
             version:            '3.23',                                 // The version of Google Maps to load.
             sensor:             false,                                  // True if the location-aware stuff is to be turned on.
             libraries:          [],                                     // The optional libraries to load.
-            loadMarkerWithLabel:false,                                  // Loads the marker-with-labels library after loading Google Maps. Has no effect with other map providers.
+            loadMarkerWithLabel:false,                                  // Loads the marker-with-labels library after loading Google Maps.
+            loadMarkerCluster:  false,                                  // Loads the marker cluster library after loading Google Maps.
 
             // Google map open options
             openOnCreate:       true,                                   // Open the map when the widget is created, if false then the code that creates the map has to call open() itself.
@@ -1499,14 +1568,26 @@ namespace VRS
             } else {
                 var callback = successCallback;
                 if(this.options.loadMarkerWithLabel) {
+                    var chainCallbackMarkerWithLabel = callback;
                     callback = function() {
                         VRS.scriptManager.loadScript({
                             key:        'markerWithLabel',
                             url:        'script/markerWithLabel.js',
                             queue:      true,
-                            success:    successCallback
+                            success:    chainCallbackMarkerWithLabel
                         });
-                    }
+                    };
+                }
+                if(this.options.loadMarkerCluster) {
+                    var chainCallbackMarkerCluster = callback;
+                    callback = function() {
+                        VRS.scriptManager.loadScript({
+                            key:        'markerCluster',
+                            url:        'script/markercluster.js',
+                            queue:      true,
+                            success:    chainCallbackMarkerCluster
+                        });
+                    };
                 }
 
                 if(window['google'] && window['google']['maps']) {
@@ -2192,6 +2273,26 @@ namespace VRS
             if(marker) {
                 state.map.setCenter(marker.marker.getPosition());
             }
+        }
+
+
+        //
+        // MAP CLUSTERER METHODS
+        //
+
+
+        createMapMarkerClusterer(settings?: IMapMarkerClustererSettings) : IMapMarkerClusterer
+        {
+            var result: MapMarkerClusterer = null;
+
+            var state = this._getState();
+            if(state.map) {
+                settings = $.extend({}, settings);
+                var clusterer = new MarkerClusterer(state.map, [], settings);
+                result = new MapMarkerClusterer(clusterer);
+            }
+
+            return result;
         }
 
 
