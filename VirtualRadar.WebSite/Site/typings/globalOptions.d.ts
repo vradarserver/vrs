@@ -81,6 +81,9 @@
         aircraftMarkerHideNonAircraftZoomLevel?: number;
         aircraftMarkerShowNonAircraftTrails?: boolean;
         aircraftMarkerOnlyUsePre22Icons?: boolean;
+        aircraftMarkerClustererEnabled?: boolean;
+        aircraftMarkerClustererMaxZoom?: number;
+        aircraftMarkerClustererMinimumClusterSize?: number;
         aircraftMarkers?: AircraftMarker[];
 
         // aircraftRenderer

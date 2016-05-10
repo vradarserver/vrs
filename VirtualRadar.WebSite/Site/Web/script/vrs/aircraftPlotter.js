@@ -114,6 +114,9 @@ var VRS;
     VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel = VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel != undefined ? VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel : 13;
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false;
     VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false;
+    VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;
+    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 6;
+    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 2;
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
@@ -846,6 +849,12 @@ var VRS;
             }, settings);
             this._Settings = settings;
             this._Map = VRS.jQueryUIHelper.getMapPlugin(settings.map);
+            if (VRS.globalOptions.aircraftMarkerClustererEnabled) {
+                this._MapMarkerClusterer = this._Map.createMapMarkerClusterer({
+                    maxZoom: VRS.globalOptions.aircraftMarkerClustererMaxZoom,
+                    minimumClusterSize: VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize
+                });
+            }
             this._UnitDisplayPreferences = settings.unitDisplayPreferences || new VRS.UnitDisplayPreferences();
             this._SuppressTextOnImages = settings.suppressTextOnImages;
             this._GetSelectedAircraft = settings.getSelectedAircraft || function () {
@@ -876,6 +885,9 @@ var VRS;
         };
         AircraftPlotter.prototype.getMap = function () {
             return this._Map;
+        };
+        AircraftPlotter.prototype.getMapMarkerClusterer = function () {
+            return this._MapMarkerClusterer;
         };
         AircraftPlotter.prototype.getMovingMap = function () {
             return this._MovingMap;
@@ -985,6 +997,9 @@ var VRS;
             if (unusedAircraft) {
                 this.removeOldMarkers(unusedAircraft);
             }
+            if (this._MapMarkerClusterer) {
+                this._MapMarkerClusterer.repaint();
+            }
         };
         AircraftPlotter.prototype.refreshAircraftMarker = function (aircraft, forceRefresh, ignoreBounds, bounds, mapZoomLevel, isSelectedAircraft) {
             if ((ignoreBounds || bounds) && aircraft.hasPosition()) {
@@ -1053,6 +1068,9 @@ var VRS;
                     this.createLabel(details);
                     this.updateTrail(details, isSelectedAircraft, forceRefresh);
                     this._PlottedDetail[aircraft.id] = details;
+                    if (this._MapMarkerClusterer) {
+                        this._MapMarkerClusterer.addMarker(details.mapMarker, true);
+                    }
                 }
             }
         };
@@ -1079,6 +1097,9 @@ var VRS;
         };
         AircraftPlotter.prototype.removeDetails = function (details) {
             if (details.mapMarker) {
+                if (this._MapMarkerClusterer) {
+                    this._MapMarkerClusterer.removeMarker(details.mapMarker, true);
+                }
                 this._Map.destroyMarker(details.mapMarker);
             }
             this.removeTrail(details);

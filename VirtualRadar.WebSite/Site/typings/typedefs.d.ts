@@ -224,6 +224,10 @@
         centerOnMarker: (idOrMarker: string | number | IMapMarker) => void;
 
         //
+        // Map marker clusterer methods
+        createMapMarkerClusterer: (settings?: IMapMarkerClustererSettings) => IMapMarkerClusterer;
+
+        //
         // Map polyline methods
         addPolyline: (id: string | number, userOptions: IMapPolylineSettings) => IMapPolyline;
         getPolyline: (idOrPolyline: string | number | IMapPolyline) => IMapPolyline;
@@ -461,9 +465,50 @@
         tooltip?:               string;
         zIndex?:                number;
         tag?:                   any;
+
+        // Marker with label settings
         useMarkerWithLabel?:    boolean;
         mwlLabelInBackground?:  boolean;
         mwlLabelClass?:         string;
+    }
+
+    /**
+     * The interface for classes that cluster map markers together.
+     */
+    export interface IMapMarkerClusterer
+    {
+        getNative:              () => any;
+        getNativeType:          () => string;
+
+        addMarker:      (marker: IMapMarker, noRepaint?: boolean) => void;
+        addMarkers:     (markers: IMapMarker[], noRepaint?: boolean) => void;
+        removeMarker:   (marker: IMapMarker, noRepaint?: boolean) => void;
+        removeMarkers:  (markers: IMapMarker[], noRepaint?: boolean) => void;
+        repaint:        () => void;
+
+        getMaxZoom:     () => number;
+        setMaxZoom:     (maxZoom: number) => void;
+    }
+
+    /**
+     * The interface for a map marker cluster's settings.
+     */
+    export interface IMapMarkerClustererSettings
+    {
+        gridSize?:              number;
+        maxZoom?:               number;
+        zoomOnClick?:           boolean;
+        averageCenter?:         boolean;
+        minimumClusterSize?:    number;
+        ignoreHidden?:          boolean;
+        title?:                 string;
+        clusterClass?:          string;
+        enableRetinaIcons?:     boolean;
+        batchSize?:             number;
+        batchSizeIE?:           number;
+        imagePath?:             string;
+        imageExtension?:        string;
+        imageSizes?:            number[];
     }
 
     /**
@@ -505,6 +550,7 @@
         sensor?:                boolean;
         libraries?:             string[];
         loadMarkerWithLabel?:   boolean;
+        loadMarkerCluster?:     boolean;
         openOnCreate?:          boolean;
         waitUntilReady?:        boolean;
         zoom?:                  number;

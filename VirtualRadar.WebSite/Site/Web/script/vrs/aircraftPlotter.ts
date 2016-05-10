@@ -182,6 +182,9 @@ namespace VRS
     VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel = VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel != undefined ? VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel : 13;   // Ground vehicles and towers are only shown when the zoom level is this value or above. Set to 0 to always show them, 99999 to never show them.
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false; // True if trails are to be shown for ground vehicles and towers, false if they are not.
     VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false; // True if we should only show the old style (pre-version 2.2) aircraft markers.
+    VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;                  // True if the marker clusterer is to be used.
+    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 6;                       // The maximum zoom level at which to cluster map markers or null if there is no maximum.
+    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 2; // The minimum number of adjacent markers in a map marker cluster.
 
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
@@ -1329,6 +1332,7 @@ namespace VRS
         private _RangeCircleCentre: ILatLng = null;
         private _RangeCircleCircles: IMapCircle[] = [];
         private _MovingMap: boolean = VRS.globalOptions.aircraftMarkerMovingMapOn;
+        private _MapMarkerClusterer: IMapMarkerClusterer;
 
         // Event handles
         private _PlotterOptionsPropertyChangedHook:             IEventHandle;
@@ -1370,6 +1374,13 @@ namespace VRS
             this._Settings = settings;
 
             this._Map = VRS.jQueryUIHelper.getMapPlugin(settings.map);
+            if(VRS.globalOptions.aircraftMarkerClustererEnabled) {
+                this._MapMarkerClusterer = this._Map.createMapMarkerClusterer({
+                    maxZoom:            VRS.globalOptions.aircraftMarkerClustererMaxZoom,
+                    minimumClusterSize: VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize
+                });
+            }
+
             this._UnitDisplayPreferences = settings.unitDisplayPreferences || new VRS.UnitDisplayPreferences();
             this._SuppressTextOnImages = settings.suppressTextOnImages;
 
@@ -1410,6 +1421,14 @@ namespace VRS
         getMap() : IMap
         {
             return this._Map;
+        }
+
+        /**
+         * Gets the object that is clustering map markers for us. Note that this can be null if clustering has been disabled.
+         */
+        getMapMarkerClusterer() : IMapMarkerClusterer
+        {
+            return this._MapMarkerClusterer;
         }
 
         getMovingMap() : boolean
@@ -1543,6 +1562,10 @@ namespace VRS
             if(unusedAircraft) {
                 this.removeOldMarkers(unusedAircraft);
             }
+
+            if(this._MapMarkerClusterer) {
+                this._MapMarkerClusterer.repaint();
+            }
         }
 
         /**
@@ -1616,6 +1639,10 @@ namespace VRS
                     this.createLabel(details);
                     this.updateTrail(details, isSelectedAircraft, forceRefresh);
                     this._PlottedDetail[aircraft.id] = details;
+
+                    if(this._MapMarkerClusterer) {
+                        this._MapMarkerClusterer.addMarker(details.mapMarker, true);
+                    }
                 }
             }
         }
@@ -1661,6 +1688,9 @@ namespace VRS
         private removeDetails(details: PlottedDetail)
         {
             if(details.mapMarker) {
+                if(this._MapMarkerClusterer) {
+                    this._MapMarkerClusterer.removeMarker(details.mapMarker, true);
+                }
                 this._Map.destroyMarker(details.mapMarker);
             }
             this.removeTrail(details);

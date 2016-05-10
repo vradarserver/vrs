@@ -263,6 +263,7 @@ namespace VRS
                 draggable:              !VRS.globalOptions.isMobile,
                 useServerDefaults:      true,
                 loadMarkerWithLabel:    true,
+                loadMarkerCluster:      false,
                 autoSaveState:          true,
                 useStateOnOpen:         true,
                 mapControls:            options.mapControls,

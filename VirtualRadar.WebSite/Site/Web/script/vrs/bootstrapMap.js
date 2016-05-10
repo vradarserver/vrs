@@ -55,6 +55,7 @@ var VRS;
                         autoSaveState: true,
                         useServerDefaults: true,
                         loadMarkerWithLabel: true,
+                        loadMarkerCluster: true,
                         controlStyle: VRS.MapControlStyle.DropdownMenu,
                         afterOpen: function () {
                             _this.raiseMapInitialising(pageSettings);
