@@ -624,7 +624,7 @@ namespace VRS
      */
     class MapMarkerClusterer implements IMapMarkerClusterer
     {
-        constructor(private nativeMarkerClusterer: MarkerClusterer)
+        constructor(private map: MapPlugin, private nativeMarkerClusterer: MarkerClusterer)
         {
         }
 
@@ -2285,11 +2285,13 @@ namespace VRS
         {
             var result: MapMarkerClusterer = null;
 
-            var state = this._getState();
-            if(state.map) {
-                settings = $.extend({}, settings);
-                var clusterer = new MarkerClusterer(state.map, [], settings);
-                result = new MapMarkerClusterer(clusterer);
+            if(typeof(MarkerClusterer) == 'function') {
+                var state = this._getState();
+                if(state.map) {
+                    settings = $.extend({}, settings);
+                    var clusterer = new MarkerClusterer(state.map, [], settings);
+                    result = new MapMarkerClusterer(this, clusterer);
+                }
             }
 
             return result;

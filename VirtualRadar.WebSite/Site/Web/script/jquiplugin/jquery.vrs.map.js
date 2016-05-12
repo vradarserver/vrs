@@ -364,7 +364,8 @@ var VRS;
         return MapMarker;
     })();
     var MapMarkerClusterer = (function () {
-        function MapMarkerClusterer(nativeMarkerClusterer) {
+        function MapMarkerClusterer(map, nativeMarkerClusterer) {
+            this.map = map;
             this.nativeMarkerClusterer = nativeMarkerClusterer;
         }
         MapMarkerClusterer.prototype.getNative = function () {
@@ -1311,11 +1312,13 @@ var VRS;
         };
         MapPlugin.prototype.createMapMarkerClusterer = function (settings) {
             var result = null;
-            var state = this._getState();
-            if (state.map) {
-                settings = $.extend({}, settings);
-                var clusterer = new MarkerClusterer(state.map, [], settings);
-                result = new MapMarkerClusterer(clusterer);
+            if (typeof (MarkerClusterer) == 'function') {
+                var state = this._getState();
+                if (state.map) {
+                    settings = $.extend({}, settings);
+                    var clusterer = new MarkerClusterer(state.map, [], settings);
+                    result = new MapMarkerClusterer(this, clusterer);
+                }
             }
             return result;
         };
