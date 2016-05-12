@@ -115,8 +115,10 @@ var VRS;
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false;
     VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false;
     VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;
-    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 6;
-    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 2;
+    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 7;
+    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;
+    VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom || VRS.globalOptions.aircraftMarkerClustererEnabled;
+    VRS.globalOptions.aircraftMarkerTrailsMaxZoom = VRS.globalOptions.aircraftMarkerTrailsMaxZoom || VRS.globalOptions.aircraftMarkerClustererMaxZoom;
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
@@ -829,6 +831,7 @@ var VRS;
             this._RangeCircleCentre = null;
             this._RangeCircleCircles = [];
             this._MovingMap = VRS.globalOptions.aircraftMarkerMovingMapOn;
+            this._HideTrailsAtMaxZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom;
             settings = $.extend({
                 name: 'default',
                 aircraftMarkers: VRS.globalOptions.aircraftMarkers,
@@ -888,6 +891,12 @@ var VRS;
         };
         AircraftPlotter.prototype.getMapMarkerClusterer = function () {
             return this._MapMarkerClusterer;
+        };
+        AircraftPlotter.prototype.getHideTrailsAtMaxZoom = function () {
+            return this._HideTrailsAtMaxZoom;
+        };
+        AircraftPlotter.prototype.setHideTrailsAtMaxZoom = function (hideTrails) {
+            this._HideTrailsAtMaxZoom = hideTrails;
         };
         AircraftPlotter.prototype.getMovingMap = function () {
             return this._MovingMap;
@@ -1043,7 +1052,7 @@ var VRS;
                         if (forceRefresh || this.haveLabelDetailsChanged(details)) {
                             this.createLabel(details);
                         }
-                        this.updateTrail(details, isSelectedAircraft, forceRefresh);
+                        this.updateTrail(details, isSelectedAircraft, mapZoomLevel, forceRefresh);
                     }
                 }
                 else if (plotAircraft) {
@@ -1066,7 +1075,7 @@ var VRS;
                     }
                     details.mapMarker = this._Map.addMarker(aircraft.id, markerOptions);
                     this.createLabel(details);
-                    this.updateTrail(details, isSelectedAircraft, forceRefresh);
+                    this.updateTrail(details, isSelectedAircraft, mapZoomLevel, forceRefresh);
                     this._PlottedDetail[aircraft.id] = details;
                     if (this._MapMarkerClusterer) {
                         this._MapMarkerClusterer.addMarker(details.mapMarker, true);
@@ -1370,7 +1379,7 @@ var VRS;
                 }
             }
         };
-        AircraftPlotter.prototype.updateTrail = function (details, isAircraftSelected, forceRefresh) {
+        AircraftPlotter.prototype.updateTrail = function (details, isAircraftSelected, mapZoomLevel, forceRefresh) {
             if (VRS.globalOptions.suppressTrails) {
                 return;
             }
@@ -1386,6 +1395,9 @@ var VRS;
                     break;
             }
             if (showTrails && !aircraft.isAircraftSpecies() && !VRS.globalOptions.aircraftMarkerShowNonAircraftTrails) {
+                showTrails = false;
+            }
+            if (showTrails && this._HideTrailsAtMaxZoom && mapZoomLevel <= VRS.globalOptions.aircraftMarkerTrailsMaxZoom) {
                 showTrails = false;
             }
             if (forceRefresh) {

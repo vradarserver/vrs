@@ -183,8 +183,10 @@ namespace VRS
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false; // True if trails are to be shown for ground vehicles and towers, false if they are not.
     VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false; // True if we should only show the old style (pre-version 2.2) aircraft markers.
     VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;                  // True if the marker clusterer is to be used.
-    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 6;                       // The maximum zoom level at which to cluster map markers or null if there is no maximum.
-    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 2; // The minimum number of adjacent markers in a map marker cluster.
+    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 7;                       // The maximum zoom level at which to cluster map markers or null if there is no maximum.
+    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1; // The minimum number of adjacent markers in a map marker cluster.
+    VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom || VRS.globalOptions.aircraftMarkerClustererEnabled;    // True to stop showing trails when the user zooms out
+    VRS.globalOptions.aircraftMarkerTrailsMaxZoom = VRS.globalOptions.aircraftMarkerTrailsMaxZoom || VRS.globalOptions.aircraftMarkerClustererMaxZoom;                  // The largest map zoom value that trails will be drawn at when aircraftMarkerClustererEnabled is true
 
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
@@ -1333,6 +1335,7 @@ namespace VRS
         private _RangeCircleCircles: IMapCircle[] = [];
         private _MovingMap: boolean = VRS.globalOptions.aircraftMarkerMovingMapOn;
         private _MapMarkerClusterer: IMapMarkerClusterer;
+        private _HideTrailsAtMaxZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom;
 
         // Event handles
         private _PlotterOptionsPropertyChangedHook:             IEventHandle;
@@ -1429,6 +1432,18 @@ namespace VRS
         getMapMarkerClusterer() : IMapMarkerClusterer
         {
             return this._MapMarkerClusterer;
+        }
+
+        /**
+         * True to hide trails when the user zooms out.
+         */
+        getHideTrailsAtMaxZoom()
+        {
+            return this._HideTrailsAtMaxZoom;
+        }
+        setHideTrailsAtMaxZoom(hideTrails: boolean)
+        {
+            this._HideTrailsAtMaxZoom = hideTrails;
         }
 
         getMovingMap() : boolean
@@ -1615,7 +1630,7 @@ namespace VRS
                         if(forceRefresh || this.haveLabelDetailsChanged(details)) {
                             this.createLabel(details);
                         }
-                        this.updateTrail(details, isSelectedAircraft, forceRefresh);
+                        this.updateTrail(details, isSelectedAircraft, mapZoomLevel, forceRefresh);
                     }
                 } else if(plotAircraft) {
                     details = new PlottedDetail(aircraft);
@@ -1637,7 +1652,7 @@ namespace VRS
                     }
                     details.mapMarker = this._Map.addMarker(aircraft.id, markerOptions);
                     this.createLabel(details);
-                    this.updateTrail(details, isSelectedAircraft, forceRefresh);
+                    this.updateTrail(details, isSelectedAircraft, mapZoomLevel, forceRefresh);
                     this._PlottedDetail[aircraft.id] = details;
 
                     if(this._MapMarkerClusterer) {
@@ -2043,7 +2058,7 @@ namespace VRS
         /**
          * Updates the aircraft trail for the aircraft passed aross.
          */
-        private updateTrail(details: PlottedDetail, isAircraftSelected: boolean, forceRefresh: boolean)
+        private updateTrail(details: PlottedDetail, isAircraftSelected: boolean, mapZoomLevel: number, forceRefresh: boolean)
         {
             if(VRS.globalOptions.suppressTrails) {
                 return;
@@ -2057,6 +2072,9 @@ namespace VRS
                 case VRS.TrailDisplay.SelectedOnly: showTrails = isAircraftSelected; break;
             }
             if(showTrails && !aircraft.isAircraftSpecies() && !VRS.globalOptions.aircraftMarkerShowNonAircraftTrails) {
+                showTrails = false;
+            }
+            if(showTrails && this._HideTrailsAtMaxZoom && mapZoomLevel <= VRS.globalOptions.aircraftMarkerTrailsMaxZoom) {
                 showTrails = false;
             }
 
