@@ -166,7 +166,7 @@
     </Content>
     <Content Include="Web-WebAdmin\WebAdmin\DatabaseEditorPluginOptions.html" />
     <Content Include="Web-WebAdmin\WebAdmin\DatabaseEditorPluginOptions.js">
-        <DependentUpon>DatabaseEditorPluginOptions.ts</DependentUpon>
+      <DependentUpon>DatabaseEditorPluginOptions.ts</DependentUpon>
     </Content>
     <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap.css" />
@@ -189,7 +189,7 @@
   <ItemGroup>
     <None Include="Typings\Manager.ttinclude" />
     <None Include="Web-WebAdmin\WebAdmin\DatabaseEditorPluginOptions.js.map">
-        <DependentUpon>DatabaseEditorPluginOptions.ts</DependentUpon>
+      <DependentUpon>DatabaseEditorPluginOptions.ts</DependentUpon>
     </None>
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
@@ -244,9 +244,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Web\script-DatabaseEditor\typings\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
