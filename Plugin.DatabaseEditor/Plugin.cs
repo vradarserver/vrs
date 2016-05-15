@@ -72,6 +72,12 @@ namespace VirtualRadar.Plugin.DatabaseEditor
 
         #region Properties
         /// <summary>
+        /// Gets the last initialised instance of the plugin object. At run-time only one plugin
+        /// object gets created and initialised.
+        /// </summary>
+        public static Plugin Singleton { get; private set; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public string Id { get { return "VirtualRadarServer.Plugin.DatabaseEditor"; } }
@@ -141,6 +147,21 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         {
             EventHelper.Raise(StatusChanged, this, args);
         }
+
+        /// <summary>
+        /// Raised when <see cref="OptionsStorage"/> saves a new set of options.
+        /// </summary>
+        public event EventHandler<EventArgs<Options>> SettingsChanged;
+
+        /// <summary>
+        /// Raises <see cref="SettingsChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        internal void RaiseSettingsChanged(EventArgs<Options> args)
+        {
+            ApplyOptions(args.Value);
+            EventHelper.Raise(SettingsChanged, this, args);
+        }
         #endregion
 
         #region Plugin methods
@@ -158,6 +179,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <param name="parameters"></param>
         public void Startup(PluginStartupParameters parameters)
         {
+            Singleton = this;
             var options = OptionsStorage.Load(this);
 
             _HtmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
@@ -188,6 +210,12 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         public void GuiThreadStartup()
         {
+            var webAdminViewManager = Factory.Singleton.Resolve<IWebAdminViewManager>().Singleton;
+            webAdminViewManager.RegisterTranslations(typeof(DatabaseEditorStrings), "DatabaseEditorPlugin");
+            webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "DatabaseEditorPluginOptions.html", DatabaseEditorStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(DatabaseEditorStrings)) {
+                Plugin = this,
+            });
+            webAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web-WebAdmin");
         }
 
         /// <summary>
@@ -204,15 +232,23 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
-                var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
-                dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "DatabaseEditor/index.html");
+                dialog.IndexPageAddress = GetIndexPageAddress();
                 dialog.Options = OptionsStorage.Load(this);
 
                 if(dialog.ShowDialog() == DialogResult.OK) {
                     OptionsStorage.Save(this, dialog.Options);
-                    ApplyOptions(dialog.Options);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the address of the index page.
+        /// </summary>
+        /// <returns></returns>
+        internal string GetIndexPageAddress()
+        {
+            var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            return String.Format("{0}/{1}", webServer.LocalAddress, "DatabaseEditor/index.html");
         }
         #endregion
 

@@ -23,6 +23,7 @@ using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Interface.WebSite.WebAdminModels;
 
 namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 {
@@ -283,56 +284,6 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
                 (source)       => source.CopyToSettings(presenter.CreateUser()),
                 (source, dest) => source.CopyToSettings(dest)
             );
-        }
-    }
-
-    public class AccessModel
-    {
-        public int DefaultAccess { get; set; }              // DefaultAccess
-
-        public List<CidrModel> Addresses { get; private set; }
-
-        public AccessModel()
-        {
-            Addresses = new List<CidrModel>();
-        }
-
-        public AccessModel(Access settings) : this()
-        {
-            RefreshFromSettings(settings);
-        }
-
-        public void RefreshFromSettings(Access settings)
-        {
-            DefaultAccess = (int)settings.DefaultAccess;
-            CollectionHelper.OverwriteDestinationWithSource(settings.Addresses.Select(r => new CidrModel(r)).ToList(), Addresses);
-        }
-
-        public Access CopyToSettings(Access settings)
-        {
-            settings.DefaultAccess = EnumModel.CastFromInt<DefaultAccess>(DefaultAccess);
-            CollectionHelper.OverwriteDestinationWithSource(Addresses.Select(r => r.Cidr).ToList(), settings.Addresses);
-
-            return settings;
-        }
-    }
-
-    public class CidrModel
-    {
-        public string Cidr { get; set; }
-
-        public CidrModel()
-        {
-        }
-
-        public CidrModel(string address)
-        {
-            Cidr = address;
-        }
-
-        public override string ToString()
-        {
-            return Cidr;
         }
     }
 

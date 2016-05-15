@@ -89,6 +89,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DisableAudio", "Plugin.DisableAudio\Plugin.DisableAudio.csproj", "{9FE50C5D-76F9-4283-B9AD-893A8D5C6B69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DatabaseEditor", "Plugin.DatabaseEditor\Plugin.DatabaseEditor.csproj", "{3465B4A9-2278-422D-B1D5-E2CDCB308D03}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.FeedFilter", "Plugin.FeedFilter\Plugin.FeedFilter.csproj", "{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}"
 EndProject

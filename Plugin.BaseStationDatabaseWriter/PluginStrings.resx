@@ -211,7 +211,7 @@
     <value>Database Writer</value>
   </data>
   <data name="WebAdminMenuName" xml:space="preserve">
-    <value>Plugin: Database Writer Options</value>
+    <value>Database Writer</value>
   </data>
   <data name="CannotCreateDatabaseFileTitle" xml:space="preserve">
     <value>Cannot Create Database File</value>

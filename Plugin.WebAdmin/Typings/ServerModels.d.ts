@@ -319,17 +319,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         IdleTimeoutMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         StaleSeconds: number;
         StaleSecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
-        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel;
+        Access: VirtualRadar.Interface.WebSite.WebAdminModels.IAccessModel;
         Passphrase: string;
         SendIntervalMilliseconds: number;
         SendIntervalMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
-    }
-    interface IAccessModel {
-        DefaultAccess: number;
-        Addresses: VirtualRadar.Plugin.WebAdmin.View.Settings.ICidrModel[];
-    }
-    interface ICidrModel {
-        Cidr: string;
     }
     interface IReceiverModel {
         Enabled: boolean;
@@ -344,7 +337,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AutoReconnectAtStartup: boolean;
         IsPassive: boolean;
         IsPassiveValidation: VirtualRadar.Interface.View.IValidationModelField;
-        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel;
+        Access: VirtualRadar.Interface.WebSite.WebAdminModels.IAccessModel;
         Address: string;
         AddressValidation: VirtualRadar.Interface.View.IValidationModelField;
         Port: number;
@@ -404,6 +397,15 @@ declare module VirtualRadar.Interface.View {
     interface IEnumModel {
         Value: number;
         Description: string;
+    }
+}
+declare module VirtualRadar.Interface.WebSite.WebAdminModels {
+    interface IAccessModel {
+        DefaultAccess: number;
+        Addresses: VirtualRadar.Interface.WebSite.WebAdminModels.ICidrModel[];
+    }
+    interface ICidrModel {
+        Cidr: string;
     }
 }
 declare module VirtualRadar.Interface.Listener {
@@ -782,17 +784,10 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         IdleTimeoutMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         StaleSeconds: KnockoutObservable<number>;
         StaleSecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
-        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel_KO;
+        Access: VirtualRadar.Interface.WebSite.WebAdminModels.IAccessModel_KO;
         Passphrase: KnockoutObservable<string>;
         SendIntervalMilliseconds: KnockoutObservable<number>;
         SendIntervalMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
-    }
-    interface IAccessModel_KO {
-        DefaultAccess: KnockoutObservable<number>;
-        Addresses: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Settings.ICidrModel_KO>;
-    }
-    interface ICidrModel_KO {
-        Cidr: KnockoutObservable<string>;
     }
     interface IReceiverModel_KO {
         Enabled: KnockoutObservable<boolean>;
@@ -807,7 +802,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AutoReconnectAtStartup: KnockoutObservable<boolean>;
         IsPassive: KnockoutObservable<boolean>;
         IsPassiveValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
-        Access: VirtualRadar.Plugin.WebAdmin.View.Settings.IAccessModel_KO;
+        Access: VirtualRadar.Interface.WebSite.WebAdminModels.IAccessModel_KO;
         Address: KnockoutObservable<string>;
         AddressValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         Port: KnockoutObservable<number>;
@@ -867,6 +862,15 @@ declare module VirtualRadar.Interface.View {
     interface IEnumModel_KO {
         Value: KnockoutObservable<number>;
         Description: KnockoutObservable<string>;
+    }
+}
+declare module VirtualRadar.Interface.WebSite.WebAdminModels {
+    interface IAccessModel_KO {
+        DefaultAccess: KnockoutObservable<number>;
+        Addresses: KnockoutViewModelArray<VirtualRadar.Interface.WebSite.WebAdminModels.ICidrModel_KO>;
+    }
+    interface ICidrModel_KO {
+        Cidr: KnockoutObservable<string>;
     }
 }
 declare module VirtualRadar.Interface.Listener {

@@ -376,7 +376,7 @@ namespace VirtualRadar.Plugin.CustomContent {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Plugin: Custom Content Options.
+        ///   Looks up a localized string similar to Custom Content.
         /// </summary>
         public static string WebAdminMenuName {
             get {

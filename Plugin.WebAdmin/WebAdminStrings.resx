@@ -192,6 +192,9 @@
   <data name="WA_Title_Options" xml:space="preserve">
     <value>Options</value>
   </data>
+  <data name="WA_Title_PluginOptions" xml:space="preserve">
+    <value>Plugin: {0}</value>
+  </data>
   <data name="WA_Title_Queues" xml:space="preserve">
     <value>Diagnostics - Queues</value>
   </data>
