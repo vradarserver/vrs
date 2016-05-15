@@ -168,6 +168,9 @@
   <data name="Tag" xml:space="preserve">
     <value>Tag</value>
   </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Database Editor</value>
+  </data>
   <data name="XhrFailed" xml:space="preserve">
     <value>Could not fetch from server: {0}</value>
   </data>

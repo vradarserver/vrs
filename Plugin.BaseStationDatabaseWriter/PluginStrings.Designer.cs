@@ -340,7 +340,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Plugin: Database Writer Options.
+        ///   Looks up a localized string similar to Database Writer.
         /// </summary>
         public static string WebAdminMenuName {
             get {

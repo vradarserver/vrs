@@ -286,6 +286,15 @@ namespace VirtualRadar.Plugin.WebAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Plugin: {0}.
+        /// </summary>
+        public static string WA_Title_PluginOptions {
+            get {
+                return ResourceManager.GetString("WA_Title_PluginOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Diagnostics - Queues.
         /// </summary>
         public static string WA_Title_Queues {

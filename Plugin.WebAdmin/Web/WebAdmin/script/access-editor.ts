@@ -9,7 +9,7 @@
         Deny = 2
     }
 
-    export interface AccessModel extends ViewJson.IAccessModel_KO
+    export interface AccessModel extends VirtualRadar.Interface.WebSite.WebAdminModels.IAccessModel_KO
     {
         CidrTableLabel?:    KnockoutComputed<string>;
         EditLabel?:         KnockoutComputed<string>;
@@ -22,7 +22,7 @@
         DeleteCidr?:        (cidrModel: AccessCidrModel) => void;
     }
 
-    export interface AccessCidrModel extends ViewJson.ICidrModel_KO
+    export interface AccessCidrModel extends VirtualRadar.Interface.WebSite.WebAdminModels.ICidrModel_KO
     {
         FromAddress:        KnockoutComputed<string>;
         ToAddress:          KnockoutComputed<string>;

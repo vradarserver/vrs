@@ -155,6 +155,7 @@
     <Compile Include="View\ValidationModelHelper.cs" />
     <Compile Include="View\EnumModel.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
+    <Compile Include="WebSite\WebAdminModels.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />
     <Compile Include="WebSite\IWebAdminViewManager.cs" />
     <Compile Include="WebSite\IWebSiteGraphics.cs" />

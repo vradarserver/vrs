@@ -105,6 +105,8 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginLocalise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebAdmin\OptionsModels.cs" />
+    <Compile Include="WebAdmin\OptionsView.cs" />
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,15 +133,40 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Typings\DatabaseEditorPluginEnums.ts">
+      <DependentUpon>DatabaseEditorPluginModels.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\DatabaseEditorPluginModels.d.ts">
+      <DependentUpon>DatabaseEditorPluginModels.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-databaseeditorstrings.d.ts">
+      <DependentUpon>translations-databaseeditorstrings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
+    <TypeScriptCompile Include="Web-WebAdmin\WebAdmin\DatabaseEditorPluginOptions.ts" />
     <TypeScriptCompile Include="Web\DatabaseEditor\index.ts" />
     <TypeScriptCompile Include="Web\DatabaseEditor\utility.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout.mapping.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\knockout.d.ts" />
-    <TypeScriptCompile Include="Web\script-DatabaseEditor\typings\vrs.d.ts" />
+    <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Typings\DatabaseEditorPluginModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DatabaseEditorPluginModels.d.ts</LastGenOutput>
+    </None>
+    <None Include="Typings\translations-databaseeditorstrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-databaseeditorstrings.d.ts</LastGenOutput>
+    </None>
     <Content Include="VirtualRadar.Plugin.DatabaseEditor.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web-WebAdmin\WebAdmin\DatabaseEditorPluginOptions.html" />
+    <Content Include="Web-WebAdmin\WebAdmin\DatabaseEditorPluginOptions.js">
+        <DependentUpon>DatabaseEditorPluginOptions.ts</DependentUpon>
     </Content>
     <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Web\css-DatabaseEditor\bootstrap\css\bootstrap.css" />
@@ -160,6 +187,10 @@
     <Content Include="Web\script-DatabaseEditor\knockout.mapping.js" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Typings\Manager.ttinclude" />
+    <None Include="Web-WebAdmin\WebAdmin\DatabaseEditorPluginOptions.js.map">
+        <DependentUpon>DatabaseEditorPluginOptions.ts</DependentUpon>
+    </None>
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
@@ -213,8 +244,28 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Web\script-DatabaseEditor\typings\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>
     <PreBuildEvent>

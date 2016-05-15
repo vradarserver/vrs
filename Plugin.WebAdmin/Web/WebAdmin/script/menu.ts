@@ -89,12 +89,13 @@
 
             this._MenuItemsList.empty();
             $.each(this._MenuEntries, (idx, page) => {
+                var menuName = page.IsPlugin ? VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Title_PluginOptions, page.Name) : page.Name;
                 var isCurrentPage = VRS.stringUtility.equals(currentPageUrl, page.HtmlFileName, true);
                 var pageElement = $('<li />');
                 if(isCurrentPage) {
-                    pageElement.text(page.Name).addClass('active');
+                    pageElement.text(menuName).addClass('active');
                 } else {
-                    pageElement.append($('<a />').attr('href', page.HtmlFileName).text(page.Name));
+                    pageElement.append($('<a />').attr('href', page.HtmlFileName).text(menuName));
                 }
                 this._MenuItemsList.append(pageElement);
             });

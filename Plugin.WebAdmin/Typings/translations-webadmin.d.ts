@@ -33,6 +33,7 @@ declare module VRS.WebAdmin
         WA_Title_Main:               string;
         WA_Title_Messages:           string;
         WA_Title_Options:            string;
+        WA_Title_PluginOptions:      string;
         WA_Title_Queues:             string;
         WA_Title_Sent:               string;
         WA_Title_Status:             string;

@@ -24,6 +24,11 @@ namespace VirtualRadar.Plugin.DatabaseEditor
     /// </summary>
     public class Options : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets or sets a value indicating the version of the saved options.
+        /// </summary>
+        public long DataVersion { get; set; }
+
         private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating whether the plugin is active.

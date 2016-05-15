@@ -61,6 +61,12 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <param name="options"></param>
         public static void Save(Plugin plugin, Options options)
         {
+            var currentOptions = Load(plugin);
+            if(options.DataVersion != currentOptions.DataVersion) {
+                throw new ConflictingUpdateException(String.Format("The options you are trying to save have changed since you loaded them. You are editing version {0}, the current version is {1}", options.DataVersion, currentOptions.DataVersion));
+            }
+            ++options.DataVersion;
+
             using(var stream = new MemoryStream()) {
                 var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
                 serialiser.Serialise(options, stream);
@@ -70,6 +76,8 @@ namespace VirtualRadar.Plugin.DatabaseEditor
                 pluginSettings.Write(plugin, Key, Encoding.UTF8.GetString(stream.ToArray()));
                 pluginStorage.Save(pluginSettings);
             }
+
+            Plugin.Singleton.RaiseSettingsChanged(new EventArgs<Options>(options));
         }
     }
 }
