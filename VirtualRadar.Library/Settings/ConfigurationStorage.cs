@@ -310,7 +310,18 @@ namespace VirtualRadar.Library.Settings
             using(_FileProtectionSpinLock.AcquireLock()) {
                 if(!Directory.Exists(Provider.Folder)) Directory.CreateDirectory(Provider.Folder);
 
-                var currentConfiguration = LoadIfExists(acquireLock: false);
+                Configuration currentConfiguration = null;
+                var ignoreLoadException = configuration.DataVersion == 0;       // i.e. it's a brand new configuration
+                try {
+                    currentConfiguration = LoadIfExists(acquireLock: false);
+                } catch {
+                    if(ignoreLoadException) {
+                        currentConfiguration = null;
+                    } else {
+                        throw;
+                    }
+                }
+
                 if(currentConfiguration != null && currentConfiguration.DataVersion != configuration.DataVersion) {
                     throw new ConflictingUpdateException(String.Format("Cannot save the configuration - it has been saved elsewhere since you last loaded it. Current data version is {0}, you are attempting to save version {1}",
                         currentConfiguration.DataVersion,
