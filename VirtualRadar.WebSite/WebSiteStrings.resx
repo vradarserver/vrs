@@ -1804,4 +1804,10 @@
   <data name="UseShortLabels" xml:space="preserve">
     <value>Use short labels</value>
   </data>
+  <data name="ResetClustererZoomLevel" xml:space="preserve">
+    <value>Reset cluster aircraft zoom level</value>
+  </data>
+  <data name="SetClustererZoomLevel" xml:space="preserve">
+    <value>Cluster aircraft at this zoom level</value>
+  </data>
 </root>
