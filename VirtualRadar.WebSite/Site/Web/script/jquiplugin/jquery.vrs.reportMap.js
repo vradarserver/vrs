@@ -25,7 +25,7 @@ var VRS;
             this.localeChangedHookResult = null;
         }
         return ReportMapPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getReportMapPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsReportMap');
@@ -224,7 +224,8 @@ var VRS;
             applyWhenReady();
         };
         return ReportMapPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.ReportMapPlugin = ReportMapPlugin;
     $.widget('vrs.vrsReportMap', new ReportMapPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.reportMap.js.map

@@ -64,7 +64,7 @@ var VRS;
             return this._Settings.matches ? this._Settings.matches(aircraft) : false;
         };
         return AircraftMarker;
-    })();
+    }());
     VRS.AircraftMarker = AircraftMarker;
     VRS.globalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftMarkerPinTextWidth = VRS.globalOptions.aircraftMarkerPinTextWidth || 68;
@@ -242,7 +242,7 @@ var VRS;
             configurable: true
         });
         return PlottedDetail;
-    })();
+    }());
     var AircraftPlotterOptions = (function () {
         function AircraftPlotterOptions(settings) {
             var _this = this;
@@ -819,7 +819,7 @@ var VRS;
             };
         };
         return AircraftPlotterOptions;
-    })();
+    }());
     VRS.AircraftPlotterOptions = AircraftPlotterOptions;
     var AircraftPlotter = (function () {
         function AircraftPlotter(settings) {
@@ -972,7 +972,7 @@ var VRS;
         AircraftPlotter.prototype.getPlottedAircraftIds = function () {
             var result = [];
             for (var aircraftId in this._PlottedDetail) {
-                result.push(aircraftId);
+                result.push(Number(aircraftId));
             }
             return result;
         };
@@ -1831,6 +1831,7 @@ var VRS;
             }
         };
         return AircraftPlotter;
-    })();
+    }());
     VRS.AircraftPlotter = AircraftPlotter;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftPlotter.js.map

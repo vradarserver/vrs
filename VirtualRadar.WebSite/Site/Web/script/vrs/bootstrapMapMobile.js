@@ -22,6 +22,7 @@ var VRS;
             });
         }
         return BootstrapMapMobile;
-    })(VRS.BootstrapMap);
+    }(VRS.BootstrapMap));
     VRS.BootstrapMapMobile = BootstrapMapMobile;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=bootstrapMapMobile.js.map

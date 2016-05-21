@@ -19,7 +19,7 @@ var VRS;
             this.localeChangedHookResult = null;
         }
         return PagePanel_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getPagePanelPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsPagePanel');
@@ -159,7 +159,8 @@ var VRS;
             this._updateHeaderText();
         };
         return PagePanel;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.PagePanel = PagePanel;
     $.widget('vrs.vrsPagePanel', new PagePanel());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.pagePanel.js.map

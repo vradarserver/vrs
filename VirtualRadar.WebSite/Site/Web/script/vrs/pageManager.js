@@ -31,7 +31,7 @@ var VRS;
             this.originalParent = null;
         };
         return Page;
-    })();
+    }());
     VRS.Page = Page;
     var PageManager = (function () {
         function PageManager() {
@@ -221,7 +221,8 @@ var VRS;
             }
         };
         return PageManager;
-    })();
+    }());
     VRS.PageManager = PageManager;
     VRS.pageManager = new VRS.PageManager();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=pageManager.js.map

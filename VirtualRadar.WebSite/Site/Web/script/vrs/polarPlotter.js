@@ -566,6 +566,7 @@ var VRS;
             };
         };
         return PolarPlotter;
-    })();
+    }());
     VRS.PolarPlotter = PolarPlotter;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=polarPlotter.js.map

@@ -14,7 +14,7 @@ var VRS;
             this.importControlsContainer = null;
         }
         return StoredSettingsList_State;
-    })();
+    }());
     var StoredSettingsList = (function (_super) {
         __extends(StoredSettingsList, _super);
         function StoredSettingsList() {
@@ -258,7 +258,8 @@ var VRS;
             this._showKeyContent(keyName, content);
         };
         return StoredSettingsList;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.StoredSettingsList = StoredSettingsList;
     $.widget('vrs.vrsStoredSettingsList', new StoredSettingsList());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.storedSettingsList.js.map

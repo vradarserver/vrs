@@ -92,7 +92,7 @@ var VRS;
             return result;
         };
         return ArrayHelper;
-    })();
+    }());
     VRS.ArrayHelper = ArrayHelper;
     var BrowserHelper = (function () {
         function BrowserHelper() {
@@ -219,7 +219,7 @@ var VRS;
         };
         ;
         return BrowserHelper;
-    })();
+    }());
     VRS.BrowserHelper = BrowserHelper;
     var ColourHelper = (function () {
         function ColourHelper() {
@@ -260,7 +260,7 @@ var VRS;
                     }
                     var fifth = Math.floor(value / fifthRange);
                     var remainder = (value - (fifth * fifthRange)) / fifthRange;
-                    var r, g, b;
+                    var r = void 0, g = void 0, b = void 0;
                     switch (fifth) {
                         case 0:
                             b = 0;
@@ -308,7 +308,7 @@ var VRS;
             return result;
         };
         return ColourHelper;
-    })();
+    }());
     VRS.ColourHelper = ColourHelper;
     var DateHelper = (function () {
         function DateHelper() {
@@ -362,7 +362,7 @@ var VRS;
             return result;
         };
         return DateHelper;
-    })();
+    }());
     VRS.DateHelper = DateHelper;
     var DelayedTrace = (function () {
         function DelayedTrace(title, delayMilliseconds) {
@@ -382,7 +382,7 @@ var VRS;
             this._Lines.push(message || '');
         };
         return DelayedTrace;
-    })();
+    }());
     VRS.DelayedTrace = DelayedTrace;
     var DomHelper = (function () {
         function DomHelper() {
@@ -458,7 +458,7 @@ var VRS;
             this.setClass(element, classNames.join(' '));
         };
         return DomHelper;
-    })();
+    }());
     VRS.DomHelper = DomHelper;
     var EnumHelper = (function () {
         function EnumHelper() {
@@ -481,7 +481,7 @@ var VRS;
             return result;
         };
         return EnumHelper;
-    })();
+    }());
     VRS.EnumHelper = EnumHelper;
     var GreatCircle = (function () {
         function GreatCircle() {
@@ -525,7 +525,7 @@ var VRS;
             return result;
         };
         return GreatCircle;
-    })();
+    }());
     VRS.GreatCircle = GreatCircle;
     var JsonHelper = (function () {
         function JsonHelper() {
@@ -534,7 +534,7 @@ var VRS;
             return json.replace(/\"\\\/Date\(([\d\+\-]+)\)\\\/\"/g, 'new Date($1)');
         };
         return JsonHelper;
-    })();
+    }());
     VRS.JsonHelper = JsonHelper;
     var ObjectHelper = (function () {
         function ObjectHelper() {
@@ -545,7 +545,7 @@ var VRS;
             return new blankSlate();
         };
         return ObjectHelper;
-    })();
+    }());
     VRS.ObjectHelper = ObjectHelper;
     var PageHelper = (function () {
         function PageHelper() {
@@ -599,7 +599,7 @@ var VRS;
             return now;
         };
         return PageHelper;
-    })();
+    }());
     VRS.PageHelper = PageHelper;
     var TimeHelper = (function () {
         function TimeHelper() {
@@ -615,7 +615,7 @@ var VRS;
             return this.secondsToHoursMinutesSeconds(Math.floor(ticks / 1000));
         };
         return TimeHelper;
-    })();
+    }());
     VRS.TimeHelper = TimeHelper;
     var Utility = (function () {
         function Utility() {
@@ -633,7 +633,7 @@ var VRS;
             return result;
         };
         return Utility;
-    })();
+    }());
     VRS.Utility = Utility;
     var UnitConverter = (function () {
         function UnitConverter() {
@@ -843,7 +843,7 @@ var VRS;
             return result;
         };
         return UnitConverter;
-    })();
+    }());
     VRS.UnitConverter = UnitConverter;
     var ValueText = (function () {
         function ValueText(settings) {
@@ -865,7 +865,7 @@ var VRS;
             return this._Settings.text || VRS.globalisation.getText(this._Settings.textKey);
         };
         return ValueText;
-    })();
+    }());
     VRS.ValueText = ValueText;
     VRS.arrayHelper = new VRS.ArrayHelper();
     VRS.browserHelper = new VRS.BrowserHelper();
@@ -880,3 +880,4 @@ var VRS;
     VRS.timeHelper = new VRS.TimeHelper();
     VRS.unitConverter = new VRS.UnitConverter();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=utility.js.map

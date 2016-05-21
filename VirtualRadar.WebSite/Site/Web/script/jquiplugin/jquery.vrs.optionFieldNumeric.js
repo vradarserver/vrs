@@ -10,7 +10,7 @@ var VRS;
             this.sliderElement = null;
         }
         return OptionFieldNumericPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFieldNumericPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionFieldNumeric');
@@ -124,7 +124,7 @@ var VRS;
             this.element.off();
         };
         return OptionFieldNumericPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldNumericPlugin = OptionFieldNumericPlugin;
     $.widget('vrs.vrsOptionFieldNumeric', new OptionFieldNumericPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -135,3 +135,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldNumeric.js.map

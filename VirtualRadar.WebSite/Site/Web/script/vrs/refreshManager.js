@@ -15,7 +15,7 @@ var VRS;
             this.onRefreshThis = null;
         };
         return RefreshTarget;
-    })();
+    }());
     VRS.RefreshTarget = RefreshTarget;
     var RefreshOwner = (function () {
         function RefreshOwner(settings) {
@@ -63,7 +63,7 @@ var VRS;
             this._Targets = [];
         };
         return RefreshOwner;
-    })();
+    }());
     VRS.RefreshOwner = RefreshOwner;
     var RefreshManager = (function () {
         function RefreshManager() {
@@ -188,7 +188,8 @@ var VRS;
             return result;
         };
         return RefreshManager;
-    })();
+    }());
     VRS.RefreshManager = RefreshManager;
     VRS.refreshManager = new VRS.RefreshManager();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=refreshManager.js.map

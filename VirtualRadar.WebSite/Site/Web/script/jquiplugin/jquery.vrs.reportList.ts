@@ -692,12 +692,13 @@ namespace VRS
                     row = $(row);
                 }
                 for(var rowId in state.flightRows) {
+                    var numericRowId = Number(rowId);
                     var flightRow = state.flightRows[rowId];
                     if(flightRow instanceof jQuery && flightRow.is(row)) {
                         var length = flights.length;
                         for(var i = 0;i < length;++i) {
                             var flight = flights[i];
-                            if(flight.row == rowId) {
+                            if(flight.row == numericRowId) {
                                 result = flight;
                                 break;
                             }

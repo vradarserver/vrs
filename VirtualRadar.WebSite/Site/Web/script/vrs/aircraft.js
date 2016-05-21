@@ -19,7 +19,7 @@ var VRS;
             this.chg = true;
         };
         return Value;
-    })();
+    }());
     VRS.Value = Value;
     var StringValue = (function (_super) {
         __extends(StringValue, _super);
@@ -27,7 +27,7 @@ var VRS;
             _super.call(this, value);
         }
         return StringValue;
-    })(Value);
+    }(Value));
     VRS.StringValue = StringValue;
     var BoolValue = (function (_super) {
         __extends(BoolValue, _super);
@@ -35,7 +35,7 @@ var VRS;
             _super.call(this, value);
         }
         return BoolValue;
-    })(Value);
+    }(Value));
     VRS.BoolValue = BoolValue;
     var NumberValue = (function (_super) {
         __extends(NumberValue, _super);
@@ -43,7 +43,7 @@ var VRS;
             _super.call(this, value);
         }
         return NumberValue;
-    })(Value);
+    }(Value));
     VRS.NumberValue = NumberValue;
     var ArrayValue = (function () {
         function ArrayValue(initialArray) {
@@ -84,7 +84,7 @@ var VRS;
             }
         };
         return ArrayValue;
-    })();
+    }());
     VRS.ArrayValue = ArrayValue;
     var RouteValue = (function (_super) {
         __extends(RouteValue, _super);
@@ -99,7 +99,7 @@ var VRS;
             return this._AirportCode;
         };
         return RouteValue;
-    })(Value);
+    }(Value));
     VRS.RouteValue = RouteValue;
     var AirportDataThumbnailValue = (function (_super) {
         __extends(AirportDataThumbnailValue, _super);
@@ -113,7 +113,7 @@ var VRS;
             this._LastResetChgValue = this.chg;
         };
         return AirportDataThumbnailValue;
-    })(Value);
+    }(Value));
     VRS.AirportDataThumbnailValue = AirportDataThumbnailValue;
     var ShortTrailValue = (function () {
         function ShortTrailValue(latitude, longitude, posnTick, altitude, speed) {
@@ -124,7 +124,7 @@ var VRS;
             this.speed = speed;
         }
         return ShortTrailValue;
-    })();
+    }());
     VRS.ShortTrailValue = ShortTrailValue;
     var FullTrailValue = (function () {
         function FullTrailValue(latitude, longitude, heading, altitude, speed) {
@@ -136,7 +136,7 @@ var VRS;
             this.chg = false;
         }
         return FullTrailValue;
-    })();
+    }());
     VRS.FullTrailValue = FullTrailValue;
     var Aircraft = (function () {
         function Aircraft() {
@@ -705,6 +705,7 @@ var VRS;
             return VRS.format.yearBuilt(this.yearBuilt.val);
         };
         return Aircraft;
-    })();
+    }());
     VRS.Aircraft = Aircraft;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraft.js.map

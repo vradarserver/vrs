@@ -118,7 +118,7 @@ var VRS;
             return !!tooltipText;
         };
         return RenderPropertyHandler;
-    })();
+    }());
     VRS.RenderPropertyHandler = RenderPropertyHandler;
     VRS.renderPropertyHandlers = VRS.renderPropertyHandlers || {};
     VRS.renderPropertyHandlers[VRS.RenderProperty.AirPressure] = new VRS.RenderPropertyHandler({
@@ -982,7 +982,8 @@ var VRS;
             return result;
         };
         return RenderPropertyHelper;
-    })();
+    }());
     VRS.RenderPropertyHelper = RenderPropertyHelper;
     VRS.renderPropertyHelper = new VRS.RenderPropertyHelper();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftRenderer.js.map

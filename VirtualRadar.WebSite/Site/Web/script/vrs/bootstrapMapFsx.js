@@ -15,6 +15,7 @@ var VRS;
             document.title = VRS.$$.FlightSimTitle;
         }
         return BootstrapMapFsx;
-    })(VRS.BootstrapMap);
+    }(VRS.BootstrapMap));
     VRS.BootstrapMapFsx = BootstrapMapFsx;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=bootstrapMapFsx.js.map

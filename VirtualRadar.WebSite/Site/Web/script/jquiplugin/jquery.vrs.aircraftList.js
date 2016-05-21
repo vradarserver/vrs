@@ -80,7 +80,7 @@ var VRS;
             this.suspended = false;
         }
         return AircraftListPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getAircraftListPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsAircraftList');
@@ -732,7 +732,8 @@ var VRS;
             return false;
         };
         return AircraftListPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.AircraftListPlugin = AircraftListPlugin;
     $.widget('vrs.vrsAircraftList', new AircraftListPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.aircraftList.js.map

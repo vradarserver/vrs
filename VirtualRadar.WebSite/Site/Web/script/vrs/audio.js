@@ -477,6 +477,7 @@ var VRS;
             };
         };
         return AudioWrapper;
-    })();
+    }());
     VRS.AudioWrapper = AudioWrapper;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=audio.js.map

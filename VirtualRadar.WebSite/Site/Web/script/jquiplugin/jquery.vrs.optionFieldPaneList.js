@@ -11,7 +11,7 @@ var VRS;
             this.addPaneContainer = null;
         }
         return OptionFieldPaneListPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFieldPaneListPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionFieldPaneList');
@@ -150,7 +150,7 @@ var VRS;
             this._refreshControlStates();
         };
         return OptionFieldPaneListPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldPaneListPlugin = OptionFieldPaneListPlugin;
     $.widget('vrs.vrsOptionFieldPaneList', new OptionFieldPaneListPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -161,3 +161,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldPaneList.js.map

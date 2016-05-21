@@ -69,7 +69,7 @@ var VRS;
             this.aircraftLastRendered = undefined;
         }
         return AircraftDetailPlugin_State;
-    })();
+    }());
     var AircraftDetailProperty = (function () {
         function AircraftDetailProperty(property, isHeader, element, options) {
             this.element = element;
@@ -87,7 +87,7 @@ var VRS;
             handler.createWidgetInJQuery(this.contentElement, isHeader ? VRS.RenderSurface.DetailHead : VRS.RenderSurface.DetailBody, options);
         }
         return AircraftDetailProperty;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getAircraftDetailPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsAircraftDetail');
@@ -528,7 +528,8 @@ var VRS;
                 this._reRenderAircraft(state);
         };
         return AircraftDetailPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.AircraftDetailPlugin = AircraftDetailPlugin;
     $.widget('vrs.vrsAircraftDetail', new AircraftDetailPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.aircraftDetail.js.map

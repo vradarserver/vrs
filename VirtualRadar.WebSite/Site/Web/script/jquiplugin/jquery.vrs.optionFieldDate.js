@@ -69,7 +69,7 @@ var VRS;
             this.element.off();
         };
         return OptionFieldDatePlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldDatePlugin = OptionFieldDatePlugin;
     $.widget('vrs.vrsOptionFieldDate', new OptionFieldDatePlugin());
     if (VRS.optionControlTypeBroker) {
@@ -81,3 +81,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldDate.js.map

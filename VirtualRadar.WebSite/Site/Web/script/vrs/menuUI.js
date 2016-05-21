@@ -67,7 +67,7 @@ var VRS;
             return result;
         };
         return MenuItem;
-    })();
+    }());
     VRS.MenuItem = MenuItem;
     var Menu = (function () {
         function Menu(settings) {
@@ -153,6 +153,7 @@ var VRS;
             return result;
         };
         return Menu;
-    })();
+    }());
     VRS.Menu = Menu;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=menuUI.js.map

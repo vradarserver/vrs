@@ -51,7 +51,7 @@ var VRS;
             }
         };
         return LinkRenderHandler;
-    })();
+    }());
     VRS.LinkRenderHandler = LinkRenderHandler;
     VRS.linkRenderHandlers = [
         new VRS.LinkRenderHandler({
@@ -109,7 +109,7 @@ var VRS;
             });
         };
         return LinkRenderHandler_AutoRefreshPluginBase;
-    })(LinkRenderHandler);
+    }(LinkRenderHandler));
     VRS.LinkRenderHandler_AutoRefreshPluginBase = LinkRenderHandler_AutoRefreshPluginBase;
     var AutoSelectLinkRenderHelper = (function (_super) {
         __extends(AutoSelectLinkRenderHelper, _super);
@@ -144,7 +144,7 @@ var VRS;
             _super.prototype.refreshAircraftLinksPlugin.call(this);
         };
         return AutoSelectLinkRenderHelper;
-    })(LinkRenderHandler_AutoRefreshPluginBase);
+    }(LinkRenderHandler_AutoRefreshPluginBase));
     VRS.AutoSelectLinkRenderHelper = AutoSelectLinkRenderHelper;
     var CentreOnSelectedAircraftLinkRenderHandler = (function (_super) {
         __extends(CentreOnSelectedAircraftLinkRenderHandler, _super);
@@ -166,7 +166,7 @@ var VRS;
             });
         }
         return CentreOnSelectedAircraftLinkRenderHandler;
-    })(LinkRenderHandler);
+    }(LinkRenderHandler));
     VRS.CentreOnSelectedAircraftLinkRenderHandler = CentreOnSelectedAircraftLinkRenderHandler;
     var HideAircraftNotOnMapLinkRenderHandler = (function (_super) {
         __extends(HideAircraftNotOnMapLinkRenderHandler, _super);
@@ -201,7 +201,7 @@ var VRS;
             _super.prototype.refreshAircraftLinksPlugin.call(this);
         };
         return HideAircraftNotOnMapLinkRenderHandler;
-    })(LinkRenderHandler_AutoRefreshPluginBase);
+    }(LinkRenderHandler_AutoRefreshPluginBase));
     VRS.HideAircraftNotOnMapLinkRenderHandler = HideAircraftNotOnMapLinkRenderHandler;
     var JumpToAircraftDetailPageRenderHandler = (function (_super) {
         __extends(JumpToAircraftDetailPageRenderHandler, _super);
@@ -224,7 +224,7 @@ var VRS;
             });
         }
         return JumpToAircraftDetailPageRenderHandler;
-    })(LinkRenderHandler);
+    }(LinkRenderHandler));
     VRS.JumpToAircraftDetailPageRenderHandler = JumpToAircraftDetailPageRenderHandler;
     var PauseLinkRenderHandler = (function (_super) {
         __extends(PauseLinkRenderHandler, _super);
@@ -258,7 +258,7 @@ var VRS;
             _super.prototype.refreshAircraftLinksPlugin.call(this);
         };
         return PauseLinkRenderHandler;
-    })(LinkRenderHandler_AutoRefreshPluginBase);
+    }(LinkRenderHandler_AutoRefreshPluginBase));
     VRS.PauseLinkRenderHandler = PauseLinkRenderHandler;
     var LinksRenderer = (function () {
         function LinksRenderer() {
@@ -297,7 +297,8 @@ var VRS;
             return result;
         };
         return LinksRenderer;
-    })();
+    }());
     VRS.LinksRenderer = LinksRenderer;
     VRS.linksRenderer = new VRS.LinksRenderer();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=linksRenderer.js.map

@@ -19,7 +19,7 @@ var VRS;
             this.onBlur = settings.onBlur || function () { };
         }
         return Layout;
-    })();
+    }());
     VRS.Layout = Layout;
     var LayoutManager = (function () {
         function LayoutManager(name) {
@@ -181,7 +181,8 @@ var VRS;
             };
         };
         return LayoutManager;
-    })();
+    }());
     VRS.LayoutManager = LayoutManager;
     VRS.layoutManager = new VRS.LayoutManager();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=layoutManager.js.map

@@ -16,7 +16,7 @@ var VRS;
             this.lockEnabled = true;
         }
         return OptionFieldOrderedSubsetPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFieldOrderedSubsetPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionFieldOrderedSubset');
@@ -379,7 +379,7 @@ var VRS;
             }
         };
         return OptionFieldOrderedSubsetPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldOrderedSubsetPlugin = OptionFieldOrderedSubsetPlugin;
     $.widget('vrs.vrsOptionFieldOrderedSubset', new OptionFieldOrderedSubsetPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -390,3 +390,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldOrderedSubset.js.map

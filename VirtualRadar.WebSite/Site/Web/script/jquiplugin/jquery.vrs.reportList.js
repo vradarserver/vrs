@@ -56,7 +56,7 @@ var VRS;
             this.localeChangedHookResult = null;
         }
         return ReportListPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getReportListPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsReportList');
@@ -415,12 +415,13 @@ var VRS;
                     row = $(row);
                 }
                 for (var rowId in state.flightRows) {
+                    var numericRowId = Number(rowId);
                     var flightRow = state.flightRows[rowId];
                     if (flightRow instanceof jQuery && flightRow.is(row)) {
                         var length = flights.length;
                         for (var i = 0; i < length; ++i) {
                             var flight = flights[i];
-                            if (flight.row == rowId) {
+                            if (flight.row == numericRowId) {
                                 result = flight;
                                 break;
                             }
@@ -463,7 +464,8 @@ var VRS;
             this._markSelectedRow();
         };
         return ReportListPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.ReportListPlugin = ReportListPlugin;
     $.widget('vrs.vrsReportList', new ReportListPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.reportList.js.map

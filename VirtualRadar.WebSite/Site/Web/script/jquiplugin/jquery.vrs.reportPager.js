@@ -27,7 +27,7 @@ var VRS;
             this.pageSizeChangedHookResult = null;
         }
         return ReportPagerPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getReportPagerPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsReportPager');
@@ -276,7 +276,8 @@ var VRS;
             }
         };
         return ReportPagerPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.ReportPagerPlugin = ReportPagerPlugin;
     $.widget('vrs.vrsReportPager', new ReportPagerPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.reportPager.js.map

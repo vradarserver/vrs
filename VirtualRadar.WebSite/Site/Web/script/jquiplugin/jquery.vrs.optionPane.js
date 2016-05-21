@@ -10,7 +10,7 @@ var VRS;
             this.fieldElements = [];
         }
         return OptionPanePlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionPanePlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionPane');
@@ -95,7 +95,8 @@ var VRS;
             this.element.empty();
         };
         return OptionPanePlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionPanePlugin = OptionPanePlugin;
     $.widget('vrs.vrsOptionPane', new OptionPanePlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionPane.js.map

@@ -363,6 +363,7 @@ var VRS;
             this.applyServerConfiguration();
         }
         return AircraftListFetcher;
-    })();
+    }());
     VRS.AircraftListFetcher = AircraftListFetcher;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftListFetcher.js.map

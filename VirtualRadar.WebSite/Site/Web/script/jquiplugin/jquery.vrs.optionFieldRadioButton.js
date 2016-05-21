@@ -69,7 +69,7 @@ var VRS;
             this.element.empty();
         };
         return OptionFieldRadioButtonPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldRadioButtonPlugin = OptionFieldRadioButtonPlugin;
     $.widget('vrs.vrsOptionFieldRadioButton', new OptionFieldRadioButtonPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -80,3 +80,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldRadioButton.js.map

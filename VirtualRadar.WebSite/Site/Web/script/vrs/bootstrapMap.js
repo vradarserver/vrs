@@ -868,6 +868,7 @@ var VRS;
             this.raisePageManagerInitialised(pageSettings);
         };
         return BootstrapMap;
-    })(VRS.Bootstrap);
+    }(VRS.Bootstrap));
     VRS.BootstrapMap = BootstrapMap;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=bootstrapMap.js.map

@@ -40,7 +40,7 @@ var VRS;
             return (this.GetStringCallback(lhs, unitDisplayPreferences) || '').localeCompare(this.GetStringCallback(rhs, unitDisplayPreferences) || '');
         };
         return AircraftListSortHandler;
-    })();
+    }());
     VRS.AircraftListSortHandler = AircraftListSortHandler;
     VRS.aircraftListSortHandlers = VRS.aircraftListSortHandlers || {};
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Altitude] = new VRS.AircraftListSortHandler({
@@ -504,6 +504,7 @@ var VRS;
             ];
         };
         return AircraftListSorter;
-    })();
+    }());
     VRS.AircraftListSorter = AircraftListSorter;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftListSorter.js.map

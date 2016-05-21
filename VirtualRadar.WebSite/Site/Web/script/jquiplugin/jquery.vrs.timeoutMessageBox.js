@@ -10,7 +10,7 @@ var VRS;
             this.SiteTimedOutHookResult = null;
         }
         return TimeoutMessageBoxPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getTimeoutMessageBox = function (jQueryElement) {
         return jQueryElement.data('vrsVrsTimeoutMessageBox');
@@ -62,7 +62,8 @@ var VRS;
             });
         };
         return TimeoutMessageBoxPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.TimeoutMessageBoxPlugin = TimeoutMessageBoxPlugin;
     $.widget('vrs.vrsTimeoutMessageBox', new TimeoutMessageBoxPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.timeoutMessageBox.js.map

@@ -41,6 +41,7 @@ var VRS;
             this.refreshAircraftCount(true);
         };
         return TitleUpdater;
-    })();
+    }());
     VRS.TitleUpdater = TitleUpdater;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=titleUpdater.js.map

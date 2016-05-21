@@ -10,7 +10,7 @@ var VRS;
             this.suppressFieldSet = false;
         }
         return OptionFieldCheckBoxPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFieldCheckBoxPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionFieldCheckBox');
@@ -69,7 +69,7 @@ var VRS;
             field.unhookEvents();
         };
         return OptionFieldCheckBoxPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldCheckBoxPlugin = OptionFieldCheckBoxPlugin;
     $.widget('vrs.vrsOptionFieldCheckBox', new OptionFieldCheckBoxPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -80,3 +80,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldCheckBox.js.map

@@ -428,6 +428,7 @@ var VRS;
             ];
         };
         return UnitDisplayPreferences;
-    })();
+    }());
     VRS.UnitDisplayPreferences = UnitDisplayPreferences;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=unitDisplayPreferences.js.map
