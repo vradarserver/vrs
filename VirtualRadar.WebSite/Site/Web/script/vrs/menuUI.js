@@ -156,4 +156,3 @@ var VRS;
     })();
     VRS.Menu = Menu;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=menuUI.js.map

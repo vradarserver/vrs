@@ -353,4 +353,3 @@ var VRS;
     VRS.CurrentLocation = CurrentLocation;
     VRS.currentLocation = new VRS.CurrentLocation();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=currentLocation.js.map

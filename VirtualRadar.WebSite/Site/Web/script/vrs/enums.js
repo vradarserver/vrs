@@ -431,4 +431,3 @@ var VRS;
         Heavy: 3
     };
 })(VRS || (VRS = {}));
-//# sourceMappingURL=enums.js.map

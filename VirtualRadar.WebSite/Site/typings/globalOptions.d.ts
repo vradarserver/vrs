@@ -84,8 +84,6 @@
         aircraftMarkerClustererEnabled?: boolean;
         aircraftMarkerClustererMaxZoom?: number;
         aircraftMarkerClustererMinimumClusterSize?: number;
-        aircraftMarkerHideTrailsAtHighZoom?: boolean;
-        aircraftMarkerTrailsMaxZoom?: number;
         aircraftMarkers?: AircraftMarker[];
 
         // aircraftRenderer

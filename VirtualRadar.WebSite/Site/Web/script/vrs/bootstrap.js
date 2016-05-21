@@ -277,4 +277,3 @@ var VRS;
     VRS.Bootstrap = Bootstrap;
     VRS.bootstrap = null;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrap.js.map

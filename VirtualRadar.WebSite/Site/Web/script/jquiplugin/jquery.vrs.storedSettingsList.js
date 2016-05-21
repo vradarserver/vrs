@@ -262,4 +262,3 @@ var VRS;
     VRS.StoredSettingsList = StoredSettingsList;
     $.widget('vrs.vrsStoredSettingsList', new StoredSettingsList());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.storedSettingsList.js.map

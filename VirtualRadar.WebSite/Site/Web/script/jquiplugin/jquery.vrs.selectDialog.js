@@ -75,4 +75,3 @@ var VRS;
     VRS.SelectDialog = SelectDialog;
     $.widget('vrs.vrsSelectDialog', new SelectDialog());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.selectDialog.js.map

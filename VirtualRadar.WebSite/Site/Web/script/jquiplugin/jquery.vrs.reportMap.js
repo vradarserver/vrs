@@ -143,7 +143,6 @@ var VRS;
                             return [aircraft.id === state.firstPositionAircraftId ? VRS.$$.Start : VRS.$$.End];
                         }
                     });
-                    state.aircraftPlotter.setHideTrailsAtMaxZoom(false);
                 }
                 VRS.globalisation.hookLocaleChanged(this._localeChanged, this);
             }
@@ -229,4 +228,3 @@ var VRS;
     VRS.ReportMapPlugin = ReportMapPlugin;
     $.widget('vrs.vrsReportMap', new ReportMapPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.reportMap.js.map

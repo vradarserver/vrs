@@ -89,8 +89,6 @@ namespace VirtualRadar.Interface.Network
         /// <summary>
         /// Unhooks the events that were hooked by <see cref="HookFeed"/>.
         /// </summary>
-        /// <param name="feed"></param>
-        /// <param name="connector"></param>
         void UnhookFeed();
 
         /// <summary>

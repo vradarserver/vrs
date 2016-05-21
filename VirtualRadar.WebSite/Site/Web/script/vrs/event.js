@@ -71,4 +71,3 @@ var VRS;
         name: 'GlobalDispatch'
     });
 })(VRS || (VRS = {}));
-//# sourceMappingURL=event.js.map

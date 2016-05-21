@@ -55,7 +55,7 @@ namespace VirtualRadar.Interface.Settings
 
         private string _DataSource;
         /// <summary>
-        /// Gets or sets the unique ID of the <see cref="IReceiverFormatProvider"/> that will handle
+        /// Gets or sets the unique ID of the IReceiverFormatProvider that will handle
         /// the feed from the receiever.
         /// </summary>
         public string DataSource

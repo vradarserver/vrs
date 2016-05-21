@@ -61,6 +61,7 @@ namespace VirtualRadar.Interface.WebSite
         /// Escapes quotes in the string, converts linebreaks to \r or \n etc.
         /// </summary>
         /// <param name="resourceString"></param>
+        /// <param name="stringDelimiter"></param>
         /// <returns></returns>
         string ConvertResourceStringToJavaScriptString(string resourceString, char stringDelimiter);
     }

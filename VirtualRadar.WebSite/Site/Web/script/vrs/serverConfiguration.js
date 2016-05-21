@@ -74,4 +74,3 @@ var VRS;
     VRS.ServerConfiguration = ServerConfiguration;
     VRS.serverConfig = new VRS.ServerConfiguration();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=serverConfiguration.js.map

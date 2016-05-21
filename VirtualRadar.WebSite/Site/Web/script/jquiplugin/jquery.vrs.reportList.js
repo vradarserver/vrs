@@ -467,4 +467,3 @@ var VRS;
     VRS.ReportListPlugin = ReportListPlugin;
     $.widget('vrs.vrsReportList', new ReportListPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.reportList.js.map

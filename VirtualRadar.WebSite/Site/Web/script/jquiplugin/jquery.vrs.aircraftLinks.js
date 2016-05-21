@@ -152,4 +152,3 @@ var VRS;
     VRS.AircraftLinksPlugin = AircraftLinksPlugin;
     $.widget('vrs.vrsAircraftLinks', new AircraftLinksPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.aircraftLinks.js.map

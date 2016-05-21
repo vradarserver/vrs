@@ -708,4 +708,3 @@ var VRS;
     })();
     VRS.Aircraft = Aircraft;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=aircraft.js.map

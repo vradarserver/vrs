@@ -880,4 +880,3 @@ var VRS;
     VRS.timeHelper = new VRS.TimeHelper();
     VRS.unitConverter = new VRS.UnitConverter();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=utility.js.map

@@ -197,4 +197,3 @@ var VRS;
     VRS.ConfigStorage = ConfigStorage;
     VRS.configStorage = VRS.configStorage || new VRS.ConfigStorage();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=configStorage.js.map

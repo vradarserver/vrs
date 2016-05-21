@@ -15,9 +15,7 @@ using System.Text;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 
-/// <summary>
-/// Models that are common between plugins.
-/// </summary>
+// Models that are common between plugins.
 namespace VirtualRadar.Interface.WebSite.WebAdminModels
 {
     /// <summary>

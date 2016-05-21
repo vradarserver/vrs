@@ -744,4 +744,3 @@ var VRS;
     VRS.ReportPropertyHandlerHelper = ReportPropertyHandlerHelper;
     VRS.reportPropertyHandlerHelper = new VRS.ReportPropertyHandlerHelper();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=reportRenderer.js.map

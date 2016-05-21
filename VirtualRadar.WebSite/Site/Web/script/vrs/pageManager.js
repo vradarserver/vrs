@@ -225,4 +225,3 @@ var VRS;
     VRS.PageManager = PageManager;
     VRS.pageManager = new VRS.PageManager();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=pageManager.js.map

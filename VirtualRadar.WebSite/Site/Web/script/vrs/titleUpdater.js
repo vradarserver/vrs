@@ -44,4 +44,3 @@ var VRS;
     })();
     VRS.TitleUpdater = TitleUpdater;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=titleUpdater.js.map

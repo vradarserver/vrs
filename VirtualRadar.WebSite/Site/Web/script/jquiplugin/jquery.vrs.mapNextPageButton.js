@@ -115,4 +115,3 @@ var VRS;
     VRS.MapNextPageButton = MapNextPageButton;
     $.widget('vrs.vrsMapNextPageButton', new MapNextPageButton());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.mapNextPageButton.js.map

@@ -163,4 +163,3 @@ var VRS;
     VRS.PagePanel = PagePanel;
     $.widget('vrs.vrsPagePanel', new PagePanel());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.pagePanel.js.map

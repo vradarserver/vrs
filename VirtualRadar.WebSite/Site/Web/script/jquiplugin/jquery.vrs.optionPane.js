@@ -99,4 +99,3 @@ var VRS;
     VRS.OptionPanePlugin = OptionPanePlugin;
     $.widget('vrs.vrsOptionPane', new OptionPanePlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.optionPane.js.map

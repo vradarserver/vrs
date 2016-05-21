@@ -18,4 +18,3 @@ var VRS;
     })(VRS.BootstrapMap);
     VRS.BootstrapMapFsx = BootstrapMapFsx;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrapMapFsx.js.map

@@ -153,6 +153,7 @@ namespace VirtualRadar.Interface
         /// Creates a new object.
         /// </summary>
         /// <param name="queueName"></param>
+        /// <param name="maxQueuedItems"></param>
         public BackgroundThreadQueue(string queueName, int maxQueuedItems = int.MaxValue) : this(queueName, BackgroundThreadQueueMechanism.Queue, maxQueuedItems)
         {
         }

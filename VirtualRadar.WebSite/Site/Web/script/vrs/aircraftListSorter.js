@@ -507,4 +507,3 @@ var VRS;
     })();
     VRS.AircraftListSorter = AircraftListSorter;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=aircraftListSorter.js.map

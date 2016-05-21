@@ -757,4 +757,3 @@ var VRS;
     VRS.Splitter = Splitter;
     $.widget('vrs.vrsSplitter', new Splitter());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.splitter.js.map

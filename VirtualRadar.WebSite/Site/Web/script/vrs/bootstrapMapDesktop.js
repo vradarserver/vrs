@@ -17,4 +17,3 @@ var VRS;
     })(VRS.BootstrapMap);
     VRS.BootstrapMapDesktop = BootstrapMapDesktop;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrapMapDesktop.js.map

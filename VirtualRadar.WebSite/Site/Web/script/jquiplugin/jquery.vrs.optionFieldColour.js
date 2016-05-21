@@ -109,4 +109,3 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.optionFieldColour.js.map
