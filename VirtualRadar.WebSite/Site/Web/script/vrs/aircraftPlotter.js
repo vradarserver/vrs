@@ -117,6 +117,7 @@ var VRS;
     VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;
     VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;
     VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;
+    VRS.globalOptions.aircraftMarkerClustererUserCanConfigure = VRS.globalOptions.aircraftMarkerClustererUserCanConfigure !== false;
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
@@ -257,6 +258,12 @@ var VRS;
             this._PinTexts = [];
             this.getName = function () {
                 return _this._Settings.name;
+            };
+            this.getMap = function () {
+                return _this._Settings.map;
+            };
+            this.setMap = function (map) {
+                _this._Settings.map = map;
             };
             this.getShowAltitudeStalk = function () {
                 return _this._Settings.showAltitudeStalk;
@@ -423,6 +430,18 @@ var VRS;
                     _this.raisePropertyChanged();
                 }
             };
+            this.getAircraftMarkerClustererMaxZoom = function () {
+                return _this._Settings.aircraftMarkerClustererMaxZoom;
+            };
+            this.setAircraftMarkerClustererMaxZoom = function (value) {
+                if (_this._Settings.aircraftMarkerClustererMaxZoom !== value) {
+                    _this._Settings.aircraftMarkerClustererMaxZoom = value;
+                    _this.raisePropertyChanged();
+                }
+            };
+            this.getCanSetAircraftMarkerClustererMaxZoomFromMap = function () {
+                return !!_this._Settings.map;
+            };
             this.hookPropertyChanged = function (callback, forceThis) {
                 return _this._Dispatcher.hook(_this._Events.propertyChanged, callback, forceThis);
             };
@@ -483,6 +502,7 @@ var VRS;
                 _this.setRangeCircleEvenColour(settings.rangeCircleEvenColour);
                 _this.setRangeCircleEvenWeight(settings.rangeCircleEvenWeight);
                 _this.setOnlyUsePre22Icons(settings.onlyUsePre22Icons);
+                _this.setAircraftMarkerClustererMaxZoom(settings.aircraftMarkerClustererMaxZoom);
                 _this._SuppressEvents = suppressEvents;
                 _this.raisePropertyChanged();
                 _this.raiseRangeCirclePropertyChanged();
@@ -572,6 +592,25 @@ var VRS;
                         setValue: _this.setHideEmptyPinTextLines,
                         saveState: _this.saveState
                     }));
+                    if (VRS.globalOptions.aircraftMarkerClustererUserCanConfigure && VRS.globalOptions.aircraftMarkerClustererEnabled && _this.getCanSetAircraftMarkerClustererMaxZoomFromMap()) {
+                        displayPane.addField(new VRS.OptionFieldButton({
+                            name: 'aircraftMarkerClustererSetMaxZoom',
+                            saveState: function () {
+                                _this.setAircraftMarkerClusterMaxZoomFromMap();
+                                _this.saveState();
+                            },
+                            keepWithNext: true,
+                            labelKey: 'SetClustererZoomLevel'
+                        }));
+                        displayPane.addField(new VRS.OptionFieldButton({
+                            name: 'resetAircraftMarkerClustererMaxZoom',
+                            saveState: function () {
+                                _this.setAircraftMarkerClustererMaxZoom(VRS.globalOptions.aircraftMarkerClustererMaxZoom);
+                                _this.saveState();
+                            },
+                            labelKey: 'ResetClustererZoomLevel'
+                        }));
+                    }
                 }
                 if (!VRS.globalOptions.suppressTrails) {
                     var trailsPane = new VRS.OptionPane({
@@ -759,6 +798,7 @@ var VRS;
             };
             this._Settings = $.extend({
                 name: 'default',
+                map: null,
                 showAltitudeStalk: VRS.globalOptions.aircraftMarkerAllowAltitudeStalk && VRS.globalOptions.aircraftMarkerShowAltitudeStalk,
                 suppressAltitudeStalkWhenZoomed: VRS.globalOptions.aircraftMarkerSuppressAltitudeStalkWhenZoomed,
                 showPinText: VRS.globalOptions.aircraftMarkerAllowPinText,
@@ -775,7 +815,8 @@ var VRS;
                 rangeCircleOddWeight: VRS.globalOptions.aircraftMarkerRangeCircleOddWeight,
                 rangeCircleEvenColour: VRS.globalOptions.aircraftMarkerRangeCircleEvenColour,
                 rangeCircleEvenWeight: VRS.globalOptions.aircraftMarkerRangeCircleEvenWeight,
-                onlyUsePre22Icons: VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons
+                onlyUsePre22Icons: VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons,
+                aircraftMarkerClustererMaxZoom: VRS.globalOptions.aircraftMarkerClustererMaxZoom
             }, settings);
             $.each(this._Settings.pinTexts, function (idx, renderProperty) {
                 _this.setPinText(idx, renderProperty);
@@ -784,6 +825,11 @@ var VRS;
                 this.setPinText(noPinTextIdx, VRS.RenderProperty.None);
             }
         }
+        AircraftPlotterOptions.prototype.setAircraftMarkerClusterMaxZoomFromMap = function () {
+            if (this.getCanSetAircraftMarkerClustererMaxZoomFromMap()) {
+                this.setAircraftMarkerClustererMaxZoom(this._Settings.map.getZoom());
+            }
+        };
         AircraftPlotterOptions.prototype.raisePropertyChanged = function () {
             if (!this._SuppressEvents) {
                 this._Dispatcher.raise(this._Events.propertyChanged);
@@ -815,7 +861,8 @@ var VRS;
                 rangeCircleOddWeight: this.getRangeCircleOddWeight(),
                 rangeCircleEvenColour: this.getRangeCircleEvenColour(),
                 rangeCircleEvenWeight: this.getRangeCircleEvenWeight(),
-                onlyUsePre22Icons: this.getOnlyUsePre22Icons()
+                onlyUsePre22Icons: this.getOnlyUsePre22Icons(),
+                aircraftMarkerClustererMaxZoom: this.getAircraftMarkerClustererMaxZoom(),
             };
         };
         return AircraftPlotterOptions;
@@ -851,7 +898,7 @@ var VRS;
             this._Map = VRS.jQueryUIHelper.getMapPlugin(settings.map);
             if (VRS.globalOptions.aircraftMarkerClustererEnabled) {
                 this._MapMarkerClusterer = this._Map.createMapMarkerClusterer({
-                    maxZoom: VRS.globalOptions.aircraftMarkerClustererMaxZoom,
+                    maxZoom: settings.plotterOptions.getAircraftMarkerClustererMaxZoom(),
                     minimumClusterSize: VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize
                 });
             }
@@ -1753,6 +1800,12 @@ var VRS;
             return this._PlottedDetail[aircraft.id];
         };
         AircraftPlotter.prototype.optionsPropertyChanged = function () {
+            if (this._MapMarkerClusterer) {
+                var newMaxZoom = this._Settings.plotterOptions.getAircraftMarkerClustererMaxZoom();
+                if (newMaxZoom !== this._MapMarkerClusterer.getMaxZoom()) {
+                    this._MapMarkerClusterer.setMaxZoom(newMaxZoom);
+                }
+            }
             if (!this._Suspended) {
                 this.refreshMarkers(null, null, true);
             }

@@ -168,8 +168,8 @@ namespace VRS
 
                 // Create the plotter options - these are used on the various maps
                 pageSettings.plotterOptions = new VRS.AircraftPlotterOptions({
-                    trailDisplay:           VRS.TrailDisplay.AllAircraft,
-                    trailType:              VRS.TrailType.Full
+                    trailDisplay:   VRS.TrailDisplay.AllAircraft,
+                    trailType:      VRS.TrailType.Full
                 });
 
                 // Create the report map

@@ -182,9 +182,10 @@ namespace VRS
     VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel = VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel != undefined ? VRS.globalOptions.aircraftMarkerHideNonAircraftZoomLevel : 13;   // Ground vehicles and towers are only shown when the zoom level is this value or above. Set to 0 to always show them, 99999 to never show them.
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false; // True if trails are to be shown for ground vehicles and towers, false if they are not.
     VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false; // True if we should only show the old style (pre-version 2.2) aircraft markers.
-    VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;                  // True if the marker clusterer is to be used.
-    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;                       // The maximum zoom level at which to cluster map markers or null if there is no maximum.
-    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1; // The minimum number of adjacent markers in a map marker cluster.
+    VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;                      // True if the marker clusterer is to be used.
+    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;                           // The maximum zoom level at which to cluster map markers or null if there is no maximum.
+    VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;     // The minimum number of adjacent markers in a map marker cluster.
+    VRS.globalOptions.aircraftMarkerClustererUserCanConfigure = VRS.globalOptions.aircraftMarkerClustererUserCanConfigure !== false;    // True if the user can configure the map marker clusterer.
 
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
@@ -381,6 +382,11 @@ namespace VRS
         name?: string;
 
         /**
+         * The map that will be used as a source of zoom level for configuring the map clusterer.
+         */
+        map?: VRS.IMap;
+
+        /**
          * True to show altitude stalks, false otherwise.
          */
         showAltitudeStalk?: boolean;
@@ -464,6 +470,11 @@ namespace VRS
          * True to only show the old-school aircraft markers.
          */
         onlyUsePre22Icons?: boolean;
+
+        /**
+         * The zoom level at which the clusterer will start clustering.
+         */
+        aircraftMarkerClustererMaxZoom?: number;
     }
 
     /**
@@ -488,6 +499,7 @@ namespace VRS
         rangeCircleEvenColour:              string;
         rangeCircleEvenWeight:              number;
         onlyUsePre22Icons:                  boolean;
+        aircraftMarkerClustererMaxZoom:     number;
     }
 
     /**
@@ -511,6 +523,7 @@ namespace VRS
         {
             this._Settings = $.extend({
                 name:                               'default',
+                map:                                null,
                 showAltitudeStalk:                  VRS.globalOptions.aircraftMarkerAllowAltitudeStalk && VRS.globalOptions.aircraftMarkerShowAltitudeStalk,
                 suppressAltitudeStalkWhenZoomed:    VRS.globalOptions.aircraftMarkerSuppressAltitudeStalkWhenZoomed,
                 showPinText:                        VRS.globalOptions.aircraftMarkerAllowPinText,
@@ -527,7 +540,8 @@ namespace VRS
                 rangeCircleOddWeight:               VRS.globalOptions.aircraftMarkerRangeCircleOddWeight,
                 rangeCircleEvenColour:              VRS.globalOptions.aircraftMarkerRangeCircleEvenColour,
                 rangeCircleEvenWeight:              VRS.globalOptions.aircraftMarkerRangeCircleEvenWeight,
-                onlyUsePre22Icons:                  VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons
+                onlyUsePre22Icons:                  VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons,
+                aircraftMarkerClustererMaxZoom:     VRS.globalOptions.aircraftMarkerClustererMaxZoom
             }, settings);
 
             $.each(this._Settings.pinTexts, (idx, renderProperty) => {
@@ -541,6 +555,15 @@ namespace VRS
         getName = () : string =>
         {
             return this._Settings.name;
+        }
+
+        getMap = () : IMap =>
+        {
+            return this._Settings.map;
+        }
+        setMap = (map: IMap) =>
+        {
+            this._Settings.map = map;
         }
 
         getShowAltitudeStalk = () : boolean =>
@@ -761,6 +784,28 @@ namespace VRS
             }
         }
 
+        getAircraftMarkerClustererMaxZoom = () : number =>
+        {
+            return this._Settings.aircraftMarkerClustererMaxZoom;
+        }
+        setAircraftMarkerClustererMaxZoom = (value: number) =>
+        {
+            if(this._Settings.aircraftMarkerClustererMaxZoom !== value) {
+                this._Settings.aircraftMarkerClustererMaxZoom = value;
+                this.raisePropertyChanged();
+            }
+        }
+        getCanSetAircraftMarkerClustererMaxZoomFromMap = () : boolean =>
+        {
+            return !!this._Settings.map;
+        }
+        setAircraftMarkerClusterMaxZoomFromMap()
+        {
+            if(this.getCanSetAircraftMarkerClustererMaxZoomFromMap()) {
+                this.setAircraftMarkerClustererMaxZoom(this._Settings.map.getZoom());
+            }
+        }
+
         hookPropertyChanged = (callback: () => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.propertyChanged, callback, forceThis);
@@ -852,6 +897,7 @@ namespace VRS
             this.setRangeCircleEvenColour(settings.rangeCircleEvenColour);
             this.setRangeCircleEvenWeight(settings.rangeCircleEvenWeight);
             this.setOnlyUsePre22Icons(settings.onlyUsePre22Icons);
+            this.setAircraftMarkerClustererMaxZoom(settings.aircraftMarkerClustererMaxZoom);
 
             this._SuppressEvents = suppressEvents;
 
@@ -897,7 +943,8 @@ namespace VRS
                 rangeCircleOddWeight:               this.getRangeCircleOddWeight(),
                 rangeCircleEvenColour:              this.getRangeCircleEvenColour(),
                 rangeCircleEvenWeight:              this.getRangeCircleEvenWeight(),
-                onlyUsePre22Icons:                  this.getOnlyUsePre22Icons()
+                onlyUsePre22Icons:                  this.getOnlyUsePre22Icons(),
+                aircraftMarkerClustererMaxZoom:     this.getAircraftMarkerClustererMaxZoom(),
             };
         }
 
@@ -996,6 +1043,26 @@ namespace VRS
                     setValue:           this.setHideEmptyPinTextLines,
                     saveState:          this.saveState
                 }));
+
+                if(VRS.globalOptions.aircraftMarkerClustererUserCanConfigure && VRS.globalOptions.aircraftMarkerClustererEnabled && this.getCanSetAircraftMarkerClustererMaxZoomFromMap()) {
+                    displayPane.addField(new VRS.OptionFieldButton({
+                        name:           'aircraftMarkerClustererSetMaxZoom',
+                        saveState:      () => {
+                                            this.setAircraftMarkerClusterMaxZoomFromMap();
+                                            this.saveState();
+                                        },
+                        keepWithNext:   true,
+                        labelKey:       'SetClustererZoomLevel'
+                    }));
+                    displayPane.addField(new VRS.OptionFieldButton({
+                        name:           'resetAircraftMarkerClustererMaxZoom',
+                        saveState:      () => {
+                                            this.setAircraftMarkerClustererMaxZoom(VRS.globalOptions.aircraftMarkerClustererMaxZoom);
+                                            this.saveState();
+                                        },
+                        labelKey:       'ResetClustererZoomLevel'
+                    }));
+                }
             }
 
             // Trail options
@@ -1376,7 +1443,7 @@ namespace VRS
             this._Map = VRS.jQueryUIHelper.getMapPlugin(settings.map);
             if(VRS.globalOptions.aircraftMarkerClustererEnabled) {
                 this._MapMarkerClusterer = this._Map.createMapMarkerClusterer({
-                    maxZoom:            VRS.globalOptions.aircraftMarkerClustererMaxZoom,
+                    maxZoom:            settings.plotterOptions.getAircraftMarkerClustererMaxZoom(),
                     minimumClusterSize: VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize
                 });
             }
@@ -2577,6 +2644,13 @@ namespace VRS
          */
         private optionsPropertyChanged()
         {
+            if(this._MapMarkerClusterer) {
+                var newMaxZoom = this._Settings.plotterOptions.getAircraftMarkerClustererMaxZoom();
+                if(newMaxZoom !== this._MapMarkerClusterer.getMaxZoom()) {
+                    this._MapMarkerClusterer.setMaxZoom(newMaxZoom);
+                }
+            }
+
             if(!this._Suspended) {
                 this.refreshMarkers(null, null, true);
             }

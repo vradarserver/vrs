@@ -128,7 +128,9 @@ var VRS;
                 pageSettings.aircraftListFilter.loadAndApplyState();
             }
             if (pageSettings.mapPlugin && VRS.AircraftPlotter) {
-                pageSettings.aircraftPlotterOptions = new VRS.AircraftPlotterOptions(null);
+                pageSettings.aircraftPlotterOptions = new VRS.AircraftPlotterOptions({
+                    map: pageSettings.mapPlugin
+                });
                 pageSettings.aircraftPlotterOptions.loadAndApplyState();
                 pageSettings.aircraftPlotter = new VRS.AircraftPlotter({
                     plotterOptions: pageSettings.aircraftPlotterOptions,

@@ -410,6 +410,7 @@ declare namespace VRS
         ReportsAreDisabled:                 string;
         ReportTodaysFlights:                string;
         ReportYesterdaysFlights:            string;
+        ResetClustererZoomLevel:            string;
         Resume:                             string;
         Reversing:                          string;
         ReversingShort:                     string;
@@ -466,6 +467,7 @@ declare namespace VRS
         ServerFetchTimedOut:                string;
         ServerReportExceptionBody:          string;
         ServerReportExceptionTitle:         string;
+        SetClustererZoomLevel:              string;
         SetCurrentLocation:                 string;
         Settings:                           string;
         SettingsPage:                       string;

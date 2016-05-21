@@ -3679,6 +3679,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset cluster aircraft zoom level.
+        /// </summary>
+        public static string ResetClustererZoomLevel {
+            get {
+                return ResourceManager.GetString("ResetClustererZoomLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resume.
         /// </summary>
         public static string Resume {
@@ -4179,6 +4188,15 @@ namespace VirtualRadar.WebSite {
         public static string ServerReportExceptionTitle {
             get {
                 return ResourceManager.GetString("ServerReportExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cluster aircraft at this zoom level.
+        /// </summary>
+        public static string SetClustererZoomLevel {
+            get {
+                return ResourceManager.GetString("SetClustererZoomLevel", resourceCulture);
             }
         }
         

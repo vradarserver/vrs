@@ -381,7 +381,9 @@ namespace VRS
 
             // Create the object that plots aircraft on the map
             if(pageSettings.mapPlugin && VRS.AircraftPlotter) {
-                pageSettings.aircraftPlotterOptions = new VRS.AircraftPlotterOptions(null);
+                pageSettings.aircraftPlotterOptions = new VRS.AircraftPlotterOptions({
+                    map: pageSettings.mapPlugin
+                });
                 pageSettings.aircraftPlotterOptions.loadAndApplyState();
 
                 pageSettings.aircraftPlotter = new VRS.AircraftPlotter({
