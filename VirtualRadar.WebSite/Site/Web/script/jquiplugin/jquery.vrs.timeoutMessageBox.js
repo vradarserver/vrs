@@ -66,4 +66,3 @@ var VRS;
     VRS.TimeoutMessageBoxPlugin = TimeoutMessageBoxPlugin;
     $.widget('vrs.vrsTimeoutMessageBox', new TimeoutMessageBoxPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.timeoutMessageBox.js.map

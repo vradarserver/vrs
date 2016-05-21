@@ -24,4 +24,3 @@ var VRS;
     })();
     VRS.AirportDataApi = AirportDataApi;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=airportDataApi.js.map

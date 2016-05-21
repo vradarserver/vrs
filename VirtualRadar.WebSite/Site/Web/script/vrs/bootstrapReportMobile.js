@@ -17,4 +17,3 @@ var VRS;
     })(VRS.BootstrapReport);
     VRS.BootstrapReportMobile = BootstrapReportMobile;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrapReportMobile.js.map

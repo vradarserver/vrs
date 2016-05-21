@@ -719,4 +719,3 @@ var VRS;
     VRS.optionControlTypes.radioButton = 'vrsRadioButton';
     VRS.optionControlTypes.textBox = 'vrsTextBox';
 })(VRS || (VRS = {}));
-//# sourceMappingURL=optionsUI.js.map

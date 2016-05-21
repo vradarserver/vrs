@@ -197,4 +197,3 @@ var VRS;
     VRS.AircraftPositionMapPlugin = AircraftPositionMapPlugin;
     $.widget('vrs.vrsAircraftPositonMap', new AircraftPositionMapPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.aircraftPositionMap.js.map

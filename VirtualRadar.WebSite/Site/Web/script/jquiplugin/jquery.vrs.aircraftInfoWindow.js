@@ -351,4 +351,3 @@ var VRS;
     VRS.AircraftInfoWindowPlugin = AircraftInfoWindowPlugin;
     $.widget('vrs.vrsAircraftInfoWindow', new AircraftInfoWindowPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.aircraftInfoWindow.js.map

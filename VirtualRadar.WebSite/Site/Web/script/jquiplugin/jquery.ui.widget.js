@@ -76,4 +76,3 @@ var JQueryUICustomWidget = (function () {
     };
     return JQueryUICustomWidget;
 })();
-//# sourceMappingURL=jquery.ui.widget.js.map

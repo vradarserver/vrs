@@ -272,4 +272,3 @@ var VRS;
     })();
     VRS.AircraftAutoSelect = AircraftAutoSelect;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=aircraftAutoSelect.js.map

@@ -16,7 +16,7 @@ using System.Text;
 namespace VirtualRadar.Interface.View
 {
     /// <summary>
-    /// Used to decorate <see cref="ValidationFieldModel"/> properties in a view model with
+    /// Used to decorate ValidationFieldModel properties in a view model with
     /// the <see cref="ValidationField"/> corresponding to the property.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple=false, Inherited=true)]

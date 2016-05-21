@@ -428,4 +428,3 @@ var VRS;
     })();
     VRS.ReportCriteria = ReportCriteria;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=reportFilter.js.map

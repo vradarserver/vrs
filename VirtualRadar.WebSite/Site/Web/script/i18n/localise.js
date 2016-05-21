@@ -356,4 +356,3 @@ var VRS;
     VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)', nativeName: '中文 (中国)' });
     VRS.globalisation.addCultureInfo('pt-BR', { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)', countryFlag: 'br', topLevel: true });
 })(VRS || (VRS = {}));
-//# sourceMappingURL=localise.js.map

@@ -73,4 +73,3 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.optionFieldLabel.js.map

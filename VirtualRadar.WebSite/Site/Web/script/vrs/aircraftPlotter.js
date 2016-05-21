@@ -115,10 +115,8 @@ var VRS;
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false;
     VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false;
     VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;
-    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 7;
+    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;
     VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;
-    VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom || VRS.globalOptions.aircraftMarkerClustererEnabled;
-    VRS.globalOptions.aircraftMarkerTrailsMaxZoom = VRS.globalOptions.aircraftMarkerTrailsMaxZoom || VRS.globalOptions.aircraftMarkerClustererMaxZoom;
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
@@ -831,7 +829,6 @@ var VRS;
             this._RangeCircleCentre = null;
             this._RangeCircleCircles = [];
             this._MovingMap = VRS.globalOptions.aircraftMarkerMovingMapOn;
-            this._HideTrailsAtMaxZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom;
             settings = $.extend({
                 name: 'default',
                 aircraftMarkers: VRS.globalOptions.aircraftMarkers,
@@ -893,10 +890,10 @@ var VRS;
             return this._MapMarkerClusterer;
         };
         AircraftPlotter.prototype.getHideTrailsAtMaxZoom = function () {
-            return this._HideTrailsAtMaxZoom;
+            return !!this._MapMarkerClusterer;
         };
-        AircraftPlotter.prototype.setHideTrailsAtMaxZoom = function (hideTrails) {
-            this._HideTrailsAtMaxZoom = hideTrails;
+        AircraftPlotter.prototype.getHideTrailsMaxZoom = function () {
+            return !this._MapMarkerClusterer ? -1 : this._MapMarkerClusterer.getMaxZoom();
         };
         AircraftPlotter.prototype.getMovingMap = function () {
             return this._MovingMap;
@@ -1397,7 +1394,7 @@ var VRS;
             if (showTrails && !aircraft.isAircraftSpecies() && !VRS.globalOptions.aircraftMarkerShowNonAircraftTrails) {
                 showTrails = false;
             }
-            if (showTrails && this._HideTrailsAtMaxZoom && mapZoomLevel <= VRS.globalOptions.aircraftMarkerTrailsMaxZoom) {
+            if (showTrails && mapZoomLevel <= this.getHideTrailsMaxZoom()) {
                 showTrails = false;
             }
             if (forceRefresh) {
@@ -1837,4 +1834,3 @@ var VRS;
     })();
     VRS.AircraftPlotter = AircraftPlotter;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=aircraftPlotter.js.map

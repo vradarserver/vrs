@@ -790,4 +790,3 @@ var VRS;
     VRS.Format = Format;
     VRS.format = new VRS.Format();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=format.js.map

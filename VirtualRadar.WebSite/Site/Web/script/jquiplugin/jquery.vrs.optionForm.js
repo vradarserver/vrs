@@ -142,4 +142,3 @@ var VRS;
     VRS.OptionForm = OptionForm;
     $.widget('vrs.vrsOptionForm', new OptionForm());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.optionForm.js.map

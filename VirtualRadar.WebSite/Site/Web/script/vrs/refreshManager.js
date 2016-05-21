@@ -192,4 +192,3 @@ var VRS;
     VRS.RefreshManager = RefreshManager;
     VRS.refreshManager = new VRS.RefreshManager();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=refreshManager.js.map

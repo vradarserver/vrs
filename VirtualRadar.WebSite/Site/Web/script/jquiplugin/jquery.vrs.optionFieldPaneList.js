@@ -161,4 +161,3 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.optionFieldPaneList.js.map

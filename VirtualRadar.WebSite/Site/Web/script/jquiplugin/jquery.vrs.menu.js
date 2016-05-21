@@ -340,4 +340,3 @@ var VRS;
     VRS.MenuPlugin = MenuPlugin;
     $.widget('vrs.vrsMenu', new MenuPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.menu.js.map

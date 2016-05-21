@@ -279,4 +279,3 @@ var VRS;
     VRS.StringUtility = StringUtility;
     VRS.stringUtility = new VRS.StringUtility();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=string.js.map

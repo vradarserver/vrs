@@ -280,4 +280,3 @@ var VRS;
     VRS.ReportPagerPlugin = ReportPagerPlugin;
     $.widget('vrs.vrsReportPager', new ReportPagerPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.reportPager.js.map

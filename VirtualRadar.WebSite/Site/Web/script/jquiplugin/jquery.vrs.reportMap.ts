@@ -304,7 +304,6 @@ namespace VRS
                             return [ aircraft.id === state.firstPositionAircraftId ? VRS.$$.Start : VRS.$$.End ];
                         }
                     });
-                    state.aircraftPlotter.setHideTrailsAtMaxZoom(false);
                 }
 
                 VRS.globalisation.hookLocaleChanged(this._localeChanged, this);

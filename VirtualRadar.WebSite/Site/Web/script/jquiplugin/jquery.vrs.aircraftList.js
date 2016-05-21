@@ -736,4 +736,3 @@ var VRS;
     VRS.AircraftListPlugin = AircraftListPlugin;
     $.widget('vrs.vrsAircraftList', new AircraftListPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.aircraftList.js.map

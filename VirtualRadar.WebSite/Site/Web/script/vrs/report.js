@@ -487,4 +487,3 @@ var VRS;
     })();
     VRS.Report = Report;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=report.js.map

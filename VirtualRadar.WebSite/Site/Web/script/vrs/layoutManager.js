@@ -185,4 +185,3 @@ var VRS;
     VRS.LayoutManager = LayoutManager;
     VRS.layoutManager = new VRS.LayoutManager();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=layoutManager.js.map

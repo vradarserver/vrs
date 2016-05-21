@@ -1595,4 +1595,3 @@ var VRS;
     })(JQueryUICustomWidget);
     $.widget('vrs.vrsMap', new MapPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.map.js.map

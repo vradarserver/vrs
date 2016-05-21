@@ -301,4 +301,3 @@ var VRS;
     VRS.LinksRenderer = LinksRenderer;
     VRS.linksRenderer = new VRS.LinksRenderer();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=linksRenderer.js.map

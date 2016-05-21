@@ -16,4 +16,3 @@ var VRS;
     })(VRS.BootstrapReport);
     VRS.BootstrapReportDesktop = BootstrapReportDesktop;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrapReportDesktop.js.map

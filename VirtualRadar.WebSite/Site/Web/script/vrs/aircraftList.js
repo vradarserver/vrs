@@ -207,4 +207,3 @@ var VRS;
     })();
     VRS.AircraftList = AircraftList;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=aircraftList.js.map

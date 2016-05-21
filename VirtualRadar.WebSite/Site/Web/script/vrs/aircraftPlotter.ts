@@ -183,10 +183,8 @@ namespace VRS
     VRS.globalOptions.aircraftMarkerShowNonAircraftTrails = VRS.globalOptions.aircraftMarkerShowNonAircraftTrails !== undefined ? VRS.globalOptions.aircraftMarkerShowNonAircraftTrails : false; // True if trails are to be shown for ground vehicles and towers, false if they are not.
     VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons = VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons !== undefined ? VRS.globalOptions.aircraftMarkerOnlyUsePre22Icons : false; // True if we should only show the old style (pre-version 2.2) aircraft markers.
     VRS.globalOptions.aircraftMarkerClustererEnabled = VRS.globalOptions.aircraftMarkerClustererEnabled !== false;                  // True if the marker clusterer is to be used.
-    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 7;                       // The maximum zoom level at which to cluster map markers or null if there is no maximum.
+    VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;                       // The maximum zoom level at which to cluster map markers or null if there is no maximum.
     VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1; // The minimum number of adjacent markers in a map marker cluster.
-    VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom || VRS.globalOptions.aircraftMarkerClustererEnabled;    // True to stop showing trails when the user zooms out
-    VRS.globalOptions.aircraftMarkerTrailsMaxZoom = VRS.globalOptions.aircraftMarkerTrailsMaxZoom || VRS.globalOptions.aircraftMarkerClustererMaxZoom;                  // The largest map zoom value that trails will be drawn at when aircraftMarkerClustererEnabled is true
 
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
@@ -1335,7 +1333,6 @@ namespace VRS
         private _RangeCircleCircles: IMapCircle[] = [];
         private _MovingMap: boolean = VRS.globalOptions.aircraftMarkerMovingMapOn;
         private _MapMarkerClusterer: IMapMarkerClusterer;
-        private _HideTrailsAtMaxZoom = VRS.globalOptions.aircraftMarkerHideTrailsAtHighZoom;
 
         // Event handles
         private _PlotterOptionsPropertyChangedHook:             IEventHandle;
@@ -1435,15 +1432,19 @@ namespace VRS
         }
 
         /**
-         * True to hide trails when the user zooms out.
+         * Gets a value indicating that trails need to be hidden past a certain zoom level.
          */
         getHideTrailsAtMaxZoom()
         {
-            return this._HideTrailsAtMaxZoom;
+            return !!this._MapMarkerClusterer;
         }
-        setHideTrailsAtMaxZoom(hideTrails: boolean)
+
+        /**
+         * Gets the zoom level past which trails should be hidden.
+         */
+        getHideTrailsMaxZoom()
         {
-            this._HideTrailsAtMaxZoom = hideTrails;
+            return !this._MapMarkerClusterer ? -1 : this._MapMarkerClusterer.getMaxZoom();
         }
 
         getMovingMap() : boolean
@@ -2074,7 +2075,7 @@ namespace VRS
             if(showTrails && !aircraft.isAircraftSpecies() && !VRS.globalOptions.aircraftMarkerShowNonAircraftTrails) {
                 showTrails = false;
             }
-            if(showTrails && this._HideTrailsAtMaxZoom && mapZoomLevel <= VRS.globalOptions.aircraftMarkerTrailsMaxZoom) {
+            if(showTrails && mapZoomLevel <= this.getHideTrailsMaxZoom()) {
                 showTrails = false;
             }
 

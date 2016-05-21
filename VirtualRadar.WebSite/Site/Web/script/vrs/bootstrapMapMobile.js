@@ -25,4 +25,3 @@ var VRS;
     })(VRS.BootstrapMap);
     VRS.BootstrapMapMobile = BootstrapMapMobile;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrapMapMobile.js.map

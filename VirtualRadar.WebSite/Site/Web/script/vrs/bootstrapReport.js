@@ -318,4 +318,3 @@ var VRS;
     })(VRS.Bootstrap);
     VRS.BootstrapReport = BootstrapReport;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrapReport.js.map

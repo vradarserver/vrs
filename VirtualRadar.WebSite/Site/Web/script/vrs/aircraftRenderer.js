@@ -986,4 +986,3 @@ var VRS;
     VRS.RenderPropertyHelper = RenderPropertyHelper;
     VRS.renderPropertyHelper = new VRS.RenderPropertyHelper();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=aircraftRenderer.js.map

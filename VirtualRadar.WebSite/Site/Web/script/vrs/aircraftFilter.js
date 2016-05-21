@@ -252,4 +252,3 @@ var VRS;
     VRS.AircraftFilterHelper = AircraftFilterHelper;
     VRS.aircraftFilterHelper = new VRS.AircraftFilterHelper();
 })(VRS || (VRS = {}));
-//# sourceMappingURL=aircraftFilter.js.map

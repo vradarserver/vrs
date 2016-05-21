@@ -80,4 +80,3 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.optionFieldCheckBox.js.map

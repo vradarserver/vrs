@@ -871,4 +871,3 @@ var VRS;
     })(VRS.Bootstrap);
     VRS.BootstrapMap = BootstrapMap;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=bootstrapMap.js.map

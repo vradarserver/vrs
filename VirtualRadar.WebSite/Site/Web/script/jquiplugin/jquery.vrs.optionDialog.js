@@ -58,4 +58,3 @@ var VRS;
     VRS.OptionDialog = OptionDialog;
     $.widget('vrs.vrsOptionDialog', new OptionDialog());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.optionDialog.js.map
