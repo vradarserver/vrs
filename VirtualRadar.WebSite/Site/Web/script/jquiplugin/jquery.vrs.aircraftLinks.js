@@ -13,7 +13,7 @@ var VRS;
             this.separatorElements = [];
         }
         return AircraftLinksPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getAircraftLinksPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsAircraftLinks');
@@ -148,7 +148,8 @@ var VRS;
             state.separatorElements = [];
         };
         return AircraftLinksPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.AircraftLinksPlugin = AircraftLinksPlugin;
     $.widget('vrs.vrsAircraftLinks', new AircraftLinksPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.aircraftLinks.js.map

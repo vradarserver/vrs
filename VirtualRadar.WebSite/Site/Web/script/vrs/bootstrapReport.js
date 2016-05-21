@@ -315,6 +315,7 @@ var VRS;
             this.raiseOptionsPagesInitialised(pageSettings);
         };
         return BootstrapReport;
-    })(VRS.Bootstrap);
+    }(VRS.Bootstrap));
     VRS.BootstrapReport = BootstrapReport;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=bootstrapReport.js.map

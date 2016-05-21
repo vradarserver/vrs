@@ -20,7 +20,7 @@ var VRS;
             this.mirrorMapTypeChangedHookResult = null;
         }
         return AircraftPositionMapPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getAircraftPositionMapPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsAircraftPositonMap');
@@ -193,7 +193,8 @@ var VRS;
             return state.selectedAircraft;
         };
         return AircraftPositionMapPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.AircraftPositionMapPlugin = AircraftPositionMapPlugin;
     $.widget('vrs.vrsAircraftPositonMap', new AircraftPositionMapPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.aircraftPositionMap.js.map

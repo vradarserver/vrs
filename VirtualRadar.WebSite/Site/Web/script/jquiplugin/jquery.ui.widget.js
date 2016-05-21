@@ -75,4 +75,5 @@ var JQueryUICustomWidget = (function () {
         throw 'Should not see this';
     };
     return JQueryUICustomWidget;
-})();
+}());
+//# sourceMappingURL=jquery.ui.widget.js.map

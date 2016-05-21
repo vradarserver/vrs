@@ -16,7 +16,7 @@ var VRS;
             this.menuContainer = null;
         }
         return MenuPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getMenuPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsMenu');
@@ -336,7 +336,8 @@ var VRS;
             this._destroyMenu(this._getState());
         };
         return MenuPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.MenuPlugin = MenuPlugin;
     $.widget('vrs.vrsMenu', new MenuPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.menu.js.map

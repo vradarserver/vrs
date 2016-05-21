@@ -16,7 +16,7 @@ var VRS;
             }, settings));
         }
         return ReportFilterPropertyHandler;
-    })(VRS.FilterPropertyHandler);
+    }(VRS.FilterPropertyHandler));
     VRS.ReportFilterPropertyHandler = ReportFilterPropertyHandler;
     VRS.reportFilterPropertyHandlers = VRS.reportFilterPropertyHandlers || {};
     VRS.reportFilterPropertyHandlers[VRS.ReportFilterProperty.Callsign] = new VRS.ReportFilterPropertyHandler({
@@ -143,7 +143,7 @@ var VRS;
             });
         }
         return ReportFilter;
-    })(VRS.Filter);
+    }(VRS.Filter));
     VRS.ReportFilter = ReportFilter;
     var ReportFilterHelper = (function (_super) {
         __extends(ReportFilterHelper, _super);
@@ -157,7 +157,7 @@ var VRS;
             });
         }
         return ReportFilterHelper;
-    })(VRS.FilterHelper);
+    }(VRS.FilterHelper));
     VRS.ReportFilterHelper = ReportFilterHelper;
     VRS.reportFilterHelper = new VRS.ReportFilterHelper();
     var ReportCriteria = (function () {
@@ -425,6 +425,7 @@ var VRS;
             }
         };
         return ReportCriteria;
-    })();
+    }());
     VRS.ReportCriteria = ReportCriteria;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=reportFilter.js.map

@@ -65,9 +65,10 @@ var VRS;
             }
         };
         return EventHandler;
-    })();
+    }());
     VRS.EventHandler = EventHandler;
     VRS.globalDispatch = new VRS.EventHandler({
         name: 'GlobalDispatch'
     });
 })(VRS || (VRS = {}));
+//# sourceMappingURL=event.js.map

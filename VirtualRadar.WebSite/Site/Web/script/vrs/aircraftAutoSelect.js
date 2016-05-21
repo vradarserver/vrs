@@ -269,6 +269,7 @@ var VRS;
             this._SelectedAircraftChangedHook = aircraftList.hookSelectedAircraftChanged(this.selectedAircraftChanged, this);
         }
         return AircraftAutoSelect;
-    })();
+    }());
     VRS.AircraftAutoSelect = AircraftAutoSelect;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftAutoSelect.js.map

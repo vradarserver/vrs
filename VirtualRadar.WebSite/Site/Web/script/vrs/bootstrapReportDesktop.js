@@ -13,6 +13,7 @@ var VRS;
             });
         }
         return BootstrapReportDesktop;
-    })(VRS.BootstrapReport);
+    }(VRS.BootstrapReport));
     VRS.BootstrapReportDesktop = BootstrapReportDesktop;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=bootstrapReportDesktop.js.map

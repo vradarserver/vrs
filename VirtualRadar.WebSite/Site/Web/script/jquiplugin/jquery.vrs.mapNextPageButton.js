@@ -20,7 +20,7 @@ var VRS;
             this.pausedChangedHookResult = null;
         }
         return MapNextPageButton_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getMapNextPageButtonPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsMapNextPageButton');
@@ -111,7 +111,8 @@ var VRS;
             this._showImage();
         };
         return MapNextPageButton;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.MapNextPageButton = MapNextPageButton;
     $.widget('vrs.vrsMapNextPageButton', new MapNextPageButton());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.mapNextPageButton.js.map

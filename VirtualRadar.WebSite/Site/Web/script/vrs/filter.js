@@ -25,7 +25,7 @@ var VRS;
             this._ReverseCondition = value;
         };
         return ValueCondition;
-    })();
+    }());
     VRS.ValueCondition = ValueCondition;
     var OneValueCondition = (function (_super) {
         __extends(OneValueCondition, _super);
@@ -60,7 +60,7 @@ var VRS;
             this.setValue(settings.value);
         };
         return OneValueCondition;
-    })(ValueCondition);
+    }(ValueCondition));
     VRS.OneValueCondition = OneValueCondition;
     var TwoValueCondition = (function (_super) {
         __extends(TwoValueCondition, _super);
@@ -123,7 +123,7 @@ var VRS;
             this.setValue2(settings.value2);
         };
         return TwoValueCondition;
-    })(ValueCondition);
+    }(ValueCondition));
     VRS.TwoValueCondition = TwoValueCondition;
     var FilterPropertyTypeHandler = (function () {
         function FilterPropertyTypeHandler(settings) {
@@ -219,7 +219,7 @@ var VRS;
             valueCondition.setReverseCondition(decodedCondition.reverseCondition);
         };
         return FilterPropertyTypeHandler;
-    })();
+    }());
     VRS.FilterPropertyTypeHandler = FilterPropertyTypeHandler;
     VRS.filterPropertyTypeHandlers = VRS.filterPropertyTypeHandlers || {};
     VRS.filterPropertyTypeHandlers[VRS.FilterPropertyType.DateRange] = new VRS.FilterPropertyTypeHandler({
@@ -591,7 +591,7 @@ var VRS;
             return VRS.filterPropertyTypeHandlers[this.type];
         };
         return FilterPropertyHandler;
-    })();
+    }());
     VRS.FilterPropertyHandler = FilterPropertyHandler;
     var Filter = (function () {
         function Filter(settings) {
@@ -689,7 +689,7 @@ var VRS;
             }
         };
         return Filter;
-    })();
+    }());
     VRS.Filter = Filter;
     var FilterHelper = (function () {
         function FilterHelper(settings) {
@@ -829,6 +829,7 @@ var VRS;
             }
         };
         return FilterHelper;
-    })();
+    }());
     VRS.FilterHelper = FilterHelper;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=filter.js.map

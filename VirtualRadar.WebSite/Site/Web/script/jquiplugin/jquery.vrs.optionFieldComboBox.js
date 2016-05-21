@@ -11,7 +11,7 @@ var VRS;
             this.refreshFieldVisibilityHookResult = null;
         }
         return OptionFieldComboBoxPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFieldComboBoxPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionFieldComboBox');
@@ -124,7 +124,7 @@ var VRS;
             this._setVisibility(null);
         };
         return OptionFieldComboBoxPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldComboBoxPlugin = OptionFieldComboBoxPlugin;
     $.widget('vrs.vrsOptionFieldComboBox', new OptionFieldComboBoxPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -135,3 +135,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldComboBox.js.map

@@ -113,7 +113,7 @@ var VRS;
             }
         };
         return OptionField;
-    })();
+    }());
     VRS.OptionField = OptionField;
     var OptionFieldButton = (function (_super) {
         __extends(OptionFieldButton, _super);
@@ -126,8 +126,8 @@ var VRS;
                 secondaryIcon: null,
                 showText: true
             }, settings);
-            this._Enabled = true;
             _super.call(this, settings);
+            this._Enabled = true;
         }
         OptionFieldButton.prototype.getPrimaryIcon = function () {
             return this._Settings.primaryIcon || this._Settings.icon;
@@ -148,7 +148,7 @@ var VRS;
             }
         };
         return OptionFieldButton;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldButton = OptionFieldButton;
     var OptionFieldCheckBox = (function (_super) {
         __extends(OptionFieldCheckBox, _super);
@@ -160,7 +160,7 @@ var VRS;
             _super.call(this, settings);
         }
         return OptionFieldCheckBox;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldCheckBox = OptionFieldCheckBox;
     var OptionFieldColour = (function (_super) {
         __extends(OptionFieldColour, _super);
@@ -173,7 +173,7 @@ var VRS;
             _super.call(this, settings);
         }
         return OptionFieldColour;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldColour = OptionFieldColour;
     var OptionFieldComboBox = (function (_super) {
         __extends(OptionFieldComboBox, _super);
@@ -193,7 +193,7 @@ var VRS;
             this._Settings.changed(selectedValue);
         };
         return OptionFieldComboBox;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldComboBox = OptionFieldComboBox;
     var OptionFieldDate = (function (_super) {
         __extends(OptionFieldDate, _super);
@@ -217,7 +217,7 @@ var VRS;
             return this._Settings.maxDate;
         };
         return OptionFieldDate;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldDate = OptionFieldDate;
     var OptionFieldLabel = (function (_super) {
         __extends(OptionFieldLabel, _super);
@@ -233,7 +233,7 @@ var VRS;
             return this._Settings.labelWidth;
         };
         return OptionFieldLabel;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldLabel = OptionFieldLabel;
     var OptionFieldLinkLabel = (function (_super) {
         __extends(OptionFieldLinkLabel, _super);
@@ -253,7 +253,7 @@ var VRS;
             return this._Settings.getTarget() || null;
         };
         return OptionFieldLinkLabel;
-    })(OptionFieldLabel);
+    }(OptionFieldLabel));
     VRS.OptionFieldLinkLabel = OptionFieldLinkLabel;
     var OptionFieldNumeric = (function (_super) {
         __extends(OptionFieldNumeric, _super);
@@ -294,7 +294,7 @@ var VRS;
             return this._Settings.allowNullValue;
         };
         return OptionFieldNumeric;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldNumeric = OptionFieldNumeric;
     var OptionFieldOrderedSubset = (function (_super) {
         __extends(OptionFieldOrderedSubset, _super);
@@ -314,7 +314,7 @@ var VRS;
             return this._Settings.keepValuesSorted;
         };
         return OptionFieldOrderedSubset;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldOrderedSubset = OptionFieldOrderedSubset;
     var OptionFieldPaneList = (function (_super) {
         __extends(OptionFieldPaneList, _super);
@@ -331,12 +331,12 @@ var VRS;
                     $(':button', addParentJQ).button('option', 'disabled', disabled);
                 }
             }, settings);
+            _super.call(this, settings);
             this._PaneListEvents = {
                 paneAdded: 'paneAdded',
                 paneRemoved: 'paneRemoved',
                 maxPanesChanged: 'maxPanesChanged'
             };
-            _super.call(this, settings);
         }
         OptionFieldPaneList.prototype.getMaxPanes = function () {
             return this._Settings.maxPanes;
@@ -428,7 +428,7 @@ var VRS;
             this.onPaneRemoved(pane, index);
         };
         return OptionFieldPaneList;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldPaneList = OptionFieldPaneList;
     var OptionFieldRadioButton = (function (_super) {
         __extends(OptionFieldRadioButton, _super);
@@ -444,7 +444,7 @@ var VRS;
             return this._Settings.values;
         };
         return OptionFieldRadioButton;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldRadioButton = OptionFieldRadioButton;
     var OptionFieldTextBox = (function (_super) {
         __extends(OptionFieldTextBox, _super);
@@ -468,7 +468,7 @@ var VRS;
             return this._Settings.maxLength;
         };
         return OptionFieldTextBox;
-    })(OptionField);
+    }(OptionField));
     VRS.OptionFieldTextBox = OptionFieldTextBox;
     var OptionPane = (function () {
         function OptionPane(settings) {
@@ -562,7 +562,7 @@ var VRS;
             return result;
         };
         return OptionPane;
-    })();
+    }());
     VRS.OptionPane = OptionPane;
     var OptionPage = (function () {
         function OptionPage(settings) {
@@ -651,7 +651,7 @@ var VRS;
             }
         };
         return OptionPage;
-    })();
+    }());
     VRS.OptionPage = OptionPage;
     var OptionPageParent = (function () {
         function OptionPageParent() {
@@ -670,7 +670,7 @@ var VRS;
             this._Dispatcher.unhook(hookResult);
         };
         return OptionPageParent;
-    })();
+    }());
     VRS.OptionPageParent = OptionPageParent;
     var OptionControlTypeBroker = (function () {
         function OptionControlTypeBroker() {
@@ -702,7 +702,7 @@ var VRS;
             return creator(options);
         };
         return OptionControlTypeBroker;
-    })();
+    }());
     VRS.OptionControlTypeBroker = OptionControlTypeBroker;
     VRS.optionControlTypeBroker = new VRS.OptionControlTypeBroker();
     VRS.optionControlTypes = VRS.optionControlTypes || {};
@@ -719,3 +719,4 @@ var VRS;
     VRS.optionControlTypes.radioButton = 'vrsRadioButton';
     VRS.optionControlTypes.textBox = 'vrsTextBox';
 })(VRS || (VRS = {}));
+//# sourceMappingURL=optionsUI.js.map

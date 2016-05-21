@@ -70,7 +70,8 @@ var VRS;
             }, VRS.globalOptions.serverConfigRetryInterval);
         };
         return ServerConfiguration;
-    })();
+    }());
     VRS.ServerConfiguration = ServerConfiguration;
     VRS.serverConfig = new VRS.ServerConfiguration();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=serverConfiguration.js.map

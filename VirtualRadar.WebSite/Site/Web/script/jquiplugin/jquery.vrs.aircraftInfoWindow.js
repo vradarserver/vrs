@@ -45,7 +45,7 @@ var VRS;
             this.localeChangedHookResult = null;
         }
         return AircraftInfoWindowPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getAircraftInfoWindowPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsAircraftInfoWindow');
@@ -347,7 +347,8 @@ var VRS;
                 this.refreshDisplay();
         };
         return AircraftInfoWindowPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.AircraftInfoWindowPlugin = AircraftInfoWindowPlugin;
     $.widget('vrs.vrsAircraftInfoWindow', new AircraftInfoWindowPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.aircraftInfoWindow.js.map

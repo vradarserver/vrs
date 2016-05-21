@@ -61,7 +61,7 @@ var VRS;
             }
         };
         return ReportPropertyHandler;
-    })();
+    }());
     VRS.ReportPropertyHandler = ReportPropertyHandler;
     VRS.reportPropertyHandlers = VRS.reportPropertyHandlers || {};
     VRS.reportPropertyHandlers[VRS.ReportAircraftProperty.AircraftClass] = new VRS.ReportPropertyHandler({
@@ -740,7 +740,8 @@ var VRS;
             return result;
         };
         return ReportPropertyHandlerHelper;
-    })();
+    }());
     VRS.ReportPropertyHandlerHelper = ReportPropertyHandlerHelper;
     VRS.reportPropertyHandlerHelper = new VRS.ReportPropertyHandlerHelper();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=reportRenderer.js.map

@@ -10,7 +10,7 @@ var VRS;
             this.refreshFieldContentHookResult = null;
         }
         return OptionFieldLabelPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFieldLabelPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionFieldLabel');
@@ -62,7 +62,7 @@ var VRS;
             state.refreshFieldContentHookResult = null;
         };
         return OptionFieldLabelPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldLabelPlugin = OptionFieldLabelPlugin;
     $.widget('vrs.vrsOptionFieldLabel', new OptionFieldLabelPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -73,3 +73,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldLabel.js.map

@@ -13,7 +13,7 @@ var VRS;
             this.tabsJQ = null;
         }
         return OptionForm_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFormPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionForm');
@@ -138,7 +138,8 @@ var VRS;
             });
         };
         return OptionForm;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionForm = OptionForm;
     $.widget('vrs.vrsOptionForm', new OptionForm());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionForm.js.map

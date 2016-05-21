@@ -273,7 +273,8 @@ var VRS;
             return pageSettings.localeMenuItem;
         };
         return Bootstrap;
-    })();
+    }());
     VRS.Bootstrap = Bootstrap;
     VRS.bootstrap = null;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=bootstrap.js.map

@@ -22,7 +22,7 @@ var VRS;
             this.eventNamespace = '';
         }
         return Splitter_State;
-    })();
+    }());
     var SplitterPane_State = (function () {
         function SplitterPane_State() {
             this.container = null;
@@ -30,7 +30,7 @@ var VRS;
             this.originalContentCss = null;
         }
         return SplitterPane_State;
-    })();
+    }());
     var SplitterPaneDetail = (function () {
         function SplitterPaneDetail(element) {
             this.element = element;
@@ -38,7 +38,7 @@ var VRS;
             this.length = 0;
         }
         return SplitterPaneDetail;
-    })();
+    }());
     var SplitterGroupPersistence = (function () {
         function SplitterGroupPersistence(name) {
             this._SplitterDetails = {};
@@ -142,7 +142,7 @@ var VRS;
             }
         };
         return SplitterGroupPersistence;
-    })();
+    }());
     VRS.SplitterGroupPersistence = SplitterGroupPersistence;
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getSplitterPlugin = function (jQueryElement) {
@@ -252,7 +252,7 @@ var VRS;
             return result;
         };
         return SplitterPane;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.SplitterPane = SplitterPane;
     $.widget('vrs.vrsSplitterPane', new SplitterPane());
     var Splitter = (function (_super) {
@@ -753,7 +753,8 @@ var VRS;
             return false;
         };
         return Splitter;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.Splitter = Splitter;
     $.widget('vrs.vrsSplitter', new Splitter());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.splitter.js.map

@@ -24,7 +24,7 @@ var VRS;
             return result;
         };
         return AircraftCollection;
-    })();
+    }());
     VRS.AircraftCollection = AircraftCollection;
     var AircraftList = (function () {
         function AircraftList() {
@@ -204,6 +204,7 @@ var VRS;
             }
         };
         return AircraftList;
-    })();
+    }());
     VRS.AircraftList = AircraftList;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftList.js.map

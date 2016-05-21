@@ -10,7 +10,7 @@ var VRS;
             this.colourPicker = null;
         }
         return OptionFieldColourPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getOptionFieldColourPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsOptionFieldColour');
@@ -98,7 +98,7 @@ var VRS;
             return result;
         };
         return OptionFieldColourPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldColourPlugin = OptionFieldColourPlugin;
     $.widget('vrs.vrsOptionFieldColour', new OptionFieldColourPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -109,3 +109,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldColour.js.map

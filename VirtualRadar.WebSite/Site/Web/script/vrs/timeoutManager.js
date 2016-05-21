@@ -74,7 +74,8 @@ var VRS;
             }
         };
         return TimeoutManager;
-    })();
+    }());
     VRS.TimeoutManager = TimeoutManager;
     VRS.timeoutManager = new VRS.TimeoutManager();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=timeoutManager.js.map

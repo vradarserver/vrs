@@ -21,6 +21,7 @@ var VRS;
             });
         };
         return AirportDataApi;
-    })();
+    }());
     VRS.AirportDataApi = AirportDataApi;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=airportDataApi.js.map

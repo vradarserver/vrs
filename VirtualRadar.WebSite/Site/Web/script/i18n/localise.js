@@ -83,7 +83,7 @@ var VRS;
             return result;
         };
         return CultureInfo;
-    })();
+    }());
     VRS.CultureInfo = CultureInfo;
     var Localise = (function () {
         function Localise() {
@@ -323,7 +323,7 @@ var VRS;
             });
         };
         return Localise;
-    })();
+    }());
     VRS.Localise = Localise;
     VRS.globalisation = new VRS.Localise();
     VRS.globalisation.addCultureInfo('en', { language: 'en', englishName: 'English', forceCultureName: 'en-GB', topLevel: true });
@@ -356,3 +356,4 @@ var VRS;
     VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)', nativeName: '中文 (中国)' });
     VRS.globalisation.addCultureInfo('pt-BR', { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)', countryFlag: 'br', topLevel: true });
 })(VRS || (VRS = {}));
+//# sourceMappingURL=localise.js.map

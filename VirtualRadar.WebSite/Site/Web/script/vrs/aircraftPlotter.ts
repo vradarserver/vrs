@@ -1540,7 +1540,7 @@ namespace VRS
         {
             var result: number[] = [];
             for(var aircraftId in this._PlottedDetail) {
-                result.push(aircraftId);
+                result.push(Number(aircraftId));
             }
 
             return result;

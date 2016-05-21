@@ -73,7 +73,7 @@ var VRS;
             this.localeChangedHookResult = null;
         }
         return ReportDetailPlugin_State;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getReportDetailPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsReportDetail');
@@ -375,7 +375,8 @@ var VRS;
             this._displayFlightDetails(this._getState(), selectedFlight);
         };
         return ReportDetailPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.ReportDetailPlugin = ReportDetailPlugin;
     $.widget('vrs.vrsReportDetail', new ReportDetailPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.reportDetail.js.map

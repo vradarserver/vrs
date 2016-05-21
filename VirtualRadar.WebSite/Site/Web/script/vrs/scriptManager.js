@@ -95,7 +95,8 @@ var VRS;
             }
         };
         return ScriptManager;
-    })();
+    }());
     VRS.ScriptManager = ScriptManager;
     VRS.scriptManager = new VRS.ScriptManager();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=scriptManager.js.map

@@ -62,7 +62,7 @@ var VRS;
             this.element.off();
         };
         return OptionFieldTextBoxPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.OptionFieldTextBoxPlugin = OptionFieldTextBoxPlugin;
     $.widget('vrs.vrsOptionFieldTextBox', new OptionFieldTextBoxPlugin());
     if (VRS.optionControlTypeBroker) {
@@ -73,3 +73,4 @@ var VRS;
         });
     }
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.optionFieldTextBox.js.map

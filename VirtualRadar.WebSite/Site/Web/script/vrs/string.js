@@ -33,10 +33,10 @@ var VRS;
             if (result) {
                 result = '';
                 var length_1 = text.length;
-                var start = 0;
+                var start_1 = 0;
                 var useChunk = function (end) {
-                    result += text.substring(start, end);
-                    start = end + 1;
+                    result += text.substring(start_1, end);
+                    start_1 = end + 1;
                 };
                 for (var i = 0; i < length_1; ++i) {
                     var ch = text[i];
@@ -275,7 +275,8 @@ var VRS;
             return result;
         };
         return StringUtility;
-    })();
+    }());
     VRS.StringUtility = StringUtility;
     VRS.stringUtility = new VRS.StringUtility();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=string.js.map

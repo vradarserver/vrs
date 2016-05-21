@@ -71,7 +71,8 @@ var VRS;
             this.element.dialog(dialogSettings);
         };
         return SelectDialog;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     VRS.SelectDialog = SelectDialog;
     $.widget('vrs.vrsSelectDialog', new SelectDialog());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.selectDialog.js.map

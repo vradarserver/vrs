@@ -281,7 +281,7 @@ var VRS;
             }
         };
         return GoogleMapUtilities;
-    })();
+    }());
     VRS.GoogleMapUtilities = GoogleMapUtilities;
     VRS.googleMapUtilities = new VRS.GoogleMapUtilities();
     var MapIcon = (function () {
@@ -294,7 +294,7 @@ var VRS;
             this.labelAnchor = labelAnchor;
         }
         return MapIcon;
-    })();
+    }());
     VRS.MapIcon = MapIcon;
     var MapMarker = (function () {
         function MapMarker(id, nativeMarker, isMarkerWithLabel, tag) {
@@ -362,7 +362,7 @@ var VRS;
                 this.marker.set('labelAnchor', VRS.googleMapUtilities.toGooglePoint(anchor));
         };
         return MapMarker;
-    })();
+    }());
     var MapMarkerClusterer = (function () {
         function MapMarkerClusterer(map, nativeMarkerClusterer) {
             this.map = map;
@@ -404,7 +404,7 @@ var VRS;
             return result;
         };
         return MapMarkerClusterer;
-    })();
+    }());
     var MapPolygon = (function () {
         function MapPolygon(id, nativePolygon, tag, options) {
             this.id = id;
@@ -512,7 +512,7 @@ var VRS;
             }
         };
         return MapPolygon;
-    })();
+    }());
     var MapPolyline = (function () {
         function MapPolyline(id, nativePolyline, tag, options) {
             this.id = id;
@@ -591,7 +591,7 @@ var VRS;
             return result;
         };
         return MapPolyline;
-    })();
+    }());
     var MapCircle = (function () {
         function MapCircle(id, nativeCircle, tag, options) {
             this.id = id;
@@ -692,7 +692,7 @@ var VRS;
             }
         };
         return MapCircle;
-    })();
+    }());
     var MapInfoWindow = (function () {
         function MapInfoWindow(id, nativeInfoWindow, tag, options) {
             this.nativeListeners = [];
@@ -750,7 +750,7 @@ var VRS;
             this.infoWindow.setZIndex(value);
         };
         return MapInfoWindow;
-    })();
+    }());
     var MapPluginState = (function () {
         function MapPluginState() {
             this.map = undefined;
@@ -763,7 +763,7 @@ var VRS;
             this.nativeHooks = [];
         }
         return MapPluginState;
-    })();
+    }());
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getMapPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsMap');
@@ -1592,6 +1592,7 @@ var VRS;
             this._setCenter(state, center);
         };
         return MapPlugin;
-    })(JQueryUICustomWidget);
+    }(JQueryUICustomWidget));
     $.widget('vrs.vrsMap', new MapPlugin());
 })(VRS || (VRS = {}));
+//# sourceMappingURL=jquery.vrs.map.js.map

@@ -17,7 +17,7 @@ var VRS;
             this.getValueCallback = settings.getValueCallback;
         }
         return AircraftFilterPropertyHandler;
-    })(VRS.FilterPropertyHandler);
+    }(VRS.FilterPropertyHandler));
     VRS.AircraftFilterPropertyHandler = AircraftFilterPropertyHandler;
     VRS.aircraftFilterPropertyHandlers = VRS.aircraftFilterPropertyHandlers || {};
     VRS.aircraftFilterPropertyHandlers[VRS.AircraftFilterProperty.Airport] = new VRS.AircraftFilterPropertyHandler({
@@ -222,7 +222,7 @@ var VRS;
             return result;
         };
         return AircraftFilter;
-    })(VRS.Filter);
+    }(VRS.Filter));
     VRS.AircraftFilter = AircraftFilter;
     var AircraftFilterHelper = (function (_super) {
         __extends(AircraftFilterHelper, _super);
@@ -248,7 +248,8 @@ var VRS;
             return result;
         };
         return AircraftFilterHelper;
-    })(VRS.FilterHelper);
+    }(VRS.FilterHelper));
     VRS.AircraftFilterHelper = AircraftFilterHelper;
     VRS.aircraftFilterHelper = new VRS.AircraftFilterHelper();
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftFilter.js.map

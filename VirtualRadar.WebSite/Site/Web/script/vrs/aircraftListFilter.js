@@ -212,6 +212,7 @@ var VRS;
             };
         };
         return AircraftListFilter;
-    })();
+    }());
     VRS.AircraftListFilter = AircraftListFilter;
 })(VRS || (VRS = {}));
+//# sourceMappingURL=aircraftListFilter.js.map

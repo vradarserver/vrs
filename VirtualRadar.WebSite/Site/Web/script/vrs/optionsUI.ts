@@ -318,9 +318,9 @@ namespace VRS
                 secondaryIcon: null,
                 showText: true
             }, settings);
-            this._Enabled = true;
-
             super(settings);
+
+            this._Enabled = true;
         }
 
         getPrimaryIcon() : string
@@ -790,14 +790,13 @@ namespace VRS
                     $(':button', addParentJQ).button('option', 'disabled', disabled);
                 }
             }, settings);
+            super(settings);
 
             this._PaneListEvents = {
                 paneAdded:          'paneAdded',
                 paneRemoved:        'paneRemoved',
                 maxPanesChanged:    'maxPanesChanged'
             };
-            
-            super(settings);
         }
 
         getMaxPanes() : number
