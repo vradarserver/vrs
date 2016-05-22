@@ -117,66 +117,54 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SomethingDoesNotExist" xml:space="preserve">
-    <value>'{0}' não existe</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="CreateDatabase" xml:space="preserve">
-    <value>Criar Banco de dados</value>
-  </data>
-  <data name="DatabaseFileName" xml:space="preserve">
-    <value>Nome do arquivo de banco de dados</value>
-  </data>
-  <data name="Disabled" xml:space="preserve">
-    <value>Desativado</value>
-  </data>
-  <data name="Enabled" xml:space="preserve">
-    <value>Ativado</value>
-  </data>
-  <data name="EnabledAndUpdatingSomething" xml:space="preserve">
-    <value>Ativado, atualizando {0}</value>
-  </data>
-  <data name="EnabledNoDatabase" xml:space="preserve">
-    <value>Ativado, banco de dados não especificado</value>
-  </data>
-  <data name="EnabledNotUpdating" xml:space="preserve">
-    <value>Ativado, mas não está atualizando o banco de dados</value>
-  </data>
-  <data name="ExceptionCaught" xml:space="preserve">
-    <value>erro detectado: {0}</value>
-  </data>
-  <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
-    <value>Erro detectado ao fechar sessão: {0}</value>
-  </data>
-  <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
-    <value>Erro detectado ao iniciar sessão: {0}</value>
-  </data>
-  <data name="NotUpdatingDatabase" xml:space="preserve">
-    <value>Não atualizar banco de dados</value>
-  </data>
-  <data name="OK" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="OnlyUpdateDatabasesCreatedByPlugin" xml:space="preserve">
-    <value>Atualizar apenas o banco de dados que este plug-in criou</value>
-    <comment>Only update databases that this plugin created</comment>
-  </data>
-  <data name="OptionsViewTitle" xml:space="preserve">
-    <value>BaseStation Database Writer Options</value>
+  <data name="UseDefaultFileName" xml:space="preserve">
+    <value>Usar nome padrão</value>
   </data>
   <data name="SelectDatabaseFile" xml:space="preserve">
     <value>Selecione arquivo de Banco de Dados</value>
   </data>
-  <data name="SomethingIsZeroLength" xml:space="preserve">
-    <value>'{0}' é zero</value>
+  <data name="Receiver" xml:space="preserve">
+    <value>Receptor</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="DatabaseFileName" xml:space="preserve">
+    <value>Banco de dados:</value>
+  </data>
+  <data name="NotUpdatingDatabase" xml:space="preserve">
+    <value>Não atualizar banco de dados</value>
+  </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>Erro detectado durante o processamento da mensagem: {0}</value>
+  </data>
+  <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
+    <value>Erro detectado ao iniciar sessão: {0}</value>
+  </data>
+  <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
+    <value>Erro detectado ao fechar sessão: {0}</value>
+  </data>
+  <data name="ExceptionCaught" xml:space="preserve">
+    <value>Erro: {0}</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Desativado</value>
+  </data>
+  <data name="CreateDatabase" xml:space="preserve">
+    <value>Criar Banco de dados</value>
   </data>
   <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
-    <value>Configurações impedem a atualização do banco de dados não criado pelo plug-in</value>
+    <value>Esta configuração impede a atualização do banco de dados que não foi criado por este plugin</value>
   </data>
-  <data name="UseDefaultFileName" xml:space="preserve">
-    <value>Usar nome padrão</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="OptionsViewTitle" xml:space="preserve">
+    <value>BaseStation Database Writer Options</value>
+  </data>
+  <data name="OnlyUpdateDatabasesCreatedByPlugin" xml:space="preserve">
+    <value>Atualizar apenas o banco de dados que este plug-in criou</value>
+    <comment>Only update databases that this plugin created</comment>
   </data>
   <data name="EnabledBadReceiver" xml:space="preserve">
     <value>Ativado, receptor não habilitado ou inválido</value>
@@ -184,10 +172,22 @@
   <data name="EnabledNoReceiver" xml:space="preserve">
     <value>Ativado, nenhum receptor expecificado</value>
   </data>
-  <data name="Receiver" xml:space="preserve">
-    <value>Receptor</value>
+  <data name="EnabledNotUpdating" xml:space="preserve">
+    <value>Ativado, mas não está atualizando o banco de dados</value>
   </data>
-  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
-    <value>Erro detectado durante o processamento da mensagem: {0}</value>
+  <data name="EnabledNoDatabase" xml:space="preserve">
+    <value>Ativado, banco de dados não especificado</value>
+  </data>
+  <data name="EnabledAndUpdatingSomething" xml:space="preserve">
+    <value>Ativado, atualizando {0}</value>
+  </data>
+  <data name="SomethingDoesNotExist" xml:space="preserve">
+    <value>'{0}' não existe</value>
+  </data>
+  <data name="SomethingIsZeroLength" xml:space="preserve">
+    <value>'{0}' é zero</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>&amp;Ativado</value>
   </data>
 </root>
