@@ -277,7 +277,7 @@
     <value>Desktop Report Page</value>
   </data>
   <data name="DetailItems" xml:space="preserve">
-    <value>Itens de detalhes das aeronaves</value>
+    <value>Aircraft Detail Items</value>
   </data>
   <data name="DetailPanel" xml:space="preserve">
     <value>Painel de detalhes</value>
@@ -286,10 +286,10 @@
     <value>Desativar auto-seleção</value>
   </data>
   <data name="Distance" xml:space="preserve">
-    <value>Distancia</value>
+    <value>Distância</value>
   </data>
   <data name="Distances" xml:space="preserve">
-    <value>Distancias</value>
+    <value>Distâncias</value>
   </data>
   <data name="DoNotImportAutoSelect" xml:space="preserve">
     <value>Não importar configurações de auto-selecionar</value>
@@ -298,7 +298,7 @@
     <value>Não importar a localização</value>
   </data>
   <data name="DoNotImportRequestFeedId" xml:space="preserve">
-    <value>Não importar o ID do feed</value>
+    <value>Do not import request feed ID</value>
   </data>
   <data name="DoNotImportLanguageSettings" xml:space="preserve">
     <value>Não importar a configuração de idioma</value>
@@ -373,7 +373,7 @@
     <value>Find all permutations of callsign</value>
   </data>
   <data name="First" xml:space="preserve">
-    <value>First</value>
+    <value>Primeiro</value>
   </data>
   <data name="FirstAltitude" xml:space="preserve">
     <value>Primeira altitude</value>
@@ -469,7 +469,7 @@
     <value>Mais distante</value>
   </data>
   <data name="GenericName" xml:space="preserve">
-    <value>Generic Name</value>
+    <value>Nome genérico</value>
   </data>
   <data name="Geometric" xml:space="preserve">
     <value>Geometric</value>
@@ -496,19 +496,19 @@
     <value>Ground track</value>
   </data>
   <data name="GroundVehicle" xml:space="preserve">
-    <value>Ground Vehicle</value>
+    <value>Veiculo de solo</value>
   </data>
   <data name="Gyrocopter" xml:space="preserve">
-    <value>Gyrocopter</value>
+    <value>Girocóptero</value>
   </data>
   <data name="HadAlert" xml:space="preserve">
-    <value>Had Alert</value>
+    <value>Em alerta</value>
   </data>
   <data name="HadEmergency" xml:space="preserve">
-    <value>Had Emergency</value>
+    <value>Em emergência</value>
   </data>
   <data name="HadSPI" xml:space="preserve">
-    <value>Had Ident</value>
+    <value>Acionou o Ident</value>
   </data>
   <data name="Heading" xml:space="preserve">
     <value>Proa</value>
@@ -538,7 +538,7 @@
     <value>Contraste</value>
   </data>
   <data name="Icao" xml:space="preserve">
-    <value>ModeS</value>
+    <value>ICAO</value>
   </data>
   <data name="Import" xml:space="preserve">
     <value>Importar</value>
@@ -556,7 +556,7 @@
     <value>Index</value>
   </data>
   <data name="IndicatedAirSpeed" xml:space="preserve">
-    <value>Indicado</value>
+    <value>Indicated</value>
   </data>
   <data name="IndicatedAirSpeedShort" xml:space="preserve">
     <value>IAS</value>
@@ -595,10 +595,10 @@
     <value>{0} kts</value>
   </data>
   <data name="LandPlane" xml:space="preserve">
-    <value>Avião</value>
+    <value>Landplane</value>
   </data>
   <data name="Last" xml:space="preserve">
-    <value>Último</value>
+    <value>Last</value>
   </data>
   <data name="LastAltitude" xml:space="preserve">
     <value>Última Altitude</value>
@@ -718,19 +718,19 @@
     <value>Motores</value>
   </data>
   <data name="ListFirstAltitude" xml:space="preserve">
-    <value>Da Alt.</value>
+    <value>From Alt.</value>
   </data>
   <data name="ListFirstFlightLevel" xml:space="preserve">
-    <value>Da FL</value>
+    <value>From FL</value>
   </data>
   <data name="ListFirstHeading" xml:space="preserve">
     <value>Do Hdg.</value>
   </data>
   <data name="ListFirstLatitude" xml:space="preserve">
-    <value>Da Lat.</value>
+    <value>From Lat.</value>
   </data>
   <data name="ListFirstLongitude" xml:space="preserve">
-    <value>Da Lng.</value>
+    <value>From Lng.</value>
   </data>
   <data name="ListFirstOnGround" xml:space="preserve">
     <value>From On Gnd.</value>
@@ -739,7 +739,7 @@
     <value>Primeiro Registro</value>
   </data>
   <data name="ListFirstSpeed" xml:space="preserve">
-    <value>Da Velocidade</value>
+    <value>From Speed</value>
   </data>
   <data name="ListFirstSquawk" xml:space="preserve">
     <value>From Squawk</value>
@@ -757,13 +757,13 @@
     <value>Visto</value>
   </data>
   <data name="ListGenericName" xml:space="preserve">
-    <value>Nome genérico</value>
+    <value>Nome generico</value>
   </data>
   <data name="ListHadAlert" xml:space="preserve">
-    <value>Alerta</value>
+    <value>Alert</value>
   </data>
   <data name="ListHadEmergency" xml:space="preserve">
-    <value>Emergencia</value>
+    <value>Emergency</value>
   </data>
   <data name="ListHadSPI" xml:space="preserve">
     <value>SPI</value>
@@ -775,37 +775,37 @@
     <value>Hdg. Type</value>
   </data>
   <data name="ListIcao" xml:space="preserve">
-    <value>ModeS</value>
+    <value>ICAO</value>
   </data>
   <data name="ListInteresting" xml:space="preserve">
     <value>Interessante</value>
   </data>
   <data name="ListLastAltitude" xml:space="preserve">
-    <value>Até Alt.</value>
+    <value>To Alt.</value>
   </data>
   <data name="ListLastFlightLevel" xml:space="preserve">
-    <value>Até FL</value>
+    <value>To FL</value>
   </data>
   <data name="ListLastHeading" xml:space="preserve">
-    <value>Até Hdg.</value>
+    <value>To Hdg.</value>
   </data>
   <data name="ListLastLatitude" xml:space="preserve">
-    <value>Até Lat.</value>
+    <value>To Lat.</value>
   </data>
   <data name="ListLastLongitude" xml:space="preserve">
-    <value>Até Lng.</value>
+    <value>To Lng.</value>
   </data>
   <data name="ListLastOnGround" xml:space="preserve">
     <value>To On Gnd.</value>
   </data>
   <data name="ListLastSpeed" xml:space="preserve">
-    <value>Até a velocidade</value>
+    <value>To Speed</value>
   </data>
   <data name="ListLastSquawk" xml:space="preserve">
     <value>To Squawk</value>
   </data>
   <data name="ListLastVerticalSpeed" xml:space="preserve">
-    <value>Até VSI</value>
+    <value>To VSI</value>
   </data>
   <data name="ListLatitude" xml:space="preserve">
     <value>Lat.</value>
@@ -814,13 +814,13 @@
     <value>Lng.</value>
   </data>
   <data name="ListNotes" xml:space="preserve">
-    <value>Notas</value>
+    <value>Notes</value>
   </data>
   <data name="ListManufacturer" xml:space="preserve">
     <value>Fabricante</value>
   </data>
   <data name="ListMaxTakeoffWeight" xml:space="preserve">
-    <value>Peso max. de decolagem</value>
+    <value>Max T/O Weight</value>
   </data>
   <data name="ListMlat" xml:space="preserve">
     <value>MLAT</value>
@@ -832,7 +832,7 @@
     <value>Aeronave</value>
   </data>
   <data name="ListModeSCountry" xml:space="preserve">
-    <value>Mode-S Country</value>
+    <value>País do Mode-S </value>
   </data>
   <data name="ListModelSilhouette" xml:space="preserve">
     <value>Silhueta</value>
@@ -1141,7 +1141,7 @@
     <value>Configurações da Lista</value>
   </data>
   <data name="PaneManyAircraft" xml:space="preserve">
-    <value>Relatórios de múltiplas Aeronaves</value>
+    <value>Dados da lista de aeronaves</value>
   </data>
   <data name="PanePermanentLink" xml:space="preserve">
     <value>Link permanente</value>
@@ -1153,13 +1153,13 @@
     <value>Alcance do receptor</value>
   </data>
   <data name="PaneSingleAircraft" xml:space="preserve">
-    <value>Relatórios de uma única aeronave</value>
+    <value>Dados da aeronave selecionada</value>
   </data>
   <data name="PaneSortAircraftList" xml:space="preserve">
     <value>Lista curta de aeronaves</value>
   </data>
   <data name="PaneSortReport" xml:space="preserve">
-    <value>Ordenar Relatório</value>
+    <value>Ordem dos voos</value>
   </data>
   <data name="PaneUnits" xml:space="preserve">
     <value>Unidades</value>
@@ -1171,7 +1171,7 @@
     <value>Legenda da Aeronave - Linha {0}</value>
   </data>
   <data name="PopularName" xml:space="preserve">
-    <value>Popular Name</value>
+    <value>Nome popular</value>
   </data>
   <data name="PositionAndAltitude" xml:space="preserve">
     <value>Posição e altitude</value>
@@ -1189,7 +1189,7 @@
     <value>Legendas a exibir</value>
   </data>
   <data name="Piston" xml:space="preserve">
-    <value>Pistão</value>
+    <value>Piston</value>
   </data>
   <data name="Pixels" xml:space="preserve">
     <value>pixels</value>
@@ -1198,7 +1198,7 @@
     <value>Desenvolvido por Virtual Radar Server</value>
   </data>
   <data name="PreviousId" xml:space="preserve">
-    <value>ID Anterior</value>
+    <value>Previous ID</value>
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>Quantidade</value>
@@ -1210,7 +1210,7 @@
     <value>Cor dos círculos pares</value>
   </data>
   <data name="RangeCircleOddColour" xml:space="preserve">
-    <value>Cor dos círculos impares</value>
+    <value>Cor dos círculos ímpares</value>
   </data>
   <data name="RangeCircles" xml:space="preserve">
     <value>Círculos de alcance</value>
@@ -1240,25 +1240,25 @@
     <value>Relatório deste indicativo</value>
   </data>
   <data name="ReportCallsignValid" xml:space="preserve">
-    <value>Relatório do indicativo: {0}</value>
+    <value>Relatório do voo: {0}</value>
   </data>
   <data name="ReportEmpty" xml:space="preserve">
     <value>Nenhum dado encontrato com o filtro aplicado</value>
   </data>
   <data name="ReportFreeForm" xml:space="preserve">
-    <value>Relatório customizado</value>
+    <value>Relatório personalizado</value>
   </data>
   <data name="ReportIcaoInvalid" xml:space="preserve">
     <value>Relatório deste HEX.</value>
   </data>
   <data name="ReportIcaoValid" xml:space="preserve">
-    <value>Relatório do ICAO Hex: {0}</value>
+    <value>Relatório do HEXA.: {0}</value>
   </data>
   <data name="ReportRegistrationInvalid" xml:space="preserve">
     <value>Relatório desta matrícula</value>
   </data>
   <data name="ReportRegistrationValid" xml:space="preserve">
-    <value>Relatório da matricula {0}</value>
+    <value>Relatório da matricula: {0}</value>
   </data>
   <data name="ReportTodaysFlights" xml:space="preserve">
     <value>Voos de hoje</value>
@@ -1303,7 +1303,7 @@
     <value>Gerar relatório</value>
   </data>
   <data name="SeaPlane" xml:space="preserve">
-    <value>Hidroavião</value>
+    <value>Seaplane</value>
   </data>
   <data name="Select" xml:space="preserve">
     <value>Selecionar a:</value>
@@ -1315,19 +1315,19 @@
     <value>Serial</value>
   </data>
   <data name="ServerFetchFailedTitle" xml:space="preserve">
-    <value>Falha na busca</value>
+    <value>Fetch Failed</value>
   </data>
   <data name="ServerFetchFailedBody" xml:space="preserve">
-    <value>Não foi possível obter a partir do servidor. O erro é "{0}" e o status é "{1}".</value>
+    <value>Could not fetch from the server. The error is "{0}" and the status is "{1}".</value>
   </data>
   <data name="ServerFetchTimedOut" xml:space="preserve">
-    <value>A solicitação expirou.</value>
+    <value>The request has timed out.</value>
   </data>
   <data name="ServerReportExceptionBody" xml:space="preserve">
-    <value>O servidor encontrou uma exceção ao gerar o relatório. A exceção foi "{0}"</value>
+    <value>The server encountered an exception while generating the report. The exception was "{0}"</value>
   </data>
   <data name="ServerReportExceptionTitle" xml:space="preserve">
-    <value>Erro no servidor</value>
+    <value>Server Exception</value>
   </data>
   <data name="SetCurrentLocation" xml:space="preserve">
     <value>Definir a localização atual</value>
@@ -1351,7 +1351,7 @@
     <value>Mostrar a localização atual</value>
   </data>
   <data name="ShowDetail" xml:space="preserve">
-    <value>Mostrar detalhes</value>
+    <value>MOstrar detalhes</value>
   </data>
   <data name="ShowForAllAircraft" xml:space="preserve">
     <value>Mostrar para todas as aeronaves</value>
@@ -1366,7 +1366,7 @@
     <value>Mostrar apenas para a aeronave selecionada</value>
   </data>
   <data name="ShowInterestingAircraft" xml:space="preserve">
-    <value>Mostrar aeronaves favoritas</value>
+    <value>Show interesting aircraft</value>
   </data>
   <data name="ShowRangeCircles" xml:space="preserve">
     <value>Mostrar círculos de alcance</value>
@@ -1405,7 +1405,7 @@
     <value>Ordenar por</value>
   </data>
   <data name="Species" xml:space="preserve">
-    <value>Classe</value>
+    <value>Espécie</value>
   </data>
   <data name="Speed" xml:space="preserve">
     <value>Velocidade</value>
