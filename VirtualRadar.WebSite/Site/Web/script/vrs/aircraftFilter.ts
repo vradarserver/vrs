@@ -224,6 +224,14 @@ namespace VRS
         serverFilterName:   'fSqk'
     });
 
+    VRS.aircraftFilterPropertyHandlers[VRS.AircraftFilterProperty.UserTag] = new VRS.AircraftFilterPropertyHandler({
+        property:           VRS.AircraftFilterProperty.UserTag,
+        type:               VRS.FilterPropertyType.TextMatch,
+        labelKey:           'UserTag',
+        getValueCallback:   function(aircraft) { return aircraft.userTag.val; },
+        serverFilterName:   'fUt'
+    });
+
     VRS.aircraftFilterPropertyHandlers[VRS.AircraftFilterProperty.UserInterested] = new VRS.AircraftFilterPropertyHandler({
         property:           VRS.AircraftFilterProperty.UserInterested,
         type:               VRS.FilterPropertyType.OnOff,

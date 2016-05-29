@@ -47,6 +47,7 @@ namespace VRS
         Species:        'spc',
         Squawk:         'sqk',
         UserInterested: 'int',
+        UserTag:        'tag',
         Wtc:            'wtc'
     };
 

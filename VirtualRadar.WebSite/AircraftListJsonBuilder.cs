@@ -500,6 +500,7 @@ namespace VirtualRadar.WebSite
                 if(result && filter.Species != null)                result = filter.Species.Passes(aircraft.Species);
                 if(result && filter.Squawk != null)                 result = filter.Squawk.Passes(aircraft.Squawk);
                 if(result && filter.Type != null)                   result = filter.Type.Passes(aircraft.Type);
+                if(result && filter.UserTag != null)                result = filter.UserTag.Passes(aircraft.UserTag);
                 if(result && filter.WakeTurbulenceCategory != null) result = filter.WakeTurbulenceCategory.Passes(aircraft.WakeTurbulenceCategory);
 
                 if(result && filter.Airport != null) result = PassesAirportFilter(filter.Airport, aircraft);

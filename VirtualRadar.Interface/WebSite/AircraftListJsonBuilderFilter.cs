@@ -105,9 +105,14 @@ namespace VirtualRadar.Interface.WebSite
         public FilterRange<int> Squawk { get; set; }
 
         /// <summary>
-        /// Gets or sets the text will be compared to an aircraft's type before it can pass the filter.
+        /// Gets or sets the text that will be compared to an aircraft's type before it can pass the filter.
         /// </summary>
         public FilterString Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text that will be compared to an aircraft's user tag before it can pass the filter.
+        /// </summary>
+        public FilterString UserTag { get; set; }
 
         /// <summary>
         /// Gets or sets the wake turbulence category that the aircraft must have before it can pass the filter.
