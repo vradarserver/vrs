@@ -244,6 +244,7 @@ namespace VirtualRadar.WebSite
                     case "FSP":     if(caselessName.StartsWith("FSPC"))     result.Species = DecodeEnumFilter<Species>(name, args.QueryString[name]); break;
                     case "FSQ":     if(caselessName.StartsWith("FSQK"))     result.Squawk = DecodeIntRangeFilter(result.Squawk, name, args.QueryString[name]); break;
                     case "FTY":     if(caselessName.StartsWith("FTYP"))     result.Type = DecodeStringFilter(name, args.QueryString[name]); break;
+                    case "FUT":     if(caselessName.StartsWith("FUT"))      result.UserTag = DecodeStringFilter(name, args.QueryString[name]); break;
                     case "FWT":     if(caselessName.StartsWith("FWTC"))     result.WakeTurbulenceCategory = DecodeEnumFilter<WakeTurbulenceCategory>(name, args.QueryString[name]); break;
                 }
             }

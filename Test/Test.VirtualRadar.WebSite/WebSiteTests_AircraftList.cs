@@ -301,6 +301,7 @@ namespace Test.VirtualRadar.WebSite
             public NumericFilter<int>                   Squawk { get; set; }
             public StringFilter                         Type { get; set; }
             public BoolFilter<WakeTurbulenceCategory>   WakeTurbulenceCategory { get; set; }
+            public StringFilter                         UserTag { get; set; }
             public Pair<Coordinate>                     PositionWithin { get; set; }
 
             public void AddToQueryValuesMap(Dictionary<string, string> queryValues)
@@ -321,6 +322,7 @@ namespace Test.VirtualRadar.WebSite
                 if(Species != null)                 Species.AddQueryValues("fSpc", queryValues);
                 if(Squawk != null)                  Squawk.AddQueryValues("fSqk", queryValues);
                 if(Type != null)                    Type.AddQueryValues("fTyp", queryValues);
+                if(UserTag != null)                 UserTag.AddQueryValues("fUt", queryValues);
                 if(WakeTurbulenceCategory != null)  WakeTurbulenceCategory.AddQueryValues("fWtc", queryValues);
 
                 if(PositionWithin != null) {
@@ -2190,6 +2192,10 @@ namespace Test.VirtualRadar.WebSite
                 case "Type":
                     _AircraftListFilter.Type = new StringFilter("A38", FilterCondition.StartsWith, false);
                     aircraft.Type = complies ? "A380" : "A340";
+                    break;
+                case "UserTag":
+                    _AircraftListFilter.UserTag = new StringFilter("FORM", FilterCondition.Contains, false);
+                    aircraft.UserTag = complies ? "Freeform text" : "Something else";
                     break;
                 case "WakeTurbulenceCategory":
                     _AircraftListFilter.WakeTurbulenceCategory = new BoolFilter<WakeTurbulenceCategory>(WakeTurbulenceCategory.Heavy, false);

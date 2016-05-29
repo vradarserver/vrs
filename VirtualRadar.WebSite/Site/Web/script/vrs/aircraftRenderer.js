@@ -824,7 +824,7 @@ var VRS;
     });
     VRS.renderPropertyHandlers[VRS.RenderProperty.UserTag] = new VRS.RenderPropertyHandler({
         property: VRS.RenderProperty.UserTag,
-        surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,
+        surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow + VRS.RenderSurface.Marker,
         headingKey: 'ListUserTag',
         labelKey: 'UserTag',
         sortableField: VRS.AircraftListSortableField.UserTag,
