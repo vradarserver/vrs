@@ -112,22 +112,38 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SomethingDoesNotExist" xml:space="preserve">
-    <value>'{0}' не существует</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Отменить</value>
+  </data>
+  <data name="CannotCreateDatabaseFileTitle" xml:space="preserve">
+    <value>Cannot Create Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CreateDatabase" xml:space="preserve">
     <value>Создать базу данных</value>
   </data>
+  <data name="CreatedDatabaseFile" xml:space="preserve">
+    <value>Created the database file {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="CreatedDatabaseFileTitle" xml:space="preserve">
+    <value>Created Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="DatabaseFileAlreadyExists" xml:space="preserve">
+    <value>The database file already exists</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="DatabaseFileName" xml:space="preserve">
     <value>Файл базы данных</value>
+  </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>База данных в настоящее время заблокирована другой программой.  Некоторые полеты могут быть не записаны.</value>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Отключен</value>
@@ -138,8 +154,14 @@
   <data name="EnabledAndUpdatingSomething" xml:space="preserve">
     <value>Включен, обновляется файл базы данных {0}</value>
   </data>
+  <data name="EnabledBadReceiver" xml:space="preserve">
+    <value>Включен, приемник не доступен или ошибочный</value>
+  </data>
   <data name="EnabledNoDatabase" xml:space="preserve">
     <value>Включен, база данных не выбрана</value>
+  </data>
+  <data name="EnabledNoReceiver" xml:space="preserve">
+    <value>Включен, приемник не указан</value>
   </data>
   <data name="EnabledNotUpdating" xml:space="preserve">
     <value>Включен, но не обновляет базу данных</value>
@@ -150,6 +172,9 @@
   <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
     <value>Получено исключение при закрытии сессии: {0}</value>
   </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>Получено исключение при обработке сообщения: {0}</value>
+  </data>
   <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
     <value>Получено исключение при запуске сессии: {0}</value>
   </data>
@@ -158,6 +183,7 @@
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OnlyUpdateDatabasesCreatedByPlugin" xml:space="preserve">
     <value>Обновлять базы данных, созданные только самим плагином</value>
@@ -165,11 +191,24 @@
   <data name="OptionsViewTitle" xml:space="preserve">
     <value>Параметры BaseStation Database Writer</value>
   </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>Приемник</value>
+  </data>
   <data name="SelectDatabaseFile" xml:space="preserve">
     <value>Выберите файл базы данных</value>
   </data>
+  <data name="SomethingDoesNotExist" xml:space="preserve">
+    <value>'{0}' не существует</value>
+  </data>
   <data name="SomethingIsZeroLength" xml:space="preserve">
     <value>'{0}' нулевой длины</value>
+  </data>
+  <data name="UpdateExistingAircraft" xml:space="preserve">
+    <value>Перезаписывать сведения для существующих самолетов</value>
   </data>
   <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
     <value>Настройки, предотвращающие обновление базы данных, созданной не самим плагином</value>
@@ -177,34 +216,20 @@
   <data name="UseDefaultFileName" xml:space="preserve">
     <value>Использовать имя файла по умолчанию</value>
   </data>
-  <data name="EnabledBadReceiver" xml:space="preserve">
-    <value>Включен, приемник не доступен или ошибочный</value>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="EnabledNoReceiver" xml:space="preserve">
-    <value>Включен, приемник не указан</value>
+  <data name="WriteOnlineLookupsNoticeAllAircraft" xml:space="preserve">
+    <value>Сохранение результатов онлайн поиска обновит регистрацию, страну, серийный номер, год выпуска, производителя, тип и оператора для новых и существующих записей самолетов, которым более 28 дней.</value>
   </data>
-  <data name="Receiver" xml:space="preserve">
-    <value>Приемник</value>
-  </data>
-  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
-    <value>Получено исключение при обработке сообщения: {0}</value>
-  </data>
-  <data name="DatabaseLocked" xml:space="preserve">
-    <value>База данных в настоящее время заблокирована другой программой.  Некоторые полеты могут быть не записаны.</value>
+  <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
+    <value>Сохранение результатов онлайн поиска обновит регистрацию, страну, серийный номер, год выпуска, производителя, тип и оператора для новых записей самолетов.</value>
   </data>
   <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
     <value>Сохранять результаты онлайн поиска в базе данных</value>
   </data>
   <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
     <value>Сохранение результатов онлайн поиска</value>
-  </data>
-  <data name="WriteOnlineLookupsNoticeAllAircraft" xml:space="preserve">
-    <value>Сохранение результатов онлайн поиска обновит регистрацию, страну, серийный номер, год выпуска, производителя, тип и оператора для новых и существующих записей самолетов, которым более 28 дней.</value>
-  </data>
-  <data name="UpdateExistingAircraft" xml:space="preserve">
-    <value>Перезаписывать сведения для существующих самолетов</value>
-  </data>
-  <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
-    <value>Сохранение результатов онлайн поиска обновит регистрацию, страну, серийный номер, год выпуска, производителя, тип и оператора для новых записей самолетов.</value>
   </data>
 </root>

@@ -112,13 +112,25 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Disabled" xml:space="preserve">
     <value>禁用</value>
+  </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Web Admin</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Conflicting_Update" xml:space="preserve">
+    <value>This screen has been changed elsewhere since you originally loaded it. Your changes were based on out-of-date information and they have not been saved.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Exception_Reported" xml:space="preserve">
+    <value>The server reported an exception, see log for details: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Home" xml:space="preserve">
     <value>主页</value>
@@ -144,11 +156,23 @@
   <data name="WA_Logout" xml:space="preserve">
     <value>登出</value>
   </data>
+  <data name="WA_Lost_Contact" xml:space="preserve">
+    <value>This page has lost contact with the server and cannot continue</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Saved" xml:space="preserve">
+    <value>Saved</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="WA_ScrollToEnd" xml:space="preserve">
     <value>滚动到结尾</value>
   </data>
   <data name="WA_ScrollToTop" xml:space="preserve">
     <value>滚动到顶部</value>
+  </data>
+  <data name="WA_Send_Failed" xml:space="preserve">
+    <value>This page could not send a message to the server. The error was: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_About" xml:space="preserve">
     <value>关于</value>
@@ -174,6 +198,14 @@
   <data name="WA_Title_Options" xml:space="preserve">
     <value>选项</value>
   </data>
+  <data name="WA_Title_PluginOptions" xml:space="preserve">
+    <value>Plugin: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Title_Queues" xml:space="preserve">
+    <value>Diagnostics - Queues</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="WA_Title_Sent" xml:space="preserve">
     <value>已发送</value>
   </data>
@@ -182,20 +214,32 @@
   </data>
   <data name="WA_Title_Tracking" xml:space="preserve">
     <value>跟踪</value>
+    <comment>As in "tracking 20 aircraft"</comment>
   </data>
   <data name="WA_Title_Upnp" xml:space="preserve">
     <value>UPnP即插即用</value>
   </data>
   <data name="WA_Title_VirtualRadarServer" xml:space="preserve">
     <value>Virtual Radar Server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_WebAdmin" xml:space="preserve">
     <value>VRS Web 管理</value>
   </data>
+  <data name="WA_Validation_Failed" xml:space="preserve">
+    <value>Correct your errors and try again</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="WA_Value_DotNet" xml:space="preserve">
     <value>.NET</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Value_Mono" xml:space="preserve">
     <value>Mono</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WS_Title_AircraftLookup_Log" xml:space="preserve">
+    <value>Aircraft Detail Lookup Log</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>

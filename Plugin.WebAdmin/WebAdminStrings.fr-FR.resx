@@ -112,25 +112,40 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Disabled" xml:space="preserve">
     <value>Désactivé</value>
   </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Web Admin</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Conflicting_Update" xml:space="preserve">
+    <value>This screen has been changed elsewhere since you originally loaded it. Your changes were based on out-of-date information and they have not been saved.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Exception_Reported" xml:space="preserve">
+    <value>The server reported an exception, see log for details: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="WA_Home" xml:space="preserve">
     <value>Home</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Label_Credits" xml:space="preserve">
     <value>Credits</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Label_Environment" xml:space="preserve">
     <value>Environnement</value>
   </data>
   <data name="WA_Label_Lines" xml:space="preserve">
     <value>Lines</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Label_Reconnect" xml:space="preserve">
     <value>Reconnecté</value>
@@ -143,12 +158,25 @@
   </data>
   <data name="WA_Logout" xml:space="preserve">
     <value>Logout</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Lost_Contact" xml:space="preserve">
+    <value>This page has lost contact with the server and cannot continue</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Saved" xml:space="preserve">
+    <value>Saved</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_ScrollToEnd" xml:space="preserve">
     <value>Descendre vers la fin</value>
   </data>
   <data name="WA_ScrollToTop" xml:space="preserve">
     <value>Allerr vers le début</value>
+  </data>
+  <data name="WA_Send_Failed" xml:space="preserve">
+    <value>This page could not send a message to the server. The error was: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_About" xml:space="preserve">
     <value>A propos</value>
@@ -164,15 +192,26 @@
   </data>
   <data name="WA_Title_Log" xml:space="preserve">
     <value>Log</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_Main" xml:space="preserve">
     <value>Principal</value>
   </data>
   <data name="WA_Title_Messages" xml:space="preserve">
     <value>Messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_Options" xml:space="preserve">
     <value>Options</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Title_PluginOptions" xml:space="preserve">
+    <value>Plugin: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Title_Queues" xml:space="preserve">
+    <value>Diagnostics - Queues</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_Sent" xml:space="preserve">
     <value>Envoyer</value>
@@ -186,17 +225,30 @@
   </data>
   <data name="WA_Title_Upnp" xml:space="preserve">
     <value>UPnP</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_VirtualRadarServer" xml:space="preserve">
     <value>Virtual Radar Server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_WebAdmin" xml:space="preserve">
     <value>VRS Web Admin</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WA_Validation_Failed" xml:space="preserve">
+    <value>Correct your errors and try again</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Value_DotNet" xml:space="preserve">
     <value>.NET</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Value_Mono" xml:space="preserve">
     <value>Mono</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WS_Title_AircraftLookup_Log" xml:space="preserve">
+    <value>Aircraft Detail Lookup Log</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>

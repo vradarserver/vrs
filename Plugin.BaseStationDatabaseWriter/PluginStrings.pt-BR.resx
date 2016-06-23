@@ -112,62 +112,54 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UseDefaultFileName" xml:space="preserve">
-    <value>Usar nome padrão</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
   </data>
-  <data name="SelectDatabaseFile" xml:space="preserve">
-    <value>Selecione arquivo de Banco de Dados</value>
-  </data>
-  <data name="Receiver" xml:space="preserve">
-    <value>Receptor</value>
-  </data>
-  <data name="OK" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="DatabaseFileName" xml:space="preserve">
-    <value>Banco de dados:</value>
-  </data>
-  <data name="NotUpdatingDatabase" xml:space="preserve">
-    <value>Não atualizar banco de dados</value>
-  </data>
-  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
-    <value>Erro detectado durante o processamento da mensagem: {0}</value>
-  </data>
-  <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
-    <value>Erro detectado ao iniciar sessão: {0}</value>
-  </data>
-  <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
-    <value>Erro detectado ao fechar sessão: {0}</value>
-  </data>
-  <data name="ExceptionCaught" xml:space="preserve">
-    <value>Erro: {0}</value>
-  </data>
-  <data name="Disabled" xml:space="preserve">
-    <value>Desativado</value>
+  <data name="CannotCreateDatabaseFileTitle" xml:space="preserve">
+    <value>Cannot Create Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CreateDatabase" xml:space="preserve">
     <value>Criar Banco de dados</value>
   </data>
-  <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
-    <value>Esta configuração impede a atualização do banco de dados que não foi criado por este plugin</value>
+  <data name="CreatedDatabaseFile" xml:space="preserve">
+    <value>Created the database file {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="CreatedDatabaseFileTitle" xml:space="preserve">
+    <value>Created Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="OptionsViewTitle" xml:space="preserve">
-    <value>BaseStation Database Writer Options</value>
+  <data name="DatabaseFileAlreadyExists" xml:space="preserve">
+    <value>The database file already exists</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="OnlyUpdateDatabasesCreatedByPlugin" xml:space="preserve">
-    <value>Atualizar apenas o banco de dados que este plug-in criou</value>
-    <comment>Only update databases that this plugin created</comment>
+  <data name="DatabaseFileName" xml:space="preserve">
+    <value>Banco de dados:</value>
+  </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>The database is currently locked by another program. Some flights may not be recorded.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Desativado</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>&amp;Ativado</value>
+  </data>
+  <data name="EnabledAndUpdatingSomething" xml:space="preserve">
+    <value>Ativado, atualizando {0}</value>
   </data>
   <data name="EnabledBadReceiver" xml:space="preserve">
     <value>Ativado, receptor não habilitado ou inválido</value>
+  </data>
+  <data name="EnabledNoDatabase" xml:space="preserve">
+    <value>Ativado, banco de dados não especificado</value>
   </data>
   <data name="EnabledNoReceiver" xml:space="preserve">
     <value>Ativado, nenhum receptor expecificado</value>
@@ -175,11 +167,41 @@
   <data name="EnabledNotUpdating" xml:space="preserve">
     <value>Ativado, mas não está atualizando o banco de dados</value>
   </data>
-  <data name="EnabledNoDatabase" xml:space="preserve">
-    <value>Ativado, banco de dados não especificado</value>
+  <data name="ExceptionCaught" xml:space="preserve">
+    <value>Erro: {0}</value>
   </data>
-  <data name="EnabledAndUpdatingSomething" xml:space="preserve">
-    <value>Ativado, atualizando {0}</value>
+  <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
+    <value>Erro detectado ao fechar sessão: {0}</value>
+  </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>Erro detectado durante o processamento da mensagem: {0}</value>
+  </data>
+  <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
+    <value>Erro detectado ao iniciar sessão: {0}</value>
+  </data>
+  <data name="NotUpdatingDatabase" xml:space="preserve">
+    <value>Não atualizar banco de dados</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="OnlyUpdateDatabasesCreatedByPlugin" xml:space="preserve">
+    <value>Atualizar apenas o banco de dados que este plug-in criou</value>
+  </data>
+  <data name="OptionsViewTitle" xml:space="preserve">
+    <value>BaseStation Database Writer Options</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>Receptor</value>
+  </data>
+  <data name="SelectDatabaseFile" xml:space="preserve">
+    <value>Selecione arquivo de Banco de Dados</value>
   </data>
   <data name="SomethingDoesNotExist" xml:space="preserve">
     <value>'{0}' não existe</value>
@@ -187,7 +209,34 @@
   <data name="SomethingIsZeroLength" xml:space="preserve">
     <value>'{0}' é zero</value>
   </data>
-  <data name="Enabled" xml:space="preserve">
-    <value>&amp;Ativado</value>
+  <data name="UpdateExistingAircraft" xml:space="preserve">
+    <value>Overwrite details on existing aircraft</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
+    <value>Esta configuração impede a atualização do banco de dados que não foi criado por este plugin</value>
+  </data>
+  <data name="UseDefaultFileName" xml:space="preserve">
+    <value>Usar nome padrão</value>
+  </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WriteOnlineLookupsNoticeAllAircraft" xml:space="preserve">
+    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new and existing aircraft records that are more than 28 days old.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
+    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new aircraft records.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Save online lookups in database</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Saving online lookups</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>

@@ -112,22 +112,38 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SomethingDoesNotExist" xml:space="preserve">
-    <value>'{0}' 不存在</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
+  </data>
+  <data name="CannotCreateDatabaseFileTitle" xml:space="preserve">
+    <value>Cannot Create Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CreateDatabase" xml:space="preserve">
     <value>创建数据库</value>
   </data>
+  <data name="CreatedDatabaseFile" xml:space="preserve">
+    <value>Created the database file {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="CreatedDatabaseFileTitle" xml:space="preserve">
+    <value>Created Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="DatabaseFileAlreadyExists" xml:space="preserve">
+    <value>The database file already exists</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="DatabaseFileName" xml:space="preserve">
     <value>数据库文件名</value>
+  </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>数据库当前被另一个程序锁住。一些航班可能不能被记录。</value>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>已禁用</value>
@@ -138,8 +154,14 @@
   <data name="EnabledAndUpdatingSomething" xml:space="preserve">
     <value>已启用, 更新中 {0}</value>
   </data>
+  <data name="EnabledBadReceiver" xml:space="preserve">
+    <value>已启用, 接收器未启用或无效</value>
+  </data>
   <data name="EnabledNoDatabase" xml:space="preserve">
     <value>已启用, 数据库未指定</value>
+  </data>
+  <data name="EnabledNoReceiver" xml:space="preserve">
+    <value>已启用, 未指定接收器</value>
   </data>
   <data name="EnabledNotUpdating" xml:space="preserve">
     <value>已启用但未更新数据库</value>
@@ -149,6 +171,9 @@
   </data>
   <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
     <value>关闭 Session 时捕获异常: {0}</value>
+  </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>消息处理过程中发生异常：{0}</value>
   </data>
   <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
     <value>启动 Session 时捕获异常: {0}</value>
@@ -165,11 +190,25 @@
   <data name="OptionsViewTitle" xml:space="preserve">
     <value>BaseStation 数据库写入器选项</value>
   </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="Receiver" xml:space="preserve">
+    <value>接收器</value>
+  </data>
   <data name="SelectDatabaseFile" xml:space="preserve">
     <value>选择数据库文件</value>
   </data>
+  <data name="SomethingDoesNotExist" xml:space="preserve">
+    <value>'{0}' 不存在</value>
+  </data>
   <data name="SomethingIsZeroLength" xml:space="preserve">
     <value>'{0}' 长度为0</value>
+  </data>
+  <data name="UpdateExistingAircraft" xml:space="preserve">
+    <value>Overwrite details on existing aircraft</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
     <value>防止插件未创建数据库而更新</value>
@@ -177,19 +216,24 @@
   <data name="UseDefaultFileName" xml:space="preserve">
     <value>使用默认文件名</value>
   </data>
-  <data name="EnabledBadReceiver" xml:space="preserve">
-    <value>已启用, 接收器未启用或无效</value>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="EnabledNoReceiver" xml:space="preserve">
-    <value>已启用, 未指定接收器</value>
+  <data name="WriteOnlineLookupsNoticeAllAircraft" xml:space="preserve">
+    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new and existing aircraft records that are more than 28 days old.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="Receiver" xml:space="preserve">
-    <value>接收器</value>
+  <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
+    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new aircraft records.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
-    <value>消息处理过程中发生异常：{0}</value>
+  <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Save online lookups in database</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="DatabaseLocked" xml:space="preserve">
-    <value>数据库当前被另一个程序锁住。一些航班可能不能被记录。</value>
+  <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Saving online lookups</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>
