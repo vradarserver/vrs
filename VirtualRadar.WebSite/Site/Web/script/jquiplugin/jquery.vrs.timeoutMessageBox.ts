@@ -101,6 +101,7 @@ namespace VRS
             dialog.dialog({
                 modal: true,
                 title: VRS.$$.TitleSiteTimedOut,
+                draggable: false,
                 close: function() {
                     options.aircraftListFetcher.setPaused(false);
                     dialog.dialog('destroy');
