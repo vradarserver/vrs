@@ -112,37 +112,51 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Enabled" xml:space="preserve">
-    <value>Actuvé</value>
-  </data>
-  <data name="SomethingDoesNotExist" xml:space="preserve">
-    <value>« {0} » n'existe pas</value>
-  </data>
-  <data name="SomethingIsZeroLength" xml:space="preserve">
-    <value>« {0} » est de longueur nulle</value>
-  </data>
-  <data name="OptionsViewTitle" xml:space="preserve">
-    <value>Options de Basestation database Writer</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Annuler</value>
+  </data>
+  <data name="CannotCreateDatabaseFileTitle" xml:space="preserve">
+    <value>Cannot Create Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CreateDatabase" xml:space="preserve">
     <value>Créer Base de données</value>
   </data>
+  <data name="CreatedDatabaseFile" xml:space="preserve">
+    <value>Created the database file {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="CreatedDatabaseFileTitle" xml:space="preserve">
+    <value>Created Database File</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="DatabaseFileAlreadyExists" xml:space="preserve">
+    <value>The database file already exists</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="DatabaseFileName" xml:space="preserve">
     <value>Nom Base de données</value>
+  </data>
+  <data name="DatabaseLocked" xml:space="preserve">
+    <value>The database is currently locked by another program. Some flights may not be recorded.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Désactivé</value>
   </data>
-  <data name="EnabledNotUpdating" xml:space="preserve">
-    <value>Activé mais ne met pas  à jour la base de données</value>
+  <data name="Enabled" xml:space="preserve">
+    <value>Actuvé</value>
+  </data>
+  <data name="EnabledAndUpdatingSomething" xml:space="preserve">
+    <value>Activé, mise à jour : {0}</value>
+  </data>
+  <data name="EnabledBadReceiver" xml:space="preserve">
+    <value>Activé, Récepteur non activé ou invalide</value>
   </data>
   <data name="EnabledNoDatabase" xml:space="preserve">
     <value>Activé, Base de données non spécifiée</value>
@@ -150,29 +164,38 @@
   <data name="EnabledNoReceiver" xml:space="preserve">
     <value>Activé, pas de récepteur spécifié</value>
   </data>
-  <data name="EnabledBadReceiver" xml:space="preserve">
-    <value>Activé, Récepteur non activé ou invalide</value>
+  <data name="EnabledNotUpdating" xml:space="preserve">
+    <value>Activé mais ne met pas  à jour la base de données</value>
   </data>
-  <data name="EnabledAndUpdatingSomething" xml:space="preserve">
-    <value>Activé, mise à jour : {0}</value>
+  <data name="ExceptionCaught" xml:space="preserve">
+    <value>Exception détectée : {0}</value>
   </data>
   <data name="ExceptionCaughtWhenClosingSession" xml:space="preserve">
     <value>Exception interceptée lors de la fermeture session: {0}</value>
   </data>
+  <data name="ExceptionCaughtWhenProcessingMessage" xml:space="preserve">
+    <value>Exception caught when processing message: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="ExceptionCaughtWhenStartingSession" xml:space="preserve">
     <value>Exception interceptée lors du démarrage de session: {0}</value>
-  </data>
-  <data name="ExceptionCaught" xml:space="preserve">
-    <value>Exception détectée : {0}</value>
   </data>
   <data name="NotUpdatingDatabase" xml:space="preserve">
     <value>Ne met pas à jour la base de données</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OnlyUpdateDatabasesCreatedByPlugin" xml:space="preserve">
     <value>Ne mettre à jour que les bases de données créés par ce plugin</value>
+  </data>
+  <data name="OptionsViewTitle" xml:space="preserve">
+    <value>Options de Basestation database Writer</value>
+  </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Receiver" xml:space="preserve">
     <value>Récepteur</value>
@@ -180,10 +203,40 @@
   <data name="SelectDatabaseFile" xml:space="preserve">
     <value>Sélectionnez fichier de base de données</value>
   </data>
+  <data name="SomethingDoesNotExist" xml:space="preserve">
+    <value>« {0} » n'existe pas</value>
+  </data>
+  <data name="SomethingIsZeroLength" xml:space="preserve">
+    <value>« {0} » est de longueur nulle</value>
+  </data>
+  <data name="UpdateExistingAircraft" xml:space="preserve">
+    <value>Overwrite details on existing aircraft</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
     <value>Les paramètres empêchent la mise à jour des bases de données non créée par le  plugin</value>
   </data>
   <data name="UseDefaultFileName" xml:space="preserve">
     <value>Utiliser le nom de fichier par défaut</value>
+  </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Database Writer</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WriteOnlineLookupsNoticeAllAircraft" xml:space="preserve">
+    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new and existing aircraft records that are more than 28 days old.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
+    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new aircraft records.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Save online lookups in database</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
+    <value>Saving online lookups</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>

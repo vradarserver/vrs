@@ -112,19 +112,36 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>Endereço</value>
+    <comment>As in a web site address</comment>
+  </data>
+  <data name="At" xml:space="preserve">
+    <value>Em</value>
+  </data>
+  <data name="Body" xml:space="preserve">
+    <value>Body</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Exluir</value>
+  </data>
   <data name="DirectoryAlreadyInUse" xml:space="preserve">
     <value>{0} já é a pasta raiz do site</value>
   </data>
   <data name="DirectoryDoesNotExist" xml:space="preserve">
     <value>{0} não existe</value>
   </data>
-  <data name="FileDoesNotExist" xml:space="preserve">
-    <value>{0} não existe</value>
+  <data name="Disabled" xml:space="preserve">
+    <value>Desativado</value>
   </data>
   <data name="Enabled" xml:space="preserve">
     <value>Ativado</value>
@@ -135,34 +152,28 @@
   <data name="EnabledWithSiteRoot" xml:space="preserve">
     <value>Ativado, servindo de conteúdo personalizado a partir de {0}</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="Of" xml:space="preserve">
-    <value>De</value>
-  </data>
-  <data name="Disabled" xml:space="preserve">
-    <value>Desativado</value>
-  </data>
-  <data name="At" xml:space="preserve">
-    <value>Em</value>
-  </data>
   <data name="End" xml:space="preserve">
     <value>End</value>
-    <comment>As in at the end of a file</comment>
-  </data>
-  <data name="Address" xml:space="preserve">
-    <value>Endereço</value>
-    <comment>As in a web site address</comment>
-  </data>
-  <data name="ErrorCheckingFolder" xml:space="preserve">
-    <value>Erro durante verificação da pasta: {0}</value>
+    <comment>** SAME AS ENGLISH ** As in at the end of a file</comment>
   </data>
   <data name="ErrorCheckingFileName" xml:space="preserve">
     <value>Erro durante verificação do nome do arquivo: {0}</value>
   </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Exluir</value>
+  <data name="ErrorCheckingFolder" xml:space="preserve">
+    <value>Erro durante verificação da pasta: {0}</value>
+  </data>
+  <data name="FileDoesNotExist" xml:space="preserve">
+    <value>{0} não existe</value>
+  </data>
+  <data name="FileNameRequired" xml:space="preserve">
+    <value>Por favor, insira o nome do arquivo para inserir no HTML</value>
+  </data>
+  <data name="Head" xml:space="preserve">
+    <value>Head</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="HtmlPage" xml:space="preserve">
+    <value>pagina HTML</value>
   </data>
   <data name="Inject" xml:space="preserve">
     <value>Arquivo</value>
@@ -177,39 +188,53 @@
   <data name="New" xml:space="preserve">
     <value>Novo</value>
   </data>
-  <data name="PathAndFileMissingRoot" xml:space="preserve">
-    <value>O endereço da página HTML deve começar com uma barra "/"</value>
-  </data>
-  <data name="PathAndFileMissingExtension" xml:space="preserve">
-    <value>O nome do arquivo HTML para inserir conteúdo deve terminar em .htm ou .html</value>
+  <data name="Of" xml:space="preserve">
+    <value>De</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsTitle" xml:space="preserve">
     <value>Opções</value>
   </data>
+  <data name="OptionsViewTitle" xml:space="preserve">
+    <value>Custom Content Options</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="PathAndFileMissingExtension" xml:space="preserve">
+    <value>O nome do arquivo HTML para inserir conteúdo deve terminar em .htm ou .html</value>
+  </data>
+  <data name="PathAndFileMissingRoot" xml:space="preserve">
+    <value>O endereço da página HTML deve começar com uma barra "/"</value>
+  </data>
+  <data name="PathAndFileRequired" xml:space="preserve">
+    <value>Por favor, insira o caminho e o nome do arquivo HTML para inserir o conteúdo (por exemplo /index.html) ou * para inseir em todo o HTML</value>
+  </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Custom Content</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="ReplaceAndAddSiteContent" xml:space="preserve">
+    <value>Substituir/Adicionar o conteúdo do site</value>
+  </data>
   <data name="Reset" xml:space="preserve">
     <value>Padrão</value>
   </data>
-  <data name="HtmlPage" xml:space="preserve">
-    <value>pagina HTML</value>
+  <data name="ResourceImagesFolder" xml:space="preserve">
+    <value>Resource images folder</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SiteRootLabel" xml:space="preserve">
     <value>Pasta raiz do site</value>
     <comment>The root folder for the web site</comment>
   </data>
-  <data name="PathAndFileRequired" xml:space="preserve">
-    <value>Por favor, insira o caminho e o nome do arquivo HTML para inserir o conteúdo (por exemplo /index.html) ou * para inseir em todo o HTML</value>
-  </data>
-  <data name="FileNameRequired" xml:space="preserve">
-    <value>Por favor, insira o nome do arquivo para inserir no HTML</value>
-  </data>
   <data name="Start" xml:space="preserve">
     <value>Start</value>
-    <comment>As in at the beginning of a file</comment>
+    <comment>** SAME AS ENGLISH ** As in at the beginning of a file</comment>
   </data>
-  <data name="ReplaceAndAddSiteContent" xml:space="preserve">
-    <value>Substituir/Adicionar o conteúdo do site</value>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Custom Content</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>

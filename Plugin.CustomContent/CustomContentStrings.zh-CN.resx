@@ -112,16 +112,27 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>地址</value>
+    <comment>As in a web site address</comment>
+  </data>
   <data name="At" xml:space="preserve">
     <value>在</value>
   </data>
+  <data name="Body" xml:space="preserve">
+    <value>Body</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>删除</value>
   </data>
   <data name="DirectoryAlreadyInUse" xml:space="preserve">
     <value>{0} 已经是一个网站的根目录</value>
@@ -141,11 +152,31 @@
   <data name="EnabledWithSiteRoot" xml:space="preserve">
     <value>已启用, 服务定制内容来自 {0}</value>
   </data>
+  <data name="End" xml:space="preserve">
+    <value>结束</value>
+    <comment>As in at the end of a file</comment>
+  </data>
+  <data name="ErrorCheckingFileName" xml:space="preserve">
+    <value>检查文件名时捕获错误: {0}</value>
+  </data>
   <data name="ErrorCheckingFolder" xml:space="preserve">
     <value>检查文件夹时捕获错误: {0}</value>
   </data>
+  <data name="FileDoesNotExist" xml:space="preserve">
+    <value>{0} 不存在</value>
+  </data>
+  <data name="FileNameRequired" xml:space="preserve">
+    <value>请输入要注入到HTML的文件名称</value>
+  </data>
+  <data name="Head" xml:space="preserve">
+    <value>Head</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="HtmlPage" xml:space="preserve">
     <value>HTML 页</value>
+  </data>
+  <data name="Inject" xml:space="preserve">
+    <value>注入</value>
   </data>
   <data name="InjectFile" xml:space="preserve">
     <value>注入文件</value>
@@ -154,8 +185,12 @@
     <value>注入到 HTML</value>
     <comment>As in to insert content into HTML files - this is a title, please keep it short</comment>
   </data>
+  <data name="New" xml:space="preserve">
+    <value>新建</value>
+  </data>
   <data name="Of" xml:space="preserve">
     <value>Of</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OK" xml:space="preserve">
     <value>确定</value>
@@ -163,28 +198,9 @@
   <data name="OptionsTitle" xml:space="preserve">
     <value>选项</value>
   </data>
-  <data name="ReplaceAndAddSiteContent" xml:space="preserve">
-    <value>替换 / 添加 网站内容</value>
-  </data>
-  <data name="SiteRootLabel" xml:space="preserve">
-    <value>网站根目录</value>
-    <comment>The root folder for the web site</comment>
-  </data>
-  <data name="End" xml:space="preserve">
-    <value>结束</value>
-    <comment>As in at the end of a file</comment>
-  </data>
-  <data name="ErrorCheckingFileName" xml:space="preserve">
-    <value>检查文件名时捕获错误: {0}</value>
-  </data>
-  <data name="FileDoesNotExist" xml:space="preserve">
-    <value>{0} 不存在</value>
-  </data>
-  <data name="FileNameRequired" xml:space="preserve">
-    <value>请输入要注入到HTML的文件名称</value>
-  </data>
-  <data name="Inject" xml:space="preserve">
-    <value>注入</value>
+  <data name="OptionsViewTitle" xml:space="preserve">
+    <value>Custom Content Options</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PathAndFileMissingExtension" xml:space="preserve">
     <value>要注入内容的HTML文件名必须以 .htm or .html结尾</value>
@@ -195,21 +211,30 @@
   <data name="PathAndFileRequired" xml:space="preserve">
     <value>请输入一个要注入内容的HTML文件路径和名称 (例如 /index.html) 或 * 注入到 所有 HTML</value>
   </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Custom Content</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="ReplaceAndAddSiteContent" xml:space="preserve">
+    <value>替换 / 添加 网站内容</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="ResourceImagesFolder" xml:space="preserve">
+    <value>Resource images folder</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="SiteRootLabel" xml:space="preserve">
+    <value>网站根目录</value>
+    <comment>The root folder for the web site</comment>
+  </data>
   <data name="Start" xml:space="preserve">
     <value>开始</value>
     <comment>As in at the beginning of a file</comment>
   </data>
-  <data name="Address" xml:space="preserve">
-    <value>地址</value>
-    <comment>As in a web site address</comment>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>删除</value>
-  </data>
-  <data name="New" xml:space="preserve">
-    <value>新建</value>
-  </data>
-  <data name="Reset" xml:space="preserve">
-    <value>重置</value>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Custom Content</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>

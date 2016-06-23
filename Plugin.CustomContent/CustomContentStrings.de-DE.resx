@@ -112,16 +112,27 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>Adresse</value>
+    <comment>As in a web site address</comment>
+  </data>
   <data name="At" xml:space="preserve">
     <value>Bei</value>
   </data>
+  <data name="Body" xml:space="preserve">
+    <value>Body</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Entfernen</value>
   </data>
   <data name="DirectoryAlreadyInUse" xml:space="preserve">
     <value>{0} ist bereits ein Site Root Ordner</value>
@@ -141,11 +152,31 @@
   <data name="EnabledWithSiteRoot" xml:space="preserve">
     <value>Aktiviert, Custom Content wird bereitgestellt von {0}</value>
   </data>
+  <data name="End" xml:space="preserve">
+    <value>Ende</value>
+    <comment>As in at the end of a file</comment>
+  </data>
+  <data name="ErrorCheckingFileName" xml:space="preserve">
+    <value>Ausnahmefehler bei Dateiname {0}</value>
+  </data>
   <data name="ErrorCheckingFolder" xml:space="preserve">
     <value>Ausnahmefehler während Aufruf des Ordners {0}</value>
   </data>
+  <data name="FileDoesNotExist" xml:space="preserve">
+    <value>{0} ist nicht vorhanden</value>
+  </data>
+  <data name="FileNameRequired" xml:space="preserve">
+    <value>Bitte den Namen der Datei angeben, die in HTML einfügt wird</value>
+  </data>
+  <data name="Head" xml:space="preserve">
+    <value>Head</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="HtmlPage" xml:space="preserve">
     <value>HTML Seite</value>
+  </data>
+  <data name="Inject" xml:space="preserve">
+    <value>Einfügen</value>
   </data>
   <data name="InjectFile" xml:space="preserve">
     <value>Einfügen Datei</value>
@@ -154,37 +185,22 @@
     <value>Einfügen in HTML</value>
     <comment>As in to insert content into HTML files - this is a title, please keep it short</comment>
   </data>
+  <data name="New" xml:space="preserve">
+    <value>Neu</value>
+  </data>
   <data name="Of" xml:space="preserve">
     <value>Von</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsTitle" xml:space="preserve">
     <value>Optionen</value>
   </data>
-  <data name="ReplaceAndAddSiteContent" xml:space="preserve">
-    <value>Ersetzen / Hinzufügen von Seiteninhalt</value>
-  </data>
-  <data name="SiteRootLabel" xml:space="preserve">
-    <value>Site Root Ordner</value>
-    <comment>The root folder for the web site</comment>
-  </data>
-  <data name="End" xml:space="preserve">
-    <value>Ende</value>
-    <comment>As in at the end of a file</comment>
-  </data>
-  <data name="ErrorCheckingFileName" xml:space="preserve">
-    <value>Ausnahmefehler bei Dateiname {0}</value>
-  </data>
-  <data name="FileDoesNotExist" xml:space="preserve">
-    <value>{0} ist nicht vorhanden</value>
-  </data>
-  <data name="FileNameRequired" xml:space="preserve">
-    <value>Bitte den Namen der Datei angeben, die in HTML einfügt wird</value>
-  </data>
-  <data name="Inject" xml:space="preserve">
-    <value>Einfügen</value>
+  <data name="OptionsViewTitle" xml:space="preserve">
+    <value>Custom Content Options</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PathAndFileMissingExtension" xml:space="preserve">
     <value>Der Name der HTML Datei muss mit .htm or .html enden</value>
@@ -195,24 +211,29 @@
   <data name="PathAndFileRequired" xml:space="preserve">
     <value>Bitte Pfad und Name der HTML Datei angeben in die Inhalt eingefügt werden soll (z.B. /index.html) oder * um in alle HTML einzufügen</value>
   </data>
-  <data name="Start" xml:space="preserve">
-    <value>Start</value>
-    <comment>As in at the beginning of a file</comment>
+  <data name="PluginName" xml:space="preserve">
+    <value>Custom Content</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
-  <data name="Address" xml:space="preserve">
-    <value>Adresse</value>
-    <comment>As in a web site address</comment>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Entfernen</value>
-  </data>
-  <data name="New" xml:space="preserve">
-    <value>Neu</value>
+  <data name="ReplaceAndAddSiteContent" xml:space="preserve">
+    <value>Ersetzen / Hinzufügen von Seiteninhalt</value>
   </data>
   <data name="Reset" xml:space="preserve">
     <value>Zurücksetzen</value>
   </data>
   <data name="ResourceImagesFolder" xml:space="preserve">
     <value>Ressourcen Bilder Ordner</value>
+  </data>
+  <data name="SiteRootLabel" xml:space="preserve">
+    <value>Site Root Ordner</value>
+    <comment>The root folder for the web site</comment>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+    <comment>** SAME AS ENGLISH ** As in at the beginning of a file</comment>
+  </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>Custom Content</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>
