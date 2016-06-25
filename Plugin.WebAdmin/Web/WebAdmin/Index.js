@@ -126,7 +126,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             Index.PageHandler = PageHandler;
         })(Index = WebAdmin.Index || (WebAdmin.Index = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

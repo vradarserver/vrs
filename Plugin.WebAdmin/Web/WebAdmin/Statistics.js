@@ -90,7 +90,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             Statistics.PageHandler = PageHandler;
         })(Statistics = WebAdmin.Statistics || (WebAdmin.Statistics = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

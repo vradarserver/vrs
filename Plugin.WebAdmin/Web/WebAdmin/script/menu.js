@@ -74,7 +74,7 @@ var VRS;
                 });
             };
             return Menu;
-        })();
+        }());
         WebAdmin.Menu = Menu;
         WebAdmin.menu = new Menu();
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

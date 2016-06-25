@@ -46,7 +46,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             Log.PageHandler = PageHandler;
         })(Log = WebAdmin.Log || (WebAdmin.Log = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

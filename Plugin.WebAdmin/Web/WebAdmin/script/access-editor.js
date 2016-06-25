@@ -86,7 +86,7 @@ var VRS;
                 });
             };
             return AccessEditor;
-        })();
+        }());
         WebAdmin.AccessEditor = AccessEditor;
         var Cidr = (function () {
             function Cidr() {
@@ -209,7 +209,7 @@ var VRS;
                 return result;
             };
             return Cidr;
-        })();
+        }());
         WebAdmin.Cidr = Cidr;
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
