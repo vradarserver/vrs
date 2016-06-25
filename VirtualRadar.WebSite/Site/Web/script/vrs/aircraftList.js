@@ -35,6 +35,7 @@ var VRS;
                 fetchingList: 'fetchingList',
                 selectedChanged: 'selectedChanged',
                 selectedReselected: 'selectedReselected',
+                appliedJson: 'appliedJson',
                 updated: 'updated'
             };
             this._Aircraft = new AircraftCollection();
@@ -110,6 +111,9 @@ var VRS;
                 this._WasAircraftSelectedByUser = wasSelectedByUser;
                 this._Dispatcher.raise(this._Events.selectedChanged, [oldSelectedAircraft]);
             }
+        };
+        AircraftList.prototype.hookAppliedJson = function (callback, forceThis) {
+            return this._Dispatcher.hook(this._Events.appliedJson, callback, forceThis);
         };
         AircraftList.prototype.hookUpdated = function (callback, forceThis) {
             return this._Dispatcher.hook(this._Events.updated, callback, forceThis);
@@ -195,6 +199,7 @@ var VRS;
                 var offRadar = this._Aircraft;
                 this._Aircraft = aircraft;
                 this._CountAvailableAircraft = length;
+                this._Dispatcher.raise(this._Events.appliedJson, [newAircraft, offRadar]);
                 if (reselectedAircraft) {
                     this._SelectedAircraft = reselectedAircraft;
                     this._Dispatcher.raise(this._Events.selectedReselected);

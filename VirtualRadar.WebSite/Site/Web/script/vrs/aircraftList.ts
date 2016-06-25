@@ -69,6 +69,7 @@ namespace VRS
             fetchingList:       'fetchingList',
             selectedChanged:    'selectedChanged',
             selectedReselected: 'selectedReselected',
+            appliedJson:        'appliedJson',
             updated:            'updated'
         };
 
@@ -215,6 +216,15 @@ namespace VRS
                 this._WasAircraftSelectedByUser = wasSelectedByUser;
                 this._Dispatcher.raise(this._Events.selectedChanged, [ oldSelectedAircraft ]);
             }
+        }
+
+        /**
+         * Raised after the aircraft list has had new JSON applied to it. This is raised before the updated event and can be
+         * used to make changes to the aircraft list before the rest of the system refreshes on the updated event.
+         */
+        hookAppliedJson(callback: (newAircraft: AircraftCollection, offRadar: AircraftCollection) => void, forceThis?: Object) : IEventHandle
+        {
+            return this._Dispatcher.hook(this._Events.appliedJson, callback, forceThis);
         }
 
         /**
@@ -377,6 +387,8 @@ namespace VRS
                 var offRadar = this._Aircraft;
                 this._Aircraft = aircraft;
                 this._CountAvailableAircraft = length;
+
+                this._Dispatcher.raise(this._Events.appliedJson, [ newAircraft, offRadar ]);
 
                 if(reselectedAircraft) {
                     this._SelectedAircraft = reselectedAircraft;
