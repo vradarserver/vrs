@@ -80,7 +80,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Statistics
             this.BadlyFormedBaseStationMessagesRatio =  view.BadlyFormedBaseStationMessagesRatio;
             this.BaseStationMessages =                  view.BaseStationMessages;
             this.BytesReceived =                        view.BytesReceived;
-            this.ConnectedDuration =                    String.Format("{0:00}:{1:00}:{2:00}", view.ConnectedDuration.Hours, view.ConnectedDuration.Minutes, view.ConnectedDuration.Seconds);
+            this.ConnectedDuration =                    String.Format("{0:00}:{1:00}:{2:00}", (long)view.ConnectedDuration.TotalHours, view.ConnectedDuration.Minutes, view.ConnectedDuration.Seconds);
             this.CurrentBufferSize =                    view.CurrentBufferSize;
             this.ModeSLongFrame =                       view.ModeSLongFrame;
             this.ModeSMessageCount =                    view.ModeSMessageCount;
