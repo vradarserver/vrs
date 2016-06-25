@@ -26,6 +26,11 @@ namespace VirtualRadar.WinForms.Controls
     /// </summary>
     public partial class PluginDetailPanel : BaseUserControl
     {
+        /// <summary>
+        /// True if the plugin's events have been hooked.
+        /// </summary>
+        private bool _HookedPlugin;
+
         private IPlugin _Plugin;
         /// <summary>
         /// Gets or sets the plugin whose details are to be shown to the user.
@@ -37,7 +42,7 @@ namespace VirtualRadar.WinForms.Controls
             set
             {
                 if(_Plugin != value) {
-                    if(_Plugin != null) _Plugin.StatusChanged -= Plugin_StatusChanged;
+                    UnhookPluginEvents();
 
                     _Plugin = value;
                     labelPluginName.Text = value.Name;
@@ -46,7 +51,7 @@ namespace VirtualRadar.WinForms.Controls
                     labelStatusDescription.Text = value.StatusDescription;
                     buttonConfigure.Enabled = value.HasOptions;
 
-                    _Plugin.StatusChanged += Plugin_StatusChanged;
+                    HookPluginEvents();
                 }
             }
         }
@@ -62,7 +67,7 @@ namespace VirtualRadar.WinForms.Controls
         /// <param name="args"></param>
         protected virtual void OnConfigureClicked(PluginEventArgs args)
         {
-            if(ConfigureClicked != null) ConfigureClicked(this, args);
+            EventHelper.Raise(ConfigureClicked, this, args);
         }
 
         /// <summary>
@@ -110,6 +115,30 @@ namespace VirtualRadar.WinForms.Controls
             } else {
                 labelStatus.Text = Plugin.Status;
                 labelStatusDescription.Text = Plugin.StatusDescription;
+            }
+        }
+
+        /// <summary>
+        /// Hooks events on the plugin.
+        /// </summary>
+        private void HookPluginEvents()
+        {
+            if(!_HookedPlugin) {
+                _HookedPlugin = true;
+                _Plugin.StatusChanged += Plugin_StatusChanged;
+            }
+        }
+
+        /// <summary>
+        /// Unhooks events that have been hooked on the plugin.
+        /// </summary>
+        private void UnhookPluginEvents()
+        {
+            if(_HookedPlugin) {
+                _HookedPlugin = false;
+                if(_Plugin != null) {
+                    _Plugin.StatusChanged -= Plugin_StatusChanged;
+                }
             }
         }
     }
