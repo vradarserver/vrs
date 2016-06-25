@@ -539,7 +539,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             Settings.PageHandler = PageHandler;
         })(Settings = WebAdmin.Settings || (WebAdmin.Settings = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

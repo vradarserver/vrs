@@ -294,7 +294,7 @@ var VRS;
                 return enumModel ? enumModel.Description : null;
             };
             return ViewId;
-        })();
+        }());
         WebAdmin.ViewId = ViewId;
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));

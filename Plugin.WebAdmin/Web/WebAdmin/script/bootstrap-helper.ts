@@ -57,15 +57,20 @@
 
                 fieldValidate.attr('data-bind', fieldValidateBinding);
 
-                var helpBlockControl = $('input,textarea,select,:checkbox', fieldValidate);
+                var helpBlockControl = $('input,textarea,select,:checkbox,table', fieldValidate).first();
                 var parentInputGroup = helpBlockControl.parent('.input-group');
                 if(parentInputGroup.length > 0) {
                     helpBlockControl = parentInputGroup;
                 }
+                var isListControl = helpBlockControl.is('table');
                 var helpBlock = $('<span />')
                     .addClass('help-block')
-                    .attr('data-bind', visibleIfInvalidBinding)
-                    .insertAfter(helpBlockControl);
+                    .attr('data-bind', visibleIfInvalidBinding);
+                if(isListControl) {
+                    helpBlock.insertBefore(helpBlockControl);
+                } else {
+                    helpBlock.insertAfter(helpBlockControl);
+                }
                 $('<span />')
                     .attr('data-bind', messageBinding)
                     .appendTo(helpBlock);

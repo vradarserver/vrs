@@ -42,7 +42,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             Queues.PageHandler = PageHandler;
         })(Queues = WebAdmin.Queues || (WebAdmin.Queues = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

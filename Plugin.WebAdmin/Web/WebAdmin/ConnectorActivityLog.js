@@ -74,7 +74,7 @@ var VRS;
                     return result;
                 };
                 return PageHandler;
-            })();
+            }());
             ConnectorActivityLog.PageHandler = PageHandler;
         })(ConnectorActivityLog = WebAdmin.ConnectorActivityLog || (WebAdmin.ConnectorActivityLog = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

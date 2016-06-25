@@ -35,7 +35,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             AircraftDetailLookupLog.PageHandler = PageHandler;
         })(AircraftDetailLookupLog = WebAdmin.AircraftDetailLookupLog || (WebAdmin.AircraftDetailLookupLog = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

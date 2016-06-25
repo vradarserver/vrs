@@ -37,7 +37,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             About.PageHandler = PageHandler;
         })(About = WebAdmin.About || (WebAdmin.About = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
