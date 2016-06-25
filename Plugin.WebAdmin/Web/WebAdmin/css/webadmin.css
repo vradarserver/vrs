@@ -1,4 +1,8 @@
-﻿/* Page styles */
+﻿/*
+    Palleton: http://paletton.com/#uid=13W0u0kfSkm7JtOc6oxjLgrovcG
+*/
+
+/* Page styles */
 html, body {
     font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -57,7 +61,7 @@ html, body {
     border-bottom-width:1px;
 }
 #sidebar li a:hover {
-    background-color: #8285A4;
+    background-color: #337AB7;
     color: #eee;
 }
 #sidebar li.active {
@@ -100,6 +104,39 @@ html, body {
   }
 }
 
+/* Panels */
+.panel, .panel-group .panel, .panel-heading {
+    border-radius: 0;
+}
+.panel-default {
+    border-color: #8285A4;
+}
+.panel-default > .panel-heading {
+    background-color: #5B5F87;
+    color: #eee;
+    border-color: #8285A4;
+}
+
+.panel-default > .panel-heading a,
+.panel-default > .panel-heading a:link,
+.panel-default > .panel-heading a:visited,
+.panel-default > .panel-heading a:hover,
+.panel-default > .panel-heading a:active
+{
+    color: #eee;
+    text-decoration: none;
+}
+
+/* Modals */
+.modal-header {
+    background: #404570;
+    color: #eee;
+}
+.modal-header .close {
+    color: #eee;
+    opacity: 0.9;
+}
+
 /* Forms */
 .has-feedback.has-warning .form-control-feedback.glyphicon-exclamation-sign {
     color: #ffff00;
@@ -107,7 +144,7 @@ html, body {
 }
 .form-section {
     font-size: 1.4em;
-    color: #337ab7;
+    color: #337AB7;
     border-bottom: 1px solid #eee;
     margin: 1.4em -15px 0.5em -15px;
     padding-left: 15px;
@@ -124,6 +161,12 @@ html, body {
 }
 .help-block-icon.warning {
     color: #0000ff;
+}
+
+/* Tables */
+.table > thead > tr > th {
+    color: #2A2F5A;
+    border-bottom: 2px solid #8285A4;
 }
 
 /* Modal alerts */
