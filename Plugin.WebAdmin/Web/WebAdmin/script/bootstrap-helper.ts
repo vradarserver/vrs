@@ -147,9 +147,9 @@
                 var body = $(children[1]);
                 var bodyId = Helper.applyUniqueId(body);
 
-                panel.addClass('panel panel-default');
+                panel.addClass('panel panel-primary');
 
-                var headerLink = $('<a />')
+                var headerLink = $('<div />')
                     .attr('class', startCollapsed ? 'collapsed' : '')
                     .attr('data-toggle', 'collapse')
                     .attr('role', 'button')

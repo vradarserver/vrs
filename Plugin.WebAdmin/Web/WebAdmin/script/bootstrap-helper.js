@@ -93,8 +93,8 @@ var Bootstrap;
                 var headingId = Helper.applyUniqueId(heading);
                 var body = $(children[1]);
                 var bodyId = Helper.applyUniqueId(body);
-                panel.addClass('panel panel-default');
-                var headerLink = $('<a />')
+                panel.addClass('panel panel-primary');
+                var headerLink = $('<div />')
                     .attr('class', startCollapsed ? 'collapsed' : '')
                     .attr('data-toggle', 'collapse')
                     .attr('role', 'button')
