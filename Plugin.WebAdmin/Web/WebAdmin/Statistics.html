@@ -17,9 +17,9 @@
                             ::StatisticsTitle:: - <span data-bind="text: Name"></span>
                         </h1>
 
-                        <h2>
+                        <div class="form-section">
                             ::Connection::
-                        </h2>
+                        </div>
                         <div class="row">
                             <label class="col-sm-3">
                                 ::Duration:::
@@ -48,11 +48,9 @@
                             <div class="col-sm-3" data-bind="text: FormattedCurrentBufferSize"></div>
                         </div>
 
-                        <hr />
-
-                        <h2>
+                        <div class="form-section">
                             ::BaseStation::
-                        </h2>
+                        </div>
                         <div class="row">
                             <label class="col-sm-3">
                                 ::MessagesReceived:::
@@ -64,12 +62,9 @@
                             <div class="col-sm-3" data-bind="text: FormattedBadlyFormedBaseStationMessages"></div>
                         </div>
 
-
-                        <hr />
-
-                        <h2>
+                        <div class="form-section">
                             ::ModeS::
-                        </h2>
+                        </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="row">
@@ -133,11 +128,9 @@
                             </div>
                         </div>
 
-                        <hr />
-
-                        <h2>
+                        <div class="form-section">
                             ::ADSB::
-                        </h2>
+                        </div>
                         <div class="row">
                             <label class="col-sm-3">
                                 ::MessagesReceived:::
@@ -203,7 +196,7 @@
 
                         <div class="row">
                             <div class="col-sm-4 col-sm-offset-4 text-center">
-                                <button type="button" class="btn btn-primary" onclick="$.proxy(pageHandler.resetCounters(), pageHandler)">
+                                <button type="button" class="btn btn-info" onclick="$.proxy(pageHandler.resetCounters(), pageHandler)">
                                     ::ResetCounters::
                                 </button>
                             </div>

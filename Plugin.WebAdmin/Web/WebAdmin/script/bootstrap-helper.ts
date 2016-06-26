@@ -135,6 +135,14 @@
                 var options = Helper.getOptions(panel);
                 var startCollapsed = VRS.arrayHelper.indexOf(options, 'expanded') === -1;
                 var usePanelTitle = VRS.arrayHelper.indexOf(options, 'use-title') !== -1;
+                var context = 'default';
+                if(VRS.arrayHelper.indexOf(options, 'danger') !== -1)  context = 'danger';
+                if(VRS.arrayHelper.indexOf(options, 'default') !== -1) context = 'default';
+                if(VRS.arrayHelper.indexOf(options, 'info') !== -1)    context = 'info';
+                if(VRS.arrayHelper.indexOf(options, 'primary') !== -1) context = 'primary';
+                if(VRS.arrayHelper.indexOf(options, 'success') !== -1) context = 'success';
+                if(VRS.arrayHelper.indexOf(options, 'warning') !== -1) context = 'warning';
+
                 var isInAccordion = panel.parent().hasClass('panel-group') || VRS.arrayHelper.indexOf(options, 'accordion') !== -1;
                 var accordion = !isInAccordion ? null : panel.closest('.panel-group');
                 if(!accordion) {
@@ -147,7 +155,7 @@
                 var body = $(children[1]);
                 var bodyId = Helper.applyUniqueId(body);
 
-                panel.addClass('panel panel-primary');
+                panel.addClass('panel panel-' + context);
 
                 var headerLink = $('<div />')
                     .attr('class', startCollapsed ? 'collapsed' : '')
@@ -197,7 +205,7 @@
                 var footer = children.length === 3 ? $(children[2]) : null;
 
                 var headingTitle = $('<h4 />').addClass('modal-title');
-                heading.wrapInner(headingTitle).addClass('modal-header');
+                heading.wrapInner(headingTitle).addClass('modal-header bg-primary');
                 var headingId = Helper.applyUniqueId(headingTitle);
 
                 if(addHeaderCloseButton) {

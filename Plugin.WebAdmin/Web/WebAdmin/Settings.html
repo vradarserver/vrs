@@ -178,10 +178,10 @@
                                                     <td data-bind="text: FormattedConnectionType"></td>
                                                     <td data-bind="text: ConnectionParameters"></td>
                                                     <td class="text-nowrap">
-                                                        <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-receiver">
+                                                        <button type="button" class="btn btn-sm btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-receiver">
                                                             <span class="glyphicon glyphicon-pencil"></span>
                                                         </button>
-                                                        <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: DeleteRow">
                                                             <span class="glyphicon glyphicon-remove"></span>
                                                         </button>
                                                     </td>
@@ -227,13 +227,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-4">::Location:::</label>
-                                        <div class="col-sm-7">
-                                            <select class="form-control" data-bind="options: $root.ReceiverLocations(), optionsText: 'Name', optionsValue: 'UniqueId', value: ReceiverLocationId, valueAllowUnset: true"></select>
-                                        </div>
-                                        <div class="col-sm-1">
-                                            <button type="button" class="btn btn-default btn-sm" data-bind="click: ResetLocation">
-                                                <span class="glyphicon glyphicon-remove"></span>
-                                            </button>
+                                        <div class="col-sm-8">
+                                            <div class="input-group">
+                                                <select class="form-control" data-bind="options: $root.ReceiverLocations(), optionsText: 'Name', optionsValue: 'UniqueId', value: ReceiverLocationId, valueAllowUnset: true"></select>
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" data-bind="click: ResetLocation">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -244,7 +246,7 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-offset-4 col-sm-8">
-                                            <button type="button" class="btn btn-primary" data-bind="click: TestConnection">
+                                            <button type="button" class="btn btn-info" data-bind="click: TestConnection">
                                                 ::TestConnection::
                                             </button>
                                         </div>
@@ -432,10 +434,10 @@
                                                     <td data-bind="text: FormattedLatitude"></td>
                                                     <td data-bind="text: FormattedLongitude"></td>
                                                     <td class="text-nowrap">
-                                                        <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-receiver-location">
+                                                        <button type="button" class="btn btn-sm btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-receiver-location">
                                                             <span class="glyphicon glyphicon-pencil"></span>
                                                         </button>
-                                                        <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: DeleteRow">
                                                             <span class="glyphicon glyphicon-remove"></span>
                                                         </button>
                                                     </td>
@@ -517,10 +519,10 @@
                                                     <td data-bind="text: FormattedIgnoreModeS"></td>
                                                     <td data-bind="text: FormattedHidden"></td>
                                                     <td class="text-nowrap">
-                                                        <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-merged-feed">
+                                                        <button type="button" class="btn btn-sm btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-merged-feed">
                                                             <span class="glyphicon glyphicon-pencil"></span>
                                                         </button>
-                                                        <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: DeleteRow">
                                                             <span class="glyphicon glyphicon-remove"></span>
                                                         </button>
                                                     </td>
@@ -651,10 +653,10 @@
                                                     <td data-bind="text: FormattedAddress"></td>
                                                     <td data-bind="text: FormattedAccess"></td>
                                                     <td class="text-nowrap">
-                                                        <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-rebroadcast-server">
+                                                        <button type="button" class="btn btn-sm btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-rebroadcast-server">
                                                             <span class="glyphicon glyphicon-pencil"></span>
                                                         </button>
-                                                        <button type="button" class="btn btn-danger" data-bind="click: DeleteRow">
+                                                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: DeleteRow">
                                                             <span class="glyphicon glyphicon-remove"></span>
                                                         </button>
                                                     </td>
@@ -800,10 +802,10 @@
                                                         <input type="checkbox" data-bind="checked: IsAdminUser, disable: IsCurrentUser" />
                                                     </td>
                                                     <td class="text-nowrap">
-                                                        <button type="button" class="btn btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-user">
+                                                        <button type="button" class="btn btn-sm btn-success" data-bind="click: SelectRow" data-toggle="modal" data-target="#edit-user">
                                                             <span class="glyphicon glyphicon-pencil"></span>
                                                         </button>
-                                                        <button type="button" class="btn btn-danger" data-bind="click: DeleteRow, disable: IsCurrentUser">
+                                                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: DeleteRow, disable: IsCurrentUser">
                                                             <span class="glyphicon glyphicon-remove"></span>
                                                         </button>
                                                     </td>
@@ -1436,7 +1438,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-offset-4 col-sm-8">
-                                                <button type="button" class="btn btn-primary" data-bind="click: SetDefaultVoice">
+                                                <button type="button" class="btn btn-info" data-bind="click: SetDefaultVoice">
                                                     ::DefaultVoice::
                                                 </button>
                                             </div>
@@ -1461,7 +1463,7 @@
 
                         <div class="row">
                             <div class="col-sm-2">
-                                <button type="button" class="btn btn-primary" data-bind="click: $.proxy(pageHandler.save, pageHandler)">
+                                <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.save, pageHandler)">
                                     ::Save::
                                 </button>
                             </div>

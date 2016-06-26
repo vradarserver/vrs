@@ -285,10 +285,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web\WebAdmin\css\bootstrap\css\bootstrap.css.map" />
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
