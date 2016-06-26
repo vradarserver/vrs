@@ -19,11 +19,11 @@
                             ::WA_Title_Main::
                         </h1>
 
-                        <div class="alert alert-info" role="alert" data-bind="visible: NewVer">
+                        <div class="alert alert-info text-center" role="alert" data-bind="visible: NewVer">
                             <a href="#" target="external" data-bind="attr: { href: NewVerUrl }">::LaterVersionAvailable::</a>
                         </div>
 
-                        <div class="alert alert-info" role="alert" data-bind="visible: HasFailedPlugins">
+                        <div class="alert alert-danger text-center" role="alert" data-bind="visible: HasFailedPlugins">
                             <span data-bind="text: FailedPluginsMessage"></span>
                         </div>
 
@@ -68,7 +68,7 @@
                                         <tbody data-bind="foreach: Feeds">
                                             <tr>
                                                 <td class="thin-column">
-                                                    <button type="button" class="btn btn-primary" aria-label="Feed Options" data-bind="click: $root.SelectFeed" data-toggle="modal" data-target="#feed-modal">
+                                                    <button type="button" class="btn btn-info btn-xs" aria-label="Feed Options" data-bind="click: $root.SelectFeed" data-toggle="modal" data-target="#feed-modal">
                                                         <span class="glyphicon glyphicon-cog"></span>
                                                     </button>
                                                 </td>
@@ -91,35 +91,35 @@
                             <div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <button type="button" class="btn btn-default" disabled="disabled" data-bind="visible: SelectedFeed().Merged">
+                                        <button type="button" class="btn btn-info" disabled="disabled" data-bind="visible: SelectedFeed().Merged">
                                             ::StatisticsTitle:: »
                                         </button>
-                                        <a class="btn btn-default" data-bind="attr: { href: SelectedFeed().StatisticsUrl }, hidden: SelectedFeed().Merged">
+                                        <a class="btn btn-info" data-bind="attr: { href: SelectedFeed().StatisticsUrl }, hidden: SelectedFeed().Merged">
                                             ::StatisticsTitle:: »
                                         </a>
                                     </div>
                                     <div class="col-sm-6">
-                                        <button type="button" class="btn btn-default" disabled="disabled" data-bind="visible: SelectedFeed().Merged">
+                                        <button type="button" class="btn btn-info pull-right" disabled="disabled" data-bind="visible: SelectedFeed().Merged">
                                             ::ConnectorActivityLog:: »
                                         </button>
-                                        <a class="btn btn-default" data-bind="attr: { href: SelectedFeed().ConnectorActivityLogUrl }, hidden: SelectedFeed().Merged">
+                                        <a class="btn btn-info pull-right" data-bind="attr: { href: SelectedFeed().ConnectorActivityLogUrl }, hidden: SelectedFeed().Merged">
                                             ::ConnectorActivityLog:: »
                                         </a>
                                     </div>
                                 </div>
-                                <p>
-                                </p>
                                 <hr />
-                                <p>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.resetPolarPlot, pageHandler), enable: SelectedFeed().Polar">
-                                        ::WA_Label_ResetPolarPlot::
-                                    </button>
-                                </p>
-                                <p>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.reconnectFeed, pageHandler), disable: SelectedFeed().Merged">
-                                        ::WA_Label_Reconnect::
-                                    </button>
-                                </p>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.resetPolarPlot, pageHandler), enable: SelectedFeed().Polar">
+                                            ::WA_Label_ResetPolarPlot::
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-danger pull-right" data-dismiss="modal" data-bind="click: $.proxy(pageHandler.reconnectFeed, pageHandler), disable: SelectedFeed().Merged">
+                                            ::WA_Label_Reconnect::
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -190,7 +190,7 @@
                             <div>
                                 <p data-bind="text: UpnpStatus"></p>
                                 <div>
-                                    <button id="upnp-toggle" type="button" class="btn btn-primary"
+                                    <button id="upnp-toggle" type="button" class="btn btn-info"
                                             data-bind="text: UpnpButtonText, disable: UpnpButtonDisabled, click: $.proxy(pageHandler.toggleUPnpStatus, pageHandler)"></button>
                                 </div>
                             </div>
