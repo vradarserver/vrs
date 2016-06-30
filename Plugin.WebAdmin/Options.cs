@@ -23,6 +23,16 @@ namespace VirtualRadar.Plugin.WebAdmin
     /// </summary>
     public class Options : INotifyPropertyChanged
     {
+        private long _DataVersion;
+        /// <summary>
+        /// Gets or sets the version of the options being saved.
+        /// </summary>
+        public long DataVersion
+        {
+            get { return _DataVersion; }
+            set { SetField(ref _DataVersion, value, () => DataVersion); }
+        }
+
         private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating whether the plugin is active.
