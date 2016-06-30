@@ -17,7 +17,7 @@ var DatabaseEditor;
             function Translations() {
             }
             return Translations;
-        })();
+        }());
         Index.Translations = Translations;
         var PageHandler = (function () {
             function PageHandler(translations) {
@@ -119,14 +119,14 @@ var DatabaseEditor;
                 });
             };
             return PageHandler;
-        })();
+        }());
         Index.PageHandler = PageHandler;
         var SearchModel = (function () {
             function SearchModel() {
                 this.icao = ko.observable();
             }
             return SearchModel;
-        })();
+        }());
         var RecordModel = (function () {
             function RecordModel() {
             }
@@ -136,7 +136,7 @@ var DatabaseEditor;
                 'Registration': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } }
             };
             return RecordModel;
-        })();
+        }());
     })(Index = DatabaseEditor.Index || (DatabaseEditor.Index = {}));
 })(DatabaseEditor || (DatabaseEditor = {}));
 //# sourceMappingURL=index.js.map
