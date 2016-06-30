@@ -56,6 +56,12 @@ namespace VirtualRadar.Plugin.WebAdmin
         private WebAdminViewManager _WebAdminViewManager;
 
         /// <summary>
+        /// Gets the last initialised instance of the plugin object. At run-time only one plugin
+        /// object gets created and initialised.
+        /// </summary>
+        public static Plugin Singleton { get; private set; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public string Id { get { return "VirtualRadar.Plugin.WebAdmin"; } }
@@ -105,6 +111,21 @@ namespace VirtualRadar.Plugin.WebAdmin
         }
 
         /// <summary>
+        /// Raised when <see cref="OptionsStorage"/> saves a new set of options.
+        /// </summary>
+        public event EventHandler<EventArgs<Options>> SettingsChanged;
+
+        /// <summary>
+        /// Raises <see cref="SettingsChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        internal void RaiseSettingsChanged(EventArgs<Options> args)
+        {
+            ApplyOptions(args.Value);
+            EventHelper.Raise(SettingsChanged, this, args);
+        }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public Plugin()
@@ -132,7 +153,8 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <param name="parameters"></param>
         public void Startup(PluginStartupParameters parameters)
         {
-            _Options = OptionsStorage.Load(this);
+            Singleton = this;
+            _Options = OptionsStorage.Load();
 
             var pathFromRoot = String.Format("/{0}/", ProtectedFolder);
             _WebAdminViewManager.Startup(parameters.WebSite);
@@ -185,11 +207,10 @@ namespace VirtualRadar.Plugin.WebAdmin
             using(var dialog = new WinForms.OptionsView()) {
                 var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
                 dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "WebAdmin/Index.html");
-                dialog.Options = OptionsStorage.Load(this);
+                dialog.Options = OptionsStorage.Load();
 
                 if(dialog.ShowDialog() == DialogResult.OK) {
-                    OptionsStorage.Save(this, dialog.Options);
-                    ApplyOptions(dialog.Options);
+                    OptionsStorage.Save(dialog.Options);
                 }
             }
         }

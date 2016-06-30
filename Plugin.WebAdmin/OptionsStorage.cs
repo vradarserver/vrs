@@ -8,15 +8,16 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using InterfaceFactory;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
-using System.IO;
 using System.Xml.Serialization;
-using Newtonsoft.Json;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
@@ -28,14 +29,13 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// Loads the plugin's options.
         /// </summary>
-        /// <param name="plugin"></param>
         /// <returns></returns>
-        public static Options Load(Plugin plugin)
+        public static Options Load()
         {
             var pluginStorage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
             var pluginSettings = pluginStorage.Load();
 
-            var jsonOptions = pluginSettings.ReadString(plugin, Key);
+            var jsonOptions = pluginSettings.ReadString(Plugin.Singleton, Key);
             var result = String.IsNullOrEmpty(jsonOptions) ? new Options() : JsonConvert.DeserializeObject<Options>(jsonOptions);
 
             return result;
@@ -44,16 +44,23 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// Saves the plugin's options.
         /// </summary>
-        /// <param name="plugin"></param>
         /// <param name="options"></param>
-        public static void Save(Plugin plugin, Options options)
+        public static void Save(Options options)
         {
+            var currentOptions = Load();
+            if(options.DataVersion != currentOptions.DataVersion) {
+                throw new ConflictingUpdateException(String.Format("The options you are trying to save have changed since you loaded them. You are editing version {0}, the current version is {1}", options.DataVersion, currentOptions.DataVersion));
+            }
+            ++options.DataVersion;
+
             var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
 
             var pluginSettings = storage.Load();
-            pluginSettings.Write(plugin, Key, JsonConvert.SerializeObject(options));
+            pluginSettings.Write(Plugin.Singleton, Key, JsonConvert.SerializeObject(options));
 
             storage.Save(pluginSettings);
+
+            Plugin.Singleton.RaiseSettingsChanged(new EventArgs<Options>(options));
         }
     }
 }
