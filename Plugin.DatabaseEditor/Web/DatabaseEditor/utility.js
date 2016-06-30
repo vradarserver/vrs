@@ -44,7 +44,7 @@ var DatabaseEditor;
             return result;
         };
         return BootstapUtility;
-    })();
+    }());
     DatabaseEditor.BootstapUtility = BootstapUtility;
 })(DatabaseEditor || (DatabaseEditor = {}));
 //# sourceMappingURL=utility.js.map

@@ -109,7 +109,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             DatabaseEditorPluginOptions.PageHandler = PageHandler;
         })(DatabaseEditorPluginOptions = WebAdmin.DatabaseEditorPluginOptions || (WebAdmin.DatabaseEditorPluginOptions = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));

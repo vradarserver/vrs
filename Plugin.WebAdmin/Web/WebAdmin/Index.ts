@@ -144,8 +144,15 @@
                                 { page: '/FlightSim.htm',   description: VRS.Server.$$.FlightSimVersionOld },
                                 { page: '/settings.html',   description: VRS.Server.$$.SettingsPage },
                             ];
-                            root.SelectedAddressPerspective = ko.observable(root.AddressPerspectives[0]);
-                            root.SelectedAddressPage = ko.observable(root.AddressPages[0]);
+                            var initialPerspective = 0;
+                            var currentUrl = window.location.href.toLowerCase();
+                            if(currentUrl.indexOf(root.LanRoot().toLowerCase()) !== -1) {
+                                initialPerspective = 1;
+                            } else if(currentUrl.indexOf(root.PublicRoot().toLowerCase()) !== -1) {
+                                initialPerspective = 2;
+                            }
+                            root.SelectedAddressPerspective = ko.observable(root.AddressPerspectives[initialPerspective]);
+                            root.SelectedAddressPage = ko.observable(root.AddressPages[initialPerspective]);
                             root.AddressUrl = ko.computed(() => {
                                 var result = '#';
                                 if(root.SelectedAddressPerspective() && root.SelectedAddressPage()) {
