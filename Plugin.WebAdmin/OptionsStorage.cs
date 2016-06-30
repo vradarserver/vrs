@@ -36,7 +36,13 @@ namespace VirtualRadar.Plugin.WebAdmin
             var pluginSettings = pluginStorage.Load();
 
             var jsonOptions = pluginSettings.ReadString(Plugin.Singleton, Key);
-            var result = String.IsNullOrEmpty(jsonOptions) ? new Options() : JsonConvert.DeserializeObject<Options>(jsonOptions);
+            var result = String.IsNullOrEmpty(jsonOptions) ? Options.Default() : JsonConvert.DeserializeObject<Options>(jsonOptions);
+
+            // There was a bug in preview releases of the plugin that could double-up entries in the Access object every time
+            // the settings were saved. This block cleans up the options for those users that might have hit the bug:
+            var distinctAccessAddresses = result.Access.Addresses.Distinct().ToArray();
+            result.Access.Addresses.Clear();
+            result.Access.Addresses.AddRange(distinctAccessAddresses);
 
             return result;
         }
