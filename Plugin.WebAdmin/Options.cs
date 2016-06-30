@@ -94,7 +94,19 @@ namespace VirtualRadar.Plugin.WebAdmin
         public Options()
         {
             Enabled = true;
-            Access = Access.CreateDenyAllButLocalMachineAndNetwork();
+            Access = new Access();
+        }
+
+        /// <summary>
+        /// Returns a new object with the Access object pre-loaded with default entries.
+        /// </summary>
+        /// <returns></returns>
+        public static Options Default()
+        {
+            var result = new Options();
+            result.Access = Access.CreateDenyAllButLocalMachineAndNetwork();
+
+            return result;
         }
     }
 }

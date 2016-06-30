@@ -25,6 +25,8 @@
         .For<VirtualRadar.Plugin.WebAdmin.View.Settings.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Settings.TestConnectionOutcomeModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Statistics.ViewModel>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions.ViewModel>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions.SaveOutcomeModel>()
         ;
 #>
 <# var ko = TypeScript.Definitions(new TypeLite.AlternateGenerators.TsKnockoutViewmodelModelGenerator())
@@ -41,6 +43,8 @@
         .For<VirtualRadar.Plugin.WebAdmin.View.Settings.ViewModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Settings.TestConnectionOutcomeModel>()
         .For<VirtualRadar.Plugin.WebAdmin.View.Statistics.ViewModel>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions.ViewModel>()
+        .For<VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions.SaveOutcomeModel>()
         ;
 #>
 <#= ts.Generate(TsGeneratorOutput.Properties) #>

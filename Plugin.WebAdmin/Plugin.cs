@@ -174,6 +174,11 @@ namespace VirtualRadar.Plugin.WebAdmin
             // Views that do not have a menu entry
             _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "Statistics.html", null, () => new View.StatisticsView(), null));
 
+            // Plugin options views
+            _WebAdminViewManager.AddWebAdminView(new WebAdminView(pathFromRoot, "WebAdminPluginOptions.html", WebAdminStrings.PluginName, () => new View.WebAdminPluginOptionsView(), null) {
+                Plugin = this,
+            });
+
             _WebAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
 
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();

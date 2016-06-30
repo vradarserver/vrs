@@ -39,8 +39,9 @@ var VRS;
                     var existing = model.EditExisting();
                     if (result) {
                         $.each(model.Addresses(), function (idx, other) {
-                            if ((!existing || other !== existing) && other.Cidr() === address) {
-                                result = false;
+                            if (!existing || other !== existing) {
+                                var otherCidr = Cidr.parse(other.Cidr());
+                                result = !cidr.equals(otherCidr);
                             }
                             return result;
                         });
@@ -69,9 +70,12 @@ var VRS;
                     model.EditAddress(cidrModel.Cidr());
                 };
                 model.DeleteCidr = function (cidrModel) {
-                    model.Addresses.popToModel(cidrModel);
-                    if (model.EditExisting() === cidrModel) {
-                        model.ResetEdit();
+                    var idx = VRS.arrayHelper.indexOf(model.Addresses(), cidrModel);
+                    if (idx !== -1) {
+                        model.Addresses.removeAtToModel(idx, cidrModel);
+                        if (model.EditExisting() === cidrModel) {
+                            model.ResetEdit();
+                        }
                     }
                 };
             };
@@ -120,13 +124,8 @@ var VRS;
             Cidr.prototype.equals = function (other) {
                 var result = this === other;
                 if (!result && other) {
-                    var length = this._AddressBytes.length;
-                    result = length === other._AddressBytes.length && this._BitmaskBits === other._BitmaskBits;
-                    for (var i = 0; result && i < length; ++i) {
-                        if (this._AddressBytes[i] !== other._AddressBytes[i]) {
-                            result = false;
-                        }
-                    }
+                    result = this.getFromAddress() === other.getFromAddress() &&
+                        this.getToAddress() === other.getToAddress();
                 }
                 return result;
             };

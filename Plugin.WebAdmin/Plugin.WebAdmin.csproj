@@ -71,12 +71,14 @@
     <Compile Include="View\LogView.cs" />
     <Compile Include="View\MainModels.cs" />
     <Compile Include="View\MainView.cs" />
+    <Compile Include="View\WebAdminPluginOptionsModels.cs" />
     <Compile Include="View\QueuesModels.cs" />
     <Compile Include="View\QueuesView.cs" />
     <Compile Include="View\SettingsModels.cs" />
     <Compile Include="View\SettingsView.cs" />
     <Compile Include="View\StatisticsModels.cs" />
     <Compile Include="View\StatisticsView.cs" />
+    <Compile Include="View\WebAdminPluginOptionsView.cs" />
     <Compile Include="WebAdminStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -122,6 +124,7 @@
     <TypeScriptCompile Include="Web\WebAdmin\About.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\AircraftDetailLookupLog.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\ConnectorActivityLog.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\WebAdminPluginOptions.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Index.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Log.ts" />
     <TypeScriptCompile Include="Web\WebAdmin\Queues.ts" />
@@ -186,6 +189,10 @@
     <Content Include="Web\WebAdmin\ConnectorActivityLog.js.map">
       <DependentUpon>ConnectorActivityLog.ts</DependentUpon>
     </Content>
+    <Content Include="Web\WebAdmin\WebAdminPluginOptions.js">
+      <DependentUpon>WebAdminPluginOptions.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\WebAdminPluginOptions.html" />
     <Content Include="Web\WebAdmin\script\knockout.extensions.js" />
     <Content Include="Web\WebAdmin\script\knockout.viewmodel.js" />
     <Content Include="VirtualRadar.Plugin.WebAdmin.xml">
@@ -289,6 +296,9 @@
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="Web\WebAdmin\css\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="Web\WebAdmin\WebAdminPluginOptions.js.map">
+      <DependentUpon>WebAdminPluginOptions.ts</DependentUpon>
+    </None>
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>

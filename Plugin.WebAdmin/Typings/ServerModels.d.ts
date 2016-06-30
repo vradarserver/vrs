@@ -464,6 +464,18 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
         Val: number;
     }
 }
+declare module VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions {
+    interface IViewModel {
+        DataVersion: number;
+        Enabled: boolean;
+        Access: VirtualRadar.Interface.WebSite.WebAdminModels.IAccessModel;
+        EnumDefaultAccesses: VirtualRadar.Interface.View.IEnumModel[];
+    }
+    interface ISaveOutcomeModel {
+        Outcome: string;
+        ViewModel: VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions.IViewModel;
+    }
+}
 
 
 declare module VirtualRadar.Plugin.WebAdmin {
@@ -927,6 +939,18 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
     interface IAdsbMessageFormatCountModel_KO {
         Fmt: KnockoutObservable<string>;
         Val: KnockoutObservable<number>;
+    }
+}
+declare module VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions {
+    interface IViewModel_KO {
+        DataVersion: KnockoutObservable<number>;
+        Enabled: KnockoutObservable<boolean>;
+        Access: VirtualRadar.Interface.WebSite.WebAdminModels.IAccessModel_KO;
+        EnumDefaultAccesses: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+    }
+    interface ISaveOutcomeModel_KO {
+        Outcome: KnockoutObservable<string>;
+        ViewModel: VirtualRadar.Plugin.WebAdmin.View.WebAdminPluginOptions.IViewModel_KO;
     }
 }
 
