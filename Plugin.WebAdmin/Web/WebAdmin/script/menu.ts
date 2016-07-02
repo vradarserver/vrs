@@ -7,17 +7,24 @@
         private _MenuEntries: ViewJson.IJsonMenuEntry[] = [];
         private _MenuItemsList: JQuery;
 
+        static suppressNavbar = false;
+        static suppressSidebar = false;
+
         constructor()
         {
             $(document).ready(() => {
-                this.addTopNavbar();
-                this.addNavSidebar();
+                if(!Menu.suppressNavbar) {
+                    this.addTopNavbar();
+                }
+                if(!Menu.suppressSidebar) {
+                    this.addNavSidebar();
 
-                $('[data-toggle=offcanvas]').click(function() {
-                    $('.row-offcanvas').toggleClass('active');
-                });
+                    $('[data-toggle=offcanvas]').click(function() {
+                        $('.row-offcanvas').toggleClass('active');
+                    });
 
-                this.fetchMenuEntries();
+                    this.fetchMenuEntries();
+                }
             });
         }
 
@@ -40,21 +47,28 @@
          */
         private addTopNavbar()
         {
+            var toggleSidebarButton: JQuery;
+            if(Menu.suppressSidebar) {
+                toggleSidebarButton = $('<div />');
+            } else {
+                toggleSidebarButton = $('<button />')
+                    .attr('type', 'button')
+                    .attr('class', 'navbar-toggle')
+                    .attr('data-toggle', 'offcanvas')
+                    .attr('data-target', '.sidebar-nav')
+                    .attr('aria-label', 'Menu')
+                    .append($('<span />').addClass('icon-bar'))
+                    .append($('<span />').addClass('icon-bar'))
+                    .append($('<span />').addClass('icon-bar'))
+                ;
+            }
+
             var html =
                 $('<div />')
                 .attr('class', 'navbar navbar-default navbar-fixed-top" role="navigation')
                 .append($('<div />').attr('class', 'container-fluid')
                     .append($('<div />').attr('class', 'navbar-header')
-                        .append($('<button />')
-                            .attr('type', 'button')
-                            .attr('class', 'navbar-toggle')
-                            .attr('data-toggle', 'offcanvas')
-                            .attr('data-target', '.sidebar-nav')
-                            .attr('aria-label', 'Menu')
-                            .append($('<span />').addClass('icon-bar'))
-                            .append($('<span />').addClass('icon-bar'))
-                            .append($('<span />').addClass('icon-bar'))
-                        )
+                        .append(toggleSidebarButton)
                         .append($('<a />')
                             .attr('class', 'navbar-brand')
                             .attr('href', '#')

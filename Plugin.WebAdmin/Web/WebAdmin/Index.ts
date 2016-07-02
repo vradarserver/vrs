@@ -28,6 +28,7 @@
         FormattedTracked?:          KnockoutComputed<string>;
         ConnectorActivityLogUrl?:   KnockoutComputed<string>;
         StatisticsUrl?:             KnockoutComputed<string>;
+        StatisticsTarget?:          KnockoutComputed<string>;
     }
 
     interface RequestModel extends ViewJson.IServerRequestModel_KO
@@ -180,6 +181,7 @@
                             feed.StatusClass = ko.computed(() => feed.ConnDesc() === VRS.Server.$$.Connected ? '' : 'bg-danger');
                             feed.ConnectorActivityLogUrl = ko.computed(() => feed.Merged() ? '' : 'ConnectorActivityLog.html?connectorName=' + encodeURIComponent(feed.Name()));
                             feed.StatisticsUrl = ko.computed(() => feed.Merged() ? '' : 'Statistics.html?feedId=' + encodeURIComponent(String(feed.Id())));
+                            feed.StatisticsTarget = ko.computed(() => 'statistics-' + feed.Id());
                         },
 
                         '{root}.Requests[i]': function(request: RequestModel)
