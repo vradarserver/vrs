@@ -865,6 +865,10 @@ Show this message.</value>
   <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
     <value>Le niveau de zoom de Google Maps doit être compris entre 0 et 19</value>
   </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="Hidden" xml:space="preserve">
     <value>Hidden</value>
     <comment>** SAME AS ENGLISH **</comment>
