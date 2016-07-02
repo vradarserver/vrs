@@ -4,6 +4,7 @@
 
     interface Model extends ViewJson.IViewModel_KO
     {
+        PageTitle?:                                     KnockoutComputed<string>;
         FormattedBytesReceived?:                        KnockoutComputed<string>;
         FormattedReceiverThroughput?:                   KnockoutComputed<string>;
         FormattedReceiverBadChecksum?:                  KnockoutComputed<string>;
@@ -105,6 +106,7 @@
                     extend: {
                         '{root}': function(root: Model)
                         {
+                            root.PageTitle = ko.computed(() => root.Name() + ' ' + VRS.Server.$$.StatisticsTitle + ' - ' + VRS.WebAdmin.$$.WA_Title_WebAdmin);
                             root.FormattedBytesReceived = ko.computed(() => VRS.stringUtility.formatNumber(root.BytesReceived(), 'N0'));
                             root.FormattedReceiverThroughput = ko.computed(() => VRS.stringUtility.format('{0:N2} {1}', root.ReceiverThroughput(), VRS.Server.$$.AcronymKilobytePerSecond));
                             root.FormattedReceiverBadChecksum = ko.computed(() => VRS.stringUtility.formatNumber(root.ReceiverBadChecksum(), 'N0'));
@@ -141,7 +143,7 @@
                         }
                     }
                 });
-                ko.applyBindings(this._Model);
+                ko.applyBindings(this._Model, $('#bind-root')[0]);
             }
         }
     }

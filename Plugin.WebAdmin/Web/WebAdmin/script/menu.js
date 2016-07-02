@@ -7,12 +7,16 @@ var VRS;
                 var _this = this;
                 this._MenuEntries = [];
                 $(document).ready(function () {
-                    _this.addTopNavbar();
-                    _this.addNavSidebar();
-                    $('[data-toggle=offcanvas]').click(function () {
-                        $('.row-offcanvas').toggleClass('active');
-                    });
-                    _this.fetchMenuEntries();
+                    if (!Menu.suppressNavbar) {
+                        _this.addTopNavbar();
+                    }
+                    if (!Menu.suppressSidebar) {
+                        _this.addNavSidebar();
+                        $('[data-toggle=offcanvas]').click(function () {
+                            $('.row-offcanvas').toggleClass('active');
+                        });
+                        _this.fetchMenuEntries();
+                    }
                 });
             }
             Menu.prototype.fetchMenuEntries = function () {
@@ -29,19 +33,26 @@ var VRS;
                 });
             };
             Menu.prototype.addTopNavbar = function () {
+                var toggleSidebarButton;
+                if (Menu.suppressSidebar) {
+                    toggleSidebarButton = $('<div />');
+                }
+                else {
+                    toggleSidebarButton = $('<button />')
+                        .attr('type', 'button')
+                        .attr('class', 'navbar-toggle')
+                        .attr('data-toggle', 'offcanvas')
+                        .attr('data-target', '.sidebar-nav')
+                        .attr('aria-label', 'Menu')
+                        .append($('<span />').addClass('icon-bar'))
+                        .append($('<span />').addClass('icon-bar'))
+                        .append($('<span />').addClass('icon-bar'));
+                }
                 var html = $('<div />')
                     .attr('class', 'navbar navbar-default navbar-fixed-top" role="navigation')
                     .append($('<div />').attr('class', 'container-fluid')
                     .append($('<div />').attr('class', 'navbar-header')
-                    .append($('<button />')
-                    .attr('type', 'button')
-                    .attr('class', 'navbar-toggle')
-                    .attr('data-toggle', 'offcanvas')
-                    .attr('data-target', '.sidebar-nav')
-                    .attr('aria-label', 'Menu')
-                    .append($('<span />').addClass('icon-bar'))
-                    .append($('<span />').addClass('icon-bar'))
-                    .append($('<span />').addClass('icon-bar')))
+                    .append(toggleSidebarButton)
                     .append($('<a />')
                     .attr('class', 'navbar-brand')
                     .attr('href', '#')
@@ -73,6 +84,8 @@ var VRS;
                     _this._MenuItemsList.append(pageElement);
                 });
             };
+            Menu.suppressNavbar = false;
+            Menu.suppressSidebar = false;
             return Menu;
         }());
         WebAdmin.Menu = Menu;

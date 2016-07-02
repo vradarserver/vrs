@@ -119,6 +119,7 @@ var VRS;
                                     feed.StatusClass = ko.computed(function () { return feed.ConnDesc() === VRS.Server.$$.Connected ? '' : 'bg-danger'; });
                                     feed.ConnectorActivityLogUrl = ko.computed(function () { return feed.Merged() ? '' : 'ConnectorActivityLog.html?connectorName=' + encodeURIComponent(feed.Name()); });
                                     feed.StatisticsUrl = ko.computed(function () { return feed.Merged() ? '' : 'Statistics.html?feedId=' + encodeURIComponent(String(feed.Id())); });
+                                    feed.StatisticsTarget = ko.computed(function () { return 'statistics-' + feed.Id(); });
                                 },
                                 '{root}.Requests[i]': function (request) {
                                     request.FormattedBytes = ko.computed(function () { return VRS.stringUtility.format('{0:N0}', request.Bytes()); });

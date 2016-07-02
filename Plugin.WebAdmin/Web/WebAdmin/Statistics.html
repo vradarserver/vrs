@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
-<html>
+<html id="bind-root">
     <head>
         <meta charset="utf-8" />
-        <title>::StatisticsTitle:: - ::WA_Title_WebAdmin::</title>
+        <title data-bind="text: PageTitle"></title>
         @head.html@
         <!-- [[ BUNDLE END ]] -->
         <script src="script/Strings.Server.js"></script>
@@ -10,206 +10,203 @@
     </head>
     <body>
         <div id="page-container">
-            <div id="content" class="container-fluid">
-                <div class="row row-offcanvas row-offcanvas-left">
-                    <div class="col-xs-12 col-sm-9">
-                        <h1 class="page-header">
-                            ::StatisticsTitle:: - <span data-bind="text: Name"></span>
-                        </h1>
+            <div id="content" class="container">
+                <h1 class="page-header">
+                    <span data-bind="text: Name"></span> ::StatisticsTitle::
+                </h1>
 
-                        <div class="form-section">
-                            ::Connection::
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-3">
-                                ::Duration:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: ConnectedDuration"></div>
-                            <label class="col-sm-3">
-                                ::BadChecksum:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: FormattedReceiverBadChecksum"></div>
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-3">
-                                ::BytesReceived:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: FormattedBytesReceived"></div>
-                            <label class="col-sm-3">
-                                ::Throughput:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: FormattedReceiverThroughput"></div>
-                        </div>
+                <div class="form-section">
+                    ::Connection::
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">
+                        ::Duration:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: ConnectedDuration"></div>
+                    <label class="col-sm-3">
+                        ::BadChecksum:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedReceiverBadChecksum"></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">
+                        ::BytesReceived:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedBytesReceived"></div>
+                    <label class="col-sm-3">
+                        ::Throughput:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedReceiverThroughput"></div>
+                </div>
 
-                        <div class="row">
-                            <label class="col-sm-3">
-                                ::ReadBufferSize:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: FormattedCurrentBufferSize"></div>
-                        </div>
+                <div class="row">
+                    <label class="col-sm-3">
+                        ::ReadBufferSize:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedCurrentBufferSize"></div>
+                </div>
 
-                        <div class="form-section">
-                            ::BaseStation::
-                        </div>
+                <div class="form-section">
+                    ::BaseStation::
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">
+                        ::MessagesReceived:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedBaseStationMessages"></div>
+                    <label class="col-sm-3">
+                        ::BadlyFormatted:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedBadlyFormedBaseStationMessages"></div>
+                </div>
+
+                <div class="form-section">
+                    ::ModeS::
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="row">
-                            <label class="col-sm-3">
+                            <label class="col-sm-6">
                                 ::MessagesReceived:::
                             </label>
-                            <div class="col-sm-3" data-bind="text: FormattedBaseStationMessages"></div>
-                            <label class="col-sm-3">
-                                ::BadlyFormatted:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: FormattedBadlyFormedBaseStationMessages"></div>
-                        </div>
-
-                        <div class="form-section">
-                            ::ModeS::
+                            <div class="col-sm-6" data-bind="text: FormattedModeSMessageCount"></div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
-                                <div class="row">
-                                    <label class="col-sm-6">
-                                        ::MessagesReceived:::
-                                    </label>
-                                    <div class="col-sm-6" data-bind="text: FormattedModeSMessageCount"></div>
-                                </div>
-                                <div class="row">
-                                    <label class="col-sm-6">
-                                        ::NoAdsbPayload:::
-                                    </label>
-                                    <div class="col-sm-6" data-bind="text: FormattedModeSNoAdsbPayload"></div>
-                                </div>
-                                <div class="row">
-                                    <label class="col-sm-6">
-                                        ::ShortFrame:::
-                                    </label>
-                                    <div class="col-sm-6" data-bind="text: FormattedModeSShortFrame"></div>
-                                </div>
-                                <div class="row">
-                                    <label class="col-sm-6">
-                                        ::ShortFrameUnusable:::
-                                    </label>
-                                    <div class="col-sm-6" data-bind="text: FormattedModeSShortFrameUnusable"></div>
-                                </div>
-                                <div class="row">
-                                    <label class="col-sm-6">
-                                        ::LongFrame:::
-                                    </label>
-                                    <div class="col-sm-6" data-bind="text: FormattedModeSLongFrame"></div>
-                                </div>
-                                <div class="row">
-                                    <label class="col-sm-6">
-                                        ::PIPresent:::
-                                    </label>
-                                    <div class="col-sm-6" data-bind="text: FormattedModeSWithPI"></div>
-                                </div>
-                                <div class="row">
-                                    <label class="col-sm-6">
-                                        ::PIBadParity:::
-                                    </label>
-                                    <div class="col-sm-6" data-bind="text: FormattedModeSPIBadParity"></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 table-responsive">
-                                <table class="table table-striped table-condensed">
-                                    <thead>
-                                        <tr>
-                                            <th>::DF::</th>
-                                            <th class="text-right">::Count::</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody data-bind="foreach: ModeSDFCount">
-                                        <tr>
-                                            <td data-bind="text: DF"></td>
-                                            <td data-bind="text: FormattedVal" class="text-right"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="form-section">
-                            ::ADSB::
+                            <label class="col-sm-6">
+                                ::NoAdsbPayload:::
+                            </label>
+                            <div class="col-sm-6" data-bind="text: FormattedModeSNoAdsbPayload"></div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-3">
-                                ::MessagesReceived:::
+                            <label class="col-sm-6">
+                                ::ShortFrame:::
                             </label>
-                            <div class="col-sm-3" data-bind="text: FormattedAdsbMessages"></div>
-                            <label class="col-sm-3">
-                                ::AdsbRejected:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: FormattedAdsbRejected"></div>
+                            <div class="col-sm-6" data-bind="text: FormattedModeSShortFrame"></div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-3">
-                                ::PositionResets:::
+                            <label class="col-sm-6">
+                                ::ShortFrameUnusable:::
                             </label>
-                            <div class="col-sm-3" data-bind="text: FormattedPositionsReset"></div>
-                            <label class="col-sm-3">
-                                ::PositionsOutOfRange:::
-                            </label>
-                            <div class="col-sm-3" data-bind="text: FormattedPositionsOutOfRange"></div>
+                            <div class="col-sm-6" data-bind="text: FormattedModeSShortFrameUnusable"></div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-3">
-                                ::SpeedChecksExceeded:::
+                            <label class="col-sm-6">
+                                ::LongFrame:::
                             </label>
-                            <div class="col-sm-3" data-bind="text: FormattedPositionSpeedCheckExceeded"></div>
+                            <div class="col-sm-6" data-bind="text: FormattedModeSLongFrame"></div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6 table-responsive">
-                                <table class="table table-striped table-condensed">
-                                    <thead>
-                                        <tr>
-                                            <th>::Type::</th>
-                                            <th class="text-right">::Count::</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody data-bind="foreach: AdsbMessageTypeCount">
-                                        <tr>
-                                            <td data-bind="text: N"></td>
-                                            <td data-bind="text: FormattedVal" class="text-right"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-sm-6 table-responsive">
-                                <table class="table table-striped table-condensed">
-                                    <thead>
-                                        <tr>
-                                            <th>::Format::</th>
-                                            <th class="text-right">::Count::</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody data-bind="foreach: AdsbMessageFormatCount">
-                                        <tr>
-                                            <td data-bind="text: Fmt"></td>
-                                            <td data-bind="text: FormattedVal" class="text-right"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <label class="col-sm-6">
+                                ::PIPresent:::
+                            </label>
+                            <div class="col-sm-6" data-bind="text: FormattedModeSWithPI"></div>
                         </div>
-
-                        <hr />
-
                         <div class="row">
-                            <div class="col-sm-4 col-sm-offset-4 text-center">
-                                <button type="button" class="btn btn-info" onclick="$.proxy(pageHandler.resetCounters(), pageHandler)">
-                                    ::ResetCounters::
-                                </button>
-                            </div>
+                            <label class="col-sm-6">
+                                ::PIBadParity:::
+                            </label>
+                            <div class="col-sm-6" data-bind="text: FormattedModeSPIBadParity"></div>
                         </div>
-
-                        <hr />
-
+                    </div>
+                    <div class="col-sm-6 table-responsive">
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>::DF::</th>
+                                    <th class="text-right">::Count::</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: ModeSDFCount">
+                                <tr>
+                                    <td data-bind="text: DF"></td>
+                                    <td data-bind="text: FormattedVal" class="text-right"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+
+                <div class="form-section">
+                    ::ADSB::
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">
+                        ::MessagesReceived:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedAdsbMessages"></div>
+                    <label class="col-sm-3">
+                        ::AdsbRejected:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedAdsbRejected"></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">
+                        ::PositionResets:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedPositionsReset"></div>
+                    <label class="col-sm-3">
+                        ::PositionsOutOfRange:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedPositionsOutOfRange"></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">
+                        ::SpeedChecksExceeded:::
+                    </label>
+                    <div class="col-sm-3" data-bind="text: FormattedPositionSpeedCheckExceeded"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 table-responsive">
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>::Type::</th>
+                                    <th class="text-right">::Count::</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: AdsbMessageTypeCount">
+                                <tr>
+                                    <td data-bind="text: N"></td>
+                                    <td data-bind="text: FormattedVal" class="text-right"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-6 table-responsive">
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>::Format::</th>
+                                    <th class="text-right">::Count::</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: AdsbMessageFormatCount">
+                                <tr>
+                                    <td data-bind="text: Fmt"></td>
+                                    <td data-bind="text: FormattedVal" class="text-right"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="row">
+                    <div class="col-sm-4 col-sm-offset-4 text-center">
+                        <button type="button" class="btn btn-info" onclick="$.proxy(pageHandler.resetCounters(), pageHandler)">
+                            ::ResetCounters::
+                        </button>
+                    </div>
+                </div>
+
+                <hr />
+
             </div>
         </div>
 
         <script type="text/javascript">
+            VRS.WebAdmin.Menu.suppressSidebar = true;
             $(document).on('ready', function() {
                 window.pageHandler = new VRS.WebAdmin.Statistics.PageHandler('@view-id@');
             });

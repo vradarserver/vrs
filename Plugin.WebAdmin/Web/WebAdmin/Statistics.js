@@ -56,6 +56,7 @@ var VRS;
                             },
                             extend: {
                                 '{root}': function (root) {
+                                    root.PageTitle = ko.computed(function () { return root.Name() + ' ' + VRS.Server.$$.StatisticsTitle + ' - ' + VRS.WebAdmin.$$.WA_Title_WebAdmin; });
                                     root.FormattedBytesReceived = ko.computed(function () { return VRS.stringUtility.formatNumber(root.BytesReceived(), 'N0'); });
                                     root.FormattedReceiverThroughput = ko.computed(function () { return VRS.stringUtility.format('{0:N2} {1}', root.ReceiverThroughput(), VRS.Server.$$.AcronymKilobytePerSecond); });
                                     root.FormattedReceiverBadChecksum = ko.computed(function () { return VRS.stringUtility.formatNumber(root.ReceiverBadChecksum(), 'N0'); });
@@ -86,7 +87,7 @@ var VRS;
                                 }
                             }
                         });
-                        ko.applyBindings(this._Model);
+                        ko.applyBindings(this._Model, $('#bind-root')[0]);
                     }
                 };
                 return PageHandler;
