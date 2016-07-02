@@ -870,10 +870,19 @@ var VRS;
             var params = {
                 v: this.options.version
             };
-            if (this.options.key)
-                params.key = this.options.key;
-            if (this.options.libraries.length > 0)
+            var googleMapsApiKey = this.options.key;
+            if (!googleMapsApiKey && VRS.serverConfig) {
+                var config = VRS.serverConfig.get();
+                if (config && config.GoogleMapsApiKey) {
+                    googleMapsApiKey = config.GoogleMapsApiKey;
+                }
+            }
+            if (googleMapsApiKey) {
+                params.key = googleMapsApiKey;
+            }
+            if (this.options.libraries.length > 0) {
                 params.libraries = this.options.libraries.join(',');
+            }
             if (VRS.browserHelper && VRS.browserHelper.notOnline()) {
                 failureCallback(null, VRS.$$.WorkingInOfflineMode, VRS.$$.WorkingInOfflineMode);
             }

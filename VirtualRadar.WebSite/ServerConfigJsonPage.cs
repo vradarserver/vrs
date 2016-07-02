@@ -36,6 +36,11 @@ namespace VirtualRadar.WebSite
         private ServerConfigJson _ServerConfigJson = new ServerConfigJson();
 
         /// <summary>
+        /// A copy of the UseGoogleMapsAPIKeyWithLocalRequests flag from the last configuration loaded.
+        /// </summary>
+        private bool _UseGoogleMapsAPIKeyWithLocalRequests;
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="webSite"></param>
@@ -55,6 +60,9 @@ namespace VirtualRadar.WebSite
                 ServerConfigJson json;
                 lock(_ServerConfigJson) json = (ServerConfigJson)_ServerConfigJson.Clone();
                 json.IsLocalAddress = !args.IsInternetRequest;
+                if(json.IsLocalAddress && !_UseGoogleMapsAPIKeyWithLocalRequests) {
+                    json.GoogleMapsApiKey = null;
+                }
                 Responder.SendJson(args.Request, args.Response, json, null, null);
                 args.Handled = true;
             }
@@ -75,8 +83,9 @@ namespace VirtualRadar.WebSite
             var isMono = runtimeEnvironment.IsMono;
 
             lock(_SyncLock) {
-
+                _UseGoogleMapsAPIKeyWithLocalRequests = configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests;
                 _ServerConfigJson = new ServerConfigJson() {
+                    GoogleMapsApiKey = configuration.GoogleMapSettings.GoogleMapsApiKey,
                     InitialDistanceUnit = GetDistanceUnit(configuration.GoogleMapSettings.InitialDistanceUnit),
                     InitialHeightUnit = GetHeightUnit(configuration.GoogleMapSettings.InitialHeightUnit),
                     InitialLatitude = configuration.GoogleMapSettings.InitialMapLatitude,
@@ -99,6 +108,9 @@ namespace VirtualRadar.WebSite
                     RefreshSeconds = configuration.GoogleMapSettings.InitialRefreshSeconds,
                     VrsVersion = applicationInformation.ShortVersion,
                 };
+                if(_ServerConfigJson.GoogleMapsApiKey == "") {
+                    _ServerConfigJson.GoogleMapsApiKey = null;
+                }
                 foreach(var receiver in configuration.Receivers) {
                     _ServerConfigJson.Receivers.Add(new ServerReceiverJson() {
                         UniqueId = receiver.UniqueId,

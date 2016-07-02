@@ -2082,6 +2082,62 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
+        public void WebSite_Configuration_Copies_GoogleMapsApiKey_To_ServerConfig_Js_For_Internet_Clients_When_Key_Present()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "API Key";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = false;
+
+            SendRequest("/ServerConfig.json", isInternetClient: true);
+            var jsonSerialiser = new DataContractJsonSerializer(typeof(ServerConfigJson));
+            _OutputStream.Position = 0;
+            var result = (ServerConfigJson)jsonSerialiser.ReadObject(_OutputStream);
+
+            Assert.AreEqual("API Key", result.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
+        public void WebSite_Configuration_Sends_Null_GoogleMapsApiKey_To_ServerConfig_Js_For_Internet_Clients_When_Key_Missing()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = false;
+
+            SendRequest("/ServerConfig.json", isInternetClient: true);
+            var jsonSerialiser = new DataContractJsonSerializer(typeof(ServerConfigJson));
+            _OutputStream.Position = 0;
+            var result = (ServerConfigJson)jsonSerialiser.ReadObject(_OutputStream);
+
+            Assert.IsNull(result.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
+        public void WebSite_Configuration_Does_Not_Copy_GoogleMapsApiKey_To_ServerConfig_Js_For_Local_Clients_When_Key_Present()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "API Key";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = false;
+
+            SendRequest("/ServerConfig.json", isInternetClient: false);
+            var jsonSerialiser = new DataContractJsonSerializer(typeof(ServerConfigJson));
+            _OutputStream.Position = 0;
+            var result = (ServerConfigJson)jsonSerialiser.ReadObject(_OutputStream);
+
+            Assert.IsNull(result.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
+        public void WebSite_Configuration_Copies_GoogleMapsApiKey_To_ServerConfig_Js_For_Local_Clients_When_Key_Present_And_Switch_Set()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "API Key";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = true;
+
+            SendRequest("/ServerConfig.json", isInternetClient: false);
+            var jsonSerialiser = new DataContractJsonSerializer(typeof(ServerConfigJson));
+            _OutputStream.Position = 0;
+            var result = (ServerConfigJson)jsonSerialiser.ReadObject(_OutputStream);
+
+            Assert.AreEqual("API Key", result.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "SubstituteConfiguration$")]
         public void WebSite_Configuration_Changes_Correctly_Substituted_Into_Web_Pages()

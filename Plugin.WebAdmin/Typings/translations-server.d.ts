@@ -216,6 +216,7 @@ declare module VRS.Server
         FromAddress:                                               string;
         General:                                                   string;
         GoogleMaps:                                                string;
+        GoogleMapsAPIKey:                                          string;
         GoogleMapZoomOutOfBounds:                                  string;
         Hidden:                                                    string;
         HideFromWebSite:                                           string;
@@ -421,6 +422,7 @@ declare module VRS.Server
         OptionsDescribeGeneralShortTrailLengthSeconds:             string;
         OptionsDescribeGeneralTextToSpeechVoice:                   string;
         OptionsDescribeGeneralTrackingTimeoutSeconds:              string;
+        OptionsDescribeGoogleMapsAPIKey:                           string;
         OptionsDescribeIcaoTimeout:                                string;
         OptionsDescribeIgnoreAircraftWithNoPosition:               string;
         OptionsDescribeIsMlatFeed:                                 string;
@@ -469,6 +471,7 @@ declare module VRS.Server
         OptionsDescribeReceiverLocationLongitude:                  string;
         OptionsDescribeReceiverLocationName:                       string;
         OptionsDescribeReceiverName:                               string;
+        OptionsDescribeUseGoogleMapsKeyWithLocalRequests:          string;
         OptionsDescribeUserEnabled:                                string;
         OptionsDescribeUserName:                                   string;
         OptionsDescribeUserPassword:                               string;
@@ -778,6 +781,7 @@ declare module VRS.Server
         USBOverCOM:                                                string;
         UseDefaultPort:                                            string;
         UseFreezeMethod:                                           string;
+        UseGoogleMapsKeyWithLocalRequests:                         string;
         UseIcaoSpecificationSettings:                              string;
         UseKeepAlive:                                              string;
         UseLocalDecodeForInitialPosition:                          string;

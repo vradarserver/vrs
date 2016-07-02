@@ -1420,7 +1420,7 @@ namespace VRS
     {
         return $.extend({
             // Google Map load options - THESE ONLY HAVE ANY EFFECT ON THE FIRST MAP LOADED ON A PAGE
-            key:                null,                                   // If supplied then the Google Maps script is loaded with this API key. API keys are optional for v3 of Google Maps.
+            key:                null,                                   // If supplied then the Google Maps script is loaded with this API key. API keys are no longer optional for public servers but remain optional for LAN and local loopback servers.
             version:            '3.24',                                 // The version of Google Maps to load.
             sensor:             false,                                  // True if the location-aware stuff is to be turned on.
             libraries:          [],                                     // The optional libraries to load.
@@ -1560,8 +1560,20 @@ namespace VRS
                 // Note that Google Maps no longer requires the sensor flag and will report a warning if it is used
                 v: this.options.version
             };
-            if(this.options.key)                  params.key = this.options.key;
-            if(this.options.libraries.length > 0) params.libraries = this.options.libraries.join(',');
+            var googleMapsApiKey = this.options.key;
+            if(!googleMapsApiKey && VRS.serverConfig) {
+                var config = VRS.serverConfig.get();
+                if(config && config.GoogleMapsApiKey) {
+                    googleMapsApiKey = config.GoogleMapsApiKey;
+                }
+            }
+            if(googleMapsApiKey) {
+                params.key = googleMapsApiKey;
+            }
+
+            if(this.options.libraries.length > 0) {
+                params.libraries = this.options.libraries.join(',');
+            }
 
             if(VRS.browserHelper && VRS.browserHelper.notOnline()) {
                 failureCallback(null, VRS.$$.WorkingInOfflineMode, VRS.$$.WorkingInOfflineMode);

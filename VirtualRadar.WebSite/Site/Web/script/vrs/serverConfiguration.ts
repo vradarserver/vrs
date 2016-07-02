@@ -31,29 +31,30 @@ namespace VRS
 
     export interface IServerConfig
     {
-        VrsVersion:                              string;
-        IsMono:                                  boolean;
-        UseMarkerLabels:                         boolean;
-        Receivers:                               IServerConfigReceiver[];
-        IsLocalAddress:                          boolean;
-        IsAudioEnabled:                          boolean;
-        MinimumRefreshSeconds:                   number;
-        RefreshSeconds:                          number;
-        InitialSettings:                         string;
-        InitialLatitude:                         number;
-        InitialLongitude:                        number;
-        InitialMapType:                          string;    // VRS.MapType
-        InitialZoom:                             number;
-        InitialDistanceUnit:                     string;    // VRS.Distance
-        InitialHeightUnit:                       string;    // VRS.Height
-        InitialSpeedUnit:                        string;    // VRS.Speed
-        InternetClientCanRunReports:             boolean;
-        InternetClientCanShowPinText:            boolean;
-        InternetClientTimeoutMinutes:            number;
-        InternetClientsCanPlayAudio:             boolean;
-        InternetClientsCanSubmitRoutes:          boolean;
-        InternetClientsCanSeeAircraftPictures:   boolean;
-        InternetClientsCanSeePolarPlots:         boolean;
+        VrsVersion:                             string;
+        IsMono:                                 boolean;
+        UseMarkerLabels:                        boolean;
+        Receivers:                              IServerConfigReceiver[];
+        IsLocalAddress:                         boolean;
+        IsAudioEnabled:                         boolean;
+        MinimumRefreshSeconds:                  number;
+        RefreshSeconds:                         number;
+        GoogleMapsApiKey:                       string;
+        InitialSettings:                        string;
+        InitialLatitude:                        number;
+        InitialLongitude:                       number;
+        InitialMapType:                         string;    // VRS.MapType
+        InitialZoom:                            number;
+        InitialDistanceUnit:                    string;    // VRS.Distance
+        InitialHeightUnit:                      string;    // VRS.Height
+        InitialSpeedUnit:                       string;    // VRS.Speed
+        InternetClientCanRunReports:            boolean;
+        InternetClientCanShowPinText:           boolean;
+        InternetClientTimeoutMinutes:           number;
+        InternetClientsCanPlayAudio:            boolean;
+        InternetClientsCanSubmitRoutes:         boolean;
+        InternetClientsCanSeeAircraftPictures:  boolean;
+        InternetClientsCanSeePolarPlots:        boolean;
     }
 
     export interface IServerConfigReceiver

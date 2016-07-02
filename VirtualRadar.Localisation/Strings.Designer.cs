@@ -1957,6 +1957,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Maps API key.
+        /// </summary>
+        public static string GoogleMapsAPIKey {
+            get {
+                return ResourceManager.GetString("GoogleMapsAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Google Maps zoom level must be between 0 and 19.
         /// </summary>
         public static string GoogleMapZoomOutOfBounds {
@@ -3807,6 +3816,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter the Google Maps API key that should be used when the site is put onto the Internet. You do not need a Google Maps API key if the server is only being used on the local network..
+        /// </summary>
+        public static string OptionsDescribeGoogleMapsAPIKey {
+            get {
+                return ResourceManager.GetString("OptionsDescribeGoogleMapsAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of seconds that must elapse before a receiver is no longer considered to be the only receiver allowed to receive messages for an ICAO. If this is too low then you will get planes appearing to jump backwards. If it is too high then you will get pauses when planes move from one receiver to another..
         /// </summary>
         public static string OptionsDescribeIcaoTimeout {
@@ -4235,6 +4253,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeReceiverName {
             get {
                 return ResourceManager.GetString("OptionsDescribeReceiverName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes if the Google Maps API key should be used for requests from the local loopback and local area network as well as requests from the Internet, no if the API key should not be used for local loopback and LAN requests..
+        /// </summary>
+        public static string OptionsDescribeUseGoogleMapsKeyWithLocalRequests {
+            get {
+                return ResourceManager.GetString("OptionsDescribeUseGoogleMapsKeyWithLocalRequests", resourceCulture);
             }
         }
         
@@ -7018,6 +7045,15 @@ namespace VirtualRadar.Localisation {
         public static string UseFreezeMethod {
             get {
                 return ResourceManager.GetString("UseFreezeMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Google Maps API key with local requests.
+        /// </summary>
+        public static string UseGoogleMapsKeyWithLocalRequests {
+            get {
+                return ResourceManager.GetString("UseGoogleMapsKeyWithLocalRequests", resourceCulture);
             }
         }
         

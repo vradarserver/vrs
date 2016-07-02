@@ -849,6 +849,10 @@ Show this message.</value>
     <value>Google Maps</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
+  <data name="GoogleMapsAPIKey" xml:space="preserve">
+    <value>Google Maps API key</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
     <value>Der Google Maps "Zoomlevel" muss zwischen 0 und 19</value>
   </data>
@@ -1520,6 +1524,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeGeneralTrackingTimeoutSeconds" xml:space="preserve">
     <value>Die Anzahl Sekunden die vergehen müssen seit eine Nachricht von einem Flugzeug zuletzt erhalten wurde bevor das 'Tracking' dafür gestopped wird.</value>
   </data>
+  <data name="OptionsDescribeGoogleMapsAPIKey" xml:space="preserve">
+    <value>Enter the Google Maps API key that should be used when the site is put onto the Internet. You do not need a Google Maps API key if the server is only being used on the local network.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="OptionsDescribeIcaoTimeout" xml:space="preserve">
     <value>Die Zeit in Sekunden die verstreichen muss bevor ein Empfänger nicht länger als der einzige Empfänger angesehen wird der ICAO Nachrichten empfangen darf. Wenn dieser Wert zu niedrig ist, sehen Sie Flugzeuge die rückwärts zu springen scheinen. Wenn dieser Wert zu hoch ist, gibt es Pausen wenn Flugzeuge von einem zum anderen Empfänger wechseln.</value>
   </data>
@@ -1664,6 +1672,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="OptionsDescribeReceiverName" xml:space="preserve">
     <value>Der eindeutige Name für den Empfänger. Dieser muss ebenso eindeutig über alle zusammengeführten Datenströme sein.</value>
+  </data>
+  <data name="OptionsDescribeUseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
+    <value>Yes if the Google Maps API key should be used for requests from the local loopback and local area network as well as requests from the Internet, no if the API key should not be used for local loopback and LAN requests.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUserEnabled" xml:space="preserve">
     <value>Ja, wenn das Benutzerkonto aktiviert ist, Nein wenn der Benutzer sich nicht anmelden darf.</value>
@@ -2688,6 +2700,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
   <data name="UseFreezeMethod" xml:space="preserve">
     <value>Verwende "freeze" Methode</value>
     <comment>"Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
+    <value>Use Google Maps API key with local requests</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseIcaoSpecificationSettings" xml:space="preserve">
     <value>Verwende ICAO Spezifikationseinstellungen</value>
