@@ -2731,4 +2731,7 @@ Show this message.</value>
   <data name="UseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
     <value>Use Google Maps API key with local requests</value>
   </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
 </root>

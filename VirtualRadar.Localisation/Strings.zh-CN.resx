@@ -860,6 +860,10 @@ Show this message.</value>
   <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
     <value>Google Maps 缩放级别必须在 0 至 19</value>
   </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="Hidden" xml:space="preserve">
     <value>隐藏</value>
   </data>
