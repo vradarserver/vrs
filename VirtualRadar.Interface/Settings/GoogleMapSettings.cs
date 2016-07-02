@@ -254,6 +254,27 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _AllowCorsDomains, value, () => AllowCorsDomains); }
         }
 
+        private string _GoogleMapsApiKey;
+        /// <summary>
+        /// Gets or sets the Google Maps API key to use with the site.
+        /// </summary>
+        public string GoogleMapsApiKey
+        {
+            get { return _GoogleMapsApiKey; }
+            set { SetField(ref _GoogleMapsApiKey, value, () => GoogleMapsApiKey); }
+        }
+
+        private bool _UseGoogleMapsAPIKeyWithLocalRequests;
+        /// <summary>
+        /// True if the Google Maps API key should be used for requests from local addresses. This should
+        /// only be switched on if the installation is behind a proxy.
+        /// </summary>
+        public bool UseGoogleMapsAPIKeyWithLocalRequests
+        {
+            get { return _UseGoogleMapsAPIKeyWithLocalRequests; }
+            set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, () => UseGoogleMapsAPIKeyWithLocalRequests); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

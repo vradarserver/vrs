@@ -29,6 +29,7 @@ namespace Test.VirtualRadar.Interface.WebSite
 
             Assert.AreEqual(0, json.Receivers.Count);
 
+            TestUtilities.TestProperty(json, r => r.GoogleMapsApiKey, null, "API Key");
             TestUtilities.TestProperty(json, r => r.InitialDistanceUnit, null, "Abc");
             TestUtilities.TestProperty(json, r => r.InitialHeightUnit, null, "Abc");
             TestUtilities.TestProperty(json, r => r.InitialLatitude, 0.00, 1.234);
@@ -62,6 +63,7 @@ namespace Test.VirtualRadar.Interface.WebSite
 
                     object expected = null;
                     switch(property.Name) {
+                        case "GoogleMapsApiKey":                        expected = json.GoogleMapsApiKey = pass == 0 ? "A" : "B"; break;
                         case "InitialDistanceUnit":                     expected = json.InitialDistanceUnit = pass == 0 ? "A": "B"; break;
                         case "InitialHeightUnit":                       expected = json.InitialHeightUnit = pass == 0 ? "A" : "B"; break;
                         case "InitialLatitude":                         expected = json.InitialLatitude = pass == 0 ? 1.234 : 5.678; break;

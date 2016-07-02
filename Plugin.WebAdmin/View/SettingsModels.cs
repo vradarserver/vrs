@@ -522,6 +522,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         [ValidationModelField(ValidationField.AllowCorsDomains)]
         public ValidationModelField AllowCorsDomainsValidation { get; set; }
 
+        public string GoogleMapsApiKey { get; set; }
+
+        public bool UseGoogleMapsAPIKeyWithLocalRequests { get; set; }
+
         public GoogleMapSettingsModel()
         {
         }
@@ -533,54 +537,58 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public void RefreshFromSettings(GoogleMapSettings settings)
         {
-            InitialSettings =               settings.InitialSettings;
-            InitialMapLatitude =            settings.InitialMapLatitude;
-            InitialMapLongitude =           settings.InitialMapLongitude;
-            InitialMapType =                settings.InitialMapType;
-            InitialMapZoom =                settings.InitialMapZoom;
-            InitialRefreshSeconds =         settings.InitialRefreshSeconds;
-            MinimumRefreshSeconds =         settings.MinimumRefreshSeconds;
-            ShortTrailLengthSeconds =       settings.ShortTrailLengthSeconds;
-            InitialDistanceUnit =           (int)settings.InitialDistanceUnit;
-            InitialHeightUnit =             (int)settings.InitialHeightUnit;
-            InitialSpeedUnit =              (int)settings.InitialSpeedUnit;
-            PreferIataAirportCodes =        settings.PreferIataAirportCodes;
-            EnableBundling =                settings.EnableBundling;
-            EnableMinifying =               settings.EnableMinifying;
-            EnableCompression =             settings.EnableCompression;
-            WebSiteReceiverId =             settings.WebSiteReceiverId;
-            DirectoryEntryKey =             settings.DirectoryEntryKey;
-            ClosestAircraftReceiverId =     settings.ClosestAircraftReceiverId;
-            FlightSimulatorXReceiverId =    settings.FlightSimulatorXReceiverId;
-            ProxyType =                     (int)settings.ProxyType;
-            EnableCorsSupport =             settings.EnableCorsSupport;
-            AllowCorsDomains =              settings.AllowCorsDomains;
+            InitialSettings =                       settings.InitialSettings;
+            InitialMapLatitude =                    settings.InitialMapLatitude;
+            InitialMapLongitude =                   settings.InitialMapLongitude;
+            InitialMapType =                        settings.InitialMapType;
+            InitialMapZoom =                        settings.InitialMapZoom;
+            InitialRefreshSeconds =                 settings.InitialRefreshSeconds;
+            MinimumRefreshSeconds =                 settings.MinimumRefreshSeconds;
+            ShortTrailLengthSeconds =               settings.ShortTrailLengthSeconds;
+            InitialDistanceUnit =                   (int)settings.InitialDistanceUnit;
+            InitialHeightUnit =                     (int)settings.InitialHeightUnit;
+            InitialSpeedUnit =                      (int)settings.InitialSpeedUnit;
+            PreferIataAirportCodes =                settings.PreferIataAirportCodes;
+            EnableBundling =                        settings.EnableBundling;
+            EnableMinifying =                       settings.EnableMinifying;
+            EnableCompression =                     settings.EnableCompression;
+            WebSiteReceiverId =                     settings.WebSiteReceiverId;
+            DirectoryEntryKey =                     settings.DirectoryEntryKey;
+            ClosestAircraftReceiverId =             settings.ClosestAircraftReceiverId;
+            FlightSimulatorXReceiverId =            settings.FlightSimulatorXReceiverId;
+            ProxyType =                             (int)settings.ProxyType;
+            EnableCorsSupport =                     settings.EnableCorsSupport;
+            AllowCorsDomains =                      settings.AllowCorsDomains;
+            GoogleMapsApiKey =                      settings.GoogleMapsApiKey;
+            UseGoogleMapsAPIKeyWithLocalRequests =  settings.UseGoogleMapsAPIKeyWithLocalRequests;
         }
 
         public GoogleMapSettings CopyToSettings(GoogleMapSettings settings)
         {
-            settings.InitialSettings =              InitialSettings;
-            settings.InitialMapLatitude =           InitialMapLatitude;
-            settings.InitialMapLongitude =          InitialMapLongitude;
-            settings.InitialMapType =               InitialMapType;
-            settings.InitialMapZoom =               InitialMapZoom;
-            settings.InitialRefreshSeconds =        InitialRefreshSeconds;
-            settings.MinimumRefreshSeconds =        MinimumRefreshSeconds;
-            settings.ShortTrailLengthSeconds =      ShortTrailLengthSeconds;
-            settings.InitialDistanceUnit =          EnumModel.CastFromInt<DistanceUnit>(InitialDistanceUnit);
-            settings.InitialHeightUnit =            EnumModel.CastFromInt<HeightUnit>(InitialHeightUnit);
-            settings.InitialSpeedUnit =             EnumModel.CastFromInt<SpeedUnit>(InitialSpeedUnit);
-            settings.PreferIataAirportCodes =       PreferIataAirportCodes;
-            settings.EnableBundling =               EnableBundling;
-            settings.EnableMinifying =              EnableMinifying;
-            settings.EnableCompression =            EnableCompression;
-            settings.WebSiteReceiverId =            WebSiteReceiverId;
-            settings.DirectoryEntryKey =            DirectoryEntryKey;
-            settings.ClosestAircraftReceiverId =    ClosestAircraftReceiverId;
-            settings.FlightSimulatorXReceiverId =   FlightSimulatorXReceiverId;
-            settings.ProxyType =                    EnumModel.CastFromInt<ProxyType>(ProxyType);
-            settings.EnableCorsSupport =            EnableCorsSupport;
-            settings.AllowCorsDomains =             AllowCorsDomains;
+            settings.InitialSettings =                      InitialSettings;
+            settings.InitialMapLatitude =                   InitialMapLatitude;
+            settings.InitialMapLongitude =                  InitialMapLongitude;
+            settings.InitialMapType =                       InitialMapType;
+            settings.InitialMapZoom =                       InitialMapZoom;
+            settings.InitialRefreshSeconds =                InitialRefreshSeconds;
+            settings.MinimumRefreshSeconds =                MinimumRefreshSeconds;
+            settings.ShortTrailLengthSeconds =              ShortTrailLengthSeconds;
+            settings.InitialDistanceUnit =                  EnumModel.CastFromInt<DistanceUnit>(InitialDistanceUnit);
+            settings.InitialHeightUnit =                    EnumModel.CastFromInt<HeightUnit>(InitialHeightUnit);
+            settings.InitialSpeedUnit =                     EnumModel.CastFromInt<SpeedUnit>(InitialSpeedUnit);
+            settings.PreferIataAirportCodes =               PreferIataAirportCodes;
+            settings.EnableBundling =                       EnableBundling;
+            settings.EnableMinifying =                      EnableMinifying;
+            settings.EnableCompression =                    EnableCompression;
+            settings.WebSiteReceiverId =                    WebSiteReceiverId;
+            settings.DirectoryEntryKey =                    DirectoryEntryKey;
+            settings.ClosestAircraftReceiverId =            ClosestAircraftReceiverId;
+            settings.FlightSimulatorXReceiverId =           FlightSimulatorXReceiverId;
+            settings.ProxyType =                            EnumModel.CastFromInt<ProxyType>(ProxyType);
+            settings.EnableCorsSupport =                    EnableCorsSupport;
+            settings.AllowCorsDomains =                     AllowCorsDomains;
+            settings.GoogleMapsApiKey =                     GoogleMapsApiKey;
+            settings.UseGoogleMapsAPIKeyWithLocalRequests = UseGoogleMapsAPIKeyWithLocalRequests;
 
             return settings;
         }

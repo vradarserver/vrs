@@ -853,6 +853,10 @@ Show this message.</value>
     <value>Google Maps</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
+  <data name="GoogleMapsAPIKey" xml:space="preserve">
+    <value>Google Maps API key</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
     <value>Google Maps 缩放级别必须在 0 至 19</value>
   </data>
@@ -1517,6 +1521,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeGeneralTrackingTimeoutSeconds" xml:space="preserve">
     <value>停止跟踪之前，最后接收到航空器消息起必须经历秒数.</value>
   </data>
+  <data name="OptionsDescribeGoogleMapsAPIKey" xml:space="preserve">
+    <value>Enter the Google Maps API key that should be used when the site is put onto the Internet. You do not need a Google Maps API key if the server is only being used on the local network.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="OptionsDescribeIcaoTimeout" xml:space="preserve">
     <value>接收器不再被考虑允许作为唯一接收 ICAO 消息的接收器必须经过的秒数. 如果这个值太低你将得到向后跳的飞机.如果这个值太高当飞机从一个接收器移到另一个接收器时将暂停。</value>
   </data>
@@ -1661,6 +1669,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   </data>
   <data name="OptionsDescribeReceiverName" xml:space="preserve">
     <value>接收器唯一名称. 也必须在所有合并源中唯一.</value>
+  </data>
+  <data name="OptionsDescribeUseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
+    <value>Yes if the Google Maps API key should be used for requests from the local loopback and local area network as well as requests from the Internet, no if the API key should not be used for local loopback and LAN requests.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUserEnabled" xml:space="preserve">
     <value>是 如果启用用户的账户,不 如果用户允许不登录。</value>
@@ -2678,6 +2690,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
   <data name="UseFreezeMethod" xml:space="preserve">
     <value>使用 "freeze" 方式</value>
     <comment>"Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
+    <value>Use Google Maps API key with local requests</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseIcaoSpecificationSettings" xml:space="preserve">
     <value>使用 ICAO 规范设置</value>

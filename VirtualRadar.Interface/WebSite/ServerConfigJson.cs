@@ -166,6 +166,12 @@ namespace VirtualRadar.Interface.WebSite
         public bool InternetClientsCanSeePolarPlots { get; set; }
 
         /// <summary>
+        /// Gets or sets the API key to use when working with Google Maps.
+        /// </summary>
+        [DataMember]
+        public string GoogleMapsApiKey { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ServerConfigJson()
@@ -181,6 +187,7 @@ namespace VirtualRadar.Interface.WebSite
         {
             var result = (ServerConfigJson)Activator.CreateInstance(GetType());
 
+            result.GoogleMapsApiKey = GoogleMapsApiKey;
             result.InitialDistanceUnit = InitialDistanceUnit;
             result.InitialHeightUnit = InitialHeightUnit;
             result.InitialLatitude = InitialLatitude;
