@@ -152,7 +152,7 @@
                                 initialPerspective = 2;
                             }
                             root.SelectedAddressPerspective = ko.observable(root.AddressPerspectives[initialPerspective]);
-                            root.SelectedAddressPage = ko.observable(root.AddressPages[initialPerspective]);
+                            root.SelectedAddressPage = ko.observable(root.AddressPages[0]);
                             root.AddressUrl = ko.computed(() => {
                                 var result = '#';
                                 if(root.SelectedAddressPerspective() && root.SelectedAddressPage()) {
