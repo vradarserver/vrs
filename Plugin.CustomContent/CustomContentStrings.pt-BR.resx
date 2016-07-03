@@ -199,8 +199,7 @@
     <value>Opções</value>
   </data>
   <data name="OptionsViewTitle" xml:space="preserve">
-    <value>Custom Content Options</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Opções de conteúdos personalizados</value>
   </data>
   <data name="PathAndFileMissingExtension" xml:space="preserve">
     <value>O nome do arquivo HTML para inserir conteúdo deve terminar em .htm ou .html</value>
@@ -212,8 +211,7 @@
     <value>Por favor, insira o caminho e o nome do arquivo HTML para inserir o conteúdo (por exemplo /index.html) ou * para inseir em todo o HTML</value>
   </data>
   <data name="PluginName" xml:space="preserve">
-    <value>Custom Content</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Conteúdo personalizado</value>
   </data>
   <data name="ReplaceAndAddSiteContent" xml:space="preserve">
     <value>Substituir/Adicionar o conteúdo do site</value>
@@ -222,8 +220,7 @@
     <value>Padrão</value>
   </data>
   <data name="ResourceImagesFolder" xml:space="preserve">
-    <value>Resource images folder</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pasta fonte das imagens</value>
   </data>
   <data name="SiteRootLabel" xml:space="preserve">
     <value>Pasta raiz do site</value>
@@ -234,7 +231,6 @@
     <comment>** SAME AS ENGLISH ** As in at the beginning of a file</comment>
   </data>
   <data name="WebAdminMenuName" xml:space="preserve">
-    <value>Custom Content</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Conteúdo personalizado</value>
   </data>
 </root>
