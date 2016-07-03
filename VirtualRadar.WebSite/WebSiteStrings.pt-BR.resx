@@ -149,8 +149,7 @@
     <value>Classe da Aeronave</value>
   </data>
   <data name="AircraftDetailShort" xml:space="preserve">
-    <value>Detail</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Detalhe</value>
   </data>
   <data name="AircraftNotTransmittingCallsign" xml:space="preserve">
     <value>A aeronave não está transmitindo seu indicativo</value>
@@ -162,8 +161,7 @@
     <value>Miniaturas (airport-data.com)</value>
   </data>
   <data name="AirPressure" xml:space="preserve">
-    <value>Air Pressure</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pressão do ar</value>
   </data>
   <data name="AllAircraft" xml:space="preserve">
     <value>Mostrar todos</value>
@@ -186,8 +184,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AltitudeGraph" xml:space="preserve">
-    <value>Altitude Graph</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Gráfico de altitude</value>
   </data>
   <data name="AltitudeType" xml:space="preserve">
     <value>Altimetro</value>
@@ -208,7 +205,7 @@
     <value>Nivel médio do sinal</value>
   </data>
   <data name="Barometric" xml:space="preserve">
-    <value>barométrico</value>
+    <value>Barométrico</value>
   </data>
   <data name="Bearing" xml:space="preserve">
     <value>Rumo</value>
@@ -223,7 +220,7 @@
     <value>Indicativo &amp; Rota</value>
   </data>
   <data name="CallsignMayNotBeCorrect" xml:space="preserve">
-    <value>Indicativo podem não estar corretos</value>
+    <value>Indicativos podem não estar corretos</value>
   </data>
   <data name="CentreOnSelectedAircraft" xml:space="preserve">
     <value>Mostrar no mapa</value>
@@ -250,16 +247,16 @@
     <value>Colunas</value>
   </data>
   <data name="Contains" xml:space="preserve">
-    <value>Contenha</value>
+    <value>Que contenha</value>
   </data>
   <data name="CountAdsb" xml:space="preserve">
     <value>Mensagens ADS-B</value>
   </data>
   <data name="CountModeS" xml:space="preserve">
-    <value>Contagem de Mode-S</value>
+    <value>Mensagens Mode-S</value>
   </data>
   <data name="CountPositions" xml:space="preserve">
-    <value>Contagem de posição</value>
+    <value>Posições</value>
   </data>
   <data name="Country" xml:space="preserve">
     <value>País</value>
@@ -268,7 +265,7 @@
     <value>Filtro</value>
   </data>
   <data name="CurrentLocationInstruction" xml:space="preserve">
-    <value>Para definir a sua localização atual clique "Definir a localização atual" e arraste o marcador.</value>
+    <value>Para definir a sua localização atual clique em "Definir a localização atual" e arraste o marcador.</value>
   </data>
   <data name="CurrentRegDate" xml:space="preserve">
     <value>Data do registro atual</value>
@@ -312,20 +309,16 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DeRegDate" xml:space="preserve">
-    <value>De-reg. Date</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Data do desregistro</value>
   </data>
   <data name="DesktopPage" xml:space="preserve">
-    <value>Desktop Page</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pagina Desktop</value>
   </data>
   <data name="DesktopReportPage" xml:space="preserve">
-    <value>Desktop Report Page</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Página de relatório Desktop</value>
   </data>
   <data name="DetailItems" xml:space="preserve">
-    <value>Aircraft Detail Items</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Itens nos detalhes das aeronaves</value>
   </data>
   <data name="DetailPanel" xml:space="preserve">
     <value>Painel de detalhes</value>
@@ -340,7 +333,7 @@
     <value>Distâncias</value>
   </data>
   <data name="DoNotImportAutoSelect" xml:space="preserve">
-    <value>Não importar configurações de auto-selecionar</value>
+    <value>Não importar o auto-selecionar</value>
   </data>
   <data name="DoNotImportCurrentLocation" xml:space="preserve">
     <value>Não importar a localização</value>
@@ -349,12 +342,10 @@
     <value>Não importar a configuração de idioma</value>
   </data>
   <data name="DoNotImportRequestFeedId" xml:space="preserve">
-    <value>Do not import request feed ID</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Não importar os IDs dos receptores</value>
   </data>
   <data name="DoNotImportSplitters" xml:space="preserve">
-    <value>Do not import splitters</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Não importar os splitters</value>
   </data>
   <data name="DoNotShow" xml:space="preserve">
     <value>Não mostrar</value>
@@ -363,14 +354,13 @@
     <value>Duração</value>
   </data>
   <data name="Electric" xml:space="preserve">
-    <value>Electric</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Elétrico</value>
   </data>
   <data name="EnableAutoSelect" xml:space="preserve">
     <value>Ativar auto-seleção</value>
   </data>
   <data name="EnableFilters" xml:space="preserve">
-    <value>Ativar filtros</value>
+    <value>Aplicar filtros</value>
   </data>
   <data name="EnableInfoWindow" xml:space="preserve">
     <value>Ativar pup-up</value>
@@ -383,7 +373,7 @@
     <value>Termina com</value>
   </data>
   <data name="EndTime" xml:space="preserve">
-    <value>Hora do final</value>
+    <value>Hora final</value>
   </data>
   <data name="Engines" xml:space="preserve">
     <value>Motores</value>
@@ -392,10 +382,10 @@
     <value>Tipo de Motor</value>
   </data>
   <data name="Equal" xml:space="preserve">
-    <value>Extamente</value>
+    <value>Exatamente</value>
   </data>
   <data name="EraseBeforeImport" xml:space="preserve">
-    <value>Apague todas as configurações antes da importação</value>
+    <value>Apagar todas as configurações antes da importação</value>
   </data>
   <data name="ExportSettings" xml:space="preserve">
     <value>Exportar configurações</value>
@@ -432,35 +422,34 @@
     <value>Primeiro</value>
   </data>
   <data name="FirstAltitude" xml:space="preserve">
-    <value>Primeira altitude</value>
+    <value>Altitude inicial</value>
   </data>
   <data name="FirstFlightLevel" xml:space="preserve">
-    <value>Primeiro FL</value>
+    <value>Fl inicial</value>
   </data>
   <data name="FirstHeading" xml:space="preserve">
-    <value>Primeira proa</value>
+    <value>Proa inicial</value>
   </data>
   <data name="FirstLatitude" xml:space="preserve">
-    <value>Primeira Latitude</value>
+    <value>Latitude inicial</value>
   </data>
   <data name="FirstLongitude" xml:space="preserve">
-    <value>Primeira Longitude</value>
+    <value>Longitude inicial</value>
   </data>
   <data name="FirstOnGround" xml:space="preserve">
     <value>Primeira vez no solo</value>
   </data>
   <data name="FirstRegDate" xml:space="preserve">
-    <value>First Reg.Date</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Data do primeiro registro</value>
   </data>
   <data name="FirstSpeed" xml:space="preserve">
-    <value>Primeira Velocidade</value>
+    <value>Velocidade incial</value>
   </data>
   <data name="FirstSquawk" xml:space="preserve">
     <value>Primeiro Squawk</value>
   </data>
   <data name="FirstVerticalSpeed" xml:space="preserve">
-    <value>Primeira Velocidade Vertical</value>
+    <value>Velocidade Vertical inicial</value>
   </data>
   <data name="FlightDetailShort" xml:space="preserve">
     <value>Detalhe</value>
@@ -535,8 +524,7 @@
     <value>Nome genérico</value>
   </data>
   <data name="Geometric" xml:space="preserve">
-    <value>Geometric</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Geométrico</value>
   </data>
   <data name="GeometricAltitude" xml:space="preserve">
     <value>Altitude (AMSL)</value>
@@ -547,7 +535,7 @@
     <comment>A ** SHORT ** indication that the reported altitude is geometric as opposed to barometric. AMSL is above mean sea level</comment>
   </data>
   <data name="GoogleMapsCouldNotBeLoaded" xml:space="preserve">
-    <value>Google Maps não pôde ser carregado</value>
+    <value>O Google Maps não pôde ser carregado</value>
   </data>
   <data name="GotoCurrentLocation" xml:space="preserve">
     <value>Ir para a localização atual</value>
@@ -604,15 +592,14 @@
     <value>Ocultar linhas vazias</value>
   </data>
   <data name="HideNoPosition" xml:space="preserve">
-    <value>Tem posição</value>
+    <value>Com posição</value>
   </data>
   <data name="HighContrastMap" xml:space="preserve">
     <value>Contraste</value>
     <comment>&lt;-- please try to keep this one short, it appears as a button on the map and there may not be a lot of room</comment>
   </data>
   <data name="Icao" xml:space="preserve">
-    <value>ICAO</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>HEXA</value>
   </data>
   <data name="Import" xml:space="preserve">
     <value>Importar</value>
@@ -621,7 +608,7 @@
     <value>Não foi possível importar as suas definições. O erro relatado foi: {0}</value>
   </data>
   <data name="ImportFailedTitle" xml:space="preserve">
-    <value>A importação falhoud</value>
+    <value>A importação falhou</value>
   </data>
   <data name="ImportSettings" xml:space="preserve">
     <value>Importar configurações</value>
@@ -631,8 +618,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IndicatedAirSpeed" xml:space="preserve">
-    <value>Indicated</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Indicado</value>
   </data>
   <data name="IndicatedAirSpeedShort" xml:space="preserve">
     <value>IAS</value>
@@ -643,11 +629,10 @@
     <comment>** SAME AS ENGLISH ** Unit of measurement - inches of mercury</comment>
   </data>
   <data name="InHgDescription" xml:space="preserve">
-    <value>Inches of Mercury</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Polegadas de Mercúrio</value>
   </data>
   <data name="Interesting" xml:space="preserve">
-    <value>Interessante</value>
+    <value>Favorito</value>
   </data>
   <data name="IntervalSeconds" xml:space="preserve">
     <value>Atualizar a cada (seg)</value>
@@ -689,35 +674,34 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Last" xml:space="preserve">
-    <value>Last</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Último</value>
   </data>
   <data name="LastAltitude" xml:space="preserve">
-    <value>Última Altitude</value>
+    <value>Altitude final</value>
   </data>
   <data name="LastFlightLevel" xml:space="preserve">
-    <value>Último FL</value>
+    <value>FL final</value>
   </data>
   <data name="LastHeading" xml:space="preserve">
-    <value>Última proa</value>
+    <value>Proa final</value>
   </data>
   <data name="LastLatitude" xml:space="preserve">
-    <value>Última Latitude</value>
+    <value>Latitude final</value>
   </data>
   <data name="LastLongitude" xml:space="preserve">
-    <value>Última Longitude</value>
+    <value>Longitude final</value>
   </data>
   <data name="LastOnGround" xml:space="preserve">
     <value>Última vez em solo</value>
   </data>
   <data name="LastSpeed" xml:space="preserve">
-    <value>Última velocidade</value>
+    <value>Velocidade final</value>
   </data>
   <data name="LastSquawk" xml:space="preserve">
     <value>Último Squawk</value>
   </data>
   <data name="LastVerticalSpeed" xml:space="preserve">
-    <value>Última velocidade vertical</value>
+    <value>Velocidade Vertical final</value>
   </data>
   <data name="Latitude" xml:space="preserve">
     <value>Latitude</value>
@@ -749,15 +733,13 @@
     <value>Tall Detail and List</value>
   </data>
   <data name="ListAircraftClass" xml:space="preserve">
-    <value>A/C Class</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>A/C Classe</value>
   </data>
   <data name="ListAirportDataThumbnails" xml:space="preserve">
     <value>Miniaturas (airport-data.com)</value>
   </data>
   <data name="ListAirPressure" xml:space="preserve">
-    <value>Pressure</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pressão</value>
   </data>
   <data name="ListAltitude" xml:space="preserve">
     <value>Altitude</value>
@@ -768,8 +750,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListAltitudeType" xml:space="preserve">
-    <value>Alt. Type</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Alt. do tipo</value>
   </data>
   <data name="ListAverageSignalLevel" xml:space="preserve">
     <value>Avg. Sig</value>
@@ -813,12 +794,12 @@
     <value>País</value>
   </data>
   <data name="ListCurrentRegDate" xml:space="preserve">
-    <value>Current Reg.</value>
-    <comment>** SAME AS ENGLISH ** Date of current registration</comment>
+    <value>Registro atual</value>
+    <comment>Date of current registration</comment>
   </data>
   <data name="ListDeRegDate" xml:space="preserve">
-    <value>De-reg Date</value>
-    <comment>** SAME AS ENGLISH ** as in the date it was taken off the register</comment>
+    <value>Data do desregistro</value>
+    <comment>as in the date it was taken off the register</comment>
   </data>
   <data name="ListDistance" xml:space="preserve">
     <value>Distancia</value>
@@ -834,43 +815,35 @@
     <value>Motores</value>
   </data>
   <data name="ListFirstAltitude" xml:space="preserve">
-    <value>From Alt.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Da Alt.</value>
   </data>
   <data name="ListFirstFlightLevel" xml:space="preserve">
-    <value>From FL</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Do FL</value>
   </data>
   <data name="ListFirstHeading" xml:space="preserve">
     <value>Do Hdg.</value>
   </data>
   <data name="ListFirstLatitude" xml:space="preserve">
-    <value>From Lat.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Da Lat.</value>
   </data>
   <data name="ListFirstLongitude" xml:space="preserve">
-    <value>From Lng.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Da Lng.</value>
   </data>
   <data name="ListFirstOnGround" xml:space="preserve">
-    <value>From On Gnd.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Em solo.</value>
   </data>
   <data name="ListFirstRegDate" xml:space="preserve">
     <value>Primeiro Registro</value>
     <comment>Date of first registration</comment>
   </data>
   <data name="ListFirstSpeed" xml:space="preserve">
-    <value>From Speed</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Da Speed</value>
   </data>
   <data name="ListFirstSquawk" xml:space="preserve">
-    <value>From Squawk</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Do Squawk</value>
   </data>
   <data name="ListFirstVerticalSpeed" xml:space="preserve">
-    <value>From VSI</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Do VSI</value>
   </data>
   <data name="ListFlightLevel" xml:space="preserve">
     <value>FL</value>
@@ -884,19 +857,17 @@
     <value>Visto</value>
   </data>
   <data name="ListGenericName" xml:space="preserve">
-    <value>Nome generico</value>
+    <value>Nome genérico</value>
   </data>
   <data name="ListGeometricAltitude" xml:space="preserve">
     <value>Altitude (AMSL)</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListHadAlert" xml:space="preserve">
-    <value>Alert</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Alerta</value>
   </data>
   <data name="ListHadEmergency" xml:space="preserve">
-    <value>Emergency</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Emergência</value>
   </data>
   <data name="ListHadSPI" xml:space="preserve">
     <value>SPI</value>
@@ -907,43 +878,35 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListHeadingType" xml:space="preserve">
-    <value>Hdg. Type</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Tipo do Hdg.</value>
   </data>
   <data name="ListIcao" xml:space="preserve">
-    <value>ICAO</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>HEXA</value>
   </data>
   <data name="ListInteresting" xml:space="preserve">
-    <value>Interessante</value>
+    <value>Favorito</value>
   </data>
   <data name="ListLastAltitude" xml:space="preserve">
-    <value>To Alt.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Para a Alt.</value>
   </data>
   <data name="ListLastFlightLevel" xml:space="preserve">
-    <value>To FL</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Para o FL</value>
   </data>
   <data name="ListLastHeading" xml:space="preserve">
-    <value>To Hdg.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Para o Hdg.</value>
   </data>
   <data name="ListLastLatitude" xml:space="preserve">
-    <value>To Lat.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Para a Lat.</value>
   </data>
   <data name="ListLastLongitude" xml:space="preserve">
-    <value>To Lng.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Para a Lng.</value>
   </data>
   <data name="ListLastOnGround" xml:space="preserve">
     <value>To On Gnd.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListLastSpeed" xml:space="preserve">
-    <value>To Speed</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Para a velocidade</value>
   </data>
   <data name="ListLastSquawk" xml:space="preserve">
     <value>To Squawk</value>
@@ -965,8 +928,7 @@
     <value>Fabricante</value>
   </data>
   <data name="ListMaxTakeoffWeight" xml:space="preserve">
-    <value>Max T/O Weight</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Peso máximo de T/O</value>
   </data>
   <data name="ListMlat" xml:space="preserve">
     <value>MLAT</value>
@@ -985,11 +947,10 @@
     <value>Bandeiras</value>
   </data>
   <data name="ListModeSCountry" xml:space="preserve">
-    <value>País do Mode-S </value>
+    <value>Nacionalidade do Mode-S </value>
   </data>
   <data name="ListNotes" xml:space="preserve">
-    <value>Notes</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Notas</value>
   </data>
   <data name="ListOperator" xml:space="preserve">
     <value>Operador</value>
@@ -998,16 +959,13 @@
     <value>Bandeira</value>
   </data>
   <data name="ListOperatorIcao" xml:space="preserve">
-    <value>Op. Code</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Código do operador</value>
   </data>
   <data name="ListOwnershipStatus" xml:space="preserve">
-    <value>Ownership Status</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Situação da propriedade</value>
   </data>
   <data name="ListPicture" xml:space="preserve">
-    <value>Picture</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Foto</value>
   </data>
   <data name="ListPopularName" xml:space="preserve">
     <value>Nome Popular</value>
@@ -1017,12 +975,10 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListPreviousId" xml:space="preserve">
-    <value>Previous ID</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Último ID</value>
   </data>
   <data name="ListReceiver" xml:space="preserve">
-    <value>Receiver</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Receptor</value>
   </data>
   <data name="ListRegistration" xml:space="preserve">
     <value>Reg.</value>
@@ -1043,8 +999,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListSpecies" xml:space="preserve">
-    <value>Species</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Espécie</value>
   </data>
   <data name="ListSpeed" xml:space="preserve">
     <value>Velocidade</value>
@@ -1076,8 +1031,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListTotalHours" xml:space="preserve">
-    <value>Total Hours</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Horas totais</value>
   </data>
   <data name="ListTransponderType" xml:space="preserve">
     <value>Transponder</value>
@@ -1092,8 +1046,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListVerticalSpeed" xml:space="preserve">
-    <value>V.Speed</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Velocidade V.</value>
   </data>
   <data name="ListVerticalSpeedType" xml:space="preserve">
     <value>V.Speed Type</value>
@@ -1104,8 +1057,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListYearBuilt" xml:space="preserve">
-    <value>Built</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Construído</value>
   </data>
   <data name="Longitude" xml:space="preserve">
     <value>Longitude</value>
@@ -1115,8 +1067,7 @@
     <value>Fabricante</value>
   </data>
   <data name="Map" xml:space="preserve">
-    <value>Map</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Mapa</value>
   </data>
   <data name="MaxTakeoffWeight" xml:space="preserve">
     <value>Peso max. de decolagem</value>
@@ -1168,12 +1119,10 @@
     <comment>** SAME AS ENGLISH ** An abbreviation of Multilateration</comment>
   </data>
   <data name="MobilePage" xml:space="preserve">
-    <value>Mobile Page</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>magina mobile</value>
   </data>
   <data name="MobileReportPage" xml:space="preserve">
-    <value>Mobile Report Page</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pagina de reportes mobile</value>
   </data>
   <data name="Model" xml:space="preserve">
     <value>Modelo</value>
@@ -1186,8 +1135,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ModeSCountry" xml:space="preserve">
-    <value>Mode-S Country</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Nacionalidade do Mode-S</value>
   </data>
   <data name="MovingMap" xml:space="preserve">
     <value>Seguir aeronave</value>
@@ -1205,21 +1153,19 @@
     <value>Milhas Náuticas</value>
   </data>
   <data name="Neither" xml:space="preserve">
-    <value>Neither</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Nem</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>Não</value>
   </data>
   <data name="NoLocalStorage" xml:space="preserve">
-    <value>Este navegador não suporta o armazenamento local. Suas configurações não serão salvas\n\nSe você está navegando no "modo anonimo", em seguida, va para a versão normal. O modo anomimo não salva as alterações</value>
+    <value>Este navegador não suporta o armazenamento local. Suas configurações não serão salvas\n\nSe você está navegando no "modo anonimo", vá para a versão normal. O modo anomimo não salva as alterações</value>
   </data>
   <data name="None" xml:space="preserve">
     <value>Nenhum</value>
   </data>
   <data name="NoSettingsFound" xml:space="preserve">
-    <value>No settings found</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Configurações não encontradas</value>
   </data>
   <data name="NotBetween" xml:space="preserve">
     <value>Não está entre</value>
@@ -1228,7 +1174,7 @@
     <value>Que não contenha</value>
   </data>
   <data name="NotEndsWith" xml:space="preserve">
-    <value>Não termina com</value>
+    <value>Que não termine com</value>
   </data>
   <data name="NotEquals" xml:space="preserve">
     <value>Exceto</value>
@@ -1240,7 +1186,7 @@
     <value>Não começa com</value>
   </data>
   <data name="OffRadarAction" xml:space="preserve">
-    <value>Quando a aeronave sair do alcance::</value>
+    <value>Quando a aeronave sair do alcance:</value>
   </data>
   <data name="OffRadarActionEnableAutoSelect" xml:space="preserve">
     <value>Ativar auto-selecionar</value>
@@ -1378,8 +1324,7 @@
     <value>Legenda da Aeronave - Linha {0}</value>
   </data>
   <data name="Piston" xml:space="preserve">
-    <value>Piston</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pistão</value>
   </data>
   <data name="Pixels" xml:space="preserve">
     <value>pixels</value>
@@ -1398,16 +1343,13 @@
     <value>Desenvolvido por Virtual Radar Server</value>
   </data>
   <data name="PressureAltitude" xml:space="preserve">
-    <value>Altitude (Pressure)</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Altitude (pressão)</value>
   </data>
   <data name="Pressures" xml:space="preserve">
-    <value>Pressures</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pressões</value>
   </data>
   <data name="PreviousId" xml:space="preserve">
-    <value>Previous ID</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Último ID</value>
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>Quantidade</value>
@@ -1459,10 +1401,10 @@
     <value>Relatório personalizado</value>
   </data>
   <data name="ReportIcaoInvalid" xml:space="preserve">
-    <value>Relatório deste HEX.</value>
+    <value>Relatório do HEX.</value>
   </data>
   <data name="ReportIcaoValid" xml:space="preserve">
-    <value>Relatório do HEXA.: {0}</value>
+    <value>Relatório do HEXA: {0}</value>
   </data>
   <data name="ReportRegistrationInvalid" xml:space="preserve">
     <value>Relatório desta matrícula</value>
@@ -1474,8 +1416,7 @@
     <value>Reportes</value>
   </data>
   <data name="ReportsAreDisabled" xml:space="preserve">
-    <value>Server permissions prohibit the running of reports</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>As permissões do servidor proíbem a visualização de relatórios</value>
   </data>
   <data name="ReportTodaysFlights" xml:space="preserve">
     <value>Voos de hoje</value>
@@ -1491,8 +1432,7 @@
     <value>Resumir</value>
   </data>
   <data name="Reversing" xml:space="preserve">
-    <value>Reversing</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Invertido</value>
   </data>
   <data name="ReversingShort" xml:space="preserve">
     <value>REV</value>
@@ -1505,7 +1445,7 @@
     <value>Rota (completa)</value>
   </data>
   <data name="RouteNotKnown" xml:space="preserve">
-    <value>Rota não conhecida</value>
+    <value>Rota desconhecida</value>
   </data>
   <data name="RouteShort" xml:space="preserve">
     <value>Rota (curta)</value>
@@ -1521,8 +1461,7 @@
     <value>Gerar relatório</value>
   </data>
   <data name="SayAlpha" xml:space="preserve">
-    <value>alfuh</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>alpha</value>
   </data>
   <data name="SayAy" xml:space="preserve">
     <value>Ey</value>
@@ -1570,7 +1509,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SayIcao" xml:space="preserve">
-    <value>HEXA. {0}.</value>
+    <value>HEXA {0}.</value>
   </data>
   <data name="SayIndia" xml:space="preserve">
     <value>india</value>
@@ -1585,8 +1524,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SayLima" xml:space="preserve">
-    <value>leamah</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>lima</value>
   </data>
   <data name="SayMike" xml:space="preserve">
     <value>mike</value>
@@ -1661,8 +1599,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SeaPlane" xml:space="preserve">
-    <value>Seaplane</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Hidroavião</value>
   </data>
   <data name="Select" xml:space="preserve">
     <value>Selecionar a:</value>
@@ -1675,24 +1612,20 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ServerFetchFailedBody" xml:space="preserve">
-    <value>Could not fetch from the server. The error is "{0}" and the status is "{1}".</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Não foi possível obter a partir do servidor. O erro é "{0}" e o status é "{1}".</value>
   </data>
   <data name="ServerFetchFailedTitle" xml:space="preserve">
     <value>Fetch Failed</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ServerFetchTimedOut" xml:space="preserve">
-    <value>The request has timed out.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>O pedido foi excedeu o tempo maximo.</value>
   </data>
   <data name="ServerReportExceptionBody" xml:space="preserve">
-    <value>The server encountered an exception while generating the report. The exception was "{0}"</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>O servidor encontrou uma exceção ao gerar o relatório. A exceção foi "{0}"</value>
   </data>
   <data name="ServerReportExceptionTitle" xml:space="preserve">
-    <value>Server Exception</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Exceção do servidor</value>
   </data>
   <data name="SetClustererZoomLevel" xml:space="preserve">
     <value>Cluster aircraft at this zoom level</value>
@@ -1720,11 +1653,11 @@
     <value>Mostrar a localização atual</value>
   </data>
   <data name="ShowDetail" xml:space="preserve">
-    <value>MOstrar detalhes</value>
+    <value>Mostrar detalhes</value>
   </data>
   <data name="ShowEmergencySquawks" xml:space="preserve">
-    <value>Show emergency squawks</value>
-    <comment>** SAME AS ENGLISH ** Followed by "first / last / neither"</comment>
+    <value>Mostrar squawks de emergência</value>
+    <comment>Followed by "first / last / neither"</comment>
   </data>
   <data name="ShowEmptyValues" xml:space="preserve">
     <value>Mostrar valores em branco</value>
@@ -1736,8 +1669,8 @@
     <value>Mostrar apenas para a aeronave selecionada</value>
   </data>
   <data name="ShowInterestingAircraft" xml:space="preserve">
-    <value>Show interesting aircraft</value>
-    <comment>** SAME AS ENGLISH ** Followed by "first / last / neither"</comment>
+    <value>Mostrar aeronaves favoritas</value>
+    <comment>Followed by "first / last / neither"</comment>
   </data>
   <data name="ShowRangeCircles" xml:space="preserve">
     <value>Mostrar círculos de alcance</value>
@@ -1767,11 +1700,10 @@
     <value>Silhueta</value>
   </data>
   <data name="SilhouetteAndOpFlag" xml:space="preserve">
-    <value>Sil. &amp; Op. Flag</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Sil. &amp; Band. Op.</value>
   </data>
   <data name="SiteTimedOut" xml:space="preserve">
-    <value>O site está em pausa devido à inatividade. Feche a caixa de mensagem para retomar as atualizações.</value>
+    <value>O site está pausado devido à inatividade. Feche essa caixa de mensagem para retomar as atualizações.</value>
   </data>
   <data name="SortBy" xml:space="preserve">
     <value>Ordenar por</value>
@@ -1783,8 +1715,7 @@
     <value>Velocidade</value>
   </data>
   <data name="SpeedGraph" xml:space="preserve">
-    <value>Speed Graph</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Gráfico de velocidade</value>
   </data>
   <data name="Speeds" xml:space="preserve">
     <value>Velocidades</value>
@@ -1800,8 +1731,7 @@
     <value>Nenhum squawk atribuído</value>
   </data>
   <data name="Squawk7500" xml:space="preserve">
-    <value>Aircraft hijacking</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Aeronave desviada</value>
   </data>
   <data name="Squawk7600" xml:space="preserve">
     <value>Falha no Radio</value>
@@ -1854,7 +1784,7 @@
     <value>Proa planejada</value>
   </data>
   <data name="ThenBy" xml:space="preserve">
-    <value>em seguida por</value>
+    <value>Em seguida por</value>
   </data>
   <data name="Tiltwing" xml:space="preserve">
     <value>Tiltwing</value>
@@ -1908,20 +1838,17 @@
     <value>Band. do Transponder</value>
   </data>
   <data name="TrueAirSpeed" xml:space="preserve">
-    <value>True</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Real</value>
   </data>
   <data name="TrueAirSpeedShort" xml:space="preserve">
     <value>TAS</value>
     <comment>** SAME AS ENGLISH ** Keep this one short, an abbreviation if possible.</comment>
   </data>
   <data name="TrueHeading" xml:space="preserve">
-    <value>True heading</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Rumo real</value>
   </data>
   <data name="TrueHeadingShort" xml:space="preserve">
-    <value>True</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Real</value>
   </data>
   <data name="Turbo" xml:space="preserve">
     <value>Turbo</value>
@@ -1931,11 +1858,10 @@
     <value>Desconhecido</value>
   </data>
   <data name="UseBrowserLocation" xml:space="preserve">
-    <value>Use a localização GPS</value>
+    <value>Usar localização via GPS</value>
   </data>
   <data name="UsePressureAltitude" xml:space="preserve">
-    <value>Use pressure altitude</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Mostrar altitude por pressão</value>
   </data>
   <data name="UseRelativeDates" xml:space="preserve">
     <value>Manter as datas</value>
@@ -1945,8 +1871,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseShortLabels" xml:space="preserve">
-    <value>Use short labels</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Use etiquetas curtas</value>
   </data>
   <data name="VerticalSpeed" xml:space="preserve">
     <value>Velocidade vertical</value>
@@ -1993,7 +1918,7 @@
     <value>Leve</value>
   </data>
   <data name="WtcMedium" xml:space="preserve">
-    <value>Médio</value>
+    <value>Média</value>
   </data>
   <data name="YearBuilt" xml:space="preserve">
     <value>Ano de fabricação</value>

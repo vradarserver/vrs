@@ -121,30 +121,25 @@
     <value>Cancelar</value>
   </data>
   <data name="CannotCreateDatabaseFileTitle" xml:space="preserve">
-    <value>Cannot Create Database File</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Não foi possível criar o arquivo de banco de dados</value>
   </data>
   <data name="CreateDatabase" xml:space="preserve">
     <value>Criar Banco de dados</value>
   </data>
   <data name="CreatedDatabaseFile" xml:space="preserve">
-    <value>Created the database file {0}</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Criado o arquivo de banco de dados {0}</value>
   </data>
   <data name="CreatedDatabaseFileTitle" xml:space="preserve">
-    <value>Created Database File</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Banco de dados criado</value>
   </data>
   <data name="DatabaseFileAlreadyExists" xml:space="preserve">
-    <value>The database file already exists</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>O arquivo de banco de dados já existe</value>
   </data>
   <data name="DatabaseFileName" xml:space="preserve">
     <value>Banco de dados:</value>
   </data>
   <data name="DatabaseLocked" xml:space="preserve">
-    <value>The database is currently locked by another program. Some flights may not be recorded.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>O banco de dados está em uso por outro programa. Alguns voos podem não ser gravados.</value>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Desativado</value>
@@ -156,7 +151,7 @@
     <value>Ativado, atualizando {0}</value>
   </data>
   <data name="EnabledBadReceiver" xml:space="preserve">
-    <value>Ativado, receptor não habilitado ou inválido</value>
+    <value>Ativado, receptor inválido ou não habilitado</value>
   </data>
   <data name="EnabledNoDatabase" xml:space="preserve">
     <value>Ativado, banco de dados não especificado</value>
@@ -194,8 +189,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginName" xml:space="preserve">
-    <value>Database Writer</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Editor de banco de dados</value>
   </data>
   <data name="Receiver" xml:space="preserve">
     <value>Receptor</value>
@@ -210,8 +204,7 @@
     <value>'{0}' é zero</value>
   </data>
   <data name="UpdateExistingAircraft" xml:space="preserve">
-    <value>Overwrite details on existing aircraft</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Sobrescrever detalhes sobre aeronaves existentes</value>
   </data>
   <data name="UpdatingDatabasesNotCreatedByPluginForbidden" xml:space="preserve">
     <value>Esta configuração impede a atualização do banco de dados que não foi criado por este plugin</value>
@@ -220,23 +213,18 @@
     <value>Usar nome padrão</value>
   </data>
   <data name="WebAdminMenuName" xml:space="preserve">
-    <value>Database Writer</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Editor de banco de dados</value>
   </data>
   <data name="WriteOnlineLookupsNoticeAllAircraft" xml:space="preserve">
-    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new and existing aircraft records that are more than 28 days old.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Salvar pesquisas on-line irá atualizar o registro, país, número de série, ano de fabricação, fabricante, modelo e operador para as aeronaves novas, ou com dados com mais de 28 dias.</value>
   </data>
   <data name="WriteOnlineLookupsNoticeJustNew" xml:space="preserve">
-    <value>Saving online lookups will update the registration, country, serial number, year built, manufacturer, model and operator details for new aircraft records.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Salvar pesquisas on-line irá atualizar o registro, país, número de série, ano de fabricação, fabricante, modelo e operador para novos registros de aeronaves.</value>
   </data>
   <data name="WriteOnlineLookupsToDatabase" xml:space="preserve">
-    <value>Save online lookups in database</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Salvar pesquisas on-line no banco de dados</value>
   </data>
   <data name="WritingOnlineLookupsToDatabase" xml:space="preserve">
-    <value>Saving online lookups</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Salvar pesquisas on-line</value>
   </data>
 </root>

@@ -99,7 +99,7 @@
         var result = '';
 
         switch(countEngines) {
-            case 'C':       result = 'Coupled'; break;
+            case 'C':       result = 'Acoplado a'; break;
             case '1':       result = 'Monomotor a'; break;
             case '2':       result = 'Bimotor a '; break;
             case '3':       result = 'Trimotor a'; break;
@@ -112,7 +112,7 @@
         }
 
         switch(engineType) {
-            case VRS.EngineType.Electric:   result += ' eléctrico'; break;
+            case VRS.EngineType.Electric:   result += ' elétrico'; break;
             case VRS.EngineType.Jet:        result += ' jato'; break;
             case VRS.EngineType.Piston:     result += ' pistão'; break;
             case VRS.EngineType.Turbo:      result += ' turbo'; break;
@@ -149,9 +149,9 @@
 
             if(expandedDescription && result) {
                 switch(category) {
-                    case VRS.WakeTurbulenceCategory.Light:  result += ' (up to 7 tons)'; break;
-                    case VRS.WakeTurbulenceCategory.Medium: result += ' (up to 135 tons)'; break;
-                    case VRS.WakeTurbulenceCategory.Heavy:  result += ' (over 135 tons)'; break;
+                    case VRS.WakeTurbulenceCategory.Light:  result += ' (até 7 toneladas)'; break;
+                    case VRS.WakeTurbulenceCategory.Medium: result += ' (até 135 toneladas)'; break;
+                    case VRS.WakeTurbulenceCategory.Heavy:  result += ' (mais de 135 toneladas)'; break;
                 }
             }
         }

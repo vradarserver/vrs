@@ -118,83 +118,64 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ImportantProperties" xml:space="preserve">
-    <value>Important Properties</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Propriedades importantes</value>
   </data>
   <data name="Interesting" xml:space="preserve">
-    <value>Interesting</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Favoritos</value>
   </data>
   <data name="Manufacturer" xml:space="preserve">
-    <value>Manufacturer</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Fabricante</value>
   </data>
   <data name="Model" xml:space="preserve">
-    <value>Model</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Modelo</value>
   </data>
   <data name="ModelIcao" xml:space="preserve">
-    <value>Model ICAO</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Modelo do HEXA</value>
   </data>
   <data name="NoDatabaseRecord" xml:space="preserve">
-    <value>Could not find aircraft record</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Aeronave não encontrada</value>
   </data>
   <data name="Notes" xml:space="preserve">
-    <value>Notes</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Notas	</value>
   </data>
   <data name="OperatorIcao" xml:space="preserve">
-    <value>Operator ICAO</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Operador do HEXA</value>
   </data>
   <data name="OtherProperties" xml:space="preserve">
-    <value>Other Properties</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Outros Proprietários</value>
   </data>
   <data name="PluginName" xml:space="preserve">
-    <value>Database Editor</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Editor de Banco de Dados</value>
   </data>
   <data name="Saved" xml:space="preserve">
-    <value>Saved</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Salvo</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Pesquisar</value>
   </data>
   <data name="SerialNumber" xml:space="preserve">
-    <value>Serial number</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Número de série</value>
   </data>
   <data name="ServerReportedException" xml:space="preserve">
-    <value>Exception encountered: {0}</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Exceção encontrada: {0}</value>
   </data>
   <data name="StatusDisabled" xml:space="preserve">
-    <value>Disabled</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Desativado</value>
   </data>
   <data name="StatusStatistics" xml:space="preserve">
-    <value>{0:N0} searches, {1:N0} updates</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>{0:N0} pesquisas, {1:N0} atualizados</value>
   </data>
   <data name="Tag" xml:space="preserve">
     <value>Tag</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebAdminMenuName" xml:space="preserve">
-    <value>Database Editor</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Editor de Banco de Dados</value>
   </data>
   <data name="XhrFailed" xml:space="preserve">
-    <value>Could not fetch from server: {0}</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Impossível receber do servidor: {0}</value>
   </data>
   <data name="YearBuilt" xml:space="preserve">
-    <value>Year built</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Ano de fabricação</value>
   </data>
 </root>

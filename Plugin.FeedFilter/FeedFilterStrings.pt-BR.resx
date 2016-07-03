@@ -118,63 +118,50 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AllowIcaos" xml:space="preserve">
-    <value>Only allow ICAOs in list</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Permitir apenas os HEXAs listados</value>
   </data>
   <data name="BlockIcaosInstructions" xml:space="preserve">
-    <value>Enter ICAOs separated by commas or on separate lines</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Digite os códigos HEXAs separados por vírgulas ou linha</value>
   </data>
   <data name="CouldNotSaveOutOfDate" xml:space="preserve">
-    <value>The filter configuration could not be saved because it has been changed elsewhere. Reload the page and try again.</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>As configurações não foram salvas porque elas foram alteradas em outro local. Recarregue a página e tente novamente.</value>
   </data>
   <data name="FoundDuplicateIcaos" xml:space="preserve">
-    <value>The duplicate entries for the following ICAOs were not saved</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>As entradas duplicadas para os HEXAs seguintes não foram salvas</value>
   </data>
   <data name="FoundInvalidIcaos" xml:space="preserve">
-    <value>The following ICAOs were invalid and were not saved</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Os seguintes HEXAs. são inválidos e não foram salvos</value>
   </data>
   <data name="Icaos" xml:space="preserve">
-    <value>ICAOs</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>HEXAs</value>
   </data>
   <data name="PluginName" xml:space="preserve">
     <value>Feed Filter</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ProhibitIcaos" xml:space="preserve">
-    <value>Block all ICAOs in list</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Bloquear todos os HEXAs listados.</value>
   </data>
   <data name="ProhibitMlat" xml:space="preserve">
-    <value>Prohibit MLAT positions</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Bloqeuar posições MLAT</value>
   </data>
   <data name="ProhibitUnfilterableFeeds" xml:space="preserve">
-    <value>Prohibit unfilterable feeds</value>
-    <comment>** SAME AS ENGLISH ** Do not allow feeds that cannot be filtered</comment>
+    <value>Bloquear os receptores não listados.</value>
+    <comment>Do not allow feeds that cannot be filtered</comment>
   </data>
   <data name="Saved" xml:space="preserve">
-    <value>Saved</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Salvo</value>
   </data>
   <data name="ServerReportedException" xml:space="preserve">
-    <value>Exception encountered: {0}</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Exceção encontrada: {0}</value>
   </data>
   <data name="StatusDisabled" xml:space="preserve">
-    <value>Disabled</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Desativado</value>
   </data>
   <data name="StatusEnabled" xml:space="preserve">
-    <value>Enabled</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Ativado</value>
   </data>
   <data name="XhrFailed" xml:space="preserve">
-    <value>Could not fetch from server: {0}</value>
-    <comment>** SAME AS ENGLISH **</comment>
+    <value>Impossível receber do servidor: {0}</value>
   </data>
 </root>
