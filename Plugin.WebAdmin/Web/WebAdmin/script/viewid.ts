@@ -25,7 +25,20 @@
             this._Id = viewId;
             this._ModalOverlay = $('<div />').addClass('modal-alert').hide().appendTo('body');
 
+            this.configureAffixes();
+
             this.sendHeartbeat();
+        }
+
+        configureAffixes()
+        {
+            $('[data-spy="affix"]').each(function() {
+                $(this).affix({
+                    offset: {
+                        top: $(this).offset().top
+                    }
+                });
+            });
         }
 
         private setHeartbeatTimer(pauseInterval: number = 10000)

@@ -190,6 +190,7 @@
       <DependentUpon>ConnectorActivityLog.ts</DependentUpon>
     </Content>
     <Content Include="Web\WebAdmin\css\bootstrap\css\bootstrap-vrs-theme.css" />
+    <Content Include="Web\WebAdmin\css\site.css" />
     <Content Include="Web\WebAdmin\WebAdminPluginOptions.js">
       <DependentUpon>WebAdminPluginOptions.ts</DependentUpon>
     </Content>

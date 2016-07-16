@@ -10,6 +10,7 @@ var VRS;
                 this._ViewName = viewName;
                 this._Id = viewId;
                 this._ModalOverlay = $('<div />').addClass('modal-alert').hide().appendTo('body');
+                this.configureAffixes();
                 this.sendHeartbeat();
             }
             Object.defineProperty(ViewId.prototype, "Id", {
@@ -26,6 +27,15 @@ var VRS;
                 enumerable: true,
                 configurable: true
             });
+            ViewId.prototype.configureAffixes = function () {
+                $('[data-spy="affix"]').each(function () {
+                    $(this).affix({
+                        offset: {
+                            top: $(this).offset().top
+                        }
+                    });
+                });
+            };
             ViewId.prototype.setHeartbeatTimer = function (pauseInterval) {
                 var _this = this;
                 if (pauseInterval === void 0) { pauseInterval = 10000; }

@@ -89,7 +89,7 @@
                 .attr('id', 'sidebar')
                 .attr('role', 'navigation')
                 .addClass('col-xs-6 col-sm-3 sidebar-offcanvas hidden-print');
-            this._MenuItemsList = $('<ul />').addClass('nav').appendTo(sidebar);
+            this._MenuItemsList = $('<ul />').attr('data-spy', 'affix').addClass('nav').appendTo(sidebar);
 
             $('#content > .row').prepend(sidebar);
         }
