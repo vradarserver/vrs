@@ -1,0 +1,11 @@
+﻿#sidebar .nav.affix {
+    width: 402px;
+}
+.affix {
+    top: 10px;
+}
+@media screen and (max-width: 767px) {
+    #sidebar .nav.affix {
+        display: none;
+    }
+}
