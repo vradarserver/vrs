@@ -9,6 +9,7 @@
 
         static suppressNavbar = false;
         static suppressSidebar = false;
+        static suppressSubmenus = false;
 
         constructor()
         {
@@ -108,7 +109,67 @@
                 var pageElement = $('<li />').addClass(isCurrentPage ? 'active' : '');
                 pageElement.append($('<a />').attr('href', page.HtmlFileName).text(menuName));
                 this._MenuItemsList.append(pageElement);
+
+                if(isCurrentPage && !Menu.suppressSubmenus) {
+                    this.buildSubmenus(pageElement);
+                }
             });
+        }
+
+        buildSubmenus(submenuParent: JQuery)
+        {
+            $.each($('[data-site-jump-submenu]'), (idx, targetElement) => {
+                var target = $(targetElement);
+                this.buildJumpMenuEntry(submenuParent, target);
+            });
+        }
+
+        private buildJumpMenuEntry(menuParent: JQuery, target: JQuery)
+        {
+            var menu = $('ul.nav', menuParent).last();
+            if(menu.length === 0) {
+                menu = $('<ul />')
+                    .addClass('nav')
+                    .appendTo(menuParent);
+            }
+
+            var title = target.attr('data-site-jump-submenu');
+            if(!title) {
+                title = this.elementText(target);
+            }
+            if(!title || !title.length) {
+                $.each(target.find('*'), (idx, childElement) => {
+                    title = this.elementText($(childElement));
+                    return !title || !title.length;
+                });
+            }
+
+            var targetID = target.attr('id');
+            if(!targetID) {
+                title = 'NO TARGET FOR ' + title;
+            }
+
+            var liTag = $('<li />');
+            var aTag = $('<a />')
+                .attr('href', '#' + targetID)
+                .text(title)
+                .appendTo(liTag);
+
+            menu.append(liTag);
+        }
+
+        elementText(element: JQuery) : string
+        {
+            var result: string = null;
+
+            if(element.length === 1) {
+                var textNodes = element.contents().filter(function() { return this.nodeType === 3; });
+                if(textNodes.length > 0) {
+                    result = $.trim(textNodes[0].nodeValue);
+                }
+            }
+
+            return result;
         }
     }
 
