@@ -77,10 +77,60 @@ var VRS;
                     var pageElement = $('<li />').addClass(isCurrentPage ? 'active' : '');
                     pageElement.append($('<a />').attr('href', page.HtmlFileName).text(menuName));
                     _this._MenuItemsList.append(pageElement);
+                    if (isCurrentPage && !Menu.suppressSubmenus) {
+                        _this.buildSubmenus(pageElement);
+                    }
                 });
+            };
+            Menu.prototype.buildSubmenus = function (submenuParent) {
+                var _this = this;
+                $.each($('[data-site-jump-submenu]'), function (idx, targetElement) {
+                    var target = $(targetElement);
+                    _this.buildJumpMenuEntry(submenuParent, target);
+                });
+            };
+            Menu.prototype.buildJumpMenuEntry = function (menuParent, target) {
+                var _this = this;
+                var menu = $('ul.nav', menuParent).last();
+                if (menu.length === 0) {
+                    menu = $('<ul />')
+                        .addClass('nav')
+                        .appendTo(menuParent);
+                }
+                var title = target.attr('data-site-jump-submenu');
+                if (!title) {
+                    title = this.elementText(target);
+                }
+                if (!title || !title.length) {
+                    $.each(target.find('*'), function (idx, childElement) {
+                        title = _this.elementText($(childElement));
+                        return !title || !title.length;
+                    });
+                }
+                var targetID = target.attr('id');
+                if (!targetID) {
+                    title = 'NO TARGET FOR ' + title;
+                }
+                var liTag = $('<li />');
+                var aTag = $('<a />')
+                    .attr('href', '#' + targetID)
+                    .text(title)
+                    .appendTo(liTag);
+                menu.append(liTag);
+            };
+            Menu.prototype.elementText = function (element) {
+                var result = null;
+                if (element.length === 1) {
+                    var textNodes = element.contents().filter(function () { return this.nodeType === 3; });
+                    if (textNodes.length > 0) {
+                        result = $.trim(textNodes[0].nodeValue);
+                    }
+                }
+                return result;
             };
             Menu.suppressNavbar = false;
             Menu.suppressSidebar = false;
+            Menu.suppressSubmenus = false;
             return Menu;
         }());
         WebAdmin.Menu = Menu;
