@@ -80,6 +80,7 @@
             this.radioButtonDedicatedMicroAdsb = new System.Windows.Forms.RadioButton();
             this.radioButtonDedicatedBeast = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
+            this.radioButtonDedicatedPlaneFinderRadar = new System.Windows.Forms.RadioButton();
             this.panelBorder.SuspendLayout();
             this.panelHeading.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
@@ -165,6 +166,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.wizard.BackColor = System.Drawing.SystemColors.Control;
+            this.wizard.Controls.Add(this.wizardPageDedicatedReceiver);
             this.wizard.Controls.Add(this.wizardPageSdrDecoder);
             this.wizard.Controls.Add(this.wizardPageSdrOrDedicated);
             this.wizard.Controls.Add(this.wizardPageFinish);
@@ -172,7 +174,6 @@
             this.wizard.Controls.Add(this.wizardPageLoopback);
             this.wizard.Controls.Add(this.wizardPageKineticConnection);
             this.wizard.Controls.Add(this.wizardPageConnectionType);
-            this.wizard.Controls.Add(this.wizardPageDedicatedReceiver);
             this.wizard.Location = new System.Drawing.Point(0, 57);
             this.wizard.Margin = new System.Windows.Forms.Padding(0);
             this.wizard.Name = "wizard";
@@ -604,13 +605,14 @@
             this.wizardPageDedicatedReceiver.IsFinishPage = false;
             this.wizardPageDedicatedReceiver.Location = new System.Drawing.Point(0, 0);
             this.wizardPageDedicatedReceiver.Name = "wizardPageDedicatedReceiver";
-            this.wizardPageDedicatedReceiver.Size = new System.Drawing.Size(511, 283);
+            this.wizardPageDedicatedReceiver.Size = new System.Drawing.Size(569, 302);
             this.wizardPageDedicatedReceiver.TabIndex = 5;
             // 
             // radioPanelDedicatedReceiver
             // 
             this.radioPanelDedicatedReceiver.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedPlaneFinderRadar);
             this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedRadarBox);
             this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedOther);
             this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedKinetics);
@@ -618,7 +620,7 @@
             this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedBeast);
             this.radioPanelDedicatedReceiver.Location = new System.Drawing.Point(12, 44);
             this.radioPanelDedicatedReceiver.Name = "radioPanelDedicatedReceiver";
-            this.radioPanelDedicatedReceiver.Size = new System.Drawing.Size(487, 130);
+            this.radioPanelDedicatedReceiver.Size = new System.Drawing.Size(545, 153);
             this.radioPanelDedicatedReceiver.TabIndex = 9;
             this.radioPanelDedicatedReceiver.ValueMember = null;
             // 
@@ -628,18 +630,18 @@
             this.radioButtonDedicatedRadarBox.Location = new System.Drawing.Point(3, 3);
             this.radioButtonDedicatedRadarBox.Name = "radioButtonDedicatedRadarBox";
             this.radioButtonDedicatedRadarBox.Size = new System.Drawing.Size(222, 17);
-            this.radioButtonDedicatedRadarBox.TabIndex = 4;
+            this.radioButtonDedicatedRadarBox.TabIndex = 0;
             this.radioButtonDedicatedRadarBox.Text = "::RecConWizDedicatedAirNavRadarBox::";
             this.radioButtonDedicatedRadarBox.UseVisualStyleBackColor = true;
             // 
             // radioButtonDedicatedOther
             // 
             this.radioButtonDedicatedOther.AutoSize = true;
-            this.radioButtonDedicatedOther.Location = new System.Drawing.Point(4, 102);
+            this.radioButtonDedicatedOther.Location = new System.Drawing.Point(3, 125);
             this.radioButtonDedicatedOther.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.radioButtonDedicatedOther.Name = "radioButtonDedicatedOther";
             this.radioButtonDedicatedOther.Size = new System.Drawing.Size(63, 17);
-            this.radioButtonDedicatedOther.TabIndex = 8;
+            this.radioButtonDedicatedOther.TabIndex = 5;
             this.radioButtonDedicatedOther.Text = "::Other::";
             this.radioButtonDedicatedOther.UseVisualStyleBackColor = true;
             // 
@@ -649,17 +651,17 @@
             this.radioButtonDedicatedKinetics.Location = new System.Drawing.Point(3, 49);
             this.radioButtonDedicatedKinetics.Name = "radioButtonDedicatedKinetics";
             this.radioButtonDedicatedKinetics.Size = new System.Drawing.Size(180, 17);
-            this.radioButtonDedicatedKinetics.TabIndex = 3;
+            this.radioButtonDedicatedKinetics.TabIndex = 2;
             this.radioButtonDedicatedKinetics.Text = "::RecConWizDedicatedKinetics::";
             this.radioButtonDedicatedKinetics.UseVisualStyleBackColor = true;
             // 
             // radioButtonDedicatedMicroAdsb
             // 
             this.radioButtonDedicatedMicroAdsb.AutoSize = true;
-            this.radioButtonDedicatedMicroAdsb.Location = new System.Drawing.Point(3, 72);
+            this.radioButtonDedicatedMicroAdsb.Location = new System.Drawing.Point(3, 95);
             this.radioButtonDedicatedMicroAdsb.Name = "radioButtonDedicatedMicroAdsb";
             this.radioButtonDedicatedMicroAdsb.Size = new System.Drawing.Size(193, 17);
-            this.radioButtonDedicatedMicroAdsb.TabIndex = 6;
+            this.radioButtonDedicatedMicroAdsb.TabIndex = 4;
             this.radioButtonDedicatedMicroAdsb.Text = "::RecConWizDedicatedMicroAdsb::";
             this.radioButtonDedicatedMicroAdsb.UseVisualStyleBackColor = true;
             // 
@@ -669,7 +671,7 @@
             this.radioButtonDedicatedBeast.Location = new System.Drawing.Point(3, 26);
             this.radioButtonDedicatedBeast.Name = "radioButtonDedicatedBeast";
             this.radioButtonDedicatedBeast.Size = new System.Drawing.Size(170, 17);
-            this.radioButtonDedicatedBeast.TabIndex = 5;
+            this.radioButtonDedicatedBeast.TabIndex = 1;
             this.radioButtonDedicatedBeast.Text = "::RecConWizDedicatedBeast::";
             this.radioButtonDedicatedBeast.UseVisualStyleBackColor = true;
             // 
@@ -683,6 +685,16 @@
             this.label4.Size = new System.Drawing.Size(172, 13);
             this.label4.TabIndex = 2;
             this.label4.Text = "::RecConWizDedicatedTitle::";
+            // 
+            // radioButtonDedicatedPlaneFinderRadar
+            // 
+            this.radioButtonDedicatedPlaneFinderRadar.AutoSize = true;
+            this.radioButtonDedicatedPlaneFinderRadar.Location = new System.Drawing.Point(3, 72);
+            this.radioButtonDedicatedPlaneFinderRadar.Name = "radioButtonDedicatedPlaneFinderRadar";
+            this.radioButtonDedicatedPlaneFinderRadar.Size = new System.Drawing.Size(93, 17);
+            this.radioButtonDedicatedPlaneFinderRadar.TabIndex = 3;
+            this.radioButtonDedicatedPlaneFinderRadar.Text = "::PlaneFinder::";
+            this.radioButtonDedicatedPlaneFinderRadar.UseVisualStyleBackColor = true;
             // 
             // ReceiverConfigurationWizard
             // 
@@ -791,5 +803,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.PictureBox pictureBoxLogo;
         private System.Windows.Forms.RadioButton radioButtonSdrFR24Feeder;
+        private System.Windows.Forms.RadioButton radioButtonDedicatedPlaneFinderRadar;
     }
 }

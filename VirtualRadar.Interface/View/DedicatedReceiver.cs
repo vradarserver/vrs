@@ -42,6 +42,11 @@ namespace VirtualRadar.Interface.View
         MicroAdsb,
 
         /// <summary>
+        /// The user has a Plane Finder Radar receiver.
+        /// </summary>
+        PlaneFinderRadar,
+
+        /// <summary>
         /// The user has a receiver that we don't know about.
         /// </summary>
         Other,
