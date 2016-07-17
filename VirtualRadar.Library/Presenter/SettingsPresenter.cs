@@ -627,6 +627,8 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="receiver"></param>
         public void ApplyReceiverConfigurationWizard(IReceiverConfigurationWizardAnswers answers, Receiver receiver)
         {
+            receiver.IsSatcomFeed = false;
+
             switch(answers.ReceiverClass) {
                 case ReceiverClass.SoftwareDefinedRadio:
                     receiver.ConnectionType = ConnectionType.TCP;
@@ -662,6 +664,12 @@ namespace VirtualRadar.Library.Presenter
                         case DedicatedReceiver.MicroAdsb:
                             receiver.ConnectionType = ConnectionType.COM;
                             receiver.DataSource = DataSource.Beast;
+                            break;
+                        case DedicatedReceiver.PlaneFinderRadar:
+                            receiver.ConnectionType = ConnectionType.TCP;
+                            receiver.DataSource = DataSource.PlaneFinder;
+                            receiver.Address = answers.NetworkAddress;
+                            receiver.Port = 30054;
                             break;
                         case DedicatedReceiver.RadarBox:
                         case DedicatedReceiver.Other:

@@ -135,11 +135,12 @@ namespace VirtualRadar.WinForms
             radioPanelSdrDecoder.DataSource = Answers;
 
             // DedicatedReceiver
-            radioButtonDedicatedBeast.Tag =     DedicatedReceiver.Beast;
-            radioButtonDedicatedKinetics.Tag =  DedicatedReceiver.KineticAvionicsAll;
-            radioButtonDedicatedMicroAdsb.Tag = DedicatedReceiver.MicroAdsb;
-            radioButtonDedicatedOther.Tag =     DedicatedReceiver.Other;
-            radioButtonDedicatedRadarBox.Tag =  DedicatedReceiver.RadarBox;
+            radioButtonDedicatedBeast.Tag =             DedicatedReceiver.Beast;
+            radioButtonDedicatedKinetics.Tag =          DedicatedReceiver.KineticAvionicsAll;
+            radioButtonDedicatedMicroAdsb.Tag =         DedicatedReceiver.MicroAdsb;
+            radioButtonDedicatedOther.Tag =             DedicatedReceiver.Other;
+            radioButtonDedicatedRadarBox.Tag =          DedicatedReceiver.RadarBox;
+            radioButtonDedicatedPlaneFinderRadar.Tag =  DedicatedReceiver.PlaneFinderRadar;
             radioPanelDedicatedReceiver.ValueMember = PropertyHelper.ExtractName(answers, r => r.DedicatedReceiver);
             radioPanelDedicatedReceiver.DataSource = Answers;
 
