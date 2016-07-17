@@ -161,7 +161,7 @@
     <value>Миниатюры (airport-data.com)</value>
   </data>
   <data name="AirPressure" xml:space="preserve">
-    <value>Air Pressure</value>
+    <value>Давление воздуха</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AllAircraft" xml:space="preserve">
@@ -289,7 +289,7 @@
   </data>
   <data name="DateTimeShort" xml:space="preserve">
     <value>{0} {1}</value>
-    <comment>** SAME AS ENGLISH ** Where "{0}" is a date, e.g. 10/10/2013; and "{1}" is a time, e.g. 17:41:32.</comment>
+    <comment>Where "{0}" is a date, e.g. 10/10/2013; and "{1}" is a time, e.g. 17:41:32.</comment>
   </data>
   <data name="DateWeekAbbr" xml:space="preserve">
     <value>Нед</value>
@@ -520,11 +520,11 @@
     <value>Истинная</value>
   </data>
   <data name="GeometricAltitude" xml:space="preserve">
-    <value>Altitude (AMSL)</value>
+    <value>Высота (AMSL)</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="GeometricAltitudeIndicator" xml:space="preserve">
-    <value>GPS</value>
+    <value>amsl</value>
     <comment>A ** SHORT ** indication that the reported altitude is geometric as opposed to barometric. AMSL is above mean sea level</comment>
   </data>
   <data name="GoogleMapsCouldNotBeLoaded" xml:space="preserve">
@@ -613,14 +613,14 @@
   </data>
   <data name="IndicatedAirSpeedShort" xml:space="preserve">
     <value>IAS</value>
-    <comment>** SAME AS ENGLISH ** &lt;-- please try to keep this short, an abbreviation if possible</comment>
+    <comment>&lt;-- please try to keep this short, an abbreviation if possible</comment>
   </data>
   <data name="InHgAbbreviation" xml:space="preserve">
-    <value>{0} inHg</value>
-    <comment>** SAME AS ENGLISH ** Unit of measurement - inches of mercury</comment>
+    <value>{0} дюйм рт. ст. </value>
+    <comment>Unit of measurement - inches of mercury</comment>
   </data>
   <data name="InHgDescription" xml:space="preserve">
-    <value>Inches of Mercury</value>
+    <value>Дюймы ртутного столба</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Interesting" xml:space="preserve">
@@ -720,7 +720,7 @@
     <value>Миниатюры (airport-data.com)</value>
   </data>
   <data name="ListAirPressure" xml:space="preserve">
-    <value>Pressure</value>
+    <value>Давление</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListAltitude" xml:space="preserve">
@@ -832,7 +832,7 @@
     <value>Общ.назв.</value>
   </data>
   <data name="ListGeometricAltitude" xml:space="preserve">
-    <value>Altitude (AMSL)</value>
+    <value>Высота (AMSL)</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListHadAlert" xml:space="preserve">
@@ -842,7 +842,7 @@
     <value>Аварийная обстановка</value>
   </data>
   <data name="ListHadSPI" xml:space="preserve">
-    <value>Условие SPI</value>
+    <value>SPI</value>
     <comment>Name of a pulse in Mode-S, may not need translation. Used when ATC has asked for ident from aircraft.</comment>
   </data>
   <data name="ListHeading" xml:space="preserve">
@@ -899,7 +899,7 @@
   </data>
   <data name="ListMlat" xml:space="preserve">
     <value>MLAT</value>
-    <comment>** SAME AS ENGLISH ** Abbreviation of Multilateration</comment>
+    <comment>Abbreviation of Multilateration</comment>
   </data>
   <data name="ListModel" xml:space="preserve">
     <value>Модель самолета</value>
@@ -938,7 +938,7 @@
     <value>Прозвище</value>
   </data>
   <data name="ListPressureAltitude" xml:space="preserve">
-    <value>Altitude (ISA)</value>
+    <value>Высота (ISA)</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListPreviousId" xml:space="preserve">
@@ -998,7 +998,7 @@
     <value>Трансп.</value>
   </data>
   <data name="ListTransponderTypeFlag" xml:space="preserve">
-    <value />
+    <value></value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListUserTag" xml:space="preserve">
@@ -1059,16 +1059,16 @@
     <value>Военный</value>
   </data>
   <data name="MillibarAbbreviation" xml:space="preserve">
-    <value>{0} mb</value>
-    <comment>** SAME AS ENGLISH ** Unit of measurement - millibars</comment>
+    <value>{0} мбар</value>
+    <comment>Unit of measurement - millibars</comment>
   </data>
   <data name="MillibarDescription" xml:space="preserve">
-    <value>Millibars</value>
+    <value>Миллибары</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Mlat" xml:space="preserve">
     <value>MLAT</value>
-    <comment>** SAME AS ENGLISH ** An abbreviation of Multilateration</comment>
+    <comment>An abbreviation of Multilateration</comment>
   </data>
   <data name="MobilePage" xml:space="preserve">
     <value>Для мобильного компьютера</value>
@@ -1291,11 +1291,11 @@
     <value>Создано в Virtual Radar Server</value>
   </data>
   <data name="PressureAltitude" xml:space="preserve">
-    <value>Altitude (Pressure)</value>
+    <value>Высота (Pressure)</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Pressures" xml:space="preserve">
-    <value>Pressures</value>
+    <value>Давления</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PreviousId" xml:space="preserve">
@@ -1374,7 +1374,7 @@
     <value>За предыдущие сутки</value>
   </data>
   <data name="ResetClustererZoomLevel" xml:space="preserve">
-    <value>Reset cluster aircraft zoom level</value>
+    <value>Сброс кластеризации меток при масштабировании</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Resume" xml:space="preserve">
@@ -1413,7 +1413,7 @@
   </data>
   <data name="SayAy" xml:space="preserve">
     <value>Ey</value>
-    <comment>** SAME AS ENGLISH ** How text-to-speech should pronounce the letter A</comment>
+    <comment>How text-to-speech should pronounce the letter A</comment>
   </data>
   <data name="SayBravo" xml:space="preserve">
     <value>bravo</value>
@@ -1549,7 +1549,7 @@
   </data>
   <data name="SayZed" xml:space="preserve">
     <value>ZED</value>
-    <comment>** SAME AS ENGLISH ** How text to speech should pronounce the letter 'Z'</comment>
+    <comment>How text to speech should pronounce the letter 'Z'</comment>
   </data>
   <data name="SayZulu" xml:space="preserve">
     <value>zulu</value>
@@ -1583,7 +1583,7 @@
     <value>Получено исключение сервера</value>
   </data>
   <data name="SetClustererZoomLevel" xml:space="preserve">
-    <value>Cluster aircraft at this zoom level</value>
+    <value>Кластеризация меток на этом уровне масштабирования</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SetCurrentLocation" xml:space="preserve">
@@ -1792,7 +1792,7 @@
   </data>
   <data name="TrueAirSpeedShort" xml:space="preserve">
     <value>TAS</value>
-    <comment>** SAME AS ENGLISH ** Keep this one short, an abbreviation if possible.</comment>
+    <comment>Keep this one short, an abbreviation if possible.</comment>
   </data>
   <data name="TrueHeading" xml:space="preserve">
     <value>Истинный курс</value>
@@ -1810,7 +1810,7 @@
     <value>Использовать GPS местоположение</value>
   </data>
   <data name="UsePressureAltitude" xml:space="preserve">
-    <value>Use pressure altitude</value>
+    <value>Использовать высоту по давлению</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseRelativeDates" xml:space="preserve">
@@ -1820,7 +1820,7 @@
     <value>Пользовательский тэг</value>
   </data>
   <data name="UseShortLabels" xml:space="preserve">
-    <value>Use short labels</value>
+    <value>Использовать короткие метки</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="VerticalSpeed" xml:space="preserve">
