@@ -2779,6 +2779,24 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} mmHg.
+        /// </summary>
+        public static string MmHgAbbreviation {
+            get {
+                return ResourceManager.GetString("MmHgAbbreviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Millimetres of Mercury.
+        /// </summary>
+        public static string MmHgDescription {
+            get {
+                return ResourceManager.GetString("MmHgDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mobile Page.
         /// </summary>
         public static string MobilePage {

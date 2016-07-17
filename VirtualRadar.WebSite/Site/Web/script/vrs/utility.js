@@ -798,6 +798,9 @@ var VRS;
                             case VRS.Pressure.Millibar:
                                 result /= 0.0295301;
                                 break;
+                            case VRS.Pressure.MmHg:
+                                result *= 25.4;
+                                break;
                             default: throw 'Unknown pressure unit ' + toUnit;
                         }
                         break;
@@ -806,8 +809,23 @@ var VRS;
                             case VRS.Pressure.InHg:
                                 result *= 0.0295301;
                                 break;
+                            case VRS.Pressure.MmHg:
+                                result *= 0.750061561303;
+                                break;
                             default: throw 'Unknown pressure unit ' + toUnit;
                         }
+                        break;
+                    case VRS.Pressure.MmHg:
+                        switch (toUnit) {
+                            case VRS.Pressure.InHg:
+                                result /= 25.4;
+                                break;
+                            case VRS.Pressure.Millibar:
+                                result /= 0.750061561303;
+                                break;
+                            default: throw 'Unknown pressure unit ' + toUnit;
+                        }
+                        break;
                     default:
                         throw 'Unknown pressure unit ' + fromUnit;
                 }
@@ -818,6 +836,7 @@ var VRS;
             switch (unit) {
                 case VRS.Pressure.InHg: return VRS.$$.InHgAbbreviation;
                 case VRS.Pressure.Millibar: return VRS.$$.MillibarAbbreviation;
+                case VRS.Pressure.MmHg: return VRS.$$.MmHgAbbreviation;
                 default: throw 'Unknown pressure unit ' + unit;
             }
         };

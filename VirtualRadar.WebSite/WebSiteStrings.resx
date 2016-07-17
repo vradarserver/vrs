@@ -1810,4 +1810,10 @@
   <data name="SetClustererZoomLevel" xml:space="preserve">
     <value>Cluster aircraft at this zoom level</value>
   </data>
+  <data name="MmHgAbbreviation" xml:space="preserve">
+    <value>{0} mmHg</value>
+  </data>
+  <data name="MmHgDescription" xml:space="preserve">
+    <value>Millimetres of Mercury</value>
+  </data>
 </root>
