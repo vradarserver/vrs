@@ -79,9 +79,9 @@
             // buttonToggleUPnpStatus
             // 
             this.buttonToggleUPnpStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonToggleUPnpStatus.Location = new System.Drawing.Point(535, 44);
+            this.buttonToggleUPnpStatus.Location = new System.Drawing.Point(506, 44);
             this.buttonToggleUPnpStatus.Name = "buttonToggleUPnpStatus";
-            this.buttonToggleUPnpStatus.Size = new System.Drawing.Size(120, 23);
+            this.buttonToggleUPnpStatus.Size = new System.Drawing.Size(145, 23);
             this.buttonToggleUPnpStatus.TabIndex = 3;
             this.buttonToggleUPnpStatus.Text = "Toggle Port Mapping";
             this.buttonToggleUPnpStatus.UseVisualStyleBackColor = true;
@@ -131,9 +131,9 @@
             // buttonToggleServerStatus
             // 
             this.buttonToggleServerStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonToggleServerStatus.Location = new System.Drawing.Point(535, 15);
+            this.buttonToggleServerStatus.Location = new System.Drawing.Point(506, 15);
             this.buttonToggleServerStatus.Name = "buttonToggleServerStatus";
-            this.buttonToggleServerStatus.Size = new System.Drawing.Size(120, 23);
+            this.buttonToggleServerStatus.Size = new System.Drawing.Size(145, 23);
             this.buttonToggleServerStatus.TabIndex = 1;
             this.buttonToggleServerStatus.Text = "Toggle Server";
             this.buttonToggleServerStatus.UseVisualStyleBackColor = true;
