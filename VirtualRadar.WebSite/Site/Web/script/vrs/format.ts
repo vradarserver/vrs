@@ -713,6 +713,7 @@ namespace VRS
                 switch(unit) {
                     case VRS.Pressure.InHg:         result = VRS.stringUtility.formatNumber(value, '0.00'); break;
                     case VRS.Pressure.Millibar:     result = VRS.stringUtility.formatNumber(value, '0'); break;
+                    case VRS.Pressure.MmHg:         result = VRS.stringUtility.formatNumber(value, '0.00'); break;
                     default:                        throw 'Unknown pressure unit ' + unit;
                 }
                 if(showUnit && result) {

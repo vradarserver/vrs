@@ -200,7 +200,8 @@ var VRS;
     };
     VRS.Pressure = {
         InHg: '0',
-        Millibar: '1'
+        Millibar: '1',
+        MmHg: '2'
     };
     VRS.RenderProperty = {
         None: '---',

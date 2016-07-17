@@ -310,6 +310,8 @@ declare namespace VRS
         MillibarAbbreviation:               string;
         MillibarDescription:                string;
         Mlat:                               string;
+        MmHgAbbreviation:                   string;
+        MmHgDescription:                    string;
         MobilePage:                         string;
         MobileReportPage:                   string;
         Model:                              string;

@@ -332,7 +332,8 @@ namespace VRS
      */
     export var Pressure = {
         InHg:               '0',
-        Millibar:           '1'
+        Millibar:           '1',
+        MmHg:               '2'
     };
 
     export type RenderPropertyEnum = string;
