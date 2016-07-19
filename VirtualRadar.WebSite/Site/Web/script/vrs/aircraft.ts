@@ -1317,7 +1317,7 @@ namespace VRS
          */
         formatVerticalSpeed(heightUnit: HeightEnum, perSecond: boolean, showUnit: boolean, showType: boolean) : string
         {
-            return VRS.format.verticalSpeed(this.verticalSpeed.val, this.verticalSpeedType.val, heightUnit, perSecond, showUnit, showType);
+            return VRS.format.verticalSpeed(this.verticalSpeed.val, this.isOnGround.val, this.verticalSpeedType.val, heightUnit, perSecond, showUnit, showType);
         }
 
         /**

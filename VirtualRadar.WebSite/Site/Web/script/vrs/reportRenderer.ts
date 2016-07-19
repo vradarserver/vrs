@@ -756,7 +756,7 @@ namespace VRS
         labelKey:           'FirstVerticalSpeed',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(json: IReportFlight) { return json.fVsi !== undefined; },
-        contentCallback:    function(json: IReportFlight, options: ReportRender_Options) { return VRS.format.verticalSpeed(json.fVsi, AltitudeType.Barometric, options.unitDisplayPreferences.getHeightUnit(), options.unitDisplayPreferences.getShowVerticalSpeedPerSecond(), options.showUnits); }
+        contentCallback:    function(json: IReportFlight, options: ReportRender_Options) { return VRS.format.verticalSpeed(json.fVsi, json.fOnGnd, AltitudeType.Barometric, options.unitDisplayPreferences.getHeightUnit(), options.unitDisplayPreferences.getShowVerticalSpeedPerSecond(), options.showUnits); }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.FlightLevel] = new VRS.ReportPropertyHandler({
@@ -902,7 +902,7 @@ namespace VRS
         labelKey:           'LastVerticalSpeed',
         alignment:          VRS.Alignment.Right,
         hasValue:           function(json: IReportFlight) { return json.lVsi !== undefined; },
-        contentCallback:    function(json: IReportFlight, options: ReportRender_Options) { return VRS.format.verticalSpeed(json.lVsi, AltitudeType.Barometric, options.unitDisplayPreferences.getHeightUnit(), options.unitDisplayPreferences.getShowVerticalSpeedPerSecond(), options.showUnits); }
+        contentCallback:    function(json: IReportFlight, options: ReportRender_Options) { return VRS.format.verticalSpeed(json.lVsi, json.fOnGnd, AltitudeType.Barometric, options.unitDisplayPreferences.getHeightUnit(), options.unitDisplayPreferences.getShowVerticalSpeedPerSecond(), options.showUnits); }
     });
 
     VRS.reportPropertyHandlers[VRS.ReportFlightProperty.PositionsOnMap] = new VRS.ReportPropertyHandler({
