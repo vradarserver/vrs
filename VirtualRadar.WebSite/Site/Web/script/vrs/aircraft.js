@@ -693,7 +693,7 @@ var VRS;
             return VRS.format.userTag(this.userTag.val);
         };
         Aircraft.prototype.formatVerticalSpeed = function (heightUnit, perSecond, showUnit, showType) {
-            return VRS.format.verticalSpeed(this.verticalSpeed.val, this.verticalSpeedType.val, heightUnit, perSecond, showUnit, showType);
+            return VRS.format.verticalSpeed(this.verticalSpeed.val, this.isOnGround.val, this.verticalSpeedType.val, heightUnit, perSecond, showUnit, showType);
         };
         Aircraft.prototype.formatVerticalSpeedType = function () {
             return VRS.format.verticalSpeedType(this.verticalSpeedType.val);

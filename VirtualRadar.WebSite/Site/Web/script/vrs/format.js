@@ -705,8 +705,11 @@ var VRS;
         Format.prototype.userTag = function (userTag) {
             return userTag || '';
         };
-        Format.prototype.verticalSpeed = function (verticalSpeed, verticalSpeedType, heightUnit, perSecond, showUnit, showType) {
+        Format.prototype.verticalSpeed = function (verticalSpeed, isOnGround, verticalSpeedType, heightUnit, perSecond, showUnit, showType) {
             var result = '';
+            if (verticalSpeed && !!isOnGround) {
+                verticalSpeed = 0;
+            }
             verticalSpeed = VRS.unitConverter.convertVerticalSpeed(verticalSpeed, VRS.Height.Feet, heightUnit, perSecond);
             if (verticalSpeed || verticalSpeed === 0) {
                 result = VRS.stringUtility.formatNumber(verticalSpeed, '0');

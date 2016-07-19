@@ -1121,9 +1121,13 @@ namespace VRS
         /**
          * Returns the vertical speed formatted as a string.
          */
-        verticalSpeed(verticalSpeed: number, verticalSpeedType: AltitudeTypeEnum, heightUnit: HeightEnum, perSecond: boolean, showUnit?: boolean, showType?: boolean) : string
+        verticalSpeed(verticalSpeed: number, isOnGround: boolean, verticalSpeedType: AltitudeTypeEnum, heightUnit: HeightEnum, perSecond: boolean, showUnit?: boolean, showType?: boolean) : string
         {
             var result = '';
+
+            if(verticalSpeed && !!isOnGround) {
+                verticalSpeed = 0;
+            }
 
             verticalSpeed = VRS.unitConverter.convertVerticalSpeed(verticalSpeed, VRS.Height.Feet, heightUnit, perSecond);
             if(verticalSpeed || verticalSpeed === 0) {
