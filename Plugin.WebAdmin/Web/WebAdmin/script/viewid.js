@@ -67,7 +67,7 @@ var VRS;
                                     .show();
                             }
                         }
-                    }, false);
+                    }, false, true);
                 }
             };
             ViewId.prototype.showModalOverlay = function (show) {
