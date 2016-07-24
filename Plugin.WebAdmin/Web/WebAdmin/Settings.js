@@ -365,6 +365,16 @@ var VRS;
                                             },
                                             owner: _this
                                         });
+                                        model.IdleTimeoutSeconds = ko.pureComputed({
+                                            read: function () {
+                                                return Math.floor(model.IdleTimeoutMilliseconds() / 1000);
+                                            },
+                                            write: function (value) {
+                                                model.IdleTimeoutMilliseconds(value * 1000);
+                                            },
+                                            owner: _this
+                                        });
+                                        model.IsWholeListFeed = ko.computed(function () { return model.Format() === 'AircraftListJson'; });
                                         model.WrapUpValidation = _this._ViewId.createWrapupValidation(_this._ViewId.findValidationProperties(model));
                                         model.SelectRow = function (row) {
                                             _this._Model.SelectedRebroadcastServer(row);

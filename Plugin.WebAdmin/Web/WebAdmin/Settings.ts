@@ -90,8 +90,10 @@
         FormattedAddress?:          KnockoutComputed<string>;
         FormatDescription?:         KnockoutComputed<string>;
         Feed?:                      KnockoutComputed<FeedModel>;
+        IdleTimeoutSeconds?:        KnockoutComputed<number>;
         SendIntervalSeconds?:       KnockoutComputed<number>;
         WrapUpValidation?:          IValidation_KC;
+        IsWholeListFeed?:           KnockoutComputed<boolean>;
 
         SelectRow?:                 (row: RebroadcastServerModel) => void;
         DeleteRow?:                 (row: RebroadcastServerModel) => void;
@@ -585,6 +587,17 @@
                                     },
                                     owner: this
                                 });
+                                model.IdleTimeoutSeconds = ko.pureComputed({
+                                    read: () => {
+                                        return Math.floor(model.IdleTimeoutMilliseconds() / 1000);
+                                    },
+                                    write: (value) => {
+                                        model.IdleTimeoutMilliseconds(value * 1000);
+                                    },
+                                    owner: this
+                                });
+
+                                model.IsWholeListFeed = ko.computed(() => model.Format() === 'AircraftListJson');
 
                                 model.WrapUpValidation = this._ViewId.createWrapupValidation(this._ViewId.findValidationProperties(model));
 
