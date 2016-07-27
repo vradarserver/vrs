@@ -49,7 +49,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.ConnectorActivityLog
         {
             Id =            obj.Id;
             ConnectorName = obj.ConnectorName;
-            Time =          obj.Time.ToString("dd-MMM-yyyy HH:mm:ss");
+            Time =          obj.Time.ToLocalTime().ToString("dd-MMM-yyyy HH:mm:ss");
             Type =          Describe.ConnectorActivityType(obj.Type);
             Message =       obj.Message;
         }

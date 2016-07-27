@@ -42,7 +42,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.AircraftOnlineLookupLog
 
         public LogEntry(AircraftOnlineLookupLogEntry entry)
         {
-            Time = String.Format("{0:00}:{1:00}:{2:00}", entry.ResponseUtc.Hour, entry.ResponseUtc.Minute, entry.ResponseUtc.Second);
+            Time = String.Format("{0:HH:mm:ss}", entry.ResponseUtc.ToLocalTime());
             Icao = entry.Icao;
 
             var detail = entry.Detail;
