@@ -239,6 +239,7 @@ namespace Test.VirtualRadar.Library.Listener
                 var msOffsetName = String.Format("MSOffset{0}", i);
                 var hasPosnName = String.Format("HasPosn{0}", i);
                 var hasHeadName = String.Format("HasHead{0}", i);
+                var hasSpeedName = String.Format("HasSpeed{0}", i);
                 var isMlatName = String.Format("IsMlat{0}", i);
                 var passesName = String.Format("Passes{0}", i);
                 var isOutOfBandName = String.Format("OOB{0}", i);
@@ -250,6 +251,7 @@ namespace Test.VirtualRadar.Library.Listener
                     var hasZeroPosn = worksheet.String(hasPosnName) == "0";
                     var hasPosn = hasZeroPosn ? true : worksheet.Bool(hasPosnName);
                     var hasHead = worksheet.Bool(hasHeadName);
+                    var hasSpeed = worksheet.Bool(hasSpeedName);
                     var isMlat = worksheet.Bool(isMlatName);
                     var resetExpected = worksheet.String(passesName) == "True";
                     var messageExpected = resetExpected || worksheet.String(passesName) == "NoReset";
@@ -268,6 +270,7 @@ namespace Test.VirtualRadar.Library.Listener
                     if(hasZeroPosn)  baseStationMessageEventArgs.Message.Latitude = baseStationMessageEventArgs.Message.Longitude = 0.0;
                     else if(hasPosn) baseStationMessageEventArgs.Message.Latitude = baseStationMessageEventArgs.Message.Longitude = 1.0;
                     if(hasHead)      baseStationMessageEventArgs.Message.Track = 2;
+                    if(hasSpeed)     baseStationMessageEventArgs.Message.GroundSpeed = 3;
                     if(isMlat)       baseStationMessageEventArgs.Message.IsMlat = true;
 
                     var baseStationMessageEventRecorder = new EventRecorder<BaseStationMessageEventArgs>();
