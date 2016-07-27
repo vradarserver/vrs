@@ -107,7 +107,13 @@
                 var menuName = page.IsPlugin ? VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Title_PluginOptions, page.Name) : page.Name;
                 var isCurrentPage = VRS.stringUtility.equals(currentPageUrl, page.HtmlFileName, true);
                 var pageElement = $('<li />').addClass(isCurrentPage ? 'active' : '');
-                pageElement.append($('<a />').attr('href', page.HtmlFileName).text(menuName));
+
+                var linkElement = $('<a />').text(menuName);
+                if(!isCurrentPage) {
+                    linkElement.attr('href', page.HtmlFileName);
+                }
+                pageElement.append(linkElement);
+
                 this._MenuItemsList.append(pageElement);
 
                 if(isCurrentPage && !Menu.suppressSubmenus) {
