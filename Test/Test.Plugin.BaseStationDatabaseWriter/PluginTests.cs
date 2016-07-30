@@ -836,6 +836,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                     ReceiverId =                    worksheet.Int("ReceiverId"),
                     SaveDownloadedAircraftDetails = worksheet.Bool("SaveDownloadedAircraftDetails"),
                     RefreshOutOfDateAircraft =      worksheet.Bool("RefreshOutOfDateAircraft"),
+                    DataVersion =                   1,
                 });
                 Assert.AreEqual(jsonText, settings.ReadString(_Plugin, "Options"));
             });
