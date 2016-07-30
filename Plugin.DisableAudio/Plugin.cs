@@ -30,7 +30,7 @@ namespace VirtualRadar.Plugin.DisableAudio
 
         public string Name { get { return "Disable Audio Plugin"; } }
 
-        public string Version { get { return "2.3.0"; } }
+        public string Version { get { return "2.4.0"; } }
 
         public string Status { get; private set; }
 
