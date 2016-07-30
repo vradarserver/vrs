@@ -85,7 +85,7 @@ namespace VirtualRadar.Plugin.CustomContent
 
                         if(!String.Equals(currentFullPath, siteRootFullPath, StringComparison.OrdinalIgnoreCase)) {
                             if(Plugin.Singleton.WebSite.GetSiteRootFolders().Any(r => String.Equals(NormalisePath(r), siteRootFullPath, StringComparison.OrdinalIgnoreCase))) {
-                                message = CustomContentStrings.DirectoryAlreadyInUse;
+                                message = String.Format(CustomContentStrings.DirectoryAlreadyInUse, siteRootFullPath);
                             }
                         }
                     } catch(Exception ex) {
