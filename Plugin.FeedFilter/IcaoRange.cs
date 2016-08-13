@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2016 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -16,45 +16,18 @@ using System.Text;
 namespace VirtualRadar.Plugin.FeedFilter
 {
     /// <summary>
-    /// All of the configuration settings for the filter.
+    /// Describes a range of ICAOs.
     /// </summary>
-    class FilterConfiguration
+    class IcaoRange
     {
         /// <summary>
-        /// Gets a list of aircraft ICAO codes that either must not be allowed through to the rest of the system
-        /// or are the only ones that can be allowed through to the rest of the system.
+        /// Gets the first ICAO in the range.
         /// </summary>
-        public List<string> Icaos { get; private set; }
+        public string Start { get; set; }
 
         /// <summary>
-        /// Gets a list of ranges of ICAOs that must either be blocked or be the only ones allowed through.
+        /// Gets the last ICAO in the range.
         /// </summary>
-        public List<IcaoRange> IcaoRanges { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether aircraft in <see cref="Icaos"/> are to be blocked or whether
-        /// they are the only ICAOs that can be used.
-        /// </summary>
-        public bool ProhibitIcaos { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that MLAT positions must not be allowed through the filter.
-        /// </summary>
-        public bool ProhibitMlat { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value that is incremented every time the settings are saved.
-        /// </summary>
-        public long DataVersion { get; set; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public FilterConfiguration()
-        {
-            Icaos = new List<string>();
-            IcaoRanges = new List<IcaoRange>();
-            ProhibitIcaos = true;
-        }
+        public string End { get; set; }
     }
 }

@@ -49,14 +49,14 @@ namespace VirtualRadar.Plugin.FeedFilter
             private bool _ProhibitUnfilterableFeeds;
 
             /// <summary>
-            /// The collection of ICAOs as 6 digit upper-case hex strings.
-            /// </summary>
-            private HashSet<string> _IcaoStrings = new HashSet<string>();
-
-            /// <summary>
             /// The collection of prohibited ICAOs as integers.
             /// </summary>
             private HashSet<int> _IcaoNumbers = new HashSet<int>();
+
+            /// <summary>
+            /// The collection of prohibited ICAO ranges as integers.
+            /// </summary>
+            private List<Pair<int>> _IcaoRanges = new List<Pair<int>>();
 
             /// <summary>
             /// True if the ICAOs list are prohibited ICAOs, false if they're the only allowable ICAOs.
@@ -85,19 +85,49 @@ namespace VirtualRadar.Plugin.FeedFilter
                     _ProhibitMlat = filterConfiguration.ProhibitMlat;
                     _ProhibitIcaos = filterConfiguration.ProhibitIcaos;
 
-                    _IcaoStrings.Clear();
-                    _IcaoNumbers.Clear();
-                    foreach(var icao in filterConfiguration.Icaos) {
-                        var normalisedIcao = NormaliseIcao(icao);
-                        if(normalisedIcao.Length == 6 && !_IcaoStrings.Contains(normalisedIcao)) {
-                            try {
-                                var icaoNumber = Convert.ToInt32(normalisedIcao, 16);
-                                _IcaoStrings.Add(normalisedIcao);
+                    FillIcaoNumbers(filterConfiguration);
+                    FillIcaoRanges(filterConfiguration);
+                }
+            }
+
+            private void FillIcaoNumbers(FilterConfiguration filterConfiguration)
+            {
+                _IcaoNumbers.Clear();
+                foreach(var icao in filterConfiguration.Icaos) {
+                    var normalisedIcao = NormaliseIcao(icao);
+                    if(normalisedIcao.Length == 6) {
+                        try {
+                            var icaoNumber = Convert.ToInt32(normalisedIcao, 16);
+                            if(!_IcaoNumbers.Contains(icaoNumber)) {
                                 _IcaoNumbers.Add(icaoNumber);
-                            } catch(FormatException) {
-                                // Unparsable ICAO. These should have been caught by validation, we're not
-                                // going to make a song and dance about them here.
                             }
+                        } catch(FormatException) {
+                            // Unparsable ICAO. These should have been caught by validation, we're not
+                            // going to make a song and dance about them here.
+                        }
+                    }
+                }
+            }
+
+            private void FillIcaoRanges(FilterConfiguration filterConfiguration)
+            {
+                _IcaoRanges.Clear();
+                foreach(var icaoRange in filterConfiguration.IcaoRanges) {
+                    var startIcao = NormaliseIcao(icaoRange.Start);
+                    var endIcao =   NormaliseIcao(icaoRange.End);
+                    if(startIcao.Length == 6 && endIcao.Length == 6) {
+                        try {
+                            var startNumber = Convert.ToInt32(startIcao, 16);
+                            var endNumber =   Convert.ToInt32(endIcao, 16);
+                            if(startNumber <= endNumber) {
+                                var pair = new Pair<int>(startNumber, endNumber);
+                                if(!_IcaoRanges.Contains(pair)) {
+                                    _IcaoRanges.Add(pair);
+                                }
+                            }
+                        } catch(FormatException) {
+                            // Unparsable ICAO. These should have been caught by validation, we're not
+                            // going to make a song and dance about them here.
                         }
                     }
                 }
@@ -136,37 +166,27 @@ namespace VirtualRadar.Plugin.FeedFilter
             /// </summary>
             /// <param name="icao"></param>
             /// <returns></returns>
-            public bool IsIcaoProhibited(string icao)
-            {
-                var result = false;
-                if(!String.IsNullOrEmpty(icao)) {
-                    var normalisedIcao = NormaliseIcao(icao);
-                    _Lock.Lock();
-                    try {
-                        if(_ProhibitIcaos) result = _Enabled && _IcaoStrings.Contains(icao);
-                        else               result = _Enabled && !_IcaoStrings.Contains(icao);
-                    } finally {
-                        _Lock.Unlock();
-                    }
-                }
-
-                return result;
-            }
-
-            /// <summary>
-            /// Returns true if the ICAO is prohibited.
-            /// </summary>
-            /// <param name="icao"></param>
-            /// <returns></returns>
             public bool IsIcaoProhibited(int icao)
             {
+                var prohibited = _Enabled;
+
                 _Lock.Lock();
                 try {
-                    if(_ProhibitIcaos) return _Enabled && _IcaoNumbers.Contains(icao);
-                    else               return _Enabled && !_IcaoNumbers.Contains(icao);
+                    if(prohibited) {
+                        var isInList = _IcaoNumbers.Contains(icao);
+                        for(var i = 0;!isInList && i < _IcaoRanges.Count;++i) {
+                            var icaoRange = _IcaoRanges[i];
+                            isInList = icao >= icaoRange.First && icao <= icaoRange.Second;
+                        }
+
+                        if(_ProhibitIcaos) prohibited = isInList;
+                        else               prohibited = !isInList;
+                    }
                 } finally {
                     _Lock.Unlock();
                 }
+
+                return prohibited;
             }
 
             /// <summary>
@@ -228,11 +248,17 @@ namespace VirtualRadar.Plugin.FeedFilter
             var result = args;
 
             if(args != null && args.Message != null) {
-                if(_ParsedConfiguration.IsIcaoProhibited(args.Message.Icao24)) result = null;
-                else if((args.Message.IsMlat || args.IsOutOfBand) && _ParsedConfiguration.IsMlatProhibited()) {
-                    result.Message.Latitude = null;
-                    result.Message.Longitude = null;
-                    result.Message.Track = null;
+                try {
+                    var icaoNumber = Convert.ToInt32(args.Message.Icao24, 16);
+                    if(_ParsedConfiguration.IsIcaoProhibited(icaoNumber)) {
+                        result = null;
+                    } else if((args.Message.IsMlat || args.IsOutOfBand) && _ParsedConfiguration.IsMlatProhibited()) {
+                        result.Message.Latitude = null;
+                        result.Message.Longitude = null;
+                        result.Message.Track = null;
+                    }
+                } catch {
+                    ;
                 }
             }
 

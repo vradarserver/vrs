@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="FilterConfiguration.cs" />
     <Compile Include="FilterConfigurationStorage.cs" />
+    <Compile Include="IcaoRange.cs" />
     <Compile Include="Json\FilterConfigurationJson.cs" />
     <Compile Include="Json\ResponseJson.cs" />
     <Compile Include="Json\SaveFilterConfigurationJson.cs" />
