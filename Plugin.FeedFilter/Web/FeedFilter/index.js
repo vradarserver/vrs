@@ -134,7 +134,7 @@
                         _SaveErrorPanel.show();
                     } else {
                         if(data.DuplicateIcaos.length > 0) {
-                            showWarningListPanel(_SaveDuplicatesPanel, translations.foundDuplicates, data.DuplicateIcaos);
+                            showWarningListPanel(_SaveDuplicatesPanel, translations.foundDuplicateIcaos, data.DuplicateIcaos);
                         }
                         if(data.InvalidIcaos.length > 0) {
                             showWarningListPanel(_SaveInvalidPanel, translations.foundInvalidIcaos, data.InvalidIcaos);

@@ -29,5 +29,14 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// Gets the last ICAO in the range.
         /// </summary>
         public string End { get; set; }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return String.Format("{0} - {1}", Start, End);
+        }
     }
 }

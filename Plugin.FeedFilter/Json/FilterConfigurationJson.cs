@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Plugin.FeedFilter.Json
 {
@@ -51,7 +52,11 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
             DataVersion =   filterConfiguration.DataVersion;
             ProhibitMlat =  filterConfiguration.ProhibitMlat;
             ProhibitIcaos = filterConfiguration.ProhibitIcaos;
-            Icaos =         String.Join("\n", filterConfiguration.Icaos.ToArray());
+
+            var icaoLines = new List<string>(filterConfiguration.Icaos);
+            icaoLines.AddRange(filterConfiguration.IcaoRanges.Select(r => r.ToString()));
+            icaoLines.Sort((lhs, rhs) => String.Compare(lhs, rhs));
+            Icaos = String.Join("\n", icaoLines.ToArray());
         }
 
         /// <summary>
@@ -67,39 +72,118 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
                 ProhibitMlat =  ProhibitMlat,
                 ProhibitIcaos = ProhibitIcaos,
             };
-            result.Icaos.AddRange(ParseIcaos(Icaos, duplicateIcaos, invalidIcaos));
+            ParseIcaos(Icaos, result.Icaos, result.IcaoRanges, duplicateIcaos, invalidIcaos);
 
             return result;
         }
 
         /// <summary>
-        /// Parses a single string containing multiple ICAOs into a collection of prohibited ICAOs.
+        /// Parses a single string containing multiple ICAOs into a collection of prohibited ICAOs and prohibited ICAO ranges.
         /// </summary>
         /// <param name="rawIcaos"></param>
+        /// <param name="icaos"></param>
+        /// <param name="icaoRanges"></param>
         /// <param name="duplicateIcaos"></param>
         /// <param name="invalidIcaos"></param>
         /// <returns></returns>
-        private string[] ParseIcaos(string rawIcaos, List<string> duplicateIcaos, List<string> invalidIcaos)
+        private void ParseIcaos(string rawIcaos, List<string> icaos, List<IcaoRange> icaoRanges, List<string> duplicateIcaos, List<string> invalidIcaos)
         {
-            var result = new HashSet<string>();
+            var singleIcaos = new HashSet<string>();
+            var rangeIcaos = new HashSet<Pair<string>>();
 
             if(!String.IsNullOrEmpty(rawIcaos)) {
-                foreach(var chunk in rawIcaos.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
+                foreach(var chunk in rawIcaos.Split(new char[] { ';', ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
                     var candidate = chunk.ToUpper().Trim();
-                    if(candidate.Length < 6) candidate = String.Format("{0}{1}", new String('0', 6 - candidate.Length), candidate);
-                    if(result.Contains(candidate)) {
-                        if(!duplicateIcaos.Contains(candidate)) duplicateIcaos.Add(candidate);
-                    } else if(candidate.Length > 6 || candidate.Any(r => !((r >= 'A' && r <= 'F') || (r >= '0' && r <= '9')))) {
-                        if(!invalidIcaos.Contains(candidate)) invalidIcaos.Add(candidate);
+                    var rangeSeparatorIndex = candidate.IndexOf('-');
+                    if(rangeSeparatorIndex == -1) {
+                        ParseSingleIcao(candidate, singleIcaos, duplicateIcaos, invalidIcaos);
                     } else {
-                        result.Add(candidate);
+                        ParseIcaoRange(candidate, rangeSeparatorIndex, rangeIcaos, duplicateIcaos, invalidIcaos);
                     }
                 }
             }
+            icaos.AddRange(singleIcaos);
+            icaoRanges.AddRange(rangeIcaos.Select(r => new IcaoRange() { Start = r.First, End = r.Second }));
+
+            icaos.Sort((lhs, rhs) => String.Compare(lhs, rhs));
+            icaoRanges.Sort((lhs, rhs) => {
+                var result = String.Compare(lhs.Start, rhs.Start);
+                if(result == 0) {
+                    result = String.Compare(lhs.End, rhs.End);
+                }
+                return result;
+            });
             duplicateIcaos.Sort((lhs, rhs) => String.Compare(lhs, rhs));
             invalidIcaos.Sort((lhs, rhs) => String.Compare(lhs, rhs));
+        }
 
-            return result.OrderBy(r => r).ToArray();
+        private void ParseSingleIcao(string candidate, HashSet<string> singleIcaos, List<string> duplicateIcaos, List<string> invalidIcaos)
+        {
+            var rawCandidate = candidate;
+            candidate = PadCandidate(candidate);
+
+            if(singleIcaos.Contains(candidate)) {
+                AddToErrorList(rawCandidate, duplicateIcaos);
+            } else if(CandidateIsInvalid(candidate)) {
+                AddToErrorList(rawCandidate, invalidIcaos);
+            } else {
+                singleIcaos.Add(candidate);
+            }
+        }
+
+        private void ParseIcaoRange(string rangeCandidate, int separatorIndex, HashSet<Pair<string>> rangeIcaos, List<string> duplicateIcaos, List<string> invalidIcaos)
+        {
+            var rawCandidate = rangeCandidate;
+
+            var startCandidate = rangeCandidate.Substring(0, separatorIndex).Trim();
+            var endCandidate = rangeCandidate.Substring(separatorIndex + 1).Trim();
+
+            if(startCandidate.Length < 1 || endCandidate.Length < 1) {
+                AddToErrorList(rawCandidate, invalidIcaos);
+            } else {
+                startCandidate = PadCandidate(startCandidate);
+                endCandidate = PadCandidate(endCandidate);
+                var pair = new Pair<string>(startCandidate, endCandidate);
+
+                if(rangeIcaos.Contains(pair)) {
+                    AddToErrorList(rawCandidate, duplicateIcaos);
+                } else if(CandidateIsInvalid(startCandidate) || CandidateIsInvalid(endCandidate)) {
+                    AddToErrorList(rawCandidate, invalidIcaos);
+                } else if(ConvertToNumber(startCandidate) > ConvertToNumber(endCandidate)) {
+                    AddToErrorList(rawCandidate, invalidIcaos);
+                } else {
+                    rangeIcaos.Add(pair);
+                }
+            }
+        }
+
+        private string PadCandidate(string candidate)
+        {
+            if(candidate.Length < 6) {
+                candidate = String.Format("{0}{1}", new String('0', 6 - candidate.Length), candidate);
+            }
+            return candidate;
+        }
+
+        private bool CandidateIsInvalid(string candidate)
+        {
+            return candidate.Length > 6 || candidate.Any(r => !((r >= 'A' && r <= 'F') || (r >= '0' && r <= '9')));
+        }
+
+        private int ConvertToNumber(string candidate)
+        {
+            try {
+                return Convert.ToInt32(candidate, 16);
+            } catch(FormatException) {
+                return -1;
+            }
+        }
+
+        private void AddToErrorList(string candidate, List<string> errorList)
+        {
+            if(!errorList.Contains(candidate)) {
+                errorList.Add(candidate);
+            }
         }
     }
 }
